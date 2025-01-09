@@ -1,6 +1,6 @@
 <template>
   <div v-if="visible" ref="container" class="p-viewer" tabindex="-1" role="dialog">
-    <div ref="lightbox" class="p-viewer__lightbox" :class="{ slideshow: slideshow.active, sidebar: sidebarVisible }"></div>
+    <div ref="lightbox" class="p-viewer__lightbox" :class="{ slideshow: slideshow.active, sidebar: sidebarVisible, 'is-favorite': model.Favorite }"></div>
     <div v-if="sidebarVisible" ref="sidebar" class="p-viewer__sidebar"></div>
 
     <!-- TODO: All previously available features and controls must be preserved in the new hybrid photo/video viewer:
@@ -361,6 +361,23 @@ export default {
             },
           });
         }
+
+        if (this.canLike) {
+          lightbox.pswp.ui.registerElement({
+            name: "toggle-like-button",
+            className: "pswp__button--mdi pswp__button--toggle-like-button", // Sets the icon style/size in viewer.css.
+            order: 10,
+            isButton: true,
+            html: {
+              isCustomSVG: true,
+              inner: `<path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z" id="pswp__icn-like" /><path d="M12,15.39L8.24,17.66L9.23,13.38L5.91,10.5L10.29,10.13L12,6.09L13.71,10.13L18.09,10.5L14.77,13.38L15.76,17.66M22,9.24L14.81,8.63L12,2L9.19,8.63L2,9.24L7.45,13.97L5.82,21L12,17.27L18.18,21L16.54,13.97L22,9.24Z" id="pswp__icn-like-outline" />`,
+              size: 24, // Depends on the original SVG viewBox, e.g. use 24 for viewBox="0 0 24 24".
+            },
+            onClick: () => {
+              return this.onLike();
+            },
+          });
+        }
       });
 
       // Trigger onChange() event handler when slide is changed and on initialization,
@@ -613,7 +630,6 @@ export default {
         e.stopPropagation();
       }
     },
-    // TODO: Toggles the current picture to be flagged as a favorite.
     onLike() {
       this.model.toggleLike();
     },
