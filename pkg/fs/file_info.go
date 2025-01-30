@@ -25,6 +25,7 @@ var TypeInfo = TypeMap{
 	VideoMP2:        "MPEG 2 (H.262)",
 	VideoAVC:        "Advanced Video Coding (H.264, MPEG-4 Part 10)",
 	VideoHEVC:       "High Efficiency Video Coding (H.265)",
+	VideoHEV1:       "High Efficiency Video Coding (HEVC) Bitstream",
 	VideoVVC:        "Versatile Video Coding (H.266)",
 	VideoEVC:        "Essential Video Coding (MPEG-5 Part 1)",
 	VideoAV1:        "AOMedia Video 1",

@@ -32,6 +32,7 @@ type ClientConfig struct {
 	Flags            string              `json:"flags"`
 	BaseUri          string              `json:"baseUri"`
 	StaticUri        string              `json:"staticUri"`
+	ClientAssets     *ClientAssets       `json:"-"`
 	CssUri           string              `json:"cssUri"`
 	JsUri            string              `json:"jsUri"`
 	ManifestUri      string              `json:"manifestUri"`
@@ -95,7 +96,7 @@ type ClientConfig struct {
 }
 
 // ApplyACL updates the client config values based on the ACL and Role provided.
-func (c ClientConfig) ApplyACL(a acl.ACL, r acl.Role) ClientConfig {
+func (c *ClientConfig) ApplyACL(a acl.ACL, r acl.Role) *ClientConfig {
 	if c.Settings != nil {
 		c.Settings = c.Settings.ApplyACL(a, r)
 	}
@@ -221,14 +222,14 @@ func (c *Config) Flags() (flags []string) {
 }
 
 // ClientPublic returns config values for use by the JavaScript UI and other clients.
-func (c *Config) ClientPublic() ClientConfig {
+func (c *Config) ClientPublic() *ClientConfig {
 	if c.Public() {
 		return c.ClientUser(true).ApplyACL(acl.Rules, acl.RoleAdmin)
 	}
 
 	a := c.ClientAssets()
 
-	cfg := ClientConfig{
+	cfg := &ClientConfig{
 		Settings: c.PublicSettings(),
 		ACL:      acl.Rules.Grants(acl.RoleNone),
 		Disable: ClientDisable{
@@ -258,6 +259,7 @@ func (c *Config) ClientPublic() ClientConfig {
 		Edition:          c.Edition(),
 		BaseUri:          c.BaseUri(""),
 		StaticUri:        c.StaticUri(),
+		ClientAssets:     a,
 		CssUri:           a.AppCssUri(),
 		JsUri:            a.AppJsUri(),
 		ApiUri:           c.ApiUri(),
@@ -315,10 +317,10 @@ func (c *Config) ClientPublic() ClientConfig {
 }
 
 // ClientShare returns reduced client config values for share link visitors.
-func (c *Config) ClientShare() ClientConfig {
+func (c *Config) ClientShare() *ClientConfig {
 	a := c.ClientAssets()
 
-	cfg := ClientConfig{
+	cfg := &ClientConfig{
 		Settings: c.ShareSettings(),
 		ACL:      acl.Rules.Grants(acl.RoleVisitor),
 		Disable: ClientDisable{
@@ -348,6 +350,7 @@ func (c *Config) ClientShare() ClientConfig {
 		Edition:          c.Edition(),
 		BaseUri:          c.BaseUri(""),
 		StaticUri:        c.StaticUri(),
+		ClientAssets:     a,
 		CssUri:           a.AppCssUri(),
 		JsUri:            a.ShareJsUri(),
 		ApiUri:           c.ApiUri(),
@@ -406,7 +409,7 @@ func (c *Config) ClientShare() ClientConfig {
 }
 
 // ClientUser returns complete client config values for users with full access.
-func (c *Config) ClientUser(withSettings bool) ClientConfig {
+func (c *Config) ClientUser(withSettings bool) *ClientConfig {
 	a := c.ClientAssets()
 
 	var s *customize.Settings
@@ -415,7 +418,7 @@ func (c *Config) ClientUser(withSettings bool) ClientConfig {
 		s = c.Settings()
 	}
 
-	cfg := ClientConfig{
+	cfg := &ClientConfig{
 		Settings: s,
 		Disable: ClientDisable{
 			Settings:       c.DisableSettings(),
@@ -445,6 +448,7 @@ func (c *Config) ClientUser(withSettings bool) ClientConfig {
 		Edition:          c.Edition(),
 		BaseUri:          c.BaseUri(""),
 		StaticUri:        c.StaticUri(),
+		ClientAssets:     a,
 		CssUri:           a.AppCssUri(),
 		JsUri:            a.AppJsUri(),
 		ApiUri:           c.ApiUri(),
@@ -682,12 +686,12 @@ func (c *Config) ClientUser(withSettings bool) ClientConfig {
 }
 
 // ClientRole provides the client config values for the specified user role.
-func (c *Config) ClientRole(role acl.Role) ClientConfig {
+func (c *Config) ClientRole(role acl.Role) *ClientConfig {
 	return c.ClientUser(true).ApplyACL(acl.Rules, role)
 }
 
 // ClientSession provides the client config values for the specified session.
-func (c *Config) ClientSession(sess *entity.Session) (cfg ClientConfig) {
+func (c *Config) ClientSession(sess *entity.Session) (cfg *ClientConfig) {
 	if sess.NoUser() && sess.IsClient() {
 		cfg = c.ClientUser(false).ApplyACL(acl.Rules, sess.ClientRole())
 		cfg.Settings = c.SessionSettings(sess)

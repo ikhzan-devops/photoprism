@@ -1,7 +1,7 @@
 <template>
   <transition id="p-loading-bar" :css="false" @before-enter="beforeEnter" @enter="enter" @after-enter="afterEnter">
     <div v-if="show" class="top-progress" :style="barStyle">
-      <div class="peg" :style="pegStyle"> </div>
+      <div class="peg" :style="pegStyle"></div>
     </div>
   </transition>
 </template>

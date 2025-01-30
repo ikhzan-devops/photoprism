@@ -1,90 +1,125 @@
 <template>
-  <div v-infinite-scroll="loadMore" class="p-page p-page-errors" :infinite-scroll-disabled="scrollDisabled" :infinite-scroll-distance="scrollDistance" :infinite-scroll-listen-for-event="'scrollRefresh'">
-    <v-toolbar flat :dense="$vuetify.breakpoint.smAndDown" class="page-toolbar" color="secondary">
+  <div class="p-page p-page-errors">
+    <v-toolbar
+      flat
+      :density="$vuetify.display.smAndDown ? 'compact' : 'default'"
+      class="page-toolbar"
+      color="secondary"
+    >
       <v-text-field
-        :value="filter.q"
-        solo
+        :model-value="filter.q"
         hide-details
         clearable
         overflow
         single-line
-        validate-on-blur
-        class="input-search background-inherit elevation-0"
-        browser-autocomplete="off"
+        rounded
+        variant="solo-filled"
+        :density="density"
+        validate-on="invalid-input"
+        autocomplete="off"
         autocorrect="off"
         autocapitalize="none"
-        :label="$gettext('Search')"
-        prepend-inner-icon="search"
-        color="secondary-dark"
-        @change="
+        :placeholder="$gettext('Search')"
+        prepend-inner-icon="mdi-magnify"
+        color="surface-variant"
+        class="input-search background-inherit elevation-0"
+        @update:modelValue="
           (v) => {
             updateFilter({ q: v });
           }
         "
-        @keyup.enter.native="(e) => updateQuery({ q: e.target.value })"
+        @keyup.enter="() => updateQuery()"
         @click:clear="
           () => {
             updateQuery({ q: '' });
           }
         "
       ></v-text-field>
-      <v-spacer></v-spacer>
+
       <v-btn icon class="action-reload" :title="$gettext('Reload')" @click.stop="onReload()">
-        <v-icon>refresh</v-icon>
+        <v-icon>mdi-refresh</v-icon>
       </v-btn>
       <v-btn v-if="!isPublic" icon class="action-delete" :title="$gettext('Delete')" @click.stop="onDelete()">
-        <v-icon>delete</v-icon>
+        <v-icon>mdi-delete</v-icon>
       </v-btn>
-      <v-btn icon href="https://docs.photoprism.app/getting-started/troubleshooting/" target="_blank" class="action-bug-report" :title="$gettext('Troubleshooting Checklists')">
-        <v-icon>bug_report</v-icon>
+      <v-btn
+        icon
+        href="https://docs.photoprism.app/getting-started/troubleshooting/"
+        target="_blank"
+        class="action-bug-report"
+        :title="$gettext('Troubleshooting Checklists')"
+      >
+        <v-icon>mdi-bug</v-icon>
       </v-btn>
     </v-toolbar>
-    <v-container v-if="loading" fluid class="pa-4">
-      <v-progress-linear color="secondary-dark" :indeterminate="true"></v-progress-linear>
-    </v-container>
-    <v-list v-else-if="errors.length > 0" dense two-line class="transparent pa-1">
-      <v-list-tile v-for="err in errors" :key="err.ID" avatar class="rounded-4" @click="showDetails(err)">
-        <v-list-tile-avatar>
-          <v-icon :color="err.Level">{{ err.Level }}</v-icon>
-        </v-list-tile-avatar>
+    <div v-if="loading" fluid class="pa-6">
+      <v-progress-linear :indeterminate="true"></v-progress-linear>
+    </div>
+    <div v-else-if="errors.length > 0" fluid class="pa-0">
+      <p-scroll
+        :load-more="loadMore"
+        :load-disabled="scrollDisabled"
+        :load-distance="scrollDistance"
+        :loading="loading"
+      ></p-scroll>
 
-        <v-list-tile-content class="text-selectable">
-          <v-list-tile-title>{{ err.Message }}</v-list-tile-title>
-          <v-list-tile-sub-title>{{ formatTime(err.Time) }}</v-list-tile-sub-title>
-        </v-list-tile-content>
-      </v-list-tile>
-    </v-list>
-    <div v-else class="pa-2">
-      <v-alert :value="true" color="secondary-dark" icon="check_circle_outline" class="no-results ma-2 opacity-70" outline>
-        <p class="body-1 mt-0 mb-0 pa-0">
-          <template v-if="filter.q !== ''">
-            <translate>No warnings or error containing this keyword. Note that search is case-sensitive.</translate>
+      <v-list lines="one" bg-color="table" density="compact">
+        <v-list-item
+          v-for="err in errors"
+          :key="err.ID"
+          :prepend-icon="err.Level === 'error' ? 'mdi-alert-circle-outline' : 'mdi-alert'"
+          density="compact"
+          :title="err.Message"
+          :subtitle="formatTime(err.Time)"
+          @click="showDetails(err)"
+        >
+          <template #prepend>
+            <v-icon v-if="err.Level === 'error'" icon="mdi-alert-circle-outline" color="error"></v-icon>
+            <v-icon v-else-if="err.Level === 'warning'" icon="mdi-alert" color="warning"></v-icon>
+            <v-icon v-else icon="mdi-information-outline" color="info"></v-icon>
           </template>
-          <template>
-            <translate>Log messages appear here whenever PhotoPrism comes across broken files, or there are other potential issues.</translate>
-          </template>
-        </p>
+        </v-list-item>
+      </v-list>
+    </div>
+    <div v-else class="pa-3">
+      <v-alert color="primary" icon="mdi-check-circle-outline" class="no-results" variant="outlined">
+        <div v-if="filter.q">
+          {{ $gettext(`No warnings or error containing this keyword. Note that search is case-sensitive.`) }}
+        </div>
+        <div v-else>
+          {{
+            $gettext(
+              `Log messages appear here whenever PhotoPrism comes across broken files, or there are other potential issues.`
+            )
+          }}
+        </div>
       </v-alert>
     </div>
-    <p-confirm-dialog :show="dialog.delete" icon="delete_outline" @cancel="dialog.delete = false" @confirm="onConfirmDelete"></p-confirm-dialog>
-    <v-dialog v-model="details.show" max-width="500">
-      <v-card class="pa-2">
-        <v-card-title class="headline pa-2">
-          {{ details.err.Level | capitalize }}
+    <p-confirm-action
+      :show="dialog.delete"
+      icon="mdi-delete-outline"
+      @close="dialog.delete = false"
+      @confirm="onConfirmDelete"
+    ></p-confirm-action>
+    <v-dialog v-model="details.show" max-width="550" class="p-dialog">
+      <v-card>
+        <v-card-title class="d-flex justify-start align-center ga-3">
+          <v-icon v-if="details.err.Level === 'error'" icon="mdi-alert-circle-outline" color="error"></v-icon>
+          <v-icon v-else-if="details.err.Level === 'warning'" icon="mdi-alert" color="warning"></v-icon>
+          <v-icon v-else icon="mdi-information-outline" color="info"></v-icon>
+          <h6 class="text-h6 text-capitalize">{{ formatLevel(details.err.Level) }}</h6>
         </v-card-title>
 
-        <v-card-text class="pa-2 body-2">
-          {{ localTime(details.err.Time) }}
+        <v-card-text>
+          <p :class="'p-log-' + details.err.Level" class="p-log-message text-body-2 text-selectable" dir="ltr">
+            <span class="font-weight-medium">{{ formatTime(details.err.Time) }}</span
+            >&puncsp;<span class="text-break">{{ details.err.Message }}</span>
+          </p>
         </v-card-text>
 
-        <v-card-text class="pa-2 body-1">
-          {{ details.err.Message }}
-        </v-card-text>
-
-        <v-card-actions class="pa-2">
-          <v-spacer></v-spacer>
-          <v-btn color="secondary-light" depressed class="action-close" @click="details.show = false">
-            <translate>Close</translate>
+        <v-card-actions>
+          <v-btn color="button" variant="flat" class="action-close" @click="details.show = false">
+            {{ $gettext(`Close`) }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -95,9 +130,13 @@
 <script>
 import { DateTime } from "luxon";
 import Api from "common/api";
+import PConfirmAction from "component/confirm/action.vue";
 
 export default {
   name: "PPageErrors",
+  components: {
+    PConfirmAction,
+  },
   data() {
     const query = this.$route.query;
     const q = query["q"] ? query["q"] : "";
@@ -121,6 +160,11 @@ export default {
         err: { Level: "", Message: "", Time: "" },
       },
     };
+  },
+  computed: {
+    density() {
+      return this.$vuetify.display.smAndDown ? "compact" : "comfortable";
+    },
   },
   watch: {
     $route() {
@@ -267,12 +311,23 @@ export default {
     level(s) {
       return s.substring(0, 4).toUpperCase();
     },
+
     localTime(s) {
       if (!s) {
         return this.$gettext("Unknown");
       }
 
       return DateTime.fromISO(s).toLocaleString(DateTime.DATETIME_FULL_WITH_SECONDS);
+    },
+    formatLevel(level) {
+      switch (level) {
+        case "error":
+          return this.$gettext("Error");
+        case "warning":
+          return this.$gettext("Warning");
+      }
+
+      return level;
     },
     formatTime(s) {
       if (!s) {

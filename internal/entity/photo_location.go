@@ -458,7 +458,7 @@ func (m *Photo) SaveLocation() error {
 		log.Errorf("photo: %s %s while updating keyword labels", m.String(), err)
 	}
 
-	if err := m.UpdateTitle(m.ClassifyLabels()); err != nil {
+	if err := m.GenerateTitle(m.ClassifyLabels()); err != nil {
 		log.Info(err)
 	}
 

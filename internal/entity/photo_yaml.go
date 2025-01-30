@@ -19,6 +19,7 @@ var photoYamlMutex = sync.Mutex{}
 func (m *Photo) Yaml() ([]byte, error) {
 	// Load details if not done yet.
 	m.GetDetails()
+	m.NormalizeValues()
 
 	m.CreatedAt = m.CreatedAt.UTC().Truncate(time.Second)
 	m.UpdatedAt = m.UpdatedAt.UTC().Truncate(time.Second)
@@ -126,6 +127,8 @@ func (m *Photo) LoadFromYaml(fileName string) error {
 	if err = yaml.Unmarshal(data, m); err != nil {
 		return err
 	}
+
+	m.NormalizeValues()
 
 	return nil
 }

@@ -82,6 +82,7 @@ var Extensions = FileExtensions{
 	".x3f":      ImageRaw,
 	ExtAVC:      VideoAVC,  // .avc
 	ExtHEVC:     VideoHEVC, // .hevc
+	ExtHEV1:     VideoHEV1, // .hev1
 	ExtVVC:      VideoVVC,  // .vvc
 	ExtEVC:      VideoEVC,  // .evc
 	".mov":      VideoMOV,

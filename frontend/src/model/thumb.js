@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2018 - 2024 PhotoPrism UG. All rights reserved.
+Copyright (c) 2018 - 2025 PhotoPrism UG. All rights reserved.
 
     This program is free software: you can redistribute it and/or modify
     it under Version 3 of the GNU Affero General Public License (the "AGPL"):
@@ -26,7 +26,7 @@ Additional information can be found in our Developer Guide:
 import Model from "model.js";
 import Api from "common/api";
 import { config } from "app/session.js";
-import { $gettext } from "common/vm";
+import { $gettext } from "common/gettext";
 
 const thumbs = window.__CONFIG__.thumbs;
 
@@ -36,12 +36,15 @@ export class Thumb extends Model {
       UID: "",
       Title: "",
       TakenAtLocal: "",
-      Description: "",
+      Caption: "",
       Favorite: false,
       Playable: false,
       DownloadUrl: "",
       Width: 0,
       Height: 0,
+      Hash: "",
+      Codec: "",
+      Mime: "",
       Thumbs: {},
     };
   }
@@ -73,12 +76,13 @@ export class Thumb extends Model {
       UID: "",
       Title: $gettext("Invalid photo selected"),
       TakenAtLocal: "",
-      Description: "",
+      Caption: "",
       Favorite: false,
       Playable: false,
       DownloadUrl: "",
       Width: 0,
       Height: 0,
+      Hash: "",
       Thumbs: {},
     };
 
@@ -119,12 +123,13 @@ export class Thumb extends Model {
       UID: photo.UID,
       Title: photo.Title,
       TakenAtLocal: photo.getDateString(),
-      Description: photo.Description,
+      Caption: photo.Caption,
       Favorite: photo.Favorite,
       Playable: photo.isPlayable(),
       DownloadUrl: this.downloadUrl(photo),
       Width: photo.Width,
       Height: photo.Height,
+      Hash: photo.Hash,
       Thumbs: {},
     };
 
@@ -151,12 +156,13 @@ export class Thumb extends Model {
       UID: photo.UID,
       Title: photo.Title,
       TakenAtLocal: photo.getDateString(),
-      Description: photo.Description,
+      Caption: photo.Caption,
       Favorite: photo.Favorite,
       Playable: photo.isPlayable(),
       DownloadUrl: this.downloadUrl(file),
       Width: file.Width,
       Height: file.Height,
+      Hash: file.Hash,
       Thumbs: {},
     };
 

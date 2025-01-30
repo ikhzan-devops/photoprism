@@ -8,7 +8,7 @@ import (
 )
 
 func TestNewFeedback(t *testing.T) {
-	t.Run("success", func(t *testing.T) {
+	t.Run("Success", func(t *testing.T) {
 		feedback := NewFeedback("xxx", "zqkunt22r0bewti9", "test", "test")
 		assert.Equal(t, "xxx", feedback.ClientVersion)
 		assert.Equal(t, "zqkunt22r0bewti9", feedback.ClientSerial)
@@ -16,7 +16,7 @@ func TestNewFeedback(t *testing.T) {
 }
 
 func TestSendFeedback(t *testing.T) {
-	t.Run("success", func(t *testing.T) {
+	t.Run("Success", func(t *testing.T) {
 		c := NewConfig("test", "testdata/new.yml", "zqkunt22r0bewti9", "test", "PhotoPrism/Test", "test")
 
 		feedback := Feedback{

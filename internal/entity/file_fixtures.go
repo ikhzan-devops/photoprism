@@ -1133,7 +1133,7 @@ var FileFixtures = FileMap{
 		OriginalName:    "my-videos/IMG_88888.MP4",
 		FileHash:        "pcad9a68fa6acc5c5ba965adf6ec465ca42fd915",
 		FileSize:        900,
-		FileCodec:       "avc1",
+		FileCodec:       "hvc1",
 		FileType:        "mp4",
 		MediaType:       media.Video.String(),
 		FileMime:        "video/mp4",

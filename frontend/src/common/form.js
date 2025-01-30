@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2018 - 2024 PhotoPrism UG. All rights reserved.
+Copyright (c) 2018 - 2025 PhotoPrism UG. All rights reserved.
 
     This program is free software: you can redistribute it and/or modify
     it under Version 3 of the GNU Affero General Public License (the "AGPL"):
@@ -23,13 +23,15 @@ Additional information can be found in our Developer Guide:
 
 */
 
+import { $gettext } from "common/gettext";
+
 export const FormPropertyType = Object.freeze({
   String: "string",
   Number: "number",
   Object: "object",
 });
 
-export default class Form {
+export class Form {
   constructor(definition) {
     this.definition = definition;
   }
@@ -90,10 +92,157 @@ export default class Form {
   }
 
   getOptions(fieldName) {
-    if (this.definition && this.definition.hasOwnProperty(fieldName) && this.definition[fieldName].hasOwnProperty("options")) {
+    if (
+      this.definition &&
+      this.definition.hasOwnProperty(fieldName) &&
+      this.definition[fieldName].hasOwnProperty("options")
+    ) {
       return this.definition[fieldName].options;
     }
 
     return [{ option: "", label: "" }];
+  }
+}
+
+export class rules {
+  static maxLen(v, max) {
+    if (!v || typeof v !== "string" || max <= 0) {
+      return true;
+    }
+
+    return v.length <= max;
+  }
+
+  static minLen(v, min) {
+    if (!v || typeof v !== "string" || min <= 0) {
+      return true;
+    }
+
+    return v.length >= min;
+  }
+
+  static isEmail(v) {
+    if (typeof v !== "string" || v === "") {
+      return true;
+    } else if (!this.maxLen(v, 250)) {
+      return false;
+    }
+
+    return /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,32})+$/.test(v);
+  }
+
+  static isUrl(v) {
+    if (typeof v !== "string" || v === "") {
+      return true;
+    } else if (!this.maxLen(v, 500)) {
+      return false;
+    }
+
+    try {
+      new URL(v);
+    } catch (e) {
+      return false;
+    }
+    return true;
+  }
+
+  static email(required) {
+    if (required) {
+      return [
+        (v) => v?.length > 0 || $gettext("This field is required"),
+        (v) => this.isEmail(v) || $gettext("Invalid address"),
+      ];
+    } else {
+      return [(v) => this.isEmail(v) || $gettext("Invalid address")];
+    }
+  }
+
+  static url(required) {
+    if (required) {
+      return [
+        (v) => v?.length > 0 || $gettext("This field is required"),
+        (v) => this.isUrl(v) || $gettext("Invalid URL"),
+      ];
+    } else {
+      return [(v) => this.isUrl(v) || $gettext("Invalid URL")];
+    }
+  }
+
+  static text(required, min, max, s) {
+    if (!s) {
+      s = $gettext("Text");
+    }
+
+    if (required) {
+      return [
+        (v) => v?.length > 0 || $gettext("This field is required"),
+        (v) => this.minLen(v, min ? min : 0) || $gettext(`%{s} is too short`, { s }),
+        (v) => this.maxLen(v, max ? max : 200) || $gettext("%{s} is too long", { s }),
+      ];
+    } else {
+      return [
+        (v) => this.minLen(v, min ? min : 0) || $gettext("%{s} is too short", { s }),
+        (v) => this.maxLen(v, max ? max : 200) || $gettext("%{s} is too long", { s }),
+      ];
+    }
+  }
+
+  static country(required) {
+    if (required) {
+      return [
+        (v) => v?.length > 0 || $gettext("This field is required"),
+        (v) => this.minLen(v, 2) || $gettext("Invalid country"),
+        (v) => this.maxLen(v, 2) || $gettext("Invalid country"),
+      ];
+    } else {
+      return [
+        (v) => this.minLen(v, 2) || $gettext("Invalid country"),
+        (v) => this.maxLen(v, 2) || $gettext("Invalid country"),
+      ];
+    }
+  }
+  static day(required) {
+    if (required) {
+      return [
+        (v) => (v && v > 0) || $gettext("This field is required"),
+        (v) => !v || v === -1 || (v >= 1 && v <= 31) || $gettext("Invalid"),
+      ];
+    } else {
+      return [(v) => !v || v === -1 || (v >= 1 && v <= 31) || $gettext("Invalid")];
+    }
+  }
+
+  static month(required) {
+    if (required) {
+      return [
+        (v) => (v && v > 0) || $gettext("This field is required"),
+        (v) => !v || v === -1 || (v >= 1 && v <= 12) || $gettext("Invalid"),
+      ];
+    } else {
+      return [(v) => !v || v === -1 || (v >= 1 && v <= 12) || $gettext("Invalid")];
+    }
+  }
+
+  static year(required, min, max) {
+    if (!min) {
+      min = 1800;
+    }
+
+    if (!max) {
+      max = new Date().getFullYear();
+    }
+
+    if (required) {
+      return [
+        (v) => !v || v < 0 || $gettext("This field is required"),
+        (v) => !v || v === -1 || v >= min || $gettext("Invalid"),
+        (v) => !v || v === -1 || v <= max || $gettext("Invalid"),
+      ];
+    } else {
+      return [
+        (v) => !v || v === -1 || v >= min || $gettext("Invalid"),
+        (v) => !v || v === -1 || v <= max || $gettext("Invalid"),
+      ];
+    }
   }
 }

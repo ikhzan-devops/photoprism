@@ -10,7 +10,7 @@ import (
 )
 
 func TestGetConfig(t *testing.T) {
-	t.Run("successful request", func(t *testing.T) {
+	t.Run("Success", func(t *testing.T) {
 		app, router, _ := NewApiTest()
 		GetClientConfig(router)
 		r := PerformRequest(app, "GET", "/api/v1/config")

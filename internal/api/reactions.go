@@ -17,6 +17,7 @@ import (
 //	@Summary	flags a photo as favorite
 //	@Id			LikePhoto
 //	@Tags		Photos
+//	@Accept		json
 //	@Produce	json
 //	@Success	200				{object}	gin.H
 //	@Failure	401,403,404,500	{object}	i18n.Response
@@ -64,6 +65,7 @@ func LikePhoto(router *gin.RouterGroup) {
 //	@Summary	removes the favorite flags from a photo
 //	@Id			DislikePhoto
 //	@Tags		Photos
+//	@Accept		json
 //	@Produce	json
 //	@Success	200				{object}	gin.H
 //	@Failure	401,403,404,500	{object}	i18n.Response

@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/photoprism/photoprism/pkg/fs"
+	"github.com/photoprism/photoprism/pkg/header"
 	"github.com/photoprism/photoprism/pkg/media"
 )
 
@@ -69,10 +70,10 @@ func (info Info) VideoBitrate() float64 {
 // VideoContentType composes the video content type from its mime type and codec.
 func (info Info) VideoContentType() string {
 	if info.VideoMimeType == "" {
-		return ContentTypeDefault
+		return header.ContentTypeBinary
 	}
 
-	return ContentType(info.VideoMimeType, info.VideoCodec)
+	return ContentType(info.VideoMimeType, info.FileType.String(), info.VideoCodec)
 }
 
 // VideoFileExt returns the appropriate video file extension based on the mime type and defaults to fs.ExtMP4 otherwise.

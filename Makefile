@@ -1,4 +1,4 @@
-# Copyright © 2018 - 2024 PhotoPrism UG. All rights reserved.
+# Copyright © 2018 - 2025 PhotoPrism UG. All rights reserved.
 #
 # Questions? Email us at hello@photoprism.app or visit our website to learn
 # more about our team, products and services: https://www.photoprism.app/
@@ -62,6 +62,7 @@ all: dep build-js
 dep: dep-tensorflow dep-js
 biuld: build
 build: build-go
+watch: watch-js
 build-all: build-go build-js
 pull: docker-pull
 test: test-js test-go
@@ -171,7 +172,7 @@ install:
 	chmod -R $(INSTALL_MODE_BIN) $(DESTDIR)/bin $(DESTDIR)/lib
 	@echo "PhotoPrism $(BUILD_TAG) has been successfully installed in \"$(DESTDIR)\".\nEnjoy!"
 install-go:
-	sudo scripts/dist/install-go.sh
+	sudo scripts/dist/install-go.sh latest
 	go build -v ./...
 install-tensorflow:
 	sudo scripts/dist/install-tensorflow.sh
@@ -251,7 +252,7 @@ zip-nasnet:
 zip-nsfw:
 	(cd assets && zip -r nsfw.zip nsfw -x "*/.*" -x "*/version.txt")
 build-js:
-	(cd frontend &&	env NODE_ENV=production npm run build)
+	(cd frontend &&	env BUILD_ENV=production NODE_ENV=production npm run build)
 build-go: build-develop
 build-develop:
 	rm -f $(BINARY_NAME)
@@ -301,10 +302,10 @@ build-tensorflow-arm64:
 	docker build -t photoprism/tensorflow:arm64 docker/tensorflow/arm64
 	docker run -ti photoprism/tensorflow:arm64 bash
 watch-js:
-	(cd frontend &&	env NODE_ENV=development npm run watch)
+	(cd frontend &&	env BUILD_ENV=development NODE_ENV=production npm run watch)
 test-js:
 	$(info Running JS unit tests...)
-	(cd frontend && env TZ=UTC NODE_ENV=development BABEL_ENV=test npm run test)
+	(cd frontend && env TZ=UTC BUILD_ENV=development NODE_ENV=development BABEL_ENV=test npm run test)
 acceptance:
 	$(info Running public-mode tests in Chrome...)
 	(cd frontend &&	npm run testcafe -- "chrome --headless=new" --test-grep "^(Common|Core)\:*" --test-meta mode=public --config-file ./testcaferc.json "tests/acceptance")
@@ -390,7 +391,7 @@ docker-pull:
 	$(DOCKER_COMPOSE) -f compose.latest.yaml pull --ignore-pull-failures
 docker-build:
 	$(DOCKER_COMPOSE) --profile=all pull --ignore-pull-failures
-	$(DOCKER_COMPOSE) build
+	$(DOCKER_COMPOSE) build --pull
 docker-local-up:
 	$(DOCKER_COMPOSE) -f compose.local.yaml up --force-recreate
 docker-local-down:

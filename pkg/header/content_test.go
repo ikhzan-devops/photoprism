@@ -30,6 +30,6 @@ func TestContent(t *testing.T) {
 		assert.Equal(t, "image/png", ContentTypePNG)
 		assert.Equal(t, "image/jpeg", ContentTypeJPEG)
 		assert.Equal(t, "image/svg+xml", ContentTypeSVG)
-		assert.Equal(t, "video/mp4; codecs=\"avc1\"", ContentTypeAVC)
+		assert.Equal(t, "video/mp4; codecs=\"avc1.640028\"", ContentTypeAVC)
 	})
 }

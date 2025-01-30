@@ -146,7 +146,7 @@ func TestMediaFile_CreateExifToolJson(t *testing.T) {
 		assert.Equal(t, 270, data.Width)
 		assert.Equal(t, 480, data.Height)
 		assert.Equal(t, false, data.Flash)
-		assert.Equal(t, "", data.Description)
+		assert.Equal(t, "", data.Caption)
 
 		if err = os.Remove(jsonName); err != nil {
 			t.Error(err)
@@ -191,7 +191,7 @@ func TestMediaFile_Exif_JPEG(t *testing.T) {
 		assert.Equal(t, 497, data.Width)
 		assert.Equal(t, 331, data.Height)
 		assert.Equal(t, false, data.Flash)
-		assert.Equal(t, "", data.Description)
+		assert.Equal(t, "", data.Caption)
 		t.Logf("UTC: %s", data.TakenAt.String())
 		t.Logf("Local: %s", data.TakenAtLocal.String())
 	})
@@ -226,7 +226,7 @@ func TestMediaFile_Exif_JPEG(t *testing.T) {
 		assert.Equal(t, 331, info.Width)
 		assert.Equal(t, 331, info.Height)
 		assert.Equal(t, true, info.Flash)
-		assert.Equal(t, "", info.Description)
+		assert.Equal(t, "", info.Caption)
 		t.Logf("UTC: %s", info.TakenAt.String())
 		t.Logf("Local: %s", info.TakenAtLocal.String())
 	})
@@ -263,7 +263,7 @@ func TestMediaFile_Exif_JPEG(t *testing.T) {
 		assert.Equal(t, "2020-05-24T11:55:21Z", data.TakenAtLocal.Format("2006-01-02T15:04:05Z"))
 		assert.Equal(t, "", data.Title)
 		assert.Equal(t, "panorama", data.Keywords.String())
-		assert.Equal(t, "", data.Description)
+		assert.Equal(t, "", data.Caption)
 		assert.Equal(t, "", data.Copyright)
 		assert.Equal(t, 3600, data.Height)
 		assert.Equal(t, 7200, data.Width)
@@ -300,7 +300,7 @@ func TestMediaFile_Exif_JPEG(t *testing.T) {
 		assert.Equal(t, "Europe/Berlin", data.TimeZone)
 		assert.Equal(t, "", data.Title)
 		assert.Equal(t, "berlin, shop", data.Keywords.String())
-		assert.Equal(t, "", data.Description)
+		assert.Equal(t, "", data.Caption)
 		assert.Equal(t, "", data.Copyright)
 		assert.Equal(t, 375, data.Height)
 		assert.Equal(t, 500, data.Width)
@@ -351,7 +351,7 @@ func TestMediaFile_Exif_DNG(t *testing.T) {
 	assert.Equal(t, 0.0, info.Lng)
 	assert.Equal(t, 0.0, info.Altitude)
 	assert.Equal(t, false, info.Flash)
-	assert.Equal(t, "", info.Description)
+	assert.Equal(t, "", info.Caption)
 
 	// TODO: Unstable results, depending on test order!
 	// assert.Equal(t, 1224, info.Width)

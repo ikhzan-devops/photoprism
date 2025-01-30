@@ -2,6 +2,11 @@ package txt
 
 var SpecialWords = map[string]string{
 	"av":                 "AV",
+	"av1":                "AV1",
+	"aomedia":            "AOMedia",
+	"vp":                 "VP",
+	"vp8":                "VP8",
+	"vp9":                "VP9",
 	"xxs":                "XXS",
 	"xs":                 "XS",
 	"s":                  "S",
@@ -120,6 +125,8 @@ var SpecialWords = map[string]string{
 	"mov":                "MOV",
 	"avc":                "AVC",
 	"hvc":                "HVC",
+	"vvc":                "VVC",
+	"evc":                "EVC",
 	"hevc":               "HEVC",
 	"heif":               "HEIF",
 	"heic":               "HEIC",

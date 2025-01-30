@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2018 - 2024 PhotoPrism UG. All rights reserved.
+Copyright (c) 2018 - 2025 PhotoPrism UG. All rights reserved.
 
     This program is free software: you can redistribute it and/or modify
     it under Version 3 of the GNU Affero General Public License (the "AGPL"):
@@ -24,7 +24,7 @@ Additional information can be found in our Developer Guide:
 */
 
 import Event from "pubsub-js";
-import { $gettext } from "vm.js";
+import { $gettext } from "common/gettext";
 
 let ajaxPending = 0;
 let ajaxCallbacks = [];

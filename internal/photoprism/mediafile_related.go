@@ -108,13 +108,13 @@ func (m *MediaFile) RelatedFiles(stripSequence bool) (result RelatedFiles, err e
 	}
 
 	if len(result.Files) == 0 || result.Main == nil {
-		t := m.MimeType()
+		mediaType := m.BaseType()
 
-		if t == "" {
-			t = "unknown type"
+		if mediaType == "" {
+			mediaType = "unknown type"
 		}
 
-		return result, fmt.Errorf("%s is unsupported (%s)", clean.Log(m.BaseName()), t)
+		return result, fmt.Errorf("%s is unsupported (%s)", clean.Log(m.BaseName()), mediaType)
 	}
 
 	// Add hidden preview image if needed.

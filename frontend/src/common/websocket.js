@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2018 - 2024 PhotoPrism UG. All rights reserved.
+Copyright (c) 2018 - 2025 PhotoPrism UG. All rights reserved.
 
     This program is free software: you can redistribute it and/or modify
     it under Version 3 of the GNU Affero General Public License (the "AGPL"):
@@ -36,7 +36,7 @@ const Socket = new Sockette(url, {
   timeout: 5e3,
   onopen: (e) => {
     console.log("websocket: connected");
-    config.disconnected = false;
+    config.disconnected.value = false;
     document.body.classList.remove("disconnected");
     Event.publish("websocket.connected", e);
   },
@@ -48,7 +48,7 @@ const Socket = new Sockette(url, {
   onmaximum: () => console.warn("websocket: hit max reconnect limit"),
   onclose: () => {
     console.warn("websocket: disconnected");
-    config.disconnected = true;
+    config.disconnected.value = true;
     document.body.classList.add("disconnected");
   },
 });

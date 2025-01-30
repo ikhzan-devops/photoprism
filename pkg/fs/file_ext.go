@@ -12,6 +12,7 @@ const (
 	ExtTHM  = ".thm"
 	ExtAVC  = ".avc"
 	ExtHEVC = ".hevc"
+	ExtHEV1 = ".hev1"
 	ExtVVC  = ".vvc"
 	ExtEVC  = ".evc"
 	ExtMP4  = ".mp4"
