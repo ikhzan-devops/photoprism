@@ -10,7 +10,7 @@ import (
 )
 
 func TestUploadToService(t *testing.T) {
-	t.Run("invalid request", func(t *testing.T) {
+	t.Run("InvalidRequest", func(t *testing.T) {
 		app, router, _ := NewApiTest()
 		UploadToService(router)
 		r := PerformRequest(app, "POST", "/api/v1/services/1000000/upload")

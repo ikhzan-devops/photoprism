@@ -71,12 +71,12 @@ var Rules = ACL{
 		RoleGuest: GrantUpdateOwn,
 	},
 	ResourceUsers: Roles{
-		RoleAdmin:  GrantAll,
+		RoleAdmin:  GrantManageOwn,
 		RoleGuest:  GrantViewUpdateOwn,
 		RoleClient: GrantViewOwn,
 	},
 	ResourceSessions: Roles{
-		RoleAdmin:   GrantFullAccess,
+		RoleAdmin:   GrantManageOwn,
 		RoleDefault: GrantOwn,
 	},
 	ResourceLogs: Roles{

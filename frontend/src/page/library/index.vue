@@ -1,72 +1,93 @@
 <template>
   <div class="p-tab p-tab-index">
-    <v-form ref="form" class="p-photo-index" lazy-validation dense @submit.prevent="submit">
-      <v-container fluid>
-        <p class="subheading">
-          <span v-if="fileName" class="break-word">{{ action }} {{ fileName }}…</span>
-          <span v-else-if="action">{{ action }}…</span>
-          <span v-else-if="busy"><translate>Indexing media and sidecar files…</translate></span>
-          <span v-else-if="completed"><translate>Done.</translate></span>
-          <span v-else><translate>Press button to start indexing…</translate></span>
-        </p>
-
-        <v-autocomplete
-          v-model="settings.index.path"
-          color="secondary-dark"
-          class="my-3 input-index-folder"
-          hide-details
-          hide-no-data
-          flat
-          solo
-          browser-autocomplete="off"
-          :items="dirs"
-          :loading="loading"
-          :disabled="busy || !ready"
-          item-text="name"
-          item-value="path"
-          @change="onChange"
-          @focus="onFocus"
-        >
-        </v-autocomplete>
-
-        <p class="options">
-          <v-progress-linear color="secondary-dark" height="1.5em" :value="completed" :indeterminate="busy"></v-progress-linear>
-        </p>
-
-        <v-layout wrap align-top class="pb-3">
-          <v-flex xs12 sm6 lg3 xl2 class="px-2 pb-2 pt-2">
-            <v-checkbox
-              v-model="settings.index.rescan"
-              :disabled="busy || !ready"
-              class="ma-0 pa-0"
-              color="secondary-dark"
-              :label="$gettext('Complete Rescan')"
-              :hint="$gettext('Re-index all originals, including already indexed and unchanged files.')"
-              prepend-icon="cached"
-              persistent-hint
-              @change="onChange"
-            >
-            </v-checkbox>
-          </v-flex>
-          <v-flex v-if="isAdmin" xs12 sm6 lg3 xl2 class="px-2 pb-2 pt-2">
-            <v-checkbox v-model="cleanup" :disabled="busy || !ready" class="ma-0 pa-0" color="secondary-dark" :label="$gettext('Cleanup')" :hint="$gettext('Delete orphaned index entries, sidecar files and thumbnails.')" prepend-icon="delete_sweep" persistent-hint> </v-checkbox>
-          </v-flex>
-        </v-layout>
-
-        <v-btn :disabled="!busy || !ready" color="primary-button" class="white--text ml-0 mt-2 action-cancel" depressed @click.stop="cancelIndexing()">
-          <translate>Cancel</translate>
-        </v-btn>
-
-        <v-btn :disabled="busy || !ready" color="primary-button" class="white--text ml-0 mt-2 action-index" depressed @click.stop="startIndexing()">
-          <translate>Start</translate>
-          <v-icon :right="!rtl" :left="rtl" dark>update</v-icon>
-        </v-btn>
-
-        <v-alert v-if="ready && !busy && config.count.hidden > 1" :value="true" color="error" icon="priority_high" class="mt-3" outline>
-          <translate :translate-params="{ n: config.count.hidden }">The index currently contains %{n} hidden files.</translate>
-          <translate>Their format may not be supported, they haven't been converted to JPEG yet or there are duplicates.</translate>
+    <v-form ref="form" class="p-form p-photo-index" validate-on="invalid-input" @submit.prevent="submit">
+      <div class="form-header">
+        <span v-if="fileName" class="text-break">{{ action }} {{ fileName }}…</span>
+        <span v-else-if="action">{{ action }}…</span>
+        <span v-else-if="busy">{{ $gettext(`Indexing media and sidecar files…`) }}</span>
+        <span v-else-if="completed">{{ $gettext(`Done.`) }}</span>
+        <span v-else>{{ $gettext(`Select the folder to be indexed…`) }}</span>
+      </div>
+      <div class="form-body">
+        <div class="form-controls">
+          <v-autocomplete
+            v-model="settings.index.path"
+            color="surface-variant"
+            class="input-index-folder"
+            hide-details
+            hide-no-data
+            flat
+            variant="solo-filled"
+            autocomplete="off"
+            :items="dirs"
+            item-title="name"
+            item-value="path"
+            :loading="loading"
+            :disabled="busy || !ready"
+            @update:model-value="onChange"
+            @focus="onFocus"
+          >
+          </v-autocomplete>
+          <v-progress-linear :model-value="completed" :indeterminate="busy"></v-progress-linear>
+        </div>
+        <div class="form-options">
+          <v-checkbox
+            v-model="settings.index.rescan"
+            :disabled="busy || !ready"
+            :label="$gettext('Complete Rescan')"
+            :hint="$gettext('Re-index all originals, including already indexed and unchanged files.')"
+            prepend-icon="mdi-cached"
+            persistent-hint
+            @update:model-value="onChange"
+          >
+          </v-checkbox>
+          <v-checkbox
+            v-if="isAdmin"
+            v-model="cleanup"
+            :disabled="busy || !ready"
+            :label="$gettext('Cleanup')"
+            :hint="$gettext('Delete orphaned index entries, sidecar files and thumbnails.')"
+            prepend-icon="mdi-delete-sweep"
+            persistent-hint
+          >
+          </v-checkbox>
+        </div>
+      </div>
+      <div class="form-actions">
+        <div class="action-buttons">
+          <v-btn
+            :disabled="!busy || !ready"
+            variant="flat"
+            color="button"
+            class="action-cancel"
+            @click.stop="cancelIndexing()"
+          >
+            {{ $gettext(`Cancel`) }}
+          </v-btn>
+          <v-btn
+            :disabled="busy || !ready"
+            variant="flat"
+            color="highlight"
+            class="action-index"
+            @click.stop="startIndexing()"
+          >
+            {{ $gettext(`Start`) }}
+            <v-icon end>mdi-update</v-icon>
+          </v-btn>
+        </div>
+      </div>
+      <div v-if="ready && !busy && config.count.hidden > 1" class="form-footer">
+        <v-alert color="primary" icon="mdi-alert-circle-outline" class="v-alert--default" variant="outlined">
+          <div>
+            {{ $gettext(`The index currently contains %{n} hidden files.`, { n: config.count.hidden }) }}
+            {{
+              $gettext(
+                `Their format may not be supported, they haven't been converted to JPEG yet or there are duplicates.`
+              )
+            }}
+          </div>
         </v-alert>
-      </v-container>
+      </div>
     </v-form>
   </div>
 </template>
@@ -87,7 +108,7 @@ export default {
 
     return {
       ready: !this.$config.loading(),
-      settings: new Settings(this.$config.settings()),
+      settings: new Settings(this.$config.getSettings()),
       readonly: this.$config.get("readonly"),
       config: this.$config.values,
       isAdmin: this.$session.isAdmin(),
@@ -109,13 +130,13 @@ export default {
     this.subscriptionId = Event.subscribe("index", this.handleEvent);
     this.load();
   },
-  destroyed() {
+  unmounted() {
     Event.unsubscribe(this.subscriptionId);
   },
   methods: {
     load() {
       this.$config.load().then(() => {
-        this.settings.setValues(this.$config.settings());
+        this.settings.setValues(this.$config.getSettings());
         this.dirs = [this.root];
 
         if (this.settings.index.path !== this.root.path) {

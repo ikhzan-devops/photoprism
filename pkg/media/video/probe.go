@@ -144,17 +144,22 @@ func Probe(file io.ReadSeeker) (info Info, err error) {
 		}
 	}
 
-	// Detect codec by searching for matching chunks.
+	// If no AVC video was found, search the video data for High Efficiency Video Coding (HEVC) chunks,
+	// see https://stackoverflow.com/questions/63468587/what-hevc-codec-tag-to-use-with-fmp4-hvc1-or-hev1.
 	if info.VideoCodec == "" {
-		if found, _ := ChunkHVC1.DataOffset(file); found > 0 {
-			info.VideoCodec = CodecHVC
+		if fileOffset, fileErr := ChunkHVC1.DataOffset(file, -1); fileOffset > 0 && fileErr == nil {
+			info.VideoCodec = CodecHEVC
+		} else if fileOffset, fileErr = ChunkHEV1.DataOffset(file, 5*fs.MB); fileOffset > 0 && fileErr == nil {
+			info.VideoCodec = CodecHEV1
 		}
 	}
 
 	// Calculate video duration in seconds.
 	if video.Duration > 0 {
 		s := float64(video.Duration) / float64(video.Timescale)
+
 		info.Duration = time.Duration(s * float64(time.Second))
+
 		if info.FPS > 0 {
 			info.Frames = int(math.Round(info.FPS * s))
 		}

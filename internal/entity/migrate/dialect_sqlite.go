@@ -117,4 +117,16 @@ var DialectSQLite = Migrations{
 		Stage:      "pre",
 		Statements: []string{"DELETE FROM auth_users_details WHERE user_uid NOT IN (SELECT user_uid FROM auth_users);", "DELETE FROM auth_users_settings WHERE user_uid NOT IN (SELECT user_uid FROM auth_users);", "DELETE FROM auth_users_shares WHERE user_uid NOT IN (SELECT user_uid FROM auth_users);", "DELETE FROM categories WHERE label_id NOT IN (SELECT id FROM labels) OR category_id NOT IN (SELECT id FROM labels);", "UPDATE cells SET place_id = 'zz' WHERE place_id NOT IN (SELECT id FROM places);", "UPDATE countries SET country_photo_id = NULL WHERE country_photo_id NOT IN (SELECT id FROM photos) AND country_photo_id IS NOT NULL;", "DELETE FROM details WHERE photo_id NOT IN (SELECT id FROM photos);", "UPDATE files SET photo_id = NULL WHERE photo_id NOT IN (SELECT id FROM photos) AND photo_id IS NOT NULL;", "UPDATE files SET photo_id = photos.id FROM files AS f INNER JOIN photos ON f.photo_uid = photos.photo_uid WHERE f.photo_id IS NULL AND f.photo_uid IS NOT NULL;", "UPDATE files SET photo_uid = NULL WHERE photo_id IS NULL AND photo_uid IS NOT NULL;", "DELETE FROM files_share WHERE file_id NOT IN (SELECT id FROM files) OR service_id NOT IN (SELECT id FROM services);", "UPDATE files_sync SET file_id = NULL WHERE file_id NOT IN (SELECT id FROM files);", "DELETE FROM files_sync WHERE service_id NOT IN (SELECT id FROM services);", "UPDATE photos SET camera_id = cameras.id FROM photos AS p CROSS JOIN cameras ON cameras.camera_slug = 'zz' WHERE p.camera_id NOT IN (SELECT id FROM cameras) AND p.camera_id IS NOT NULL;", "UPDATE photos SET cell_id = 'zz' WHERE cell_id NOT IN (SELECT id FROM cells) AND cell_id IS NOT NULL;", "UPDATE photos SET lens_id = lenses.id FROM photos AS p CROSS JOIN lenses ON lenses.lens_slug = 'zz' WHERE p.lens_id NOT IN (SELECT id FROM lenses) AND p.lens_id IS NOT NULL;", "UPDATE photos SET place_id = 'zz' WHERE place_id NOT IN (SELECT id FROM places) AND place_id IS NOT NULL;", "DELETE FROM photos_albums WHERE photo_uid NOT IN (SELECT photo_uid FROM photos) OR album_uid NOT IN (SELECT album_uid FROM albums);", "DELETE FROM photos_keywords WHERE photo_id NOT IN (SELECT id FROM photos) OR keyword_id NOT IN (SELECT id FROM keywords);", "DELETE FROM photos_labels WHERE photo_id NOT IN (SELECT id FROM photos) OR label_id NOT IN (SELECT id FROM labels);"},
 	},
+	{
+		ID:         "20241202-000001",
+		Dialect:    "sqlite",
+		Stage:      "main",
+		Statements: []string{"UPDATE auth_users_details SET birth_year = -1 WHERE birth_year >= 0 AND birth_year < 1000 OR birth_year < -1 OR birth_year IS NULL;", "UPDATE auth_users_details SET birth_month = -1 WHERE birth_month = 0 OR birth_month < -1 OR birth_month > 12 OR birth_month IS NULL;", "UPDATE auth_users_details SET birth_day = -1 WHERE birth_day = 0 OR birth_day < -1 OR birth_day > 31 OR birth_day IS NULL;", "UPDATE auth_users_details SET user_country = 'zz' WHERE user_country = '' OR user_country IS NULL;"},
+	},
+	{
+		ID:         "20250117-000001",
+		Dialect:    "sqlite",
+		Stage:      "pre",
+		Statements: []string{"ALTER TABLE photos RENAME COLUMN photo_description TO photo_caption;", "ALTER TABLE photos RENAME COLUMN description_src TO caption_src;"},
+	},
 }

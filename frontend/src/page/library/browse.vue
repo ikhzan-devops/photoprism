@@ -1,95 +1,83 @@
 <template>
   <div class="p-page p-page-files">
-    <v-form ref="form" class="p-files-search" lazy-validation dense @submit.prevent="updateQuery">
-      <v-toolbar flat color="secondary" :dense="$vuetify.breakpoint.smAndDown">
+    <v-form ref="form" class="p-files-search" validate-on="invalid-input" @submit.prevent="updateQuery">
+      <v-toolbar flat color="secondary" :density="$vuetify.display.smAndDown ? 'compact' : 'default'">
         <v-toolbar-title>
           <router-link to="/index/files">
-            <translate key="Originals">Originals</translate>
+            {{ $gettext(`Originals`) }}
           </router-link>
 
-          <router-link v-for="(item, index) in breadcrumbs" :key="index" :to="item.path">
+          <router-link v-for="dir in breadcrumbs" :key="dir.key" :to="dir.uri">
             <v-icon>{{ navIcon }}</v-icon>
-            {{ item.name }}
+            {{ dir.name }}
           </router-link>
         </v-toolbar-title>
 
-        <v-spacer></v-spacer>
-
         <v-btn icon :title="$gettext('Reload')" class="action-reload" @click.stop="refresh">
-          <v-icon>refresh</v-icon>
+          <v-icon>mdi-refresh</v-icon>
         </v-btn>
       </v-toolbar>
     </v-form>
 
-    <v-container v-if="loading" fluid class="pa-4">
-      <v-progress-linear color="secondary-dark" :indeterminate="true"></v-progress-linear>
-    </v-container>
-    <v-container v-else fluid class="pa-0">
+    <div v-if="loading" class="pa-6">
+      <v-progress-linear :indeterminate="true"></v-progress-linear>
+    </div>
+    <div v-else>
       <p-file-clipboard :refresh="refresh" :selection="selection" :clear-selection="clearSelection"></p-file-clipboard>
 
-      <p-scroll-top></p-scroll-top>
+      <p-scroll :loading="loading"></p-scroll>
 
-      <v-container grid-list-xs fluid class="pa-2 p-files p-files-cards">
-        <v-alert :value="results.length === 0" color="secondary-dark" icon="lightbulb_outline" class="no-results ma-2 opacity-70" outline>
-          <h3 class="body-2 ma-0 pa-0">
-            <translate>No pictures found</translate>
-          </h3>
-          <p class="body-1 mt-2 mb-0 pa-0">
-            <translate>Duplicates will be skipped and only appear once.</translate>
-            <translate>In case pictures you expect are missing, please rescan your library and wait until indexing has been completed.</translate>
-          </p>
+      <div class="p-files p-files-cards">
+        <v-alert v-if="results.length === 0" color="primary" icon="mdi-lightbulb-outline" class="ma-3 no-results opacity-60" variant="outlined">
+          <div class="font-weight-bold">
+            {{ $gettext(`No pictures found`) }}
+          </div>
+          <div class="mt-2">
+            {{ $gettext(`Duplicates will be skipped and only appear once.`) }}
+            {{ $gettext(`In case pictures you expect are missing, please rescan your library and wait until indexing has been completed.`) }}
+          </div>
         </v-alert>
-        <v-layout row wrap class="search-results file-results cards-view" :class="{ 'select-results': selection.length > 0 }">
-          <v-flex v-for="(model, index) in results" :key="model.UID" xs6 sm4 md3 lg2 xxl1 d-flex>
-            <v-card tile :data-uid="model.UID" class="result card" :class="model.classes(selection.includes(model.UID))" @contextmenu.stop="onContextMenu($event, index)">
-              <div class="card-background card"></div>
-              <v-img
-                :src="model.thumbnailUrl('tile_500')"
-                :alt="model.Name"
-                :transition="false"
-                loading="lazy"
-                aspect-ratio="1"
-                class="card darken-1 clickable"
+        <div v-else class="v-row search-results file-results cards-view" :class="{ 'select-results': selection.length > 0 }">
+          <div v-for="(m, index) in results" :key="m.UID" ref="items" class="v-col-6 v-col-sm-4 v-col-md-3 v-col-xl-2">
+            <div :data-uid="m.UID" class="result" :class="m.classes(selection.includes(m.UID))" @contextmenu.stop="onContextMenu($event, index)">
+              <div
+                :title="m.Name"
+                :style="`background-image: url(${m.thumbnailUrl('tile_500')})`"
+                class="preview"
                 @touchstart.passive="input.touchStart($event, index)"
                 @touchend.stop.prevent="onClick($event, index)"
                 @mousedown.stop.prevent="input.mouseDown($event, index)"
                 @click.stop.prevent="onClick($event, index)"
               >
-                <v-btn :ripple="false" icon flat absolute class="input-select" @touchstart.stop.prevent="input.touchStart($event, index)" @touchend.stop.prevent="onSelect($event, index)" @touchmove.stop.prevent @click.stop.prevent="onSelect($event, index)">
-                  <v-icon color="white" class="select-on">check_circle</v-icon>
-                  <v-icon color="white" class="select-off">radio_button_off</v-icon>
-                </v-btn>
-              </v-img>
+                <div class="preview__overlay"></div>
 
-              <v-card-title v-if="model.isFile()" primary-title class="pa-3 card-details" style="user-select: none">
-                <div>
-                  <h3 class="body-2 mb-2" :title="model.Name">
-                    <button @click.exact="openFile(index)">
-                      {{ model.baseName() }}
-                    </button>
-                  </h3>
-                  <div class="caption" title="Info">
-                    {{ model.getInfo() }}
-                  </div>
+                <button class="input-select" @touchstart.stop.prevent="input.touchStart($event, index)" @touchend.stop.prevent="onSelect($event, index)" @touchmove.stop.prevent @click.stop.prevent="onSelect($event, index)">
+                  <i class="mdi mdi-check-circle select-on" />
+                  <i class="mdi mdi-circle-outline select-off" />
+                </button>
+              </div>
+
+              <div v-if="m.isFile()" class="meta">
+                <button :title="m.Name" class="meta-title" @click.exact="openFile(index)">
+                  {{ m.baseName() }}
+                </button>
+                <div class="meta-description">
+                  {{ m.getInfo() }}
                 </div>
-              </v-card-title>
-              <v-card-title v-else primary-title class="pa-3 card-details">
-                <div>
-                  <h3 class="body-2 mb-2" :title="model.Title">
-                    <button @click.exact="openFile(index)">
-                      {{ model.baseName() }}
-                    </button>
-                  </h3>
-                  <div class="caption" title="Path">
-                    <translate key="Folder">Folder</translate>
-                  </div>
+              </div>
+              <div v-else class="meta">
+                <button :title="m.Title" class="meta-title" @click.exact="openFile(index)">
+                  {{ m.baseName() }}
+                </button>
+                <div class="meta-description">
+                  {{ $gettext(`Folder`) }}
                 </div>
-              </v-card-title>
-            </v-card>
-          </v-flex>
-        </v-layout>
-      </v-container>
-    </v-container>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -120,7 +108,7 @@ export default {
 
     return {
       config: this.$config.values,
-      navIcon: this.$rtl ? "navigate_before" : "navigate_next",
+      navIcon: this.$rtl ? "mdi-chevron-left" : "mdi-chevron-right",
       subscriptions: [],
       listen: false,
       dirty: false,
@@ -131,7 +119,7 @@ export default {
       filter: filter,
       lastFilter: {},
       routeName: routeName,
-      path: "",
+      path: [],
       page: 0,
       files: {
         limit: 999,
@@ -169,7 +157,7 @@ export default {
     this.subscriptions.push(Event.subscribe("folders", (ev, data) => this.onUpdate(ev, data)));
     this.subscriptions.push(Event.subscribe("touchmove.top", () => this.refresh()));
   },
-  destroyed() {
+  unmounted() {
     for (let i = 0; i < this.subscriptions.length; i++) {
       Event.unsubscribe(this.subscriptions[i]);
     }
@@ -177,14 +165,16 @@ export default {
   methods: {
     getBreadcrumbs() {
       let result = [];
-      let path = "/index/files";
+      let uri = "/index/files";
+      let key = "B";
 
-      const crumbs = this.path.split("/");
+      const crumbs = [...this.path];
 
       crumbs.forEach((dir) => {
         if (dir) {
-          path += "/" + dir;
-          result.push({ path: path, name: dir });
+          key += "_" + dir;
+          uri += "/" + dir;
+          result.push({ key, uri, name: dir });
         }
       });
 
@@ -378,6 +368,13 @@ export default {
       this.dirty = true;
       this.search();
     },
+    getPathAsString() {
+      if (Array.isArray(this.path)) {
+        return this.path.join("/");
+      }
+
+      return "";
+    },
     search() {
       // Don't query the same data more than once
       if (!this.dirty && JSON.stringify(this.lastFilter) === JSON.stringify(this.filter)) {
@@ -395,7 +392,7 @@ export default {
 
       const params = this.searchParams();
 
-      Folder.originals(this.path, params)
+      Folder.originals(this.getPathAsString(), params)
         .then((response) => {
           this.files.offset = this.files.limit;
 

@@ -12,13 +12,13 @@ import (
 
 	"github.com/photoprism/photoprism/internal/event"
 	"github.com/photoprism/photoprism/internal/ffmpeg"
-
+	"github.com/photoprism/photoprism/internal/ffmpeg/encode"
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/fs"
 )
 
 // ToAvc converts a single video file to MPEG-4 AVC.
-func (w *Convert) ToAvc(f *MediaFile, encoder ffmpeg.AvcEncoder, noMutex, force bool) (file *MediaFile, err error) {
+func (w *Convert) ToAvc(f *MediaFile, encoder encode.Encoder, noMutex, force bool) (file *MediaFile, err error) {
 	// Abort if the source media file is nil.
 	if f == nil {
 		return nil, fmt.Errorf("convert: file is nil - you may have found a bug")
@@ -66,7 +66,7 @@ func (w *Convert) ToAvc(f *MediaFile, encoder ffmpeg.AvcEncoder, noMutex, force 
 		avcName, _ = fs.FileName(f.FileName(), w.conf.SidecarPath(), w.conf.OriginalsPath(), fs.ExtAVC)
 	}
 
-	cmd, useMutex, err := w.AvcConvertCommand(f, avcName, encoder)
+	cmd, useMutex, err := w.TranscodeToAvcCmd(f, avcName, encoder)
 
 	// Return if an error occurred.
 	if err != nil {
@@ -138,8 +138,8 @@ func (w *Convert) ToAvc(f *MediaFile, encoder ffmpeg.AvcEncoder, noMutex, force 
 		}
 
 		// Try again using software encoder.
-		if encoder != ffmpeg.SoftwareEncoder {
-			return w.ToAvc(f, ffmpeg.SoftwareEncoder, true, false)
+		if encoder != encode.SoftwareAvc {
+			return w.ToAvc(f, encode.SoftwareAvc, true, false)
 		} else {
 			return nil, err
 		}
@@ -152,8 +152,8 @@ func (w *Convert) ToAvc(f *MediaFile, encoder ffmpeg.AvcEncoder, noMutex, force 
 	return NewMediaFile(avcName)
 }
 
-// AvcConvertCommand returns the command for converting video files to MPEG-4 AVC.
-func (w *Convert) AvcConvertCommand(f *MediaFile, avcName string, encoder ffmpeg.AvcEncoder) (result *exec.Cmd, useMutex bool, err error) {
+// TranscodeToAvcCmd returns the command for converting video files to MPEG-4 AVC.
+func (w *Convert) TranscodeToAvcCmd(f *MediaFile, avcName string, encoder encode.Encoder) (result *exec.Cmd, useMutex bool, err error) {
 	fileExt := f.Extension()
 	fileName := f.FileName()
 
@@ -170,11 +170,11 @@ func (w *Convert) AvcConvertCommand(f *MediaFile, avcName string, encoder ffmpeg
 	}
 
 	// Use FFmpeg to transcode all other media files to AVC.
-	var opt ffmpeg.Options
+	var opt encode.Options
 	if opt, err = w.conf.FFmpegOptions(encoder, w.AvcBitrate(f)); err != nil {
 		return nil, false, fmt.Errorf("convert: failed to transcode %s (%s)", clean.Log(f.BaseName()), err)
 	} else {
-		return ffmpeg.AvcConvertCommand(fileName, avcName, opt)
+		return ffmpeg.TranscodeCmd(fileName, avcName, opt)
 	}
 }
 

@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2018 - 2024 PhotoPrism UG. All rights reserved.
+Copyright (c) 2018 - 2025 PhotoPrism UG. All rights reserved.
 
     This program is free software: you can redistribute it and/or modify
     it under Version 3 of the GNU Affero General Public License (the "AGPL"):
@@ -23,6 +23,15 @@ Additional information can be found in our Developer Guide:
 
 */
 
+import { config } from "app/session";
+import { DATE_FULL } from "model/photo";
+import sanitizeHtml from "sanitize-html";
+import { DateTime } from "luxon";
+import { $gettext } from "common/gettext";
+import Notify from "common/notify";
+import * as media from "common/media";
+import * as can from "common/can";
+
 const Nanosecond = 1;
 const Microsecond = 1000 * Nanosecond;
 const Millisecond = 1000 * Microsecond;
@@ -32,11 +41,21 @@ const Hour = 60 * Minute;
 let start = new Date();
 
 export default class Util {
-  static fps(fps) {
-    return `${fps.toFixed(1)} FPS`;
+  formatDate(s) {
+    if (!s || !s.length) {
+      return s;
+    }
+
+    const l = s.length;
+
+    if (l !== 20 || s[l - 1] !== "Z") {
+      return s;
+    }
+
+    return DateTime.fromISO(s, { zone: "UTC" }).toLocaleString(DATE_FULL);
   }
 
-  static duration(d) {
+  static formatDuration(d) {
     let u = d;
 
     let neg = d < 0;
@@ -69,13 +88,32 @@ export default class Util {
     let min = Math.floor(u / Minute) % 60;
     let sec = Math.ceil(u / Second) % 60;
 
-    result.push(h.toString().padStart(2, "0"));
-    result.push(min.toString().padStart(2, "0"));
+    if (h && h > 0) {
+      result.push(h.toString());
+      result.push(min.toString().padStart(2, "0"));
+    } else {
+      result.push(min.toString());
+    }
+
     result.push(sec.toString().padStart(2, "0"));
 
     // return `${h}h${min}m${sec}s`
 
     return result.join(":");
+  }
+
+  static formatNs(d) {
+    if (!d || typeof d !== "number") {
+      return "";
+    }
+
+    const ms = Math.round(d / 1000000).toLocaleString();
+
+    return `${ms} ms`;
+  }
+
+  static formatFPS(fps) {
+    return `${fps.toFixed(1)} FPS`;
   }
 
   static arabicToRoman(number) {
@@ -126,8 +164,49 @@ export default class Util {
     }
   }
 
+  static sanitizeHtml(html) {
+    if (!html) {
+      return "";
+    }
+
+    return sanitizeHtml(html);
+  }
+
   static encodeHTML(text) {
-    return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#x27;");
+    const linkRegex = /(https?:\/\/)[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&;/=]*)/g;
+
+    function linkFunc(matched) {
+      if (!matched) {
+        return "";
+      }
+
+      // Strip query parameters for added security and shorter links.
+      matched = matched.split("?")[0];
+
+      // Ampersand characters (&) should generally be ok in the link URL (though it should already be stripped as it may only be part of the query).
+      let url = matched.replace(/&amp;/g, "&");
+
+      // Make sure the URL starts with "http://" or "https://".
+      if (!url.startsWith("https")) {
+        url = "https://" + matched;
+      }
+
+      // Return HTML link markup.
+      return `<a href="${url}" target="_blank">${matched}</a>`;
+    }
+
+    // Escape HTML control characters.
+    text = text
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&apos;");
+
+    // Make URLs clickable.
+    text = text.replace(linkRegex, linkFunc);
+
+    return text;
   }
 
   static resetTimer() {
@@ -190,18 +269,24 @@ export default class Util {
         return "GIF";
       case "dng":
         return "Adobe Digital Negative";
-      case "avc":
-      case "avc1":
+      case media.FormatAVC:
+      case media.CodecAVC:
         return "Advanced Video Coding (AVC) / H.264";
       case "avif":
         return "AOMedia Video 1 (AV1)";
       case "avifs":
         return "AVIF Image Sequence";
+      case "hev":
       case "hvc":
-      case "hevc":
-      case "hev1":
-      case "hvc1":
+      case media.CodecHEVC:
+      case media.FormatHEVC:
         return "High Efficiency Video Coding (HEVC) / H.265";
+      case media.CodecHEV1:
+      case media.FormatHEV1:
+        return "High Efficiency Video Coding (HEVC) Bitstream";
+      case media.FormatEVC:
+      case media.CodecEVC:
+        return "Essential Video Coding (MPEG-5 Part 1)";
       case "m4v":
         return "Apple iTunes Multimedia Container";
       case "mkv":
@@ -212,8 +297,14 @@ export default class Util {
         return "Blu-ray MPEG-2 Transport Stream";
       case "webp":
         return "Google WebP";
-      case "webm":
+      case media.FormatWebM:
         return "Google WebM";
+      case media.CodecVP8:
+      case media.FormatVP8:
+        return "Google VP8";
+      case media.CodecVP9:
+      case media.FormatVP9:
+        return "Google VP9";
       case "flv":
         return "Flash";
       case "mpg":
@@ -226,9 +317,9 @@ export default class Util {
       case "wmv":
         return "Windows Media";
       case "svg":
-        return "Scalable Vector Graphics";
+        return "SVG";
       case "pdf":
-        return "Portable Document Format";
+        return "PDF";
       case "ai":
         return "Adobe Illustrator";
       case "ps":
@@ -240,26 +331,62 @@ export default class Util {
     }
   }
 
+  static formatCamera(camera, cameraID, cameraMake, cameraModel) {
+    if (camera) {
+      if (camera.Model.length > 7) {
+        return camera.Model;
+      } else {
+        return camera.Make + " " + camera.Model;
+      }
+    } else if (cameraMake && cameraModel) {
+      if (cameraModel.length > 7) {
+        return cameraModel;
+      } else {
+        return cameraMake + " " + cameraModel;
+      }
+    } else if (cameraID > 1 && cameraModel) {
+      return cameraModel;
+    }
+
+    return "";
+  }
+
   static formatCodec(codec) {
     if (!codec) {
       return "";
     }
 
     switch (codec) {
-      case "webp":
-      case "extended webp":
-        return "WebP";
-      case "webm":
-        return "WebM";
-      case "av1c":
-      case "av01":
+      case media.CodecAV1C:
+      case media.CodecAV1:
         return "AV1";
-      case "avc1":
+      case media.CodecAVC:
+      case media.CodecAVC3:
+      case media.FormatAVC:
         return "AVC";
       case "hvc":
-      case "hev1":
-      case "hvc1":
+      case media.CodecHEV1:
+      case media.FormatHEV1:
+      case media.CodecHEVC:
+      case media.FormatHEVC:
         return "HEVC";
+      case media.CodecVVC:
+      case media.FormatVVC:
+        return "VVC";
+      case media.CodecEVC:
+      case media.FormatEVC:
+        return "EVC";
+      case media.FormatWebM:
+        return "WebM";
+      case media.CodecVP8:
+      case media.FormatVP8:
+        return "VP8";
+      case media.CodecVP9:
+      case media.FormatVP9:
+        return "VP9";
+      case "extended webp":
+      case media.FormatWebP:
+        return "WebP";
       default:
         return codec.toUpperCase();
     }
@@ -278,20 +405,27 @@ export default class Util {
       case "qt  ":
         return "Apple QuickTime (MOV)";
       case "avc":
-      case "avc1":
+      case media.CodecAVC:
         return "Advanced Video Coding (AVC) / H.264";
+      case media.CodecAVC3:
+        return "Advanced Video Coding (AVC) Bitstream";
       case "hvc":
-      case "hevc":
-      case "hev1":
-      case "hvc1":
+      case "hev":
+      case media.CodecHEVC:
+      case media.FormatHEVC:
         return "High Efficiency Video Coding (HEVC) / H.265";
-      case "vvc":
-      case "vvc1":
+      case media.CodecHEV1:
+      case media.FormatHEV1:
+        return "High Efficiency Video Coding (HEVC) Bitstream";
+      case media.FormatVVC:
+      case media.CodecVVC:
         return "Versatile Video Coding (VVC) / H.266";
-      case "evc":
-      case "evc1":
+      case media.FormatEVC:
+      case media.CodecEVC:
         return "Essential Video Coding (MPEG-5 Part 1)";
+      case "av1":
       case "av1c":
+      case "av1C":
       case "av01":
         return "AOMedia Video 1 (AV1)";
       case "gif":
@@ -419,6 +553,123 @@ export default class Util {
       default:
         return value.toUpperCase();
     }
+  }
+
+  static thumbSize(pixelsWidth, pixelsHeight) {
+    const thumbs = config.values.thumbs;
+
+    for (let i = 0; i < thumbs.length; i++) {
+      let t = thumbs[i];
+
+      if (t.w >= pixelsWidth && t.h >= pixelsHeight) {
+        return t.size;
+      }
+    }
+
+    return "fit_7680";
+  }
+
+  static videoFormat(codec, mime) {
+    if ((!codec && !mime) || mime?.startsWith('video/mp4; codecs="avc')) {
+      return media.FormatAVC;
+    } else if (can.useHEVC && (codec === media.CodecHEVC || mime?.startsWith('video/mp4; codecs="hvc'))) {
+      return media.FormatHEVC;
+    } else if (can.useHEV1 && (codec === media.CodecHEV1 || mime?.startsWith('video/mp4; codecs="hev'))) {
+      return media.FormatHEV1; // HEVC Bitstream
+    } else if (
+      can.useVVC &&
+      (codec === media.CodecVVC || codec === media.FormatVVC || mime?.startsWith('video/mp4; codecs="vvc'))
+    ) {
+      return media.FormatVVC;
+    } else if (can.useOGV && (codec === media.CodecOGV || codec === media.FormatOGG || mime === media.ContentTypeOGV)) {
+      return media.FormatOGG;
+    } else if (can.useVP8 && (codec === "vp8" || codec === "vp08" || mime?.startsWith('video/mp4; codecs="vp8'))) {
+      return media.FormatVP8;
+    } else if (can.useVP9 && (codec === "vp9" || codec === "vp09" || mime?.startsWith('video/mp4; codecs="vp09'))) {
+      return media.FormatVP9;
+    } else if (
+      can.useAV1 &&
+      (codec === media.CodecAV1 ||
+        codec === media.CodecAV1C ||
+        codec === media.FormatAV1 ||
+        mime?.startsWith('video/webm; codecs="av01'))
+    ) {
+      return media.FormatAV1;
+    } else if (can.useWebM && (codec === media.FormatWebM || mime === media.ContentTypeWebM)) {
+      return media.FormatWebM;
+    }
+
+    return media.FormatAVC;
+  }
+
+  static videoFormatUrl(hash, format) {
+    if (!hash) {
+      return "";
+    }
+
+    if (!format) {
+      format = media.FormatAVC;
+    }
+
+    return `${config.videoUri}/videos/${hash}/${config.previewToken}/${format}`;
+  }
+
+  static videoUrl(hash, codec, mime) {
+    return this.videoFormatUrl(hash, this.videoFormat(codec, mime));
+  }
+
+  static videoContentType(codec, mime) {
+    switch (this.videoFormat(codec, mime)) {
+      case media.FormatAVC:
+        return media.ContentTypeAVC;
+      case media.CodecOGV:
+        return media.ContentTypeOGV;
+      case media.CodecVP8:
+      case media.FormatVP8:
+        return media.ContentTypeVP8;
+      case media.CodecVP9:
+      case media.FormatVP9:
+        return media.ContentTypeVP9;
+      case media.CodecAV1C:
+      case media.CodecAV1:
+      case media.FormatAV1:
+        return media.ContentTypeAV1;
+      case media.FormatWebM:
+        return media.ContentTypeWebM;
+      case media.CodecHEVC:
+      case media.FormatHEVC:
+        return media.ContentTypeHEVC;
+      case media.CodecHEV1:
+      case media.FormatHEV1:
+        return media.ContentTypeHEV1;
+      case media.FormatVVC:
+        return media.ContentTypeVVC;
+      default:
+        return "video/mp4";
+    }
+  }
+
+  static async copyText(text) {
+    if (!text) {
+      return false;
+    }
+
+    // Join additional text arguments, if any.
+    for (let i = 1; i < arguments.length; i++) {
+      if (typeof arguments[i] === "string" && arguments[i].length > 0) {
+        text += " " + arguments[i];
+      }
+    }
+
+    try {
+      await Util.copyToMachineClipboard(text);
+      Notify.success($gettext("Copied to clipboard"));
+      return true;
+    } catch (_) {
+      Notify.error($gettext("Cannot copy to clipboard"));
+    }
+
+    return false;
   }
 
   static async copyToMachineClipboard(text) {

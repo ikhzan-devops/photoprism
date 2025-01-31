@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"net/http"
 	"path/filepath"
 	"strings"
@@ -14,7 +13,9 @@ import (
 	"github.com/photoprism/photoprism/internal/photoprism/get"
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/fs"
+	"github.com/photoprism/photoprism/pkg/header"
 	"github.com/photoprism/photoprism/pkg/media/video"
+	"github.com/photoprism/photoprism/pkg/rnd"
 )
 
 // GetVideo returns a video, optionally limited to a byte range for streaming.
@@ -32,47 +33,59 @@ import (
 //	@Router			/api/v1/videos/{hash}/{token}/{format} [get]
 func GetVideo(router *gin.RouterGroup) {
 	router.GET("/videos/:hash/:token/:format", func(c *gin.Context) {
+		fileHash := clean.Token(c.Param("hash"))
+
+		// Check if a valid security token was provided.
 		if InvalidPreviewToken(c) {
-			c.Data(http.StatusForbidden, "image/svg+xml", brokenIconSvg)
+			c.Data(http.StatusForbidden, "image/svg+xml", videoIconSvg)
 			return
 		}
 
-		fileHash := clean.Token(c.Param("hash"))
-		formatName := clean.Token(c.Param("format"))
+		// Check if a valid file hash was provided.
+		if !rnd.IsSHA(fileHash) {
+			log.Debugf("video: invalid file hash %s", clean.Log(fileHash))
+			AbortVideo(c)
+			return
+		}
 
+		// Check if a supported video format was provided.
+		formatName := clean.Token(c.Param("format"))
 		format, ok := video.Types[formatName]
 
 		if !ok {
 			log.Errorf("video: invalid format %s", clean.Log(formatName))
-			c.Data(http.StatusOK, "image/svg+xml", videoIconSvg)
+			c.Data(http.StatusBadRequest, "image/svg+xml", videoIconSvg)
 			return
 		}
 
+		// Find media file by SHA hash.
 		f, err := query.FileByHash(fileHash)
 
 		if err != nil {
 			log.Errorf("video: requested file not found (%s)", err)
-			c.Data(http.StatusOK, "image/svg+xml", videoIconSvg)
+			AbortVideo(c)
 			return
 		}
 
+		// If file is not a video, try to find the realted video file.
 		if !f.FileVideo {
 			f, err = query.VideoByPhotoUID(f.PhotoUID)
 
 			if err != nil {
 				log.Errorf("video: no playable file found (%s)", err)
-				c.Data(http.StatusOK, "image/svg+xml", videoIconSvg)
+				AbortVideo(c)
 				return
 			}
 		}
 
+		// Return a broken video if the file could not be found.
 		if f.FileError != "" {
 			log.Errorf("video: file has error %s", f.FileError)
-			c.Data(http.StatusOK, "image/svg+xml", videoIconSvg)
+			AbortVideo(c)
 			return
 		} else if f.FileHash == "" {
 			log.Errorf("video: file hash missing in index")
-			c.Data(http.StatusOK, "image/svg+xml", videoIconSvg)
+			AbortVideo(c)
 			return
 		}
 
@@ -90,13 +103,11 @@ func GetVideo(router *gin.RouterGroup) {
 			if info, videoErr := video.ProbeFile(videoFileName); info.VideoOffset < 0 || !info.Compatible || videoErr != nil {
 				logErr("video", videoErr)
 				log.Warnf("video: no embedded media found in %s", clean.Log(f.FileName))
-				AddContentTypeHeader(c, video.ContentTypeAVC)
-				c.File(get.Config().StaticFile("video/404.mp4"))
+				AbortVideo(c)
 				return
 			} else if reader, readErr := video.NewReader(videoFileName, info.VideoOffset); readErr != nil {
 				log.Errorf("video: failed to read media embedded in %s (%s)", clean.Log(f.FileName), readErr)
-				AddContentTypeHeader(c, video.ContentTypeAVC)
-				c.File(get.Config().StaticFile("video/404.mp4"))
+				AbortVideo(c)
 				return
 			} else if c.Request.Header.Get("Range") == "" && info.VideoCodec == format.Codec {
 				defer reader.Close()
@@ -105,13 +116,12 @@ func GetVideo(router *gin.RouterGroup) {
 				return
 			} else if cacheName, cacheErr := fs.CacheFileFromReader(filepath.Join(conf.MediaFileCachePath(f.FileHash), f.FileHash+info.VideoFileExt()), reader); cacheErr != nil {
 				log.Errorf("video: failed to cache %s embedded in %s (%s)", strings.ToUpper(videoFileType), clean.Log(f.FileName), cacheErr)
-				AddContentTypeHeader(c, video.ContentTypeAVC)
-				c.File(get.Config().StaticFile("video/404.mp4"))
+				AbortVideo(c)
 				return
 			} else {
 				// Serve embedded videos from cache to allow streaming and transcoding.
 				videoBitrate = info.VideoBitrate()
-				videoCodec = info.VideoCodec.String()
+				videoCodec = info.VideoCodec
 				videoFileType = info.VideoFileType().String()
 				videoFileName = cacheName
 				log.Debugf("video: streaming %s encoded %s in %s from cache", strings.ToUpper(videoCodec), strings.ToUpper(videoFileType), clean.Log(f.FileName))
@@ -119,7 +129,7 @@ func GetVideo(router *gin.RouterGroup) {
 		}
 
 		// Check video format support.
-		supported := videoCodec != "" && videoCodec == format.Codec.String() || format.Codec == video.CodecUnknown && videoFileType == format.FileType.String()
+		supported := videoCodec != "" && videoCodec == format.Codec || format.Codec == video.CodecUnknown && videoFileType == format.FileType.String()
 
 		// Check video bitrate against the configured limit.
 		transcode := !supported || conf.FFmpegEnabled() && conf.FFmpegBitrateExceeded(videoBitrate)
@@ -130,8 +140,8 @@ func GetVideo(router *gin.RouterGroup) {
 
 			// Log error and default to 404.mp4
 			log.Errorf("video: file %s is missing", clean.Log(f.FileName))
-			videoFileName = get.Config().StaticFile("video/404.mp4")
-			AddContentTypeHeader(c, video.ContentTypeAVC)
+			AbortVideo(c)
+			return
 		} else if transcode {
 			if videoCodec != "" {
 				log.Debugf("video: %s is %s encoded and cannot be streamed directly, average bitrate %.1f MBit/s", clean.Log(f.FileName), strings.ToUpper(videoCodec), videoBitrate)
@@ -143,20 +153,20 @@ func GetVideo(router *gin.RouterGroup) {
 
 			if avcFile, avcErr := conv.ToAvc(mediaFile, get.Config().FFmpegEncoder(), false, false); avcFile != nil && avcErr == nil {
 				videoFileName = avcFile.FileName()
+				AddContentTypeHeader(c, header.ContentTypeAVC)
 			} else {
 				// Log error and default to 404.mp4
 				log.Errorf("video: failed to transcode %s", clean.Log(f.FileName))
-				videoFileName = get.Config().StaticFile("video/404.mp4")
+				AbortVideo(c)
+				return
 			}
-
-			AddContentTypeHeader(c, video.ContentTypeAVC)
 		} else {
 			if videoCodec != "" && videoCodec != videoFileType {
 				log.Debugf("video: %s is %s encoded and requires no transcoding, average bitrate %.1f MBit/s", clean.Log(f.FileName), strings.ToUpper(videoCodec), videoBitrate)
-				AddContentTypeHeader(c, fmt.Sprintf("%s; codecs=\"%s\"", f.FileMime, clean.Codec(videoCodec)))
+				AddContentTypeHeader(c, video.ContentType(mediaFile.MimeType(), videoFileType, videoCodec))
 			} else {
 				log.Debugf("video: %s is streamed directly, average bitrate %.1f MBit/s", clean.Log(f.FileName), videoBitrate)
-				AddContentTypeHeader(c, f.FileMime)
+				AddContentTypeHeader(c, f.ContentType())
 			}
 		}
 

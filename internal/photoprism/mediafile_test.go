@@ -364,18 +364,21 @@ func TestMediaFile_Exposure(t *testing.T) {
 	c := config.TestConfig()
 
 	t.Run("/cat_brown.jpg", func(t *testing.T) {
-
 		mediaFile, err := NewMediaFile(c.ExamplesPath() + "/cat_brown.jpg")
+
 		if err != nil {
 			t.Fatal(err)
 		}
+
 		assert.Equal(t, "1/50", mediaFile.Exposure())
 	})
 	t.Run("/elephants.jpg", func(t *testing.T) {
 		mediaFile, err := NewMediaFile(c.ExamplesPath() + "/elephants.jpg")
+
 		if err != nil {
 			t.Fatal(err)
 		}
+
 		assert.Equal(t, "1/640", mediaFile.Exposure())
 	})
 }
@@ -384,29 +387,36 @@ func TestMediaFileCanonicalName(t *testing.T) {
 	c := config.TestConfig()
 
 	mediaFile, err := NewMediaFile(c.ExamplesPath() + "/beach_wood.jpg")
+
 	if err != nil {
 		t.Fatal(err)
 	}
-	assert.Equal(t, "20180111_110938_7D8F8A23", mediaFile.CanonicalName())
+
+	assert.Equal(t, "2018_01_11-11_09_38_7D8F8A23", mediaFile.CanonicalName("2006_01_02-15_04_05_"))
+	assert.Equal(t, "180111-110938_7D8F8A23", mediaFile.CanonicalName("060102-150405_"))
+	assert.Equal(t, "20180111_110938_7D8F8A23", mediaFile.CanonicalName(""))
+	assert.Equal(t, "20180111_110938_7D8F8A23", mediaFile.CanonicalNameDefault())
 }
 
 func TestMediaFileCanonicalNameFromFile(t *testing.T) {
-	t.Run("/beach_wood.jpg", func(t *testing.T) {
-		conf := config.TestConfig()
+	c := config.TestConfig()
 
-		mediaFile, err := NewMediaFile(conf.ExamplesPath() + "/beach_wood.jpg")
+	t.Run("/beach_wood.jpg", func(t *testing.T) {
+		mediaFile, err := NewMediaFile(c.ExamplesPath() + "/beach_wood.jpg")
+
 		if err != nil {
 			t.Fatal(err)
 		}
+
 		assert.Equal(t, "beach_wood", mediaFile.CanonicalNameFromFile())
 	})
 	t.Run("/airport_grey", func(t *testing.T) {
-		conf := config.TestConfig()
+		mediaFile, err := NewMediaFile(c.ExamplesPath() + "/airport_grey")
 
-		mediaFile, err := NewMediaFile(conf.ExamplesPath() + "/airport_grey")
 		if err != nil {
 			t.Fatal(err)
 		}
+
 		assert.Equal(t, "airport_grey", mediaFile.CanonicalNameFromFile())
 	})
 }
@@ -689,10 +699,15 @@ func TestMediaFile_MimeType(t *testing.T) {
 	})
 	t.Run("iphone_7.xmp", func(t *testing.T) {
 		mediaFile, err := NewMediaFile(c.ExamplesPath() + "/iphone_7.xmp")
+
 		if err != nil {
 			t.Fatal(err)
 		}
-		assert.Equal(t, "text/plain", mediaFile.MimeType())
+
+		assert.Equal(t, fs.MimeTypeText, mediaFile.BaseType())
+		assert.Equal(t, "text/plain", mediaFile.BaseType())
+		assert.Equal(t, "text/plain; charset=utf-8", mediaFile.MimeType())
+		assert.Equal(t, true, mediaFile.HasMimeType("text/plain"))
 	})
 	t.Run("iphone_7.json", func(t *testing.T) {
 		mediaFile, err := NewMediaFile(c.ExamplesPath() + "/iphone_7.json")
@@ -722,7 +737,11 @@ func TestMediaFile_MimeType(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		assert.Equal(t, fs.MimeTypeXML, mediaFile.MimeType())
+
+		assert.Equal(t, fs.MimeTypeXML, mediaFile.BaseType())
+		assert.Equal(t, "text/xml", mediaFile.BaseType())
+		assert.Equal(t, "text/xml; charset=utf-8", mediaFile.MimeType())
+		assert.Equal(t, true, mediaFile.HasMimeType("text/xml"))
 	})
 	t.Run("earth.mov", func(t *testing.T) {
 		if f, err := NewMediaFile(filepath.Join(c.ExamplesPath(), "earth.mov")); err != nil {
@@ -2013,10 +2032,11 @@ func TestMediaFile_ExceedsResolution(t *testing.T) {
 }
 
 func TestMediaFile_AspectRatio(t *testing.T) {
-	t.Run("iphone_7.heic", func(t *testing.T) {
-		conf := config.TestConfig()
+	c := config.TestConfig()
 
-		mediaFile, err := NewMediaFile(conf.ExamplesPath() + "/iphone_7.heic")
+	t.Run("iphone_7.heic", func(t *testing.T) {
+
+		mediaFile, err := NewMediaFile(c.ExamplesPath() + "/iphone_7.heic")
 
 		if err != nil {
 			t.Fatal(err)
@@ -2027,9 +2047,7 @@ func TestMediaFile_AspectRatio(t *testing.T) {
 		assert.False(t, mediaFile.Square())
 	})
 	t.Run("fern_green.jpg", func(t *testing.T) {
-		conf := config.TestConfig()
-
-		mediaFile, err := NewMediaFile(conf.ExamplesPath() + "/fern_green.jpg")
+		mediaFile, err := NewMediaFile(c.ExamplesPath() + "/fern_green.jpg")
 
 		if err != nil {
 			t.Fatal(err)
@@ -2040,9 +2058,7 @@ func TestMediaFile_AspectRatio(t *testing.T) {
 		assert.True(t, mediaFile.Square())
 	})
 	t.Run("elephants.jpg", func(t *testing.T) {
-		conf := config.TestConfig()
-
-		mediaFile, err := NewMediaFile(conf.ExamplesPath() + "/elephants.jpg")
+		mediaFile, err := NewMediaFile(c.ExamplesPath() + "/elephants.jpg")
 
 		if err != nil {
 			t.Fatal(err)
@@ -2106,6 +2122,8 @@ func TestMediaFile_FileType(t *testing.T) {
 		assert.False(t, m.IsPNG())
 		assert.Equal(t, "png", string(m.FileType()))
 		assert.Equal(t, "image/jpeg", m.MimeType())
+		assert.Equal(t, "image/jpeg", m.BaseType())
+		assert.Equal(t, true, m.HasMimeType("image/jpeg"))
 		assert.Equal(t, fs.ImagePNG, m.FileType())
 		assert.Equal(t, ".png", m.Extension())
 	})
@@ -2121,6 +2139,7 @@ func TestMediaFile_FileType(t *testing.T) {
 		assert.False(t, m.IsPNG())
 		assert.Equal(t, "thm", string(m.FileType()))
 		assert.Equal(t, "image/jpeg", m.MimeType())
+		assert.Equal(t, true, m.HasMimeType("image/jpeg"))
 		assert.Equal(t, fs.ImageThumb, m.FileType())
 		assert.Equal(t, ".thm", m.Extension())
 	})
@@ -2128,9 +2147,9 @@ func TestMediaFile_FileType(t *testing.T) {
 
 func TestMediaFile_Stat(t *testing.T) {
 	t.Run("iphone_7.heic", func(t *testing.T) {
-		conf := config.TestConfig()
+		c := config.TestConfig()
 
-		mediaFile, err := NewMediaFile(conf.ExamplesPath() + "/iphone_7.heic")
+		mediaFile, err := NewMediaFile(c.ExamplesPath() + "/iphone_7.heic")
 
 		if err != nil {
 			t.Fatal(err)
@@ -2149,9 +2168,9 @@ func TestMediaFile_Stat(t *testing.T) {
 
 func TestMediaFile_FileSize(t *testing.T) {
 	t.Run("iphone_7.heic", func(t *testing.T) {
-		conf := config.TestConfig()
+		c := config.TestConfig()
 
-		mediaFile, err := NewMediaFile(conf.ExamplesPath() + "/iphone_7.heic")
+		mediaFile, err := NewMediaFile(c.ExamplesPath() + "/iphone_7.heic")
 
 		if err != nil {
 			t.Fatal(err)
@@ -2164,9 +2183,9 @@ func TestMediaFile_FileSize(t *testing.T) {
 
 func TestMediaFile_JsonName(t *testing.T) {
 	t.Run("blue-go-video.mp4", func(t *testing.T) {
-		conf := config.TestConfig()
+		c := config.TestConfig()
 
-		mediaFile, err := NewMediaFile(conf.ExamplesPath() + "/blue-go-video.mp4")
+		mediaFile, err := NewMediaFile(c.ExamplesPath() + "/blue-go-video.mp4")
 
 		if err != nil {
 			t.Fatal(err)
@@ -2178,10 +2197,10 @@ func TestMediaFile_JsonName(t *testing.T) {
 }
 
 func TestMediaFile_PathNameInfo(t *testing.T) {
-	t.Run("blue-go-video.mp4", func(t *testing.T) {
-		conf := config.TestConfig()
+	c := config.TestConfig()
 
-		mediaFile, err := NewMediaFile(conf.ExamplesPath() + "/blue-go-video.mp4")
+	t.Run("blue-go-video.mp4", func(t *testing.T) {
+		mediaFile, err := NewMediaFile(c.ExamplesPath() + "/blue-go-video.mp4")
 
 		if err != nil {
 			t.Fatal(err)
@@ -2194,11 +2213,8 @@ func TestMediaFile_PathNameInfo(t *testing.T) {
 		assert.Equal(t, "blue-go-video.mp4", name)
 
 	})
-
 	t.Run("beach_sand sidecar", func(t *testing.T) {
-		conf := config.TestConfig()
-
-		mediaFile, err := NewMediaFile(conf.ExamplesPath() + "/beach_sand.jpg")
+		mediaFile, err := NewMediaFile(c.ExamplesPath() + "/beach_sand.jpg")
 
 		if err != nil {
 			t.Fatal(err)
@@ -2214,13 +2230,11 @@ func TestMediaFile_PathNameInfo(t *testing.T) {
 		assert.Equal(t, ".photoprism/beach_sand.jpg", name)
 		mediaFile.SetFileName(initialName)
 	})
-
 	t.Run("beach_sand import", func(t *testing.T) {
-		conf := config.TestConfig()
 		t.Log(Config().SidecarPath())
 		t.Log(Config().ImportPath())
 
-		mediaFile, err := NewMediaFile(filepath.Join(conf.ExamplesPath(), "beach_sand.jpg"))
+		mediaFile, err := NewMediaFile(filepath.Join(c.ExamplesPath(), "beach_sand.jpg"))
 
 		if err != nil {
 			t.Fatal(err)
@@ -2228,7 +2242,7 @@ func TestMediaFile_PathNameInfo(t *testing.T) {
 
 		initialName := mediaFile.FileName()
 		t.Log(initialName)
-		mediaFile.SetFileName(filepath.Join(conf.ImportPath(), "beach_sand.jpg"))
+		mediaFile.SetFileName(filepath.Join(c.ImportPath(), "beach_sand.jpg"))
 
 		root, base, path, name := mediaFile.PathNameInfo(true)
 		assert.Equal(t, "import", root)
@@ -2239,9 +2253,7 @@ func TestMediaFile_PathNameInfo(t *testing.T) {
 	})
 
 	t.Run("beach_sand unknown root", func(t *testing.T) {
-		conf := config.TestConfig()
-
-		mediaFile, err := NewMediaFile(conf.ExamplesPath() + "/beach_sand.jpg")
+		mediaFile, err := NewMediaFile(c.ExamplesPath() + "/beach_sand.jpg")
 
 		if err != nil {
 			t.Fatal(err)
@@ -2260,10 +2272,10 @@ func TestMediaFile_PathNameInfo(t *testing.T) {
 }
 
 func TestMediaFile_SubDirectory(t *testing.T) {
-	t.Run("blue-go-video.mp4", func(t *testing.T) {
-		conf := config.TestConfig()
+	c := config.TestConfig()
 
-		mediaFile, err := NewMediaFile(conf.ExamplesPath() + "/blue-go-video.mp4")
+	t.Run("blue-go-video.mp4", func(t *testing.T) {
+		mediaFile, err := NewMediaFile(c.ExamplesPath() + "/blue-go-video.mp4")
 
 		if err != nil {
 			t.Fatal(err)
@@ -2275,16 +2287,16 @@ func TestMediaFile_SubDirectory(t *testing.T) {
 }
 
 func TestMediaFile_HasSameName(t *testing.T) {
-	t.Run("false", func(t *testing.T) {
-		conf := config.TestConfig()
+	c := config.TestConfig()
 
-		mediaFile, err := NewMediaFile(conf.ExamplesPath() + "/blue-go-video.mp4")
+	t.Run("false", func(t *testing.T) {
+		mediaFile, err := NewMediaFile(c.ExamplesPath() + "/blue-go-video.mp4")
 
 		if err != nil {
 			t.Fatal(err)
 		}
 
-		mediaFile2, err := NewMediaFile(conf.ExamplesPath() + "/beach_sand.jpg")
+		mediaFile2, err := NewMediaFile(c.ExamplesPath() + "/beach_sand.jpg")
 
 		if err != nil {
 			t.Fatal(err)
@@ -2404,7 +2416,7 @@ func TestMediaFile_SkipTranscoding(t *testing.T) {
 }
 
 func TestMediaFile_RenameSidecarFiles(t *testing.T) {
-	t.Run("success", func(t *testing.T) {
+	t.Run("Success", func(t *testing.T) {
 		conf := config.TestConfig()
 
 		jpegExample := filepath.Join(conf.ExamplesPath(), "/limes.jpg")
@@ -2454,7 +2466,7 @@ func TestMediaFile_RenameSidecarFiles(t *testing.T) {
 }
 
 func TestMediaFile_RemoveSidecarFiles(t *testing.T) {
-	t.Run("success", func(t *testing.T) {
+	t.Run("Success", func(t *testing.T) {
 		conf := config.TestConfig()
 
 		jpegExample := filepath.Join(conf.ExamplesPath(), "/limes.jpg")

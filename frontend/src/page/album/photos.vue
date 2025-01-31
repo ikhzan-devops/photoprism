@@ -1,31 +1,92 @@
 <template>
-  <div v-infinite-scroll="loadMore" class="p-page p-page-album-photos" :infinite-scroll-disabled="scrollDisabled" :infinite-scroll-distance="scrollDistance" :infinite-scroll-listen-for-event="'scrollRefresh'">
-    <p-album-toolbar :filter="filter" :album="model" :settings="settings" :refresh="refresh" :update-filter="updateFilter" :update-query="updateQuery"></p-album-toolbar>
+  <div class="p-page p-page-album-photos">
+    <p-album-toolbar
+      ref="toolbar"
+      :filter="filter"
+      :album="model"
+      :settings="settings"
+      :refresh="refresh"
+      :update-filter="updateFilter"
+      :update-query="updateQuery"
+    ></p-album-toolbar>
 
-    <v-container v-if="loading" fluid class="pa-4">
-      <v-progress-linear color="secondary-dark" :indeterminate="true"></v-progress-linear>
-    </v-container>
-    <v-container v-else fluid class="pa-0">
-      <p-scroll-top></p-scroll-top>
+    <div v-if="loading" class="pa-6">
+      <v-progress-linear :indeterminate="true"></v-progress-linear>
+    </div>
+    <div v-else>
+      <p-scroll
+        :load-more="loadMore"
+        :load-disabled="scrollDisabled"
+        :load-distance="scrollDistance"
+        :loading="loading"
+      >
+      </p-scroll>
 
-      <p-photo-clipboard :refresh="refresh" :selection="selection" :album="model" context="album"></p-photo-clipboard>
+      <p-photo-clipboard :refresh="refresh" :album="model" context="album"></p-photo-clipboard>
 
-      <p-photo-mosaic v-if="settings.view === 'mosaic'" context="album" :photos="results" :select-mode="selectMode" :filter="filter" :album="model" :edit-photo="editPhoto" :open-photo="openPhoto" :is-shared-view="isShared"></p-photo-mosaic>
-      <p-photo-list v-else-if="settings.view === 'list'" context="album" :photos="results" :select-mode="selectMode" :filter="filter" :album="model" :open-photo="openPhoto" :edit-photo="editPhoto" :open-date="openDate" :open-location="openLocation" :is-shared-view="isShared"></p-photo-list>
-      <p-photo-cards v-else context="album" :photos="results" :select-mode="selectMode" :filter="filter" :album="model" :open-photo="openPhoto" :edit-photo="editPhoto" :open-date="openDate" :open-location="openLocation" :is-shared-view="isShared"></p-photo-cards>
-    </v-container>
+      <p-photo-view-mosaic
+        v-if="settings.view === 'mosaic'"
+        context="album"
+        :photos="results"
+        :select-mode="selectMode"
+        :filter="filter"
+        :album="model"
+        :edit-photo="editPhoto"
+        :open-photo="openPhoto"
+        :is-shared-view="isShared"
+      ></p-photo-view-mosaic>
+      <p-photo-view-list
+        v-else-if="settings.view === 'list'"
+        context="album"
+        :photos="results"
+        :select-mode="selectMode"
+        :filter="filter"
+        :album="model"
+        :open-photo="openPhoto"
+        :edit-photo="editPhoto"
+        :open-date="openDate"
+        :open-location="openLocation"
+        :is-shared-view="isShared"
+      ></p-photo-view-list>
+      <p-photo-view-cards
+        v-else
+        context="album"
+        :photos="results"
+        :select-mode="selectMode"
+        :filter="filter"
+        :album="model"
+        :open-photo="openPhoto"
+        :edit-photo="editPhoto"
+        :open-date="openDate"
+        :open-location="openLocation"
+        :is-shared-view="isShared"
+      ></p-photo-view-cards>
+    </div>
   </div>
 </template>
 
 <script>
-import { Photo, MediaLive, MediaRaw, MediaVideo, MediaAnimated } from "model/photo";
+import { Photo } from "model/photo";
 import Album from "model/album";
 import Thumb from "model/thumb";
 import Event from "pubsub-js";
-import Viewer from "common/viewer";
+import PAlbumToolbar from "component/album/toolbar.vue";
+import PPhotoClipboard from "component/photo/clipboard.vue";
+import PPhotoViewCards from "component/photo/view/cards.vue";
+import PPhotoViewMosaic from "component/photo/view/mosaic.vue";
+import PPhotoViewList from "component/photo/view/list.vue";
+import PScroll from "component/scroll.vue";
 
 export default {
   name: "PPageAlbumPhotos",
+  components: {
+    PAlbumToolbar,
+    PPhotoClipboard,
+    PPhotoViewCards,
+    PPhotoViewMosaic,
+    PPhotoViewList,
+    PScroll,
+  },
   props: {
     staticFilter: {
       type: Object,
@@ -59,7 +120,7 @@ export default {
       uid: uid,
       results: [],
       scrollDisabled: true,
-      scrollDistance: window.innerHeight * 6,
+      scrollDistance: window.innerHeight * 4,
       batchSize: batchSize,
       offset: 0,
       page: 0,
@@ -127,15 +188,29 @@ export default {
     this.subscriptions.push(Event.subscribe("albums.updated", (ev, data) => this.onAlbumsUpdated(ev, data)));
     this.subscriptions.push(Event.subscribe("photos", (ev, data) => this.onUpdate(ev, data)));
 
+    this.subscriptions.push(
+      this.$event.subscribe("viewer.opened", (ev, data) => {
+        this.viewer.open = true;
+      })
+    );
+    this.subscriptions.push(
+      this.$event.subscribe("viewer.closed", (ev, data) => {
+        this.viewer.open = false;
+      })
+    );
+
     this.subscriptions.push(Event.subscribe("touchmove.top", () => this.refresh()));
     this.subscriptions.push(Event.subscribe("touchmove.bottom", () => this.loadMore()));
   },
-  destroyed() {
+  unmounted() {
     for (let i = 0; i < this.subscriptions.length; i++) {
       Event.unsubscribe(this.subscriptions[i]);
     }
   },
   methods: {
+    hideExpansionPanel() {
+      return this.$refs?.toolbar?.hideExpansionPanel();
+    },
     getViewType() {
       let queryParam = this.$route.query["view"] ? this.$route.query["view"] : "";
       let defaultType = window.localStorage.getItem("photos_view");
@@ -168,7 +243,7 @@ export default {
         return;
       }
 
-      this.$router.push({ query: { q: "taken:" + photo.TakenAt.substring(0, 10) }});
+      this.$router.push({ query: { q: "taken:" + photo.TakenAt.substring(0, 10) } });
     },
     openLocation(index) {
       if (!this.hasPlaces) {
@@ -187,7 +262,7 @@ export default {
         this.$router.push({ name: "places_view", params: { s: this.uid }, query: { q: photo.CellID } });
       }
     },
-    editPhoto(index) {
+    editPhoto(index, tab) {
       if (!this.canEdit) {
         return this.openPhoto(index);
       }
@@ -197,7 +272,7 @@ export default {
       });
 
       // Open Edit Dialog
-      Event.publish("dialog.edit", { selection: selection, album: this.album, index: index });
+      Event.publish("dialog.edit", { selection, album: this.album, index, tab });
     },
     openPhoto(index, showMerged = false, preferVideo = false) {
       if (this.loading || !this.listen || this.viewer.loading || !this.results[index]) {
@@ -206,8 +281,8 @@ export default {
 
       const selected = this.results[index];
 
-      // Don't open as stack when user is selecting pictures, or a RAW has only one JPEG.
-      if (this.selection.length > 0 || (selected.Type === MediaRaw && selected.jpegFiles().length < 2)) {
+      // Do not open as stack if there is only one JPEG or if multiple pictures are selected.
+      if (this.selection.length > 0 || selected.jpegFiles().length < 2) {
         showMerged = false;
       }
 
@@ -225,16 +300,10 @@ export default {
        *
        * preferVideo is true, when the user explicitly clicks the live-image-icon.
        */
-      if ((preferVideo && selected.Type === MediaLive) || selected.Type === MediaVideo || selected.Type === MediaAnimated) {
-        if (selected.isPlayable()) {
-          this.$viewer.play({ video: selected, album: this.album });
-        } else {
-          this.$viewer.show(Thumb.fromPhotos(this.results), index);
-        }
-      } else if (showMerged) {
-        this.$viewer.show(Thumb.fromFiles([selected]), 0);
+      if (showMerged) {
+        this.$root.$refs.viewer.showThumbs(Thumb.fromFiles([selected]), 0);
       } else {
-        Viewer.show(this, index);
+        this.$root.$refs.viewer.showContext(this, index);
       }
 
       return true;
@@ -275,7 +344,9 @@ export default {
             this.offset = offset;
 
             if (this.results.length > 1) {
-              this.$notify.info(this.$gettextInterpolate(this.$gettext("%{n} pictures found"), { n: this.results.length }));
+              this.$notify.info(
+                this.$gettextInterpolate(this.$gettext("%{n} pictures found"), { n: this.results.length })
+              );
             }
           } else if (this.results.length >= Photo.limit()) {
             this.offset = offset;
@@ -288,7 +359,7 @@ export default {
 
             this.$nextTick(() => {
               if (this.$root.$el.clientHeight <= window.document.documentElement.clientHeight + 300) {
-                this.$emit("scrollRefresh");
+                this.loadMore();
               }
             });
           }
@@ -402,7 +473,7 @@ export default {
 
       // Don't query the same data more than once
       if (JSON.stringify(this.lastFilter) === JSON.stringify(this.filter)) {
-        this.$nextTick(() => this.$emit("scrollRefresh"));
+        // this.$nextTick(() => this.$emit("scrollRefresh"));
         return;
       }
 
@@ -418,6 +489,11 @@ export default {
 
       Photo.search(params)
         .then((response) => {
+          // Hide search toolbar expansion panel when matching pictures were found.
+          if (this.offset === 0 && response.count > 0) {
+            this.hideExpansionPanel();
+          }
+
           this.offset = this.batchSize;
           this.results = response.models;
           this.viewer.results = [];
@@ -431,13 +507,15 @@ export default {
             } else if (this.results.length === 1) {
               this.$notify.info(this.$gettext("One picture found"));
             } else {
-              this.$notify.info(this.$gettextInterpolate(this.$gettext("%{n} pictures found"), { n: this.results.length }));
+              this.$notify.info(
+                this.$gettextInterpolate(this.$gettext("%{n} pictures found"), { n: this.results.length })
+              );
             }
           } else {
             // this.$notify.info(this.$gettextInterpolate(this.$gettext("More than %{n} pictures found"), {n: 100}));
             this.$nextTick(() => {
               if (this.$root.$el.clientHeight <= window.document.documentElement.clientHeight + 300) {
-                this.$emit("scrollRefresh");
+                this.loadMore();
               }
             });
           }

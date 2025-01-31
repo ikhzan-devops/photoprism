@@ -22,12 +22,13 @@ func (m QueryErr) Matches(query, err string) bool {
 }
 
 var IgnoreErr = QueryErr{
-	"rename":       {"no such", "already exists"},
-	"replace":      {"no such", "exist", "exists"},
-	" ignore ":     {"no such", "exist", "exists"},
-	"drop index ":  {"drop"},
-	"drop table ":  {"drop"},
-	"alter table ": {"duplicate"},
-	"delete from ": {"no such"},
-	"update ":      {"no such"},
+	"rename":              {"no such", "already exists"},
+	"replace":             {"no such", "exist", "exists"},
+	" ignore ":            {"no such", "exist", "exists"},
+	"drop index ":         {"drop"},
+	"drop table ":         {"drop"},
+	"alter table ":        {"duplicate", "exist", "unknown", "1054", "1146"},
+	"alter ignore table ": {"duplicate", "exist", "unknown", "1054", "1146"},
+	"delete from ":        {"no such"},
+	"update ":             {"no such"},
 }

@@ -108,16 +108,16 @@ func (w *Convert) ToImage(f *MediaFile, force bool) (result *MediaFile, err erro
 	}
 
 	// Run external commands for other formats.
-	var cmds ConvertCommands
+	var cmds ConvertCmds
 	var useMutex bool
 	var expectedMime string
 
 	switch fs.LowerExt(imageName) {
 	case fs.ExtPNG:
-		cmds, useMutex, err = w.PngConvertCommands(f, imageName)
+		cmds, useMutex, err = w.PngConvertCmds(f, imageName)
 		expectedMime = fs.MimeTypePNG
 	case fs.ExtJPEG:
-		cmds, useMutex, err = w.JpegConvertCommands(f, imageName, xmpName)
+		cmds, useMutex, err = w.JpegConvertCmds(f, imageName, xmpName)
 		expectedMime = fs.MimeTypeJPEG
 	default:
 		return nil, fmt.Errorf("convert: unspported target format %s (%s)", fs.LowerExt(imageName), clean.Log(f.RootRelName()))

@@ -460,7 +460,7 @@ func TestSession_RefreshUser(t *testing.T) {
 
 		assert.Equal(t, "bob", m.Username())
 	})
-	t.Run("empty", func(t *testing.T) {
+	t.Run("Empty", func(t *testing.T) {
 		m := &Session{}
 		assert.Equal(t, "", m.RefreshUser().UserUID)
 	})

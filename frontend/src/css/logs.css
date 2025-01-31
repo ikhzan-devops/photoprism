@@ -1,15 +1,15 @@
 /* Event Logs */
 
-#photoprism .p-logs {
+.p-logs {
     color: white;
     border-radius: 4px;
 }
 
-#photoprism .p-log-empty,
-#photoprism .p-log-message {
+.p-log-empty,
+.p-log-message {
     display: block;
     text-align: left;
-    font-size: 1em;
+    font-size: 0.825rem;
     font-family: monospace;
     white-space: normal;
     color: white;
@@ -17,37 +17,37 @@
     margin: 0;
 }
 
-#photoprism .p-log-empty {
+.p-log-empty {
     font-weight: normal;
 }
 
-#photoprism .p-log-message {
+.p-log-message {
     font-weight: bold;
 }
 
-#photoprism .p-log-message span {
+.p-log-message span {
     color: #FEFEFE;
     font-weight: normal;
 }
 
-#photoprism .p-log-fatal,
-#photoprism .p-log-critical,
-#photoprism .p-log-error {
+.p-log-fatal,
+.p-log-critical,
+.p-log-error {
     color: #F48FB1;
 }
 
-#photoprism .p-log-warning {
+.p-log-warning {
     color: #FFD600;
 }
 
-#photoprism .p-log-fatal {
+.p-log-fatal {
     color: #FFECB3;
 }
 
-#photoprism .p-log-info {
+.p-log-info {
     color: #82B1FF;
 }
 
-#photoprism .p-log-debug {
+.p-log-debug {
     color: #DDDDDD;
 }

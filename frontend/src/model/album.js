@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2018 - 2024 PhotoPrism UG. All rights reserved.
+Copyright (c) 2018 - 2025 PhotoPrism UG. All rights reserved.
 
     This program is free software: you can redistribute it and/or modify
     it under Version 3 of the GNU Affero General Public License (the "AGPL"):
@@ -28,9 +28,9 @@ import Api from "common/api";
 import countries from "options/countries.json";
 import { DateTime } from "luxon";
 import { config } from "app/session";
-import { $gettext } from "common/vm";
+import { $gettext } from "common/gettext";
 
-export let BatchSize = 24;
+export let BatchSize = 60;
 
 export class Album extends RestModel {
   getDefaults() {
@@ -68,7 +68,7 @@ export class Album extends RestModel {
   route(view) {
     return {
       name: view,
-      params: { album: this.UID, slug: "view", year: this.Year, month: this.Month },
+      params: { album: this.UID, slug: "view" },
     };
   }
 

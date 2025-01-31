@@ -37,10 +37,20 @@ var AVC = Type{
 	Public:      true,
 }
 
-// HEVC aka High Efficiency Video Coding (H.265).
+// HEVC aka High Efficiency Video Coding (H.265), with the parameter sets stored in the sample descriptions.
 var HEVC = Type{
-	Codec:       CodecHVC,
+	Codec:       CodecHEVC,
 	FileType:    fs.VideoHEVC,
+	WidthLimit:  0,
+	HeightLimit: 0,
+	Public:      false,
+}
+
+// HEV1 (High Efficiency Video Coding) bitstream with the parameter sets stored in the samples,
+// not supported on macOS: https://ott.dolby.com/codec_test/index.html
+var HEV1 = Type{
+	Codec:       CodecHEV1,
+	FileType:    fs.VideoHEV1,
 	WidthLimit:  0,
 	HeightLimit: 0,
 	Public:      false,

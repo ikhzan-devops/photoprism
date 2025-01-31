@@ -80,13 +80,20 @@ func (m *PhotoLabel) Delete() error {
 
 // FirstOrCreatePhotoLabel returns the existing row, inserts a new row or nil in case of errors.
 func FirstOrCreatePhotoLabel(m *PhotoLabel) *PhotoLabel {
-	result := PhotoLabel{}
-	if err := Db().Preload("Label").Where("photo_id = ? AND label_id = ?", m.PhotoID, m.LabelID).First(&result).Error; err == nil {
-		return &result
+	if m == nil {
+		return nil
+	} else if m.PhotoID < 1 || m.LabelID < 1 {
+		return nil
+	}
+
+	result := &PhotoLabel{}
+
+	if err := Db().Preload("Label").Where("photo_id = ? AND label_id = ?", m.PhotoID, m.LabelID).First(result).Error; err == nil {
+		return result
 	} else if createErr := m.Create(); createErr == nil {
 		return m
-	} else if err := Db().Preload("Label").Where("photo_id = ? AND label_id = ?", m.PhotoID, m.LabelID).First(&result).Error; err == nil {
-		return &result
+	} else if err = Db().Preload("Label").Where("photo_id = ? AND label_id = ?", m.PhotoID, m.LabelID).First(result).Error; err == nil {
+		return result
 	} else {
 		log.Errorf("photo-label: %s (find or create)", createErr)
 	}

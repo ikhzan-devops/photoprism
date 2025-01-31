@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2018 - 2024 PhotoPrism UG. All rights reserved.
+Copyright (c) 2018 - 2025 PhotoPrism UG. All rights reserved.
 
     This program is free software: you can redistribute it and/or modify
     it under Version 3 of the GNU Affero General Public License (the "AGPL"):
@@ -29,7 +29,7 @@ import { DateTime } from "luxon";
 import File from "model/file";
 import Util from "common/util";
 import { config } from "app/session";
-import { $gettext } from "common/vm";
+import { $gettext } from "common/gettext";
 
 export const RootImport = "import";
 export const RootOriginals = "originals";

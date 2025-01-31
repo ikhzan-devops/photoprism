@@ -107,6 +107,7 @@ func Start(ctx context.Context, conf *config.Config) {
 		var unixAddr *net.UnixAddr
 		var err error
 
+		// Create a Unix socket and attach the server to it.
 		if unixAddr, err = net.ResolveUnixAddr("unix", unixSocket); err != nil {
 			log.Errorf("server: invalid unix socket (%s)", err)
 			return
@@ -114,6 +115,8 @@ func Start(ctx context.Context, conf *config.Config) {
 			log.Errorf("server: failed to listen on unix socket (%s)", err)
 			return
 		} else {
+			// Listen on Unix socket, which should be automatically closed and removed after use:
+			// https://pkg.go.dev/net#UnixListener.SetUnlinkOnClose.
 			server = &http.Server{
 				Addr:    unixSocket,
 				Handler: router,

@@ -598,27 +598,27 @@ func TestInitDBLengths(t *testing.T) {
 
 		assert.Equal(t, expectedCount, actualCount)
 	})
-	t.Run("PhotoExceedMaxPhotoDescription", func(t *testing.T) {
+	t.Run("PhotoExceedMaxPhotoCaption", func(t *testing.T) {
 		if strings.Contains(entity.DbDialect(), "sqlite") {
 			t.Skip("sqlite doesn't support max length testing")
 		}
 		m := &entity.Photo{}
 		n := &entity.Photo{ID: 99887766,
 			// UUID:
-			PhotoUID:         "1234567890123456789012345678901234567890123456789012345678901234",
-			TakenAt:          time.Date(2008, 7, 1, 10, 0, 0, 0, time.UTC),
-			TakenAtLocal:     time.Date(2008, 7, 1, 12, 0, 0, 0, time.UTC),
-			TakenSrc:         "12345678",
-			PhotoType:        "12345678",
-			TypeSrc:          "12345678",
-			PhotoTitle:       strings.Repeat("1234567890", 20),
-			TitleSrc:         "12345678",
-			PhotoDescription: strings.Repeat("1234567890", 409) + "1234567",
-			DescriptionSrc:   "12345678",
-			PhotoPath:        strings.Repeat("1234567890", 102) + "1234",
-			PhotoName:        strings.Repeat("1234567890", 25) + "12345",
-			OriginalName:     strings.Repeat("1234567890", 75) + "12345",
-			PhotoFavorite:    false,
+			PhotoUID:      "1234567890123456789012345678901234567890123456789012345678901234",
+			TakenAt:       time.Date(2008, 7, 1, 10, 0, 0, 0, time.UTC),
+			TakenAtLocal:  time.Date(2008, 7, 1, 12, 0, 0, 0, time.UTC),
+			TakenSrc:      "12345678",
+			PhotoType:     "12345678",
+			TypeSrc:       "12345678",
+			PhotoTitle:    strings.Repeat("1234567890", 20),
+			TitleSrc:      "12345678",
+			PhotoCaption:  strings.Repeat("1234567890", 409) + "1234567",
+			CaptionSrc:    "12345678",
+			PhotoPath:     strings.Repeat("1234567890", 102) + "1234",
+			PhotoName:     strings.Repeat("1234567890", 25) + "12345",
+			OriginalName:  strings.Repeat("1234567890", 75) + "12345",
+			PhotoFavorite: false,
 			//PhotoSingle
 			PhotoPrivate:     false,
 			PhotoScan:        false,
@@ -680,7 +680,7 @@ func TestInitDBLengths(t *testing.T) {
 		if result.Error != nil {
 
 			if strings.Contains(entity.DbDialect(), "mysql") {
-				assert.Contains(t, result.Error.Error(), schema.NamingStrategy{}.ColumnName("", "PhotoDescription"))
+				assert.Contains(t, result.Error.Error(), schema.NamingStrategy{}.ColumnName("", "PhotoCaption"))
 			} else if strings.Contains(entity.DbDialect(), "postgres") {
 				assert.Contains(t, result.Error.Error(), "value to long")
 			}

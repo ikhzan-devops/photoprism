@@ -7,6 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/photoprism/photoprism/pkg/fs"
+	"github.com/photoprism/photoprism/pkg/header"
 )
 
 func TestInfo(t *testing.T) {
@@ -27,7 +28,7 @@ func TestInfo(t *testing.T) {
 		info := NewInfo()
 		info.VideoMimeType = fs.MimeTypeMP4
 		info.VideoCodec = CodecAVC
-		assert.Equal(t, ContentTypeAVC, info.VideoContentType())
+		assert.Equal(t, header.ContentTypeAVC, info.VideoContentType())
 	})
 	t.Run("VideoFileExt", func(t *testing.T) {
 		info := NewInfo()

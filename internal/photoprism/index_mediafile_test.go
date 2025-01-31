@@ -50,7 +50,7 @@ func TestIndex_MediaFile(t *testing.T) {
 		assert.Contains(t, words, "burst")
 		assert.Contains(t, words, "flash")
 		assert.Contains(t, words, "panorama")
-		assert.Equal(t, "Animal with green eyes on table burst", mediaFile.metaData.Description)
+		assert.Equal(t, "Animal with green eyes on table burst", mediaFile.metaData.Caption)
 		assert.Equal(t, IndexStatus("added"), result.Status)
 	})
 
@@ -152,7 +152,7 @@ func TestIndex_MediaFile(t *testing.T) {
 		assert.Equal(t, IndexStatus("added"), result.Status)
 	})
 
-	t.Run("error", func(t *testing.T) {
+	t.Run("Error", func(t *testing.T) {
 		cfg := config.TestConfig()
 
 		cfg.InitializeTestData()

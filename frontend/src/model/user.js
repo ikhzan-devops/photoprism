@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2018 - 2024 PhotoPrism UG. All rights reserved.
+Copyright (c) 2018 - 2025 PhotoPrism UG. All rights reserved.
 
     This program is free software: you can redistribute it and/or modify
     it under Version 3 of the GNU Affero General Public License (the "AGPL"):
@@ -24,13 +24,13 @@ Additional information can be found in our Developer Guide:
 */
 
 import RestModel from "model/rest";
-import Form from "common/form";
+import { Form } from "common/form";
 import Util from "common/util";
 import Api from "common/api";
-import { T, $gettext } from "common/vm";
+import { T, $gettext } from "common/gettext";
 import { config } from "app/session";
 import memoizeOne from "memoize-one";
-import * as auth from "../options/auth";
+import * as auth from "options/auth";
 
 export class User extends RestModel {
   getDefaults() {
@@ -91,7 +91,7 @@ export class User extends RestModel {
         About: "",
         Bio: "",
         Location: "",
-        Country: "",
+        Country: "zz",
         Phone: "",
         SiteURL: "",
         ProfileURL: "",
@@ -174,18 +174,24 @@ export class User extends RestModel {
   }
 
   getRegisterForm() {
-    return Api.options(this.getEntityResource() + "/register").then((response) => Promise.resolve(new Form(response.data)));
+    return Api.options(this.getEntityResource() + "/register").then((response) =>
+      Promise.resolve(new Form(response.data))
+    );
   }
 
-  getAvatarURL(size) {
+  getAvatarURL(size, $config) {
     if (!size) {
       size = "tile_500";
     }
 
+    if (!$config) {
+      $config = config;
+    }
+
     if (this.Thumb) {
-      return `${config.contentUri}/t/${this.Thumb}/${config.previewToken}/${size}`;
+      return `${$config.contentUri}/t/${this.Thumb}/${$config.previewToken}/${size}`;
     } else {
-      return `${config.staticUri}/img/avatar/${size}.jpg`;
+      return `${$config.staticUri}/img/avatar/${size}.jpg`;
     }
   }
 
@@ -202,11 +208,15 @@ export class User extends RestModel {
 
     formData.append("files", file);
 
-    return Api.post(this.getEntityResource() + `/avatar`, formData, formConf).then((response) => Promise.resolve(this.setValues(response.data)));
+    return Api.post(this.getEntityResource() + `/avatar`, formData, formConf).then((response) =>
+      Promise.resolve(this.setValues(response.data))
+    );
   }
 
   getProfileForm() {
-    return Api.options(this.getEntityResource() + "/profile").then((response) => Promise.resolve(new Form(response.data)));
+    return Api.options(this.getEntityResource() + "/profile").then((response) =>
+      Promise.resolve(new Form(response.data))
+    );
   }
 
   isRemote() {

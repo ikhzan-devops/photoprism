@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2018 - 2024 PhotoPrism UG. All rights reserved.
+Copyright (c) 2018 - 2025 PhotoPrism UG. All rights reserved.
 
     This program is free software: you can redistribute it and/or modify
     it under Version 3 of the GNU Affero General Public License (the "AGPL"):
@@ -27,10 +27,10 @@ import RestModel from "model/rest";
 import Api from "common/api";
 import { DateTime } from "luxon";
 import { config } from "app/session";
-import { $gettext } from "common/vm";
+import { $gettext } from "common/gettext";
 import * as src from "common/src";
 
-export let BatchSize = 48;
+export let BatchSize = 60;
 
 export class Marker extends RestModel {
   getDefaults() {
@@ -106,7 +106,7 @@ export class Marker extends RestModel {
     return this.update();
   }
 
-  rename() {
+  setName() {
     if (!this.Name || this.Name.trim() === "") {
       // Can't save an empty name.
       return Promise.resolve(this);

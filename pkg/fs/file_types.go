@@ -42,6 +42,7 @@ const (
 const (
 	VideoWebM  Type = "webm" // Google WebM Video
 	VideoHEVC  Type = "hevc" // H.265, High Efficiency Video Coding (HEVC)
+	VideoHEV1  Type = "hev1" // HEVC Bitstream, not supported on macOS
 	VideoAVI   Type = "avi"  // Microsoft Audio Video Interleave (AVI)
 	VideoAVC   Type = "avc"  // H.264, Advanced Video Coding (AVC, MPEG-4 Part 10)
 	VideoVVC   Type = "vvc"  // H.266, Versatile Video Coding (VVC)

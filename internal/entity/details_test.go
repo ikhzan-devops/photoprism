@@ -30,7 +30,7 @@ func TestDetails_FirstOrCreateDetails(t *testing.T) {
 			t.Fatal("details should not be nil")
 		}
 	})
-	t.Run("error", func(t *testing.T) {
+	t.Run("Error", func(t *testing.T) {
 		details := &Details{PhotoID: 0}
 		assert.Nil(t, FirstOrCreateDetails(details))
 	})
@@ -150,7 +150,7 @@ func TestDetails_NewDetails(t *testing.T) {
 }
 
 func TestDetails_Create(t *testing.T) {
-	t.Run("error", func(t *testing.T) {
+	t.Run("Error", func(t *testing.T) {
 		details := Details{PhotoID: 0}
 
 		assert.Error(t, details.Create())
@@ -192,7 +192,7 @@ func TestDetails_Save(t *testing.T) {
 		UnscopedDb().Delete(newPhoto)
 	})
 
-	t.Run("error", func(t *testing.T) {
+	t.Run("Error", func(t *testing.T) {
 		details := Details{PhotoID: 0}
 
 		assert.Error(t, details.Save())

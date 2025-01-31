@@ -1,76 +1,93 @@
 <template>
   <div class="p-tab p-tab-import">
-    <v-form ref="form" class="p-photo-import" lazy-validation dense @submit.prevent="submit">
-      <v-container fluid>
-        <p class="subheading">
-          <span v-if="fileName" class="break-word"><translate :translate-params="{ name: fileName }">Importing %{name}…</translate></span>
-          <span v-else-if="busy"><translate>Importing files to originals…</translate></span>
-          <span v-else-if="completed"><translate>Done.</translate></span>
-          <span v-else><translate>Press button to start importing…</translate></span>
-        </p>
-
-        <v-autocomplete
-          v-model="settings.import.path"
-          color="secondary-dark"
-          class="my-3 input-import-folder"
-          hide-details
-          hide-no-data
-          flat
-          solo
-          browser-autocomplete="off"
-          :items="dirs"
-          :loading="loading"
-          :disabled="busy || !ready"
-          item-text="name"
-          item-value="path"
-          @change="onChange"
-          @focus="onFocus"
-        >
-        </v-autocomplete>
-
-        <p class="options">
-          <v-progress-linear color="secondary-dark" height="1.5em" :value="completed" :indeterminate="busy"></v-progress-linear>
-        </p>
-
-        <v-layout wrap align-top class="pb-2">
-          <v-flex xs12 class="px-2 pb-2 pt-2">
-            <v-checkbox
-              v-model="settings.import.move"
-              :disabled="busy || !ready"
-              class="ma-0 pa-0"
-              color="secondary-dark"
-              :label="$gettext('Move Files')"
-              :hint="$gettext('Remove imported files to save storage. Unsupported file types will never be deleted, they remain in their current location.')"
-              prepend-icon="delete"
-              persistent-hint
-              @change="onChange"
-            >
-            </v-checkbox>
-          </v-flex>
-          <v-flex xs12 class="px-2 pb-2 pt-2">
-            <p class="body-1 pt-2">
-              <translate>Imported files will be sorted by date and given a unique name to avoid duplicates.</translate>
-              <translate>JPEGs and thumbnails are automatically rendered as needed.</translate>
-              <translate>Original file names will be stored and indexed.</translate>
-              <translate>Note you may manually manage your originals folder and importing is optional.</translate>
-            </p>
-          </v-flex>
-        </v-layout>
-
-        <v-btn :disabled="!busy || !ready" color="primary-button" class="white--text ml-0 action-cancel" depressed @click.stop="cancelImport()">
-          <translate>Cancel</translate>
-        </v-btn>
-
-        <v-btn v-if="!$config.values.readonly && $config.feature('upload')" :disabled="busy || !ready" color="primary-button" class="white--text ml-0 hidden-xs-only action-upload" depressed @click.stop="showUpload()">
-          <translate>Upload</translate>
-          <v-icon :right="!rtl" :left="rtl" dark>cloud_upload</v-icon>
-        </v-btn>
-
-        <v-btn :disabled="busy || !ready" color="primary-button" class="white--text ml-0 mt-2 action-import" depressed @click.stop="startImport()">
-          <translate>Import</translate>
-          <v-icon :right="!rtl" :left="rtl" dark>sync</v-icon>
-        </v-btn>
-      </v-container>
+    <v-form ref="form" class="p-form p-photo-import" validate-on="invalid-input" @submit.prevent="submit">
+      <div class="form-header">
+        <span v-if="fileName" class="text-break">{{ $gettext(`Importing %{s}…`, { s: fileName }) }}</span>
+        <span v-else-if="busy">{{ $gettext(`Importing files to originals…`) }}</span>
+        <span v-else-if="completed">{{ $gettext(`Done.`) }}</span>
+        <span v-else>{{ $gettext(`Select a source folder to import files…`) }}</span>
+      </div>
+      <div class="form-body">
+        <div class="form-controls">
+          <v-autocomplete
+            v-model="settings.import.path"
+            color="surface-variant"
+            class="input-import-folder"
+            hide-details
+            hide-no-data
+            flat
+            variant="solo-filled"
+            autocomplete="off"
+            :items="dirs"
+            item-title="name"
+            item-value="path"
+            :loading="loading"
+            :disabled="busy || !ready"
+            @update:model-value="onChange"
+            @focus="onFocus"
+          >
+          </v-autocomplete>
+          <v-progress-linear :model-value="completed" :indeterminate="busy"></v-progress-linear>
+        </div>
+        <div class="form-options">
+          <v-checkbox
+            v-model="settings.import.move"
+            :disabled="busy || !ready"
+            color="surface-variant"
+            density="compact"
+            :label="$gettext('Move Files')"
+            :hint="
+              $gettext(
+                'Remove imported files to save storage. Unsupported file types will never be deleted, they remain in their current location.'
+              )
+            "
+            prepend-icon="mdi-delete"
+            persistent-hint
+            @update:model-value="onChange"
+          >
+          </v-checkbox>
+        </div>
+        <div class="form-text">
+          {{ $gettext(`Imported files will be sorted by date and given a unique name to avoid duplicates.`) }}
+          {{ $gettext(`JPEGs and thumbnails are automatically rendered as needed.`) }}
+          {{ $gettext(`Original file names will be stored and indexed.`) }}
+          {{ $gettext(`Note you may manually manage your originals folder and importing is optional.`) }}
+        </div>
+      </div>
+      <div class="form-actions">
+        <div class="action-buttons">
+          <v-btn
+            :disabled="!busy || !ready"
+            variant="flat"
+            color="button"
+            class="action-cancel"
+            @click.stop="cancelImport()"
+          >
+            {{ $gettext(`Cancel`) }}
+          </v-btn>
+          <v-btn
+            v-if="!$config.values.readonly && $config.feature('upload')"
+            :disabled="busy || !ready"
+            variant="flat"
+            color="highlight"
+            class="hidden-xs action-upload"
+            @click.stop="showUpload()"
+          >
+            {{ $gettext(`Upload`) }}
+            <v-icon end>mdi-cloud-upload</v-icon>
+          </v-btn>
+          <v-btn
+            :disabled="busy || !ready"
+            variant="flat"
+            color="highlight"
+            class="action-import"
+            @click.stop="startImport()"
+          >
+            {{ $gettext(`Import`) }}
+            <v-icon end>mdi-plus</v-icon>
+          </v-btn>
+        </div>
+      </div>
     </v-form>
   </div>
 </template>
@@ -91,7 +108,7 @@ export default {
 
     return {
       ready: !this.$config.loading(),
-      settings: new Settings(this.$config.settings()),
+      settings: new Settings(this.$config.getSettings()),
       started: false,
       busy: false,
       loading: false,
@@ -108,13 +125,13 @@ export default {
     this.subscriptionId = Event.subscribe("import", this.handleEvent);
     this.load();
   },
-  destroyed() {
+  unmounted() {
     Event.unsubscribe(this.subscriptionId);
   },
   methods: {
     load() {
       this.$config.load().then(() => {
-        this.settings.setValues(this.$config.settings());
+        this.settings.setValues(this.$config.getSettings());
         this.dirs = [this.root];
 
         if (this.settings.import.path !== this.root.path) {

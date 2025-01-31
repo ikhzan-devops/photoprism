@@ -10,7 +10,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 
 	"github.com/photoprism/photoprism/internal/config/customize"
 	"github.com/photoprism/photoprism/internal/thumb"
@@ -85,7 +85,7 @@ func NewTestOptions(pkg string) *Options {
 	c := &Options{
 		Name:            "PhotoPrism",
 		Version:         "0.0.0",
-		Copyright:       "(c) 2018-2024 PhotoPrism UG. All rights reserved.",
+		Copyright:       "(c) 2018-2025 PhotoPrism UG. All rights reserved.",
 		Public:          true,
 		Sponsor:         true,
 		AuthMode:        "",
@@ -202,7 +202,7 @@ func NewTestContext(args []string) *cli.Context {
 	app := cli.NewApp()
 	app.Usage = "PhotoPrism®"
 	app.Version = "test"
-	app.Copyright = "(c) 2018-2024 PhotoPrism UG. All rights reserved."
+	app.Copyright = "(c) 2018-2025 PhotoPrism UG. All rights reserved."
 	app.EnableBashCompletion = true
 	app.Flags = Flags.Cli()
 	app.Metadata = map[string]interface{}{
@@ -213,7 +213,7 @@ func NewTestContext(args []string) *cli.Context {
 	}
 
 	// Parse command arguments.
-	flags := flag.NewFlagSet("test", 0)
+	flags := flag.NewFlagSet("test", flag.ContinueOnError)
 	LogErr(flags.Parse(args))
 
 	// Create and return new context.
@@ -224,7 +224,7 @@ func NewTestContext(args []string) *cli.Context {
 func CliTestContext() *cli.Context {
 	config := NewTestOptions("config-cli")
 
-	globalSet := flag.NewFlagSet("test", 0)
+	globalSet := flag.NewFlagSet("test", flag.ContinueOnError)
 	globalSet.String("config-path", config.ConfigPath, "doc")
 	globalSet.String("admin-password", config.DarktableBin, "doc")
 	globalSet.String("oidc-uri", config.OIDCUri, "doc")
