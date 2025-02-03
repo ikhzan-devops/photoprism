@@ -5,22 +5,33 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/montanaflynn/stats"
-
-	"github.com/photoprism/photoprism/pkg/clusters"
+	"github.com/photoprism/photoprism/pkg/vector"
 )
 
 // Embeddings represents a face embedding cluster.
 type Embeddings []Embedding
 
-// NewEmbeddings creates a new embeddings from inference results.
-func NewEmbeddings(inference [][]float32) Embeddings {
-	result := make(Embeddings, len(inference))
+// NewEmbeddings creates a new embeddings from float64 slices.
+func NewEmbeddings(values [][]float64) Embeddings {
+	result := make(Embeddings, 0, len(values))
+
+	var i int
+
+	for i = range values {
+		result = append(result, NewEmbedding(values[i]))
+	}
+
+	return result
+}
+
+// NewEmbeddingsFromInference creates a new embeddings from float32 inference slices.
+func NewEmbeddingsFromInference(values [][]float32) Embeddings {
+	result := make(Embeddings, len(values))
 
 	var v []float32
 	var i int
 
-	for i, v = range inference {
+	for i, v = range values {
 		e := NewEmbedding(v)
 
 		if e.CanMatch() {
@@ -37,7 +48,7 @@ func (embeddings Embeddings) Empty() bool {
 		return true
 	}
 
-	return len(embeddings[0]) < 1
+	return embeddings[0].Dim() < 1
 }
 
 // Count returns the number of embeddings.
@@ -79,7 +90,7 @@ func (embeddings Embeddings) Float64() [][]float64 {
 	result := make([][]float64, len(embeddings))
 
 	for i, e := range embeddings {
-		result[i] = e
+		result[i] = e.Vector
 	}
 
 	return result
@@ -124,6 +135,17 @@ func (embeddings Embeddings) JSON() []byte {
 	}
 }
 
+// MarshalJSON returns the face embeddings as JSON.
+func (embeddings Embeddings) MarshalJSON() ([]byte, error) {
+	values := make(vector.Vectors, len(embeddings))
+
+	for i := range embeddings {
+		values[i] = embeddings[i].Vector
+	}
+
+	return json.Marshal(values)
+}
+
 // EmbeddingsMidpoint returns the embeddings vector midpoint.
 func EmbeddingsMidpoint(embeddings Embeddings) (result Embedding, radius float64, count int) {
 	// Return if there are no embeddings.
@@ -140,33 +162,31 @@ func EmbeddingsMidpoint(embeddings Embeddings) (result Embedding, radius float64
 		return embeddings[0], 0.0, 1
 	}
 
-	dim := len(embeddings[0])
+	dim := embeddings[0].Dim()
 
 	// No embedding values?
 	if dim == 0 {
 		return Embedding{}, 0.0, count
 	}
 
-	result = make(Embedding, dim)
+	// Create a new embedding with the given vector dimension.
+	result = NewEmbedding(vector.NullVector(dim))
 
-	// The mean of a set of vectors is calculated component-wise.
+	// Calculate mean values.
+	// TODO: Improve to get better matching results.
 	for i := 0; i < dim; i++ {
-		values := make(stats.Float64Data, count)
+		values := make(vector.Vector, count)
 
 		for j := 0; j < count; j++ {
-			values[j] = embeddings[j][i]
+			values[j] = embeddings[j].Vector[i]
 		}
 
-		if m, err := stats.Mean(values); err != nil {
-			log.Warnf("embeddings: %s", err)
-		} else {
-			result[i] = m
-		}
+		result.Vector[i] = values.Mean()
 	}
 
 	// Radius is the max embedding distance + 0.01 from result.
 	for _, emb := range embeddings {
-		if d := clusters.EuclideanDist(result, emb); d > radius {
+		if d := result.Dist(emb); d > radius {
 			radius = d + 0.01
 		}
 	}
@@ -182,7 +202,11 @@ func UnmarshalEmbeddings(s string) (result Embeddings, err error) {
 		return result, fmt.Errorf("cannot unmarshal empeddings, invalid json provided")
 	}
 
-	err = json.Unmarshal([]byte(s), &result)
+	var values [][]float64
 
-	return result, err
+	if err = json.Unmarshal([]byte(s), &values); err != nil {
+		return result, err
+	}
+
+	return NewEmbeddings(values), nil
 }

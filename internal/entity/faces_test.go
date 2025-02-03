@@ -10,9 +10,9 @@ func TestFaces_Embeddings(t *testing.T) {
 	m := FaceFixtures.Get("joe-biden")
 	m1 := FaceFixtures.Get("jane-doe")
 	r := Faces{m, m1}.Embeddings()
-	len1 := len(m.Embedding())
-	len2 := len(m1.Embedding())
-	assert.Equal(t, len1+len2, len(r[0])+len(r[1]))
+	len1 := m.Embedding().Dim()
+	len2 := m1.Embedding().Dim()
+	assert.Equal(t, len1+len2, len(r[0].Vector)+len(r[1].Vector))
 }
 
 func TestFaces_IDs(t *testing.T) {

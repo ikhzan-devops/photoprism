@@ -5,26 +5,41 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/photoprism/photoprism/pkg/clusters"
+	"github.com/photoprism/photoprism/pkg/vector"
 )
 
 // Embedding represents a face embedding.
-type Embedding []float64
+type Embedding struct {
+	Vector vector.Vector
+}
 
-var NullEmbedding = make(Embedding, 512)
+// Dim defines the number of face embedding vector dimensions.
+const Dim = 512
+
+var (
+	NullVector    = make(vector.Vector, Dim)
+	NullEmbedding = Embedding{Vector: NullVector}
+)
 
 // NewEmbedding creates a new embedding from an inference result.
-func NewEmbedding(inference []float32) Embedding {
-	result := make(Embedding, len(inference))
-
-	var v float32
-	var i int
-
-	for i, v = range inference {
-		result[i] = float64(v)
+func NewEmbedding(values interface{}) Embedding {
+	if values == nil {
+		return NullEmbedding
+	} else if v, err := vector.NewVector(values); err != nil {
+		return NullEmbedding
+	} else {
+		return Embedding{Vector: v}
 	}
+}
 
-	return result
+// Null checks if this is a null embedding.
+func (m Embedding) Null() bool {
+	return len(m.Vector) == 0
+}
+
+// Dim returns the dimensions of the embedded vector.
+func (m Embedding) Dim() int {
+	return len(m.Vector)
 }
 
 // Kind returns the type of face e.g. regular, kids, or ignored.
@@ -50,31 +65,46 @@ func (m Embedding) CanMatch() bool {
 
 // Dist calculates the distance to another face embedding.
 func (m Embedding) Dist(other Embedding) float64 {
-	if len(other) == 0 || len(m) != len(other) {
+	if len(other.Vector) == 0 || len(m.Vector) != len(other.Vector) {
 		return -1
 	}
 
-	return clusters.EuclideanDist(m, other)
+	// TODO: Use CosineDist()
+	return m.Vector.EuclideanDist(other.Vector)
 }
 
-// Magnitude returns the face embedding vector length (magnitude).
-func (m Embedding) Magnitude() float64 {
-	return m.Dist(NullEmbedding)
+// Norm returns the face embedding vector size (magnitude),
+// see https://builtin.com/data-science/vector-norms.
+func (m Embedding) Norm() float64 {
+	return m.Vector.EuclideanNorm()
+}
+
+// MarshalJSON returns the face embedding as JSON.
+func (m Embedding) MarshalJSON() ([]byte, error) {
+	if len(m.Vector) < 1 {
+		return []byte(""), nil
+	}
+
+	if result, err := json.Marshal(m.Vector); err != nil {
+		return []byte(""), err
+	} else {
+		return result, nil
+	}
+}
+
+// UnmarshalJSON sets the embedding vector as JSON.
+func (m Embedding) UnmarshalJSON(b []byte) error {
+	if len(b) < 1 {
+		return nil
+	}
+
+	return json.Unmarshal(b, &m.Vector)
 }
 
 // JSON returns the face embedding as JSON bytes.
 func (m Embedding) JSON() []byte {
-	var noResult = []byte("")
-
-	if len(m) < 1 {
-		return noResult
-	}
-
-	if result, err := json.Marshal(m); err != nil {
-		return noResult
-	} else {
-		return result
-	}
+	result, _ := m.MarshalJSON()
+	return result
 }
 
 // UnmarshalEmbedding parses a single face embedding JSON.
@@ -85,7 +115,13 @@ func UnmarshalEmbedding(s string) (result Embedding, err error) {
 		return result, fmt.Errorf("cannot unmarshal embedding, invalid json provided")
 	}
 
-	err = json.Unmarshal([]byte(s), &result)
+	var v = make([]float64, Dim)
 
-	return result, err
+	err = json.Unmarshal([]byte(s), &v)
+
+	if err != nil {
+		return NewEmbedding(v), err
+	}
+
+	return NewEmbedding(v), nil
 }

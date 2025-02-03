@@ -431,7 +431,7 @@ func TestMarker_Embeddings(t *testing.T) {
 	t.Run("Success", func(t *testing.T) {
 		m := MarkerFixtures.Get("1000003-4")
 
-		assert.Equal(t, 0.013083286379677253, m.Embeddings()[0][0])
+		assert.Equal(t, 0.013083286379677253, m.Embeddings()[0].Vector[0])
 	})
 	t.Run("empty embedding", func(t *testing.T) {
 		m := Marker{}

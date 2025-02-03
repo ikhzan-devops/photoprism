@@ -80,7 +80,7 @@ func TestNet(t *testing.T) {
 						// t.Logf("FACE %d IN %s: %#v", i, fileName, f.Embeddings)
 						embeddings[faceIndices[baseName][i]] = f.Embeddings[0]
 					} else {
-						embeddings[faceIndices[baseName][i]] = nil
+						embeddings[faceIndices[baseName][i]] = NullEmbedding
 					}
 				}
 			}

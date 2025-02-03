@@ -272,7 +272,7 @@ func (m *Marker) SetFace(f *Face, dist float64) (updated bool, err error) {
 
 		// Calculate the smallest distance to embeddings.
 		for _, e := range m.Embeddings() {
-			if len(e) != len(faceEmbedding) {
+			if e.Dim() != faceEmbedding.Dim() {
 				continue
 			}
 
@@ -403,11 +403,12 @@ func (m *Marker) Create() error {
 
 // Embeddings returns parsed marker embeddings.
 func (m *Marker) Embeddings() face.Embeddings {
+	var err error
 	if len(m.EmbeddingsJSON) == 0 {
 		return face.Embeddings{}
 	} else if len(m.embeddings) > 0 {
 		return m.embeddings
-	} else if err := json.Unmarshal(m.EmbeddingsJSON, &m.embeddings); err != nil {
+	} else if m.embeddings, err = face.UnmarshalEmbeddings(string(m.EmbeddingsJSON)); err != nil {
 		log.Errorf("markers: %s while parsing embeddings json", err)
 	}
 

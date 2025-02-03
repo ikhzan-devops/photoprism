@@ -48,14 +48,14 @@ func RandomEmbeddings(n int, k Kind) (result Embeddings) {
 
 // RandomEmbedding returns a random embedding for testing.
 func RandomEmbedding() (result Embedding) {
-	result = make(Embedding, 512)
+	result = NewEmbedding(nil)
 
 	d := 64 / 512.0
 
 	for {
 		i := 0
-		for i = range result {
-			result[i] = RandomFloat64(0, d)
+		for i = range result.Vector {
+			result.Vector[i] = RandomFloat64(0, d)
 		}
 		if !result.SkipMatching() {
 			break
@@ -67,14 +67,14 @@ func RandomEmbedding() (result Embedding) {
 
 // RandomKidsEmbedding returns a random kids embedding for testing.
 func RandomKidsEmbedding() (result Embedding) {
-	result = make(Embedding, 512)
+	result = NewEmbedding(nil)
 
 	d := 0.1 / 512.0
 	n := 1 + rand.IntN(len(KidsEmbeddings)-1)
 	e := KidsEmbeddings[n]
 
-	for i := range result {
-		result[i] = RandomFloat64(e[i], d)
+	for i := range result.Vector {
+		result.Vector[i] = RandomFloat64(e.Vector[i], d)
 	}
 
 	return result
@@ -82,14 +82,14 @@ func RandomKidsEmbedding() (result Embedding) {
 
 // RandomIgnoredEmbedding returns a random ignored embedding for testing.
 func RandomIgnoredEmbedding() (result Embedding) {
-	result = make(Embedding, 512)
+	result = NewEmbedding(nil)
 
 	d := 0.1 / 512.0
 	n := 1 + rand.IntN(len(IgnoredEmbeddings)-1)
 	e := IgnoredEmbeddings[n]
 
-	for i := range result {
-		result[i] = RandomFloat64(e[i], d)
+	for i := range result.Vector {
+		result.Vector[i] = RandomFloat64(e.Vector[i], d)
 	}
 
 	return result

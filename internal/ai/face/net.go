@@ -125,7 +125,7 @@ func (t *Net) getEmbeddings(img image.Image) Embeddings {
 	if len(output) < 1 {
 		log.Errorf("faces: inference failed, no output")
 	} else {
-		return NewEmbeddings(output[0].Value().([][]float32))
+		return NewEmbeddingsFromInference(output[0].Value().([][]float32))
 	}
 
 	return nil

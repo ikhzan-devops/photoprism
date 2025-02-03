@@ -83,7 +83,7 @@ func (m *Face) SetEmbeddings(embeddings face.Embeddings) (err error) {
 
 	m.embedding, m.SampleRadius, m.Samples = face.EmbeddingsMidpoint(embeddings)
 
-	if len(m.embedding) != len(face.NullEmbedding) {
+	if m.embedding.Dim() != face.Dim {
 		return fmt.Errorf("embedding has invalid number of values")
 	}
 
@@ -122,7 +122,7 @@ func (m *Face) Matched() error {
 func (m *Face) Embedding() face.Embedding {
 	if len(m.EmbeddingJSON) == 0 {
 		return face.Embedding{}
-	} else if len(m.embedding) > 0 {
+	} else if m.embedding.Dim() > 0 {
 		return m.embedding
 	} else if err := json.Unmarshal(m.EmbeddingJSON, &m.embedding); err != nil {
 		log.Errorf("failed parsing face embedding json: %s", err)
@@ -142,7 +142,7 @@ func (m *Face) Match(embeddings face.Embeddings) (match bool, dist float64) {
 
 	faceEmbedding := m.Embedding()
 
-	if len(faceEmbedding) == 0 {
+	if faceEmbedding.Dim() == 0 {
 		// Should never happen.
 		return false, dist
 	}
