@@ -259,7 +259,7 @@ func (ind *Index) UserMediaFile(m *MediaFile, o IndexOptions, originalName, phot
 			photo.PhotoStack = entity.IsStackable
 		}
 
-		if yamlName := fs.SidecarYAML.FindFirst(m.FileName(), []string{Config().SidecarPath(), fs.PPHiddenPathname}, Config().OriginalsPath(), stripSequence); yamlName != "" {
+		if yamlName := fs.SidecarYaml.FindFirst(m.FileName(), []string{Config().SidecarPath(), fs.PPHiddenPathname}, Config().OriginalsPath(), stripSequence); yamlName != "" {
 			if err = photo.LoadFromYaml(yamlName); err != nil {
 				log.Errorf("index: %s in %s (restore from yaml)", err.Error(), logName)
 			} else if photo.HasUID() {
@@ -527,7 +527,7 @@ func (ind *Index) UserMediaFile(m *MediaFile, o IndexOptions, originalName, phot
 			file.SetSoftware(data.Software)
 
 			// Get video metadata from embedded file?
-			if !m.IsHEIC() || !data.HasVideoEmbedded {
+			if !m.IsHeic() || !data.HasVideoEmbedded {
 				file.SetDuration(data.Duration)
 				file.SetFPS(data.FPS)
 				file.SetFrames(data.Frames)
@@ -816,7 +816,7 @@ func (ind *Index) UserMediaFile(m *MediaFile, o IndexOptions, originalName, phot
 	file.ModTime = modTime.UTC().Truncate(time.Second).Unix()
 
 	// Detect ICC color profile for JPEGs if still unknown at this point.
-	if file.FileColorProfile == "" && fs.ImageJPEG.Equal(file.FileType) {
+	if file.FileColorProfile == "" && fs.ImageJpeg.Equal(file.FileType) {
 		file.SetColorProfile(m.ColorProfile())
 	}
 

@@ -126,7 +126,7 @@
             </div>
           </div>
         </div>
-        <div class="d-flex justify-center mt-8 mb-4">
+        <div class="d-flex justify-center my-8">
           <v-btn color="secondary" rounded variant="flat" :to="{ name: 'all', query: { q: 'face:new' } }">
             {{ $gettext(`Show all new faces`) }}
           </v-btn>

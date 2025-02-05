@@ -49,7 +49,7 @@ func SharePreview(router *gin.RouterGroup) {
 			return
 		}
 
-		previewFilename := filepath.Join(thumbPath, shared+fs.ExtJPEG)
+		previewFilename := filepath.Join(thumbPath, shared+fs.ExtJpeg)
 
 		expires := entity.Now().Add(-1 * time.Hour)
 

@@ -7,6 +7,9 @@ import (
 	"github.com/photoprism/photoprism/pkg/list"
 )
 
+// Develop indicates whether the application is running in development mode.
+var Develop = false
+
 // Environment names.
 const (
 	EnvProd    = "prod"
@@ -15,6 +18,7 @@ const (
 	EnvTrace   = "trace"
 	EnvDemo    = "demo"
 	EnvSponsor = "sponsor"
+	EnvDevelop = "develop"
 	EnvTest    = "test"
 )
 

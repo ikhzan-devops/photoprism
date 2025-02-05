@@ -68,6 +68,18 @@ describe("common/config", () => {
     assert.equal(config.storage["config"], expected);
   });
 
+  it("should return the develop feature flag value", () => {
+    assert.equal(defaultConfig.featDevelop(), true);
+  });
+
+  it("should return the experimental feature flag value", () => {
+    assert.equal(defaultConfig.featExperimental(), true);
+  });
+
+  it("should return the preview feature flag value", () => {
+    assert.equal(defaultConfig.featPreview(), true);
+  });
+
   it("should set and get single config value", () => {
     const storage = new StorageShim();
     const values = { siteTitle: "Foo", country: "Germany", city: "Hamburg" };

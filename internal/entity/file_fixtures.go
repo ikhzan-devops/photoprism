@@ -2602,7 +2602,7 @@ var FileFixtures = FileMap{
 		FileHash:        "pcad9168fa6acc5c5c2965adf6ec465ca42fd3451",
 		FileSize:        921858,
 		FileCodec:       "jpeg",
-		FileType:        string(fs.ImageJPEG),
+		FileType:        string(fs.ImageJpeg),
 		MediaType:       media.Image.String(),
 		FileMime:        "image/jpg",
 		FilePrimary:     true,

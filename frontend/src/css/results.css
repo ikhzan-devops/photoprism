@@ -719,8 +719,8 @@ body.chrome .search-results .result {
     text-align: center;
 }
 
-.face-results.cards-view {
-    padding-bottom: 312px;
+body.mobile .face-results.cards-view {
+    padding-bottom: 144px;
 }
 
 .face-results .is-face.is-hidden,

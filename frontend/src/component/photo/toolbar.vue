@@ -92,7 +92,7 @@
         <v-btn
           v-if="canDelete && context === 'archive' && config.count.archived > 0"
           icon
-          class="hidden-sm-and-down action-delete-all"
+          class="action-delete-all"
           :title="$gettext('Delete All')"
           @click.stop="deleteAll()"
         >

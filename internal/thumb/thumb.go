@@ -26,11 +26,10 @@ package thumb
 
 import (
 	"fmt"
-	"math"
-
 	_ "image/gif"
 	_ "image/jpeg"
 	_ "image/png"
+	"math"
 
 	_ "golang.org/x/image/bmp"
 	_ "golang.org/x/image/tiff"

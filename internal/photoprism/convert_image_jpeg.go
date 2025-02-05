@@ -23,21 +23,21 @@ func (w *Convert) JpegConvertCmds(f *MediaFile, jpegName string, xmpName string)
 	maxSize := strconv.Itoa(w.conf.JpegSize())
 
 	// Apple Scriptable image processing system: https://ss64.com/osx/sips.html
-	if (f.IsRaw() || f.IsHEIF()) && w.conf.SipsEnabled() && w.sipsExclude.Allow(fileExt) {
+	if (f.IsRaw() || f.IsHeif()) && w.conf.SipsEnabled() && w.sipsExclude.Allow(fileExt) {
 		result = append(result, NewConvertCmd(
 			exec.Command(w.conf.SipsBin(), "-Z", maxSize, "-s", "format", "jpeg", "--out", jpegName, f.FileName())),
 		)
 	}
 
 	// Extract a video still image for use as a thumbnail (poster image).
-	if f.IsAnimated() && !f.IsWebP() && w.conf.FFmpegEnabled() {
+	if f.IsAnimated() && !f.IsWebp() && w.conf.FFmpegEnabled() {
 		result = append(result, NewConvertCmd(
 			ffmpeg.ExtractJpegImageCmd(f.FileName(), jpegName, encode.NewPreviewImageOptions(w.conf.FFmpegBin(), f.Duration()))),
 		)
 	}
 
 	// Use heif-convert for HEIC/HEIF and AVIF image files.
-	if (f.IsHEIC() || f.IsAVIF()) && w.conf.HeifConvertEnabled() {
+	if (f.IsHeic() || f.IsAvif()) && w.conf.HeifConvertEnabled() {
 		result = append(result, NewConvertCmd(
 			exec.Command(w.conf.HeifConvertBin(), "-q", w.conf.JpegQuality().String(), f.FileName(), jpegName)).
 			WithOrientation(w.conf.HeifConvertOrientation()),
@@ -94,7 +94,7 @@ func (w *Convert) JpegConvertCmds(f *MediaFile, jpegName string, xmpName string)
 	}
 
 	// Extract preview image from DNG files.
-	if f.IsDNG() && w.conf.ExifToolEnabled() {
+	if f.IsDng() && w.conf.ExifToolEnabled() {
 		// Example: exiftool -b -PreviewImage -w IMG_4691.DNG.jpg IMG_4691.DNG
 		result = append(result, NewConvertCmd(
 			exec.Command(w.conf.ExifToolBin(), "-q", "-q", "-b", "-PreviewImage", f.FileName())),
@@ -110,7 +110,7 @@ func (w *Convert) JpegConvertCmds(f *MediaFile, jpegName string, xmpName string)
 
 	// Try ImageMagick for other image file formats if allowed.
 	if w.conf.ImageMagickEnabled() && w.imageMagickExclude.Allow(fileExt) &&
-		(f.IsImage() && !f.IsJpegXL() && !f.IsRaw() && !f.IsHEIF() || f.IsVector() && w.conf.VectorEnabled()) {
+		(f.IsImage() && !f.IsJpegXL() && !f.IsRaw() && !f.IsHeif() || f.IsVector() && w.conf.VectorEnabled()) {
 		quality := fmt.Sprintf("%d", w.conf.JpegQuality())
 		resize := fmt.Sprintf("%dx%d>", w.conf.JpegSize(), w.conf.JpegSize())
 		args := []string{f.FileName(), "-flatten", "-resize", resize, "-quality", quality, jpegName}

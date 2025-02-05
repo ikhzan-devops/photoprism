@@ -485,7 +485,12 @@ func (c *Config) Sponsor() bool {
 	return Sponsor
 }
 
-// Experimental checks if experimental features should be enabled.
+// Develop checks if features under development should be enabled.
+func (c *Config) Develop() bool {
+	return Develop || Env(EnvDevelop)
+}
+
+// Experimental checks if new features that may be incomplete or unstable should be enabled.
 func (c *Config) Experimental() bool {
 	return c.options.Experimental
 }

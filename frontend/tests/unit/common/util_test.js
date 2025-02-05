@@ -1,7 +1,7 @@
 import "../fixtures";
 import Util from "common/util";
 import * as can from "common/can";
-import { ContentTypeAVC, ContentTypeHEVC } from "common/media";
+import { ContentTypeMp4AvcMain, ContentTypeMp4HvcMain } from "common/media";
 
 let chai = require("chai/chai");
 let assert = chai.assert;
@@ -48,10 +48,10 @@ describe("common/util", () => {
     assert.equal(iPhone13, "iPhone 13");
   });
   it("should return matching video format name", () => {
-    const avc = Util.videoFormat("avc1", ContentTypeAVC);
+    const avc = Util.videoFormat("avc1", ContentTypeMp4AvcMain);
     assert.equal(avc, "avc");
 
-    const hevc = Util.videoFormat("hvc1", ContentTypeHEVC);
+    const hevc = Util.videoFormat("hvc1", ContentTypeMp4HvcMain);
     if (can.useHEVC) {
       assert.equal(hevc, "hevc");
     } else {

@@ -360,7 +360,7 @@ func (m *File) ReplaceHash(newHash string) error {
 	m.FileHash = newHash
 
 	// Ok to skip updating related tables?
-	if m.NoJPEG() || m.FileHash == "" {
+	if m.NoJpeg() || m.FileHash == "" {
 		return nil
 	}
 
@@ -590,13 +590,13 @@ func (m *File) RelatedPhoto() *Photo {
 }
 
 // NoJPEG returns true if the file is not a JPEG image.
-func (m *File) NoJPEG() bool {
-	return fs.ImageJPEG.NotEqual(m.FileType)
+func (m *File) NoJpeg() bool {
+	return fs.ImageJpeg.NotEqual(m.FileType)
 }
 
 // NoPNG returns true if the file is not a PNG image.
-func (m *File) NoPNG() bool {
-	return fs.ImagePNG.NotEqual(m.FileType)
+func (m *File) NoPng() bool {
+	return fs.ImagePng.NotEqual(m.FileType)
 }
 
 // Type returns the file type.

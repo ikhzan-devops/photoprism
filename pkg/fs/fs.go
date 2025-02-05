@@ -42,7 +42,32 @@ const (
 	HomePath      = Home + PathSeparator
 )
 
-// FileExists returns true if file exists and is not a directory.
+// Stat returns the os.FileInfo for the given file path, or an error if it does not exist.
+func Stat(filePath string) (os.FileInfo, error) {
+	if filePath == "" {
+		return nil, fmt.Errorf("empty filepath")
+	}
+
+	return os.Stat(filePath)
+}
+
+// SocketExists returns true if the specified socket exists and is not a regular file or directory.
+func SocketExists(socketName string) bool {
+	if socketName == "" {
+		return false
+	}
+
+	// Check if path exists and is a socket.
+	if info, err := os.Stat(socketName); err != nil {
+		return false
+	} else if mode := info.Mode(); info.IsDir() || mode.IsRegular() || mode.Type() != os.ModeSocket {
+		return false
+	}
+
+	return true
+}
+
+// FileExists returns true if specified file exists and is not a directory.
 func FileExists(fileName string) bool {
 	if fileName == "" {
 		return false

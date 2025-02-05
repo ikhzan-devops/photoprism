@@ -59,7 +59,7 @@ func (m *MediaFile) RelatedFiles(stripSequence bool) (result RelatedFiles, err e
 		matches = list.Join(matches, files)
 	}
 
-	isHEIC := false
+	isHeic := false
 
 	// Process files that matched the pattern.
 	for _, fileName := range matches {
@@ -89,14 +89,14 @@ func (m *MediaFile) RelatedFiles(stripSequence bool) (result RelatedFiles, err e
 			result.Main = f
 		} else if f.IsVector() {
 			result.Main = f
-		} else if f.IsHEIC() {
-			isHEIC = true
+		} else if f.IsHeic() {
+			isHeic = true
 			result.Main = f
-		} else if f.IsHEIF() {
+		} else if f.IsHeif() {
 			result.Main = f
 		} else if f.IsImage() && !f.IsPreviewImage() && !f.IsThumb() {
 			result.Main = f
-		} else if f.IsVideo() && !isHEIC {
+		} else if f.IsVideo() && !isHeic {
 			result.Main = f
 		} else if result.Main != nil && f.IsPreviewImage() {
 			if result.Main.IsPreviewImage() && len(result.Main.FileName()) > len(f.FileName()) {
@@ -119,11 +119,11 @@ func (m *MediaFile) RelatedFiles(stripSequence bool) (result RelatedFiles, err e
 
 	// Add hidden preview image if needed.
 	if !result.HasPreview() {
-		if jpegName := fs.ImageJPEG.FindFirst(result.Main.FileName(), []string{Config().SidecarPath(), fs.PPHiddenPathname}, Config().OriginalsPath(), stripSequence); jpegName != "" {
+		if jpegName := fs.ImageJpeg.FindFirst(result.Main.FileName(), []string{Config().SidecarPath(), fs.PPHiddenPathname}, Config().OriginalsPath(), stripSequence); jpegName != "" {
 			if resultFile, _ := NewMediaFile(jpegName); resultFile.Ok() {
 				result.Files = append(result.Files, resultFile)
 			}
-		} else if pngName := fs.ImagePNG.FindFirst(result.Main.FileName(), []string{Config().SidecarPath(), fs.PPHiddenPathname}, Config().OriginalsPath(), stripSequence); pngName != "" {
+		} else if pngName := fs.ImagePng.FindFirst(result.Main.FileName(), []string{Config().SidecarPath(), fs.PPHiddenPathname}, Config().OriginalsPath(), stripSequence); pngName != "" {
 			if resultFile, _ := NewMediaFile(pngName); resultFile.Ok() {
 				result.Files = append(result.Files, resultFile)
 			}

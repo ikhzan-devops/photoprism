@@ -92,7 +92,7 @@ RUN apt-get update && \
     apt-get -qq dist-upgrade && \
     /scripts/cleanup.sh
 
-# Default working directory.
+# Set default working directory.
 WORKDIR /photoprism
 
 # Expose HTTP(S) ports.
@@ -101,8 +101,5 @@ EXPOSE 2342 2443
 # Copy app files.
 COPY --from=build --chown=root:root --chmod=755 /opt/photoprism/ /opt/photoprism
 
-# Declare container entrypoint script.
-ENTRYPOINT ["/scripts/entrypoint.sh"]
-
 # Start app.
-CMD ["/opt/photoprism/bin/photoprism", "start"]
+CMD ["/scripts/cmd.sh", "/opt/photoprism/bin/photoprism", "start"]

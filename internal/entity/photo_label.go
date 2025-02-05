@@ -50,8 +50,10 @@ func (m *PhotoLabel) Save() error {
 		m.Photo = nil
 	}
 
-	if m.Label != nil {
-		m.Label.SetName(m.Label.LabelName)
+	if m.Label == nil {
+		// Do nothing.
+	} else if !m.Label.SetName(m.Label.LabelName) {
+		return ErrInvalidName
 	}
 
 	return Db().Save(m).Error

@@ -142,7 +142,7 @@ func TestMediaFile_CreateExifToolJson(t *testing.T) {
 		assert.Equal(t, "2020-05-11 14:18:35 +0000 UTC", data.TakenAt.String())
 		assert.Equal(t, "2020-05-11 14:18:35 +0000 UTC", data.TakenAtLocal.String())
 		assert.Equal(t, time.Duration(2410000000), data.Duration)
-		assert.Equal(t, meta.CodecAvc1, data.Codec)
+		assert.Equal(t, video.CodecAvc, data.Codec)
 		assert.Equal(t, 270, data.Width)
 		assert.Equal(t, 480, data.Height)
 		assert.Equal(t, false, data.Flash)
@@ -154,7 +154,7 @@ func TestMediaFile_CreateExifToolJson(t *testing.T) {
 	})
 }
 
-func TestMediaFile_Exif_JPEG(t *testing.T) {
+func TestMediaFile_Exif_Jpeg(t *testing.T) {
 	conf := config.TestConfig()
 
 	t.Run("elephants.jpg", func(t *testing.T) {
@@ -319,7 +319,7 @@ func TestMediaFile_Exif_JPEG(t *testing.T) {
 	})
 }
 
-func TestMediaFile_Exif_DNG(t *testing.T) {
+func TestMediaFile_Exif_Dng(t *testing.T) {
 	c := config.TestConfig()
 
 	img, err := NewMediaFile(c.ExamplesPath() + "/canon_eos_6d.dng")
@@ -375,14 +375,14 @@ func TestMediaFile_VideoInfo(t *testing.T) {
 
 			info := mf.VideoInfo()
 
-			assert.Equal(t, video.MP4, info.VideoType)
-			assert.Equal(t, video.CodecAVC, info.VideoCodec)
+			assert.Equal(t, video.Mp4, info.VideoType)
+			assert.Equal(t, video.CodecAvc, info.VideoCodec)
 			assert.Equal(t, 1440, info.VideoWidth)
 			assert.Equal(t, 1080, info.VideoHeight)
 			assert.Equal(t, int64(2685814), info.VideoOffset)
 			assert.Equal(t, int64(0), info.ThumbOffset)
 			assert.Equal(t, "2.933s", info.Duration.String())
-			assert.Equal(t, fs.ImageJPEG, info.FileType)
+			assert.Equal(t, fs.ImageJpeg, info.FileType)
 			assert.Equal(t, media.Live, info.MediaType)
 		},
 	)
@@ -405,7 +405,7 @@ func TestMediaFile_VideoInfo(t *testing.T) {
 			assert.Equal(t, int64(-1), info.VideoOffset)
 			assert.Equal(t, int64(-1), info.ThumbOffset)
 			assert.Equal(t, time.Duration(0), info.Duration)
-			assert.Equal(t, fs.ImageJPEG, info.FileType)
+			assert.Equal(t, fs.ImageJpeg, info.FileType)
 			assert.Equal(t, media.Image, info.MediaType)
 		},
 	)

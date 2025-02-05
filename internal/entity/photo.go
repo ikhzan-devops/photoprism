@@ -692,7 +692,7 @@ func (m *Photo) AddLabels(labels classify.Labels) {
 		labelEntity := FirstOrCreateLabel(NewLabel(classifyLabel.Title(), classifyLabel.Priority))
 
 		if labelEntity == nil {
-			log.Errorf("index: label %s should not be nil - you may have found a bug (%s)", clean.Log(classifyLabel.Title()), m)
+			log.Errorf("index: label %s coud not be created (%s)", clean.Log(classifyLabel.Title()), m)
 			continue
 		}
 

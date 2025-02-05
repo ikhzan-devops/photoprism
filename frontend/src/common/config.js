@@ -611,6 +611,21 @@ export default class Config {
     return this.values[key];
   }
 
+  // featDevelop checks if features under development should be enabled.
+  featDevelop() {
+    return this.values?.develop === true;
+  }
+
+  // featExperimental checks if new features that may be incomplete or unstable should be enabled.
+  featExperimental() {
+    return this.values?.experimental === true;
+  }
+
+  // featPreview checks if features available for preview should be enabled.
+  featPreview() {
+    return this.featDevelop() || this.featExperimental();
+  }
+
   // feature checks a single feature flag by name and returns true if it is set.
   feature(name) {
     return this.values.settings.features[name] === true;

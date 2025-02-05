@@ -347,37 +347,37 @@ run-test-short:
 	$(GOTEST) -parallel 2 -count 1 -cpu 2 -short -timeout 5m ./pkg/... ./internal/...
 run-test-go:
 	$(info Running all Go tests...)
-	$(GOTEST) -parallel 1 -count 1 -cpu 1 -tags slow -timeout 20m ./pkg/... ./internal/...
+	$(GOTEST) -parallel 1 -count 1 -cpu 1 -tags="slow,develop" -timeout 20m ./pkg/... ./internal/...
 run-test-mariadb:
 	$(info Running all Go tests on MariaDB...)
-	PHOTOPRISM_TEST_DRIVER="mysql" PHOTOPRISM_TEST_DSN="root:photoprism@tcp(mariadb:4001)/acceptance?charset=utf8mb4,utf8&collation=utf8mb4_unicode_ci&parseTime=true" $(GOTEST) -parallel 1 -count 1 -cpu 1 -tags slow -timeout 20m ./pkg/... ./internal/...
+	PHOTOPRISM_TEST_DRIVER="mysql" PHOTOPRISM_TEST_DSN="root:photoprism@tcp(mariadb:4001)/acceptance?charset=utf8mb4,utf8&collation=utf8mb4_unicode_ci&parseTime=true" $(GOTEST) -parallel 1 -count 1 -cpu 1 -tags="slow,develop" -timeout 20m ./pkg/... ./internal/...
 run-test-pkg:
 	$(info Running all Go tests in "/pkg"...)
-	$(GOTEST) -parallel 2 -count 1 -cpu 2 -tags slow -timeout 20m ./pkg/...
+	$(GOTEST) -parallel 2 -count 1 -cpu 2 -tags="slow,develop" -timeout 20m ./pkg/...
 run-test-api:
 	$(info Running all API tests...)
-	$(GOTEST) -parallel 2 -count 1 -cpu 2 -tags slow -timeout 20m ./internal/api/...
+	$(GOTEST) -parallel 2 -count 1 -cpu 2 -tags="slow,develop" -timeout 20m ./internal/api/...
 run-test-entity:
 	$(info Running all Entity tests...)
-	$(GOTEST) -parallel 2 -count 1 -cpu 2 -tags slow -timeout 20m ./internal/entity/...
+	$(GOTEST) -parallel 2 -count 1 -cpu 2 -tags="slow,develop" -timeout 20m ./internal/entity/...
 run-test-commands:
 	$(info Running all CLI command tests...)
-	$(GOTEST) -parallel 2 -count 1 -cpu 2 -tags slow -timeout 20m ./internal/commands/...
+	$(GOTEST) -parallel 2 -count 1 -cpu 2 -tags="slow,develop" -timeout 20m ./internal/commands/...
 run-test-photoprism:
 	$(info Running all Go tests in "/internal/photoprism"...)
-	$(GOTEST) -parallel 2 -count 1 -cpu 2 -tags slow -timeout 20m ./internal/photoprism/...
+	$(GOTEST) -parallel 2 -count 1 -cpu 2 -tags="slow,develop" -timeout 20m ./internal/photoprism/...
 test-parallel:
 	$(info Running all Go tests in parallel mode...)
-	$(GOTEST) -parallel 2 -count 1 -cpu 2 -tags slow -timeout 20m ./pkg/... ./internal/...
+	$(GOTEST) -parallel 2 -count 1 -cpu 2 -tags="slow,develop" -timeout 20m ./pkg/... ./internal/...
 test-verbose:
 	$(info Running all Go tests in verbose mode...)
-	$(GOTEST) -parallel 1 -count 1 -cpu 1 -tags slow -timeout 20m -v ./pkg/... ./internal/...
+	$(GOTEST) -parallel 1 -count 1 -cpu 1 -tags="slow,develop" -timeout 20m -v ./pkg/... ./internal/...
 test-race:
 	$(info Running all Go tests with race detection in verbose mode...)
-	$(GOTEST) -tags slow -race -timeout 60m -v ./pkg/... ./internal/...
+	$(GOTEST) -tags="slow,develop" -race -timeout 60m -v ./pkg/... ./internal/...
 test-coverage:
 	$(info Running all Go tests with code coverage report...)
-	go test -parallel 1 -count 1 -cpu 1 -failfast -tags slow -timeout 30m -coverprofile coverage.txt -covermode atomic ./pkg/... ./internal/...
+	go test -parallel 1 -count 1 -cpu 1 -failfast -tags="slow,develop" -timeout 30m -coverprofile coverage.txt -covermode atomic ./pkg/... ./internal/...
 	go tool cover -html=coverage.txt -o coverage.html
 	go tool cover -func coverage.txt  | grep total:
 test-benchmark10x:
@@ -643,18 +643,34 @@ stop-mysql:
 	$(DOCKER_COMPOSE) -f compose.mysql.yaml stop mysql
 logs-mysql:
 	$(DOCKER_COMPOSE) -f compose.mysql.yaml logs -f mysql
-latest:
+test-latest:
 	$(DOCKER_COMPOSE) -f compose.latest.yaml pull photoprism-latest
 	$(DOCKER_COMPOSE) -f compose.latest.yaml stop photoprism-latest
 	$(DOCKER_COMPOSE) -f compose.latest.yaml up -d --wait photoprism-latest
 start-latest:
 	$(DOCKER_COMPOSE) -f compose.latest.yaml up photoprism-latest
 stop-latest:
-	$(DOCKER_COMPOSE) -f compose.latest.yaml stop photoprism-latest
+	$(DOCKER_COMPOSE) -f compose.latest.yaml stop -t 30 photoprism-latest
+down-latest:
+	$(DOCKER_COMPOSE) -f compose.latest.yaml down -t 30 photoprism-latest
 terminal-latest:
 	$(DOCKER_COMPOSE) -f compose.latest.yaml exec photoprism-latest bash
 logs-latest:
 	$(DOCKER_COMPOSE) -f compose.latest.yaml logs -f photoprism-latest
+test-preview:
+	$(DOCKER_COMPOSE) -f compose.preview.yaml pull photoprism-preview
+	$(DOCKER_COMPOSE) -f compose.preview.yaml stop photoprism-preview
+	$(DOCKER_COMPOSE) -f compose.preview.yaml up -d --wait photoprism-preview
+start-preview:
+	$(DOCKER_COMPOSE) -f compose.preview.yaml up photoprism-preview
+stop-preview:
+	$(DOCKER_COMPOSE) -f compose.preview.yaml stop -t 30 photoprism-preview
+down-preview:
+	$(DOCKER_COMPOSE) -f compose.preview.yaml down -t 30 photoprism-preview
+terminal-preview:
+	$(DOCKER_COMPOSE) -f compose.preview.yaml exec photoprism-preview bash
+logs-preview:
+	$(DOCKER_COMPOSE) -f compose.preview.yaml logs -f photoprism-preview
 docker-local: docker-local-oracular
 docker-local-all: docker-local-oracular docker-local-noble docker-local-mantic docker-local-lunar docker-local-jammy docker-local-bookworm docker-local-bullseye docker-local-buster
 docker-local-bookworm:
@@ -770,7 +786,7 @@ fmt-js:
 fmt-go:
 	go fmt ./pkg/... ./internal/... ./cmd/...
 	gofmt -w -s pkg internal cmd
-	goimports -w pkg internal cmd
+	goimports -w -local "github.com/photoprism" pkg internal cmd
 tidy:
 	go mod tidy
 users:

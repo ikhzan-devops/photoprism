@@ -6,18 +6,23 @@ import (
 )
 
 const (
-	ExtJPEG = ".jpg"
-	ExtPNG  = ".png"
-	ExtDNG  = ".dng"
-	ExtTHM  = ".thm"
-	ExtAVC  = ".avc"
-	ExtHEVC = ".hevc"
-	ExtHEV1 = ".hev1"
-	ExtVVC  = ".vvc"
-	ExtEVC  = ".evc"
-	ExtMP4  = ".mp4"
-	ExtMOV  = ".mov"
-	ExtYAML = ".yml"
+	ExtJpeg = ".jpg"
+	ExtPng  = ".png"
+	ExtDng  = ".dng"
+	ExtThm  = ".thm"
+	ExtAvc  = ".avc"
+	ExtHevc = ".hevc"
+	ExtHev1 = ".hev1"
+	ExtVvc  = ".vvc"
+	ExtEvc  = ".evc"
+	ExtMp4  = ".mp4"
+	ExtMov  = ".mov"
+	ExtYaml = ".yml"
+	ExtJson = ".json"
+	ExtXml  = ".xml"
+	ExtXMP  = ".xmp"
+	ExtTxt  = ".txt"
+	ExtMd   = ".md"
 )
 
 // Ext returns all extension of a file name including the dots.

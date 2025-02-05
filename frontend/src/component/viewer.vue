@@ -60,7 +60,8 @@ export default {
       canFullscreen: !this.$isMobile,
       isFullscreen: !window.screenTop && !window.screenY,
       mobileBreakpoint: 600, // Minimum viewport width for large screens.
-      experimental: this.$config.get("experimental"), // Experimental features flag.
+      featExperimental: this.$config.featExperimental(), // Enables features that may be incomplete or unstable.
+      featDevelop: this.$config.featDevelop(), // Enables new features that are still under development.
       selection: this.$clipboard.selection,
       config: this.$config.values,
       model: new Thumb(), // Current slide.
@@ -344,9 +345,9 @@ export default {
 
       // Create and append video source elements, depending on file format support.
       if (
-        format !== media.FormatAVC &&
+        format !== media.FormatAvc &&
         model?.Mime &&
-        model.Mime !== media.ContentTypeAVC &&
+        model.Mime !== media.ContentTypeMp4AvcMain &&
         video.canPlayType(model.Mime)
       ) {
         const nativeSource = document.createElement("source");
@@ -356,8 +357,8 @@ export default {
       }
 
       const avcSource = document.createElement("source");
-      avcSource.type = media.ContentTypeAVC;
-      avcSource.src = Util.videoFormatUrl(model.Hash, media.FormatAVC);
+      avcSource.type = media.ContentTypeMp4AvcMain;
+      avcSource.src = Util.videoFormatUrl(model.Hash, media.FormatAvc);
       video.appendChild(avcSource);
 
       // Return HTMLMediaElement.
@@ -495,11 +496,11 @@ export default {
       // TODO: The same controls as with PhotoSwipe 4 should be usable/available!
       lightbox.on("uiRegister", () => {
         // Add a sidebar toggle button only if the window is large enough.
-        // TODO: Proof-of-concept only, the sidebar needs to be fully implemented before this can be released.
+        // TODO: Proof-of-concept only, the sidebar needs to be fully implemented before removing the featDevelop check.
         // TODO: Once this is fully implemented, remove the "this.experimental" flag check below.
         // IDEA: We can later try to add styles that display the sidebar at the bottom
         //       instead of on the side, to allow use on mobile devices.
-        if (this.experimental && this.canEdit && window.innerWidth > this.mobileBreakpoint) {
+        if (this.featDevelop && this.canEdit && window.innerWidth > this.mobileBreakpoint) {
           lightbox.pswp.ui.registerElement({
             name: "sidebar-button",
             className: "pswp__button--sidebar-button pswp__button--mdi", // Sets the icon style/size in viewer.css.

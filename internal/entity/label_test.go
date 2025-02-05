@@ -44,7 +44,6 @@ func TestLabel_SetName(t *testing.T) {
 		assert.Equal(t, "landscape", entity.LabelSlug)
 		assert.Equal(t, "landschaft", entity.CustomSlug)
 	})
-
 	t.Run("new name empty", func(t *testing.T) {
 		entity := LabelFixtures["flower"]
 
@@ -52,7 +51,7 @@ func TestLabel_SetName(t *testing.T) {
 		assert.Equal(t, "flower", entity.LabelSlug)
 		assert.Equal(t, "flower", entity.CustomSlug)
 
-		entity.SetName("")
+		assert.False(t, entity.SetName(""))
 
 		assert.Equal(t, "Flower", entity.LabelName)
 		assert.Equal(t, "flower", entity.LabelSlug)
