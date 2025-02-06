@@ -85,7 +85,7 @@ func VideoByPhotoUID(photoUID string) (*entity.File, error) {
 	}
 
 	err := Db().Where("photo_uid = ? AND file_missing = FALSE", photoUID).
-		Where("file_video = TRUE OR file_duration > 0 OR file_frames > 0 OR file_type = ?", fs.ImageGIF).
+		Where("file_video = TRUE OR file_duration > 0 OR file_frames > 0 OR file_type = ?", fs.ImageGif).
 		Order("file_error ASC, file_video DESC, file_duration DESC, file_frames DESC").
 		Preload("Photo").First(&f).Error
 

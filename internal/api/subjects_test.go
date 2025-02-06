@@ -10,7 +10,7 @@ import (
 )
 
 func TestGetSubject(t *testing.T) {
-	t.Run("Ok", func(t *testing.T) {
+	t.Run("Success", func(t *testing.T) {
 		app, router, _ := NewApiTest()
 		GetSubject(router)
 		r := PerformRequest(app, "GET", "/api/v1/subjects/js6sg6b1h1njaaaa")

@@ -8,8 +8,9 @@ import (
 	"io"
 	"os"
 
-	"github.com/photoprism/photoprism/pkg/fs"
 	"github.com/sunfish-shogi/bufseekio"
+
+	"github.com/photoprism/photoprism/pkg/fs"
 )
 
 // Chunk represents a fixed length file chunk.

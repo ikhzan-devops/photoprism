@@ -115,8 +115,8 @@ func (m *Label) Save() error {
 func (m *Label) SaveForm(f *form.Label) error {
 	if f == nil {
 		return fmt.Errorf("form is nil")
-	} else if f.LabelName == "" {
-		return fmt.Errorf("missing name")
+	} else if f.LabelName == "" || txt.Slug(f.LabelName) == "" {
+		return ErrInvalidName
 	}
 
 	labelMutex.Lock()
@@ -126,9 +126,11 @@ func (m *Label) SaveForm(f *form.Label) error {
 		return err
 	}
 
-	m.SetName(f.LabelName)
-
-	return Db().Save(m).Error
+	if m.SetName(f.LabelName) {
+		return Db().Save(m).Error
+	} else {
+		return ErrInvalidName
+	}
 }
 
 // Create inserts the label to the database.
@@ -199,10 +201,14 @@ func (m *Label) Update(attr string, value interface{}) error {
 
 // FirstOrCreateLabel returns the existing label, inserts a new label or nil in case of errors.
 func FirstOrCreateLabel(m *Label) *Label {
+	if m.LabelSlug == "" && m.CustomSlug == "" {
+		return nil
+	}
+
 	result := &Label{}
 
 	if err := UnscopedDb().
-		Where("label_slug = ? OR (custom_slug <> '' AND custom_slug = ? OR label_slug <> '' AND label_slug = ?)", m.LabelSlug, m.CustomSlug, m.LabelSlug).
+		Where("(custom_slug <> '' AND custom_slug = ? OR label_slug <> '' AND label_slug = ?)", m.CustomSlug, m.LabelSlug).
 		First(result).Error; err == nil {
 		return result
 	} else if createErr := m.Create(); createErr == nil {
@@ -216,7 +222,7 @@ func FirstOrCreateLabel(m *Label) *Label {
 
 		return m
 	} else if err = UnscopedDb().
-		Where("label_slug = ? OR (custom_slug <> '' AND custom_slug = ? OR label_slug <> '' AND label_slug = ?)", m.LabelSlug, m.CustomSlug, m.LabelSlug).
+		Where("(custom_slug <> '' AND custom_slug = ? OR label_slug <> '' AND label_slug = ?)", m.CustomSlug, m.LabelSlug).
 		First(result).Error; err == nil {
 		return result
 	} else {
@@ -227,15 +233,44 @@ func FirstOrCreateLabel(m *Label) *Label {
 }
 
 // SetName changes the label name.
-func (m *Label) SetName(name string) {
-	name = clean.NameCapitalized(name)
+func (m *Label) SetName(name string) bool {
+	labelName := txt.Clip(clean.NameCapitalized(name), txt.ClipName)
 
-	if name == "" {
-		return
+	if labelName == "" {
+		return false
 	}
 
-	m.LabelName = txt.Clip(name, txt.ClipName)
-	m.CustomSlug = txt.Slug(name)
+	labelSlug := txt.Slug(labelName)
+
+	if labelSlug == "" {
+		return false
+	}
+
+	m.LabelName = labelName
+	m.CustomSlug = labelSlug
+
+	if m.LabelSlug == "" {
+		m.LabelSlug = labelSlug
+	}
+
+	return true
+}
+
+// InvalidName checks if the label name is invalid.
+func (m *Label) InvalidName() bool {
+	labelName := txt.Clip(clean.NameCapitalized(m.LabelName), txt.ClipName)
+
+	if labelName == "" {
+		return true
+	}
+
+	labelSlug := txt.Slug(labelName)
+
+	if labelSlug == "" {
+		return true
+	}
+
+	return false
 }
 
 // GetSlug returns the label slug.
@@ -268,8 +303,11 @@ func (m *Label) UpdateClassify(label classify.Label) error {
 	}
 
 	if m.CustomSlug == m.LabelSlug && label.Title() != m.LabelName {
-		m.SetName(label.Title())
-		save = true
+		if m.SetName(label.Title()) {
+			save = true
+		} else {
+			return ErrInvalidName
+		}
 	}
 
 	// Save label.

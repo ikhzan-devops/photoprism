@@ -46,22 +46,25 @@ func UpdateLabel(router *gin.RouterGroup) {
 		}
 
 		// Create new label form.
-		f, formErr := form.NewLabel(m)
+		frm, frmErr := form.NewLabel(m)
 
-		if formErr != nil {
+		if frmErr != nil {
 			Abort(c, http.StatusBadRequest, i18n.ErrBadRequest)
 			return
 		}
 
 		// Set form values from request.
-		if formErr = c.BindJSON(f); formErr != nil {
+		if frmErr = c.BindJSON(frm); frmErr != nil {
 			AbortBadRequest(c)
+			return
+		} else if frmErr = frm.Validate(); frmErr != nil {
+			AbortInvalidName(c)
 			return
 		}
 
 		// Save label and return new model values if successful.
-		if err = m.SaveForm(f); err != nil {
-			log.Error(err)
+		if err = m.SaveForm(frm); err != nil {
+			log.Errorf("label: %s", clean.Error(err))
 			AbortSaveFailed(c)
 			return
 		}

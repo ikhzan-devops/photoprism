@@ -61,13 +61,13 @@ func ShareSelection(originals bool) FileSelection {
 		}
 
 		omitTypes = []string{
-			fs.ImagePNG.String(),
-			fs.ImageWebP.String(),
-			fs.ImageTIFF.String(),
-			fs.ImageAVIF.String(),
-			fs.ImageHEIC.String(),
-			fs.ImageBMP.String(),
-			fs.ImageGIF.String(),
+			fs.ImagePng.String(),
+			fs.ImageWebp.String(),
+			fs.ImageTiff.String(),
+			fs.ImageAvif.String(),
+			fs.ImageHeic.String(),
+			fs.ImageBmp.String(),
+			fs.ImageGif.String(),
 		}
 	}
 

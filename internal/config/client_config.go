@@ -68,6 +68,7 @@ type ClientConfig struct {
 	RegisterUri      string              `json:"registerUri"`
 	PasswordLength   int                 `json:"passwordLength"`
 	PasswordResetUri string              `json:"passwordResetUri"`
+	Develop          bool                `json:"develop"`
 	Experimental     bool                `json:"experimental"`
 	AlbumCategories  []string            `json:"albumCategories"`
 	Albums           entity.Albums       `json:"albums"`
@@ -202,6 +203,10 @@ func (c *Config) Flags() (flags []string) {
 		flags = append(flags, "sponsor")
 	}
 
+	if c.Develop() {
+		flags = append(flags, "develop")
+	}
+
 	if c.Experimental() {
 		flags = append(flags, "experimental")
 	}
@@ -294,6 +299,7 @@ func (c *Config) ClientPublic() *ClientConfig {
 		LoginUri:         c.LoginUri(),
 		RegisterUri:      c.RegisterUri(),
 		PasswordResetUri: c.PasswordResetUri(),
+		Develop:          c.Develop(),
 		Experimental:     c.Experimental(),
 		Albums:           entity.Albums{},
 		Cameras:          entity.Cameras{},
@@ -386,6 +392,7 @@ func (c *Config) ClientShare() *ClientConfig {
 		LoginUri:         c.LoginUri(),
 		RegisterUri:      c.RegisterUri(),
 		PasswordResetUri: c.PasswordResetUri(),
+		Develop:          c.Develop(),
 		Experimental:     c.Experimental(),
 		Albums:           entity.Albums{},
 		Cameras:          entity.Cameras{},
@@ -485,6 +492,7 @@ func (c *Config) ClientUser(withSettings bool) *ClientConfig {
 		RegisterUri:      c.RegisterUri(),
 		PasswordLength:   c.PasswordLength(),
 		PasswordResetUri: c.PasswordResetUri(),
+		Develop:          c.Develop(),
 		Experimental:     c.Experimental(),
 		Albums:           entity.Albums{},
 		Cameras:          entity.Cameras{},

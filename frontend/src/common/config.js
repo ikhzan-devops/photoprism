@@ -23,8 +23,8 @@ Additional information can be found in our Developer Guide:
 
 */
 
-import Api from "api.js";
-import Event from "pubsub-js";
+import $api from "common/api";
+import $event from "pubsub-js";
 import * as themes from "options/themes";
 import translations from "locales/translations.json";
 import { Languages } from "options/options";
@@ -121,10 +121,10 @@ export default class Config {
 
     this.updateTokens();
 
-    Event.subscribe("config.updated", (ev, data) => this.setValues(data.config));
-    Event.subscribe("config.tokens", (ev, data) => this.setTokens(data));
-    Event.subscribe("count", (ev, data) => this.onCount(ev, data));
-    Event.subscribe("people", (ev, data) => this.onPeople(ev, data));
+    $event.subscribe("config.updated", (ev, data) => this.setValues(data.config));
+    $event.subscribe("config.tokens", (ev, data) => this.setTokens(data));
+    $event.subscribe("count", (ev, data) => this.onCount(ev, data));
+    $event.subscribe("people", (ev, data) => this.onPeople(ev, data));
 
     if (this.has("settings")) {
       this.setTheme(this.get("settings").ui.theme);
@@ -150,7 +150,7 @@ export default class Config {
       return this.updating;
     }
 
-    this.updating = Api.get("config")
+    this.updating = $api.get("config")
       .then(
         (resp) => {
           return this.setValues(resp.data);
@@ -173,7 +173,7 @@ export default class Config {
     }
 
     if (values.jsUri && this.values.jsUri !== values.jsUri) {
-      Event.publish("dialog.reload", { values });
+      $event.publish("dialog.reload", { values });
     }
 
     for (let key in values) {
@@ -422,8 +422,8 @@ export default class Config {
     }
 
     // Update the Accept-Language header for XHR requests.
-    if (Api) {
-      Api.defaults.headers.common["Accept-Language"] = locale;
+    if ($api) {
+      $api.defaults.headers.common["Accept-Language"] = locale;
     }
 
     // Update the language-specific attributes of the <html> and <body> elements.
@@ -499,7 +499,7 @@ export default class Config {
       this.values.settings.ui.theme = this.themeName;
     }
 
-    Event.publish("view.refresh", this);
+    $event.publish("view.refresh", this);
 
     this.theme = theme;
 
@@ -609,6 +609,21 @@ export default class Config {
   // get returns a top-level config value.
   get(key) {
     return this.values[key];
+  }
+
+  // featDevelop checks if features under development should be enabled.
+  featDevelop() {
+    return this.values?.develop === true;
+  }
+
+  // featExperimental checks if new features that may be incomplete or unstable should be enabled.
+  featExperimental() {
+    return this.values?.experimental === true;
+  }
+
+  // featPreview checks if features available for preview should be enabled.
+  featPreview() {
+    return this.featDevelop() || this.featExperimental();
   }
 
   // feature checks a single feature flag by name and returns true if it is set.

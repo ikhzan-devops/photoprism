@@ -22,14 +22,14 @@ func (w *Convert) PngConvertCmds(f *MediaFile, pngName string) (result ConvertCm
 	maxSize := strconv.Itoa(w.conf.PngSize())
 
 	// Apple Scriptable image processing system: https://ss64.com/osx/sips.html
-	if (f.IsRaw() || f.IsHEIF()) && w.conf.SipsEnabled() && w.sipsExclude.Allow(fileExt) {
+	if (f.IsRaw() || f.IsHeif()) && w.conf.SipsEnabled() && w.sipsExclude.Allow(fileExt) {
 		result = append(result, NewConvertCmd(
 			exec.Command(w.conf.SipsBin(), "-Z", maxSize, "-s", "format", "png", "--out", pngName, f.FileName())),
 		)
 	}
 
 	// Extract a video still image that can be used as preview.
-	if f.IsAnimated() && !f.IsWebP() && w.conf.FFmpegEnabled() {
+	if f.IsAnimated() && !f.IsWebp() && w.conf.FFmpegEnabled() {
 		// Use "ffmpeg" to extract a PNG still image from the video.
 		result = append(result, NewConvertCmd(
 			ffmpeg.ExtractPngImageCmd(f.FileName(), pngName, encode.NewPreviewImageOptions(w.conf.FFmpegBin(), f.Duration()))),
@@ -37,7 +37,7 @@ func (w *Convert) PngConvertCmds(f *MediaFile, pngName string) (result ConvertCm
 	}
 
 	// Use heif-convert for HEIC/HEIF and AVIF image files.
-	if (f.IsHEIC() || f.IsAVIF()) && w.conf.HeifConvertEnabled() {
+	if (f.IsHeic() || f.IsAvif()) && w.conf.HeifConvertEnabled() {
 		result = append(result, NewConvertCmd(
 			exec.Command(w.conf.HeifConvertBin(), f.FileName(), pngName)).
 			WithOrientation(w.conf.HeifConvertOrientation()),
@@ -59,7 +59,7 @@ func (w *Convert) PngConvertCmds(f *MediaFile, pngName string) (result ConvertCm
 			exec.Command(w.conf.RsvgConvertBin(), args...)),
 		)
 	} else if w.conf.ImageMagickEnabled() && w.imageMagickExclude.Allow(fileExt) &&
-		(f.IsImage() && !f.IsJpegXL() && !f.IsRaw() && !f.IsHEIF() || f.IsVector() && w.conf.VectorEnabled()) {
+		(f.IsImage() && !f.IsJpegXL() && !f.IsRaw() && !f.IsHeif() || f.IsVector() && w.conf.VectorEnabled()) {
 		resize := fmt.Sprintf("%dx%d>", w.conf.PngSize(), w.conf.PngSize())
 		args := []string{f.FileName(), "-flatten", "-resize", resize, pngName}
 		result = append(result, NewConvertCmd(

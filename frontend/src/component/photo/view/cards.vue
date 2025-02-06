@@ -84,7 +84,7 @@
                 <i class="mdi mdi-camera-iris" />
                 {{ m.getLensInfo() }}
               </button>
-              <button v-if="featDownload" class="meta-filename text-truncate">
+              <button class="meta-filename text-truncate">
                 <i class="mdi mdi-film" />
                 {{ m.getOriginalName() }}
               </button>
@@ -282,7 +282,6 @@
                 {{ m.getLensInfo() }}
               </button>
               <button
-                v-if="featDownload"
                 :title="m.getOriginalName()"
                 class="meta-filename text-truncate"
                 @click.exact="editPhoto(index, 'files')"
@@ -310,7 +309,7 @@
 </template>
 <script>
 import download from "common/download";
-import Notify from "common/notify";
+import $notify from "common/notify";
 import { Input, InputInvalid, ClickShort, ClickLong } from "common/input";
 import { virtualizationTools } from "common/virtualization-tools";
 import IconLivePhoto from "component/icon/live-photo.vue";
@@ -471,7 +470,7 @@ export default {
       }
     },
     downloadFile(index) {
-      Notify.success(this.$gettext("Downloading…"));
+      $notify.success(this.$gettext("Downloading…"));
 
       const photo = this.photos[index];
       download(`${this.$config.apiUri}/dl/${photo.Hash}?t=${this.$config.downloadToken}`, photo.FileName);

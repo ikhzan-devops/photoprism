@@ -18,6 +18,7 @@ import (
 	"github.com/photoprism/photoprism/internal/mutex"
 	"github.com/photoprism/photoprism/internal/photoprism/backup"
 	"github.com/photoprism/photoprism/internal/server"
+	"github.com/photoprism/photoprism/internal/server/process"
 	"github.com/photoprism/photoprism/internal/workers"
 	"github.com/photoprism/photoprism/internal/workers/auto"
 	"github.com/photoprism/photoprism/pkg/clean"
@@ -144,11 +145,9 @@ func startAction(ctx *cli.Context) error {
 	// Start auto-indexing background worker.
 	auto.Start(conf)
 
-	// Wait for signal to initiate server shutdown.
-	quit := make(chan os.Signal)
-	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM, syscall.SIGUSR1)
-
-	sig := <-quit
+	// Wait for signal to trigger server shutdown or restart.
+	signal.Notify(process.Signal, os.Interrupt, syscall.SIGTERM, syscall.SIGUSR1)
+	sig := <-process.Signal
 
 	// Stop all background activity.
 	auto.Shutdown()
@@ -167,7 +166,10 @@ func startAction(ctx *cli.Context) error {
 	time.Sleep(2 * time.Second)
 	conf.Shutdown()
 
-	// Don't exit with 0 if SIGUSR1 was received to avoid restarts.
+	// Exit with status code 1 if the shutdown was initiated with SIGUSR1 to request a restart.
+	//
+	// Note that this requires an entrypoint script or other process to
+	// spawns a new instance when the server exists with status code 1.
 	if sig == syscall.SIGUSR1 {
 		os.Exit(1)
 		return nil

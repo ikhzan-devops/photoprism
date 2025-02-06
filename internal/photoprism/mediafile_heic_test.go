@@ -11,7 +11,7 @@ import (
 	"github.com/photoprism/photoprism/internal/meta"
 )
 
-func TestMediaFile_HEIC(t *testing.T) {
+func TestMediaFile_Heic(t *testing.T) {
 	if testing.Short() {
 		t.Skip("skipping test in short mode.")
 	}

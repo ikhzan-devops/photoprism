@@ -1,11 +1,11 @@
 package entity
 
 import (
-	"github.com/photoprism/photoprism/pkg/authn"
 	"github.com/urfave/cli/v2"
 	"gorm.io/gorm"
 
 	"github.com/photoprism/photoprism/internal/form"
+	"github.com/photoprism/photoprism/pkg/authn"
 	"github.com/photoprism/photoprism/pkg/clean"
 )
 

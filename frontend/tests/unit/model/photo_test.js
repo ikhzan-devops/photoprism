@@ -762,7 +762,7 @@ describe("model/photo", () => {
       ],
     };
     const photo = new Photo(values);
-    assert.equal(photo.videoContentType(), media.ContentTypeAVC);
+    assert.equal(photo.videoContentType(), media.ContentTypeMp4AvcMain);
     assert.equal(photo.videoUrl(), "/api/v1/videos/703cf8f274fbb265d49c6262825780e1/public/avc");
     const values2 = { ID: 9, UID: "ABC163", Hash: "2305e512e3b183ec982d60a8b608a8ca501973ba" };
     const photo2 = new Photo(values2);
@@ -813,7 +813,7 @@ describe("model/photo", () => {
   it("should return main file", () => {
     const values = { ID: 9, UID: "ABC163", Width: 111, Height: 222 };
     const photo = new Photo(values);
-    assert.equal(photo.mainFile(), photo);
+    assert.equal(photo.primaryFile(), photo);
     const values2 = {
       ID: 10,
       UID: "ABC127",
@@ -839,7 +839,7 @@ describe("model/photo", () => {
       ],
     };
     const photo2 = new Photo(values2);
-    const file = photo2.mainFile();
+    const file = photo2.primaryFile();
     assert.equal(file.Name, "1980/01/superCuteKitten.jpg");
     const values3 = {
       ID: 1,
@@ -866,7 +866,7 @@ describe("model/photo", () => {
       ],
     };
     const photo3 = new Photo(values3);
-    const file2 = photo3.mainFile();
+    const file2 = photo3.primaryFile();
     assert.equal(file2.Name, "1980/01/MainKitten.jpg");
   });
 
@@ -885,7 +885,7 @@ describe("model/photo", () => {
           UID: "123fgb",
           Name: "1980/01/superCuteKitten.jpg",
           Primary: false,
-          FileType: media.FormatJPEG,
+          FileType: media.FormatJpeg,
           Width: 500,
           Height: 600,
           Hash: "1xxbgdt55",
@@ -909,33 +909,38 @@ describe("model/photo", () => {
   it("should return main hash", () => {
     const values = { ID: 9, UID: "ABC163" };
     const photo = new Photo(values);
-    assert.equal(photo.mainFileHash(), "");
+    assert.equal(photo.primaryFileHash(), "");
     const values2 = {
       ID: 10,
       UID: "ABC127",
+      Type: "video",
       Files: [
         {
-          UID: "123fgb",
+          UID: "fsr3uh0u30trle4l",
           Name: "1980/01/superCuteKitten.mp4",
           Primary: false,
+          Root: "/",
+          MediaType: "video",
           FileType: "mp4",
           Width: 500,
           Height: 600,
-          Hash: "1xxbgdt55",
+          Hash: "617693d2c2b9afdba19f97d1c92963953e1d2cfe",
         },
         {
-          UID: "123fgb",
+          UID: "fsr3uh0g2us6cwg4",
           Name: "1980/01/superCuteKitten.jpg",
           Primary: false,
+          Root: "/",
+          MediaType: "image",
           FileType: "jpg",
           Width: 500,
           Height: 600,
-          Hash: "1xxbgdt56",
+          Hash: "9249cee32bc8adc6ba996a6b78dd84c03b5a0153",
         },
       ],
     };
     const photo2 = new Photo(values2);
-    assert.equal(photo2.mainFileHash(), "1xxbgdt56");
+    assert.equal(photo2.primaryFileHash(), "9249cee32bc8adc6ba996a6b78dd84c03b5a0153");
   });
 
   it("should test filemodels", () => {
@@ -945,50 +950,66 @@ describe("model/photo", () => {
     const values2 = {
       ID: 10,
       UID: "ABC127",
+      Type: "video",
       Files: [
         {
-          UID: "123fgb",
+          UID: "fsr3uh0u30trle4l",
           Name: "1980/01/cat.jpg",
           Primary: false,
+          Root: "/",
           FileType: "jpg",
+          MediaType: "image",
           Width: 500,
           Height: 600,
-          Hash: "1xxbgdt55",
+          Hash: "35c905d21486b400814bd2d8479ed2e780440b1a",
         },
         {
-          UID: "123fgb",
+          UID: "fsr3uh0g2us6cwg4",
           Name: "1999/01/dog.jpg",
           Primary: true,
+          Root: "/",
           FileType: "jpg",
+          MediaType: "image",
           Width: 500,
           Height: 600,
-          Hash: "1xxbgdt56",
+          Hash: "617693d2c2b9afdba19f97d1c92963953e1d2cfe",
+        },
+        {
+          UID: "fsr3uh10nrgs63a2",
+          Name: "1999/01/dog.mov",
+          Video: true,
+          Root: "/",
+          FileType: "mov",
+          MediaType: "video",
+          Width: 500,
+          Height: 600,
+          Hash: "9249cee32bc8adc6ba996a6b78dd84c03b5a0153",
         },
       ],
     };
     const photo2 = new Photo(values2);
-    assert.equal(photo2.fileModels()[0].Name, "1999/01/dog.jpg");
+    assert.equal(photo2.fileModels()[0].Name, "1999/01/dog.mov");
     const values3 = {
       ID: 10,
       UID: "ABC127",
       Files: [
         {
-          UID: "123fgb",
+          UID: "fsr3uh0u30trle4l",
           Name: "1980/01/cat.jpg",
           Primary: true,
           FileType: "jpg",
           Width: 500,
           Height: 600,
-          Hash: "1xxbgdt55",
+          Hash: "35c905d21486b400814bd2d8479ed2e780440b1a",
         },
         {
-          UID: "123fgb",
+          UID: "fsr3uh0g2us6cwg4",
           Name: "1999/01/dog.jpg",
           Primary: false,
           FileType: "jpg",
           Width: 500,
           Height: 600,
-          Hash: "1xxbgdt56",
+          Hash: "617693d2c2b9afdba19f97d1c92963953e1d2cfe",
         },
       ],
     };
@@ -999,13 +1020,15 @@ describe("model/photo", () => {
       UID: "ABC127",
       Files: [
         {
-          UID: "123fgb",
+          UID: "fsr3uh0u30trle4l",
           Name: "1980/01/cat.jpg",
           Primary: true,
+          Root: "/",
           FileType: "jpg",
+          MediaType: "image",
           Width: 500,
           Height: 600,
-          Hash: "1xxbgdt55",
+          Hash: "35c905d21486b400814bd2d8479ed2e780440b1a",
         },
       ],
     };
@@ -1305,7 +1328,7 @@ describe("model/photo", () => {
     };
     const photo = new Photo(values);
     photo
-      .primaryFile("fqbfk181n4ca5sud")
+      .setPrimaryFile("fqbfk181n4ca5sud")
       .then((response) => {
         assert.equal(response.Files[0].Primary, true);
         done();

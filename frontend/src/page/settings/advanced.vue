@@ -44,7 +44,7 @@
                 density="compact"
                 color="surface-variant"
                 :label="$gettext('Experimental Features')"
-                :hint="$gettext('Enable new features currently under development.')"
+                :hint="$gettext('Enable new features that may be incomplete or unstable.')"
                 prepend-icon="mdi-flask-empty"
                 persistent-hint
                 @update:model-value="onChange"

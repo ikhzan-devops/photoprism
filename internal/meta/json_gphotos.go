@@ -6,8 +6,9 @@ import (
 	"runtime/debug"
 	"time"
 
-	"github.com/photoprism/photoprism/pkg/txt"
 	"gopkg.in/photoprism/go-tz.v2/tz"
+
+	"github.com/photoprism/photoprism/pkg/txt"
 )
 
 type GPhoto struct {

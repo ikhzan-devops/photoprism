@@ -11,8 +11,8 @@ import (
 	"github.com/photoprism/photoprism/internal/photoprism/get"
 	"github.com/photoprism/photoprism/pkg/authn"
 	"github.com/photoprism/photoprism/pkg/clean"
-	"github.com/photoprism/photoprism/pkg/header"
 	"github.com/photoprism/photoprism/pkg/i18n"
+	"github.com/photoprism/photoprism/pkg/media/http/header"
 )
 
 //go:embed embed/video.mp4
@@ -110,6 +110,10 @@ func AbortBusy(c *gin.Context) {
 	Abort(c, http.StatusTooManyRequests, i18n.ErrBusy)
 }
 
+func AbortInvalidName(c *gin.Context) {
+	Abort(c, http.StatusBadRequest, i18n.ErrInvalidName)
+}
+
 func AbortInvalidCredentials(c *gin.Context) {
 	if c != nil {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": authn.ErrInvalidCredentials.Error(), "code": i18n.ErrInvalidCredentials, "message": i18n.Msg(i18n.ErrInvalidCredentials)})
@@ -124,6 +128,6 @@ func AbortVideo(c *gin.Context) {
 
 func AbortVideoWithStatus(c *gin.Context, code int) {
 	if c != nil {
-		c.Data(code, header.ContentTypeAVC32, brokenVideo)
+		c.Data(code, header.ContentTypeMp4AvcMain, brokenVideo)
 	}
 }

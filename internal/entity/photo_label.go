@@ -58,8 +58,11 @@ func (m *PhotoLabel) Save() error {
 		return errors.New("PK value not provided")
 	}
 
-	if m.Label != nil {
-		m.Label.SetName(m.Label.LabelName)
+	if m.Label == nil {
+		// Do nothing.
+	} else if !m.Label.SetName(m.Label.LabelName) {
+		return ErrInvalidName
+	} else {
 		if err := m.Label.Save(); err != nil {
 			return err
 		}

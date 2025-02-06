@@ -15,7 +15,7 @@ require (
 	github.com/gin-contrib/gzip v1.2.2
 	github.com/gin-gonic/gin v1.10.0
 	github.com/golang/geo v0.0.0-20230421003525-6adc56603217
-	github.com/google/open-location-code/go v0.0.0-20250124103411-4eff49ec4e27
+	github.com/google/open-location-code/go v0.0.0-20250131120908-b46335afbc82
 	github.com/gorilla/websocket v1.5.3
 	github.com/gosimple/slug v1.15.0
 	github.com/jinzhu/inflection v1.0.0
@@ -47,7 +47,7 @@ require (
 
 require (
 	github.com/go-xmlfmt/xmlfmt v1.1.3 // indirect
-	golang.org/x/image v0.23.0
+	golang.org/x/image v0.24.0
 )
 
 require github.com/olekukonko/tablewriter v0.0.5
@@ -59,8 +59,8 @@ require github.com/chzyer/readline v1.5.1 // indirect
 require github.com/gabriel-vasile/mimetype v1.4.8
 
 require (
-	golang.org/x/sync v0.10.0
-	golang.org/x/time v0.9.0
+	golang.org/x/sync v0.11.0
+	golang.org/x/time v0.10.0
 )
 
 require github.com/go-ldap/ldap/v3 v3.4.10
@@ -72,7 +72,7 @@ require (
 
 require github.com/dustinkirkland/golang-petname v0.0.0-20240428194347-eebcea082ee0
 
-require golang.org/x/text v0.21.0
+require golang.org/x/text v0.22.0
 
 require (
 	gorm.io/driver/mysql v1.5.7

@@ -23,6 +23,7 @@ var (
 	ChunkISO8 = Chunk{'i', 's', 'o', '8'}
 	ChunkISO9 = Chunk{'i', 's', 'o', '9'}
 	ChunkAVC1 = Chunk{'a', 'v', 'c', '1'}
+	ChunkAVC3 = Chunk{'a', 'v', 'c', '3'}
 	ChunkHEV1 = Chunk{'h', 'e', 'v', '1'}
 	ChunkHVC1 = Chunk{'h', 'v', 'c', '1'}
 	ChunkAV01 = Chunk{'a', 'v', '0', '1'}
@@ -48,8 +49,10 @@ var CompatibleBrands = Chunks{
 	ChunkISO8,
 	ChunkISO9,
 	ChunkAVC1,
+	ChunkAVC3,
 	ChunkHEV1,
 	ChunkHVC1,
+	ChunkHEIC,
 	ChunkAV01,
 	ChunkAV1C,
 	ChunkMMP4,

@@ -49,12 +49,15 @@ func AddPhotoLabel(router *gin.RouterGroup) {
 		if err = c.BindJSON(frm); err != nil {
 			AbortBadRequest(c)
 			return
+		} else if err = frm.Validate(); err != nil {
+			AbortInvalidName(c)
+			return
 		}
 
 		labelEntity := entity.FirstOrCreateLabel(entity.NewLabel(frm.LabelName, frm.LabelPriority))
 
 		if labelEntity == nil {
-			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "failed to create label"})
+			AbortInvalidName(c)
 			return
 		}
 

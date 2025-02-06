@@ -13,9 +13,10 @@ import (
 	"github.com/photoprism/photoprism/internal/ffmpeg"
 	"github.com/photoprism/photoprism/internal/thumb"
 	"github.com/photoprism/photoprism/pkg/authn"
-	"github.com/photoprism/photoprism/pkg/header"
 	"github.com/photoprism/photoprism/pkg/i18n"
 	"github.com/photoprism/photoprism/pkg/media"
+	"github.com/photoprism/photoprism/pkg/media/http/header"
+	"github.com/photoprism/photoprism/pkg/media/http/scheme"
 	"github.com/photoprism/photoprism/pkg/txt"
 )
 
@@ -335,7 +336,7 @@ var Flags = CliFlags{
 		Flag: &cli.BoolFlag{
 			Name:    "experimental",
 			Aliases: []string{"e"},
-			Usage:   "enable new features currently under development",
+			Usage:   "enable new features that may be incomplete or unstable",
 			EnvVars: EnvVars("EXPERIMENTAL"),
 		}}, {
 		Flag: &cli.BoolFlag{
@@ -616,7 +617,7 @@ var Flags = CliFlags{
 		Flag: &cli.StringSliceFlag{
 			Name:    "proxy-proto-https",
 			Usage:   "forwarded HTTPS protocol `NAME`",
-			Value:   cli.NewStringSlice(header.ProtoHttps),
+			Value:   cli.NewStringSlice(scheme.Https),
 			EnvVars: EnvVars("PROXY_PROTO_HTTPS"),
 		}}, {
 		Flag: &cli.BoolFlag{
@@ -678,7 +679,7 @@ var Flags = CliFlags{
 			Name:    "http-host",
 			Aliases: []string{"ip"},
 			Value:   "0.0.0.0",
-			Usage:   "Web server `IP` address or Unix domain socket, e.g. unix:/var/run/photoprism.sock",
+			Usage:   "Web server `IP` address or Unix domain socket, e.g. unix:/var/run/photoprism.sock?force=true&mode=660",
 			EnvVars: EnvVars("HTTP_HOST"),
 		}}, {
 		Flag: &cli.IntFlag{

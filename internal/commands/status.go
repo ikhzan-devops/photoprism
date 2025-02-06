@@ -35,10 +35,10 @@ func statusAction(ctx *cli.Context) error {
 	client := &http.Client{Timeout: 10 * time.Second}
 
 	// Connect to unix socket?
-	if unixSocket := conf.HttpSocket(); unixSocket != "" {
+	if unixSocket := conf.HttpSocket(); unixSocket != nil {
 		client.Transport = &http.Transport{
 			DialContext: func(ctx context.Context, network, addr string) (net.Conn, error) {
-				return net.Dial("unix", unixSocket)
+				return net.Dial(unixSocket.Scheme, unixSocket.Path)
 			},
 		}
 	}

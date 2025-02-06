@@ -562,15 +562,29 @@ func TestConfig_ClientSessionConfig(t *testing.T) {
 
 func TestConfig_Flags(t *testing.T) {
 	config := TestConfig()
+
+	// Remember flag state.
+	develop := Develop
+	experimental := config.options.Experimental
+	readOnly := config.options.ReadOnly
+	scrollBar := config.settings.UI.Scrollbar
+	demo := config.options.Demo
+
+	// Set flags.
+	Develop = true
 	config.options.Experimental = true
 	config.options.ReadOnly = true
 	config.settings.UI.Scrollbar = false
 	config.options.Demo = true
 
 	result := config.Flags()
-	assert.Equal(t, []string{"public", "debug", "test", "demo", "sponsor", "experimental", "readonly", "settings", "hide-scrollbar"}, result)
 
-	config.options.Experimental = false
-	config.options.ReadOnly = false
-	config.options.Demo = false
+	assert.Equal(t, []string{"public", "debug", "test", "demo", "sponsor", "develop", "experimental", "readonly", "settings", "hide-scrollbar"}, result)
+
+	// Restore flag state.
+	Develop = develop
+	config.options.Experimental = experimental
+	config.options.ReadOnly = readOnly
+	config.settings.UI.Scrollbar = scrollBar
+	config.options.Demo = demo
 }

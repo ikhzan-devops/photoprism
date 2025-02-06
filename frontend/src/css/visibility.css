@@ -8,6 +8,8 @@ body.shared .hidden-shared-only {
 
 .feature-mobile,
 .feature-experimental,
+.feature-develop,
+.feature-preview,
 .feature-debug,
 .feature-public,
 .feature-readonly {
@@ -16,6 +18,9 @@ body.shared .hidden-shared-only {
 
 body.mobile .feature-mobile,
 body.experimental .feature-experimental,
+body.experimental .feature-preview,
+body.develop .feature-develop,
+body.develop .feature-preview,
 body.debug .feature-debug,
 body.public .feature-public,
 body.readonly .feature-readonly {

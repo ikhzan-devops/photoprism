@@ -3,10 +3,11 @@ package config
 import (
 	"testing"
 
-	"gorm.io/gorm"
-	"github.com/photoprism/photoprism/pkg/fs"
 	"github.com/stretchr/testify/assert"
 	"github.com/urfave/cli/v2"
+	"gorm.io/gorm"
+
+	"github.com/photoprism/photoprism/pkg/fs"
 )
 
 func TestConfig_TestdataPath2(t *testing.T) {

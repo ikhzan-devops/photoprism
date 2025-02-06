@@ -1,23 +1,35 @@
 <template>
-  <div v-if="visible" ref="container" class="p-viewer" tabindex="-1" role="dialog">
-    <div
-      ref="lightbox"
-      tabindex="0"
-      class="p-viewer__lightbox"
-      :class="{
-        'sidebar-visible': sidebarVisible,
-        'slideshow-active': slideshow.active,
-        'is-fullscreen': isFullscreen,
-        'is-favorite': model.Favorite,
-        'is-playable': model.Playable,
-        'is-selected': $clipboard.has(model),
-      }"
-      @keydown.space.prevent="onSpace"
-    ></div>
-    <div v-if="sidebarVisible" ref="sidebar" class="p-viewer__sidebar">
-      <!-- TODO: Create a reusable sidebar component that allows users to view/edit metadata. -->
+  <v-dialog
+    ref="dialog"
+    :model-value="visible"
+    :transition="false"
+    :scrollable="false"
+    fullscreen
+    scrim
+    tiled
+    class="p-dialog p-viewer v-dialog--viewer"
+  >
+    <div class="p-viewer__underlay"></div>
+    <div ref="container" class="p-viewer__content">
+      <div
+        ref="lightbox"
+        tabindex="0"
+        class="p-viewer__lightbox"
+        :class="{
+          'sidebar-visible': sidebarVisible,
+          'slideshow-active': slideshow.active,
+          'is-fullscreen': isFullscreen,
+          'is-favorite': model.Favorite,
+          'is-playable': model.Playable,
+          'is-selected': $clipboard.has(model),
+        }"
+        @keydown.space.prevent="onSpace"
+      ></div>
+      <div v-if="sidebarVisible" ref="sidebar" class="p-viewer__sidebar">
+        <!-- TODO: Create a reusable sidebar component that allows users to view/edit metadata. -->
+      </div>
     </div>
-  </div>
+  </v-dialog>
 </template>
 
 <script>
@@ -25,7 +37,7 @@ import PhotoSwipe from "photoswipe";
 import Lightbox from "photoswipe/lightbox";
 import Captions from "common/captions";
 import Util from "common/util";
-import Api from "common/api";
+import $api from "common/api";
 import Thumb from "model/thumb";
 import { Photo } from "model/photo";
 import * as media from "common/media";
@@ -60,7 +72,8 @@ export default {
       canFullscreen: !this.$isMobile,
       isFullscreen: !window.screenTop && !window.screenY,
       mobileBreakpoint: 600, // Minimum viewport width for large screens.
-      experimental: this.$config.get("experimental"), // Experimental features flag.
+      featExperimental: this.$config.featExperimental(), // Enables features that may be incomplete or unstable.
+      featDevelop: this.$config.featDevelop(), // Enables new features that are still under development.
       selection: this.$clipboard.selection,
       config: this.$config.values,
       model: new Thumb(), // Current slide.
@@ -110,7 +123,7 @@ export default {
         zoom: true,
         close: true,
         counter: false,
-        trapFocus: true,
+        trapFocus: false,
         returnFocus: false,
         allowPanToNext: false,
         initialZoomLevel: "fit",
@@ -182,7 +195,7 @@ export default {
       params.offset = 0;
 
       // Fetch viewer results from API.
-      return Api.get("photos/view", { params })
+      return $api.get("photos/view", { params })
         .then((response) => {
           const count = response && response.data ? response.data.length : 0;
           if (count === 0) {
@@ -305,13 +318,21 @@ export default {
       // Check if a slideshow is running.
       const slideshow = this.slideshow.active;
 
+      let preload = "none";
+
+      if (autoplay) {
+        preload = "auto";
+      } else if (slideshow || loop) {
+        preload = "metadata";
+      }
+
       // Set HTMLMediaElement properties.
       video.className = "pswp__video";
       video.poster = posterSrc;
       video.autoplay = autoplay;
       video.loop = loop && !slideshow;
       video.mute = mute;
-      video.preload = autoplay ? "auto" : "metadata";
+      video.preload = preload;
       video.playsInline = true;
       video.controls = true;
 
@@ -344,9 +365,9 @@ export default {
 
       // Create and append video source elements, depending on file format support.
       if (
-        format !== media.FormatAVC &&
+        format !== media.FormatAvc &&
         model?.Mime &&
-        model.Mime !== media.ContentTypeAVC &&
+        model.Mime !== media.ContentTypeMp4AvcMain &&
         video.canPlayType(model.Mime)
       ) {
         const nativeSource = document.createElement("source");
@@ -356,8 +377,8 @@ export default {
       }
 
       const avcSource = document.createElement("source");
-      avcSource.type = media.ContentTypeAVC;
-      avcSource.src = Util.videoFormatUrl(model.Hash, media.FormatAVC);
+      avcSource.type = media.ContentTypeMp4AvcMain;
+      avcSource.src = Util.videoFormatUrl(model.Hash, media.FormatAvc);
       video.appendChild(avcSource);
 
       // Return HTMLMediaElement.
@@ -495,11 +516,11 @@ export default {
       // TODO: The same controls as with PhotoSwipe 4 should be usable/available!
       lightbox.on("uiRegister", () => {
         // Add a sidebar toggle button only if the window is large enough.
-        // TODO: Proof-of-concept only, the sidebar needs to be fully implemented before this can be released.
+        // TODO: Proof-of-concept only, the sidebar needs to be fully implemented before removing the featDevelop check.
         // TODO: Once this is fully implemented, remove the "this.experimental" flag check below.
         // IDEA: We can later try to add styles that display the sidebar at the bottom
         //       instead of on the side, to allow use on mobile devices.
-        if (this.experimental && this.canEdit && window.innerWidth > this.mobileBreakpoint) {
+        if (this.featDevelop && this.canEdit && window.innerWidth > this.mobileBreakpoint) {
           lightbox.pswp.ui.registerElement({
             name: "sidebar-button",
             className: "pswp__button--sidebar-button pswp__button--mdi", // Sets the icon style/size in viewer.css.
@@ -676,7 +697,7 @@ export default {
     },
     onShow() {
       // Hide the browser scrollbar as it is not wanted in the viewer.
-      this.$scrollbar.hide();
+      this.$modal.enter();
 
       // Render the component template.
       this.visible = true;
@@ -742,7 +763,7 @@ export default {
       }
 
       // Restore browser scrollbar state.
-      this.$scrollbar.show();
+      this.$modal.leave();
     },
     // Returns the active PhotoSwipe instance, if any.
     // Be sure to check the result before using it!
@@ -894,6 +915,10 @@ export default {
     playVideo(el, loop) {
       if (!el || typeof el.play !== "function") {
         return;
+      }
+
+      if (el.preload === "none") {
+        el.preload = "auto";
       }
 
       el.loop = loop && !this.slideshow.active;

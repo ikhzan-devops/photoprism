@@ -135,7 +135,7 @@ RUN echo 'APT::Acquire::Retries "3";' > /etc/apt/apt.conf.d/80retries && \
       /photoprism/storage/cache && \
     /scripts/cleanup.sh
 
-# Default working directory.
+# Set default working directory.
 WORKDIR /photoprism
 
 # Expose HTTP(S) ports.

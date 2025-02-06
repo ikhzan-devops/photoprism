@@ -4,8 +4,8 @@ import (
 	"time"
 
 	"github.com/photoprism/photoprism/pkg/fs"
-	"github.com/photoprism/photoprism/pkg/header"
 	"github.com/photoprism/photoprism/pkg/media"
+	"github.com/photoprism/photoprism/pkg/media/http/header"
 )
 
 // Info represents video file information.
@@ -73,25 +73,25 @@ func (info Info) VideoContentType() string {
 		return header.ContentTypeBinary
 	}
 
-	return ContentType(info.VideoMimeType, info.FileType.String(), info.VideoCodec)
+	return ContentType(info.VideoMimeType, info.FileType.String(), info.VideoCodec, false)
 }
 
-// VideoFileExt returns the appropriate video file extension based on the mime type and defaults to fs.ExtMP4 otherwise.
+// VideoFileExt returns the appropriate video file extension based on the mime type and defaults to fs.ExtMp4 otherwise.
 func (info Info) VideoFileExt() string {
 	switch info.VideoMimeType {
-	case fs.MimeTypeMOV:
-		return fs.ExtMOV
+	case header.ContentTypeMov:
+		return fs.ExtMov
 	default:
-		return fs.ExtMP4
+		return fs.ExtMp4
 	}
 }
 
-// VideoFileType returns the video type based on the mime type and defaults to fs.VideoMP4 otherwise.
+// VideoFileType returns the video type based on the mime type and defaults to fs.VideoMp4 otherwise.
 func (info Info) VideoFileType() fs.Type {
 	switch info.VideoMimeType {
-	case fs.MimeTypeMOV:
-		return fs.VideoMOV
+	case header.ContentTypeMov:
+		return fs.VideoMov
 	default:
-		return fs.VideoMP4
+		return fs.VideoMp4
 	}
 }

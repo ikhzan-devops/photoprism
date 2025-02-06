@@ -7,12 +7,13 @@ import (
 
 	"github.com/dustin/go-humanize/english"
 
+	"gopkg.in/photoprism/go-tz.v2/tz"
+
 	"github.com/photoprism/photoprism/internal/ai/classify"
 	"github.com/photoprism/photoprism/internal/service/maps"
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/geo"
 	"github.com/photoprism/photoprism/pkg/txt"
-	"gopkg.in/photoprism/go-tz.v2/tz"
 )
 
 // SetCoordinates changes the photo lat, lng and altitude if not empty and from an acceptable source.

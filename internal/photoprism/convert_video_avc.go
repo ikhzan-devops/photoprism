@@ -36,9 +36,9 @@ func (w *Convert) ToAvc(f *MediaFile, encoder encode.Encoder, noMutex, force boo
 
 	// Use .mp4 file extension for animated images and .avi for videos.
 	if f.IsAnimatedImage() {
-		avcName = fs.VideoMP4.FindFirst(f.FileName(), []string{w.conf.SidecarPath(), fs.PPHiddenPathname}, w.conf.OriginalsPath(), false)
+		avcName = fs.VideoMp4.FindFirst(f.FileName(), []string{w.conf.SidecarPath(), fs.PPHiddenPathname}, w.conf.OriginalsPath(), false)
 	} else {
-		avcName = fs.VideoAVC.FindFirst(f.FileName(), []string{w.conf.SidecarPath(), fs.PPHiddenPathname}, w.conf.OriginalsPath(), false)
+		avcName = fs.VideoAvc.FindFirst(f.FileName(), []string{w.conf.SidecarPath(), fs.PPHiddenPathname}, w.conf.OriginalsPath(), false)
 	}
 
 	mediaFile, err := NewMediaFile(avcName)
@@ -61,9 +61,9 @@ func (w *Convert) ToAvc(f *MediaFile, encoder encode.Encoder, noMutex, force boo
 
 	// Use .mp4 file extension for animated images and .avi for videos.
 	if f.IsAnimatedImage() {
-		avcName, _ = fs.FileName(f.FileName(), w.conf.SidecarPath(), w.conf.OriginalsPath(), fs.ExtMP4)
+		avcName, _ = fs.FileName(f.FileName(), w.conf.SidecarPath(), w.conf.OriginalsPath(), fs.ExtMp4)
 	} else {
-		avcName, _ = fs.FileName(f.FileName(), w.conf.SidecarPath(), w.conf.OriginalsPath(), fs.ExtAVC)
+		avcName, _ = fs.FileName(f.FileName(), w.conf.SidecarPath(), w.conf.OriginalsPath(), fs.ExtAvc)
 	}
 
 	cmd, useMutex, err := w.TranscodeToAvcCmd(f, avcName, encoder)
@@ -110,7 +110,7 @@ func (w *Convert) ToAvc(f *MediaFile, encoder encode.Encoder, noMutex, force boo
 		"xmpName":  "",
 	})
 
-	log.Infof("%s: transcoding %s to %s", encoder, relName, fs.VideoAVC)
+	log.Infof("%s: transcoding %s to %s", encoder, relName, fs.VideoAvc)
 
 	// Log exact command for debugging in trace mode.
 	log.Trace(cmd.String())
@@ -165,7 +165,7 @@ func (w *Convert) TranscodeToAvcCmd(f *MediaFile, avcName string, encoder encode
 	}
 
 	// Try to transcode animated WebP images with ImageMagick.
-	if w.conf.ImageMagickEnabled() && f.IsWebP() && w.imageMagickExclude.Allow(fileExt) {
+	if w.conf.ImageMagickEnabled() && f.IsWebp() && w.imageMagickExclude.Allow(fileExt) {
 		return exec.Command(w.conf.ImageMagickBin(), f.FileName(), avcName), false, nil
 	}
 

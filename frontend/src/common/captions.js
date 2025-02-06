@@ -162,7 +162,7 @@ class PhotoSwipeDynamicCaption {
     const isOnHorizontalEdge = x <= this.options.horizontalEdgeThreshold;
     captionEl.classList[isOnHorizontalEdge ? "add" : "remove"]("pswp__dynamic-caption--on-hor-edge");
 
-    if (document.dir === "rtl") {
+    if (document.dir === "rtl" && isOnHorizontalEdge) {
       captionEl.style.right = x + "px";
     } else {
       captionEl.style.left = x + "px";

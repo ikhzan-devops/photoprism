@@ -27,29 +27,29 @@ import * as media from "common/media";
 
 export const useVideo = !!document.createElement("video").canPlayType;
 export const useAVC = useVideo // AVC
-  ? !!document.createElement("video").canPlayType(media.ContentTypeAVC)
+  ? !!document.createElement("video").canPlayType(media.ContentTypeMp4AvcMain)
   : false;
 export const useHEVC = useVideo // HEVC, Basic Support
-  ? !!document.createElement("video").canPlayType(media.ContentTypeHEVC)
+  ? !!document.createElement("video").canPlayType(media.ContentTypeMp4HvcMain)
   : false;
 export const useHEV1 = useVideo // HEV1, Basic Support
-  ? !!document.createElement("video").canPlayType(media.ContentTypeHEV1)
+  ? !!document.createElement("video").canPlayType(media.ContentTypeMp4HevMain)
   : false;
 export const useVVC = useVideo // VVC, Basic Support
-  ? !!document.createElement("video").canPlayType(media.ContentTypeVVC)
+  ? !!document.createElement("video").canPlayType(media.ContentTypeMp4Vvc)
   : false;
 export const useOGV = useVideo // Ogg Theora
-  ? !!document.createElement("video").canPlayType(media.ContentTypeOGV)
+  ? !!document.createElement("video").canPlayType(media.ContentTypeOgg)
   : false;
 export const useWebM = useVideo // Google WebM
-  ? !!document.createElement("video").canPlayType(media.ContentTypeWebM)
+  ? !!document.createElement("video").canPlayType(media.ContentTypeWebm)
   : false;
 export const useVP8 = useVideo // Google WebM, VP8
-  ? !!document.createElement("video").canPlayType(media.ContentTypeVP8)
+  ? !!document.createElement("video").canPlayType(media.ContentTypeWebmVp8)
   : false;
 export const useVP9 = useVideo // Google WebM, VP9
-  ? !!document.createElement("video").canPlayType(media.ContentTypeVP9)
+  ? !!document.createElement("video").canPlayType(media.ContentTypeWebmVp9)
   : false;
 export const useAV1 = useVideo // AV1, Main Profile
-  ? !!document.createElement("video").canPlayType(media.ContentTypeAV1)
+  ? !!document.createElement("video").canPlayType(media.ContentTypeWebmAv1)
   : false;

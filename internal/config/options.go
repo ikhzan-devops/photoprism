@@ -3,6 +3,7 @@ package config
 import (
 	"errors"
 	"fmt"
+	"net/url"
 	"os"
 	"time"
 
@@ -144,7 +145,7 @@ type Options struct {
 	HttpVideoMaxAge        int           `yaml:"HttpVideoMaxAge" json:"HttpVideoMaxAge" flag:"http-video-maxage"`
 	HttpHost               string        `yaml:"HttpHost" json:"-" flag:"http-host"`
 	HttpPort               int           `yaml:"HttpPort" json:"-" flag:"http-port"`
-	HttpSocket             string        `yaml:"-" json:"-" flag:"-"`
+	HttpSocket             *url.URL      `yaml:"-" json:"-" flag:"-"`
 	DatabaseDriver         string        `yaml:"DatabaseDriver" json:"-" flag:"database-driver"`
 	DatabaseDsn            string        `yaml:"DatabaseDsn" json:"-" flag:"database-dsn"`
 	DatabaseName           string        `yaml:"DatabaseName" json:"-" flag:"database-name"`

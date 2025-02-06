@@ -32,8 +32,8 @@
                               <v-img
                                 :src="file.thumbnailUrl('tile_224')"
                                 aspect-ratio="1"
-                                max-width="112"
-                                max-height="112"
+                                max-width="150"
+                                max-height="150"
                                 rounded="4"
                                 class="card elevation-0 clickable my-1"
                                 @click.exact="openFile(file)"
@@ -69,7 +69,7 @@
                                   color="highlight"
                                   class="btn-action action-primary"
                                   :disabled="busy"
-                                  @click.stop.prevent="primaryFile(file)"
+                                  @click.stop.prevent="setPrimaryFile(file)"
                                 >
                                   {{ $gettext(`Primary`) }}
                                 </v-btn>
@@ -103,10 +103,9 @@
                                   variant="flat"
                                   color="highlight"
                                   class="btn-action action-open-folder"
-                                  :href="folderUrl(file)"
-                                  target="_blank"
+                                  @click.stop.prevent="openFolder(file)"
                                 >
-                                  {{ $gettext(`File Browser`) }}
+                                  {{ $gettext(`Open Folder`) }}
                                 </v-btn>
                               </div>
                             </td>
@@ -372,7 +371,7 @@
 <script>
 import Thumb from "model/thumb";
 import { DateTime } from "luxon";
-import Notify from "common/notify";
+import $notify from "common/notify";
 import Util from "common/util";
 import * as options from "options/options";
 
@@ -466,20 +465,32 @@ export default {
     openFile(file) {
       this.$root.$refs.viewer.showThumbs([Thumb.fromFile(this.model, file)], 0);
     },
-    folderUrl(m) {
-      if (!m) {
+    openFolder(file) {
+      if (!file) {
         return "#";
       }
 
-      const name = m.Name;
+      const name = file.Name;
 
       // "#" chars in path names must be explicitly escaped,
       // see https://github.com/photoprism/photoprism/issues/3695
       const path = name.substring(0, name.lastIndexOf("/")).replaceAll(":", "%3A").replaceAll("#", "%23");
-      return this.$router.resolve({ path: "/index/files/" + path }).href;
+      const route = { path: "/index/files/" + path };
+
+      if (this.$isMobile) {
+        this.$emit("close");
+        this.$router.push(route);
+      } else {
+        // Open in a new tab on desktop browsers.
+        const routeUrl = this.$router.resolve(route).href;
+
+        if (routeUrl) {
+          window.open(routeUrl, "_blank");
+        }
+      }
     },
     downloadFile(file) {
-      Notify.success(this.$gettext("Downloading…"));
+      $notify.success(this.$gettext("Downloading…"));
 
       file.download();
     },
@@ -501,8 +512,8 @@ export default {
     unstackFile(file) {
       this.model.unstackFile(file.UID);
     },
-    primaryFile(file) {
-      this.model.primaryFile(file.UID);
+    setPrimaryFile(file) {
+      this.model.setPrimaryFile(file.UID);
     },
     changeOrientation(file) {
       if (!file) {

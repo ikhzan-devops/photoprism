@@ -91,7 +91,7 @@ RUN apt-get update && \
     apt-get -qq dist-upgrade && \
     /scripts/cleanup.sh
 
-# Default working directory.
+# Set default working directory.
 WORKDIR /photoprism
 
 # Expose HTTP(S) ports.
