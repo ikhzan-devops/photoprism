@@ -1245,7 +1245,7 @@ func generateDatabase(numberOfPhotos int, driver string, dsn string, dropdb bool
 			FileHash:     rnd.GenerateUID(entity.FileUID),
 			FileSize:     rand.Int64N(1000000),
 			FileCodec:    "",
-			FileType:     string(fs.ImageJPEG),
+			FileType:     string(fs.ImageJpeg),
 			MediaType:    string(media.Image),
 			FileMime:     "image/jpg",
 			FilePrimary:  true,
