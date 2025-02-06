@@ -64,7 +64,7 @@ export class Form {
 
     if (!def.hasOwnProperty(name)) {
       throw `Property ${name} not found`;
-    } else if (typeof value != def[name].type) {
+    } else if (typeof value !== def[name].type) {
       throw `Property ${name} must be ${def[name].type}`;
     } else {
       def[name].value = value;
@@ -121,6 +121,46 @@ export class rules {
     return v.length >= min;
   }
 
+  static isLat(v) {
+    if (typeof v !== "string" || v === "") {
+      return true;
+    }
+
+    const lat = Number(v);
+
+    if (isNaN(lat)) {
+      return false;
+    }
+
+    return -91 < lat < 91;
+  }
+
+  static isLng(v) {
+    if (typeof v !== "string" || v === "") {
+      return true;
+    }
+
+    const lng = Number(v);
+
+    if (isNaN(lng)) {
+      return false;
+    }
+
+    return -181 < lng < 181;
+  }
+
+  static isNumber(v) {
+    if (typeof v !== "string" || v === "") {
+      return true;
+    }
+
+    return !isNaN(Number(v));
+  }
+
+  static isTime(v) {
+    return /^(2[0-3]|[0-1][0-9])\D[0-5][0-9]\D[0-5][0-9]$/.test(v); // 23:59:59
+  }
+
   static isEmail(v) {
     if (typeof v !== "string" || v === "") {
       return true;
@@ -146,25 +186,52 @@ export class rules {
     return true;
   }
 
+  static lat(required) {
+    if (required) {
+      return [
+        (v) => !!v || $gettext("This field is required"),
+        (v) => this.isLat(v) || $gettext("Invalid"),
+      ];
+    } else {
+      return [(v) => this.isLat(v) || $gettext("Invalid")];
+    }
+  }
+
+  static lng(required) {
+    if (required) {
+      return [
+        (v) => !!v || $gettext("This field is required"),
+        (v) => this.isLng(v) || $gettext("Invalid"),
+      ];
+    } else {
+      return [(v) => this.isLng(v) || $gettext("Invalid")];
+    }
+  }
+
+  static time(required) {
+    if (required) {
+      return [(v) => !!v || $gettext("This field is required"), (v) => this.isTime(v) || $gettext("Invalid time")];
+    } else {
+      return [(v) => this.isTime(v) || $gettext("Invalid time")];
+    }
+  }
+
   static email(required) {
     if (required) {
       return [
-        (v) => v?.length > 0 || $gettext("This field is required"),
-        (v) => this.isEmail(v) || $gettext("Invalid address"),
+        (v) => !!v || $gettext("This field is required"),
+        (v) => !v || this.isEmail(v) || $gettext("Invalid address"),
       ];
     } else {
-      return [(v) => this.isEmail(v) || $gettext("Invalid address")];
+      return [(v) => !v || this.isEmail(v) || $gettext("Invalid address")];
     }
   }
 
   static url(required) {
     if (required) {
-      return [
-        (v) => v?.length > 0 || $gettext("This field is required"),
-        (v) => this.isUrl(v) || $gettext("Invalid URL"),
-      ];
+      return [(v) => !!v || $gettext("This field is required"), (v) => !v || this.isUrl(v) || $gettext("Invalid URL")];
     } else {
-      return [(v) => this.isUrl(v) || $gettext("Invalid URL")];
+      return [(v) => !v || this.isUrl(v) || $gettext("Invalid URL")];
     }
   }
 
@@ -175,7 +242,7 @@ export class rules {
 
     if (required) {
       return [
-        (v) => v?.length > 0 || $gettext("This field is required"),
+        (v) => !!v || $gettext("This field is required"),
         (v) => this.minLen(v, min ? min : 0) || $gettext(`%{s} is too short`, { s }),
         (v) => this.maxLen(v, max ? max : 200) || $gettext("%{s} is too long", { s }),
       ];
@@ -187,10 +254,33 @@ export class rules {
     }
   }
 
+  static number(required, min, max) {
+    if (!min) {
+      min = 0;
+    }
+
+    if (!max) {
+      max = 2147483647;
+    }
+
+    if (required) {
+      return [
+        (v) => !!v || $gettext("This field is required"),
+        (v) => (this.isNumber(v) && v >= min) || $gettext("Invalid"),
+        (v) => (this.isNumber(v) && v <= max) || $gettext("Invalid"),
+      ];
+    } else {
+      return [
+        (v) => (this.isNumber(v) && v >= min) || $gettext("Invalid"),
+        (v) => (this.isNumber(v) && v <= max) || $gettext("Invalid"),
+      ];
+    }
+  }
+
   static country(required) {
     if (required) {
       return [
-        (v) => v?.length > 0 || $gettext("This field is required"),
+        (v) => !!v || $gettext("This field is required"),
         (v) => this.minLen(v, 2) || $gettext("Invalid country"),
         (v) => this.maxLen(v, 2) || $gettext("Invalid country"),
       ];
@@ -201,25 +291,26 @@ export class rules {
       ];
     }
   }
+
   static day(required) {
     if (required) {
       return [
-        (v) => (v && v > 0) || $gettext("This field is required"),
-        (v) => !v || v === -1 || (v >= 1 && v <= 31) || $gettext("Invalid"),
+        (v) => !!v || Number(v) < -1 || $gettext("This field is required"),
+        (v) => !v || (this.isNumber(v) && (v === -1 || (v >= 1 && v <= 31))) || $gettext("Invalid"),
       ];
     } else {
-      return [(v) => !v || v === -1 || (v >= 1 && v <= 31) || $gettext("Invalid")];
+      return [(v) => !v || (this.isNumber(v) && (v === -1 || (v >= 1 && v <= 31))) || $gettext("Invalid")];
     }
   }
 
   static month(required) {
     if (required) {
       return [
-        (v) => (v && v > 0) || $gettext("This field is required"),
-        (v) => !v || v === -1 || (v >= 1 && v <= 12) || $gettext("Invalid"),
+        (v) => !!v || Number(v) < -1 || $gettext("This field is required"),
+        (v) => !v || (this.isNumber(v) && (v === -1 || (v >= 1 && v <= 12))) || $gettext("Invalid"),
       ];
     } else {
-      return [(v) => !v || v === -1 || (v >= 1 && v <= 12) || $gettext("Invalid")];
+      return [(v) => !v || (this.isNumber(v) && (v === -1 || (v >= 1 && v <= 12))) || $gettext("Invalid")];
     }
   }
 
@@ -234,14 +325,14 @@ export class rules {
 
     if (required) {
       return [
-        (v) => !v || v < 0 || $gettext("This field is required"),
-        (v) => !v || v === -1 || v >= min || $gettext("Invalid"),
-        (v) => !v || v === -1 || v <= max || $gettext("Invalid"),
+        (v) => !!v || Number(v) < -1 || $gettext("This field is required"),
+        (v) => !v || (this.isNumber(v) && (v === -1 || v >= min)) || $gettext("Invalid"),
+        (v) => !v || (this.isNumber(v) && (v === -1 || v <= max)) || $gettext("Invalid"),
       ];
     } else {
       return [
-        (v) => !v || v === -1 || v >= min || $gettext("Invalid"),
-        (v) => !v || v === -1 || v <= max || $gettext("Invalid"),
+        (v) => !v || (this.isNumber(v) && (v === -1 || v >= min)) || $gettext("Invalid"),
+        (v) => !v || (this.isNumber(v) && (v === -1 || v <= max)) || $gettext("Invalid"),
       ];
     }
   }

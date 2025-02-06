@@ -47,12 +47,10 @@ func ContentType(s string) string {
 	case
 		header.ContentTypeMovAvc,
 		header.ContentTypeMp4Avc,
-		header.ContentTypeMp4AvcHigh,
 		"video/mp4; codecs=\"avc\"":
 		return header.ContentTypeMp4AvcMain // Advanced Video Coding (AVC), also known as H.264
 	case
-		header.ContentTypeMp4Avc3,
-		header.ContentTypeMp4Avc3High:
+		header.ContentTypeMp4Avc3:
 		return header.ContentTypeMp4Avc3Main // Advanced Video Coding (AVC) Bitstream
 	case
 		header.ContentTypeMp4Hvc,
@@ -76,6 +74,11 @@ func ContentType(s string) string {
 		"video/webm; codecs=\"av1C\"",
 		"video/webm; codecs=\"av01\"":
 		return header.ContentTypeWebmAv1 // Google WebM container with AV1 video
+	case "video/matroska; codecs=\"av1\"",
+		"video/matroska; codecs=\"av1c\"",
+		"video/matroska; codecs=\"av1C\"",
+		"video/matroska; codecs=\"av01\"":
+		return header.ContentTypeMkvAv1 // Matroska container with AV1 video
 	}
 
 	return s

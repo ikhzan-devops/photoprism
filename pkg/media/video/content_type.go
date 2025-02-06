@@ -11,45 +11,63 @@ import (
 )
 
 // ContentType returns a normalized video content type strings based on the video file type and codec.
-func ContentType(mediaType, fileType, videoCodec string) string {
+func ContentType(mediaType, fileType, videoCodec string, hdr bool) string {
 	if mediaType == "" && fileType == "" && videoCodec == "" {
 		return header.ContentTypeBinary
 	}
 
 	if mediaType == "" {
-		var c string
+		videoCodec = Codecs[videoCodec]
 
-		if videoCodec != "" {
-			c = Codecs[videoCodec]
-		} else {
-			c = fileType
+		if fs.VideoMov.Equal(fileType) {
+			fileType = fs.VideoMp4.String()
 		}
 
-		switch c {
-		case "mov", "mp4":
-			mediaType = header.ContentTypeMp4
-		case CodecAvc3:
-			mediaType = header.ContentTypeMp4Avc3Main // AVC (H.264) Bitstream, High Profile
-		case string(fs.VideoAvc), CodecAvc:
-			mediaType = header.ContentTypeMp4AvcMain // Advanced Video Coding (H.264), High Profile
-		case string(fs.VideoHvc), CodecHvc:
-			mediaType = header.ContentTypeMp4HvcMain // High Efficiency Video Coding (H.265)
-		case string(fs.VideoHev), CodecHev:
-			mediaType = header.ContentTypeMp4HevMain // High Efficiency Video Coding (HEVC) Bitstream
-		case CodecVvc, "vvc":
+		switch {
+		case fs.VideoMp4.Equal(fileType) && videoCodec == CodecAvc3:
+			if hdr {
+				mediaType = header.ContentTypeMp4Avc3High // AVC (H.264) Bitstream, High Profile
+			} else {
+				mediaType = header.ContentTypeMp4Avc3Main // AVC (H.264) Bitstream, High Profile
+			}
+		case fs.VideoAvc.Equal(fileType) || fs.VideoMp4.Equal(fileType) && videoCodec == CodecAvc:
+			if hdr {
+				mediaType = header.ContentTypeMp4AvcHigh // MPEG-4 AVC, High Profile
+			} else {
+				mediaType = header.ContentTypeMp4AvcMain // MPEG-4 AVC, Main Profile
+			}
+		case fs.VideoHvc.Equal(fileType) || fs.VideoMp4.Equal(fileType) && videoCodec == CodecHvc:
+			if hdr {
+				mediaType = header.ContentTypeMp4HvcMain10 // MPEG-4 HEVC, Main 10-Bit HDR
+			} else {
+				mediaType = header.ContentTypeMp4HvcMain // MPEG-4 HEVC, Main
+			}
+		case fs.VideoHev.Equal(fileType) || fs.VideoMp4.Equal(fileType) && videoCodec == CodecHev:
+			if hdr {
+				mediaType = header.ContentTypeMp4HevMain10 // HEVC Bitstream, Main 10-Bit HDR
+			} else {
+				mediaType = header.ContentTypeMp4HevMain // HEVC Bitstream, Main
+			}
+		case fs.VideoVvc.Equal(fileType) || fs.VideoMp4.Equal(fileType) && videoCodec == CodecVvc:
 			mediaType = header.ContentTypeMp4Vvc // Versatile Video Coding (VVC), also known as H.266
-		case CodecEvc, "evc":
+		case fs.VideoEvc.Equal(fileType) || fs.VideoMp4.Equal(fileType) && videoCodec == CodecEvc:
 			mediaType = header.ContentTypeMp4Evc // MPEG-5 Essential Video Coding (EVC), also known as ISO/IEC 23094-1
-		case CodecVp8, "vp08":
+		case videoCodec == CodecVp8:
 			mediaType = header.ContentTypeWebmVp8
-		case CodecVp9, "vp9":
+		case videoCodec == CodecVp9:
 			mediaType = header.ContentTypeWebmVp9
-		case CodecAv1, "av1":
+		case fs.VideoAv1.Equal(fileType) || fs.VideoWebm.Equal(fileType) && videoCodec == CodecAv1:
 			mediaType = header.ContentTypeWebmAv1
-		case CodecTheora, "ogg":
+		case fs.VideoMkv.Equal(fileType) && videoCodec == CodecAv1:
+			mediaType = header.ContentTypeMkvAv1
+		case fs.VideoTheora.Equal(fileType) || videoCodec == CodecTheora:
 			mediaType = header.ContentTypeOggTheora
-		case string(fs.VideoWebm):
+		case fs.VideoWebm.Equal(fileType):
 			mediaType = header.ContentTypeWebm
+		case fs.VideoMp4.Equal(fileType):
+			mediaType = header.ContentTypeMp4
+		case fs.VideoMkv.Equal(fileType):
+			mediaType = header.ContentTypeMkv
 		}
 	}
 
@@ -57,6 +75,34 @@ func ContentType(mediaType, fileType, videoCodec string) string {
 	if mediaType != "" && !strings.Contains(mediaType, ";") {
 		if codec, found := Codecs[videoCodec]; found && codec != "" {
 			mediaType = fmt.Sprintf("%s; codecs=\"%s\"", mediaType, codec)
+		}
+	}
+
+	if hdr {
+		switch mediaType {
+		case
+			header.ContentTypeMovAvc,
+			header.ContentTypeMovAvcMain,
+			header.ContentTypeMp4Avc,
+			header.ContentTypeMp4AvcBaseline,
+			header.ContentTypeMp4AvcMain:
+			if Codecs[videoCodec] == CodecAvc3 {
+				mediaType = header.ContentTypeMp4Avc3High
+			} else {
+				mediaType = header.ContentTypeMp4AvcHigh
+			}
+		case
+			header.ContentTypeMp4Avc3,
+			header.ContentTypeMp4Avc3Main:
+			mediaType = header.ContentTypeMp4Avc3High
+		case
+			header.ContentTypeMp4Hvc,
+			header.ContentTypeMp4HvcMain:
+			mediaType = header.ContentTypeMp4HvcMain10
+		case
+			header.ContentTypeMp4Hev,
+			header.ContentTypeMp4HevMain:
+			mediaType = header.ContentTypeMp4HevMain10
 		}
 	}
 

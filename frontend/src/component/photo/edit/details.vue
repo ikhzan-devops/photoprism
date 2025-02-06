@@ -59,12 +59,13 @@
                 hide-details
                 hide-no-data
                 :items="options.Days()"
-                :rules="rules.day(false)"
                 item-title="text"
                 item-value="value"
                 density="comfortable"
+                validate-on="input"
+                :rules="rules.day(true)"
                 class="input-day"
-                @update:model-value="updateTime"
+                @update:model-value="syncTime"
               >
               </v-autocomplete>
             </v-col>
@@ -78,12 +79,13 @@
                 hide-details
                 hide-no-data
                 :items="options.MonthsShort()"
-                :rules="rules.month(false)"
                 item-title="text"
                 item-value="value"
                 density="comfortable"
+                validate-on="input"
+                :rules="rules.month(true)"
                 class="input-month"
-                @update:model-value="updateTime"
+                @update:model-value="syncTime"
               >
               </v-autocomplete>
             </v-col>
@@ -97,12 +99,13 @@
                 hide-details
                 hide-no-data
                 :items="options.Years(1000)"
-                :rules="rules.year(false, 1000)"
                 item-title="text"
                 item-value="value"
                 density="comfortable"
+                validate-on="input"
+                :rules="rules.year(true, 1000)"
                 class="input-year"
-                @update:model-value="updateTime"
+                @update:model-value="syncTime"
               >
               </v-autocomplete>
             </v-col>
@@ -116,9 +119,11 @@
                 autocorrect="off"
                 autocapitalize="none"
                 hide-details
-                return-masked-value
                 density="comfortable"
+                validate-on="input"
+                :rules="rules.time()"
                 class="input-local-time"
+                @update:model-value="setTime"
               ></v-text-field>
             </v-col>
             <v-col cols="6" lg="4">
@@ -132,7 +137,7 @@
                 :items="options.TimeZones()"
                 density="comfortable"
                 class="input-timezone"
-                @update:model-value="updateTime"
+                @update:model-value="syncTime"
               ></v-autocomplete>
             </v-col>
             <v-col cols="12" sm="8" md="4">
@@ -150,6 +155,8 @@
                 :items="countries"
                 prepend-inner-icon="mdi-map-marker"
                 density="comfortable"
+                validate-on="input"
+                :rules="rules.country(true)"
                 class="input-country"
               >
               </v-autocomplete>
@@ -167,6 +174,8 @@
                 placeholder=""
                 color="surface-variant"
                 density="comfortable"
+                validate-on="input"
+                :rules="rules.number(false, -10000, 1000000)"
                 class="input-altitude"
               ></v-text-field>
             </v-col>
@@ -182,6 +191,8 @@
                 :label="$gettext('Latitude')"
                 placeholder=""
                 density="comfortable"
+                validate-on="input"
+                :rules="rules.lat(false)"
                 class="input-latitude"
                 @paste="pastePosition"
               ></v-text-field>
@@ -198,6 +209,8 @@
                 :label="$gettext('Longitude')"
                 placeholder=""
                 density="comfortable"
+                validate-on="input"
+                :rules="rules.lng(false)"
                 class="input-longitude"
                 @paste="pastePosition"
               ></v-text-field>
@@ -231,6 +244,8 @@
                 label="ISO"
                 placeholder=""
                 density="comfortable"
+                validate-on="input"
+                :rules="rules.number(false, 0, 1048576)"
                 class="input-iso"
               ></v-text-field>
             </v-col>
@@ -245,6 +260,8 @@
                 :label="$gettext('Exposure')"
                 placeholder=""
                 density="comfortable"
+                validate-on="input"
+                :rules="rules.text(false, 0, 64)"
                 class="input-exposure"
               ></v-text-field>
             </v-col>
@@ -269,7 +286,6 @@
             <v-col cols="6" md="3">
               <v-text-field
                 v-model="model.FNumber"
-                f
                 :disabled="disabled"
                 hide-details
                 autocomplete="off"
@@ -278,6 +294,8 @@
                 :label="$gettext('F Number')"
                 placeholder=""
                 density="comfortable"
+                validate-on="input"
+                :rules="rules.number(false, 0, 1048576)"
                 class="input-fnumber"
               ></v-text-field>
             </v-col>
@@ -290,6 +308,8 @@
                 :label="$gettext('Focal Length')"
                 placeholder=""
                 density="comfortable"
+                validate-on="input"
+                :rules="rules.number(false, 0, 1048576)"
                 class="input-focal-length"
               ></v-text-field>
             </v-col>
@@ -461,23 +481,27 @@ export default {
   },
   watch: {
     model() {
-      this.updateTime();
+      this.syncTime();
     },
     uid() {
-      this.updateTime();
+      this.syncTime();
     },
   },
   created() {
-    this.updateTime();
+    this.syncTime();
   },
   methods: {
-    updateTime() {
+    setTime() {
+      if (this.rules.isTime(this.time)) {
+        this.updateModel();
+      }
+    },
+    syncTime() {
       if (!this.model.hasId()) {
         return;
       }
 
       const taken = this.model.getDateTime();
-
       this.time = taken.toFormat("HH:mm:ss");
     },
     pastePosition(event) {
@@ -569,7 +593,7 @@ export default {
           this.$emit("close");
         }
 
-        this.updateTime();
+        this.syncTime();
       });
     },
     close() {

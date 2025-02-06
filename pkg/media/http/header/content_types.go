@@ -18,10 +18,10 @@ package header
 const (
 	ContentTypeMp4            = "video/mp4"
 	ContentTypeMp4Avc         = ContentTypeMp4 + "; codecs=\"avc1\""             // MPEG-4 AVC (H.264)
-	ContentTypeMp4Avc3        = ContentTypeMp4 + "; codecs=\"avc3\""             // MPEG-4 AVC Bitstream
 	ContentTypeMp4AvcBaseline = ContentTypeMp4 + "; codecs=\"avc1.420028\""      // MPEG-4 AVC (H.264), Baseline Level 4.0
 	ContentTypeMp4AvcMain     = ContentTypeMp4 + "; codecs=\"avc1.4d0028\""      // MPEG-4 AVC (H.264), Main Level 4.0
 	ContentTypeMp4AvcHigh     = ContentTypeMp4 + "; codecs=\"avc1.640028\""      // MPEG-4 AVC (H.264), High Level 4.0
+	ContentTypeMp4Avc3        = ContentTypeMp4 + "; codecs=\"avc3\""             // MPEG-4 AVC Bitstream
 	ContentTypeMp4Avc3Main    = ContentTypeMp4 + "; codecs=\"avc3.4d0028\""      // MPEG-4 AVC Bitstream, Main Profile, may not be supported on macOS
 	ContentTypeMp4Avc3High    = ContentTypeMp4 + "; codecs=\"avc3.640028\""      // MPEG-4 AVC Bitstream, High Profile, may not be supported on macOS
 	ContentTypeMp4Hvc         = ContentTypeMp4 + "; codecs=\"hvc1\""             // MPEG-4 HEVC (H.265)
@@ -43,6 +43,8 @@ const (
 	ContentTypeWebmVp8        = ContentTypeWebm + "; codecs=\"vp8\""
 	ContentTypeWebmVp9        = ContentTypeWebm + "; codecs=\"vp09.00.10.08\""
 	ContentTypeWebmAv1        = ContentTypeWebm + "; codecs=\"av01.2.10M.10\""
+	ContentTypeMkv            = "video/matroska"
+	ContentTypeMkvAv1         = ContentTypeMkv + "; codecs=\"av01.2.10M.10\""
 )
 
 // Standard ContentType identifiers for images and vector graphics.
