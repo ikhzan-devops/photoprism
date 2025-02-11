@@ -13,8 +13,8 @@
             <v-col cols="3" sm="2" class="form-thumb">
               <div>
                 <img
-                  :alt="model.Title"
-                  :src="model.thumbnailUrl('tile_500')"
+                  :alt="view.model.Title"
+                  :src="view.model.thumbnailUrl('tile_500')"
                   class="clickable"
                   @click.stop.prevent.exact="openPhoto()"
                 />
@@ -22,8 +22,8 @@
             </v-col>
             <v-col cols="9" sm="10" class="d-flex align-self-stretch flex-column ga-4">
               <v-text-field
-                v-model="model.Title"
-                :append-inner-icon="model.TitleSrc === 'manual' ? 'mdi-check' : ''"
+                v-model="view.model.Title"
+                :append-inner-icon="view.model.TitleSrc === 'manual' ? 'mdi-check' : ''"
                 :disabled="disabled"
                 :rules="[textRule]"
                 hide-details
@@ -34,8 +34,8 @@
                 class="input-title"
               ></v-text-field>
               <v-textarea
-                v-model="model.Caption"
-                :append-inner-icon="model.CaptionSrc === 'manual' ? 'mdi-check' : ''"
+                v-model="view.model.Caption"
+                :append-inner-icon="view.model.CaptionSrc === 'manual' ? 'mdi-check' : ''"
                 :disabled="disabled"
                 hide-details
                 autocomplete="off"
@@ -50,11 +50,13 @@
           </v-row>
           <v-row dense>
             <v-col cols="4" lg="2">
-              <v-autocomplete
-                v-model="model.Day"
+              <v-combobox
+                :model-value="view.model.Day > 0 ? view.model.Day : null"
                 :disabled="disabled"
                 :error="invalidDate"
                 :label="$gettext('Day')"
+                :placeholder="$gettext('Unknown')"
+                :prepend-inner-icon="$vuetify.display.xs ? undefined : 'mdi-calendar'"
                 autocomplete="off"
                 hide-details
                 hide-no-data
@@ -63,18 +65,19 @@
                 item-value="value"
                 density="comfortable"
                 validate-on="input"
-                :rules="rules.day(true)"
+                :rules="rules.day(false)"
                 class="input-day"
-                @update:model-value="syncTime"
+                @update:model-value="setDay"
               >
-              </v-autocomplete>
+              </v-combobox>
             </v-col>
             <v-col cols="4" lg="2">
-              <v-autocomplete
-                v-model="model.Month"
+              <v-combobox
+                :model-value="view.model.Month > 0 ? view.model.Month : null"
                 :disabled="disabled"
                 :error="invalidDate"
                 :label="$gettext('Month')"
+                :placeholder="$gettext('Unknown')"
                 autocomplete="off"
                 hide-details
                 hide-no-data
@@ -83,38 +86,40 @@
                 item-value="value"
                 density="comfortable"
                 validate-on="input"
-                :rules="rules.month(true)"
+                :rules="rules.month(false)"
                 class="input-month"
-                @update:model-value="syncTime"
+                @update:model-value="setMonth"
               >
-              </v-autocomplete>
+              </v-combobox>
             </v-col>
             <v-col cols="4" lg="2">
-              <v-autocomplete
-                v-model="model.Year"
+              <v-combobox
+                :model-value="view.model.Year > 0 ? view.model.Year : null"
                 :disabled="disabled"
                 :error="invalidDate"
                 :label="$gettext('Year')"
+                :placeholder="$gettext('Unknown')"
                 autocomplete="off"
                 hide-details
                 hide-no-data
-                :items="options.Years(1000)"
+                :items="options.Years(1900)"
                 item-title="text"
                 item-value="value"
                 density="comfortable"
                 validate-on="input"
-                :rules="rules.year(true, 1000)"
+                :rules="rules.year(false, 1000)"
                 class="input-year"
-                @update:model-value="syncTime"
+                @update:model-value="setYear"
               >
-              </v-autocomplete>
+              </v-combobox>
             </v-col>
             <v-col cols="6" lg="2">
               <v-text-field
                 v-model="time"
-                :append-inner-icon="model.TakenSrc === 'manual' ? 'mdi-check' : ''"
+                :append-inner-icon="view.model.TakenSrc === 'manual' ? 'mdi-check' : ''"
                 :disabled="disabled"
-                :label="model.timeIsUTC() ? $gettext('Time UTC') : $gettext('Local Time')"
+                :label="view.model.timeIsUTC() ? $gettext('Time UTC') : $gettext('Local Time')"
+                :prepend-inner-icon="$vuetify.display.xs ? undefined : 'mdi-clock-time-eight-outline'"
                 autocomplete="off"
                 autocorrect="off"
                 autocapitalize="none"
@@ -128,7 +133,7 @@
             </v-col>
             <v-col cols="6" lg="4">
               <v-autocomplete
-                v-model="model.TimeZone"
+                v-model="view.model.TimeZone"
                 :disabled="disabled"
                 :label="$gettext('Time Zone')"
                 hide-no-data
@@ -142,10 +147,10 @@
             </v-col>
             <v-col cols="12" sm="8" md="4">
               <v-autocomplete
-                v-model="model.Country"
-                :append-inner-icon="model.PlaceSrc === 'manual' ? 'mdi-check' : ''"
+                v-model="view.model.Country"
+                :append-inner-icon="view.model.PlaceSrc === 'manual' ? 'mdi-check' : ''"
                 :disabled="disabled"
-                :readonly="!!(model.Lat || model.Lng)"
+                :readonly="!!(view.model.Lat || view.model.Lng)"
                 :placeholder="$gettext('Country')"
                 hide-details
                 hide-no-data
@@ -163,7 +168,7 @@
             </v-col>
             <v-col cols="4" md="2">
               <v-text-field
-                v-model="model.Altitude"
+                v-model="view.model.Altitude"
                 :disabled="disabled"
                 hide-details
                 flat
@@ -181,8 +186,8 @@
             </v-col>
             <v-col cols="4" sm="6" md="3">
               <v-text-field
-                v-model="model.Lat"
-                :append-inner-icon="model.PlaceSrc === 'manual' ? 'mdi-check' : ''"
+                v-model="view.model.Lat"
+                :append-inner-icon="view.model.PlaceSrc === 'manual' ? 'mdi-check' : ''"
                 :disabled="disabled"
                 hide-details
                 autocomplete="off"
@@ -199,8 +204,8 @@
             </v-col>
             <v-col cols="4" sm="6" md="3">
               <v-text-field
-                v-model="model.Lng"
-                :append-inner-icon="model.PlaceSrc === 'manual' ? 'mdi-check' : ''"
+                v-model="view.model.Lng"
+                :append-inner-icon="view.model.PlaceSrc === 'manual' ? 'mdi-check' : ''"
                 :disabled="disabled"
                 hide-details
                 autocomplete="off"
@@ -217,8 +222,8 @@
             </v-col>
             <v-col cols="12" md="6" class="p-camera-select">
               <v-select
-                v-model="model.CameraID"
-                :append-inner-icon="model.CameraSrc === 'manual' ? 'mdi-check' : ''"
+                v-model="view.model.CameraID"
+                :append-inner-icon="view.model.CameraSrc === 'manual' ? 'mdi-check' : ''"
                 :disabled="disabled"
                 :placeholder="$gettext('Camera')"
                 :menu-props="{ maxHeight: 346 }"
@@ -235,7 +240,7 @@
             </v-col>
             <v-col cols="6" md="3">
               <v-text-field
-                v-model="model.Iso"
+                v-model="view.model.Iso"
                 :disabled="disabled"
                 hide-details
                 autocomplete="off"
@@ -251,7 +256,7 @@
             </v-col>
             <v-col cols="6" md="3">
               <v-text-field
-                v-model="model.Exposure"
+                v-model="view.model.Exposure"
                 :disabled="disabled"
                 hide-details
                 autocomplete="off"
@@ -267,8 +272,8 @@
             </v-col>
             <v-col cols="12" md="6" class="p-lens-select">
               <v-select
-                v-model="model.LensID"
-                :append-inner-icon="model.CameraSrc === 'manual' ? 'mdi-check' : ''"
+                v-model="view.model.LensID"
+                :append-inner-icon="view.model.CameraSrc === 'manual' ? 'mdi-check' : ''"
                 :disabled="disabled"
                 :placeholder="$gettext('Lens')"
                 :menu-props="{ maxHeight: 346 }"
@@ -285,7 +290,7 @@
             </v-col>
             <v-col cols="6" md="3">
               <v-text-field
-                v-model="model.FNumber"
+                v-model="view.model.FNumber"
                 :disabled="disabled"
                 hide-details
                 autocomplete="off"
@@ -301,7 +306,7 @@
             </v-col>
             <v-col cols="6" md="3">
               <v-text-field
-                v-model="model.FocalLength"
+                v-model="view.model.FocalLength"
                 :disabled="disabled"
                 hide-details
                 autocomplete="off"
@@ -317,8 +322,8 @@
           <v-row dense>
             <v-col cols="12" md="6">
               <v-textarea
-                v-model="model.Details.Subject"
-                :append-inner-icon="model.Details.SubjectSrc === 'manual' ? 'mdi-check' : ''"
+                v-model="view.model.Details.Subject"
+                :append-inner-icon="view.model.Details.SubjectSrc === 'manual' ? 'mdi-check' : ''"
                 :disabled="disabled"
                 :rules="[textRule]"
                 hide-details
@@ -333,8 +338,8 @@
             </v-col>
             <v-col cols="12" md="6">
               <v-text-field
-                v-model="model.Details.Copyright"
-                :append-inner-icon="model.Details.CopyrightSrc === 'manual' ? 'mdi-check' : ''"
+                v-model="view.model.Details.Copyright"
+                :append-inner-icon="view.model.Details.CopyrightSrc === 'manual' ? 'mdi-check' : ''"
                 :disabled="disabled"
                 :rules="[textRule]"
                 hide-details
@@ -347,8 +352,8 @@
             </v-col>
             <v-col cols="12" md="6">
               <v-text-field
-                v-model="model.Details.Artist"
-                :append-inner-icon="model.Details.ArtistSrc === 'manual' ? 'mdi-check' : ''"
+                v-model="view.model.Details.Artist"
+                :append-inner-icon="view.model.Details.ArtistSrc === 'manual' ? 'mdi-check' : ''"
                 :disabled="disabled"
                 :rules="[textRule]"
                 hide-details
@@ -361,8 +366,8 @@
             </v-col>
             <v-col cols="12" md="6">
               <v-textarea
-                v-model="model.Details.License"
-                :append-inner-icon="model.Details.LicenseSrc === 'manual' ? 'mdi-check' : ''"
+                v-model="view.model.Details.License"
+                :append-inner-icon="view.model.Details.LicenseSrc === 'manual' ? 'mdi-check' : ''"
                 :disabled="disabled"
                 :rules="[textRule]"
                 hide-details
@@ -377,8 +382,8 @@
             </v-col>
             <v-col cols="12" md="8">
               <v-textarea
-                v-model="model.Details.Keywords"
-                :append-inner-icon="model.Details.KeywordsSrc === 'manual' ? 'mdi-check' : ''"
+                v-model="view.model.Details.Keywords"
+                :append-inner-icon="view.model.Details.KeywordsSrc === 'manual' ? 'mdi-check' : ''"
                 :disabled="disabled"
                 hide-details
                 autocomplete="off"
@@ -392,8 +397,8 @@
             </v-col>
             <v-col cols="12" md="4">
               <v-textarea
-                v-model="model.Details.Notes"
-                :append-inner-icon="model.Details.NotesSrc === 'manual' ? 'mdi-check' : ''"
+                v-model="view.model.Details.Notes"
+                :append-inner-icon="view.model.Details.NotesSrc === 'manual' ? 'mdi-check' : ''"
                 :disabled="disabled"
                 hide-details
                 autocomplete="off"
@@ -416,7 +421,7 @@
           <v-btn
             color="highlight"
             variant="flat"
-            :disabled="!model?.wasChanged() && !inReview"
+            :disabled="!view.model?.wasChanged() && !inReview"
             class="action-apply action-approve"
             @click.stop="save(false)"
           >
@@ -432,17 +437,12 @@
 <script>
 import countries from "options/countries.json";
 import Thumb from "model/thumb";
-import Photo from "model/photo";
 import * as options from "options/options";
 import { rules } from "common/form";
 
 export default {
   name: "PTabPhotoDetails",
   props: {
-    model: {
-      type: Object,
-      default: () => new Photo(false),
-    },
     uid: {
       type: String,
       default: "",
@@ -450,6 +450,7 @@ export default {
   },
   data() {
     return {
+      view: this.$view.data(),
       disabled: !this.$config.feature("edit"),
       config: this.$config.values,
       all: {
@@ -476,13 +477,10 @@ export default {
       return this.config.lenses;
     },
     inReview() {
-      return this.featReview && this.model.Quality < 3;
+      return this.featReview && this.view.model.Quality < 3;
     },
   },
   watch: {
-    model() {
-      this.syncTime();
-    },
     uid() {
       this.syncTime();
     },
@@ -491,21 +489,54 @@ export default {
     this.syncTime();
   },
   methods: {
+    setDay(v) {
+      if (Number.isInteger(v?.value)) {
+        this.view.model.Day = v?.value;
+        this.syncTime();
+      } else if (!v) {
+        this.view.model.Day = -1;
+      } else if (this.rules.isNumberRange(v, 1, 31)) {
+        this.view.model.Day = Number(v);
+        this.syncTime();
+      }
+    },
+    setMonth(v) {
+      if (Number.isInteger(v?.value)) {
+        this.view.model.Month = v?.value;
+        this.syncTime();
+      } else if (!v) {
+        this.view.model.Month = -1;
+      } else if (this.rules.isNumberRange(v, 1, 12)) {
+        this.view.model.Month = Number(v);
+        this.syncTime();
+      }
+    },
+    setYear(v) {
+      if (Number.isInteger(v?.value)) {
+        this.view.model.Year = v?.value;
+        this.syncTime();
+      } else if (!v) {
+        this.view.model.Year = -1;
+      } else if (this.rules.isNumberRange(v, 1000, Number(new Date().getUTCFullYear()))) {
+        this.view.model.Year = Number(v);
+        this.syncTime();
+      }
+    },
     setTime() {
       if (this.rules.isTime(this.time)) {
         this.updateModel();
       }
     },
     syncTime() {
-      if (!this.model.hasId()) {
+      if (!this.view?.model.hasId()) {
         return;
       }
 
-      const taken = this.model.getDateTime();
+      const taken = this.view.model.getDateTime();
       this.time = taken.toFormat("HH:mm:ss");
     },
     pastePosition(event) {
-      // Auto-fills the lat and lng fields if the text in the clipboard contains two float values.
+      // Autofill the lat and lng fields if the text in the clipboard contains two float values.
       const clipboard = event.clipboardData ? event.clipboardData : window.clipboardData;
 
       if (!clipboard) {
@@ -526,20 +557,20 @@ export default {
 
         // Lat and long must be valid floating point numbers.
         if (!isNaN(lat) && lat >= -90 && lat <= 90 && !isNaN(lng) && lng >= -180 && lng <= 180) {
-          // Update model values.
-          this.model.Lat = lat;
-          this.model.Lng = lng;
+          // Update view.model values.
+          this.view.model.Lat = lat;
+          this.view.model.Lng = lng;
           // Prevent default action.
           event.preventDefault();
         }
       }
     },
     updateModel() {
-      if (!this.model.hasId()) {
+      if (!this.view?.model.hasId()) {
         return;
       }
 
-      let localDate = this.model.localDate(this.time);
+      let localDate = this.view.model.localDate(this.time);
 
       this.invalidDate = !localDate.isValid;
 
@@ -547,16 +578,16 @@ export default {
         return;
       }
 
-      if (this.model.Day === 0) {
-        this.model.Day = parseInt(localDate.toFormat("d"));
+      if (this.view.model.Day === 0) {
+        this.view.model.Day = parseInt(localDate.toFormat("d"));
       }
 
-      if (this.model.Month === 0) {
-        this.model.Month = parseInt(localDate.toFormat("L"));
+      if (this.view.model.Month === 0) {
+        this.view.model.Month = parseInt(localDate.toFormat("L"));
       }
 
-      if (this.model.Year === 0) {
-        this.model.Year = parseInt(localDate.toFormat("y"));
+      if (this.view.model.Year === 0) {
+        this.view.model.Year = parseInt(localDate.toFormat("y"));
       }
 
       const isoTime =
@@ -565,10 +596,10 @@ export default {
           includeOffset: false,
         }) + "Z";
 
-      this.model.TakenAtLocal = isoTime;
+      this.view.model.TakenAtLocal = isoTime;
 
-      if (this.model.currentTimeZoneUTC()) {
-        this.model.TakenAt = isoTime;
+      if (this.view.model.currentTimeZoneUTC()) {
+        this.view.model.TakenAt = isoTime;
       }
     },
     left() {
@@ -578,7 +609,7 @@ export default {
       this.$emit("prev");
     },
     openPhoto() {
-      this.$root.$refs.viewer.showThumbs(Thumb.fromFiles([this.model]), 0);
+      this.$lightbox.openModels(Thumb.fromFiles([this.view.model]), 0);
     },
     save(close) {
       if (this.invalidDate) {
@@ -588,7 +619,7 @@ export default {
 
       this.updateModel();
 
-      this.model.update().then(() => {
+      this.view.model.update().then(() => {
         if (close) {
           this.$emit("close");
         }

@@ -23,12 +23,14 @@ Additional information can be found in our Developer Guide:
 
 */
 
+import "common/debug";
 import "core-js/stable";
 import "regenerator-runtime/runtime";
 import "common/navigation";
 import $api from "common/api";
 import $notify from "common/notify";
-import $modal from "common/modal";
+import { $view } from "common/view";
+import { $lightbox } from "common/lightbox";
 import { PhotoClipboard } from "common/clipboard";
 import $event from "pubsub-js";
 import $log from "common/log";
@@ -68,6 +70,8 @@ const $isMobile =
   /Android|webOS|iPhone|iPad|iPod|BlackBerry|Mobile|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
   (navigator.maxTouchPoints && navigator.maxTouchPoints > 2);
 
+window.$isMobile = $isMobile;
+
 $config.progress(50);
 
 $config.update().finally(() => {
@@ -92,7 +96,8 @@ $config.update().finally(() => {
   // Assign helpers to VueJS prototype.
   app.config.globalProperties.$event = $event;
   app.config.globalProperties.$notify = $notify;
-  app.config.globalProperties.$modal = $modal;
+  app.config.globalProperties.$view = $view;
+  app.config.globalProperties.$lightbox = $lightbox;
   app.config.globalProperties.$session = $session;
   app.config.globalProperties.$api = $api;
   app.config.globalProperties.$log = $log;
@@ -159,13 +164,13 @@ $config.update().finally(() => {
   components.install(app);
 
   // Make scroll-pos-restore compatible with bfcache (required to work in PWA mode on iOS).
-  window.addEventListener("pagehide", (event) => {
-    if (event.persisted) {
+  window.addEventListener("pagehide", (ev) => {
+    if (ev.persisted) {
       localStorage.setItem("lastScrollPosBeforePageHide", JSON.stringify({ x: window.scrollX, y: window.scrollY }));
     }
   });
-  window.addEventListener("pageshow", (event) => {
-    if (event.persisted) {
+  window.addEventListener("pageshow", (ev) => {
+    if (ev.persisted) {
       const lastSavedScrollPos = localStorage.getItem("lastScrollPosBeforePageHide");
       if (lastSavedScrollPos !== undefined && lastSavedScrollPos !== null && lastSavedScrollPos !== "") {
         window.positionToRestore = JSON.parse(localStorage.getItem("lastScrollPosBeforePageHide"));
@@ -214,8 +219,8 @@ $config.update().finally(() => {
   });
 
   router.beforeEach((to) => {
-    if ($modal.active()) {
-      // Disable navigation when a fullscreen dialog or viewer is open.
+    if ($view.preventNavigation) {
+      // Disable navigation when a fullscreen dialog or lightbox is open.
       return false;
     } else if (to.matched.some((record) => record.meta.settings) && $config.values.disable.settings) {
       return { name: "home" };
