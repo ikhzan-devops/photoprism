@@ -141,7 +141,7 @@ The following is the status of unit testing against sqlite.
 Removing test database files...  
 find ./internal -type f -name ".test.*" -delete  
 Running all Go tests...  
-richgo test -parallel 1 -count 1 -cpu 1 -tags slow -timeout 20m ./pkg/... ./internal/...  
+richgo test -parallel 1 -count 1 -cpu 1 -tags="slow,develop" -timeout 20m ./pkg/... ./internal/...  
 
 | Status | Path/Test |
 | ------ | --------------------------------------------------------------------- |
@@ -156,13 +156,14 @@ richgo test -parallel 1 -count 1 -cpu 1 -tags slow -timeout 20m ./pkg/... ./inte
 | PASS | github.com/photoprism/photoprism/pkg/geo |
 | PASS | github.com/photoprism/photoprism/pkg/geo/pluscode |
 | PASS | github.com/photoprism/photoprism/pkg/geo/s2 |
-| PASS | github.com/photoprism/photoprism/pkg/header |
 | PASS | github.com/photoprism/photoprism/pkg/i18n |
 | PASS | github.com/photoprism/photoprism/pkg/list |
 | PASS | github.com/photoprism/photoprism/pkg/log/dummy |
 | PASS | github.com/photoprism/photoprism/pkg/log/level |
 | PASS | github.com/photoprism/photoprism/pkg/media |
 | PASS | github.com/photoprism/photoprism/pkg/media/colors |
+| PASS | github.com/photoprism/photoprism/pkg/media/http/header |
+| PASS | github.com/photoprism/photoprism/pkg/media/http/scheme |
 | PASS | github.com/photoprism/photoprism/pkg/media/projection |
 | PASS | github.com/photoprism/photoprism/pkg/media/video |
 | PASS | github.com/photoprism/photoprism/pkg/react |
@@ -171,6 +172,7 @@ richgo test -parallel 1 -count 1 -cpu 1 -tags slow -timeout 20m ./pkg/... ./inte
 | PASS | github.com/photoprism/photoprism/pkg/txt |
 | PASS | github.com/photoprism/photoprism/pkg/txt/clip |
 | PASS | github.com/photoprism/photoprism/pkg/txt/report |
+| PASS | github.com/photoprism/photoprism/pkg/vector |
 | PASS | github.com/photoprism/photoprism/internal/ai/classify |
 | PASS | github.com/photoprism/photoprism/internal/ai/face |
 | PASS | github.com/photoprism/photoprism/internal/ai/nsfw |
@@ -184,6 +186,11 @@ richgo test -parallel 1 -count 1 -cpu 1 -tags slow -timeout 20m ./pkg/... ./inte
 | PASS | github.com/photoprism/photoprism/internal/config/customize |
 | PASS | github.com/photoprism/photoprism/internal/config/pwa |
 | PASS | github.com/photoprism/photoprism/internal/config/ttl |
+| SKIP | github.com/photoprism/photoprism/internal/ffmpeg/apple	[no test files] |
+| SKIP | github.com/photoprism/photoprism/internal/ffmpeg/intel	[no test files] |
+| SKIP | github.com/photoprism/photoprism/internal/ffmpeg/nvidia	[no test files] |
+| SKIP | github.com/photoprism/photoprism/internal/ffmpeg/v4l	[no test files] |
+| SKIP | github.com/photoprism/photoprism/internal/ffmpeg/vaapi	[no test files] |
 | PASS | github.com/photoprism/photoprism/internal/entity |
 | SKIP | github.com/photoprism/photoprism/internal/testextras	[no test files] |
 | PASS | github.com/photoprism/photoprism/internal/entity/dbtest |
@@ -194,15 +201,18 @@ richgo test -parallel 1 -count 1 -cpu 1 -tags slow -timeout 20m ./pkg/... ./inte
 | PASS | github.com/photoprism/photoprism/internal/entity/sortby |
 | PASS | github.com/photoprism/photoprism/internal/event |
 | PASS | github.com/photoprism/photoprism/internal/ffmpeg |
+| PASS | github.com/photoprism/photoprism/internal/ffmpeg/encode |
 | PASS | github.com/photoprism/photoprism/internal/form |
 | PASS | github.com/photoprism/photoprism/internal/functions |
 | PASS | github.com/photoprism/photoprism/internal/meta |
 | PASS | github.com/photoprism/photoprism/internal/mutex |
+| PASS | github.com/photoprism/photoprism/internal/performancetest |
 | PASS | github.com/photoprism/photoprism/internal/photoprism |
 | PASS | github.com/photoprism/photoprism/internal/photoprism/backup |
 | PASS | github.com/photoprism/photoprism/internal/photoprism/get |
 | PASS | github.com/photoprism/photoprism/internal/server |
 | PASS | github.com/photoprism/photoprism/internal/server/limiter |
+| PASS | github.com/photoprism/photoprism/internal/server/process |
 | PASS | github.com/photoprism/photoprism/internal/server/wellknown |
 | PASS | github.com/photoprism/photoprism/internal/service |
 | PASS | github.com/photoprism/photoprism/internal/service/hub |
@@ -221,8 +231,8 @@ richgo test -parallel 1 -count 1 -cpu 1 -tags slow -timeout 20m ./pkg/... ./inte
 The following is the status of unit testing against mariadb, which drops the database as part of the init.  
 Resetting acceptance database...  
 mysql < scripts/sql/reset-acceptance.sql  
-Running all Go tests on MariaDB...
-PHOTOPRISM_TEST_DRIVER="mysql" PHOTOPRISM_TEST_DSN="root:photoprism@tcp(mariadb:4001)/acceptance?charset=utf8mb4,utf8&collation=utf8mb4_unicode_ci&parseTime=true" richgo test -parallel 1 -count 1 -cpu 1 -tags slow -timeout 20m ./pkg/... ./internal/...  
+Running all Go tests on MariaDB...  
+PHOTOPRISM_TEST_DRIVER="mysql" PHOTOPRISM_TEST_DSN="root:photoprism@tcp(mariadb:4001)/acceptance?charset=utf8mb4,utf8&collation=utf8mb4_unicode_ci&parseTime=true" richgo test -parallel 1 -count 1 -cpu 1 -tags="slow,develop" -timeout 20m ./pkg/... ./internal/...  
 | Status | Path/Test |
 | ------ | --------------------------------------------------------------------- |
 | PASS | github.com/photoprism/photoprism/pkg/authn |
@@ -236,13 +246,14 @@ PHOTOPRISM_TEST_DRIVER="mysql" PHOTOPRISM_TEST_DSN="root:photoprism@tcp(mariadb:
 | PASS | github.com/photoprism/photoprism/pkg/geo |
 | PASS | github.com/photoprism/photoprism/pkg/geo/pluscode |
 | PASS | github.com/photoprism/photoprism/pkg/geo/s2 |
-| PASS | github.com/photoprism/photoprism/pkg/header |
 | PASS | github.com/photoprism/photoprism/pkg/i18n |
 | PASS | github.com/photoprism/photoprism/pkg/list |
 | PASS | github.com/photoprism/photoprism/pkg/log/dummy |
 | PASS | github.com/photoprism/photoprism/pkg/log/level |
 | PASS | github.com/photoprism/photoprism/pkg/media |
 | PASS | github.com/photoprism/photoprism/pkg/media/colors |
+| PASS | github.com/photoprism/photoprism/pkg/media/http/header |
+| PASS | github.com/photoprism/photoprism/pkg/media/http/scheme |
 | PASS | github.com/photoprism/photoprism/pkg/media/projection |
 | PASS | github.com/photoprism/photoprism/pkg/media/video |
 | PASS | github.com/photoprism/photoprism/pkg/react |
@@ -251,21 +262,26 @@ PHOTOPRISM_TEST_DRIVER="mysql" PHOTOPRISM_TEST_DSN="root:photoprism@tcp(mariadb:
 | PASS | github.com/photoprism/photoprism/pkg/txt |
 | PASS | github.com/photoprism/photoprism/pkg/txt/clip |
 | PASS | github.com/photoprism/photoprism/pkg/txt/report |
+| PASS | github.com/photoprism/photoprism/pkg/vector |
 | PASS | github.com/photoprism/photoprism/internal/ai/classify |
 | PASS | github.com/photoprism/photoprism/internal/ai/face |
 | PASS | github.com/photoprism/photoprism/internal/ai/nsfw |
-| SKIP | github.com/photoprism/photoprism/internal/entity/legacy	[no test files] |
 | PASS | github.com/photoprism/photoprism/internal/api |
 | PASS | github.com/photoprism/photoprism/internal/auth/acl |
 | PASS | github.com/photoprism/photoprism/internal/auth/oidc |
 | PASS | github.com/photoprism/photoprism/internal/auth/session |
 | PASS | github.com/photoprism/photoprism/internal/commands |
+| SKIP | github.com/photoprism/photoprism/internal/entity/legacy	[no test files] |
 | PASS | github.com/photoprism/photoprism/internal/config |
 | PASS | github.com/photoprism/photoprism/internal/config/customize |
 | PASS | github.com/photoprism/photoprism/internal/config/pwa |
 | PASS | github.com/photoprism/photoprism/internal/config/ttl |
 | PASS | github.com/photoprism/photoprism/internal/entity |
-| SKIP | github.com/photoprism/photoprism/internal/testextras	[no test files] |
+| SKIP | github.com/photoprism/photoprism/internal/ffmpeg/apple	[no test files] |
+| SKIP | github.com/photoprism/photoprism/internal/ffmpeg/intel	[no test files] |
+| SKIP | github.com/photoprism/photoprism/internal/ffmpeg/nvidia	[no test files] |
+| SKIP | github.com/photoprism/photoprism/internal/ffmpeg/v4l	[no test files] |
+| SKIP | github.com/photoprism/photoprism/internal/ffmpeg/vaapi	[no test files] |
 | PASS | github.com/photoprism/photoprism/internal/entity/dbtest |
 | PASS | github.com/photoprism/photoprism/internal/entity/migrate |
 | PASS | github.com/photoprism/photoprism/internal/entity/query |
@@ -274,15 +290,19 @@ PHOTOPRISM_TEST_DRIVER="mysql" PHOTOPRISM_TEST_DSN="root:photoprism@tcp(mariadb:
 | PASS | github.com/photoprism/photoprism/internal/entity/sortby |
 | PASS | github.com/photoprism/photoprism/internal/event |
 | PASS | github.com/photoprism/photoprism/internal/ffmpeg |
+| PASS | github.com/photoprism/photoprism/internal/ffmpeg/encode |
 | PASS | github.com/photoprism/photoprism/internal/form |
 | PASS | github.com/photoprism/photoprism/internal/functions |
 | PASS | github.com/photoprism/photoprism/internal/meta |
 | PASS | github.com/photoprism/photoprism/internal/mutex |
+| PASS | github.com/photoprism/photoprism/internal/performancetest |
 | PASS | github.com/photoprism/photoprism/internal/photoprism |
 | PASS | github.com/photoprism/photoprism/internal/photoprism/backup |
 | PASS | github.com/photoprism/photoprism/internal/photoprism/get |
+| SKIP | github.com/photoprism/photoprism/internal/testextras	[no test files] |
 | PASS | github.com/photoprism/photoprism/internal/server |
 | PASS | github.com/photoprism/photoprism/internal/server/limiter |
+| PASS | github.com/photoprism/photoprism/internal/server/process |
 | PASS | github.com/photoprism/photoprism/internal/server/wellknown |
 | PASS | github.com/photoprism/photoprism/internal/service |
 | PASS | github.com/photoprism/photoprism/internal/service/hub |
@@ -298,175 +318,208 @@ PHOTOPRISM_TEST_DRIVER="mysql" PHOTOPRISM_TEST_DSN="root:photoprism@tcp(mariadb:
 
 
 The following is current state of acceptance testing against sqlite:  
+Running auth-mode tests in Chrome...
 ```
 > photoprism@1 testcafe
-> testcafe chrome --headless=new --test-grep ^(Common|Core)\:* --test-meta mode=auth --config-file ./testcaferc.json tests/acceptance
+> testcafe chrome --headless=new --test-grep ^(Multi-Window)\:* --test-meta mode=auth --config-file ./testcaferc.json --experimental-multiple-windows tests/acceptance
 ```
- Running tests in:  
- - Chrome 128.0.0.0 / Ubuntu 24.04  
+Running tests in:
+ - Chrome 133.0.0.0 / Ubuntu 24.10
 
- Test authentication  
- ✓ Common: Login and Logout  
- ✓ Common: Login with wrong credentials  
- ✓ Common: Change password  
- ✓ Common: Delete Clipboard on logout  
-  
- Test components  
- ✓ Common: Mobile Toolbar  
-  
- Test account settings  
- ✓ Core: Sign in with recovery code  
- ✓ Core: Create App Password  
- ✓ Core: Check App Password has limited permissions and last updated is set  
- ✓ Core: Try to login with invalid credentials/insufficient scope  
- ✓ Core: Delete App Password  
- ✓ Common: Try to activate 2FA with wrong password/passcode  
-  
- Test general settings  
- ✓ Common: Disable delete  
- ✓ Common: Change language  
- ✓ Common: Disable pages: import, originals, logs, moments, places, library  
- ✓ Common: Disable people and labels  
- ✓ Common: Disable private, archive and quality filter  
- ✓ Common: Disable upload, download, edit and share  
-  
- Test link sharing  
- ✓ Common: Create, view, delete shared albums  
- ✓ Common: Verify visitor role has limited permissions  
-  
-  
- 19 passed (29m 11s)  
+ Test link sharing
+ ✓ Multi-Window: Verify visitor role has limited permissions
 
- Warnings (2):  
-- TestCafe cannot interact with the <div title="Logout" class="v-list__tile__action">...</div> element because another element obstructs it.
-- TestCafe cannot interact with the <button type="button" class="action-clear v-btn v-btn--floating v-btn--small theme--dark accent">...</button> element because another element obstructs it.
-  
+
+ 1 passed (3m 45s)
+
+ ```
+> photoprism@1 testcafe
+> testcafe chrome --headless=new --test-grep ^(Common|Core)\:* --test-meta mode=auth --config-file ./testcaferc.json tests/acceptance
+ ```
+ 
+  Running tests in:
+ - Chrome 133.0.0.0 / Ubuntu 24.10
+
+ Test authentication
+ ✓ Common: Login and Logout
+ ✓ Common: Login with wrong credentials
+ ✓ Common: Change password
+ ✓ Common: Delete Clipboard on logout
+
+ Test components
+ ✓ Common: Mobile Toolbar
+
+ Test account settings
+ ✓ Core: Sign in with recovery code
+ ✓ Core: Create App Password
+ ✓ Core: Check App Password has limited permissions and last updated is set
+ ✓ Core: Try to login with invalid credentials/insufficient scope
+ ✓ Core: Delete App Password
+ ✓ Common: Try to activate 2FA with wrong password/passcode
+
+ Test general settings
+ ✓ Common: Disable delete
+ ✓ Common: Change language
+ ✓ Common: Disable pages: import, originals, logs, moments, places, library
+ ✓ Common: Disable people and labels
+ ✓ Common: Disable private, archive and quality filter
+ ✓ Common: Disable upload, download, edit and share
+
+ Test link sharing
+ ✓ Common: Create, view, delete shared albums
+
+
+ 18 passed (33m 21s)
+
+ Warnings (4):
+ --
+  TestCafe cannot interact with the <i class="mdi-power mdi v-icon notranslate v-theme--default v-icon--size-default" aria-hidden="true"></i> element because another element obstructs it.
+  TestCafe cannot interact with the <button type="button" class="v-btn v-btn--disabled v-btn--flat v-theme--default text-on-surface-variant v-btn--density-default v-btn--size-default v-btn--variant-text v-tab" disabled="" tabindex="-1" role="tab" aria-selected="false" id="tab-labels" value="labels">...</button> element because another element obstructs it.
+  TestCafe cannot interact with the <button type="button" class="v-btn v-btn--disabled v-btn--flat v-theme--default text-on-surface-variant v-btn--density-default v-btn--size-default v-btn--variant-text v-tab" disabled="" tabindex="-1" role="tab" aria-selected="false" id="tab-people" value="people">...</button> element because another element obstructs it.
+  TestCafe cannot interact with the <button type="button" class="v-btn v-btn--flat v-btn--icon v-theme--default bg-grey-darken-2 v-btn--density-comfortable v-btn--size-small v-btn--variant-flat action-clear" style="">...</button> element because another element obstructs it.
+
 
 Running public-mode tests in Chrome...
 ```
-(cd frontend &&	npm run testcafe -- "chrome --headless=new" --test-grep "^(Common|Core)\:*" --test-meta mode=public --config-file ./testcaferc.json "tests/acceptance")
+> photoprism@1 testcafe
+> testcafe chrome --headless=new --test-grep ^(Multi-Window)\:* --test-meta mode=public --config-file ./testcaferc.json --experimental-multiple-windows tests/acceptance
+```
+ Running tests in:
+ - Chrome 133.0.0.0 / Ubuntu 24.10
 
+ Test photos
+ ✓ Multi-Window: Navigate from card view to place
+ ✓ Multi-Window: Navigate from card view to photos taken at the same date
+
+ Search and open photo from places
+ ✓ Multi-Window: Test places
+
+
+ 3 passed (1m 15s)
+
+```
 > photoprism@1 testcafe
 > testcafe chrome --headless=new --test-grep ^(Common|Core)\:* --test-meta mode=public --config-file ./testcaferc.json tests/acceptance
 ```
- Running tests in:  
- - Chrome 128.0.0.0 / Ubuntu 24.04  
+ Running tests in:
+ - Chrome 133.0.0.0 / Ubuntu 24.10
 
- Test albums  
- ✓ Common: Create/delete album on /albums  
- ✓ Common: Create/delete album during add to album  
- ✓ Common: Update album details  
- ✓ Common: Add/Remove Photos to/from album  
- ✓ Common: Use album search and filters  
- ✓ Common: Test album autocomplete  
- ✓ Common: Create, Edit, delete sharing link  
- ✓ Common: Verify album sort options  
-  
- Test calendar  
- ✓ Common: View calendar  
- ✓ Common: Update calendar details  
- ✓ Common: Create, Edit, delete sharing link for calendar  
- ✓ Common: Create/delete album-clone from calendar  
- ✓ Common: Verify calendar sort options  
-  
- Test components  
- ✓ Common: Test filter options  
- ✓ Common: Fullscreen mode  
- ✓ Common: Mosaic view  
- ✓ Common: List view  
- ✓ Common: Card view  
- ✓ Common: Mobile Toolbar  
-  
- Test folders  
- ✓ Common: View folders  
- ✓ Common: Update folder details  
- ✓ Common: Create, Edit, delete sharing link  
- ✓ Common: Create/delete album-clone from folder  
- ✓ Common: Verify folder sort options  
-  
- Test labels  
- ✓ Common: Remove/Activate Add/Delete Label from photo  
- ✓ Common: Toggle between important and all labels  
- ✓ Common: Rename Label  
- ✓ Common: Add label to album  
- ✓ Common: Delete label  
-  
- Import file from folder  
- ✓ Common: Import files from folder using copy  
-  
- Test index  
- ✓ Common: Index files from folder  
-  
- Test moments  
- ✓ Common: Update moment details  
- ✓ Common: Create, Edit, delete sharing link for moment  
- ✓ Common: Create/delete album-clone from moment  
- ✓ Common: Verify moment sort options  
-  
- Test files  
- ✓ Common: Navigate in originals  
- ✓ Common: Add original files to album  
- ✓ Common: Download available in originals  
-  
- Test people  
- ✓ Common: Add name to new face and rename subject  
- ✓ Common: Add + Reject name on people tab  
- ✓ Common: Test mark subject as favorite  
- ✓ Common: Test new face autocomplete  
- ✓ Common: Remove face  
- ✓ Common: Hide face  
- ✓ Common: Hide person  
-  
- Test photos archive and private functionalities  
- ✓ Common: Private/unprivate photo/video using clipboard and list  
- ✓ Common: Archive/restore video, photos, private photos and review photos using clipboard  
- ✓ Common: Check that archived files are not shown in monochrome/panoramas/stacks/scans/review/albums/favorites/private/videos/calendar/moments/states/labels/folders/originals  
- ✓ Common: Check that private files are not shown in monochrome/panoramas/stacks/scans/review/albums/favorites/archive/videos/calendar/moments/states/labels/folders/originals  
- ✓ Common: Check delete all dialog  
-  
- Does not work in container and we have no content-disposition header anymore  
- ø Common: Test download jpg file from context menu and fullscreen  
- ø Common: Test download video from context menu  
- ø Common: Test download multiple jpg files from context menu  
- ø Common: Test raw file from context menu and fullscreen mode  
-  
- Test photos upload and delete  
- ✓ Core: Upload + Delete jpg/json  
- ✓ Core: Upload + Delete video  
- ✓ Core: Upload to existing Album + Delete  
- ✓ Core: Upload jpg to new Album + Delete  
- ✓ Core: Try uploading nsfw file  
- ✓ Core: Try uploading txt file  
-  
- Test photos  
- ✖ Common: Scroll to top (also fails on GormV1)  
- ✓ Common: Download single photo/video using clipboard and fullscreen mode  
- ✓ Common: Approve photo using approve and by adding location  
- ✓ Common: Like/dislike photo/video  
- ✓ Common: Edit photo/video  
- ø Common: Navigate from card view to place  
- ✓ Common: Mark photos/videos as panorama/scan  
- ✓ Common: Navigate from card view to photos taken at the same date  
-  
- Search and open photo from places  
- ✓ Common: Test places  
-  
- Test about  
- ✓ Core: About page is displayed with all links  
- ✓ Core: License page is displayed with all links  
-  
- Test stacks  
-desktop  
- ✓ Common: View all files of a stack  
- ✓ Common: Change primary file  
- ✓ Common: Ungroup files  
- ✓ Common: Delete non primary file  
-  
- Test states  
- ✓ Common: Update state details  
- ✓ Common: Create, Edit, delete sharing link for state  
- ✓ Common: Create/delete album-clone from state  
-  
-  
- 1/73 failed (1h 03m 27s)  
- 5 skipped  
+ Test albums
+ ✓ Common: Create/delete album on /albums
+ ✓ Common: Create/delete album during add to album
+ ✓ Common: Update album details
+ ✓ Common: Add/Remove Photos to/from album
+ ✓ Common: Use album search and filters
+ ✓ Common: Test album autocomplete
+ ✓ Common: Create, Edit, delete sharing link
+ ✓ Common: Verify album sort options
+
+ Test calendar
+ ✓ Common: View calendar
+ ✓ Common: Update calendar details
+ ✓ Common: Create, Edit, delete sharing link for calendar
+ ✓ Common: Create/delete album-clone from calendar
+ ✓ Common: Verify calendar sort options
+
+ Test components
+ ✓ Common: Test filter options
+ ✓ Common: Fullscreen mode
+ ✓ Common: Mosaic view
+ ✓ Common: List view
+ ✓ Common: Card view
+ ✓ Common: Mobile Toolbar
+
+ Test folders
+ ✓ Common: View folders
+ ✓ Common: Update folder details
+ ✓ Common: Create, Edit, delete sharing link
+ ✓ Common: Create/delete album-clone from folder
+ ✓ Common: Verify folder sort options
+
+ Test labels
+ ✓ Common: Remove/Activate Add/Delete Label from photo
+ ✓ Common: Toggle between important and all labels
+ ✓ Common: Rename Label
+ ✓ Common: Add label to album
+ ✓ Common: Delete label
+
+ Import file from folder
+ ✓ Common: Import files from folder using copy
+
+ Test index
+ ✓ Common: Index files from folder
+
+ Test moments
+ ✓ Common: Update moment details
+ ✓ Common: Create, Edit, delete sharing link for moment
+ ✓ Common: Create/delete album-clone from moment
+ ✓ Common: Verify moment sort options
+
+ Test files
+ ✓ Common: Navigate in originals
+ ✓ Common: Add original files to album
+ ✓ Common: Download available in originals
+
+ Test people
+ ✓ Common: Add name to new face and rename subject
+ ✓ Common: Add + Reject name on people tab
+ ✓ Common: Test mark subject as favorite
+ ✓ Common: Test new face autocomplete
+ ✓ Common: Remove face
+ ✓ Common: Hide face
+ ✓ Common: Hide person
+
+ Test photos archive and private functionalities
+ ✓ Common: Private/unprivate photo/video using clipboard
+ ✓ Common: Archive/restore video, photos, private photos and review photos using clipboard
+ ✓ Common: Check that archived files are not shown in monochrome/panoramas/stacks/scans/review/albums/favorites/private/videos/calendar/moments/states/labels/folders/originals
+ ✓ Common: Check that private files are not shown in monochrome/panoramas/stacks/scans/review/albums/favorites/archive/videos/calendar/moments/states/labels/folders/originals
+ ✓ Common: Check delete all dialog
+
+ Does not work in container and we have no content-disposition header anymore
+ - Common: Test download jpg file from context menu and fullscreen
+ - Common: Test download video from context menu
+ - Common: Test download multiple jpg files from context menu
+ - Common: Test raw file from context menu and fullscreen mode
+
+ Test photos upload and delete
+ ✓ Core: Upload + Delete jpg/json
+ ✓ Core: Upload + Delete video
+ ✓ Core: Upload to existing Album + Delete
+ ✓ Core: Upload jpg to new Album + Delete
+ ✓ Core: Try uploading nsfw file
+ ✓ Core: Try uploading txt file
+
+ Test photos
+ ✓ Common: Scroll to top
+ ✓ Common: Download single photo/video using clipboard and fullscreen mode
+ ✓ Common: Approve photo using approve and by adding location
+ ✓ Common: Like/dislike photo/video
+ ✓ Common: Edit photo/video
+ ✓ Common: Mark photos/videos as panorama/scan
+
+ Test about
+ ✓ Core: About page is displayed with all links
+ ✓ Core: License page is displayed with all links
+
+ Test stacks
+desktop
+ ✓ Common: View all files of a stack
+ ✓ Common: Change primary file
+ ✓ Common: Ungroup files
+ ✓ Common: Delete non primary file
+
+ Test states
+ ✓ Common: Update state details
+ ✓ Common: Create, Edit, delete sharing link for state
+ ✓ Common: Create/delete album-clone from state
+
+
+ 71 passed (1h 11m 39s)
+ 4 skipped
+
+ Warnings (3):
+ --
+  TestCafe cannot interact with the <button type="button" class="v-btn v-btn--flat v-btn--icon v-theme--default v-btn--density-default v-btn--size-default v-btn--variant-text action-close">...</button> element because another element obstructs it.
+  TestCafe cannot interact with the <button type="button" class="v-btn v-btn--flat v-btn--icon v-theme--default bg-grey-darken-2 v-btn--density-comfortable v-btn--size-small v-btn--variant-elevated action-clear" style="">...</button> element because another element obstructs it.
+  TestCafe cannot interact with the <button type="button" class="v-btn v-btn--disabled v-btn--flat v-theme--default bg-highlight v-btn--density-default v-btn--size-default v-btn--variant-flat action-apply action-approve" disabled="">...</button> element because another element obstructs it.
