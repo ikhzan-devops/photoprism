@@ -33,8 +33,8 @@ test.meta("testID", "photos-001").meta({ mode: "public" })("Common: Scroll to to
     .expect(Selector("div.type-image.result").nth(0).visible)
     .ok();
 
-  await scroll(0, 1400);
-  await scroll(0, 900);
+    await t.scroll('bottom');
+    await t.pressKey('pageup');
 
   await t.click(Selector("button.p-scroll")).expect(getcurrentPosition()).eql(0);
 });
