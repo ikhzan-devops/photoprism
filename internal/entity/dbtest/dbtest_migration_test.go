@@ -634,6 +634,89 @@ func TestDialectSQLite3(t *testing.T) {
 
 }
 
+func TestDialectMysql(t *testing.T) {
+	if testing.Short() {
+		t.Skip("skipping test in short mode.")
+	}
+	dbtestMutex.Lock()
+	defer dbtestMutex.Unlock()
+
+	t.Run("ValidMigration", func(t *testing.T) {
+		// Prepare migrate mariadb db.
+		if dumpName, err := filepath.Abs("../migrate/testdata/migrate_mysql.sql"); err != nil {
+			t.Fatal(err)
+		} else if err = exec.Command("mariadb", "-u", "migrate", "-pmigrate", "migrate",
+			"-e", "source "+dumpName).Run(); err != nil {
+			t.Fatal(err)
+		}
+
+		log = logrus.StandardLogger()
+		log.SetLevel(logrus.TraceLevel)
+
+		db, err := gorm.Open(mysql.Open(
+			"migrate:migrate@tcp(mariadb:4001)/migrate?charset=utf8mb4,utf8&collation=utf8mb4_unicode_ci&parseTime=true"),
+			&gorm.Config{
+				Logger: logger.New(
+					log,
+					logger.Config{
+						SlowThreshold:             time.Second,  // Slow SQL threshold
+						LogLevel:                  logger.Error, // Log level
+						IgnoreRecordNotFoundError: true,         // Ignore ErrRecordNotFound error for logger
+						ParameterizedQueries:      true,         // Don't include params in the SQL log
+						Colorful:                  false,        // Disable color
+					},
+				),
+			},
+		)
+
+		if err != nil || db == nil {
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			return
+		}
+
+		sqldb, _ := db.DB()
+		defer sqldb.Close()
+
+		opt := migrate.Opt(true, true, nil)
+
+		// Make sure that migrate and version is done, as the Once doesn't work as it has already been set before we opened the new database..
+		if err = db.AutoMigrate(&migrate.Migration{}); err != nil {
+			t.Error(err)
+		}
+		if err = db.AutoMigrate(&migrate.Version{}); err != nil {
+			t.Error(err)
+		}
+
+		// Setup and capture SQL Logging output
+		buffer := bytes.Buffer{}
+		log.SetOutput(&buffer)
+
+		entity.Entities.Migrate(db, opt)
+		// The bad thing is that the above panics, but doesn't return an error.
+
+		// Reset logger
+		log.SetOutput(os.Stdout)
+
+		log.Info(buffer.String())
+		// Detect a foreign key issue
+		assert.NotContains(t, buffer.String(), "errno: 150")
+
+		stmt := db.Table("photos").Where("photo_caption = '' OR photo_caption IS NULL")
+
+		count := int64(0)
+
+		// Fetch count from database.
+		if err = stmt.Count(&count).Error; err != nil {
+			t.Error(err)
+		} else {
+			assert.Equal(t, int64(0), count)
+		}
+	})
+}
+
 // Db returns the default *gorm.DB connection.
 func Db() *gorm.DB {
 	if dbConn == nil {
