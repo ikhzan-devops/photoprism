@@ -5,6 +5,8 @@
     max-width="500"
     class="p-dialog modal-dialog p-settings-passcode"
     @keydown.esc="close"
+    @after-enter="afterEnter"
+    @after-leave="afterLeave"
   >
     <v-form
       ref="form"
@@ -46,7 +48,7 @@
                   autocomplete="current-password"
                   class="input-password text-selectable"
                   prepend-inner-icon="mdi-lock"
-                  :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                  :append-inner-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
                   @click:append-inner="showPassword = !showPassword"
                   @keyup.enter="onSetup"
                 ></v-text-field>
@@ -215,7 +217,7 @@
                   :placeholder="$gettext('Password')"
                   class="input-password text-selectable"
                   prepend-inner-icon="mdi-lock"
-                  :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                  :append-inner-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
                   @click:append-inner="showPassword = !showPassword"
                   @keyup.enter="onDeactivate"
                 ></v-text-field>
@@ -260,7 +262,10 @@
 export default {
   name: "PSettingsPasscode",
   props: {
-    visible: Boolean,
+    visible: {
+      type: Boolean,
+      default: false,
+    },
     model: {
       type: Object,
       default: () => this.$session.getUser(),
@@ -304,10 +309,7 @@ export default {
   watch: {
     visible: function (show) {
       if (show) {
-        this.$view.enter(this);
         this.reset();
-      } else {
-        this.$view.leave(this);
       }
     },
   },
@@ -317,6 +319,12 @@ export default {
     }
   },
   methods: {
+    afterEnter() {
+      this.$view.enter(this);
+    },
+    afterLeave() {
+      this.$view.leave(this);
+    },
     reset() {
       this.code = "";
       this.password = "";

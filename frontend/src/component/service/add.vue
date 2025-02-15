@@ -1,5 +1,13 @@
 <template>
-  <v-dialog :model-value="visible" persistent max-width="500" class="p-dialog p-service-add" @keydown.esc="close">
+  <v-dialog
+    :model-value="visible"
+    persistent
+    max-width="500"
+    class="p-dialog p-service-add"
+    @keydown.esc="close"
+    @after-enter="afterEnter"
+    @after-leave="afterLeave"
+  >
     <v-form ref="form" validate-on="invalid-input" accept-charset="UTF-8" tabindex="1" @submit.prevent>
       <v-card>
         <v-card-title class="d-flex justify-start align-center ga-3">
@@ -42,7 +50,7 @@
                 autocomplete="new-password"
                 :label="$gettext('Password')"
                 :placeholder="$gettext('optional')"
-                :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                :append-inner-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
                 :type="showPassword ? 'text' : 'password'"
                 @click:append-inner="showPassword = !showPassword"
               ></v-text-field>
@@ -76,7 +84,10 @@ import * as options from "options/options";
 export default {
   name: "PServiceAdd",
   props: {
-    visible: Boolean,
+    visible: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -93,16 +104,19 @@ export default {
   watch: {
     visible: function (show) {
       if (show) {
-        this.$view.enter(this);
         this.loading = false;
         this.showPassword = false;
         this.model = new Service();
-      } else {
-        this.$view.leave(this);
       }
     },
   },
   methods: {
+    afterEnter() {
+      this.$view.enter(this);
+    },
+    afterLeave() {
+      this.$view.leave(this);
+    },
     close() {
       this.$emit("close");
     },

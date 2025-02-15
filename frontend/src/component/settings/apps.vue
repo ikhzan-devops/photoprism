@@ -5,6 +5,8 @@
     max-width="610"
     class="p-dialog modal-dialog p-settings-apps"
     @keydown.esc="close"
+    @after-enter="afterEnter"
+    @after-leave="afterLeave"
   >
     <v-form
       ref="form"
@@ -41,7 +43,7 @@
                   autocapitalize="none"
                   autocomplete="current-password"
                   class="input-password text-monospace text-selectable"
-                  :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                  :append-inner-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
                   prepend-inner-icon="mdi-lock"
                   @click:append-inner="showPassword = !showPassword"
                   @keyup.enter="onConfirm"
@@ -262,7 +264,10 @@ export default {
     PConfirmAction,
   },
   props: {
-    visible: Boolean,
+    visible: {
+      type: Boolean,
+      default: false,
+    },
     model: {
       type: Object,
       default: () => new User(null),
@@ -333,11 +338,8 @@ export default {
   watch: {
     visible: function (show) {
       if (show) {
-        this.$view.enter(this);
         this.reset();
         this.find();
-      } else {
-        this.$view.leave(this);
       }
     },
   },
@@ -347,6 +349,12 @@ export default {
     }
   },
   methods: {
+    afterEnter() {
+      this.$view.enter(this);
+    },
+    afterLeave() {
+      this.$view.leave(this);
+    },
     onCopyAppPassword() {
       if (this.$util.copyText(this.appPassword)) {
         this.appPasswordCopied = true;
