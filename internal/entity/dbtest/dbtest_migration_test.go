@@ -38,6 +38,95 @@ func TestDialectSQLite3(t *testing.T) {
 	dbtestMutex.Lock()
 	defer dbtestMutex.Unlock()
 
+	t.Run("ValidMigration", func(t *testing.T) {
+		// Prepare temporary sqlite db.
+		testDbOriginal := "../migrate/testdata/migrate_sqlite3"
+		testDbTemp := "../migrate/testdata/migrate_sqlite3.db"
+		if !fs.FileExists(testDbOriginal) {
+			t.Fatal(testDbOriginal + " not found")
+		}
+		dumpName, err := filepath.Abs(testDbTemp)
+		_ = os.Remove(dumpName)
+		if err != nil {
+			t.Fatal(err)
+		} else if err = fs.Copy(testDbOriginal, dumpName); err != nil {
+			t.Fatal(err)
+		}
+		defer os.Remove(dumpName)
+
+		log = logrus.StandardLogger()
+		log.SetLevel(logrus.TraceLevel)
+
+		dsn := fmt.Sprintf("%v?_foreign_keys=on&_busy_timeout=5000", dumpName)
+
+		db, err := gorm.Open(sqlite.Open(dsn),
+			&gorm.Config{
+				Logger: logger.New(
+					log,
+					logger.Config{
+						SlowThreshold:             time.Second,  // Slow SQL threshold
+						LogLevel:                  logger.Error, // Log level
+						IgnoreRecordNotFoundError: true,         // Ignore ErrRecordNotFound error for logger
+						ParameterizedQueries:      false,        // Don't include params in the SQL log
+						Colorful:                  false,        // Disable color
+					},
+				),
+			},
+		)
+
+		if err != nil || db == nil {
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			return
+		}
+
+		sqldb, _ := db.DB()
+		defer sqldb.Close()
+
+		opt := migrate.Opt(true, true, nil)
+
+		// Make sure that migrate and version is done, as the Once doesn't work as it has already been set before we opened the new database..
+		if err = db.AutoMigrate(&migrate.Migration{}); err != nil {
+			t.Error(err)
+		}
+		if err = db.AutoMigrate(&migrate.Version{}); err != nil {
+			t.Error(err)
+		}
+
+		// Setup and capture SQL Logging output
+		buffer := bytes.Buffer{}
+		log.SetOutput(&buffer)
+
+		entity.Entities.Migrate(db, opt)
+		// The bad thing is that the above panics, but doesn't return an error.
+
+		// Reset logger
+		log.SetOutput(os.Stdout)
+
+		for i := 0; i < len(strings.Split(buffer.String(), "\n")); i++ {
+			log.Info(strings.Split(buffer.String(), "\n")[i])
+		}
+
+		// Expect 4 errors (auth_? tables missing)
+		// And a blank record.
+		assert.Equal(t, 5, len(strings.Split(buffer.String(), "\n")))
+		assert.Equal(t, 0, len(strings.Split(buffer.String(), "\n")[4]))
+
+		stmt := db.Table("photos").Where("photo_caption = '' OR photo_caption IS NULL")
+
+		count := int64(0)
+
+		// Fetch count from database.
+		if err = stmt.Count(&count).Error; err != nil {
+			t.Error(err)
+		} else {
+			assert.Equal(t, int64(0), count)
+		}
+
+	})
+
 	t.Run("InvalidDataUpgrade", func(t *testing.T) {
 		// Prepare temporary sqlite db.
 		testDbOriginal := "../migrate/testdata/migrate_sqlite3"
@@ -94,23 +183,28 @@ func TestDialectSQLite3(t *testing.T) {
 
 		// INSERT INTO "photos_albums" ("photo_uid", "album_uid", "order", "hidden", "missing", "created_at", "updated_at") VALUES ('pksx180k4pog19ig', 'aksx1801bih9b9w1', '0', '0', '0', '2024-10-07 10:23:25', '2024-10-07 10:23:25');
 
+		log.Info("Begin Test of Migration")
+
 		opt := migrate.Opt(true, true, nil)
 
 		// Make sure that migrate and version is done, as the Once doesn't work as it has already been set before we opened the new database..
 		err = db.AutoMigrate(&migrate.Migration{})
 		err = db.AutoMigrate(&migrate.Version{})
 
-		// Run pre-migrations.
-		if err = migrate.Run(db, opt.Pre()); err != nil {
-			t.Error(err)
-		}
+		// Setup and capture SQL Logging output
+		buffer := bytes.Buffer{}
+		log.SetOutput(&buffer)
 
 		entity.Entities.Migrate(db, opt)
+		// The bad thing is that the above panics, but doesn't return an error.
 
-		// Run migrations.
-		if err = migrate.Run(db, opt); err != nil {
-			t.Error(err)
-		}
+		// Reset logger
+		log.SetOutput(os.Stdout)
+
+		// Expect 4 errors (auth_? tables missing)
+		// And a blank record.
+		assert.Equal(t, 5, len(strings.Split(buffer.String(), "\n")))
+		assert.Equal(t, 0, len(strings.Split(buffer.String(), "\n")[4]))
 
 		stmt := db.Table("photos").Where("photo_caption = '' OR photo_caption IS NULL")
 
@@ -178,17 +272,20 @@ func TestDialectSQLite3(t *testing.T) {
 		err = db.AutoMigrate(&migrate.Migration{})
 		err = db.AutoMigrate(&migrate.Version{})
 
-		// Run pre-migrations.
-		if err = migrate.Run(db, opt.Pre()); err != nil {
-			t.Error(err)
-		}
+		// Setup and capture SQL Logging output
+		buffer := bytes.Buffer{}
+		log.SetOutput(&buffer)
 
 		entity.Entities.Migrate(db, opt)
+		// The bad thing is that the above panics, but doesn't return an error.
 
-		// Run migrations.
-		if err = migrate.Run(db, opt); err != nil {
-			t.Error(err)
-		}
+		// Reset logger
+		log.SetOutput(os.Stdout)
+
+		// Expect 3 errors (no such table accounts, and missing account_id in files_sync and files_share)
+		// And a blank record.
+		assert.Equal(t, 4, len(strings.Split(buffer.String(), "\n")))
+		assert.Equal(t, 0, len(strings.Split(buffer.String(), "\n")[3]))
 
 		elapsed := time.Since(start)
 
@@ -265,17 +362,20 @@ func TestDialectSQLite3(t *testing.T) {
 		version := migrate.FirstOrCreateVersion(db, migrate.NewVersion("Gorm For SQLite", "V2 Upgrade"))
 		version.Migrated(db)
 
-		// Run pre-migrations.
-		if err = migrate.Run(db, opt.Pre()); err != nil {
-			t.Error(err)
-		}
+		// Setup and capture SQL Logging output
+		buffer := bytes.Buffer{}
+		log.SetOutput(&buffer)
 
 		entity.Entities.Migrate(db, opt)
+		// The bad thing is that the above panics, but doesn't return an error.
 
-		// Run migrations.
-		if err = migrate.Run(db, opt); err != nil {
-			t.Error(err)
-		}
+		// Reset logger
+		log.SetOutput(os.Stdout)
+
+		// Expect 3 errors (no such table accounts, and missing account_id in files_sync and files_share)
+		// And a blank record.
+		assert.Equal(t, 4, len(strings.Split(buffer.String(), "\n")))
+		assert.Equal(t, 0, len(strings.Split(buffer.String(), "\n")[3]))
 
 		elapsed := time.Since(start)
 
@@ -348,17 +448,20 @@ func TestDialectSQLite3(t *testing.T) {
 		err = db.AutoMigrate(&migrate.Migration{})
 		err = db.AutoMigrate(&migrate.Version{})
 
-		// Run pre-migrations.
-		if err = migrate.Run(db, opt.Pre()); err != nil {
-			t.Error(err)
-		}
+		// Setup and capture SQL Logging output
+		buffer := bytes.Buffer{}
+		log.SetOutput(&buffer)
 
 		entity.Entities.Migrate(db, opt)
+		// The bad thing is that the above panics, but doesn't return an error.
 
-		// Run migrations.
-		if err = migrate.Run(db, opt); err != nil {
-			t.Error(err)
-		}
+		// Reset logger
+		log.SetOutput(os.Stdout)
+
+		// Expect 3 errors (no such table accounts, and missing account_id in files_sync and files_share)
+		// And a blank record.
+		assert.Equal(t, 4, len(strings.Split(buffer.String(), "\n")))
+		assert.Equal(t, 0, len(strings.Split(buffer.String(), "\n")[3]))
 
 		elapsed := time.Since(start)
 
@@ -435,17 +538,20 @@ func TestDialectSQLite3(t *testing.T) {
 		version := migrate.FirstOrCreateVersion(db, migrate.NewVersion("Gorm For SQLite", "V2 Upgrade"))
 		version.Migrated(db)
 
-		// Run pre-migrations.
-		if err = migrate.Run(db, opt.Pre()); err != nil {
-			t.Error(err)
-		}
+		// Setup and capture SQL Logging output
+		buffer := bytes.Buffer{}
+		log.SetOutput(&buffer)
 
 		entity.Entities.Migrate(db, opt)
+		// The bad thing is that the above panics, but doesn't return an error.
 
-		// Run migrations.
-		if err = migrate.Run(db, opt); err != nil {
-			t.Error(err)
-		}
+		// Reset logger
+		log.SetOutput(os.Stdout)
+
+		// Expect 3 errors (no such table accounts, and missing account_id in files_sync and files_share)
+		// And a blank record.
+		assert.Equal(t, 4, len(strings.Split(buffer.String(), "\n")))
+		assert.Equal(t, 0, len(strings.Split(buffer.String(), "\n")[3]))
 
 		elapsed := time.Since(start)
 
@@ -518,17 +624,21 @@ func TestDialectSQLite3(t *testing.T) {
 		err = db.AutoMigrate(&migrate.Migration{})
 		err = db.AutoMigrate(&migrate.Version{})
 
-		// Run pre-migrations.
-		if err = migrate.Run(db, opt.Pre()); err != nil {
-			t.Error(err)
-		}
+		// Setup and capture SQL Logging output
+		buffer := bytes.Buffer{}
+		log.SetOutput(&buffer)
 
 		entity.Entities.Migrate(db, opt)
+		// The bad thing is that the above panics, but doesn't return an error.
 
-		// Run migrations.
-		if err = migrate.Run(db, opt); err != nil {
-			t.Error(err)
-		}
+		// Reset logger
+		log.SetOutput(os.Stdout)
+
+		// Expect 3 errors (no such table accounts, and missing account_id in files_sync and files_share)
+		// And a blank record.
+		assert.Equal(t, 4, len(strings.Split(buffer.String(), "\n")))
+		assert.Equal(t, 0, len(strings.Split(buffer.String(), "\n")[3]))
+
 		elapsed := time.Since(start)
 
 		stmt := db.Table("photos").Where("photo_uid IS NOT NULL")
@@ -604,17 +714,21 @@ func TestDialectSQLite3(t *testing.T) {
 		version := migrate.FirstOrCreateVersion(db, migrate.NewVersion("Gorm For SQLite", "V2 Upgrade"))
 		version.Migrated(db)
 
-		// Run pre-migrations.
-		if err = migrate.Run(db, opt.Pre()); err != nil {
-			t.Error(err)
-		}
+		// Setup and capture SQL Logging output
+		buffer := bytes.Buffer{}
+		log.SetOutput(&buffer)
 
 		entity.Entities.Migrate(db, opt)
+		// The bad thing is that the above panics, but doesn't return an error.
 
-		// Run migrations.
-		if err = migrate.Run(db, opt); err != nil {
-			t.Error(err)
-		}
+		// Reset logger
+		log.SetOutput(os.Stdout)
+
+		// Expect 3 errors (no such table accounts, and missing account_id in files_sync and files_share)
+		// And a blank record.
+		assert.Equal(t, 4, len(strings.Split(buffer.String(), "\n")))
+		assert.Equal(t, 0, len(strings.Split(buffer.String(), "\n")[3]))
+
 		elapsed := time.Since(start)
 
 		stmt := db.Table("photos").Where("photo_uid IS NOT NULL")
@@ -700,7 +814,10 @@ func TestDialectMysql(t *testing.T) {
 		// Reset logger
 		log.SetOutput(os.Stdout)
 
-		log.Info(buffer.String())
+		// Expect 2 errors (Error 1050 as table services already exists and Error 1054 as column auth_domain is missing)
+		// And a blank record.
+		assert.Equal(t, 3, len(strings.Split(buffer.String(), "\n")))
+		assert.Equal(t, 0, len(strings.Split(buffer.String(), "\n")[2]))
 		// Detect a foreign key issue
 		assert.NotContains(t, buffer.String(), "errno: 150")
 
