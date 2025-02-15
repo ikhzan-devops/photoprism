@@ -181,10 +181,6 @@ func TestDialectSQLite3(t *testing.T) {
 		_, err = sqldb.Exec("INSERT INTO photos_albums (photo_uid, album_uid, `order`, hidden, missing, created_at, updated_at) VALUES (?, ?, '0', '0', '0', ?, ?)", rnd.GenerateUID(PhotoUID), rnd.GenerateUID(AlbumUID), time.Now().UTC(), time.Now().UTC())
 		assert.Nil(t, err)
 
-		// INSERT INTO "photos_albums" ("photo_uid", "album_uid", "order", "hidden", "missing", "created_at", "updated_at") VALUES ('pksx180k4pog19ig', 'aksx1801bih9b9w1', '0', '0', '0', '2024-10-07 10:23:25', '2024-10-07 10:23:25');
-
-		log.Info("Begin Test of Migration")
-
 		opt := migrate.Opt(true, true, nil)
 
 		// Make sure that migrate and version is done, as the Once doesn't work as it has already been set before we opened the new database..
@@ -832,6 +828,178 @@ func TestDialectMysql(t *testing.T) {
 			assert.Equal(t, int64(0), count)
 		}
 	})
+
+	t.Run("InvalidDataUpgrade", func(t *testing.T) {
+		// Prepare migrate mariadb db.
+		if dumpName, err := filepath.Abs("../migrate/testdata/migrate_mysql.sql"); err != nil {
+			t.Fatal(err)
+		} else if err = exec.Command("mariadb", "-u", "migrate", "-pmigrate", "migrate",
+			"-e", "source "+dumpName).Run(); err != nil {
+			t.Fatal(err)
+		}
+
+		log = logrus.StandardLogger()
+		log.SetLevel(logrus.TraceLevel)
+
+		db, err := gorm.Open(mysql.Open(
+			"migrate:migrate@tcp(mariadb:4001)/migrate?charset=utf8mb4,utf8&collation=utf8mb4_unicode_ci&parseTime=true"),
+			&gorm.Config{
+				Logger: logger.New(
+					log,
+					logger.Config{
+						SlowThreshold:             time.Second,  // Slow SQL threshold
+						LogLevel:                  logger.Error, // Log level
+						IgnoreRecordNotFoundError: true,         // Ignore ErrRecordNotFound error for logger
+						ParameterizedQueries:      true,         // Don't include params in the SQL log
+						Colorful:                  false,        // Disable color
+					},
+				),
+			},
+		)
+
+		if err != nil || db == nil {
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			return
+		}
+
+		sqldb, _ := db.DB()
+		defer sqldb.Close()
+
+		// Load some invalid data into the database
+		AlbumUID := byte('a')
+		PhotoUID := byte('p')
+
+		_, err = sqldb.Exec("INSERT INTO photos_albums (photo_uid, album_uid, `order`, hidden, missing, created_at, updated_at) VALUES (?, ?, '0', '0', '0', ?, ?)", rnd.GenerateUID(PhotoUID), rnd.GenerateUID(AlbumUID), time.Now().UTC(), time.Now().UTC())
+		assert.Nil(t, err)
+
+		opt := migrate.Opt(true, true, nil)
+
+		// Make sure that migrate and version is done, as the Once doesn't work as it has already been set before we opened the new database..
+		err = db.AutoMigrate(&migrate.Migration{})
+		err = db.AutoMigrate(&migrate.Version{})
+
+		// Setup and capture SQL Logging output
+		buffer := bytes.Buffer{}
+		log.SetOutput(&buffer)
+
+		entity.Entities.Migrate(db, opt)
+		// The bad thing is that the above panics, but doesn't return an error.
+
+		// Reset logger
+		log.SetOutput(os.Stdout)
+
+		// Expect 2 errors (Error 1050 as table services already exists and Error 1054 as column auth_domain is missing)
+		// And a blank record.
+		assert.Equal(t, 3, len(strings.Split(buffer.String(), "\n")))
+		assert.Equal(t, 0, len(strings.Split(buffer.String(), "\n")[2]))
+
+		stmt := db.Table("photos").Where("photo_caption = '' OR photo_caption IS NULL")
+
+		count := int64(0)
+
+		// Fetch count from database.
+		if err = stmt.Count(&count).Error; err != nil {
+			t.Error(err)
+		} else {
+			assert.Equal(t, int64(0), count)
+		}
+	})
+
+	t.Run("OneKUpgradeTest_Auto", func(t *testing.T) {
+		// Prepare temporary mariadb db.
+		testDbOriginal := "../../../storage/test-1k.original.mysql"
+		if !fs.FileExists(testDbOriginal) {
+			generateDatabase(1000, "mysql", "migrate:migrate@tcp(mariadb:4001)/migrate?charset=utf8mb4,utf8&collation=utf8mb4_unicode_ci&parseTime=true", true, true)
+			resultFile := "--result-file=" + testDbOriginal
+			if err := exec.Command("mariadb-dump", "--user=migrate", "--password=migrate", "--lock-tables", "--databases", "migrate", resultFile).Run(); err != nil {
+				t.Fatal(err)
+			}
+		}
+
+		// Prepare migrate mariadb db.
+		if dumpName, err := filepath.Abs("../../../storage/test-1k.original.mysql"); err != nil {
+			t.Fatal(err)
+		} else if err = exec.Command("mariadb", "-u", "migrate", "-pmigrate", "migrate",
+			"-e", "source "+dumpName).Run(); err != nil {
+			t.Fatal(err)
+		}
+
+		start := time.Now()
+
+		log = logrus.StandardLogger()
+		log.SetLevel(logrus.TraceLevel)
+
+		db, err := gorm.Open(mysql.Open(
+			"migrate:migrate@tcp(mariadb:4001)/migrate?charset=utf8mb4,utf8&collation=utf8mb4_unicode_ci&parseTime=true"),
+			&gorm.Config{
+				Logger: logger.New(
+					log,
+					logger.Config{
+						SlowThreshold:             time.Second,  // Slow SQL threshold
+						LogLevel:                  logger.Error, // Log level
+						IgnoreRecordNotFoundError: true,         // Ignore ErrRecordNotFound error for logger
+						ParameterizedQueries:      true,         // Don't include params in the SQL log
+						Colorful:                  false,        // Disable color
+					},
+				),
+			},
+		)
+
+		if err != nil || db == nil {
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			return
+		}
+
+		sqldb, _ := db.DB()
+		defer sqldb.Close()
+
+		opt := migrate.Opt(true, true, nil)
+
+		// Make sure that migrate and version is done, as the Once doesn't work as it has already been set before we opened the new database..
+		err = db.AutoMigrate(&migrate.Migration{})
+		err = db.AutoMigrate(&migrate.Version{})
+
+		// Skip the Gorm Migration Speedup.
+		version := migrate.FirstOrCreateVersion(db, migrate.NewVersion("Gorm For SQLite", "V2 Upgrade"))
+		version.Migrated(db)
+
+		// Setup and capture SQL Logging output
+		buffer := bytes.Buffer{}
+		log.SetOutput(&buffer)
+
+		entity.Entities.Migrate(db, opt)
+		// The bad thing is that the above panics, but doesn't return an error.
+
+		// Reset logger
+		log.SetOutput(os.Stdout)
+
+		// Expect 3 errors (no such table accounts, and missing account_id in files_sync and files_share)
+		// And a blank record.
+		assert.Equal(t, 4, len(strings.Split(buffer.String(), "\n")))
+		assert.Equal(t, 0, len(strings.Split(buffer.String(), "\n")[3]))
+
+		elapsed := time.Since(start)
+
+		stmt := db.Table("photos").Where("photo_uid IS NOT NULL")
+
+		count := int64(0)
+
+		// Fetch count from database.
+		if err = stmt.Count(&count).Error; err != nil {
+			t.Error(err)
+		} else {
+			assert.Equal(t, int64(1000), count)
+		}
+
+		log.Info("Migration took ", elapsed)
+		assert.LessOrEqual(t, elapsed, time.Minute)
+	})
 }
 
 // Db returns the default *gorm.DB connection.
@@ -993,7 +1161,7 @@ func randomSHA1() string {
 	return string(result)
 }
 
-func generateDatabase(numberOfPhotos int, driver string, dsn string, dropdb bool, sqlitescript bool) {
+func generateDatabase(numberOfPhotos int, driver string, dsn string, dropdb bool, databasescript bool) {
 
 	// log = logrus.StandardLogger()
 	// log.SetLevel(logrus.TraceLevel)
@@ -1068,7 +1236,7 @@ func generateDatabase(numberOfPhotos int, driver string, dsn string, dropdb bool
 	photoCounter := int64(0)
 	if err := Db().Model(entity.Photo{}).Count(&photoCounter).Error; err != nil {
 		// Handle SQLite differently as it does table recreates on initial migrate, so we need to be able to simulate that.
-		if driver == SQLite3 && sqlitescript {
+		if driver == SQLite3 && databasescript {
 			filename := dsn
 			if strings.Index(dsn, "?") > 0 {
 				if strings.Index(dsn, ":") > 0 {
@@ -1101,6 +1269,16 @@ func generateDatabase(numberOfPhotos int, driver string, dsn string, dropdb bool
 					log.Error(errStr)
 					os.Exit(1)
 				}
+			}
+		} else if driver == MySQL && databasescript {
+			// Prepare migrate mariadb db.
+			if dumpName, err := filepath.Abs("./mariadb.sql"); err != nil {
+				log.Error(err)
+				os.Exit(1)
+			} else if err = exec.Command("mariadb", "-u", "migrate", "-pmigrate", "migrate",
+				"-e", "source "+dumpName).Run(); err != nil {
+				log.Error(err)
+				os.Exit(1)
 			}
 		} else {
 			entity.Entities.Migrate(Db(), migrate.Opt(true, false, nil))
