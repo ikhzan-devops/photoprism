@@ -127,7 +127,7 @@ func TestFilesByUID(t *testing.T) {
 			}
 			assert.Equal(t, 0, len(files))
 		} else {
-			// mariadb fails on this, and it's likely that postgress will
+			// mariadb fails on this, and it's likely that postgres will
 			assert.Error(t, err)
 		}
 	})
