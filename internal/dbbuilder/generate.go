@@ -26,11 +26,15 @@ import (
 	"github.com/photoprism/photoprism/pkg/txt"
 	"github.com/sirupsen/logrus"
 	"gorm.io/driver/mysql"
-	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
+
+var drivers = map[string]func(string) gorm.Dialector{
+	MySQL:   mysql.Open,
+	SQLite3: sqlite.Open,
+}
 
 var log = event.Log
 
@@ -46,11 +50,9 @@ func UTC() time.Time {
 	return time.Now().UTC()
 }
 
-// Set UTC as the default for created and updated timestamps.
-func init() {
-	gormConfig().NowFunc = func() time.Time {
-		return UTC()
-	}
+// Now returns the current time in UTC, truncated to seconds.
+func Now() time.Time {
+	return UTC().Truncate(time.Second)
 }
 
 // Db returns the default *gorm.DB connection.
@@ -71,17 +73,10 @@ func UnscopedDb() *gorm.DB {
 // Supported test databases.
 const (
 	MySQL           = "mysql"
-	Postgres        = "postgres"
-	SQLite3         = "sqlite"
+	SQLite3         = "sqlite3"
 	SQLiteTestDB    = ".test.db"
-	SQLiteMemoryDSN = ":memory:?cache=shared&_foreign_keys=on"
+	SQLiteMemoryDSN = ":memory:?cache=shared"
 )
-
-var drivers = map[string]func(string) gorm.Dialector{
-	MySQL:    mysql.Open,
-	Postgres: postgres.Open,
-	SQLite3:  sqlite.Open,
-}
 
 // dbConn is the global gorm.DB connection provider.
 var dbConn Gorm
@@ -135,7 +130,7 @@ func (g *DbConn) Open() {
 	}
 	log.Info("DB connection established successfully")
 
-	sqlDB, _ := db.DB()
+	sqlDB, err := db.DB()
 
 	sqlDB.SetMaxIdleConns(4)   // in config_db it uses c.DatabaseConnsIdle(), but we don't have the c here.
 	sqlDB.SetMaxOpenConns(256) // in config_db it uses c.DatabaseConns(), but we don't have the c here.
@@ -152,6 +147,25 @@ func (g *DbConn) Close() {
 		}
 
 		g.db = nil
+	}
+}
+
+func gormConfig() *gorm.Config {
+	return &gorm.Config{
+		Logger: logger.New(
+			log,
+			logger.Config{
+				SlowThreshold:             time.Second,  // Slow SQL threshold
+				LogLevel:                  logger.Error, // Log level
+				IgnoreRecordNotFoundError: true,         // Ignore ErrRecordNotFound error for logger
+				ParameterizedQueries:      true,         // Don't include params in the SQL log
+				Colorful:                  false,        // Disable color
+			},
+		),
+		// Set UTC as the default for created and updated timestamps.
+		NowFunc: func() time.Time {
+			return UTC()
+		},
 	}
 }
 
@@ -175,24 +189,14 @@ func HasDbProvider() bool {
 	return dbConn != nil
 }
 
-func gormConfig() *gorm.Config {
-	return &gorm.Config{
-		Logger: logger.New(
-			log,
-			logger.Config{
-				SlowThreshold:             time.Second,  // Slow SQL threshold
-				LogLevel:                  logger.Error, // Log level
-				IgnoreRecordNotFoundError: true,         // Ignore ErrRecordNotFound error for logger
-				ParameterizedQueries:      false,        // Don't include params in the SQL log
-				Colorful:                  false,        // Disable color
-			},
-		),
-		// Set UTC as the default for created and updated timestamps.
-		NowFunc: func() time.Time {
-			return UTC()
-		},
-		DisableForeignKeyConstraintWhenMigrating: true,
+var characterRunes = []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+
+func randomSHA1() string {
+	result := make([]rune, 32)
+	for i := range result {
+		result[i] = characterRunes[rand.IntN(len(characterRunes))]
 	}
+	return string(result)
 }
 
 func main() {
@@ -209,7 +213,7 @@ func main() {
 	event.AuditLog = log
 
 	flag.IntVar(&numberOfPhotos, "numberOfPhotos", 0, "Number of photos to generate")
-	flag.StringVar(&driver, "driver", "sqlite", "GORM driver to use.  Choose from sqlite, mysql and postgres")
+	flag.StringVar(&driver, "driver", "sqlite3", "GORM driver to use.  Choose from sqlite3, mysql and postgres")
 	flag.StringVar(&dsn, "dsn", "testdb.db", "DSN to access the database")
 	flag.BoolVar(&dropdb, "dropdb", false, "Drop/Delete the database")
 	flag.BoolVar(&sqlitescript, "sqlitescript", true, "Create an SQLite database from script")
@@ -288,6 +292,11 @@ func main() {
 	defer db.Close()
 
 	SetDbProvider(db)
+
+	// Disable journal to speed up.
+	if driver == SQLite3 {
+		Db().Exec("PRAGMA journal_mode=OFF")
+	}
 
 	start := time.Now()
 
@@ -559,21 +568,6 @@ func main() {
 		cell.PlaceID = placeId
 		Db().FirstOrCreate(cell)
 
-		// Allocate the keywords for this photo
-		keywordCount := rand.IntN(5)
-		keywords := []entity.Keyword{}
-		keywordStr := ""
-		for i := 0; i < keywordCount; i++ {
-			keyword := entity.Keyword{}
-			Db().Model(entity.Keyword{}).Where("id = ?", keywordRandoms[rand.IntN(len(keywordRandoms))]).First(&keyword)
-			keywords = append(keywords, keyword)
-			if len(keywordStr) > 0 {
-				keywordStr = fmt.Sprintf("%s,%s", keywordStr, keyword.Keyword)
-			} else {
-				keywordStr = keyword.Keyword
-			}
-		}
-
 		folder := entity.Folder{}
 		if res := Db().Model(entity.Folder{}).Where("path = ?", fmt.Sprintf("%04d", year)).First(&folder); res.RowsAffected == 0 {
 			folder = entity.NewFolder("/", fmt.Sprintf("%04d", year), time.Now().UTC())
@@ -637,7 +631,7 @@ func main() {
 			// Lens
 			// Cell
 			// Place
-			Keywords: keywords,
+			Keywords: []entity.Keyword{},
 			Albums:   []entity.Album{},
 			Files:    []entity.File{},
 			Labels:   []entity.PhotoLabel{},
@@ -651,10 +645,26 @@ func main() {
 			DeletedAt:   gorm.DeletedAt{},
 		}
 		Db().Create(&photo)
+		// Allocate the labels for this photo
 		for i := 0; i < labelCount; i++ {
 			photoLabel := entity.NewPhotoLabel(photo.ID, labelRandoms[rand.IntN(len(labelRandoms))], 0, entity.SrcMeta)
 			Db().FirstOrCreate(photoLabel)
 		}
+		// Allocate the keywords for this photo
+		keywordCount := rand.IntN(5)
+		keywordStr := ""
+		for i := 0; i < keywordCount; i++ {
+			photoKeyword := entity.PhotoKeyword{PhotoID: photo.ID, KeywordID: keywordRandoms[rand.IntN(len(keywordRandoms))]}
+			keyword := entity.Keyword{}
+			Db().Model(entity.Keyword{}).Where("id = ?", photoKeyword.KeywordID).First(&keyword)
+			Db().FirstOrCreate(&photoKeyword)
+			if len(keywordStr) > 0 {
+				keywordStr = fmt.Sprintf("%s,%s", keywordStr, keyword.Keyword)
+			} else {
+				keywordStr = keyword.Keyword
+			}
+		}
+
 		// Create File
 		file := entity.File{
 			//	ID
@@ -737,6 +747,20 @@ func main() {
 				UpdatedAt:     time.Now().UTC(),
 			}
 			Db().Create(&marker)
+			face := entity.Face{
+				ID:              randomSHA1(),
+				FaceSrc:         entity.SrcImage,
+				FaceKind:        1,
+				FaceHidden:      false,
+				SubjUID:         subject.SubjUID,
+				Samples:         5,
+				SampleRadius:    0.35,
+				Collisions:      5,
+				CollisionRadius: 0.5,
+				CreatedAt:       time.Now().UTC(),
+				UpdatedAt:       time.Now().UTC(),
+			}
+			Db().Create(&face)
 		}
 
 		// Add to Album
