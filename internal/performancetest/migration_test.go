@@ -34,533 +34,31 @@ func TestDialectSQLite3(t *testing.T) {
 	if testing.Short() {
 		t.Skip("skipping test in short mode.")
 	}
+	dbtestMutex.Lock()
+	defer dbtestMutex.Unlock()
 
 	t.Run("OneKUpgradeTest_Custom", func(t *testing.T) {
-		// Prepare temporary sqlite db.
-		testDbOriginal := "../../storage/test-1k.original"
-		testDbTemp := "../../storage/test-1k.db"
-		if !fs.FileExists(testDbOriginal) {
-			generateDatabase(1000, "sqlite3", testDbOriginal, true, true)
-		}
-		dumpName, err := filepath.Abs(testDbTemp)
-		_ = os.Remove(dumpName)
-		if err != nil {
-			t.Fatal(err)
-		} else if err = fs.Copy(testDbOriginal, dumpName); err != nil {
-			t.Fatal(err)
-		}
-		defer os.Remove(dumpName)
-
-		log = logrus.StandardLogger()
-		log.SetLevel(logrus.TraceLevel)
-
-		start := time.Now()
-		dsn := fmt.Sprintf("%v?_foreign_keys=on&_busy_timeout=5000", dumpName)
-
-		db, err := gorm.Open(sqlite.Open(dsn),
-			&gorm.Config{
-				Logger: logger.New(
-					log,
-					logger.Config{
-						SlowThreshold:             time.Second,  // Slow SQL threshold
-						LogLevel:                  logger.Error, // Log level
-						IgnoreRecordNotFoundError: true,         // Ignore ErrRecordNotFound error for logger
-						ParameterizedQueries:      false,        // Don't include params in the SQL log
-						Colorful:                  false,        // Disable color
-					},
-				),
-			},
-		)
-
-		if err != nil || db == nil {
-			if err != nil {
-				t.Fatal(err)
-			}
-
-			return
-		}
-
-		sqldb, _ := db.DB()
-		defer sqldb.Close()
-
-		opt := migrate.Opt(true, true, nil)
-
-		// Make sure that migrate and version is done, as the Once doesn't work as it has already been set before we opened the new database..
-		err = db.AutoMigrate(&migrate.Migration{})
-		err = db.AutoMigrate(&migrate.Version{})
-
-		// Setup and capture SQL Logging output
-		buffer := bytes.Buffer{}
-		log.SetOutput(&buffer)
-
-		entity.Entities.Migrate(db, opt)
-		// The bad thing is that the above panics, but doesn't return an error.
-
-		// Reset logger
-		log.SetOutput(os.Stdout)
-
-		// Expect 3 errors (no such table accounts, and missing account_id in files_sync and files_share)
-		// And a blank record.
-		assert.Equal(t, 4, len(strings.Split(buffer.String(), "\n")))
-		assert.Equal(t, 0, len(strings.Split(buffer.String(), "\n")[3]))
-
-		elapsed := time.Since(start)
-
-		stmt := db.Table("photos").Where("photo_uid IS NOT NULL")
-
-		count := int64(0)
-
-		// Fetch count from database.
-		if err = stmt.Count(&count).Error; err != nil {
-			t.Error(err)
-		} else {
-			assert.Equal(t, int64(1000), count)
-		}
-
-		log.Info("OneKUpgradeTest_Custom Migration took ", elapsed)
-		assert.LessOrEqual(t, elapsed, time.Minute)
+		sqliteMigration("../../storage/test-1k.original", "../../storage/test-1k.db", 1000, false, "OneKUpgradeTest_Custom", time.Minute, t)
 	})
 
 	t.Run("OneKUpgradeTest_Auto", func(t *testing.T) {
-		// Prepare temporary sqlite db.
-		testDbOriginal := "../../storage/test-1k.original"
-		testDbTemp := "../../storage/test-1k.db"
-		if !fs.FileExists(testDbOriginal) {
-			generateDatabase(1000, "sqlite3", testDbOriginal, true, true)
-		}
-		dumpName, err := filepath.Abs(testDbTemp)
-		_ = os.Remove(dumpName)
-		if err != nil {
-			t.Fatal(err)
-		} else if err = fs.Copy(testDbOriginal, dumpName); err != nil {
-			t.Fatal(err)
-		}
-		defer os.Remove(dumpName)
-
-		log = logrus.StandardLogger()
-		log.SetLevel(logrus.TraceLevel)
-
-		start := time.Now()
-		dsn := fmt.Sprintf("%v?_foreign_keys=on&_busy_timeout=5000", dumpName)
-
-		db, err := gorm.Open(sqlite.Open(dsn),
-			&gorm.Config{
-				Logger: logger.New(
-					log,
-					logger.Config{
-						SlowThreshold:             time.Second,  // Slow SQL threshold
-						LogLevel:                  logger.Error, // Log level
-						IgnoreRecordNotFoundError: true,         // Ignore ErrRecordNotFound error for logger
-						ParameterizedQueries:      false,        // Don't include params in the SQL log
-						Colorful:                  false,        // Disable color
-					},
-				),
-			},
-		)
-
-		if err != nil || db == nil {
-			if err != nil {
-				t.Fatal(err)
-			}
-
-			return
-		}
-
-		sqldb, _ := db.DB()
-		defer sqldb.Close()
-
-		opt := migrate.Opt(true, true, nil)
-
-		// Make sure that migrate and version is done, as the Once doesn't work as it has already been set before we opened the new database..
-		err = db.AutoMigrate(&migrate.Migration{})
-		err = db.AutoMigrate(&migrate.Version{})
-
-		// Skip the Gorm Migration Speedup.
-		version := migrate.FirstOrCreateVersion(db, migrate.NewVersion("Gorm For SQLite", "V2 Upgrade"))
-		version.Migrated(db)
-
-		// Setup and capture SQL Logging output
-		buffer := bytes.Buffer{}
-		log.SetOutput(&buffer)
-
-		entity.Entities.Migrate(db, opt)
-		// The bad thing is that the above panics, but doesn't return an error.
-
-		// Reset logger
-		log.SetOutput(os.Stdout)
-
-		// Expect 3 errors (no such table accounts, and missing account_id in files_sync and files_share)
-		// And a blank record.
-		assert.Equal(t, 4, len(strings.Split(buffer.String(), "\n")))
-		assert.Equal(t, 0, len(strings.Split(buffer.String(), "\n")[3]))
-
-		elapsed := time.Since(start)
-
-		stmt := db.Table("photos").Where("photo_uid IS NOT NULL")
-
-		count := int64(0)
-
-		// Fetch count from database.
-		if err = stmt.Count(&count).Error; err != nil {
-			t.Error(err)
-		} else {
-			assert.Equal(t, int64(1000), count)
-		}
-
-		log.Info("OneKUpgradeTest_Auto Migration took ", elapsed)
-		assert.LessOrEqual(t, elapsed, time.Minute)
+		sqliteMigration("../../storage/test-1k.original", "../../storage/test-1k.db", 1000, true, "OneKUpgradeTest_Auto", time.Minute, t)
 	})
 
 	t.Run("TenKUpgradeTest_Custom", func(t *testing.T) {
-		// Prepare temporary sqlite db.
-		testDbOriginal := "../../storage/test-10k.original"
-		testDbTemp := "../../storage/test-10k.db"
-		if !fs.FileExists(testDbOriginal) {
-			generateDatabase(10000, "sqlite3", testDbOriginal, true, true)
-		}
-		dumpName, err := filepath.Abs(testDbTemp)
-		_ = os.Remove(dumpName)
-		if err != nil {
-			t.Fatal(err)
-		} else if err = fs.Copy(testDbOriginal, dumpName); err != nil {
-			t.Fatal(err)
-		}
-		defer os.Remove(dumpName)
-
-		log = logrus.StandardLogger()
-		log.SetLevel(logrus.TraceLevel)
-
-		start := time.Now()
-		dsn := fmt.Sprintf("%v?_foreign_keys=on&_busy_timeout=5000", dumpName)
-
-		db, err := gorm.Open(sqlite.Open(dsn),
-			&gorm.Config{
-				Logger: logger.New(
-					log,
-					logger.Config{
-						SlowThreshold:             time.Second,  // Slow SQL threshold
-						LogLevel:                  logger.Error, // Log level
-						IgnoreRecordNotFoundError: true,         // Ignore ErrRecordNotFound error for logger
-						ParameterizedQueries:      false,        // Don't include params in the SQL log
-						Colorful:                  false,        // Disable color
-					},
-				),
-			},
-		)
-
-		if err != nil || db == nil {
-			if err != nil {
-				t.Fatal(err)
-			}
-
-			return
-		}
-
-		sqldb, _ := db.DB()
-		defer sqldb.Close()
-
-		opt := migrate.Opt(true, true, nil)
-
-		// Make sure that migrate and version is done, as the Once doesn't work as it has already been set before we opened the new database..
-		err = db.AutoMigrate(&migrate.Migration{})
-		err = db.AutoMigrate(&migrate.Version{})
-
-		// Setup and capture SQL Logging output
-		buffer := bytes.Buffer{}
-		log.SetOutput(&buffer)
-
-		entity.Entities.Migrate(db, opt)
-		// The bad thing is that the above panics, but doesn't return an error.
-
-		// Reset logger
-		log.SetOutput(os.Stdout)
-
-		// Expect 3 errors (no such table accounts, and missing account_id in files_sync and files_share)
-		// And a blank record.
-		assert.Equal(t, 4, len(strings.Split(buffer.String(), "\n")))
-		assert.Equal(t, 0, len(strings.Split(buffer.String(), "\n")[3]))
-
-		elapsed := time.Since(start)
-
-		stmt := db.Table("photos").Where("photo_uid IS NOT NULL")
-
-		count := int64(0)
-
-		// Fetch count from database.
-		if err = stmt.Count(&count).Error; err != nil {
-			t.Error(err)
-		} else {
-			assert.Equal(t, int64(10000), count)
-		}
-
-		log.Info("TenKUpgradeTest_Custom Migration took ", elapsed)
-		assert.LessOrEqual(t, elapsed, time.Minute)
+		sqliteMigration("../../storage/test-10k.original", "../../storage/test-10k.db", 10000, false, "TenKUpgradeTest_Custom", time.Minute, t)
 	})
 
 	t.Run("TenKUpgradeTest_Auto", func(t *testing.T) {
-		// Prepare temporary sqlite db.
-		testDbOriginal := "../../storage/test-10k.original"
-		testDbTemp := "../../storage/test-10k.db"
-		if !fs.FileExists(testDbOriginal) {
-			generateDatabase(10000, "sqlite3", testDbOriginal, true, true)
-		}
-		dumpName, err := filepath.Abs(testDbTemp)
-		_ = os.Remove(dumpName)
-		if err != nil {
-			t.Fatal(err)
-		} else if err = fs.Copy(testDbOriginal, dumpName); err != nil {
-			t.Fatal(err)
-		}
-		defer os.Remove(dumpName)
-
-		log = logrus.StandardLogger()
-		log.SetLevel(logrus.TraceLevel)
-
-		start := time.Now()
-		dsn := fmt.Sprintf("%v?_foreign_keys=on&_busy_timeout=5000", dumpName)
-
-		db, err := gorm.Open(sqlite.Open(dsn),
-			&gorm.Config{
-				Logger: logger.New(
-					log,
-					logger.Config{
-						SlowThreshold:             time.Second,  // Slow SQL threshold
-						LogLevel:                  logger.Error, // Log level
-						IgnoreRecordNotFoundError: true,         // Ignore ErrRecordNotFound error for logger
-						ParameterizedQueries:      false,        // Don't include params in the SQL log
-						Colorful:                  false,        // Disable color
-					},
-				),
-			},
-		)
-
-		if err != nil || db == nil {
-			if err != nil {
-				t.Fatal(err)
-			}
-
-			return
-		}
-
-		sqldb, _ := db.DB()
-		defer sqldb.Close()
-
-		opt := migrate.Opt(true, true, nil)
-
-		// Make sure that migrate and version is done, as the Once doesn't work as it has already been set before we opened the new database..
-		err = db.AutoMigrate(&migrate.Migration{})
-		err = db.AutoMigrate(&migrate.Version{})
-
-		// Skip the Gorm Migration Speedup.
-		version := migrate.FirstOrCreateVersion(db, migrate.NewVersion("Gorm For SQLite", "V2 Upgrade"))
-		version.Migrated(db)
-
-		// Setup and capture SQL Logging output
-		buffer := bytes.Buffer{}
-		log.SetOutput(&buffer)
-
-		entity.Entities.Migrate(db, opt)
-		// The bad thing is that the above panics, but doesn't return an error.
-
-		// Reset logger
-		log.SetOutput(os.Stdout)
-
-		// Expect 3 errors (no such table accounts, and missing account_id in files_sync and files_share)
-		// And a blank record.
-		assert.Equal(t, 4, len(strings.Split(buffer.String(), "\n")))
-		assert.Equal(t, 0, len(strings.Split(buffer.String(), "\n")[3]))
-
-		elapsed := time.Since(start)
-
-		stmt := db.Table("photos").Where("photo_uid IS NOT NULL")
-
-		count := int64(0)
-
-		// Fetch count from database.
-		if err = stmt.Count(&count).Error; err != nil {
-			t.Error(err)
-		} else {
-			assert.Equal(t, int64(10000), count)
-		}
-
-		log.Info("TenKUpgradeTest_Auto Migration took ", elapsed)
-		assert.LessOrEqual(t, elapsed, time.Minute)
+		sqliteMigration("../../storage/test-10k.original", "../../storage/test-10k.db", 10000, true, "TenKUpgradeTest_Auto", time.Minute, t)
 	})
 
 	t.Run("OneHundredKUpgradeTest_Custom", func(t *testing.T) {
-		// Prepare temporary sqlite db.
-		testDbOriginal := "../../storage/test-100k.original"
-		testDbTemp := "../../storage/test-100k.db"
-		if !fs.FileExists(testDbOriginal) {
-			generateDatabase(100000, "sqlite3", testDbOriginal, true, true)
-		}
-		dumpName, err := filepath.Abs(testDbTemp)
-		_ = os.Remove(dumpName)
-		if err != nil {
-			t.Fatal(err)
-		} else if err = fs.Copy(testDbOriginal, dumpName); err != nil {
-			t.Fatal(err)
-		}
-		defer os.Remove(dumpName)
-
-		log = logrus.StandardLogger()
-		log.SetLevel(logrus.TraceLevel)
-
-		dsn := fmt.Sprintf("%v?_foreign_keys=on&_busy_timeout=5000", dumpName)
-		start := time.Now()
-
-		db, err := gorm.Open(sqlite.Open(dsn),
-			&gorm.Config{
-				Logger: logger.New(
-					log,
-					logger.Config{
-						SlowThreshold:             time.Second,  // Slow SQL threshold
-						LogLevel:                  logger.Error, // Log level
-						IgnoreRecordNotFoundError: true,         // Ignore ErrRecordNotFound error for logger
-						ParameterizedQueries:      false,        // Don't include params in the SQL log
-						Colorful:                  false,        // Disable color
-					},
-				),
-			},
-		)
-
-		if err != nil || db == nil {
-			if err != nil {
-				t.Fatal(err)
-			}
-
-			return
-		}
-
-		sqldb, _ := db.DB()
-		defer sqldb.Close()
-
-		opt := migrate.Opt(true, true, nil)
-
-		// Make sure that migrate and version is done, as the Once doesn't work as it has already been set before we opened the new database..
-		err = db.AutoMigrate(&migrate.Migration{})
-		err = db.AutoMigrate(&migrate.Version{})
-
-		// Setup and capture SQL Logging output
-		buffer := bytes.Buffer{}
-		log.SetOutput(&buffer)
-
-		entity.Entities.Migrate(db, opt)
-		// The bad thing is that the above panics, but doesn't return an error.
-
-		// Reset logger
-		log.SetOutput(os.Stdout)
-
-		// Expect 3 errors (no such table accounts, and missing account_id in files_sync and files_share)
-		// And a blank record.
-		assert.Equal(t, 4, len(strings.Split(buffer.String(), "\n")))
-		assert.Equal(t, 0, len(strings.Split(buffer.String(), "\n")[3]))
-
-		elapsed := time.Since(start)
-
-		stmt := db.Table("photos").Where("photo_uid IS NOT NULL")
-
-		count := int64(0)
-
-		// Fetch count from database.
-		if err = stmt.Count(&count).Error; err != nil {
-			t.Error(err)
-		} else {
-			assert.Equal(t, int64(100000), count)
-		}
-
-		log.Info("OneHundredKUpgradeTest_Custom Migration took ", elapsed)
-		assert.LessOrEqual(t, elapsed, time.Minute*3)
+		sqliteMigration("../../storage/test-100k.original", "../../storage/test-100k.db", 100000, false, "OneHundredKUpgradeTest_Custom", time.Minute*5, t)
 	})
 
 	t.Run("OneHundredKUpgradeTest_Auto", func(t *testing.T) {
-		// Prepare temporary sqlite db.
-		testDbOriginal := "../../storage/test-100k.original"
-		testDbTemp := "../../storage/test-100k.db"
-		if !fs.FileExists(testDbOriginal) {
-			generateDatabase(100000, "sqlite3", testDbOriginal, true, true)
-		}
-		dumpName, err := filepath.Abs(testDbTemp)
-		_ = os.Remove(dumpName)
-		if err != nil {
-			t.Fatal(err)
-		} else if err = fs.Copy(testDbOriginal, dumpName); err != nil {
-			t.Fatal(err)
-		}
-		defer os.Remove(dumpName)
-
-		log = logrus.StandardLogger()
-		log.SetLevel(logrus.TraceLevel)
-
-		dsn := fmt.Sprintf("%v?_foreign_keys=on&_busy_timeout=5000", dumpName)
-		start := time.Now()
-
-		db, err := gorm.Open(sqlite.Open(dsn),
-			&gorm.Config{
-				Logger: logger.New(
-					log,
-					logger.Config{
-						SlowThreshold:             time.Second,  // Slow SQL threshold
-						LogLevel:                  logger.Error, // Log level
-						IgnoreRecordNotFoundError: true,         // Ignore ErrRecordNotFound error for logger
-						ParameterizedQueries:      false,        // Don't include params in the SQL log
-						Colorful:                  false,        // Disable color
-					},
-				),
-			},
-		)
-
-		if err != nil || db == nil {
-			if err != nil {
-				t.Fatal(err)
-			}
-
-			return
-		}
-
-		sqldb, _ := db.DB()
-		defer sqldb.Close()
-
-		opt := migrate.Opt(true, true, nil)
-
-		// Make sure that migrate and version is done, as the Once doesn't work as it has already been set before we opened the new database..
-		err = db.AutoMigrate(&migrate.Migration{})
-		err = db.AutoMigrate(&migrate.Version{})
-
-		// Skip the Gorm Migration Speedup.
-		version := migrate.FirstOrCreateVersion(db, migrate.NewVersion("Gorm For SQLite", "V2 Upgrade"))
-		version.Migrated(db)
-
-		// Setup and capture SQL Logging output
-		buffer := bytes.Buffer{}
-		log.SetOutput(&buffer)
-
-		entity.Entities.Migrate(db, opt)
-		// The bad thing is that the above panics, but doesn't return an error.
-
-		// Reset logger
-		log.SetOutput(os.Stdout)
-
-		// Expect 3 errors (no such table accounts, and missing account_id in files_sync and files_share)
-		// And a blank record.
-		assert.Equal(t, 4, len(strings.Split(buffer.String(), "\n")))
-		assert.Equal(t, 0, len(strings.Split(buffer.String(), "\n")[3]))
-
-		elapsed := time.Since(start)
-
-		stmt := db.Table("photos").Where("photo_uid IS NOT NULL")
-
-		count := int64(0)
-
-		// Fetch count from database.
-		if err = stmt.Count(&count).Error; err != nil {
-			t.Error(err)
-		} else {
-			assert.Equal(t, int64(100000), count)
-		}
-
-		log.Info("OneHundredKUpgradeTest_Auto Migration took ", elapsed)
-		assert.LessOrEqual(t, elapsed, time.Minute*3)
+		sqliteMigration("../../storage/test-100k.original", "../../storage/test-100k.db", 100000, true, "OneHundredKUpgradeTest_Auto", time.Minute*5, t)
 	})
 
 }
@@ -569,99 +67,211 @@ func TestDialectMysql(t *testing.T) {
 	if testing.Short() {
 		t.Skip("skipping test in short mode.")
 	}
+	dbtestMutex.Lock()
+	defer dbtestMutex.Unlock()
 
-	t.Run("OneKUpgradeTest_Auto", func(t *testing.T) {
-		// Prepare temporary mariadb db.
-		testDbOriginal := "../../storage/test-1k.original.mysql"
-		if !fs.FileExists(testDbOriginal) {
-			generateDatabase(1000, "mysql", "migrate:migrate@tcp(mariadb:4001)/migrate?charset=utf8mb4,utf8&collation=utf8mb4_unicode_ci&parseTime=true", true, true)
-			resultFile := "--result-file=" + testDbOriginal
-			if err := exec.Command("mariadb-dump", "--user=migrate", "--password=migrate", "--lock-tables", "--databases", "migrate", resultFile).Run(); err != nil {
-				t.Fatal(err)
-			}
-		}
+	t.Run("OneKUpgradeTest", func(t *testing.T) {
+		mysqlMigration("../../storage/test-1k.original.mysql", 1000, "OneKUpgradeTest", time.Minute, t)
+	})
 
-		// Prepare migrate mariadb db.
-		if dumpName, err := filepath.Abs("../../storage/test-1k.original.mysql"); err != nil {
+	t.Run("TenKUpgradeTest", func(t *testing.T) {
+		mysqlMigration("../../storage/test-10k.original.mysql", 10000, "TenKUpgradeTest", time.Minute, t)
+	})
+
+	t.Run("OneHundredKUpgradeTest", func(t *testing.T) {
+		mysqlMigration("../../storage/test-100k.original.mysql", 100000, "OneHundredKUpgradeTest", time.Minute*5, t)
+	})
+}
+
+func sqliteMigration(original string, temp string, numberOfRecords int, skipSpeedup bool, testname string, expectedDuration time.Duration, t *testing.T) {
+	// Prepare temporary sqlite db.
+	testDbOriginal := original
+	testDbTemp := temp
+	if !fs.FileExists(testDbOriginal) {
+		generateDatabase(numberOfRecords, "sqlite3", testDbOriginal, true, true)
+	}
+	dumpName, err := filepath.Abs(testDbTemp)
+	_ = os.Remove(dumpName)
+	if err != nil {
+		t.Fatal(err)
+	} else if err = fs.Copy(testDbOriginal, dumpName); err != nil {
+		t.Fatal(err)
+	}
+	defer os.Remove(dumpName)
+
+	log = logrus.StandardLogger()
+	log.SetLevel(logrus.TraceLevel)
+
+	start := time.Now()
+	dsn := fmt.Sprintf("%v?_foreign_keys=on&_busy_timeout=5000", dumpName)
+
+	db, err := gorm.Open(sqlite.Open(dsn),
+		&gorm.Config{
+			Logger: logger.New(
+				log,
+				logger.Config{
+					SlowThreshold:             time.Second,  // Slow SQL threshold
+					LogLevel:                  logger.Error, // Log level
+					IgnoreRecordNotFoundError: true,         // Ignore ErrRecordNotFound error for logger
+					ParameterizedQueries:      false,        // Don't include params in the SQL log
+					Colorful:                  false,        // Disable color
+				},
+			),
+		},
+	)
+
+	if err != nil || db == nil {
+		if err != nil {
 			t.Fatal(err)
-		} else if err = exec.Command("mariadb", "-u", "migrate", "-pmigrate", "migrate",
-			"-e", "source "+dumpName).Run(); err != nil {
-			t.Fatal(err)
 		}
 
-		start := time.Now()
+		return
+	}
 
-		log = logrus.StandardLogger()
-		log.SetLevel(logrus.TraceLevel)
+	sqldb, _ := db.DB()
+	defer sqldb.Close()
 
-		db, err := gorm.Open(mysql.Open(
-			"migrate:migrate@tcp(mariadb:4001)/migrate?charset=utf8mb4,utf8&collation=utf8mb4_unicode_ci&parseTime=true"),
-			&gorm.Config{
-				Logger: logger.New(
-					log,
-					logger.Config{
-						SlowThreshold:             time.Second,  // Slow SQL threshold
-						LogLevel:                  logger.Error, // Log level
-						IgnoreRecordNotFoundError: true,         // Ignore ErrRecordNotFound error for logger
-						ParameterizedQueries:      true,         // Don't include params in the SQL log
-						Colorful:                  false,        // Disable color
-					},
-				),
-			},
-		)
+	opt := migrate.Opt(true, true, nil)
 
-		if err != nil || db == nil {
-			if err != nil {
-				t.Fatal(err)
-			}
+	// Make sure that migrate and version is done, as the Once doesn't work as it has already been set before we opened the new database..
+	err = db.AutoMigrate(&migrate.Migration{})
+	err = db.AutoMigrate(&migrate.Version{})
 
-			return
-		}
-
-		sqldb, _ := db.DB()
-		defer sqldb.Close()
-
-		opt := migrate.Opt(true, true, nil)
-
-		// Make sure that migrate and version is done, as the Once doesn't work as it has already been set before we opened the new database..
-		err = db.AutoMigrate(&migrate.Migration{})
-		err = db.AutoMigrate(&migrate.Version{})
-
+	if skipSpeedup {
 		// Skip the Gorm Migration Speedup.
 		version := migrate.FirstOrCreateVersion(db, migrate.NewVersion("Gorm For SQLite", "V2 Upgrade"))
 		version.Migrated(db)
+	}
 
-		// Setup and capture SQL Logging output
-		buffer := bytes.Buffer{}
-		log.SetOutput(&buffer)
+	// Setup and capture SQL Logging output
+	buffer := bytes.Buffer{}
+	log.SetOutput(&buffer)
 
-		entity.Entities.Migrate(db, opt)
-		// The bad thing is that the above panics, but doesn't return an error.
+	entity.Entities.Migrate(db, opt)
+	// The bad thing is that the above panics, but doesn't return an error.
 
-		// Reset logger
-		log.SetOutput(os.Stdout)
+	// Reset logger
+	log.SetOutput(os.Stdout)
 
-		// Expect 3 errors (no such table accounts, and missing account_id in files_sync and files_share)
-		// And a blank record.
-		assert.Equal(t, 4, len(strings.Split(buffer.String(), "\n")))
-		assert.Equal(t, 0, len(strings.Split(buffer.String(), "\n")[3]))
+	// Expect 3 errors (no such table accounts, and missing account_id in files_sync and files_share)
+	// And a blank record.
+	assert.Equal(t, 4, len(strings.Split(buffer.String(), "\n")))
+	assert.Equal(t, 0, len(strings.Split(buffer.String(), "\n")[3]))
 
-		elapsed := time.Since(start)
+	elapsed := time.Since(start)
 
-		stmt := db.Table("photos").Where("photo_uid IS NOT NULL")
+	stmt := db.Table("photos").Where("photo_uid IS NOT NULL")
 
-		count := int64(0)
+	count := int64(0)
 
-		// Fetch count from database.
-		if err = stmt.Count(&count).Error; err != nil {
-			t.Error(err)
-		} else {
-			assert.Equal(t, int64(1000), count)
+	// Fetch count from database.
+	if err = stmt.Count(&count).Error; err != nil {
+		t.Error(err)
+	} else {
+		assert.Equal(t, int64(numberOfRecords), count)
+	}
+
+	log.Info(testname, " sqlite took ", elapsed)
+	assert.LessOrEqual(t, elapsed, expectedDuration)
+}
+
+func mysqlMigration(testDbOriginal string, numberOfRecords int, testname string, expectedDuration time.Duration, t *testing.T) {
+	// Prepare temporary mariadb db.
+	if !fs.FileExists(testDbOriginal) {
+		generateDatabase(numberOfRecords, "mysql", "migrate:migrate@tcp(mariadb:4001)/migrate?charset=utf8mb4,utf8&collation=utf8mb4_unicode_ci&parseTime=true", true, true)
+		resultFile := "--result-file=" + testDbOriginal
+		if err := exec.Command("mariadb-dump", "--user=migrate", "--password=migrate", "--lock-tables", "--add-drop-database", "--databases", "migrate", resultFile).Run(); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	// Prepare migrate mariadb db.
+	if dumpName, err := filepath.Abs(testDbOriginal); err != nil {
+		t.Fatal(err)
+	} else if err = exec.Command("mariadb", "-u", "migrate", "-pmigrate", "migrate",
+		"-e", "source "+dumpName).Run(); err != nil {
+		t.Fatal(err)
+	}
+
+	start := time.Now()
+
+	log = logrus.StandardLogger()
+	log.SetLevel(logrus.TraceLevel)
+
+	db, err := gorm.Open(mysql.Open(
+		"migrate:migrate@tcp(mariadb:4001)/migrate?charset=utf8mb4,utf8&collation=utf8mb4_unicode_ci&parseTime=true"),
+		&gorm.Config{
+			Logger: logger.New(
+				log,
+				logger.Config{
+					SlowThreshold:             time.Second,  // Slow SQL threshold
+					LogLevel:                  logger.Error, // Log level
+					IgnoreRecordNotFoundError: true,         // Ignore ErrRecordNotFound error for logger
+					ParameterizedQueries:      true,         // Don't include params in the SQL log
+					Colorful:                  false,        // Disable color
+				},
+			),
+		},
+	)
+
+	if err != nil || db == nil {
+		if err != nil {
+			t.Fatal(err)
 		}
 
-		log.Info("OneKUpgradeTest_Auto Migration took ", elapsed)
-		assert.LessOrEqual(t, elapsed, time.Minute)
-	})
+		return
+	}
+
+	sqldb, _ := db.DB()
+	defer sqldb.Close()
+
+	opt := migrate.Opt(true, true, nil)
+
+	// Make sure that migrate and version is done, as the Once doesn't work as it has already been set before we opened the new database..
+	err = db.AutoMigrate(&migrate.Migration{})
+	err = db.AutoMigrate(&migrate.Version{})
+
+	// Skip the Gorm Migration Speedup.
+	version := migrate.FirstOrCreateVersion(db, migrate.NewVersion("Gorm For SQLite", "V2 Upgrade"))
+	version.Migrated(db)
+
+	// Setup and capture SQL Logging output
+	buffer := bytes.Buffer{}
+	log.SetOutput(&buffer)
+
+	entity.Entities.Migrate(db, opt)
+	// The bad thing is that the above panics, but doesn't return an error.
+
+	// Reset logger
+	log.SetOutput(os.Stdout)
+
+	// Expect 3 errors (no such table accounts, and missing account_id in files_sync and files_share)
+	// And a blank record.
+	assert.Equal(t, 4, len(strings.Split(buffer.String(), "\n")))
+	if len(strings.Split(buffer.String(), "\n")) == 4 {
+		assert.Equal(t, 0, len(strings.Split(buffer.String(), "\n")[3]))
+	} else {
+		log.Error("Migration result not as expected.  Results follow:")
+		for i := 0; i < len(strings.Split(buffer.String(), "\n")); i++ {
+			log.Error(strings.Split(buffer.String(), "\n")[i])
+		}
+	}
+
+	elapsed := time.Since(start)
+
+	stmt := db.Table("photos").Where("photo_uid IS NOT NULL")
+
+	count := int64(0)
+
+	// Fetch count from database.
+	if err = stmt.Count(&count).Error; err != nil {
+		t.Error(err)
+	} else {
+		assert.Equal(t, int64(numberOfRecords), count)
+	}
+
+	log.Info(testname, " mysql took ", elapsed)
+	assert.LessOrEqual(t, elapsed, expectedDuration)
 }
 
 var characterRunes = []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
@@ -932,7 +542,7 @@ func generateDatabase(numberOfPhotos int, driver string, dsn string, dropdb bool
 
 	PlaceUID := byte('P')
 
-	file, _ := os.Open("../../../pkg/txt/resources/countries.txt")
+	file, _ := os.Open("../../pkg/txt/resources/countries.txt")
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
