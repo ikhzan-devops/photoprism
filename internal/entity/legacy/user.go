@@ -25,7 +25,7 @@ type User struct {
 	UserName       string         `gorm:"size:64;" json:"UserName" yaml:"UserName,omitempty"`
 	UserStatus     string         `gorm:"size:32;" json:"UserStatus" yaml:"UserStatus,omitempty"`
 	UserDisabled   bool           `json:"UserDisabled" yaml:"UserDisabled,omitempty"`
-	UserSettings   string         `gorm:"type:LONGTEXT;" json:"-" yaml:"-"`
+	UserSettings   string         `gorm:"size:-1;" json:"-" yaml:"-"`
 	PrimaryEmail   string         `gorm:"size:255;index;" json:"PrimaryEmail" yaml:"PrimaryEmail,omitempty"`
 	EmailConfirmed bool           `json:"EmailConfirmed" yaml:"EmailConfirmed,omitempty"`
 	BackupEmail    string         `gorm:"size:255;" json:"BackupEmail" yaml:"BackupEmail,omitempty"`
@@ -35,7 +35,7 @@ type User struct {
 	PersonAvatar   string         `gorm:"type:bytes;size:255;" json:"PersonAvatar" yaml:"PersonAvatar,omitempty"`
 	PersonLocation string         `gorm:"size:128;" json:"PersonLocation" yaml:"PersonLocation,omitempty"`
 	PersonBio      string         `gorm:"type:TEXT;" json:"PersonBio" yaml:"PersonBio,omitempty"`
-	PersonAccounts string         `gorm:"type:LONGTEXT;" json:"-" yaml:"-"`
+	PersonAccounts string         `gorm:"size:-1;" json:"-" yaml:"-"`
 	BusinessURL    string         `gorm:"type:bytes;size:255;" json:"BusinessURL" yaml:"BusinessURL,omitempty"`
 	BusinessPhone  string         `gorm:"size:32;" json:"BusinessPhone" yaml:"BusinessPhone,omitempty"`
 	BusinessEmail  string         `gorm:"size:255;" json:"BusinessEmail" yaml:"BusinessEmail,omitempty"`

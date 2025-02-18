@@ -14,7 +14,7 @@ type PhotoLabel struct {
 	PhotoID     uint   `gorm:"primaryKey;autoIncrement:false"`
 	LabelID     uint   `gorm:"primaryKey;autoIncrement:false"`
 	LabelSrc    string `gorm:"type:bytes;size:8;"`
-	Uncertainty int    `gorm:"type:SMALLINT"`
+	Uncertainty int    `gorm:"type:int;size:16;"`
 	Photo       *Photo `gorm:"foreignKey:PhotoID;references:ID;" yaml:"-"`
 	Label       *Label `gorm:"foreignKey:LabelID;references:ID;"`
 }

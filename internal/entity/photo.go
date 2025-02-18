@@ -67,19 +67,19 @@ type Photo struct {
 	CellID           string         `gorm:"type:bytes;size:42;index;default:'zz'" json:"CellID" yaml:"-"`
 	CellAccuracy     int            `json:"CellAccuracy" yaml:"CellAccuracy,omitempty"`
 	PhotoAltitude    int            `json:"Altitude" yaml:"Altitude,omitempty"`
-	PhotoLat         float64        `gorm:"type:DOUBLE;index;" json:"Lat" yaml:"Lat,omitempty"`
-	PhotoLng         float64        `gorm:"type:DOUBLE;index;" json:"Lng" yaml:"Lng,omitempty"`
+	PhotoLat         float64        `gorm:"index;" json:"Lat" yaml:"Lat,omitempty"`
+	PhotoLng         float64        `gorm:"index;" json:"Lng" yaml:"Lng,omitempty"`
 	PhotoCountry     string         `gorm:"type:bytes;size:2;index:idx_photos_country_year_month;default:'zz'" json:"Country" yaml:"-"`
 	PhotoYear        int            `gorm:"index:idx_photos_ymd;index:idx_photos_country_year_month;" json:"Year" yaml:"Year"`
 	PhotoMonth       int            `gorm:"index:idx_photos_ymd;index:idx_photos_country_year_month;" json:"Month" yaml:"Month"`
 	PhotoDay         int            `gorm:"index:idx_photos_ymd" json:"Day" yaml:"Day"`
 	PhotoIso         int            `json:"Iso" yaml:"ISO,omitempty"`
 	PhotoExposure    string         `gorm:"type:bytes;size:64;" json:"Exposure" yaml:"Exposure,omitempty"`
-	PhotoFNumber     float32        `gorm:"type:FLOAT;" json:"FNumber" yaml:"FNumber,omitempty"`
+	PhotoFNumber     float32        `json:"FNumber" yaml:"FNumber,omitempty"`
 	PhotoFocalLength int            `json:"FocalLength" yaml:"FocalLength,omitempty"`
-	PhotoQuality     int            `gorm:"type:SMALLINT" json:"Quality" yaml:"Quality,omitempty"`
+	PhotoQuality     int            `gorm:"type:int;size:16;" json:"Quality" yaml:"Quality,omitempty"`
 	PhotoFaces       int            `json:"Faces,omitempty" yaml:"Faces,omitempty"`
-	PhotoResolution  int            `gorm:"type:SMALLINT" json:"Resolution" yaml:"-"`
+	PhotoResolution  int            `gorm:"type:int;size:16;" json:"Resolution" yaml:"-"`
 	PhotoDuration    time.Duration  `json:"Duration,omitempty" yaml:"Duration,omitempty"`
 	PhotoColor       int16          `json:"Color" yaml:"-"`
 	CameraID         uint           `gorm:"index:idx_photos_camera_lens;default:1" json:"CameraID" yaml:"-"`

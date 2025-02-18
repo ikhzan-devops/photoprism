@@ -17,12 +17,12 @@ const (
 
 // UserDetails represents user profile information.
 type UserDetails struct {
-	UserUID      string    `gorm:"type:VARBINARY(42);primary_key;auto_increment:false;" json:"-" yaml:"-"`
-	SubjUID      string    `gorm:"type:VARBINARY(42);index;" json:"SubjUID,omitempty" yaml:"SubjUID,omitempty"`
-	SubjSrc      string    `gorm:"type:VARBINARY(8);default:'';" json:"-" yaml:"SubjSrc,omitempty"`
-	PlaceID      string    `gorm:"type:VARBINARY(42);index;default:'zz'" json:"-" yaml:"-"`
-	PlaceSrc     string    `gorm:"type:VARBINARY(8);" json:"-" yaml:"PlaceSrc,omitempty"`
-	CellID       string    `gorm:"type:VARBINARY(42);index;default:'zz'" json:"-" yaml:"CellID,omitempty"`
+	UserUID      string    `gorm:"type:bytes;size:42;primaryKey;autoIncrement:false;" json:"-" yaml:"-"`
+	SubjUID      string    `gorm:"type:bytes;size:42;index;" json:"SubjUID,omitempty" yaml:"SubjUID,omitempty"`
+	SubjSrc      string    `gorm:"type:bytes;size:8;default:'';" json:"-" yaml:"SubjSrc,omitempty"`
+	PlaceID      string    `gorm:"type:bytes;size:42;index;default:'zz';" json:"-" yaml:"-"`
+	PlaceSrc     string    `gorm:"type:bytes;size:8;" json:"-" yaml:"PlaceSrc,omitempty"`
+	CellID       string    `gorm:"type:bytes;size:42;index;default:'zz';" json:"-" yaml:"CellID,omitempty"`
 	BirthYear    int       `gorm:"default:-1;" json:"BirthYear" yaml:"BirthYear,omitempty"`
 	BirthMonth   int       `gorm:"default:-1;" json:"BirthMonth" yaml:"BirthMonth,omitempty"`
 	BirthDay     int       `gorm:"default:-1;" json:"BirthDay" yaml:"BirthDay,omitempty"`
@@ -37,7 +37,7 @@ type UserDetails struct {
 	UserAbout    string    `gorm:"size:512;" json:"About" yaml:"About,omitempty"`
 	UserBio      string    `gorm:"size:2048;" json:"Bio" yaml:"Bio,omitempty"`
 	UserLocation string    `gorm:"size:512;" json:"Location" yaml:"Location,omitempty"`
-	UserCountry  string    `gorm:"type:bytes;size:2;default:'zz'" json:"Country" yaml:"Country,omitempty"`
+	UserCountry  string    `gorm:"type:bytes;size:2;default:'zz';" json:"Country" yaml:"Country,omitempty"`
 	UserPhone    string    `gorm:"size:32;" json:"Phone" yaml:"Phone,omitempty"`
 	SiteURL      string    `gorm:"type:bytes;size:512;column:site_url" json:"SiteURL" yaml:"SiteURL,omitempty"`
 	ProfileURL   string    `gorm:"type:bytes;size:512;column:profile_url" json:"ProfileURL" yaml:"ProfileURL,omitempty"`
