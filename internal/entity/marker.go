@@ -39,16 +39,16 @@ type Marker struct {
 	FaceID         string          `gorm:"type:bytes;size:64;index;" json:"FaceID" yaml:"FaceID,omitempty"`
 	FaceDist       float64         `gorm:"default:-1;" json:"FaceDist" yaml:"FaceDist,omitempty"`
 	face           *Face           `gorm:"foreignKey:FaceID;"`
-	EmbeddingsJSON json.RawMessage `json:"-" yaml:"EmbeddingsJSON,omitempty"`
+	EmbeddingsJSON json.RawMessage `gorm:"type:bytes;size:66666;" json:"-" yaml:"EmbeddingsJSON,omitempty"`
 	embeddings     face.Embeddings `gorm:"-" yaml:"-"`
-	LandmarksJSON  json.RawMessage `json:"-" yaml:"LandmarksJSON,omitempty"`
-	X              float32         `gorm:"type:FLOAT;" json:"X" yaml:"X,omitempty"`
-	Y              float32         `gorm:"type:FLOAT;" json:"Y" yaml:"Y,omitempty"`
-	W              float32         `gorm:"type:FLOAT;" json:"W" yaml:"W,omitempty"`
-	H              float32         `gorm:"type:FLOAT;" json:"H" yaml:"H,omitempty"`
+	LandmarksJSON  json.RawMessage `gorm:"type:bytes;size:66666;" json:"-" yaml:"LandmarksJSON,omitempty"`
+	X              float32         `gorm:"type:float;size:32;" json:"X" yaml:"X,omitempty"`
+	Y              float32         `gorm:"type:float;size:32;" json:"Y" yaml:"Y,omitempty"`
+	W              float32         `gorm:"type:float;size:32;" json:"W" yaml:"W,omitempty"`
+	H              float32         `gorm:"type:float;size:32;" json:"H" yaml:"H,omitempty"`
 	Q              int             `json:"Q" yaml:"Q,omitempty"`
 	Size           int             `gorm:"default:-1;" json:"Size" yaml:"Size,omitempty"`
-	Score          int             `gorm:"type:SMALLINT;" json:"Score" yaml:"Score,omitempty"`
+	Score          int             `gorm:"type:int;size:16;" json:"Score" yaml:"Score,omitempty"`
 	Thumb          string          `gorm:"type:bytes;size:128;index;default:'';" json:"Thumb" yaml:"Thumb,omitempty"`
 	MatchedAt      *time.Time      `sql:"index" json:"MatchedAt" yaml:"MatchedAt,omitempty"`
 	CreatedAt      time.Time
