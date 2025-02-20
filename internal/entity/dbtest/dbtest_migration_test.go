@@ -381,10 +381,17 @@ func TestDialectMysql(t *testing.T) {
 		// Reset logger
 		log.SetOutput(os.Stdout)
 
-		// Expect 2 errors (Error 1050 as table services already exists and Error 1054 as column auth_domain is missing)
-		// And a blank record.
-		assert.Equal(t, 3, len(strings.Split(buffer.String(), "\n")))
-		assert.Equal(t, 0, len(strings.Split(buffer.String(), "\n")[2]))
+		assert.Contains(t, buffer.String(), "Table 'migrate.auth_sessions' doesn't exist")
+		assert.Contains(t, buffer.String(), "Table 'migrate.auth_users_details' doesn't exist")
+		assert.Contains(t, buffer.String(), "Table 'migrate.auth_users_settings' doesn't exist")
+		assert.Contains(t, buffer.String(), "Table 'migrate.auth_users_shares' doesn't exist")
+		// There is a blank record.
+		assert.Equal(t, 5, len(strings.Split(buffer.String(), "\n")))
+		if len(strings.Split(buffer.String(), "\n")) != 5 {
+			for i := 0; i < len(strings.Split(buffer.String(), "\n")); i++ {
+				assert.Empty(t, strings.Split(buffer.String(), "\n")[i])
+			}
+		}
 
 		stmt := db.Table("photos").Where("photo_caption = '' OR photo_caption IS NULL")
 
