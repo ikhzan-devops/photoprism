@@ -120,7 +120,7 @@ export default {
       config: config,
       readonly: isReadOnly,
       active: active,
-      rtl: this.$rtl,
+      rtl: this.$isRtl,
     };
   },
   watch: {

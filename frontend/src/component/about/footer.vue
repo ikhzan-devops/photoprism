@@ -4,15 +4,11 @@
       <strong>
         <router-link to="/about" class="text-link text-selectable">{{ about }} {{ getMembership() }}</router-link>
       </strong>
-      <span class="body-link text-selectable">
-        <span class="cursor-text" @click.stop.prevent="$util.copyText(about, version)">Build</span>
-        <a
-          v-tooltip="version"
-          href="https://docs.photoprism.app/release-notes/"
-          target="_blank"
-          class="body-link text-truncate"
-          >{{ build }}</a
-        >
+      <span :title="version" class="body-link text-selectable">
+        <span class="cursor-copy" @click.stop.prevent="$util.copyText(about, version)">Build</span>
+        <a href="https://docs.photoprism.app/release-notes/" target="_blank" class="body-link text-truncate">{{
+          build
+        }}</a>
       </span>
     </div>
     <div class="hidden-xs text-sm-end">
@@ -33,7 +29,7 @@ export default {
     const customer = this.$config.getCustomer();
 
     return {
-      rtl: this.$rtl,
+      rtl: this.$isRtl,
       about: about,
       membership: membership,
       customer: customer,

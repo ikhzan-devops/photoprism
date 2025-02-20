@@ -17,6 +17,11 @@ entryPoints:
           scheme: https
   websecure:
     address: ":443"
+    transport:
+      respondingTimeouts:
+        readTimeout: "1h"
+        writeTimeout: "0s"
+        idleTimeout: "300s"
 
 certificatesResolvers:
   myresolver:

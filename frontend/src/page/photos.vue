@@ -262,10 +262,12 @@ export default {
   mounted() {
     this.$view.enter(this);
   },
-  unmounted() {
+  beforeUnmount() {
     for (let i = 0; i < this.subscriptions.length; i++) {
       this.$event.unsubscribe(this.subscriptions[i]);
     }
+  },
+  unmounted() {
     this.$view.leave(this);
   },
   methods: {
@@ -432,7 +434,7 @@ export default {
       // Open Edit Dialog
       this.$event.publish("dialog.edit", { selection, album: null, index, tab });
     },
-    openPhoto(index, showMerged = false, preferVideo = false) {
+    openPhoto(index, showMerged = false) {
       if (this.loading || !this.listen || this.lightbox.loading || !this.results[index]) {
         return false;
       }
@@ -444,20 +446,6 @@ export default {
         showMerged = false;
       }
 
-      /**
-       * If the file is a video or an animation (like gif), then we always play
-       * it in the video-player.
-       * If the file is a live-image (an image with an embedded video), then we only
-       * play it in the video-player if specifically requested.
-       * This is because:
-       * 1. the lower-resolution video in these files is already
-       *    played when hovering the element (which does not happen for regular
-       *    video files)
-       * 2. The video in live-images is an addon. The main focus is usually still
-       *    the high resolution image inside
-       *
-       * preferVideo is true, when the user explicitly clicks the live-image-icon.
-       */
       if (showMerged) {
         this.$lightbox.openModels(Thumb.fromFiles([selected]), 0);
       } else {
@@ -466,8 +454,10 @@ export default {
 
       return true;
     },
-    loadMore() {
-      if (this.scrollDisabled || this.$view.isHidden(this)) return;
+    loadMore(force) {
+      if (!force && (this.scrollDisabled || this.$view.isHidden(this))) {
+        return;
+      }
 
       this.scrollDisabled = true;
       this.listen = false;
@@ -696,9 +686,11 @@ export default {
         });
     },
     onImportCompleted() {
-      if (!this.listen) return;
+      if (!this.listen) {
+        return;
+      }
 
-      this.loadMore();
+      this.loadMore(true);
     },
     updateResults(entity) {
       this.results
@@ -729,7 +721,9 @@ export default {
       }
     },
     onUpdate(ev, data) {
-      if (!this.listen) return;
+      if (!this.listen) {
+        return;
+      }
 
       if (!data || !data.entities || !Array.isArray(data.entities)) {
         return;

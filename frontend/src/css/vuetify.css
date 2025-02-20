@@ -102,7 +102,7 @@ body.dark-theme {
 .v-overlay.v-dialog.v-dialog--sidepanel:not(.v-dialog--fullscreen) .v-overlay__content {
     height: 100vh;
     min-width: 940px;
-    width: 45vw;
+    width: 48vw;
     max-width: 1080px;
     margin: 0;
     padding: 0;

@@ -55,13 +55,13 @@ export default {
   mounted() {
     this.$view.enter(this);
   },
-  unmounted() {
-    this.$view.leave(this);
-  },
   beforeUnmount() {
     for (let i = 0; i < this.subscriptions.length; i++) {
       this.$event.unsubscribe(this.subscriptions[i]);
     }
+  },
+  unmounted() {
+    this.$view.leave(this);
   },
   methods: {
     onRefresh(config) {

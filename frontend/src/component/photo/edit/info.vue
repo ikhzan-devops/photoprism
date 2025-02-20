@@ -7,7 +7,7 @@
             <tr>
               <td>UID</td>
               <td class="text-break">
-                <span class="clickable text-uppercase" @click.stop.prevent="$util.copyText(view.model.UID)">{{
+                <span class="cursor-copy text-uppercase" @click.stop.prevent="$util.copyText(view.model.UID)">{{
                   view.model.UID
                 }}</span>
               </td>
@@ -15,7 +15,7 @@
             <tr v-if="view.model.DocumentID">
               <td>Document ID</td>
               <td class="text-break">
-                <span class="clickable text-uppercase" @click.stop.prevent="$util.copyText(view.model.DocumentID)">{{
+                <span class="cursor-copy text-uppercase" @click.stop.prevent="$util.copyText(view.model.DocumentID)">{{
                   view.model.DocumentID
                 }}</span>
               </td>
@@ -48,7 +48,7 @@
                 {{ $gettext(`Folder`) }}
               </td>
               <td class="text-break">
-                <span class="clickable" @click.stop.prevent="$util.copyText(view.model.Path)">{{
+                <span class="cursor-copy" @click.stop.prevent="$util.copyText(view.model.Path)">{{
                   view.model.Path
                 }}</span>
               </td>
@@ -58,7 +58,7 @@
                 {{ $gettext(`Name`) }}
               </td>
               <td class="text-break">
-                <span class="clickable" @click.stop.prevent="$util.copyText(view.model.Name)">{{
+                <span class="cursor-copy" @click.stop.prevent="$util.copyText(view.model.Name)">{{
                   view.model.Name
                 }}</span>
               </td>
@@ -88,7 +88,7 @@
               </td>
               <td>
                 <div v-tooltip="formatSource(view.model?.TitleSrc, $gettext('Generated'))" class="text-flex text-break">
-                  <span class="clickable text-break" @click.stop.prevent="$util.copyText(view.model.Title)">{{
+                  <span class="cursor-copy text-break" @click.stop.prevent="$util.copyText(view.model.Title)">{{
                     view.model.Title
                   }}</span>
                   <v-icon v-if="view.model.TitleSrc === 'name'" icon="mdi-file" class="src"></v-icon>
@@ -323,11 +323,9 @@
 </template>
 
 <script>
-import Thumb from "model/thumb";
 import { DateTime } from "luxon";
 import * as options from "options/options";
 import { $gettext, T } from "common/gettext";
-import Util from "common/util";
 
 export default {
   name: "PTabPhotoAdvanced",
@@ -389,7 +387,7 @@ export default {
         case "location":
           return this.$gettext("Location");
         default:
-          return T(Util.capitalize(s));
+          return T(this.$util.capitalize(s));
       }
     },
     formatTime(s) {

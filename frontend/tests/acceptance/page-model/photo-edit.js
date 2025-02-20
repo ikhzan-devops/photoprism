@@ -26,8 +26,8 @@ export default class Page {
     });
     this.keywords = Selector(".input-keywords textarea", { timeout: 15000 });
     this.title = Selector(".input-title input", { timeout: 15000 });
-    this.latitude = Selector('.input-latitude input', { timeout: 15000 });
-    this.longitude = Selector('.input-longitude input', { timeout: 15000 });
+    this.latitude = Selector(".input-latitude input", { timeout: 15000 });
+    this.longitude = Selector(".input-longitude input", { timeout: 15000 });
     this.localTime = Selector(".input-local-time input", { timeout: 15000 });
     this.day = Selector("div.input-day input", { timeout: 15000 });
     this.month = Selector(".input-month input", { timeout: 15000 });
@@ -147,29 +147,23 @@ export default class Page {
   }
 
   async turnSwitchOff(type) {
-    await t
-      .click("#tab-info");
+    await t.click("#tab-info");
     const initialState = await Selector("td .input-" + type + " input", { timeout: 8000 }).hasAttribute("checked");
     if (initialState === true) {
-      await t
-          .click(Selector("td .input-" + type + " div.v-switch__track"));
+      await t.click(Selector("td .input-" + type + " div.v-switch__track"));
     }
     const finalState = await Selector("td .input-" + type + " input", { timeout: 8000 }).hasAttribute("checked");
-    await t
-        .expect(finalState).eql(false);
+    await t.expect(finalState).eql(false);
   }
 
   async turnSwitchOn(type) {
-    await t
-      .click("#tab-info");
+    await t.click("#tab-info");
     const initialState = await Selector("td .input-" + type + " input", { timeout: 8000 }).hasAttribute("checked");
     if (initialState === false) {
-      await t
-          .click(Selector("td .input-" + type + " div.v-selection-control__input"));
+      await t.click(Selector("td .input-" + type + " div.v-selection-control__input"));
     }
     const finalState = await Selector("td .input-" + type + " input", { timeout: 8000 }).hasAttribute("checked");
-    await t
-        .expect(finalState).eql(true);
+    await t.expect(finalState).eql(true);
   }
 
   async checkEditFormInputValue(field, val) {
@@ -180,7 +174,7 @@ export default class Page {
 
   async checkEditFormSelectValue(field, val) {
     if (val !== "") {
-        await t.expect(this[field+"Value"].innerText).eql(val);
+      await t.expect(this[field + "Value"].innerText).eql(val);
     }
   }
 
@@ -214,16 +208,18 @@ export default class Page {
     license,
     description,
     keywords,
-    notes, camera, lens
+    notes,
+    camera,
+    lens
   ) {
     await t
       .typeText(this.title, title, { replace: true })
       .typeText(this.timezone, timezone, { replace: true })
       .click(Selector("div").withText(timezone).parent('div[role="option"]'))
       .typeText(this.day, day, { replace: true })
-        .click(Selector("div").withText(day).parent('div[role="option"]'))
+      .click(Selector("div").withText(day).parent('div[role="option"]'))
       .typeText(this.month, month, { replace: true })
-        .click(Selector("div").withText(month).parent('div[role="option"]'))
+      .click(Selector("div").withText(month).parent('div[role="option"]'))
       .typeText(this.year, year, { replace: true })
       .click(Selector("div").withText(year).parent('div[role="option"]'))
       .click(this.localTime)
@@ -307,9 +303,7 @@ export default class Page {
         .typeText(Selector(".input-timezone input"), "UTC", { replace: true })
         .pressKey("enter");
     } else {
-      await t
-        .typeText(Selector(".input-timezone input"), timezone, { replace: true })
-        .pressKey("enter");
+      await t.typeText(Selector(".input-timezone input"), timezone, { replace: true }).pressKey("enter");
     }
     if (lat.empty || lat === "") {
       await t.click(Selector(".input-latitude input")).pressKey("ctrl+a delete");

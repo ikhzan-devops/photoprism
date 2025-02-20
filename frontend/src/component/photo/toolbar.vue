@@ -319,7 +319,6 @@
   </v-form>
 </template>
 <script>
-import Event from "pubsub-js";
 import * as options from "options/options";
 import $api from "common/api";
 import $notify from "common/notify";
@@ -487,7 +486,7 @@ export default {
       }
     },
     showUpload() {
-      Event.publish("dialog.upload");
+      this.$event.publish("dialog.upload");
     },
     deleteAll() {
       if (!this.canDelete) {

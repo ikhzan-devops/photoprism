@@ -187,6 +187,11 @@ table td > .action-buttons {
     gap: 8px;
 }
 
+.p-tab-photo-files table td > .action-buttons > .v-btn,
+.p-tab-photo-files table td > .action-buttons > button {
+    min-width: 150px;
+}
+
 @media (max-width: 599px) {
     .action-buttons > .v-btn,
     .action-buttons > button {

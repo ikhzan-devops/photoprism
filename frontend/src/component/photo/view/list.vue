@@ -79,7 +79,7 @@
                     <button
                       v-else-if="m.Type === 'video' || m.Type === 'live' || m.Type === 'animated'"
                       class="input-open"
-                      @click.stop.prevent="openPhoto(index, false, m.Type === 'live')"
+                      @click.stop.prevent="openPhoto(index, false)"
                     >
                       <i v-if="m.Type === 'live'" class="action-live" :title="$gettext('Live')"><icon-live-photo /></i>
                       <i v-if="m.Type === 'animated'" class="mdi mdi-file-gif-box" :title="$gettext('Animated')" />

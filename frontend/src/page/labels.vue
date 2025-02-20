@@ -245,10 +245,12 @@ export default {
   mounted() {
     this.$view.enter(this);
   },
-  unmounted() {
+  beforeUnmount() {
     for (let i = 0; i < this.subscriptions.length; i++) {
       this.$event.unsubscribe(this.subscriptions[i]);
     }
+  },
+  unmounted() {
     this.$view.leave(this);
   },
   methods: {

@@ -102,7 +102,6 @@
   </v-form>
 </template>
 <script>
-import Event from "pubsub-js";
 import $notify from "common/notify";
 import download from "common/download";
 import { T } from "common/gettext";
@@ -160,7 +159,7 @@ export default {
       categories: this.$config.albumCategories(),
       collectionTitle: this.$route.meta?.collectionTitle ? this.$route.meta.collectionTitle : this.$gettext("Albums"),
       collectionRoute: this.$route.meta?.collectionRoute ? this.$route.meta.collectionRoute : "albums",
-      navIcon: this.$rtl ? "mdi-chevron-left" : "mdi-chevron-right",
+      navIcon: this.$isRtl ? "mdi-chevron-left" : "mdi-chevron-right",
       listView: this.$config.getSettings()?.search?.listView,
       dialog: {
         share: false,
@@ -186,9 +185,9 @@ export default {
     showUpload() {
       // Pre-select manually managed albums in upload dialog.
       if (this.album.Type === "album") {
-        Event.publish("dialog.upload", { albums: [this.album] });
+        this.$event.publish("dialog.upload", { albums: [this.album] });
       } else {
-        Event.publish("dialog.upload", { albums: [] });
+        this.$event.publish("dialog.upload", { albums: [] });
       }
     },
     onUpdate(v) {

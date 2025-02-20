@@ -95,10 +95,7 @@ describe("model/file", () => {
       FileType: "raw",
     };
     const file3 = new File(values3);
-    assert.equal(
-      file3.thumbnailUrl("tile_224"),
-      "/api/v1/t/bd66bd2c304f45f6c160df375f34b49eb7aef321/public/tile_224"
-    );
+    assert.equal(file3.thumbnailUrl("tile_224"), "/api/v1/t/bd66bd2c304f45f6c160df375f34b49eb7aef321/public/tile_224");
     const values4 = {
       InstanceID: 5,
       UID: "ABC123",

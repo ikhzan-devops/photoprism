@@ -43,33 +43,28 @@
       </div>
     </div>
     <div v-show="video.controls && controlsShown !== 0" ref="controls" class="p-lightbox__controls" @click.stop.prevent>
-      <div class="video-control video-control--play">
-        <v-icon v-if="video.seeking" icon="mdi-loading" class="animate-loading"></v-icon>
+      <div :title="video.error" class="video-control video-control--play">
+        <v-icon v-if="video.error || video.errorCode > 0" icon="mdi-alert"></v-icon>
+        <v-icon v-else-if="video.seeking || video.waiting" icon="mdi-loading" class="animate-loading"></v-icon>
         <v-icon
           v-else-if="video.playing"
           icon="mdi-pause"
           class="clickable"
           @pointerdown.stop.prevent="toggleVideo"
         ></v-icon>
-        <v-icon
-          v-else-if="video.paused || video.ended"
-          icon="mdi-play"
-          class="clickable"
-          @pointerdown.stop.prevent="toggleVideo"
-        ></v-icon>
-        <v-icon v-else v-tooltip="video.error" icon="mdi-alert-circle" class="clickable"></v-icon>
+        <v-icon v-else icon="mdi-play" class="clickable" @pointerdown.stop.prevent="toggleVideo"></v-icon>
       </div>
       <div class="video-control video-control--time text-body-2">
         {{ $util.formatSeconds(video.time) }}
       </div>
       <v-slider
         :model-value="video.time"
-        :disabled="video.state === 0"
+        :disabled="!video.seekable"
         :readonly="video.seeking"
         :thumb-size="12"
         :track-size="3"
         hide-details
-        :error="!!video.error"
+        :error="video.errorCode > 0"
         :min="0"
         :max="video.duration"
         class="video-control video-control--slider"
@@ -102,7 +97,6 @@
 import PhotoSwipe from "photoswipe";
 import Lightbox from "photoswipe/lightbox";
 import Captions from "common/captions";
-import Util from "common/util";
 import $api from "common/api";
 import Thumb from "model/thumb";
 import { Photo } from "model/photo";
@@ -122,7 +116,7 @@ export default {
       lightbox: null, // Current PhotoSwipe lightbox instance.
       captionPlugin: null, // Current PhotoSwipe caption plugin instance.
       muted: window.sessionStorage.getItem("lightbox.muted") === "true",
-      hasTouch: false,
+      hasTouch: this.$util.hasTouch(),
       shortVideoDuration: 5, // Duration in seconds for videos that are short enough to automatically loop.
       playControlHideDelay: 1000, // Hide the lightbox controls after this time in ms when a video starts playing.
       defaultControlHideDelay: 5000, // Automatically hide lightbox controls this time in ms, TODO: add custom settings.
@@ -148,10 +142,12 @@ export default {
         controls: false,
         src: "",
         error: "",
+        errorCode: 0,
         state: 0,
         time: 0,
         duration: 0,
         seeking: false,
+        seekable: false,
         waiting: false,
         playing: false,
         paused: false,
@@ -207,7 +203,7 @@ export default {
     // Returns true if a blocking event is currently being processed.
     isBusy(action) {
       if (this.busy) {
-        console.log(`lightbox: still busy, cannot ${action ? action : "do this"}`);
+        this.log(`still busy, cannot ${action ? action : "do this"}`);
         return true;
       }
 
@@ -243,6 +239,7 @@ export default {
     // Triggered when the dialog has been fully opened.
     afterEnter() {
       this.$event.publish("lightbox.enter");
+      this.$emit("enter");
     },
     // Triggered when the dialog has closed.
     afterLeave() {
@@ -251,18 +248,29 @@ export default {
       this.busy = false;
       this.$view.leave(this);
       this.$event.publish("lightbox.leave");
+      this.$emit("leave");
     },
     // Triggered when the dialog focus changes.
     onDialogFocus(ev) {
       if (this.trace) {
-        console.log(`lightbox: dialog.${ev.type}`);
+        this.log(`dialog.${ev.type}`);
       }
       return false;
+    },
+    log(ev, data) {
+      if (!ev) {
+        return;
+      }
+      if (data) {
+        console.log(`%clightbox: ${ev}`, "color: #039be5;", data);
+      } else {
+        console.log(`%clightbox: ${ev}`, "color: #039be5;");
+      }
     },
     // Returns the PhotoSwipe content element.
     getContentElement() {
       if (!this.$refs.content) {
-        console.log("lightbox: content element is not visible");
+        this.log("content element is not visible");
         return null;
       }
 
@@ -271,7 +279,7 @@ export default {
     // Returns the metadata sidebar element.
     getSidebarElement() {
       if (!this.$refs.sidebar) {
-        console.log("lightbox: sidebar element is not visible");
+        this.log("sidebar element is not visible");
         return null;
       }
 
@@ -287,7 +295,7 @@ export default {
         mouseMovePan: true,
         arrowPrev: true,
         arrowNext: true,
-        loop: true,
+        loop: false,
         zoom: true,
         close: true,
         escKey: false,
@@ -302,9 +310,9 @@ export default {
         hideAnimationDuration: 0,
         showAnimationDuration: 0,
         wheelToZoom: true,
-        maxZoomLevel: 6,
+        maxZoomLevel: 8,
         bgOpacity: 1,
-        preload: [1, 1],
+        preload: [2, 2],
         showHideAnimationType: "none",
         mainClass: "p-lightbox__pswp",
         tapAction: (point, ev) => this.onContentTap(ev),
@@ -327,7 +335,7 @@ export default {
 
       // Check if at least one model was passed, as otherwise no content can be displayed.
       if (!Array.isArray(models) || models.length === 0 || index >= models.length) {
-        console.log("model list passed to lightbox is empty:", models);
+        this.log("model list passed to lightbox is empty:", models);
         return Promise.reject();
       }
 
@@ -428,22 +436,23 @@ export default {
         });
     },
     getItemData(el, i) {
-      // Get the current slide model data.
+      // Get the slide model.
       const model = this.models[i];
 
-      // Get the screen (window) resolution in real pixels
-      const pixels = this.getWindowPixels();
+      // Get the estimated slide (viewport) size in real pixels.
+      const pixels = this.getSlidePixels(model);
 
-      // Get the right thumbnail size based on the screen resolution in pixels.
-      const thumbSize = Util.thumbSize(pixels.width, pixels.height);
+      // Get initial thumbnail size that best matches the viewport size in real pixels.
+      const thumbSize = this.$util.thumbSize(pixels.width, pixels.height);
 
       // Get thumbnail image URL, width, and height.
-      const img = {
+      const thumb = {
         src: model.Thumbs[thumbSize].src,
         width: model.Thumbs[thumbSize].w,
         height: model.Thumbs[thumbSize].h,
         alt: model?.Title,
         model: model,
+        loading: false,
       };
 
       // Check if content is playable and return the data needed to render it in "contentLoad".
@@ -464,14 +473,15 @@ export default {
           html: `<div class="pswp__html"></div>`, // Replaced with the <video> element.
           model: model, // Content model.
           duration: model.Duration > 0 ? model.Duration / 1000000000 : 0,
-          format: Util.videoFormat(model?.Codec, model?.Mime), // Content format.
+          format: this.$util.videoFormat(model?.Codec, model?.Mime), // Content format.
           loop: model?.Type !== media.Live && (isShort || model?.Type === media.Animated), // If possible, loop these types.
-          msrc: img.src, // Image URL.
+          msrc: thumb.src, // Image URL.
+          loading: true,
         };
 
         if (model?.Type === media.Live) {
-          data.width = img.width;
-          data.height = img.height;
+          data.width = thumb.width;
+          data.height = thumb.height;
         }
 
         return data;
@@ -479,7 +489,7 @@ export default {
 
       // Return the image data so that PhotoSwipe can render it in the lightbox,
       // see https://photoswipe.com/data-sources/#dynamically-generated-data.
-      return img;
+      return thumb;
     },
     isContentZoomable(isContentZoomable, content) {
       if (content.data?.model?.Type === media.Live) {
@@ -518,9 +528,10 @@ export default {
 
           content.element = mediaElement;
           content.state = "loading";
+          content.data.loading = false;
           content.onLoaded();
         } catch (err) {
-          console.warn("failed to load video", err);
+          this.log("failed to load video", err);
         }
       }
     },
@@ -554,7 +565,7 @@ export default {
       video.playsInline = true;
       video.disableRemotePlayback = false;
       video.controls = false;
-      video.dir = this.$rtl ? "rtl" : "ltr";
+      video.dir = document.dir ? document.dir : this.$config.dir(this.$isRtl);
 
       // Attach video event handler.
       video.addEventListener("loadstart", (ev) => this.onVideo(ev));
@@ -583,13 +594,13 @@ export default {
       ) {
         const nativeSource = document.createElement("source");
         nativeSource.type = model.Mime;
-        nativeSource.src = Util.videoFormatUrl(model.Hash, format);
+        nativeSource.src = this.$util.videoFormatUrl(model.Hash, format);
         video.appendChild(nativeSource);
       }
 
       const avcSource = document.createElement("source");
       avcSource.type = media.ContentTypeMp4AvcMain;
-      avcSource.src = Util.videoFormatUrl(model.Hash, media.FormatAvc);
+      avcSource.src = this.$util.videoFormatUrl(model.Hash, media.FormatAvc);
       video.appendChild(avcSource);
 
       if (video.remote && video.remote instanceof RemotePlayback) {
@@ -657,7 +668,7 @@ export default {
             this.$notify.error(err.message);
         }
       } else {
-        console.warn(err);
+        this.log(err);
       }
     },
     onVideoRemote(ev) {
@@ -684,7 +695,8 @@ export default {
         this.resetVideo();
       }
 
-      const isPlaying = video.readyState && !video.paused && !video.ended && !video.waiting && !video.error;
+      const isPlaying =
+        video.readyState && !video.paused && !video.ended && !video.waiting && (!video.error || video.error.code === 0);
 
       if (ev && ev.type) {
         switch (ev.type) {
@@ -693,6 +705,7 @@ export default {
             this.video.waiting = false;
             this.hideControlsWithDelay(this.playControlHideDelay);
             video.parentElement.classList.add("is-playing");
+            video.parentElement.classList.remove("is-waiting");
             break;
           case "ended":
           case "pause":
@@ -700,8 +713,8 @@ export default {
             break;
           case "abort":
           case "error":
+            video.parentElement.classList.add("is-broken");
             video.parentElement.classList.remove("is-playing");
-            video.parentElement.classList.remove("is-broken");
             break;
           case "timeupdate":
           case "loadeddata":
@@ -710,6 +723,7 @@ export default {
             break;
           case "waiting":
             this.video.waiting = true;
+            video.parentElement.classList.add("is-waiting");
         }
 
         // Automatically hide the lightbox controls after a video has started playing.
@@ -738,12 +752,54 @@ export default {
       // Update properties of the currently playing video.
       this.video.controls =
         !this.slideshow.active && !video.loop && data.model?.Type !== media.Animated && data.model?.Type !== media.Live;
+
       this.video.src = video.src;
-      this.video.error = video.error;
+
+      // Get video playback error, if any:
+      // https://developer.mozilla.org/de/docs/Web/API/HTMLMediaElement/error
+      if (video.error && video.error instanceof MediaError && video.error.code > 0) {
+        if (this.debug) {
+          this.log(video.error.message);
+        }
+
+        switch (video.error.code) {
+          case 1:
+            this.$notify.error(this.$gettext("Something went wrong, try again"));
+            break;
+          case 2:
+            this.video.error = this.$gettext("Request failed - are you offline?");
+            break;
+          case 3:
+          case 4:
+            this.video.error = this.$gettext("Not supported");
+            break;
+          default:
+            this.video.error = video.error.message;
+        }
+
+        video.parentElement.classList.add("is-broken");
+        this.video.errorCode = video.error.code;
+      } else {
+        video.parentElement.classList.remove("is-broken");
+        this.video.error = "";
+        this.video.errorCode = 0;
+      }
+
       this.video.state = video.readyState;
       this.video.time = video.currentTime;
       this.video.duration = video.duration ? video.duration : data.duration;
-      this.video.seeking = !!video.seeking;
+      this.video.seeking = video.seeking === true;
+
+      // Enable seeking if the video has a seekable time range.
+      if (video.seekable && video.seekable instanceof TimeRanges) {
+        this.video.seekable = video.seekable.length > 0;
+      }
+
+      // Disable seeking if video is broken or not loaded.
+      if (this.video.errorCode > 0 || this.video.state <= 0) {
+        this.video.seekable = false;
+      }
+
       this.video.playing = isPlaying;
       this.video.paused = video.paused;
       this.video.ended = video.ended;
@@ -753,10 +809,12 @@ export default {
         controls: !!showControls,
         src: "",
         error: "",
+        errorCode: 0,
         state: 0,
         time: 0,
         duration: 0,
         seeking: false,
+        seekable: false,
         waiting: false,
         playing: false,
         paused: false,
@@ -770,20 +828,27 @@ export default {
     renderLightbox(models, index = 0) {
       // Check if at least one model was passed, as otherwise no content can be displayed.
       if (!Array.isArray(models) || models.length === 0 || index >= models.length) {
-        console.log("lightbox: model list is empty", models);
+        this.log("model list is empty", models);
         return Promise.reject();
       }
 
-      // Set the initial model list and start index.
+      // Set the model list and start index.
       // TODO: In the future, additional models should be dynamically loaded when the index reaches the end of the list.
-      this.models = models;
-      this.index = index;
+      if (this.$isRtl) {
+        // Reverse the slide direction for right-to-left languages.
+        this.models = models.toReversed();
+        this.index = models.length - (index + 1);
+      } else {
+        // Keep direction for left-to-right languages.
+        this.models = models;
+        this.index = index;
+      }
 
       // Get PhotoSwipe lightbox config options, see https://photoswipe.com/options/.
       const options = this.getOptions();
 
       if (!options.appendToEl) {
-        console.log("lightbox: content element not found", options);
+        this.log("content element not found", options);
         return Promise.reject();
       }
 
@@ -798,7 +863,6 @@ export default {
       // Keep reference to PhotoSwipe instance.
       this.lightbox = lightbox;
       this.idleTimer = false;
-      this.hasTouch = false;
 
       // Use dynamic caption plugin,
       // see https://github.com/dimsemenov/photoswipe-dynamic-caption-plugin.
@@ -945,7 +1009,7 @@ export default {
       this.lightbox.init();
 
       // Show first image.
-      this.lightbox.loadAndOpen(index);
+      this.lightbox.loadAndOpen(this.index);
 
       return Promise.resolve();
     },
@@ -1144,7 +1208,7 @@ export default {
       let caption = "";
 
       if (model.Title) {
-        caption += `<h4>${Util.encodeHTML(model.Title)}</h4>`;
+        caption += `<h4>${this.$util.encodeHTML(model.Title)}</h4>`;
       }
 
       /*
@@ -1152,16 +1216,16 @@ export default {
               We MAY postpone this and display it along with other metadata in the new sidebar.
        */
       /* if (model.TakenAtLocal) {
-         caption += `<div>${Util.formatDate(model.TakenAtLocal)}</div>`;
+         caption += `<div>${this.$util.formatDate(model.TakenAtLocal)}</div>`;
       } */
 
       if (model.Caption) {
-        caption += `<p>${Util.encodeHTML(model.Caption)}</p>`;
+        caption += `<p>${this.$util.encodeHTML(model.Caption)}</p>`;
       } else if (model.Description) {
-        caption += `<p>${Util.encodeHTML(model.Description)}</p>`;
+        caption += `<p>${this.$util.encodeHTML(model.Description)}</p>`;
       }
 
-      return Util.sanitizeHtml(caption);
+      return this.$util.sanitizeHtml(caption);
     },
     // Removes any event listeners before the lightbox is fully closed.
     onClose() {
@@ -1175,7 +1239,6 @@ export default {
     },
     // Resets the state of the lightbox controls.
     resetControls() {
-      this.hasTouch = false;
       this.controlsShown = -1;
     },
     // Reset the lightbox models and index.
@@ -1246,7 +1309,7 @@ export default {
           action();
           return true;
         } else {
-          console.log(`lightbox: controls not visible, will not call ${action.name}`);
+          this.log(`controls not visible, will not call ${action.name}`);
         }
       }
 
@@ -1297,8 +1360,8 @@ export default {
           } else if (ev.clientX && window.innerWidth) {
             const x = ev.clientX / window.innerWidth;
 
-            // Let PhotoSwipe handle the left and right 20% of the screen.
-            if (x <= 0.2 || x >= 0.8) {
+            // Let PhotoSwipe handle the left and right 30% of the screen.
+            if (x <= 0.3 || x >= 0.7) {
               return;
             }
           }
@@ -1407,13 +1470,17 @@ export default {
         try {
           video.pause();
         } catch (e) {
-          console.log(e);
+          this.log(e);
         }
       }
     },
     // Starts playback on the specified video element, if any.
     playVideo(video, loop) {
       if (!video || !(video instanceof HTMLMediaElement)) {
+        return;
+      }
+
+      if (video.error && video.error instanceof MediaError && video.error.code > 0) {
         return;
       }
 
@@ -1430,9 +1497,9 @@ export default {
           // see https://developer.chrome.com/blog/play-request-was-interrupted.
           const playPromise = video.play();
           if (playPromise !== undefined) {
-            playPromise.catch((e) => {
-              if (this.trace) {
-                console.log(e.message);
+            playPromise.catch((err) => {
+              if (this.trace && err && err.message) {
+                this.log(err.message);
               }
             });
           }
@@ -1511,7 +1578,7 @@ export default {
           video.pause();
           this.showControls();
         } catch (e) {
-          console.log(e);
+          this.log(e);
         }
       }
     },
@@ -1550,7 +1617,7 @@ export default {
       const { video } = this.getContent();
 
       // Play video, if any, but without looping.
-      if (video && (video.paused || video.ended)) {
+      if (video) {
         this.playVideo(video, false);
       }
 
@@ -1587,10 +1654,14 @@ export default {
 
       if (video && !video.paused) {
         // Do nothing if a video is still playing.
-      } else if (this.models.length > this.index + 1) {
+      } else if (!this.$isRtl && this.models.length > this.index + 1) {
         // Show the next slide.
         this.slideshow.next = this.index + 1;
         pswp.next();
+      } else if (this.$isRtl && this.index > 0) {
+        // Reverse slideshow direction for right-to-left languages.
+        this.slideshow.next = this.index - 1;
+        pswp.prev();
       } else {
         // Pause slideshow if this is the end.
         this.pauseSlideshow();
@@ -1618,7 +1689,7 @@ export default {
        */
 
       if (!this.model || !this.model.DownloadUrl) {
-        console.warn("photo lightbox: no download url");
+        this.log("photo lightbox: no download url");
         return;
       }
 
@@ -1780,7 +1851,7 @@ export default {
       document.addEventListener("mousemove", this.onMouseMoveOnce.bind(this), { once: true });
     },
     startTimer() {
-      if (this.hasTouch || this.$isMobile) {
+      if (this.hasTouch) {
         return;
       }
 
@@ -1798,12 +1869,7 @@ export default {
         this.idleTimer = false;
       }
     },
-    getWindowPixels() {
-      return {
-        width: window.innerWidth * window.devicePixelRatio,
-        height: window.innerHeight * window.devicePixelRatio,
-      };
-    },
+    // Returns the viewport size without sidebar, if visible.
     getViewport() {
       const el = this.getContentElement();
 
@@ -1819,6 +1885,24 @@ export default {
         };
       }
     },
+    getSlidePixels(model) {
+      // Get viewport size without sidebar, if visible.
+      const viewport = this.getViewport();
+
+      // Subtract viewport padding to get estimated slide size if it is an image or vector graphic.
+      if (model && (model.Type === media.Image || model.Type === media.Raw || model.Type === media.Vector)) {
+        const padding = this.getPadding(viewport, { width: model.Width, height: model.Height });
+        viewport.x = viewport.x - padding.left - padding.right;
+        viewport.y = viewport.y - padding.top - padding.bottom;
+      }
+
+      // Calculate estimated slide size based on viewport size and device pixel ratio.
+      return {
+        width: viewport.x * window.devicePixelRatio,
+        height: viewport.y * window.devicePixelRatio,
+      };
+    },
+    // Calculates viewport padding based on screen and image size.
     getPadding(viewport, data) {
       let top = 0,
         bottom = 0,
@@ -1854,7 +1938,7 @@ export default {
 
       return { top, bottom, left, right };
     },
-    // Called when the zoom level changes and higher quality thumbnails may be required.
+    // Updates the thumbnail when the zoom level changes and a different resolution may be required.
     onImageSizeChange() {
       if (this.isBusy("change image size")) {
         return;
@@ -1866,75 +1950,118 @@ export default {
         return;
       }
 
-      if (video || data?.type === "html") {
+      // Continue only if the content is an <img> element and not e.g. a <video>.
+      if (video || data?.type === "html" || data?.loading) {
+        return;
+      } else if (!content || !content.element || !(content.element instanceof HTMLImageElement)) {
         return;
       }
 
-      // Get current slide and zoom level.
+      // Get current zoom level and image model.
       const zoomLevel = slide.currZoomLevel;
       const model = data.model;
 
-      // Don't continue if current model is not set.
+      // Do not proceed if the model is missing or incomplete.
       if (!model || !model.Thumbs) {
         return;
       }
 
-      // Don't continue if slide is not zoomed.
-      if (zoomLevel < 1) {
+      // Do not proceed unless the image is zoomed to near its intrinsic (natural) size.
+      if (zoomLevel < 0.9) {
         return;
       }
 
-      // Calculate thumbnail width and height based on slide size multiplied by zoom level and pixel ratio.
-      const currentWidth = Math.round(slide.width * zoomLevel * window.devicePixelRatio);
-      const currentHeight = Math.round(slide.height * zoomLevel * window.devicePixelRatio);
+      // Calculate slide width and height in real pixels based on zoom level and pixel ratio.
+      const slideWidth = Math.ceil(slide.width * zoomLevel * window.devicePixelRatio);
+      const slideHeight = Math.ceil(slide.height * zoomLevel * window.devicePixelRatio);
 
-      // Find the right thumbnail size based on the slide size and zoom level in pixels.
-      const thumbSize = Util.thumbSize(currentWidth, currentHeight);
+      // Find thumbnail size that best matches the current slide size and zoom level.
+      const thumbSize = this.$util.thumbSize(slideWidth, slideHeight);
 
-      // Don't continue of no matching size was found.
+      // Do not proceed if no matching size was found.
       if (!thumbSize) {
         return;
       }
 
-      // New thumbnail image URL, width, and height.
-      const img = {
+      // Get new thumbnail URL based on the calculated size.
+      const thumb = {
         src: model.Thumbs[thumbSize].src,
         width: model.Thumbs[thumbSize].w,
         height: model.Thumbs[thumbSize].h,
       };
 
-      // Get current thumbnail image URL.
+      // Get the thumbnail URL of the currently displayed image.
       const currentSrc = data.src;
 
-      // Don't update thumbnail if the URL stays the same.
-      if (currentSrc === img.src) {
+      // Do not proceed if the thumbnail URL remains the same.
+      if (currentSrc === thumb.src) {
         return;
       }
 
       // Create HTMLImageElement to load thumbnail image in the matching size.
       try {
-        const el = new Image();
-        el.src = img.src;
+        const image = new Image();
 
-        // Swap thumbnails when the new image has loaded.
-        el.onload = () => {
-          // Abort if image URL is empty or the current slide is undefined.
-          if (!content || !el?.src) {
+        // Decode the image synchronously for atomic presentation with other content:
+        // https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/decoding
+        image.decoding = "sync";
+
+        // Tell the browser to load the new image as quickly as possible:
+        // https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/loading
+        image.loading = "eager";
+
+        // Flag the new image as loading in the content data.
+        data.loading = true;
+
+        // Attach an onload event handler to swap the thumbnail when the new image is loaded.
+        image.addEventListener("load", (ev) => {
+          if (!ev || !ev.target) {
             return;
           }
 
+          // Remove loading flag.
+          data.loading = false;
+
+          if (this.trace) {
+            this.log(`image.${ev.type}`, [ev, ev.target]);
+          }
+
+          // Abort if image URL is empty or the current slide is undefined.
+          if (!content || !ev.target.currentSrc || !ev.target.naturalHeight || !ev.target.naturalWidth) {
+            if (this.debug) {
+              this.log(`failed to replace thumbnail with ${thumb.src}`, { element: content.element, image: ev.target });
+            }
+            data.loading = false;
+            return;
+          }
+
+          if (content.element.src === ev.target.currentSrc) {
+            this.log(`old and new thumbnail are the same ${ev.target.currentSrc}`);
+            data.loading = false;
+            return;
+          }
+
+          if (this.debug) {
+            this.log(`loaded thumbnail ${thumbSize} from ${ev.target.currentSrc}`);
+          }
+
           // Update the slide's HTMLImageElement to use the new thumbnail image.
-          content.element.src = el.src;
-          content.element.width = img.width;
-          content.element.height = img.height;
+          content.element.src = ev.target.currentSrc;
+          content.element.width = ev.target.width;
+          content.element.height = ev.target.height;
 
           // Update PhotoSwipe's slide data.
-          data.src = img.src;
-          data.width = img.width;
-          data.height = img.height;
-        };
+          data.src = thumb.src;
+          data.width = thumb.width;
+          data.height = thumb.height;
+          data.loading = false;
+        });
+
+        // Set thumbnail src to load the new image.
+        image.src = thumb.src;
       } catch (err) {
-        console.warn("lightbox: failed to change image size", err);
+        this.log(`failed to load image size ${thumbSize}`, err);
+        data.loading = false;
       }
     },
   },

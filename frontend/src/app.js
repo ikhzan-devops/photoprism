@@ -31,7 +31,7 @@ import $notify from "common/notify";
 import { $view } from "common/view";
 import { $lightbox } from "common/lightbox";
 import { PhotoClipboard } from "common/clipboard";
-import $event from "pubsub-js";
+import $event from "common/event";
 import $log from "common/log";
 import $util from "common/util";
 import * as components from "component/components";
@@ -65,9 +65,7 @@ import "css/app.css";
 passiveSupport({ events: ["touchstart", "touchmove", "wheel", "mousewheel"] });
 
 // Check if running on a mobile device.
-const $isMobile =
-  /Android|webOS|iPhone|iPad|iPod|BlackBerry|Mobile|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
-  (navigator.maxTouchPoints && navigator.maxTouchPoints > 2);
+const $isMobile = $util.isMobile();
 
 window.$isMobile = $isMobile;
 
@@ -87,12 +85,14 @@ $config.update().finally(() => {
   Luxon.defaultLocale = $config.getLanguageCode();
 
   // Detect right-to-left languages such as Arabic and Hebrew
-  const rtl = $config.isRtl();
+  const $isRtl = $config.isRtl();
 
   // HTTP Live Streaming (video support).
   window.Hls = Hls;
 
   // Assign helpers to VueJS prototype.
+  app.config.globalProperties.$isRtl = $isRtl;
+  app.config.globalProperties.$isMobile = $isMobile;
   app.config.globalProperties.$event = $event;
   app.config.globalProperties.$notify = $notify;
   app.config.globalProperties.$view = $view;
@@ -103,8 +103,6 @@ $config.update().finally(() => {
   app.config.globalProperties.$socket = Socket;
   app.config.globalProperties.$config = $config;
   app.config.globalProperties.$clipboard = PhotoClipboard;
-  app.config.globalProperties.$isMobile = $isMobile;
-  app.config.globalProperties.$rtl = rtl;
   app.config.globalProperties.$util = $util;
   app.config.globalProperties.$sponsorFeatures = () => {
     return $config.load().finally(() => {

@@ -467,7 +467,7 @@ export default {
       invalidDate: false,
       time: "",
       textRule: (v) => v.length <= this.$config.get("clip") || this.$gettext("Text too long"),
-      rtl: this.$rtl,
+      rtl: this.$isRtl,
     };
   },
   computed: {

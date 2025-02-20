@@ -184,7 +184,6 @@
 <script>
 import $api from "common/api";
 import $notify from "common/notify";
-import Event from "pubsub-js";
 import download from "common/download";
 import Photo from "model/photo";
 import PPhotoAlbumDialog from "component/photo/album/dialog.vue";
@@ -231,7 +230,7 @@ export default {
         album: false,
         share: false,
       },
-      rtl: this.$rtl,
+      rtl: this.$isRtl,
     };
   },
   methods: {
@@ -407,7 +406,7 @@ export default {
     },
     edit() {
       // Open Edit Dialog
-      Event.PubSub.publish("dialog.edit", { selection: this.selection, album: this.album, index: 0 });
+      this.$event.PubSub.publish("dialog.edit", { selection: this.selection, album: this.album, index: 0 });
     },
     onShared() {
       this.dialog.share = false;

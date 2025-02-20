@@ -107,7 +107,7 @@ export default {
         album: false,
         edit: false,
       },
-      rtl: this.$rtl,
+      rtl: this.$isRtl,
     };
   },
   methods: {

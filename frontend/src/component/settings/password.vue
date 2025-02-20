@@ -118,7 +118,7 @@ export default {
       minLength: this.$config.get("passwordLength"),
       maxLength: 72,
       showPassword: false,
-      rtl: this.$rtl,
+      rtl: this.$isRtl,
     };
   },
   computed: {

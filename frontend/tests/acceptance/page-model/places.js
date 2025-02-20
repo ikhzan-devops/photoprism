@@ -2,7 +2,7 @@ import { Selector, t } from "testcafe";
 
 export default class Page {
   constructor() {
-    this.placesSearch = Selector('div.search-control input');
+    this.placesSearch = Selector("div.search-control input");
     this.openClusterInSearch = Selector("div.cluster-control-container button.action-browse");
     this.closeCluster = Selector("div.cluster-control-container button.action-close");
     this.clearLocation = Selector("button.action-clear-location");

@@ -7,8 +7,6 @@
   </v-snackbar>
 </template>
 <script>
-import Event from "pubsub-js";
-
 export default {
   name: "PNotify",
   data() {
@@ -26,10 +24,10 @@ export default {
     };
   },
   created() {
-    this.subscriptionId = Event.subscribe("notify", this.onNotify);
+    this.subscriptionId = this.$event.subscribe("notify", this.onNotify);
   },
-  unmounted() {
-    Event.unsubscribe(this.subscriptionId);
+  beforeUnmount() {
+    this.$event.unsubscribe(this.subscriptionId);
   },
   methods: {
     onNotify: function (ev, data) {

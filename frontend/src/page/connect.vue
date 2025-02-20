@@ -225,7 +225,7 @@ export default {
       tier: this.$config.getTier(),
       membership: membership,
       showInfo: !token && membership === "ce",
-      rtl: this.$rtl,
+      rtl: this.$isRtl,
       tokenMask: "nnnn-nnnn-nnnn",
       form: {
         token,

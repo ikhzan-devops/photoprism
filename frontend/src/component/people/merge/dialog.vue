@@ -1,5 +1,11 @@
 <template>
-  <v-dialog :model-value="visible" persistent max-width="350" class="p-dialog p-people-merge-dialog" @keydown.esc="close">
+  <v-dialog
+    :model-value="visible"
+    persistent
+    max-width="350"
+    class="p-dialog p-people-merge-dialog"
+    @keydown.esc="close"
+  >
     <v-card>
       <v-card-title class="d-flex justify-start align-center ga-3">
         <v-icon size="54" color="primary">mdi-account-multiple</v-icon>

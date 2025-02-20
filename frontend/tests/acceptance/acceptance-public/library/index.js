@@ -63,7 +63,8 @@ test.meta("testID", "library-index-001").meta({ type: "short", mode: "public" })
     await menu.openPage("library");
     await t
       .click(library.indexTab)
-      .click(library.indexFolderSelect).typeText(library.indexFolderSelect, "/mo", { replace: true })
+      .click(library.indexFolderSelect)
+      .typeText(library.indexFolderSelect, "/mo", { replace: true })
       .click(page.selectOption.withText("/moment"))
       .click(library.index)
       //TODO replace wait

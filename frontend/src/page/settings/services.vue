@@ -201,7 +201,7 @@ export default {
           align: "right",
         },
       ],
-      rtl: this.$rtl,
+      rtl: this.$isRtl,
     };
   },
   created() {

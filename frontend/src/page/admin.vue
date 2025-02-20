@@ -10,7 +10,7 @@ export default {
   components: { PPageAbout },
   data() {
     return {
-      rtl: this.$rtl,
+      rtl: this.$isRtl,
     };
   },
   mounted() {

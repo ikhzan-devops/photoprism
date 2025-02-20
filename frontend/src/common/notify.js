@@ -23,7 +23,7 @@ Additional information can be found in our Developer Guide:
 
 */
 
-import $event from "pubsub-js";
+import $event from "common/event";
 import { $gettext } from "common/gettext";
 
 let ajaxPending = 0;

@@ -59,7 +59,10 @@ export default {
     reload() {
       this.$notify.info(this.$gettext("Reloading…"));
       this.$notify.blockUI();
-      setTimeout(() => window.location.reload(), 100);
+      setTimeout(() => {
+        window.location.reload();
+      }, 100);
+      this.close();
     },
   },
 };

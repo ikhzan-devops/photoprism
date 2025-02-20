@@ -129,7 +129,6 @@
 import $api from "common/api";
 import $notify from "common/notify";
 import Album from "model/album";
-import Util from "common/util";
 import { Duration } from "luxon";
 
 export default {
@@ -169,7 +168,7 @@ export default {
       fileLimit: isDemo ? 3 : 0,
       rejectNSFW: !this.$config.get("uploadNSFW"),
       featReview: this.$config.feature("review"),
-      rtl: this.$rtl,
+      rtl: this.$isRtl,
     };
   },
   computed: {
@@ -339,7 +338,7 @@ export default {
       }
 
       this.uploads = [];
-      this.token = Util.generateToken();
+      this.token = this.$util.generateToken();
       this.selected = this.$refs.upload.files;
       this.busy = true;
       this.indexing = false;

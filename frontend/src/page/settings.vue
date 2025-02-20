@@ -140,7 +140,7 @@ export default {
       public: isPublic,
       readonly: this.$config.get("readonly"),
       active: active,
-      rtl: this.$rtl,
+      rtl: this.$isRtl,
     };
   },
   watch: {

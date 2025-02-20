@@ -1,28 +1,28 @@
 <template>
   <div id="p-dialogs">
-    <p-photo-upload-dialog
-      :visible="upload.visible"
-      :data="upload.data"
-      @close="upload.visible = false"
-      @confirm="upload.visible = false"
-    ></p-photo-upload-dialog>
     <p-photo-edit-dialog
       :visible="edit.visible"
       :selection="edit.selection"
       :index="edit.index"
       :album="edit.album"
       :tab="edit.tab"
-      @close="edit.visible = false"
+      @close="closeEditDialog"
     ></p-photo-edit-dialog>
-    <p-update :visible="update.visible" @close="update.visible = false"></p-update>
-    <p-lightbox></p-lightbox>
+    <p-photo-upload-dialog
+      :visible="upload.visible"
+      :data="upload.data"
+      @close="closeUploadDialog"
+      @confirm="closeUploadDialog"
+    ></p-photo-upload-dialog>
+    <p-update :visible="update.visible" @close="closeUpdateDialog"></p-update>
+    <p-lightbox @enter="onLightboxEnter" @leave="onLightboxLeave"></p-lightbox>
   </div>
 </template>
 <script>
 import Album from "model/album";
 
-import PPhotoUploadDialog from "component/photo/upload/dialog.vue";
 import PPhotoEditDialog from "component/photo/edit/dialog.vue";
+import PPhotoUploadDialog from "component/photo/upload/dialog.vue";
 import PUpdate from "component/update.vue";
 import PLightbox from "component/lightbox.vue";
 
@@ -36,13 +36,6 @@ export default {
   },
   data() {
     return {
-      update: {
-        visible: false,
-      },
-      upload: {
-        visible: false,
-        data: {},
-      },
       edit: {
         visible: false,
         album: null,
@@ -50,40 +43,42 @@ export default {
         index: 0,
         tab: "",
       },
+      upload: {
+        visible: false,
+        data: {},
+      },
+      update: {
+        visible: false,
+      },
+      lightbox: {
+        visible: false,
+      },
       subscriptions: [],
     };
   },
   created() {
-    // Opens the web upload dialog.
-    this.subscriptions.push(
-      this.$event.subscribe("dialog.upload", (ev, data) => {
-        this.openUpload(data);
-      })
-    );
-
     // Opens the photo edit dialog.
     this.subscriptions.push(
       this.$event.subscribe("dialog.edit", (ev, data) => {
-        if (this.hasAuth() && !this.edit.visible) {
-          this.edit.visible = true;
-          this.edit.index = data.index;
-          this.edit.selection = data.selection;
-          this.edit.album = data.album;
-          this.edit.tab = data?.tab ? data.tab : "";
-        }
+        this.onEdit(data);
+      })
+    );
+
+    // Opens the web upload dialog.
+    this.subscriptions.push(
+      this.$event.subscribe("dialog.upload", (ev, data) => {
+        this.onUpload(data);
       })
     );
 
     // Opens the update dialog so that users can reload the UI after updates.
     this.subscriptions.push(
       this.$event.subscribe("dialog.update", () => {
-        if (!this.update.visible) {
-          this.update.visible = true;
-        }
+        this.onUpdate();
       })
     );
   },
-  unmounted() {
+  beforeUnmount() {
     for (let i = 0; i < this.subscriptions.length; i++) {
       this.$event.unsubscribe(this.subscriptions[i]);
     }
@@ -95,7 +90,23 @@ export default {
     isReadOnly() {
       return this.$config.get("readonly");
     },
-    openUpload(data) {
+    onEdit(data) {
+      if (this.edit.visible || !this.hasAuth()) {
+        return;
+      }
+
+      this.edit.index = data.index;
+      this.edit.selection = data.selection;
+      this.edit.album = data.album;
+      this.edit.tab = data?.tab ? data.tab : "";
+      this.edit.visible = true;
+    },
+    closeEditDialog() {
+      if (this.edit.visible) {
+        this.edit.visible = false;
+      }
+    },
+    onUpload(data) {
       if (this.upload.visible || !this.hasAuth() || this.isReadOnly() || !this.$config.feature("upload")) {
         return;
       }
@@ -104,17 +115,42 @@ export default {
         return new Album()
           .find(this.$route.params?.album)
           .then((m) => {
-            this.upload.visible = true;
-            this.upload.data = Object.assign({ albums: [m] }, data);
+            this.showUploadDialog(Object.assign({ albums: [m] }, data));
           })
           .catch(() => {
-            this.upload.visible = true;
-            this.upload.data = Object.assign({ albums: [] }, data);
+            this.showUploadDialog(data);
           });
       } else {
-        this.upload.visible = true;
-        this.upload.data = Object.assign({ albums: [] }, data);
+        this.showUploadDialog(data);
       }
+    },
+    showUploadDialog(data) {
+      this.upload.data = Object.assign({ albums: [] }, data);
+      this.upload.visible = true;
+    },
+    closeUploadDialog() {
+      if (this.upload.visible) {
+        this.upload.visible = false;
+      }
+    },
+    onUpdate() {
+      if (this.update.visible || this.lightbox.visible) {
+        return;
+      }
+
+      this.update.visible = true;
+    },
+    closeUpdateDialog() {
+      if (this.update.visible) {
+        this.update.visible = false;
+      }
+    },
+    onLightboxEnter() {
+      this.closeUpdateDialog();
+      this.lightbox.visible = true;
+    },
+    onLightboxLeave() {
+      this.lightbox.visible = false;
     },
   },
 };

@@ -132,7 +132,7 @@ export default {
 
     return {
       config: this.$config.values,
-      navIcon: this.$rtl ? "mdi-chevron-left" : "mdi-chevron-right",
+      navIcon: this.$isRtl ? "mdi-chevron-left" : "mdi-chevron-right",
       subscriptions: [],
       listen: false,
       dirty: false,
@@ -184,10 +184,12 @@ export default {
   mounted() {
     this.$view.enter(this);
   },
-  unmounted() {
+  beforeUnmount() {
     for (let i = 0; i < this.subscriptions.length; i++) {
       this.$event.unsubscribe(this.subscriptions[i]);
     }
+  },
+  unmounted() {
     this.$view.leave(this);
   },
   methods: {

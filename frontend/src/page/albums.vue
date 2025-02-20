@@ -502,13 +502,13 @@ export default {
     this.subscriptions.push(this.$event.subscribe("touchmove.bottom", () => this.loadMore()));
     this.subscriptions.push(this.$event.subscribe("config.updated", (ev, data) => this.onConfigUpdated(data)));
   },
+  mounted() {
+    this.$view.enter(this);
+  },
   beforeUnmount() {
     for (let i = 0; i < this.subscriptions.length; i++) {
       this.$event.unsubscribe(this.subscriptions[i]);
     }
-  },
-  mounted() {
-    this.$view.enter(this);
   },
   unmounted() {
     this.$view.leave(this);

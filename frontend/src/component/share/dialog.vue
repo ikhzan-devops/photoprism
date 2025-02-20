@@ -44,17 +44,17 @@
                     <v-col cols="12">
                       <v-text-field
                         :model-value="link.url()"
-                        append-inner-icon="mdi-content-copy"
+                        readonly
+                        flat
                         hide-details
                         density="comfortable"
                         variant="solo"
-                        flat
-                        readonly
                         autocorrect="off"
                         autocapitalize="none"
                         autocomplete="off"
-                        class="input-url"
-                        @click:append-inner="$util.copyText(link.url())"
+                        append-inner-icon="mdi-content-copy"
+                        class="input-url cursor-copy"
+                        @click.stop="$util.copyText(link.url())"
                       >
                       </v-text-field>
                     </v-col>
@@ -175,7 +175,7 @@ export default {
         cancel: this.$gettext("Cancel"),
         confirm: this.$gettext("Done"),
       },
-      rtl: this.$rtl,
+      rtl: this.$isRtl,
     };
   },
   watch: {

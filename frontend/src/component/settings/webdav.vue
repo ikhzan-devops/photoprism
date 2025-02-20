@@ -20,16 +20,15 @@
 
       <v-card-text class="text-body-2">
         <v-text-field
-          append-inner-icon="mdi-content-copy"
+          :model-value="webdavUrl()"
+          readonly
+          single-line
+          hide-details
           autocorrect="off"
           autocapitalize="none"
           autocomplete="off"
-          hide-details
-          readonly
-          single-line
-          :model-value="webdavUrl()"
-          class="input-url"
-          @click:append-inner="$util.copyText(webdavUrl())"
+          append-inner-icon="mdi-content-copy"
+          class="input-url cursor-copy"
           @click.stop="$util.copyText(webdavUrl())"
         ></v-text-field>
       </v-card-text>
@@ -40,16 +39,15 @@
 
       <v-card-text class="text-body-2">
         <v-text-field
-          append-inner-icon="mdi-content-copy"
+          :model-value="windowsUrl()"
+          readonly
+          single-line
+          hide-details
           autocorrect="off"
           autocapitalize="none"
           autocomplete="off"
-          hide-details
-          readonly
-          single-line
-          :model-value="windowsUrl()"
-          class="input-url"
-          @click:append-inner="$util.copyText(windowsUrl())"
+          append-inner-icon="mdi-content-copy"
+          class="input-url cursor-copy"
           @click.stop="$util.copyText(windowsUrl())"
         ></v-text-field>
       </v-card-text>
@@ -115,11 +113,26 @@ export default {
       return baseUrl;
     },
     windowsUrl() {
+      // Generates a resource string for Windows users to connect via WebDAV,
+      // see https://docs.photoprism.app/user-guide/sync/webdav/#microsoft-windows.
       let baseUrl = "";
 
-      if (window.location.protocol === "https") {
-        baseUrl = `\\\\${window.location.host}@SSL\\originals\\`;
+      if (this.$util.isHttps()) {
+        if (window.location.port && window.location.port !== "443") {
+          /*
+              \\example.com@SSL@8443\originals\
+          */
+          baseUrl = `\\\\${window.location.hostname}@SSL@${window.location.port}\\originals\\`;
+        } else {
+          /*
+              \\example.com@SSL\originals\
+          */
+          baseUrl = `\\\\${window.location.hostname}@SSL\\originals\\`;
+        }
       } else {
+        /*
+            \\localhost:2342\originals\
+        */
         baseUrl = `\\\\${window.location.host}\\originals\\`;
       }
 

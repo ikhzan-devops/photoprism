@@ -1,4 +1,4 @@
-import $event from "pubsub-js";
+import $event from "common/event";
 
 // Opens the lightbox dialog with the specified options.
 export class Lightbox {

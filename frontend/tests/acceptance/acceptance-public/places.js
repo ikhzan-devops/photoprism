@@ -42,11 +42,7 @@ test.meta("testID", "places-001").meta({ mode: "public" })("Multi-Window: Test p
 
   await places.search("canada");
 
-  await t
-      .click(places.zoomOut)
-      .click(places.zoomOut)
-      .click(places.zoomOut)
-      .click(places.zoomOut);
+  await t.click(places.zoomOut).click(places.zoomOut).click(places.zoomOut).click(places.zoomOut);
 
   const clusterCountCanada = await Selector("div.cluster-marker").count;
 

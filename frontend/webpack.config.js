@@ -29,12 +29,14 @@ const ESLintPlugin = require("eslint-webpack-plugin");
 const { WebpackManifestPlugin } = require("webpack-manifest-plugin");
 const OfflinePlugin = require("@lcdp/offline-plugin");
 const webpack = require("webpack");
-const isDev = process.env?.BUILD_ENV === "development" || process.env?.NODE_ENV === "development";
+const isAnalyze = process.env?.BUILD_ENV === "analyze" || process.env?.NODE_ENV === "analyze";
+const isDev = isAnalyze || process.env?.BUILD_ENV === "development" || process.env?.NODE_ENV === "development";
 const isCustom = !!process.env.CUSTOM_SRC;
 const appName = process.env.CUSTOM_NAME ? process.env.CUSTOM_NAME : "PhotoPrism";
 const { VueLoaderPlugin } = require("vue-loader");
 const { VuetifyPlugin } = require("webpack-plugin-vuetify");
 const { DefinePlugin } = require("webpack");
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 
 const PATHS = {
   src: path.join(__dirname, "src"),
@@ -267,6 +269,13 @@ if (isDev) {
     });
     config.plugins.push(esLintPlugin);
   });
+}
+
+// Analyze bundle contents with https://www.npmjs.com/package/webpack-bundle-analyzer.
+if (isAnalyze) {
+  const analyzerPlugin = new BundleAnalyzerPlugin();
+
+  config.plugins.push(analyzerPlugin);
 }
 
 module.exports = config;

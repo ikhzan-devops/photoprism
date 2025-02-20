@@ -86,9 +86,9 @@
                   autocorrect="off"
                   autocapitalize="none"
                   autocomplete="off"
-                  class="input-app-password text-selectable"
                   append-inner-icon="mdi-content-copy"
-                  @click:append-inner="onCopyAppPassword"
+                  class="input-app-password text-selectable cursor-copy"
+                  @click.stop="onCopyAppPassword"
                 >
                 </v-text-field>
               </v-col>
@@ -284,7 +284,7 @@ export default {
       showPassword: false,
       minLength: this.$config.get("passwordLength"),
       maxLength: 72,
-      rtl: this.$rtl,
+      rtl: this.$isRtl,
       action: "",
       confirmAction: "",
       user: this.$session.getUser(),
@@ -356,9 +356,8 @@ export default {
       this.$view.leave(this);
     },
     onCopyAppPassword() {
-      if (this.$util.copyText(this.appPassword)) {
-        this.appPasswordCopied = true;
-      }
+      this.$util.copyText(this.appPassword);
+      this.appPasswordCopied = true;
     },
     formatDate(d) {
       if (!d) {

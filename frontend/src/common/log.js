@@ -23,7 +23,7 @@ Additional information can be found in our Developer Guide:
 
 */
 
-import $event from "pubsub-js";
+import $event from "common/event";
 import { $config } from "app/session";
 import { reactive } from "vue";
 

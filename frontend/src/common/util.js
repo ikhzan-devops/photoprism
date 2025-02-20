@@ -40,8 +40,11 @@ const Minute = 60 * Second;
 const Hour = 60 * Minute;
 let start = new Date();
 
-export default class Util {
-  formatDate(s) {
+// True if debug logs should be created.
+const debug = window.__CONFIG__?.debug || window.__CONFIG__?.trace;
+
+export default class $util {
+  static formatDate(s) {
     if (!s || !s.length) {
       return s;
     }
@@ -250,6 +253,21 @@ export default class Util {
     return (Math.random() + 1).toString(36).substring(6);
   }
 
+  static hasTouch() {
+    return navigator.maxTouchPoints && navigator.maxTouchPoints > 0;
+  }
+
+  static isMobile() {
+    return (
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|Mobile|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+      (navigator.maxTouchPoints && navigator.maxTouchPoints > 2)
+    );
+  }
+
+  static isHttps() {
+    return window.location.protocol === "https:";
+  }
+
   static fileType(value) {
     if (!value || typeof value !== "string") {
       return "";
@@ -344,21 +362,31 @@ export default class Util {
     }
   }
 
-  static formatCamera(camera, cameraID, cameraMake, cameraModel) {
+  static formatCamera(camera, cameraID, cameraMake, cameraModel, long) {
     if (camera) {
-      if (camera.Model.length > 7) {
+      if (!long && camera.Model.length > 7) {
+        // Return only the model name if it is longer than 7 characters.
         return camera.Model;
       } else {
+        // Return the full camera name with make and model.
         return camera.Make + " " + camera.Model;
       }
     } else if (cameraMake && cameraModel) {
-      if (cameraModel.length > 7) {
+      if (!long && cameraModel.length > 7) {
+        // Return only the model name if it is longer than 7 characters.
         return cameraModel;
       } else {
+        // Return the full camera name with make and model.
         return cameraMake + " " + cameraModel;
       }
     } else if (cameraID > 1 && cameraModel) {
+      // Return only the model if the camera make is unknown.
       return cameraModel;
+    }
+
+    // Return a placeholder string for unknown cameras.
+    if (long) {
+      return $gettext("Unknown");
     }
 
     return "";
@@ -658,7 +686,7 @@ export default class Util {
     }
   }
 
-  static async copyText(text) {
+  static copyText(text) {
     if (!text) {
       return false;
     }
@@ -670,55 +698,27 @@ export default class Util {
       }
     }
 
-    try {
-      await Util.copyToMachineClipboard(text);
-      $notify.success($gettext("Copied to clipboard"));
-      return true;
-    } catch (_) {
-      $notify.error($gettext("Cannot copy to clipboard"));
-    }
-
-    return false;
+    return this.writeToClipboard(text);
   }
 
-  static async copyToMachineClipboard(text) {
-    if (window.navigator.clipboard) {
-      await window.navigator.clipboard.writeText(text);
-    } else if (document.execCommand) {
-      // Clipboard is available only in HTTPS pages. see https://web.dev/async-clipboard/
-      // So if the official 'clipboard' doesn't supported and the 'document.execCommand' is supported.
-      // copy by a work-around by creating a textarea in the DOM and execute copy command from him.
+  static writeToClipboard(text) {
+    if (window.navigator?.clipboard && window.navigator.clipboard instanceof EventTarget) {
+      window.navigator.clipboard
+        .writeText(text)
+        .then(() => {
+          $notify.success($gettext("Copied to clipboard"));
+        })
+        .catch((err) => {
+          if (debug && err) {
+            console.log("copy:", err);
+          }
 
-      // Create the text area element (to copy from)
-      const clipboardElement = document.createElement("textarea");
-
-      // Set the text content to copy
-      clipboardElement.value = text;
-
-      // Avoid scrolling to bottom
-      clipboardElement.style.top = "0";
-      clipboardElement.style.left = "0";
-      clipboardElement.style.position = "fixed";
-
-      // Add element to DOM
-      document.body.appendChild(clipboardElement);
-
-      // "Select" the new textarea
-      clipboardElement.focus();
-      clipboardElement.select();
-
-      // Copy the selected textarea content
-      const succeed = document.execCommand("copy");
-
-      // Remove the textarea from DOM
-      document.body.removeChild(clipboardElement);
-
-      // Validate operation succeed
-      if (!succeed) {
-        throw new Error("Failed copying to clipboard");
-      }
-    } else {
-      throw new Error("Copy to clipboard does not support in your browser");
+          $notify.error($gettext("Not allowed"));
+        });
+      return true;
     }
+
+    $notify.warn($gettext("Not supported"));
+    return false;
   }
 }

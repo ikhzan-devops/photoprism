@@ -63,7 +63,7 @@ export default {
       isDemo: this.$config.isDemo(),
       isSponsor: this.$config.isSponsor(),
       host: window.location.host,
-      rtl: this.$rtl,
+      rtl: this.$isRtl,
     };
   },
   methods: {

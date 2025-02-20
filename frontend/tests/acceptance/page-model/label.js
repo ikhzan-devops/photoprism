@@ -14,9 +14,7 @@ export default class Page {
   }
 
   async selectLabelFromUID(uid) {
-    await t
-      .hover(Selector("div.is-label").withAttribute("data-uid", uid))
-      .click(Selector(`.uid-${uid} .input-select`));
+    await t.hover(Selector("div.is-label").withAttribute("data-uid", uid)).click(Selector(`.uid-${uid} .input-select`));
   }
 
   async toggleSelectNthLabel(nth) {

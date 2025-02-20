@@ -24,13 +24,13 @@ Additional information can be found in our Developer Guide:
 */
 
 import RestModel from "model/rest";
-import { Form } from "common/form";
-import Util from "common/util";
-import $api from "common/api";
-import { T, $gettext } from "common/gettext";
-import { $config } from "app/session";
 import memoizeOne from "memoize-one";
 import * as auth from "options/auth";
+import $util from "common/util";
+import $api from "common/api";
+import { T, $gettext } from "common/gettext";
+import { Form } from "common/form";
+import { $config } from "app/session";
 
 export class User extends RestModel {
   getDefaults() {
@@ -149,7 +149,7 @@ export class User extends RestModel {
     } else if (this.Details && this.Details.GivenName) {
       return this.Details.GivenName;
     } else if (this.Name) {
-      return T(Util.capitalize(this.Name));
+      return T($util.capitalize(this.Name));
     }
 
     return $gettext("Unknown");
@@ -163,7 +163,7 @@ export class User extends RestModel {
     } else if (this.Details && this.Details.JobTitle) {
       return this.Details.JobTitle;
     } else if (this.Role) {
-      return T(Util.capitalize(this.Role));
+      return T($util.capitalize(this.Role));
     }
 
     return $gettext("Account");
@@ -249,7 +249,7 @@ export class User extends RestModel {
     if (providerName) {
       providerName = T(providerName);
     } else {
-      providerName = Util.capitalize(this.AuthProvider);
+      providerName = $util.capitalize(this.AuthProvider);
     }
 
     if (!this.AuthMethod || this.AuthMethod === "" || this.AuthMethod === "default") {

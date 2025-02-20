@@ -24,9 +24,7 @@ export default class Page {
         .notOk();
     } else {
       if (await Selector("#t-clipboard button.action-" + action).visible) {
-        await t
-          .expect(Selector("#t-clipboard button.action-" + action).hasAttribute("disabled"))
-          .ok();
+        await t.expect(Selector("#t-clipboard button.action-" + action).hasAttribute("disabled")).ok();
       } else {
         await t.expect(Selector("#t-clipboard button.action-" + action).visible).notOk();
       }
@@ -42,10 +40,9 @@ export default class Page {
       await t.click(Selector("button.action-confirm"));
     }
     if ((action === "album") | (action === "clone")) {
-      await t
-        .typeText(Selector(".input-album input"), albumName, { replace: true })
+      await t.typeText(Selector(".input-album input"), albumName, { replace: true });
       if (await Selector("div").withText(albumName).parent('div[role="option"]').visible) {
-        await t.click(Selector("div").withText(albumName).parent('div[role="option"]'))
+        await t.click(Selector("div").withText(albumName).parent('div[role="option"]'));
       }
       await t.click(Selector("button.action-confirm"));
     }

@@ -26,7 +26,7 @@ Additional information can be found in our Developer Guide:
 import Axios from "axios";
 import $notify from "common/notify";
 import { $gettext } from "common/gettext";
-import $event from "pubsub-js";
+import $event from "common/event";
 
 const testConfig = {
   baseUri: "",

@@ -257,7 +257,11 @@
 
             <v-col cols="12" sm="6" lg="4" class="py-2">
               <v-list-subheader class="pa-0">
-                {{ $gettextInterpolate($gettext("Dynamic Size Limit: %{n}px"), { n: parseInt(settings.ThumbSizeUncached) }) }}
+                {{
+                  $gettextInterpolate($gettext("Dynamic Size Limit: %{n}px"), {
+                    n: parseInt(settings.ThumbSizeUncached),
+                  })
+                }}
               </v-list-subheader>
               <v-slider
                 v-model="settings.ThumbSizeUncached"
@@ -489,7 +493,7 @@ export default {
       isSponsor: this.$config.isSponsor(),
       readonly: this.$config.get("readonly"),
       config: this.$config.values,
-      rtl: this.$rtl,
+      rtl: this.$isRtl,
       settings: new ConfigOptions(false),
       options: options,
     };

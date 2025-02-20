@@ -298,7 +298,7 @@ describe("model/user", () => {
   });
 
   it("should return auth info", async () => {
-    const values = { ID: 50, Name: "max", DisplayName: "Max Last", AuthProvider: "oidc"};
+    const values = { ID: 50, Name: "max", DisplayName: "Max Last", AuthProvider: "oidc" };
     const user = new User(values);
     const result = await user.authInfo();
     assert.equal(result, "OIDC");

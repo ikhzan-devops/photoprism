@@ -57,6 +57,7 @@
                                   @click.stop.prevent="downloadFile(file)"
                                 >
                                   {{ $gettext(`Download`) }}
+                                  <v-icon icon="mdi-download" size="18" end></v-icon>
                                 </v-btn>
                                 <v-btn
                                   v-if="
@@ -73,6 +74,7 @@
                                   @click.stop.prevent="setPrimaryFile(file)"
                                 >
                                   {{ $gettext(`Primary`) }}
+                                  <v-icon icon="mdi-image" size="18" end></v-icon>
                                 </v-btn>
                                 <v-btn
                                   v-if="
@@ -86,6 +88,7 @@
                                   @click.stop.prevent="unstackFile(file)"
                                 >
                                   {{ $gettext(`Unstack`) }}
+                                  <v-icon icon="mdi-undo-variant" size="18" end></v-icon>
                                 </v-btn>
                                 <v-btn
                                   v-if="features.delete && !file.Primary"
@@ -97,16 +100,18 @@
                                   @click.stop.prevent="showDeleteDialog(file)"
                                 >
                                   {{ $gettext(`Delete`) }}
+                                  <v-icon icon="mdi-delete" size="18" end></v-icon>
                                 </v-btn>
                                 <v-btn
                                   v-if="experimental && canAccessPrivate && file.Primary"
                                   density="comfortable"
                                   variant="flat"
                                   color="highlight"
-                                  class="btn-action action-open-folder"
+                                  class="btn-action action-browse action-folder action-open-folder"
                                   @click.stop.prevent="openFolder(file)"
                                 >
-                                  {{ $gettext(`Open Folder`) }}
+                                  <v-icon icon="mdi-folder" size="18" start></v-icon>
+                                  {{ $gettext(`Browse`) }}
                                 </v-btn>
                               </div>
                             </td>
@@ -114,7 +119,7 @@
                           <tr>
                             <td title="Unique ID">UID</td>
                             <td class="text-break">
-                              <span class="clickable text-uppercase" @click.stop.prevent="$util.copyText(file.UID)">{{
+                              <span class="cursor-copy text-uppercase" @click.stop.prevent="$util.copyText(file.UID)">{{
                                 file.UID
                               }}</span>
                             </td>
@@ -136,7 +141,7 @@
                               {{ $gettext(`Hash`) }}
                             </td>
                             <td class="text-break">
-                              <span class="clickable text-break" @click.stop.prevent="$util.copyText(file.Hash)">{{
+                              <span class="cursor-copy text-break" @click.stop.prevent="$util.copyText(file.Hash)">{{
                                 file.Hash
                               }}</span>
                             </td>
@@ -146,7 +151,7 @@
                               {{ $gettext(`Filename`) }}
                             </td>
                             <td class="text-break">
-                              <span class="clickable" @click.stop.prevent="$util.copyText(file.Name)">{{
+                              <span class="cursor-copy" @click.stop.prevent="$util.copyText(file.Name)">{{
                                 file.Name
                               }}</span>
                             </td>
@@ -162,7 +167,7 @@
                               {{ $gettext(`Original Name`) }}
                             </td>
                             <td class="text-break">
-                              <span class="clickable" @click.stop.prevent="$util.copyText(file.OriginalName)">{{
+                              <span class="cursor-copy" @click.stop.prevent="$util.copyText(file.OriginalName)">{{
                                 file.OriginalName
                               }}</span>
                             </td>
@@ -373,7 +378,6 @@
 import Thumb from "model/thumb";
 import { DateTime } from "luxon";
 import $notify from "common/notify";
-import Util from "common/util";
 import * as options from "options/options";
 
 export default {
@@ -400,7 +404,7 @@ export default {
         this.$config.allow("photos", "access_library") && this.$config.allow("photos", "access_private"),
       options: options,
       busy: false,
-      rtl: this.$rtl,
+      rtl: this.$isRtl,
       listColumns: [
         {
           title: this.$gettext("Primary"),
@@ -443,21 +447,21 @@ export default {
         return "";
       }
 
-      return Util.formatDuration(file.Duration);
+      return this.$util.formatDuration(file.Duration);
     },
     fileType(file) {
       if (!file || !file.FileType) {
         return "";
       }
 
-      return Util.fileType(file.FileType);
+      return this.$util.fileType(file.FileType);
     },
     codecName(file) {
       if (!file || !file.Codec) {
         return "";
       }
 
-      return Util.codecName(file.Codec);
+      return this.$util.codecName(file.Codec);
     },
     openFile(file) {
       this.$lightbox.openModels([Thumb.fromFile(this.view.model, file)], 0);

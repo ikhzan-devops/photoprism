@@ -923,8 +923,6 @@
 </template>
 
 <script>
-import Event from "pubsub-js";
-
 export default {
   name: "PNavigation",
   data() {
@@ -977,7 +975,7 @@ export default {
       page: this.$config.page,
       user: this.$session.getUser(),
       speedDial: false,
-      rtl: this.$rtl,
+      rtl: this.$isRtl,
       subscriptions: [],
     };
   },
@@ -1009,12 +1007,12 @@ export default {
     },
   },
   created() {
-    this.subscriptions.push(Event.subscribe("index", this.onIndex));
-    this.subscriptions.push(Event.subscribe("import", this.onIndex));
+    this.subscriptions.push(this.$event.subscribe("index", this.onIndex));
+    this.subscriptions.push(this.$event.subscribe("import", this.onIndex));
   },
-  unmounted() {
+  beforeUnmount() {
     for (let i = 0; i < this.subscriptions.length; i++) {
-      Event.unsubscribe(this.subscriptions[i]);
+      this.$event.unsubscribe(this.subscriptions[i]);
     }
   },
   methods: {

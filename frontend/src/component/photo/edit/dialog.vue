@@ -100,7 +100,6 @@
 </template>
 <script>
 import Photo from "model/photo";
-import Event from "pubsub-js";
 
 import PhotoDetails from "component/photo/edit/details.vue";
 import PhotoLabels from "component/photo/edit/labels.vue";
@@ -152,7 +151,7 @@ export default {
       canEdit: this.$config.feature("edit"),
       readonly: this.$config.get("readonly"),
       active: this.tab,
-      rtl: this.$rtl,
+      rtl: this.$isRtl,
       subscriptions: [],
     };
   },
@@ -183,11 +182,11 @@ export default {
     },
   },
   created() {
-    this.subscriptions.push(Event.subscribe("photos.updated", (ev, data) => this.onUpdate(ev, data)));
+    this.subscriptions.push(this.$event.subscribe("photos.updated", (ev, data) => this.onUpdate(ev, data)));
   },
-  unmounted() {
+  beforeUnmount() {
     for (let i = 0; i < this.subscriptions.length; i++) {
-      Event.unsubscribe(this.subscriptions[i]);
+      this.$event.unsubscribe(this.subscriptions[i]);
     }
   },
   methods: {

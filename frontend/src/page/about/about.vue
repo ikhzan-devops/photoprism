@@ -167,14 +167,14 @@
             >browser, browser plugins</a
           >, operating system, storage type, memory size, and processor.
         </p>
-        <p
-          >We kindly ask you not to report bugs via GitHub Issues unless you are certain to have found a fully
-          reproducible and previously unreported issue that must be fixed directly in the app.</p
-        >
+        <p>
+          We kindly ask you not to report bugs via GitHub Issues unless you are certain to have found a fully
+          reproducible and previously unreported issue that must be fixed directly in the app.
+        </p>
 
         <h3>Developer Guide</h3>
-        <p
-          >Our
+        <p>
+          Our
           <a href="https://docs.photoprism.app/developer-guide/" class="text-link" target="_blank">Developer Guide</a>
           contains all the information you need to get started as a developer. It guides you from
           <a href="https://docs.photoprism.app/developer-guide/setup/" class="text-link" target="_blank"
@@ -196,32 +196,32 @@
         </p>
 
         <h3>Terms &amp; Privacy</h3>
-        <p
-          >Visit
+        <p>
+          Visit
           <a href="https://www.photoprism.app/terms" class="text-link" target="_blank"
             ><strong>photoprism.app/terms</strong></a
           >
           to learn how we work, what you can expect from us, and what we expect from you. What information we collect,
           how we use it, and under what circumstances we share it is explained in our
-          <a href="https://www.photoprism.app/privacy" class="text-link" target="_blank">Privacy Policy</a>.</p
-        >
+          <a href="https://www.photoprism.app/privacy" class="text-link" target="_blank">Privacy Policy</a>.
+        </p>
 
-        <p
-          >Read our
+        <p>
+          Read our
           <a href="https://www.photoprism.app/privacy/gdpr" class="text-link" target="_blank"
             >GDPR Compliance Statement</a
           >
           to learn more about the rights you have as a resident of the European Economic Area ("EEA"), our ongoing
-          commitment to user privacy, and the General Data Protection Regulation ("GDPR").</p
-        >
+          commitment to user privacy, and the General Data Protection Regulation ("GDPR").
+        </p>
 
-        <p
-          >Our
+        <p>
+          Our
           <a href="https://www.photoprism.app/trademark" class="text-link" target="_blank"
             >Trademark and Brand Guidelines</a
           >, which may be updated from time to time, describe how our brand assets may be used. It is important to us
-          that any permitted use of our brand assets is fair and meets the highest standards.</p
-        >
+          that any permitted use of our brand assets is fair and meets the highest standards.
+        </p>
       </div>
 
       <p class="text-caption mt-6 mb-0 text-center text-ltr">
@@ -252,7 +252,7 @@ export default {
     const isPublic = this.$config.isPublic();
     const isSuperAdmin = this.$session.isSuperAdmin();
     return {
-      rtl: this.$rtl,
+      rtl: this.$isRtl,
       tier: tier,
       membership: membership,
       canUpgrade: tier <= 4,

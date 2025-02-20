@@ -56,36 +56,40 @@
               {{ m.Caption }}
             </button>
             <div class="meta-details">
-              <button class="action-open-date meta-date" :data-uid="m.UID">
+              <button class="action-open-date meta-date text-truncate" :data-uid="m.UID">
                 <i :title="$gettext('Taken')" class="mdi mdi-calendar-range" />
                 {{ m.getDateString(true) }}
               </button>
-              <button v-if="m.Type === 'video'">
+              <button v-if="m.Type === 'video'" class="meta-video text-truncate">
                 <i class="mdi mdi-movie" />
                 {{ m.getVideoInfo() }}
               </button>
-              <button v-else-if="m.Type === 'live'">
-                <i class="mdi mdi-play-circle" />
+              <button v-else-if="m.Type === 'live'" class="meta-live text-truncate">
+                <i class="mdi mdi-play-circle-outline" />
                 {{ m.getVideoInfo() }}
               </button>
-              <button v-else-if="m.Type === 'animated'">
+              <button v-else-if="m.Type === 'animated'" class="meta-animated text-truncate">
                 <i class="mdi mdi-file-gif-box" />
                 {{ m.getVideoInfo() }}
               </button>
-              <button v-else-if="m.Type === 'vector'">
+              <button v-else-if="m.Type === 'vector'" class="meta-vector text-truncate">
                 <i class="mdi mdi-vector-polyline" />
                 {{ m.getVectorInfo() }}
               </button>
-              <button v-else class="meta-camera action-camera-edit" :data-uid="m.UID">
-                <i class="mdi mdi-camera" />
-                {{ m.getPhotoInfo() }}
+              <button v-if="m.CameraID > 1" class="meta-camera action-camera-edit text-truncate" :data-uid="m.UID">
+                <i class="mdi" :class="m.Type === 'video' ? 'mdi-video-vintage' : 'mdi-camera'" />
+                {{ m.getCameraInfo() }}
               </button>
-              <button v-if="m.LensID > 1 || m.FocalLength" class="meta-lens action-lens-edit" :data-uid="m.UID">
+              <button
+                v-if="m.LensID > 1 || m.FocalLength"
+                class="meta-lens action-lens-edit text-truncate"
+                :data-uid="m.UID"
+              >
                 <i class="mdi mdi-camera-iris" />
                 {{ m.getLensInfo() }}
               </button>
               <button class="meta-filename text-truncate">
-                <i class="mdi mdi-film" />
+                <i class="mdi" :class="m.Type === 'video' || m.Type === 'live' ? 'mdi-filmstrip' : 'mdi-film'" />
                 {{ m.getOriginalName() }}
               </button>
               <template v-if="featPlaces && m.Country !== 'zz'">
@@ -124,40 +128,34 @@
             </div>
 
             <button
-              v-if="m.Type !== 'image' || m.isStack()"
+              v-if="(m.Type !== 'image' && m.Type !== 'video') || selectMode || m.isStack()"
               class="input-open"
               @touchstart.stop="input.touchStart($event, index)"
-              @touchend.stop="onOpen($event, index, !isSharedView, m.Type === 'live')"
+              @touchend.stop="onOpen($event, index, !isSharedView)"
               @touchmove.stop
-              @click.stop.prevent="onOpen($event, index, !isSharedView, m.Type === 'live')"
+              @click.stop.prevent="onOpen($event, index, !isSharedView)"
             >
               <i v-if="m.Type === 'raw'" class="action-raw mdi mdi-raw" :title="$gettext('RAW')" />
-              <i v-if="m.Type === 'live'" class="action-live" :title="$gettext('Live')"><icon-live-photo /></i>
-              <i v-if="m.Type === 'video'" class="mdi mdi-play" :title="$gettext('Video')" />
-              <i v-if="m.Type === 'animated'" class="mdi mdi-file-gif-box" :title="$gettext('Animated')" />
+              <i v-else-if="m.Type === 'live'" class="action-live" :title="$gettext('Live')"><icon-live-photo /></i>
+              <i v-else-if="m.Type === 'animated'" class="mdi mdi-file-gif-box" :title="$gettext('Animated')" />
               <i
-                v-if="m.Type === 'vector'"
+                v-else-if="m.Type === 'vector'"
                 class="action-vector mdi mdi-vector-polyline"
                 :title="$gettext('Vector')"
               ></i>
-              <i v-if="m.Type === 'image'" class="mdi mdi-camera-burst" :title="$gettext('Stack')" />
-            </button>
-
-            <button
-              v-if="m.Type === 'image' && selectMode"
-              class="input-view"
-              :title="$gettext('View')"
-              @touchstart.stop="input.touchStart($event, index)"
-              @touchend.stop="onOpen($event, index)"
-              @touchmove.stop
-              @click.stop.prevent="onOpen($event, index)"
-            >
-              <i class="mdi mdi-magnify-plus-outline" />
+              <i
+                v-else-if="m.Type === 'image' && !selectMode"
+                class="mdi mdi-camera-burst"
+                :title="$gettext('Stack')"
+              />
+              <i v-else class="mdi mdi-magnify-plus-outline" :title="$gettext('View')" />
             </button>
 
             <div class="preview-details">
-              <div v-if="m.Type === 'video'" class="info-text">{{ m.getDurationInfo() }}</div>
               <div v-if="!isSharedView && featPrivate && m.Private" class="info-icon"><i class="mdi mdi-lock" /></div>
+              <div v-if="m.Type === 'video'" :title="$gettext('Video')" class="info-text">
+                {{ m.getDurationInfo() }}
+              </div>
             </div>
 
             <!--
@@ -237,46 +235,62 @@
               {{ m.Caption }}
             </button>
             <div class="meta-details">
-              <button class="action-open-date meta-date" :data-uid="m.UID" @click.exact="openDate(index)">
+              <button class="action-open-date meta-date text-truncate" :data-uid="m.UID" @click.exact="openDate(index)">
                 <i :title="$gettext('Taken')" class="mdi mdi-calendar-range" />
                 {{ m.getDateString(true) }}
               </button>
-              <button v-if="m.Type === 'video'" :title="$gettext('Video')" @click.exact="editPhoto(index)">
+              <button
+                v-if="m.Type === 'video'"
+                :title="$gettext('Video')"
+                class="meta-video text-truncate"
+                @click.exact="editPhoto(index, 'details')"
+              >
                 <i class="mdi mdi-movie" />
                 {{ m.getVideoInfo() }}
               </button>
-              <button v-else-if="m.Type === 'live'" :title="$gettext('Live')" @click.exact="editPhoto(index)">
-                <i class="mdi mdi-play-circle" />
+              <button
+                v-else-if="m.Type === 'live'"
+                :title="$gettext('Live')"
+                class="meta-live text-truncate"
+                @click.exact="editPhoto(index, 'details')"
+              >
+                <i class="mdi mdi-play-circle-outline" />
                 {{ m.getVideoInfo() }}
               </button>
               <button
                 v-else-if="m.Type === 'animated'"
                 :title="$gettext('Animated') + ' GIF'"
-                @click.exact="editPhoto(index)"
+                class="meta-animated text-truncate"
+                @click.exact="editPhoto(index, 'details')"
               >
                 <i class="mdi mdi-file-gif-box" />
                 {{ m.getVideoInfo() }}
               </button>
-              <button v-else-if="m.Type === 'vector'" :title="$gettext('Vector')" @click.exact="editPhoto(index)">
+              <button
+                v-else-if="m.Type === 'vector'"
+                :title="$gettext('Vector')"
+                class="meta-vector text-truncate"
+                @click.exact="editPhoto(index)"
+              >
                 <i class="mdi mdi-vector-polyline" />
                 {{ m.getVectorInfo() }}
               </button>
               <button
-                v-else
+                v-if="m.CameraID > 1"
                 :title="$gettext('Camera')"
-                class="meta-camera action-camera-edit"
+                class="meta-camera action-camera-edit text-truncate"
                 :data-uid="m.UID"
-                @click.exact="editPhoto(index)"
+                @click.exact="editPhoto(index, 'details')"
               >
-                <i class="mdi mdi-camera" />
-                {{ m.getPhotoInfo() }}
+                <i class="mdi" :class="m.Type === 'video' ? 'mdi-video-vintage' : 'mdi-camera'" />
+                {{ m.getCameraInfo() }}
               </button>
               <button
                 v-if="m.LensID > 1 || m.FocalLength"
                 :title="$gettext('Lens')"
-                class="meta-lens action-lens-edit"
+                class="meta-lens action-lens-edit text-truncate"
                 :data-uid="m.UID"
-                @click.exact="editPhoto(index)"
+                @click.exact="editPhoto(index, 'details')"
               >
                 <i class="mdi mdi-camera-iris" />
                 {{ m.getLensInfo() }}
@@ -286,7 +300,7 @@
                 class="meta-filename text-truncate"
                 @click.exact="editPhoto(index, 'files')"
               >
-                <i class="mdi mdi-film" />
+                <i class="mdi" :class="m.Type === 'video' || m.Type === 'live' ? 'mdi-filmstrip' : 'mdi-film'" />
                 {{ m.getOriginalName() }}
               </button>
               <template v-if="featPlaces && m.Country !== 'zz'">
@@ -442,9 +456,10 @@ export default {
           // see https://developer.chrome.com/blog/play-request-was-interrupted.
           const playPromise = player.play();
           if (playPromise !== undefined) {
-            playPromise.catch((e) => {
-              if (this.trace) {
-                console.log(e.message);
+            playPromise.catch((err) => {
+              if (this.trace && err && err.message) {
+                // Ignore this error, or uncomment the following line to log it.
+                // console.debug(err.message);
               }
             });
           }
@@ -513,14 +528,14 @@ export default {
        */
       this.$forceUpdate();
     },
-    onOpen(ev, index, showMerged, preferVideo) {
+    onOpen(ev, index, showMerged) {
       const inputType = this.input.eval(ev, index);
 
       if (inputType !== ClickShort) {
         return;
       }
 
-      this.openPhoto(index, showMerged, preferVideo);
+      this.openPhoto(index, showMerged);
     },
     onClick(ev, index) {
       const inputType = this.input.eval(ev, index);

@@ -97,7 +97,6 @@ import $api from "common/api";
 import Axios from "axios";
 import $notify from "common/notify";
 import Settings from "model/settings";
-import Util from "common/util";
 import { Folder, RootOriginals } from "model/folder";
 
 export default {
@@ -122,14 +121,14 @@ export default {
       source: null,
       root: root,
       dirs: [root],
-      rtl: this.$rtl,
+      rtl: this.$isRtl,
     };
   },
   created() {
     this.subscriptionId = this.$event.subscribe("index", this.handleEvent);
     this.load();
   },
-  unmounted() {
+  beforeUnmount() {
     this.$event.unsubscribe(this.subscriptionId);
   },
   methods: {
@@ -141,7 +140,7 @@ export default {
         if (this.settings.index.path !== this.root.path) {
           this.dirs.push({
             path: this.settings.index.path,
-            name: "/" + Util.truncate(this.settings.index.path, 100, "…"),
+            name: "/" + this.$util.truncate(this.settings.index.path, 100, "…"),
           });
         }
 
@@ -173,7 +172,7 @@ export default {
               found = true;
             }
 
-            this.dirs.push({ path: folders[i].Path, name: "/" + Util.truncate(folders[i].Path, 100, "…") });
+            this.dirs.push({ path: folders[i].Path, name: "/" + this.$util.truncate(folders[i].Path, 100, "…") });
           }
 
           if (!found) {
@@ -206,7 +205,8 @@ export default {
       };
 
       // Submit POST request.
-      $api.post("index", params, { cancelToken: this.source.token })
+      $api
+        .post("index", params, { cancelToken: this.source.token })
         .then(function () {
           $notify.unblockUI();
           ctx.busy = false;

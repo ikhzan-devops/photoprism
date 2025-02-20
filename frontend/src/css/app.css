@@ -36,7 +36,7 @@ Additional information can be found in our Developer Guide:
 @import url("navigation.css");
 @import url("logs.css");
 @import url("visibility.css");
-@import url("results.css");
+@import url("views.css");
 @import url("places.css");
 @import url("labels.css");
 @import url("files.css");
@@ -175,6 +175,10 @@ body .v-list__item .v-icon {
     cursor: text !important;
 }
 
+.cursor-copy,
+.cursor-copy i,
+.cursor-copy svg,
+.cursor-copy input,
 .cursor-pointer {
     cursor: pointer !important;
 }

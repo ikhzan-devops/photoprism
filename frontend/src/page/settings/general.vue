@@ -447,7 +447,7 @@ export default {
       this.$event.subscribe("config.updated", (ev, data) => this.settings.setValues(data.config.settings))
     );
   },
-  unmounted() {
+  beforeUnmount() {
     for (let i = 0; i < this.subscriptions.length; i++) {
       this.$event.unsubscribe(this.subscriptions[i]);
     }

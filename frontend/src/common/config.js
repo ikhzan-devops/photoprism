@@ -24,7 +24,7 @@ Additional information can be found in our Developer Guide:
 */
 
 import $api from "common/api";
-import $event from "pubsub-js";
+import $event from "common/event";
 import * as themes from "options/themes";
 import translations from "locales/translations.json";
 import { Languages } from "options/options";
@@ -168,10 +168,6 @@ export default class Config {
 
   setValues(values) {
     if (!values) return;
-
-    if (this.debug) {
-      console.log("config: updated", values);
-    }
 
     if (values.jsUri && this.values.jsUri !== values.jsUri) {
       $event.publish("dialog.update", { values });
@@ -436,13 +432,17 @@ export default class Config {
     if (document && document.body) {
       const isRtl = this.isRtl(locale);
 
-      // Update <html> lang and dir attributes on current locale.
+      // Update <html> lang attribute and dir attribute to match the current locale.
       document.documentElement.setAttribute("lang", locale);
-      document.documentElement.setAttribute("dir", isRtl ? "rtl" : "ltr");
+      document.documentElement.setAttribute("dir", this.dir(isRtl));
 
-      // Set body.is-rtl class depending on current locale.
-      if (isRtl !== document.body.classList.contains("is-rtl")) {
-        document.body.classList.toggle("is-rtl");
+      // Set body.is-rtl or .is-ltr, depending on the writing direction of the current locale.
+      if (isRtl) {
+        document.body.classList.add("is-rtl");
+        document.body.classList.remove("is-ltr");
+      } else {
+        document.body.classList.remove("is-rtl");
+        document.body.classList.add("is-ltr");
       }
     }
 
@@ -490,6 +490,15 @@ export default class Config {
     }
 
     return Languages().some((l) => l.value === locale && l.rtl);
+  }
+
+  // dir returns the user interface direction (for the current locale if no argument is given).
+  dir(isRtl) {
+    if (typeof isRtl === "undefined") {
+      isRtl = this.isRtl();
+    }
+
+    return isRtl ? "rtl" : "ltr";
   }
 
   // setTheme set the current UI theme based on the specified name.

@@ -295,7 +295,7 @@ export default {
     this.subscriptions.push(this.$event.subscribe("touchmove.top", () => this.refresh()));
     this.subscriptions.push(this.$event.subscribe("touchmove.bottom", () => this.loadMore()));
   },
-  unmounted() {
+  beforeUnmount() {
     for (let i = 0; i < this.subscriptions.length; i++) {
       this.$event.unsubscribe(this.subscriptions[i]);
     }

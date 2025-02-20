@@ -102,6 +102,12 @@ export default {
     validateOn: "invalid-input",
     hideDetails: "auto",
   },
+  VSlider: {
+    ripple: false,
+    focused: false,
+    elevation: 0,
+    hideDetails: "auto",
+  },
   VCard: {
     density: "compact",
     color: "background",

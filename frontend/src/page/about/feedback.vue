@@ -129,7 +129,7 @@ export default {
         UserAgent: navigator.userAgent,
         UserLocales: navigator.language,
       },
-      rtl: this.$rtl,
+      rtl: this.$isRtl,
     };
   },
   mounted() {

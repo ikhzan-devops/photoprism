@@ -205,10 +205,12 @@ export default {
   mounted() {
     this.$view.enter(this);
   },
-  unmounted() {
+  beforeUnmount() {
     for (let i = 0; i < this.subscriptions.length; i++) {
       this.$event.unsubscribe(this.subscriptions[i]);
     }
+  },
+  unmounted() {
     this.$view.leave(this);
   },
   methods: {
@@ -290,7 +292,7 @@ export default {
       // Open Edit Dialog
       this.$event.publish("dialog.edit", { selection, album: this.album, index, tab });
     },
-    openPhoto(index, showMerged = false, preferVideo = false) {
+    openPhoto(index, showMerged = false) {
       if (this.loading || !this.listen || this.lightbox.loading || !this.results[index]) {
         return false;
       }
@@ -302,20 +304,6 @@ export default {
         showMerged = false;
       }
 
-      /**
-       * If the file is a video or an animation (like gif), then we always play
-       * it in the video-player.
-       * If the file is a live-image (an image with an embedded video), then we only
-       * play it in the video-player if specifically requested.
-       * This is because:
-       * 1. the lower-resolution video in these files is already
-       *    played when hovering the element (which does not happen for regular
-       *    video files)
-       * 2. The video in live-images is an addon. The main focus is usually still
-       *    the high resolution image inside
-       *
-       * preferVideo is true, when the user explicitly clicks the live-image-icon.
-       */
       if (showMerged) {
         this.$lightbox.openModels(Thumb.fromFiles([selected]), 0);
       } else {
@@ -324,8 +312,10 @@ export default {
 
       return true;
     },
-    loadMore() {
-      if (this.scrollDisabled || this.$view.isHidden(this)) return;
+    loadMore(force) {
+      if (!force && (this.scrollDisabled || this.$view.isHidden(this))) {
+        return;
+      }
 
       this.scrollDisabled = true;
       this.listen = false;
@@ -432,10 +422,11 @@ export default {
 
       if (this.model.Order !== this.filter.order) {
         this.model.Order = this.filter.order;
-        this.updateAlbum();
       }
 
-      if (this.loading) return;
+      if (this.loading) {
+        return;
+      }
 
       const query = {
         view: this.settings.view,
@@ -485,6 +476,15 @@ export default {
       this.loadMore();
     },
     search() {
+      /**
+       * search is called on mount or route change. If the route changed to an
+       * open lightbox, no search is required. There is no reason to do an
+       * initial results load, if the results aren't currently visible
+       */
+      if (this.lightbox.open) {
+        return;
+      }
+
       this.scrollDisabled = true;
 
       // Don't query the same data more than once
@@ -585,7 +585,7 @@ export default {
             this.filter.order = this.model.Order;
             this.updateQuery();
           } else {
-            this.loadMore();
+            this.loadMore(true);
           }
 
           return;
@@ -621,7 +621,9 @@ export default {
       }
     },
     onUpdate(ev, data) {
-      if (!this.listen) return;
+      if (!this.listen) {
+        return;
+      }
 
       if (!data || !data.entities) {
         return;

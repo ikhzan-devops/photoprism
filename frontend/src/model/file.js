@@ -24,13 +24,13 @@ Additional information can be found in our Developer Guide:
 */
 
 import RestModel from "model/rest";
-import $api from "common/api";
 import { DateTime } from "luxon";
-import Util from "common/util";
 import { $config } from "app/session";
 import { $gettext } from "common/gettext";
 import download from "common/download";
 import * as media from "common/media";
+import $api from "common/api";
+import $util from "common/util";
 
 export class File extends RestModel {
   getDefaults() {
@@ -104,7 +104,7 @@ export class File extends RestModel {
     }
 
     if (truncate) {
-      result = Util.truncate(result, truncate, "…");
+      result = $util.truncate(result, truncate, "…");
     }
 
     return result;
@@ -174,11 +174,11 @@ export class File extends RestModel {
     }
 
     if (this.Duration > 0) {
-      info.push(Util.formatDuration(this.Duration));
+      info.push($util.formatDuration(this.Duration));
     }
 
     if (this.FPS > 0) {
-      info.push(Util.formatFPS(this.FPS));
+      info.push($util.formatFPS(this.FPS));
     }
 
     this.addSizeInfo(info);
@@ -194,7 +194,7 @@ export class File extends RestModel {
     if (this.Root.length === 1) {
       return $gettext("Originals");
     } else {
-      return Util.capitalize(this.Root);
+      return $util.capitalize(this.Root);
     }
   }
 
@@ -220,16 +220,16 @@ export class File extends RestModel {
       info.push($gettext("Video"));
       return info.join(" ");
     } else if (this.MediaType === "vector") {
-      info.push(Util.fileType(this.FileType));
+      info.push($util.fileType(this.FileType));
       return info.join(" ");
     } else {
-      const format = Util.fileType(this.FileType);
+      const format = $util.fileType(this.FileType);
       if (format) {
         info.push(format);
       }
 
       if (this.MediaType && this.MediaType !== this.FileType) {
-        const media = Util.capitalize(this.MediaType);
+        const media = $util.capitalize(this.MediaType);
         if (media) {
           info.push(media);
         }

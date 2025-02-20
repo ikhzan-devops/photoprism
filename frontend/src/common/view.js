@@ -213,13 +213,15 @@ export class View {
       return false;
     }
 
-    // If debug mode is enabled, create a new log group in the browser console:
+    // When debug mode is enabled, write logs to a collapsed group in the browser console:
     // https://developer.mozilla.org/en-US/docs/Web/API/console/groupCollapsed_static
     if (debug) {
-      const scope = this.scopes.map((s) => `${s?.$options?.name} #${s?.$?.uid.toString()}`).join(" ▶ ");
+      const scope = this.scopes.map((s) => `${s?.$options?.name} #${s?.$?.uid.toString()}`).join(" › ");
+      // To make them easy to recognize, the collapsed view logs are displayed
+      // in the browser console with bold white text on a purple background.
       console.groupCollapsed(
         `%c${scope}`,
-        "background: #502A85; color: white; padding: 2px 6px; border-radius: 8px; font-weight: bold;"
+        "background: #502A85; color: white; padding: 3px 5px; border-radius: 8px; font-weight: bold;"
       );
       console.log("data:", toRaw(c?.$data));
     }
