@@ -11,7 +11,7 @@
     @after-leave="afterLeave"
   >
     <v-card ref="content" :tile="$vuetify.display.smAndDown" tabindex="1">
-      <v-toolbar flat color="surface" :density="$vuetify.display.smAndDown ? 'compact' : 'comfortable'">
+      <v-toolbar flat color="navigation" :density="$vuetify.display.smAndDown ? 'compact' : 'comfortable'">
         <v-btn icon class="action-close" @click.stop="onClose">
           <v-icon>mdi-close</v-icon>
         </v-btn>

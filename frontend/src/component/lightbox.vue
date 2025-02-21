@@ -55,7 +55,7 @@
         <v-icon v-else icon="mdi-play" class="clickable" @pointerdown.stop.prevent="toggleVideo"></v-icon>
       </div>
       <div class="video-control video-control--time text-body-2">
-        {{ $util.formatSeconds(video.time) }}
+        {{ $util.formatSeconds(video.ended ? Math.ceil(video.time) : Math.floor(video.time)) }}
       </div>
       <v-slider
         :model-value="video.time"
@@ -72,7 +72,7 @@
       >
       </v-slider>
       <div class="video-control video-control--duration text-body-2">
-        {{ $util.formatSeconds(video.duration) }}
+        {{ $util.formatRemainingSeconds(video.time, video.duration) }}
       </div>
       <div v-if="featExperimental && video.castable" class="video-control video-control--cast">
         <v-icon
@@ -738,6 +738,9 @@ export default {
         }
       }
 
+      // URL of the currently playing video.
+      this.video.src = video.src;
+
       // Loop short videos of 5 seconds or less, even if the server does not know the duration.
       if (
         !data.loop &&
@@ -749,11 +752,10 @@ export default {
         video.loop = data.loop && !this.slideshow.active;
       }
 
-      // Update properties of the currently playing video.
+      // Do not display video controls if a slideshow is running,
+      // or the video belongs to an animation or live photo.
       this.video.controls =
-        !this.slideshow.active && !video.loop && data.model?.Type !== media.Animated && data.model?.Type !== media.Live;
-
-      this.video.src = video.src;
+        !this.slideshow.active && data.model?.Type !== media.Animated && data.model?.Type !== media.Live;
 
       // Get video playback error, if any:
       // https://developer.mozilla.org/de/docs/Web/API/HTMLMediaElement/error
@@ -786,7 +788,11 @@ export default {
       }
 
       this.video.state = video.readyState;
-      this.video.time = video.currentTime;
+
+      if (this.video.time !== video.currentTime) {
+        this.video.time = video.currentTime;
+      }
+
       this.video.duration = video.duration ? video.duration : data.duration;
       this.video.seeking = video.seeking === true;
 
@@ -1027,6 +1033,7 @@ export default {
           lightbox.pswp.ui.registerElement({
             name: "sidebar-button",
             className: "pswp__button--sidebar-button pswp__button--mdi", // Sets the icon style/size in lightbox.css.
+            title: this.$gettext("Show/Hide Sidebar"),
             ariaLabel: this.$gettext("Show/Hide Sidebar"),
             order: 9,
             isButton: true,
@@ -1045,6 +1052,7 @@ export default {
         lightbox.pswp.ui.registerElement({
           name: "sound-toggle",
           className: "pswp__button--sound-toggle pswp__button--mdi", // Sets the icon style/size in lightbox.css.
+          title: this.$gettext("Mute"),
           ariaLabel: this.$gettext("Mute"),
           order: 10,
           isButton: true,
@@ -1060,6 +1068,7 @@ export default {
         lightbox.pswp.ui.registerElement({
           name: "slideshow-toggle",
           className: "pswp__button--slideshow-toggle pswp__button--mdi", // Sets the icon style/size in lightbox.css.
+          title: this.$gettext("Start/Stop Slideshow"),
           ariaLabel: this.$gettext("Start/Stop Slideshow"),
           order: 10,
           isButton: true,
@@ -1076,6 +1085,7 @@ export default {
           lightbox.pswp.ui.registerElement({
             name: "fullscreen-toggle",
             className: "pswp__button--fullscreen-toggle pswp__button--mdi", // Sets the icon style/size in lightbox.css.
+            title: this.$gettext("Fullscreen"),
             ariaLabel: this.$gettext("Fullscreen"),
             order: 10,
             isButton: true,
@@ -1093,6 +1103,7 @@ export default {
           lightbox.pswp.ui.registerElement({
             name: "favorite-toggle",
             className: "pswp__button--favorite-toggle pswp__button--mdi hidden-shared-only", // Sets the icon style/size in lightbox.css.
+            title: this.$gettext("Like"),
             ariaLabel: this.$gettext("Like"),
             order: 10,
             isButton: true,
@@ -1109,6 +1120,7 @@ export default {
         lightbox.pswp.ui.registerElement({
           name: "select-toggle",
           className: "pswp__button--select-toggle pswp__button--mdi", // Sets the icon style/size in lightbox.css.
+          title: this.$gettext("Select"),
           ariaLabel: this.$gettext("Select"),
           order: 10,
           isButton: true,
@@ -1125,6 +1137,7 @@ export default {
           lightbox.pswp.ui.registerElement({
             name: "edit-button",
             className: "pswp__button--edit-button pswp__button--mdi hidden-shared-only", // Sets the icon style/size in lightbox.css.
+            title: this.$gettext("Edit"),
             ariaLabel: this.$gettext("Edit"),
             order: 10,
             isButton: true,
@@ -1143,6 +1156,7 @@ export default {
           lightbox.pswp.ui.registerElement({
             name: "download-button",
             className: "pswp__button--download-button pswp__button--mdi", // Sets the icon style/size in lightbox.css.
+            title: this.$gettext("Download"),
             ariaLabel: this.$gettext("Download"),
             order: 10,
             isButton: true,

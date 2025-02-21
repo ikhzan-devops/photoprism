@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: ci@photoprism.app\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-02-13 15:37+0000\n"
-"Last-Translator: Weblate Translation Memory <noreply-mt-weblate-translation-memory@weblate.org>\n"
+"PO-Revision-Date: 2025-02-21 01:24+0000\n"
+"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
 "Language-Team: Chinese (Simplified) <https://translate.photoprism.app/projects/photoprism/frontend/zh_Hans/>\n"
 "Language: zh\n"
 "MIME-Version: 1.0\n"
@@ -357,9 +357,9 @@ msgid "AM"
 msgstr "上午"
 
 #: src/component/navigation.vue:423 src/component/photo/edit/files.vue:351
-#: src/component/photo/view/cards.vue:315
-#: src/component/photo/view/cards.vue:479 src/component/photo/view/list.vue:172
-#: src/component/photo/view/mosaic.vue:172 src/options/options.js:368
+#: src/component/photo/view/cards.vue:313
+#: src/component/photo/view/cards.vue:466 src/component/photo/view/list.vue:172
+#: src/component/photo/view/mosaic.vue:170 src/options/options.js:368
 msgid "Animated"
 msgstr "动画"
 
@@ -385,7 +385,7 @@ msgstr "应用"
 
 #: src/component/photo/clipboard.vue:64
 #: src/component/photo/edit/details.vue:640
-#: src/component/photo/view/cards.vue:409
+#: src/component/photo/view/cards.vue:396
 msgid "Approve"
 msgstr "批准"
 
@@ -394,7 +394,7 @@ msgid "Apps and Devices"
 msgstr "应用程序和设备"
 
 #: src/app/routes.js:256 src/component/navigation.vue:552
-#: src/component/photo/clipboard.vue:142 src/component/photo/view/cards.vue:391
+#: src/component/photo/clipboard.vue:142 src/component/photo/view/cards.vue:378
 #: src/page/settings/general.vue:348
 msgid "Archive"
 msgstr "归档"
@@ -543,7 +543,7 @@ msgid "Calendar"
 msgstr "日历"
 
 #: src/component/photo/edit/details.vue:346 src/component/photo/toolbar.vue:313
-#: src/component/photo/view/cards.vue:500 src/component/photo/view/list.vue:115
+#: src/component/photo/view/cards.vue:487 src/component/photo/view/list.vue:115
 msgid "Camera"
 msgstr "相机"
 
@@ -591,7 +591,7 @@ msgstr "取消"
 
 #: src/component/photo/edit/details.vue:87 src/component/photo/edit/info.vue:59
 #: src/component/photo/edit/labels.vue:42
-#: src/component/photo/view/cards.vue:439
+#: src/component/photo/view/cards.vue:426
 msgid "Caption"
 msgstr "标题"
 
@@ -772,7 +772,7 @@ msgstr "撰稿人"
 msgid "Converting"
 msgstr "转换中"
 
-#: src/common/util.js:709
+#: src/common/util.js:719
 msgid "Copied to clipboard"
 msgstr "已复制到剪贴板"
 
@@ -829,6 +829,10 @@ msgstr "Cubic: 质量适中，性能良好"
 msgid "Current Password"
 msgstr "当前密码"
 
+#: src/options/themes.js:853 src/options/themes.js:862
+msgid "Custom"
+msgstr "定制"
+
 #: src/page/about/feedback.vue:5 src/options/options.js:472
 msgid "Customer Support"
 msgstr "客户支持"
@@ -862,7 +866,7 @@ msgstr "调试日志"
 #: src/component/photo/edit/info.vue:110 src/model/session.js:64
 #: src/model/user.js:244 src/options/auth.js:20 src/options/auth.js:21
 #: src/options/auth.js:39 src/options/auth.js:40 src/options/options.js:323
-#: src/options/options.js:387 src/options/themes.js:701 src/page/places.vue:201
+#: src/options/options.js:387 src/options/themes.js:711 src/page/places.vue:201
 msgid "Default"
 msgstr "默认"
 
@@ -1006,10 +1010,10 @@ msgid "Done."
 msgstr "完成。"
 
 #: src/component/album/clipboard.vue:72 src/component/album/toolbar.vue:120
-#: src/component/file/clipboard.vue:48 src/component/lightbox.vue:1050
-#: src/component/people/clipboard.vue:47 src/component/photo/clipboard.vue:116
-#: src/component/photo/edit/files.vue:167 src/page/settings/general.vue:252
-#: src/page/settings/general.vue:624
+#: src/component/file/clipboard.vue:48 src/component/lightbox.vue:1059
+#: src/component/lightbox.vue:1060 src/component/people/clipboard.vue:47
+#: src/component/photo/clipboard.vue:116 src/component/photo/edit/files.vue:167
+#: src/page/settings/general.vue:252 src/page/settings/general.vue:624
 msgid "Download"
 msgstr "下载"
 
@@ -1027,7 +1031,7 @@ msgstr "下载单个文件并用 zip 压缩。"
 
 #: src/component/album/clipboard.vue:102 src/component/album/toolbar.vue:105
 #: src/component/file/clipboard.vue:61 src/component/label/clipboard.vue:86
-#: src/component/lightbox.vue:1600 src/component/people/clipboard.vue:59
+#: src/component/lightbox.vue:1610 src/component/people/clipboard.vue:59
 #: src/component/photo/clipboard.vue:216 src/component/photo/edit/files.vue:117
 #: src/component/photo/view/cards.vue:164 src/component/photo/view/list.vue:133
 #: src/page/library/browse.vue:118
@@ -1067,8 +1071,8 @@ msgid "E-Mail"
 msgstr "电子邮件"
 
 #: src/component/album/clipboard.vue:61 src/component/album/toolbar.vue:82
-#: src/component/lightbox.vue:1032 src/component/photo/clipboard.vue:90
-#: src/page/settings/general.vue:324
+#: src/component/lightbox.vue:1040 src/component/lightbox.vue:1041
+#: src/component/photo/clipboard.vue:90 src/page/settings/general.vue:324
 msgid "Edit"
 msgstr "编辑"
 
@@ -1326,7 +1330,7 @@ msgstr "框架"
 msgid "Full Access"
 msgstr "完全访问"
 
-#: src/component/lightbox.vue:983
+#: src/component/lightbox.vue:988 src/component/lightbox.vue:989
 msgid "Fullscreen"
 msgstr "全屏"
 
@@ -1636,7 +1640,7 @@ msgid "Legal Information"
 msgstr "法律信息"
 
 #: src/component/photo/edit/details.vue:417
-#: src/component/photo/view/cards.vue:514
+#: src/component/photo/view/cards.vue:501
 msgid "Lens"
 msgstr "镜头"
 
@@ -1652,7 +1656,7 @@ msgstr "资料库"
 msgid "License"
 msgstr "许可证"
 
-#: src/component/lightbox.vue:1000
+#: src/component/lightbox.vue:1006 src/component/lightbox.vue:1007
 msgid "Like"
 msgstr "喜欢"
 
@@ -1676,9 +1680,9 @@ msgstr "链接"
 msgid "List"
 msgstr "列表"
 
-#: src/app/routes.js:228 src/component/photo/view/cards.vue:306
-#: src/component/photo/view/cards.vue:469 src/component/photo/view/list.vue:163
-#: src/component/photo/view/mosaic.vue:163 src/options/options.js:372
+#: src/app/routes.js:228 src/component/photo/view/cards.vue:305
+#: src/component/photo/view/cards.vue:456 src/component/photo/view/list.vue:163
+#: src/component/photo/view/mosaic.vue:162 src/options/options.js:372
 msgid "Live"
 msgstr "实况"
 
@@ -1709,7 +1713,7 @@ msgstr "本地时间"
 #: src/page/settings/account.vue:665 src/page/settings/account.vue:667
 #: src/component/album/edit/dialog.vue:92 src/component/photo/edit/info.vue:63
 #: src/component/photo/edit/labels.vue:48
-#: src/component/photo/view/cards.vue:536 src/component/photo/view/list.vue:116
+#: src/component/photo/view/cards.vue:523 src/component/photo/view/list.vue:116
 #: src/page/albums.vue:89 src/page/settings/account.vue:557
 #: src/page/settings/account.vue:559
 msgid "Location"
@@ -1845,7 +1849,7 @@ msgstr "移动文件"
 msgid "Must have at least %{n} characters."
 msgstr "必须至少有%{n}个字符。"
 
-#: src/component/lightbox.vue:952
+#: src/component/lightbox.vue:955 src/component/lightbox.vue:956
 msgid "Mute"
 msgstr "静音"
 
@@ -1980,7 +1984,7 @@ msgstr "非照片和低质量图像出现在搜索结果中前需要进行审查
 msgid "None"
 msgstr "无"
 
-#: src/common/util.js:716 src/component/lightbox.vue:569
+#: src/common/util.js:726 src/component/lightbox.vue:569
 msgid "Not allowed"
 msgstr "不允许"
 
@@ -1992,8 +1996,8 @@ msgstr "未找到"
 msgid "Not sorted."
 msgstr "未分类。"
 
-#: src/common/util.js:721 src/component/lightbox.vue:563
-#: src/component/lightbox.vue:678
+#: src/common/util.js:731 src/component/lightbox.vue:563
+#: src/component/lightbox.vue:680
 msgid "Not supported"
 msgstr "不支持"
 
@@ -2444,7 +2448,7 @@ msgstr "从相册中移除"
 msgid "Remove imported files to save storage. Unsupported file types will never be deleted, they remain in their current location."
 msgstr "移除导入的文件以节省存储空间，不支持的文件类型将永远不会被删除，它们会保留在它们当前的位置。"
 
-#: src/common/api.js:102 src/component/lightbox.vue:674
+#: src/common/api.js:102 src/component/lightbox.vue:676
 msgid "Request failed - are you offline?"
 msgstr "请求失败 - 你是否离线？"
 
@@ -2547,7 +2551,7 @@ msgstr "密钥"
 msgid "Security and Access"
 msgstr "安全和访问"
 
-#: src/component/lightbox.vue:1016
+#: src/component/lightbox.vue:1023 src/component/lightbox.vue:1024
 msgid "Select"
 msgstr "选择"
 
@@ -2673,7 +2677,7 @@ msgstr "显示更多"
 msgid "Show server logs in Library."
 msgstr "在库中显示服务器日志。"
 
-#: src/component/lightbox.vue:934
+#: src/component/lightbox.vue:936 src/component/lightbox.vue:937
 msgid "Show/Hide Sidebar"
 msgstr "显示/隐藏侧边栏"
 
@@ -2710,7 +2714,7 @@ msgstr "软件"
 msgid "Software Update"
 msgstr "软件更新"
 
-#: src/component/lightbox.vue:671
+#: src/component/lightbox.vue:673
 msgid "Something went wrong, try again"
 msgstr "出错了，再试一次"
 
@@ -2736,8 +2740,8 @@ msgstr "按降序排列。"
 msgid "Source"
 msgstr "来源"
 
-#: src/component/photo/view/cards.vue:329
-#: src/component/photo/view/mosaic.vue:186
+#: src/component/photo/view/cards.vue:325
+#: src/component/photo/view/mosaic.vue:182
 msgid "Stack"
 msgstr "堆"
 
@@ -2761,7 +2765,7 @@ msgstr "堆"
 msgid "Start"
 msgstr "开始"
 
-#: src/component/lightbox.vue:967
+#: src/component/lightbox.vue:971 src/component/lightbox.vue:972
 msgid "Start/Stop Slideshow"
 msgstr "开始/停止幻灯片"
 
@@ -2824,7 +2828,7 @@ msgid "Sync raw and video files"
 msgstr "同步 Raw 和视频文件"
 
 #: src/component/photo/edit/info.vue:183 src/component/photo/view/cards.vue:182
-#: src/component/photo/view/cards.vue:451 src/component/photo/view/list.vue:114
+#: src/component/photo/view/cards.vue:438 src/component/photo/view/list.vue:114
 msgid "Taken"
 msgstr "纳入于"
 
@@ -2991,7 +2995,7 @@ msgid "Unique ID"
 msgstr "唯一标识符"
 
 #: src/page/settings/account.vue:451 src/page/settings/account.vue:476
-#: src/page/settings/account.vue:501 src/common/util.js:389
+#: src/page/settings/account.vue:501 src/common/util.js:399
 #: src/component/photo/edit/details.vue:20
 #: src/component/photo/edit/details.vue:111
 #: src/component/photo/edit/details.vue:138
@@ -3148,9 +3152,9 @@ msgstr "用户名"
 msgid "Users"
 msgstr "用户"
 
-#: src/component/photo/view/cards.vue:322
-#: src/component/photo/view/cards.vue:489 src/component/photo/view/list.vue:179
-#: src/component/photo/view/mosaic.vue:179 src/model/photo.js:902
+#: src/component/photo/view/cards.vue:319
+#: src/component/photo/view/cards.vue:476 src/component/photo/view/list.vue:179
+#: src/component/photo/view/mosaic.vue:176 src/model/photo.js:902
 #: src/model/photo.js:910 src/options/options.js:380
 msgid "Vector"
 msgstr "矢量"
@@ -3163,9 +3167,9 @@ msgstr "媒介物"
 msgid "Verification Code"
 msgstr "验证码"
 
-#: src/component/photo/view/cards.vue:351
-#: src/component/photo/view/cards.vue:459 src/component/photo/view/list.vue:186
-#: src/component/photo/view/mosaic.vue:212 src/model/file.js:220
+#: src/component/photo/view/cards.vue:343
+#: src/component/photo/view/cards.vue:446 src/component/photo/view/list.vue:186
+#: src/component/photo/view/mosaic.vue:200 src/model/file.js:220
 #: src/model/photo.js:926 src/model/photo.js:944 src/options/options.js:376
 msgid "Video"
 msgstr "视频"
@@ -3179,8 +3183,8 @@ msgstr "视频时长"
 msgid "Videos"
 msgstr "视频"
 
-#: src/component/photo/toolbar.vue:341 src/component/photo/view/cards.vue:338
-#: src/component/photo/view/mosaic.vue:195
+#: src/component/photo/toolbar.vue:341 src/component/photo/view/cards.vue:330
+#: src/component/photo/view/mosaic.vue:187
 msgid "View"
 msgstr "视图"
 

@@ -98,14 +98,14 @@
               </v-col>
               <v-col class="text-center" cols="4" sm="3" md="2" align-self="center">
                 <v-avatar
-                  :size="$vuetify.display.xs ? 100 : 112"
+                  :size="$vuetify.display.md ? 100 : 112"
                   :class="{ clickable: !busy }"
                   @click.stop.prevent="onChangeAvatar()"
                 >
                   <v-img
                     :alt="accountInfo"
                     :title="$gettext('Change Avatar')"
-                    :src="$vuetify.display.xs ? user.getAvatarURL('tile_100') : user.getAvatarURL('tile_224')"
+                    :src="$vuetify.display.md ? user.getAvatarURL('tile_100') : user.getAvatarURL('tile_224')"
                   ></v-img>
                 </v-avatar>
               </v-col>

@@ -106,6 +106,8 @@ export default {
     ripple: false,
     focused: false,
     elevation: 0,
+    trackSize: 3,
+    thumbSize: 18,
     hideDetails: "auto",
   },
   VCard: {

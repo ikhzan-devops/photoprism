@@ -19,9 +19,8 @@ entryPoints:
     address: ":443"
     transport:
       respondingTimeouts:
-        readTimeout: "1h"
+        readTimeout: "3h"
         writeTimeout: "0s"
-        idleTimeout: "300s"
 
 certificatesResolvers:
   myresolver:

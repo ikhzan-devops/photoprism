@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: ci@photoprism.app\n"
-"PO-Revision-Date: 2025-02-19 11:43+0000\n"
+"PO-Revision-Date: 2025-02-21 01:24+0000\n"
 "Last-Translator: Google Cloud Translation Basic <noreply-mt-google-translate@weblate.org>\n"
 "Language: eu\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -354,9 +354,9 @@ msgid "AM"
 msgstr "AM"
 
 #: src/component/navigation.vue:423 src/component/photo/edit/files.vue:351
-#: src/component/photo/view/cards.vue:315
-#: src/component/photo/view/cards.vue:479 src/component/photo/view/list.vue:172
-#: src/component/photo/view/mosaic.vue:172 src/options/options.js:368
+#: src/component/photo/view/cards.vue:313
+#: src/component/photo/view/cards.vue:466 src/component/photo/view/list.vue:172
+#: src/component/photo/view/mosaic.vue:170 src/options/options.js:368
 msgid "Animated"
 msgstr "Animatua"
 
@@ -382,7 +382,7 @@ msgstr "Aplikatu"
 
 #: src/component/photo/clipboard.vue:64
 #: src/component/photo/edit/details.vue:640
-#: src/component/photo/view/cards.vue:409
+#: src/component/photo/view/cards.vue:396
 msgid "Approve"
 msgstr "Onartu"
 
@@ -391,7 +391,7 @@ msgid "Apps and Devices"
 msgstr "Aplikazioak eta gailuak"
 
 #: src/app/routes.js:256 src/component/navigation.vue:552
-#: src/component/photo/clipboard.vue:142 src/component/photo/view/cards.vue:391
+#: src/component/photo/clipboard.vue:142 src/component/photo/view/cards.vue:378
 #: src/page/settings/general.vue:348
 msgid "Archive"
 msgstr "Artxiboa"
@@ -540,7 +540,7 @@ msgid "Calendar"
 msgstr "Egutegia"
 
 #: src/component/photo/edit/details.vue:346 src/component/photo/toolbar.vue:313
-#: src/component/photo/view/cards.vue:500 src/component/photo/view/list.vue:115
+#: src/component/photo/view/cards.vue:487 src/component/photo/view/list.vue:115
 msgid "Camera"
 msgstr "Kamera"
 
@@ -588,7 +588,7 @@ msgstr "Utzi"
 
 #: src/component/photo/edit/details.vue:87 src/component/photo/edit/info.vue:59
 #: src/component/photo/edit/labels.vue:42
-#: src/component/photo/view/cards.vue:439
+#: src/component/photo/view/cards.vue:426
 msgid "Caption"
 msgstr "Epigrafea"
 
@@ -769,7 +769,7 @@ msgstr "Laguntzailea"
 msgid "Converting"
 msgstr "Bihurtzea"
 
-#: src/common/util.js:709
+#: src/common/util.js:719
 msgid "Copied to clipboard"
 msgstr "Arbelean kopiatu da"
 
@@ -826,6 +826,10 @@ msgstr "Kubikoa: kalitate ertaina, errendimendu ona"
 msgid "Current Password"
 msgstr "oraingo pasahitza"
 
+#: src/options/themes.js:853 src/options/themes.js:862
+msgid "Custom"
+msgstr "Pertsonalizatua"
+
 #: src/page/about/feedback.vue:5 src/options/options.js:472
 msgid "Customer Support"
 msgstr "Bezeroarentzako Arreta"
@@ -859,7 +863,7 @@ msgstr "Arazte-erregistroak"
 #: src/component/photo/edit/info.vue:110 src/model/session.js:64
 #: src/model/user.js:244 src/options/auth.js:20 src/options/auth.js:21
 #: src/options/auth.js:39 src/options/auth.js:40 src/options/options.js:323
-#: src/options/options.js:387 src/options/themes.js:701 src/page/places.vue:201
+#: src/options/options.js:387 src/options/themes.js:711 src/page/places.vue:201
 msgid "Default"
 msgstr "Lehenetsia"
 
@@ -1003,10 +1007,10 @@ msgid "Done."
 msgstr "Eginda."
 
 #: src/component/album/clipboard.vue:72 src/component/album/toolbar.vue:120
-#: src/component/file/clipboard.vue:48 src/component/lightbox.vue:1050
-#: src/component/people/clipboard.vue:47 src/component/photo/clipboard.vue:116
-#: src/component/photo/edit/files.vue:167 src/page/settings/general.vue:252
-#: src/page/settings/general.vue:624
+#: src/component/file/clipboard.vue:48 src/component/lightbox.vue:1059
+#: src/component/lightbox.vue:1060 src/component/people/clipboard.vue:47
+#: src/component/photo/clipboard.vue:116 src/component/photo/edit/files.vue:167
+#: src/page/settings/general.vue:252 src/page/settings/general.vue:624
 msgid "Download"
 msgstr "Deskargatu"
 
@@ -1024,7 +1028,7 @@ msgstr "Deskargatu fitxategi bakarrak eta zip artxiboak."
 
 #: src/component/album/clipboard.vue:102 src/component/album/toolbar.vue:105
 #: src/component/file/clipboard.vue:61 src/component/label/clipboard.vue:86
-#: src/component/lightbox.vue:1600 src/component/people/clipboard.vue:59
+#: src/component/lightbox.vue:1610 src/component/people/clipboard.vue:59
 #: src/component/photo/clipboard.vue:216 src/component/photo/edit/files.vue:117
 #: src/component/photo/view/cards.vue:164 src/component/photo/view/list.vue:133
 #: src/page/library/browse.vue:118
@@ -1064,8 +1068,8 @@ msgid "E-Mail"
 msgstr "Posta elektronikoa"
 
 #: src/component/album/clipboard.vue:61 src/component/album/toolbar.vue:82
-#: src/component/lightbox.vue:1032 src/component/photo/clipboard.vue:90
-#: src/page/settings/general.vue:324
+#: src/component/lightbox.vue:1040 src/component/lightbox.vue:1041
+#: src/component/photo/clipboard.vue:90 src/page/settings/general.vue:324
 msgid "Edit"
 msgstr "Editatu"
 
@@ -1323,7 +1327,7 @@ msgstr "Markoak"
 msgid "Full Access"
 msgstr "Sarbide osoa"
 
-#: src/component/lightbox.vue:983
+#: src/component/lightbox.vue:988 src/component/lightbox.vue:989
 msgid "Fullscreen"
 msgstr "Pantaila osoa"
 
@@ -1633,7 +1637,7 @@ msgid "Legal Information"
 msgstr "Informazio juridikoa"
 
 #: src/component/photo/edit/details.vue:417
-#: src/component/photo/view/cards.vue:514
+#: src/component/photo/view/cards.vue:501
 msgid "Lens"
 msgstr "Lentea"
 
@@ -1649,7 +1653,7 @@ msgstr "Liburutegia"
 msgid "License"
 msgstr "Lizentzia"
 
-#: src/component/lightbox.vue:1000
+#: src/component/lightbox.vue:1006 src/component/lightbox.vue:1007
 msgid "Like"
 msgstr "Atsegin dut"
 
@@ -1673,9 +1677,9 @@ msgstr "Esteka"
 msgid "List"
 msgstr "Zerrenda"
 
-#: src/app/routes.js:228 src/component/photo/view/cards.vue:306
-#: src/component/photo/view/cards.vue:469 src/component/photo/view/list.vue:163
-#: src/component/photo/view/mosaic.vue:163 src/options/options.js:372
+#: src/app/routes.js:228 src/component/photo/view/cards.vue:305
+#: src/component/photo/view/cards.vue:456 src/component/photo/view/list.vue:163
+#: src/component/photo/view/mosaic.vue:162 src/options/options.js:372
 msgid "Live"
 msgstr "Zuzenean"
 
@@ -1706,7 +1710,7 @@ msgstr "Tokiko Ordua"
 #: src/page/settings/account.vue:665 src/page/settings/account.vue:667
 #: src/component/album/edit/dialog.vue:92 src/component/photo/edit/info.vue:63
 #: src/component/photo/edit/labels.vue:48
-#: src/component/photo/view/cards.vue:536 src/component/photo/view/list.vue:116
+#: src/component/photo/view/cards.vue:523 src/component/photo/view/list.vue:116
 #: src/page/albums.vue:89 src/page/settings/account.vue:557
 #: src/page/settings/account.vue:559
 msgid "Location"
@@ -1842,7 +1846,7 @@ msgstr "Mugitu fitxategiak"
 msgid "Must have at least %{n} characters."
 msgstr "Gutxienez %{n} karaktere izan behar ditu."
 
-#: src/component/lightbox.vue:952
+#: src/component/lightbox.vue:955 src/component/lightbox.vue:956
 msgid "Mute"
 msgstr "Isildu"
 
@@ -1977,7 +1981,7 @@ msgstr "Argazkiak ez diren eta kalitate baxuko irudiak berrikusi behar dira bila
 msgid "None"
 msgstr "Bat ere ez"
 
-#: src/common/util.js:716 src/component/lightbox.vue:569
+#: src/common/util.js:726 src/component/lightbox.vue:569
 msgid "Not allowed"
 msgstr "Ez da onartzen"
 
@@ -1989,8 +1993,8 @@ msgstr "Ez da aurkitu"
 msgid "Not sorted."
 msgstr "Ez dago sailkatuta."
 
-#: src/common/util.js:721 src/component/lightbox.vue:563
-#: src/component/lightbox.vue:678
+#: src/common/util.js:731 src/component/lightbox.vue:563
+#: src/component/lightbox.vue:680
 msgid "Not supported"
 msgstr "Ez da onartzen"
 
@@ -2439,7 +2443,7 @@ msgstr "Kendu albumetik"
 msgid "Remove imported files to save storage. Unsupported file types will never be deleted, they remain in their current location."
 msgstr "Kendu inportatutako fitxategiak biltegia gordetzeko. Onartu gabeko fitxategi motak ez dira inoiz ezabatuko, uneko kokapenan geratzen dira."
 
-#: src/common/api.js:102 src/component/lightbox.vue:674
+#: src/common/api.js:102 src/component/lightbox.vue:676
 msgid "Request failed - are you offline?"
 msgstr "Eskaerak huts egin du - konexiorik gabe zaude?"
 
@@ -2542,7 +2546,7 @@ msgstr "Sekretua"
 msgid "Security and Access"
 msgstr "Segurtasuna eta Sarbidea"
 
-#: src/component/lightbox.vue:1016
+#: src/component/lightbox.vue:1023 src/component/lightbox.vue:1024
 msgid "Select"
 msgstr "Hautatu"
 
@@ -2668,7 +2672,7 @@ msgstr "Erakutsi gehiago"
 msgid "Show server logs in Library."
 msgstr "Erakutsi zerbitzariaren erregistroak Liburutegian."
 
-#: src/component/lightbox.vue:934
+#: src/component/lightbox.vue:936 src/component/lightbox.vue:937
 msgid "Show/Hide Sidebar"
 msgstr "Erakutsi/Ezkutatu alboko barra"
 
@@ -2705,7 +2709,7 @@ msgstr "Softwarea"
 msgid "Software Update"
 msgstr "Software eguneratzea"
 
-#: src/component/lightbox.vue:671
+#: src/component/lightbox.vue:673
 msgid "Something went wrong, try again"
 msgstr "Arazoren bat izan da. Saiatu berriro"
 
@@ -2731,8 +2735,8 @@ msgstr "Beheranzko ordenatuta."
 msgid "Source"
 msgstr "Iturria"
 
-#: src/component/photo/view/cards.vue:329
-#: src/component/photo/view/mosaic.vue:186
+#: src/component/photo/view/cards.vue:325
+#: src/component/photo/view/mosaic.vue:182
 msgid "Stack"
 msgstr "Pila"
 
@@ -2756,7 +2760,7 @@ msgstr "Pilak"
 msgid "Start"
 msgstr "Hasi"
 
-#: src/component/lightbox.vue:967
+#: src/component/lightbox.vue:971 src/component/lightbox.vue:972
 msgid "Start/Stop Slideshow"
 msgstr "Hasi/gelditu diaporama"
 
@@ -2819,7 +2823,7 @@ msgid "Sync raw and video files"
 msgstr "Sinkronizatu raw eta bideo fitxategiak"
 
 #: src/component/photo/edit/info.vue:183 src/component/photo/view/cards.vue:182
-#: src/component/photo/view/cards.vue:451 src/component/photo/view/list.vue:114
+#: src/component/photo/view/cards.vue:438 src/component/photo/view/list.vue:114
 msgid "Taken"
 msgstr "Hartua"
 
@@ -2986,7 +2990,7 @@ msgid "Unique ID"
 msgstr "ID bakarra"
 
 #: src/page/settings/account.vue:451 src/page/settings/account.vue:476
-#: src/page/settings/account.vue:501 src/common/util.js:389
+#: src/page/settings/account.vue:501 src/common/util.js:399
 #: src/component/photo/edit/details.vue:20
 #: src/component/photo/edit/details.vue:111
 #: src/component/photo/edit/details.vue:138
@@ -3143,9 +3147,9 @@ msgstr "Erabiltzaile izena"
 msgid "Users"
 msgstr "Erabiltzaileak"
 
-#: src/component/photo/view/cards.vue:322
-#: src/component/photo/view/cards.vue:489 src/component/photo/view/list.vue:179
-#: src/component/photo/view/mosaic.vue:179 src/model/photo.js:902
+#: src/component/photo/view/cards.vue:319
+#: src/component/photo/view/cards.vue:476 src/component/photo/view/list.vue:179
+#: src/component/photo/view/mosaic.vue:176 src/model/photo.js:902
 #: src/model/photo.js:910 src/options/options.js:380
 msgid "Vector"
 msgstr "Bektorea"
@@ -3158,9 +3162,9 @@ msgstr "Bektoreak"
 msgid "Verification Code"
 msgstr "Egiaztapen Kodea"
 
-#: src/component/photo/view/cards.vue:351
-#: src/component/photo/view/cards.vue:459 src/component/photo/view/list.vue:186
-#: src/component/photo/view/mosaic.vue:212 src/model/file.js:220
+#: src/component/photo/view/cards.vue:343
+#: src/component/photo/view/cards.vue:446 src/component/photo/view/list.vue:186
+#: src/component/photo/view/mosaic.vue:200 src/model/file.js:220
 #: src/model/photo.js:926 src/model/photo.js:944 src/options/options.js:376
 msgid "Video"
 msgstr "Bideoa"
@@ -3174,8 +3178,8 @@ msgstr "Bideoaren Iraupena"
 msgid "Videos"
 msgstr "Bideoak"
 
-#: src/component/photo/toolbar.vue:341 src/component/photo/view/cards.vue:338
-#: src/component/photo/view/mosaic.vue:195
+#: src/component/photo/toolbar.vue:341 src/component/photo/view/cards.vue:330
+#: src/component/photo/view/mosaic.vue:187
 msgid "View"
 msgstr "Ikusi"
 

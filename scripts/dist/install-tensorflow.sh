@@ -9,7 +9,7 @@ set -e
 
 TF_VERSION=${TF_VERSION:-1.15.2}
 
-# Determine the system architecture.
+# Determine target architecture.
 if [[ $PHOTOPRISM_ARCH ]]; then
   SYSTEM_ARCH=$PHOTOPRISM_ARCH
 else

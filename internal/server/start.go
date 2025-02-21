@@ -111,7 +111,6 @@ func Start(ctx context.Context, conf *config.Config) {
 		ReadHeaderTimeout: time.Minute,
 		ReadTimeout:       -1,
 		WriteTimeout:      -1,
-		IdleTimeout:       10 * time.Minute,
 		Handler:           router,
 	}
 

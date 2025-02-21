@@ -110,10 +110,20 @@ export default class $util {
       return "0:00";
     }
 
-    time = Math.ceil(time);
     let sec = time % 60;
     let min = Math.floor((time - sec) / 60);
+
     return `${min.toString()}:${sec.toString().padStart(2, "0")}`;
+  }
+
+  static formatRemainingSeconds(time, duration) {
+    if (!duration || (time && time >= duration - 0.00001)) {
+      return "0:00";
+    } else if (!time || time < 0) {
+      return this.formatSeconds(Math.ceil(duration));
+    }
+
+    return this.formatSeconds(Math.ceil(duration - Math.floor(time)));
   }
 
   static formatNs(d) {

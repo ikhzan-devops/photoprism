@@ -31,6 +31,32 @@ describe("common/util", () => {
     const duration = $util.formatDuration(600000000000);
     assert.equal(duration, "10:00");
   });
+  it("should return formatted seconds", () => {
+    const floor = $util.formatSeconds(Math.floor(65.4));
+    assert.equal(floor, "1:05");
+    const ceil = $util.formatSeconds(Math.ceil(65.4));
+    assert.equal(ceil, "1:06");
+    const unknown = $util.formatSeconds(0);
+    assert.equal(unknown, "0:00");
+    const negative = $util.formatSeconds(-1);
+    assert.equal(negative, "0:00");
+  });
+  it("should return remaining seconds", () => {
+    const t = 23.3;
+    const d = 42.6;
+    const time = $util.formatSeconds(Math.floor(t));
+    assert.equal(time, "0:23");
+    const duration = $util.formatRemainingSeconds(0.0, d);
+    assert.equal(duration, "0:43");
+    const difference = $util.formatRemainingSeconds(t, d);
+    assert.equal(difference, "0:20");
+    const dotTime = $util.formatSeconds(Math.floor(9.5));
+    assert.equal(dotTime, "0:09");
+    const dotDiff = $util.formatRemainingSeconds(9.5, 12);
+    assert.equal(dotDiff, "0:03");
+    const smallDiff = $util.formatRemainingSeconds(7.959863, 8.033);
+    assert.equal(smallDiff, "0:02");
+  });
   it("should return formatted milliseconds", () => {
     const short = $util.formatNs(45065875);
     assert.equal(short, "45 ms");
@@ -38,10 +64,22 @@ describe("common/util", () => {
     assert.equal(long, "45,065,875 ms");
   });
   it("should return formatted camera name", () => {
-    const iPhone15Pro = $util.formatCamera({ Make: "Apple", Model: "iPhone 15 Pro" }, 23, "Apple", "iPhone 15 Pro", false);
+    const iPhone15Pro = $util.formatCamera(
+      { Make: "Apple", Model: "iPhone 15 Pro" },
+      23,
+      "Apple",
+      "iPhone 15 Pro",
+      false
+    );
     assert.equal(iPhone15Pro, "iPhone 15 Pro");
 
-    const iPhone15ProLong = $util.formatCamera({ Make: "Apple", Model: "iPhone 15 Pro" }, 23, "Apple", "iPhone 15 Pro", true);
+    const iPhone15ProLong = $util.formatCamera(
+      { Make: "Apple", Model: "iPhone 15 Pro" },
+      23,
+      "Apple",
+      "iPhone 15 Pro",
+      true
+    );
     assert.equal(iPhone15ProLong, "Apple iPhone 15 Pro");
 
     const iPhone14 = $util.formatCamera({ Make: "Apple", Model: "iPhone 14" }, 22, "Apple", "iPhone 14", false);
