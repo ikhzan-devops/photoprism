@@ -1,11 +1,11 @@
+# Synopsis  
 GORM v2 has introduced foreign keys to the database.  
 This has caused a number of the tests to no longer function.  
 The fundamental issue is that these tests worked in the past as GORM v1 did not check if the parent record existed before saving the child record.  
 eg.  
 You could save a PhotoLabel with random numbers as the PhotoID and LabelID without an error being raised.  This is no longer possible.  
 
-
-**Tests changed so that they work with GORM v2**
+# Tests changed so that they work with GORM v2
 
 All the TestMains that utilise the database have been changed so they have a database hosted MUTEX.  
 This is to prevent 2 or more sets of database tests running at the same time.
@@ -17,7 +17,7 @@ The TestMains have an additional check for error records in the Errors table, an
 This is to ensure that the checking that has been implemented in Photo.Save (and will be implemented in other Save's as appropriate) hasn't found any scenarios where mismatches between the in Struct ID field and the sub Struct's ID field are detected.  
 
 
-Have to create records in the database or the tested function will fail due to foreign key violations  
+## Have to create records in the database or the tested function will fail due to foreign key violations  
 | File | Test |
 |----------------------------------------|---------------------------------------------|
 | internal/entity/photo_label_test.go | TestPhotoLabel_Save/success |
@@ -44,7 +44,7 @@ Have to create records in the database or the tested function will fail due to f
 
 
 
-Have to populate extra fields or the tested function will fail (or pass as the errors aren't checked in the test) due to foreign key violations  
+## Have to populate extra fields or the tested function will fail (or pass as the errors aren't checked in the test) due to foreign key violations  
 | File | Test |
 |----------------------------------------|---------------------------------------------|
 | internal/entity/keyword_test.go | TestMarker_ClearFace/empty face id |
@@ -56,13 +56,13 @@ Have to populate extra fields or the tested function will fail (or pass as the e
 
 
 
-Have to provide an ID value or tested function will fail with Where clause missing  
+## Have to provide an ID value or tested function will fail with Where clause missing  
 | File | Test |
 |----------------------------------------|---------------------------------------------|
 | internal/entity/keyword_test.go | TestKeyword_Update/success |
 
 
-Specials  
+## Specials  
 | File | Test | Description |
 |----------------------------------------|---------------------------------------------|------------------------------------------------------|
 | internal/entity/search/photos_filter_filter_test.go | TestPhotosFilterFilter/CenterPercent | Soft delete a record that was "hidden" due to duplicate ID values in Fixture |
@@ -74,7 +74,7 @@ Specials
 
 
 
-Fixed Tests
+## Fixed Tests
 | File | Test | Description |
 |----------------------------------------|---------------------------------------------|------------------------------------------------------|
 | internal/entity/auth_user_details_test.go | TestUserDetails_Updates | Validate that no errors are returned |
@@ -84,7 +84,7 @@ Fixed Tests
 
 
 
-New Tests
+## New Tests
 | File | Test | Description |
 |----------------------------------------|---------------------------------------------|------------------------------------------------------|
 | internal/entity/keyword_test.go | TestKeyword_UpdateNoID/success | Validates "id value required but not provided" error for Update |
@@ -102,6 +102,10 @@ New Tests
 | internal/entity/dbtest/dbtest_fieldlength_test.go | TestInitDBLengths/PhotoExceedMax* | makes sure that the database throws an error when the maximum length is exceeded by 1 character in a Photo |
 | internal/entity/dbtest/dbtest_blocking_test.go | TestEntity_UpdateDBErrors | verifies that entity.Update detects and returns database level errors |
 | internal/entity/dbtest/dbtest_blocking_test.go | TestEntity_SaveDBErrors | verifies that entity.Save detects and returns database level errors |
+| internal/entity/dbtest/dbtest_migration_test.go | TestDialectSQLite3/ValidMigration | verifies that the migration has completed and that auto_increment is working, and fields can be populated with min and max values |
+| internal/entity/dbtest/dbtest_migration_test.go | TestDialectSQLite3/InvalidDataUpgrade | verifies that a database with invalid foreign keys will be cleansed and then migrated |
+| internal/entity/dbtest/dbtest_migration_test.go | TestDialectMysql/ValidMigration | verifies that the migration has completed and that auto_increment is working, and fields can be populated with min and max values |
+| internal/entity/dbtest/dbtest_migration_test.go | TestDialectMysql/InvalidDataUpgrade | verifies that a database with invalid foreign keys will be cleansed and then migrated |
 | internal/entity/dbtest/dbtest_validatecreatesave_test.go | * | A set of tests that compare Gorm version functionality.  They can show you what to expect for a variety of scenarios.  The Entity.Save test no longer fails as Entity.Save has been uplifted to work like Gorm V1. |
 | internal/entity/camera_test.go | TestCamera_ScopedSearchFirst/* | Validate that ScopedSearchFirstCamera returns the expected results/errors |
 | internal/entity/entitiy_save_test.go | TestSave/NewParentPhotoWithNewChildDetails | Validate that FK violations do not happen when saving Details with a new Photo |
@@ -136,7 +140,33 @@ New Tests
 **Please note that the tests in internal/entity/dbtest all MUST use the dbtestMutex as they must run synchronous due to the database blocking tests.  Failure to include the dbtestMutex will cause unexpected failure of the test.**  
 
 
-The following is the status of unit testing against sqlite.  
+# Testing Status  
+
+## Overview  
+
+All tests that pass against the base develop branch of PhotoPrism are passing against gorm2 branch of PhotoPrism.  
+There is one acceptance test that is failing in both branches:  
+ ✖ Common: Add/Remove Photos to/from album  
+
+Benchmark tests has been created and executed against base develop and gorm2 branch of PhotoPrism.
+There are not significant performance differences between the two branches, with some database functions faster and some slower.  
+An example of slower is the creation and deletion of a Photo (and all it's associated child records) which on MariaDB has gone from 33ms to 36ms (ms = milli second).  
+
+## Unit Test Details
+The following is the detailed status of unit testing against sqlite.  
+
+```
+Chrome Headless 133.0.0.0 (Linux x86_64): Executed 347 of 347 SUCCESS (0.323 secs / 0.075 secs)
+TOTAL: 347 SUCCESS
+TOTAL: 347 SUCCESS
+
+=============================== Coverage summary ===============================
+Statements   : 69.3% ( 1991/2873 )
+Branches     : 50.93% ( 1035/2032 )
+Functions    : 68.09% ( 476/699 )
+Lines        : 69.75% ( 1910/2738 )
+================================================================================
+```
 
 Removing test database files...  
 find ./internal -type f -name ".test.*" -delete  
@@ -271,17 +301,17 @@ PHOTOPRISM_TEST_DRIVER="mysql" PHOTOPRISM_TEST_DSN="root:photoprism@tcp(mariadb:
 | PASS | github.com/photoprism/photoprism/internal/auth/oidc |
 | PASS | github.com/photoprism/photoprism/internal/auth/session |
 | PASS | github.com/photoprism/photoprism/internal/commands |
-| SKIP | github.com/photoprism/photoprism/internal/entity/legacy	[no test files] |
+| SKIP | github.com/photoprism/photoprism/internal/entity/legacy	[no test files]|
+| SKIP | github.com/photoprism/photoprism/internal/ffmpeg/apple	[no test files]|
+| SKIP | github.com/photoprism/photoprism/internal/ffmpeg/intel	[no test files]|
+| SKIP | github.com/photoprism/photoprism/internal/ffmpeg/nvidia	[no test files]|
+| SKIP | github.com/photoprism/photoprism/internal/ffmpeg/v4l	[no test files]|
+| SKIP | github.com/photoprism/photoprism/internal/ffmpeg/vaapi	[no test files]|
 | PASS | github.com/photoprism/photoprism/internal/config |
 | PASS | github.com/photoprism/photoprism/internal/config/customize |
 | PASS | github.com/photoprism/photoprism/internal/config/pwa |
 | PASS | github.com/photoprism/photoprism/internal/config/ttl |
 | PASS | github.com/photoprism/photoprism/internal/entity |
-| SKIP | github.com/photoprism/photoprism/internal/ffmpeg/apple	[no test files] |
-| SKIP | github.com/photoprism/photoprism/internal/ffmpeg/intel	[no test files] |
-| SKIP | github.com/photoprism/photoprism/internal/ffmpeg/nvidia	[no test files] |
-| SKIP | github.com/photoprism/photoprism/internal/ffmpeg/v4l	[no test files] |
-| SKIP | github.com/photoprism/photoprism/internal/ffmpeg/vaapi	[no test files] |
 | PASS | github.com/photoprism/photoprism/internal/entity/dbtest |
 | PASS | github.com/photoprism/photoprism/internal/entity/migrate |
 | PASS | github.com/photoprism/photoprism/internal/entity/query |
@@ -296,10 +326,10 @@ PHOTOPRISM_TEST_DRIVER="mysql" PHOTOPRISM_TEST_DSN="root:photoprism@tcp(mariadb:
 | PASS | github.com/photoprism/photoprism/internal/meta |
 | PASS | github.com/photoprism/photoprism/internal/mutex |
 | PASS | github.com/photoprism/photoprism/internal/performancetest |
+| SKIP | github.com/photoprism/photoprism/internal/testextras	[no test files]|
 | PASS | github.com/photoprism/photoprism/internal/photoprism |
 | PASS | github.com/photoprism/photoprism/internal/photoprism/backup |
 | PASS | github.com/photoprism/photoprism/internal/photoprism/get |
-| SKIP | github.com/photoprism/photoprism/internal/testextras	[no test files] |
 | PASS | github.com/photoprism/photoprism/internal/server |
 | PASS | github.com/photoprism/photoprism/internal/server/limiter |
 | PASS | github.com/photoprism/photoprism/internal/server/process |
@@ -317,6 +347,7 @@ PHOTOPRISM_TEST_DRIVER="mysql" PHOTOPRISM_TEST_DSN="root:photoprism@tcp(mariadb:
 | PASS | github.com/photoprism/photoprism/internal/workers/auto |
 
 
+## Acceptance Test Details
 The following is current state of acceptance testing against sqlite:  
 Running auth-mode tests in Chrome...
 ```
@@ -408,7 +439,7 @@ Running public-mode tests in Chrome...
  ✓ Common: Create/delete album on /albums
  ✓ Common: Create/delete album during add to album
  ✓ Common: Update album details
- ✓ Common: Add/Remove Photos to/from album
+ ✖ Common: Add/Remove Photos to/from album
  ✓ Common: Use album search and filters
  ✓ Common: Test album autocomplete
  ✓ Common: Create, Edit, delete sharing link
@@ -515,7 +546,7 @@ desktop
  ✓ Common: Create/delete album-clone from state
 
 
- 71 passed (1h 11m 39s)
+ 1/71 failed (1h 10m 40s)
  4 skipped
 
  Warnings (3):
@@ -523,3 +554,30 @@ desktop
   TestCafe cannot interact with the <button type="button" class="v-btn v-btn--flat v-btn--icon v-theme--default v-btn--density-default v-btn--size-default v-btn--variant-text action-close">...</button> element because another element obstructs it.
   TestCafe cannot interact with the <button type="button" class="v-btn v-btn--flat v-btn--icon v-theme--default bg-grey-darken-2 v-btn--density-comfortable v-btn--size-small v-btn--variant-elevated action-clear" style="">...</button> element because another element obstructs it.
   TestCafe cannot interact with the <button type="button" class="v-btn v-btn--disabled v-btn--flat v-theme--default bg-highlight v-btn--density-default v-btn--size-default v-btn--variant-flat action-apply action-approve" disabled="">...</button> element because another element obstructs it.
+
+## Benchmark Test Details
+
+goos: linux
+goarch: amd64
+pkg: github.com/photoprism/photoprism/internal/entity
+cpu: AMD Ryzen 7 5700X 8-Core Processor  
+
+| Test name | storage/sqlite-benchmark10x.log | storage/sqlite-benchmark10x.gorm2.log | Compared |
+| ---------------------------|---------------------------------|--------------------------------------- | ------------------------ |
+| CreateDeleteAlbum-4 | 205.4µ ± 3%| 159.3µ ± 13% | -22.40% (p=0.000 n=10) | 
+| CreateDeleteCamera-4 | 52.45µ ± 1% | 75.90µ ± 5% | +44.69% (p=0.000 n=10) | 
+| CreateDeleteCellAndPlace-4 | 237.1µ ± 3% | 174.1µ ± 6% | -26.57% (p=0.000 n=10) | 
+| CreateDeletePhoto-4 | 2.410m ± 6% | 2.109m ± 6% | -12.49% (p=0.000 n=10) | 
+| geomean | 280.1µ | 258.1µ | -7.84% | 
+
+goos: linux
+goarch: amd64
+pkg: github.com/photoprism/photoprism/internal/entity
+cpu: AMD Ryzen 7 5700X 8-Core Processor 
+| Test name | storage/mariadb-benchmark10x.log | storage/mariadb-benchmark10x.gorm2.log | Compared |
+| ---------------------------|---------------------------------|--------------------------------------- | ------------------------ |
+| CreateDeleteAlbum-4 | 2.892m ± 6% | 2.707m ± 3% | -6.39% (p=0.000 n=10) |
+| CreateDeleteCamera-4 | 1.470m ± 7% | 1.536m ± 3% | +4.48% (p=0.009 n=10) |
+| CreateDeleteCellAndPlace-4 | 4.564m ± 1% | 3.913m ± 9% | -14.27% (p=0.000 n=10) |
+| CreateDeletePhoto-4 | 33.51m ± 8% | 36.16m ± 8% | +7.92% (p=0.007 n=10) |
+| geomean 5.050m | 4.925m | -2.46% |
