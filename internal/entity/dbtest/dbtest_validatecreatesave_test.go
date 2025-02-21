@@ -25,7 +25,7 @@ func TestValidateSaveCreate(t *testing.T) {
 		defer createsavetestMutex.Unlock()
 		m := &entity.Album{}
 		assert.False(t, rnd.IsUID(m.AlbumUID, entity.AlbumUID))
-		stmt := entity.Db().Debug()
+		stmt := entity.Db()
 		stmt.Transaction(func(tx *gorm.DB) error {
 			if tx.Error != nil {
 				assert.Nil(t, tx.Error)
@@ -48,7 +48,7 @@ func TestValidateSaveCreate(t *testing.T) {
 		defer createsavetestMutex.Unlock()
 		m := &entity.Album{}
 		assert.False(t, rnd.IsUID(m.AlbumUID, entity.AlbumUID))
-		stmt := entity.Db().Debug()
+		stmt := entity.Db()
 		stmt.Transaction(func(tx *gorm.DB) error {
 			if tx.Error != nil {
 				assert.Nil(t, tx.Error)
@@ -72,7 +72,7 @@ func TestValidateSaveCreate(t *testing.T) {
 		defer createsavetestMutex.Unlock()
 		m := &entity.Album{AlbumTitle: "Test Before Create"}
 		assert.False(t, rnd.IsUID(m.AlbumUID, entity.AlbumUID))
-		stmt := entity.Db().Debug()
+		stmt := entity.Db()
 		stmt.Transaction(func(tx *gorm.DB) error {
 			if tx.Error != nil {
 				assert.Nil(t, tx.Error)
@@ -96,7 +96,7 @@ func TestValidateSaveCreate(t *testing.T) {
 		createsavetestMutex.Lock()
 		defer createsavetestMutex.Unlock()
 
-		stmt := entity.Db().Debug()
+		stmt := entity.Db()
 		stmt.Transaction(func(tx *gorm.DB) error {
 			if tx.Error != nil {
 				assert.Nil(t, tx.Error)
@@ -175,7 +175,7 @@ func TestValidateSaveCreate(t *testing.T) {
 		createsavetestMutex.Lock()
 		defer createsavetestMutex.Unlock()
 
-		stmt := entity.Db().Debug()
+		stmt := entity.Db()
 		stmt.Transaction(func(tx *gorm.DB) error {
 			if tx.Error != nil {
 				assert.Nil(t, tx.Error)
@@ -234,7 +234,7 @@ func TestValidateSaveCreate(t *testing.T) {
 		createsavetestMutex.Lock()
 		defer createsavetestMutex.Unlock()
 
-		stmt := entity.Db().Debug()
+		stmt := entity.Db()
 		stmt.Transaction(func(tx *gorm.DB) error {
 			if tx.Error != nil {
 				assert.Nil(t, tx.Error)
@@ -295,7 +295,7 @@ func TestValidateSaveCreate(t *testing.T) {
 		createsavetestMutex.Lock()
 		defer createsavetestMutex.Unlock()
 
-		stmt := entity.Db().Debug()
+		stmt := entity.Db()
 		labelotter := entity.Label{LabelName: "otter", LabelSlug: "otter"}
 		var deletedAt = gorm.DeletedAt{Time: time.Date(2020, 1, 1, 0, 0, 0, 0, time.UTC), Valid: true}
 		labelsnake := entity.Label{LabelName: "snake", LabelSlug: "snake", DeletedAt: deletedAt}
@@ -318,8 +318,8 @@ func TestValidateSaveCreate(t *testing.T) {
 		err := photo.Save()
 		assert.Nil(t, err)
 		if err != nil {
-			entity.UnscopedDb().Debug().Delete(&labelotter)
-			entity.UnscopedDb().Debug().Delete(&labelsnake)
+			entity.UnscopedDb().Delete(&labelotter)
+			entity.UnscopedDb().Delete(&labelsnake)
 			t.FailNow()
 		}
 
@@ -336,10 +336,10 @@ func TestValidateSaveCreate(t *testing.T) {
 		}
 
 		details2 := photo2.Details
-		entity.UnscopedDb().Debug().Delete(&details2)
-		entity.UnscopedDb().Debug().Delete(&photo2)
-		entity.UnscopedDb().Debug().Delete(&labelotter)
-		entity.UnscopedDb().Debug().Delete(&labelsnake)
+		entity.UnscopedDb().Delete(&details2)
+		entity.UnscopedDb().Delete(&photo2)
+		entity.UnscopedDb().Delete(&labelotter)
+		entity.UnscopedDb().Delete(&labelsnake)
 	})
 
 	// Use Entity Create with child structs to validate that values are set.
@@ -348,7 +348,7 @@ func TestValidateSaveCreate(t *testing.T) {
 		createsavetestMutex.Lock()
 		defer createsavetestMutex.Unlock()
 
-		stmt := entity.Db().Debug()
+		stmt := entity.Db()
 		labelotter := entity.Label{LabelName: "otter", LabelSlug: "otter"}
 		var deletedAt = gorm.DeletedAt{Time: time.Date(2020, 1, 1, 0, 0, 0, 0, time.UTC), Valid: true}
 		labelsnake := entity.Label{LabelName: "snake", LabelSlug: "snake", DeletedAt: deletedAt}
@@ -371,8 +371,8 @@ func TestValidateSaveCreate(t *testing.T) {
 		err := photo.Create()
 		assert.Nil(t, err)
 		if err != nil {
-			entity.UnscopedDb().Debug().Delete(&labelotter)
-			entity.UnscopedDb().Debug().Delete(&labelsnake)
+			entity.UnscopedDb().Delete(&labelotter)
+			entity.UnscopedDb().Delete(&labelsnake)
 			t.FailNow()
 		}
 
@@ -389,10 +389,10 @@ func TestValidateSaveCreate(t *testing.T) {
 		}
 
 		details2 := photo2.Details
-		entity.UnscopedDb().Debug().Delete(&details2)
-		entity.UnscopedDb().Debug().Delete(&photo2)
-		entity.UnscopedDb().Debug().Delete(&labelotter)
-		entity.UnscopedDb().Debug().Delete(&labelsnake)
+		entity.UnscopedDb().Delete(&details2)
+		entity.UnscopedDb().Delete(&photo2)
+		entity.UnscopedDb().Delete(&labelotter)
+		entity.UnscopedDb().Delete(&labelsnake)
 
 	})
 
@@ -402,7 +402,7 @@ func TestValidateSaveCreate(t *testing.T) {
 		createsavetestMutex.Lock()
 		defer createsavetestMutex.Unlock()
 
-		stmt := entity.Db().Debug()
+		stmt := entity.Db()
 		photo := entity.Photo{ID: 34567}
 
 		err := photo.Save()
@@ -423,8 +423,8 @@ func TestValidateSaveCreate(t *testing.T) {
 		assert.NotNil(t, photo2.PhotoUID)
 
 		details2 := photo2.Details
-		entity.UnscopedDb().Debug().Delete(&details2)
-		entity.UnscopedDb().Debug().Delete(&photo2)
+		entity.UnscopedDb().Delete(&details2)
+		entity.UnscopedDb().Delete(&photo2)
 	})
 
 }
