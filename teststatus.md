@@ -580,4 +580,4 @@ cpu: AMD Ryzen 7 5700X 8-Core Processor
 | CreateDeleteCamera-4 | 1.470m ± 7% | 1.536m ± 3% | +4.48% (p=0.009 n=10) |
 | CreateDeleteCellAndPlace-4 | 4.564m ± 1% | 3.913m ± 9% | -14.27% (p=0.000 n=10) |
 | CreateDeletePhoto-4 | 33.51m ± 8% | 36.16m ± 8% | +7.92% (p=0.007 n=10) |
-| geomean 5.050m | 4.925m | -2.46% |
+| geomean | 5.050m | 4.925m | -2.46% |
