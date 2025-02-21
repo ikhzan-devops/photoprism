@@ -9,7 +9,7 @@ The following 3rd-party software packages may be used by or distributed with
 PhotoPrism. Any information relevant to third-party vendors listed below are
 collected using common, reasonable means.
 
-Date generated: 2024-09-12
+Date generated: 2025-02-21
 
 ================================================================================
 
@@ -18,8 +18,8 @@ Date generated: 2024-09-12
 ================================================================================
 
 Package: github.com/abema/go-mp4
-Version: v1.2.0
-License: MIT (https://github.com/abema/go-mp4/blob/v1.2.0/LICENSE)
+Version: v1.4.1
+License: MIT (https://github.com/abema/go-mp4/blob/v1.4.1/LICENSE)
 
 MIT License
 
@@ -159,8 +159,8 @@ SOFTWARE.
 --------------------------------------------------------------------------------
 
 Package: github.com/cpuguy83/go-md2man/v2/md2man
-Version: v2.0.4
-License: MIT (https://github.com/cpuguy83/go-md2man/blob/v2.0.4/LICENSE.md)
+Version: v2.0.5
+License: MIT (https://github.com/cpuguy83/go-md2man/blob/v2.0.5/LICENSE.md)
 
 The MIT License (MIT)
 
@@ -187,8 +187,8 @@ SOFTWARE.
 --------------------------------------------------------------------------------
 
 Package: github.com/davidbyttow/govips/v2/vips
-Version: v2.15.0
-License: MIT (https://github.com/davidbyttow/govips/blob/v2.15.0/LICENSE)
+Version: v2.16.0
+License: MIT (https://github.com/davidbyttow/govips/blob/v2.16.0/LICENSE)
 
 The MIT License
 
@@ -706,8 +706,8 @@ License: Apache-2.0 (https://github.com/dustinkirkland/golang-petname/blob/eebce
 --------------------------------------------------------------------------------
 
 Package: github.com/emersion/go-webdav
-Version: v0.5.0
-License: MIT (https://github.com/emersion/go-webdav/blob/v0.5.0/LICENSE)
+Version: v0.6.0
+License: MIT (https://github.com/emersion/go-webdav/blob/v0.6.0/LICENSE)
 
 The MIT License (MIT)
 
@@ -762,8 +762,8 @@ SOFTWARE.
 --------------------------------------------------------------------------------
 
 Package: github.com/gabriel-vasile/mimetype
-Version: v1.4.5
-License: MIT (https://github.com/gabriel-vasile/mimetype/blob/v1.4.5/LICENSE)
+Version: v1.4.8
+License: MIT (https://github.com/gabriel-vasile/mimetype/blob/v1.4.8/LICENSE)
 
 MIT License
 
@@ -790,8 +790,8 @@ SOFTWARE.
 --------------------------------------------------------------------------------
 
 Package: github.com/gin-contrib/gzip
-Version: v1.0.1
-License: MIT (https://github.com/gin-contrib/gzip/blob/v1.0.1/LICENSE)
+Version: v1.2.2
+License: MIT (https://github.com/gin-contrib/gzip/blob/v1.2.2/LICENSE)
 
 MIT License
 
@@ -818,8 +818,8 @@ SOFTWARE.
 --------------------------------------------------------------------------------
 
 Package: github.com/gin-contrib/sse
-Version: v0.1.0
-License: MIT (https://github.com/gin-contrib/sse/blob/v0.1.0/LICENSE)
+Version: v1.0.0
+License: MIT (https://github.com/gin-contrib/sse/blob/v1.0.0/LICENSE)
 
 The MIT License (MIT)
 
@@ -874,8 +874,8 @@ THE SOFTWARE.
 --------------------------------------------------------------------------------
 
 Package: github.com/go-co-op/gocron/v2
-Version: v2.11.0
-License: MIT (https://github.com/go-co-op/gocron/blob/v2.11.0/LICENSE)
+Version: v2.15.0
+License: MIT (https://github.com/go-co-op/gocron/blob/v2.15.0/LICENSE)
 
 MIT License
 
@@ -1630,8 +1630,8 @@ SOFTWARE.
 --------------------------------------------------------------------------------
 
 Package: github.com/go-playground/validator/v10
-Version: v10.22.0
-License: MIT (https://github.com/go-playground/validator/blob/v10.22.0/LICENSE)
+Version: v10.24.0
+License: MIT (https://github.com/go-playground/validator/blob/v10.24.0/LICENSE)
 
 The MIT License (MIT)
 
@@ -2039,8 +2039,8 @@ Exhibit B - "Incompatible With Secondary Licenses" Notice
 --------------------------------------------------------------------------------
 
 Package: github.com/go-xmlfmt/xmlfmt
-Version: v1.1.2
-License: MIT (https://github.com/go-xmlfmt/xmlfmt/blob/v1.1.2/LICENSE)
+Version: v1.1.3
+License: MIT (https://github.com/go-xmlfmt/xmlfmt/blob/v1.1.3/LICENSE)
 
 MIT License
 
@@ -2276,8 +2276,8 @@ License: Apache-2.0 (https://github.com/golang/geo/blob/6adc56603217/LICENSE)
 --------------------------------------------------------------------------------
 
 Package: github.com/google/open-location-code/go
-Version: v0.0.0-20240712113549-dfcebc905b81
-License: Apache-2.0 (https://github.com/google/open-location-code/blob/dfcebc905b81/go/LICENSE)
+Version: v0.0.0-20250131120908-b46335afbc82
+License: Apache-2.0 (https://github.com/google/open-location-code/blob/b46335afbc82/go/LICENSE)
 
 
                                  Apache License
@@ -2582,8 +2582,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --------------------------------------------------------------------------------
 
 Package: github.com/gosimple/slug
-Version: v1.14.0
-License: MPL-2.0 (https://github.com/gosimple/slug/blob/v1.14.0/LICENSE)
+Version: v1.15.0
+License: MPL-2.0 (https://github.com/gosimple/slug/blob/v1.15.0/LICENSE)
 
 Mozilla Public License Version 2.0
 ==================================
@@ -3228,8 +3228,8 @@ SOFTWARE.
 --------------------------------------------------------------------------------
 
 Package: github.com/jonboulle/clockwork
-Version: v0.4.0
-License: Apache-2.0 (https://github.com/jonboulle/clockwork/blob/v0.4.0/LICENSE)
+Version: v0.5.0
+License: Apache-2.0 (https://github.com/jonboulle/clockwork/blob/v0.5.0/LICENSE)
 
 Apache License
                            Version 2.0, January 2004
@@ -3468,8 +3468,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --------------------------------------------------------------------------------
 
 Package: github.com/klauspost/cpuid/v2
-Version: v2.2.8
-License: MIT (https://github.com/klauspost/cpuid/blob/v2.2.8/LICENSE)
+Version: v2.2.9
+License: MIT (https://github.com/klauspost/cpuid/blob/v2.2.9/LICENSE)
 
 The MIT License (MIT)
 
@@ -3733,8 +3733,8 @@ SOFTWARE.
 --------------------------------------------------------------------------------
 
 Package: github.com/leonelquinteros/gotext
-Version: v1.6.1
-License: MIT (https://github.com/leonelquinteros/gotext/blob/v1.6.1/LICENSE)
+Version: v1.7.1
+License: MIT (https://github.com/leonelquinteros/gotext/blob/v1.7.1/LICENSE)
 
 The MIT License (MIT)
 
@@ -4421,8 +4421,8 @@ License: Apache-2.0 (https://github.com/pquerna/otp/blob/v1.4.0/LICENSE)
 --------------------------------------------------------------------------------
 
 Package: github.com/prometheus/client_golang/prometheus
-Version: v1.20.3
-License: Apache-2.0 (https://github.com/prometheus/client_golang/blob/v1.20.3/LICENSE)
+Version: v1.21.0
+License: Apache-2.0 (https://github.com/prometheus/client_golang/blob/v1.21.0/LICENSE)
 
                                  Apache License
                            Version 2.0, January 2004
@@ -4837,8 +4837,8 @@ License: Apache-2.0 (https://github.com/prometheus/client_model/blob/v0.6.1/LICE
 --------------------------------------------------------------------------------
 
 Package: github.com/prometheus/common
-Version: v0.59.1
-License: Apache-2.0 (https://github.com/prometheus/common/blob/v0.59.1/LICENSE)
+Version: v0.62.0
+License: Apache-2.0 (https://github.com/prometheus/common/blob/v0.62.0/LICENSE)
 
                                  Apache License
                            Version 2.0, January 2004
@@ -5625,8 +5625,8 @@ Copyright 2019 The TensorFlow Authors.  All rights reserved.
 --------------------------------------------------------------------------------
 
 Package: github.com/tidwall/gjson
-Version: v1.17.3
-License: MIT (https://github.com/tidwall/gjson/blob/v1.17.3/LICENSE)
+Version: v1.18.0
+License: MIT (https://github.com/tidwall/gjson/blob/v1.18.0/LICENSE)
 
 The MIT License (MIT)
 
@@ -5763,13 +5763,13 @@ SOFTWARE.
 
 --------------------------------------------------------------------------------
 
-Package: github.com/urfave/cli
-Version: v1.22.15
-License: MIT (https://github.com/urfave/cli/blob/v1.22.15/LICENSE)
+Package: github.com/urfave/cli/v2
+Version: v2.27.5
+License: MIT (https://github.com/urfave/cli/blob/v2.27.5/LICENSE)
 
 MIT License
 
-Copyright (c) 2023 Jeremy Saenz & Contributors
+Copyright (c) 2022 urfave/cli maintainers
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -5791,9 +5791,37 @@ SOFTWARE.
 
 --------------------------------------------------------------------------------
 
+Package: github.com/xrash/smetrics
+Version: v0.0.0-20240521201337-686a1a2994c1
+License: MIT (https://github.com/xrash/smetrics/blob/686a1a2994c1/LICENSE)
+
+Copyright (C) 2016 Felipe da Cunha Gonçalves
+All Rights Reserved.
+
+MIT LICENSE
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+--------------------------------------------------------------------------------
+
 Package: github.com/zitadel/logging
-Version: v0.6.0
-License: Apache-2.0 (https://github.com/zitadel/logging/blob/v0.6.0/LICENSE)
+Version: v0.6.1
+License: Apache-2.0 (https://github.com/zitadel/logging/blob/v0.6.1/LICENSE)
 
                                  Apache License
                            Version 2.0, January 2004
@@ -6000,8 +6028,8 @@ License: Apache-2.0 (https://github.com/zitadel/logging/blob/v0.6.0/LICENSE)
 --------------------------------------------------------------------------------
 
 Package: github.com/zitadel/oidc/v3/pkg
-Version: v3.29.1
-License: Apache-2.0 (https://github.com/zitadel/oidc/blob/v3.29.1/LICENSE)
+Version: v3.34.1
+License: Apache-2.0 (https://github.com/zitadel/oidc/blob/v3.34.1/LICENSE)
 
                                  Apache License
                            Version 2.0, January 2004
@@ -7075,8 +7103,8 @@ License: Apache-2.0 (https://github.com/go4org/go4/blob/214862532bf5/LICENSE)
 --------------------------------------------------------------------------------
 
 Package: golang.org/x/crypto
-Version: v0.27.0
-License: BSD-3-Clause (https://cs.opensource.google/go/x/crypto/+/v0.27.0:LICENSE)
+Version: v0.33.0
+License: BSD-3-Clause (https://cs.opensource.google/go/x/crypto/+/v0.33.0:LICENSE)
 
 Copyright 2009 The Go Authors.
 
@@ -7109,8 +7137,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --------------------------------------------------------------------------------
 
 Package: golang.org/x/exp
-Version: v0.0.0-20240823005443-9b4947da3948
-License: BSD-3-Clause (https://cs.opensource.google/go/x/exp/+/9b4947da:LICENSE)
+Version: v0.0.0-20250106191152-7588d65b2ba8
+License: BSD-3-Clause (https://cs.opensource.google/go/x/exp/+/7588d65b:LICENSE)
 
 Copyright 2009 The Go Authors.
 
@@ -7143,8 +7171,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --------------------------------------------------------------------------------
 
 Package: golang.org/x/image
-Version: v0.20.0
-License: BSD-3-Clause (https://cs.opensource.google/go/x/image/+/v0.20.0:LICENSE)
+Version: v0.24.0
+License: BSD-3-Clause (https://cs.opensource.google/go/x/image/+/v0.24.0:LICENSE)
 
 Copyright 2009 The Go Authors.
 
@@ -7177,8 +7205,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --------------------------------------------------------------------------------
 
 Package: golang.org/x/net
-Version: v0.29.0
-License: BSD-3-Clause (https://cs.opensource.google/go/x/net/+/v0.29.0:LICENSE)
+Version: v0.35.0
+License: BSD-3-Clause (https://cs.opensource.google/go/x/net/+/v0.35.0:LICENSE)
 
 Copyright 2009 The Go Authors.
 
@@ -7211,8 +7239,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --------------------------------------------------------------------------------
 
 Package: golang.org/x/oauth2
-Version: v0.23.0
-License: BSD-3-Clause (https://cs.opensource.google/go/x/oauth2/+/v0.23.0:LICENSE)
+Version: v0.25.0
+License: BSD-3-Clause (https://cs.opensource.google/go/x/oauth2/+/v0.25.0:LICENSE)
 
 Copyright 2009 The Go Authors.
 
@@ -7245,8 +7273,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --------------------------------------------------------------------------------
 
 Package: golang.org/x/sync/errgroup
-Version: v0.8.0
-License: BSD-3-Clause (https://cs.opensource.google/go/x/sync/+/v0.8.0:LICENSE)
+Version: v0.11.0
+License: BSD-3-Clause (https://cs.opensource.google/go/x/sync/+/v0.11.0:LICENSE)
 
 Copyright 2009 The Go Authors.
 
@@ -7279,8 +7307,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --------------------------------------------------------------------------------
 
 Package: golang.org/x/sys
-Version: v0.25.0
-License: BSD-3-Clause (https://cs.opensource.google/go/x/sys/+/v0.25.0:LICENSE)
+Version: v0.30.0
+License: BSD-3-Clause (https://cs.opensource.google/go/x/sys/+/v0.30.0:LICENSE)
 
 Copyright 2009 The Go Authors.
 
@@ -7313,8 +7341,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --------------------------------------------------------------------------------
 
 Package: golang.org/x/text
-Version: v0.18.0
-License: BSD-3-Clause (https://cs.opensource.google/go/x/text/+/v0.18.0:LICENSE)
+Version: v0.22.0
+License: BSD-3-Clause (https://cs.opensource.google/go/x/text/+/v0.22.0:LICENSE)
 
 Copyright 2009 The Go Authors.
 
@@ -7347,8 +7375,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --------------------------------------------------------------------------------
 
 Package: golang.org/x/time/rate
-Version: v0.6.0
-License: BSD-3-Clause (https://cs.opensource.google/go/x/time/+/v0.6.0:LICENSE)
+Version: v0.10.0
+License: BSD-3-Clause (https://cs.opensource.google/go/x/time/+/v0.10.0:LICENSE)
 
 Copyright 2009 The Go Authors.
 
@@ -7410,8 +7438,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --------------------------------------------------------------------------------
 
 Package: google.golang.org/protobuf
-Version: v1.34.2
-License: BSD-3-Clause (https://github.com/protocolbuffers/protobuf-go/blob/v1.34.2/LICENSE)
+Version: v1.36.4
+License: BSD-3-Clause (https://github.com/protocolbuffers/protobuf-go/blob/v1.36.4/LICENSE)
 
 Copyright (c) 2018 The Go Authors. All rights reserved.
 
@@ -7753,6 +7781,8 @@ Package                           License       Copyright
 @babel/register                   MIT           The Babel Team (https://babel.dev/team)
 @babel/runtime                    MIT           The Babel Team (https://babel.dev/team)
 @lcdp/offline-plugin              MIT           Le Comptoir Des Pharmacies <webmaster@lecomptoirdespharmacies.fr>
+@mdi/font                         Apache-2.0    Austin Andrews
+@vue/compiler-sfc                 MIT           Evan You
 @vvo/tzdb                         MIT           Vincent Voyer <vincent@codeagain.com>
 axios                             MIT           Matt Zabriskie
 axios-mock-adapter                MIT           Colin Timmermans <colintimmermans@gmail.com>
@@ -7769,7 +7799,6 @@ cssnano                           MIT           Ben Briggs beneb.info@gmail.com 
 easygettext                       MIT           Polyconseil
 eslint                            MIT           Nicholas C. Zakas <nicholas+npm@nczconsulting.com>
 eslint-config-prettier            MIT           Simon Lydell
-eslint-config-standard            MIT           Feross Aboukhadijeh feross@feross.org https://feross.org
 eslint-formatter-pretty           MIT           Sindre Sorhus sindresorhus@gmail.com https://sindresorhus.com
 eslint-plugin-html                ISC           n/a
 eslint-plugin-import              MIT           Ben Mosher <me@benmosher.com>
@@ -7777,10 +7806,12 @@ eslint-plugin-node                MIT           Toru Nagashima
 eslint-plugin-prettier            MIT           Teddy Katz
 eslint-plugin-promise             ISC           jden <jason@denizac.org>
 eslint-plugin-vue                 MIT           Toru Nagashima (https://github.com/mysticatea)
+eslint-plugin-vuetify             MIT           Kael Watts-Deuchar <kaelwd@gmail.com>
 eslint-webpack-plugin             MIT           Ricardo Gobbo de Souza <ricardogobbosouza@yahoo.com.br>
 eventsource-polyfill              MIT           amvtek <devel@amvtek.com>
 file-loader                       MIT           Tobias Koppers @sokra
 file-saver                        MIT           Eli Grey <me@eligrey.com>
+floating-vue                      MIT           Guillaume Chau <guillaume.b.chau@gmail.com>
 hls.js                            Apache-2.0    n/a
 i                                 MIT           Pavan Kumar Sunkara <pavan.sss1991@gmail.com> (pksunkara.github.com)
 karma                             MIT           Vojta Jína <vojta.jina@gmail.com>
@@ -7797,7 +7828,8 @@ mini-css-extract-plugin           MIT           Tobias Koppers @sokra
 minimist                          MIT           James Halliday mail@substack.net http://substack.net
 mocha                             MIT           TJ Holowaychuk <tj@vision-media.ca>
 node-storage-shim                 ISC           Michael Nahkies
-photoswipe                        MIT           Dmitry Semenov (http://dimsemenov.com)
+passive-events-support            MIT           Ignas Damunskis <ignas3run@gmail.com>
+photoswipe                        MIT           Dmytro Semenov (https://dimsemenov.com)
 postcss                           MIT           Andrey Sitnik <andrey@sitnik.ru>
 postcss-import                    MIT           Maxime Thirouin
 postcss-loader                    MIT           Andrey Sitnik <andrey@sitnik.ru>
@@ -7808,26 +7840,26 @@ prettier                          MIT           James Long
 pubsub-js                         MIT           Morgan Roderick morgan@roderick.dk http://roderick.dk
 regenerator-runtime               MIT           Ben Newman <bn@cs.stanford.edu>
 resolve-url-loader                MIT           bholloway
+sanitize-html                     MIT           Apostrophe Technologies, Inc.
 sass                              MIT           Natalie Weizenbaum nweiz@google.com https://github.com/nex3
 sass-loader                       MIT           J. Tangelder
 server                            MIT           Francisco Presencia <public@francisco.io> (https://francisco.io/)
 sockette                          MIT           Luke Edwards luke.edwards05@gmail.com lukeed.com
+standard                          MIT           Feross Aboukhadijeh feross@feross.org https://feross.org
 style-loader                      MIT           Tobias Koppers @sokra
 svg-url-loader                    MIT           Hovhannes Babayan
 tar                               ISC           Isaac Z. Schlueter
 url-loader                        MIT           Tobias Koppers @sokra
 util                              MIT           Joyent http://www.joyent.com
 vue                               MIT           Evan You
-vue-fullscreen                    ISC           mirari
-vue-gettext                       MIT           Marc Hertzog
-vue-infinite-scroll               MIT           long.zhang@ele.me
+vue-3-sanitize                    MIT           Vannsl, Vanessa Otto <mail@vannsl.io>
 vue-loader                        MIT           Evan You
 vue-loader-plugin                 ISC           Ivan liu
 vue-luxon                         MIT           Cas Bloem
-vue-router                        MIT           Evan You
+vue-router                        MIT           Eduardo San Martin Morote posva13@gmail.com
+vue-sanitize-directive            MIT           Leonardo Piccioni de Almeida leopiccionia@gmail.com
 vue-style-loader                  MIT           Evan You
-vue-template-compiler             MIT           Evan You
-vue2-filters                      MIT           Arhey
+vue3-gettext                      MIT           Leo Zurbriggen
 vuetify                           MIT           John Leider john@vuetifyjs.com
 webpack                           MIT           Tobias Koppers @sokra
 webpack-bundle-analyzer           MIT           Yury Grunin <grunin.ya@ya.ru>
@@ -7836,3 +7868,4 @@ webpack-hot-middleware            MIT           Glen Mailer <glen@stainlessed.co
 webpack-manifest-plugin           MIT           Dane Thurber <dane.thurber@gmail.com>
 webpack-md5-hash                  MIT           Kirill Ermolov
 webpack-merge                     MIT           Juho Vepsalainen <bebraw@gmail.com>
+webpack-plugin-vuetify            MIT           Kael Watts-Deuchar
