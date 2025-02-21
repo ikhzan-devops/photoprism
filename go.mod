@@ -5,9 +5,9 @@ require (
 	github.com/djherbis/times v1.6.0
 	github.com/dsoprea/go-exif/v3 v3.0.1
 	github.com/dsoprea/go-heic-exif-extractor/v2 v2.0.0-20210512044107-62067e44c235
-	github.com/dsoprea/go-iptc v0.0.0-20200610044640-bc9ca208b413
+	github.com/dsoprea/go-iptc v0.0.0-20200610044640-bc9ca208b413 // indirect
 	github.com/dsoprea/go-jpeg-image-structure/v2 v2.0.0-20221012074422-4f3f7e934102
-	github.com/dsoprea/go-photoshop-info-format v0.0.0-20200610045659-121dd752914d
+	github.com/dsoprea/go-photoshop-info-format v0.0.0-20200610045659-121dd752914d // indirect
 	github.com/dsoprea/go-png-image-structure/v2 v2.0.0-20210512210324-29b889a6093d
 	github.com/dsoprea/go-tiff-image-structure/v2 v2.0.0-20221003165014-8ecc4f52edca
 	github.com/dustin/go-humanize v1.0.1
@@ -19,12 +19,11 @@ require (
 	github.com/gorilla/websocket v1.5.3
 	github.com/gosimple/slug v1.15.0
 	github.com/jinzhu/inflection v1.0.0
-	github.com/kardianos/osext v0.0.0-20190222173326-2bc1f35cddc0
+	github.com/kardianos/osext v0.0.0-20190222173326-2bc1f35cddc0 // indirect
 	github.com/karrick/godirwalk v1.17.0
 	github.com/klauspost/cpuid/v2 v2.2.9
 	github.com/leandro-lugaresi/hub v1.1.1
 	github.com/leonelquinteros/gotext v1.7.1
-	github.com/lib/pq v1.10.9 // indirect
 	github.com/lucasb-eyer/go-colorful v1.2.0
 	github.com/mandykoh/prism v0.35.3
 	github.com/manifoldco/promptui v0.9.0
@@ -38,7 +37,7 @@ require (
 	github.com/tensorflow/tensorflow v1.15.2
 	github.com/tidwall/gjson v1.18.0
 	github.com/ulule/deepcopier v0.0.0-20200430083143-45decc6639b6
-	go4.org v0.0.0-20230225012048-214862532bf5
+	go4.org v0.0.0-20230225012048-214862532bf5 // indirect
 	golang.org/x/crypto v0.33.0
 	golang.org/x/net v0.35.0
 	gonum.org/v1/gonum v0.15.1
@@ -47,7 +46,7 @@ require (
 )
 
 require (
-	github.com/go-xmlfmt/xmlfmt v1.1.3
+	github.com/go-xmlfmt/xmlfmt v1.1.3 // indirect
 	golang.org/x/image v0.24.0
 )
 
@@ -55,7 +54,7 @@ require github.com/olekukonko/tablewriter v0.0.5
 
 require github.com/google/uuid v1.6.0
 
-require github.com/chzyer/readline v1.5.1
+require github.com/chzyer/readline v1.5.1 // indirect
 
 require github.com/gabriel-vasile/mimetype v1.4.8
 
@@ -81,70 +80,6 @@ require (
 )
 
 require (
-	github.com/KyleBanks/depth v1.2.1
-	github.com/beorn7/perks v1.0.1
-	github.com/boombuler/barcode v1.0.1
-	github.com/bytedance/sonic/loader v0.2.3
-	github.com/cespare/xxhash/v2 v2.3.0
-	github.com/cloudwego/base64x v0.1.5
-	github.com/cpuguy83/go-md2man/v2 v2.0.5
-	github.com/davecgh/go-spew v1.1.1
-	github.com/davidbyttow/govips/v2 v2.16.0
-	github.com/dsoprea/go-logging v0.0.0-20200710184922-b02d349568dd
-	github.com/dsoprea/go-utility/v2 v2.0.0-20221003172846-a3e1774ef349
-	github.com/gin-contrib/sse v1.0.0
-	github.com/go-co-op/gocron/v2 v2.15.0
-	github.com/go-jose/go-jose/v4 v4.0.4
-	github.com/go-logr/logr v1.4.2
-	github.com/go-logr/stdr v1.2.2
-	github.com/go-openapi/jsonpointer v0.21.0
-	github.com/go-openapi/jsonreference v0.21.0
-	github.com/go-openapi/spec v0.21.0
-	github.com/go-openapi/swag v0.23.0
-	github.com/go-playground/locales v0.14.1
-	github.com/go-playground/universal-translator v0.18.1
-	github.com/go-sql-driver/mysql v1.7.1
-	github.com/goccy/go-json v0.10.4
-	github.com/gorilla/securecookie v1.1.2
-	github.com/gosimple/unidecode v1.0.1
-	github.com/jackc/pgpassfile v1.0.0
-	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a
-	github.com/jackc/pgx/v5 v5.5.5
-	github.com/jackc/puddle/v2 v2.2.1
-	github.com/jinzhu/now v1.1.5
-	github.com/jonboulle/clockwork v0.5.0
-	github.com/josharian/intern v1.0.0
-	github.com/json-iterator/go v1.1.12
-	github.com/leodido/go-urn v1.4.0
-	github.com/mailru/easyjson v0.7.7
-	github.com/mandykoh/go-parallel v0.1.0
-	github.com/mattn/go-isatty v0.0.20
-	github.com/mattn/go-sqlite3 v1.14.22
-	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd
-	github.com/modern-go/reflect2 v1.0.2
-	github.com/muhlemmer/gu v0.3.1
-	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822
-	github.com/pmezard/go-difflib v1.0.0
-	github.com/pquerna/otp v1.4.0
-	github.com/prometheus/client_model v0.6.1
-	github.com/prometheus/procfs v0.15.1
-	github.com/rivo/uniseg v0.4.6
-	github.com/robfig/cron/v3 v3.0.1
-	github.com/russross/blackfriday/v2 v2.1.0
-	github.com/swaggo/files v1.0.1
-	github.com/swaggo/gin-swagger v1.6.0
-	github.com/swaggo/swag v1.16.3
-	github.com/tidwall/match v1.1.1
-	github.com/twitchyliquid64/golang-asm v0.15.1
-	github.com/ugorji/go/codec v1.2.12
-	github.com/urfave/cli/v2 v2.27.5
-	github.com/xrash/smetrics v0.0.0-20240521201337-686a1a2994c1
-	github.com/zitadel/logging v0.6.1
-	github.com/zitadel/oidc/v3 v3.34.1
-)
-
-require (
-	github.com/Azure/go-ntlmssp v0.0.0-20221128193559-754e69321358 // indirect
 	github.com/KyleBanks/depth v1.2.1 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/boombuler/barcode v1.0.1 // indirect
@@ -153,10 +88,11 @@ require (
 	github.com/cloudwego/base64x v0.1.5 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.5 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/davidbyttow/govips/v2 v2.16.0
 	github.com/dsoprea/go-logging v0.0.0-20200710184922-b02d349568dd // indirect
 	github.com/dsoprea/go-utility/v2 v2.0.0-20221003172846-a3e1774ef349 // indirect
 	github.com/gin-contrib/sse v1.0.0 // indirect
-	github.com/go-asn1-ber/asn1-ber v1.5.7 // indirect
+	github.com/go-co-op/gocron/v2 v2.15.0
 	github.com/go-jose/go-jose/v4 v4.0.4 // indirect
 	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
@@ -170,6 +106,10 @@ require (
 	github.com/goccy/go-json v0.10.4 // indirect
 	github.com/gorilla/securecookie v1.1.2 // indirect
 	github.com/gosimple/unidecode v1.0.1 // indirect
+	github.com/jackc/pgpassfile v1.0.0 // indirect
+	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect
+	github.com/jackc/pgx/v5 v5.5.5 // indirect
+	github.com/jackc/puddle/v2 v2.2.1 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/jonboulle/clockwork v0.5.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
@@ -178,27 +118,39 @@ require (
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/mandykoh/go-parallel v0.1.0 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
+	github.com/mattn/go-sqlite3 v1.14.22 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/muhlemmer/gu v0.3.1 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/pquerna/otp v1.4.0
 	github.com/prometheus/client_model v0.6.1 // indirect
 	github.com/prometheus/procfs v0.15.1 // indirect
 	github.com/rivo/uniseg v0.4.6 // indirect
+	github.com/robfig/cron/v3 v3.0.1
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
+	github.com/swaggo/files v1.0.1
+	github.com/swaggo/gin-swagger v1.6.0
 	github.com/swaggo/swag v1.16.3 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.12 // indirect
+	github.com/urfave/cli/v2 v2.27.5
 	github.com/xrash/smetrics v0.0.0-20240521201337-686a1a2994c1 // indirect
 	github.com/zitadel/logging v0.6.1 // indirect
+	github.com/zitadel/oidc/v3 v3.34.1
+)
+
+require (
+	github.com/mattn/go-runewidth v0.0.15 // indirect
+	github.com/tidwall/pretty v1.2.1 // indirect
 	github.com/zitadel/schema v1.3.0 // indirect
 	go.opentelemetry.io/otel v1.29.0 // indirect
 	go.opentelemetry.io/otel/metric v1.29.0 // indirect
 	go.opentelemetry.io/otel/trace v1.29.0 // indirect
 	golang.org/x/exp v0.0.0-20250106191152-7588d65b2ba8 // indirect
-	golang.org/x/oauth2 v0.25.0 // indirect
+	golang.org/x/oauth2 v0.26.0 // indirect
 	golang.org/x/sys v0.30.0 // indirect
 	golang.org/x/tools v0.30.0 // indirect
 	google.golang.org/protobuf v1.36.4 // indirect
@@ -207,19 +159,15 @@ require (
 
 require (
 	github.com/abema/go-mp4 v1.4.1
-	github.com/bytedance/sonic v1.12.8
-	github.com/go-errors/errors v1.5.1
-	github.com/go-playground/validator/v10 v10.24.0
-	github.com/pelletier/go-toml/v2 v2.2.3
+	github.com/bytedance/sonic v1.12.8 // indirect
+	github.com/go-errors/errors v1.5.1 // indirect
+	github.com/go-playground/validator/v10 v10.24.0 // indirect
+	github.com/pelletier/go-toml/v2 v2.2.3 // indirect
 	github.com/sunfish-shogi/bufseekio v0.1.0
-	golang.org/x/arch v0.13.0
+	golang.org/x/arch v0.13.0 // indirect
 )
 
-require (
-	github.com/emersion/go-webdav v0.6.0
-	github.com/mattn/go-runewidth v0.0.15
-	github.com/tidwall/pretty v1.2.1
-)
+require github.com/emersion/go-webdav v0.6.0
 
 go 1.23.5
 
