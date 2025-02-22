@@ -1,11 +1,13 @@
 <template>
   <v-dialog
-    :model-value="show"
+    :model-value="visible"
     persistent
     max-width="500"
     class="dialog-album-edit"
     color="background"
     @keydown.esc="close"
+    @after-enter="afterEnter"
+    @after-leave="afterLeave"
   >
     <v-form
       ref="form"
@@ -119,7 +121,10 @@ import Album from "model/album";
 export default {
   name: "PAlbumEditDialog",
   props: {
-    show: Boolean,
+    visible: {
+      type: Boolean,
+      default: false,
+    },
     album: {
       type: Object,
       default: () => {},
@@ -149,7 +154,7 @@ export default {
     };
   },
   watch: {
-    show: function (show) {
+    visible: function (show) {
       if (show) {
         this.model = this.album.clone();
         this.category = this.model.Category ? this.model.Category : null;
@@ -157,6 +162,12 @@ export default {
     },
   },
   methods: {
+    afterEnter() {
+      this.$view.enter(this);
+    },
+    afterLeave() {
+      this.$view.leave(this);
+    },
     expand() {
       this.growDesc = !this.growDesc;
     },

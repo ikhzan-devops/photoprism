@@ -28,7 +28,7 @@ Additional information can be found in our Developer Guide:
 @import url("splash.css");
 @import url("body.css");
 @import url("text.css");
-@import url("viewer.css");
+@import url("lightbox.css");
 @import url("controls.css");
 @import url("wallpapers.css");
 @import url("themes.css");
@@ -36,7 +36,7 @@ Additional information can be found in our Developer Guide:
 @import url("navigation.css");
 @import url("logs.css");
 @import url("visibility.css");
-@import url("results.css");
+@import url("views.css");
 @import url("places.css");
 @import url("labels.css");
 @import url("files.css");
@@ -91,7 +91,7 @@ main {
     top: 16px;
     left: 50%;
     transform: translate(-50%, 0);
-    padding: .4rem .8rem;
+    padding: .5rem 1rem;
     margin: auto;
     opacity: 0.87;
     color: rgb(var(--v-theme-on-button, #333333));
@@ -175,6 +175,10 @@ body .v-list__item .v-icon {
     cursor: text !important;
 }
 
+.cursor-copy,
+.cursor-copy i,
+.cursor-copy svg,
+.cursor-copy input,
 .cursor-pointer {
     cursor: pointer !important;
 }

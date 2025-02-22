@@ -24,11 +24,11 @@ Additional information can be found in our Developer Guide:
 */
 
 import RestModel from "model/rest";
-import $api from "common/api";
 import { DateTime } from "luxon";
 import File from "model/file";
-import Util from "common/util";
 import { $config } from "app/session";
+import $api from "common/api";
+import $util from "common/util";
 import { $gettext } from "common/gettext";
 
 export const RootImport = "import";
@@ -78,7 +78,7 @@ export class Folder extends RestModel {
     }
 
     if (truncate) {
-      result = Util.truncate(result, truncate, "…");
+      result = $util.truncate(result, truncate, "…");
     }
 
     return result;

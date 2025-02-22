@@ -91,12 +91,12 @@
       </v-speed-dial>
     </div>
     <p-photo-album-dialog
-      :show="dialog.album"
+      :visible="dialog.album"
       @close="dialog.album = false"
       @confirm="cloneAlbums"
     ></p-photo-album-dialog>
     <p-album-delete-dialog
-      :show="dialog.delete"
+      :visible="dialog.delete"
       @close="dialog.delete = false"
       @confirm="batchDelete"
     ></p-album-delete-dialog>
@@ -151,7 +151,7 @@ export default {
         album: false,
         edit: false,
       },
-      rtl: this.$rtl,
+      rtl: this.$isRtl,
     };
   },
   methods: {

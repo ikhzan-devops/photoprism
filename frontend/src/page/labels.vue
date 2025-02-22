@@ -1,5 +1,11 @@
 <template>
-  <div :class="$config.aclClasses('labels')" class="p-page p-page-labels not-selectable">
+  <div
+    ref="page"
+    tabindex="1"
+    class="p-page p-page-labels not-selectable"
+    :class="$config.aclClasses('labels')"
+    @keydown.ctrl="onCtrl"
+  >
     <v-form ref="form" class="p-labels-search" validate-on="invalid-input" @submit.stop.prevent="updateQuery()">
       <v-toolbar
         flat
@@ -24,7 +30,7 @@
           autocapitalize="none"
           color="surface-variant"
           class="input-search background-inherit elevation-0"
-          @update:modelValue="
+          @update:model-value="
             (v) => {
               updateFilter({ q: v });
             }
@@ -106,7 +112,7 @@
               :style="`background-image: url(${label.thumbnailUrl('tile_500')})`"
               class="preview"
               @touchstart.passive="input.touchStart($event, index)"
-              @touchend.stop.prevent="onClick($event, index)"
+              @touchend.stop="onClick($event, index)"
               @mousedown.stop.prevent="input.mouseDown($event, index)"
               @click.stop.prevent="onClick($event, index)"
             >
@@ -114,8 +120,8 @@
               <button
                 v-if="canSelect"
                 class="input-select"
-                @touchstart.stop.prevent="input.touchStart($event, index)"
-                @touchend.stop.prevent="onSelect($event, index)"
+                @touchstart.stop="input.touchStart($event, index)"
+                @touchend.stop="onSelect($event, index)"
                 @touchmove.stop.prevent
                 @click.stop.prevent="onSelect($event, index)"
               >
@@ -124,8 +130,8 @@
               </button>
               <button
                 class="input-favorite"
-                @touchstart.stop.prevent="input.touchStart($event, index)"
-                @touchend.stop.prevent="toggleLike($event, index)"
+                @touchstart.stop="input.touchStart($event, index)"
+                @touchend.stop="toggleLike($event, index)"
                 @touchmove.stop.prevent
                 @click.stop.prevent="toggleLike($event, index)"
               >
@@ -154,13 +160,12 @@
       </div>
     </div>
 
-    <p-label-edit-dialog :show="dialog.edit" :label="model" @close="dialog.edit = false"></p-label-edit-dialog>
+    <p-label-edit-dialog :visible="dialog.edit" :label="model" @close="dialog.edit = false"></p-label-edit-dialog>
   </div>
 </template>
 
 <script>
 import Label from "model/label";
-import Event from "pubsub-js";
 import RestModel from "model/rest";
 import { MaxItems } from "common/clipboard";
 import $notify from "common/notify";
@@ -220,6 +225,12 @@ export default {
   },
   watch: {
     $route() {
+      if (!this.$view.isActive(this)) {
+        return;
+      }
+
+      this.$view.focus(this.$refs?.page);
+
       const query = this.$route.query;
 
       this.routeName = this.$route.name;
@@ -233,17 +244,39 @@ export default {
   created() {
     this.search();
 
-    this.subscriptions.push(Event.subscribe("labels", (ev, data) => this.onUpdate(ev, data)));
+    this.subscriptions.push(this.$event.subscribe("labels", (ev, data) => this.onUpdate(ev, data)));
 
-    this.subscriptions.push(Event.subscribe("touchmove.top", () => this.refresh()));
-    this.subscriptions.push(Event.subscribe("touchmove.bottom", () => this.loadMore()));
+    this.subscriptions.push(this.$event.subscribe("touchmove.top", () => this.refresh()));
+    this.subscriptions.push(this.$event.subscribe("touchmove.bottom", () => this.loadMore()));
   },
-  unmounted() {
+  mounted() {
+    this.$view.enter(this, this.$refs?.page);
+  },
+  beforeUnmount() {
     for (let i = 0; i < this.subscriptions.length; i++) {
-      Event.unsubscribe(this.subscriptions[i]);
+      this.$event.unsubscribe(this.subscriptions[i]);
     }
   },
+  unmounted() {
+    this.$view.leave(this);
+  },
   methods: {
+    onCtrl(ev) {
+      if (!ev || !(ev instanceof KeyboardEvent) || !ev.ctrlKey || !this.$view.isActive(this)) {
+        return;
+      }
+
+      switch (ev.code) {
+        case "KeyR":
+          ev.preventDefault();
+          this.refresh();
+          break;
+        case "KeyF":
+          ev.preventDefault();
+          this.$view.focus(this.$refs?.form, ".input-search input", true);
+          break;
+      }
+    },
     edit(label) {
       if (!label) {
         return;
@@ -424,7 +457,7 @@ export default {
       this.lastId = "";
     },
     loadMore() {
-      if (this.scrollDisabled || this.$modal.active()) return;
+      if (this.scrollDisabled || this.$view.isHidden(this)) return;
 
       this.scrollDisabled = true;
       this.listen = false;

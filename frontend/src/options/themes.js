@@ -100,7 +100,7 @@ let themes = {
     name: "carbon",
     colors: {
       "background": "#16141c",
-      "surface": "#0a090d",
+      "surface": "#24212E",
       "card": "#292732",
       "primary": "#8a6eff",
       "highlight": "#53478a",
@@ -108,7 +108,7 @@ let themes = {
       "secondary": "#0E0D12",
       "secondary-light": "#292733",
       "table": "#1D1B26",
-      "button": "#292733",
+      "button": "#2C273E",
       "switch": "#707070",
       "selected": "#53478a",
       "accent": "#262238",
@@ -129,6 +129,7 @@ let themes = {
       "navigation-home": "#0E0D12",
     },
     variables: {
+      "overlay-color": "#24212E",
       "disabled-opacity": 0.6,
       "hover-opacity": 0.03,
     },
@@ -138,19 +139,20 @@ let themes = {
     title: "Chrome",
     name: "chrome",
     colors: {
-      "background": "#1d1d1d",
-      "surface": "#1a1a1a",
-      "card": "#1f1f1f",
+      "background": "#1e1f20",
+      "on-background": "#ffffff",
+      "surface": "#202121",
+      "card": "#1a1b1c",
       "primary": "#ffffff",
-      "highlight": "#393939",
-      "surface-variant": "#ffffff",
-      "on-surface-variant": "#000000",
-      "secondary": "#1f1f1f",
+      "highlight": "#393a3b",
+      "surface-variant": "#e8e9eb",
+      "on-surface-variant": "#262728",
+      "secondary": "#1a1b1c",
       "secondary-light": "#292929",
-      "button": "#292929",
-      "table": "#262626",
+      "button": "#2c2d2e",
+      "table": "#262728",
       "switch": "#707070",
-      "selected": "#494949",
+      "selected": "#48494b",
       "accent": "#727272",
       "error": "#d36161",
       "info": "#0696a7",
@@ -164,13 +166,15 @@ let themes = {
       "edit": "#009FF5",
       "share": "#9575cd",
       "love": "#dd3f3e",
-      "terminal": "#2f3131",
-      "navigation": "#1e2122",
-      "navigation-home": "#1e2122",
+      "terminal": "#333333",
+      "navigation": "#1a1b1c",
+      "navigation-home": "#1a1b1c",
     },
     variables: {
+      "overlay-color": "#424242",
       "disabled-opacity": 0.55,
       "hover-opacity": 0.03,
+      "border-opacity": 0.16,
     },
   },
   gemstone: {
@@ -178,23 +182,24 @@ let themes = {
     name: "gemstone",
     dark: true,
     colors: {
-      "background": "#2f2f31",
-      "surface": "#161617",
-      "card": "#2b2b2d",
+      "background": "#2b2c31",
+      "surface": "#1D1E24",
+      "card": "#26272C",
       "primary": "#AFB4D4",
-      "highlight": "#545465",
-      "surface-variant": "#9BA0C5",
+      "highlight": "#45455c",
+      "switch": "#474a60",
+      "surface-variant": "#6e74a1",
       "on-surface-variant": "#f6f7e8",
-      "secondary": "#272727",
+      "secondary": "#222228",
       "secondary-light": "#37373a",
-      "table": "#333336",
-      "button": "#37373A",
-      "selected": "#696c7f",
+      "table": "#27282d",
+      "button": "#202126",
+      "selected": "#424771",
       "accent": "#333",
-      "error": "#e57373",
-      "info": "#00acc1",
-      "success": "#26A69A",
-      "warning": "#ffd740",
+      "error": "#c35d5d",
+      "info": "#BFC0C7",
+      "success": "#545661",
+      "warning": "#726d7a",
       "remove": "#e57373",
       "restore": "#64b5f6",
       "album": "#ffab00",
@@ -203,13 +208,17 @@ let themes = {
       "edit": "#0AA9FF",
       "share": "#9575cd",
       "love": "#ef5350",
-      "terminal": "#4A464F",
-      "navigation": "#1C1C21",
-      "navigation-home": "#131316",
+      "terminal": "#393A41",
+      "navigation": "#222228",
+      "navigation-home": "#1C1C20",
     },
     variables: {
+      "overlay-color": "#1E1F24",
       "disabled-opacity": 0.65,
-      "hover-opacity": 0.03,
+      "focus-opacity": 0.055,
+      "hover-opacity": 0.01,
+      "border-opacity": 0.14,
+      "fill-opacity": 0.03,
     },
   },
   grayscale: {
@@ -256,23 +265,24 @@ let themes = {
     name: "lavender",
     dark: false,
     colors: {
-      "background": "#fafafa",
-      "surface": "#e7e8f2",
+      "background": "#F3F3F5",
+      "surface": "#DDDEE6",
+      "on-surface": "#17171b",
       "card": "#DFE0E8",
       "primary": "#9ca2c9",
-      "highlight": "#7c81a0",
-      "surface-variant": "#475185",
-      "secondary": "#E2E5F3",
+      "highlight": "#6E7189",
+      "surface-variant": "#8A8CA8",
+      "secondary": "#51526D",
       "secondary-light": "#eef0f6",
       "selected": "#7c81a0",
-      "table": "#FFFFFF",
-      "button": "#EEF0F6",
+      "table": "#DBDBE2",
+      "button": "#8A8CA8",
       "switch": "#707070",
       "accent": "#EAEAF3",
       "error": "#e57373",
-      "info": "#00acc1",
+      "info": "#6E7189",
       "success": "#26A69A",
-      "warning": "#ffd740",
+      "warning": "#bfa965",
       "remove": "#e57373",
       "restore": "#64b5f6",
       "album": "#ffab00",
@@ -281,9 +291,9 @@ let themes = {
       "edit": "#0AA9FF",
       "share": "#9575cd",
       "love": "#ef5350",
-      "terminal": "#333333",
-      "navigation": "#1b1e32",
-      "navigation-home": "#121421",
+      "terminal": "#e7e8f2",
+      "navigation": "#393B4B",
+      "navigation-home": "#2C2D3B",
     },
     variables: {
       "disabled-opacity": 0.65,
@@ -319,7 +329,7 @@ let themes = {
       "edit": "#00b8d4",
       "share": "#9575cd",
       "love": "#ef5350",
-      "terminal": "#333333",
+      "terminal": "#bdbdbd",
       "navigation": "#212121",
       "navigation-home": "#000000",
     },
@@ -447,7 +457,7 @@ let themes = {
       "edit": "#88C0D0",
       "share": "#B48EAD",
       "love": "#ef5350",
-      "terminal": "#4C566A",
+      "terminal": "#e5e9f0",
       "navigation": "#E5E9F0",
       "on-navigation": "#3e4757",
       "navigation-home": "#dde3eb",
@@ -497,7 +507,7 @@ let themes = {
       "private": "#48bcd6",
       "edit": "#0AA9FF",
       "share": "#0070a0",
-      "terminal": "#333333",
+      "terminal": "#a8a8a8",
       "navigation": "#353839",
       "navigation-home": "#212121",
     },
@@ -829,16 +839,37 @@ export const Get = (name) => {
 };
 
 // Set adds or replaces a theme by name.
-export const Set = (name, val) => {
-  if (typeof themes[name] === "undefined") {
+export const Set = (name, theme) => {
+  if (!theme) {
+    return;
+  }
+
+  if (!name) {
+    name = theme.name;
+  }
+
+  const force = theme?.force;
+
+  if (force) {
+    // If the force flag is set, make this theme the only available option.
+    options = [
+      {
+        text: theme.title ? theme.title : $gettext("Custom"),
+        value: name,
+        disabled: false,
+      },
+    ];
+  } else if (typeof themes[name] === "undefined") {
+    // Otherwise, add it to the list of available themes,
+    // unless a theme with the same name already exists.
     options.push({
-      text: val.title,
-      value: val.name,
+      text: theme.title ? theme.title : $gettext("Custom"),
+      value: name,
       disabled: false,
     });
   }
 
-  themes[name] = val;
+  themes[name] = theme;
 };
 
 // Remove deletes a theme by name.

@@ -27,10 +27,10 @@ import memoizeOne from "memoize-one";
 import RestModel from "model/rest";
 import File from "model/file";
 import Marker from "model/marker";
-import $api from "common/api";
 import { DateTime } from "luxon";
-import Util from "common/util";
 import { $config } from "app/session";
+import $api from "common/api";
+import $util from "common/util";
 import countries from "options/countries.json";
 import { $gettext } from "common/gettext";
 import { PhotoClipboard } from "common/clipboard";
@@ -352,7 +352,7 @@ export class Photo extends RestModel {
     let result = this.fileBase(this.FileName ? this.FileName : this.primaryFile().Name);
 
     if (truncate) {
-      result = Util.truncate(result, truncate, "…");
+      result = $util.truncate(result, truncate, "…");
     }
 
     return result;
@@ -494,7 +494,7 @@ export class Photo extends RestModel {
       return false;
     }
 
-    let file = files.find((f) => f.Codec === media.CodecAvc);
+    let file = files.find((f) => f.Codec === media.CodecAvc1);
 
     if (!file) {
       file = files.find((f) => f.FileType === media.FormatMp4);
@@ -523,7 +523,7 @@ export class Photo extends RestModel {
     const file = this.videoFile();
 
     if (file) {
-      return Util.videoContentType(file?.Codec, file?.Mime);
+      return $util.videoContentType(file?.Codec, file?.Mime);
     } else {
       return media.ContentTypeMp4AvcMain;
     }
@@ -532,7 +532,7 @@ export class Photo extends RestModel {
   videoUrl() {
     const file = this.videoFile();
 
-    return Util.videoUrl(file ? file.Hash : this.Hash, file?.Codec, file?.Mime);
+    return $util.videoUrl(file ? file.Hash : this.Hash, file?.Codec, file?.Mime);
   }
 
   primaryFile() {
@@ -905,7 +905,7 @@ export class Photo extends RestModel {
     const info = [];
 
     if (file.MediaType === media.Vector) {
-      info.push(Util.fileType(file.FileType));
+      info.push($util.fileType(file.FileType));
     } else {
       info.push($gettext("Vector"));
     }
@@ -928,20 +928,14 @@ export class Photo extends RestModel {
 
     const info = [];
 
-    const cameraInfo = Util.formatCamera(camera, cameraId, cameraMake, cameraModel);
-
-    if (cameraInfo) {
-      info.push(cameraInfo);
+    if (file.Duration > 0) {
+      info.push($util.formatDuration(file.Duration));
     }
 
-    /* if (file.Duration > 0) {
-      info.push(Util.formatDuration(file.Duration));
-    } */
-
     if (file.Codec) {
-      info.push(Util.formatCodec(file.Codec));
+      info.push($util.formatCodec(file.Codec));
     } else if (file.FileType) {
-      info.push(Util.formatCodec(file.FileType));
+      info.push($util.formatCodec(file.FileType));
     }
 
     this.addSizeInfo(file, info);
@@ -961,31 +955,43 @@ export class Photo extends RestModel {
 
   generateDurationInfo = memoizeOne((file) => {
     if (!file) {
-      return "";
+      return "▶";
     } else if (file.Duration && file.Duration > 0) {
-      return Util.formatDuration(file.Duration);
+      return $util.formatDuration(file.Duration);
     }
 
-    return "";
+    if (file.Codec) {
+      return $util.formatCodec(file.Codec);
+    } else if (file.FileType) {
+      return $util.formatCodec(file.FileType);
+    }
+
+    return "▶";
   });
 
   // Example: Apple iPhone 12 Pro Max, DNG, 4032 × 3024, 32.9 MB
-  getPhotoInfo = () => {
+  getCameraInfo = () => {
     let file = this.originalFile() || this.videoFile();
-    return this.generatePhotoInfo(this.Camera, this.CameraID, this.CameraMake, this.CameraModel, file);
+    return this.generateCameraInfo(this.Camera, this.CameraID, this.CameraMake, this.CameraModel, file);
   };
 
-  generatePhotoInfo = memoizeOne((camera, cameraId, cameraMake, cameraModel, file) => {
+  generateCameraInfo = memoizeOne((camera, cameraId, cameraMake, cameraModel, file) => {
     let info = [];
 
-    const cameraInfo = Util.formatCamera(camera, cameraId, cameraMake, cameraModel);
+    // Return only the complete camera name if the original is or contains a video.
+    if (file.Video) {
+      return $util.formatCamera(camera, cameraId, cameraMake, cameraModel, true);
+    }
+
+    // Get short camera names to leave room for additional details.
+    const cameraInfo = $util.formatCamera(camera, cameraId, cameraMake, cameraModel, false);
 
     if (cameraInfo) {
       info.push(cameraInfo);
     }
 
     if (file && file.Width && file.Codec) {
-      info.push(Util.formatCodec(file.Codec));
+      info.push($util.formatCodec(file.Codec));
     }
 
     this.addSizeInfo(file, info);
@@ -1092,21 +1098,21 @@ export class Photo extends RestModel {
   }
 
   setPrimaryFile(fileUID) {
-    return $api.post(`${this.getEntityResource()}/files/${fileUID}/primary`).then((r) =>
-      Promise.resolve(this.setValues(r.data))
-    );
+    return $api
+      .post(`${this.getEntityResource()}/files/${fileUID}/primary`)
+      .then((r) => Promise.resolve(this.setValues(r.data)));
   }
 
   unstackFile(fileUID) {
-    return $api.post(`${this.getEntityResource()}/files/${fileUID}/unstack`).then((r) =>
-      Promise.resolve(this.setValues(r.data))
-    );
+    return $api
+      .post(`${this.getEntityResource()}/files/${fileUID}/unstack`)
+      .then((r) => Promise.resolve(this.setValues(r.data)));
   }
 
   deleteFile(fileUID) {
-    return $api.delete(`${this.getEntityResource()}/files/${fileUID}`).then((r) =>
-      Promise.resolve(this.setValues(r.data))
-    );
+    return $api
+      .delete(`${this.getEntityResource()}/files/${fileUID}`)
+      .then((r) => Promise.resolve(this.setValues(r.data)));
   }
 
   changeFileOrientation(file) {
@@ -1124,9 +1130,9 @@ export class Photo extends RestModel {
     }
 
     // Change file orientation.
-    return $api.put(`${this.getEntityResource()}/files/${file.UID}/orientation`, values).then((r) =>
-      Promise.resolve(this.setValues(r.data))
-    );
+    return $api
+      .put(`${this.getEntityResource()}/files/${file.UID}/orientation`, values)
+      .then((r) => Promise.resolve(this.setValues(r.data)));
   }
 
   like() {
@@ -1140,21 +1146,21 @@ export class Photo extends RestModel {
   }
 
   addLabel(name) {
-    return $api.post(this.getEntityResource() + "/label", { Name: name, Priority: 10 }).then((r) =>
-      Promise.resolve(this.setValues(r.data))
-    );
+    return $api
+      .post(this.getEntityResource() + "/label", { Name: name, Priority: 10 })
+      .then((r) => Promise.resolve(this.setValues(r.data)));
   }
 
   activateLabel(id) {
-    return $api.put(this.getEntityResource() + "/label/" + id, { Uncertainty: 0 }).then((r) =>
-      Promise.resolve(this.setValues(r.data))
-    );
+    return $api
+      .put(this.getEntityResource() + "/label/" + id, { Uncertainty: 0 })
+      .then((r) => Promise.resolve(this.setValues(r.data)));
   }
 
   renameLabel(id, name) {
-    return $api.put(this.getEntityResource() + "/label/" + id, { Label: { Name: name } }).then((r) =>
-      Promise.resolve(this.setValues(r.data))
-    );
+    return $api
+      .put(this.getEntityResource() + "/label/" + id, { Label: { Name: name } })
+      .then((r) => Promise.resolve(this.setValues(r.data)));
   }
 
   removeLabel(id) {
@@ -1210,27 +1216,27 @@ export class Photo extends RestModel {
 
     // Update details source if needed.
     if (values.Details) {
-      if (values.Details.Keywords) {
+      if (values.Details.Keywords !== this.__originalValues.Details.Keywords) {
         values.Details.KeywordsSrc = src.Manual;
       }
 
-      if (values.Details.Notes) {
+      if (values.Details.Notes !== this.__originalValues.Details.Notes) {
         values.Details.NotesSrc = src.Manual;
       }
 
-      if (values.Details.Subject) {
+      if (values.Details.Subject !== this.__originalValues.Details.Subject) {
         values.Details.SubjectSrc = src.Manual;
       }
 
-      if (values.Details.Artist) {
+      if (values.Details.Artist !== this.__originalValues.Details.Artist) {
         values.Details.ArtistSrc = src.Manual;
       }
 
-      if (values.Details.Copyright) {
+      if (values.Details.Copyright !== this.__originalValues.Details.Copyright) {
         values.Details.CopyrightSrc = src.Manual;
       }
 
-      if (values.Details.License) {
+      if (values.Details.License !== this.__originalValues.Details.License) {
         values.Details.LicenseSrc = src.Manual;
       }
     }

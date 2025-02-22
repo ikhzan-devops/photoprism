@@ -1,5 +1,11 @@
 <template>
-  <div class="p-page p-page-album-photos">
+  <div
+    ref="page"
+    tabindex="1"
+    class="p-page p-page-album-photos"
+    :class="$config.aclClasses('photos')"
+    @keydown.ctrl="onCtrl"
+  >
     <p-album-toolbar
       ref="toolbar"
       :filter="filter"
@@ -69,7 +75,6 @@
 import { Photo } from "model/photo";
 import Album from "model/album";
 import Thumb from "model/thumb";
-import Event from "pubsub-js";
 import PAlbumToolbar from "component/album/toolbar.vue";
 import PPhotoClipboard from "component/photo/clipboard.vue";
 import PPhotoViewCards from "component/photo/view/cards.vue";
@@ -131,10 +136,11 @@ export default {
       routeName: routeName,
       collectionRoute: this.$route.meta?.collectionRoute ? this.$route.meta.collectionRoute : "albums",
       loading: true,
-      viewer: {
+      lightbox: {
         results: [],
         loading: false,
         complete: false,
+        open: false,
         dirty: false,
         batchSize: 6000,
       },
@@ -147,6 +153,12 @@ export default {
   },
   watch: {
     $route() {
+      if (!this.$view.isActive(this)) {
+        return;
+      }
+
+      this.$view.focus(this.$refs?.page);
+
       const query = this.$route.query;
 
       this.filter.q = query["q"] ? query["q"] : "";
@@ -168,6 +180,7 @@ export default {
        * https://github.com/photoprism/photoprism/pull/2782#issue-1409954466
        */
       const routeChanged = this.routeName !== this.$route.name;
+
       if (routeChanged) {
         this.lastFilter = {};
       }
@@ -185,29 +198,47 @@ export default {
   created() {
     this.findAlbum().then(() => this.search());
 
-    this.subscriptions.push(Event.subscribe("albums.updated", (ev, data) => this.onAlbumsUpdated(ev, data)));
-    this.subscriptions.push(Event.subscribe("photos", (ev, data) => this.onUpdate(ev, data)));
+    this.subscriptions.push(this.$event.subscribe("albums.updated", (ev, data) => this.onAlbumsUpdated(ev, data)));
+    this.subscriptions.push(this.$event.subscribe("photos", (ev, data) => this.onUpdate(ev, data)));
 
     this.subscriptions.push(
-      this.$event.subscribe("viewer.opened", (ev, data) => {
-        this.viewer.open = true;
+      this.$event.subscribe("lightbox.opened", (ev, data) => {
+        this.lightbox.open = true;
       })
     );
     this.subscriptions.push(
-      this.$event.subscribe("viewer.closed", (ev, data) => {
-        this.viewer.open = false;
+      this.$event.subscribe("lightbox.closed", (ev, data) => {
+        this.lightbox.open = false;
       })
     );
 
-    this.subscriptions.push(Event.subscribe("touchmove.top", () => this.refresh()));
-    this.subscriptions.push(Event.subscribe("touchmove.bottom", () => this.loadMore()));
+    this.subscriptions.push(this.$event.subscribe("touchmove.top", () => this.refresh()));
+    this.subscriptions.push(this.$event.subscribe("touchmove.bottom", () => this.loadMore()));
   },
-  unmounted() {
+  mounted() {
+    this.$view.enter(this, this.$refs?.page);
+  },
+  beforeUnmount() {
     for (let i = 0; i < this.subscriptions.length; i++) {
-      Event.unsubscribe(this.subscriptions[i]);
+      this.$event.unsubscribe(this.subscriptions[i]);
     }
   },
+  unmounted() {
+    this.$view.leave(this);
+  },
   methods: {
+    onCtrl(ev) {
+      if (!ev || !(ev instanceof KeyboardEvent) || !ev.ctrlKey || !this.$view.isActive(this)) {
+        return;
+      }
+
+      switch (ev.code) {
+        case "KeyR":
+          ev.preventDefault();
+          this.refresh();
+          break;
+      }
+    },
     hideExpansionPanel() {
       return this.$refs?.toolbar?.hideExpansionPanel();
     },
@@ -272,10 +303,10 @@ export default {
       });
 
       // Open Edit Dialog
-      Event.publish("dialog.edit", { selection, album: this.album, index, tab });
+      this.$event.publish("dialog.edit", { selection, album: this.album, index, tab });
     },
-    openPhoto(index, showMerged = false, preferVideo = false) {
-      if (this.loading || !this.listen || this.viewer.loading || !this.results[index]) {
+    openPhoto(index, showMerged = false) {
+      if (this.loading || !this.listen || this.lightbox.loading || !this.results[index]) {
         return false;
       }
 
@@ -286,36 +317,24 @@ export default {
         showMerged = false;
       }
 
-      /**
-       * If the file is a video or an animation (like gif), then we always play
-       * it in the video-player.
-       * If the file is a live-image (an image with an embedded video), then we only
-       * play it in the video-player if specifically requested.
-       * This is because:
-       * 1. the lower-resolution video in these files is already
-       *    played when hovering the element (which does not happen for regular
-       *    video files)
-       * 2. The video in live-images is an addon. The main focus is usually still
-       *    the high resolution image inside
-       *
-       * preferVideo is true, when the user explicitly clicks the live-image-icon.
-       */
       if (showMerged) {
-        this.$root.$refs.viewer.showThumbs(Thumb.fromFiles([selected]), 0);
+        this.$lightbox.openModels(Thumb.fromFiles([selected]), 0);
       } else {
-        this.$root.$refs.viewer.showContext(this, index);
+        this.$lightbox.openView(this, index);
       }
 
       return true;
     },
-    loadMore() {
-      if (this.scrollDisabled || this.$modal.active()) return;
+    loadMore(force) {
+      if (!force && (this.scrollDisabled || this.$view.isHidden(this))) {
+        return;
+      }
 
       this.scrollDisabled = true;
       this.listen = false;
 
       if (this.dirty) {
-        this.viewer.dirty = true;
+        this.lightbox.dirty = true;
       }
 
       const count = this.dirty ? (this.page + 2) * this.batchSize : this.batchSize;
@@ -416,10 +435,11 @@ export default {
 
       if (this.model.Order !== this.filter.order) {
         this.model.Order = this.filter.order;
-        this.updateAlbum();
       }
 
-      if (this.loading) return;
+      if (this.loading) {
+        return;
+      }
 
       const query = {
         view: this.settings.view,
@@ -469,6 +489,15 @@ export default {
       this.loadMore();
     },
     search() {
+      /**
+       * search is called on mount or route change. If the route changed to an
+       * open lightbox, no search is required. There is no reason to do an
+       * initial results load, if the results aren't currently visible
+       */
+      if (this.lightbox.open) {
+        return;
+      }
+
       this.scrollDisabled = true;
 
       // Don't query the same data more than once
@@ -496,8 +525,8 @@ export default {
 
           this.offset = this.batchSize;
           this.results = response.models;
-          this.viewer.results = [];
-          this.viewer.complete = false;
+          this.lightbox.results = [];
+          this.lightbox.complete = false;
           this.complete = response.count < this.batchSize;
           this.scrollDisabled = this.complete;
 
@@ -569,7 +598,7 @@ export default {
             this.filter.order = this.model.Order;
             this.updateQuery();
           } else {
-            this.loadMore();
+            this.loadMore(true);
           }
 
           return;
@@ -587,7 +616,7 @@ export default {
           }
         });
 
-      this.viewer.results
+      this.lightbox.results
         .filter((m) => m.UID === entity.UID)
         .forEach((m) => {
           for (let key in entity) {
@@ -605,7 +634,9 @@ export default {
       }
     },
     onUpdate(ev, data) {
-      if (!this.listen) return;
+      if (!this.listen) {
+        return;
+      }
 
       if (!data || !data.entities) {
         return;
@@ -636,7 +667,7 @@ export default {
             const uid = data.entities[i];
 
             this.removeResult(this.results, uid);
-            this.removeResult(this.viewer.results, uid);
+            this.removeResult(this.lightbox.results, uid);
             this.$clipboard.removeId(uid);
           }
 

@@ -50,7 +50,7 @@ export default {
     variant: "outlined",
     baseColor: "on-surface-variant",
     validateOn: "invalid-input",
-    autofocus: true,
+    autofocus: false,
   },
   VAutocomplete: {
     flat: true,
@@ -102,11 +102,20 @@ export default {
     validateOn: "invalid-input",
     hideDetails: "auto",
   },
+  VSlider: {
+    ripple: false,
+    focused: false,
+    elevation: 0,
+    trackSize: 3,
+    thumbSize: 18,
+    hideDetails: "auto",
+  },
   VCard: {
     density: "compact",
     color: "background",
     flat: true,
     ripple: false,
+    transition: false,
   },
   VTab: {
     color: "on-surface",
@@ -126,6 +135,7 @@ export default {
   },
   VToolbar: {
     flat: true,
+    transition: false,
   },
   VListItem: {
     ripple: false,
@@ -135,11 +145,25 @@ export default {
     itemsPerPage: -1,
     hover: true,
   },
+  VImg: {
+    transition: false,
+  },
   VDialog: {
     scrim: true,
     scrollable: true,
-    retainFocus: true,
+    retainFocus: false,
     transition: false,
+    persistent: true,
+    openDelay: 0,
+    closeDelay: 0,
+    attach: document.body,
+  },
+  VOverlay: {
+    scrim: true,
+    transition: false,
+    openDelay: 0,
+    closeDelay: 0,
+    attach: document.body,
   },
   VExpansionPanel: {
     tile: true,

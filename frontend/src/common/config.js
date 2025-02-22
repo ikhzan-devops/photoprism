@@ -24,7 +24,7 @@ Additional information can be found in our Developer Guide:
 */
 
 import $api from "common/api";
-import $event from "pubsub-js";
+import $event from "common/event";
 import * as themes from "options/themes";
 import translations from "locales/translations.json";
 import { Languages } from "options/options";
@@ -42,7 +42,7 @@ export default class Config {
   constructor(storage, values) {
     this.disconnected = ref(false);
     this.storage = storage;
-    this.storage_key = "config";
+    this.storageKey = "config";
     this.previewToken = "";
     this.downloadToken = "";
     this.updating = false;
@@ -150,7 +150,8 @@ export default class Config {
       return this.updating;
     }
 
-    this.updating = $api.get("config")
+    this.updating = $api
+      .get("config")
       .then(
         (resp) => {
           return this.setValues(resp.data);
@@ -166,14 +167,12 @@ export default class Config {
   }
 
   setValues(values) {
-    if (!values) return;
-
-    if (this.debug) {
-      console.log("config: updated", values);
+    if (!values || typeof values !== "object") {
+      return;
     }
 
-    if (values.jsUri && this.values.jsUri !== values.jsUri) {
-      $event.publish("dialog.reload", { values });
+    if (values.jsUri && values.mode === "user" && this.values.jsUri && this.values.jsUri !== values.jsUri) {
+      $event.publish("dialog.update", { values });
     }
 
     for (let key in values) {
@@ -239,7 +238,12 @@ export default class Config {
             .filter((m) => m.UID === values.UID)
             .forEach((m) => {
               for (let key in values) {
-                if (key !== "UID" && values.hasOwnProperty(key) && values[key] != null && typeof values[key] !== "object") {
+                if (
+                  key !== "UID" &&
+                  values.hasOwnProperty(key) &&
+                  values[key] != null &&
+                  typeof values[key] !== "object"
+                ) {
                   m[key] = values[key];
                 }
               }
@@ -430,13 +434,17 @@ export default class Config {
     if (document && document.body) {
       const isRtl = this.isRtl(locale);
 
-      // Update <html> lang and dir attributes on current locale.
+      // Update <html> lang attribute and dir attribute to match the current locale.
       document.documentElement.setAttribute("lang", locale);
-      document.documentElement.setAttribute("dir", isRtl ? "rtl" : "ltr");
+      document.documentElement.setAttribute("dir", this.dir(isRtl));
 
-      // Set body.is-rtl class depending on current locale.
-      if (isRtl !== document.body.classList.contains("is-rtl")) {
-        document.body.classList.toggle("is-rtl");
+      // Set body.is-rtl or .is-ltr, depending on the writing direction of the current locale.
+      if (isRtl) {
+        document.body.classList.add("is-rtl");
+        document.body.classList.remove("is-ltr");
+      } else {
+        document.body.classList.remove("is-rtl");
+        document.body.classList.add("is-ltr");
       }
     }
 
@@ -448,7 +456,7 @@ export default class Config {
     // Update the configuration settings and save them to window.localStorage.
     if (this.values.settings && this.values.settings.ui) {
       this.values.settings.ui.language = locale;
-      this.storage.setItem(this.storage_key + ".locale", locale);
+      this.storage.setItem(this.storageKey + ".locale", locale);
     }
 
     return this;
@@ -460,7 +468,7 @@ export default class Config {
     let locale = "en";
 
     if (this.loading()) {
-      const stored = this.storage.getItem(this.storage_key + ".locale");
+      const stored = this.storage.getItem(this.storageKey + ".locale");
       if (stored) {
         locale = stored;
       }
@@ -484,6 +492,15 @@ export default class Config {
     }
 
     return Languages().some((l) => l.value === locale && l.rtl);
+  }
+
+  // dir returns the user interface direction (for the current locale if no argument is given).
+  dir(isRtl) {
+    if (typeof isRtl === "undefined") {
+      isRtl = this.isRtl();
+    }
+
+    return isRtl ? "rtl" : "ltr";
   }
 
   // setTheme set the current UI theme based on the specified name.
@@ -539,10 +556,8 @@ export default class Config {
       return;
     }
 
-    const tags = document.getElementsByTagName("html");
-
-    if (tags && tags.length > 0) {
-      tags[0].setAttribute("data-color-mode", value);
+    if (document.documentElement) {
+      document.documentElement.setAttribute("data-color-mode", value);
     }
 
     if (value === "dark") {
@@ -582,13 +597,13 @@ export default class Config {
 
   // storeValues saves the current configuration values in window.localStorage.
   storeValues() {
-    this.storage.setItem(this.storage_key, JSON.stringify(this.getValues()));
+    this.storage.setItem(this.storageKey, JSON.stringify(this.getValues()));
     return this;
   }
 
   // restoreValues restores the configuration values from window.localStorage.
   restoreValues() {
-    const json = this.storage.getItem(this.storage_key);
+    const json = this.storage.getItem(this.storageKey);
     if (json !== "undefined") {
       this.setValues(JSON.parse(json));
     }

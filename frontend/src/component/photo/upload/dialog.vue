@@ -1,14 +1,16 @@
 <template>
   <v-dialog
-    :model-value="show"
+    :model-value="visible"
     :fullscreen="$vuetify.display.mdAndDown"
     scrim
     scrollable
     persistent
     class="p-photo-upload-dialog v-dialog--upload"
     @keydown.esc="close"
+    @after-enter="afterEnter"
+    @after-leave="afterLeave"
   >
-    <v-form ref="form" class="p-photo-upload" validate-on="invalid-input" @submit.prevent="submit">
+    <v-form ref="form" class="p-photo-upload" validate-on="invalid-input" tabindex="1" @submit.prevent="submit">
       <input ref="upload" type="file" multiple class="d-none input-upload" @change.stop="onUpload()" />
       <v-card :tile="$vuetify.display.mdAndDown">
         <v-toolbar
@@ -127,13 +129,15 @@
 import $api from "common/api";
 import $notify from "common/notify";
 import Album from "model/album";
-import Util from "common/util";
 import { Duration } from "luxon";
 
 export default {
   name: "PPhotoUploadDialog",
   props: {
-    show: Boolean,
+    visible: {
+      type: Boolean,
+      default: false,
+    },
     data: {
       type: Object,
       default: () => {},
@@ -164,7 +168,7 @@ export default {
       fileLimit: isDemo ? 3 : 0,
       rejectNSFW: !this.$config.get("uploadNSFW"),
       featReview: this.$config.feature("review"),
-      rtl: this.$rtl,
+      rtl: this.$isRtl,
     };
   },
   computed: {
@@ -173,10 +177,8 @@ export default {
     },
   },
   watch: {
-    show: function (show) {
+    visible: function (show) {
       if (show) {
-        // Disable the browser scrollbar.
-        this.$modal.enter();
         this.reset();
         this.isDemo = this.$config.get("demo");
         this.fileLimit = this.isDemo ? 3 : 0;
@@ -194,12 +196,16 @@ export default {
         this.load("");
       } else {
         this.reset();
-        // Re-enable the browser scrollbar.
-        this.$modal.leave();
       }
     },
   },
   methods: {
+    afterEnter() {
+      this.$view.enter(this);
+    },
+    afterLeave() {
+      this.$view.leave(this);
+    },
     removeSelection(index) {
       this.selectedAlbums.splice(index, 1);
     },
@@ -332,7 +338,7 @@ export default {
       }
 
       this.uploads = [];
-      this.token = Util.generateToken();
+      this.token = this.$util.generateToken();
       this.selected = this.$refs.upload.files;
       this.busy = true;
       this.indexing = false;

@@ -9,9 +9,7 @@ export default class Page {
   }
 
   async addNameToFace(id, name) {
-    await t
-      .typeText(Selector("div[data-id=" + id + "] div.input-name input"), name)
-      .pressKey("enter");
+    await t.typeText(Selector("div[data-id=" + id + "] div.input-name input"), name).pressKey("enter");
   }
 
   async renameSubject(uid, name) {
@@ -63,8 +61,10 @@ export default class Page {
   }
 
   async openSubjectWithUid(uid) {
-    await t.click(Selector("div[data-uid=" + uid + "] div.preview"))
-        .expect(Selector("div.is-photo").visible).ok();
+    await t
+      .click(Selector("div[data-uid=" + uid + "] div.preview"))
+      .expect(Selector("div.is-photo").visible)
+      .ok();
   }
 
   async openFaceWithUid(uid) {

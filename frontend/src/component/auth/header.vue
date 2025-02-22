@@ -13,7 +13,7 @@ export default {
     return {
       sponsor: this.$config.isSponsor(),
       config: this.$config.values,
-      rtl: this.$rtl,
+      rtl: this.$isRtl,
     };
   },
   methods: {},

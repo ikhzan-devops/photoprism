@@ -1,5 +1,11 @@
 <template>
-  <div :class="$config.aclClasses('places')" class="p-page p-page-places fill-height">
+  <div
+    ref="page"
+    tabindex="1"
+    class="p-page p-page-places fill-height"
+    :class="$config.aclClasses('places')"
+    @keydown="onKeyDown"
+  >
     <div class="places">
       <div v-if="mapError">
         <v-toolbar
@@ -21,24 +27,24 @@
         </div>
       </div>
       <div v-else-if="canSearch" class="map-control search-control">
-        <div class="maplibregl-ctrl maplibregl-ctrl-group map-control-search">
+        <div ref="search" class="maplibregl-ctrl maplibregl-ctrl-group map-control-search">
           <v-text-field
             v-model.lazy.trim="filter.q"
+            :placeholder="$gettext('Search')"
+            density="compact"
             hide-details
-            theme="light"
             clearable
             flat
             single-line
             overflow
             rounded
+            theme="light"
             validate-on="invalid-input"
-            class="input-search pa-0"
-            :density="$vuetify.display.xs ? 'compact' : 'comfortable'"
-            :placeholder="$gettext('Search')"
             prepend-inner-icon="mdi-magnify"
             autocomplete="off"
             autocorrect="off"
             autocapitalize="none"
+            class="input-search pa-0"
             @click:clear="clearQuery"
             @keyup.enter="formChange"
           ></v-text-field>
@@ -60,6 +66,17 @@ import $api from "common/api";
 import Thumb from "model/thumb";
 import PPagePhotos from "page/photos.vue";
 import MapStyleControl from "component/places/style-control";
+
+// Pixels the map pans when the up or down arrow is clicked:
+const deltaDistance = 100;
+
+// Degrees the map rotates when the left or right arrow is clicked:
+const deltaDegrees = 25;
+
+// Easing callback function.
+const easing = (t) => {
+  return t * (2 - t);
+};
 
 export default {
   name: "PPagePlaces",
@@ -126,6 +143,12 @@ export default {
   },
   watch: {
     $route() {
+      if (!this.$view.isActive(this)) {
+        return;
+      }
+
+      this.$view.focus(this.$refs?.page);
+
       this.filter.q = this.query();
       this.filter.s = this.scope();
       this.initialized = false;
@@ -134,6 +157,7 @@ export default {
     },
   },
   mounted() {
+    this.$view.enter(this);
     this.initMap()
       .then(() => {
         this.renderMap();
@@ -143,7 +167,101 @@ export default {
         this.mapError = err;
       });
   },
+  unmounted() {
+    this.$view.leave(this);
+  },
   methods: {
+    onKeyDown(ev) {
+      if (!ev || !(ev instanceof KeyboardEvent) || !this.$view.isActive(this)) {
+        return;
+      }
+
+      if (ev.ctrlKey) {
+        switch (ev.code) {
+          case "KeyR":
+            ev.preventDefault();
+            this.reload();
+            break;
+          case "KeyG":
+            ev.preventDefault();
+            this.toggleProjection();
+            break;
+          case "KeyF":
+            ev.preventDefault();
+            this.$view.focus(this.$refs?.search, ".input-search input", false);
+            break;
+        }
+      } else if (this.initialized) {
+        // Use the arrow keys to move around the map with game-like controls.
+        switch (ev.code) {
+          case "ArrowUp":
+            ev.preventDefault();
+            this.map.panBy([0, -deltaDistance], {
+              easing,
+            });
+            break;
+          case "ArrowDown":
+            ev.preventDefault();
+            this.map.panBy([0, deltaDistance], {
+              easing,
+            });
+            break;
+          case "ArrowRight":
+            ev.preventDefault();
+            this.map.easeTo({
+              bearing: this.map.getBearing() + deltaDegrees,
+              easing,
+            });
+            break;
+          case "ArrowLeft":
+            ev.preventDefault();
+            this.map.easeTo({
+              bearing: this.map.getBearing() - deltaDegrees,
+              easing,
+            });
+            break;
+        }
+      }
+    },
+    toggleProjection() {
+      if (!this.initialized || this.loading) {
+        return;
+      }
+
+      const currentProjection = this.map.getProjection()?.type;
+
+      let newProjection;
+
+      if (currentProjection === "mercator" || !currentProjection) {
+        newProjection = "globe";
+        this.map.setZoom(3);
+      } else {
+        newProjection = "mercator";
+      }
+
+      this.map.setProjection({ type: newProjection });
+
+      if (!(this.$refs?.map instanceof HTMLElement)) {
+        return;
+      }
+
+      const btn = this.$refs.map.querySelector(".maplibregl-ctrl-globe, .maplibregl-ctrl-globe-enabled");
+
+      if (btn && btn instanceof HTMLElement) {
+        switch (newProjection) {
+          case "globe":
+            btn.classList.add("maplibregl-ctrl-globe-enabled");
+            btn.classList.remove("maplibregl-ctrl-globe");
+            btn.classList.title = this.map._getUIString("GlobeControl.Disable");
+            break;
+          default:
+            btn.classList.add("maplibregl-ctrl-globe");
+            btn.classList.remove("maplibregl-ctrl-globe-enabled");
+            btn.classList.title = this.map._getUIString("GlobeControl.Enable");
+            break;
+        }
+      }
+    },
     noWebGlSupport() {
       // see https://maplibre.org/maplibre-gl-js/docs/examples/check-for-support/
       if (window.WebGLRenderingContext) {
@@ -494,13 +612,14 @@ export default {
       this.loading = true;
 
       // Perform get request to find nearby photos.
-      return $api.get("geo/view", options)
+      return $api
+        .get("geo/view", options)
         .then((r) => {
           if (r && r.data && r.data.length > 0) {
             // Show photos.
-            this.$root.$refs.viewer.showThumbs(Thumb.wrap(r.data), 0);
+            this.$lightbox.openModels(Thumb.wrap(r.data), 0);
           } else {
-            // Don't open viewer if nothing was found.
+            // Don't open lightbox if nothing was found.
             this.$notify.warn(this.$gettext("No pictures found"));
           }
         })
@@ -561,13 +680,23 @@ export default {
 
       return params;
     },
-    search() {
+    reload() {
+      if (!this.initialized || this.loading) {
+        return;
+      }
+
+      this.search(true);
+    },
+    search(force) {
       if (this.loading) {
         return;
       }
 
       // Do not query the same data more than once unless search results need to be updated.
-      if (this.initialized && JSON.stringify(this.lastFilter) === JSON.stringify(this.filter)) return;
+      if (!force && this.initialized && JSON.stringify(this.lastFilter) === JSON.stringify(this.filter)) {
+        return;
+      }
+
       this.loading = true;
 
       this.closeCluster();
@@ -582,7 +711,8 @@ export default {
       };
 
       // Fetch results from server.
-      return $api.get("geo", options)
+      return $api
+        .get("geo", options)
         .then((response) => {
           if (!response.data.features || response.data.features.length === 0) {
             this.loading = false;
@@ -631,7 +761,7 @@ export default {
         controlPos
       );
 
-      // Add terrain control, if supported.
+      // Add 3D terrain toggle control, if supported.
       if (this.terrain[this.style]) {
         this.map.addControl(
           new maplibregl.TerrainControl({
@@ -641,11 +771,16 @@ export default {
         );
       }
 
-      // Add 3D globe control.
+      // Add 3D globe toggle control.
       this.map.addControl(new maplibregl.GlobeControl());
 
-      // Add fullscreen control.
-      this.map.addControl(new maplibregl.FullscreenControl({ container: document.querySelector("body") }), controlPos);
+      // Add fullscreen toggle control, except on mobile devices.
+      if (!this.$isMobile) {
+        this.map.addControl(
+          new maplibregl.FullscreenControl({ container: document.querySelector("body") }),
+          controlPos
+        );
+      }
 
       // Add locate position control.
       this.map.addControl(

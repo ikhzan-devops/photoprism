@@ -1,5 +1,13 @@
 <template>
-  <v-dialog :model-value="show" persistent max-width="540" class="p-dialog p-share-dialog" @keydown.esc="close">
+  <v-dialog
+    :model-value="visible"
+    persistent
+    max-width="540"
+    class="p-dialog p-share-dialog"
+    @keydown.esc="close"
+    @after-enter="afterEnter"
+    @after-leave="afterLeave"
+  >
     <v-card>
       <v-card-title class="d-flex justify-space-between align-center ga-3">
         <h6 class="text-h6">{{ $gettext(`Share %{s}`, { s: model.modelName() }) }}</h6>
@@ -13,7 +21,14 @@
         ></v-btn>
       </v-card-title>
       <v-card-text>
-        <v-expansion-panels v-model="expanded" variant="accordion" density="compact" rounded="6" class="elevation-0">
+        <v-expansion-panels
+          v-model="expanded"
+          variant="accordion"
+          density="compact"
+          rounded="6"
+          tabindex="1"
+          class="elevation-0"
+        >
           <v-expansion-panel v-for="(link, index) in links" :key="link.UID" color="secondary" class="pa-0 elevation-0">
             <v-expansion-panel-title class="d-flex justify-start align-center ga-3 text-body-2 px-4">
               <v-icon icon="mdi-link"></v-icon>
@@ -29,17 +44,17 @@
                     <v-col cols="12">
                       <v-text-field
                         :model-value="link.url()"
-                        append-inner-icon="mdi-content-copy"
+                        readonly
+                        flat
                         hide-details
                         density="comfortable"
                         variant="solo"
-                        flat
-                        readonly
                         autocorrect="off"
                         autocapitalize="none"
                         autocomplete="off"
-                        class="input-url"
-                        @click:append-inner="$util.copyText(link.url())"
+                        append-inner-icon="mdi-content-copy"
+                        class="input-url cursor-copy"
+                        @click.stop="$util.copyText(link.url())"
                       >
                       </v-text-field>
                     </v-col>
@@ -82,7 +97,7 @@
                         :label="label.pass"
                         :placeholder="link.HasPassword ? '••••••••' : 'optional'"
                         color="surface-variant"
-                        :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                        :append-inner-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
                         :type="showPassword ? 'text' : 'password'"
                         @click:append-inner="showPassword = !showPassword"
                       ></v-text-field>
@@ -135,7 +150,10 @@ import * as options from "options/options";
 export default {
   name: "PShareDialog",
   props: {
-    show: Boolean,
+    visible: {
+      type: Boolean,
+      default: false,
+    },
     model: {
       type: Object,
       default: () => {},
@@ -157,11 +175,11 @@ export default {
         cancel: this.$gettext("Cancel"),
         confirm: this.$gettext("Done"),
       },
-      rtl: this.$rtl,
+      rtl: this.$isRtl,
     };
   },
   watch: {
-    show: function (show) {
+    visible: function (show) {
       if (show) {
         this.links = [];
         this.loading = true;
@@ -181,6 +199,12 @@ export default {
     },
   },
   methods: {
+    afterEnter() {
+      this.$view.enter(this);
+    },
+    afterLeave() {
+      this.$view.leave(this);
+    },
     expires(link) {
       let result = this.$gettext("Expires");
 

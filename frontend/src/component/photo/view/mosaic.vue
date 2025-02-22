@@ -61,8 +61,8 @@
             class="media result preview"
             @contextmenu.stop="onContextMenu($event, index)"
             @touchstart.passive="input.touchStart($event, index)"
-            @touchend.stop.prevent="onClick($event, index)"
-            @mousedown.stop.prevent="input.mouseDown($event, index)"
+            @touchend.stop="onClick($event, index)"
+            @mousedown.stop="input.mouseDown($event, index)"
             @click.stop.prevent="onClick($event, index)"
             @mouseover="playLive(m)"
             @mouseleave="pauseLive(m)"
@@ -75,36 +75,34 @@
             </div>
 
             <button
-              v-if="m.Type !== 'image' || m.isStack()"
+              v-if="(m.Type !== 'image' && m.Type !== 'video') || selectMode || m.isStack()"
               class="input-open"
-              @touchstart.stop.prevent="input.touchStart($event, index)"
-              @touchend.stop.prevent="onOpen($event, index, !isSharedView, m.Type === 'live')"
-              @touchmove.stop.prevent
-              @click.stop.prevent="onOpen($event, index, !isSharedView, m.Type === 'live')"
+              @touchstart.stop="input.touchStart($event, index)"
+              @touchend.stop="onOpen($event, index, !isSharedView)"
+              @touchmove.stop
+              @click.stop.prevent="onOpen($event, index, !isSharedView)"
             >
-              <i v-if="m.Type === 'raw'" class="action-raw mdi mdi-raw" :title="$gettext('RAW')"></i>
-              <i v-if="m.Type === 'live'" class="action-live" :title="$gettext('Live')"><icon-live-photo /></i>
-              <i v-if="m.Type === 'video'" class="mdi mdi-play" :title="$gettext('Video')" />
-              <i v-if="m.Type === 'animated'" class="mdi mdi-file-gif-box" :title="$gettext('Animated')" />
-              <i v-if="m.Type === 'vector'" class="action-vector mdi mdi-vector-polyline" :title="$gettext('Vector')" />
-              <i v-if="m.Type === 'image'" class="mdi mdi-camera-burst" :title="$gettext('Stack')" />
-            </button>
-
-            <button
-              v-if="m.Type === 'image' && selectMode"
-              class="input-view"
-              :title="$gettext('View')"
-              @touchstart.stop.prevent="input.touchStart($event, index)"
-              @touchend.stop.prevent="onOpen($event, index)"
-              @touchmove.stop.prevent
-              @click.stop.prevent="onOpen($event, index)"
-            >
-              <i class="mdi mdi-magnify-plus-outline" />
+              <i v-if="m.Type === 'raw'" class="action-raw mdi mdi-raw" :title="$gettext('RAW')" />
+              <i v-else-if="m.Type === 'live'" class="action-live" :title="$gettext('Live')"><icon-live-photo /></i>
+              <i v-else-if="m.Type === 'animated'" class="mdi mdi-file-gif-box" :title="$gettext('Animated')" />
+              <i
+                v-else-if="m.Type === 'vector'"
+                class="action-vector mdi mdi-vector-polyline"
+                :title="$gettext('Vector')"
+              ></i>
+              <i
+                v-else-if="m.Type === 'image' && !selectMode"
+                class="mdi mdi-camera-burst"
+                :title="$gettext('Stack')"
+              />
+              <i v-else class="mdi mdi-magnify-plus-outline" :title="$gettext('View')" />
             </button>
 
             <div class="preview-details">
               <div v-if="!isSharedView && hidePrivate && m.Private" class="info-icon"><i class="mdi mdi-lock" /></div>
-              <div v-else-if="m.Type === 'video'" class="info-text">{{ m.getDurationInfo() }}</div>
+              <div v-if="m.Type === 'video'" :title="$gettext('Video')" class="info-text">
+                {{ m.getDurationInfo() }}
+              </div>
             </div>
 
             <!--
@@ -119,9 +117,9 @@
             -->
             <button
               class="input-select"
-              @mousedown.stop.prevent="input.mouseDown($event, index)"
-              @touchstart.stop.prevent="input.touchStart($event, index)"
-              @touchend.stop.prevent="onSelect($event, index)"
+              @mousedown.stop="input.mouseDown($event, index)"
+              @touchstart.stop="input.touchStart($event, index)"
+              @touchend.stop="onSelect($event, index)"
               @touchmove.stop.prevent
               @click.stop.prevent="onSelect($event, index)"
             >
@@ -132,9 +130,9 @@
             <button
               v-if="!isSharedView"
               class="input-favorite"
-              @touchstart.stop.prevent="input.touchStart($event, index)"
-              @touchend.stop.prevent="toggleLike($event, index)"
-              @touchmove.stop.prevent
+              @touchstart.stop="input.touchStart($event, index)"
+              @touchend.stop="toggleLike($event, index)"
+              @touchmove.stop
               @click.stop.prevent="toggleLike($event, index)"
             >
               <i v-if="m.Favorite" class="mdi mdi-star text-favorite favorite-on" />
@@ -268,9 +266,10 @@ export default {
           // see https://developer.chrome.com/blog/play-request-was-interrupted.
           const playPromise = player.play();
           if (playPromise !== undefined) {
-            playPromise.catch((e) => {
-              if (this.trace) {
-                console.log(e.message);
+            playPromise.catch((err) => {
+              if (this.trace && err && err.message) {
+                // Ignore this error, or uncomment the following line to log it.
+                // console.debug(err.message);
               }
             });
           }
@@ -327,14 +326,14 @@ export default {
       this.$clipboard.toggle(photo);
       this.$forceUpdate();
     },
-    onOpen(ev, index, showMerged, preferVideo) {
+    onOpen(ev, index, showMerged) {
       const inputType = this.input.eval(ev, index);
 
       if (inputType !== ClickShort) {
         return;
       }
 
-      this.openPhoto(index, showMerged, preferVideo);
+      this.openPhoto(index, showMerged);
     },
     onClick(ev, index) {
       const inputType = this.input.eval(ev, index);

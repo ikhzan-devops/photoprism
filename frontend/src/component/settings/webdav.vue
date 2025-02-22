@@ -1,5 +1,13 @@
 <template>
-  <v-dialog v-model="visible" max-width="580" class="p-dialog p-settings-webdav">
+  <v-dialog
+    :model-value="visible"
+    persistent
+    max-width="580"
+    class="p-dialog p-settings-webdav"
+    @keydown.esc="close"
+    @after-enter="afterEnter"
+    @after-leave="afterLeave"
+  >
     <v-card>
       <v-card-title class="d-flex justify-start align-center ga-3">
         <v-icon size="28" color="primary">mdi-swap-horizontal</v-icon>
@@ -12,16 +20,15 @@
 
       <v-card-text class="text-body-2">
         <v-text-field
-          append-inner-icon="mdi-content-copy"
+          :model-value="webdavUrl()"
+          readonly
+          single-line
+          hide-details
           autocorrect="off"
           autocapitalize="none"
           autocomplete="off"
-          hide-details
-          readonly
-          single-line
-          :model-value="webdavUrl()"
-          class="input-url"
-          @click:append-inner="$util.copyText(webdavUrl())"
+          append-inner-icon="mdi-content-copy"
+          class="input-url cursor-copy"
           @click.stop="$util.copyText(webdavUrl())"
         ></v-text-field>
       </v-card-text>
@@ -32,16 +39,15 @@
 
       <v-card-text class="text-body-2">
         <v-text-field
-          append-inner-icon="mdi-content-copy"
+          :model-value="windowsUrl()"
+          readonly
+          single-line
+          hide-details
           autocorrect="off"
           autocapitalize="none"
           autocomplete="off"
-          hide-details
-          readonly
-          single-line
-          :model-value="windowsUrl()"
-          class="input-url"
-          @click:append-inner="$util.copyText(windowsUrl())"
+          append-inner-icon="mdi-content-copy"
+          class="input-url cursor-copy"
           @click.stop="$util.copyText(windowsUrl())"
         ></v-text-field>
       </v-card-text>
@@ -80,25 +86,23 @@
 export default {
   name: "PSettingsWebdav",
   props: {
-    show: Boolean,
+    visible: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
-      visible: false,
       user: this.$session.getUser(),
     };
   },
-  watch: {
-    show(val) {
-      this.visible = val;
-    },
-    visible(val) {
-      if (!val) {
-        this.close();
-      }
-    },
-  },
   methods: {
+    afterEnter() {
+      this.$view.enter(this);
+    },
+    afterLeave() {
+      this.$view.leave(this);
+    },
     webdavUrl() {
       let baseUrl = `${window.location.protocol}//${encodeURIComponent(this.user.Name)}@${window.location.host}/originals/`;
 
@@ -109,11 +113,26 @@ export default {
       return baseUrl;
     },
     windowsUrl() {
+      // Generates a resource string for Windows users to connect via WebDAV,
+      // see https://docs.photoprism.app/user-guide/sync/webdav/#microsoft-windows.
       let baseUrl = "";
 
-      if (window.location.protocol === "https") {
-        baseUrl = `\\\\${window.location.host}@SSL\\originals\\`;
+      if (this.$util.isHttps()) {
+        if (window.location.port && window.location.port !== "443") {
+          /*
+              \\example.com@SSL@8443\originals\
+          */
+          baseUrl = `\\\\${window.location.hostname}@SSL@${window.location.port}\\originals\\`;
+        } else {
+          /*
+              \\example.com@SSL\originals\
+          */
+          baseUrl = `\\\\${window.location.hostname}@SSL\\originals\\`;
+        }
       } else {
+        /*
+            \\localhost:2342\originals\
+        */
         baseUrl = `\\\\${window.location.host}\\originals\\`;
       }
 

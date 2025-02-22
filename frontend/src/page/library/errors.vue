@@ -1,57 +1,59 @@
 <template>
-  <div class="p-page p-page-errors">
-    <v-toolbar
-      flat
-      :density="$vuetify.display.smAndDown ? 'compact' : 'default'"
-      class="page-toolbar"
-      color="secondary"
-    >
-      <v-text-field
-        :model-value="filter.q"
-        hide-details
-        clearable
-        overflow
-        single-line
-        rounded
-        variant="solo-filled"
-        :density="density"
-        validate-on="invalid-input"
-        autocomplete="off"
-        autocorrect="off"
-        autocapitalize="none"
-        :placeholder="$gettext('Search')"
-        prepend-inner-icon="mdi-magnify"
-        color="surface-variant"
-        class="input-search background-inherit elevation-0"
-        @update:modelValue="
-          (v) => {
-            updateFilter({ q: v });
-          }
-        "
-        @keyup.enter="() => updateQuery()"
-        @click:clear="
-          () => {
-            updateQuery({ q: '' });
-          }
-        "
-      ></v-text-field>
-
-      <v-btn icon class="action-reload" :title="$gettext('Reload')" @click.stop="onReload()">
-        <v-icon>mdi-refresh</v-icon>
-      </v-btn>
-      <v-btn v-if="!isPublic" icon class="action-delete" :title="$gettext('Delete')" @click.stop="onDelete()">
-        <v-icon>mdi-delete</v-icon>
-      </v-btn>
-      <v-btn
-        icon
-        href="https://docs.photoprism.app/getting-started/troubleshooting/"
-        target="_blank"
-        class="action-bug-report"
-        :title="$gettext('Troubleshooting Checklists')"
+  <div ref="page" tabindex="1" class="p-page p-page-errors" @keydown.ctrl="onCtrl">
+    <v-form ref="form" class="p-errors-search" validate-on="invalid-input" @submit.prevent="updateQuery()">
+      <v-toolbar
+        flat
+        :density="$vuetify.display.smAndDown ? 'compact' : 'default'"
+        class="page-toolbar"
+        color="secondary"
       >
-        <v-icon>mdi-bug</v-icon>
-      </v-btn>
-    </v-toolbar>
+        <v-text-field
+          :model-value="filter.q"
+          hide-details
+          clearable
+          overflow
+          single-line
+          rounded
+          variant="solo-filled"
+          :density="density"
+          validate-on="invalid-input"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="none"
+          :placeholder="$gettext('Search')"
+          prepend-inner-icon="mdi-magnify"
+          color="surface-variant"
+          class="input-search background-inherit elevation-0"
+          @update:model-value="
+            (v) => {
+              updateFilter({ q: v });
+            }
+          "
+          @keyup.enter="() => updateQuery()"
+          @click:clear="
+            () => {
+              updateQuery({ q: '' });
+            }
+          "
+        ></v-text-field>
+
+        <v-btn icon class="action-reload" :title="$gettext('Reload')" @click.stop="onReload()">
+          <v-icon>mdi-refresh</v-icon>
+        </v-btn>
+        <v-btn v-if="!isPublic" icon class="action-delete" :title="$gettext('Delete')" @click.stop="onDelete()">
+          <v-icon>mdi-delete</v-icon>
+        </v-btn>
+        <v-btn
+          icon
+          href="https://docs.photoprism.app/getting-started/troubleshooting/"
+          target="_blank"
+          class="action-bug-report"
+          :title="$gettext('Troubleshooting Checklists')"
+        >
+          <v-icon>mdi-bug</v-icon>
+        </v-btn>
+      </v-toolbar>
+    </v-form>
     <div v-if="loading" fluid class="pa-6">
       <v-progress-linear :indeterminate="true"></v-progress-linear>
     </div>
@@ -63,20 +65,24 @@
         :loading="loading"
       ></p-scroll>
 
-      <v-list lines="one" bg-color="table" density="compact">
+      <v-list lines="one" bg-color="table" density="compact" class="py-0">
         <v-list-item
           v-for="err in errors"
           :key="err.ID"
           :prepend-icon="err.Level === 'error' ? 'mdi-alert-circle-outline' : 'mdi-alert'"
-          density="compact"
+          density="default"
           :title="err.Message"
           :subtitle="formatTime(err.Time)"
+          class="py-2"
           @click="showDetails(err)"
         >
           <template #prepend>
             <v-icon v-if="err.Level === 'error'" icon="mdi-alert-circle-outline" color="error"></v-icon>
             <v-icon v-else-if="err.Level === 'warning'" icon="mdi-alert" color="warning"></v-icon>
             <v-icon v-else icon="mdi-information-outline" color="info"></v-icon>
+          </template>
+          <template #title="{ title }">
+            <div class="text-body-2 text-truncate">{{ title }}</div>
           </template>
         </v-list-item>
       </v-list>
@@ -96,12 +102,12 @@
       </v-alert>
     </div>
     <p-confirm-action
-      :show="dialog.delete"
+      :visible="dialog.delete"
       icon="mdi-delete-outline"
       @close="dialog.delete = false"
       @confirm="onConfirmDelete"
     ></p-confirm-action>
-    <v-dialog v-model="details.show" max-width="550" class="p-dialog">
+    <v-dialog :model-value="details.visible" max-width="550" class="p-dialog">
       <v-card>
         <v-card-title class="d-flex justify-start align-center ga-3">
           <v-icon v-if="details.err.Level === 'error'" icon="mdi-alert-circle-outline" color="error"></v-icon>
@@ -111,14 +117,14 @@
         </v-card-title>
 
         <v-card-text>
-          <p :class="'p-log-' + details.err.Level" class="p-log-message text-body-2 text-selectable" dir="ltr">
+          <div :class="'p-log-' + details.err.Level" class="p-log-message text-body-2 text-selectable" dir="ltr">
             <span class="font-weight-medium">{{ formatTime(details.err.Time) }}</span
             >&puncsp;<span class="text-break">{{ details.err.Message }}</span>
-          </p>
+          </div>
         </v-card-text>
 
         <v-card-actions>
-          <v-btn color="button" variant="flat" class="action-close" @click="details.show = false">
+          <v-btn color="button" variant="flat" class="action-close" @click="details.visible = false">
             {{ $gettext(`Close`) }}
           </v-btn>
         </v-card-actions>
@@ -156,7 +162,7 @@ export default {
         delete: false,
       },
       details: {
-        show: false,
+        visible: false,
         err: { Level: "", Message: "", Time: "" },
       },
     };
@@ -168,20 +174,48 @@ export default {
   },
   watch: {
     $route() {
+      if (!this.$view.isActive(this)) {
+        return;
+      }
+
+      this.$view.focus(this.$refs?.page);
+
       const query = this.$route.query;
       this.filter.q = query["q"] ? query["q"] : "";
       this.onReload();
     },
   },
   created() {
-    if (this.$config.deny("logs", "view")) {
-      this.$router.push({ name: "albums" });
+    if (this.$config.deny("logs", "access_all")) {
+      this.$router.push({ name: this.$session.getDefaultRoute() });
       return;
     }
 
     this.loadMore();
   },
+  mounted() {
+    this.$view.enter(this);
+  },
+  unmounted() {
+    this.$view.leave(this);
+  },
   methods: {
+    onCtrl(ev) {
+      if (!ev || !(ev instanceof KeyboardEvent) || !ev.ctrlKey || !this.$view.isActive(this)) {
+        return;
+      }
+
+      switch (ev.code) {
+        case "KeyR":
+          ev.preventDefault();
+          this.onReload();
+          break;
+        case "KeyF":
+          ev.preventDefault();
+          this.$view.focus(this.$refs?.form, ".input-search input", true);
+          break;
+      }
+    },
     updateFilter(props) {
       if (!props || typeof props !== "object" || props.target) {
         return;
@@ -223,7 +257,7 @@ export default {
     },
     showDetails(err) {
       this.details.err = err;
-      this.details.show = true;
+      this.details.visible = true;
     },
     onDelete() {
       if (this.loading) {
@@ -243,7 +277,8 @@ export default {
       this.scrollDisabled = true;
 
       // Delete error logs.
-      $api.delete("errors")
+      $api
+        .delete("errors")
         .then((resp) => {
           if (resp && resp.data.code && resp.data.code === 200) {
             this.errors = [];
@@ -284,7 +319,8 @@ export default {
       const params = { count, offset, q };
 
       // Fetch error logs.
-      $api.get("errors", { params })
+      $api
+        .get("errors", { params })
         .then((resp) => {
           if (!resp.data) {
             resp.data = [];

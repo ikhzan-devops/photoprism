@@ -62,7 +62,7 @@ test.meta("testID", "photos-archive-private-001").meta({ type: "short", mode: "p
     }
 
     await photo.checkPhotoVisibility(FirstPhotoUid, false);
-   // await photo.checkPhotoVisibility(SecondPhotoUid, false);
+    // await photo.checkPhotoVisibility(SecondPhotoUid, false);
     await photo.checkPhotoVisibility(ThirdPhotoUid, false);
     await photo.checkPhotoVisibility(FirstVideoUid, false);
     //await photo.checkPhotoVisibility(SecondVideoUid, false);
@@ -540,11 +540,7 @@ test.meta("testID", "photos-archive-private-005").meta({ type: "short", mode: "p
   async (t) => {
     await menu.openPage("archive");
     await toolbar.triggerToolbarAction("delete-all");
-    await t
-      .expect(
-        Selector("p").withText("Are you sure you want to delete all archived pictures?").visible
-      )
-      .ok();
+    await t.expect(Selector("p").withText("Are you sure you want to delete all archived pictures?").visible).ok();
     await t.click(Selector("button.action-cancel"));
   }
 );

@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    :model-value="show"
+    :model-value="visible"
     persistent
     max-width="350"
     class="p-dialog p-photo-archive-dialog"
@@ -26,7 +26,10 @@
 export default {
   name: "PPhotoArchiveDialog",
   props: {
-    show: Boolean,
+    visible: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {};

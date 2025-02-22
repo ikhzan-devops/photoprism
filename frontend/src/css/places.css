@@ -80,12 +80,33 @@
     background-size: cover;
 }
 
+.maplibregl-ctrl {
+    opacity: 0.92;
+}
+
+.maplibregl-ctrl.maplibregl-ctrl-attrib {
+    min-height: 19px;
+    background-color: #ffffffa0;
+}
+
+.maplibregl-ctrl.maplibregl-ctrl-attrib > .maplibregl-ctrl-attrib-inner {
+    height: auto;
+    min-height: 19px;
+    display: flex;
+    align-items: center;
+}
+
 .maplibregl-ctrl-attrib-inner a {
     color: #333 !important;
+    font-size: 12px;
 }
 
 .maplibregl-style-list {
     display: none;
+}
+
+.maplibregl-ctrl-group {
+    border-radius: 6px;
 }
 
 .maplibregl-ctrl-group .maplibregl-style-list button {

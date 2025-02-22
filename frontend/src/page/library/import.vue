@@ -96,9 +96,7 @@
 import $api from "common/api";
 import Axios from "axios";
 import $notify from "common/notify";
-import Event from "pubsub-js";
 import Settings from "model/settings";
-import Util from "common/util";
 import { Folder, RootImport } from "model/folder";
 
 export default {
@@ -118,15 +116,15 @@ export default {
       source: null,
       root: root,
       dirs: [root],
-      rtl: this.$rtl,
+      rtl: this.$isRtl,
     };
   },
   created() {
-    this.subscriptionId = Event.subscribe("import", this.handleEvent);
+    this.subscriptionId = this.$event.subscribe("import", this.handleEvent);
     this.load();
   },
-  unmounted() {
-    Event.unsubscribe(this.subscriptionId);
+  beforeUnmount() {
+    this.$event.unsubscribe(this.subscriptionId);
   },
   methods: {
     load() {
@@ -137,7 +135,7 @@ export default {
         if (this.settings.import.path !== this.root.path) {
           this.dirs.push({
             path: this.settings.import.path,
-            name: "/" + Util.truncate(this.settings.import.path, 100, "…"),
+            name: "/" + this.$util.truncate(this.settings.import.path, 100, "…"),
           });
         }
 
@@ -169,7 +167,7 @@ export default {
               found = true;
             }
 
-            this.dirs.push({ path: folders[i].Path, name: "/" + Util.truncate(folders[i].Path, 100, "…") });
+            this.dirs.push({ path: folders[i].Path, name: "/" + this.$util.truncate(folders[i].Path, 100, "…") });
           }
 
           if (!found) {
@@ -179,7 +177,7 @@ export default {
         .finally(() => (this.loading = false));
     },
     showUpload() {
-      Event.publish("dialog.upload");
+      this.$event.publish("dialog.upload");
     },
     submit() {
       // DO NOTHING
@@ -197,7 +195,8 @@ export default {
       const ctx = this;
       $notify.blockUI();
 
-      $api.post("import", this.settings.import, { cancelToken: this.source.token })
+      $api
+        .post("import", this.settings.import, { cancelToken: this.source.token })
         .then(function () {
           $notify.unblockUI();
           ctx.busy = false;

@@ -40,7 +40,7 @@ export default class Page {
 
   async logout() {
     await menu.openNav();
-    await t.click(Selector('button i.mdi-power'));
+    await t.click(Selector("button i.mdi-power"));
   }
 
   async testCreateEditDeleteSharingLink(type) {
@@ -97,8 +97,7 @@ export default class Page {
       await toolbar.triggerToolbarAction("reload");
     }
     await album.triggerHoverAction("uid", FirstAlbum, "share");
-    await t
-        .click(sharedialog.deleteLink);
+    await t.click(sharedialog.deleteLink);
   }
 
   async validateDownloadRequest(request, filename, extension) {

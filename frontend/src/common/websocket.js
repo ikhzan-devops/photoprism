@@ -24,15 +24,15 @@ Additional information can be found in our Developer Guide:
 */
 
 import Sockette from "sockette";
-import $event from "pubsub-js";
+import $event from "common/event";
 import { $config } from "app/session";
 
 const host = window.location.host;
-const prot = "https:" === document.location.protocol ? "wss://" : "ws://";
+const protocol = "https:" === document.location.protocol ? "wss://" : "ws://";
 const apiUri = window.__CONFIG__ ? window.__CONFIG__.apiUri : "/api/v1";
-const url = prot + host + apiUri + "/ws";
+const socketUrl = protocol + host + apiUri + "/ws";
 
-const Socket = new Sockette(url, {
+const Socket = new Sockette(socketUrl, {
   timeout: 5e3,
   onopen: (e) => {
     console.log("websocket: connected");

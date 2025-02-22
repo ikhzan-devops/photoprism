@@ -1,5 +1,11 @@
 <template>
-  <div class="p-page p-page-people" :class="$config.aclClasses('people')">
+  <div
+    ref="page"
+    tabindex="1"
+    class="p-page p-page-people"
+    :class="$config.aclClasses('people')"
+    @keydown.ctrl="onCtrl"
+  >
     <v-tabs
       v-model="active"
       elevation="0"
@@ -95,18 +101,40 @@ export default {
       config: config,
       readonly: isReadOnly,
       active: active,
-      rtl: this.$rtl,
+      rtl: this.$isRtl,
     };
   },
   watch: {
     $route() {
+      if (!this.$view.isActive(this)) {
+        return;
+      }
+
+      this.$view.focus(this.$refs?.page);
+
       this.openTab();
     },
   },
   mounted() {
+    this.$view.enter(this, this.$refs?.page);
     this.openTab();
   },
+  unmounted() {
+    this.$view.leave(this);
+  },
   methods: {
+    onCtrl(ev) {
+      if (!ev || !(ev instanceof KeyboardEvent) || !ev.ctrlKey || !this.$view.isActive(this)) {
+        return;
+      }
+
+      switch (ev.code) {
+        case "KeyF":
+          ev.preventDefault();
+          this.$view.focus(this.$refs?.page, ".v-window-item--active .input-search input", true);
+          break;
+      }
+    },
     openTab() {
       const activeTab = this.tabs.findIndex((t) => t.name === this.$route.name);
 

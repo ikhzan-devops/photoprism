@@ -24,13 +24,13 @@ Additional information can be found in our Developer Guide:
 */
 
 import RestModel from "model/rest";
-import { Form } from "common/form";
-import Util from "common/util";
-import $api from "common/api";
-import { T, $gettext } from "common/gettext";
-import { $config } from "app/session";
 import memoizeOne from "memoize-one";
 import * as auth from "options/auth";
+import $util from "common/util";
+import $api from "common/api";
+import { T, $gettext } from "common/gettext";
+import { Form } from "common/form";
+import { $config } from "app/session";
 
 export class User extends RestModel {
   getDefaults() {
@@ -149,7 +149,7 @@ export class User extends RestModel {
     } else if (this.Details && this.Details.GivenName) {
       return this.Details.GivenName;
     } else if (this.Name) {
-      return T(Util.capitalize(this.Name));
+      return T($util.capitalize(this.Name));
     }
 
     return $gettext("Unknown");
@@ -163,7 +163,7 @@ export class User extends RestModel {
     } else if (this.Details && this.Details.JobTitle) {
       return this.Details.JobTitle;
     } else if (this.Role) {
-      return T(Util.capitalize(this.Role));
+      return T($util.capitalize(this.Role));
     }
 
     return $gettext("Account");
@@ -174,9 +174,9 @@ export class User extends RestModel {
   }
 
   getRegisterForm() {
-    return $api.options(this.getEntityResource() + "/register").then((response) =>
-      Promise.resolve(new Form(response.data))
-    );
+    return $api
+      .options(this.getEntityResource() + "/register")
+      .then((response) => Promise.resolve(new Form(response.data)));
   }
 
   getAvatarURL(size, config) {
@@ -208,15 +208,15 @@ export class User extends RestModel {
 
     formData.append("files", file);
 
-    return $api.post(this.getEntityResource() + `/avatar`, formData, formConf).then((response) =>
-      Promise.resolve(this.setValues(response.data))
-    );
+    return $api
+      .post(this.getEntityResource() + `/avatar`, formData, formConf)
+      .then((response) => Promise.resolve(this.setValues(response.data)));
   }
 
   getProfileForm() {
-    return $api.options(this.getEntityResource() + "/profile").then((response) =>
-      Promise.resolve(new Form(response.data))
-    );
+    return $api
+      .options(this.getEntityResource() + "/profile")
+      .then((response) => Promise.resolve(new Form(response.data)));
   }
 
   isRemote() {
@@ -249,7 +249,7 @@ export class User extends RestModel {
     if (providerName) {
       providerName = T(providerName);
     } else {
-      providerName = Util.capitalize(this.AuthProvider);
+      providerName = $util.capitalize(this.AuthProvider);
     }
 
     if (!this.AuthMethod || this.AuthMethod === "" || this.AuthMethod === "default") {
@@ -266,37 +266,47 @@ export class User extends RestModel {
   }
 
   changePassword(oldPassword, newPassword) {
-    return $api.put(this.getEntityResource() + "/password", {
-      old: oldPassword,
-      new: newPassword,
-    }).then((response) => Promise.resolve(response.data));
+    return $api
+      .put(this.getEntityResource() + "/password", {
+        old: oldPassword,
+        new: newPassword,
+      })
+      .then((response) => Promise.resolve(response.data));
   }
 
   createPasscode(password) {
-    return $api.post(this.getEntityResource() + "/passcode", {
-      type: "totp",
-      password: password,
-    }).then((response) => Promise.resolve(response.data));
+    return $api
+      .post(this.getEntityResource() + "/passcode", {
+        type: "totp",
+        password: password,
+      })
+      .then((response) => Promise.resolve(response.data));
   }
 
   confirmPasscode(code) {
-    return $api.post(this.getEntityResource() + "/passcode/confirm", {
-      type: "totp",
-      code: code,
-    }).then((response) => Promise.resolve(response.data));
+    return $api
+      .post(this.getEntityResource() + "/passcode/confirm", {
+        type: "totp",
+        code: code,
+      })
+      .then((response) => Promise.resolve(response.data));
   }
 
   activatePasscode() {
-    return $api.post(this.getEntityResource() + "/passcode/activate", {
-      type: "totp",
-    }).then((response) => Promise.resolve(response.data));
+    return $api
+      .post(this.getEntityResource() + "/passcode/activate", {
+        type: "totp",
+      })
+      .then((response) => Promise.resolve(response.data));
   }
 
   deactivatePasscode(password) {
-    return $api.post(this.getEntityResource() + "/passcode/deactivate", {
-      type: "totp",
-      password: password,
-    }).then((response) => Promise.resolve(response.data));
+    return $api
+      .post(this.getEntityResource() + "/passcode/deactivate", {
+        type: "totp",
+        password: password,
+      })
+      .then((response) => Promise.resolve(response.data));
   }
 
   disablePasscodeSetup(hasPassword) {
@@ -330,9 +340,11 @@ export class User extends RestModel {
       order: "client_name",
     };
 
-    return $api.get(this.getEntityResource() + "/sessions", {
-      params,
-    }).then((response) => Promise.resolve(response.data));
+    return $api
+      .get(this.getEntityResource() + "/sessions", {
+        params,
+      })
+      .then((response) => Promise.resolve(response.data));
   }
 
   static getCollectionResource() {

@@ -105,10 +105,17 @@ func Start(ctx context.Context, conf *config.Config) {
 		c.String(http.StatusOK, "OK")
 	})
 
-	// Web server configuration.
+	// Create a new HTTP server instance with no read or write timeout, except for reading the headers:
+	// https://pkg.go.dev/net/http#Server
+	server := &http.Server{
+		ReadHeaderTimeout: time.Minute,
+		ReadTimeout:       -1,
+		WriteTimeout:      -1,
+		Handler:           router,
+	}
+
 	var tlsErr error
 	var tlsManager *autocert.Manager
-	var server *http.Server
 
 	// Listen on a Unix domain socket instead of a TCP port?
 	if unixSocket := conf.HttpSocket(); unixSocket != nil {
@@ -149,10 +156,7 @@ func Start(ctx context.Context, conf *config.Config) {
 
 			// Listen on Unix socket, which should be automatically closed and removed after use:
 			// https://pkg.go.dev/net#UnixListener.SetUnlinkOnClose.
-			server = &http.Server{
-				Addr:    listener.Addr().String(),
-				Handler: router,
-			}
+			server.Addr = listener.Addr().String()
 
 			log.Infof("server: listening on %s [%s]", unixSocket.Path, time.Since(start))
 
@@ -166,11 +170,9 @@ func Start(ctx context.Context, conf *config.Config) {
 		tlsConfig := tlsManager.TLSConfig()
 		tlsConfig.MinVersion = tls.VersionTLS12
 
-		server = &http.Server{
-			Addr:      tlsSocket,
-			TLSConfig: tlsConfig,
-			Handler:   router,
-		}
+		// Listen on HTTPS socket.
+		server.Addr = tlsSocket
+		server.TLSConfig = tlsConfig
 
 		log.Infof("server: listening on %s [%s]", server.Addr, time.Since(start))
 
@@ -184,11 +186,9 @@ func Start(ctx context.Context, conf *config.Config) {
 			MinVersion: tls.VersionTLS12,
 		}
 
-		server = &http.Server{
-			Addr:      tlsSocket,
-			TLSConfig: tlsConfig,
-			Handler:   router,
-		}
+		// Listen on HTTPS socket.
+		server.Addr = tlsSocket
+		server.TLSConfig = tlsConfig
 
 		log.Infof("server: listening on %s [%s]", server.Addr, time.Since(start))
 
@@ -203,10 +203,8 @@ func Start(ctx context.Context, conf *config.Config) {
 			Fail("server: %s", err)
 			return
 		} else {
-			server = &http.Server{
-				Addr:    tcpSocket,
-				Handler: router,
-			}
+			// Listen on HTTP socket.
+			server.Addr = tcpSocket
 
 			log.Infof("server: listening on %s [%s]", server.Addr, time.Since(start))
 

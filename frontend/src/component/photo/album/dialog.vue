@@ -1,6 +1,14 @@
 <template>
-  <v-dialog :model-value="show" persistent max-width="390" class="p-dialog p-photo-album-dialog" @keydown.esc="close">
-    <v-form ref="form" validate-on="invalid-input" accept-charset="UTF-8" @submit.prevent="confirm">
+  <v-dialog
+    :model-value="visible"
+    persistent
+    max-width="390"
+    class="p-dialog p-photo-album-dialog"
+    @keydown.esc="close"
+    @after-enter="afterEnter"
+    @after-leave="afterLeave"
+  >
+    <v-form ref="form" validate-on="invalid-input" accept-charset="UTF-8" tabindex="1" @submit.prevent="confirm">
       <v-card>
         <v-card-title class="d-flex justify-start align-center ga-3">
           <v-icon icon="mdi-bookmark" size="28" color="primary"></v-icon>
@@ -52,7 +60,10 @@ const MaxResults = 10000;
 export default {
   name: "PPhotoAlbumDialog",
   props: {
-    show: Boolean,
+    visible: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -68,7 +79,7 @@ export default {
     };
   },
   watch: {
-    show: function (show) {
+    visible: function (show) {
       if (show) {
         this.reset();
         this.load("");
@@ -76,6 +87,12 @@ export default {
     },
   },
   methods: {
+    afterEnter() {
+      this.$view.enter(this);
+    },
+    afterLeave() {
+      this.$view.leave(this);
+    },
     close() {
       this.$emit("close");
     },

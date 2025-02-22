@@ -12,16 +12,15 @@
       </v-main>
     </v-app>
 
-    <p-viewer ref="viewer"></p-viewer>
+    <p-dialogs></p-dialogs>
   </div>
 </template>
 
 <script>
-import Event from "pubsub-js";
 import PLoadingBar from "component/loading-bar.vue";
 import PNotify from "component/notify.vue";
 import PNavigation from "component/navigation.vue";
-import PViewer from "component/viewer.vue";
+import PDialogs from "component/dialogs.vue";
 
 export default {
   name: "App",
@@ -29,7 +28,7 @@ export default {
     PLoadingBar,
     PNotify,
     PNavigation,
-    PViewer,
+    PDialogs,
   },
   data() {
     return {
@@ -48,47 +47,25 @@ export default {
     },
   },
   created() {
-    window.addEventListener("touchstart", this.onTouchStart.bind(this), { passive: true });
-    window.addEventListener("touchmove", this.onTouchMove.bind(this), { passive: true });
+    this.subscriptions["view.refresh"] = this.$event.subscribe("view.refresh", (ev, data) => this.onRefresh(data));
+    // this.subscriptions["lightbox"] = this.$event.subscribe("lightbox", (ev, data) => { console.log(ev); });
 
-    this.subscriptions["view.refresh"] = Event.subscribe("view.refresh", (ev, data) => this.onRefresh(data));
     this.$config.setVuetify(this.$vuetify);
   },
-  unmounted() {
+  mounted() {
+    this.$view.enter(this);
+  },
+  beforeUnmount() {
     for (let i = 0; i < this.subscriptions.length; i++) {
-      Event.unsubscribe(this.subscriptions[i]);
+      this.$event.unsubscribe(this.subscriptions[i]);
     }
-
-    window.removeEventListener("touchstart", this.onTouchStart.bind(this), false);
-    window.removeEventListener("touchmove", this.onTouchMove.bind(this), false);
+  },
+  unmounted() {
+    this.$view.leave(this);
   },
   methods: {
     onRefresh(config) {
       this.themeName = config.themeName;
-    },
-    onTouchStart(ev) {
-      this.touchStart = ev.touches[0].pageY;
-    },
-    onTouchMove(ev) {
-      if (!this.touchStart || this.$modal.active()) {
-        return;
-      }
-
-      // Don't fire event when a dialog or the photo/video viewer is open.
-      if (document.querySelector(".v-overlay--active, .pswp--open") !== null) {
-        return;
-      }
-
-      const y = ev.touches[0].pageY;
-      const h = window.document.documentElement.scrollHeight - window.document.documentElement.clientHeight;
-
-      if (window.scrollY >= h - 400 && y < this.touchStart) {
-        Event.publish("touchmove.bottom");
-        this.touchStart = 0;
-      } else if (window.scrollY === 0 && y > this.touchStart + 400) {
-        Event.publish("touchmove.top");
-        this.touchStart = 0;
-      }
     },
   },
 };

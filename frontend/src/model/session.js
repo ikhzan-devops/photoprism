@@ -24,10 +24,10 @@ Additional information can be found in our Developer Guide:
 */
 
 import RestModel from "model/rest";
-import { $gettext, T } from "common/gettext";
-import Util from "common/util";
 import * as auth from "options/auth";
 import memoizeOne from "memoize-one";
+import $util from "common/util";
+import { $gettext, T } from "common/gettext";
 
 export class Session extends RestModel {
   getDefaults() {
@@ -69,7 +69,7 @@ export class Session extends RestModel {
     if (providerName) {
       providerName = T(providerName);
     } else {
-      providerName = Util.capitalize(this.AuthProvider);
+      providerName = $util.capitalize(this.AuthProvider);
     }
 
     if (!this.AuthMethod || this.AuthMethod === "" || this.AuthMethod === "default") {

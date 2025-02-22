@@ -32,7 +32,7 @@
           prepend-inner-icon="mdi-magnify"
           color="surface-variant"
           class="input-search background-inherit elevation-0"
-          @update:modelValue="
+          @update:model-value="
             (v) => {
               updateFilter({ q: v });
             }
@@ -309,7 +309,7 @@
       </v-expand-transition>
     </div>
     <p-photo-delete-dialog
-      :show="dialog.delete"
+      :visible="dialog.delete"
       :text="$gettext('Are you sure you want to delete all archived pictures?')"
       :action="$gettext('Delete All')"
       @close="dialog.delete = false"
@@ -319,7 +319,6 @@
   </v-form>
 </template>
 <script>
-import Event from "pubsub-js";
 import * as options from "options/options";
 import $api from "common/api";
 import $notify from "common/notify";
@@ -487,7 +486,7 @@ export default {
       }
     },
     showUpload() {
-      Event.publish("dialog.upload");
+      this.$event.publish("dialog.upload");
     },
     deleteAll() {
       if (!this.canDelete) {

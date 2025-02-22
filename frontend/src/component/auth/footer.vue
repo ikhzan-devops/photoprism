@@ -33,7 +33,7 @@ export default {
       legalUrl: config.values.legalUrl,
       legalInfo: config.values.legalInfo,
       config: config.values,
-      rtl: this.$rtl,
+      rtl: this.$isRtl,
     };
   },
   methods: {},

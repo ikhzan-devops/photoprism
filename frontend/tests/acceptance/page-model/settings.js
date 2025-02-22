@@ -25,9 +25,7 @@ export default class Page {
     this.reviewCheckbox = Selector(".input-review div.v-selection-control__input");
     this.convertCheckbox = Selector(".input-convert div.v-selection-control__input");
     this.estimatesCheckbox = Selector(".input-estimates div.v-selection-control__input");
-    this.dateTimeStacksCheckbox = Selector(
-      ".input-stack-meta div.v-selection-control__input"
-    );
+    this.dateTimeStacksCheckbox = Selector(".input-stack-meta div.v-selection-control__input");
     this.uuidStacksCheckbox = Selector(".input-stack-uuid div.v-selection-control__input");
     this.nameStacksCheckbox = Selector(".input-stack-name div.v-selection-control__input");
 

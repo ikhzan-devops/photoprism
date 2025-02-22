@@ -5,6 +5,7 @@
       class="p-form p-form--table p-form-photo-labels"
       validate-on="invalid-input"
       accept-charset="UTF-8"
+      tabindex="1"
       @submit.prevent
     >
       <div class="form-body">
@@ -13,8 +14,8 @@
             <v-col cols="0" sm="2" class="form-thumb">
               <div>
                 <img
-                  :alt="model.Title"
-                  :src="model.thumbnailUrl('tile_500')"
+                  :alt="view?.model.Title"
+                  :src="view?.model.thumbnailUrl('tile_500')"
                   class="clickable"
                   @click.stop.prevent.exact="openPhoto()"
                 />
@@ -68,7 +69,7 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr v-for="label in model.Labels" :key="label.LabelID" class="label result">
+                      <tr v-for="label in view.model.Labels" :key="label.LabelID" class="label result">
                         <td class="text-start">
                           {{ label.Label.Name }}
                           <!--                  TODO: add this dialog later-->
@@ -141,11 +142,11 @@
                             :rules="[nameRule]"
                             color="surface-variant"
                             autocomplete="off"
+                            autofocus
                             single-line
                             flat
                             variant="plain"
                             hide-details
-                            autofocus
                             class="input-label ma-0 pa-0"
                             @keyup.enter="addLabel"
                           ></v-text-field>
@@ -186,10 +187,6 @@ import Thumb from "model/thumb";
 export default {
   name: "PTabPhotoLabels",
   props: {
-    model: {
-      type: Object,
-      default: () => {},
-    },
     uid: {
       type: String,
       default: "",
@@ -197,6 +194,7 @@ export default {
   },
   data() {
     return {
+      view: this.$view.data(),
       disabled: !this.$config.feature("edit"),
       config: this.$config.values,
       readonly: this.$config.get("readonly"),
@@ -216,7 +214,6 @@ export default {
       nameRule: (v) => v.length <= this.$config.get("clip") || this.$gettext("Name too long"),
     };
   },
-  computed: {},
   methods: {
     refresh() {},
     sourceName(s) {
@@ -238,33 +235,33 @@ export default {
       }
     },
     removeLabel(label) {
-      if (!label) {
+      if (!label || !this.view?.model) {
         return;
       }
 
       const name = label.Name;
 
-      this.model.removeLabel(label.ID).then((m) => {
+      this.view.model.removeLabel(label.ID).then((m) => {
         this.$notify.success("removed " + name);
       });
     },
     addLabel() {
-      if (!this.newLabel) {
+      if (!this.newLabel || !this.view?.model) {
         return;
       }
 
-      this.model.addLabel(this.newLabel).then((m) => {
+      this.view.model.addLabel(this.newLabel).then((m) => {
         this.$notify.success("added " + this.newLabel);
 
         this.newLabel = "";
       });
     },
     activateLabel(label) {
-      if (!label) {
+      if (!label || !this.view?.model) {
         return;
       }
 
-      this.model.activateLabel(label.ID);
+      this.view.model.activateLabel(label.ID);
     },
     // TODO: add this dialog later
     // renameLabel(label) {
@@ -272,14 +269,18 @@ export default {
     //     return;
     //   }
     //
-    //   this.model.renameLabel(label.ID, label.Name);
+    //   this.view.model.renameLabel(label.ID, label.Name);
     // },
     searchLabel(label) {
       this.$router.push({ name: "all", query: { q: "label:" + label.Slug } }).catch(() => {});
       this.$emit("close");
     },
     openPhoto() {
-      this.$root.$refs.viewer.showThumbs(Thumb.fromFiles([this.model]), 0);
+      if (!this.view?.model) {
+        return;
+      }
+
+      this.$lightbox.openModels(Thumb.fromFiles([this.view.model]), 0);
     },
   },
 };

@@ -1,10 +1,12 @@
 <template>
   <v-dialog
-    :model-value="show"
+    :model-value="visible"
     persistent
     max-width="575"
     class="p-dialog modal-dialog sponsor-dialog"
     @keydown.esc="close"
+    @after-enter="afterEnter"
+    @after-leave="afterLeave"
   >
     <v-card>
       <v-card-title class="d-flex justify-start align-center ga-3">
@@ -49,7 +51,10 @@
 export default {
   name: "PDialogSponsor",
   props: {
-    show: Boolean,
+    visible: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -58,10 +63,16 @@ export default {
       isDemo: this.$config.isDemo(),
       isSponsor: this.$config.isSponsor(),
       host: window.location.host,
-      rtl: this.$rtl,
+      rtl: this.$isRtl,
     };
   },
   methods: {
+    afterEnter() {
+      this.$view.enter(this);
+    },
+    afterLeave() {
+      this.$view.leave(this);
+    },
     close() {
       this.$emit("close");
     },

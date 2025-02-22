@@ -62,7 +62,7 @@
       </v-speed-dial>
     </div>
     <p-photo-album-dialog
-      :show="dialog.album"
+      :visible="dialog.album"
       @close="dialog.album = false"
       @confirm="addToAlbum"
     ></p-photo-album-dialog>
@@ -105,7 +105,7 @@ export default {
         album: false,
         edit: false,
       },
-      rtl: this.$rtl,
+      rtl: this.$isRtl,
     };
   },
   methods: {

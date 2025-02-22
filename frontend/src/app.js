@@ -28,9 +28,10 @@ import "regenerator-runtime/runtime";
 import "common/navigation";
 import $api from "common/api";
 import $notify from "common/notify";
-import $modal from "common/modal";
+import { $view } from "common/view";
+import { $lightbox } from "common/lightbox";
 import { PhotoClipboard } from "common/clipboard";
-import $event from "pubsub-js";
+import $event from "common/event";
 import $log from "common/log";
 import $util from "common/util";
 import * as components from "component/components";
@@ -64,9 +65,9 @@ import "css/app.css";
 passiveSupport({ events: ["touchstart", "touchmove", "wheel", "mousewheel"] });
 
 // Check if running on a mobile device.
-const $isMobile =
-  /Android|webOS|iPhone|iPad|iPod|BlackBerry|Mobile|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
-  (navigator.maxTouchPoints && navigator.maxTouchPoints > 2);
+const $isMobile = $util.isMobile();
+
+window.$isMobile = $isMobile;
 
 $config.progress(50);
 
@@ -84,23 +85,24 @@ $config.update().finally(() => {
   Luxon.defaultLocale = $config.getLanguageCode();
 
   // Detect right-to-left languages such as Arabic and Hebrew
-  const rtl = $config.isRtl();
+  const $isRtl = $config.isRtl();
 
   // HTTP Live Streaming (video support).
   window.Hls = Hls;
 
   // Assign helpers to VueJS prototype.
+  app.config.globalProperties.$isRtl = $isRtl;
+  app.config.globalProperties.$isMobile = $isMobile;
   app.config.globalProperties.$event = $event;
   app.config.globalProperties.$notify = $notify;
-  app.config.globalProperties.$modal = $modal;
+  app.config.globalProperties.$view = $view;
+  app.config.globalProperties.$lightbox = $lightbox;
   app.config.globalProperties.$session = $session;
   app.config.globalProperties.$api = $api;
   app.config.globalProperties.$log = $log;
   app.config.globalProperties.$socket = Socket;
   app.config.globalProperties.$config = $config;
   app.config.globalProperties.$clipboard = PhotoClipboard;
-  app.config.globalProperties.$isMobile = $isMobile;
-  app.config.globalProperties.$rtl = rtl;
   app.config.globalProperties.$util = $util;
   app.config.globalProperties.$sponsorFeatures = () => {
     return $config.load().finally(() => {
@@ -159,13 +161,13 @@ $config.update().finally(() => {
   components.install(app);
 
   // Make scroll-pos-restore compatible with bfcache (required to work in PWA mode on iOS).
-  window.addEventListener("pagehide", (event) => {
-    if (event.persisted) {
+  window.addEventListener("pagehide", (ev) => {
+    if (ev.persisted) {
       localStorage.setItem("lastScrollPosBeforePageHide", JSON.stringify({ x: window.scrollX, y: window.scrollY }));
     }
   });
-  window.addEventListener("pageshow", (event) => {
-    if (event.persisted) {
+  window.addEventListener("pageshow", (ev) => {
+    if (ev.persisted) {
       const lastSavedScrollPos = localStorage.getItem("lastScrollPosBeforePageHide");
       if (lastSavedScrollPos !== undefined && lastSavedScrollPos !== null && lastSavedScrollPos !== "") {
         window.positionToRestore = JSON.parse(localStorage.getItem("lastScrollPosBeforePageHide"));
@@ -213,9 +215,10 @@ $config.update().finally(() => {
     },
   });
 
+  // Configure route interceptors.
   router.beforeEach((to) => {
-    if ($modal.active()) {
-      // Disable navigation when a fullscreen dialog or viewer is open.
+    if ($view.preventNavigation) {
+      // Disable navigation when a fullscreen dialog or lightbox is open.
       return false;
     } else if (to.matched.some((record) => record.meta.settings) && $config.values.disable.settings) {
       return { name: "home" };
@@ -223,19 +226,15 @@ $config.update().finally(() => {
       if ($isPublic || $session.isAdmin()) {
         return true;
       } else {
-        return {
-          name: "login",
-          params: { nextUrl: to.fullPath },
-        };
+        $session.setLoginRedirectUrl(to.href);
+        return { name: "login" };
       }
     } else if (to.matched.some((record) => record.meta.requiresAuth)) {
       if ($isPublic || $session.isUser()) {
         return true;
       } else {
-        return {
-          name: "login",
-          params: { nextUrl: to.fullPath },
-        };
+        $session.setLoginRedirectUrl(to.href);
+        return { name: "login" };
       }
     } else {
       return true;
@@ -266,8 +265,9 @@ $config.update().finally(() => {
     }
   });
 
-  // Attach router.
+  // Use router.
   app.use(router);
+  window.$router = router;
 
   if ($isMobile) {
     // Add "mobile" class to body if running on a mobile device.

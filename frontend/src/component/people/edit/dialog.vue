@@ -1,17 +1,20 @@
 <template>
   <v-dialog
-    :model-value="show"
+    :model-value="visible"
     persistent
     max-width="500"
     class="dialog-person-edit"
     color="background"
     @keydown.esc="close"
+    @after-enter="afterEnter"
+    @after-leave="afterLeave"
   >
     <v-form
       ref="form"
       validate-on="invalid-input"
       class="form-person-edit"
       accept-charset="UTF-8"
+      tabindex="1"
       @submit.prevent="confirm"
     >
       <v-card>
@@ -73,7 +76,10 @@ import Subject from "model/subject";
 export default {
   name: "PPeopleEditDialog",
   props: {
-    show: Boolean,
+    visible: {
+      type: Boolean,
+      default: false,
+    },
     person: {
       type: Object,
       default: () => {},
@@ -87,13 +93,19 @@ export default {
     };
   },
   watch: {
-    show: function (show) {
+    visible: function (show) {
       if (show) {
         this.model = this.person.clone();
       }
     },
   },
   methods: {
+    afterEnter() {
+      this.$view.enter(this);
+    },
+    afterLeave() {
+      this.$view.leave(this);
+    },
     close() {
       this.$emit("close");
     },

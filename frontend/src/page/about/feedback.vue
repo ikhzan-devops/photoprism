@@ -1,5 +1,5 @@
 <template>
-  <div class="p-page p-page-support">
+  <div class="p-page p-page-support" tabindex="1">
     <v-toolbar
       flat
       :density="$vuetify.display.smAndDown ? 'compact' : 'default'"
@@ -129,8 +129,14 @@ export default {
         UserAgent: navigator.userAgent,
         UserLocales: navigator.language,
       },
-      rtl: this.$rtl,
+      rtl: this.$isRtl,
     };
+  },
+  mounted() {
+    this.$view.enter(this);
+  },
+  unmounted() {
+    this.$view.leave(this);
   },
   methods: {
     send() {

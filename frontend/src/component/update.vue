@@ -1,5 +1,13 @@
 <template>
-  <v-dialog :model-value="show" max-width="400" class="p-dialog p-update">
+  <v-dialog
+    :model-value="visible"
+    persistent
+    max-width="400"
+    class="p-dialog p-update"
+    @keydown.esc="close"
+    @after-enter="afterEnter"
+    @after-leave="afterLeave"
+  >
     <v-card>
       <v-card-title class="d-flex justify-start align-center flex-nowrap ga-3">
         <v-icon icon="mdi-alert-decagram-outline" size="28" color="primary"></v-icon>
@@ -27,27 +35,18 @@
 export default {
   name: "PUpdate",
   props: {
-    show: {
+    visible: {
       type: Boolean,
       default: false,
     },
   },
-  data() {
-    return {
-      visible: this.show,
-    };
-  },
-  watch: {
-    show(val) {
-      this.visible = val;
-    },
-    visible(val) {
-      if (!val) {
-        this.close();
-      }
-    },
-  },
   methods: {
+    afterEnter() {
+      this.$view.enter(this);
+    },
+    afterLeave() {
+      this.$view.leave(this);
+    },
     getMessage() {
       return this.$gettext("A new version of %{s} is available:", { s: this.$config.getAbout() });
     },
@@ -60,7 +59,10 @@ export default {
     reload() {
       this.$notify.info(this.$gettext("Reloading…"));
       this.$notify.blockUI();
-      setTimeout(() => window.location.reload(), 100);
+      setTimeout(() => {
+        window.location.reload();
+      }, 100);
+      this.close();
     },
   },
 };

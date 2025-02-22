@@ -11,7 +11,7 @@ if [[ $(id -u) != "0" ]]; then
   exit 1
 fi
 
-# Determine the system architecture.
+# Determine target architecture.
 if [[ $PHOTOPRISM_ARCH ]]; then
   SYSTEM_ARCH=$PHOTOPRISM_ARCH
 else

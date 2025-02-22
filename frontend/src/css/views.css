@@ -1,4 +1,4 @@
-/* PhotoPrism Search Result Styles */
+/* Search Result Views */
 
 /* Disable native long-touch menu on iOS Safari */
 .search-results .result {
@@ -55,6 +55,13 @@ body.chrome .search-results .result {
 
 .album-results .action-share {
     top: 0;
+}
+
+.is-ltr .album-results .action-share {
+    right: 0;
+}
+
+.is-rtl .album-results .action-share {
     left: 0;
 }
 
@@ -324,9 +331,16 @@ body.chrome .search-results .result {
     align-items: center;
     padding: 0;
     top: 0;
-    right: 0;
     color: #f6f6f6;
     opacity: 0.91;
+}
+
+.is-ltr.search-results .preview .preview-details {
+    left: 0;
+}
+
+.is-rtl.search-results .preview .preview-details {
+    right: 0;
 }
 
 .search-results .preview .preview-details > div {
@@ -353,6 +367,7 @@ body.chrome .search-results .result {
     margin: 5px;
     font-size: 15px;
 }
+
 
 .list-view td.meta-data {
     min-width: 90px;
@@ -602,6 +617,15 @@ body.chrome .search-results .result {
     visibility: hidden;
     opacity: 0.75;
     top: 0;
+}
+
+.is-ltr .cards-view .input-private,
+.is-ltr .mosaic-view .input-private {
+    left: 0;
+}
+
+.is-rtl .cards-view .input-private,
+.is-rtl .mosaic-view .input-private {
     right: 0;
 }
 
@@ -617,6 +641,21 @@ body.chrome .search-results .result {
     display: none;
     opacity: 0.75;
     top: 0;
+}
+
+.is-ltr .cards-view .input-open,
+.is-ltr .cards-view .input-view,
+.is-ltr .mosaic-view .input-open,
+.is-ltr .mosaic-view .input-view,
+.is-ltr .mosaic-view .input-play {
+    right: 0;
+}
+
+.is-rtl .cards-view .input-open,
+.is-rtl .cards-view .input-view,
+.is-rtl .mosaic-view .input-open,
+.is-rtl .mosaic-view .input-view,
+.is-rtl .mosaic-view .input-play {
     left: 0;
 }
 

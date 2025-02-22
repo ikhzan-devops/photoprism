@@ -1,12 +1,21 @@
 <template>
   <v-dialog
-    :model-value="show"
+    :model-value="visible"
     persistent
     max-width="610"
     class="p-dialog modal-dialog p-settings-apps"
     @keydown.esc="close"
+    @after-enter="afterEnter"
+    @after-leave="afterLeave"
   >
-    <v-form ref="form" validate-on="invalid-input" class="form-password" accept-charset="UTF-8" @submit.prevent>
+    <v-form
+      ref="form"
+      validate-on="invalid-input"
+      class="form-password"
+      accept-charset="UTF-8"
+      tabindex="1"
+      @submit.prevent
+    >
       <v-card>
         <v-card-title class="d-flex justify-start align-center ga-3">
           <v-icon v-if="action === 'add'" size="28" color="primary">mdi-plus</v-icon>
@@ -34,7 +43,7 @@
                   autocapitalize="none"
                   autocomplete="current-password"
                   class="input-password text-monospace text-selectable"
-                  :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                  :append-inner-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
                   prepend-inner-icon="mdi-lock"
                   @click:append-inner="showPassword = !showPassword"
                   @keyup.enter="onConfirm"
@@ -77,9 +86,9 @@
                   autocorrect="off"
                   autocapitalize="none"
                   autocomplete="off"
-                  class="input-app-password text-selectable"
                   append-inner-icon="mdi-content-copy"
-                  @click:append-inner="onCopyAppPassword"
+                  class="input-app-password text-selectable cursor-copy"
+                  @click.stop="onCopyAppPassword"
                 >
                 </v-text-field>
               </v-col>
@@ -234,7 +243,7 @@
       </v-card>
     </v-form>
     <p-confirm-action
-      :show="revoke.dialog"
+      :visible="revoke.dialog"
       icon="mdi-delete-outline"
       @close="revoke.dialog = false"
       @confirm="onRevoked"
@@ -255,7 +264,10 @@ export default {
     PConfirmAction,
   },
   props: {
-    show: Boolean,
+    visible: {
+      type: Boolean,
+      default: false,
+    },
     model: {
       type: Object,
       default: () => new User(null),
@@ -272,7 +284,7 @@ export default {
       showPassword: false,
       minLength: this.$config.get("passwordLength"),
       maxLength: 72,
-      rtl: this.$rtl,
+      rtl: this.$isRtl,
       action: "",
       confirmAction: "",
       user: this.$session.getUser(),
@@ -324,7 +336,7 @@ export default {
     };
   },
   watch: {
-    show: function (show) {
+    visible: function (show) {
       if (show) {
         this.reset();
         this.find();
@@ -337,10 +349,15 @@ export default {
     }
   },
   methods: {
+    afterEnter() {
+      this.$view.enter(this);
+    },
+    afterLeave() {
+      this.$view.leave(this);
+    },
     onCopyAppPassword() {
-      if (this.$util.copyText(this.appPassword)) {
-        this.appPasswordCopied = true;
-      }
+      this.$util.copyText(this.appPassword);
+      this.appPasswordCopied = true;
     },
     formatDate(d) {
       if (!d) {

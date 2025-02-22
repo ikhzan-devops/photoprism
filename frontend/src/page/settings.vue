@@ -1,5 +1,5 @@
 <template>
-  <div class="p-page p-page-settings" :class="$config.aclClasses('settings')">
+  <div ref="page" tabindex="1" class="p-page p-page-settings" :class="$config.aclClasses('settings')">
     <v-tabs v-model="active" :height="$vuetify.display.smAndDown ? 48 : 64">
       <v-tab v-for="t in tabs" :id="'tab-' + t.name" :key="t.name" :class="t.class" ripple @click="changePath(t.path)">
         <v-icon v-if="$vuetify.display.smAndDown" :title="t.label">{{ t.icon }}</v-icon>
@@ -140,11 +140,17 @@ export default {
       public: isPublic,
       readonly: this.$config.get("readonly"),
       active: active,
-      rtl: this.$rtl,
+      rtl: this.$isRtl,
     };
   },
   watch: {
     $route() {
+      if (!this.$view.isActive(this)) {
+        return;
+      }
+
+      this.$view.focus(this.$refs?.page);
+
       let active = this.active;
 
       if (typeof this.$route.name === "string" && this.$route.name !== "") {
@@ -155,6 +161,12 @@ export default {
         this.active = active;
       }
     },
+  },
+  mounted() {
+    this.$view.enter(this);
+  },
+  unmounted() {
+    this.$view.leave(this);
   },
   created() {
     if (!this.tabs || this.tabs.length === 0) {

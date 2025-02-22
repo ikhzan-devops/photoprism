@@ -1,5 +1,5 @@
 <template>
-  <div class="p-page p-page-upgrade">
+  <div class="p-page p-page-upgrade" tabindex="1">
     <v-toolbar flat color="secondary" :density="$vuetify.display.smAndDown ? 'compact' : 'default'">
       <v-toolbar-title>
         {{ $gettext(`Membership`) }}
@@ -225,7 +225,7 @@ export default {
       tier: this.$config.getTier(),
       membership: membership,
       showInfo: !token && membership === "ce",
-      rtl: this.$rtl,
+      rtl: this.$isRtl,
       tokenMask: "nnnn-nnnn-nnnn",
       form: {
         token,
@@ -238,6 +238,12 @@ export default {
         this.$router.push({ name: "home" });
       }
     });
+  },
+  mounted() {
+    this.$view.enter(this);
+  },
+  unmounted() {
+    this.$view.leave(this);
   },
   methods: {
     onRestart() {
@@ -264,7 +270,8 @@ export default {
       if (values.Token.length >= 4) {
         this.busy = true;
         this.$notify.blockUI();
-        $api.put("connect/hub", values)
+        $api
+          .put("connect/hub", values)
           .then(() => {
             this.$notify.success(this.$gettext("Connected"));
             this.success = true;
