@@ -24,6 +24,8 @@ import (
 )
 
 func sqliteMigration(original string, temp string, numberOfRecords int, skipSpeedup bool, testname string, expectedDuration time.Duration, b *testing.B) {
+
+	b.StopTimer()
 	// Prepare temporary sqlite db.
 	testDbOriginal := original
 	testDbTemp := temp
@@ -35,6 +37,7 @@ func sqliteMigration(original string, temp string, numberOfRecords int, skipSpee
 		b.Fatal(err)
 	}
 	defer os.Remove(dumpName)
+	b.StartTimer()
 
 	log = logrus.StandardLogger()
 	log.SetLevel(logrus.ErrorLevel)
@@ -124,6 +127,7 @@ func sqliteMigration(original string, temp string, numberOfRecords int, skipSpee
 }
 
 func mysqlMigration(testDbOriginal string, numberOfRecords int, testname string, expectedDuration time.Duration, b *testing.B) {
+	b.StopTimer()
 	// Prepare migrate mariadb db.
 	if dumpName, err := filepath.Abs(testDbOriginal); err != nil {
 		b.Fatal(err)
@@ -132,6 +136,7 @@ func mysqlMigration(testDbOriginal string, numberOfRecords int, testname string,
 		b.Fatal(err)
 	}
 
+	b.StartTimer()
 	start := time.Now()
 
 	log = logrus.StandardLogger()
