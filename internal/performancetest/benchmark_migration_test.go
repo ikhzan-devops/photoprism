@@ -66,14 +66,14 @@ func BenchmarkMigration_SQLite(b *testing.B) {
 	b.Run("OneHundredKUpgradeTest_Custom", func(b *testing.B) {
 		//for b.Loop() {  // This needs Go 1.24
 		for range b.N {
-			sqliteMigration("../../storage/test-100k.original.sqlite", "../../storage/test-100k.db", 100000, false, "OneHundredKUpgradeTest_Custom", time.Minute, b)
+			sqliteMigration("../../storage/test-100k.original.sqlite", "../../storage/test-100k.db", 100000, false, "OneHundredKUpgradeTest_Custom", 5*time.Minute, b)
 		}
 	})
 
 	b.Run("OneHundredKUpgradeTest_Auto", func(b *testing.B) {
 		//for b.Loop() {  // This needs Go 1.24
 		for range b.N {
-			sqliteMigration("../../storage/test-100k.original.sqlite", "../../storage/test-100k.db", 100000, true, "OneHundredKUpgradeTest_Auto", time.Minute, b)
+			sqliteMigration("../../storage/test-100k.original.sqlite", "../../storage/test-100k.db", 100000, true, "OneHundredKUpgradeTest_Auto", 5*time.Minute, b)
 		}
 	})
 
