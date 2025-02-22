@@ -12,9 +12,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 
 	"github.com/photoprism/photoprism/internal/ai/classify"
 	"github.com/photoprism/photoprism/internal/entity"
@@ -53,7 +52,7 @@ func generateDatabase(numberOfPhotos int, driver string, dsn string, dropdb bool
 		basedsn := dsn[0 : strings.Index(dsn, "/")+1]
 		basedbname := dsn[strings.Index(dsn, "/")+1 : strings.Index(dsn, "?")]
 		log.Infof("Connecting to %v", basedsn)
-		database, err := gorm.Open("mysql", basedsn)
+		database, err := gorm.Open(mysql.Open(basedsn), &gorm.Config{})
 		if err != nil {
 			log.Errorf("Unable to connect to MariaDB %v", err)
 		}
@@ -91,8 +90,6 @@ func generateDatabase(numberOfPhotos int, driver string, dsn string, dropdb bool
 	defer db.Close()
 
 	SetDbProvider(db)
-
-	Db().LogMode(false)
 
 	// Disable journal to speed up.
 	if driver == SQLite3 {
@@ -211,7 +208,7 @@ func generateDatabase(numberOfPhotos int, driver string, dsn string, dropdb bool
 						LabelCategories:  []*entity.Label{},
 						CreatedAt:        time.Now().UTC(),
 						UpdatedAt:        time.Now().UTC(),
-						DeletedAt:        nil, //gorm.DeletedAt{},
+						DeletedAt:        gorm.DeletedAt{},
 						New:              false,
 					}
 					Db().Create(&labelDb)
@@ -233,7 +230,7 @@ func generateDatabase(numberOfPhotos int, driver string, dsn string, dropdb bool
 					LabelCategories:  []*entity.Label{},
 					CreatedAt:        time.Now().UTC(),
 					UpdatedAt:        time.Now().UTC(),
-					DeletedAt:        nil, //gorm.DeletedAt{},
+					DeletedAt:        gorm.DeletedAt{},
 					New:              false,
 				}
 				Db().Create(&labelDb)
@@ -353,7 +350,7 @@ func generateDatabase(numberOfPhotos int, driver string, dsn string, dropdb bool
 			PhotoCount:   0,
 			CreatedAt:    time.Now().UTC(),
 			UpdatedAt:    time.Now().UTC(),
-			DeletedAt:    nil, //gorm.DeletedAt{},
+			DeletedAt:    gorm.DeletedAt{},
 		}
 		Db().Create(&subject)
 		subjects[subjectPos] = subject
@@ -453,7 +450,7 @@ func generateDatabase(numberOfPhotos int, driver string, dsn string, dropdb bool
 			PublishedAt: nil,
 			CheckedAt:   nil,
 			EstimatedAt: nil,
-			DeletedAt:   nil, //gorm.DeletedAt{},
+			DeletedAt:   gorm.DeletedAt{},
 		}
 		if err := Db().Create(&photo).Error; err != nil {
 			log.Debug(err)
@@ -529,7 +526,7 @@ func generateDatabase(numberOfPhotos int, driver string, dsn string, dropdb bool
 			UpdatedAt: time.Now().UTC(),
 			UpdatedIn: 935962,
 			// PublishedAt
-			DeletedAt: nil, //gorm.DeletedAt{},
+			DeletedAt: gorm.DeletedAt{},
 			Share:     []entity.FileShare{},
 			Sync:      []entity.FileSync{},
 			//markers
@@ -602,7 +599,7 @@ func generateDatabase(numberOfPhotos int, driver string, dsn string, dropdb bool
 				AlbumPrivate:     false,
 				CreatedAt:        time.Now().UTC(),
 				UpdatedAt:        time.Now().UTC(),
-				DeletedAt:        nil, //gorm.DeletedAt{},
+				DeletedAt:        gorm.DeletedAt{},
 			}
 			Db().Create(&album)
 		}

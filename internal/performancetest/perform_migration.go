@@ -10,9 +10,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	"gorm.io/driver/mysql"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
@@ -39,11 +40,21 @@ func sqliteMigration(original string, temp string, numberOfRecords int, skipSpee
 	log.SetLevel(logrus.ErrorLevel)
 
 	start := time.Now()
-	dsn := fmt.Sprintf("%v?_busy_timeout=5000", dumpName)
+	dsn := fmt.Sprintf("%v?_foreign_keys=on&_busy_timeout=5000", dumpName)
 
-	db, err := gorm.Open(
-		"sqlite3",
-		dsn,
+	db, err := gorm.Open(sqlite.Open(dsn),
+		&gorm.Config{
+			Logger: logger.New(
+				log,
+				logger.Config{
+					SlowThreshold:             time.Second,  // Slow SQL threshold
+					LogLevel:                  logger.Error, // Log level
+					IgnoreRecordNotFoundError: true,         // Ignore ErrRecordNotFound error for logger
+					ParameterizedQueries:      false,        // Don't include params in the SQL log
+					Colorful:                  false,        // Disable color
+				},
+			),
+		},
 	)
 
 	if err != nil || db == nil {
@@ -54,27 +65,23 @@ func sqliteMigration(original string, temp string, numberOfRecords int, skipSpee
 		return
 	}
 
-	defer db.Close()
-
-	db.LogMode(false)
-	db.SetLogger(log)
-
-	if err != nil || db == nil {
-		if err != nil {
-			b.Fatal(err)
-		}
-
-		return
-	}
+	sqldb, _ := db.DB()
+	defer sqldb.Close()
 
 	opt := migrate.Opt(true, true, nil)
 
 	// Make sure that migrate and version is done, as the Once doesn't work as it has already been set before we opened the new database..
-	if err = db.AutoMigrate(&migrate.Migration{}).Error; err != nil {
+	if err = db.AutoMigrate(&migrate.Migration{}); err != nil {
 		b.Fatal(err)
 	}
-	if err = db.AutoMigrate(&migrate.Version{}).Error; err != nil {
+	if err = db.AutoMigrate(&migrate.Version{}); err != nil {
 		b.Fatal(err)
+	}
+
+	if skipSpeedup {
+		// Skip the Gorm Migration Speedup.
+		version := migrate.FirstOrCreateVersion(db, migrate.NewVersion("Gorm For SQLite", "V2 Upgrade"))
+		version.Migrated(db)
 	}
 
 	// Setup and capture SQL Logging output
@@ -128,11 +135,22 @@ func mysqlMigration(testDbOriginal string, numberOfRecords int, testname string,
 	start := time.Now()
 
 	log = logrus.StandardLogger()
-	log.SetLevel(logrus.ErrorLevel)
+	log.SetLevel(logrus.TraceLevel)
 
-	db, err := gorm.Open(
-		"mysql",
-		"migrate:migrate@tcp(mariadb:4001)/migrate?charset=utf8mb4,utf8&collation=utf8mb4_unicode_ci&parseTime=true",
+	db, err := gorm.Open(mysql.Open(
+		"migrate:migrate@tcp(mariadb:4001)/migrate?charset=utf8mb4,utf8&collation=utf8mb4_unicode_ci&parseTime=true"),
+		&gorm.Config{
+			Logger: logger.New(
+				log,
+				logger.Config{
+					SlowThreshold:             time.Second,  // Slow SQL threshold
+					LogLevel:                  logger.Error, // Log level
+					IgnoreRecordNotFoundError: true,         // Ignore ErrRecordNotFound error for logger
+					ParameterizedQueries:      true,         // Don't include params in the SQL log
+					Colorful:                  false,        // Disable color
+				},
+			),
+		},
 	)
 
 	if err != nil || db == nil {
@@ -143,18 +161,16 @@ func mysqlMigration(testDbOriginal string, numberOfRecords int, testname string,
 		return
 	}
 
-	defer db.Close()
-
-	db.LogMode(false)
-	db.SetLogger(log)
+	sqldb, _ := db.DB()
+	defer sqldb.Close()
 
 	opt := migrate.Opt(true, true, nil)
 
 	// Make sure that migrate and version is done, as the Once doesn't work as it has already been set before we opened the new database..
-	if err = db.AutoMigrate(&migrate.Migration{}).Error; err != nil {
+	if err = db.AutoMigrate(&migrate.Migration{}); err != nil {
 		b.Fatal(err)
 	}
-	if err = db.AutoMigrate(&migrate.Version{}).Error; err != nil {
+	if err = db.AutoMigrate(&migrate.Version{}); err != nil {
 		b.Fatal(err)
 	}
 
@@ -170,9 +186,9 @@ func mysqlMigration(testDbOriginal string, numberOfRecords int, testname string,
 
 	// Expect 3 errors (no such table accounts, and missing account_id in files_sync and files_share)
 	// And a blank record.
-	assert.Equal(b, 1, len(strings.Split(buffer.String(), "\n")))
-	if len(strings.Split(buffer.String(), "\n")) == 1 {
-		assert.Equal(b, 0, len(strings.Split(buffer.String(), "\n")[0]))
+	assert.Equal(b, 4, len(strings.Split(buffer.String(), "\n")))
+	if len(strings.Split(buffer.String(), "\n")) == 4 {
+		assert.Equal(b, 0, len(strings.Split(buffer.String(), "\n")[3]))
 	} else {
 		log.Error("Migration result not as expected.  Results follow:")
 		for i := 0; i < len(strings.Split(buffer.String(), "\n")); i++ {

@@ -136,7 +136,7 @@ func BenchmarkMigration_MySQL(b *testing.B) {
 	b.Run("OneHundredKUpgradeTest", func(b *testing.B) {
 		//for b.Loop() {  // This needs Go 1.24
 		for range b.N {
-			mysqlMigration("../../storage/test-100k.original.mysql", 100000, "OneHundredKUpgradeTest", time.Minute, b)
+			mysqlMigration("../../storage/test-100k.original.mysql", 100000, "OneHundredKUpgradeTest", 5*time.Minute, b)
 		}
 	})
 	// teardown here

@@ -4,291 +4,51 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
-	"math"
 	"math/rand/v2"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 
 	"github.com/sirupsen/logrus"
-	"github.com/stretchr/testify/assert"
-
 	"gorm.io/driver/mysql"
-	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
 
 	"github.com/photoprism/photoprism/internal/ai/classify"
 	"github.com/photoprism/photoprism/internal/entity"
 	"github.com/photoprism/photoprism/internal/entity/migrate"
+	"github.com/photoprism/photoprism/internal/event"
+	"github.com/photoprism/photoprism/internal/testextras"
+	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/fs"
 	"github.com/photoprism/photoprism/pkg/media"
 	"github.com/photoprism/photoprism/pkg/rnd"
 	"github.com/photoprism/photoprism/pkg/txt"
 )
 
-func TestDialectSQLite3(t *testing.T) {
-	if testing.Short() {
-		t.Skip("skipping test in short mode.")
-	}
-	dbtestMutex.Lock()
-	defer dbtestMutex.Unlock()
+// All tests in this suite MUST lock and unlock this mutex or they will fail
+// on SQLite which doesn't support row locking.
+var dbtestMutex = sync.Mutex{}
 
-	t.Run("OneKUpgradeTest_Custom", func(t *testing.T) {
-		sqliteMigration("../../storage/test-1k.original", "../../storage/test-1k.db", 1000, false, "OneKUpgradeTest_Custom", time.Minute, t)
-	})
+func TestMain(m *testing.M) {
+	numberOfPhotos := 10
 
-	t.Run("OneKUpgradeTest_Auto", func(t *testing.T) {
-		sqliteMigration("../../storage/test-1k.original", "../../storage/test-1k.db", 1000, true, "OneKUpgradeTest_Auto", time.Minute, t)
-	})
+	log = logrus.StandardLogger()
+	log.SetLevel(logrus.TraceLevel)
+	event.AuditLog = log
 
-	t.Run("TenKUpgradeTest_Custom", func(t *testing.T) {
-		sqliteMigration("../../storage/test-10k.original", "../../storage/test-10k.db", 10000, false, "TenKUpgradeTest_Custom", time.Minute, t)
-	})
-
-	t.Run("TenKUpgradeTest_Auto", func(t *testing.T) {
-		sqliteMigration("../../storage/test-10k.original", "../../storage/test-10k.db", 10000, true, "TenKUpgradeTest_Auto", time.Minute, t)
-	})
-
-	t.Run("OneHundredKUpgradeTest_Custom", func(t *testing.T) {
-		sqliteMigration("../../storage/test-100k.original", "../../storage/test-100k.db", 100000, false, "OneHundredKUpgradeTest_Custom", time.Minute*5, t)
-	})
-
-	t.Run("OneHundredKUpgradeTest_Auto", func(t *testing.T) {
-		sqliteMigration("../../storage/test-100k.original", "../../storage/test-100k.db", 100000, true, "OneHundredKUpgradeTest_Auto", time.Minute*5, t)
-	})
-
-}
-
-func TestDialectMysql(t *testing.T) {
-	if testing.Short() {
-		t.Skip("skipping test in short mode.")
-	}
-	dbtestMutex.Lock()
-	defer dbtestMutex.Unlock()
-
-	t.Run("OneKUpgradeTest", func(t *testing.T) {
-		mysqlMigration("../../storage/test-1k.original.mysql", 1000, "OneKUpgradeTest", time.Minute, t)
-	})
-
-	t.Run("TenKUpgradeTest", func(t *testing.T) {
-		mysqlMigration("../../storage/test-10k.original.mysql", 10000, "TenKUpgradeTest", time.Minute, t)
-	})
-
-	t.Run("OneHundredKUpgradeTest", func(t *testing.T) {
-		mysqlMigration("../../storage/test-100k.original.mysql", 100000, "OneHundredKUpgradeTest", time.Minute*5, t)
-	})
-}
-
-func sqliteMigration(original string, temp string, numberOfRecords int, skipSpeedup bool, testname string, expectedDuration time.Duration, t *testing.T) {
-	// Prepare temporary sqlite db.
-	testDbOriginal := original
-	testDbTemp := temp
-	if !fs.FileExists(testDbOriginal) {
-		generateDatabase(numberOfRecords, "sqlite3", testDbOriginal, true, true)
-	}
-	dumpName, err := filepath.Abs(testDbTemp)
-	_ = os.Remove(dumpName)
+	caller := "internal/performancetest/setup_test.go/TestMain"
+	dbc, err := testextras.AcquireDBMutex(log, caller)
 	if err != nil {
-		t.Fatal(err)
-	} else if err = fs.Copy(testDbOriginal, dumpName); err != nil {
-		t.Fatal(err)
+		log.Error("FAIL")
+		os.Exit(1)
 	}
-	defer os.Remove(dumpName)
+	defer testextras.UnlockDBMutex(dbc.Db())
 
-	log = logrus.StandardLogger()
-	log.SetLevel(logrus.TraceLevel)
-
-	start := time.Now()
-	dsn := fmt.Sprintf("%v?_foreign_keys=on&_busy_timeout=5000", dumpName)
-
-	db, err := gorm.Open(sqlite.Open(dsn),
-		&gorm.Config{
-			Logger: logger.New(
-				log,
-				logger.Config{
-					SlowThreshold:             time.Second,  // Slow SQL threshold
-					LogLevel:                  logger.Error, // Log level
-					IgnoreRecordNotFoundError: true,         // Ignore ErrRecordNotFound error for logger
-					ParameterizedQueries:      false,        // Don't include params in the SQL log
-					Colorful:                  false,        // Disable color
-				},
-			),
-		},
-	)
-
-	if err != nil || db == nil {
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		return
-	}
-
-	sqldb, _ := db.DB()
-	defer sqldb.Close()
-
-	opt := migrate.Opt(true, true, nil)
-
-	// Make sure that migrate and version is done, as the Once doesn't work as it has already been set before we opened the new database..
-	err = db.AutoMigrate(&migrate.Migration{})
-	err = db.AutoMigrate(&migrate.Version{})
-
-	if skipSpeedup {
-		// Skip the Gorm Migration Speedup.
-		version := migrate.FirstOrCreateVersion(db, migrate.NewVersion("Gorm For SQLite", "V2 Upgrade"))
-		version.Migrated(db)
-	}
-
-	// Setup and capture SQL Logging output
-	buffer := bytes.Buffer{}
-	log.SetOutput(&buffer)
-
-	entity.Entities.Migrate(db, opt)
-	// The bad thing is that the above panics, but doesn't return an error.
-
-	// Reset logger
-	log.SetOutput(os.Stdout)
-
-	// Expect 3 errors (no such table accounts, and missing account_id in files_sync and files_share)
-	// And a blank record.
-	assert.Equal(t, 4, len(strings.Split(buffer.String(), "\n")))
-	assert.Equal(t, 0, len(strings.Split(buffer.String(), "\n")[3]))
-
-	elapsed := time.Since(start)
-
-	stmt := db.Table("photos").Where("photo_uid IS NOT NULL")
-
-	count := int64(0)
-
-	// Fetch count from database.
-	if err = stmt.Count(&count).Error; err != nil {
-		t.Error(err)
-	} else {
-		assert.Equal(t, int64(numberOfRecords), count)
-	}
-
-	log.Info(testname, " sqlite took ", elapsed)
-	assert.LessOrEqual(t, elapsed, expectedDuration)
-}
-
-func mysqlMigration(testDbOriginal string, numberOfRecords int, testname string, expectedDuration time.Duration, t *testing.T) {
-	// Prepare temporary mariadb db.
-	if !fs.FileExists(testDbOriginal) {
-		generateDatabase(numberOfRecords, "mysql", "migrate:migrate@tcp(mariadb:4001)/migrate?charset=utf8mb4,utf8&collation=utf8mb4_unicode_ci&parseTime=true", true, true)
-		resultFile := "--result-file=" + testDbOriginal
-		if err := exec.Command("mariadb-dump", "--user=migrate", "--password=migrate", "--lock-tables", "--add-drop-database", "--databases", "migrate", resultFile).Run(); err != nil {
-			t.Fatal(err)
-		}
-	}
-
-	// Prepare migrate mariadb db.
-	if dumpName, err := filepath.Abs(testDbOriginal); err != nil {
-		t.Fatal(err)
-	} else if err = exec.Command("mariadb", "-u", "migrate", "-pmigrate", "migrate",
-		"-e", "source "+dumpName).Run(); err != nil {
-		t.Fatal(err)
-	}
-
-	start := time.Now()
-
-	log = logrus.StandardLogger()
-	log.SetLevel(logrus.TraceLevel)
-
-	db, err := gorm.Open(mysql.Open(
-		"migrate:migrate@tcp(mariadb:4001)/migrate?charset=utf8mb4,utf8&collation=utf8mb4_unicode_ci&parseTime=true"),
-		&gorm.Config{
-			Logger: logger.New(
-				log,
-				logger.Config{
-					SlowThreshold:             time.Second,  // Slow SQL threshold
-					LogLevel:                  logger.Error, // Log level
-					IgnoreRecordNotFoundError: true,         // Ignore ErrRecordNotFound error for logger
-					ParameterizedQueries:      true,         // Don't include params in the SQL log
-					Colorful:                  false,        // Disable color
-				},
-			),
-		},
-	)
-
-	if err != nil || db == nil {
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		return
-	}
-
-	sqldb, _ := db.DB()
-	defer sqldb.Close()
-
-	opt := migrate.Opt(true, true, nil)
-
-	// Make sure that migrate and version is done, as the Once doesn't work as it has already been set before we opened the new database..
-	err = db.AutoMigrate(&migrate.Migration{})
-	err = db.AutoMigrate(&migrate.Version{})
-
-	// Skip the Gorm Migration Speedup.
-	version := migrate.FirstOrCreateVersion(db, migrate.NewVersion("Gorm For SQLite", "V2 Upgrade"))
-	version.Migrated(db)
-
-	// Setup and capture SQL Logging output
-	buffer := bytes.Buffer{}
-	log.SetOutput(&buffer)
-
-	entity.Entities.Migrate(db, opt)
-	// The bad thing is that the above panics, but doesn't return an error.
-
-	// Reset logger
-	log.SetOutput(os.Stdout)
-
-	// Expect 3 errors (no such table accounts, and missing account_id in files_sync and files_share)
-	// And a blank record.
-	assert.Equal(t, 4, len(strings.Split(buffer.String(), "\n")))
-	if len(strings.Split(buffer.String(), "\n")) == 4 {
-		assert.Equal(t, 0, len(strings.Split(buffer.String(), "\n")[3]))
-	} else {
-		log.Error("Migration result not as expected.  Results follow:")
-		for i := 0; i < len(strings.Split(buffer.String(), "\n")); i++ {
-			log.Error(strings.Split(buffer.String(), "\n")[i])
-		}
-	}
-
-	elapsed := time.Since(start)
-
-	stmt := db.Table("photos").Where("photo_uid IS NOT NULL")
-
-	count := int64(0)
-
-	// Fetch count from database.
-	if err = stmt.Count(&count).Error; err != nil {
-		t.Error(err)
-	} else {
-		assert.Equal(t, int64(numberOfRecords), count)
-	}
-
-	log.Info(testname, " mysql took ", elapsed)
-	assert.LessOrEqual(t, elapsed, expectedDuration)
-}
-
-var characterRunes = []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
-
-func randomSHA1() string {
-	result := make([]rune, 32)
-	for i := range result {
-		result[i] = characterRunes[rand.IntN(len(characterRunes))]
-	}
-	return string(result)
-}
-
-func generateDatabase(numberOfPhotos int, driver string, dsn string, dropdb bool, databasescript bool) {
-
-	// log = logrus.StandardLogger()
-	// log.SetLevel(logrus.TraceLevel)
-	// event.AuditLog = log
+	driver := os.Getenv("PHOTOPRISM_TEST_DRIVER")
+	dsn := os.Getenv("PHOTOPRISM_TEST_DSN")
 
 	// Set default test database driver.
 	if driver == "test" || driver == "sqlite" || driver == "" || dsn == "" {
@@ -299,11 +59,15 @@ func generateDatabase(numberOfPhotos int, driver string, dsn string, dropdb bool
 	if driver == SQLite3 {
 		if dsn == "" {
 			dsn = SQLiteMemoryDSN
+		} else if dsn != SQLiteTestDB {
+			// Continue.
+		} else if err := os.Remove(dsn); err == nil {
+			log.Debugf("sqlite: test file %s removed", clean.Log(dsn))
 		}
 	}
 
-	allowDelete := dropdb
-	if driver == MySQL && allowDelete {
+	allowDelete := os.Getenv("PHOTOPRISM_TEST_DBDROP")
+	if driver == MySQL && allowDelete == "true" {
 		basedsn := dsn[0 : strings.Index(dsn, "/")+1]
 		basedbname := dsn[strings.Index(dsn, "/")+1 : strings.Index(dsn, "?")]
 		log.Infof("Connecting to %v", basedsn)
@@ -323,7 +87,8 @@ func generateDatabase(numberOfPhotos int, driver string, dsn string, dropdb bool
 			os.Exit(1)
 		}
 	}
-	if driver == SQLite3 && dsn != SQLiteMemoryDSN && allowDelete {
+	if driver == SQLite3 && dsn != SQLiteMemoryDSN && allowDelete == "true" {
+		//file:/go/src/github.com/photoprism/photoprism/storage/testdata/unit.test.db?_foreign_keys=on&_busy_timeout=5000
 		filename := dsn
 		if strings.Index(dsn, "?") > 0 {
 			if strings.Index(dsn, ":") > 0 {
@@ -332,11 +97,41 @@ func generateDatabase(numberOfPhotos int, driver string, dsn string, dropdb bool
 				filename = dsn[0:strings.Index(dsn, "?")]
 			}
 		}
-		log.Infof("Removing file %v", filename)
 		os.Remove(filename)
+		var cmd *exec.Cmd
+
+		bashCmd := fmt.Sprintf("cat ./sqlite3.sql | sqlite3 %s", filename)
+
+		cmd = exec.Command("bash", "-c", bashCmd)
+
+		// Write to stdout or file.
+		var f *os.File
+		log.Infof("backup: sending database backup to stdout")
+		f = os.Stdout
+		var stderr bytes.Buffer
+		cmd.Stderr = &stderr
+		cmd.Stdout = f
+
+		// Log exact command for debugging in trace mode.
+		log.Debug(cmd.String())
+
+		// Run backup command.
+		if cmdErr := cmd.Run(); cmdErr != nil {
+			if errStr := strings.TrimSpace(stderr.String()); errStr != "" {
+				log.Error(errStr)
+				os.Exit(1)
+			}
+		}
 	}
 
-	log.Infof("Connecting to driver %v with dsn %v", driver, dsn)
+	/* 	// The following would apply migrate, and truncate all the tables, which we do not want, so exclude it!
+		// The individual tests will have to do this.
+	    db := entity.InitTestDb(
+			driver,
+			dsn)
+
+		defer db.Close() */
+
 	// Create gorm.DB connection provider.
 	db := &DbConn{
 		Driver: driver,
@@ -346,84 +141,25 @@ func generateDatabase(numberOfPhotos int, driver string, dsn string, dropdb bool
 
 	SetDbProvider(db)
 
-	// Disable journal to speed up.
-	if driver == SQLite3 {
-		Db().Exec("PRAGMA journal_mode=OFF")
-	}
-
 	start := time.Now()
 
-	log.Info("Create PhotoPrism tables if they don't exist")
 	// Run migration if the photos table doesn't exist.
 	// Otherwise assume that we have a valid structured database.
 	photoCounter := int64(0)
 	if err := Db().Model(entity.Photo{}).Count(&photoCounter).Error; err != nil {
-		// Handle SQLite differently as it does table recreates on initial migrate, so we need to be able to simulate that.
-		if driver == SQLite3 && databasescript {
-			filename := dsn
-			if strings.Index(dsn, "?") > 0 {
-				if strings.Index(dsn, ":") > 0 {
-					filename = dsn[strings.Index(dsn, ":")+1 : strings.Index(dsn, "?")]
-				} else {
-					filename = dsn[0:strings.Index(dsn, "?")]
-				}
-			}
-
-			var cmd *exec.Cmd
-
-			bashCmd := fmt.Sprintf("cat ./sqlite3.sql | sqlite3 %s", filename)
-
-			cmd = exec.Command("bash", "-c", bashCmd)
-
-			// Write to stdout or file.
-			var f *os.File
-			log.Infof("restore: creating database tables from script")
-			f = os.Stdout
-			var stderr bytes.Buffer
-			cmd.Stderr = &stderr
-			cmd.Stdout = f
-
-			// Log exact command for debugging in trace mode.
-			log.Debug(cmd.String())
-
-			// Run restore command.
-			if cmdErr := cmd.Run(); cmdErr != nil {
-				if errStr := strings.TrimSpace(stderr.String()); errStr != "" {
-					log.Error(errStr)
-					os.Exit(1)
-				}
-			}
-		} else if driver == MySQL && databasescript {
-			// Prepare migrate mariadb db.
-			if dumpName, err := filepath.Abs("./mariadb.sql"); err != nil {
-				log.Error(err)
-				os.Exit(1)
-			} else if err = exec.Command("mariadb", "-u", "migrate", "-pmigrate", "migrate",
-				"-e", "source "+dumpName).Run(); err != nil {
-				log.Error(err)
-				os.Exit(1)
-			}
-		} else {
-			entity.Entities.Migrate(Db(), migrate.Opt(true, false, nil))
-			if err := entity.Entities.WaitForMigration(Db()); err != nil {
-				log.Errorf("migrate: %s [%s]", err, time.Since(start))
-			}
+		entity.Entities.Migrate(Db(), migrate.Opt(true, false, nil))
+		if err := entity.Entities.WaitForMigration(Db()); err != nil {
+			log.Errorf("migrate: %s [%s]", err, time.Since(start))
 		}
-	} else {
-		log.Errorf("The photos table already exists in driver %v dsn %v.\nAborting...", driver, dsn)
-		os.Exit(1)
 	}
 
 	entity.SetDbProvider(dbConn)
-
-	log.Info("Create default fixtures")
 
 	entity.CreateDefaultFixtures()
 
 	// Load the database with data.
 
 	// Create all the labels and keywords that have specific handling in internal/ai/classify/rules.go
-	log.Info("Create labels and keywords")
 	keywords := make(map[string]uint)
 	labels := make(map[string]uint)
 	keywordRandoms := make(map[int]uint)
@@ -504,7 +240,6 @@ func generateDatabase(numberOfPhotos int, driver string, dsn string, dropdb bool
 	}
 
 	// Create every possible camera and some lenses.  Yeah the data is garbage but it's test data anyway.
-	log.Info("Create cameras and lenses")
 	lensList := [6]string{"Wide Angle", "Fisheye", "Ultra Wide Angle", "Macro", "Super Zoom", "F80"}
 	cameras := make(map[string]uint)
 	lenses := make(map[string]uint)
@@ -534,7 +269,6 @@ func generateDatabase(numberOfPhotos int, driver string, dsn string, dropdb bool
 	}
 
 	// Load up Countries and Places.
-	log.Info("Create countries and places")
 	countries := make(map[int]string)
 	countryPos := 0
 	places := make(map[int]string)
@@ -542,7 +276,7 @@ func generateDatabase(numberOfPhotos int, driver string, dsn string, dropdb bool
 
 	PlaceUID := byte('P')
 
-	file, _ := os.Open("../../pkg/txt/resources/countries.txt")
+	file, err := os.Open("../../pkg/txt/resources/countries.txt")
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
@@ -587,7 +321,6 @@ func generateDatabase(numberOfPhotos int, driver string, dsn string, dropdb bool
 	}
 
 	// Create some Subjects
-	log.Info("Create subjects")
 	subjects := make(map[int]entity.Subject)
 	subjectPos := 0
 
@@ -612,11 +345,7 @@ func generateDatabase(numberOfPhotos int, driver string, dsn string, dropdb bool
 		subjectPos++
 	}
 
-	log.Info("Start creating photos")
 	for i := 1; i <= numberOfPhotos; i++ {
-		if _, frac := math.Modf(float64(i) / 100.0); frac == 0 {
-			log.Infof("Generating photo number %v", i)
-		}
 		month := rand.IntN(11) + 1
 		day := rand.IntN(28) + 1
 		year := rand.IntN(45) + 1980
@@ -630,6 +359,21 @@ func generateDatabase(numberOfPhotos int, driver string, dsn string, dropdb bool
 		cell := entity.NewCell(lat, lng)
 		cell.PlaceID = placeId
 		Db().FirstOrCreate(cell)
+
+		// Allocate the keywords for this photo
+		keywordCount := rand.IntN(5)
+		keywords := []entity.Keyword{}
+		keywordStr := ""
+		for i := 0; i < keywordCount; i++ {
+			keyword := entity.Keyword{}
+			Db().Model(entity.Keyword{}).Where("id = ?", keywordRandoms[rand.IntN(len(keywordRandoms))]).First(&keyword)
+			keywords = append(keywords, keyword)
+			if len(keywordStr) > 0 {
+				keywordStr = fmt.Sprintf("%s,%s", keywordStr, keyword.Keyword)
+			} else {
+				keywordStr = keyword.Keyword
+			}
+		}
 
 		folder := entity.Folder{}
 		if res := Db().Model(entity.Folder{}).Where("path = ?", fmt.Sprintf("%04d", year)).First(&folder); res.RowsAffected == 0 {
@@ -694,7 +438,7 @@ func generateDatabase(numberOfPhotos int, driver string, dsn string, dropdb bool
 			// Lens
 			// Cell
 			// Place
-			Keywords: []entity.Keyword{},
+			Keywords: keywords,
 			Albums:   []entity.Album{},
 			Files:    []entity.File{},
 			Labels:   []entity.PhotoLabel{},
@@ -708,26 +452,10 @@ func generateDatabase(numberOfPhotos int, driver string, dsn string, dropdb bool
 			DeletedAt:   gorm.DeletedAt{},
 		}
 		Db().Create(&photo)
-		// Allocate the labels for this photo
 		for i := 0; i < labelCount; i++ {
 			photoLabel := entity.NewPhotoLabel(photo.ID, labelRandoms[rand.IntN(len(labelRandoms))], 0, entity.SrcMeta)
 			Db().FirstOrCreate(photoLabel)
 		}
-		// Allocate the keywords for this photo
-		keywordCount := rand.IntN(5)
-		keywordStr := ""
-		for i := 0; i < keywordCount; i++ {
-			photoKeyword := entity.PhotoKeyword{PhotoID: photo.ID, KeywordID: keywordRandoms[rand.IntN(len(keywordRandoms))]}
-			keyword := entity.Keyword{}
-			Db().Model(entity.Keyword{}).Where("id = ?", photoKeyword.KeywordID).First(&keyword)
-			Db().FirstOrCreate(&photoKeyword)
-			if len(keywordStr) > 0 {
-				keywordStr = fmt.Sprintf("%s,%s", keywordStr, keyword.Keyword)
-			} else {
-				keywordStr = keyword.Keyword
-			}
-		}
-
 		// Create File
 		file := entity.File{
 			//	ID
@@ -810,20 +538,6 @@ func generateDatabase(numberOfPhotos int, driver string, dsn string, dropdb bool
 				UpdatedAt:     time.Now().UTC(),
 			}
 			Db().Create(&marker)
-			face := entity.Face{
-				ID:              randomSHA1(),
-				FaceSrc:         entity.SrcImage,
-				FaceKind:        1,
-				FaceHidden:      false,
-				SubjUID:         subject.SubjUID,
-				Samples:         5,
-				SampleRadius:    0.35,
-				Collisions:      5,
-				CollisionRadius: 0.5,
-				CreatedAt:       time.Now().UTC(),
-				UpdatedAt:       time.Now().UTC(),
-			}
-			Db().Create(&face)
 		}
 
 		// Add to Album
@@ -880,5 +594,12 @@ func generateDatabase(numberOfPhotos int, driver string, dsn string, dropdb bool
 	entity.File{}.RegenerateIndex()
 	entity.UpdateCounts()
 
-	log.Infof("Database Creation completed in %s", time.Since(start))
+	beforeTimestamp := time.Now().UTC()
+
+	code := m.Run()
+	code = testextras.ValidateDBErrors(dbc.Db(), log, beforeTimestamp, code)
+
+	testextras.ReleaseDBMutex(dbc.Db(), log, caller, code)
+
+	os.Exit(code)
 }
