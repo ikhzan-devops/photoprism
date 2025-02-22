@@ -1,5 +1,5 @@
 <template>
-  <div class="p-page p-page-files" tabindex="1">
+  <div ref="page" tabindex="1" class="p-page p-page-files">
     <v-form ref="form" class="p-files-search" validate-on="invalid-input" @submit.prevent="updateQuery">
       <v-toolbar flat color="secondary" :density="$vuetify.display.smAndDown ? 'compact' : 'default'">
         <v-toolbar-title>
@@ -157,6 +157,12 @@ export default {
   },
   watch: {
     $route() {
+      if (!this.$view.isActive(this)) {
+        return;
+      }
+
+      this.$view.focus(this.$refs?.page);
+
       const query = this.$route.query;
 
       this.filter.q = query["q"] ? query["q"] : "";
@@ -169,8 +175,8 @@ export default {
     },
   },
   created() {
-    if (this.$config.deny("files", "access_library")) {
-      this.$router.push({ name: "albums" });
+    if (this.$config.deny("files", "access_library") || this.$config.deny("files", "access_private")) {
+      this.$router.push({ name: this.$session.getDefaultRoute() });
       return;
     }
 

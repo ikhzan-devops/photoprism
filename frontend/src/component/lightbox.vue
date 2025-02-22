@@ -211,7 +211,7 @@ export default {
     },
     // Triggered before the lightbox content is initialized.
     showDialog() {
-      this.$view.enter(this);
+      this.$view.enter(this, this.$refs?.content);
       this.busy = true;
       this.visible = true;
 

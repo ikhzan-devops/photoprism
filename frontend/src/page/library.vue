@@ -1,5 +1,5 @@
 <template>
-  <div :class="$config.aclClasses('library')" class="p-page p-page-library" tabindex="1">
+  <div ref="page" tabindex="1" :class="$config.aclClasses('library')" class="p-page p-page-library">
     <v-tabs
       v-model="active"
       elevation="0"
@@ -125,6 +125,12 @@ export default {
   },
   watch: {
     $route() {
+      if (!this.$view.isActive(this)) {
+        return;
+      }
+
+      this.$view.focus(this.$refs?.page);
+
       let active = this.active;
 
       if (typeof this.$route.name === "string" && this.$route.name !== "") {
@@ -142,7 +148,7 @@ export default {
     }
   },
   mounted() {
-    this.$view.enter(this);
+    this.$view.enter(this, this.$refs?.page);
   },
   unmounted() {
     this.$view.leave(this);

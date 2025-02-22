@@ -134,7 +134,7 @@ export default {
       }
     },
     onUpdate() {
-      if (this.update.visible || this.lightbox.visible) {
+      if (this.$view.preventNavigation || this.update.visible || this.lightbox.visible) {
         return;
       }
 

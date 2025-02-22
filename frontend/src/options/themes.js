@@ -844,14 +844,18 @@ export const Set = (name, theme) => {
     return;
   }
 
-  const force = !!theme.force;
+  if (!name) {
+    name = theme.name;
+  }
+
+  const force = theme?.force;
 
   if (force) {
     // If the force flag is set, make this theme the only available option.
     options = [
       {
         text: theme.title ? theme.title : $gettext("Custom"),
-        value: theme.name,
+        value: name,
         disabled: false,
       },
     ];
@@ -860,7 +864,7 @@ export const Set = (name, theme) => {
     // unless a theme with the same name already exists.
     options.push({
       text: theme.title ? theme.title : $gettext("Custom"),
-      value: theme.name,
+      value: name,
       disabled: false,
     });
   }

@@ -46,6 +46,7 @@ import { $config, $session } from "./session";
 
 const c = window.__CONFIG__;
 const siteTitle = c.siteTitle ? c.siteTitle : c.name;
+const loginRoute = "login";
 
 export default [
   {
@@ -78,7 +79,7 @@ export default [
     meta: { title: $gettext("Help & Support"), requiresAuth: false },
   },
   {
-    name: "login",
+    name: loginRoute,
     path: "/login",
     component: Login,
     meta: { title: siteTitle, requiresAuth: false, hideNav: true },
@@ -86,7 +87,7 @@ export default [
       if ($session.loginRequired()) {
         next();
       } else if ($config.deny("photos", "search")) {
-        next({ name: "albums" });
+        next({ name: $session.getDefaultRoute() });
       } else {
         next({ name: "browse" });
       }
@@ -133,9 +134,9 @@ export default [
     meta: { title: siteTitle, icon: true, requiresAuth: true },
     beforeEnter: (to, from, next) => {
       if ($session.loginRequired()) {
-        next({ name: "login" });
+        next({ name: loginRoute });
       } else if ($config.deny("photos", "search")) {
-        next({ name: "albums" });
+        next({ name: $session.getDefaultRoute() });
       } else {
         next();
       }
@@ -248,6 +249,15 @@ export default [
     component: Photos,
     meta: { title: $gettext("Private"), requiresAuth: true },
     props: { staticFilter: { private: "true" } },
+    beforeEnter: (to, from, next) => {
+      if ($session.loginRequired()) {
+        next({ name: loginRoute });
+      } else if ($config.deny("photos", "access_private")) {
+        next({ name: $session.getDefaultRoute() });
+      } else {
+        next();
+      }
+    },
   },
   {
     name: "archive",
@@ -255,6 +265,15 @@ export default [
     component: Photos,
     meta: { title: $gettext("Archive"), requiresAuth: true },
     props: { staticFilter: { archived: "true" } },
+    beforeEnter: (to, from, next) => {
+      if ($session.loginRequired()) {
+        next({ name: loginRoute });
+      } else if ($config.deny("library", "manage")) {
+        next({ name: $session.getDefaultRoute() });
+      } else {
+        next();
+      }
+    },
   },
   {
     name: "places",
@@ -275,9 +294,9 @@ export default [
     meta: { title: $gettext("Places"), requiresAuth: true },
     beforeEnter: (to, from, next) => {
       if ($session.loginRequired()) {
-        next({ name: "login" });
+        next({ name: loginRoute });
       } else if ($config.deny("photos", "search")) {
-        next({ name: "albums" });
+        next({ name: $session.getDefaultRoute() });
       } else {
         next();
       }
@@ -301,6 +320,15 @@ export default [
     path: "/index/files/:pathMatch(.*)*",
     component: Browse,
     meta: { title: $gettext("File Browser"), requiresAuth: true },
+    beforeEnter: (to, from, next) => {
+      if ($session.loginRequired()) {
+        next({ name: loginRoute });
+      } else if ($config.deny("files", "access_library") || $config.deny("files", "access_private")) {
+        next({ name: $session.getDefaultRoute() });
+      } else {
+        next();
+      }
+    },
   },
   {
     name: "hidden",
@@ -308,18 +336,45 @@ export default [
     component: Photos,
     meta: { title: $gettext("Hidden Files"), requiresAuth: true },
     props: { staticFilter: { hidden: "true" } },
+    beforeEnter: (to, from, next) => {
+      if ($session.loginRequired()) {
+        next({ name: loginRoute });
+      } else if ($config.deny("files", "access_library") || $config.deny("files", "access_private")) {
+        next({ name: $session.getDefaultRoute() });
+      } else {
+        next();
+      }
+    },
   },
   {
     name: "errors",
     path: "/errors",
     component: Errors,
     meta: { title: $gettext("Errors"), requiresAuth: true },
+    beforeEnter: (to, from, next) => {
+      if ($session.loginRequired()) {
+        next({ name: loginRoute });
+      } else if ($config.deny("logs", "access_all")) {
+        next({ name: $session.getDefaultRoute() });
+      } else {
+        next();
+      }
+    },
   },
   {
     name: "labels",
     path: "/labels",
     component: Labels,
     meta: { title: $gettext("Labels"), requiresAuth: true },
+    beforeEnter: (to, from, next) => {
+      if ($session.loginRequired()) {
+        next({ name: loginRoute });
+      } else if ($config.deny("labels", "search")) {
+        next({ name: $session.getDefaultRoute() });
+      } else {
+        next();
+      }
+    },
   },
   {
     name: "people",
@@ -350,6 +405,15 @@ export default [
     path: "/people/new",
     component: People,
     meta: { title: $gettext("People"), requiresAuth: true, background: "background" },
+    beforeEnter: (to, from, next) => {
+      if ($session.loginRequired()) {
+        next({ name: loginRoute });
+      } else if ($config.deny("people", "manage")) {
+        next({ name: $session.getDefaultRoute() });
+      } else {
+        next();
+      }
+    },
   },
   {
     name: "library_index",
@@ -357,6 +421,15 @@ export default [
     component: Library,
     meta: { title: $gettext("Library"), requiresAuth: true, background: "background" },
     props: { tab: "library_index" },
+    beforeEnter: (to, from, next) => {
+      if ($session.loginRequired()) {
+        next({ name: loginRoute });
+      } else if ($config.deny("files", "manage")) {
+        next({ name: $session.getDefaultRoute() });
+      } else {
+        next();
+      }
+    },
   },
   {
     name: "library_import",
@@ -364,6 +437,15 @@ export default [
     component: Library,
     meta: { title: $gettext("Library"), requiresAuth: true, background: "background" },
     props: { tab: "library_import" },
+    beforeEnter: (to, from, next) => {
+      if ($session.loginRequired()) {
+        next({ name: loginRoute });
+      } else if ($config.deny("files", "manage")) {
+        next({ name: $session.getDefaultRoute() });
+      } else {
+        next();
+      }
+    },
   },
   {
     name: "library_logs",
@@ -371,6 +453,15 @@ export default [
     component: Library,
     meta: { title: $gettext("Library"), requiresAuth: true, background: "background" },
     props: { tab: "library_logs" },
+    beforeEnter: (to, from, next) => {
+      if ($session.loginRequired()) {
+        next({ name: loginRoute });
+      } else if ($config.deny("logs", "access_all")) {
+        next({ name: $session.getDefaultRoute() });
+      } else {
+        next();
+      }
+    },
   },
   {
     name: "settings",
@@ -417,6 +508,7 @@ export default [
     meta: {
       title: $gettext("Settings"),
       requiresAuth: true,
+      admin: true,
       settings: true,
       background: "background",
     },

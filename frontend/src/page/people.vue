@@ -1,5 +1,11 @@
 <template>
-  <div class="p-page p-page-people" :class="$config.aclClasses('people')" tabindex="1" @keydown.ctrl="onCtrl">
+  <div
+    ref="page"
+    tabindex="1"
+    class="p-page p-page-people"
+    :class="$config.aclClasses('people')"
+    @keydown.ctrl="onCtrl"
+  >
     <v-tabs
       v-model="active"
       elevation="0"
@@ -100,11 +106,17 @@ export default {
   },
   watch: {
     $route() {
+      if (!this.$view.isActive(this)) {
+        return;
+      }
+
+      this.$view.focus(this.$refs?.page);
+
       this.openTab();
     },
   },
   mounted() {
-    this.$view.enter(this);
+    this.$view.enter(this, this.$refs?.page);
     this.openTab();
   },
   unmounted() {
@@ -112,17 +124,14 @@ export default {
   },
   methods: {
     onCtrl(ev) {
-      if (!ev || !ev.code || !ev.ctrlKey || !this.$view.hasFocus(this)) {
+      if (!ev || !(ev instanceof KeyboardEvent) || !ev.ctrlKey || !this.$view.isActive(this)) {
         return;
       }
 
       switch (ev.code) {
         case "KeyF":
-          const el = this.$el.querySelector(".input-search .v-field__field input");
-          if (el) {
-            ev.preventDefault();
-            el.focus();
-          }
+          ev.preventDefault();
+          this.$view.focus(this.$refs?.page, ".v-window-item--active .input-search input", true);
           break;
       }
     },

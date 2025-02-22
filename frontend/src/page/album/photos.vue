@@ -1,5 +1,11 @@
 <template>
-  <div :class="$config.aclClasses('photos')" class="p-page p-page-album-photos" tabindex="1" @keydown.ctrl="onCtrl">
+  <div
+    ref="page"
+    tabindex="1"
+    class="p-page p-page-album-photos"
+    :class="$config.aclClasses('photos')"
+    @keydown.ctrl="onCtrl"
+  >
     <p-album-toolbar
       ref="toolbar"
       :filter="filter"
@@ -147,6 +153,12 @@ export default {
   },
   watch: {
     $route() {
+      if (!this.$view.isActive(this)) {
+        return;
+      }
+
+      this.$view.focus(this.$refs?.page);
+
       const query = this.$route.query;
 
       this.filter.q = query["q"] ? query["q"] : "";
@@ -168,6 +180,7 @@ export default {
        * https://github.com/photoprism/photoprism/pull/2782#issue-1409954466
        */
       const routeChanged = this.routeName !== this.$route.name;
+
       if (routeChanged) {
         this.lastFilter = {};
       }
@@ -203,7 +216,7 @@ export default {
     this.subscriptions.push(this.$event.subscribe("touchmove.bottom", () => this.loadMore()));
   },
   mounted() {
-    this.$view.enter(this);
+    this.$view.enter(this, this.$refs?.page);
   },
   beforeUnmount() {
     for (let i = 0; i < this.subscriptions.length; i++) {
@@ -215,7 +228,7 @@ export default {
   },
   methods: {
     onCtrl(ev) {
-      if (!ev || !ev.code || !ev.ctrlKey || !this.$view.hasFocus(this)) {
+      if (!ev || !(ev instanceof KeyboardEvent) || !ev.ctrlKey || !this.$view.isActive(this)) {
         return;
       }
 

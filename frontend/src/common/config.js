@@ -42,7 +42,7 @@ export default class Config {
   constructor(storage, values) {
     this.disconnected = ref(false);
     this.storage = storage;
-    this.storage_key = "config";
+    this.storageKey = "config";
     this.previewToken = "";
     this.downloadToken = "";
     this.updating = false;
@@ -167,9 +167,11 @@ export default class Config {
   }
 
   setValues(values) {
-    if (!values) return;
+    if (!values || typeof values !== "object") {
+      return;
+    }
 
-    if (values.jsUri && this.values.jsUri !== values.jsUri) {
+    if (values.jsUri && values.mode === "user" && this.values.jsUri && this.values.jsUri !== values.jsUri) {
       $event.publish("dialog.update", { values });
     }
 
@@ -454,7 +456,7 @@ export default class Config {
     // Update the configuration settings and save them to window.localStorage.
     if (this.values.settings && this.values.settings.ui) {
       this.values.settings.ui.language = locale;
-      this.storage.setItem(this.storage_key + ".locale", locale);
+      this.storage.setItem(this.storageKey + ".locale", locale);
     }
 
     return this;
@@ -466,7 +468,7 @@ export default class Config {
     let locale = "en";
 
     if (this.loading()) {
-      const stored = this.storage.getItem(this.storage_key + ".locale");
+      const stored = this.storage.getItem(this.storageKey + ".locale");
       if (stored) {
         locale = stored;
       }
@@ -595,13 +597,13 @@ export default class Config {
 
   // storeValues saves the current configuration values in window.localStorage.
   storeValues() {
-    this.storage.setItem(this.storage_key, JSON.stringify(this.getValues()));
+    this.storage.setItem(this.storageKey, JSON.stringify(this.getValues()));
     return this;
   }
 
   // restoreValues restores the configuration values from window.localStorage.
   restoreValues() {
-    const json = this.storage.getItem(this.storage_key);
+    const json = this.storage.getItem(this.storageKey);
     if (json !== "undefined") {
       this.setValues(JSON.parse(json));
     }

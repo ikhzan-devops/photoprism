@@ -1,0 +1,144 @@
+package performancetest
+
+import (
+	"os/exec"
+	"testing"
+	"time"
+
+	"github.com/photoprism/photoprism/internal/event"
+	"github.com/photoprism/photoprism/pkg/fs"
+	"github.com/sirupsen/logrus"
+)
+
+func BenchmarkMigration_SQLite(b *testing.B) {
+	// Setup here
+	loglevel := event.Log.GetLevel()
+	if !fs.FileExists("../../storage/test-1k.original.sqlite") {
+		log.Info("Generating SQLite database with 1000 records")
+		event.Log.SetLevel(logrus.ErrorLevel)
+		generateDatabase(1000, "sqlite3", "../../storage/test-1k.original.sqlite", true, true)
+		event.Log.SetLevel(loglevel)
+	}
+	if !fs.FileExists("../../storage/test-10k.original.sqlite") {
+		log.Info("Generating SQLite database with 10000 records")
+		event.Log.SetLevel(logrus.ErrorLevel)
+		generateDatabase(10000, "sqlite3", "../../storage/test-10k.original.sqlite", true, true)
+		event.Log.SetLevel(loglevel)
+	}
+	if !fs.FileExists("../../storage/test-100k.original.sqlite") {
+		log.Info("Generating SQLite database with 100000 records")
+		event.Log.SetLevel(logrus.ErrorLevel)
+		generateDatabase(100000, "sqlite3", "../../storage/test-100k.original.sqlite", true, true)
+		event.Log.SetLevel(loglevel)
+	}
+
+	event.Log.SetLevel(logrus.ErrorLevel)
+	// tests here
+
+	b.Run("OneKUpgradeTest_Custom", func(b *testing.B) {
+		//for b.Loop() {  // This needs Go 1.24
+		for range b.N {
+			sqliteMigration("../../storage/test-1k.original.sqlite", "../../storage/test-1k.db", 1000, false, "OneKUpgradeTest_Custom", time.Minute, b)
+		}
+	})
+
+	b.Run("OneKUpgradeTest_Auto", func(b *testing.B) {
+		//for b.Loop() {  // This needs Go 1.24
+		for range b.N {
+			sqliteMigration("../../storage/test-1k.original.sqlite", "../../storage/test-1k.db", 1000, true, "OneKUpgradeTest_Auto", time.Minute, b)
+		}
+	})
+
+	b.Run("TenKUpgradeTest_Custom", func(b *testing.B) {
+		//for b.Loop() {  // This needs Go 1.24
+		for range b.N {
+			sqliteMigration("../../storage/test-10k.original.sqlite", "../../storage/test-10k.db", 10000, false, "TenKUpgradeTest_Custom", time.Minute, b)
+		}
+	})
+
+	b.Run("TenKUpgradeTest_Auto", func(b *testing.B) {
+		//for b.Loop() {  // This needs Go 1.24
+		for range b.N {
+			sqliteMigration("../../storage/test-10k.original.sqlite", "../../storage/test-10k.db", 10000, true, "TenKUpgradeTest_Auto", time.Minute, b)
+		}
+	})
+
+	b.Run("OneHundredKUpgradeTest_Custom", func(b *testing.B) {
+		//for b.Loop() {  // This needs Go 1.24
+		for range b.N {
+			sqliteMigration("../../storage/test-100k.original.sqlite", "../../storage/test-100k.db", 100000, false, "OneHundredKUpgradeTest_Custom", time.Minute, b)
+		}
+	})
+
+	b.Run("OneHundredKUpgradeTest_Auto", func(b *testing.B) {
+		//for b.Loop() {  // This needs Go 1.24
+		for range b.N {
+			sqliteMigration("../../storage/test-100k.original.sqlite", "../../storage/test-100k.db", 100000, true, "OneHundredKUpgradeTest_Auto", time.Minute, b)
+		}
+	})
+
+	// teardown here
+	event.Log.SetLevel(loglevel)
+}
+
+func BenchmarkMigration_MySQL(b *testing.B) {
+	// Setup here
+	loglevel := event.Log.GetLevel()
+	// Prepare temporary mariadb db.
+	if !fs.FileExists("../../storage/test-1k.original.mysql") {
+		log.Info("Generating Mariadb database with 1000 records")
+		event.Log.SetLevel(logrus.ErrorLevel)
+		generateDatabase(1000, "mysql", "migrate:migrate@tcp(mariadb:4001)/migrate?charset=utf8mb4,utf8&collation=utf8mb4_unicode_ci&parseTime=true", true, true)
+		resultFile := "--result-file=" + "../../storage/test-1k.original.mysql"
+		if err := exec.Command("mariadb-dump", "--user=migrate", "--password=migrate", "--lock-tables", "--add-drop-database", "--databases", "migrate", resultFile).Run(); err != nil {
+			b.Fatal(err)
+		}
+		event.Log.SetLevel(loglevel)
+	}
+	if !fs.FileExists("../../storage/test-10k.original.mysql") {
+		log.Info("Generating Mariadb database with 10000 records")
+		event.Log.SetLevel(logrus.ErrorLevel)
+		generateDatabase(10000, "mysql", "migrate:migrate@tcp(mariadb:4001)/migrate?charset=utf8mb4,utf8&collation=utf8mb4_unicode_ci&parseTime=true", true, true)
+		resultFile := "--result-file=" + "../../storage/test-10k.original.mysql"
+		if err := exec.Command("mariadb-dump", "--user=migrate", "--password=migrate", "--lock-tables", "--add-drop-database", "--databases", "migrate", resultFile).Run(); err != nil {
+			b.Fatal(err)
+		}
+		event.Log.SetLevel(loglevel)
+	}
+	if !fs.FileExists("../../storage/test-100k.original.mysql") {
+		log.Info("Generating Mariadb database with 100000 records")
+		event.Log.SetLevel(logrus.ErrorLevel)
+		generateDatabase(100000, "mysql", "migrate:migrate@tcp(mariadb:4001)/migrate?charset=utf8mb4,utf8&collation=utf8mb4_unicode_ci&parseTime=true", true, true)
+		resultFile := "--result-file=" + "../../storage/test-100k.original.mysql"
+		if err := exec.Command("mariadb-dump", "--user=migrate", "--password=migrate", "--lock-tables", "--add-drop-database", "--databases", "migrate", resultFile).Run(); err != nil {
+			b.Fatal(err)
+		}
+		event.Log.SetLevel(loglevel)
+	}
+
+	event.Log.SetLevel(logrus.ErrorLevel)
+	// tests here
+
+	b.Run("OneKUpgradeTest", func(b *testing.B) {
+		//for b.Loop() {  // This needs Go 1.24
+		for range b.N {
+			mysqlMigration("../../storage/test-1k.original.mysql", 1000, "OneKUpgradeTest", time.Minute, b)
+		}
+	})
+
+	b.Run("TenKUpgradeTest", func(b *testing.B) {
+		//for b.Loop() {  // This needs Go 1.24
+		for range b.N {
+			mysqlMigration("../../storage/test-10k.original.mysql", 10000, "TenKUpgradeTest", time.Minute, b)
+		}
+	})
+
+	b.Run("OneHundredKUpgradeTest", func(b *testing.B) {
+		//for b.Loop() {  // This needs Go 1.24
+		for range b.N {
+			mysqlMigration("../../storage/test-100k.original.mysql", 100000, "OneHundredKUpgradeTest", time.Minute, b)
+		}
+	})
+	// teardown here
+	event.Log.SetLevel(loglevel)
+}

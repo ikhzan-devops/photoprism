@@ -24,6 +24,7 @@ Additional information can be found in our Developer Guide:
 */
 
 import $api from "common/api";
+import $notify from "common/notify";
 import $event from "common/event";
 import User from "model/user";
 import Socket from "websocket.js";
@@ -40,14 +41,15 @@ export default class Session {
    * @param {object} shared
    */
   constructor(storage, config, shared) {
-    this.storage_key = "sessionStorage";
+    this.storageKey = "sessionStorage";
+    this.loginRedirect = false;
     this.config = config;
     this.provider = "";
     this.user = new User(false);
     this.data = null;
 
     // Set session storage.
-    if (storage.getItem(this.storage_key) === "true") {
+    if (storage.getItem(this.storageKey) === "true") {
       this.storage = window.sessionStorage;
     } else {
       this.storage = storage;
@@ -93,9 +95,7 @@ export default class Session {
         const location = shared.uri ? shared.uri : this.config.baseUri + "/";
 
         // Redirect to URL after one second.
-        setTimeout(() => {
-          window.location = location;
-        }, 1000);
+        this.followRedirect(location, 1000);
       });
     } else {
       this.config.progress(80);
@@ -108,12 +108,12 @@ export default class Session {
 
   useSessionStorage() {
     this.reset();
-    this.storage.setItem(this.storage_key, "true");
+    this.storage.setItem(this.storageKey, "true");
     this.storage = window.sessionStorage;
   }
 
   useLocalStorage() {
-    this.storage.setItem(this.storage_key, "false");
+    this.storage.setItem(this.storageKey, "false");
     this.storage = window.localStorage;
   }
 
@@ -313,11 +313,42 @@ export default class Session {
     return !this.config.isPublic() && !this.isUser();
   }
 
+  followLoginRedirectUrl(defaultUrl) {
+    const url = this.getLoginRedirectUrl(defaultUrl);
+    this.clearLoginRedirectUrl();
+    this.followRedirect(url);
+    return this;
+  }
+
+  getLoginRedirectUrl(defaultUrl) {
+    if (!defaultUrl) {
+      defaultUrl = "/";
+    }
+
+    return this.loginRedirect ? this.loginRedirect : defaultUrl;
+  }
+
+  clearLoginRedirectUrl() {
+    this.loginRedirect = false;
+
+    return this;
+  }
+
+  setLoginRedirectUrl(url) {
+    if (!url) {
+      return this.clearLoginRedirectUrl();
+    }
+
+    this.loginRedirect = url;
+
+    return this;
+  }
+
   isUser() {
     return this.user && this.user.hasId();
   }
 
-  getHome() {
+  getDefaultRoute() {
     if (this.loginRequired()) {
       return LoginPage;
     } else if (this.config.allow("photos", "access_library")) {
@@ -393,6 +424,7 @@ export default class Session {
     if (!window || !window.location) {
       return true;
     }
+
     return LoginPage === window.location.href.substring(window.location.href.lastIndexOf("/") + 1);
   }
 
@@ -482,13 +514,31 @@ export default class Session {
       .then((response) => Promise.resolve(response.data));
   }
 
+  followRedirect(url, delay) {
+    if (!url) {
+      return;
+    }
+
+    // Time to redirect in milliseconds.
+    if (!delay) {
+      delay = 100;
+    }
+
+    // Block UI interactions.
+    $notify.blockUI();
+
+    setTimeout(() => {
+      window.location = url;
+    }, delay);
+  }
+
   onLogout(noRedirect) {
     // Delete all authentication and session data.
     this.reset();
 
     // Perform redirect?
     if (noRedirect !== true && !this.isLogin()) {
-      window.location = this.config.loginUri;
+      this.followRedirect(this.config.loginUri);
     }
 
     return Promise.resolve();

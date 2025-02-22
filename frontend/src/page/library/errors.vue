@@ -1,57 +1,59 @@
 <template>
-  <div class="p-page p-page-errors" tabindex="1">
-    <v-toolbar
-      flat
-      :density="$vuetify.display.smAndDown ? 'compact' : 'default'"
-      class="page-toolbar"
-      color="secondary"
-    >
-      <v-text-field
-        :model-value="filter.q"
-        hide-details
-        clearable
-        overflow
-        single-line
-        rounded
-        variant="solo-filled"
-        :density="density"
-        validate-on="invalid-input"
-        autocomplete="off"
-        autocorrect="off"
-        autocapitalize="none"
-        :placeholder="$gettext('Search')"
-        prepend-inner-icon="mdi-magnify"
-        color="surface-variant"
-        class="input-search background-inherit elevation-0"
-        @update:model-value="
-          (v) => {
-            updateFilter({ q: v });
-          }
-        "
-        @keyup.enter="() => updateQuery()"
-        @click:clear="
-          () => {
-            updateQuery({ q: '' });
-          }
-        "
-      ></v-text-field>
-
-      <v-btn icon class="action-reload" :title="$gettext('Reload')" @click.stop="onReload()">
-        <v-icon>mdi-refresh</v-icon>
-      </v-btn>
-      <v-btn v-if="!isPublic" icon class="action-delete" :title="$gettext('Delete')" @click.stop="onDelete()">
-        <v-icon>mdi-delete</v-icon>
-      </v-btn>
-      <v-btn
-        icon
-        href="https://docs.photoprism.app/getting-started/troubleshooting/"
-        target="_blank"
-        class="action-bug-report"
-        :title="$gettext('Troubleshooting Checklists')"
+  <div ref="page" tabindex="1" class="p-page p-page-errors" @keydown.ctrl="onCtrl">
+    <v-form ref="form" class="p-errors-search" validate-on="invalid-input" @submit.prevent="updateQuery()">
+      <v-toolbar
+        flat
+        :density="$vuetify.display.smAndDown ? 'compact' : 'default'"
+        class="page-toolbar"
+        color="secondary"
       >
-        <v-icon>mdi-bug</v-icon>
-      </v-btn>
-    </v-toolbar>
+        <v-text-field
+          :model-value="filter.q"
+          hide-details
+          clearable
+          overflow
+          single-line
+          rounded
+          variant="solo-filled"
+          :density="density"
+          validate-on="invalid-input"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="none"
+          :placeholder="$gettext('Search')"
+          prepend-inner-icon="mdi-magnify"
+          color="surface-variant"
+          class="input-search background-inherit elevation-0"
+          @update:model-value="
+            (v) => {
+              updateFilter({ q: v });
+            }
+          "
+          @keyup.enter="() => updateQuery()"
+          @click:clear="
+            () => {
+              updateQuery({ q: '' });
+            }
+          "
+        ></v-text-field>
+
+        <v-btn icon class="action-reload" :title="$gettext('Reload')" @click.stop="onReload()">
+          <v-icon>mdi-refresh</v-icon>
+        </v-btn>
+        <v-btn v-if="!isPublic" icon class="action-delete" :title="$gettext('Delete')" @click.stop="onDelete()">
+          <v-icon>mdi-delete</v-icon>
+        </v-btn>
+        <v-btn
+          icon
+          href="https://docs.photoprism.app/getting-started/troubleshooting/"
+          target="_blank"
+          class="action-bug-report"
+          :title="$gettext('Troubleshooting Checklists')"
+        >
+          <v-icon>mdi-bug</v-icon>
+        </v-btn>
+      </v-toolbar>
+    </v-form>
     <div v-if="loading" fluid class="pa-6">
       <v-progress-linear :indeterminate="true"></v-progress-linear>
     </div>
@@ -172,14 +174,20 @@ export default {
   },
   watch: {
     $route() {
+      if (!this.$view.isActive(this)) {
+        return;
+      }
+
+      this.$view.focus(this.$refs?.page);
+
       const query = this.$route.query;
       this.filter.q = query["q"] ? query["q"] : "";
       this.onReload();
     },
   },
   created() {
-    if (this.$config.deny("logs", "view")) {
-      this.$router.push({ name: "albums" });
+    if (this.$config.deny("logs", "access_all")) {
+      this.$router.push({ name: this.$session.getDefaultRoute() });
       return;
     }
 
@@ -192,6 +200,22 @@ export default {
     this.$view.leave(this);
   },
   methods: {
+    onCtrl(ev) {
+      if (!ev || !(ev instanceof KeyboardEvent) || !ev.ctrlKey || !this.$view.isActive(this)) {
+        return;
+      }
+
+      switch (ev.code) {
+        case "KeyR":
+          ev.preventDefault();
+          this.onReload();
+          break;
+        case "KeyF":
+          ev.preventDefault();
+          this.$view.focus(this.$refs?.form, ".input-search input", true);
+          break;
+      }
+    },
     updateFilter(props) {
       if (!props || typeof props !== "object" || props.target) {
         return;

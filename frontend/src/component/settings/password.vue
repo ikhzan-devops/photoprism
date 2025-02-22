@@ -8,7 +8,7 @@
     @after-enter="afterEnter"
     @after-leave="afterLeave"
   >
-    <v-form ref="form" class="form-password" accept-charset="UTF-8" tabindex="1" @submit.prevent>
+    <v-form ref="form" class="form-password" accept-charset="UTF-8" @submit.prevent>
       <v-card>
         <v-card-title class="d-flex justify-start align-center ga-3">
           <v-icon size="28" color="primary">mdi-lock</v-icon>
@@ -21,16 +21,18 @@
             </v-col>
             <v-col v-if="oldRequired" cols="12">
               <v-text-field
+                ref="password"
                 v-model="oldPassword"
-                hide-details
                 :type="showPassword ? 'text' : 'password'"
-                autocorrect="off"
-                autocapitalize="none"
-                autocomplete="current-password"
                 :disabled="busy"
                 :maxlength="maxLength"
                 :append-inner-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
                 :label="$gettext('Current Password')"
+                tabindex="1"
+                hide-details
+                autocorrect="off"
+                autocapitalize="none"
+                autocomplete="current-password"
                 class="input-current-password"
                 @click:append-inner="showPassword = !showPassword"
               ></v-text-field>
@@ -39,46 +41,49 @@
             <v-col cols="12">
               <v-text-field
                 v-model="newPassword"
-                counter
-                persistent-hint
-                type="password"
                 :disabled="busy"
                 :minlength="minLength"
                 :maxlength="maxLength"
+                :label="$gettext('New Password')"
+                :hint="$gettextInterpolate($gettext('Must have at least %{n} characters.'), { n: minLength })"
+                tabindex="2"
+                counter
+                persistent-hint
+                type="password"
                 autocorrect="off"
                 autocapitalize="none"
                 autocomplete="new-password"
-                :label="$gettext('New Password')"
                 class="input-new-password"
-                :hint="$gettextInterpolate($gettext('Must have at least %{n} characters.'), { n: minLength })"
               ></v-text-field>
             </v-col>
 
             <v-col cols="12">
               <v-text-field
                 v-model="confirmPassword"
-                counter
-                persistent-hint
-                type="password"
                 :disabled="busy"
                 :minlength="minLength"
                 :maxlength="maxLength"
+                :label="$gettext('Retype Password')"
+                :hint="$gettext('Please confirm your new password.')"
+                tabindex="3"
+                counter
+                persistent-hint
+                type="password"
                 autocorrect="off"
                 autocapitalize="none"
                 autocomplete="new-password"
-                :label="$gettext('Retype Password')"
                 class="input-retype-password"
-                :hint="$gettext('Please confirm your new password.')"
                 @keyup.enter="onConfirm"
               ></v-text-field>
             </v-col>
           </v-row>
         </v-card-text>
         <v-card-actions class="action-buttons">
-          <v-btn variant="flat" color="button" class="action-cancel" @click.stop="close">
+          <v-btn tabindex="5" variant="flat" color="button" class="action-cancel" @click.stop="close">
             {{ $gettext(`Cancel`) }}
           </v-btn>
           <v-btn
+            tabindex="4"
             variant="flat"
             color="highlight"
             class="action-confirm"
@@ -139,7 +144,7 @@ export default {
   },
   methods: {
     afterEnter() {
-      this.$view.enter(this);
+      this.$view.enter(this, this.$refs?.password);
     },
     afterLeave() {
       this.$view.leave(this);

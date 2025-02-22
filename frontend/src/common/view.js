@@ -77,45 +77,120 @@ export function isMediaElement(el) {
   return el instanceof HTMLImageElement || el instanceof HTMLVideoElement || el instanceof HTMLCanvasElement;
 }
 
+// Component refs supported for automatic focus element detection.
+const focusRefs = ["form", "content", "container", "dialog", "page"];
+
 // Returns the most likely focus element for the given component, or null if none exists.
-export function getFocusElement(c) {
+export function findFocusElement(c) {
   if (!c) {
     return null;
   }
 
-  if (c.$refs) {
-    let ref;
+  let el, ref;
 
-    if (c.$refs.form) {
-      ref = c.$refs.form;
-    } else if (c.$refs.content) {
-      ref = c.$refs.content;
-    } else if (c.$refs.container) {
-      ref = c.$refs.container;
-    } else if (c.$refs.dialog) {
-      ref = c.$refs.dialog;
-    }
+  if (c.$refs && c.$refs instanceof Object) {
+    focusRefs.forEach((r) => {
+      if (c.$refs[r] && c.$refs[r] instanceof Object) {
+        if (c.$refs[r].$el instanceof HTMLElement && c.$refs[r].$el.getAttribute("tabindex") !== null) {
+          ref = c.$refs[r].$el;
+        } else if (c.$refs[r] instanceof HTMLElement && c.$refs[r].getAttribute("tabindex") !== null) {
+          ref = c.$refs[r];
+        }
+      }
+    });
+  }
 
-    if (ref && ref instanceof HTMLElement) {
-      return ref;
-    } else if (ref && ref.$el instanceof HTMLElement) {
-      return ref.$el;
-    } else if (c.$refs.dialog) {
-      return document.querySelector(".v-overlay-container .v-overlay__content");
+  if (!ref || !(ref instanceof Object) || typeof ref.getAttribute !== "function") {
+    ref = null;
+  } else if (ref.getAttribute("tabindex") === null) {
+    ref = null;
+  }
+
+  if (!ref && c.$el && c.$el instanceof Object) {
+    if (c.$el instanceof HTMLElement) {
+      ref = c.$el;
+    } else if (c.$el.parentElement && c.$el.parentElement instanceof HTMLElement) {
+      ref = c.$el.parentElement;
     }
   }
 
-  if (c.$el) {
-    if (c.$el.getAttribute && c.$el.getAttribute("tabindex") === "1") {
-      return c.$el;
+  if (ref) {
+    if (ref.$el && ref.$el instanceof HTMLElement) {
+      ref = ref.$el;
     }
 
-    if (c.$el.parentElement) {
-      return c.$el.parentElement.querySelector('[tabindex="1"]');
+    if (ref instanceof HTMLElement) {
+      if (ref.getAttribute("tabindex") !== null) {
+        return ref;
+      }
+
+      try {
+        el = ref.querySelector('input[tabindex="1"]');
+        if (el && el instanceof HTMLElement) {
+          return el;
+        }
+      } catch (_) {
+        // Ignore.
+      }
     }
+  }
+
+  if (c.$refs?.dialog) {
+    return document.querySelector(".v-overlay-container .v-overlay__content");
   }
 
   return null;
+}
+
+// Gives focus to the specified HTML element, or the first element that matches the specified selector string.
+export function setFocus(el, selector, scroll) {
+  if (!el) {
+    return false;
+  }
+
+  let options = { preventScroll: !scroll };
+
+  if (typeof el === "string") {
+    el = document.querySelector(el);
+  } else if (el instanceof Object) {
+    if (!selector && typeof el.focus === "function") {
+      try {
+        el.focus(options);
+        return true;
+      } catch (err) {
+        console.log(`failed to call el.focus(): ${err}`, el);
+      }
+    }
+
+    if (el.$el && el.$el instanceof HTMLElement) {
+      el = el.$el;
+    }
+  }
+
+  if (el && el instanceof HTMLElement) {
+    if (selector && typeof selector === "string") {
+      el = el.querySelector(selector);
+
+      if (!el || !(el instanceof HTMLElement)) {
+        return false;
+      }
+    }
+
+    if (trace) {
+      console.log("giving focus to this element:", el);
+    }
+
+    try {
+      el.focus(options);
+      return true;
+    } catch (err) {
+      console.log(`failed to give focus to element: ${err}`, el);
+    }
+  } else if (trace) {
+    console.log("invalid focus element:", el);
+  }
+
+  return false;
 }
 
 // Prevents the default navigation touch gestures.
@@ -150,14 +225,14 @@ export class View {
 
     if (trace) {
       document.addEventListener("focusin", (ev) => {
-        console.debug("focus: ", ev.target);
+        console.log("%cdocument.focusin", "color: #B2EBF2;", ev.target);
       });
     }
   }
 
   // Changes the view context to the specified component,
   // and updates the window and <html> body as needed.
-  enter(c) {
+  enter(c, focusElement, focusSelector) {
     if (!c) {
       return false;
     }
@@ -170,7 +245,7 @@ export class View {
       this.scopes.push(c);
     }
 
-    this.apply(c);
+    this.apply(c, focusElement, focusSelector);
 
     return this.scopes.length;
   }
@@ -198,7 +273,7 @@ export class View {
   }
 
   // Updates the window and the <html> body elements based on the specified component.
-  apply(c) {
+  apply(c, focusElement, focusSelector) {
     if (!c || typeof c !== "object" || !Number.isInteger(c?.$?.uid) || !c.$el) {
       console.log(`view: invalid component (#${this.uid.toString()})`, c);
       return false;
@@ -228,14 +303,10 @@ export class View {
 
     // Automatically focus the active component if its element tabindex attribute is set to "1":
     // https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex
-    const focusElement = getFocusElement(c);
-
-    if (focusElement && focusElement instanceof HTMLElement) {
-      try {
-        focusElement.focus({ preventScroll: true });
-      } catch (err) {
-        console.log(`focus: ${err}`, focusElement);
-      }
+    if (focusElement) {
+      setFocus(focusElement, focusSelector, false);
+    } else {
+      setFocus(findFocusElement(c), false, false);
     }
 
     // Return, as it should not be necessary to apply the same state twice.
@@ -375,13 +446,18 @@ export class View {
     }
   }
 
+  // Gives focus to the specified HTML element, or the first element that matches the specified selector string.
+  focus(el, selector, scroll) {
+    return setFocus(el, selector, scroll);
+  }
+
   // Returns true if the specified view component is currently inactive, e.g. hidden in the background.
   isHidden(c) {
-    return !this.hasFocus(c);
+    return !this.isActive(c);
   }
 
   // Returns true if the specified view component is currently active, e.g. visible in the foreground.
-  hasFocus(c) {
+  isActive(c) {
     if (!c || this.isApp()) {
       return true;
     }

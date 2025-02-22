@@ -50,7 +50,7 @@ export default {
     variant: "outlined",
     baseColor: "on-surface-variant",
     validateOn: "invalid-input",
-    autofocus: true,
+    autofocus: false,
   },
   VAutocomplete: {
     flat: true,

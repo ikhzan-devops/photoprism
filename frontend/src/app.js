@@ -215,6 +215,7 @@ $config.update().finally(() => {
     },
   });
 
+  // Configure route interceptors.
   router.beforeEach((to) => {
     if ($view.preventNavigation) {
       // Disable navigation when a fullscreen dialog or lightbox is open.
@@ -225,19 +226,15 @@ $config.update().finally(() => {
       if ($isPublic || $session.isAdmin()) {
         return true;
       } else {
-        return {
-          name: "login",
-          params: { nextUrl: to.fullPath },
-        };
+        $session.setLoginRedirectUrl(to.href);
+        return { name: "login" };
       }
     } else if (to.matched.some((record) => record.meta.requiresAuth)) {
       if ($isPublic || $session.isUser()) {
         return true;
       } else {
-        return {
-          name: "login",
-          params: { nextUrl: to.fullPath },
-        };
+        $session.setLoginRedirectUrl(to.href);
+        return { name: "login" };
       }
     } else {
       return true;
@@ -268,8 +265,9 @@ $config.update().finally(() => {
     }
   });
 
-  // Attach router.
+  // Use router.
   app.use(router);
+  window.$router = router;
 
   if ($isMobile) {
     // Add "mobile" class to body if running on a mobile device.

@@ -6,7 +6,6 @@
     fill-height
     class="auth-login wallpaper background-welcome pa-6"
     :style="wallpaper()"
-    tabindex="1"
   >
     <v-theme-provider theme="login">
       <v-row id="auth-layout" class="auth-layout">
@@ -28,32 +27,34 @@
                         ref="code"
                         v-model="code"
                         :disabled="loading"
+                        :placeholder="$gettext('Recovery Code')"
+                        tabindex="1"
                         name="code"
                         variant="solo"
                         density="comfortable"
                         type="text"
-                        :placeholder="$gettext('Recovery Code')"
                         inputmode="text"
                         hide-details
-                        autofocus
                         autocorrect="off"
                         autocapitalize="none"
                         autocomplete="none"
-                        class="input-code text-selectable ma-4"
                         prepend-inner-icon="mdi-shield-check"
+                        class="input-code text-selectable ma-4"
                         @keyup.enter="onLogin"
                       ></v-text-field>
                       <v-otp-input
                         v-else
+                        ref="otp"
                         v-model="code"
                         :disabled="loading"
                         :length="6"
                         :max-width="320"
+                        :label="$gettext('Verification Code')"
+                        tabindex="1"
                         variant="solo-filled"
                         base-color="surface"
                         name="one-time-code"
                         type="number"
-                        :label="$gettext('Verification Code')"
                         class="input-code"
                         @keyup.enter="onLogin"
                       >
@@ -66,11 +67,12 @@
                         id="auth-username"
                         v-model="username"
                         :disabled="loading || enterCode"
+                        :placeholder="$gettext('Name')"
+                        tabindex="1"
                         name="username"
                         variant="solo"
                         density="comfortable"
                         type="text"
-                        :placeholder="$gettext('Name')"
                         hide-details
                         autocorrect="off"
                         autocapitalize="none"
@@ -85,11 +87,12 @@
                         id="auth-password"
                         v-model="password"
                         :disabled="loading"
+                        :type="showPassword ? 'text' : 'password'"
+                        :placeholder="$gettext('Password')"
+                        tabindex="2"
                         name="password"
                         variant="solo"
                         density="comfortable"
-                        :type="showPassword ? 'text' : 'password'"
-                        :placeholder="$gettext('Password')"
                         hide-details
                         autocorrect="off"
                         autocapitalize="none"
@@ -106,9 +109,10 @@
                     <div class="action-buttons auth-buttons pb-1 d-flex ga-3 align-center justify-center">
                       <v-btn
                         v-if="enterCode"
+                        :block="$vuetify.display.xs"
+                        tabindex="7"
                         color="highlight"
                         variant="outlined"
-                        :block="$vuetify.display.xs"
                         class="action-cancel opacity-80"
                         @click.stop.prevent="onCancel"
                       >
@@ -116,19 +120,21 @@
                       </v-btn>
                       <v-btn
                         v-else-if="registerUri"
+                        :block="$vuetify.display.xs"
+                        tabindex="6"
                         color="highlight"
                         variant="outlined"
-                        :block="$vuetify.display.xs"
                         class="action-register opacity-80"
                         @click.stop.prevent="onRegister"
                       >
                         {{ $gettext(`Create Account`) }}
                       </v-btn>
                       <v-btn
-                        color="highlight"
-                        variant="flat"
                         :disabled="loginDisabled"
                         :block="$vuetify.display.xs"
+                        tabindex="4"
+                        color="highlight"
+                        variant="flat"
                         class="action-confirm"
                         @click.stop.prevent="onLogin"
                       >
@@ -138,15 +144,16 @@
                     </div>
                     <div
                       v-if="enterCode"
-                      :class="{ clickable: !useRecoveryCode }"
+                      tabindex="9"
                       class="auth-links text-center opacity-80"
+                      :class="{ clickable: !useRecoveryCode }"
                       @click.stop.prevent="onUseRecoveryCode"
                     >
                       {{ $gettext(`Can't access your authenticator app or device?`) }}
                       {{ $gettext(`Use your recovery code or contact an administrator for help.`) }}
                     </div>
                     <div v-else-if="passwordResetUri" class="auth-links text-center opacity-80">
-                      <a :href="passwordResetUri" class="text-secondary">
+                      <a :href="passwordResetUri" tabindex="8" class="text-secondary">
                         {{ $gettext(`Forgot password?`) }}
                       </a>
                     </div>
@@ -156,9 +163,10 @@
                       <v-divider />
                       <div class="text-center oidc-buttons mt-6">
                         <v-btn
+                          :disabled="loading"
+                          tabindex="5"
                           color="highlight"
                           variant="flat"
-                          :disabled="loading"
                           block
                           class="action-oidc-login"
                           @click.stop.prevent="onOidcLogin"
@@ -181,8 +189,15 @@
 </template>
 
 <script>
+import PAuthHeader from "component/auth/header.vue";
+import PAuthFooter from "component/auth/footer.vue";
+
 export default {
   name: "PPageLogin",
+  components: {
+    PAuthHeader,
+    PAuthFooter,
+  },
   data() {
     return {
       loading: false,
@@ -195,7 +210,6 @@ export default {
       sponsor: this.$config.isSponsor(),
       config: this.$config.values,
       siteDescription: this.$config.getSiteDescription(),
-      nextUrl: this.$route.params.nextUrl ? this.$route.params.nextUrl : "/",
       wallpaperUri: this.$config.values.wallpaperUri,
       registerUri: this.$config.values.registerUri,
       passwordResetUri: this.$config.values.passwordResetUri,
@@ -222,7 +236,7 @@ export default {
     }
   },
   mounted() {
-    this.$view.enter(this);
+    this.$view.enter(this, this.$refs?.form, 'input[value=""], button.action-confirm');
   },
   unmounted() {
     this.$view.leave(this);
@@ -236,15 +250,11 @@ export default {
       return "";
     },
     load() {
-      this.$notify.blockUI();
-
-      let route = this.$router.resolve({
-        name: this.$session.getHome(),
+      let homeRoute = this.$router.resolve({
+        name: this.$session.getDefaultRoute(),
       });
 
-      setTimeout(() => {
-        window.location = route.href;
-      }, 100);
+      this.$session.followLoginRedirectUrl(homeRoute.href);
     },
     reset() {
       this.username = "";
@@ -266,6 +276,9 @@ export default {
     onUseRecoveryCode() {
       if (!this.useRecoveryCode) {
         this.useRecoveryCode = true;
+        this.$nextTick(() => {
+          this.$view.focus(this.$refs?.code);
+        });
       }
     },
     onLogin() {
@@ -286,7 +299,9 @@ export default {
         .catch((e) => {
           if (e.response?.data?.code === 32) {
             this.enterCode = true;
-            this.$nextTick(() => this.$refs.code.focus());
+            this.$nextTick(() => {
+              this.$view.focus(this.$refs?.otp);
+            });
           }
           this.loading = false;
         });
@@ -298,9 +313,7 @@ export default {
 
       if (this.config.ext?.oidc?.loginUri) {
         this.loading = true;
-        this.$nextTick(() => {
-          window.location = this.config.ext.oidc.loginUri;
-        });
+        this.$session.followRedirect(this.config.ext.oidc.loginUri);
       } else {
         this.$notify.warn(this.$gettext("Missing or invalid configuration"));
       }

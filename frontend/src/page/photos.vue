@@ -1,8 +1,9 @@
 <template>
   <div
-    :class="$config.aclClasses('photos')"
-    class="p-page p-page-photos not-selectable"
+    ref="page"
     tabindex="1"
+    class="p-page p-page-photos not-selectable"
+    :class="$config.aclClasses('photos')"
     @keydown.ctrl="onCtrl"
   >
     <p-photo-toolbar
@@ -190,8 +191,13 @@ export default {
   },
   watch: {
     $route() {
-      const query = this.$route.query;
+      if (!this.$view.isActive(this)) {
+        return;
+      }
 
+      this.$view.focus(this.$refs?.page);
+
+      const query = this.$route.query;
       const settings = this.$config.getSettings();
 
       if (settings.features) {
@@ -231,11 +237,13 @@ export default {
        * https://github.com/photoprism/photoprism/pull/2782#issue-1409954466
        */
       const routeChanged = this.routeName !== this.$route.name;
+
       if (routeChanged) {
         this.lastFilter = {};
       }
 
       this.routeName = this.$route.name;
+
       this.search();
     },
   },
@@ -260,7 +268,7 @@ export default {
     this.subscriptions.push(this.$event.subscribe("touchmove.bottom", () => this.loadMore()));
   },
   mounted() {
-    this.$view.enter(this);
+    this.$view.enter(this, this.$refs?.page);
   },
   beforeUnmount() {
     for (let i = 0; i < this.subscriptions.length; i++) {
@@ -272,7 +280,7 @@ export default {
   },
   methods: {
     onCtrl(ev) {
-      if (!ev || !ev.code || !ev.ctrlKey || !this.$view.hasFocus(this)) {
+      if (!ev || !(ev instanceof KeyboardEvent) || !ev.ctrlKey || !this.$view.isActive(this)) {
         return;
       }
 
@@ -282,11 +290,8 @@ export default {
           this.refresh();
           break;
         case "KeyF":
-          const el = this.$el.querySelector(".input-search .v-field__field input");
-          if (el) {
-            ev.preventDefault();
-            el.focus();
-          }
+          ev.preventDefault();
+          this.$view.focus(this.$refs?.toolbar, ".input-search input", true);
           break;
       }
     },

@@ -126,11 +126,21 @@
     }
 }
 
-/* Element Focus */
+/* Focused Elements */
 
+p:focus,
 div:focus,
+img:focus,
+span:focus,
 form:focus,
+body:focus,
+main:focus,
+video:focus,
+canvas:focus,
 button:focus,
+header:focus,
+footer:focus,
+article:focus,
 .p-page:focus,
 .p-dialog:focus,
 .v-dialog:focus {

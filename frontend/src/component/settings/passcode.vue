@@ -38,17 +38,17 @@
                 <v-text-field
                   v-model="password"
                   :disabled="busy"
-                  name="password"
                   :type="showPassword ? 'text' : 'password'"
                   :placeholder="$gettext('Password')"
+                  tabindex="1"
+                  name="password"
                   hide-details
-                  autofocus
                   autocorrect="off"
                   autocapitalize="none"
                   autocomplete="current-password"
-                  class="input-password text-selectable"
                   prepend-inner-icon="mdi-lock"
                   :append-inner-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
+                  class="input-password text-selectable"
                   @click:append-inner="showPassword = !showPassword"
                   @keyup.enter="onSetup"
                 ></v-text-field>
@@ -101,6 +101,7 @@
               </v-col>
               <v-col cols="12">
                 <v-otp-input
+                  ref="otp"
                   v-model="code"
                   :disabled="busy"
                   :length="6"
@@ -208,13 +209,14 @@
                 <v-text-field
                   v-model="password"
                   :disabled="busy"
-                  name="password"
                   :type="showPassword ? 'text' : 'password'"
+                  :placeholder="$gettext('Password')"
+                  tabindex="1"
+                  name="password"
                   hide-details
                   autocorrect="off"
                   autocapitalize="none"
                   autocomplete="current-password"
-                  :placeholder="$gettext('Password')"
                   class="input-password text-selectable"
                   prepend-inner-icon="mdi-lock"
                   :append-inner-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
@@ -320,7 +322,7 @@ export default {
   },
   methods: {
     afterEnter() {
-      this.$view.enter(this);
+      this.$view.enter(this, this.$refs.form, ".input-password input");
     },
     afterLeave() {
       this.$view.leave(this);
@@ -347,8 +349,12 @@ export default {
         .createPasscode(this.password)
         .then((resp) => {
           this.key = resp;
+          this.busy = false;
+          this.$nextTick(() => {
+            this.$view.focus(this.$refs?.otp);
+          });
         })
-        .finally(() => {
+        .catch(() => {
           this.busy = false;
         });
     },

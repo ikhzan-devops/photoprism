@@ -1,8 +1,9 @@
 <template>
   <div
-    :class="$config.aclClasses('labels')"
-    class="p-page p-page-labels not-selectable"
+    ref="page"
     tabindex="1"
+    class="p-page p-page-labels not-selectable"
+    :class="$config.aclClasses('labels')"
     @keydown.ctrl="onCtrl"
   >
     <v-form ref="form" class="p-labels-search" validate-on="invalid-input" @submit.stop.prevent="updateQuery()">
@@ -224,6 +225,12 @@ export default {
   },
   watch: {
     $route() {
+      if (!this.$view.isActive(this)) {
+        return;
+      }
+
+      this.$view.focus(this.$refs?.page);
+
       const query = this.$route.query;
 
       this.routeName = this.$route.name;
@@ -243,7 +250,7 @@ export default {
     this.subscriptions.push(this.$event.subscribe("touchmove.bottom", () => this.loadMore()));
   },
   mounted() {
-    this.$view.enter(this);
+    this.$view.enter(this, this.$refs?.page);
   },
   beforeUnmount() {
     for (let i = 0; i < this.subscriptions.length; i++) {
@@ -255,7 +262,7 @@ export default {
   },
   methods: {
     onCtrl(ev) {
-      if (!ev || !ev.code || !ev.ctrlKey || !this.$view.hasFocus(this)) {
+      if (!ev || !(ev instanceof KeyboardEvent) || !ev.ctrlKey || !this.$view.isActive(this)) {
         return;
       }
 
@@ -265,11 +272,8 @@ export default {
           this.refresh();
           break;
         case "KeyF":
-          const el = this.$el.querySelector(".input-search .v-field__field input");
-          if (el) {
-            ev.preventDefault();
-            el.focus();
-          }
+          ev.preventDefault();
+          this.$view.focus(this.$refs?.form, ".input-search input", true);
           break;
       }
     },
