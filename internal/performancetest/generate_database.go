@@ -159,7 +159,7 @@ func generateDatabase(numberOfPhotos int, driver string, dsn string, dropdb bool
 		os.Exit(1)
 	}
 
-	entity.SetDbProvider(dbConn)
+	entity.SetDbProvider(db)
 
 	log.Info("Create default fixtures")
 

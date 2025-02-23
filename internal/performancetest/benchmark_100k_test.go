@@ -46,7 +46,7 @@ func Benchmark100k_SQLite(b *testing.B) {
 
 	// Create gorm.DB connection provider.
 	db := &entity.DbConn{
-		Driver: "sqlite3",
+		Driver: "sqlite",
 		Dsn:    dumpName,
 	}
 

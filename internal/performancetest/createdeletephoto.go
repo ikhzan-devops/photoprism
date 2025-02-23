@@ -11,6 +11,7 @@ import (
 	"github.com/photoprism/photoprism/pkg/fs"
 	"github.com/photoprism/photoprism/pkg/media"
 	"github.com/photoprism/photoprism/pkg/rnd"
+	"gorm.io/gorm"
 )
 
 func createDeletePhoto(b *testing.B) {
@@ -132,7 +133,7 @@ func createDeletePhoto(b *testing.B) {
 		PublishedAt: nil,
 		CheckedAt:   nil,
 		EstimatedAt: nil,
-		DeletedAt:   nil, //gormDeletedAt{},
+		DeletedAt:   gorm.DeletedAt{},
 	}
 
 	photo.Create()
@@ -152,7 +153,7 @@ func createDeletePhoto(b *testing.B) {
 			LabelCategories:  []*entity.Label{},
 			CreatedAt:        time.Now().UTC(),
 			UpdatedAt:        time.Now().UTC(),
-			DeletedAt:        nil, //gormDeletedAt{},
+			DeletedAt:        gorm.DeletedAt{},
 			New:              false,
 		}
 		label.Create()
@@ -232,7 +233,7 @@ func createDeletePhoto(b *testing.B) {
 		UpdatedAt: time.Now().UTC(),
 		UpdatedIn: 935962,
 		// PublishedAt
-		DeletedAt: nil, //gormDeletedAt{},
+		DeletedAt: gorm.DeletedAt{},
 		Share:     []entity.FileShare{},
 		Sync:      []entity.FileSync{},
 		//markers
@@ -256,7 +257,7 @@ func createDeletePhoto(b *testing.B) {
 			PhotoCount:   0,
 			CreatedAt:    time.Now().UTC(),
 			UpdatedAt:    time.Now().UTC(),
-			DeletedAt:    nil, //gormDeletedAt{},
+			DeletedAt:    gorm.DeletedAt{},
 		}
 		entity.Db().Create(&subject)
 		subjects[i] = subject.SubjUID
@@ -322,7 +323,7 @@ func createDeletePhoto(b *testing.B) {
 			AlbumPrivate:     false,
 			CreatedAt:        time.Now().UTC(),
 			UpdatedAt:        time.Now().UTC(),
-			DeletedAt:        nil, //gormDeletedAt{},
+			DeletedAt:        gorm.DeletedAt{},
 		}
 		entity.Db().Create(&album)
 	}
