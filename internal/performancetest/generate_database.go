@@ -25,12 +25,12 @@ import (
 	"github.com/photoprism/photoprism/pkg/txt"
 )
 
-var characterRunes = []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+var characterNumberRune = []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
 
 func randomSHA1() string {
 	result := make([]rune, 32)
 	for i := range result {
-		result[i] = characterRunes[rand.IntN(len(characterRunes))]
+		result[i] = characterNumberRune[rand.IntN(len(characterNumberRune))]
 	}
 	return string(result)
 }

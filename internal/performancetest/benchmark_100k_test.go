@@ -1,0 +1,279 @@
+package performancetest
+
+import (
+	"fmt"
+	"math/rand/v2"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"strconv"
+	"strings"
+	"testing"
+
+	"github.com/photoprism/photoprism/internal/entity"
+	"github.com/photoprism/photoprism/internal/entity/search"
+	"github.com/photoprism/photoprism/internal/event"
+	"github.com/photoprism/photoprism/internal/form"
+	"github.com/photoprism/photoprism/pkg/fs"
+	"github.com/sirupsen/logrus"
+)
+
+func Benchmark100k_SQLite(b *testing.B) {
+	// Setup here
+	loglevel := event.Log.GetLevel()
+	event.Log.SetLevel(logrus.ErrorLevel)
+	testDbOriginal := "../../storage/test-100k.original.sqlite"
+
+	if !fs.FileExists(testDbOriginal) {
+		log.Info("Generating SQLite database with 100000 records")
+		generateDatabase(100000, "sqlite3", testDbOriginal, true, true)
+	}
+
+	// Prepare temporary sqlite db.
+	testDbTemp := "../../storage/test-100k.db"
+	dumpName, err := filepath.Abs(testDbTemp)
+	_ = os.Remove(dumpName)
+	if err != nil {
+		b.Fatal(err)
+	} else if err = fs.Copy(testDbOriginal, dumpName); err != nil {
+		b.Fatal(err)
+	}
+	defer os.Remove(dumpName)
+
+	// Force the dbConn to nil so that a new database can be connected to.
+	entity.SetDbProvider(nil)
+
+	db := entity.InitTestDb(
+		"sqlite3",
+		dumpName)
+
+	defer db.Close()
+
+	// tests here
+
+	runTests(b)
+
+	// teardown here
+	event.Log.SetLevel(loglevel)
+}
+
+func Benchmark100k_MySQL(b *testing.B) {
+	// Setup here
+	loglevel := event.Log.GetLevel()
+	event.Log.SetLevel(logrus.ErrorLevel)
+	testDbOriginal := "../../storage/test-100k.original.mysql"
+	mysqlDSN := "migrate:migrate@tcp(mariadb:4001)/migrate?charset=utf8mb4,utf8&collation=utf8mb4_unicode_ci&parseTime=true"
+
+	// Prepare temporary mariadb db.
+	if !fs.FileExists(testDbOriginal) {
+		log.Info("Generating Mariadb database with 100000 records")
+		generateDatabase(100000, "mysql", mysqlDSN, true, true)
+		resultFile := "--result-file=" + testDbOriginal
+		if err := exec.Command("mariadb-dump", "--user=migrate", "--password=migrate", "--lock-tables", "--add-drop-database", "--databases", "migrate", resultFile).Run(); err != nil {
+			b.Fatal(err)
+		}
+	}
+
+	// Prepare migrate mariadb db.
+	if dumpName, err := filepath.Abs(testDbOriginal); err != nil {
+		b.Fatal(err)
+	} else if err = exec.Command("mariadb", "-u", "migrate", "-pmigrate", "migrate",
+		"-e", "source "+dumpName).Run(); err != nil {
+		b.Fatal(err)
+	}
+
+	// Force the dbConn to nil so that a new database can be connected to.
+	entity.SetDbProvider(nil)
+
+	db := entity.InitTestDb(
+		"mysql",
+		mysqlDSN)
+
+	defer db.Close()
+
+	// tests here
+
+	runTests(b)
+
+	// teardown here
+	event.Log.SetLevel(loglevel)
+}
+
+// The following is the tests being executed
+
+func runTests(b *testing.B) {
+
+	b.Run("CreateDeleteAlbum", func(b *testing.B) {
+		//for b.Loop() {  // This needs Go 1.24
+		for range b.N {
+			createDeleteAlbum(b)
+		}
+	})
+
+	b.Run("ListAlbums", func(b *testing.B) {
+		//for b.Loop() {  // This needs Go 1.24
+		for range b.N {
+			listAlbums(b)
+		}
+	})
+
+	b.Run("CreateDeleteCamera", func(b *testing.B) {
+		//for b.Loop() {  // This needs Go 1.24
+		for range b.N {
+			createDeleteCamera(b)
+		}
+	})
+
+	b.Run("CreateDeleteCellAndPlace", func(b *testing.B) {
+		//for b.Loop() {  // This needs Go 1.24
+		for range b.N {
+			createDeleteCellAndPlace(b)
+		}
+	})
+
+	b.Run("FileRegenerateIndex", func(b *testing.B) {
+		//for b.Loop() {  // This needs Go 1.24
+		for range b.N {
+			fileRegenerateIndex(b)
+		}
+	})
+
+	b.Run("CreateDeletePhoto", func(b *testing.B) {
+		//for b.Loop() {  // This needs Go 1.24
+		for range b.N {
+			createDeletePhoto(b)
+		}
+	})
+
+	b.Run("ListPhotos", func(b *testing.B) {
+		//for b.Loop() {  // This needs Go 1.24
+		for range b.N {
+			listPhotos(b)
+		}
+	})
+
+}
+
+// The following are the functions to be executed by the tests above, so that PostgreSQL, MariaDB and SQLite can have the same test.
+
+func createDeleteAlbum(b *testing.B) {
+	album := entity.NewAlbum("BenchMarkAlbum", entity.AlbumManual)
+	if err := album.Create(); err != nil {
+		b.Fatal(err)
+	}
+	if err := album.DeletePermanently(); err != nil {
+		b.Fatal(err)
+	}
+	entity.FlushAlbumCache()
+}
+
+func listAlbums(b *testing.B) {
+	year := rand.IntN(45) + 1980
+	frm := form.SearchAlbums{
+		Year: strconv.Itoa(year),
+	}
+	_, err := search.Albums(frm)
+	if err != nil {
+		b.Fatal(err)
+	}
+	entity.FlushAlbumCache()
+	albumSlug := fmt.Sprintf("slug:my-photos-from-%04d", year)
+	query := form.NewAlbumSearch(albumSlug)
+	_, err = search.Albums(query)
+	if err != nil {
+		b.Fatal(err)
+	}
+	entity.FlushAlbumCache()
+}
+
+func createDeleteCamera(b *testing.B) {
+	camera := entity.NewCamera("Palasonic", "Palasonic Dumix")
+
+	if err := camera.Create(); err != nil {
+		b.Fatal(err)
+	}
+	if err := entity.UnscopedDb().Delete(camera).Error; err != nil {
+		b.Fatal(err)
+	}
+	entity.FlushCameraCache()
+}
+
+const characterRunes = " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+const sha1Runes = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+
+func randRange(min, max float64) float64 {
+	return min + rand.Float64()*(max-min)
+}
+
+func randomString(len int) string {
+	sb := strings.Builder{}
+	sb.Grow(len)
+	for i := 0; i < len; {
+		sb.WriteByte(characterRunes[rand.IntN(53)])
+		i++
+	}
+
+	return sb.String()
+}
+
+func createDeleteCellAndPlace(b *testing.B) {
+	lat := randRange(-90, 90)
+	lng := randRange(-180, 180)
+	cell := entity.NewCell(lat, lng)
+	place := &entity.Place{
+		ID:            randomString(12),
+		PlaceLabel:    randomString(20),
+		PlaceDistrict: randomString(30),
+		PlaceCity:     randomString(30),
+		PlaceState:    randomString(30),
+		PlaceCountry:  randomString(2),
+		PlaceKeywords: randomString(10),
+		PlaceFavorite: false,
+	}
+
+	if cell.Place = entity.FirstOrCreatePlace(place); cell.Place == nil {
+		b.Fatal("unable to find/create place")
+	}
+
+	cell.PlaceID = cell.Place.ID
+
+	if entity.FirstOrCreateCell(cell) == nil {
+		b.Fatal("unable to find/create cell")
+	}
+	if err := cell.Delete(); err != nil {
+		b.Fatal(err)
+	}
+
+	if err := place.Delete(); err != nil {
+		b.Fatal(err)
+	}
+
+}
+
+func fileRegenerateIndex(b *testing.B) {
+	fileId := uint(rand.IntN(100000))
+
+	file := entity.File{ID: fileId}
+	entity.Db().First(&file)
+
+	file.RegenerateIndex()
+}
+
+func listPhotos(b *testing.B) {
+	year := rand.IntN(45) + 1980
+	frm := form.SearchPhotos{
+		Year: strconv.Itoa(year),
+	}
+	_, _, err := search.Photos(frm)
+	if err != nil {
+		b.Fatal(err)
+	}
+	albumSlug := fmt.Sprintf("slug:my-photos-from-%04d", year)
+	var f form.SearchPhotos
+	f.Query = ""
+	f.Albums = albumSlug
+	_, _, err = search.Photos(f)
+	if err != nil {
+		b.Fatal(err)
+	}
+}
