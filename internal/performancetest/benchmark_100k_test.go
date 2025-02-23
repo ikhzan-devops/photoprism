@@ -11,6 +11,7 @@ import (
 	"testing"
 
 	"github.com/photoprism/photoprism/internal/entity"
+	"github.com/photoprism/photoprism/internal/entity/migrate"
 	"github.com/photoprism/photoprism/internal/entity/search"
 	"github.com/photoprism/photoprism/internal/event"
 	"github.com/photoprism/photoprism/internal/form"
@@ -43,9 +44,16 @@ func Benchmark100k_SQLite(b *testing.B) {
 	// Force the dbConn to nil so that a new database can be connected to.
 	entity.SetDbProvider(nil)
 
-	db := entity.InitTestDb(
-		"sqlite3",
-		dumpName)
+	// Create gorm.DB connection provider.
+	db := &entity.DbConn{
+		Driver: "sqlite3",
+		Dsn:    dumpName,
+	}
+
+	// Insert test fixtures into the database.
+	entity.SetDbProvider(db)
+
+	entity.InitDb(migrate.Opt(true, false, nil))
 
 	defer db.Close()
 
@@ -85,9 +93,16 @@ func Benchmark100k_MySQL(b *testing.B) {
 	// Force the dbConn to nil so that a new database can be connected to.
 	entity.SetDbProvider(nil)
 
-	db := entity.InitTestDb(
-		"mysql",
-		mysqlDSN)
+	// Create gorm.DB connection provider.
+	db := &entity.DbConn{
+		Driver: "mysql",
+		Dsn:    mysqlDSN,
+	}
+
+	// Insert test fixtures into the database.
+	entity.SetDbProvider(db)
+
+	entity.InitDb(migrate.Opt(true, false, nil))
 
 	defer db.Close()
 
