@@ -107,7 +107,7 @@ var DialectSQLite = Migrations{
 	},
 	{
 		ID:         "20241010-000001",
-		Dialect:    "sqlite3",
+		Dialect:    "sqlite",
 		Stage:      "main",
 		Statements: []string{"UPDATE countries SET country_name = 'United States' WHERE country_name = 'USA' AND country_slug = 'usa';", "UPDATE albums SET album_location = 'United States' WHERE album_location = 'USA' AND album_type = 'state';"},
 	},

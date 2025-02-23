@@ -73,7 +73,7 @@ func UnscopedDb() *gorm.DB {
 // Supported test databases.
 const (
 	MySQL           = "mysql"
-	SQLite3         = "sqlite3"
+	SQLite3         = "sqlite"
 	SQLiteTestDB    = ".test.db"
 	SQLiteMemoryDSN = ":memory:?cache=shared"
 )
@@ -213,7 +213,7 @@ func main() {
 	event.AuditLog = log
 
 	flag.IntVar(&numberOfPhotos, "numberOfPhotos", 0, "Number of photos to generate")
-	flag.StringVar(&driver, "driver", "sqlite3", "GORM driver to use.  Choose from sqlite3, mysql and postgres")
+	flag.StringVar(&driver, "driver", "sqlite", "GORM driver to use.  Choose from sqlite, mysql and postgres")
 	flag.StringVar(&dsn, "dsn", "testdb.db", "DSN to access the database")
 	flag.BoolVar(&dropdb, "dropdb", false, "Drop/Delete the database")
 	flag.BoolVar(&sqlitescript, "sqlitescript", true, "Create an SQLite database from script")

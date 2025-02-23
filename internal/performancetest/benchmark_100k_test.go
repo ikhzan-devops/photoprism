@@ -27,7 +27,7 @@ func Benchmark100k_SQLite(b *testing.B) {
 
 	if !fs.FileExists(testDbOriginal) {
 		log.Info("Generating SQLite database with 100000 records")
-		generateDatabase(100000, "sqlite3", testDbOriginal, true, true)
+		generateDatabase(100000, "sqlite", testDbOriginal, true, true)
 	}
 
 	// Prepare temporary sqlite db.

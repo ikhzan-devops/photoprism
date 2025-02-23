@@ -16,19 +16,19 @@ func BenchmarkMigration_SQLite(b *testing.B) {
 	if !fs.FileExists("../../storage/test-1k.original.sqlite") {
 		log.Info("Generating SQLite database with 1000 records")
 		event.Log.SetLevel(logrus.ErrorLevel)
-		generateDatabase(1000, "sqlite3", "../../storage/test-1k.original.sqlite", true, true)
+		generateDatabase(1000, "sqlite", "../../storage/test-1k.original.sqlite", true, true)
 		event.Log.SetLevel(loglevel)
 	}
 	if !fs.FileExists("../../storage/test-10k.original.sqlite") {
 		log.Info("Generating SQLite database with 10000 records")
 		event.Log.SetLevel(logrus.ErrorLevel)
-		generateDatabase(10000, "sqlite3", "../../storage/test-10k.original.sqlite", true, true)
+		generateDatabase(10000, "sqlite", "../../storage/test-10k.original.sqlite", true, true)
 		event.Log.SetLevel(loglevel)
 	}
 	if !fs.FileExists("../../storage/test-100k.original.sqlite") {
 		log.Info("Generating SQLite database with 100000 records")
 		event.Log.SetLevel(logrus.ErrorLevel)
-		generateDatabase(100000, "sqlite3", "../../storage/test-100k.original.sqlite", true, true)
+		generateDatabase(100000, "sqlite", "../../storage/test-100k.original.sqlite", true, true)
 		event.Log.SetLevel(loglevel)
 	}
 
