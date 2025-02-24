@@ -140,7 +140,7 @@ func mysqlMigration(testDbOriginal string, numberOfRecords int, testname string,
 	start := time.Now()
 
 	log = logrus.StandardLogger()
-	log.SetLevel(logrus.TraceLevel)
+	log.SetLevel(logrus.ErrorLevel)
 
 	db, err := gorm.Open(mysql.Open(
 		"migrate:migrate@tcp(mariadb:4001)/migrate?charset=utf8mb4,utf8&collation=utf8mb4_unicode_ci&parseTime=true"),
