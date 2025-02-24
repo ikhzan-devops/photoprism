@@ -20,7 +20,6 @@ import (
 	"github.com/photoprism/photoprism/internal/entity/migrate"
 	"github.com/photoprism/photoprism/internal/mutex"
 	"github.com/photoprism/photoprism/pkg/clean"
-	"github.com/photoprism/photoprism/pkg/log/dummy"
 	"github.com/photoprism/photoprism/pkg/txt"
 )
 
@@ -387,13 +386,13 @@ func (c *Config) checkDb(db *gorm.DB) error {
 func gormConfig() *gorm.Config {
 	return &gorm.Config{
 		Logger: logger.New(
-			/* log, */ dummy.NewLogger(),
+			log, // This should be dummy.NewLogger(), to match GORM1.  Set to log before release...
 			logger.Config{
-				SlowThreshold:             time.Second,   // Slow SQL threshold
-				LogLevel:                  logger.Silent, // Log level
-				IgnoreRecordNotFoundError: true,          // Ignore ErrRecordNotFound error for logger
-				ParameterizedQueries:      true,          // Don't include params in the SQL log
-				Colorful:                  false,         // Disable color
+				SlowThreshold:             time.Second,  // Slow SQL threshold
+				LogLevel:                  logger.Error, // Log level  <-- This should be Silent to match GORM1, set to Error before release...
+				IgnoreRecordNotFoundError: true,         // Ignore ErrRecordNotFound error for logger
+				ParameterizedQueries:      true,         // Don't include params in the SQL log
+				Colorful:                  false,        // Disable color
 			},
 		),
 		// Set UTC as the default for created and updated timestamps.
