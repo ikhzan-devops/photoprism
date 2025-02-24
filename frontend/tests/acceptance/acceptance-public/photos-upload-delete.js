@@ -51,6 +51,7 @@ test.meta("testID", "photos-upload-delete-001").meta({ type: "short", mode: "pub
 
       const UploadedPhoto = await photo.getNthPhotoUid("all", 0);
       await t.navigateTo("/library/index/files/2020/10");
+      await t.wait(5000);
       const FileCount = await originals.getFileCount();
 
       await t.expect(FileCount).eql(2);
@@ -119,6 +120,8 @@ test.meta("testID", "photos-upload-delete-002").meta({ mode: "public" })("Core: 
 
     const UploadedPhoto = await photo.getNthPhotoUid("all", 0);
     await t.navigateTo("/library/index/files/2020/06");
+    await t.wait(5000);
+
     const FileCount = await originals.getFileCount();
 
     await t.expect(FileCount).eql(1);
@@ -179,6 +182,7 @@ test.meta("testID", "photos-upload-delete-003").meta({ mode: "public" })(
       await toolbar.triggerToolbarAction("upload");
       await t.setFilesToUpload(Selector(".input-upload"), ["../../upload-files/ladybug.jpg"]).wait(15000);
       await toolbar.triggerToolbarAction("reload");
+      await t.wait(5000);
       const PhotoCountAfterUpload = await photo.getPhotoCount("all");
 
       await t.expect(PhotoCountAfterUpload).eql(PhotoCount + 1);

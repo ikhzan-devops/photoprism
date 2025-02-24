@@ -46,7 +46,7 @@ msgstr "{2}的{0}-{1}部分"
 msgid "%{n} albums found"
 msgstr "已找到 %{n} 个相册"
 
-#: src/component/service/upload.vue:92
+#: src/component/service/upload.vue:106
 msgid "%{n} files uploaded"
 msgstr "已上传 %{n} 个文件"
 
@@ -580,7 +580,7 @@ msgstr "无法选择更多项目"
 #: src/component/photo/album/dialog.vue:78
 #: src/component/photo/delete/dialog.vue:56 src/component/service/add.vue:19
 #: src/component/service/edit.vue:453 src/component/service/remove.vue:49
-#: src/component/service/upload.vue:115 src/component/settings/apps.vue:352
+#: src/component/service/upload.vue:116 src/component/settings/apps.vue:352
 #: src/component/settings/passcode.vue:249
 #: src/component/settings/passcode.vue:333
 #: src/component/settings/password.vue:159 src/component/share/dialog.vue:28
@@ -829,7 +829,7 @@ msgstr "Cubic: 质量适中，性能良好"
 msgid "Current Password"
 msgstr "当前密码"
 
-#: src/options/themes.js:857 src/options/themes.js:866
+#: src/options/themes.js:870 src/options/themes.js:879
 msgid "Custom"
 msgstr "定制"
 
@@ -866,7 +866,7 @@ msgstr "调试日志"
 #: src/component/photo/edit/info.vue:110 src/model/session.js:64
 #: src/model/user.js:244 src/options/auth.js:20 src/options/auth.js:21
 #: src/options/auth.js:39 src/options/auth.js:40 src/options/options.js:323
-#: src/options/options.js:387 src/options/themes.js:711 src/page/places.vue:309
+#: src/options/options.js:387 src/options/themes.js:724 src/page/places.vue:309
 msgid "Default"
 msgstr "默认"
 
@@ -1032,7 +1032,7 @@ msgstr "下载单个文件并用 zip 压缩。"
 #: src/component/album/clipboard.vue:102 src/component/album/toolbar.vue:105
 #: src/component/file/clipboard.vue:61 src/component/label/clipboard.vue:86
 #: src/component/lightbox.vue:1614 src/component/people/clipboard.vue:59
-#: src/component/photo/clipboard.vue:216 src/component/photo/edit/files.vue:117
+#: src/component/photo/clipboard.vue:217 src/component/photo/edit/files.vue:117
 #: src/component/photo/view/cards.vue:164 src/component/photo/view/list.vue:133
 #: src/page/library/browse.vue:124
 msgid "Downloading…"
@@ -1957,7 +1957,7 @@ msgstr "没有最近编辑过的图片"
 msgid "No server connection"
 msgstr "无服务器连接"
 
-#: src/component/service/upload.vue:76
+#: src/component/service/upload.vue:90
 msgid "No servers configured."
 msgstr "沒有服务器配置。"
 
@@ -1985,6 +1985,7 @@ msgid "None"
 msgstr "无"
 
 #: src/common/util.js:726 src/component/lightbox.vue:569
+#: src/component/service/upload.vue:75 src/component/service/upload.vue:87
 msgid "Not allowed"
 msgstr "不允许"
 
@@ -2060,7 +2061,7 @@ msgstr "已找到一本相册"
 msgid "One file found"
 msgstr "已找到一个文件"
 
-#: src/component/service/upload.vue:90
+#: src/component/service/upload.vue:104
 msgid "One file uploaded"
 msgstr "已上传一个文件"
 
@@ -2174,7 +2175,7 @@ msgstr "人物"
 msgid "People you share a link with will be able to view public contents."
 msgstr "与您共享链接的人将可以查看公共内容。"
 
-#: src/component/photo/clipboard.vue:122 src/component/photo/toolbar.vue:207
+#: src/component/photo/clipboard.vue:123 src/component/photo/toolbar.vue:207
 msgid "Permanently deleted"
 msgstr "已永久删除"
 
@@ -2436,7 +2437,7 @@ msgstr "远端同步"
 msgid "Remove"
 msgstr "移除"
 
-#: src/component/photo/clipboard.vue:162
+#: src/component/photo/clipboard.vue:163
 msgid "remove failed: unknown album"
 msgstr "移除失败：未知相册"
 
@@ -2584,15 +2585,15 @@ msgstr "选择要编制索引的文件夹…"
 msgid "Select Time"
 msgstr "选择时间"
 
-#: src/component/photo/clipboard.vue:72
+#: src/component/photo/clipboard.vue:73
 msgid "Selection approved"
 msgstr "所选项已批准"
 
-#: src/component/photo/clipboard.vue:102
+#: src/component/photo/clipboard.vue:103
 msgid "Selection archived"
 msgstr "所选项已归档"
 
-#: src/component/photo/clipboard.vue:135
+#: src/component/photo/clipboard.vue:136
 msgid "Selection restored"
 msgstr "所选项已恢复"
 
@@ -2636,7 +2637,7 @@ msgstr "设置"
 msgid "Settings saved"
 msgstr "设置已保存"
 
-#: src/component/service/upload.vue:129 src/component/settings/passcode.vue:160
+#: src/component/service/upload.vue:130 src/component/settings/passcode.vue:160
 msgid "Setup"
 msgstr "设置"
 
@@ -3065,7 +3066,7 @@ msgstr "立即升级"
 
 #: src/component/album/toolbar.vue:210 src/component/navigation.vue:1733
 #: src/component/photo/toolbar.vue:196 src/component/photo/upload/dialog.vue:48
-#: src/component/service/upload.vue:142 src/page/albums.vue:132
+#: src/component/service/upload.vue:143 src/page/albums.vue:132
 #: src/page/library/import.vue:117 src/page/settings/general.vue:228
 #: src/page/settings/services.vue:37
 msgid "Upload"

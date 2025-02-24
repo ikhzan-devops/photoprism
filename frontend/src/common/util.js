@@ -609,13 +609,13 @@ export default class $util {
     }
   }
 
-  static thumbSize(pixelsWidth, pixelsHeight) {
+  static thumbSize(viewportWidth, viewportHeight) {
     const thumbs = $config.values.thumbs;
 
     for (let i = 0; i < thumbs.length; i++) {
       let t = thumbs[i];
 
-      if (t.w >= pixelsWidth && t.h >= pixelsHeight) {
+      if (t.w >= viewportWidth || t.h >= viewportHeight) {
         return t.size;
       }
     }

@@ -268,7 +268,7 @@ export default [
     beforeEnter: (to, from, next) => {
       if ($session.loginRequired()) {
         next({ name: loginRoute });
-      } else if ($config.deny("library", "manage")) {
+      } else if ($config.deny("photos", "delete")) {
         next({ name: $session.getDefaultRoute() });
       } else {
         next();

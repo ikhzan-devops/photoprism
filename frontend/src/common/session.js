@@ -521,7 +521,7 @@ export default class Session {
 
     // Time to redirect in milliseconds.
     if (!delay) {
-      delay = 100;
+      delay = 50;
     }
 
     // Block UI interactions.

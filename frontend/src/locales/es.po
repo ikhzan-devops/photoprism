@@ -46,7 +46,7 @@ msgstr "{0}-{1} de {2}"
 msgid "%{n} albums found"
 msgstr "%{n} álbumes encontrados"
 
-#: src/component/service/upload.vue:92
+#: src/component/service/upload.vue:106
 msgid "%{n} files uploaded"
 msgstr "%{n} archivos subidos"
 
@@ -580,7 +580,7 @@ msgstr "No puedes seleccionar más elementos"
 #: src/component/photo/album/dialog.vue:78
 #: src/component/photo/delete/dialog.vue:56 src/component/service/add.vue:19
 #: src/component/service/edit.vue:453 src/component/service/remove.vue:49
-#: src/component/service/upload.vue:115 src/component/settings/apps.vue:352
+#: src/component/service/upload.vue:116 src/component/settings/apps.vue:352
 #: src/component/settings/passcode.vue:249
 #: src/component/settings/passcode.vue:333
 #: src/component/settings/password.vue:159 src/component/share/dialog.vue:28
@@ -829,7 +829,7 @@ msgstr "Cúbico: Calidad moderada, buen rendimiento"
 msgid "Current Password"
 msgstr "Contraseña actual"
 
-#: src/options/themes.js:857 src/options/themes.js:866
+#: src/options/themes.js:870 src/options/themes.js:879
 msgid "Custom"
 msgstr "Personalizado"
 
@@ -866,7 +866,7 @@ msgstr "Registros de depuración"
 #: src/component/photo/edit/info.vue:110 src/model/session.js:64
 #: src/model/user.js:244 src/options/auth.js:20 src/options/auth.js:21
 #: src/options/auth.js:39 src/options/auth.js:40 src/options/options.js:323
-#: src/options/options.js:387 src/options/themes.js:711 src/page/places.vue:309
+#: src/options/options.js:387 src/options/themes.js:724 src/page/places.vue:309
 msgid "Default"
 msgstr "Por defecto"
 
@@ -1032,7 +1032,7 @@ msgstr "Descargar archivos individuales y zip."
 #: src/component/album/clipboard.vue:102 src/component/album/toolbar.vue:105
 #: src/component/file/clipboard.vue:61 src/component/label/clipboard.vue:86
 #: src/component/lightbox.vue:1614 src/component/people/clipboard.vue:59
-#: src/component/photo/clipboard.vue:216 src/component/photo/edit/files.vue:117
+#: src/component/photo/clipboard.vue:217 src/component/photo/edit/files.vue:117
 #: src/component/photo/view/cards.vue:164 src/component/photo/view/list.vue:133
 #: src/page/library/browse.vue:124
 msgid "Downloading…"
@@ -1958,7 +1958,7 @@ msgstr "No hay imágenes editadas recientemente"
 msgid "No server connection"
 msgstr "No hay conexión con el servidor"
 
-#: src/component/service/upload.vue:76
+#: src/component/service/upload.vue:90
 msgid "No servers configured."
 msgstr "Sin servidores configurados."
 
@@ -1986,6 +1986,7 @@ msgid "None"
 msgstr "Ninguno"
 
 #: src/common/util.js:726 src/component/lightbox.vue:569
+#: src/component/service/upload.vue:75 src/component/service/upload.vue:87
 msgid "Not allowed"
 msgstr "No autorizado"
 
@@ -2061,7 +2062,7 @@ msgstr "Un álbum encontrado"
 msgid "One file found"
 msgstr "Un archivo encontrado"
 
-#: src/component/service/upload.vue:90
+#: src/component/service/upload.vue:104
 msgid "One file uploaded"
 msgstr "Un archivo cargado"
 
@@ -2174,7 +2175,7 @@ msgstr "Gente"
 msgid "People you share a link with will be able to view public contents."
 msgstr "La gente con la que compartas un enlace podrá ver los contenidos públicos."
 
-#: src/component/photo/clipboard.vue:122 src/component/photo/toolbar.vue:207
+#: src/component/photo/clipboard.vue:123 src/component/photo/toolbar.vue:207
 msgid "Permanently deleted"
 msgstr "Eliminado permanentemente"
 
@@ -2435,7 +2436,7 @@ msgstr "Sincronización remota"
 msgid "Remove"
 msgstr "Eliminar"
 
-#: src/component/photo/clipboard.vue:162
+#: src/component/photo/clipboard.vue:163
 msgid "remove failed: unknown album"
 msgstr "eliminación ha fallado: álbum desconocido"
 
@@ -2583,15 +2584,15 @@ msgstr "Selecciona la carpeta a indexar…"
 msgid "Select Time"
 msgstr "Selecciona Hora"
 
-#: src/component/photo/clipboard.vue:72
+#: src/component/photo/clipboard.vue:73
 msgid "Selection approved"
 msgstr "Selección aprobada"
 
-#: src/component/photo/clipboard.vue:102
+#: src/component/photo/clipboard.vue:103
 msgid "Selection archived"
 msgstr "Selección archivada"
 
-#: src/component/photo/clipboard.vue:135
+#: src/component/photo/clipboard.vue:136
 msgid "Selection restored"
 msgstr "Selección restaurada"
 
@@ -2635,7 +2636,7 @@ msgstr "Ajustes"
 msgid "Settings saved"
 msgstr "Ajustes guardados"
 
-#: src/component/service/upload.vue:129 src/component/settings/passcode.vue:160
+#: src/component/service/upload.vue:130 src/component/settings/passcode.vue:160
 msgid "Setup"
 msgstr "Configurar"
 
@@ -3064,7 +3065,7 @@ msgstr "Mejore su plan ahora"
 
 #: src/component/album/toolbar.vue:210 src/component/navigation.vue:1733
 #: src/component/photo/toolbar.vue:196 src/component/photo/upload/dialog.vue:48
-#: src/component/service/upload.vue:142 src/page/albums.vue:132
+#: src/component/service/upload.vue:143 src/page/albums.vue:132
 #: src/page/library/import.vue:117 src/page/settings/general.vue:228
 #: src/page/settings/services.vue:37
 msgid "Upload"

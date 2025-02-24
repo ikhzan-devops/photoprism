@@ -280,6 +280,10 @@ div.v-dialog.v-dialog--fullscreen > div.v-card {
     opacity: var(--v-disabled-opacity);
 }
 
+.v-input .v-field__field input::placeholder {
+    opacity: 0.6;
+}
+
 .v-btn {
     letter-spacing: .0125em;
 }

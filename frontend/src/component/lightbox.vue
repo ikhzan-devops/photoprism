@@ -1981,7 +1981,7 @@ export default {
       }
 
       // Do not proceed unless the image is zoomed to near its intrinsic (natural) size.
-      if (zoomLevel < 0.9) {
+      if (zoomLevel < 0.95) {
         return;
       }
 

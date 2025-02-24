@@ -38,7 +38,7 @@ require (
 	github.com/tidwall/gjson v1.18.0
 	github.com/ulule/deepcopier v0.0.0-20200430083143-45decc6639b6
 	go4.org v0.0.0-20230225012048-214862532bf5 // indirect
-	golang.org/x/crypto v0.33.0
+	golang.org/x/crypto v0.34.0
 	golang.org/x/net v0.35.0
 	gonum.org/v1/gonum v0.15.1
 	gopkg.in/photoprism/go-tz.v2 v2.1.3
@@ -77,6 +77,14 @@ require (
 	gorm.io/driver/postgres v1.5.9
 	gorm.io/driver/sqlite v1.5.6
 	gorm.io/gorm v1.25.12
+	github.com/davidbyttow/govips/v2 v2.16.0
+	github.com/go-co-op/gocron/v2 v2.15.0
+	github.com/pquerna/otp v1.4.0
+	github.com/robfig/cron/v3 v3.0.1
+	github.com/swaggo/files v1.0.1
+	github.com/swaggo/gin-swagger v1.6.0
+	github.com/urfave/cli/v2 v2.27.5
+	github.com/zitadel/oidc/v3 v3.34.1
 )
 
 require (

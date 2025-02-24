@@ -180,7 +180,7 @@ export class Rest extends Model {
   }
 
   static limit() {
-    return 10000;
+    return 100000;
   }
 
   static search(params) {

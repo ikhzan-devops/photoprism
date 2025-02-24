@@ -12,15 +12,15 @@ export default class Page {
   async openPhotoViewer(mode, uidOrNth) {
     if (mode === "uid") {
       await t.hover(Selector("div.is-photo").withAttribute("data-uid", uidOrNth));
-      if (await Selector(`.uid-${uidOrNth} button.input-view`).visible) {
-        await t.click(Selector(`.uid-${uidOrNth} button.input-view`));
+      if (await Selector(`.uid-${uidOrNth} button.input-open`).visible) {
+        await t.click(Selector(`.uid-${uidOrNth} button.input-open`));
       } else {
         await t.click(Selector("div.is-photo").withAttribute("data-uid", uidOrNth));
       }
     } else if (mode === "nth") {
       await t.hover(Selector("div.is-photo").nth(uidOrNth));
-      if (await Selector(`div.is-photo button.input-view`).visible) {
-        await t.click(Selector(`div.is-photo button.input-view`));
+      if (await Selector(`div.is-photo button.input-open`).visible) {
+        await t.click(Selector(`div.is-photo button.input-open`));
       } else {
         await t.click(Selector("div.is-photo").nth(uidOrNth));
       }

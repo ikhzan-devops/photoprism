@@ -27,7 +27,7 @@
         </template>
 
         <v-btn
-          v-if="canShare && context !== 'archive' && context !== 'hidden' && context !== 'review'"
+          v-if="canServiceUpload && context !== 'archive' && context !== 'hidden' && context !== 'review'"
           key="action-share"
           :title="$gettext('Share')"
           icon="mdi-share"
@@ -217,6 +217,7 @@ export default {
       canDelete: this.$config.allow("photos", "delete") && features.delete,
       canDownload: this.$config.allow("photos", "download") && features.download,
       canShare: this.$config.allow("photos", "share") && features.share,
+      canServiceUpload: this.$config.feature("services") && this.$config.allow("services", "upload"),
       canManage: this.$config.allow("photos", "manage") && features.albums,
       canEdit: this.$config.allow("photos", "update") && features.edit,
       canEditAlbum: this.$config.allow("albums", "update") && features.albums,

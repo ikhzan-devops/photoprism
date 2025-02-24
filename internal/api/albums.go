@@ -55,21 +55,27 @@ func GetAlbum(router *gin.RouterGroup) {
 		// Get sanitized album UID from request path.
 		uid := clean.UID(c.Param("uid"))
 
-		// Visitors and other restricted users can only access shared content.
-		if (s.User().HasSharedAccessOnly(acl.ResourceAlbums) || s.NotRegistered()) && !s.HasShare(uid) {
+		// Visitors can only access shared content.
+		if (s.NotRegistered()) && !s.HasShare(uid) {
 			AbortForbidden(c)
 			return
 		}
 
 		// Find album by UID.
-		a, err := query.AlbumByUID(uid)
+		album, err := query.AlbumByUID(uid)
 
 		if err != nil {
 			AbortAlbumNotFound(c)
 			return
 		}
 
-		c.JSON(http.StatusOK, a)
+		// Other restricted users can only access their own or shared content.
+		if s.User().HasSharedAccessOnly(acl.ResourceAlbums) && album.CreatedBy != s.UserUID && !s.HasShare(uid) {
+			AbortForbidden(c)
+			return
+		}
+
+		c.JSON(http.StatusOK, album)
 	})
 }
 
@@ -103,13 +109,13 @@ func CreateAlbum(router *gin.RouterGroup) {
 		albumMutex.Lock()
 		defer albumMutex.Unlock()
 
-		a := entity.NewUserAlbum(frm.AlbumTitle, entity.AlbumManual, s.UserUID)
-		a.AlbumFavorite = frm.AlbumFavorite
+		album := entity.NewUserAlbum(frm.AlbumTitle, entity.AlbumManual, s.UserUID)
+		album.AlbumFavorite = frm.AlbumFavorite
 
 		// Existing album?
-		if found := a.Find(); found == nil {
+		if found := album.Find(); found == nil {
 			// Not found, create new album.
-			if err := a.Create(); err != nil {
+			if err := album.Create(); err != nil {
 				// Report unexpected error.
 				log.Errorf("album: %s (create)", err)
 				AbortUnexpectedError(c)
@@ -117,11 +123,11 @@ func CreateAlbum(router *gin.RouterGroup) {
 			}
 		} else {
 			// Exists, restore if necessary.
-			a = found
-			if !a.Deleted() {
-				c.JSON(http.StatusOK, a)
+			album = found
+			if !album.Deleted() {
+				c.JSON(http.StatusOK, album)
 				return
-			} else if err := a.Restore(); err != nil {
+			} else if err := album.Restore(); err != nil {
 				// Report unexpected error.
 				log.Errorf("album: %s (restore)", err)
 				AbortUnexpectedError(c)
@@ -132,10 +138,10 @@ func CreateAlbum(router *gin.RouterGroup) {
 		UpdateClientConfig()
 
 		// Update album YAML backup.
-		SaveAlbumYaml(*a)
+		SaveAlbumYaml(*album)
 
 		// Return as JSON.
-		c.JSON(http.StatusOK, a)
+		c.JSON(http.StatusOK, album)
 	})
 }
 
@@ -169,14 +175,14 @@ func UpdateAlbum(router *gin.RouterGroup) {
 		}
 
 		// Find album by UID.
-		a, err := query.AlbumByUID(uid)
+		album, err := query.AlbumByUID(uid)
 
 		if err != nil {
 			AbortAlbumNotFound(c)
 			return
 		}
 
-		frm, err := form.NewAlbum(a)
+		frm, err := form.NewAlbum(album)
 
 		if err != nil {
 			log.Error(err)
@@ -194,7 +200,7 @@ func UpdateAlbum(router *gin.RouterGroup) {
 		albumMutex.Lock()
 		defer albumMutex.Unlock()
 
-		if err = a.SaveForm(frm); err != nil {
+		if err = album.SaveForm(frm); err != nil {
 			log.Error(err)
 			AbortSaveFailed(c)
 			return
@@ -207,9 +213,9 @@ func UpdateAlbum(router *gin.RouterGroup) {
 		UpdateClientConfig()
 
 		// Update album YAML backup.
-		SaveAlbumYaml(a)
+		SaveAlbumYaml(album)
 
-		c.JSON(http.StatusOK, a)
+		c.JSON(http.StatusOK, album)
 	})
 }
 
@@ -241,7 +247,7 @@ func DeleteAlbum(router *gin.RouterGroup) {
 		}
 
 		// Find album by UID.
-		a, err := query.AlbumByUID(uid)
+		album, err := query.AlbumByUID(uid)
 
 		if err != nil {
 			AbortAlbumNotFound(c)
@@ -252,9 +258,9 @@ func DeleteAlbum(router *gin.RouterGroup) {
 		defer albumMutex.Unlock()
 
 		// Regular, manually created album?
-		if a.IsDefault() {
+		if album.IsDefault() {
 			// Soft delete manually created albums.
-			err = a.Delete()
+			err = album.Delete()
 
 			// Also update album YAML backup.
 			if err != nil {
@@ -262,18 +268,18 @@ func DeleteAlbum(router *gin.RouterGroup) {
 				AbortDeleteFailed(c)
 				return
 			} else {
-				SaveAlbumYaml(a)
+				SaveAlbumYaml(album)
 			}
 		} else {
 			// Permanently delete automatically created albums.
-			err = a.DeletePermanently()
+			err = album.DeletePermanently()
 
 			// Also remove YAML backup file, if it exists.
 			if err != nil {
 				log.Errorf("album: %s (delete permanently)", err)
 				AbortDeleteFailed(c)
 				return
-			} else if fileName, relName, nameErr := a.YamlFileName(get.Config().BackupAlbumsPath()); nameErr != nil {
+			} else if fileName, relName, nameErr := album.YamlFileName(get.Config().BackupAlbumsPath()); nameErr != nil {
 				log.Warnf("album: %s (delete %s)", err, clean.Log(relName))
 			} else if !fs.FileExists(fileName) {
 				// Do nothing.
@@ -284,7 +290,7 @@ func DeleteAlbum(router *gin.RouterGroup) {
 
 		UpdateClientConfig()
 
-		c.JSON(http.StatusOK, a)
+		c.JSON(http.StatusOK, album)
 	})
 }
 
@@ -316,14 +322,14 @@ func LikeAlbum(router *gin.RouterGroup) {
 		}
 
 		// Find album by UID.
-		a, err := query.AlbumByUID(uid)
+		album, err := query.AlbumByUID(uid)
 
 		if err != nil {
 			AbortAlbumNotFound(c)
 			return
 		}
 
-		if err := a.Update("AlbumFavorite", true); err != nil {
+		if err = album.Update("AlbumFavorite", true); err != nil {
 			Abort(c, http.StatusInternalServerError, i18n.ErrSaveFailed)
 			return
 		}
@@ -333,7 +339,7 @@ func LikeAlbum(router *gin.RouterGroup) {
 		PublishAlbumEvent(StatusUpdated, uid, c)
 
 		// Update album YAML backup.
-		SaveAlbumYaml(a)
+		SaveAlbumYaml(album)
 
 		c.JSON(http.StatusOK, i18n.NewResponse(http.StatusOK, i18n.MsgChangesSaved))
 	})
@@ -367,14 +373,14 @@ func DislikeAlbum(router *gin.RouterGroup) {
 		}
 
 		// Find album by UID.
-		a, err := query.AlbumByUID(uid)
+		album, err := query.AlbumByUID(uid)
 
 		if err != nil {
 			AbortAlbumNotFound(c)
 			return
 		}
 
-		if err = a.Update("AlbumFavorite", false); err != nil {
+		if err = album.Update("AlbumFavorite", false); err != nil {
 			Abort(c, http.StatusInternalServerError, i18n.ErrSaveFailed)
 			return
 		}
@@ -384,7 +390,7 @@ func DislikeAlbum(router *gin.RouterGroup) {
 		PublishAlbumEvent(StatusUpdated, uid, c)
 
 		// Update album YAML backup.
-		SaveAlbumYaml(a)
+		SaveAlbumYaml(album)
 
 		c.JSON(http.StatusOK, i18n.NewResponse(http.StatusOK, i18n.MsgChangesSaved))
 	})
@@ -420,7 +426,7 @@ func CloneAlbums(router *gin.RouterGroup) {
 		}
 
 		// Find album by UID.
-		a, err := query.AlbumByUID(uid)
+		album, err := query.AlbumByUID(uid)
 
 		if err != nil {
 			AbortAlbumNotFound(c)
@@ -452,19 +458,19 @@ func CloneAlbums(router *gin.RouterGroup) {
 				continue
 			}
 
-			added = append(added, a.AddPhotos(photos)...)
+			added = append(added, album.AddPhotos(photos)...)
 		}
 
 		if len(added) > 0 {
-			event.SuccessMsg(i18n.MsgSelectionAddedTo, clean.Log(a.Title()))
+			event.SuccessMsg(i18n.MsgSelectionAddedTo, clean.Log(album.Title()))
 
-			PublishAlbumEvent(StatusUpdated, a.AlbumUID, c)
+			PublishAlbumEvent(StatusUpdated, album.AlbumUID, c)
 
 			// Update album YAML backup.
-			SaveAlbumYaml(a)
+			SaveAlbumYaml(album)
 		}
 
-		c.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "message": i18n.Msg(i18n.MsgAlbumCloned), "album": a, "added": added})
+		c.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "message": i18n.Msg(i18n.MsgAlbumCloned), "album": album, "added": added})
 	})
 }
 
@@ -506,12 +512,12 @@ func AddPhotosToAlbum(router *gin.RouterGroup) {
 		}
 
 		// Find album by UID.
-		a, err := query.AlbumByUID(uid)
+		album, err := query.AlbumByUID(uid)
 
 		if err != nil {
 			AbortAlbumNotFound(c)
 			return
-		} else if !a.HasID() {
+		} else if !album.HasID() {
 			AbortAlbumNotFound(c)
 			return
 		} else if frm.Empty() {
@@ -530,21 +536,21 @@ func AddPhotosToAlbum(router *gin.RouterGroup) {
 
 		conf := get.Config()
 
-		added := a.AddPhotos(photos)
+		added := album.AddPhotos(photos)
 
 		if len(added) > 0 {
 			if len(added) == 1 {
-				event.SuccessMsg(i18n.MsgEntryAddedTo, clean.Log(a.Title()))
+				event.SuccessMsg(i18n.MsgEntryAddedTo, clean.Log(album.Title()))
 			} else {
-				event.SuccessMsg(i18n.MsgEntriesAddedTo, len(added), clean.Log(a.Title()))
+				event.SuccessMsg(i18n.MsgEntriesAddedTo, len(added), clean.Log(album.Title()))
 			}
 
-			RemoveFromAlbumCoverCache(a.AlbumUID)
+			RemoveFromAlbumCoverCache(album.AlbumUID)
 
-			PublishAlbumEvent(StatusUpdated, a.AlbumUID, c)
+			PublishAlbumEvent(StatusUpdated, album.AlbumUID, c)
 
 			// Update album YAML backup.
-			SaveAlbumYaml(a)
+			SaveAlbumYaml(album)
 
 			// Auto-approve photos that have been added to an album,
 			// see https://github.com/photoprism/photoprism/issues/4229
@@ -575,7 +581,7 @@ func AddPhotosToAlbum(router *gin.RouterGroup) {
 			}
 		}
 
-		c.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "message": i18n.Msg(i18n.MsgChangesSaved), "album": a, "photos": photos.UIDs(), "added": added})
+		c.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "message": i18n.Msg(i18n.MsgChangesSaved), "album": album, "photos": photos.UIDs(), "added": added})
 	})
 }
 
@@ -622,33 +628,33 @@ func RemovePhotosFromAlbum(router *gin.RouterGroup) {
 		}
 
 		// Find album by UID.
-		a, err := query.AlbumByUID(uid)
+		album, err := query.AlbumByUID(uid)
 
 		if err != nil {
 			AbortAlbumNotFound(c)
 			return
-		} else if !a.HasID() {
+		} else if !album.HasID() {
 			AbortAlbumNotFound(c)
 			return
 		}
 
-		removed := a.RemovePhotos(frm.Photos)
+		removed := album.RemovePhotos(frm.Photos)
 
 		if len(removed) > 0 {
 			if len(removed) == 1 {
-				event.SuccessMsg(i18n.MsgEntryRemovedFrom, clean.Log(a.Title()))
+				event.SuccessMsg(i18n.MsgEntryRemovedFrom, clean.Log(album.Title()))
 			} else {
-				event.SuccessMsg(i18n.MsgEntriesRemovedFrom, len(removed), clean.Log(a.Title()))
+				event.SuccessMsg(i18n.MsgEntriesRemovedFrom, len(removed), clean.Log(album.Title()))
 			}
 
-			RemoveFromAlbumCoverCache(a.AlbumUID)
+			RemoveFromAlbumCoverCache(album.AlbumUID)
 
-			PublishAlbumEvent(StatusUpdated, a.AlbumUID, c)
+			PublishAlbumEvent(StatusUpdated, album.AlbumUID, c)
 
 			// Update album YAML backup.
-			SaveAlbumYaml(a)
+			SaveAlbumYaml(album)
 		}
 
-		c.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "message": i18n.Msg(i18n.MsgChangesSaved), "album": a, "photos": frm.Photos, "removed": removed})
+		c.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "message": i18n.Msg(i18n.MsgChangesSaved), "album": album, "photos": frm.Photos, "removed": removed})
 	})
 }

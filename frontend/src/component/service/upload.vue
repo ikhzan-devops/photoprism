@@ -45,6 +45,7 @@
                 item-title="abs"
                 item-value="abs"
                 :label="$gettext('Folder')"
+                @update:model-value="setPath"
               >
               </v-autocomplete>
             </v-col>
@@ -56,7 +57,7 @@
           </v-btn>
           <v-btn
             v-if="noServices"
-            :disabled="isPublic && !isDemo"
+            :disabled="!canManage || (isPublic && !isDemo)"
             color="highlight"
             variant="flat"
             class="action-setup"
@@ -66,7 +67,7 @@
           </v-btn>
           <v-btn
             v-else
-            :disabled="noServices || !service"
+            :disabled="!canUpload || noServices || !service"
             color="highlight"
             variant="flat"
             class="action-upload"
@@ -103,6 +104,8 @@ export default {
     return {
       isDemo: this.$config.get("demo"),
       isPublic: this.$config.get("public"),
+      canManage: this.$config.feature("services") && this.$config.allow("services", "manage"),
+      canUpload: this.$config.feature("services") && this.$config.allow("services", "upload"),
       noServices: false,
       loading: false,
       search: null,
@@ -151,10 +154,22 @@ export default {
       this.$emit("close");
     },
     setup() {
-      this.$router.push({ name: "settings_services" });
+      if (!this.canManage) {
+        this.$notify.error(this.$gettext("Not allowed"));
+        return;
+      }
+
+      this.$emit("close");
+
+      this.$nextTick(() => {
+        this.$router.push({ name: "settings_services" });
+      });
     },
     confirm() {
-      if (this.noServices) {
+      if (!this.canUpload) {
+        this.$notify.error(this.$gettext("Not allowed"));
+        return;
+      } else if (this.noServices) {
         this.$notify.warn(this.$gettext("No servers configured."));
         return;
       } else if (this.loading) {
@@ -178,6 +193,9 @@ export default {
         })
         .catch(() => (this.loading = false));
     },
+    setPath(path) {
+      this.path = path ? path : "/";
+    },
     onChange() {
       if (this.loading) {
         return;
@@ -186,15 +204,13 @@ export default {
       this.loading = true;
 
       this.paths = [{ abs: "/" }];
+      this.pathItems = [];
 
       this.service
         .Folders()
-        .then((p) => {
-          for (let i = 0; i < p.length; i++) {
-            this.paths.push(p[i]);
-          }
-
-          this.pathItems = [...this.paths];
+        .then((paths) => {
+          this.paths = [...paths];
+          this.pathItems = [...paths];
           this.path = this.service.SharePath;
         })
         .finally(() => (this.loading = false));
@@ -226,9 +242,9 @@ export default {
 
       Service.search(params)
         .then((response) => {
+          this.loading = false;
           if (!response.models.length) {
             this.noServices = true;
-            this.loading = false;
             this.services.length = 0;
             this.service = null;
           } else {
@@ -237,7 +253,7 @@ export default {
             this.onChange();
           }
         })
-        .finally(() => (this.loading = false));
+        .catch(() => (this.loading = false));
     },
   },
 };

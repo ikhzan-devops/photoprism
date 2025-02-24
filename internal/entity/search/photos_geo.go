@@ -84,23 +84,26 @@ func UserPhotosGeo(frm form.SearchPhotosGeo, sess *entity.Session) (results GeoR
 		frm.Album = ""
 	}
 
+	var album entity.Album
+	var albumErr error
+
 	// Limit search results to a specific UID scope, e.g. when sharing.
 	if txt.NotEmpty(frm.Scope) {
 		frm.Scope = strings.ToLower(frm.Scope)
 
 		if idType, idPrefix := rnd.IdType(frm.Scope); idType != rnd.TypeUID || idPrefix != entity.AlbumUID {
 			return GeoResults{}, ErrInvalidId
-		} else if a, err := entity.CachedAlbumByUID(frm.Scope); err != nil || a.AlbumUID == "" {
+		} else if album, albumErr = entity.CachedAlbumByUID(frm.Scope); albumErr != nil || album.AlbumUID == "" {
 			return GeoResults{}, ErrInvalidId
-		} else if a.AlbumFilter == "" {
+		} else if album.AlbumFilter == "" {
 			s = s.Joins("JOIN photos_albums ON photos_albums.photo_uid = files.photo_uid").
-				Where("photos_albums.hidden = FALSE AND photos_albums.album_uid = ?", a.AlbumUID)
-		} else if formErr := form.Unserialize(&frm, a.AlbumFilter); formErr != nil {
-			log.Debugf("search: %s (%s)", clean.Error(formErr), clean.Log(a.AlbumFilter))
+				Where("photos_albums.hidden = FALSE AND photos_albums.album_uid = ?", album.AlbumUID)
+		} else if formErr := form.Unserialize(&frm, album.AlbumFilter); formErr != nil {
+			log.Debugf("search: %s (%s)", clean.Error(formErr), clean.Log(album.AlbumFilter))
 			return GeoResults{}, ErrBadFilter
 		} else {
-			frm.Filter = a.AlbumFilter
-			s = s.Where("files.photo_uid NOT IN (SELECT photo_uid FROM photos_albums pa WHERE pa.hidden = TRUE AND pa.album_uid = ?)", a.AlbumUID)
+			frm.Filter = album.AlbumFilter
+			s = s.Where("files.photo_uid NOT IN (SELECT photo_uid FROM photos_albums pa WHERE pa.hidden = TRUE AND pa.album_uid = ?)", album.AlbumUID)
 		}
 
 		// Enforce search distance range (km).
@@ -131,7 +134,7 @@ func UserPhotosGeo(frm form.SearchPhotosGeo, sess *entity.Session) (results GeoR
 		}
 
 		// Visitors and other restricted users can only access shared content.
-		if frm.Scope != "" && !sess.HasShare(frm.Scope) && (sess.User().HasSharedAccessOnly(acl.ResourcePlaces) || sess.NotRegistered()) ||
+		if frm.Scope != "" && album.CreatedBy != user.UserUID && !sess.HasShare(frm.Scope) && (sess.User().HasSharedAccessOnly(acl.ResourcePlaces) || sess.NotRegistered()) ||
 			frm.Scope == "" && acl.Rules.Deny(acl.ResourcePlaces, aclRole, acl.ActionSearch) {
 			event.AuditErr([]string{sess.IP(), "session %s", "%s %s as %s", authn.Denied}, sess.RefID, acl.ActionSearch.String(), string(acl.ResourcePlaces), aclRole)
 			return GeoResults{}, ErrForbidden

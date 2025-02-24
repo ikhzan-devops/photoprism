@@ -32,12 +32,11 @@
             v-model.lazy.trim="filter.q"
             :placeholder="$gettext('Search')"
             density="compact"
-            hide-details
-            clearable
             flat
             single-line
             overflow
-            rounded
+            clearable
+            hide-details
             theme="light"
             validate-on="invalid-input"
             prepend-inner-icon="mdi-magnify"
@@ -802,12 +801,6 @@ export default {
       this.map.addControl(new maplibregl.ScaleControl({}), "bottom-left");
 
       this.map.on("load", () => this.onMapLoad());
-
-      const attrCtrl = this.$refs.map.querySelector(".maplibregl-ctrl-attrib.maplibregl-compact-show");
-
-      if (attrCtrl) {
-        attrCtrl.classList?.remove("maplibregl-compact-show");
-      }
     },
     getClusterFeatures(clusterId, limit, callback) {
       this.map
@@ -961,7 +954,19 @@ export default {
       // Remember the markers displayed on the map.
       this.markersOnScreen = newMarkers;
     },
+    minimizeAttribCtrl() {
+      if (this.$refs.map instanceof HTMLElement) {
+        const attrCtrl = this.$refs.map.querySelector(".maplibregl-ctrl-attrib");
+
+        if (attrCtrl && attrCtrl instanceof HTMLElement) {
+          attrCtrl.classList?.remove("maplibregl-compact-show");
+          attrCtrl.removeAttribute("open");
+        }
+      }
+    },
     onMapLoad() {
+      this.minimizeAttribCtrl();
+
       // Add 'photos' data source.
       this.map.addSource("photos", {
         type: "geojson",

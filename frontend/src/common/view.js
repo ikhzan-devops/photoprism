@@ -326,6 +326,9 @@ export class View {
       case "PPagePlaces":
         hideScrollbar = true;
         break;
+      case "PServiceUpload":
+        preventNavigation = false;
+        break;
       case "PPageLogin":
         hideScrollbar = true;
         preventNavigation = true;

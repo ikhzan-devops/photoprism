@@ -37,7 +37,7 @@ msgstr ""
 msgid "%{n} albums found"
 msgstr ""
 
-#: src/component/service/upload.vue:92
+#: src/component/service/upload.vue:106
 msgid "%{n} files uploaded"
 msgstr ""
 
@@ -644,7 +644,7 @@ msgstr ""
 #: src/component/service/add.vue:19
 #: src/component/service/edit.vue:453
 #: src/component/service/remove.vue:49
-#: src/component/service/upload.vue:115
+#: src/component/service/upload.vue:116
 #: src/component/settings/apps.vue:352
 #: src/component/settings/passcode.vue:249
 #: src/component/settings/passcode.vue:333
@@ -939,8 +939,8 @@ msgstr ""
 msgid "Current Password"
 msgstr ""
 
-#: src/options/themes.js:857
-#: src/options/themes.js:866
+#: src/options/themes.js:870
+#: src/options/themes.js:879
 msgid "Custom"
 msgstr ""
 
@@ -988,7 +988,7 @@ msgstr ""
 #: src/options/auth.js:40
 #: src/options/options.js:323
 #: src/options/options.js:387
-#: src/options/themes.js:711
+#: src/options/themes.js:724
 #: src/page/places.vue:309
 msgid "Default"
 msgstr ""
@@ -1178,7 +1178,7 @@ msgstr ""
 #: src/component/label/clipboard.vue:86
 #: src/component/lightbox.vue:1614
 #: src/component/people/clipboard.vue:59
-#: src/component/photo/clipboard.vue:216
+#: src/component/photo/clipboard.vue:217
 #: src/component/photo/edit/files.vue:117
 #: src/component/photo/view/cards.vue:164
 #: src/component/photo/view/list.vue:133
@@ -2247,7 +2247,7 @@ msgstr ""
 msgid "No server connection"
 msgstr ""
 
-#: src/component/service/upload.vue:76
+#: src/component/service/upload.vue:90
 msgid "No servers configured."
 msgstr ""
 
@@ -2280,6 +2280,8 @@ msgstr ""
 
 #: src/common/util.js:726
 #: src/component/lightbox.vue:569
+#: src/component/service/upload.vue:75
+#: src/component/service/upload.vue:87
 msgid "Not allowed"
 msgstr ""
 
@@ -2360,7 +2362,7 @@ msgstr ""
 msgid "One file found"
 msgstr ""
 
-#: src/component/service/upload.vue:90
+#: src/component/service/upload.vue:104
 msgid "One file uploaded"
 msgstr ""
 
@@ -2493,7 +2495,7 @@ msgstr ""
 msgid "People you share a link with will be able to view public contents."
 msgstr ""
 
-#: src/component/photo/clipboard.vue:122
+#: src/component/photo/clipboard.vue:123
 #: src/component/photo/toolbar.vue:207
 msgid "Permanently deleted"
 msgstr ""
@@ -2783,7 +2785,7 @@ msgstr ""
 msgid "Remove"
 msgstr ""
 
-#: src/component/photo/clipboard.vue:162
+#: src/component/photo/clipboard.vue:163
 msgid "remove failed: unknown album"
 msgstr ""
 
@@ -2951,15 +2953,15 @@ msgstr ""
 msgid "Select Time"
 msgstr ""
 
-#: src/component/photo/clipboard.vue:72
+#: src/component/photo/clipboard.vue:73
 msgid "Selection approved"
 msgstr ""
 
-#: src/component/photo/clipboard.vue:102
+#: src/component/photo/clipboard.vue:103
 msgid "Selection archived"
 msgstr ""
 
-#: src/component/photo/clipboard.vue:135
+#: src/component/photo/clipboard.vue:136
 msgid "Selection restored"
 msgstr ""
 
@@ -3016,7 +3018,7 @@ msgstr ""
 msgid "Settings saved"
 msgstr ""
 
-#: src/component/service/upload.vue:129
+#: src/component/service/upload.vue:130
 #: src/component/settings/passcode.vue:160
 msgid "Setup"
 msgstr ""
@@ -3517,7 +3519,7 @@ msgstr ""
 #: src/component/navigation.vue:1733
 #: src/component/photo/toolbar.vue:196
 #: src/component/photo/upload/dialog.vue:48
-#: src/component/service/upload.vue:142
+#: src/component/service/upload.vue:143
 #: src/page/albums.vue:132
 #: src/page/library/import.vue:117
 #: src/page/settings/general.vue:228

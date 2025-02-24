@@ -188,6 +188,9 @@
 
 .pswp__img {
     -webkit-touch-callout: default;
+}
+
+.is-zoomable .pswp__img {
     cursor: zoom-in;
 }
 

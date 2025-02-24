@@ -46,7 +46,7 @@ msgstr "{0}-{1} z {2}"
 msgid "%{n} albums found"
 msgstr "%{n} nájdených albumov"
 
-#: src/component/service/upload.vue:92
+#: src/component/service/upload.vue:106
 msgid "%{n} files uploaded"
 msgstr "%{n} odovzdaných súborov"
 
@@ -580,7 +580,7 @@ msgstr "Nemožno označiť viac položiek"
 #: src/component/photo/album/dialog.vue:78
 #: src/component/photo/delete/dialog.vue:56 src/component/service/add.vue:19
 #: src/component/service/edit.vue:453 src/component/service/remove.vue:49
-#: src/component/service/upload.vue:115 src/component/settings/apps.vue:352
+#: src/component/service/upload.vue:116 src/component/settings/apps.vue:352
 #: src/component/settings/passcode.vue:249
 #: src/component/settings/passcode.vue:333
 #: src/component/settings/password.vue:159 src/component/share/dialog.vue:28
@@ -829,7 +829,7 @@ msgstr "Kubický: Stredná kvalita, dobrý výkon"
 msgid "Current Password"
 msgstr "Súčasné heslo"
 
-#: src/options/themes.js:857 src/options/themes.js:866
+#: src/options/themes.js:870 src/options/themes.js:879
 msgid "Custom"
 msgstr "Vlastné"
 
@@ -866,7 +866,7 @@ msgstr "Denníky ladenia"
 #: src/component/photo/edit/info.vue:110 src/model/session.js:64
 #: src/model/user.js:244 src/options/auth.js:20 src/options/auth.js:21
 #: src/options/auth.js:39 src/options/auth.js:40 src/options/options.js:323
-#: src/options/options.js:387 src/options/themes.js:711 src/page/places.vue:309
+#: src/options/options.js:387 src/options/themes.js:724 src/page/places.vue:309
 msgid "Default"
 msgstr "Predvolená"
 
@@ -1032,7 +1032,7 @@ msgstr "Stiahnuť samostatné súbory a zip archívy."
 #: src/component/album/clipboard.vue:102 src/component/album/toolbar.vue:105
 #: src/component/file/clipboard.vue:61 src/component/label/clipboard.vue:86
 #: src/component/lightbox.vue:1614 src/component/people/clipboard.vue:59
-#: src/component/photo/clipboard.vue:216 src/component/photo/edit/files.vue:117
+#: src/component/photo/clipboard.vue:217 src/component/photo/edit/files.vue:117
 #: src/component/photo/view/cards.vue:164 src/component/photo/view/list.vue:133
 #: src/page/library/browse.vue:124
 msgid "Downloading…"
@@ -1957,7 +1957,7 @@ msgstr "Žiadne nedávno upravené fotky"
 msgid "No server connection"
 msgstr "Žiadne pripojenie k serveru"
 
-#: src/component/service/upload.vue:76
+#: src/component/service/upload.vue:90
 msgid "No servers configured."
 msgstr "Žiadne nakonfigurované servery."
 
@@ -1985,6 +1985,7 @@ msgid "None"
 msgstr "Žiadne"
 
 #: src/common/util.js:726 src/component/lightbox.vue:569
+#: src/component/service/upload.vue:75 src/component/service/upload.vue:87
 msgid "Not allowed"
 msgstr "Nie je povolené"
 
@@ -2060,7 +2061,7 @@ msgstr "Našiel sa jeden album"
 msgid "One file found"
 msgstr "Našiel sa jeden súbor"
 
-#: src/component/service/upload.vue:90
+#: src/component/service/upload.vue:104
 msgid "One file uploaded"
 msgstr "Jeden nahraný súbor"
 
@@ -2173,7 +2174,7 @@ msgstr "Ľudia"
 msgid "People you share a link with will be able to view public contents."
 msgstr "Ľudia s ktorými zdieľate odkaz, budú vidieť verejný obsah."
 
-#: src/component/photo/clipboard.vue:122 src/component/photo/toolbar.vue:207
+#: src/component/photo/clipboard.vue:123 src/component/photo/toolbar.vue:207
 msgid "Permanently deleted"
 msgstr "Trvalo odstránené"
 
@@ -2434,7 +2435,7 @@ msgstr "Vzdialená Synchronizácia"
 msgid "Remove"
 msgstr "Odstrániť"
 
-#: src/component/photo/clipboard.vue:162
+#: src/component/photo/clipboard.vue:163
 msgid "remove failed: unknown album"
 msgstr "odstránenie zlyhalo: neznámy album"
 
@@ -2582,15 +2583,15 @@ msgstr "Vyberte priečinok, ktorý sa má indexovať…"
 msgid "Select Time"
 msgstr "Vyberte čas"
 
-#: src/component/photo/clipboard.vue:72
+#: src/component/photo/clipboard.vue:73
 msgid "Selection approved"
 msgstr "Označenie schválené"
 
-#: src/component/photo/clipboard.vue:102
+#: src/component/photo/clipboard.vue:103
 msgid "Selection archived"
 msgstr "Označenie archivované"
 
-#: src/component/photo/clipboard.vue:135
+#: src/component/photo/clipboard.vue:136
 msgid "Selection restored"
 msgstr "Označenie obnovené"
 
@@ -2634,7 +2635,7 @@ msgstr "Nastavenia"
 msgid "Settings saved"
 msgstr "Nastavenia uložené"
 
-#: src/component/service/upload.vue:129 src/component/settings/passcode.vue:160
+#: src/component/service/upload.vue:130 src/component/settings/passcode.vue:160
 msgid "Setup"
 msgstr "Prvotné nastavenie"
 
@@ -3063,7 +3064,7 @@ msgstr "Aktualizujte teraz"
 
 #: src/component/album/toolbar.vue:210 src/component/navigation.vue:1733
 #: src/component/photo/toolbar.vue:196 src/component/photo/upload/dialog.vue:48
-#: src/component/service/upload.vue:142 src/page/albums.vue:132
+#: src/component/service/upload.vue:143 src/page/albums.vue:132
 #: src/page/library/import.vue:117 src/page/settings/general.vue:228
 #: src/page/settings/services.vue:37
 msgid "Upload"
