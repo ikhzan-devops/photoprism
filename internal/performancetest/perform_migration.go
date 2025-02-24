@@ -181,6 +181,7 @@ func mysqlMigration(testDbOriginal string, numberOfRecords int, testname string,
 
 	// Setup and capture SQL Logging output
 	buffer := bytes.Buffer{}
+	log.SetLevel(logrus.TraceLevel)
 	log.SetOutput(&buffer)
 
 	entity.Entities.Migrate(db, opt)
@@ -188,6 +189,7 @@ func mysqlMigration(testDbOriginal string, numberOfRecords int, testname string,
 
 	// Reset logger
 	log.SetOutput(os.Stdout)
+	log.SetLevel(logrus.ErrorLevel)
 
 	// Expect 3 errors (no such table accounts, and missing account_id in files_sync and files_share)
 	// And a blank record.
