@@ -134,8 +134,10 @@ This is to ensure that the checking that has been implemented in Photo.Save (and
 | internal/entity/photos_test.go | TestPhotos_UnscopedSearch/* | Validate that UnscopedSearchPhotos returns that expected results/errors |
 | internal/entity/photos_test.go | TestPhotos_ScopedSearch/* | Validate that ScopedSearchPhotos returns that expected results/errors |
 | internal/photoprism/index_mediafile_test.go | TestIndex_MediaFile/twoFiles | Test scenario where 2 files are indexed (Primary and Json) that it is done correctly.  This replicates a front end acceptance test that was failing for GormV2 |
-
-
+| internal/performancetest/benchmark_100k_test.go | Benchmark100k_SQLite/* | Benchmark's for SQLite with a 100k record database |
+| internal/performancetest/benchmark_100k_test.go | Benchmark100k_MySQL/* | Benchmark's for Mariadb with a 100k record database |
+| internal/performancetest/benchmark_migration_test.go | BenchmarkMigration_SQLite/* | Database Migration Benchmark's for SQLite with a 100k record database |
+| internal/performancetest/benchmark_migration_test.go | BenchmarkMigration_MySQL/* | Database Migration Benchmark's for MySQL with a 100k record database |
 
 **Please note that the tests in internal/entity/dbtest all MUST use the dbtestMutex as they must run synchronous due to the database blocking tests.  Failure to include the dbtestMutex will cause unexpected failure of the test.**  
 
@@ -557,27 +559,28 @@ desktop
 
 ## Benchmark Test Details
 
-goos: linux
-goarch: amd64
-pkg: github.com/photoprism/photoprism/internal/entity
-cpu: AMD Ryzen 7 5700X 8-Core Processor  
-
-| Test name | storage/sqlite-benchmark10x.log | storage/sqlite-benchmark10x.gorm2.log | Compared |
+```
+cd internal/performancetest
+go test -skip Test -parallel 1 -count 10 -cpu 4 -failfast -tags slow -timeout 3h -benchtime 10s -bench=Benchmark100k > ../../storage/performance_benchmark100k.txt
+```
+goos: linux  
+goarch: amd64  
+pkg: github.com/photoprism/photoprism/internal/performancetest  
+cpu: AMD Ryzen 7 5700X 8-Core Processor               
+| Test name | storage/performance_benchmark100k.gorm1.txt | storage/performance_benchmark100k.txt | Compared |
 | ---------------------------|---------------------------------|--------------------------------------- | ------------------------ |
-| CreateDeleteAlbum-4 | 205.4µ ± 3%| 159.3µ ± 13% | -22.40% (p=0.000 n=10) | 
-| CreateDeleteCamera-4 | 52.45µ ± 1% | 75.90µ ± 5% | +44.69% (p=0.000 n=10) | 
-| CreateDeleteCellAndPlace-4 | 237.1µ ± 3% | 174.1µ ± 6% | -26.57% (p=0.000 n=10) | 
-| CreateDeletePhoto-4 | 2.410m ± 6% | 2.109m ± 6% | -12.49% (p=0.000 n=10) | 
-| geomean | 280.1µ | 258.1µ | -7.84% | 
-
-goos: linux
-goarch: amd64
-pkg: github.com/photoprism/photoprism/internal/entity
-cpu: AMD Ryzen 7 5700X 8-Core Processor 
-| Test name | storage/mariadb-benchmark10x.log | storage/mariadb-benchmark10x.gorm2.log | Compared |
-| ---------------------------|---------------------------------|--------------------------------------- | ------------------------ |
-| CreateDeleteAlbum-4 | 2.892m ± 6% | 2.707m ± 3% | -6.39% (p=0.000 n=10) |
-| CreateDeleteCamera-4 | 1.470m ± 7% | 1.536m ± 3% | +4.48% (p=0.009 n=10) |
-| CreateDeleteCellAndPlace-4 | 4.564m ± 1% | 3.913m ± 9% | -14.27% (p=0.000 n=10) |
-| CreateDeletePhoto-4 | 33.51m ± 8% | 36.16m ± 8% | +7.92% (p=0.007 n=10) |
-| geomean | 5.050m | 4.925m | -2.46% |
+100k_SQLite/CreateDeleteAlbum-4 | 5.411m ±  1% | 5.377m ± 2% | ~ (p=0.315 n=10)
+100k_SQLite/ListAlbums-4 | 315.4m ±  1% | 259.3m ± 0% | -17.77% (p=0.000 n=10)
+100k_SQLite/CreateDeleteCamera-4 | 3.326m ±  1% | 3.395m ± 1% | +2.08% (p=0.000 n=10)
+100k_SQLite/CreateDeleteCellAndPlace-4 | 7.066m ±  0% | 7.046m ± 2% | ~ (p=0.393 n=10)
+100k_SQLite/FileRegenerateIndex-4 | 4.576m ±  1% | 4.633m ± 1% | +1.26% (p=0.004 n=10)
+100k_SQLite/CreateDeletePhoto-4 | 55.55m ±  3% | 54.63m ± 1% | -1.66% (p=0.035 n=10)
+100k_SQLite/ListPhotos-4 | 341.9m ±  0% | 256.9m ± 1% | -24.86% (p=0.000 n=10)
+100k_MySQL/CreateDeleteAlbum-4 | 3.651m ± 30% | 2.240m ± 3% | -38.65% (p=0.000 n=10)
+100k_MySQL/ListAlbums-4 | 116.8m ±  2% | 109.0m ± 0% | -6.75% (p=0.000 n=10)
+100k_MySQL/CreateDeleteCamera-4 | 1.313m ±  7% | 1.429m ± 1% | +8.79% (p=0.000 n=10)
+100k_MySQL/CreateDeleteCellAndPlace-4 | 4.084m ±  1% | 3.524m ± 2% | -13.72% (p=0.000 n=10)
+100k_MySQL/FileRegenerateIndex-4 | 1.210m ±  1% | 1.173m ± 4% | -3.10% (p=0.005 n=10)
+100k_MySQL/CreateDeletePhoto-4 | 29.97m ±  1% | 27.39m ± 7% | -8.59% (p=0.000 n=10)
+100k_MySQL/ListPhotos-4 | 451.2m ±  0% | 453.4m ± 2% | +0.49% (p=0.002 n=10)
+geomean | 16.69m | 15.31m | -8.29%
