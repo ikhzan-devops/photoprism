@@ -812,5 +812,15 @@ dummy-ldap:
 	$(DOCKER_COMPOSE) stop dummy-ldap
 	$(DOCKER_COMPOSE) up -d -V --force-recreate dummy-ldap
 
+start-postgresql:
+	$(info Running PhotoPrism on PostgresQL...)
+	PHOTOPRISM_DRIVER="postgres" PHOTOPRISM_DSN="user=photoprism password=photoprism dbname=photoprism host=localhost port=5432 connect_timeout=15 sslmode=disable TimeZone=UTC" ./photoprism start -d
+docker-postgresql:
+	$(DOCKER_COMPOSE) -f compose.postgres.yaml up
+docker-recreatepostgresql:
+	docker container rm photoprism-postgres-1
+	docker volume rm photoprism_postgresql
+
+
 # Declare all targets as "PHONY", see https://www.gnu.org/software/make/manual/html_node/Phony-Targets.html.
 MAKEFLAGS += --always-make
