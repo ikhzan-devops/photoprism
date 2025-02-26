@@ -91,6 +91,12 @@ PASS |   FixPrimaries/Success (0.00s)
 FAIL | 	github.com/photoprism/photoprism/internal/entity/query	100.671s
 FAIL | Albums (0.00s)
 FAIL |   Albums/search_with_string (0.00s)
+************************************************************
+Panic error caused all subsequent tests to not be run.
+Panic was caused because the test above returned no results.
+Query expects the DBMS to be be case insensitive.
+PostgreSQL is not by default.
+************************************************************
 FAIL | 	github.com/photoprism/photoprism/internal/entity/search	88.476s
      | time="2025-02-26T04:52:41Z" level=error msg=FAIL
 FAIL | 	github.com/photoprism/photoprism/internal/photoprism	604.100s
