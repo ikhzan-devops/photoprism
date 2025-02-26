@@ -280,7 +280,7 @@ func MomentsLabels(threshold int, public bool) (results Moments, err error) {
 	}
 
 	stmt = stmt.Group("l.label_slug").
-		Having("photo_count >= ?", threshold)
+		Having("COUNT(*) >= ?", threshold)
 
 	if err = stmt.Scan(&m).Error; err != nil {
 		return m, err
