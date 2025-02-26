@@ -227,7 +227,7 @@ func MomentsCountries(threshold int, public bool) (results Moments, err error) {
 	}
 
 	stmt = stmt.Group("photo_year, photo_country").
-		Having("photo_count >= ?", threshold)
+		Having("COUNT(*) >= ?", threshold)
 
 	if err = stmt.Scan(&results).Error; err != nil {
 		return results, err
