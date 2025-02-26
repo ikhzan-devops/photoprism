@@ -139,8 +139,8 @@ func FixPrimaries() error {
 
 	// Remove primary file flag from broken or missing files.
 	if err := UnscopedDb().Table(entity.File{}.TableName()).
-		Where("(file_error <> '' OR file_missing = TRUE) AND file_primary <> 0").
-		UpdateColumn("file_primary", 0).Error; err != nil {
+		Where("(file_error <> '' OR file_missing = TRUE) AND file_primary = TRUE").
+		UpdateColumn("file_primary", false).Error; err != nil {
 		return err
 	}
 
