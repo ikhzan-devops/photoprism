@@ -73,7 +73,7 @@ test-entity: reset-sqlite run-test-entity
 test-commands: reset-sqlite run-test-commands
 test-photoprism: reset-sqlite run-test-photoprism
 test-short: reset-sqlite run-test-short
-test-mariadb: reset-acceptance run-test-mariadb
+test-mariadb: reset-mariadb-acceptance run-test-mariadb
 test-sqlite: reset-sqlite-unit run-test-sqlite
 acceptance-run-chromium: storage/acceptance acceptance-auth-sqlite-restart wait acceptance-auth acceptance-auth-sqlite-stop acceptance-sqlite-restart wait-2 acceptance acceptance-sqlite-stop
 acceptance-run-chromium-short: storage/acceptance acceptance-auth-sqlite-restart wait acceptance-auth-short acceptance-auth-sqlite-stop acceptance-sqlite-restart wait-2 acceptance-short acceptance-sqlite-stop
@@ -343,7 +343,7 @@ reset-sqlite-unit:
 	cp ./internal/entity/migrate/testdata/migrate_sqlite3 ./storage/testdata/unit.test.db
 reset-mariadb-all: reset-mariadb-testdb reset-mariadb-local reset-mariadb-acceptance reset-mariadb-photoprism
 reset-testdb: reset-sqlite reset-mariadb-testdb
-reset-acceptance: reset-mariadb-acceptance
+# reset-acceptance: reset-mariadb-acceptance
 reset-sqlite:
 	$(info Removing test database files...)
 	find ./internal -type f -name ".test.*" -delete
@@ -814,12 +814,38 @@ dummy-ldap:
 
 start-postgresql:
 	$(info Running PhotoPrism on PostgresQL...)
-	PHOTOPRISM_DRIVER="postgres" PHOTOPRISM_DSN="user=photoprism password=photoprism dbname=photoprism host=localhost port=5432 connect_timeout=15 sslmode=disable TimeZone=UTC" ./photoprism start -d
+	PHOTOPRISM_DRIVER="postgres" PHOTOPRISM_DSN="postgresql://photoprism:photoprism@postgres:5432/photoprism?connect_timeout=15&sslmode=disable&options=-c%20TimeZone=UTC" ./photoprism start -d
 docker-postgresql:
 	$(DOCKER_COMPOSE) -f compose.postgres.yaml up
 docker-recreatepostgresql:
 	docker container rm photoprism-postgres-1
 	docker volume rm photoprism_postgresql
+test-postgresql: reset-postgresql-acceptance run-test-postgresql
+postgresql:
+	$(DOCKER_COMPOSE) exec postgres psql -uphotoprism -pphotoprism photoprism
+reset-postgresql:
+	$(info Resetting photoprism database...)
+	psql postgresql://photoprism:photoprism@postgres:5432/postgres -f scripts/sql/postgresql/reset-photoprism.sql
+reset-postgresql-testdb:
+	$(info Resetting testdb database...)
+	psql postgresql://photoprism:photoprism@postgres:5432/postgres  -f scripts/sql/postgresql/reset-testdb.sql
+reset-postgresql-local:
+	$(info Resetting local database...)
+	psql postgresql://photoprism:photoprism@postgres:5432/postgres  -f scripts/sql/postgresql/reset-local.sql
+reset-postgresql-acceptance:
+	$(info Resetting acceptance database...)
+	psql postgresql://photoprism:photoprism@postgres:5432/postgres  -f scripts/sql/postgresql/reset-acceptance.sql
+reset-postgresql-all: reset-postgresql-testdb reset-postgresql-local reset-postgresql-acceptance reset-postgresql-photoprism
+run-test-postgresql:
+	$(info Running all Go tests on PostgreSQL...)
+	PHOTOPRISM_TEST_DRIVER="postgres" PHOTOPRISM_TEST_DSN="postgresql://acceptance:acceptance@postgres:5432/acceptance?connect_timeout=15&sslmode=disable&options=-c%20TimeZone=UTC" $(GOTEST) -parallel 1 -count 1 -cpu 1 -tags="slow,develop" -timeout 20m ./pkg/... ./internal/...
+#	PHOTOPRISM_TEST_DRIVER="postgres" PHOTOPRISM_TEST_DSN="user=acceptance password=acceptance dbname=acceptance host=localhost port=5432 connect_timeout=15 sslmode=disable TimeZone=UTC" $(GOTEST) -parallel 1 -count 1 -cpu 1 -tags="slow,develop" -timeout 20m ./pkg/... ./internal/...
+test-postgresql-benchmark10x:
+	$(info Running all Go tests with benchmarks...)
+	dirname $$(grep --files-with-matches --include "*_test.go" -oP "(?<=func )Benchmark[A-Za-z_]+(?=\(b \*testing\.B)" --recursive ./*) | sort -u | xargs -n1 bash -c 'cd "$$0" && pwd && PHOTOPRISM_TEST_DRIVER="postgres" PHOTOPRISM_TEST_DSN="user=acceptance password=acceptance dbname=acceptance host=localhost port=5432 connect_timeout=15 sslmode=disable TimeZone=UTC" go test -skip Test -parallel 4 -count 10 -cpu 4 -failfast -tags slow -timeout 30m -benchtime 1s -bench=.'
+test-postgresql-benchmark10s:
+	$(info Running all Go tests with benchmarks...)
+	dirname $$(grep --files-with-matches --include "*_test.go" -oP "(?<=func )Benchmark[A-Za-z_]+(?=\(b \*testing\.B)" --recursive ./*) | sort -u | xargs -n1 bash -c 'cd "$$0" && pwd && PHOTOPRISM_TEST_DRIVER="postgres" PHOTOPRISM_TEST_DSN="user=acceptance password=acceptance dbname=acceptance host=localhost port=5432 connect_timeout=15 sslmode=disable TimeZone=UTC" go test -skip Test -parallel 4 -count 1 -cpu 4 -failfast -tags slow -timeout 30m -benchtime 10s -bench=.'
 
 
 # Declare all targets as "PHONY", see https://www.gnu.org/software/make/manual/html_node/Phony-Targets.html.
