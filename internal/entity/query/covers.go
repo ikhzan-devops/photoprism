@@ -102,31 +102,18 @@ func UpdateAlbumMonthCovers() (err error) {
 
 	condition := gorm.Expr("album_type = ? AND thumb_src = ?", entity.AlbumMonth, entity.SrcAuto)
 
-	switch DbDialect() {
-	case MySQL, Postgres:
-		res = Db().Exec(`UPDATE albums LEFT JOIN (
-		SELECT p2.photo_year, p2.photo_month, f.file_hash FROM files f, (
-			SELECT p.photo_year, p.photo_month, max(p.id) AS photo_id FROM photos p
-			WHERE p.photo_quality > 0 AND p.photo_private = FALSE AND p.deleted_at IS NULL
-			GROUP BY p.photo_year, p.photo_month) p2 WHERE p2.photo_id = f.photo_id AND f.file_primary = TRUE AND f.file_error = '' AND f.file_type IN (?)
-			) b ON b.photo_year = albums.album_year AND b.photo_month = albums.album_month
-		SET thumb = b.file_hash WHERE ?`, media.PreviewExpr, condition)
-	case SQLite3:
-		res = Db().Table(entity.Album{}.TableName()).
-			Where("album_type = ? AND thumb_src = ?", entity.AlbumMonth, entity.SrcAuto).
-			UpdateColumn("thumb", gorm.Expr(`(
-		SELECT f.file_hash FROM files f,(
-			SELECT p.photo_year, p.photo_month, max(p.id) AS photo_id FROM photos p
-			  WHERE p.photo_quality > 0 AND p.photo_private = FALSE AND p.deleted_at IS NULL
-			  GROUP BY p.photo_year, p.photo_month
-			) b
-		WHERE f.photo_id = b.photo_id AND f.file_primary = TRUE AND f.file_error = '' AND f.file_type IN (?)
-		AND b.photo_year = albums.album_year AND b.photo_month = albums.album_month LIMIT 1)
-		`, media.PreviewExpr))
-	default:
-		log.Warnf("sql: unsupported dialect %s", DbDialect())
-		return nil
-	}
+	res = Db().Exec(`UPDATE albums
+					SET thumb = (SELECT b.file_hash FROM (  SELECT p2.photo_year, p2.photo_month, f.file_hash FROM files f
+					INNER JOIN
+						(SELECT p.photo_year, p.photo_month, max(p.id) AS photo_id FROM photos p   
+							WHERE p.photo_quality > 0 AND p.photo_private = FALSE AND p.deleted_at IS NULL   
+							GROUP BY p.photo_year, p.photo_month) p2 
+						ON p2.photo_id = f.photo_id 
+						WHERE f.file_primary = TRUE 
+						AND f.file_error = '' 
+						AND f.file_type IN (?)   
+						) b WHERE b.photo_year = albums.album_year AND b.photo_month = albums.album_month)
+					WHERE ?`, media.PreviewExpr, condition)
 
 	err = res.Error
 
