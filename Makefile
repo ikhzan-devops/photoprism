@@ -814,7 +814,7 @@ dummy-ldap:
 
 start-postgresql:
 	$(info Running PhotoPrism on PostgresQL...)
-	PHOTOPRISM_DRIVER="postgres" PHOTOPRISM_DSN="postgresql://photoprism:photoprism@postgres:5432/photoprism?connect_timeout=15&sslmode=disable&options=-c%20TimeZone=UTC" ./photoprism start -d
+	PHOTOPRISM_DRIVER="postgres" PHOTOPRISM_DSN="postgresql://photoprism:photoprism@postgres:5432/photoprism?connect_timeout=15&lock_timeout=50000&sslmode=disable&options=-c%20TimeZone=UTC" ./photoprism start -d
 docker-postgresql:
 	$(DOCKER_COMPOSE) -f compose.postgres.yaml up
 docker-recreatepostgresql:
@@ -838,7 +838,7 @@ reset-postgresql-acceptance:
 reset-postgresql-all: reset-postgresql-testdb reset-postgresql-local reset-postgresql-acceptance reset-postgresql-photoprism
 run-test-postgresql:
 	$(info Running all Go tests on PostgreSQL...)
-	PHOTOPRISM_TEST_DRIVER="postgres" PHOTOPRISM_TEST_DSN="postgresql://acceptance:acceptance@postgres:5432/acceptance?connect_timeout=15&sslmode=disable&options=-c%20TimeZone=UTC" $(GOTEST) -parallel 1 -count 1 -cpu 1 -tags="slow,develop" -timeout 20m ./pkg/... ./internal/...
+	PHOTOPRISM_TEST_DRIVER="postgres" PHOTOPRISM_TEST_DSN="postgresql://acceptance:acceptance@postgres:5432/acceptance?connect_timeout=15&lock_timeout=5000&sslmode=disable&options=-c%20TimeZone=UTC" $(GOTEST) -parallel 1 -count 1 -cpu 1 -tags="slow,develop" -timeout 20m ./pkg/... ./internal/...
 #	PHOTOPRISM_TEST_DRIVER="postgres" PHOTOPRISM_TEST_DSN="user=acceptance password=acceptance dbname=acceptance host=localhost port=5432 connect_timeout=15 sslmode=disable TimeZone=UTC" $(GOTEST) -parallel 1 -count 1 -cpu 1 -tags="slow,develop" -timeout 20m ./pkg/... ./internal/...
 test-postgresql-benchmark10x:
 	$(info Running all Go tests with benchmarks...)
