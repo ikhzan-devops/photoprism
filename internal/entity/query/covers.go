@@ -235,24 +235,70 @@ func UpdateLabelCovers() (err error) {
 
 	condition := gorm.Expr("thumb_src = ?", entity.SrcAuto)
 
-	res = Db().Exec(`UPDATE labels
-					SET thumb = ( SELECT b.file_hash FROM (SELECT p2.label_id, f.file_hash FROM files f
-					INNER JOIN (SELECT pl.label_id as label_id, max(p.id) AS photo_id FROM photos p
-								INNER JOIN photos_labels pl ON pl.photo_id = p.id AND pl.uncertainty < 100
-								WHERE p.photo_quality > 0 AND p.photo_private = FALSE AND p.deleted_at IS NULL
-								GROUP BY pl.label_id
-								UNION
-								SELECT c.category_id as label_id, max(p.id) AS photo_id FROM photos p     
-								JOIN photos_labels pl ON pl.photo_id = p.id AND pl.uncertainty < 100     
-								JOIN categories c ON c.label_id = pl.label_id    
-								WHERE p.photo_quality > 0 AND p.photo_private = FALSE AND p.deleted_at IS NULL    
-								GROUP BY c.category_id    
-								) p2
-								ON p2.photo_id = f.photo_id 
-								WHERE f.file_primary = TRUE AND f.file_error = '' AND f.file_type IN (?) AND f.file_missing = FALSE
-						) b WHERE b.label_id = labels.id)
-					WHERE ?`, media.PreviewExpr, condition)
+	switch DbDialect() {
+	case Postgres:
+		res = Db().Exec(`UPDATE labels
+						SET thumb = ( SELECT b.file_hash FROM (SELECT p2.label_id, f.file_hash FROM files f
+						INNER JOIN (SELECT pl.label_id as label_id, max(p.id) AS photo_id FROM photos p
+									INNER JOIN photos_labels pl ON pl.photo_id = p.id AND pl.uncertainty < 100
+									WHERE p.photo_quality > 0 AND p.photo_private = FALSE AND p.deleted_at IS NULL
+									GROUP BY pl.label_id
+									UNION
+									SELECT c.category_id as label_id, max(p.id) AS photo_id FROM photos p     
+									JOIN photos_labels pl ON pl.photo_id = p.id AND pl.uncertainty < 100     
+									JOIN categories c ON c.label_id = pl.label_id    
+									WHERE p.photo_quality > 0 AND p.photo_private = FALSE AND p.deleted_at IS NULL    
+									GROUP BY c.category_id    
+									) p2
+									ON p2.photo_id = f.photo_id 
+									WHERE f.file_primary = TRUE AND f.file_error = '' AND f.file_type IN (?) AND f.file_missing = FALSE
+							) b WHERE b.label_id = labels.id)
+						WHERE ?`, media.PreviewExpr, condition)
+	case MySQL:
+		res = Db().Exec(`UPDATE labels LEFT JOIN (
+						SELECT p2.label_id, f.file_hash FROM files f, (
+							SELECT pl.label_id as label_id, max(p.id) AS photo_id FROM photos p
+								JOIN photos_labels pl ON pl.photo_id = p.id AND pl.uncertainty < 100
+							WHERE p.photo_quality > 0 AND p.photo_private = FALSE AND p.deleted_at IS NULL
+							GROUP BY pl.label_id
+							UNION
+							SELECT c.category_id as label_id, max(p.id) AS photo_id FROM photos p
+								JOIN photos_labels pl ON pl.photo_id = p.id AND pl.uncertainty < 100
+								JOIN categories c ON c.label_id = pl.label_id
+							WHERE p.photo_quality > 0 AND p.photo_private = FALSE AND p.deleted_at IS NULL
+							GROUP BY c.category_id
+							) p2 WHERE p2.photo_id = f.photo_id AND f.file_primary = TRUE AND f.file_error = '' AND f.file_type IN (?) AND f.file_missing = FALSE
+						) b ON b.label_id = labels.id
+						SET thumb = b.file_hash WHERE ?`, media.PreviewExpr, condition)
+	case SQLite3:
+		res = Db().Table(entity.Label{}.TableName()).
+			Where("thumb_src = ?", entity.SrcAuto).
+			UpdateColumn("thumb", gorm.Expr(`(
+						SELECT f.file_hash FROM files f 
+							JOIN photos_labels pl ON pl.label_id = labels.id AND pl.photo_id = f.photo_id AND pl.uncertainty < 100
+							JOIN photos p ON p.id = f.photo_id AND p.photo_private = FALSE AND p.deleted_at IS NULL AND p.photo_quality > 0
+							WHERE f.deleted_at IS NULL AND f.file_hash <> '' AND f.file_missing = FALSE AND f.file_primary = TRUE AND f.file_error = '' AND f.file_type IN (?)
+							ORDER BY p.photo_quality DESC, pl.uncertainty ASC, p.taken_at DESC LIMIT 1
+						) `, media.PreviewExpr))
 
+		if res.Error == nil {
+			catRes := Db().Table(entity.Label{}.TableName()).
+				Where("thumb IS NULL").
+				UpdateColumn("thumb", gorm.Expr(`(
+							SELECT f.file_hash FROM files f 
+							JOIN photos_labels pl ON pl.photo_id = f.photo_id AND pl.uncertainty < 100
+							JOIN categories c ON c.label_id = pl.label_id AND c.category_id = labels.id
+							JOIN photos p ON p.id = f.photo_id AND p.photo_private = FALSE AND p.deleted_at IS NULL AND p.photo_quality > 0
+							WHERE f.deleted_at IS NULL AND f.file_hash <> '' AND f.file_missing = FALSE AND f.file_primary = TRUE AND f.file_error = '' AND f.file_type IN (?)
+							ORDER BY p.photo_quality DESC, pl.uncertainty ASC, p.taken_at DESC LIMIT 1
+							) `, media.PreviewExpr))
+
+			res.RowsAffected += catRes.RowsAffected
+		}
+	default:
+		log.Warnf("sql: unsupported dialect %s", DbDialect())
+		return nil
+	}
 	err = res.Error
 
 	if err == nil {
