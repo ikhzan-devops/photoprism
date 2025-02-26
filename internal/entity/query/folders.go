@@ -60,7 +60,7 @@ func AlbumFolders(threshold int) (folders entity.Folders, err error) {
 		Select("folders.path, folders.root, folders.folder_uid, folders.folder_title, folders.folder_country, folders.folder_year, folders.folder_month, COUNT(photos.id) AS photo_count").
 		Joins("JOIN photos ON photos.photo_path = folders.path AND photos.deleted_at IS NULL AND photos.photo_quality >= 3 AND photos.photo_private = FALSE").
 		Group("folders.path, folders.root, folders.folder_uid, folders.folder_title, folders.folder_country, folders.folder_year, folders.folder_month").
-		Having("photo_count >= ?", threshold)
+		Having("COUNT(photos.id) >= ?", threshold)
 
 	if err = db.Scan(&folders).Error; err != nil {
 		return folders, err
