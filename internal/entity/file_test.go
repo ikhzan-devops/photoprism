@@ -19,10 +19,10 @@ import (
 
 func TestFile_RegenerateIndex(t *testing.T) {
 	t.Run("ID", func(t *testing.T) {
-		Db().Debug().Model(&File{ID: 1000000}).Update("media_id", gorm.Expr("null")).Update("photo_taken_at", gorm.Expr("null")).Update("time_index", gorm.Expr("null"))
+		Db().Model(&File{ID: 1000000}).Update("media_id", gorm.Expr("null")).Update("photo_taken_at", gorm.Expr("null")).Update("time_index", gorm.Expr("null"))
 		File{ID: 1000000}.RegenerateIndex()
 		result := File{}
-		if err := Db().Debug().Model(&File{ID: 1000000}).First(&result).Error; err != nil {
+		if err := Db().Model(&File{ID: 1000000}).First(&result).Error; err != nil {
 			t.Error(err)
 		}
 		assert.NotNil(t, result.PhotoTakenAt)
@@ -30,10 +30,10 @@ func TestFile_RegenerateIndex(t *testing.T) {
 		assert.NotNil(t, result.TimeIndex)
 	})
 	t.Run("PhotoID", func(t *testing.T) {
-		Db().Debug().Model(&File{}).Where("photo_id = ?", 1000039).Update("media_id", gorm.Expr("null")).Update("photo_taken_at", gorm.Expr("null")).Update("time_index", gorm.Expr("null"))
+		Db().Model(&File{}).Where("photo_id = ?", 1000039).Update("media_id", gorm.Expr("null")).Update("photo_taken_at", gorm.Expr("null")).Update("time_index", gorm.Expr("null"))
 		File{PhotoID: 1000039}.RegenerateIndex()
 		result := File{}
-		if err := Db().Debug().Model(&File{}).Where("photo_id = ?", 1000039).First(&result).Error; err != nil {
+		if err := Db().Model(&File{}).Where("photo_id = ?", 1000039).First(&result).Error; err != nil {
 			t.Error(err)
 		}
 		assert.NotNil(t, result.PhotoTakenAt)
@@ -41,10 +41,10 @@ func TestFile_RegenerateIndex(t *testing.T) {
 		assert.NotNil(t, result.TimeIndex)
 	})
 	t.Run("PhotoUID", func(t *testing.T) {
-		Db().Debug().Model(&File{}).Where("photo_uid = ?", "ps6sg6byk7wrbk32").Update("media_id", gorm.Expr("null")).Update("photo_taken_at", gorm.Expr("null")).Update("time_index", gorm.Expr("null"))
+		Db().Model(&File{}).Where("photo_uid = ?", "ps6sg6byk7wrbk32").Update("media_id", gorm.Expr("null")).Update("photo_taken_at", gorm.Expr("null")).Update("time_index", gorm.Expr("null"))
 		File{PhotoUID: "ps6sg6byk7wrbk32"}.RegenerateIndex()
 		result := File{}
-		if err := Db().Debug().Model(&File{}).Where("photo_uid = ?", "ps6sg6byk7wrbk32").First(&result).Error; err != nil {
+		if err := Db().Model(&File{}).Where("photo_uid = ?", "ps6sg6byk7wrbk32").First(&result).Error; err != nil {
 			t.Error(err)
 		}
 		assert.NotNil(t, result.PhotoTakenAt)
