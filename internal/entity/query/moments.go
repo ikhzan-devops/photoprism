@@ -206,7 +206,7 @@ func MomentsTime(threshold int, public bool) (results Moments, err error) {
 
 	stmt = stmt.Group("photos.photo_year, photos.photo_month").
 		Order("photos.photo_year DESC, photos.photo_month DESC").
-		Having("photo_count >= ?", threshold)
+		Having("COUNT(*) >= ?", threshold)
 
 	if err = stmt.Scan(&results).Error; err != nil {
 		return results, err
