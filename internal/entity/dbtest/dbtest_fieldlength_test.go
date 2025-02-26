@@ -115,6 +115,9 @@ func TestInitDBLengths(t *testing.T) {
 		if strings.Contains(entity.DbDialect(), "sqlite") {
 			t.Skip("sqlite doesn't support max length testing")
 		}
+		if strings.Contains(entity.DbDialect(), "postgres") {
+			t.Skip("postgres doesn't support max length testing on bytes")
+		}
 		m := &entity.Photo{}
 		n := &entity.Photo{ID: 99887766,
 			// UUID:
@@ -195,7 +198,7 @@ func TestInitDBLengths(t *testing.T) {
 			if strings.Contains(entity.DbDialect(), "mysql") {
 				assert.Contains(t, result.Error.Error(), schema.NamingStrategy{}.ColumnName("", "TakenSrc"))
 			} else if strings.Contains(entity.DbDialect(), "postgres") {
-				assert.Contains(t, result.Error.Error(), "value to long")
+				assert.Contains(t, result.Error.Error(), "value too long")
 			}
 		}
 
@@ -212,6 +215,9 @@ func TestInitDBLengths(t *testing.T) {
 	t.Run("PhotoExceedMaxPhotoType", func(t *testing.T) {
 		if strings.Contains(entity.DbDialect(), "sqlite") {
 			t.Skip("sqlite doesn't support max length testing")
+		}
+		if strings.Contains(entity.DbDialect(), "postgres") {
+			t.Skip("postgres doesn't support max length testing on bytes")
 		}
 		m := &entity.Photo{}
 		n := &entity.Photo{ID: 99887766,
@@ -293,7 +299,7 @@ func TestInitDBLengths(t *testing.T) {
 			if strings.Contains(entity.DbDialect(), "mysql") {
 				assert.Contains(t, result.Error.Error(), schema.NamingStrategy{}.ColumnName("", "PhotoType"))
 			} else if strings.Contains(entity.DbDialect(), "postgres") {
-				assert.Contains(t, result.Error.Error(), "value to long")
+				assert.Contains(t, result.Error.Error(), "value too long")
 			}
 		}
 
@@ -310,6 +316,9 @@ func TestInitDBLengths(t *testing.T) {
 	t.Run("PhotoExceedMaxTypeSrc", func(t *testing.T) {
 		if strings.Contains(entity.DbDialect(), "sqlite") {
 			t.Skip("sqlite doesn't support max length testing")
+		}
+		if strings.Contains(entity.DbDialect(), "postgres") {
+			t.Skip("postgres doesn't support max length testing on bytes")
 		}
 		m := &entity.Photo{}
 		n := &entity.Photo{ID: 99887766,
@@ -391,7 +400,7 @@ func TestInitDBLengths(t *testing.T) {
 			if strings.Contains(entity.DbDialect(), "mysql") {
 				assert.Contains(t, result.Error.Error(), schema.NamingStrategy{}.ColumnName("", "TypeSrc"))
 			} else if strings.Contains(entity.DbDialect(), "postgres") {
-				assert.Contains(t, result.Error.Error(), "value to long")
+				assert.Contains(t, result.Error.Error(), "value too long")
 			}
 		}
 
@@ -407,6 +416,9 @@ func TestInitDBLengths(t *testing.T) {
 	t.Run("PhotoExceedMaxTitleSrc", func(t *testing.T) {
 		if strings.Contains(entity.DbDialect(), "sqlite") {
 			t.Skip("sqlite doesn't support max length testing")
+		}
+		if strings.Contains(entity.DbDialect(), "postgres") {
+			t.Skip("postgres doesn't support max length testing on bytes")
 		}
 		m := &entity.Photo{}
 		n := &entity.Photo{ID: 99887766,
@@ -488,7 +500,7 @@ func TestInitDBLengths(t *testing.T) {
 			if strings.Contains(entity.DbDialect(), "mysql") {
 				assert.Contains(t, result.Error.Error(), schema.NamingStrategy{}.ColumnName("", "TitleSrc"))
 			} else if strings.Contains(entity.DbDialect(), "postgres") {
-				assert.Contains(t, result.Error.Error(), "value to long")
+				assert.Contains(t, result.Error.Error(), "value too long")
 			}
 		}
 
@@ -585,7 +597,7 @@ func TestInitDBLengths(t *testing.T) {
 			if strings.Contains(entity.DbDialect(), "mysql") {
 				assert.Contains(t, result.Error.Error(), schema.NamingStrategy{}.ColumnName("", "PhotoTitle"))
 			} else if strings.Contains(entity.DbDialect(), "postgres") {
-				assert.Contains(t, result.Error.Error(), "value to long")
+				assert.Contains(t, result.Error.Error(), "value too long")
 			}
 		}
 
@@ -682,7 +694,7 @@ func TestInitDBLengths(t *testing.T) {
 			if strings.Contains(entity.DbDialect(), "mysql") {
 				assert.Contains(t, result.Error.Error(), schema.NamingStrategy{}.ColumnName("", "PhotoCaption"))
 			} else if strings.Contains(entity.DbDialect(), "postgres") {
-				assert.Contains(t, result.Error.Error(), "value to long")
+				assert.Contains(t, result.Error.Error(), "value too long")
 			}
 		}
 
@@ -698,6 +710,9 @@ func TestInitDBLengths(t *testing.T) {
 	t.Run("PhotoExceedMaxPhotoPath", func(t *testing.T) {
 		if strings.Contains(entity.DbDialect(), "sqlite") {
 			t.Skip("sqlite doesn't support max length testing")
+		}
+		if strings.Contains(entity.DbDialect(), "postgres") {
+			t.Skip("postgres doesn't support max length testing on bytes")
 		}
 		m := &entity.Photo{}
 		n := &entity.Photo{ID: 99887766,
@@ -779,7 +794,7 @@ func TestInitDBLengths(t *testing.T) {
 			if strings.Contains(entity.DbDialect(), "mysql") {
 				assert.Contains(t, result.Error.Error(), schema.NamingStrategy{}.ColumnName("", "PhotoPath"))
 			} else if strings.Contains(entity.DbDialect(), "postgres") {
-				assert.Contains(t, result.Error.Error(), "value to long")
+				assert.Contains(t, result.Error.Error(), "value too long")
 			}
 		}
 
@@ -795,6 +810,9 @@ func TestInitDBLengths(t *testing.T) {
 	t.Run("PhotoExceedMaxPhotoName", func(t *testing.T) {
 		if strings.Contains(entity.DbDialect(), "sqlite") {
 			t.Skip("sqlite doesn't support max length testing")
+		}
+		if strings.Contains(entity.DbDialect(), "postgres") {
+			t.Skip("postgres doesn't support max length testing on bytes")
 		}
 		m := &entity.Photo{}
 		n := &entity.Photo{ID: 99887766,
@@ -876,7 +894,7 @@ func TestInitDBLengths(t *testing.T) {
 			if strings.Contains(entity.DbDialect(), "mysql") {
 				assert.Contains(t, result.Error.Error(), schema.NamingStrategy{}.ColumnName("", "PhotoName"))
 			} else if strings.Contains(entity.DbDialect(), "postgres") {
-				assert.Contains(t, result.Error.Error(), "value to long")
+				assert.Contains(t, result.Error.Error(), "value too long")
 			}
 		}
 
@@ -892,6 +910,9 @@ func TestInitDBLengths(t *testing.T) {
 	t.Run("PhotoExceedMaxOriginalName", func(t *testing.T) {
 		if strings.Contains(entity.DbDialect(), "sqlite") {
 			t.Skip("sqlite doesn't support max length testing")
+		}
+		if strings.Contains(entity.DbDialect(), "postgres") {
+			t.Skip("postgres doesn't support max length testing on bytes")
 		}
 		m := &entity.Photo{}
 		n := &entity.Photo{ID: 99887766,
@@ -973,7 +994,7 @@ func TestInitDBLengths(t *testing.T) {
 			if strings.Contains(entity.DbDialect(), "mysql") {
 				assert.Contains(t, result.Error.Error(), schema.NamingStrategy{}.ColumnName("", "OriginalName"))
 			} else if strings.Contains(entity.DbDialect(), "postgres") {
-				assert.Contains(t, result.Error.Error(), "value to long")
+				assert.Contains(t, result.Error.Error(), "value too long")
 			}
 		}
 
@@ -989,6 +1010,9 @@ func TestInitDBLengths(t *testing.T) {
 	t.Run("PhotoExceedMaxTimeZone", func(t *testing.T) {
 		if strings.Contains(entity.DbDialect(), "sqlite") {
 			t.Skip("sqlite doesn't support max length testing")
+		}
+		if strings.Contains(entity.DbDialect(), "postgres") {
+			t.Skip("postgres doesn't support max length testing on bytes")
 		}
 		m := &entity.Photo{}
 		n := &entity.Photo{ID: 99887766,
@@ -1070,7 +1094,7 @@ func TestInitDBLengths(t *testing.T) {
 			if strings.Contains(entity.DbDialect(), "mysql") {
 				assert.Contains(t, result.Error.Error(), schema.NamingStrategy{}.ColumnName("", "TimeZone"))
 			} else if strings.Contains(entity.DbDialect(), "postgres") {
-				assert.Contains(t, result.Error.Error(), "value to long")
+				assert.Contains(t, result.Error.Error(), "value too long")
 			}
 		}
 
@@ -1086,6 +1110,9 @@ func TestInitDBLengths(t *testing.T) {
 	t.Run("PhotoExceedMaxPlaceSrc", func(t *testing.T) {
 		if strings.Contains(entity.DbDialect(), "sqlite") {
 			t.Skip("sqlite doesn't support max length testing")
+		}
+		if strings.Contains(entity.DbDialect(), "postgres") {
+			t.Skip("postgres doesn't support max length testing on bytes")
 		}
 		m := &entity.Photo{}
 		n := &entity.Photo{ID: 99887766,
@@ -1167,7 +1194,7 @@ func TestInitDBLengths(t *testing.T) {
 			if strings.Contains(entity.DbDialect(), "mysql") {
 				assert.Contains(t, result.Error.Error(), schema.NamingStrategy{}.ColumnName("", "PlaceSrc"))
 			} else if strings.Contains(entity.DbDialect(), "postgres") {
-				assert.Contains(t, result.Error.Error(), "value to long")
+				assert.Contains(t, result.Error.Error(), "value too long")
 			}
 		}
 
@@ -1183,6 +1210,9 @@ func TestInitDBLengths(t *testing.T) {
 	t.Run("PhotoExceedMaxPhotoExposure", func(t *testing.T) {
 		if strings.Contains(entity.DbDialect(), "sqlite") {
 			t.Skip("sqlite doesn't support max length testing")
+		}
+		if strings.Contains(entity.DbDialect(), "postgres") {
+			t.Skip("postgres doesn't support max length testing on bytes")
 		}
 		m := &entity.Photo{}
 		n := &entity.Photo{ID: 99887766,
@@ -1264,7 +1294,7 @@ func TestInitDBLengths(t *testing.T) {
 			if strings.Contains(entity.DbDialect(), "mysql") {
 				assert.Contains(t, result.Error.Error(), schema.NamingStrategy{}.ColumnName("", "PhotoExposure"))
 			} else if strings.Contains(entity.DbDialect(), "postgres") {
-				assert.Contains(t, result.Error.Error(), "value to long")
+				assert.Contains(t, result.Error.Error(), "value too long")
 			}
 		}
 
@@ -1280,6 +1310,9 @@ func TestInitDBLengths(t *testing.T) {
 	t.Run("PhotoExceedMaxCameraSerial", func(t *testing.T) {
 		if strings.Contains(entity.DbDialect(), "sqlite") {
 			t.Skip("sqlite doesn't support max length testing")
+		}
+		if strings.Contains(entity.DbDialect(), "postgres") {
+			t.Skip("postgres doesn't support max length testing on bytes")
 		}
 		m := &entity.Photo{}
 		n := &entity.Photo{ID: 99887766,
@@ -1361,7 +1394,7 @@ func TestInitDBLengths(t *testing.T) {
 			if strings.Contains(entity.DbDialect(), "mysql") {
 				assert.Contains(t, result.Error.Error(), schema.NamingStrategy{}.ColumnName("", "CameraSerial"))
 			} else if strings.Contains(entity.DbDialect(), "postgres") {
-				assert.Contains(t, result.Error.Error(), "value to long")
+				assert.Contains(t, result.Error.Error(), "value too long")
 			}
 		}
 
@@ -1377,6 +1410,9 @@ func TestInitDBLengths(t *testing.T) {
 	t.Run("PhotoExceedMaxCameraSrc", func(t *testing.T) {
 		if strings.Contains(entity.DbDialect(), "sqlite") {
 			t.Skip("sqlite doesn't support max length testing")
+		}
+		if strings.Contains(entity.DbDialect(), "postgres") {
+			t.Skip("postgres doesn't support max length testing on bytes")
 		}
 		m := &entity.Photo{}
 		n := &entity.Photo{ID: 99887766,
@@ -1458,7 +1494,7 @@ func TestInitDBLengths(t *testing.T) {
 			if strings.Contains(entity.DbDialect(), "mysql") {
 				assert.Contains(t, result.Error.Error(), schema.NamingStrategy{}.ColumnName("", "CameraSrc"))
 			} else if strings.Contains(entity.DbDialect(), "postgres") {
-				assert.Contains(t, result.Error.Error(), "value to long")
+				assert.Contains(t, result.Error.Error(), "value too long")
 			}
 		}
 
@@ -1475,6 +1511,9 @@ func TestInitDBLengths(t *testing.T) {
 	t.Run("PhotoExceedMaxCameraSrcUniCode", func(t *testing.T) {
 		if strings.Contains(entity.DbDialect(), "sqlite") {
 			t.Skip("sqlite doesn't support max length testing")
+		}
+		if strings.Contains(entity.DbDialect(), "postgres") {
+			t.Skip("postgres doesn't support max length testing on bytes")
 		}
 		m := &entity.Photo{}
 		n := &entity.Photo{ID: 99887766,
@@ -1556,7 +1595,7 @@ func TestInitDBLengths(t *testing.T) {
 			if strings.Contains(entity.DbDialect(), "mysql") {
 				assert.Contains(t, result.Error.Error(), schema.NamingStrategy{}.ColumnName("", "CameraSrc"))
 			} else if strings.Contains(entity.DbDialect(), "postgres") {
-				assert.Contains(t, result.Error.Error(), "value to long")
+				assert.Contains(t, result.Error.Error(), "value too long")
 			}
 		}
 
@@ -1573,6 +1612,9 @@ func TestInitDBLengths(t *testing.T) {
 	t.Run("PhotoCameraSrcUniCode", func(t *testing.T) {
 		if strings.Contains(entity.DbDialect(), "sqlite") {
 			t.Skip("sqlite doesn't support max length testing")
+		}
+		if strings.Contains(entity.DbDialect(), "postgres") {
+			t.Skip("postgres doesn't support max length testing on bytes")
 		}
 		m := &entity.Photo{}
 		n := &entity.Photo{ID: 99887766,
