@@ -127,7 +127,36 @@ func (m File) RegenerateIndex() {
 	}
 
 	switch DbDialect() {
-	case MySQL, Postgres:
+
+	case Postgres:
+		// The following code (commented out), shows an alternative where DBMS specific conversions are not needed.
+		// It may be useful later as an example on how to do these updates.
+		// photoTakenAtTx := Db().Clauses(clause.From{Tables: []clause.Table{{Name: "photos"}}})
+		// photoTakenAtTx.Select("photo_taken_at")
+		// photoTakenAtTx.Where("photos.id = files.photo_id")
+		// photoTakenAtTx.Where(updateWhere).Model(&File{})
+
+		// photoTakenAtTx.Statement.BuildClauses = []string{
+		// 	clause.Update{}.Name(),
+		// 	clause.Set{}.Name(),
+		// 	clause.From{}.Name(),
+		// 	clause.Where{}.Name(),
+		// }
+
+		Log("files", "regenerate photo_taken_at",
+			// photoTakenAtTx.Debug().UpdateColumn("photo_taken_at", gorm.Expr("photos.taken_at_local")).Error)
+			Db().Exec("UPDATE files SET photo_taken_at = p.taken_at_local FROM ? AS p WHERE ? AND p.id = files.photo_id",
+				gorm.Expr(photosTable), updateWhere).Error)
+
+		Log("files", "regenerate media_id",
+			Db().Exec("UPDATE files SET media_id = convert_to(CASE WHEN file_missing = FALSE AND deleted_at IS NULL THEN CONCAT((10000000000 - photo_id), '-', 1 + CASE WHEN file_sidecar THEN 1 ELSE 0 END - CASE WHEN file_primary THEN 1 ELSE 0 END, '-', convert_from(file_uid, 'UTF8')) ELSE NULL END, 'UTF8') WHERE ?",
+				updateWhere).Error)
+
+		Log("files", "regenerate time_index",
+			Db().Exec("UPDATE files SET time_index = convert_to(CASE WHEN media_id IS NOT NULL AND photo_taken_at IS NOT NULL THEN CONCAT(100000000000000 - to_number(to_char(photo_taken_at, 'YYYYMMDDHHMISS'),'99999999999999'), '-', convert_from(media_id,'UTF8')) ELSE NULL END, 'UTF8') WHERE ?",
+				updateWhere).Error)
+
+	case MySQL:
 		Log("files", "regenerate photo_taken_at",
 			Db().Exec("UPDATE files JOIN ? p ON p.id = files.photo_id SET files.photo_taken_at = p.taken_at_local WHERE ?",
 				gorm.Expr(photosTable), updateWhere).Error)
