@@ -125,6 +125,12 @@ func TestValidateSaveCreate(t *testing.T) {
 			details := &entity.Details{Keywords: "cow, flower, snake, otter"}
 			photo := entity.Photo{ID: 34567, Details: details}
 
+			// PostgreSQL will error all statements after a failure in a transaction.
+			// So enable a savepoint to rollback to after the error we are about to create.
+			if entity.DbDialect() == entity.Postgres {
+				tx.Exec("SAVEPOINT beforeError")
+			}
+
 			// Direct Save.  This will always fail with foreign key constraints on v2.
 			res = tx.Save(&photo)
 			assert.Error(t, res.Error)
@@ -132,7 +138,12 @@ func TestValidateSaveCreate(t *testing.T) {
 				t.Log("Expected a foreign key error here")
 				t.FailNow()
 				return res.Error
+			} else {
+				if entity.DbDialect() == entity.Postgres {
+					tx.Exec("ROLLBACK TO SAVEPOINT beforeError")
+				}
 			}
+
 			assert.ErrorContains(t, res.Error, "constraint")
 
 			// do the save the safe way.
