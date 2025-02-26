@@ -73,6 +73,8 @@ func TestEntity_UpdateDBErrors(t *testing.T) {
 
 	migrateTestBlocker(entity.UnscopedDb())
 
+	entity.UnscopedDb().Debug().Where("1=1").Delete(&Blocker{})
+
 	if entity.DbDialect() == entity.MySQL {
 		entity.Db().Exec("SET GLOBAL lock_wait_timeout=5;")
 		entity.Db().Exec("SET GLOBAL innodb_lock_wait_timeout=5;")
@@ -141,6 +143,8 @@ func TestEntity_SaveDBErrors(t *testing.T) {
 	defer dbtestMutex.Unlock()
 
 	migrateTestBlocker(entity.UnscopedDb())
+
+	entity.UnscopedDb().Debug().Where("1=1").Delete(&Blocker{})
 
 	if entity.DbDialect() == entity.MySQL {
 		entity.Db().Exec("SET GLOBAL lock_wait_timeout=5;")
