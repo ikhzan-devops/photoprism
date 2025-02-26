@@ -42,7 +42,7 @@ FAIL | 	github.com/photoprism/photoprism/internal/entity/dbtest	205.053s
 FAIL | DialectMysql (0.05s)
 FAIL | 	github.com/photoprism/photoprism/internal/entity/migrate	0.171s
 PASS | UpdateAlbumDefaultCovers (0.00s)
-FAIL | UpdateAlbumFolderCovers (0.00s)
+PASS | UpdateAlbumFolderCovers (0.00s)
 FAIL | UpdateAlbumMonthCovers (0.00s)
 FAIL | UpdateAlbumCovers (0.00s)
 FAIL | UpdateLabelCovers (0.00s)
