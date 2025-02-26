@@ -46,7 +46,7 @@ PASS | UpdateAlbumFolderCovers (0.00s)
 PASS | UpdateAlbumMonthCovers (0.00s)
 PASS | UpdateAlbumCovers (0.00s)
 PASS | UpdateLabelCovers (0.00s)
-FAIL | UpdateSubjectCovers (0.00s)
+PASS | UpdateSubjectCovers (0.00s)
 FAIL | UpdateCovers (0.00s)
 FAIL | FileSelection (0.01s)
 FAIL |   FileSelection/DownloadSelectionRawSidecarPrivate (0.00s)
@@ -109,3 +109,9 @@ FAIL | 	github.com/photoprism/photoprism/internal/workers	604.231s
      | time="2025-02-26T05:10:12Z" level=error msg=FAIL
 FAIL | 	github.com/photoprism/photoprism/internal/workers/auto	604.270s
 ```
+
+
+# Inconsistencies Discovered.
+
+UpdateSubjectCovers updates 6 x 2 for SQLite and PostgreSQL.  But 6 and 0 for MariaDB.  Executing the captured SQL against MariaDB results in 6 and 6.  Unsure if this is a defect in Gorm not reporting the number of records affected correctly, or something else.  This branch has not changed the MariaDB query.  
+  
