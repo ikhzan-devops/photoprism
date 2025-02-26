@@ -121,13 +121,13 @@ func TestFilesByUID(t *testing.T) {
 	t.Run("Negative limit with offset", func(t *testing.T) {
 		files, err := FilesByUID([]string{"fs6sg6bw45bnlqdw"}, -100, 100)
 
-		if entity.DbDialect() == "sqlite" {
+		switch entity.DbDialect() {
+		case entity.Postgres, entity.SQLite3:
 			if err != nil {
 				t.Fatal(err)
 			}
 			assert.Equal(t, 0, len(files))
-		} else {
-			// mariadb fails on this, and it's likely that postgres will
+		case entity.MySQL:
 			assert.Error(t, err)
 		}
 	})
