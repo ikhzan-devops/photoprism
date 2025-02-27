@@ -95,7 +95,16 @@ func UpdateSubjectCounts(public bool) (err error) {
 	condition := gorm.Expr("subj_type = ?", SubjPerson)
 
 	switch DbDialect() {
-	case MySQL, Postgres:
+	case Postgres:
+		res = Db().Exec(`UPDATE ?
+						SET (file_count, photo_count) = (SELECT COALESCE(COUNT(DISTINCT f.id),0) AS file_count, COALESCE(COUNT(DISTINCT f.photo_id), 0) AS photo_count
+						FROM files f
+						JOIN photos p ON ?			    
+						JOIN markers m ON f.file_uid = m.file_uid AND m.subj_uid IS NOT NULL AND m.subj_uid <> '' AND m.subj_uid IS NOT NULL
+						WHERE m.marker_invalid = FALSE AND f.deleted_at IS NULL
+						AND m.subj_uid = subjects.subj_uid)
+						WHERE ?`, gorm.Expr(subjTable), photosJoin, condition)
+	case MySQL:
 		res = Db().Exec(`UPDATE ? LEFT JOIN (
 		SELECT m.subj_uid, COUNT(DISTINCT f.id) AS subj_files, COUNT(DISTINCT f.photo_id) AS subj_photos
 			FROM files f
@@ -147,21 +156,35 @@ func UpdateLabelCounts() (err error) {
 
 	start := time.Now()
 	var res *gorm.DB
-	if IsDialect(MySQL) || IsDialect(Postgres) {
+	switch DbDialect() {
+	case Postgres:
+		res = Db().Exec(`UPDATE labels
+					SET photo_count = (SELECT COALESCE(COUNT(DISTINCT photo_id),0) AS photo_count
+						FROM (SELECT p.id AS photo_id FROM photos p
+								JOIN photos_labels pl ON pl.photo_id = p.id AND pl.uncertainty < 100
+							WHERE p.photo_quality > -1 AND p.photo_private = FALSE AND p.deleted_at IS NULL AND pl.label_id = labels.id
+							UNION
+							SELECT p.id AS photo_id FROM photos p
+								JOIN photos_labels pl ON pl.photo_id = p.id AND pl.uncertainty < 100
+								JOIN categories c ON c.label_id = pl.label_id
+							WHERE p.photo_quality > -1 AND p.photo_private = FALSE AND p.deleted_at IS NULL AND c.category_id = labels.id
+							) p2
+                    )`)
+	case MySQL:
 		res = Db().Exec(`UPDATE labels LEFT JOIN (
-		SELECT p2.label_id, COUNT(DISTINCT photo_id) AS label_photos FROM (
-			SELECT pl.label_id as label_id, p.id AS photo_id FROM photos p
-				JOIN photos_labels pl ON pl.photo_id = p.id AND pl.uncertainty < 100
-			WHERE p.photo_quality > -1 AND p.photo_private = FALSE AND p.deleted_at IS NULL
-			UNION
-			SELECT c.category_id as label_id, p.id AS photo_id FROM photos p
-				JOIN photos_labels pl ON pl.photo_id = p.id AND pl.uncertainty < 100
-				JOIN categories c ON c.label_id = pl.label_id
-			WHERE p.photo_quality > -1 AND p.photo_private = FALSE AND p.deleted_at IS NULL
-			) p2 GROUP BY p2.label_id
-		) b ON b.label_id = labels.id
-		SET photo_count = CASE WHEN b.label_photos IS NULL THEN 0 ELSE b.label_photos END`)
-	} else if IsDialect(SQLite3) {
+			SELECT p2.label_id, COUNT(DISTINCT photo_id) AS label_photos FROM (
+				SELECT pl.label_id as label_id, p.id AS photo_id FROM photos p
+					JOIN photos_labels pl ON pl.photo_id = p.id AND pl.uncertainty < 100
+				WHERE p.photo_quality > -1 AND p.photo_private = FALSE AND p.deleted_at IS NULL
+				UNION
+				SELECT c.category_id as label_id, p.id AS photo_id FROM photos p
+					JOIN photos_labels pl ON pl.photo_id = p.id AND pl.uncertainty < 100
+					JOIN categories c ON c.label_id = pl.label_id
+				WHERE p.photo_quality > -1 AND p.photo_private = FALSE AND p.deleted_at IS NULL
+				) p2 GROUP BY p2.label_id
+			) b ON b.label_id = labels.id
+			SET photo_count = CASE WHEN b.label_photos IS NULL THEN 0 ELSE b.label_photos END`)
+	case SQLite3:
 		res = Db().
 			Table("labels").
 			Where("id is not null").
@@ -183,7 +206,7 @@ func UpdateLabelCounts() (err error) {
 					AND ph.photo_quality > -1
 					AND ph.photo_private = FALSE
 					AND ph.deleted_at IS NULL GROUP BY l.id) counts GROUP BY label_id) label_counts WHERE label_id = labels.id)`))
-	} else {
+	default:
 		return fmt.Errorf("sql: unsupported dialect %s", DbDialect())
 	}
 
