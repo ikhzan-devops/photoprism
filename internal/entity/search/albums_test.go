@@ -32,7 +32,10 @@ func TestAlbums(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		assert.Equal(t, "Christmas 2030", result[0].AlbumTitle)
+		assert.Greater(t, len(result), 0)
+		if len(result) > 0 {
+			assert.Equal(t, "Christmas 2030", result[0].AlbumTitle)
+		}
 	})
 
 	t.Run("search with slug", func(t *testing.T) {
@@ -43,7 +46,10 @@ func TestAlbums(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		assert.Equal(t, "Holiday 2030", result[0].AlbumTitle)
+		assert.Greater(t, len(result), 0)
+		if len(result) > 0 {
+			assert.Equal(t, "Holiday 2030", result[0].AlbumTitle)
+		}
 	})
 
 	t.Run("search with country", func(t *testing.T) {
@@ -54,7 +60,10 @@ func TestAlbums(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		assert.Equal(t, "April 1990", result[0].AlbumTitle)
+		assert.Greater(t, len(result), 0)
+		if len(result) > 0 {
+			assert.Equal(t, "April 1990", result[0].AlbumTitle)
+		}
 	})
 
 	t.Run("favorites true", func(t *testing.T) {
@@ -67,7 +76,10 @@ func TestAlbums(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		assert.Equal(t, "Holiday 2030", result[0].AlbumTitle)
+		assert.Greater(t, len(result), 0)
+		if len(result) > 0 {
+			assert.Equal(t, "Holiday 2030", result[0].AlbumTitle)
+		}
 	})
 	t.Run("empty query", func(t *testing.T) {
 		query := form.NewAlbumSearch("")
@@ -113,7 +125,9 @@ func TestAlbums(t *testing.T) {
 		}
 
 		assert.Equal(t, 1, len(result))
-		assert.Equal(t, "christmas-2030", result[0].AlbumSlug)
+		if len(result) == 1 {
+			assert.Equal(t, "christmas-2030", result[0].AlbumSlug)
+		}
 	})
 	t.Run("search with multiple filters", func(t *testing.T) {
 		f := form.SearchAlbums{
@@ -134,7 +148,9 @@ func TestAlbums(t *testing.T) {
 		}
 
 		assert.Equal(t, 1, len(result))
-		assert.Equal(t, "Empty Moment", result[0].AlbumTitle)
+		if len(result) == 1 {
+			assert.Equal(t, "Empty Moment", result[0].AlbumTitle)
+		}
 	})
 	t.Run("search for  year/month/day", func(t *testing.T) {
 		f := form.SearchAlbums{
@@ -181,7 +197,10 @@ func TestAlbums(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		assert.Equal(t, "April 1990", result[0].AlbumTitle)
+		assert.Greater(t, len(result), 0)
+		if len(result) > 0 {
+			assert.Equal(t, "April 1990", result[0].AlbumTitle)
+		}
 	})
 	t.Run("California", func(t *testing.T) {
 		query := form.NewAlbumSearch("california")

@@ -20,36 +20,46 @@ func TestSubjects(t *testing.T) {
 		results, err := Subjects(form.SearchSubjects{Type: entity.SubjPerson, Count: 2, Order: "count"})
 		assert.NoError(t, err)
 		//t.Logf("Subjects: %#v", results)
-		assert.GreaterOrEqual(t, results[0].FileCount, results[1].FileCount)
 		assert.Equal(t, 2, len(results))
+		if len(results) > 1 {
+			assert.GreaterOrEqual(t, results[0].FileCount, results[1].FileCount)
+		}
 	})
 	t.Run("FindAll sort by name", func(t *testing.T) {
 		results, err := Subjects(form.SearchSubjects{Type: entity.SubjPerson, Order: "name"})
 		assert.NoError(t, err)
 		//t.Logf("Subjects: %#v", results)
-		assert.Equal(t, "Actor A", results[0].SubjName)
 		assert.LessOrEqual(t, 3, len(results))
+		if len(results) > 0 {
+			assert.Equal(t, "Actor A", results[0].SubjName)
+		}
 	})
 	t.Run("sort by added", func(t *testing.T) {
 		results, err := Subjects(form.SearchSubjects{Type: entity.SubjPerson, Order: "added"})
 		assert.NoError(t, err)
 		//t.Logf("Subjects: %#v", results)
-		assert.Equal(t, "Jane Doe", results[0].SubjName)
 		assert.LessOrEqual(t, 3, len(results))
+		if len(results) > 0 {
+			assert.Equal(t, "Jane Doe", results[0].SubjName)
+		}
 	})
 	t.Run("sort by relevance", func(t *testing.T) {
 		results, err := Subjects(form.SearchSubjects{Type: entity.SubjPerson, Order: "relevance"})
 		assert.NoError(t, err)
 		//t.Logf("Subjects: %#v", results)
-		assert.Equal(t, "John Doe", results[0].SubjName)
 		assert.LessOrEqual(t, 3, len(results))
+		if len(results) > 0 {
+			assert.Equal(t, "John Doe", results[0].SubjName)
+		}
 	})
 	t.Run("search favorite", func(t *testing.T) {
 		results, err := Subjects(form.SearchSubjects{Type: entity.SubjPerson, Favorite: "yes"})
 		assert.NoError(t, err)
 		//t.Logf("Subjects: %#v", results)
-		assert.Equal(t, "John Doe", results[0].SubjName)
 		assert.LessOrEqual(t, 1, len(results))
+		if len(results) > 0 {
+			assert.Equal(t, "John Doe", results[0].SubjName)
+		}
 	})
 	t.Run("search private", func(t *testing.T) {
 		results, err := Subjects(form.SearchSubjects{Type: entity.SubjPerson, Private: "true"})
@@ -73,15 +83,19 @@ func TestSubjects(t *testing.T) {
 		results, err := Subjects(form.SearchSubjects{Type: entity.SubjPerson, Query: "Powell", Favorite: "no", Private: "no"})
 		assert.NoError(t, err)
 		//t.Logf("Subjects: %#v", results)
-		assert.Equal(t, "Dangling Subject", results[0].SubjName)
 		assert.LessOrEqual(t, 1, len(results))
+		if len(results) > 0 {
+			assert.Equal(t, "Dangling Subject", results[0].SubjName)
+		}
 	})
 	t.Run("search for ID", func(t *testing.T) {
 		results, err := Subjects(form.SearchSubjects{Type: entity.SubjPerson, UID: "js6sg6b2h8njw0sx"})
 		assert.NoError(t, err)
 		//t.Logf("Subjects: %#v", results)
-		assert.Equal(t, "Joe Biden", results[0].SubjName)
 		assert.Equal(t, 1, len(results))
+		if len(results) > 0 {
+			assert.Equal(t, "Joe Biden", results[0].SubjName)
+		}
 	})
 }
 

@@ -1865,7 +1865,9 @@ func TestPhotos(t *testing.T) {
 
 		t.Logf("results: %+v", photos)
 		assert.Equal(t, 1, len(photos))
-		assert.Equal(t, photos[0].PhotoTitle, "Neckarbrücke")
+		if len(photos) > 0 {
+			assert.Equal(t, photos[0].PhotoTitle, "Neckarbrücke")
+		}
 	})
 	t.Run("SortByFileSize", func(t *testing.T) {
 		var frm form.SearchPhotos
@@ -1886,8 +1888,10 @@ func TestPhotos(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		assert.GreaterOrEqual(t, len(photos), 1)
-		assert.GreaterOrEqual(t, photos[0].FileSize, photos[3].FileSize)
+		assert.GreaterOrEqual(t, len(photos), 4)
+		if len(photos) > 3 {
+			assert.GreaterOrEqual(t, photos[0].FileSize, photos[3].FileSize)
+		}
 
 		for _, r := range photos {
 			assert.IsType(t, Photo{}, r)
@@ -1953,8 +1957,10 @@ func TestPhotos(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		assert.GreaterOrEqual(t, len(photos), 1)
-		assert.Equal(t, photos[0].PlaceCountry, photos[3].PlaceCountry)
+		assert.GreaterOrEqual(t, len(photos), 4)
+		if len(photos) > 3 {
+			assert.Equal(t, photos[0].PlaceCountry, photos[3].PlaceCountry)
+		}
 
 		for _, r := range photos {
 			assert.IsType(t, Photo{}, r)
