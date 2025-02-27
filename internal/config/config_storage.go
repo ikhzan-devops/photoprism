@@ -646,6 +646,16 @@ func (c *Config) MariadbDumpBin() string {
 	return findBin("", "mariadb-dump", "mysqldump")
 }
 
+// PostgreSQLBin returns the PostgreSQL restore executable file name.
+func (c *Config) PostgreSQLRestoreBin() string {
+	return findBin("", "pg_restore")
+}
+
+// PostgreSQLDumpBin returns the PostgreSQL backup executable file name.
+func (c *Config) PostgreSQLDumpBin() string {
+	return findBin("", "pg_dump")
+}
+
 // SqliteBin returns the sqlite executable file name.
 func (c *Config) SqliteBin() string {
 	return findBin("", "sqlite3")

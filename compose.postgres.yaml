@@ -135,7 +135,7 @@ services:
   ## PostgreSQL Database Server
   ## Docs: https://www.postgresql.org/docs/
   postgres:
-    image: postgres:17-alpine
+    image: postgres:16-alpine
     expose:
       - "5432"
     ports:
