@@ -5,6 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
+	"github.com/photoprism/photoprism/internal/entity"
 	"github.com/photoprism/photoprism/internal/form"
 )
 
@@ -21,6 +22,13 @@ func TestPhotosFilterLabel(t *testing.T) {
 			t.Fatal(err)
 		}
 		assert.Equal(t, len(photos), 1)
+		if len(photos) > 0 {
+			assert.Equal(t, entity.PhotoFixtures.Pointer("19800101_000002_D640C559").ID, photos[0].ID)
+			assert.Equal(t, entity.PhotoFixtures.Pointer("19800101_000002_D640C559").CameraID, photos[0].CameraID)
+			assert.Equal(t, entity.PhotoFixtures.Pointer("19800101_000002_D640C559").CellID, photos[0].CellID)
+			assert.Equal(t, entity.PhotoFixtures.Pointer("19800101_000002_D640C559").LensID, photos[0].LensID)
+			assert.Equal(t, entity.PhotoFixtures.Pointer("19800101_000002_D640C559").PhotoCaption, photos[0].PhotoCaption)
+		}
 	})
 	t.Run("cake", func(t *testing.T) {
 		var f form.SearchPhotos
