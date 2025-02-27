@@ -79,12 +79,26 @@ func searchPhotos(frm form.SearchPhotos, sess *entity.Session, resultCols string
 		frm.Dist = geo.DistLimit
 	}
 
+	// Are we PostgreSQL and will a group by be added?
+	postgreSQLRowNumber := txt.NotEmpty(frm.Label) && entity.DbDialect() == entity.Postgres
+
 	// Specify table names and joins.
-	s := UnscopedDb().Table(entity.File{}.TableName()).Select(resultCols).
-		Joins("JOIN photos ON files.photo_id = photos.id AND files.media_id IS NOT NULL").
-		Joins("LEFT JOIN cameras ON photos.camera_id = cameras.id").
-		Joins("LEFT JOIN lenses ON photos.lens_id = lenses.id").
-		Joins("LEFT JOIN places ON photos.place_id = places.id")
+	var s *gorm.DB
+	if postgreSQLRowNumber {
+		// PostgreSQL doesn't support a GROUP BY that excludes non aggregated columns.
+		// This is the work around.
+		s = UnscopedDb().Table(entity.File{}.TableName()).Select("ROW_NUMBER() OVER (PARTITION BY photos.id, files.id ORDER BY files.media_id) as rec_num, " + resultCols).
+			Joins("JOIN photos ON files.photo_id = photos.id AND files.media_id IS NOT NULL").
+			Joins("LEFT JOIN cameras ON photos.camera_id = cameras.id").
+			Joins("LEFT JOIN lenses ON photos.lens_id = lenses.id").
+			Joins("LEFT JOIN places ON photos.place_id = places.id")
+	} else {
+		s = UnscopedDb().Table(entity.File{}.TableName()).Select(resultCols).
+			Joins("JOIN photos ON files.photo_id = photos.id AND files.media_id IS NOT NULL").
+			Joins("LEFT JOIN cameras ON photos.camera_id = cameras.id").
+			Joins("LEFT JOIN lenses ON photos.lens_id = lenses.id").
+			Joins("LEFT JOIN places ON photos.place_id = places.id")
+	}
 
 	// Accept the album UID as scope for backward compatibility.
 	if rnd.IsUID(frm.Album, entity.AlbumUID) {
@@ -297,8 +311,13 @@ func searchPhotos(frm form.SearchPhotos, sess *entity.Session, resultCols string
 				}
 			}
 
-			s = s.Joins("JOIN photos_labels ON photos_labels.photo_id = files.photo_id AND photos_labels.uncertainty < 100 AND photos_labels.label_id IN (?)", labelIds).
-				Group("photos.id, files.id")
+			if postgreSQLRowNumber {
+				// PostgreSQL doesn't support a GROUP BY that excludes non aggregated columns.
+				s = s.Joins("JOIN photos_labels ON photos_labels.photo_id = files.photo_id AND photos_labels.uncertainty < 100 AND photos_labels.label_id IN (?)", labelIds)
+			} else {
+				s = s.Joins("JOIN photos_labels ON photos_labels.photo_id = files.photo_id AND photos_labels.uncertainty < 100 AND photos_labels.label_id IN (?)", labelIds).
+					Group("photos.id, files.id")
+			}
 		}
 	}
 
@@ -778,8 +797,17 @@ func searchPhotos(frm form.SearchPhotos, sess *entity.Session, resultCols string
 	}
 
 	// Query database.
-	if err = s.Scan(&results).Error; err != nil {
-		return results, 0, err
+	if postgreSQLRowNumber {
+		// PostgreSQL doesn't support a GROUP BY that excludes non aggregated columns.
+		oq := UnscopedDb().Table("(?) as result", s).Select("*").Where("rec_num = ?", 1)
+		if err = oq.Scan(&results).Error; err != nil {
+			return results, 0, err
+		}
+	} else {
+
+		if err = s.Scan(&results).Error; err != nil {
+			return results, 0, err
+		}
 	}
 
 	// Log number of results.
