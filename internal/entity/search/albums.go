@@ -144,10 +144,19 @@ func UserAlbums(frm form.SearchAlbums, sess *entity.Session) (results AlbumResul
 	if txt.NotEmpty(frm.Query) {
 		q := "%" + strings.Trim(frm.Query, " *%") + "%"
 
-		if frm.Type == entity.AlbumFolder {
-			s = s.Where("albums.album_title LIKE ? OR albums.album_location LIKE ? OR albums.album_path LIKE ?", q, q, q)
-		} else {
-			s = s.Where("albums.album_title LIKE ? OR albums.album_location LIKE ?", q, q)
+		switch entity.DbDialect() {
+		case entity.Postgres:
+			if frm.Type == entity.AlbumFolder {
+				s = s.Where("albums.album_title LIKE ? OR albums.album_location LIKE ? OR convert_from(albums.album_path, 'UTF8') LIKE ?", q, q, q)
+			} else {
+				s = s.Where("albums.album_title LIKE ? OR albums.album_location LIKE ?", q, q)
+			}
+		default:
+			if frm.Type == entity.AlbumFolder {
+				s = s.Where("albums.album_title LIKE ? OR albums.album_location LIKE ? OR albums.album_path LIKE ?", q, q, q)
+			} else {
+				s = s.Where("albums.album_title LIKE ? OR albums.album_location LIKE ?", q, q)
+			}
 		}
 	}
 
@@ -210,7 +219,7 @@ func UserAlbums(frm form.SearchAlbums, sess *entity.Session) (results AlbumResul
 	}
 
 	// Query database.
-	if result := s.Scan(&results); result.Error != nil {
+	if result := s.Debug().Scan(&results); result.Error != nil {
 		return results, result.Error
 	}
 
