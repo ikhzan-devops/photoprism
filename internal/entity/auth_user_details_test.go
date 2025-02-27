@@ -14,7 +14,9 @@ func TestCreateUserDetails(t *testing.T) {
 	})
 	t.Run("Success", func(t *testing.T) {
 		m := &User{UserUID: "1234"}
-		Db().Create(m) // Have to create a user BEFORE adding details to it.
+		if err := Db().Create(m).Error; err != nil { // Have to create a user BEFORE adding details to it.
+			t.Fatal(err)
+		}
 		err := CreateUserDetails(m)
 
 		if err != nil {

@@ -139,7 +139,11 @@ func resetIDToOne(tableName string) {
 	if UnscopedDb().Dialector.Name() == MySQL {
 		sqlCommand = fmt.Sprintf("ALTER TABLE `%v` AUTO_INCREMENT = 1", tableName)
 	} else if UnscopedDb().Dialector.Name() == Postgres {
-		sqlCommand = fmt.Sprintf("ALTER SEQUENCE %v_id_seq RESTART WITH 1", tableName)
+		if tableName == "auth_users" {
+			sqlCommand = fmt.Sprintf("ALTER SEQUENCE %v_id_seq RESTART WITH 100", tableName)
+		} else {
+			sqlCommand = fmt.Sprintf("ALTER SEQUENCE %v_id_seq RESTART WITH 1", tableName)
+		}
 	} else if UnscopedDb().Dialector.Name() == SQLite3 {
 		sqlCommand = fmt.Sprintf("UPDATE SQLITE_SEQUENCE SET SEQ=0 WHERE NAME='%v'", tableName)
 	} else {
