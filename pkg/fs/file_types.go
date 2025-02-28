@@ -53,7 +53,7 @@ const (
 	VideoMjpeg  Type = "mjpg" // Motion JPEG (M-JPEG)
 	VideoMp2    Type = "mp2"  // MPEG-2, H.222/H.262
 	VideoMp4    Type = "mp4"  // MPEG-4 Container based on QuickTime, can contain AVC, HEVC,...
-	VideoM4V    Type = "m4v"  // Apple iTunes MPEG-4 Container, optionally with DRM copy protection
+	VideoM4v    Type = "m4v"  // Apple iTunes MPEG-4 Container, optionally with DRM copy protection
 	VideoMkv    Type = "mkv"  // Matroska Multimedia Container, free and open
 	VideoMov    Type = "mov"  // QuickTime File Format, can contain AVC, HEVC,...
 	VideoMXF    Type = "mxf"  // Material Exchange Format

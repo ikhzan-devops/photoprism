@@ -60,6 +60,7 @@ import (
 
 // log points to the global logger.
 var log = event.Log
+var initThumbsMutex sync.Mutex
 
 // Config holds database, cache and all parameters of photoprism
 type Config struct {
@@ -84,10 +85,24 @@ func init() {
 		LowMem = TotalMem < MinMem
 	}
 
+	initThumbs()
+}
+
+func initThumbs() {
+	initThumbsMutex.Lock()
+	defer initThumbsMutex.Unlock()
+
+	maxSize := thumb.MaxSize()
+	Thumbs = ThumbSizes{}
+
 	// Init public thumb sizes for use in client apps.
 	for i := len(thumb.Names) - 1; i >= 0; i-- {
 		name := thumb.Names[i]
 		t := thumb.Sizes[name]
+
+		if t.Width > maxSize {
+			continue
+		}
 
 		if t.Public {
 			Thumbs = append(Thumbs, ThumbSize{Size: string(name), Usage: t.Usage, Width: t.Width, Height: t.Height})
@@ -252,6 +267,7 @@ func (c *Config) Propagate() {
 	thumb.SizeOnDemand = c.ThumbSizeUncached()
 	thumb.JpegQualityDefault = c.JpegQuality()
 	thumb.CachePublic = c.HttpCachePublic()
+	initThumbs()
 
 	// Set cache expiration defaults.
 	ttl.CacheDefault = c.HttpCacheMaxAge()

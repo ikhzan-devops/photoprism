@@ -125,7 +125,7 @@ export default {
       canEdit: this.$config.allow("photos", "update") && this.$config.feature("edit"),
       canLike: this.$config.allow("photos", "manage") && this.$config.feature("favorites"),
       canDownload: this.$config.allow("photos", "download") && this.$config.feature("download"),
-      canFullscreen: !this.$isMobile,
+      canFullscreen: !this.$isMobile || this.$config.featExperimental(),
       isFullscreen: !window.screenTop && !window.screenY,
       isZoomable: true,
       mobileBreakpoint: 600, // Minimum viewport width for large screens.
@@ -312,7 +312,7 @@ export default {
         wheelToZoom: true,
         maxZoomLevel: 8,
         bgOpacity: 1,
-        preload: [2, 2],
+        preload: [1, 1],
         showHideAnimationType: "none",
         mainClass: "p-lightbox__pswp",
         tapAction: (point, ev) => this.onContentTap(ev),

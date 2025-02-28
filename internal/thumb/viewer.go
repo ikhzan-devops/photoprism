@@ -6,12 +6,13 @@ import (
 
 // Viewer represents thumbnail URLs for the photo/video viewer.
 type Viewer struct {
-	Fit720  Thumb `json:"fit_720"`
-	Fit1280 Thumb `json:"fit_1280"`
-	Fit1920 Thumb `json:"fit_1920"`
-	Fit2560 Thumb `json:"fit_2560"`
-	Fit4096 Thumb `json:"fit_4096"`
-	Fit7680 Thumb `json:"fit_7680"`
+	Fit720  *Thumb `json:"fit_720"`
+	Fit1280 *Thumb `json:"fit_1280"`
+	Fit1920 *Thumb `json:"fit_1920"`
+	Fit2560 *Thumb `json:"fit_2560"`
+	Fit4096 *Thumb `json:"fit_4096"`
+	Fit5120 *Thumb `json:"fit_5120"`
+	Fit7680 *Thumb `json:"fit_7680"`
 }
 
 // ViewerThumbs creates and returns a Viewer struct pointer with the required thumbnail URLs for the photo/video viewer.
@@ -21,8 +22,9 @@ func ViewerThumbs(fileWidth, fileHeight int, fileHash, contentUri, previewToken 
 	// Get Viewer struct fields.
 	fields := reflect.ValueOf(thumbs).Elem()
 
-	// Remember the largest size needed, if any.
-	var maxSize Size
+	// Remember the maximum allowed size and the maximum actual size.
+	var maxSize = MaxSize()
+	var largestSize Size
 
 	// Iterate through all Viewer struct fields and set the best matching thumb size.
 	for i := 0; i < fields.NumField(); i++ {
@@ -43,13 +45,13 @@ func ViewerThumbs(fileWidth, fileHeight int, fileHash, contentUri, previewToken 
 		}
 
 		// Remember this as the largest size needed if the original size is smaller than the thumb size.
-		if maxSize.Name == "" && s.Width >= fileWidth && s.Height >= fileHeight {
-			maxSize = s
+		if largestSize.Name == "" && (s.Width >= fileWidth && s.Height >= fileHeight || s.Width >= maxSize) {
+			largestSize = s
 		}
 
 		// Set the field value to the current size or the maximum size, if any.
-		if maxSize.Name != "" {
-			thumb.Set(reflect.ValueOf(New(fileWidth, fileHeight, fileHash, maxSize, contentUri, previewToken)))
+		if largestSize.Name != "" {
+			thumb.Set(reflect.ValueOf(New(fileWidth, fileHeight, fileHash, largestSize, contentUri, previewToken)))
 		} else {
 			thumb.Set(reflect.ValueOf(New(fileWidth, fileHeight, fileHash, s, contentUri, previewToken)))
 		}

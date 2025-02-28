@@ -9,12 +9,23 @@ import (
 )
 
 func TestContentType(t *testing.T) {
+	t.Run("Empty", func(t *testing.T) {
+		assert.Equal(t, "application/octet-stream", ContentType("", "", "", false))
+	})
 	t.Run("Mkv", func(t *testing.T) {
 		assert.Equal(t, header.ContentTypeMkv, ContentType("", "mkv", "", false))
 		assert.Equal(t, header.ContentTypeMkv, ContentType(header.ContentTypeMkv, "", "", false))
 	})
 	t.Run("Mov", func(t *testing.T) {
 		assert.Equal(t, header.ContentTypeMp4, ContentType(header.ContentTypeMov, "", "", false))
+	})
+	t.Run("M4v", func(t *testing.T) {
+		assert.Equal(t, header.ContentTypeMp4, ContentType("", "m4v", "", false))
+		assert.Equal(t, header.ContentTypeMp4, ContentType(header.ContentTypeM4v, "", "", false))
+		assert.Equal(t, header.ContentTypeMp4AvcMain, ContentType(header.ContentTypeM4v, "", CodecAvc1, false))
+		assert.Equal(t, header.ContentTypeMp4AvcHigh10, ContentType(header.ContentTypeM4v, "", CodecAvc1, true))
+		assert.Equal(t, header.ContentTypeMp4HvcMain10, ContentType(header.ContentTypeM4v, "", CodecHvc1, false))
+		assert.Equal(t, header.ContentTypeMp4HvcMain10, ContentType(header.ContentTypeM4v, "", CodecHvc1, true))
 	})
 	t.Run("Mov/Hvc", func(t *testing.T) {
 		assert.Equal(t, header.ContentTypeMp4HvcMain10, ContentType(header.ContentTypeMov, "mov", CodecHvc1, false))
@@ -46,6 +57,56 @@ func TestContentType(t *testing.T) {
 		assert.Equal(t, header.ContentTypeMp4HevMain10, ContentType(header.ContentTypeMp4, "", CodecHev1, true))
 		assert.Equal(t, header.ContentTypeMp4HevMain10, ContentType("", "mp4", CodecHev1, false))
 		assert.Equal(t, header.ContentTypeMp4HevMain10, ContentType("", "mp4", CodecHev1, true))
+	})
+	t.Run("Mp4/Vvc", func(t *testing.T) {
+		assert.Equal(t, header.ContentTypeMp4Vvc, ContentType(header.ContentTypeMp4, "", CodecVvc1, false))
+		assert.Equal(t, header.ContentTypeMp4Vvc, ContentType(header.ContentTypeMp4, "", CodecVvc1, true))
+		assert.Equal(t, header.ContentTypeMp4Vvc, ContentType("", "vvc", CodecVvc1, false))
+		assert.Equal(t, header.ContentTypeMp4Vvc, ContentType("", "vvc", CodecVvc1, true))
+	})
+	t.Run("Mp4/Evc", func(t *testing.T) {
+		assert.Equal(t, header.ContentTypeMp4Evc, ContentType(header.ContentTypeMp4, "", CodecEvc1, false))
+		assert.Equal(t, header.ContentTypeMp4Evc, ContentType(header.ContentTypeMp4, "", CodecEvc1, true))
+		assert.Equal(t, header.ContentTypeMp4Evc, ContentType("", "evc", CodecEvc1, false))
+		assert.Equal(t, header.ContentTypeMp4Evc, ContentType("", "evc", CodecEvc1, true))
+	})
+	t.Run("VP8", func(t *testing.T) {
+		assert.Equal(t, header.ContentTypeWebmVp8, ContentType("", "", CodecVp08, false))
+		assert.Equal(t, header.ContentTypeWebmVp8, ContentType("", "", CodecVp08, true))
+		assert.Equal(t, header.ContentTypeWebmVp8, ContentType("", "vp8", "", false))
+		assert.Equal(t, header.ContentTypeWebmVp8, ContentType("", "vp8", "", true))
+	})
+	t.Run("VP9", func(t *testing.T) {
+		assert.Equal(t, header.ContentTypeWebmVp9Main, ContentType("", "", CodecVp09, false))
+		assert.Equal(t, header.ContentTypeWebmVp9Main, ContentType("", "", CodecVp09, true))
+		assert.Equal(t, header.ContentTypeWebmVp9Main, ContentType("", "vp9", "", false))
+		assert.Equal(t, header.ContentTypeWebmVp9Main, ContentType("", "vp9", "", true))
+	})
+	t.Run("Webmm/Av1", func(t *testing.T) {
+		assert.Equal(t, header.ContentTypeWebmAv1Main10, ContentType("", "webm", CodecAv01, false))
+		assert.Equal(t, header.ContentTypeWebmAv1Main10, ContentType("", "webm", CodecAv01, true))
+	})
+	t.Run("Mp4/Av1", func(t *testing.T) {
+		assert.Equal(t, header.ContentTypeMp4Av1Main10, ContentType(header.ContentTypeMp4, "mp4", CodecAv01, false))
+		assert.Equal(t, header.ContentTypeMp4Av1Main10, ContentType(header.ContentTypeMp4, "mp4", CodecAv01, true))
+		assert.Equal(t, header.ContentTypeMp4Av1Main10, ContentType("", "mp4", CodecAv01, false))
+		assert.Equal(t, header.ContentTypeMp4Av1Main10, ContentType("", "mp4", CodecAv01, true))
+	})
+	t.Run("Mkv/Av1", func(t *testing.T) {
+		assert.Equal(t, header.ContentTypeMkvAv1Main10, ContentType("", "mkv", CodecAv01, false))
+		assert.Equal(t, header.ContentTypeMkvAv1Main10, ContentType("", "mkv", CodecAv01, true))
+	})
+	t.Run("Av1", func(t *testing.T) {
+		assert.Equal(t, header.ContentTypeMp4Av1Main10, ContentType("", "av1", "", false))
+		assert.Equal(t, header.ContentTypeMp4Av1Main10, ContentType("", "av1", "", true))
+	})
+	t.Run("Ogg", func(t *testing.T) {
+		assert.Equal(t, header.ContentTypeOgg, ContentType("", "ogv", "", false))
+		assert.Equal(t, header.ContentTypeOgg, ContentType("", "ogv", "", true))
+	})
+	t.Run("Webm", func(t *testing.T) {
+		assert.Equal(t, header.ContentTypeWebm, ContentType("", "webm", "", false))
+		assert.Equal(t, header.ContentTypeWebm, ContentType("", "webm", "", true))
 	})
 }
 

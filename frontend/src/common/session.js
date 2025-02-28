@@ -24,8 +24,8 @@ Additional information can be found in our Developer Guide:
 */
 
 import $api from "common/api";
-import $notify from "common/notify";
 import $event from "common/event";
+import { $view } from "common/view";
 import User from "model/user";
 import Socket from "websocket.js";
 
@@ -519,17 +519,13 @@ export default class Session {
       return;
     }
 
-    // Time to redirect in milliseconds.
+    // Default redirect delay in milliseconds.
     if (!delay) {
-      delay = 50;
+      delay = 100;
     }
 
-    // Block UI interactions.
-    $notify.blockUI();
-
-    setTimeout(() => {
-      window.location = url;
-    }, delay);
+    // Redirect to URL with the specified delay.
+    $view.redirect(url, delay, true);
   }
 
   onLogout(noRedirect) {

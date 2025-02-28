@@ -91,6 +91,7 @@ services:
       PHOTOPRISM_ASSETS_PATH: "/go/src/github.com/photoprism/photoprism/assets"
       PHOTOPRISM_STORAGE_PATH: "/go/src/github.com/photoprism/photoprism/storage"
       PHOTOPRISM_ORIGINALS_PATH: "/go/src/github.com/photoprism/photoprism/storage/originals"
+      PHOTOPRISM_ORIGINALS_LIMIT: 128000             # sets originals file size limit to 128 GB
       PHOTOPRISM_IMPORT_PATH: "/go/src/github.com/photoprism/photoprism/storage/import"
       PHOTOPRISM_DISABLE_CHOWN: "false"              # disables updating storage permissions via chmod and chown on startup
       PHOTOPRISM_DISABLE_BACKUPS: "false"            # disables backing up albums and photo metadata to YAML files

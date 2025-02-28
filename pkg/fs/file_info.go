@@ -33,7 +33,7 @@ var TypeInfo = TypeMap{
 	VideoVp9:        "Google VP9 Video",
 	VideoMov:        "Apple QuickTime",
 	VideoMp4:        "Multimedia Container (MPEG-4 Part 14)",
-	VideoM4V:        "Apple iTunes Multimedia Container",
+	VideoM4v:        "Apple iTunes Multimedia Container",
 	VideoMXF:        "Material Exchange Format",
 	VideoAVI:        "Microsoft Audio Video Interleave",
 	VideoASF:        "Advanced Systems Format ",

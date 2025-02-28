@@ -18,6 +18,7 @@ package header
 
 // Standard ContentType strings for audio and video files:
 const (
+	ContentTypeM4v            = "video/x-m4v"
 	ContentTypeMp4            = "video/mp4"
 	ContentTypeMp4Avc         = ContentTypeMp4 + "; codecs=\"avc1\""             // MPEG-4 AVC (H.264)
 	ContentTypeMp4AvcBaseline = ContentTypeMp4 + "; codecs=\"avc1.420028\""      // MPEG-4 AVC (H.264), Baseline Level 4.0
