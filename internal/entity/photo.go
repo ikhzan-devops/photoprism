@@ -1126,10 +1126,10 @@ func (m *Photo) SetPrimary(fileUid string) (err error) {
 
 	if err = Db().Model(File{}).
 		Where("photo_uid = ? AND file_uid <> ?", m.PhotoUID, fileUid).
-		UpdateColumn("file_primary", 0).Error; err != nil {
+		UpdateColumn("file_primary", false).Error; err != nil {
 		return err
 	} else if err = Db().Model(File{}).Where("photo_uid = ? AND file_uid = ?", m.PhotoUID, fileUid).
-		UpdateColumn("file_primary", 1).Error; err != nil {
+		UpdateColumn("file_primary", true).Error; err != nil {
 		return err
 	} else if m.PhotoQuality < 0 {
 		m.PhotoQuality = 0
