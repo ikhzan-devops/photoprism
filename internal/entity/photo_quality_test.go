@@ -100,7 +100,7 @@ func TestPhoto_QualityScore(t *testing.T) {
 		assert.Equal(t, 3, digikam.QualityScore())
 
 		beforeId := uint(0)
-		if res := Db().Raw("SELECT COALESCE(MAX(id),0) FROM `errors`").Scan(&beforeId); res.Error != nil {
+		if res := Db().Model(&Error{}).Select("COALESCE(MAX(id),?)", 0).Scan(&beforeId); res.Error != nil {
 			t.Log(res.Error)
 			t.FailNow()
 		}
