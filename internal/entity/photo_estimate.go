@@ -98,7 +98,7 @@ func (m *Photo) EstimateLocation(force bool) {
 
 	switch DbDialect() {
 	case Postgres:
-		err = UnscopedDb().Debug().
+		err = UnscopedDb().
 			Where("photo_lat <> 0 AND photo_lng <> 0").
 			Where("place_src <> '' AND place_src <> ? AND place_id IS NOT NULL AND place_id <> '' AND place_id <> 'zz'", SrcEstimate).
 			// I do not know why the following fails to work.  ToDo: write a test harness to prove bug in Gorm/PostgreSQL driver?
@@ -110,7 +110,7 @@ func (m *Photo) EstimateLocation(force bool) {
 				WithoutParentheses: true}}).Limit(2).
 			Preload("Place").Find(&mostRecent).Error
 	case MySQL:
-		err = UnscopedDb().Debug().
+		err = UnscopedDb().
 			Where("photo_lat <> 0 AND photo_lng <> 0").
 			Where("place_src <> '' AND place_src <> ? AND place_id IS NOT NULL AND place_id <> '' AND place_id <> 'zz'", SrcEstimate).
 			Where("taken_src <> '' AND taken_at BETWEEN CAST(? AS DATETIME) AND CAST(? AS DATETIME)", rangeMin, rangeMax).
@@ -120,7 +120,7 @@ func (m *Photo) EstimateLocation(force bool) {
 				WithoutParentheses: true}}).Limit(2).
 			Preload("Place").Find(&mostRecent).Error
 	case SQLite3:
-		err = UnscopedDb().Debug().
+		err = UnscopedDb().
 			Where("photo_lat <> 0 AND photo_lng <> 0").
 			Where("place_src <> '' AND place_src <> ? AND place_id IS NOT NULL AND place_id <> '' AND place_id <> 'zz'", SrcEstimate).
 			Where("taken_src <> '' AND taken_at BETWEEN ? AND ?", rangeMin, rangeMax).

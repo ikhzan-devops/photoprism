@@ -219,7 +219,7 @@ func UserAlbums(frm form.SearchAlbums, sess *entity.Session) (results AlbumResul
 	}
 
 	// Query database.
-	if result := s.Debug().Scan(&results); result.Error != nil {
+	if result := s.Scan(&results); result.Error != nil {
 		return results, result.Error
 	}
 
