@@ -289,7 +289,7 @@ func (m *Face) SetSubjectUID(subjUid string) (err error) {
 		Where("face_id = ?", m.ID).
 		Where("subj_src = ?", SrcAuto).
 		Where("subj_uid <> ?", m.SubjUID).
-		Where("marker_invalid = 0").
+		Where("marker_invalid = FALSE").
 		UpdateColumns(map[string]interface{}{"subj_uid": m.SubjUID, "marker_review": false}).Error; err != nil {
 		return err
 	}
@@ -441,7 +441,7 @@ func ValidFaceCount(fileUid string) (c int) {
 
 	if err := Db().Model(Marker{}).
 		Where("file_uid = ? AND marker_type = ?", fileUid, MarkerFace).
-		Where("marker_invalid = 0").
+		Where("marker_invalid = FALSE").
 		Count(&cValue).Error; err != nil {
 		log.Errorf("file: %s (count faces)", err)
 		return 0
