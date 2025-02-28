@@ -271,7 +271,7 @@ export default {
       this.reset();
     },
     onRegister() {
-      window.location = this.registerUri;
+      this.$view.redirect(this.registerUri);
     },
     onUseRecoveryCode() {
       if (!this.useRecoveryCode) {

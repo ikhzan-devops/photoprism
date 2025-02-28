@@ -124,7 +124,7 @@ var Extensions = FileExtensions{
 	".mp2":      VideoMp2,
 	".mpv":      VideoMp2,
 	".mp":       VideoMp4,
-	".m4v":      VideoM4V,
+	".m4v":      VideoM4v,
 	".mxf":      VideoMXF,
 	".3gp":      Video3GP,
 	".3g2":      Video3G2,

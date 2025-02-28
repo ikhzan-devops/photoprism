@@ -23,7 +23,7 @@ type Result struct {
 	Hash         string        `json:"Hash"`
 	Codec        string        `json:"Codec,omitempty"`
 	Mime         string        `json:"Mime,omitempty"`
-	Thumbs       *thumb.Viewer `json:"Thumbs"`
+	Thumbs       *thumb.Viewer `json:"Thumbs,omitempty"`
 	DownloadUrl  string        `json:"DownloadUrl,omitempty"`
 }
 

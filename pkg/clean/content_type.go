@@ -12,11 +12,15 @@ func ContentType(s string) string {
 		return header.ContentTypeBinary
 	}
 
+	// Remove invalid characters and enforce a maximum length of 64 characters.
 	s = Type(s)
 
-	// Replace "video/quicktime" with "video/mp4" as the container formats are largely compatible.
+	// Assume that .mov and .m4v can be played like .mp4 files,
+	// since the video container formats are largely compatible.
 	s = strings.Replace(s, header.ContentTypeMov, header.ContentTypeMp4, 1)
+	s = strings.Replace(s, header.ContentTypeM4v, header.ContentTypeMp4, 1)
 
+	// Normalize media type strings.
 	switch s {
 	case "":
 		return header.ContentTypeBinary

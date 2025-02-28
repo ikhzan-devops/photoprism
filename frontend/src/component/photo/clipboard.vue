@@ -27,7 +27,7 @@
         </template>
 
         <v-btn
-          v-if="canServiceUpload && context !== 'archive' && context !== 'hidden' && context !== 'review'"
+          v-if="canShare && canServiceUpload && context !== 'archive' && context !== 'hidden' && context !== 'review'"
           key="action-share"
           :title="$gettext('Share')"
           icon="mdi-share"
@@ -111,7 +111,7 @@
           @click.stop="dialog.album = true"
         ></v-btn>
         <v-btn
-          v-if="canArchive && !isAlbum && context !== 'archive' && context !== 'hidden'"
+          v-if="canArchive && context !== 'archive' && context !== 'hidden'"
           key="action-archive"
           :title="$gettext('Archive')"
           icon="mdi-archive"

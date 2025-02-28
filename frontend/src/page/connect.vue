@@ -258,7 +258,7 @@ export default {
       window.open("https://link.photoprism.app/personal-editions", "_blank").focus();
     },
     connect() {
-      window.location = "https://my.photoprism.app/connect/" + encodeURIComponent(window.location);
+      this.$view.redirect("https://my.photoprism.app/connect/" + encodeURIComponent(window.location));
     },
     activate() {
       if (!this.form.token || this.form.token.length !== this.tokenMask.length) {

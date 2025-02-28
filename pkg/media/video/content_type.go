@@ -19,7 +19,7 @@ func ContentType(mediaType, fileType, videoCodec string, hdr bool) string {
 	if mediaType == "" {
 		videoCodec = Codecs[videoCodec]
 
-		if fs.VideoMov.Equal(fileType) {
+		if fs.VideoMov.Equal(fileType) || fs.VideoM4v.Equal(fileType) {
 			fileType = fs.VideoMp4.String()
 		}
 
@@ -74,6 +74,10 @@ func ContentType(mediaType, fileType, videoCodec string, hdr bool) string {
 		}
 	}
 
+	// Normalize the media content type string.
+	mediaType = clean.ContentType(mediaType)
+
+	// Adjust codec details for HDR video content.
 	if hdr {
 		switch mediaType {
 		case
@@ -120,7 +124,7 @@ func ContentType(mediaType, fileType, videoCodec string, hdr bool) string {
 		}
 	}
 
-	return clean.ContentType(mediaType)
+	return mediaType
 }
 
 // Compatible tests if the video content types are expected to be compatible,
