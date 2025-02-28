@@ -8,6 +8,7 @@ import (
 
 	"github.com/dustin/go-humanize/english"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 
 	"github.com/photoprism/photoprism/internal/auth/acl"
 	"github.com/photoprism/photoprism/internal/entity"
@@ -160,7 +161,11 @@ func UserPhotosGeo(frm form.SearchPhotosGeo, sess *entity.Session) (results GeoR
 		s = s.Order("taken_at, photos.photo_uid")
 	} else {
 		// Sort by distance to UID.
-		s = s.Order(gorm.Expr("(photos.photo_uid = ?) DESC, ABS(? - photos.photo_lat)+ABS(? - photos.photo_lng)", frm.Near, frm.Lat, frm.Lng))
+		s = s.
+			Clauses(clause.OrderBy{Expression: clause.Expr{
+				SQL:                "(photos.photo_uid = ?) DESC, ABS(? - photos.photo_lat)+ABS(? - photos.photo_lng)",
+				Vars:               []interface{}{frm.Near, frm.Lat, frm.Lng},
+				WithoutParentheses: true}})
 	}
 
 	// Find specific UIDs only.
