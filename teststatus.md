@@ -63,13 +63,18 @@ PASS | Photo_FaceCount (0.00s)
 PASS |   Photo_FaceCount/Photo04 (0.00s)
 PASS | Photo_UnscopedSearch (0.01s)
 PASS |   Photo_UnscopedSearch/Ok (0.01s)
-FAIL | Photo_ScopedSearch (0.01s)
-FAIL |   Photo_ScopedSearch/Ok (0.01s)
-FAIL | Photos_UnscopedSearch (0.00s)
-FAIL |   Photos_UnscopedSearch/Ok (0.00s)
-FAIL | Photos_ScopedSearch (0.00s)
-FAIL |   Photos_ScopedSearch/Ok (0.00s)
-FAIL | 	github.com/photoprism/photoprism/internal/entity	234.554s
+PASS | Photo_ScopedSearch (0.01s)
+PASS |   Photo_ScopedSearch/Ok (0.01s)
+PASS | Photos_UnscopedSearch (0.00s)
+PASS |   Photos_UnscopedSearch/Ok (0.00s)
+PASS | Photos_ScopedSearch (0.00s)
+PASS |   Photos_ScopedSearch/Ok (0.00s)
+PASS | 	github.com/photoprism/photoprism/internal/entity	234.554s
+FAIL | User_RedeemToken (0.00s)
+FAIL |   User_RedeemToken/Alice (0.00s)
+FAIL | File_RegenerateIndex (0.04s)
+FAIL |   File_RegenerateIndex/PhotoUID (0.01s)
+FAIL | 	github.com/photoprism/photoprism/internal/entity	26.554s
 PASS | DialectMysql (0.07s)  <-- Start mariadb via docker to fix.
 PASS |   DialectMysql/ValidMigration (0.04s)  <-- Start mariadb via docker to fix.
 PASS |   DialectMysql/InvalidDataUpgrade (0.03s)  <-- Start mariadb via docker to fix.
