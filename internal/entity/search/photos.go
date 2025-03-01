@@ -699,7 +699,11 @@ func searchPhotos(frm form.SearchPhotos, sess *entity.Session, resultCols string
 
 	// Filter by title.
 	if txt.NotEmpty(frm.Title) {
-		where, values := OrLike("photos.photo_title", frm.Title)
+		likeString := "photos.photo_title"
+		if entity.DbDialect() == entity.Postgres {
+			likeString = "lower(photos.photo_title)"
+		}
+		where, values := OrLike(likeString, frm.Title)
 		s = s.Where(where, values...)
 	}
 
@@ -781,9 +785,17 @@ func searchPhotos(frm form.SearchPhotos, sess *entity.Session, resultCols string
 			s = s.Where("photos.photo_uid NOT IN (SELECT photo_uid FROM photos_albums pa JOIN albums a ON a.album_uid = pa.album_uid WHERE pa.hidden = FALSE AND a.deleted_at IS NULL)")
 		} else if txt.NotEmpty(frm.Album) {
 			v := strings.Trim(frm.Album, "*%") + "%"
-			s = s.Where("photos.photo_uid IN (SELECT pa.photo_uid FROM photos_albums pa JOIN albums a ON a.album_uid = pa.album_uid AND pa.hidden = FALSE WHERE (a.album_title LIKE ? OR a.album_slug LIKE ?))", v, v)
+			if entity.DbDialect() == entity.Postgres {
+				s = s.Where("photos.photo_uid IN (SELECT pa.photo_uid FROM photos_albums pa JOIN albums a ON a.album_uid = pa.album_uid AND pa.hidden = FALSE WHERE (lower(a.album_title) LIKE ? OR a.album_slug LIKE ?))", v, v)
+			} else {
+				s = s.Where("photos.photo_uid IN (SELECT pa.photo_uid FROM photos_albums pa JOIN albums a ON a.album_uid = pa.album_uid AND pa.hidden = FALSE WHERE (a.album_title LIKE ? OR a.album_slug LIKE ?))", v, v)
+			}
 		} else if txt.NotEmpty(frm.Albums) {
-			for _, where := range LikeAnyWord("a.album_title", frm.Albums) {
+			whereString := "a.album_title"
+			if entity.DbDialect() == entity.Postgres {
+				whereString = "lower(a.album_title)"
+			}
+			for _, where := range LikeAnyWord(whereString, frm.Albums) {
 				s = s.Where("photos.photo_uid IN (SELECT pa.photo_uid FROM photos_albums pa JOIN albums a ON a.album_uid = pa.album_uid AND pa.hidden = FALSE WHERE (?))", gorm.Expr(where))
 			}
 		}
