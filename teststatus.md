@@ -72,9 +72,9 @@ PASS |   Photos_ScopedSearch/Ok (0.00s)
 PASS | 	github.com/photoprism/photoprism/internal/entity	234.554s
 PASS | User_RedeemToken (0.00s)
 PASS |   User_RedeemToken/Alice (0.00s)
-FAIL | File_RegenerateIndex (0.04s)
-FAIL |   File_RegenerateIndex/PhotoUID (0.01s)
-FAIL | 	github.com/photoprism/photoprism/internal/entity	26.554s
+PASS | File_RegenerateIndex (0.04s)
+PASS |   File_RegenerateIndex/PhotoUID (0.01s)
+PASS | 	github.com/photoprism/photoprism/internal/entity	26.554s
 PASS | DialectMysql (0.07s)  <-- Start mariadb via docker to fix.
 PASS |   DialectMysql/ValidMigration (0.04s)  <-- Start mariadb via docker to fix.
 PASS |   DialectMysql/InvalidDataUpgrade (0.03s)  <-- Start mariadb via docker to fix.
