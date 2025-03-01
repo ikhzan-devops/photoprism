@@ -16,6 +16,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/photoprism/photoprism/internal/ai/classify"
 	"github.com/photoprism/photoprism/internal/entity"
 	"github.com/photoprism/photoprism/internal/entity/migrate"
@@ -26,6 +27,7 @@ import (
 	"github.com/photoprism/photoprism/pkg/txt"
 	"github.com/sirupsen/logrus"
 	"gorm.io/driver/mysql"
+	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -93,6 +95,7 @@ type DbConn struct {
 
 	once sync.Once
 	db   *gorm.DB
+	pool *pgxpool.Pool
 }
 
 // Db returns the gorm db connection.
@@ -109,12 +112,26 @@ func (g *DbConn) Db() *gorm.DB {
 // Open creates a new gorm db connection.
 func (g *DbConn) Open() {
 	log.Infof("Opening DB connection with driver %s", g.Driver)
-	db, err := gorm.Open(drivers[g.Driver](g.Dsn), gormConfig())
+	var db *gorm.DB
+	var err error
+	if g.Driver == entity.Postgres {
+		postgresDB, pgxPool := entity.OpenPostgreSQL(g.Dsn)
+		g.pool = pgxPool
+		db, err = gorm.Open(postgres.New(postgres.Config{Conn: postgresDB}), gormConfig())
+	} else {
+		db, err = gorm.Open(drivers[g.Driver](g.Dsn), gormConfig())
+	}
 
 	if err != nil || db == nil {
 		for i := 1; i <= 12; i++ {
 			fmt.Printf("gorm.Open(%s, %s) %d\n", g.Driver, g.Dsn, i)
-			db, err = gorm.Open(drivers[g.Driver](g.Dsn), gormConfig())
+			if g.Driver == entity.Postgres {
+				postgresDB, pgxPool := entity.OpenPostgreSQL(g.Dsn)
+				g.pool = pgxPool
+				db, err = gorm.Open(postgres.New(postgres.Config{Conn: postgresDB}), gormConfig())
+			} else {
+				db, err = gorm.Open(drivers[g.Driver](g.Dsn), gormConfig())
+			}
 
 			if db != nil && err == nil {
 				break
@@ -130,10 +147,12 @@ func (g *DbConn) Open() {
 	}
 	log.Info("DB connection established successfully")
 
-	sqlDB, err := db.DB()
+	if g.Driver != entity.Postgres {
+		sqlDB, _ := db.DB()
 
-	sqlDB.SetMaxIdleConns(4)   // in config_db it uses c.DatabaseConnsIdle(), but we don't have the c here.
-	sqlDB.SetMaxOpenConns(256) // in config_db it uses c.DatabaseConns(), but we don't have the c here.
+		sqlDB.SetMaxIdleConns(4)   // in config_db it uses c.DatabaseConnsIdle(), but we don't have the c here.
+		sqlDB.SetMaxOpenConns(256) // in config_db it uses c.DatabaseConns(), but we don't have the c here.
+	}
 
 	g.db = db
 }

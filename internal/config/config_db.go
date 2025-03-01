@@ -91,12 +91,12 @@ func (c *Config) DatabaseDsn() string {
 			)
 		case Postgres:
 			return fmt.Sprintf(
-				"user=%s password=%s dbname=%s host=%s port=%d connect_timeout=%d sslmode=disable TimeZone=UTC",
+				"postgresql://%s:%s@%s:%d/%s?TimeZone=UTC&connect_timeout=%d&lock_timeout=50000&sslmode=disable",
 				c.DatabaseUser(),
 				c.DatabasePassword(),
-				c.DatabaseName(),
 				c.DatabaseHost(),
 				c.DatabasePort(),
+				c.DatabaseName(),
 				c.DatabaseTimeout(),
 			)
 		case SQLite3:
@@ -293,6 +293,9 @@ func (c *Config) CloseDb() error {
 		} else {
 			return dberr
 		}
+		if c.pool != nil {
+			c.pool.Close()
+		}
 	}
 
 	return nil
@@ -421,12 +424,28 @@ func (c *Config) connectDb() error {
 	}
 
 	// Open database connection.
-	db, err := gorm.Open(drivers[dbDriver](dbDsn), gormConfig())
+	var db *gorm.DB
+	var err error
+	if dbDriver == Postgres {
+		postgresDB, pgxPool := entity.OpenPostgreSQL(dbDsn)
+		c.pool = pgxPool
+		db, err = gorm.Open(postgres.New(postgres.Config{Conn: postgresDB}), gormConfig())
+	} else {
+		c.pool = nil
+		db, err = gorm.Open(drivers[dbDriver](dbDsn), gormConfig())
+	}
 	if err != nil || db == nil {
 		log.Infof("config: waiting for the database to become available")
 
 		for i := 1; i <= 12; i++ {
-			db, err := gorm.Open(drivers[dbDriver](dbDsn), gormConfig())
+			if dbDriver == Postgres {
+				postgresDB, pgxPool := entity.OpenPostgreSQL(dbDsn)
+				c.pool = pgxPool
+				db, err = gorm.Open(postgres.New(postgres.Config{Conn: postgresDB}), gormConfig())
+			} else {
+				c.pool = nil
+				db, err = gorm.Open(drivers[dbDriver](dbDsn), gormConfig())
+			}
 
 			if db != nil && err == nil {
 				break
@@ -445,13 +464,15 @@ func (c *Config) connectDb() error {
 	//db.SetLogger(log)
 
 	// Set database connection parameters.
-	sqlDB, err := db.DB()
-	if err != nil {
-		return err
+	if dbDriver != Postgres {
+		sqlDB, err := db.DB()
+		if err != nil {
+			return err
+		}
+		sqlDB.SetMaxOpenConns(c.DatabaseConns())
+		sqlDB.SetMaxIdleConns(c.DatabaseConnsIdle())
+		sqlDB.SetConnMaxLifetime(time.Hour)
 	}
-	sqlDB.SetMaxOpenConns(c.DatabaseConns())
-	sqlDB.SetMaxIdleConns(c.DatabaseConnsIdle())
-	sqlDB.SetConnMaxLifetime(time.Hour)
 
 	// Check database server version.
 	if err = c.checkDb(db); err != nil {

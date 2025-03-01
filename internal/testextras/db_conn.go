@@ -1,10 +1,16 @@
 package testextras
 
 import (
+	"context"
+	"database/sql"
 	"fmt"
 	"sync"
 	"time"
 
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgtype"
+	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/jackc/pgx/v5/stdlib"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
@@ -42,6 +48,7 @@ type DbConn struct {
 
 	once sync.Once
 	db   *gorm.DB
+	pool *pgxpool.Pool
 }
 
 // Db returns the gorm db connection.
@@ -55,15 +62,60 @@ func (g *DbConn) Db() *gorm.DB {
 	return g.db
 }
 
+// Replicated here to avoid import loop.
+func OpenPostgreSQL(dsn string) (db *sql.DB, pool *pgxpool.Pool) {
+	ctx := context.Background()
+	pgxPoolConfig, err := pgxpool.ParseConfig(dsn)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	pgxPoolConfig.AfterConnect = func(ctx context.Context, conn *pgx.Conn) error {
+		conn.TypeMap().RegisterType(&pgtype.Type{
+			Name:  "timestamptz",
+			OID:   pgtype.TimestamptzOID,
+			Codec: &pgtype.TimestamptzCodec{ScanLocation: time.UTC},
+		})
+
+		return nil
+	}
+
+	pool, err = pgxpool.NewWithConfig(ctx, pgxPoolConfig)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if err = pool.Ping(ctx); err != nil {
+		pool.Close()
+		log.Fatal(err)
+	}
+
+	return stdlib.OpenDBFromPool(pool), pool
+}
+
 // Open creates a new gorm db connection.
 func (g *DbConn) Open() {
 	log.Infof("Opening DB connection with driver %s", g.Driver)
-	db, err := gorm.Open(drivers[g.Driver](g.Dsn), gormConfig())
+	var db *gorm.DB
+	var err error
+	if g.Driver == Postgres {
+		postgresDB, pgxPool := OpenPostgreSQL(g.Dsn)
+		g.pool = pgxPool
+		db, err = gorm.Open(postgres.New(postgres.Config{Conn: postgresDB}), gormConfig())
+	} else {
+		db, err = gorm.Open(drivers[g.Driver](g.Dsn), gormConfig())
+	}
 
 	if err != nil || db == nil {
 		for i := 1; i <= 12; i++ {
 			fmt.Printf("gorm.Open(%s, %s) %d\n", g.Driver, g.Dsn, i)
-			db, err = gorm.Open(drivers[g.Driver](g.Dsn), gormConfig())
+			if g.Driver == Postgres {
+				postgresDB, pgxPool := OpenPostgreSQL(g.Dsn)
+				g.pool = pgxPool
+				db, err = gorm.Open(postgres.New(postgres.Config{Conn: postgresDB}), gormConfig())
+			} else {
+				db, err = gorm.Open(drivers[g.Driver](g.Dsn), gormConfig())
+			}
 
 			if db != nil && err == nil {
 				break
@@ -79,10 +131,12 @@ func (g *DbConn) Open() {
 	}
 	log.Info("DB connection established successfully")
 
-	sqlDB, _ := db.DB()
+	if g.Driver != Postgres {
+		sqlDB, _ := db.DB()
 
-	sqlDB.SetMaxIdleConns(4)   // in config_db it uses c.DatabaseConnsIdle(), but we don't have the c here.
-	sqlDB.SetMaxOpenConns(256) // in config_db it uses c.DatabaseConns(), but we don't have the c here.
+		sqlDB.SetMaxIdleConns(4)   // in config_db it uses c.DatabaseConnsIdle(), but we don't have the c here.
+		sqlDB.SetMaxOpenConns(256) // in config_db it uses c.DatabaseConns(), but we don't have the c here.
+	}
 
 	g.db = db
 }

@@ -36,6 +36,7 @@ import (
 	"time"
 
 	"github.com/dustin/go-humanize"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/klauspost/cpuid/v2"
 	"github.com/pbnjay/memory"
 	"github.com/sirupsen/logrus"
@@ -69,6 +70,7 @@ type Config struct {
 	options  *Options
 	settings *customize.Settings
 	db       *gorm.DB
+	pool     *pgxpool.Pool
 	hub      *hub.Config
 	token    string
 	serial   string
