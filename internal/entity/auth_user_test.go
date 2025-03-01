@@ -2243,8 +2243,15 @@ func TestUser_RedeemToken(t *testing.T) {
 		assert.Equal(t, "as6sg6bxpogaaba9", m.UserShares[0].ShareUID)
 		assert.Equal(t, 1, m.RedeemToken("4jxf3jfn2k"))
 		m.RefreshShares()
-		assert.Equal(t, "as6sg6bxpogaaba7", m.UserShares[0].ShareUID)
-		assert.Equal(t, "as6sg6bxpogaaba9", m.UserShares[1].ShareUID)
+
+		// m.UserShares is not ordered, so sometimes this test would fail
+		assert.Equal(t, 2, len(m.UserShares))
+		var shareUIDs []string
+		for _, shareUID := range m.UserShares {
+			shareUIDs = append(shareUIDs, shareUID.ShareUID)
+		}
+		assert.Contains(t, shareUIDs, "as6sg6bxpogaaba7")
+		assert.Contains(t, shareUIDs, "as6sg6bxpogaaba9")
 	})
 }
 
