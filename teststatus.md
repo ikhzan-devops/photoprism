@@ -273,9 +273,9 @@ PASS |   Photos/AlbumsOrSearch (0.00s)
 PASS |   Photos/AlbumsAndSearch (0.00s)
 PASS |   Photos/Search_in_Title (0.00s)
 PASS |   Photos/form.title (0.00s)
-FAIL | Subjects (0.00s)  <-- case insensitivity issue 
-FAIL |   Subjects/search_for_alias (0.00s)
-FAIL | 	github.com/photoprism/photoprism/internal/entity/search	14.435s
+PASS | Subjects (0.00s)  <-- case insensitivity issue 
+PASS |   Subjects/search_for_alias (0.00s)
+PASS | 	github.com/photoprism/photoprism/internal/entity/search	14.435s
 PASS | Database (0.00s)
 PASS |   Database/Success (0.00s)
 PASS | 	github.com/photoprism/photoprism/internal/photoprism/backup	8.539s
