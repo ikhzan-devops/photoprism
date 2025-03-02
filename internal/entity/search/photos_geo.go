@@ -409,15 +409,18 @@ func UserPhotosGeo(frm form.SearchPhotosGeo, sess *entity.Session) (results GeoR
 	} else if frm.Subjects != "" {
 		whereString1 := ""
 		whereString2 := ""
+		valueString := ""
 		switch entity.DbDialect() {
 		case entity.Postgres:
 			whereString1 = "lower(subj_name)"
 			whereString2 = "lower(subj_alias)"
+			valueString = strings.ToLower(frm.Subjects)
 		default:
 			whereString1 = "subj_name"
 			whereString2 = "subj_alias"
+			valueString = frm.Subjects
 		}
-		for _, where := range LikeAllNames(Cols{whereString1, whereString2}, frm.Subjects) {
+		for _, where := range LikeAllNames(Cols{whereString1, whereString2}, valueString) {
 			s = s.Where(fmt.Sprintf("photos.id IN (SELECT photo_id FROM files f JOIN %s m ON f.file_uid = m.file_uid AND m.marker_invalid = FALSE JOIN %s s ON s.subj_uid = m.subj_uid WHERE (?))",
 				entity.Marker{}.TableName(), entity.Subject{}.TableName()), gorm.Expr(where))
 		}

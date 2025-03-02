@@ -259,9 +259,11 @@ PASS |   PhotosGeoQueryAlbums/AndSearch2 (0.00s)
 PASS |   PhotosGeoQueryAlbums/OrSearch2 (0.00s)
 PASS |   PhotosGeoQueryAlbums/AndSearch3 (0.00s)
 PASS |   PhotosGeoQueryAlbums/OrSearch3 (0.00s)
-FAIL | Geo (0.07s) <-- case insensitivity issue 
-FAIL |   Geo/Albums (0.00s)
-FAIL |   Geo/albums_and_and_or_search (0.00s)
+PASS | Geo (0.07s) <-- case insensitivity issue 
+PASS |   Geo/Albums (0.00s)
+PASS |   Geo/albums_and_and_or_search (0.00s)
+PASS |   Geo/subjects_and_and_or_search (0.00s)
+PASS |   Geo/people_=_subjects_&_person_=_subject (0.01s)
 FAIL | Photos (0.26s) <-- case insensitivity issue 
 FAIL |   Photos/label_query_landscape (0.00s)
 FAIL |   Photos/search_for_lens_name (0.00s)
