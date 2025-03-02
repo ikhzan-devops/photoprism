@@ -305,8 +305,14 @@ func UserPhotosGeo(frm form.SearchPhotosGeo, sess *entity.Session) (results GeoR
 
 		if err := Db().Where(AnySlug("custom_slug", frm.Query, " ")).Find(&labels).Error; len(labels) == 0 || err != nil {
 			log.Tracef("search: label %s not found, using fuzzy search", txt.LogParamLower(frm.Query))
-
-			for _, where := range LikeAnyKeyword("k.keyword", frm.Query) {
+			whereString := ""
+			switch entity.DbDialect() {
+			case entity.Postgres:
+				whereString = "lower(k.keyword)"
+			default:
+				whereString = "k.keyword"
+			}
+			for _, where := range LikeAnyKeyword(whereString, frm.Query) {
 				s = s.Where("photos.id IN (SELECT pk.photo_id FROM keywords k JOIN photos_keywords pk ON k.id = pk.keyword_id WHERE (?))", gorm.Expr(where))
 			}
 		} else {
@@ -321,7 +327,14 @@ func UserPhotosGeo(frm form.SearchPhotosGeo, sess *entity.Session) (results GeoR
 				}
 			}
 
-			if wheres := LikeAnyKeyword("k.keyword", frm.Query); len(wheres) > 0 {
+			whereString := ""
+			switch entity.DbDialect() {
+			case entity.Postgres:
+				whereString = "lower(k.keyword)"
+			default:
+				whereString = "k.keyword"
+			}
+			if wheres := LikeAnyKeyword(whereString, frm.Query); len(wheres) > 0 {
 				for _, where := range wheres {
 					s = s.Where("photos.id IN (SELECT pk.photo_id FROM keywords k JOIN photos_keywords pk ON k.id = pk.keyword_id WHERE (?)) OR "+
 						"photos.id IN (SELECT pl.photo_id FROM photos_labels pl WHERE pl.uncertainty < 100 AND pl.label_id IN (?))", gorm.Expr(where), labelIds)
@@ -334,7 +347,14 @@ func UserPhotosGeo(frm form.SearchPhotosGeo, sess *entity.Session) (results GeoR
 
 	// Search for one or more keywords.
 	if frm.Keywords != "" {
-		for _, where := range LikeAnyWord("k.keyword", frm.Keywords) {
+		whereString := ""
+		switch entity.DbDialect() {
+		case entity.Postgres:
+			whereString = "lower(k.keyword)"
+		default:
+			whereString = "k.keyword"
+		}
+		for _, where := range LikeAnyWord(whereString, frm.Keywords) {
 			s = s.Where("photos.id IN (SELECT pk.photo_id FROM keywords k JOIN photos_keywords pk ON k.id = pk.keyword_id WHERE (?))", gorm.Expr(where))
 		}
 	}
@@ -387,7 +407,17 @@ func UserPhotosGeo(frm form.SearchPhotosGeo, sess *entity.Session) (results GeoR
 			}
 		}
 	} else if frm.Subjects != "" {
-		for _, where := range LikeAllNames(Cols{"subj_name", "subj_alias"}, frm.Subjects) {
+		whereString1 := ""
+		whereString2 := ""
+		switch entity.DbDialect() {
+		case entity.Postgres:
+			whereString1 = "lower(subj_name)"
+			whereString2 = "lower(subj_alias)"
+		default:
+			whereString1 = "subj_name"
+			whereString2 = "subj_alias"
+		}
+		for _, where := range LikeAllNames(Cols{whereString1, whereString2}, frm.Subjects) {
 			s = s.Where(fmt.Sprintf("photos.id IN (SELECT photo_id FROM files f JOIN %s m ON f.file_uid = m.file_uid AND m.marker_invalid = FALSE JOIN %s s ON s.subj_uid = m.subj_uid WHERE (?))",
 				entity.Marker{}.TableName(), entity.Subject{}.TableName()), gorm.Expr(where))
 		}
@@ -399,9 +429,22 @@ func UserPhotosGeo(frm form.SearchPhotosGeo, sess *entity.Session) (results GeoR
 			s = s.Where("photos.photo_uid NOT IN (SELECT photo_uid FROM photos_albums pa JOIN albums a ON a.album_uid = pa.album_uid WHERE pa.hidden = FALSE AND a.deleted_at IS NULL)")
 		} else if txt.NotEmpty(frm.Album) {
 			v := strings.Trim(frm.Album, "*%") + "%"
-			s = s.Where("photos.photo_uid IN (SELECT pa.photo_uid FROM photos_albums pa JOIN albums a ON a.album_uid = pa.album_uid AND pa.hidden = FALSE WHERE (a.album_title LIKE ? OR a.album_slug LIKE ?))", v, v)
+			w := strings.ToLower(v)
+			switch entity.DbDialect() {
+			case entity.Postgres:
+				s = s.Where("photos.photo_uid IN (SELECT pa.photo_uid FROM photos_albums pa JOIN albums a ON a.album_uid = pa.album_uid AND pa.hidden = FALSE WHERE (lower(a.album_title) LIKE ? OR a.album_slug LIKE ?))", w, v)
+			default:
+				s = s.Where("photos.photo_uid IN (SELECT pa.photo_uid FROM photos_albums pa JOIN albums a ON a.album_uid = pa.album_uid AND pa.hidden = FALSE WHERE (a.album_title LIKE ? OR a.album_slug LIKE ?))", v, v)
+			}
 		} else if txt.NotEmpty(frm.Albums) {
-			for _, where := range LikeAnyWord("a.album_title", frm.Albums) {
+			whereString := ""
+			switch entity.DbDialect() {
+			case entity.Postgres:
+				whereString = "lower(a.album_title)"
+			default:
+				whereString = "a.album_title"
+			}
+			for _, where := range LikeAnyWord(whereString, frm.Albums) {
 				s = s.Where("photos.photo_uid IN (SELECT pa.photo_uid FROM photos_albums pa JOIN albums a ON a.album_uid = pa.album_uid AND pa.hidden = FALSE WHERE (?))", gorm.Expr(where))
 			}
 		}
@@ -568,7 +611,14 @@ func UserPhotosGeo(frm form.SearchPhotosGeo, sess *entity.Session) (results GeoR
 
 	// Filter by title.
 	if frm.Title != "" {
-		where, values := OrLike("photos.photo_title", frm.Title)
+		whereString := ""
+		switch entity.DbDialect() {
+		case entity.Postgres:
+			whereString = "lower(photos.photo_title)"
+		default:
+			whereString = "photos.photo_title"
+		}
+		where, values := OrLike(whereString, frm.Title)
 		s = s.Where(where, values...)
 	}
 

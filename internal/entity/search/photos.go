@@ -514,7 +514,13 @@ func searchPhotos(frm form.SearchPhotos, sess *entity.Session, resultCols string
 		s = s.Where("photos.camera_id = ?", txt.UInt(frm.Camera))
 	} else if txt.NotEmpty(frm.Camera) {
 		v := strings.Trim(frm.Camera, "*%") + "%"
-		s = s.Where("cameras.camera_name LIKE ? OR cameras.camera_model LIKE ? OR cameras.camera_slug LIKE ?", v, v, v)
+		w := strings.ToLower(v)
+		switch entity.DbDialect() {
+		case entity.Postgres:
+			s = s.Where("lower(cameras.camera_name) LIKE ? OR lower(cameras.camera_model) LIKE ? OR cameras.camera_slug LIKE ?", w, w, v)
+		default:
+			s = s.Where("cameras.camera_name LIKE ? OR cameras.camera_model LIKE ? OR cameras.camera_slug LIKE ?", v, v, v)
+		}
 	}
 
 	// Filter by lens id or name.
@@ -522,7 +528,13 @@ func searchPhotos(frm form.SearchPhotos, sess *entity.Session, resultCols string
 		s = s.Where("photos.lens_id = ?", txt.UInt(frm.Lens))
 	} else if txt.NotEmpty(frm.Lens) {
 		v := strings.Trim(frm.Lens, "*%") + "%"
-		s = s.Where("lenses.lens_name LIKE ? OR lenses.lens_model LIKE ? OR lenses.lens_slug LIKE ?", v, v, v)
+		w := strings.ToLower(v)
+		switch entity.DbDialect() {
+		case entity.Postgres:
+			s = s.Where("lower(lenses.lens_name) LIKE ? OR lower(lenses.lens_model) LIKE ? OR lenses.lens_slug LIKE ?", w, w, v)
+		default:
+			s = s.Where("lenses.lens_name LIKE ? OR lenses.lens_model LIKE ? OR lenses.lens_slug LIKE ?", v, v, v)
+		}
 	}
 
 	// Filter by ISO Number (light sensitivity) range.
@@ -785,15 +797,20 @@ func searchPhotos(frm form.SearchPhotos, sess *entity.Session, resultCols string
 			s = s.Where("photos.photo_uid NOT IN (SELECT photo_uid FROM photos_albums pa JOIN albums a ON a.album_uid = pa.album_uid WHERE pa.hidden = FALSE AND a.deleted_at IS NULL)")
 		} else if txt.NotEmpty(frm.Album) {
 			v := strings.Trim(frm.Album, "*%") + "%"
-			if entity.DbDialect() == entity.Postgres {
-				s = s.Where("photos.photo_uid IN (SELECT pa.photo_uid FROM photos_albums pa JOIN albums a ON a.album_uid = pa.album_uid AND pa.hidden = FALSE WHERE (lower(a.album_title) LIKE ? OR a.album_slug LIKE ?))", v, v)
-			} else {
+			w := strings.ToLower(v)
+			switch entity.DbDialect() {
+			case entity.Postgres:
+				s = s.Where("photos.photo_uid IN (SELECT pa.photo_uid FROM photos_albums pa JOIN albums a ON a.album_uid = pa.album_uid AND pa.hidden = FALSE WHERE (lower(a.album_title) LIKE ? OR a.album_slug LIKE ?))", w, v)
+			default:
 				s = s.Where("photos.photo_uid IN (SELECT pa.photo_uid FROM photos_albums pa JOIN albums a ON a.album_uid = pa.album_uid AND pa.hidden = FALSE WHERE (a.album_title LIKE ? OR a.album_slug LIKE ?))", v, v)
 			}
 		} else if txt.NotEmpty(frm.Albums) {
-			whereString := "a.album_title"
-			if entity.DbDialect() == entity.Postgres {
+			whereString := ""
+			switch entity.DbDialect() {
+			case entity.Postgres:
 				whereString = "lower(a.album_title)"
+			default:
+				whereString = "a.album_title"
 			}
 			for _, where := range LikeAnyWord(whereString, frm.Albums) {
 				s = s.Where("photos.photo_uid IN (SELECT pa.photo_uid FROM photos_albums pa JOIN albums a ON a.album_uid = pa.album_uid AND pa.hidden = FALSE WHERE (?))", gorm.Expr(where))
