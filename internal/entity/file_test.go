@@ -50,7 +50,7 @@ func TestFile_RegenerateIndex(t *testing.T) {
 		assert.NotNil(t, result.PhotoTakenAt)
 		assert.NotNil(t, result.MediaID)
 		assert.NotNil(t, result.TimeIndex)
-		assert.Equal(t, time.Date(2020, 11, 11, 9, 7, 18, 0, time.Local), result.PhotoTakenAt)
+		assert.Equal(t, time.Date(2020, 11, 11, 9, 7, 18, 0, time.UTC), result.PhotoTakenAt)
 		if result.MediaID != nil {
 			assert.Equal(t, "9998999960-0-fs6sg6bw15bnl342", *result.MediaID)
 		}
