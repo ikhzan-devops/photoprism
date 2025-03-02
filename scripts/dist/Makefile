@@ -24,6 +24,10 @@ mariadb: mariadb-client
 mariadb-client: install-mariadb-client
 install-mariadb-client:
 	/scripts/install-mariadb.sh mariadb-client
+postgresql: postgresql-client
+postgresql-client: install-postgresql-client
+install-postgresql-client:
+	/scripts/install-postgresql.sh postgresql-client
 gpu: install-gpu
 install-gpu:
 	/scripts/install-gpu.sh

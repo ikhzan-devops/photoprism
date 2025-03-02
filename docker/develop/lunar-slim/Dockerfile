@@ -51,6 +51,7 @@ RUN echo 'APT::Acquire::Retries "3";' > /etc/apt/apt.conf.d/80retries && \
         x264 x265 libde265-dev libaom-dev libvpx-dev libwebm-dev libjpeg-dev libmatroska-dev libdvdread-dev \
     && \
     /scripts/install-mariadb.sh mariadb-client && \
+    /scripts/install-postgresql.sh postgresql-client && \
     /scripts/install-darktable.sh && \
     /scripts/install-libheif.sh && \
     echo 'alias ll="ls -alh"' >> /etc/skel/.bashrc && \

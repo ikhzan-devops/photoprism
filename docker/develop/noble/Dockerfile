@@ -69,6 +69,7 @@ RUN echo 'APT::Acquire::Retries "3";' > /etc/apt/apt.conf.d/80retries && \
     && \
     /scripts/install-nodejs.sh && \
     /scripts/install-mariadb.sh mariadb-client && \
+    /scripts/install-postgresql.sh postgresql-client && \
     /scripts/install-tensorflow.sh && \
     /scripts/install-darktable.sh && \
     /scripts/install-libheif.sh && \

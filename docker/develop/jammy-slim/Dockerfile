@@ -54,6 +54,7 @@ RUN echo 'APT::Acquire::Retries "3";' > /etc/apt/apt.conf.d/80retries && \
         iputils-ping dnsutils \
     && \
     /scripts/install-mariadb.sh mariadb-client && \
+    /scripts/install-postgresql.sh postgresql-client && \
     /scripts/install-darktable.sh && \
     /scripts/install-libheif.sh && \
     echo 'alias ll="ls -alh"' >> /etc/skel/.bashrc && \
