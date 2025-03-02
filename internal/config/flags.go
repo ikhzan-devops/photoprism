@@ -692,14 +692,14 @@ var Flags = CliFlags{
 		Flag: &cli.StringFlag{
 			Name:    "database-driver",
 			Aliases: []string{"db"},
-			Usage:   "database `DRIVER` (sqlite, mysql)",
+			Usage:   "database `DRIVER` (sqlite, mysql, postgres)",
 			Value:   "sqlite",
 			EnvVars: EnvVars("DATABASE_DRIVER"),
 		}}, {
 		Flag: &cli.StringFlag{
 			Name:    "database-dsn",
 			Aliases: []string{"dsn"},
-			Usage:   "database connection `DSN` (sqlite file, optional for mysql)",
+			Usage:   "database connection `DSN` (sqlite file, optional for mysql and postgres)",
 			EnvVars: EnvVars("DATABASE_DSN"),
 		}}, {
 		Flag: &cli.StringFlag{
