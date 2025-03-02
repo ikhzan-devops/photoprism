@@ -264,14 +264,15 @@ PASS |   Geo/Albums (0.00s)
 PASS |   Geo/albums_and_and_or_search (0.00s)
 PASS |   Geo/subjects_and_and_or_search (0.00s)
 PASS |   Geo/people_=_subjects_&_person_=_subject (0.01s)
-FAIL | Photos (0.26s) <-- case insensitivity issue 
-FAIL |   Photos/label_query_landscape (0.00s)
-FAIL |   Photos/search_for_lens_name (0.00s)
-FAIL |   Photos/albums (0.00s)
-FAIL |   Photos/search_for_labels (0.00s)
-FAIL |   Photos/AlbumsOrSearch (0.00s)
-FAIL |   Photos/AlbumsAndSearch (0.00s)
-FAIL |   Photos/Search_in_Title (0.00s)
+PASS | Photos (0.26s) <-- case insensitivity issue 
+PASS |   Photos/label_query_landscape (0.00s)
+PASS |   Photos/search_for_lens_name (0.00s)
+PASS |   Photos/albums (0.00s)
+PASS |   Photos/search_for_labels (0.00s)
+PASS |   Photos/AlbumsOrSearch (0.00s)
+PASS |   Photos/AlbumsAndSearch (0.00s)
+PASS |   Photos/Search_in_Title (0.00s)
+PASS |   Photos/form.title (0.00s)
 FAIL | Subjects (0.00s)  <-- case insensitivity issue 
 FAIL |   Subjects/search_for_alias (0.00s)
 FAIL | 	github.com/photoprism/photoprism/internal/entity/search	14.435s

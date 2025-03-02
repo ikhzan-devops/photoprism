@@ -711,11 +711,17 @@ func searchPhotos(frm form.SearchPhotos, sess *entity.Session, resultCols string
 
 	// Filter by title.
 	if txt.NotEmpty(frm.Title) {
-		likeString := "photos.photo_title"
-		if entity.DbDialect() == entity.Postgres {
+		likeString := ""
+		titleString := ""
+		switch entity.DbDialect() {
+		case entity.Postgres:
 			likeString = "lower(photos.photo_title)"
+			titleString = strings.ToLower(frm.Title)
+		default:
+			likeString = "photos.photo_title"
+			titleString = frm.Title
 		}
-		where, values := OrLike(likeString, frm.Title)
+		where, values := OrLike(likeString, titleString)
 		s = s.Where(where, values...)
 	}
 
