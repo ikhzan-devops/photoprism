@@ -292,3 +292,5 @@ PASS | 	github.com/photoprism/photoprism/internal/commands	401.908s
 - [ ] UpdateSubjectCovers updates 6 x 2 for SQLite and PostgreSQL.  But 6 and 0 for MariaDB.  Executing the captured SQL against MariaDB results in 6 and 6.  Unsure if this is a defect in Gorm not reporting the number of records affected correctly, or something else.  This branch has not changed the MariaDB query.  
   
 - [ ] github.com/photoprism/photoprism/internal/workers should have failed as there were DB errors thrown that did not cause the test to fail.  
+
+- [ ] time="2025-03-02T12:33:11Z" level=info msg="/go/src/github.com/photoprism/photoprism/internal/entity/file.go:629 ERROR: column files.uuid does not exist (SQLSTATE 42703)\n[0.778ms] [rows:0] SELECT \"files\".\"id\",\"files\".\"uuid\",\"files\".\"taken_at\" SNIP FROM \"files\"" is generated from a file trying to return a photo.  Check if this error is just internal gorm stuff.
