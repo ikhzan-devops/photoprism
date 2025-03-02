@@ -30,7 +30,8 @@ WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'migrate')\gexec
 
 SELECT 'CREATE USER acceptance PASSWORD ''acceptance'''
 WHERE NOT EXISTS (SELECT FROM pg_user WHERE usename = 'acceptance')\gexec
-SELECT 'CREATE DATABASE acceptance OWNER acceptance'
+-- SELECT 'CREATE DATABASE acceptance OWNER acceptance TEMPLATE "template0" LOCALE_PROVIDER "icu" ICU_LOCALE "und-u-ks-level2";'
+SELECT 'CREATE DATABASE acceptance OWNER acceptance;'
 WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'acceptance')\gexec
 
 SELECT 'CREATE USER photoprism_01 PASSWORD ''photoprism_01'''
