@@ -58,4 +58,43 @@ func TestNewDSN(t *testing.T) {
 		assert.Equal(t, "my_db", dsn.Name)
 		assert.Equal(t, "", dsn.Params)
 	})
+
+	t.Run("PostgreSQL URI 1", func(t *testing.T) {
+		dsn := NewDSN("postgresql://john:pass@postgres:5432/my_db?TimeZone=UTC&connect_timeout=15&lock_timeout=5000&sslmode=disable")
+
+		assert.Equal(t, "postgresql", dsn.Driver)
+		assert.Equal(t, "john", dsn.User)
+		assert.Equal(t, "pass", dsn.Password)
+		assert.Equal(t, "", dsn.Net)
+		assert.Equal(t, "postgres:5432", dsn.Server)
+		assert.Equal(t, "my_db", dsn.Name)
+		assert.Equal(t, "TimeZone=UTC&connect_timeout=15&lock_timeout=5000&sslmode=disable", dsn.Params)
+	})
+
+	t.Run("PostgreSQL URI 2", func(t *testing.T) {
+		dsn := NewDSN("postgres://john:pass@postgres:5432/my_db?TimeZone=UTC&connect_timeout=15&lock_timeout=5000&sslmode=disable")
+
+		assert.Equal(t, "postgres", dsn.Driver)
+		assert.Equal(t, "john", dsn.User)
+		assert.Equal(t, "pass", dsn.Password)
+		assert.Equal(t, "", dsn.Net)
+		assert.Equal(t, "postgres:5432", dsn.Server)
+		assert.Equal(t, "my_db", dsn.Name)
+		assert.Equal(t, "TimeZone=UTC&connect_timeout=15&lock_timeout=5000&sslmode=disable", dsn.Params)
+	})
+
+	t.Run("PostgreSQL Keywords", func(t *testing.T) {
+		dsn := NewDSN("host=postgres port=5432 dbname=my_db user=john password=pass connect_timeout=15 sslmode=disable TimeZone=UTC application_name='Photo Prism'")
+
+		assert.Equal(t, "postgresql", dsn.Driver)
+		assert.Equal(t, "john", dsn.User)
+		assert.Equal(t, "pass", dsn.Password)
+		assert.Equal(t, "", dsn.Net)
+		assert.Equal(t, "postgres:5432", dsn.Server)
+		assert.Equal(t, "my_db", dsn.Name)
+		assert.Contains(t, dsn.Params, "connect_timeout=15")
+		assert.Contains(t, dsn.Params, "sslmode=disable")
+		assert.Contains(t, dsn.Params, "TimeZone=UTC")
+		assert.Contains(t, dsn.Params, "application_name=%27Photo+Prism%27")
+	})
 }

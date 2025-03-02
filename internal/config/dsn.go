@@ -1,6 +1,11 @@
 package config
 
-import "regexp"
+import (
+	"net/url"
+	"regexp"
+	"strings"
+	"unicode"
+)
 
 // dsnPattern is a regular expression matching a database DSN string.
 var dsnPattern = regexp.MustCompile(
@@ -36,27 +41,81 @@ func (d *DSN) Parse(dsn string) {
 	matches := dsnPattern.FindStringSubmatch(dsn)
 	names := dsnPattern.SubexpNames()
 
-	for i, match := range matches {
-		switch names[i] {
-		case "driver":
-			d.Driver = match
-		case "user":
-			d.User = match
-		case "password":
-			d.Password = match
-		case "net":
-			d.Net = match
-		case "server":
-			d.Server = match
-		case "name":
-			d.Name = match
-		case "params":
-			d.Params = match
+	if len(matches) > 0 {
+		for i, match := range matches {
+			switch names[i] {
+			case "driver":
+				d.Driver = match
+			case "user":
+				d.User = match
+			case "password":
+				d.Password = match
+			case "net":
+				d.Net = match
+			case "server":
+				d.Server = match
+			case "name":
+				d.Name = match
+			case "params":
+				d.Params = match
+			}
 		}
-	}
 
-	if d.Net != "" && d.Server == "" {
-		d.Server = d.Net
-		d.Net = ""
+		if d.Net != "" && d.Server == "" {
+			d.Server = d.Net
+			d.Net = ""
+		}
+	} else {
+		// Assume we have a PostgreSQL key value pair connection string.
+		lastQuote := rune(0)
+		smartSplit := func(char rune) bool {
+			switch {
+			case char == lastQuote:
+				lastQuote = rune(0)
+				return false
+			case lastQuote != rune(0):
+				return false
+			case unicode.In(char, unicode.Quotation_Mark):
+				lastQuote = char
+				return false
+			default:
+				return unicode.IsSpace(char)
+			}
+		}
+		pairs := strings.FieldsFunc(dsn, smartSplit)
+		params := url.Values{}
+		host := ""
+		port := ""
+
+		for _, pair := range pairs {
+			splitPair := strings.Split(pair, "=")
+			switch strings.ToLower(splitPair[0]) {
+			case "host":
+				host = splitPair[1]
+			case "port":
+				port = splitPair[1]
+			case "user":
+				d.User = splitPair[1]
+			case "password":
+				d.Password = splitPair[1]
+			case "dbname":
+				d.Name = splitPair[1]
+			default:
+				params.Add(splitPair[0], splitPair[1])
+			}
+		}
+		d.Params = params.Encode()
+
+		if len(host) > 0 && len(port) > 0 {
+			d.Server = host + ":" + port
+		} else if len(host) > 0 {
+			d.Server = host
+		} else {
+			d.Server = ""
+		}
+
+		if len(pairs) > 1 {
+			d.Driver = "postgresql"
+		}
 	}
 }
