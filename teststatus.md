@@ -281,6 +281,11 @@ PASS |   Database/Success (0.00s)
 PASS | 	github.com/photoprism/photoprism/internal/photoprism/backup	8.539s
 ```
 
+# the following are the tests that are failing after all the above were addressed, as at 2025-03-02.
+
+PASS | IndexCommand (19.10s)
+PASS | 	github.com/photoprism/photoprism/internal/commands	401.908s
+
 
 # Inconsistencies Discovered.
 

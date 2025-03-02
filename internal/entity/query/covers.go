@@ -238,22 +238,23 @@ func UpdateLabelCovers() (err error) {
 	switch DbDialect() {
 	case Postgres:
 		res = Db().Exec(`UPDATE labels
-						SET thumb = ( SELECT b.file_hash FROM (SELECT p2.label_id, f.file_hash FROM files f
-						INNER JOIN (SELECT pl.label_id as label_id, max(p.id) AS photo_id FROM photos p
-									INNER JOIN photos_labels pl ON pl.photo_id = p.id AND pl.uncertainty < 100
-									WHERE p.photo_quality > 0 AND p.photo_private = FALSE AND p.deleted_at IS NULL
-									GROUP BY pl.label_id
-									UNION
-									SELECT c.category_id as label_id, max(p.id) AS photo_id FROM photos p     
-									JOIN photos_labels pl ON pl.photo_id = p.id AND pl.uncertainty < 100     
-									JOIN categories c ON c.label_id = pl.label_id    
-									WHERE p.photo_quality > 0 AND p.photo_private = FALSE AND p.deleted_at IS NULL    
-									GROUP BY c.category_id    
-									) p2
-									ON p2.photo_id = f.photo_id 
-									WHERE f.file_primary = TRUE AND f.file_error = '' AND f.file_type IN (?) AND f.file_missing = FALSE
-							) b WHERE b.label_id = labels.id)
-						WHERE ?`, media.PreviewExpr, condition)
+SET thumb = b.file_hash
+FROM (
+	SELECT p2.label_id, f.file_hash FROM files f, (
+		SELECT pl.label_id as label_id, max(p.id) AS photo_id FROM photos p
+			JOIN photos_labels pl ON pl.photo_id = p.id AND pl.uncertainty < 100
+		WHERE p.photo_quality > 0 AND p.photo_private = FALSE AND p.deleted_at IS NULL
+		GROUP BY pl.label_id
+		UNION
+		SELECT c.category_id as label_id, max(p.id) AS photo_id FROM photos p
+			JOIN photos_labels pl ON pl.photo_id = p.id AND pl.uncertainty < 100
+			JOIN categories c ON c.label_id = pl.label_id
+		WHERE p.photo_quality > 0 AND p.photo_private = FALSE AND p.deleted_at IS NULL
+		GROUP BY c.category_id
+		) p2 WHERE p2.photo_id = f.photo_id AND f.file_primary = TRUE AND f.file_error = '' AND f.file_type IN (?) AND f.file_missing = FALSE
+	) b
+WHERE b.label_id = labels.id					
+AND ?`, media.PreviewExpr, condition)
 	case MySQL:
 		res = Db().Exec(`UPDATE labels LEFT JOIN (
 						SELECT p2.label_id, f.file_hash FROM files f, (
