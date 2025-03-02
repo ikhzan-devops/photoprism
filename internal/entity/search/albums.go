@@ -147,9 +147,9 @@ func UserAlbums(frm form.SearchAlbums, sess *entity.Session) (results AlbumResul
 		switch entity.DbDialect() {
 		case entity.Postgres:
 			if frm.Type == entity.AlbumFolder {
-				s = s.Where("albums.album_title LIKE ? OR albums.album_location LIKE ? OR convert_from(albums.album_path, 'UTF8') LIKE ?", q, q, q)
+				s = s.Where("lower(albums.album_title) LIKE ? OR lower(albums.album_location) LIKE ? OR convert_from(albums.album_path, 'UTF8') LIKE ?", q, q, q)
 			} else {
-				s = s.Where("albums.album_title LIKE ? OR albums.album_location LIKE ?", q, q)
+				s = s.Where("lower(albums.album_title) LIKE ? OR lower(albums.album_location) LIKE ?", q, q)
 			}
 		default:
 			if frm.Type == entity.AlbumFolder {

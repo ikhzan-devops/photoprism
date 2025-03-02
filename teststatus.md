@@ -129,9 +129,9 @@ PASS |   PhotoSelection/FindStates (0.00s)
 PASS | FixPrimaries (0.00s)
 PASS |   FixPrimaries/Success (0.00s)
 FAIL | 	github.com/photoprism/photoprism/internal/entity/query	100.671s
-FAIL | Albums (0.02s)
-FAIL |   Albums/search_with_string (0.00s)  <-- case insensitivity issue 
-FAIL |   Albums/Blue (0.00s)  <-- case insensitivity issue 
+PASS | Albums (0.02s)
+PASS |   Albums/search_with_string (0.00s)  <-- case insensitivity issue 
+PASS |   Albums/Blue (0.00s)  <-- case insensitivity issue 
 PASS | Faces (0.00s)
 PASS |   Faces/Unknown (0.00s)
 PASS |   Faces/Search_with_limit (0.00s)
