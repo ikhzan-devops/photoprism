@@ -267,6 +267,23 @@ var Flags = CliFlags{
 			Usage:   "create YAML sidecar files to back up picture metadata",
 			EnvVars: EnvVars("SIDECAR_YAML"),
 		}, DocDefault: "true"}, {
+		Flag: &cli.BoolFlag{
+			Name:    "usage-info",
+			Usage:   "display usage information in the user interface",
+			EnvVars: EnvVars("USAGE_INFO"),
+		}}, {
+		Flag: &cli.Uint64Flag{
+			Name:    "quota",
+			Usage:   "maximum aggregated size of all indexed files in `MB` (0 to disable)",
+			EnvVars: EnvVars("QUOTA"),
+			Hidden:  true,
+		}}, {
+		Flag: &cli.IntFlag{
+			Name:    "quota-users",
+			Usage:   "maximum number of registered user accounts, excluding guests (0 to disable)",
+			EnvVars: EnvVars("QUOTA_USERS"),
+			Hidden:  true,
+		}}, {
 		Flag: &cli.StringFlag{
 			Name:    "backup-path",
 			Aliases: []string{"ba"},

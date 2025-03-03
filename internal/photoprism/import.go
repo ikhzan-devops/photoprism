@@ -254,7 +254,7 @@ func (imp *Import) Start(opt ImportOptions) fs.Done {
 				continue
 			}
 
-			if err := os.Remove(file); err != nil {
+			if err = os.Remove(file); err != nil {
 				log.Errorf("import: failed removing %s (%s)", clean.Log(fs.RelName(file, importPath)), err.Error())
 			}
 		}
@@ -268,16 +268,17 @@ func (imp *Import) Start(opt ImportOptions) fs.Done {
 		// Run face recognition if enabled.
 		if w := NewFaces(imp.conf); w.Disabled() {
 			log.Debugf("import: skipping face recognition")
-		} else if err := w.Start(FacesOptionsDefault()); err != nil {
+		} else if err = w.Start(FacesOptionsDefault()); err != nil {
 			log.Errorf("import: %s", err)
 		}
 
 		// Update photo counts and visibilities.
-		if err := entity.UpdateCounts(); err != nil {
+		if err = entity.UpdateCounts(); err != nil {
 			log.Warnf("index: %s (update counts)", err)
 		}
 	}
 
+	config.FlushUsageInfoCache()
 	runtime.GC()
 
 	return done

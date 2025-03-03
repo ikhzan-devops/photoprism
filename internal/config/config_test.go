@@ -339,12 +339,12 @@ func TestConfig_OriginalsLimit(t *testing.T) {
 	assert.Equal(t, 800, c.OriginalsLimit())
 }
 
-func TestConfig_OriginalsByteLimit(t *testing.T) {
+func TestConfig_OriginalsLimitBytes(t *testing.T) {
 	c := NewConfig(CliTestContext())
 
-	assert.Equal(t, int64(-1), c.OriginalsByteLimit())
+	assert.Equal(t, int64(-1), c.OriginalsLimitBytes())
 	c.options.OriginalsLimit = 800
-	assert.Equal(t, int64(838860800), c.OriginalsByteLimit())
+	assert.Equal(t, int64(838860800), c.OriginalsLimitBytes())
 }
 
 func TestConfig_ResolutionLimit(t *testing.T) {

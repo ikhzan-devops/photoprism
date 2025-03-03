@@ -188,3 +188,25 @@ test.meta("testID", "labels-004").meta({ mode: "public" })("Common: Delete label
 
   await t.expect(Selector("td").withText("Dome").visible).ok();
 });
+
+test.meta("testID", "labels-005").meta({ mode: "public" })("Common: Test mark label as favorite", async (t) => {
+  await menu.openPage("labels");
+  const FirstLabelUid = await label.getNthLabeltUid(0);
+  const SecondLabelUid = await label.getNthLabeltUid(1);
+  await label.triggerHoverAction("uid", SecondLabelUid, "favorite");
+  await toolbar.triggerToolbarAction("reload");
+  const FirstLabelUidAfterFavorite = await label.getNthLabeltUid(0);
+
+  await t.expect(FirstLabelUid).notEql(FirstLabelUidAfterFavorite);
+  await t.expect(SecondLabelUid).eql(FirstLabelUidAfterFavorite);
+
+  await label.checkHoverActionState("uid", SecondLabelUid, "favorite", true);
+  await label.triggerHoverAction("uid", SecondLabelUid, "favorite");
+  await label.checkHoverActionState("uid", SecondLabelUid, "favorite", false);
+  await label.checkHoverActionState("uid", FirstLabelUid, "favorite", false);
+  await t
+    .click(Selector("div[data-uid=" + FirstLabelUid + "] div.meta-title"))
+    .click(Selector('input[aria-label="Favorite"]'))
+    .click(Selector("button.action-confirm"));
+  await label.checkHoverActionState("uid", FirstLabelUid, "favorite", true);
+});

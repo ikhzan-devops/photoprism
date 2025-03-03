@@ -79,6 +79,11 @@ func (c *Config) Report() (rows [][]string, cols []string) {
 		{"sidecar-path", c.SidecarPath()},
 		{"sidecar-yaml", fmt.Sprintf("%t", c.SidecarYaml())},
 
+		// Usage.
+		{"usage-info", fmt.Sprintf("%t", c.UsageInfo())},
+		{"quota", fmt.Sprintf("%d", c.Quota())},
+		{"quota-users", fmt.Sprintf("%d", c.QuotaUsers())},
+
 		// Backups.
 		{"backup-path", c.BackupBasePath()},
 		{"backup-schedule", c.BackupSchedule()},

@@ -91,6 +91,7 @@ type ClientConfig struct {
 	Categories       CategoryLabels      `json:"categories"`
 	Clip             int                 `json:"clip"`
 	Server           env.Resources       `json:"server"`
+	Usage            Usage               `json:"usage"`
 	Settings         *customize.Settings `json:"settings,omitempty"`
 	ACL              acl.Grants          `json:"acl,omitempty"`
 	Ext              Map                 `json:"ext"`
@@ -510,6 +511,7 @@ func (c *Config) ClientUser(withSettings bool) *ClientConfig {
 		ManifestUri:      c.ClientManifestUri(),
 		Clip:             txt.ClipDefault,
 		Server:           env.Info(),
+		Usage:            c.Usage(),
 		Ext:              ClientExt(c, ClientUser),
 	}
 
