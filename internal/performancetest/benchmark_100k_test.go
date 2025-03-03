@@ -7,7 +7,6 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strconv"
-	"strings"
 	"testing"
 
 	"github.com/photoprism/photoprism/internal/entity"
@@ -211,24 +210,6 @@ func createDeleteCamera(b *testing.B) {
 		b.Fatal(err)
 	}
 	entity.FlushCameraCache()
-}
-
-const characterRunes = " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-const sha1Runes = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-
-func randRange(min, max float64) float64 {
-	return min + rand.Float64()*(max-min)
-}
-
-func randomString(len int) string {
-	sb := strings.Builder{}
-	sb.Grow(len)
-	for i := 0; i < len; {
-		sb.WriteByte(characterRunes[rand.IntN(53)])
-		i++
-	}
-
-	return sb.String()
 }
 
 func createDeleteCellAndPlace(b *testing.B) {

@@ -14,6 +14,24 @@ import (
 	"gorm.io/gorm"
 )
 
+const characterRunes = " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+const sha1Runes = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+
+func randRange(min, max float64) float64 {
+	return min + rand.Float64()*(max-min)
+}
+
+func randomString(len int) string {
+	sb := strings.Builder{}
+	sb.Grow(len)
+	for i := 0; i < len; {
+		sb.WriteByte(characterRunes[rand.IntN(53)])
+		i++
+	}
+
+	return sb.String()
+}
+
 func createDeletePhoto(b *testing.B) {
 	month := rand.IntN(11) + 1
 	day := rand.IntN(28) + 1
