@@ -136,7 +136,7 @@ services:
   ## PostgreSQL Database Server
   ## Docs: https://www.postgresql.org/docs/
   postgres:
-    image: postgres:16-alpine
+    image: postgres:17-alpine
 #    image: postgres:16-bookworm
     expose:
       - "5432"
