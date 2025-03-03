@@ -113,6 +113,58 @@ func Benchmark100k_MySQL(b *testing.B) {
 	event.Log.SetLevel(loglevel)
 }
 
+func Benchmark100k_PostgreSQL(b *testing.B) {
+	// Setup here
+	loglevel := event.Log.GetLevel()
+	event.Log.SetLevel(logrus.ErrorLevel)
+	testDbOriginal := "../../storage/test-100k.original.postgresql"
+	postgresqlDSN := "postgresql://migrate:migrate@postgres:5432/migrate"
+	postgresqlParams := "?TimeZone=UTC&connect_timeout=15&lock_timeout=5000&sslmode=disable"
+
+	// Prepare temporary PostgreSQL db.
+	if !fs.FileExists(testDbOriginal) {
+		log.Info("Generating PostgreSQL database with 100000 records")
+		generateDatabase(100000, Postgres, postgresqlDSN+postgresqlParams, true, true)
+		if err := exec.Command("pg_dump", "-d", postgresqlDSN, "-F c", "-f", testDbOriginal).Run(); err != nil {
+			b.Fatal(err)
+		}
+	}
+
+	// Prepare migrate PostgreSQL db.
+	if dumpName, err := filepath.Abs(testDbOriginal); err != nil {
+		b.Fatal(err)
+	} else if err = exec.Command("dropdb", "--maintenance-db=postgresql://photoprism:photoprism@postgres:5432/postgres", "--force", "--if-exists", "migrate").Run(); err != nil {
+		b.Fatal(err)
+	} else if err = exec.Command("createdb", "--maintenance-db=postgresql://photoprism:photoprism@postgres:5432/postgres", "-O", "migrate", "-T", "template0", "migrate").Run(); err != nil {
+		b.Fatal(err)
+	} else if err = exec.Command("pg_restore", "-d", postgresqlDSN, dumpName).Run(); err != nil {
+		b.Fatal(err)
+	}
+
+	// Force the dbConn to nil so that a new database can be connected to.
+	entity.SetDbProvider(nil)
+
+	// Create gorm.DB connection provider.
+	db := &entity.DbConn{
+		Driver: Postgres,
+		Dsn:    postgresqlDSN + postgresqlParams,
+	}
+
+	// Insert test fixtures into the database.
+	entity.SetDbProvider(db)
+
+	entity.InitDb(migrate.Opt(true, false, nil))
+
+	defer db.Close()
+
+	// tests here
+
+	runTests(b)
+
+	// teardown here
+	event.Log.SetLevel(loglevel)
+}
+
 // The following is the tests being executed
 
 func runTests(b *testing.B) {

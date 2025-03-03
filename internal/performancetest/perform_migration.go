@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"gorm.io/driver/mysql"
+	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -217,5 +218,105 @@ func mysqlMigration(testDbOriginal string, numberOfRecords int, testname string,
 	}
 
 	log.Info(testname, " mysql took ", elapsed)
+	assert.LessOrEqual(b, elapsed, expectedDuration)
+}
+
+func postgresqlMigration(testDbOriginal string, numberOfRecords int, testname string, expectedDuration time.Duration, b *testing.B) {
+	b.StopTimer()
+	postgresqlDSN := "postgresql://migrate:migrate@postgres:5432/migrate"
+	postgresqlParams := "?TimeZone=UTC&connect_timeout=15&lock_timeout=5000&sslmode=disable"
+
+	// Prepare migrate PostgreSQL db.
+	if dumpName, err := filepath.Abs(testDbOriginal); err != nil {
+		b.Fatal(err)
+	} else if err = exec.Command("dropdb", "--maintenance-db=postgresql://photoprism:photoprism@postgres:5432/postgres", "--force", "--if-exists", "migrate").Run(); err != nil {
+		b.Fatal(err)
+	} else if err = exec.Command("createdb", "--maintenance-db=postgresql://photoprism:photoprism@postgres:5432/postgres", "-O", "migrate", "-T", "template0", "migrate").Run(); err != nil {
+		b.Fatal(err)
+	} else if err = exec.Command("pg_restore", "-d", postgresqlDSN, dumpName).Run(); err != nil {
+		b.Fatal(err)
+	}
+
+	b.StartTimer()
+	start := time.Now()
+
+	log = logrus.StandardLogger()
+	log.SetLevel(logrus.ErrorLevel)
+
+	db, err := gorm.Open(postgres.Open(
+		postgresqlDSN+postgresqlParams),
+		&gorm.Config{
+			Logger: logger.New(
+				log,
+				logger.Config{
+					SlowThreshold:             time.Second,  // Slow SQL threshold
+					LogLevel:                  logger.Error, // Log level
+					IgnoreRecordNotFoundError: true,         // Ignore ErrRecordNotFound error for logger
+					ParameterizedQueries:      true,         // Don't include params in the SQL log
+					Colorful:                  false,        // Disable color
+				},
+			),
+		},
+	)
+
+	if err != nil || db == nil {
+		if err != nil {
+			b.Fatal(err)
+		}
+
+		return
+	}
+
+	sqldb, _ := db.DB()
+	defer sqldb.Close()
+
+	opt := migrate.Opt(true, true, nil)
+
+	// Make sure that migrate and version is done, as the Once doesn't work as it has already been set before we opened the new database..
+	if err = db.AutoMigrate(&migrate.Migration{}); err != nil {
+		b.Fatal(err)
+	}
+	if err = db.AutoMigrate(&migrate.Version{}); err != nil {
+		b.Fatal(err)
+	}
+
+	// Setup and capture SQL Logging output
+	buffer := bytes.Buffer{}
+	log.SetLevel(logrus.TraceLevel)
+	log.SetOutput(&buffer)
+
+	entity.Entities.Migrate(db, opt)
+	// The bad thing is that the above panics, but doesn't return an error.
+
+	// Reset logger
+	log.SetOutput(os.Stdout)
+	log.SetLevel(logrus.ErrorLevel)
+
+	// Expect 3 errors (no such table accounts, and missing account_id in files_sync and files_share)
+	// And a blank record.
+	assert.Equal(b, 4, len(strings.Split(buffer.String(), "\n")))
+	if len(strings.Split(buffer.String(), "\n")) == 4 {
+		assert.Equal(b, 0, len(strings.Split(buffer.String(), "\n")[3]))
+	} else {
+		log.Error("Migration result not as expected.  Results follow:")
+		for i := 0; i < len(strings.Split(buffer.String(), "\n")); i++ {
+			log.Error(strings.Split(buffer.String(), "\n")[i])
+		}
+	}
+
+	elapsed := time.Since(start)
+
+	stmt := db.Table("photos").Where("photo_uid IS NOT NULL")
+
+	count := int64(0)
+
+	// Fetch count from database.
+	if err = stmt.Count(&count).Error; err != nil {
+		b.Error(err)
+	} else {
+		assert.Equal(b, int64(numberOfRecords), count)
+	}
+
+	log.Info(testname, " postgresql took ", elapsed)
 	assert.LessOrEqual(b, elapsed, expectedDuration)
 }
