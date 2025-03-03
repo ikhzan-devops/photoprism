@@ -27,6 +27,8 @@ DESTARCH=${BUILD_ARCH:-$SYSTEM_ARCH}
 echo "Installing \"$PACKAGES\" distribution packages for ${DESTARCH^^}..."
 
 sudo apt-get update
+sudo apt-get -qy install curl gnupg postgresql-common apt-transport-https lsb-release
+sudo sh /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y
 sudo apt-get -qq install $PACKAGES
 
 echo "Done."
