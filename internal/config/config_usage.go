@@ -55,7 +55,7 @@ func (c *Config) Usage() Usage {
 		info.Free = m.Free
 		info.Total = info.Used + m.Free
 
-		if quotaTotal > 0 && (info.Total <= 0 || quotaTotal < info.Total) {
+		if quotaTotal > 0 && quotaTotal < info.Total {
 			info.Total = quotaTotal
 		}
 
