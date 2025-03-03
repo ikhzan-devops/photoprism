@@ -19,6 +19,9 @@ func TestDatabase(t *testing.T) {
 		if c.DatabaseDriver() != config.SQLite3 {
 			t.Skip("Not executing against sqlite")
 		}
+		if fs.FileExistsNotEmpty(c.DatabaseFile()) {
+			t.Skip("Using a real existing sqlite database") // This test only works against a memory database
+		}
 		backupPath, err := filepath.Abs("./testdata/sqlite")
 
 		if err != nil {
@@ -42,6 +45,9 @@ func TestDatabase(t *testing.T) {
 
 		if c.DatabaseDriver() != config.SQLite3 {
 			t.Skip("Not executing against sqlite")
+		}
+		if fs.FileExistsNotEmpty(c.DatabaseFile()) {
+			t.Skip("Using a real existing sqlite database")
 		}
 		backupPath, err := filepath.Abs("./testdata/sqlite")
 

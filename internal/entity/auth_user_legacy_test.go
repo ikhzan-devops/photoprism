@@ -10,6 +10,14 @@ import (
 )
 
 func TestFindLegacyUser(t *testing.T) {
+	// Make sure that the user table doesn't exist, which is what this test requires.
+	if notFound := FindLegacyUser(Admin); notFound != nil {
+		if err := Db().Migrator().DropTable(legacy.User{}); err != nil {
+			log.Errorf("TestFindLegacyUser: failed dropping legacy.User")
+			t.Error(err)
+		}
+	}
+
 	notFound := FindLegacyUser(Admin)
 	assert.Nil(t, notFound)
 
@@ -40,6 +48,14 @@ func TestFindLegacyUser(t *testing.T) {
 }
 
 func TestFindLegacyUsers(t *testing.T) {
+	// Make sure that the user table doesn't exist, which is what this test requires.
+	if notFound := FindLegacyUser(Admin); notFound != nil {
+		if err := Db().Migrator().DropTable(legacy.User{}); err != nil {
+			log.Errorf("TestFindLegacyUser: failed dropping legacy.User")
+			t.Error(err)
+		}
+	}
+
 	notFound := FindLegacyUsers("all")
 	assert.Len(t, notFound, 0)
 
