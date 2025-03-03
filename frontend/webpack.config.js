@@ -64,6 +64,16 @@ const config = {
   devtool: isDev ? "inline-source-map" : false,
   optimization: {
     minimize: !isDev,
+    splitChunks: {
+      cacheGroups: {
+        places: {
+          test: /[\\/]page[\\/]places\.vue$/,
+          name: "places-page",
+          enforce: true,
+        },
+        vendors: false,
+      },
+    },
   },
   entry: {
     app: PATHS.app,
@@ -72,17 +82,14 @@ const config = {
   },
   output: {
     path: PATHS.build,
-    publicPath: PATHS.public,
-    filename: "[name].[contenthash].js",
+    filename: '[name].[contenthash].js',
     clean: true,
   },
   resolve: {
     modules: isCustom ? [PATHS.custom, PATHS.src, PATHS.modules] : [PATHS.src, PATHS.modules],
     preferRelative: true,
     alias: {
-      // TODO: change it
-      vue$: "vue/dist/vue.runtime.esm-bundler.js",
-      // vue: isDev ? "vue/dist/vue.js" : "vue/dist/vue.min.js",
+      vue$: isDev ? "vue/dist/vue.esm-bundler.js" : "vue/dist/vue.runtime.esm-bundler.js",
     },
   },
   plugins: [

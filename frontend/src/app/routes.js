@@ -26,7 +26,6 @@ Additional information can be found in our Developer Guide:
 import Photos from "page/photos.vue";
 import Albums from "page/albums.vue";
 import AlbumPhotos from "page/album/photos.vue";
-import Places from "page/places.vue";
 import Browse from "page/library/browse.vue";
 import Errors from "page/library/errors.vue";
 import Labels from "page/labels.vue";
@@ -278,13 +277,13 @@ export default [
   {
     name: "places",
     path: "/places",
-    component: Places,
+    component: () => import(/* webpackChunkName: "places-page" */ "page/places.vue"),
     meta: { title: $gettext("Places"), requiresAuth: true },
   },
   {
     name: "places_view",
     path: "/places/view/:s",
-    component: Places,
+    component: () => import(/* webpackChunkName: "places-page" */ "page/places.vue"),
     meta: { title: $gettext("Places"), requiresAuth: true },
   },
   {
