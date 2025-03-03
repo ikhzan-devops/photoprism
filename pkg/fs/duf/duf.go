@@ -71,7 +71,7 @@ func FindByPath(dir string) (m []Mount, warnings []string, err error) {
 	if len(folders) <= 1 {
 		filter.OnlyMountPoints = NewFilterValues("/")
 	} else if parent := strings.TrimSpace(folders[1]); parent != "" {
-		filter.OnlyMountPoints = NewFilterValues("/", "/"+parent+"/*")
+		filter.OnlyMountPoints = NewFilterValues("/", "/"+parent+"*")
 	} else if len(folders) > 2 {
 		filter.OnlyMountPoints = NewFilterValues("/")
 	}

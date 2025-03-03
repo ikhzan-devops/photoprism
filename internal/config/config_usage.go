@@ -46,7 +46,7 @@ func (c *Config) Usage() Usage {
 		Select("SUM(file_size) AS used").
 		Where("deleted_at IS NULL").
 		Take(&info).Error; err != nil {
-		log.Warnf("config: %s", err.Error())
+		log.Warnf("config: failed to calculate indexed file usage (%s)", err.Error())
 	}
 
 	quotaTotal := c.QuotaBytes()
@@ -54,16 +54,16 @@ func (c *Config) Usage() Usage {
 	if m, err := duf.PathInfo(originalsPath); err == nil {
 		info.Free = m.Free
 		info.Total = info.Used + m.Free
+	} else {
+		log.Debugf("config: failed to detect filesystem usage (%s)", err.Error())
+	}
 
-		if quotaTotal > 0 && quotaTotal < info.Total {
-			info.Total = quotaTotal
-		}
-
-		if info.Total > 0 {
-			info.UsedPct = int(math.RoundToEven(float64(info.Used) / float64(info.Total) * 100))
-		}
-	} else if quotaTotal > 0 {
+	if quotaTotal > 0 && quotaTotal < info.Total {
 		info.Total = quotaTotal
+	}
+
+	if info.Total > 0 {
+		info.UsedPct = int(math.RoundToEven(float64(info.Used) / float64(info.Total) * 100))
 	}
 
 	if info.Used > 0 && info.UsedPct <= 0 {
