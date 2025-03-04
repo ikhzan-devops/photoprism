@@ -668,16 +668,24 @@ func TestUser_SameUID(t *testing.T) {
 
 func TestUser_String(t *testing.T) {
 	t.Run("UID", func(t *testing.T) {
-		p := User{UserUID: "abc123", UserName: "", DisplayName: ""}
-		assert.Equal(t, "abc123", p.String())
+		expected := rnd.GenerateUID(UserUID) // Use a valid UID, otherwise it will be replaced by BeforeCreate.
+		p := User{UserUID: expected, UserName: "", DisplayName: ""}
+		p.Create()
+		// GormV2 internal failure created in p.String() as the UserDetails fails to save as there isn't a user record.
+		assert.Equal(t, expected, p.String())
+		UnscopedDb().Delete(&p)
 	})
 	t.Run("FullName", func(t *testing.T) {
 		p := User{UserUID: "abc123", UserName: "", DisplayName: "Test"}
+		p.Create()
 		assert.Equal(t, "'Test'", p.String())
+		UnscopedDb().Delete(&p)
 	})
 	t.Run("UserName", func(t *testing.T) {
 		p := User{UserUID: "abc123", UserName: "Super-User ", DisplayName: "Test"}
+		p.Create()
 		assert.Equal(t, "'super-user'", p.String())
+		UnscopedDb().Delete(&p)
 	})
 }
 
