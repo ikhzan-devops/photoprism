@@ -348,6 +348,13 @@ nav .v-list__item__title.title {
     z-index: 1;
 }
 
+.nav-sidebar .nav-container > .nav-info > .nav-info__content {
+    width: 100%;
+    text-align: center;
+    padding: 4px 8px;
+    flex-grow: 1;
+}
+
 .nav-sidebar .nav-container > .nav-info:hover > .nav-info__underlay {
     opacity: var(--v-hover-opacity, .018);
 }

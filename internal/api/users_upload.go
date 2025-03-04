@@ -52,6 +52,13 @@ func UploadUserFiles(router *gin.RouterGroup) {
 			return
 		}
 
+		// Abort if the available storage is full.
+		if conf.FilesQuotaReached() {
+			event.AuditErr([]string{ClientIP(c), "session %s", "upload files", "quota has been reached"}, s.RefID)
+			Abort(c, http.StatusForbidden, i18n.ErrStorageIsFull)
+			return
+		}
+
 		start := time.Now()
 		token := clean.Token(c.Param("token"))
 

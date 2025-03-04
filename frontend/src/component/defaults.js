@@ -137,6 +137,13 @@ export default {
     flat: true,
     transition: false,
   },
+  VNavigationDrawer: {
+    width: 270,
+    railWidth: 70,
+    mobileBreakpoint: 960,
+    location: "start",
+    touchless: true,
+  },
   VListItem: {
     ripple: false,
   },

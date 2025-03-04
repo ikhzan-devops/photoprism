@@ -28,7 +28,7 @@
             @focus="onFocus"
           >
           </v-autocomplete>
-          <v-progress-linear :model-value="completed" :indeterminate="busy"></v-progress-linear>
+          <v-progress-linear :model-value="completed" :indeterminate="busy" :height="16"></v-progress-linear>
         </div>
         <div class="form-options">
           <v-checkbox

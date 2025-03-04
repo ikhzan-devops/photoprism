@@ -875,13 +875,7 @@ export class Photo extends RestModel {
       return;
     }
 
-    if (file.Size > 102400) {
-      const size = Number.parseFloat(file.Size) / 1048576;
-      info.push(size.toFixed(1) + " MB");
-    } else {
-      const size = Number.parseFloat(file.Size) / 1024;
-      info.push(size.toFixed(1) + " KB");
-    }
+    info.push($util.formatBytes(file.Size));
   }
 
   vectorFile() {

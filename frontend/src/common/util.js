@@ -44,6 +44,38 @@ let start = new Date();
 const debug = window.__CONFIG__?.debug || window.__CONFIG__?.trace;
 
 export default class $util {
+  static formatBytes(b) {
+    if (!b) {
+      return "0 KB";
+    }
+
+    if (typeof b === "string") {
+      b = Number.parseFloat(b);
+    }
+
+    if (b >= 1073741824) {
+      const gb = b / 1073741824;
+      return gb.toFixed(1) + " GB";
+    } else if (b >= 1048576) {
+      const mb = b / 1048576;
+      return mb.toFixed(1) + " MB";
+    }
+
+    return Math.ceil(b / 1024) + " KB";
+  }
+
+  static gigaBytes(b) {
+    if (!b) {
+      return 0;
+    }
+
+    if (typeof b === "string") {
+      b = Number.parseFloat(b);
+    }
+
+    return Math.round(b / 1073741824);
+  }
+
   static formatDate(s) {
     if (!s || !s.length) {
       return s;

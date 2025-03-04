@@ -1095,7 +1095,7 @@ describe("model/photo", () => {
       ],
     };
     const photo3 = new Photo(values3);
-    assert.equal(photo3.getVideoInfo(), "6µs, AVC, 500 × 600, 0.2 MB");
+    assert.equal(photo3.getVideoInfo(), "6µs, AVC, 500 × 600, 218 KB");
     const values4 = {
       ID: 10,
       UID: "ABC127",
@@ -1122,7 +1122,7 @@ describe("model/photo", () => {
       ],
     };
     const photo4 = new Photo(values4);
-    assert.equal(photo4.getVideoInfo(), "6µs, AVC, 300 × 500, 10.0 KB");
+    assert.equal(photo4.getVideoInfo(), "6µs, AVC, 300 × 500, 10 KB");
     assert.equal(photo4.getDurationInfo(), "6µs");
   });
 

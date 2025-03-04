@@ -1,6 +1,6 @@
 <template>
   <div ref="page" tabindex="1" class="p-page p-page-settings" :class="$config.aclClasses('settings')">
-    <v-tabs v-model="active" :height="$vuetify.display.smAndDown ? 48 : 64">
+    <v-tabs v-model="active" :height="$vuetify.display.smAndDown ? 48 : 64" class="p-page__navigation">
       <v-tab v-for="t in tabs" :id="'tab-' + t.name" :key="t.name" :class="t.class" ripple @click="changePath(t.path)">
         <v-icon v-if="$vuetify.display.smAndDown" :title="t.label">{{ t.icon }}</v-icon>
         <template v-else>

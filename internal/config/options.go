@@ -26,7 +26,7 @@ type Options struct {
 	PartnerID              string        `yaml:"-" json:"-" flag:"partner-id"`
 	AuthMode               string        `yaml:"AuthMode" json:"-" flag:"auth-mode"`
 	Public                 bool          `yaml:"Public" json:"-" flag:"public"`
-	NoHub                  bool          `yaml:"NoHub" json:"-" flag:"no-hub"`
+	NoHub                  bool          `yaml:"-" json:"-" flag:"no-hub"`
 	AdminUser              string        `yaml:"AdminUser" json:"-" flag:"admin-user"`
 	AdminPassword          string        `yaml:"AdminPassword" json:"-" flag:"admin-password"`
 	PasswordLength         int           `yaml:"PasswordLength" json:"-" flag:"password-length"`
@@ -72,6 +72,9 @@ type Options struct {
 	CustomAssetsPath       string        `yaml:"-" json:"-" flag:"custom-assets-path"`
 	SidecarPath            string        `yaml:"SidecarPath" json:"-" flag:"sidecar-path"`
 	SidecarYaml            bool          `yaml:"SidecarYaml" json:"SidecarYaml" flag:"sidecar-yaml" default:"true"`
+	UsageInfo              bool          `yaml:"UsageInfo" json:"UsageInfo" flag:"usage-info"`
+	FilesQuota             uint64        `yaml:"FilesQuota" json:"-" flag:"files-quota"`
+	UsersQuota             int           `yaml:"UsersQuota" json:"-" flag:"users-quota"`
 	BackupPath             string        `yaml:"BackupPath" json:"-" flag:"backup-path"`
 	BackupSchedule         string        `yaml:"BackupSchedule" json:"BackupSchedule" flag:"backup-schedule"`
 	BackupRetain           int           `yaml:"BackupRetain" json:"BackupRetain" flag:"backup-retain"`

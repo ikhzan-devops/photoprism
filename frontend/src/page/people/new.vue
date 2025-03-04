@@ -1,6 +1,6 @@
 <template>
   <div class="p-page p-page-faces not-selectable">
-    <v-form ref="form" class="p-faces-search" validate-on="invalid-input" @submit.prevent="updateQuery">
+    <v-form ref="form" validate-on="invalid-input" class="p-faces-search" @submit.prevent="updateQuery">
       <v-toolbar density="compact" class="page-toolbar" color="secondary-light">
         <v-spacer></v-spacer>
 
@@ -41,7 +41,7 @@
     <div v-if="loading" class="pa-6">
       <v-progress-linear :indeterminate="true"></v-progress-linear>
     </div>
-    <div v-else>
+    <div v-else class="p-page__content">
       <p-scroll
         :load-more="loadMore"
         :load-disabled="scrollDisabled"

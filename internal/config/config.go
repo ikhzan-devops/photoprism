@@ -661,8 +661,8 @@ func (c *Config) OriginalsLimit() int {
 	return c.options.OriginalsLimit
 }
 
-// OriginalsByteLimit returns the maximum size of originals in bytes.
-func (c *Config) OriginalsByteLimit() int64 {
+// OriginalsLimitBytes returns the maximum size of originals in bytes.
+func (c *Config) OriginalsLimitBytes() int64 {
 	if result := c.OriginalsLimit(); result <= 0 {
 		return -1
 	} else {

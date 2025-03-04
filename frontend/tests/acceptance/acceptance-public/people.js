@@ -155,6 +155,12 @@ test.meta("testID", "people-003").meta({ mode: "public" })("Common: Test mark su
   await subject.checkHoverActionState("uid", SecondSubjectUid, "favorite", true);
   await subject.triggerHoverAction("uid", SecondSubjectUid, "favorite");
   await subject.checkHoverActionState("uid", SecondSubjectUid, "favorite", false);
+  await subject.checkHoverActionState("uid", FirstSubjectUid, "favorite", false);
+  await t
+    .click(Selector("div[data-uid=" + FirstSubjectUid + "] div.meta-title"))
+    .click(Selector('input[aria-label="Favorite"]'))
+    .click(Selector("button.action-confirm"));
+  await subject.checkHoverActionState("uid", FirstSubjectUid, "favorite", true);
 });
 
 test.meta("testID", "people-004").meta({ mode: "public" })("Common: Test new face autocomplete", async (t) => {

@@ -1,8 +1,8 @@
 package fs
 
-// KiloByte, MegaByte, and GigaByte size constants.
+// Size constants for KByte, MByte, and GByte.
 const (
-	KiloByte = 1024
-	MegaByte = KiloByte * 1024
-	GigaByte = MegaByte * 1024
+	KB = 1024
+	MB = KB * 1024
+	GB = MB * 1024
 )

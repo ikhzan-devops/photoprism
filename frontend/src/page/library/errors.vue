@@ -1,6 +1,11 @@
 <template>
   <div ref="page" tabindex="1" class="p-page p-page-errors" @keydown.ctrl="onCtrl">
-    <v-form ref="form" class="p-errors-search" validate-on="invalid-input" @submit.prevent="updateQuery()">
+    <v-form
+      ref="form"
+      validate-on="invalid-input"
+      class="p-errors-search p-page__navigation"
+      @submit.prevent="updateQuery()"
+    >
       <v-toolbar
         flat
         :density="$vuetify.display.smAndDown ? 'compact' : 'default'"
