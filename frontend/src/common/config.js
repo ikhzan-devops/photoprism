@@ -646,6 +646,11 @@ export default class Config {
     return this.values.settings.features[name] === true;
   }
 
+  // filesQuotaReached returns true if the filesystem quota is reached or exceeded.
+  filesQuotaReached() {
+    return this.values?.usage?.filesUsedPct >= 100;
+  }
+
   // setTokens sets the security tokens required to load thumbnails and download files from the server.
   setTokens(tokens) {
     if (!tokens || typeof tokens !== "object") {

@@ -73,8 +73,8 @@ type Options struct {
 	SidecarPath            string        `yaml:"SidecarPath" json:"-" flag:"sidecar-path"`
 	SidecarYaml            bool          `yaml:"SidecarYaml" json:"SidecarYaml" flag:"sidecar-yaml" default:"true"`
 	UsageInfo              bool          `yaml:"UsageInfo" json:"UsageInfo" flag:"usage-info"`
-	Quota                  uint64        `yaml:"Quota" json:"Quota" flag:"quota"`
-	QuotaUsers             int           `yaml:"QuotaUsers" json:"QuotaUsers" flag:"quota-users"`
+	FilesQuota             uint64        `yaml:"FilesQuota" json:"-" flag:"files-quota"`
+	UsersQuota             int           `yaml:"UsersQuota" json:"-" flag:"users-quota"`
 	BackupPath             string        `yaml:"BackupPath" json:"-" flag:"backup-path"`
 	BackupSchedule         string        `yaml:"BackupSchedule" json:"BackupSchedule" flag:"backup-schedule"`
 	BackupRetain           int           `yaml:"BackupRetain" json:"BackupRetain" flag:"backup-retain"`

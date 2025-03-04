@@ -81,8 +81,8 @@ func (c *Config) Report() (rows [][]string, cols []string) {
 
 		// Usage.
 		{"usage-info", fmt.Sprintf("%t", c.UsageInfo())},
-		{"quota", fmt.Sprintf("%d", c.Quota())},
-		{"quota-users", fmt.Sprintf("%d", c.QuotaUsers())},
+		{"files-quota", fmt.Sprintf("%d", c.FilesQuota())},
+		{"users-quota", fmt.Sprintf("%d", c.UsersQuota())},
 
 		// Backups.
 		{"backup-path", c.BackupBasePath()},

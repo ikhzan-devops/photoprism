@@ -278,7 +278,7 @@ func (imp *Import) Start(opt ImportOptions) fs.Done {
 		}
 	}
 
-	config.FlushUsageInfoCache()
+	config.FlushUsageCache()
 	runtime.GC()
 
 	return done

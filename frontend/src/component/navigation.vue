@@ -755,27 +755,23 @@
             </v-list-item>
           </v-list>
 
-          <div
-            v-if="!isMini && featUsage"
-            class="nav-info usage-info clickable"
-            @click.stop="showUsageInfo"
-          >
+          <div v-if="!isMini && featUsage" class="nav-info usage-info clickable" @click.stop="showUsageInfo">
             <div class="nav-info__underlay"></div>
             <div class="nav-info__content">
               <v-progress-linear
-                :color="config.usage.usedPct > 95 ? 'error' : 'surface-variant'"
+                :color="config.usage.filesUsedPct > 95 ? 'error' : 'surface-variant'"
                 height="16"
                 max="100"
                 min="0"
                 width="100%"
-                :model-value="config.usage.usedPct"
+                :model-value="config.usage.filesUsedPct"
                 rounded
               >
                 <div class="text-caption opacity-85">
                   {{
                     $gettext(`%{n} GB of %{q} GB used`, {
-                      n: $util.gigaBytes(config.usage.used),
-                      q: $util.gigaBytes(config.usage.total),
+                      n: $util.gigaBytes(config.usage.filesUsed),
+                      q: $util.gigaBytes(config.usage.filesTotal),
                     })
                   }}
                 </div>
@@ -985,7 +981,7 @@ export default {
       featMembership: tier < 3 && isSuperAdmin && !isPublic && !isDemo,
       featFeedback: tier >= 6 && isSuperAdmin && !isPublic && !isDemo,
       featFiles: this.$config.feature("files"),
-      featUsage: !isDemo && canManagePhotos && this.$config.feature("files") && this.$config.values?.usage?.total,
+      featUsage: !isDemo && canManagePhotos && this.$config.feature("files") && this.$config.values?.usage?.filesTotal,
       isRestricted: isRestricted,
       isMini: localStorage.getItem("last_navigation_mode") !== "false" || isRestricted,
       isDemo: isDemo,

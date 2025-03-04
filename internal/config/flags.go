@@ -273,15 +273,14 @@ var Flags = CliFlags{
 			EnvVars: EnvVars("USAGE_INFO"),
 		}}, {
 		Flag: &cli.Uint64Flag{
-			Name:    "quota",
+			Name:    "files-quota",
 			Usage:   "maximum aggregated size of all indexed files in `MB` (0 to disable)",
-			EnvVars: EnvVars("QUOTA"),
-			Hidden:  true,
+			EnvVars: EnvVars("FILES_QUOTA"),
 		}}, {
 		Flag: &cli.IntFlag{
-			Name:    "quota-users",
+			Name:    "users-quota",
 			Usage:   "maximum number of registered user accounts, excluding guests (0 to disable)",
-			EnvVars: EnvVars("QUOTA_USERS"),
+			EnvVars: EnvVars("USERS_QUOTA"),
 			Hidden:  true,
 		}}, {
 		Flag: &cli.StringFlag{

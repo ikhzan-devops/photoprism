@@ -232,15 +232,12 @@ div.v-dialog.v-dialog--fullscreen > div.v-card {
 }
 
 .v-progress-linear.v-progress-linear--upload .v-progress-linear__content {
-    justify-content: end;
+    justify-content: center;
 }
 
 .v-progress-linear .v-progress-linear__content span {
-    opacity: .56;
     padding-left: 8px;
     padding-right: 8px;
-    font-size: 0.875rem;
-    font-weight: 400;
 }
 
 /* Form Inputs */

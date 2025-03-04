@@ -47,6 +47,7 @@ const (
 	ErrWakeupInterval
 	ErrAccountConnect
 	ErrTooManyRequests
+	ErrStorageIsFull
 
 	MsgChangesSaved
 	MsgAlbumCreated
@@ -144,6 +145,7 @@ var Messages = MessageMap{
 	ErrWakeupInterval:     gettext("The wakeup interval is %s, but must be 1h or less"),
 	ErrAccountConnect:     gettext("Your account could not be connected"),
 	ErrTooManyRequests:    gettext("Too many requests"),
+	ErrStorageIsFull:      gettext("Storage is full"),
 
 	// Info and confirmation messages:
 	MsgChangesSaved:          gettext("Changes successfully saved"),

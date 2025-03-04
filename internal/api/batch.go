@@ -11,6 +11,7 @@ import (
 	"github.com/jinzhu/gorm"
 
 	"github.com/photoprism/photoprism/internal/auth/acl"
+	"github.com/photoprism/photoprism/internal/config"
 	"github.com/photoprism/photoprism/internal/entity"
 	"github.com/photoprism/photoprism/internal/entity/query"
 	"github.com/photoprism/photoprism/internal/event"
@@ -503,6 +504,8 @@ func BatchPhotosDelete(router *gin.RouterGroup) {
 
 		// Any photos deleted?
 		if len(deleted) > 0 {
+			config.FlushUsageCache()
+
 			// Update precalculated photo and file counts.
 			logWarn("index", entity.UpdateCounts())
 

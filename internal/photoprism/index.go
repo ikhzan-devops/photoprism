@@ -328,7 +328,7 @@ func (ind *Index) Start(o IndexOptions) (found fs.Done, updated int) {
 		log.Infof("index: found no new or modified files")
 	}
 
-	config.FlushUsageInfoCache()
+	config.FlushUsageCache()
 	runtime.GC()
 
 	ind.lastRun = entity.Now()
