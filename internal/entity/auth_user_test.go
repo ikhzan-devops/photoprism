@@ -1962,6 +1962,11 @@ func TestUser_FullName(t *testing.T) {
 			CanInvite:   false,
 		}
 
+		if err := u.Create(); err != nil {
+			t.Logf("user create fail %s", err)
+			t.FailNow()
+		}
+
 		assert.Equal(t, "Mr-Happy", u.FullName())
 
 		u.UserName = "mr.happy@cat.com"
@@ -1979,6 +1984,11 @@ func TestUser_FullName(t *testing.T) {
 		u.SetDisplayName("Jane Doe", SrcManual)
 
 		assert.Equal(t, "Jane Doe", u.FullName())
+
+		if err := UnscopedDb().Delete(&u).Error; err != nil {
+			t.Logf("user delete fail %s", err)
+			t.FailNow()
+		}
 	})
 	t.Run("Name from Details", func(t *testing.T) {
 		u := User{
@@ -2013,9 +2023,19 @@ func TestUser_FullName(t *testing.T) {
 			CanInvite:   false,
 		}
 
+		if err := u.Create(); err != nil {
+			t.Logf("user create fail %s", err)
+			t.FailNow()
+		}
+
 		assert.Equal(t, "jens.mander", u.Handle())
 		assert.Equal(t, "domain\\jens mander", u.Username())
 		assert.Equal(t, "Jens Mander", u.FullName())
+
+		if err := UnscopedDb().Delete(&u).Error; err != nil {
+			t.Logf("user delete fail %s", err)
+			t.FailNow()
+		}
 	})
 }
 
