@@ -92,7 +92,11 @@ func TestNewFolder(t *testing.T) {
 
 func TestFirstOrCreateFolder(t *testing.T) {
 	folder := NewFolder(RootOriginals, RootPath, time.Now().UTC())
-	result := FirstOrCreateFolder(&folder)
+	result, err := FirstOrCreateFolder(&folder)
+
+	if err != nil {
+		t.Fatalf("Error should not be thrown %s", err)
+	}
 
 	if result == nil {
 		t.Fatal("result should not be nil")

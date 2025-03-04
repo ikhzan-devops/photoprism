@@ -2,6 +2,8 @@ package api
 
 import (
 	"encoding/json"
+	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -16,6 +18,13 @@ func TestGetFoldersOriginals(t *testing.T) {
 		app, router, conf := NewApiTest()
 		_ = conf.CreateDirectories()
 		expected, err := fs.Dirs(conf.OriginalsPath(), false, true)
+
+		if len(expected) == 0 {
+			// create something so that the test does some work.
+			newpath := filepath.Join(conf.OriginalsPath(), "2025/01")
+			os.MkdirAll(newpath, os.ModePerm)
+			expected, err = fs.Dirs(conf.OriginalsPath(), false, true)
+		}
 
 		if err != nil {
 			t.Fatal(err)
