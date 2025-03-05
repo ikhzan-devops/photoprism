@@ -213,19 +213,19 @@ func FindFolder(root, dir string) *Folder {
 	return nil
 }
 
-// FirstOrCreateFolder returns the existing row, inserts a new row or nil in case of errors, along with the causative error.
-func FirstOrCreateFolder(m *Folder) (*Folder, error) {
+// FirstOrCreateFolder returns the existing row, inserts a new row or nil in case of errors, along with the causative error, and whether a new record was created.
+func FirstOrCreateFolder(m *Folder) (folder *Folder, newRec bool, err error) {
 	result := Folder{}
 
 	if err := Db().Where("path = ? AND root = ?", m.Path, m.Root).First(&result).Error; err == nil {
-		return &result, nil
+		return &result, false, nil
 	} else if createErr := m.Create(); createErr == nil {
-		return m, nil
+		return m, true, nil
 	} else if err := Db().Where("path = ? AND root = ?", m.Path, m.Root).First(&result).Error; err == nil {
-		return &result, nil
+		return &result, false, nil
 	} else {
 		log.Errorf("folder: %s (find or create %s)", createErr, m.Path)
-		return nil, createErr
+		return nil, false, createErr
 	}
 }
 

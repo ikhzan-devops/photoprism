@@ -92,7 +92,7 @@ func TestNewFolder(t *testing.T) {
 
 func TestFirstOrCreateFolder(t *testing.T) {
 	folder := NewFolder(RootOriginals, RootPath, time.Now().UTC())
-	result, err := FirstOrCreateFolder(&folder)
+	result, _, err := FirstOrCreateFolder(&folder)
 
 	if err != nil {
 		t.Fatalf("Error should not be thrown %s", err)
@@ -123,6 +123,21 @@ func TestFirstOrCreateFolder(t *testing.T) {
 	if found.FolderCountry != UnknownID {
 		t.Errorf("FolderCountry should be 'zz'")
 	}
+
+	folder = NewFolder(RootOriginals, "HopeThisDoesntExist", time.Now().UTC())
+	result, newRecord, err := FirstOrCreateFolder(&folder)
+
+	if err != nil {
+		t.Fatalf("Error should not be thrown %s", err)
+	}
+
+	if result == nil {
+		t.Fatal("result should not be nil")
+	}
+
+	assert.True(t, newRecord)
+
+	UnscopedDb().Delete(&folder)
 }
 
 func TestFolder_SetValuesFromPath(t *testing.T) {
