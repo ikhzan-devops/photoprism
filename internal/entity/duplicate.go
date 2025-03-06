@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/photoprism/photoprism/pkg/clean"
+	"gorm.io/gorm/clause"
 )
 
 type Duplicates []Duplicate
@@ -43,13 +44,14 @@ func AddDuplicate(fileName, fileRoot, fileHash string, fileSize, modTime int64) 
 		ModTime:  modTime,
 	}
 
-	if err := duplicate.Create(); err == nil {
+	if err := UnscopedDb().Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "file_name"}, {Name: "file_root"}},
+		DoUpdates: clause.AssignmentColumns([]string{"file_hash", "file_size", "mod_time"}),
+	}).Create(duplicate).Error; err == nil {
 		return nil
-	} else if err := duplicate.Save(); err != nil {
+	} else {
 		return err
 	}
-
-	return nil
 }
 
 // PurgeDuplicate deletes a duplicate.
