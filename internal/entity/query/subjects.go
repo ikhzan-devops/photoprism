@@ -65,11 +65,27 @@ func SubjectMap() (result map[string]entity.Subject, err error) {
 
 // RemoveOrphanSubjects permanently removes dangling marker subjects from the index.
 func RemoveOrphanSubjects() (removed int64, err error) {
+
+	// Gather all the uid's to be removed
+	results := []string{}
+	UnscopedDb().
+		Model(&entity.Subject{}).
+		Select("subj_uid").
+		Where("subj_src = ?", entity.SrcMarker).
+		Where(fmt.Sprintf("subj_uid NOT IN (SELECT subj_uid FROM %s)", entity.Face{}.TableName())).
+		Where(fmt.Sprintf("subj_uid NOT IN (SELECT subj_uid FROM %s)", entity.Marker{}.TableName())).
+		Scan(&results)
+
 	res := UnscopedDb().
 		Where("subj_src = ?", entity.SrcMarker).
 		Where(fmt.Sprintf("subj_uid NOT IN (SELECT subj_uid FROM %s)", entity.Face{}.TableName())).
 		Where(fmt.Sprintf("subj_uid NOT IN (SELECT subj_uid FROM %s)", entity.Marker{}.TableName())).
 		Delete(&entity.Subject{})
+
+	if res.Error == nil {
+		// Remove from the cache.  This is because BulkDelete appears to trigger a single AfterDelete that doesn't have the SubjUID in it.
+		entity.SubjNames.BulkRemove(results)
+	}
 
 	return res.RowsAffected, res.Error
 }
