@@ -278,6 +278,11 @@ var PhotoAlbumFixtures = PhotoAlbumMap{
 // CreatePhotoAlbumFixtures inserts known entities into the database for testing.
 func CreatePhotoAlbumFixtures() {
 	for _, entity := range PhotoAlbumFixtures {
-		Db().Create(&entity)
+		firstEntity := &PhotoAlbum{}
+		if err := Db().Model(&PhotoAlbum{}).Where("photo_uid = ? and album_uid = ?", entity.PhotoUID, entity.AlbumUID).First(&firstEntity).Error; err != nil {
+			Db().Create(&entity)
+		} else {
+			Db().Save(&entity)
+		}
 	}
 }

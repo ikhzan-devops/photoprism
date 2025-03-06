@@ -56,6 +56,12 @@ var LensFixtures = LensMap{
 // CreateLensFixtures inserts known entities into the database for testing.
 func CreateLensFixtures() {
 	for _, entity := range LensFixtures {
-		Db().Create(&entity)
+		firstEntity := &Lens{}
+		if err := Db().Model(&Lens{}).Where("id = ?", entity.ID).First(&firstEntity).Error; err != nil {
+			Db().Create(&entity)
+		}
+		// Save updates the UpdatedAt, which breaks some tests.
+		// So assume that the record already being there means that the other fixture
+		// has used the complete definition.
 	}
 }

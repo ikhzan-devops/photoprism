@@ -126,6 +126,11 @@ var CellFixtures = CellMap{
 // CreateCellFixtures inserts known entities into the database for testing.
 func CreateCellFixtures() {
 	for _, entity := range CellFixtures {
-		Db().Create(&entity)
+		firstEntity := &Cell{}
+		if err := Db().Model(&Cell{}).Where("id = ?", entity.ID).First(&firstEntity).Error; err != nil {
+			Db().Create(&entity)
+		} else {
+			Db().Save(&entity)
+		}
 	}
 }
