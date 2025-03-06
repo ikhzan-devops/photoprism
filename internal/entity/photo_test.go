@@ -402,8 +402,14 @@ func TestPhoto_GetDetails(t *testing.T) {
 	})
 	t.Run("NewPhotoWithID", func(t *testing.T) {
 		m := Photo{ID: 79550, PhotoUID: "prjwufg1z97rcxff"}
+		if err := m.Create(); err != nil { // Create the photo otherwise the GetDetails generates a foreign key violation.
+			t.Error(err)
+		}
 		result := m.GetDetails()
 		assert.Equal(t, uint(0x136be), result.PhotoID)
+		if _, err := m.DeletePermanently(); err != nil {
+			t.Error(err)
+		}
 	})
 }
 
