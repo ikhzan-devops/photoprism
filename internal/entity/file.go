@@ -597,7 +597,7 @@ func (m *File) RelatedPhoto() *Photo {
 
 	photo := Photo{}
 
-	UnscopedDb().Model(m).Find(&photo)
+	UnscopedDb().Model(&Photo{}).Where("id = ? OR uuid = ?", m.PhotoID, m.PhotoUID).First(&photo)
 
 	return &photo
 }
