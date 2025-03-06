@@ -172,6 +172,7 @@ func TestFile_Create(t *testing.T) {
 		file := &File{PhotoID: 123, FileType: "jpg", FileSize: 500, ModTime: time.Date(2019, 01, 15, 0, 0, 0, 0, time.UTC).Unix()}
 		assert.Nil(t, file.Create())
 		newID := file.ID
+		log.Info("Expect duplicate key violation Error or SQLSTATE from file.Create")
 		assert.Error(t, file.Create())
 		UnscopedDb().Where("id = ?", newID).Delete(&File{})
 		UnscopedDb().Delete(newPhoto)

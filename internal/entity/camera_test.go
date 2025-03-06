@@ -292,6 +292,7 @@ func TestCamera_ScopedSearchFirst(t *testing.T) {
 
 	t.Run("Error", func(t *testing.T) {
 		camera := Camera{}
+		log.Info("Expect unknown column Error or SQLSTATE on camera_slugs from ScopedSearchFirstCamera")
 		if res := ScopedSearchFirstCamera(&camera, "camera_slugs = ?", rnd.UUID()); res.Error == nil {
 			assert.NotNil(t, res.Error)
 			t.FailNow()

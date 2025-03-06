@@ -1430,6 +1430,7 @@ func TestPhoto_UnscopedSearch(t *testing.T) {
 		photo := Photo{}
 
 		res := &gorm.DB{}
+		log.Info("Expect unknown column Error or SQLSTATE on photo_uids from UnscopedSearchFirstPhoto")
 		if res = UnscopedSearchFirstPhoto(&photo, "photo_uids = ?", rnd.UUID()); res.Error == nil {
 			assert.NotNil(t, res.Error)
 			t.FailNow()
@@ -1486,6 +1487,7 @@ func TestPhoto_ScopedSearch(t *testing.T) {
 		photo := Photo{}
 
 		res := &gorm.DB{}
+		log.Info("Expect unknown column Error or SQLSTATE on photo_uids from ScopedSearchFirstPhoto")
 		if res = ScopedSearchFirstPhoto(&photo, "photo_uids in (?, ?, ?)", rnd.UUID(), rnd.UUID(), rnd.UUID()); res.Error == nil {
 			assert.NotNil(t, res.Error)
 			t.FailNow()
