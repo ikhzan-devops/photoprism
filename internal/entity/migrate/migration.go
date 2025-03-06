@@ -126,7 +126,7 @@ func (m *Migration) Execute(db *gorm.DB) error {
 			// and otherwise ignore them, since some databases do not
 			// support "IF EXISTS".
 			if IgnoreErr.Matches(s, err.Error()) {
-				log.Tracef("migrate: ignored %s", err)
+				log.Infof("migrate: ignored %s", err)
 			} else {
 				return err
 			}
