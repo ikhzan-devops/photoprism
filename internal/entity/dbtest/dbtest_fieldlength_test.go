@@ -19,6 +19,7 @@ var checkedTime = time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC)
 func TestInitDBLengths(t *testing.T) {
 	dbtestMutex.Lock()
 	defer dbtestMutex.Unlock()
+	log.Info("Expect data to long Error or SQLSTATE from dbtest_fieldlength_test")
 
 	t.Run("PhotoMaxVarLengths", func(t *testing.T) {
 		m := &entity.Photo{}
@@ -1664,4 +1665,5 @@ func TestInitDBLengths(t *testing.T) {
 		assert.Equal(t, expectedCount, actualCount)
 	})
 
+	log.Info("End expecting data to long Error or SQLSTATE from dbtest_fieldlength_test")
 }

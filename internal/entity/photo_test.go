@@ -502,6 +502,7 @@ func TestPhoto_Create(t *testing.T) {
 func TestPhoto_Save(t *testing.T) {
 	t.Run("Ok", func(t *testing.T) {
 		photo := Photo{PhotoUID: "567", PhotoName: "Holiday", OriginalName: "holidayOriginal2"}
+		log.Info("Expect duplicate key violation Error or SQLSTATE from entity_save")
 		err := photo.Save()
 		if err != nil {
 			t.Fatal(err)
@@ -704,6 +705,7 @@ func TestPhoto_UpdateLabels(t *testing.T) {
 		}
 		photo := Photo{ID: 134567, PhotoTitle: "Cat in the House", Details: details}
 
+		log.Info("Expect 2 x foreign key violation Error or SQLSTATE from entity_save")
 		err = photo.Save()
 		if err != nil {
 			t.Fatal(err)
@@ -723,8 +725,8 @@ func TestPhoto_UpdateLabels(t *testing.T) {
 		assert.Equal(t, 25, len(p.Details.Keywords))
 		assert.Equal(t, 3, len(p.Labels))
 		p.DeletePermanently()
-		UnscopedDb().Delete(labelNative)
-		UnscopedDb().Delete(labelWindow)
+		UnscopedDb().Delete(&labelNative)
+		UnscopedDb().Delete(&labelWindow)
 	})
 }
 
@@ -773,6 +775,7 @@ func TestPhoto_UpdateSubjectLabels(t *testing.T) {
 		details := &Details{Subject: "cow, egg, bird", SubjectSrc: SrcMeta}
 		photo := Photo{ID: 334567, TitleSrc: SrcName, Details: details}
 
+		log.Info("Expect 2 x foreign key violation Error or SQLSTATE from entity_save")
 		if err := photo.Save(); err != nil {
 			t.Fatal(err)
 		}
@@ -794,6 +797,7 @@ func TestPhoto_UpdateSubjectLabels(t *testing.T) {
 		details := &Details{Subject: "", SubjectSrc: SrcMeta}
 		photo := Photo{ID: 334568, TitleSrc: SrcName, Details: details}
 
+		log.Info("Expect 2 x foreign key violation Error or SQLSTATE from entity_save")
 		if err := photo.Save(); err != nil {
 			t.Fatal(err)
 		}
@@ -830,6 +834,7 @@ func TestPhoto_UpdateKeywordLabels(t *testing.T) {
 		details := &Details{Keywords: "cow, flower, snake, otter", KeywordsSrc: SrcAuto}
 		photo := Photo{ID: 434567, Details: details}
 
+		log.Info("Expect 2 x foreign key violation Error or SQLSTATE from entity_save")
 		if err := photo.Save(); err != nil {
 			t.Fatal(err)
 		}
@@ -851,6 +856,7 @@ func TestPhoto_UpdateKeywordLabels(t *testing.T) {
 		details := &Details{Keywords: "", KeywordsSrc: SrcAuto}
 		photo := Photo{ID: 434568, Details: details}
 
+		log.Info("Expect 2 x foreign key violation Error or SQLSTATE from entity_save")
 		if err := photo.Save(); err != nil {
 			t.Fatal(err)
 		}

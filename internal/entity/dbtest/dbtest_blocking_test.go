@@ -78,6 +78,7 @@ func TestEntity_UpdateDBErrors(t *testing.T) {
 		entity.Db().Exec("SET GLOBAL innodb_lock_wait_timeout=5;")
 	}
 
+	log.Info("Expect duplicate keys and locking Error or SQLSTATE from entity_update or dbtest_blocking_test")
 	startTime := time.Now()
 
 	t.Run("LockedDB", func(t *testing.T) {
@@ -129,6 +130,7 @@ func TestEntity_UpdateDBErrors(t *testing.T) {
 	if timeLeft > 0 {
 		time.Sleep(timeLeft)
 	}
+	log.Info("End of expecting duplicate keys and locking Error or SQLSTATE from entity_update or dbtest_blocking_test")
 }
 
 // This test locks a record in a newly created database table and tests that an error is
@@ -146,6 +148,8 @@ func TestEntity_SaveDBErrors(t *testing.T) {
 		entity.Db().Exec("SET GLOBAL lock_wait_timeout=5;")
 		entity.Db().Exec("SET GLOBAL innodb_lock_wait_timeout=5;")
 	}
+
+	log.Info("Expect duplicate keys and locking Error or SQLSTATE from entity_update or dbtest_blocking_test")
 
 	startTime := time.Now()
 
@@ -198,4 +202,5 @@ func TestEntity_SaveDBErrors(t *testing.T) {
 	if timeLeft > 0 {
 		time.Sleep(timeLeft)
 	}
+	log.Info("End of expecting duplicate keys and locking Error or SQLSTATE from entity_update or dbtest_blocking_test")
 }
