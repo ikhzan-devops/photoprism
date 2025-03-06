@@ -108,14 +108,22 @@ func (m *Migrations) Start(db *gorm.DB, opt Options) {
 			continue
 		}
 
-		// Run migration.
-		if err := migration.Execute(db); err != nil {
-			migration.Fail(err, db)
-			log.Errorf("migrate: executing %s failed with %s [%s]", migration.ID, err, time.Since(start))
-		} else if err = migration.Finish(db); err != nil {
-			log.Warnf("migrate: updating %s failed with %s [%s]", migration.ID, err, time.Since(start))
+		if opt.NewDatabase {
+			if err := migration.Finish(db); err != nil {
+				log.Warnf("migrate: updating %s failed with %s [%s]", migration.ID, err, time.Since(start))
+			} else {
+				log.Infof("migrate: %s bypassed [%s] due new database", migration.ID, time.Since(start))
+			}
 		} else {
-			log.Infof("migrate: %s successful [%s]", migration.ID, time.Since(start))
+			// Run migration.
+			if err := migration.Execute(db); err != nil {
+				migration.Fail(err, db)
+				log.Errorf("migrate: executing %s failed with %s [%s]", migration.ID, err, time.Since(start))
+			} else if err = migration.Finish(db); err != nil {
+				log.Warnf("migrate: updating %s failed with %s [%s]", migration.ID, err, time.Since(start))
+			} else {
+				log.Infof("migrate: %s successful [%s]", migration.ID, time.Since(start))
+			}
 		}
 	}
 }
