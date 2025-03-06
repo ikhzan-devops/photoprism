@@ -7,6 +7,7 @@ type Options struct {
 	RunFailed      bool
 	Migrations     []string
 	DropDeprecated bool
+	NewDatabase    bool
 }
 
 // Opt returns migration options based on the specified parameters.
@@ -18,6 +19,7 @@ func Opt(runAll, runFailed bool, ids []string) Options {
 		RunFailed:      runFailed,
 		Migrations:     ids,
 		DropDeprecated: runAll,
+		NewDatabase:    false,
 	}
 }
 
@@ -33,6 +35,7 @@ func (opt Options) Stage(name string) Options {
 		RunFailed:      opt.RunFailed,
 		Migrations:     opt.Migrations,
 		DropDeprecated: opt.DropDeprecated,
+		NewDatabase:    opt.NewDatabase,
 	}
 }
 
