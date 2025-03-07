@@ -384,7 +384,8 @@ func TestUser_InvalidPassword(t *testing.T) {
 		assert.True(t, m.InvalidPassword("wrong-password"))
 	})
 	t.Run("no password existing", func(t *testing.T) {
-		p := User{UserUID: "u000000000000010", UserName: "Hans", DisplayName: ""}
+		expected := rnd.GenerateUID(UserUID)
+		p := User{UserUID: expected, UserName: "HansNP", DisplayName: ""}
 		err := p.Save()
 		if err != nil {
 			t.Fatal(err)
@@ -668,16 +669,24 @@ func TestUser_SameUID(t *testing.T) {
 
 func TestUser_String(t *testing.T) {
 	t.Run("UID", func(t *testing.T) {
-		p := User{UserUID: "abc123", UserName: "", DisplayName: ""}
-		assert.Equal(t, "abc123", p.String())
+		expected := rnd.GenerateUID(UserUID) // Use a valid UID, otherwise it will be replaced by BeforeCreate.
+		p := User{UserUID: expected, UserName: "", DisplayName: ""}
+		p.Create()
+		// GormV2 internal failure created in p.String() as the UserDetails fails to save as there isn't a user record.
+		assert.Equal(t, expected, p.String())
+		UnscopedDb().Delete(&p)
 	})
 	t.Run("FullName", func(t *testing.T) {
 		p := User{UserUID: "abc123", UserName: "", DisplayName: "Test"}
+		p.Create()
 		assert.Equal(t, "'Test'", p.String())
+		UnscopedDb().Delete(&p)
 	})
 	t.Run("UserName", func(t *testing.T) {
 		p := User{UserUID: "abc123", UserName: "Super-User ", DisplayName: "Test"}
+		p.Create()
 		assert.Equal(t, "'super-user'", p.String())
+		UnscopedDb().Delete(&p)
 	})
 }
 
@@ -1953,6 +1962,11 @@ func TestUser_FullName(t *testing.T) {
 			CanInvite:   false,
 		}
 
+		if err := u.Create(); err != nil {
+			t.Logf("user create fail %s", err)
+			t.FailNow()
+		}
+
 		assert.Equal(t, "Mr-Happy", u.FullName())
 
 		u.UserName = "mr.happy@cat.com"
@@ -1970,6 +1984,11 @@ func TestUser_FullName(t *testing.T) {
 		u.SetDisplayName("Jane Doe", SrcManual)
 
 		assert.Equal(t, "Jane Doe", u.FullName())
+
+		if err := UnscopedDb().Delete(&u).Error; err != nil {
+			t.Logf("user delete fail %s", err)
+			t.FailNow()
+		}
 	})
 	t.Run("Name from Details", func(t *testing.T) {
 		u := User{
@@ -2004,9 +2023,19 @@ func TestUser_FullName(t *testing.T) {
 			CanInvite:   false,
 		}
 
+		if err := u.Create(); err != nil {
+			t.Logf("user create fail %s", err)
+			t.FailNow()
+		}
+
 		assert.Equal(t, "jens.mander", u.Handle())
 		assert.Equal(t, "domain\\jens mander", u.Username())
 		assert.Equal(t, "Jens Mander", u.FullName())
+
+		if err := UnscopedDb().Delete(&u).Error; err != nil {
+			t.Logf("user delete fail %s", err)
+			t.FailNow()
+		}
 	})
 }
 

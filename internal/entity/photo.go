@@ -291,6 +291,18 @@ func (m *Photo) String() string {
 
 // FirstOrCreate fetches an existing row from the database or inserts a new one.
 func (m *Photo) FirstOrCreate() *Photo {
+	find := &Photo{}
+	// Find photo by uid.
+	if rnd.IsUID(m.PhotoUID, PhotoUID) {
+		if UnscopedDb().First(&find, "photo_uid = ?", m.PhotoUID).Error == nil {
+			return FindPhoto(*m)
+		}
+	}
+	if m.ID > 0 {
+		if UnscopedDb().First(&find, "id = ?", m.ID).Error == nil {
+			return FindPhoto(*m)
+		}
+	}
 	if err := m.Create(); err == nil {
 		return m
 	} else {

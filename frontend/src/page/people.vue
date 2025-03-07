@@ -9,11 +9,11 @@
     <v-tabs
       v-model="active"
       elevation="0"
-      class="bg-transparent"
       grow
       bg-color="secondary"
       slider-color="surface-variant"
       :height="$vuetify.display.smAndDown ? 48 : 64"
+      class="bg-transparent p-page__navigation"
     >
       <v-tab
         v-for="t in tabs"

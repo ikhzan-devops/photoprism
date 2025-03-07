@@ -125,6 +125,7 @@ func TestLens_ScopedSearchFirst(t *testing.T) {
 
 	t.Run("Error", func(t *testing.T) {
 		lens := Lens{}
+		log.Info("Expect unknown column Error or SQLSTATE on lens_slugs from ScopedSearchFirstLens")
 		if res := ScopedSearchFirstLens(&lens, "lens_slugs = ?", rnd.UUID()); res.Error == nil {
 			assert.NotNil(t, res.Error)
 			t.FailNow()

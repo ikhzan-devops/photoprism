@@ -55,9 +55,20 @@ export function setHtmlStyle(key, value) {
   return true;
 }
 
-// Returns the <body>> element.
+// Returns the <body> element.
 export function getBodyElement() {
   return document.body;
+}
+
+// Returns the width of the vertical window scrollbar.
+export function getScrollbarWidth() {
+  const body = getBodyElement();
+
+  if (!body || !window.innerWidth) {
+    return 0;
+  }
+
+  return window.innerWidth - body.offsetWidth;
 }
 
 // Checks if the element is a button.
@@ -381,6 +392,7 @@ export class View {
         bodyEl.classList.add("hide-scrollbar");
         setHtmlStyle("scrollbar-width", "none");
         setHtmlStyle("overflow-y", "hidden");
+
         if (debug) {
           console.log(`html: added style="scrollbar-width: none; overflow-y: hidden;"`);
         }
@@ -389,6 +401,7 @@ export class View {
       bodyEl.classList.remove("hide-scrollbar");
       setHtmlStyle("scrollbar-width");
       setHtmlStyle("overflow-y");
+
       if (debug) {
         console.log(`html: removed style="scrollbar-width: none; overflow-y: hidden;"`);
       }

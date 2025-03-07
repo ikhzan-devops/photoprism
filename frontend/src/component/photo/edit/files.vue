@@ -176,7 +176,9 @@
                             <td>
                               {{ $gettext(`Size`) }}
                             </td>
-                            <td>{{ file.sizeInfo() }}</td>
+                            <td>
+                              <span v-tooltip="Math.ceil(file?.Size / 1024).toLocaleString() + ' KB'">{{ file.sizeInfo() }}</span>
+                            </td>
                           </tr>
                           <tr v-if="file.Software">
                             <td>

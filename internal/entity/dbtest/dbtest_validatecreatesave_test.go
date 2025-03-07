@@ -132,6 +132,7 @@ func TestValidateSaveCreate(t *testing.T) {
 			}
 
 			// Direct Save.  This will always fail with foreign key constraints on v2.
+			log.Info("Expect 2 foreign key violation Error or SQLSTATE from dbtest_foreignkey_test")
 			res = tx.Save(&photo)
 			assert.Error(t, res.Error)
 			if res.Error == nil {
@@ -326,6 +327,7 @@ func TestValidateSaveCreate(t *testing.T) {
 		details := &entity.Details{Keywords: "cow, flower, snake, otter"}
 		photo := entity.Photo{ID: 34567, Details: details}
 
+		log.Info("Expect 2 x foreign key violation Error or SQLSTATE from entity_save")
 		err := photo.Save()
 		assert.Nil(t, err)
 		if err != nil {

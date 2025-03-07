@@ -31,4 +31,5 @@ var IgnoreErr = QueryErr{
 	"alter ignore table ": {"duplicate", "exist", "unknown", "1054", "1146"},
 	"delete from ":        {"no such", "1146"},
 	"update ":             {"no such", "1146"},
+	"truncate ":           {"1146"},
 }

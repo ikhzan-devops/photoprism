@@ -73,6 +73,7 @@ require github.com/dustinkirkland/golang-petname v0.0.0-20240428194347-eebcea082
 require golang.org/x/text v0.22.0
 
 require (
+	github.com/IGLOU-EU/go-wildcard v1.0.3
 	github.com/davidbyttow/govips/v2 v2.16.0
 	github.com/go-co-op/gocron/v2 v2.16.0
 	github.com/pquerna/otp v1.4.0
@@ -81,6 +82,7 @@ require (
 	github.com/swaggo/gin-swagger v1.6.0
 	github.com/urfave/cli/v2 v2.27.5
 	github.com/zitadel/oidc/v3 v3.35.0
+	golang.org/x/sys v0.30.0
 	gorm.io/driver/mysql v1.5.7
 	gorm.io/driver/postgres v1.5.9
 	gorm.io/driver/sqlite v1.5.6
@@ -132,7 +134,7 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/prometheus/client_model v0.6.1 // indirect
 	github.com/prometheus/procfs v0.15.1 // indirect
-	github.com/rivo/uniseg v0.4.6 // indirect
+	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/swaggo/swag v1.16.3 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
@@ -143,7 +145,7 @@ require (
 )
 
 require (
-	github.com/mattn/go-runewidth v0.0.15 // indirect
+	github.com/mattn/go-runewidth v0.0.16 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
 	github.com/zitadel/schema v1.3.0 // indirect
 	go.opentelemetry.io/otel v1.29.0 // indirect
@@ -151,7 +153,6 @@ require (
 	go.opentelemetry.io/otel/trace v1.29.0 // indirect
 	golang.org/x/exp v0.0.0-20250106191152-7588d65b2ba8 // indirect
 	golang.org/x/oauth2 v0.26.0 // indirect
-	golang.org/x/sys v0.30.0 // indirect
 	golang.org/x/tools v0.30.0 // indirect
 	google.golang.org/protobuf v1.36.4 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect

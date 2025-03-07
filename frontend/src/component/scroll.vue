@@ -1,6 +1,6 @@
 <template>
   <transition name="fade-transition">
-    <button v-if="showButton" type="button" class="p-scroll" @click.stop="scrollToTop">
+    <button v-if="showButton" type="button" :style="`top: ${offsetTop}px`" class="p-scroll" @click.stop="scrollToTop">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
         <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path>
       </svg>
@@ -50,6 +50,8 @@ export default {
       showButton: false,
       showButtonDistance: 100,
       maxScrollY: 0,
+      marginTop: 24,
+      offsetTop: 72,
     };
   },
   created() {
@@ -95,9 +97,19 @@ export default {
       this.resetHidePanel();
       this.resetScrollY();
     },
+    getOffsetTop() {
+      const el = document.querySelector(".p-page > .p-page__navigation");
+
+      if (el && el instanceof HTMLElement && el.offsetHeight) {
+        return el.offsetHeight;
+      }
+
+      return 48;
+    },
     onShowButton() {
       // Show "Back to top" button if it is not already visible.
       if (!this.showButton && !this.loading && !this.wait) {
+        this.offsetTop = this.getOffsetTop() + this.marginTop;
         this.showButton = true;
       }
     },

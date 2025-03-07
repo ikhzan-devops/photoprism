@@ -1,6 +1,6 @@
 <template>
   <div class="p-page p-page-subjects not-selectable">
-    <v-form ref="form" class="p-people-search" validate-on="invalid-input" @submit.prevent="updateQuery()">
+    <v-form ref="form" validate-on="invalid-input" class="p-people-search" @submit.prevent="updateQuery()">
       <v-toolbar density="compact" class="page-toolbar" color="secondary-light">
         <v-text-field
           v-if="canSearch"
@@ -71,7 +71,7 @@
     <div v-if="loading" class="pa-6">
       <v-progress-linear :indeterminate="true"></v-progress-linear>
     </div>
-    <div v-else style="min-height: 100vh">
+    <div v-else style="min-height: 100vh" class="p-page__content">
       <p-people-clipboard
         :refresh="refresh"
         :selection="selection"

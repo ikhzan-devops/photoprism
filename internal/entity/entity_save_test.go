@@ -67,7 +67,7 @@ func TestSave(t *testing.T) {
 		details := &Details{Keywords: "cow, flower, snakez, otterz"}
 		photo := Photo{ID: 934567, Details: details}
 
-		// This was failing with a foreign key constraint violation
+		log.Info("Expect 2 x foreign key violation Error or SQLSTATE from entity_save")
 		err = photo.Save()
 		assert.Nil(t, err)
 		if err != nil {

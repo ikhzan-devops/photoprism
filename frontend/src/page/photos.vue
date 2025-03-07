@@ -17,12 +17,13 @@
       :update-query="updateQuery"
       :on-close="onClose"
       :embedded="embedded"
+      class="p-page__navigation"
     />
 
     <div v-if="loading" class="pa-6">
       <v-progress-linear :indeterminate="true"></v-progress-linear>
     </div>
-    <div v-else>
+    <div v-else class="p-page__content">
       <p-scroll
         :hide-panel="hideExpansionPanel"
         :load-more="loadMore"

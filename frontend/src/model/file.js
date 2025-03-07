@@ -252,14 +252,8 @@ export class File extends RestModel {
       info.push(this.Width + " × " + this.Height);
     }
 
-    if (this.Size > 102400) {
-      const size = Number.parseFloat(this.Size) / 1048576;
-
-      info.push(size.toFixed(1) + " MB");
-    } else if (this.Size) {
-      const size = Number.parseFloat(this.Size) / 1024;
-
-      info.push(size.toFixed(1) + " KB");
+    if (this.Size) {
+      info.push($util.formatBytes(this.Size));
     }
   }
 

@@ -402,8 +402,14 @@ func TestPhoto_GetDetails(t *testing.T) {
 	})
 	t.Run("NewPhotoWithID", func(t *testing.T) {
 		m := Photo{ID: 79550, PhotoUID: "prjwufg1z97rcxff"}
+		if err := m.Create(); err != nil { // Create the photo otherwise the GetDetails generates a foreign key violation.
+			t.Error(err)
+		}
 		result := m.GetDetails()
 		assert.Equal(t, uint(0x136be), result.PhotoID)
+		if _, err := m.DeletePermanently(); err != nil {
+			t.Error(err)
+		}
 	})
 }
 
@@ -496,6 +502,7 @@ func TestPhoto_Create(t *testing.T) {
 func TestPhoto_Save(t *testing.T) {
 	t.Run("Ok", func(t *testing.T) {
 		photo := Photo{PhotoUID: "567", PhotoName: "Holiday", OriginalName: "holidayOriginal2"}
+		log.Info("Expect duplicate key violation Error or SQLSTATE from entity_save")
 		err := photo.Save()
 		if err != nil {
 			t.Fatal(err)
@@ -698,6 +705,7 @@ func TestPhoto_UpdateLabels(t *testing.T) {
 		}
 		photo := Photo{ID: 134567, PhotoTitle: "Cat in the House", Details: details}
 
+		log.Info("Expect 2 x foreign key violation Error or SQLSTATE from entity_save")
 		err = photo.Save()
 		if err != nil {
 			t.Fatal(err)
@@ -717,8 +725,8 @@ func TestPhoto_UpdateLabels(t *testing.T) {
 		assert.Equal(t, 25, len(p.Details.Keywords))
 		assert.Equal(t, 3, len(p.Labels))
 		p.DeletePermanently()
-		UnscopedDb().Delete(labelNative)
-		UnscopedDb().Delete(labelWindow)
+		UnscopedDb().Delete(&labelNative)
+		UnscopedDb().Delete(&labelWindow)
 	})
 }
 
@@ -767,6 +775,7 @@ func TestPhoto_UpdateSubjectLabels(t *testing.T) {
 		details := &Details{Subject: "cow, egg, bird", SubjectSrc: SrcMeta}
 		photo := Photo{ID: 334567, TitleSrc: SrcName, Details: details}
 
+		log.Info("Expect 2 x foreign key violation Error or SQLSTATE from entity_save")
 		if err := photo.Save(); err != nil {
 			t.Fatal(err)
 		}
@@ -788,6 +797,7 @@ func TestPhoto_UpdateSubjectLabels(t *testing.T) {
 		details := &Details{Subject: "", SubjectSrc: SrcMeta}
 		photo := Photo{ID: 334568, TitleSrc: SrcName, Details: details}
 
+		log.Info("Expect 2 x foreign key violation Error or SQLSTATE from entity_save")
 		if err := photo.Save(); err != nil {
 			t.Fatal(err)
 		}
@@ -824,6 +834,7 @@ func TestPhoto_UpdateKeywordLabels(t *testing.T) {
 		details := &Details{Keywords: "cow, flower, snake, otter", KeywordsSrc: SrcAuto}
 		photo := Photo{ID: 434567, Details: details}
 
+		log.Info("Expect 2 x foreign key violation Error or SQLSTATE from entity_save")
 		if err := photo.Save(); err != nil {
 			t.Fatal(err)
 		}
@@ -845,6 +856,7 @@ func TestPhoto_UpdateKeywordLabels(t *testing.T) {
 		details := &Details{Keywords: "", KeywordsSrc: SrcAuto}
 		photo := Photo{ID: 434568, Details: details}
 
+		log.Info("Expect 2 x foreign key violation Error or SQLSTATE from entity_save")
 		if err := photo.Save(); err != nil {
 			t.Fatal(err)
 		}
@@ -1424,6 +1436,7 @@ func TestPhoto_UnscopedSearch(t *testing.T) {
 		photo := Photo{}
 
 		res := &gorm.DB{}
+		log.Info("Expect unknown column Error or SQLSTATE on photo_uids from UnscopedSearchFirstPhoto")
 		if res = UnscopedSearchFirstPhoto(&photo, "photo_uids = ?", rnd.UUID()); res.Error == nil {
 			assert.NotNil(t, res.Error)
 			t.FailNow()
@@ -1480,6 +1493,7 @@ func TestPhoto_ScopedSearch(t *testing.T) {
 		photo := Photo{}
 
 		res := &gorm.DB{}
+		log.Info("Expect unknown column Error or SQLSTATE on photo_uids from ScopedSearchFirstPhoto")
 		if res = ScopedSearchFirstPhoto(&photo, "photo_uids in (?, ?, ?)", rnd.UUID(), rnd.UUID(), rnd.UUID()); res.Error == nil {
 			assert.NotNil(t, res.Error)
 			t.FailNow()

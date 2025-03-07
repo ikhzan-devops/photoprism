@@ -6,7 +6,12 @@
     :class="$config.aclClasses('albums')"
     @keydown.ctrl="onCtrl"
   >
-    <v-form ref="form" class="p-albums-search" validate-on="invalid-input" @submit.prevent="updateQuery()">
+    <v-form
+      ref="form"
+      validate-on="invalid-input"
+      class="p-albums-search p-page__navigation"
+      @submit.prevent="updateQuery()"
+    >
       <v-toolbar
         flat
         :density="$vuetify.display.smAndDown ? 'compact' : 'default'"
@@ -151,7 +156,7 @@
     <div v-if="loading" class="pa-6">
       <v-progress-linear :indeterminate="true"></v-progress-linear>
     </div>
-    <div v-else>
+    <div v-else class="p-page__content">
       <p-scroll
         :hide-panel="hideExpansionPanel"
         :load-more="loadMore"

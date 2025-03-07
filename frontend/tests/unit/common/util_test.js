@@ -7,6 +7,18 @@ let chai = require("chai/chai");
 let assert = chai.assert;
 
 describe("common/util", () => {
+  it("should return size in KB", () => {
+    const s = $util.formatBytes(10 * 1024);
+    assert.equal(s, "10 KB");
+  });
+  it("should return size in GB", () => {
+    const s = $util.formatBytes(10 * 1024 * 1024 * 1024);
+    assert.equal(s, "10.0 GB");
+  });
+  it("should convert bytes in GB", () => {
+    const b = $util.gigaBytes(10 * 1024 * 1024 * 1024);
+    assert.equal(b, 10);
+  });
   it("should return duration 3ns", () => {
     const duration = $util.formatDuration(-3);
     assert.equal(duration, "3ns");

@@ -248,6 +248,7 @@ func TestSession_Create(t *testing.T) {
 
 		s.SetAuthToken(authToken)
 
+		log.Info("Expect duplicate key violation Error or SQLSTATE from session.Create")
 		err := s.Create()
 		assert.Error(t, err)
 	})

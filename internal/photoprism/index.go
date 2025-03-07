@@ -170,8 +170,9 @@ func (ind *Index) Start(o IndexOptions) (found fs.Done, updated int) {
 
 				if !errors.Is(result, filepath.SkipDir) {
 					folder := entity.NewFolder(entity.RootOriginals, relName, fs.ModTime(fileName))
-
-					if err := folder.Create(); err == nil {
+					if _, newRec, err := entity.FirstOrCreateFolder(&folder); err != nil {
+						log.Warnf("index: %s", clean.Error(err))
+					} else if newRec {
 						log.Infof("index: added folder /%s", folder.Path)
 					}
 				}
@@ -321,13 +322,14 @@ func (ind *Index) Start(o IndexOptions) (found fs.Done, updated int) {
 		})
 
 		// Update precalculated photo and file counts.
-		if err := entity.UpdateCounts(); err != nil {
+		if err = entity.UpdateCounts(); err != nil {
 			log.Warnf("index: %s (update counts)", err)
 		}
 	} else {
 		log.Infof("index: found no new or modified files")
 	}
 
+	config.FlushUsageCache()
 	runtime.GC()
 
 	ind.lastRun = entity.Now()

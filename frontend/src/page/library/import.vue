@@ -5,29 +5,32 @@
         <span v-if="fileName" class="text-break">{{ $gettext(`Importing %{s}…`, { s: fileName }) }}</span>
         <span v-else-if="busy">{{ $gettext(`Importing files to originals…`) }}</span>
         <span v-else-if="completed">{{ $gettext(`Done.`) }}</span>
+        <span v-else-if="$config.filesQuotaReached()"
+          >{{ $gettext(`Your storage is full.`) }} {{ $gettext(`No new files can be added to your library.`) }}</span
+        >
         <span v-else>{{ $gettext(`Select a source folder to import files…`) }}</span>
       </div>
       <div class="form-body">
         <div class="form-controls">
           <v-autocomplete
             v-model="settings.import.path"
+            :items="dirs"
+            :loading="loading"
+            :disabled="busy || !ready || $config.filesQuotaReached()"
             color="surface-variant"
             class="input-import-folder"
+            variant="solo-filled"
+            autocomplete="off"
+            item-title="name"
+            item-value="path"
             hide-details
             hide-no-data
             flat
-            variant="solo-filled"
-            autocomplete="off"
-            :items="dirs"
-            item-title="name"
-            item-value="path"
-            :loading="loading"
-            :disabled="busy || !ready"
             @update:model-value="onChange"
             @focus="onFocus"
           >
           </v-autocomplete>
-          <v-progress-linear :model-value="completed" :indeterminate="busy"></v-progress-linear>
+          <v-progress-linear :model-value="completed" :indeterminate="busy" :height="16"></v-progress-linear>
         </div>
         <div class="form-options">
           <v-checkbox
@@ -67,7 +70,7 @@
           </v-btn>
           <v-btn
             v-if="!$config.values.readonly && $config.feature('upload')"
-            :disabled="busy || !ready"
+            :disabled="busy || !ready || $config.filesQuotaReached()"
             variant="flat"
             color="highlight"
             class="hidden-xs action-upload"
@@ -77,7 +80,7 @@
             <v-icon end>mdi-cloud-upload</v-icon>
           </v-btn>
           <v-btn
-            :disabled="busy || !ready"
+            :disabled="busy || !ready || $config.filesQuotaReached()"
             variant="flat"
             color="highlight"
             class="action-import"

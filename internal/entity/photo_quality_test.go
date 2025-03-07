@@ -111,6 +111,7 @@ func TestPhoto_QualityScore(t *testing.T) {
 		digikam.Cell = &UnknownLocation
 		digikam.Place = &UnknownPlace
 		// Save the record, which doesn't do anything in GormV1
+		log.Info("Expect inconsistent .ID and ID warnings Error or SQLSTATE from photo.save")
 		digikam.Save()
 
 		// Validate that the QualityScore stays the same.

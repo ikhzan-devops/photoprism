@@ -19,6 +19,7 @@ var OptionsReportSections = []ReportSection{
 	{Start: "PHOTOPRISM_LOG_LEVEL", Title: "Logging"},
 	{Start: "PHOTOPRISM_CONFIG_PATH", Title: "Storage"},
 	{Start: "PHOTOPRISM_SIDECAR_PATH", Title: "Sidecar Files"},
+	{Start: "PHOTOPRISM_USAGE_INFO", Title: "Usage"},
 	{Start: "PHOTOPRISM_BACKUP_PATH", Title: "Backup"},
 	{Start: "PHOTOPRISM_INDEX_WORKERS, PHOTOPRISM_WORKERS", Title: "Indexing"},
 	{Start: "PHOTOPRISM_READONLY", Title: "Feature Flags"},

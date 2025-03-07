@@ -79,7 +79,7 @@ func TestFileShare_Updates(t *testing.T) {
 		Db().Create(newFile)
 		newService123 := &Service{ID: 123}
 		Db().Create(newService123)
-		newService999 := &Service{ID: 123}
+		newService999 := &Service{ID: 999}
 		Db().Create(newService999)
 
 		fileShare := NewFileShare(123, 123, "NameBeforeUpdate")

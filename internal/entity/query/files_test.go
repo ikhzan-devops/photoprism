@@ -119,6 +119,9 @@ func TestFilesByUID(t *testing.T) {
 	})
 
 	t.Run("Negative limit with offset", func(t *testing.T) {
+		if entity.DbDialect() == entity.MySQL {
+			log.Info("Expect SQL syntax Error to be generated")
+		}
 		files, err := FilesByUID([]string{"fs6sg6bw45bnlqdw"}, -100, 100)
 
 		switch entity.DbDialect() {

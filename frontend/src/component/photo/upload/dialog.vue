@@ -40,13 +40,17 @@
               </span>
               <span v-else-if="indexing">{{ $gettext(`Upload complete. Indexing…`) }}</span>
               <span v-else-if="completedTotal === 100">{{ $gettext(`Done.`) }}</span>
+              <span v-else-if="filesQuotaReached"
+                >{{ $gettext(`Your storage is full.`) }}
+                {{ $gettext(`No new files can be added to your library.`) }}</span
+              >
               <span v-else>{{ $gettext(`Select the files to upload…`) }}</span>
             </div>
             <div class="form-body">
               <div class="form-controls">
                 <v-combobox
                   v-model="selectedAlbums"
-                  :disabled="busy || loading || total > 0"
+                  :disabled="busy || loading || total > 0 || filesQuotaReached"
                   :loading="loading"
                   hide-details
                   chips
@@ -81,10 +85,10 @@
                 <v-progress-linear
                   :model-value="completedTotal"
                   :indeterminate="indexing"
-                  :height="21"
+                  :height="16"
                   class="v-progress-linear--upload"
                 >
-                  <span v-if="eta" class="eta">{{ eta }}</span>
+                  <span v-if="eta" class="eta text-caption opacity-85">{{ eta }}</span>
                 </v-progress-linear>
               </div>
               <div class="form-text">
@@ -112,7 +116,7 @@
             {{ $gettext(`Close`) }}
           </v-btn>
           <v-btn
-            :disabled="busy"
+            :disabled="busy || filesQuotaReached"
             variant="flat"
             color="highlight"
             class="action-select action-upload"
@@ -154,6 +158,7 @@ export default {
       loading: false,
       indexing: false,
       failed: false,
+      filesQuotaReached: this.$config.filesQuotaReached(),
       current: 0,
       total: 0,
       totalSize: 0,

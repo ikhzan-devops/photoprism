@@ -3,8 +3,8 @@
     <v-toolbar
       flat
       :density="$vuetify.display.smAndDown ? 'compact' : 'default'"
-      class="page-toolbar"
       color="secondary"
+      class="page-toolbar p-page__navigation"
     >
       <v-toolbar-title>
         <span class="text-ltr">{{ $config.getAbout() }}{{ getMembership() }}</span>

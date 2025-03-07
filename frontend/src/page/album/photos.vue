@@ -14,12 +14,13 @@
       :refresh="refresh"
       :update-filter="updateFilter"
       :update-query="updateQuery"
+      class="p-page__navigation"
     ></p-album-toolbar>
 
     <div v-if="loading" class="pa-6">
       <v-progress-linear :indeterminate="true"></v-progress-linear>
     </div>
-    <div v-else>
+    <div v-else class="p-page__content">
       <p-scroll
         :load-more="loadMore"
         :load-disabled="scrollDisabled"

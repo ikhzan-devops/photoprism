@@ -28,10 +28,9 @@ func FoldersByPath(rootName, rootPath, path string, recursive bool) (folders ent
 	for i, dir := range dirs {
 		newFolder := entity.NewFolder(rootName, filepath.Join(path, dir), fs.ModTime(filepath.Join(rootPath, dir)))
 
-		if err = newFolder.Create(); err == nil {
-			folders[i] = newFolder
-		} else if folder := entity.FindFolder(rootName, filepath.Join(path, dir)); folder != nil {
-			folders[i] = *folder
+		result, _, err := entity.FirstOrCreateFolder(&newFolder)
+		if err == nil {
+			folders[i] = *result
 		} else {
 			log.Errorf("folders: %s (create folder)", err)
 		}

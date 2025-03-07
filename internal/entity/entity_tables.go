@@ -346,6 +346,18 @@ func (list Tables) Migrate(db *gorm.DB, opt migrate.Options) {
 
 	log.Debugf("migrate: running database migrations")
 
+	// Check if this is an empty database
+	tablesFound := 0
+	for _, tableMap := range list {
+		if db.Migrator().HasTable(tableMap.TableDefinition) {
+			tablesFound++
+		}
+	}
+
+	if tablesFound == 0 {
+		opt.NewDatabase = true
+	}
+
 	// Run pre migrations, if any.
 	if err := migrate.Run(db, opt.Pre()); err != nil {
 		log.Error(err)

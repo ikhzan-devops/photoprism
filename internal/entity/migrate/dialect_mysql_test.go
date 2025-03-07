@@ -22,6 +22,7 @@ func TestDialectMysql(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	log.Info("Expect many table does not exist or no such table Error or SQLSTATE from migration.go")
 	log = logrus.StandardLogger()
 	log.SetLevel(logrus.TraceLevel)
 
@@ -74,4 +75,5 @@ func TestDialectMysql(t *testing.T) {
 	} else {
 		assert.Equal(t, int64(0), count)
 	}
+	log.Info("End Expect many table does not exist or no such table Error or SQLSTATE from migration.go")
 }

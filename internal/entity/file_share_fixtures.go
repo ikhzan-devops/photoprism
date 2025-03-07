@@ -52,6 +52,11 @@ var FileShareFixtures = FileShareMap{
 // CreateFileShareFixtures inserts known entities into the database for testing.
 func CreateFileShareFixtures() {
 	for _, entity := range FileShareFixtures {
-		Db().Create(&entity)
+		firstEntity := &FileShare{}
+		if err := Db().Model(&FileShare{}).Where("file_id = ? and service_id = ? and remote_name = ?", entity.FileID, entity.ServiceID, entity.RemoteName).First(&firstEntity).Error; err != nil {
+			Db().Create(&entity)
+		} else {
+			Db().Save(&entity)
+		}
 	}
 }

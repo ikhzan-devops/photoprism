@@ -2979,6 +2979,10 @@ var FileFixturesExampleBridgeVideo = FileFixtures["bridge2.mp4"]
 // CreateFileFixtures inserts known entities into the database for testing.
 func CreateFileFixtures() {
 	for _, entity := range FileFixtures {
-		Db().Create(&entity)
+		if entity.PhotoUID == "" && entity.PhotoID == 0 && entity.Photo == nil {
+			log.Debugf("Unable to create %s as it doesn't have required foreign key components", entity.FileName)
+		} else {
+			Db().Create(&entity)
+		}
 	}
 }

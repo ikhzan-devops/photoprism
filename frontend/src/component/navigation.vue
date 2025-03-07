@@ -50,14 +50,9 @@
       <v-navigation-drawer
         v-if="auth"
         v-model="drawer"
-        color="navigation"
         :rail="isMini"
-        :rail-width="70"
-        :width="270"
-        :mobile-breakpoint="960"
+        color="navigation"
         class="nav-sidebar navigation"
-        location="start"
-        touchless
       >
         <div class="nav-container">
           <v-toolbar flat :density="$vuetify.display.smAndDown ? 'compact' : 'default'">
@@ -760,6 +755,30 @@
             </v-list-item>
           </v-list>
 
+          <div v-if="!isMini && featUsage" class="nav-info usage-info clickable" @click.stop="showUsageInfo">
+            <div class="nav-info__underlay"></div>
+            <div class="nav-info__content">
+              <v-progress-linear
+                :color="config.usage.filesUsedPct > 95 ? 'error' : 'surface-variant'"
+                height="16"
+                max="100"
+                min="0"
+                width="100%"
+                :model-value="config.usage.filesUsedPct"
+                rounded
+              >
+                <div class="text-caption opacity-85">
+                  {{
+                    $gettext(`%{n} GB of %{q} GB used`, {
+                      n: $util.gigaBytes(config.usage.filesUsed),
+                      q: $util.gigaBytes(config.usage.filesTotal),
+                    })
+                  }}
+                </div>
+              </v-progress-linear>
+            </div>
+          </div>
+
           <div v-if="disconnected" class="nav-info connection-info clickable" @click.stop="showServerConnectionHelp">
             <div class="nav-info__underlay"></div>
             <div class="text-center my-1">
@@ -935,6 +954,7 @@ export default {
       appNameSuffix = appNameParts.slice(1, 9).join(" ");
     }
 
+    const canManagePhotos = this.$config.allow("photos", "manage");
     const isDemo = this.$config.get("demo");
     const isPro = !!this.$config.values?.ext["pro"];
     const isPublic = this.$config.get("public");
@@ -946,7 +966,7 @@ export default {
     return {
       canSearchPlaces: this.$config.allow("places", "search"),
       canAccessPrivate: !isRestricted && this.$config.allow("photos", "access_private"),
-      canManagePhotos: this.$config.allow("photos", "manage"),
+      canManagePhotos: canManagePhotos,
       canManagePeople: this.$config.allow("people", "manage"),
       canManageUsers: (!isPublic || isDemo) && this.$config.allow("users", "manage"),
       appNameSuffix: appNameSuffix,
@@ -960,6 +980,8 @@ export default {
       featUpgrade: tier < 6 && isSuperAdmin && !isPublic && !isDemo,
       featMembership: tier < 3 && isSuperAdmin && !isPublic && !isDemo,
       featFeedback: tier >= 6 && isSuperAdmin && !isPublic && !isDemo,
+      featFiles: this.$config.feature("files"),
+      featUsage: !isDemo && canManagePhotos && this.$config.feature("files") && this.$config.values?.usage?.filesTotal,
       isRestricted: isRestricted,
       isMini: localStorage.getItem("last_navigation_mode") !== "false" || isRestricted,
       isDemo: isDemo,
@@ -1070,14 +1092,17 @@ export default {
       this.isMini = !this.isMini;
       localStorage.setItem("last_navigation_mode", `${this.isMini}`);
     },
-    showAccountSettings: function () {
+    showAccountSettings() {
       if (this.$config.feature("account")) {
         this.$router.push({ name: "settings_account" });
       } else {
         this.$router.push({ name: "settings" });
       }
     },
-    showServerConnectionHelp: function () {
+    showUsageInfo() {
+      this.$router.push({ path: "/index/files" });
+    },
+    showServerConnectionHelp() {
       this.$router.push({ path: "/help/websockets" });
     },
     showLegalInfo() {

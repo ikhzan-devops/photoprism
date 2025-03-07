@@ -154,6 +154,11 @@ var KeywordFixtures = KeywordMap{
 // CreateKeywordFixtures inserts known entities into the database for testing.
 func CreateKeywordFixtures() {
 	for _, entity := range KeywordFixtures {
-		Db().Create(&entity)
+		firstEntity := &Keyword{}
+		if err := Db().Model(&Keyword{}).Where("id = ?", entity.ID).First(&firstEntity).Error; err != nil {
+			Db().Create(&entity)
+		} else {
+			Db().Save(&entity)
+		}
 	}
 }

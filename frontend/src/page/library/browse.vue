@@ -1,6 +1,6 @@
 <template>
   <div ref="page" tabindex="1" class="p-page p-page-files">
-    <v-form ref="form" class="p-files-search" validate-on="invalid-input" @submit.prevent="updateQuery">
+    <v-form ref="form" validate-on="invalid-input" class="p-files-search p-page__navigation" @submit.prevent="updateQuery">
       <v-toolbar flat color="secondary" :density="$vuetify.display.smAndDown ? 'compact' : 'default'">
         <v-toolbar-title>
           <router-link to="/index/files">
@@ -22,7 +22,7 @@
     <div v-if="loading" class="pa-6">
       <v-progress-linear :indeterminate="true"></v-progress-linear>
     </div>
-    <div v-else>
+    <div v-else class="p-page__content">
       <p-file-clipboard :refresh="refresh" :selection="selection" :clear-selection="clearSelection"></p-file-clipboard>
 
       <p-scroll :loading="loading"></p-scroll>

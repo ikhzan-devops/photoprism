@@ -78,6 +78,7 @@ func TestPhoto_UpdateCaptionLabels(t *testing.T) {
 		details := &Details{Keywords: "snake, otter", KeywordsSrc: SrcMeta}
 		photo := Photo{ID: 234667, PhotoTitle: "I was in a nice Bar!", TitleSrc: SrcName, PhotoCaption: "globe, wine, food", CaptionSrc: SrcMeta, Details: details}
 
+		log.Info("Expect 2 x foreign key violation Error or SQLSTATE from entity_save")
 		if err := photo.Save(); err != nil {
 			t.Fatal(err)
 		}
@@ -101,6 +102,7 @@ func TestPhoto_UpdateCaptionLabels(t *testing.T) {
 		details := &Details{Keywords: "snake, otter, food", KeywordsSrc: SrcMeta}
 		photo := Photo{ID: 234668, PhotoTitle: "cow, wine, food", TitleSrc: SrcName, PhotoCaption: "", CaptionSrc: SrcMeta, Details: details}
 
+		log.Info("Expect 2 x foreign key violation Error or SQLSTATE from entity_save")
 		if err := photo.Save(); err != nil {
 			t.Fatal(err)
 		}
