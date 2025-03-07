@@ -350,7 +350,7 @@ func (list Tables) Migrate(db *gorm.DB, opt migrate.Options) {
 		}
 	}
 
-	if tablesFound == 0 {
+	if tablesFound < 3 { // migrations and versions may be found.
 		opt.NewDatabase = true
 	}
 
