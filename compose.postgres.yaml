@@ -131,6 +131,7 @@ services:
     working_dir: "/go/src/github.com/photoprism/photoprism"
     volumes:
       - ".:/go/src/github.com/photoprism/photoprism"
+      - "./storage:/photoprism"
       - "go-mod:/go/pkg/mod"
 
   ## PostgreSQL Database Server
