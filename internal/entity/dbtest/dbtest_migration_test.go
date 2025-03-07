@@ -35,7 +35,7 @@ func TestDialectSQLite3(t *testing.T) {
 	}
 	dbtestMutex.Lock()
 	defer dbtestMutex.Unlock()
-
+	log.Info("Expect many table does not exist or no such table Error or SQLSTATE from migration.go")
 	t.Run("ValidMigration", func(t *testing.T) {
 		// Prepare temporary sqlite db.
 		testDbOriginal := "../migrate/testdata/migrate_sqlite3"
@@ -220,7 +220,7 @@ func TestDialectSQLite3(t *testing.T) {
 			assert.Equal(t, int64(0), count)
 		}
 	})
-
+	log.Info("End Expect many table does not exist or no such table Error or SQLSTATE from migration.go")
 }
 
 func TestDialectMysql(t *testing.T) {
@@ -229,7 +229,7 @@ func TestDialectMysql(t *testing.T) {
 	}
 	dbtestMutex.Lock()
 	defer dbtestMutex.Unlock()
-
+	log.Info("Expect many table does not exist or no such table Error or SQLSTATE from migration.go")
 	t.Run("ValidMigration", func(t *testing.T) {
 		// Prepare migrate mariadb db.
 		if dumpName, err := filepath.Abs("../migrate/testdata/migrate_mysql.sql"); err != nil {
@@ -410,7 +410,7 @@ func TestDialectMysql(t *testing.T) {
 			assert.Equal(t, int64(0), count)
 		}
 	})
-
+	log.Info("End Expect many table does not exist or no such table Error or SQLSTATE from migration.go")
 }
 
 func populatePhotoPrismStructsWithAutoIncrement(t *testing.T, db *gorm.DB) {

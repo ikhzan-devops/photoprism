@@ -33,6 +33,7 @@ func TestDialectSQLite3(t *testing.T) {
 	}
 	defer os.Remove(dumpName)
 
+	log.Info("Expect many table does not exist or no such table Error or SQLSTATE from migration.go")
 	log = logrus.StandardLogger()
 	log.SetLevel(logrus.TraceLevel)
 
@@ -92,4 +93,5 @@ func TestDialectSQLite3(t *testing.T) {
 	} else {
 		assert.Equal(t, int64(0), count)
 	}
+	log.Info("End Expect many table does not exist or no such table Error or SQLSTATE from migration.go")
 }
