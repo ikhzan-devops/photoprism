@@ -1,7 +1,8 @@
 # Synopsis  
-This branch is to enable PostgreSQL as a database for PhotoPrism.    
+This branch is to enable PostgreSQL as a database for PhotoPrism.  
 The SQL for SQLite and MariaDB is not compatible with PostgreSQL (or each other) sometimes.  
 This leads to failures.  
+All unit tests are passing.  
 
 # Testing Status
 The following shows the tests that were failing as at 2025-02-26.  As they are fixed, the status of the test will be updated.  
@@ -282,15 +283,15 @@ PASS | 	github.com/photoprism/photoprism/internal/photoprism/backup	8.539s
 ```
 
 # the following are the tests that are failing after all the above were addressed, as at 2025-03-02.
-
-PASS | IndexCommand (19.10s)
-PASS | 	github.com/photoprism/photoprism/internal/commands	401.908s
-
+```
+PASS | IndexCommand (19.10s)  
+PASS | 	github.com/photoprism/photoprism/internal/commands	401.908s  
+```
 
 # Inconsistencies Discovered.
 
-- [ ] UpdateSubjectCovers updates 6 x 2 for SQLite and PostgreSQL.  But 6 and 0 for MariaDB.  Executing the captured SQL against MariaDB results in 6 and 6.  Unsure if this is a defect in Gorm not reporting the number of records affected correctly, or something else.  This branch has not changed the MariaDB query.  
+- [X] UpdateSubjectCovers updates 6 x 2 for SQLite and PostgreSQL.  But 6 and 0 for MariaDB.  Executing the captured SQL against MariaDB results in 6 and 6.  Unsure if this is a defect in Gorm not reporting the number of records affected correctly, or something else.  This branch has not changed the MariaDB query.  Gorm bug https://github.com/go-gorm/gorm/issues/7384
   
-- [ ] github.com/photoprism/photoprism/internal/workers should have failed as there were DB errors thrown that did not cause the test to fail.  
+- [X] github.com/photoprism/photoprism/internal/workers should have failed as there were DB errors thrown that did not cause the test to fail.  Tests that the async process can be started, so test is valid.  Errors detected have been fixed in gorm2 branch and merged in.  
 
-- [ ] time="2025-03-02T12:33:11Z" level=info msg="/go/src/github.com/photoprism/photoprism/internal/entity/file.go:629 ERROR: column files.uuid does not exist (SQLSTATE 42703)\n[0.778ms] [rows:0] SELECT \"files\".\"id\",\"files\".\"uuid\",\"files\".\"taken_at\" SNIP FROM \"files\"" is generated from a file trying to return a photo.  Check if this error is just internal gorm stuff.
+- [X] time="2025-03-02T12:33:11Z" level=info msg="/go/src/github.com/photoprism/photoprism/internal/entity/file.go:629 ERROR: column files.uuid does not exist (SQLSTATE 42703)\n[0.778ms] [rows:0] SELECT \"files\".\"id\",\"files\".\"uuid\",\"files\".\"taken_at\" SNIP FROM \"files\"" is generated from a file trying to return a photo.  Check if this error is just internal gorm stuff.  Errors detected have been fixed in gorm2 branch and merged in.  
