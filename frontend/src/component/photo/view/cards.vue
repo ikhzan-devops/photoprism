@@ -56,7 +56,7 @@
               {{ m.Caption }}
             </button>
             <div class="meta-details">
-              <button class="action-open-date meta-date text-truncate" :data-uid="m.UID">
+              <button v-if="m.Year > 0" class="action-open-date meta-date text-truncate" :data-uid="m.UID">
                 <i :title="$gettext('Taken')" class="mdi mdi-calendar-range" />
                 {{ m.getDateString(true) }}
               </button>
@@ -76,7 +76,11 @@
                 <i class="mdi mdi-vector-polyline" />
                 {{ m.getVectorInfo() }}
               </button>
-              <button v-if="m.CameraID > 1" class="meta-camera action-camera-edit text-truncate" :data-uid="m.UID">
+              <button
+                v-if="m.CameraID > 1 || m.Type === 'image'"
+                class="meta-camera action-camera-edit text-truncate"
+                :data-uid="m.UID"
+              >
                 <i class="mdi" :class="m.Type === 'video' ? 'mdi-video-vintage' : 'mdi-camera'" />
                 {{ m.getCameraInfo() }}
               </button>
@@ -235,7 +239,12 @@
               {{ m.Caption }}
             </button>
             <div class="meta-details">
-              <button class="action-open-date meta-date text-truncate" :data-uid="m.UID" @click.exact="openDate(index)">
+              <button
+                v-if="m.Year > 0"
+                class="action-open-date meta-date text-truncate"
+                :data-uid="m.UID"
+                @click.exact="openDate(index)"
+              >
                 <i :title="$gettext('Taken')" class="mdi mdi-calendar-range" />
                 {{ m.getDateString(true) }}
               </button>
@@ -276,7 +285,7 @@
                 {{ m.getVectorInfo() }}
               </button>
               <button
-                v-if="m.CameraID > 1"
+                v-if="m.CameraID > 1 || m.Type === 'image'"
                 :title="$gettext('Camera')"
                 class="meta-camera action-camera-edit text-truncate"
                 :data-uid="m.UID"
