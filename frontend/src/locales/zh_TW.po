@@ -179,7 +179,7 @@ msgstr "啟用碼"
 msgid "Add"
 msgstr "新增"
 
-#: src/component/photo/edit/people.vue:162 src/page/people/new.vue:261
+#: src/component/photo/edit/people.vue:162 src/page/people/new.vue:275
 msgid "Add %{s}?"
 msgstr "添加%{名稱}？"
 
@@ -201,7 +201,7 @@ msgstr "新增連結"
 
 #: src/component/photo/edit/people.vue:25
 #: src/component/photo/edit/people.vue:162 src/page/people/new.vue:55
-#: src/page/people/new.vue:261
+#: src/page/people/new.vue:275
 msgid "Add person?"
 msgstr "添加人？"
 
@@ -361,8 +361,8 @@ msgid "AM"
 msgstr "是"
 
 #: src/component/navigation.vue:421 src/component/photo/edit/files.vue:357
-#: src/component/photo/view/cards.vue:313
-#: src/component/photo/view/cards.vue:466 src/component/photo/view/list.vue:172
+#: src/component/photo/view/cards.vue:316
+#: src/component/photo/view/cards.vue:472 src/component/photo/view/list.vue:172
 #: src/component/photo/view/mosaic.vue:170 src/options/options.js:368
 msgid "Animated"
 msgstr "動態圖片"
@@ -389,7 +389,7 @@ msgstr "套用"
 
 #: src/component/photo/clipboard.vue:64
 #: src/component/photo/edit/details.vue:640
-#: src/component/photo/view/cards.vue:396
+#: src/component/photo/view/cards.vue:399
 msgid "Approve"
 msgstr "確認"
 
@@ -398,7 +398,7 @@ msgid "Apps and Devices"
 msgstr "應用程式和裝置"
 
 #: src/app/routes.js:266 src/component/navigation.vue:550
-#: src/component/photo/clipboard.vue:142 src/component/photo/view/cards.vue:378
+#: src/component/photo/clipboard.vue:142 src/component/photo/view/cards.vue:381
 #: src/page/settings/general.vue:348
 msgid "Archive"
 msgstr "封存"
@@ -547,7 +547,7 @@ msgid "Calendar"
 msgstr "日曆"
 
 #: src/component/photo/edit/details.vue:346 src/component/photo/toolbar.vue:313
-#: src/component/photo/view/cards.vue:487 src/component/photo/view/list.vue:115
+#: src/component/photo/view/cards.vue:493 src/component/photo/view/list.vue:115
 msgid "Camera"
 msgstr "相機"
 
@@ -595,7 +595,7 @@ msgstr "取消"
 
 #: src/component/photo/edit/details.vue:87 src/component/photo/edit/info.vue:59
 #: src/component/photo/edit/labels.vue:42
-#: src/component/photo/view/cards.vue:426
+#: src/component/photo/view/cards.vue:429
 msgid "Caption"
 msgstr "標題"
 
@@ -1168,7 +1168,7 @@ msgstr "每兩天"
 msgid "Exclude content marked as private from search results, shared albums, labels, and places."
 msgstr "在搜尋結果，分享相簿，標籤，位置排除標為私人的內容。"
 
-#: src/page/people/new.vue:94 src/page/people/recognized.vue:130
+#: src/page/people/new.vue:95 src/page/people/recognized.vue:130
 msgid "Exclude hidden"
 msgstr "排除隱藏"
 
@@ -1408,7 +1408,7 @@ msgstr "隱藏"
 msgid "Hidden Files"
 msgstr "隱藏的檔案"
 
-#: src/page/people/new.vue:182 src/page/people/recognized.vue:235
+#: src/page/people/new.vue:196 src/page/people/recognized.vue:235
 msgid "Hide"
 msgstr "隱藏"
 
@@ -1644,7 +1644,7 @@ msgid "Legal Information"
 msgstr "法律資訊"
 
 #: src/component/photo/edit/details.vue:417
-#: src/component/photo/view/cards.vue:501
+#: src/component/photo/view/cards.vue:507
 msgid "Lens"
 msgstr "鏡頭"
 
@@ -1684,8 +1684,8 @@ msgstr "連結"
 msgid "List"
 msgstr "清單"
 
-#: src/app/routes.js:229 src/component/photo/view/cards.vue:305
-#: src/component/photo/view/cards.vue:456 src/component/photo/view/list.vue:163
+#: src/app/routes.js:229 src/component/photo/view/cards.vue:308
+#: src/component/photo/view/cards.vue:462 src/component/photo/view/list.vue:163
 #: src/component/photo/view/mosaic.vue:162 src/options/options.js:372
 msgid "Live"
 msgstr "即時"
@@ -1717,7 +1717,7 @@ msgstr "本地時間"
 #: src/page/settings/account.vue:665 src/page/settings/account.vue:667
 #: src/component/album/edit/dialog.vue:92 src/component/photo/edit/info.vue:63
 #: src/component/photo/edit/labels.vue:48
-#: src/component/photo/view/cards.vue:523 src/component/photo/view/list.vue:116
+#: src/component/photo/view/cards.vue:529 src/component/photo/view/list.vue:116
 #: src/page/albums.vue:89 src/page/settings/account.vue:557
 #: src/page/settings/account.vue:559
 msgid "Location"
@@ -1944,7 +1944,7 @@ msgid "No new files can be added to your library."
 msgstr "無法將新檔案新增至您的庫中。"
 
 #: src/component/photo/edit/people.vue:34 src/page/people/new.vue:342
-#: src/page/people/new.vue:431 src/page/people/new.vue:133
+#: src/page/people/new.vue:431 src/page/people/new.vue:134
 #: src/page/people/recognized.vue:519 src/page/people/recognized.vue:176
 msgid "No people found"
 msgstr "找不到人"
@@ -2365,7 +2365,7 @@ msgstr "評分為 {0}（共 {1}）"
 msgid "Raw"
 msgstr "原始"
 
-#: src/component/photo/view/cards.vue:299
+#: src/component/photo/view/cards.vue:302
 #: src/component/photo/view/mosaic.vue:156 src/page/settings/general.vue:673
 msgid "RAW"
 msgstr "RAW"
@@ -2392,7 +2392,7 @@ msgstr "最近存檔"
 msgid "Recently Edited"
 msgstr "最近編輯"
 
-#: src/component/photo/edit/people.vue:35 src/page/people/new.vue:134
+#: src/component/photo/edit/people.vue:35 src/page/people/new.vue:135
 #: src/page/people/recognized.vue:177
 msgid "Recognition starts after indexing has been completed."
 msgstr "索引完成後開始辨識。"
@@ -2426,7 +2426,7 @@ msgstr "注册"
 #: src/component/photo/toolbar.vue:89 src/component/update.vue:68
 #: src/page/albums.vue:117 src/page/labels.vue:99
 #: src/page/library/browse.vue:91 src/page/library/errors.vue:94
-#: src/page/people/new.vue:59 src/page/people/recognized.vue:93
+#: src/page/people/new.vue:60 src/page/people/recognized.vue:93
 msgid "Reload"
 msgstr "重新載入"
 
@@ -2660,15 +2660,15 @@ msgstr "分享 %{s}"
 msgid "Share your pictures with other apps and services."
 msgstr "與其他應用程式和服務分享您的照片。"
 
-#: src/page/people/new.vue:172 src/page/people/recognized.vue:225
+#: src/page/people/new.vue:186 src/page/people/recognized.vue:225
 msgid "Show"
 msgstr "顯示"
 
-#: src/page/people/new.vue:250
+#: src/page/people/new.vue:147 src/page/people/new.vue:264
 msgid "Show all new faces"
 msgstr "顯示所有新面孔"
 
-#: src/page/people/new.vue:77 src/page/people/recognized.vue:113
+#: src/page/people/new.vue:78 src/page/people/recognized.vue:113
 msgid "Show hidden"
 msgstr "顯示隱藏"
 
@@ -2747,7 +2747,7 @@ msgstr "降序排列。"
 msgid "Source"
 msgstr "來源"
 
-#: src/component/photo/view/cards.vue:325
+#: src/component/photo/view/cards.vue:328
 #: src/component/photo/view/mosaic.vue:182
 msgid "Stack"
 msgstr "堆疊"
@@ -2834,8 +2834,8 @@ msgstr "同步"
 msgid "Sync raw and video files"
 msgstr "同步 RAW 照片及影片"
 
-#: src/component/photo/edit/info.vue:183 src/component/photo/view/cards.vue:182
-#: src/component/photo/view/cards.vue:438 src/component/photo/view/list.vue:114
+#: src/component/photo/edit/info.vue:183 src/component/photo/view/cards.vue:184
+#: src/component/photo/view/cards.vue:443 src/component/photo/view/list.vue:114
 msgid "Taken"
 msgstr "拍攝於"
 
@@ -3159,8 +3159,8 @@ msgstr "使用者名稱"
 msgid "Users"
 msgstr "使用者"
 
-#: src/component/photo/view/cards.vue:319
-#: src/component/photo/view/cards.vue:476 src/component/photo/view/list.vue:179
+#: src/component/photo/view/cards.vue:322
+#: src/component/photo/view/cards.vue:482 src/component/photo/view/list.vue:179
 #: src/component/photo/view/mosaic.vue:176 src/model/photo.js:896
 #: src/model/photo.js:904 src/options/options.js:380
 msgid "Vector"
@@ -3174,8 +3174,8 @@ msgstr "向量"
 msgid "Verification Code"
 msgstr "驗證碼"
 
-#: src/component/photo/view/cards.vue:343
-#: src/component/photo/view/cards.vue:446 src/component/photo/view/list.vue:186
+#: src/component/photo/view/cards.vue:346
+#: src/component/photo/view/cards.vue:452 src/component/photo/view/list.vue:186
 #: src/component/photo/view/mosaic.vue:200 src/model/file.js:220
 #: src/model/photo.js:920 src/model/photo.js:938 src/options/options.js:376
 msgid "Video"
@@ -3190,7 +3190,7 @@ msgstr "影片長度"
 msgid "Videos"
 msgstr "影片"
 
-#: src/component/photo/toolbar.vue:341 src/component/photo/view/cards.vue:330
+#: src/component/photo/toolbar.vue:341 src/component/photo/view/cards.vue:333
 #: src/component/photo/view/mosaic.vue:187
 msgid "View"
 msgstr "檢視"
@@ -3301,7 +3301,7 @@ msgstr "您最多可以上传 %{n} 个文件用于测试。"
 msgid "You may only select one item"
 msgstr "你只能選取一個項目"
 
-#: src/component/photo/edit/people.vue:35 src/page/people/new.vue:134
+#: src/component/photo/edit/people.vue:35 src/page/people/new.vue:135
 #: src/page/people/recognized.vue:177
 msgid "You may rescan your library to find additional faces."
 msgstr "您可以重新掃描您的收藏庫以查找其他面孔。"

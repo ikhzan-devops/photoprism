@@ -179,7 +179,7 @@ msgstr "Код активації"
 msgid "Add"
 msgstr "Додати"
 
-#: src/component/photo/edit/people.vue:162 src/page/people/new.vue:261
+#: src/component/photo/edit/people.vue:162 src/page/people/new.vue:275
 msgid "Add %{s}?"
 msgstr "Додати %{s}?"
 
@@ -201,7 +201,7 @@ msgstr "Додати посилання"
 
 #: src/component/photo/edit/people.vue:25
 #: src/component/photo/edit/people.vue:162 src/page/people/new.vue:55
-#: src/page/people/new.vue:261
+#: src/page/people/new.vue:275
 msgid "Add person?"
 msgstr "Додати людину?"
 
@@ -361,8 +361,8 @@ msgid "AM"
 msgstr "AM"
 
 #: src/component/navigation.vue:421 src/component/photo/edit/files.vue:357
-#: src/component/photo/view/cards.vue:313
-#: src/component/photo/view/cards.vue:466 src/component/photo/view/list.vue:172
+#: src/component/photo/view/cards.vue:316
+#: src/component/photo/view/cards.vue:472 src/component/photo/view/list.vue:172
 #: src/component/photo/view/mosaic.vue:170 src/options/options.js:368
 msgid "Animated"
 msgstr "Анімовані"
@@ -389,7 +389,7 @@ msgstr "Застосувати"
 
 #: src/component/photo/clipboard.vue:64
 #: src/component/photo/edit/details.vue:640
-#: src/component/photo/view/cards.vue:396
+#: src/component/photo/view/cards.vue:399
 msgid "Approve"
 msgstr "Підтвердити"
 
@@ -398,7 +398,7 @@ msgid "Apps and Devices"
 msgstr "Програми та пристрої"
 
 #: src/app/routes.js:266 src/component/navigation.vue:550
-#: src/component/photo/clipboard.vue:142 src/component/photo/view/cards.vue:378
+#: src/component/photo/clipboard.vue:142 src/component/photo/view/cards.vue:381
 #: src/page/settings/general.vue:348
 msgid "Archive"
 msgstr "Архів"
@@ -547,7 +547,7 @@ msgid "Calendar"
 msgstr "Календар"
 
 #: src/component/photo/edit/details.vue:346 src/component/photo/toolbar.vue:313
-#: src/component/photo/view/cards.vue:487 src/component/photo/view/list.vue:115
+#: src/component/photo/view/cards.vue:493 src/component/photo/view/list.vue:115
 msgid "Camera"
 msgstr "Камера"
 
@@ -595,7 +595,7 @@ msgstr "Відмінити"
 
 #: src/component/photo/edit/details.vue:87 src/component/photo/edit/info.vue:59
 #: src/component/photo/edit/labels.vue:42
-#: src/component/photo/view/cards.vue:426
+#: src/component/photo/view/cards.vue:429
 msgid "Caption"
 msgstr "Підпис"
 
@@ -1168,7 +1168,7 @@ msgstr "Кожні два дні"
 msgid "Exclude content marked as private from search results, shared albums, labels, and places."
 msgstr "Виключити контент, відмічений як приватний, з результатів пошуку, спільних альбомів, міток та місць."
 
-#: src/page/people/new.vue:94 src/page/people/recognized.vue:130
+#: src/page/people/new.vue:95 src/page/people/recognized.vue:130
 msgid "Exclude hidden"
 msgstr "Виключаючи приховані"
 
@@ -1408,7 +1408,7 @@ msgstr "Приховані"
 msgid "Hidden Files"
 msgstr "Приховані файли"
 
-#: src/page/people/new.vue:182 src/page/people/recognized.vue:235
+#: src/page/people/new.vue:196 src/page/people/recognized.vue:235
 msgid "Hide"
 msgstr "Приховати"
 
@@ -1644,7 +1644,7 @@ msgid "Legal Information"
 msgstr "Юридична інформація"
 
 #: src/component/photo/edit/details.vue:417
-#: src/component/photo/view/cards.vue:501
+#: src/component/photo/view/cards.vue:507
 msgid "Lens"
 msgstr "Об'єктив"
 
@@ -1684,8 +1684,8 @@ msgstr "Посилання"
 msgid "List"
 msgstr "Список"
 
-#: src/app/routes.js:229 src/component/photo/view/cards.vue:305
-#: src/component/photo/view/cards.vue:456 src/component/photo/view/list.vue:163
+#: src/app/routes.js:229 src/component/photo/view/cards.vue:308
+#: src/component/photo/view/cards.vue:462 src/component/photo/view/list.vue:163
 #: src/component/photo/view/mosaic.vue:162 src/options/options.js:372
 msgid "Live"
 msgstr "Live фото"
@@ -1717,7 +1717,7 @@ msgstr "Місцевий час"
 #: src/page/settings/account.vue:665 src/page/settings/account.vue:667
 #: src/component/album/edit/dialog.vue:92 src/component/photo/edit/info.vue:63
 #: src/component/photo/edit/labels.vue:48
-#: src/component/photo/view/cards.vue:523 src/component/photo/view/list.vue:116
+#: src/component/photo/view/cards.vue:529 src/component/photo/view/list.vue:116
 #: src/page/albums.vue:89 src/page/settings/account.vue:557
 #: src/page/settings/account.vue:559
 msgid "Location"
@@ -1944,7 +1944,7 @@ msgid "No new files can be added to your library."
 msgstr "До вашої бібліотеки не можна додавати нові файли."
 
 #: src/component/photo/edit/people.vue:34 src/page/people/new.vue:342
-#: src/page/people/new.vue:431 src/page/people/new.vue:133
+#: src/page/people/new.vue:431 src/page/people/new.vue:134
 #: src/page/people/recognized.vue:519 src/page/people/recognized.vue:176
 msgid "No people found"
 msgstr "Людей не знайдено"
@@ -2365,7 +2365,7 @@ msgstr "Рейтинг {0} з {1}"
 msgid "Raw"
 msgstr "Raw файли"
 
-#: src/component/photo/view/cards.vue:299
+#: src/component/photo/view/cards.vue:302
 #: src/component/photo/view/mosaic.vue:156 src/page/settings/general.vue:673
 msgid "RAW"
 msgstr "RAW файли"
@@ -2392,7 +2392,7 @@ msgstr "Нещодавно заархівовані"
 msgid "Recently Edited"
 msgstr "Нещодавно відредаговані"
 
-#: src/component/photo/edit/people.vue:35 src/page/people/new.vue:134
+#: src/component/photo/edit/people.vue:35 src/page/people/new.vue:135
 #: src/page/people/recognized.vue:177
 msgid "Recognition starts after indexing has been completed."
 msgstr "Розпізнавання почнеться після завершення індексації."
@@ -2426,7 +2426,7 @@ msgstr "Зареєструватися"
 #: src/component/photo/toolbar.vue:89 src/component/update.vue:68
 #: src/page/albums.vue:117 src/page/labels.vue:99
 #: src/page/library/browse.vue:91 src/page/library/errors.vue:94
-#: src/page/people/new.vue:59 src/page/people/recognized.vue:93
+#: src/page/people/new.vue:60 src/page/people/recognized.vue:93
 msgid "Reload"
 msgstr "Перезавантажити"
 
@@ -2660,15 +2660,15 @@ msgstr "Поділитися %{s}"
 msgid "Share your pictures with other apps and services."
 msgstr "Діліться своїми фотографіями з іншими програмами та сервісами."
 
-#: src/page/people/new.vue:172 src/page/people/recognized.vue:225
+#: src/page/people/new.vue:186 src/page/people/recognized.vue:225
 msgid "Show"
 msgstr "Показати"
 
-#: src/page/people/new.vue:250
+#: src/page/people/new.vue:147 src/page/people/new.vue:264
 msgid "Show all new faces"
 msgstr "Показати всі нові обличчя"
 
-#: src/page/people/new.vue:77 src/page/people/recognized.vue:113
+#: src/page/people/new.vue:78 src/page/people/recognized.vue:113
 msgid "Show hidden"
 msgstr "Показати приховані"
 
@@ -2747,7 +2747,7 @@ msgstr "Відсортовано за спаданням."
 msgid "Source"
 msgstr "Джерело"
 
-#: src/component/photo/view/cards.vue:325
+#: src/component/photo/view/cards.vue:328
 #: src/component/photo/view/mosaic.vue:182
 msgid "Stack"
 msgstr "Серії"
@@ -2834,8 +2834,8 @@ msgstr "Синхронізація"
 msgid "Sync raw and video files"
 msgstr "Синхронізація файлів у форматі raw і відео"
 
-#: src/component/photo/edit/info.vue:183 src/component/photo/view/cards.vue:182
-#: src/component/photo/view/cards.vue:438 src/component/photo/view/list.vue:114
+#: src/component/photo/edit/info.vue:183 src/component/photo/view/cards.vue:184
+#: src/component/photo/view/cards.vue:443 src/component/photo/view/list.vue:114
 msgid "Taken"
 msgstr "Занято"
 
@@ -3159,8 +3159,8 @@ msgstr "Ім'я користувача"
 msgid "Users"
 msgstr "Користувачі"
 
-#: src/component/photo/view/cards.vue:319
-#: src/component/photo/view/cards.vue:476 src/component/photo/view/list.vue:179
+#: src/component/photo/view/cards.vue:322
+#: src/component/photo/view/cards.vue:482 src/component/photo/view/list.vue:179
 #: src/component/photo/view/mosaic.vue:176 src/model/photo.js:896
 #: src/model/photo.js:904 src/options/options.js:380
 msgid "Vector"
@@ -3174,8 +3174,8 @@ msgstr "Вектори"
 msgid "Verification Code"
 msgstr "Код підтвердження"
 
-#: src/component/photo/view/cards.vue:343
-#: src/component/photo/view/cards.vue:446 src/component/photo/view/list.vue:186
+#: src/component/photo/view/cards.vue:346
+#: src/component/photo/view/cards.vue:452 src/component/photo/view/list.vue:186
 #: src/component/photo/view/mosaic.vue:200 src/model/file.js:220
 #: src/model/photo.js:920 src/model/photo.js:938 src/options/options.js:376
 msgid "Video"
@@ -3190,7 +3190,7 @@ msgstr "Тривалість відео"
 msgid "Videos"
 msgstr "Відео"
 
-#: src/component/photo/toolbar.vue:341 src/component/photo/view/cards.vue:330
+#: src/component/photo/toolbar.vue:341 src/component/photo/view/cards.vue:333
 #: src/component/photo/view/mosaic.vue:187
 msgid "View"
 msgstr "Вид"
@@ -3301,7 +3301,7 @@ msgstr "Ви можете завантажити до %{n} файлів для �
 msgid "You may only select one item"
 msgstr "Ви можете вибрати лише один об'єкт"
 
-#: src/component/photo/edit/people.vue:35 src/page/people/new.vue:134
+#: src/component/photo/edit/people.vue:35 src/page/people/new.vue:135
 #: src/page/people/recognized.vue:177
 msgid "You may rescan your library to find additional faces."
 msgstr "Ви можете пересканувати вашу бібліотеку щоб знайти додаткові обличчя."

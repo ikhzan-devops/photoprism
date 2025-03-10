@@ -179,7 +179,7 @@ msgstr "활성화 코드"
 msgid "Add"
 msgstr "추가"
 
-#: src/component/photo/edit/people.vue:162 src/page/people/new.vue:261
+#: src/component/photo/edit/people.vue:162 src/page/people/new.vue:275
 msgid "Add %{s}?"
 msgstr "이름 추가 %{s}?"
 
@@ -201,7 +201,7 @@ msgstr "링크 추가"
 
 #: src/component/photo/edit/people.vue:25
 #: src/component/photo/edit/people.vue:162 src/page/people/new.vue:55
-#: src/page/people/new.vue:261
+#: src/page/people/new.vue:275
 msgid "Add person?"
 msgstr "사람을 추가하시겠습니까?"
 
@@ -361,8 +361,8 @@ msgid "AM"
 msgstr "AM"
 
 #: src/component/navigation.vue:421 src/component/photo/edit/files.vue:357
-#: src/component/photo/view/cards.vue:313
-#: src/component/photo/view/cards.vue:466 src/component/photo/view/list.vue:172
+#: src/component/photo/view/cards.vue:316
+#: src/component/photo/view/cards.vue:472 src/component/photo/view/list.vue:172
 #: src/component/photo/view/mosaic.vue:170 src/options/options.js:368
 msgid "Animated"
 msgstr "움직이는 사진"
@@ -389,7 +389,7 @@ msgstr "적용"
 
 #: src/component/photo/clipboard.vue:64
 #: src/component/photo/edit/details.vue:640
-#: src/component/photo/view/cards.vue:396
+#: src/component/photo/view/cards.vue:399
 msgid "Approve"
 msgstr "승인"
 
@@ -398,7 +398,7 @@ msgid "Apps and Devices"
 msgstr "앱 및 디바이스"
 
 #: src/app/routes.js:266 src/component/navigation.vue:550
-#: src/component/photo/clipboard.vue:142 src/component/photo/view/cards.vue:378
+#: src/component/photo/clipboard.vue:142 src/component/photo/view/cards.vue:381
 #: src/page/settings/general.vue:348
 msgid "Archive"
 msgstr "보관"
@@ -547,7 +547,7 @@ msgid "Calendar"
 msgstr "달력"
 
 #: src/component/photo/edit/details.vue:346 src/component/photo/toolbar.vue:313
-#: src/component/photo/view/cards.vue:487 src/component/photo/view/list.vue:115
+#: src/component/photo/view/cards.vue:493 src/component/photo/view/list.vue:115
 msgid "Camera"
 msgstr "카메라"
 
@@ -595,7 +595,7 @@ msgstr "취소"
 
 #: src/component/photo/edit/details.vue:87 src/component/photo/edit/info.vue:59
 #: src/component/photo/edit/labels.vue:42
-#: src/component/photo/view/cards.vue:426
+#: src/component/photo/view/cards.vue:429
 msgid "Caption"
 msgstr "캡션"
 
@@ -1168,7 +1168,7 @@ msgstr "2일마다"
 msgid "Exclude content marked as private from search results, shared albums, labels, and places."
 msgstr "검색 결과, 공유 앨범, 레이블 및 장소에서 비공개로 표시된 콘텐츠를 제외합니다."
 
-#: src/page/people/new.vue:94 src/page/people/recognized.vue:130
+#: src/page/people/new.vue:95 src/page/people/recognized.vue:130
 msgid "Exclude hidden"
 msgstr "숨김 제외"
 
@@ -1408,7 +1408,7 @@ msgstr "숨김"
 msgid "Hidden Files"
 msgstr "숨김 파일"
 
-#: src/page/people/new.vue:182 src/page/people/recognized.vue:235
+#: src/page/people/new.vue:196 src/page/people/recognized.vue:235
 msgid "Hide"
 msgstr "숨기기"
 
@@ -1644,7 +1644,7 @@ msgid "Legal Information"
 msgstr "법률 정보"
 
 #: src/component/photo/edit/details.vue:417
-#: src/component/photo/view/cards.vue:501
+#: src/component/photo/view/cards.vue:507
 msgid "Lens"
 msgstr "렌즈"
 
@@ -1684,8 +1684,8 @@ msgstr "링크"
 msgid "List"
 msgstr "리스트"
 
-#: src/app/routes.js:229 src/component/photo/view/cards.vue:305
-#: src/component/photo/view/cards.vue:456 src/component/photo/view/list.vue:163
+#: src/app/routes.js:229 src/component/photo/view/cards.vue:308
+#: src/component/photo/view/cards.vue:462 src/component/photo/view/list.vue:163
 #: src/component/photo/view/mosaic.vue:162 src/options/options.js:372
 msgid "Live"
 msgstr "라이브"
@@ -1717,7 +1717,7 @@ msgstr "현지 시간"
 #: src/page/settings/account.vue:665 src/page/settings/account.vue:667
 #: src/component/album/edit/dialog.vue:92 src/component/photo/edit/info.vue:63
 #: src/component/photo/edit/labels.vue:48
-#: src/component/photo/view/cards.vue:523 src/component/photo/view/list.vue:116
+#: src/component/photo/view/cards.vue:529 src/component/photo/view/list.vue:116
 #: src/page/albums.vue:89 src/page/settings/account.vue:557
 #: src/page/settings/account.vue:559
 msgid "Location"
@@ -1944,7 +1944,7 @@ msgid "No new files can be added to your library."
 msgstr "라이브러리에 새 파일을 추가할 수 없습니다."
 
 #: src/component/photo/edit/people.vue:34 src/page/people/new.vue:342
-#: src/page/people/new.vue:431 src/page/people/new.vue:133
+#: src/page/people/new.vue:431 src/page/people/new.vue:134
 #: src/page/people/recognized.vue:519 src/page/people/recognized.vue:176
 msgid "No people found"
 msgstr "사람이 없습니다"
@@ -2365,7 +2365,7 @@ msgstr "1}의 {0} 등급"
 msgid "Raw"
 msgstr "원시"
 
-#: src/component/photo/view/cards.vue:299
+#: src/component/photo/view/cards.vue:302
 #: src/component/photo/view/mosaic.vue:156 src/page/settings/general.vue:673
 msgid "RAW"
 msgstr "날것의"
@@ -2392,7 +2392,7 @@ msgstr "최근 아카이브"
 msgid "Recently Edited"
 msgstr "최근 편집"
 
-#: src/component/photo/edit/people.vue:35 src/page/people/new.vue:134
+#: src/component/photo/edit/people.vue:35 src/page/people/new.vue:135
 #: src/page/people/recognized.vue:177
 msgid "Recognition starts after indexing has been completed."
 msgstr "인덱싱이 완료된 후 인식이 시작됩니다."
@@ -2426,7 +2426,7 @@ msgstr "등록하기"
 #: src/component/photo/toolbar.vue:89 src/component/update.vue:68
 #: src/page/albums.vue:117 src/page/labels.vue:99
 #: src/page/library/browse.vue:91 src/page/library/errors.vue:94
-#: src/page/people/new.vue:59 src/page/people/recognized.vue:93
+#: src/page/people/new.vue:60 src/page/people/recognized.vue:93
 msgid "Reload"
 msgstr "새로고침"
 
@@ -2660,15 +2660,15 @@ msgstr "%{s} 공유하기"
 msgid "Share your pictures with other apps and services."
 msgstr "다른 앱 및 서비스와 사진을 공유하십시오."
 
-#: src/page/people/new.vue:172 src/page/people/recognized.vue:225
+#: src/page/people/new.vue:186 src/page/people/recognized.vue:225
 msgid "Show"
 msgstr "보이기"
 
-#: src/page/people/new.vue:250
+#: src/page/people/new.vue:147 src/page/people/new.vue:264
 msgid "Show all new faces"
 msgstr "모든 새 얼굴 표시"
 
-#: src/page/people/new.vue:77 src/page/people/recognized.vue:113
+#: src/page/people/new.vue:78 src/page/people/recognized.vue:113
 msgid "Show hidden"
 msgstr "숨김 표시"
 
@@ -2747,7 +2747,7 @@ msgstr "내림차순으로 정렬됩니다."
 msgid "Source"
 msgstr "소스"
 
-#: src/component/photo/view/cards.vue:325
+#: src/component/photo/view/cards.vue:328
 #: src/component/photo/view/mosaic.vue:182
 msgid "Stack"
 msgstr "스택"
@@ -2834,8 +2834,8 @@ msgstr "동기화"
 msgid "Sync raw and video files"
 msgstr "원시 사진과 동영상 파일을 동기화하기"
 
-#: src/component/photo/edit/info.vue:183 src/component/photo/view/cards.vue:182
-#: src/component/photo/view/cards.vue:438 src/component/photo/view/list.vue:114
+#: src/component/photo/edit/info.vue:183 src/component/photo/view/cards.vue:184
+#: src/component/photo/view/cards.vue:443 src/component/photo/view/list.vue:114
 msgid "Taken"
 msgstr "찍음"
 
@@ -3159,8 +3159,8 @@ msgstr "사용자 이름"
 msgid "Users"
 msgstr "사용자"
 
-#: src/component/photo/view/cards.vue:319
-#: src/component/photo/view/cards.vue:476 src/component/photo/view/list.vue:179
+#: src/component/photo/view/cards.vue:322
+#: src/component/photo/view/cards.vue:482 src/component/photo/view/list.vue:179
 #: src/component/photo/view/mosaic.vue:176 src/model/photo.js:896
 #: src/model/photo.js:904 src/options/options.js:380
 msgid "Vector"
@@ -3174,8 +3174,8 @@ msgstr "벡터"
 msgid "Verification Code"
 msgstr "확인 코드"
 
-#: src/component/photo/view/cards.vue:343
-#: src/component/photo/view/cards.vue:446 src/component/photo/view/list.vue:186
+#: src/component/photo/view/cards.vue:346
+#: src/component/photo/view/cards.vue:452 src/component/photo/view/list.vue:186
 #: src/component/photo/view/mosaic.vue:200 src/model/file.js:220
 #: src/model/photo.js:920 src/model/photo.js:938 src/options/options.js:376
 msgid "Video"
@@ -3190,7 +3190,7 @@ msgstr "비디오 시간"
 msgid "Videos"
 msgstr "동영상"
 
-#: src/component/photo/toolbar.vue:341 src/component/photo/view/cards.vue:330
+#: src/component/photo/toolbar.vue:341 src/component/photo/view/cards.vue:333
 #: src/component/photo/view/mosaic.vue:187
 msgid "View"
 msgstr "보기"
@@ -3301,7 +3301,7 @@ msgstr "테스트 목적으로 최대 %{n}개의 파일을 업로드할 수 있�
 msgid "You may only select one item"
 msgstr "하나의 아이템 선택할 수 있습니다"
 
-#: src/component/photo/edit/people.vue:35 src/page/people/new.vue:134
+#: src/component/photo/edit/people.vue:35 src/page/people/new.vue:135
 #: src/page/people/recognized.vue:177
 msgid "You may rescan your library to find additional faces."
 msgstr "추가 얼굴을 찾기 위해 라이브러리를 다시 검색할 수 있습니다."

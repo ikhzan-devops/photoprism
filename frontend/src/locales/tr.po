@@ -179,7 +179,7 @@ msgstr "Aktivasyon Kodu"
 msgid "Add"
 msgstr "Ekle"
 
-#: src/component/photo/edit/people.vue:162 src/page/people/new.vue:261
+#: src/component/photo/edit/people.vue:162 src/page/people/new.vue:275
 msgid "Add %{s}?"
 msgstr "Add %{s}?"
 
@@ -201,7 +201,7 @@ msgstr "Link ekle"
 
 #: src/component/photo/edit/people.vue:25
 #: src/component/photo/edit/people.vue:162 src/page/people/new.vue:55
-#: src/page/people/new.vue:261
+#: src/page/people/new.vue:275
 msgid "Add person?"
 msgstr "Kişi ekleyelim mi?"
 
@@ -361,8 +361,8 @@ msgid "AM"
 msgstr "AM"
 
 #: src/component/navigation.vue:421 src/component/photo/edit/files.vue:357
-#: src/component/photo/view/cards.vue:313
-#: src/component/photo/view/cards.vue:466 src/component/photo/view/list.vue:172
+#: src/component/photo/view/cards.vue:316
+#: src/component/photo/view/cards.vue:472 src/component/photo/view/list.vue:172
 #: src/component/photo/view/mosaic.vue:170 src/options/options.js:368
 msgid "Animated"
 msgstr "Hareketli"
@@ -389,7 +389,7 @@ msgstr "Uygula"
 
 #: src/component/photo/clipboard.vue:64
 #: src/component/photo/edit/details.vue:640
-#: src/component/photo/view/cards.vue:396
+#: src/component/photo/view/cards.vue:399
 msgid "Approve"
 msgstr "Onayla"
 
@@ -398,7 +398,7 @@ msgid "Apps and Devices"
 msgstr "Uygulamalar ve Cihazlar"
 
 #: src/app/routes.js:266 src/component/navigation.vue:550
-#: src/component/photo/clipboard.vue:142 src/component/photo/view/cards.vue:378
+#: src/component/photo/clipboard.vue:142 src/component/photo/view/cards.vue:381
 #: src/page/settings/general.vue:348
 msgid "Archive"
 msgstr "Arşiv"
@@ -547,7 +547,7 @@ msgid "Calendar"
 msgstr "Takvim"
 
 #: src/component/photo/edit/details.vue:346 src/component/photo/toolbar.vue:313
-#: src/component/photo/view/cards.vue:487 src/component/photo/view/list.vue:115
+#: src/component/photo/view/cards.vue:493 src/component/photo/view/list.vue:115
 msgid "Camera"
 msgstr "Kamera"
 
@@ -595,7 +595,7 @@ msgstr "İptal"
 
 #: src/component/photo/edit/details.vue:87 src/component/photo/edit/info.vue:59
 #: src/component/photo/edit/labels.vue:42
-#: src/component/photo/view/cards.vue:426
+#: src/component/photo/view/cards.vue:429
 msgid "Caption"
 msgstr "Başlık"
 
@@ -1168,7 +1168,7 @@ msgstr "İki günde bir"
 msgid "Exclude content marked as private from search results, shared albums, labels, and places."
 msgstr "Özel olarak işaretlenen içeriği arama sonuçlarından, paylaşılan albümlerden, etiketlerden ve yerlerden hariç tutun."
 
-#: src/page/people/new.vue:94 src/page/people/recognized.vue:130
+#: src/page/people/new.vue:95 src/page/people/recognized.vue:130
 msgid "Exclude hidden"
 msgstr "Gizlenenleri hariç tut"
 
@@ -1408,7 +1408,7 @@ msgstr "Gizli"
 msgid "Hidden Files"
 msgstr "Gizli Dosyalar"
 
-#: src/page/people/new.vue:182 src/page/people/recognized.vue:235
+#: src/page/people/new.vue:196 src/page/people/recognized.vue:235
 msgid "Hide"
 msgstr "Gizle"
 
@@ -1644,7 +1644,7 @@ msgid "Legal Information"
 msgstr "Yasal Bilgiler"
 
 #: src/component/photo/edit/details.vue:417
-#: src/component/photo/view/cards.vue:501
+#: src/component/photo/view/cards.vue:507
 msgid "Lens"
 msgstr "Lens"
 
@@ -1684,8 +1684,8 @@ msgstr "Link"
 msgid "List"
 msgstr "Liste"
 
-#: src/app/routes.js:229 src/component/photo/view/cards.vue:305
-#: src/component/photo/view/cards.vue:456 src/component/photo/view/list.vue:163
+#: src/app/routes.js:229 src/component/photo/view/cards.vue:308
+#: src/component/photo/view/cards.vue:462 src/component/photo/view/list.vue:163
 #: src/component/photo/view/mosaic.vue:162 src/options/options.js:372
 msgid "Live"
 msgstr "Canlı"
@@ -1717,7 +1717,7 @@ msgstr "Yerel Saat"
 #: src/page/settings/account.vue:665 src/page/settings/account.vue:667
 #: src/component/album/edit/dialog.vue:92 src/component/photo/edit/info.vue:63
 #: src/component/photo/edit/labels.vue:48
-#: src/component/photo/view/cards.vue:523 src/component/photo/view/list.vue:116
+#: src/component/photo/view/cards.vue:529 src/component/photo/view/list.vue:116
 #: src/page/albums.vue:89 src/page/settings/account.vue:557
 #: src/page/settings/account.vue:559
 msgid "Location"
@@ -1944,7 +1944,7 @@ msgid "No new files can be added to your library."
 msgstr "Kitaplığınıza yeni dosya eklenemez."
 
 #: src/component/photo/edit/people.vue:34 src/page/people/new.vue:342
-#: src/page/people/new.vue:431 src/page/people/new.vue:133
+#: src/page/people/new.vue:431 src/page/people/new.vue:134
 #: src/page/people/recognized.vue:519 src/page/people/recognized.vue:176
 msgid "No people found"
 msgstr "Hiç kimse bulunamadı"
@@ -2365,7 +2365,7 @@ msgstr "Değerlendirme {1}'in {0}'ı"
 msgid "Raw"
 msgstr "Raw"
 
-#: src/component/photo/view/cards.vue:299
+#: src/component/photo/view/cards.vue:302
 #: src/component/photo/view/mosaic.vue:156 src/page/settings/general.vue:673
 msgid "RAW"
 msgstr "RAW"
@@ -2392,7 +2392,7 @@ msgstr "Yakın Zamanda Arşivlendi"
 msgid "Recently Edited"
 msgstr "Son zamanlarda Düzenlendi"
 
-#: src/component/photo/edit/people.vue:35 src/page/people/new.vue:134
+#: src/component/photo/edit/people.vue:35 src/page/people/new.vue:135
 #: src/page/people/recognized.vue:177
 msgid "Recognition starts after indexing has been completed."
 msgstr "Tanıma işlemi indeksleme tamamlandıktan sonra başlar."
@@ -2426,7 +2426,7 @@ msgstr "Kayıt Olun"
 #: src/component/photo/toolbar.vue:89 src/component/update.vue:68
 #: src/page/albums.vue:117 src/page/labels.vue:99
 #: src/page/library/browse.vue:91 src/page/library/errors.vue:94
-#: src/page/people/new.vue:59 src/page/people/recognized.vue:93
+#: src/page/people/new.vue:60 src/page/people/recognized.vue:93
 msgid "Reload"
 msgstr "Tekrar yükle"
 
@@ -2660,15 +2660,15 @@ msgstr "Paylaş %{s}"
 msgid "Share your pictures with other apps and services."
 msgstr "Fotoğraflarınızı diğer uygulamalar ve hizmetlerle paylaşın."
 
-#: src/page/people/new.vue:172 src/page/people/recognized.vue:225
+#: src/page/people/new.vue:186 src/page/people/recognized.vue:225
 msgid "Show"
 msgstr "Göster"
 
-#: src/page/people/new.vue:250
+#: src/page/people/new.vue:147 src/page/people/new.vue:264
 msgid "Show all new faces"
 msgstr "Tüm yeni yüzleri göster"
 
-#: src/page/people/new.vue:77 src/page/people/recognized.vue:113
+#: src/page/people/new.vue:78 src/page/people/recognized.vue:113
 msgid "Show hidden"
 msgstr "Gizli göster"
 
@@ -2747,7 +2747,7 @@ msgstr "Azalan şekilde sıralandı."
 msgid "Source"
 msgstr "Kaynak"
 
-#: src/component/photo/view/cards.vue:325
+#: src/component/photo/view/cards.vue:328
 #: src/component/photo/view/mosaic.vue:182
 msgid "Stack"
 msgstr "Yığın"
@@ -2834,8 +2834,8 @@ msgstr "Eşitle"
 msgid "Sync raw and video files"
 msgstr "Ham ve video dosyalarını senkronize edin"
 
-#: src/component/photo/edit/info.vue:183 src/component/photo/view/cards.vue:182
-#: src/component/photo/view/cards.vue:438 src/component/photo/view/list.vue:114
+#: src/component/photo/edit/info.vue:183 src/component/photo/view/cards.vue:184
+#: src/component/photo/view/cards.vue:443 src/component/photo/view/list.vue:114
 msgid "Taken"
 msgstr "Alınmış"
 
@@ -3159,8 +3159,8 @@ msgstr "Kullanıcı Adı"
 msgid "Users"
 msgstr "Kullanıcılar"
 
-#: src/component/photo/view/cards.vue:319
-#: src/component/photo/view/cards.vue:476 src/component/photo/view/list.vue:179
+#: src/component/photo/view/cards.vue:322
+#: src/component/photo/view/cards.vue:482 src/component/photo/view/list.vue:179
 #: src/component/photo/view/mosaic.vue:176 src/model/photo.js:896
 #: src/model/photo.js:904 src/options/options.js:380
 msgid "Vector"
@@ -3174,8 +3174,8 @@ msgstr "Vektörler"
 msgid "Verification Code"
 msgstr "Doğrulama kodu"
 
-#: src/component/photo/view/cards.vue:343
-#: src/component/photo/view/cards.vue:446 src/component/photo/view/list.vue:186
+#: src/component/photo/view/cards.vue:346
+#: src/component/photo/view/cards.vue:452 src/component/photo/view/list.vue:186
 #: src/component/photo/view/mosaic.vue:200 src/model/file.js:220
 #: src/model/photo.js:920 src/model/photo.js:938 src/options/options.js:376
 msgid "Video"
@@ -3190,7 +3190,7 @@ msgstr "Video Süresi"
 msgid "Videos"
 msgstr "Videolar"
 
-#: src/component/photo/toolbar.vue:341 src/component/photo/view/cards.vue:330
+#: src/component/photo/toolbar.vue:341 src/component/photo/view/cards.vue:333
 #: src/component/photo/view/mosaic.vue:187
 msgid "View"
 msgstr "Görünüm"
@@ -3301,7 +3301,7 @@ msgstr "Test amacıyla %{n} adede kadar dosya yükleyebilirsiniz."
 msgid "You may only select one item"
 msgstr "Yalnızca bir öğe seçebilirsiniz"
 
-#: src/component/photo/edit/people.vue:35 src/page/people/new.vue:134
+#: src/component/photo/edit/people.vue:35 src/page/people/new.vue:135
 #: src/page/people/recognized.vue:177
 msgid "You may rescan your library to find additional faces."
 msgstr "Başka yüzler bulmak için kütüphanenizi yeniden tarayabilirsiniz."

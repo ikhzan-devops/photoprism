@@ -59,6 +59,11 @@
             {{ $gettext(`Recognition starts after indexing has been completed.`) }}
           </div>
         </v-alert>
+        <div class="d-flex justify-center my-8">
+          <v-btn color="secondary" rounded variant="flat" :to="{ name: 'all', query: { q: 'face:new' } }">
+            {{ $gettext(`Show all new faces`) }}
+          </v-btn>
+        </div>
       </div>
       <div v-else>
         <div class="v-row search-results face-results cards-view" :class="{ 'select-results': selection.length > 0 }">
