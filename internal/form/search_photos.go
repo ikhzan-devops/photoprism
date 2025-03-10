@@ -61,6 +61,7 @@ type SearchPhotos struct {
 	Mm        string    `form:"mm" example:"mm:28-35" notes:"Focal Length (35mm equivalent)"`
 	F         string    `form:"f" example:"f:2.8-4.5" notes:"Aperture (f-number)"`
 	Color     string    `form:"color" example:"color:\"red|blue\"" notes:"Color Name (purple, magenta, pink, red, orange, gold, yellow, lime, green, teal, cyan, blue, brown, white, grey, black) (separate with |)"` // Main color
+	Codec     string    `form:"codec" example:"codec:avc1" notes:"Media Codec (e.g. jpeg, avc1, hvc1); separate with |"`
 	Chroma    int16     `form:"chroma" example:"chroma:70" notes:"Chroma (0-100)"`
 	Mono      bool      `form:"mono" notes:"Finds pictures with few or no colors"`
 	Diff      uint32    `form:"diff" notes:"Differential Perceptual Hash (000000-FFFFFF)"`

@@ -461,9 +461,14 @@ func UserPhotosGeo(frm form.SearchPhotosGeo, sess *entity.Session) (results GeoR
 		s = s.Where("files.file_aspect_ratio = 1")
 	}
 
-	// Filter by main color.
-	if frm.Color != "" {
+	// Filter by file main color.
+	if txt.NotEmpty(frm.Color) {
 		s = s.Where("files.file_main_color IN (?)", SplitOr(strings.ToLower(frm.Color)))
+	}
+
+	// Filter by file codec.
+	if txt.NotEmpty(frm.Codec) {
+		s = s.Where("files.file_codec IN (?)", SplitOr(strings.ToLower(frm.Codec)))
 	}
 
 	// Filter by chroma.

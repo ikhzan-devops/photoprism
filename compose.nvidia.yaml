@@ -1,8 +1,5 @@
-## FOR TEST AND DEVELOPMENT ONLY, DO NOT USE IN PRODUCTION   ##
-## Setup: https://docs.photoprism.app/developer-guide/setup/ ##
-
 services:
-  ## PhotoPrism (Development Environment)
+  ## PhotoPrism (Development Environment for Nvidia)
   photoprism:
     build: .
     image: photoprism/photoprism:develop
@@ -38,10 +35,6 @@ services:
       - "traefik.http.routers.photoprism.tls.domains[0].main=localssl.dev"
       - "traefik.http.routers.photoprism.tls.domains[0].sans=*.localssl.dev"
       - "traefik.http.routers.photoprism.tls=true"
-    ## Override variables with optional env file, see https://docs.docker.com/reference/compose-file/services/#required
-    env_file:
-      - path: ".env"
-        required: false
     ## Configure development environment
     environment:
       ## Run as a non-root user after initialization (supported: 0, 33, 50-99, 500-600, and 900-1200):
@@ -115,11 +108,12 @@ services:
       PHOTOPRISM_THUMB_FILTER: "auto"                # downscaling filter (imaging best to worst: blackman, lanczos, cubic, linear, nearest)
       PHOTOPRISM_THUMB_UNCACHED: "true"              # enables on-demand thumbnail rendering (high memory and cpu usage)
       TF_CPP_MIN_LOG_LEVEL: 0                        # show TensorFlow log messages for development
-      ## Video Transcoding (https://docs.photoprism.app/getting-started/advanced/transcoding/):
-      # PHOTOPRISM_FFMPEG_ENCODER: "software"        # H.264/AVC encoder (software, intel, nvidia, apple, raspberry, or vaapi)
-      # PHOTOPRISM_FFMPEG_SIZE: "1920"               # video size limit in pixels (720-7680) (default: 3840)
-      # PHOTOPRISM_FFMPEG_BITRATE: "32"              # video bitrate limit in Mbit/s (default: 50)
-      # LIBVA_DRIVER_NAME: "i965"                    # For Intel architectures Haswell and older which do not support QSV yet but use VAAPI instead
+      ## Nvidia Video Transcoding (https://docs.photoprism.app/getting-started/advanced/transcoding/#nvidia-container-toolkit):
+      NVIDIA_VISIBLE_DEVICES: "all"
+      NVIDIA_DRIVER_CAPABILITIES: "compute,video,utility"
+      PHOTOPRISM_FFMPEG_ENCODER: "nvidia"            # H.264/AVC encoder (software, intel, nvidia, apple, raspberry, or vaapi)
+      PHOTOPRISM_FFMPEG_SIZE: "1920"                 # video size limit in pixels (720-7680) (default: 3840)
+      PHOTOPRISM_FFMPEG_BITRATE: "50"                # video bitrate limit in Mbit/s (default: 50)
       ## Run/install on first startup (options: update https gpu ffmpeg tensorflow davfs clitools clean):
       PHOTOPRISM_INIT: "https tensorflow"
     ## Share hardware devices with FFmpeg and TensorFlow (optional):
@@ -137,141 +131,41 @@ services:
       - ".:/go/src/github.com/photoprism/photoprism"
       - "./storage:/photoprism"
       - "go-mod:/go/pkg/mod"
-
-  ## MariaDB (Database Server)
-  ## Docs: https://mariadb.com/docs/reference/
-  ## Release Notes: https://mariadb.com/kb/en/changes-improvements-in-mariadb-1011/
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: "nvidia"
+              count: 1
+              capabilities: [ gpu ]
   mariadb:
-    image: mariadb:11
-    security_opt: # see https://github.com/MariaDB/mariadb-docker/issues/434#issuecomment-1136151239
-      - seccomp:unconfined
-      - apparmor:unconfined
-    command: --port=4001 --innodb-strict-mode=1 --innodb-buffer-pool-size=256M --transaction-isolation=READ-COMMITTED --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --max-connections=512 --innodb-rollback-on-timeout=OFF --innodb-lock-wait-timeout=120
-    expose:
-      - "4001"
-    ports:
-      - "4001:4001" # database port (host:container)
-    volumes:
-      - "mariadb:/var/lib/mysql"
-      - "./scripts/sql/mariadb-init.sql:/docker-entrypoint-initdb.d/init.sql"
-    environment:
-      MARIADB_AUTO_UPGRADE: "1"
-      MARIADB_INITDB_SKIP_TZINFO: "1"
-      MARIADB_DATABASE: "photoprism"
-      MARIADB_USER: "photoprism"
-      MARIADB_PASSWORD: "photoprism"
-      MARIADB_ROOT_PASSWORD: "photoprism"
-
-  ## Traefik v3 (Reverse Proxy)
-  ## includes "*.localssl.dev" SSL certificate for test environments
-  ## Docs: https://doc.traefik.io/traefik/
+    extends:
+      file: ./compose.yaml
+      service: mariadb
   traefik:
-    image: photoprism/traefik:latest
-    security_opt:
-      - no-new-privileges:true
-    ports:
-      - "80:80" # HTTP (redirects to HTTPS)
-      - "443:443" # HTTPS (required)
-    labels:
-      - "traefik.enable=true"
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock" # enables Traefik to watch services
-
-  ## Dummy WebDAV Server
+    extends:
+      file: ./compose.yaml
+      service: traefik
   dummy-webdav:
-    image: photoprism/dummy-webdav:240627
-    environment:
-      WEBDAV_USERNAME: admin
-      WEBDAV_PASSWORD: photoprism
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.services.dummy-webdav.loadbalancer.server.port=80"
-      - "traefik.http.routers.dummy-webdav.entrypoints=websecure"
-      - "traefik.http.routers.dummy-webdav.rule=Host(`dummy-webdav.localssl.dev`)"
-      - "traefik.http.routers.dummy-webdav.priority=3"
-      - "traefik.http.routers.dummy-webdav.tls.domains[0].main=localssl.dev"
-      - "traefik.http.routers.dummy-webdav.tls.domains[0].sans=*.localssl.dev"
-      - "traefik.http.routers.dummy-webdav.tls=true"
-
-  ## Dummy OIDC Identity Provider
+    extends:
+      file: ./compose.yaml
+      service: dummy-webdav
   dummy-oidc:
-    image: photoprism/dummy-oidc:240627
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.services.dummy-oidc.loadbalancer.server.port=9998"
-      - "traefik.http.routers.dummy-oidc.entrypoints=websecure"
-      - "traefik.http.routers.dummy-oidc.rule=Host(`dummy-oidc.localssl.dev`)"
-      - "traefik.http.routers.dummy-oidc.priority=3"
-      - "traefik.http.routers.dummy-oidc.tls.domains[0].main=localssl.dev"
-      - "traefik.http.routers.dummy-oidc.tls.domains[0].sans=*.localssl.dev"
-      - "traefik.http.routers.dummy-oidc.tls=true"
-
-  ## Dummy LDAP Directory Server
-  ## Docs: https://glauth.github.io/docs/
+    extends:
+      file: ./compose.yaml
+      service: dummy-oidc
   dummy-ldap:
-    image: glauth/glauth-plugins:latest
-    ports:
-      - "127.0.0.1:389:389"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.services.ldap.loadbalancer.server.port=5555"
-      - "traefik.http.routers.dummy-ldap.entrypoints=websecure"
-      - "traefik.http.routers.dummy-ldap.rule=Host(`dummy-ldap.localssl.dev`)"
-      - "traefik.http.routers.dummy-ldap.priority=3"
-      - "traefik.http.routers.dummy-ldap.tls.domains[0].main=localssl.dev"
-      - "traefik.http.routers.dummy-ldap.tls.domains[0].sans=*.localssl.dev"
-      - "traefik.http.routers.dummy-ldap.tls=true"
-    volumes:
-      - "./.ldap.cfg:/app/config/config.cfg"
-
-  ## Keycloak (OIDC Identity Provider)
-  ## Docs: https://www.keycloak.org/docs/latest/server_admin/
-  ## Login with "user / photoprism" and "admin / photoprism".
+    extends:
+      file: ./compose.yaml
+      service: dummy-ldap
   keycloak:
-    image: quay.io/keycloak/keycloak:25.0
-    command: "start-dev" # development mode, do not use this in production!
-    links:
-      - "traefik:localssl.dev"
-      - "traefik:app.localssl.dev"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.services.keycloak.loadbalancer.server.port=8080"
-      - "traefik.http.routers.keycloak.entrypoints=websecure"
-      - "traefik.http.routers.keycloak.rule=Host(`keycloak.localssl.dev`)"
-      - "traefik.http.routers.keycloak.priority=3"
-      - "traefik.http.routers.keycloak.tls.domains[0].main=localssl.dev"
-      - "traefik.http.routers.keycloak.tls.domains[0].sans=*.localssl.dev"
-      - "traefik.http.routers.keycloak.tls=true"
-    environment: # see https://www.keycloak.org/server/all-config
-      KEYCLOAK_ADMIN: "admin"
-      KEYCLOAK_ADMIN_PASSWORD: "photoprism"
-      KC_METRICS_ENABLED: "false"
-      KC_HOSTNAME: "keycloak.localssl.dev"
-      KC_HOSTNAME_STRICT: "false"
-      KC_PROXY: "edge"
-      KC_DB: "mariadb"
-      KC_DB_URL: "jdbc:mariadb://mariadb:4001/keycloak"
-      KC_DB_USERNAME: "keycloak"
-      KC_DB_PASSWORD: "keycloak"
-
-  ## Run "docker compose --profile prometheus up" to start your development environment with Prometheus.
-  ## Docs: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#oauth2
-  ## The following grants API access to Prometheus with the preconfigured client credentials (adjust flags as needed):
-  ## ./photoprism client add --id=cs5cpu17n6gj2qo5 --secret=xcCbOrw6I0vcoXzhnOmXhjpVSyFq0l0e -s metrics -n Prometheus -e 60 -t 1
+    extends:
+      file: ./compose.yaml
+      service: keycloak
   prometheus:
-    image: prom/prometheus:latest
-    profiles: ["all", "auth", "prometheus"]
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.services.prometheus.loadbalancer.server.port=9090"
-      - "traefik.http.routers.prometheus.entrypoints=websecure"
-      - "traefik.http.routers.prometheus.rule=Host(`prometheus.localssl.dev`)"
-      - "traefik.http.routers.prometheus.priority=3"
-      - "traefik.http.routers.prometheus.tls.domains[0].main=localssl.dev"
-      - "traefik.http.routers.prometheus.tls.domains[0].sans=*.localssl.dev"
-      - "traefik.http.routers.prometheus.tls=true"
-    volumes:
-      - "./prometheus.yml:/etc/prometheus/prometheus.yml"
+    extends:
+      file: ./compose.yaml
+      service: prometheus
 
 ## Create named volume for Go module cache
 volumes:
