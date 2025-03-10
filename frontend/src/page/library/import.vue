@@ -30,7 +30,9 @@
             @focus="onFocus"
           >
           </v-autocomplete>
-          <v-progress-linear :model-value="completed" :indeterminate="busy" :height="16"></v-progress-linear>
+          <v-progress-linear :model-value="completed" :indeterminate="busy" :height="16" color="surface-variant">
+            <span v-if="eta" class="eta text-caption opacity-80">{{ eta }}</span>
+          </v-progress-linear>
         </div>
         <div class="form-options">
           <v-checkbox
@@ -116,6 +118,7 @@ export default {
       completed: 0,
       subscriptionId: "",
       fileName: "",
+      eta: "",
       source: null,
       root: root,
       dirs: [root],

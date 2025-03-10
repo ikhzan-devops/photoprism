@@ -59,8 +59,8 @@
         </v-btn>
       </v-toolbar>
     </v-form>
-    <div v-if="loading" fluid class="pa-6">
-      <v-progress-linear :indeterminate="true"></v-progress-linear>
+    <div v-if="loading" class="p-page__loading">
+      <p-loading></p-loading>
     </div>
     <div v-else-if="errors.length > 0" fluid class="pa-0">
       <p-scroll
@@ -142,10 +142,12 @@
 import { DateTime } from "luxon";
 import $api from "common/api";
 import PConfirmAction from "component/confirm/action.vue";
+import PLoading from "component/loading.vue";
 
 export default {
   name: "PPageErrors",
   components: {
+    PLoading,
     PConfirmAction,
   },
   data() {

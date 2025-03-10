@@ -53,6 +53,8 @@ services:
       PHOTOPRISM_AUTH_MODE: "password"                     # authentication mode (public, password)
       PHOTOPRISM_REGISTER_URI: "https://keycloak.localssl.dev/admin/"
       PHOTOPRISM_PASSWORD_RESET_URI: "https://keycloak.localssl.dev/realms/master/login-actions/reset-credentials"
+      PHOTOPRISM_USAGE_INFO: "true"
+      PHOTOPRISM_FILES_QUOTA: "102400"
       ## OpenID Connect (pre-configured for local tests):
       ## see https://keycloak.localssl.dev/realms/master/.well-known/openid-configuration
       PHOTOPRISM_OIDC_URI: "https://keycloak.localssl.dev/realms/master"

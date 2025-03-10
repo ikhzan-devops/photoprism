@@ -86,9 +86,10 @@
                   :model-value="completedTotal"
                   :indeterminate="indexing"
                   :height="16"
+                  color="surface-variant"
                   class="v-progress-linear--upload"
                 >
-                  <span v-if="eta" class="eta text-caption opacity-85">{{ eta }}</span>
+                  <span v-if="eta" class="eta text-caption opacity-80">{{ eta }}</span>
                 </v-progress-linear>
               </div>
               <div class="form-text">

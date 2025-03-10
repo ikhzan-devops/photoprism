@@ -60,6 +60,22 @@
                 <i :title="$gettext('Taken')" class="mdi mdi-calendar-range" />
                 {{ m.getDateString(true) }}
               </button>
+              <button
+                v-if="m.CameraID > 1 || m.Iso"
+                class="meta-camera action-camera-edit text-truncate"
+                :data-uid="m.UID"
+              >
+                <i class="mdi" :class="m.Type === 'video' ? 'mdi-video-vintage' : 'mdi-camera'" />
+                {{ m.getCameraInfo() }}
+              </button>
+              <button
+                v-if="m.LensID > 1 || m.FocalLength"
+                class="meta-lens action-lens-edit text-truncate"
+                :data-uid="m.UID"
+              >
+                <i class="mdi mdi-camera-iris" />
+                {{ m.getLensInfo() }}
+              </button>
               <button v-if="m.Type === 'video'" class="meta-video text-truncate">
                 <i class="mdi mdi-movie" />
                 {{ m.getVideoInfo() }}
@@ -76,21 +92,9 @@
                 <i class="mdi mdi-vector-polyline" />
                 {{ m.getVectorInfo() }}
               </button>
-              <button
-                v-if="m.CameraID > 1 || m.Type === 'image'"
-                class="meta-camera action-camera-edit text-truncate"
-                :data-uid="m.UID"
-              >
-                <i class="mdi" :class="m.Type === 'video' ? 'mdi-video-vintage' : 'mdi-camera'" />
-                {{ m.getCameraInfo() }}
-              </button>
-              <button
-                v-if="m.LensID > 1 || m.FocalLength"
-                class="meta-lens action-lens-edit text-truncate"
-                :data-uid="m.UID"
-              >
-                <i class="mdi mdi-camera-iris" />
-                {{ m.getLensInfo() }}
+              <button v-else class="meta-image text-truncate">
+                <i class="mdi mdi-image" />
+                {{ m.getImageInfo() }}
               </button>
               <button class="meta-filename text-truncate">
                 <i class="mdi" :class="m.Type === 'video' || m.Type === 'live' ? 'mdi-filmstrip' : 'mdi-film'" />
@@ -249,6 +253,26 @@
                 {{ m.getDateString(true) }}
               </button>
               <button
+                v-if="m.CameraID > 1 || m.Iso"
+                :title="$gettext('Camera')"
+                class="meta-camera action-camera-edit text-truncate"
+                :data-uid="m.UID"
+                @click.exact="editPhoto(index, 'details')"
+              >
+                <i class="mdi" :class="m.Type === 'video' ? 'mdi-video-vintage' : 'mdi-camera'" />
+                {{ m.getCameraInfo() }}
+              </button>
+              <button
+                v-if="m.LensID > 1 || m.FocalLength"
+                :title="$gettext('Lens')"
+                class="meta-lens action-lens-edit text-truncate"
+                :data-uid="m.UID"
+                @click.exact="editPhoto(index, 'details')"
+              >
+                <i class="mdi mdi-camera-iris" />
+                {{ m.getLensInfo() }}
+              </button>
+              <button
                 v-if="m.Type === 'video'"
                 :title="$gettext('Video')"
                 class="meta-video text-truncate"
@@ -285,24 +309,13 @@
                 {{ m.getVectorInfo() }}
               </button>
               <button
-                v-if="m.CameraID > 1 || m.Type === 'image'"
-                :title="$gettext('Camera')"
-                class="meta-camera action-camera-edit text-truncate"
-                :data-uid="m.UID"
-                @click.exact="editPhoto(index, 'details')"
+                v-else
+                :title="$gettext('Image')"
+                class="meta-image text-truncate"
+                @click.exact="editPhoto(index)"
               >
-                <i class="mdi" :class="m.Type === 'video' ? 'mdi-video-vintage' : 'mdi-camera'" />
-                {{ m.getCameraInfo() }}
-              </button>
-              <button
-                v-if="m.LensID > 1 || m.FocalLength"
-                :title="$gettext('Lens')"
-                class="meta-lens action-lens-edit text-truncate"
-                :data-uid="m.UID"
-                @click.exact="editPhoto(index, 'details')"
-              >
-                <i class="mdi mdi-camera-iris" />
-                {{ m.getLensInfo() }}
+                <i class="mdi mdi-image" />
+                {{ m.getImageInfo() }}
               </button>
               <button
                 :title="m.getOriginalName()"

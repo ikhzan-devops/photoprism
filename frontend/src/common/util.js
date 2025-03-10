@@ -422,8 +422,9 @@ export default class $util {
         return cameraMake + " " + cameraModel;
       }
     } else if (cameraID > 1 && cameraModel) {
-      // Return only the model if the camera make is unknown.
       return cameraModel;
+    } else if (cameraID > 1 && cameraMake) {
+      return cameraMake;
     }
 
     // Return a placeholder string for unknown cameras.

@@ -1,6 +1,11 @@
 <template>
   <div class="p-page p-page-help" tabindex="1">
-    <v-toolbar flat color="secondary" :density="$vuetify.display.smAndDown ? 'compact' : 'default'" class="p-page__navigation">
+    <v-toolbar
+      flat
+      color="secondary"
+      :density="$vuetify.display.smAndDown ? 'compact' : 'default'"
+      class="p-page__navigation"
+    >
       <v-toolbar-title class="flex-grow-1">
         {{ $gettext(`Help`) }}
       </v-toolbar-title>

@@ -177,7 +177,9 @@
                               {{ $gettext(`Size`) }}
                             </td>
                             <td>
-                              <span v-tooltip="Math.ceil(file?.Size / 1024).toLocaleString() + ' KB'">{{ file.sizeInfo() }}</span>
+                              <span v-tooltip="Math.ceil(file?.Size / 1024).toLocaleString() + ' KB'">{{
+                                file.sizeInfo()
+                              }}</span>
                             </td>
                           </tr>
                           <tr v-if="file.Software">
@@ -325,6 +327,7 @@
                               <v-progress-linear
                                 v-tooltip="`${file.Chroma}%`"
                                 :model-value="file.Chroma"
+                                color="surface-variant"
                                 style="max-width: 300px"
                               ></v-progress-linear>
                             </td>

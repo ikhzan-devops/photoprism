@@ -1,6 +1,11 @@
 <template>
   <div class="p-page p-page-upgrade" tabindex="1">
-    <v-toolbar flat color="secondary" :density="$vuetify.display.smAndDown ? 'compact' : 'default'" class="p-page__navigation">
+    <v-toolbar
+      flat
+      color="secondary"
+      :density="$vuetify.display.smAndDown ? 'compact' : 'default'"
+      class="p-page__navigation"
+    >
       <v-toolbar-title>
         {{ $gettext(`Membership`) }}
         <v-icon :icon="rtl ? 'mdi-chevron-left' : 'mdi-chevron-right'"></v-icon>
@@ -31,7 +36,7 @@
     <div class="pa-6">
       <v-form ref="form" v-model="valid" autocomplete="off" validate-on="invalid-input" @submit.prevent>
         <div v-if="busy">
-          <v-progress-linear :indeterminate="true"></v-progress-linear>
+          <v-progress-linear :indeterminate="true" color="surface-variant"></v-progress-linear>
         </div>
         <div v-else-if="error">
           <v-alert color="primary" icon="mdi-connection" variant="outlined">

@@ -759,12 +759,12 @@
             <div class="nav-info__underlay"></div>
             <div class="nav-info__content">
               <v-progress-linear
+                :model-value="config.usage.filesUsedPct"
                 :color="config.usage.filesUsedPct > 95 ? 'error' : 'surface-variant'"
                 height="16"
                 max="100"
                 min="0"
                 width="100%"
-                :model-value="config.usage.filesUsedPct"
                 rounded
               >
                 <div class="text-caption opacity-85">

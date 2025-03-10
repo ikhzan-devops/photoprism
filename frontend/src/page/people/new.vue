@@ -38,8 +38,8 @@
       </v-toolbar>
     </v-form>
 
-    <div v-if="loading" class="pa-6">
-      <v-progress-linear :indeterminate="true"></v-progress-linear>
+    <div v-if="loading" class="p-page__loading">
+      <p-loading></p-loading>
     </div>
     <div v-else class="p-page__content">
       <p-scroll
@@ -150,10 +150,12 @@ import { MaxItems } from "common/clipboard";
 import $notify from "common/notify";
 import { ClickLong, ClickShort, Input, InputInvalid } from "common/input";
 import PConfirmAction from "component/confirm/action.vue";
+import PLoading from "component/loading.vue";
 
 export default {
   name: "PPageFaces",
   components: {
+    PLoading,
     PConfirmAction,
   },
   props: {

@@ -61,8 +61,8 @@
       </v-toolbar>
     </v-form>
 
-    <div v-if="loading" class="pa-6">
-      <v-progress-linear :indeterminate="true"></v-progress-linear>
+    <div v-if="loading" class="p-page__loading">
+      <p-loading></p-loading>
     </div>
     <div v-else class="p-page__content">
       <p-label-clipboard
@@ -175,9 +175,11 @@ import RestModel from "model/rest";
 import { MaxItems } from "common/clipboard";
 import $notify from "common/notify";
 import { Input, InputInvalid, ClickShort, ClickLong } from "common/input";
+import PLoading from "component/loading.vue";
 
 export default {
   name: "PPageLabels",
+  components: { PLoading },
   props: {
     staticFilter: {
       type: Object,

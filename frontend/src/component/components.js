@@ -3,6 +3,7 @@ import PNotify from "component/notify.vue";
 import PScroll from "component/scroll.vue";
 import PNavigation from "component/navigation.vue";
 import PUpdate from "component/update.vue";
+import PLoading from "component/loading.vue";
 import PLoadingBar from "component/loading-bar.vue";
 import PLightbox from "component/lightbox.vue";
 
@@ -74,6 +75,7 @@ export function install(app) {
   app.component("PNotify", PNotify);
   app.component("PScroll", PScroll);
   app.component("PNavigation", PNavigation);
+  app.component("PLoading", PLoading);
   app.component("PLoadingBar", PLoadingBar);
   app.component("PLightbox", PLightbox);
   app.component("PUpdate", PUpdate);
