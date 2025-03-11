@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: ci@photoprism.app\n"
-"POT-Creation-Date: 2025-03-11 16:41+0000\n"
-"PO-Revision-Date: 2025-03-11 17:07+0000\n"
+"POT-Creation-Date: 2025-03-11 19:22+0000\n"
+"PO-Revision-Date: 2025-03-11 19:36+0000\n"
 "Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
 "Language-Team: Romanian <https://translate.photoprism.app/projects/"
 "photoprism/backend/ro/>\n"
@@ -202,8 +202,8 @@ msgid "Too many requests"
 msgstr "Prea multe cereri"
 
 #: messages.go:149
-msgid "Storage is full"
-msgstr "Spațiul de stocare este plin"
+msgid "Insufficient storage"
+msgstr "Depozitare insuficientă"
 
 #: messages.go:150
 msgid "Quota exceeded"
@@ -407,6 +407,9 @@ msgstr "Verificat cu succes"
 #: messages.go:198
 msgid "Successfully activated"
 msgstr "Activat cu succes"
+
+#~ msgid "Storage is full"
+#~ msgstr "Spațiul de stocare este plin"
 
 #~ msgid "Invalid request"
 #~ msgstr "Cerere invalidă"

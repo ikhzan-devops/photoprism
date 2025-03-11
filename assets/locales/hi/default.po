@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: ci@photoprism.app\n"
-"POT-Creation-Date: 2025-03-11 16:41+0000\n"
-"PO-Revision-Date: 2025-03-11 17:07+0000\n"
+"POT-Creation-Date: 2025-03-11 19:22+0000\n"
+"PO-Revision-Date: 2025-03-11 19:36+0000\n"
 "Last-Translator: Google Cloud Translation Basic <noreply-mt-google-"
 "translate@weblate.org>\n"
 "Language-Team: Hindi <https://translate.photoprism.app/projects/photoprism/"
@@ -202,8 +202,8 @@ msgid "Too many requests"
 msgstr "बहुत अधिक अनुरोध"
 
 #: messages.go:149
-msgid "Storage is full"
-msgstr "स्टोरेज भर गया है"
+msgid "Insufficient storage"
+msgstr "अपर्याप्त भंडारण"
 
 #: messages.go:150
 msgid "Quota exceeded"
@@ -407,6 +407,9 @@ msgstr "सफलतापूर्वक सत्यापित"
 #: messages.go:198
 msgid "Successfully activated"
 msgstr "सफलतापूर्वक सक्रिय किया गया"
+
+#~ msgid "Storage is full"
+#~ msgstr "स्टोरेज भर गया है"
 
 #~ msgid "Invalid request"
 #~ msgstr "अमान्य अनुरोध"

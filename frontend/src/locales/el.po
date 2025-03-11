@@ -125,7 +125,7 @@ msgstr "Token πρόσβασης"
 msgid "Account"
 msgstr "Λογαριασμός"
 
-#: src/component/user/add/dialog.vue:103 src/component/service/add.vue:53
+#: src/component/user/add/dialog.vue:101 src/component/service/add.vue:53
 msgid "Account created"
 msgstr "Ο Λογαριασμός δημιουργήθηκε"
 
@@ -629,7 +629,7 @@ msgstr "Αλλάξτε τίτλους φωτογραφιών, τοποθεσίε
 msgid "Change private flag"
 msgstr "Αλλαγή ιδιωτικής κατάστασης"
 
-#: src/component/user/add/dialog.vue:110 src/component/user/add/dialog.vue:115
+#: src/component/user/add/dialog.vue:108 src/component/user/add/dialog.vue:113
 #: src/component/user/edit/dialog.vue:89 src/component/user/edit/dialog.vue:94
 #: src/page/settings/account.vue:121 src/page/settings/account.vue:126
 msgid "Changes could not be saved"

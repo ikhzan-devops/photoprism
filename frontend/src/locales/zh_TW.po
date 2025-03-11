@@ -128,7 +128,7 @@ msgstr "訪問令牌"
 msgid "Account"
 msgstr "帳號"
 
-#: src/component/user/add/dialog.vue:103 src/component/service/add.vue:53
+#: src/component/user/add/dialog.vue:101 src/component/service/add.vue:53
 msgid "Account created"
 msgstr "帳號已建立"
 
@@ -632,7 +632,7 @@ msgstr "更改照片標題，位置和其他資料。"
 msgid "Change private flag"
 msgstr "更改私人選項"
 
-#: src/component/user/add/dialog.vue:110 src/component/user/add/dialog.vue:115
+#: src/component/user/add/dialog.vue:108 src/component/user/add/dialog.vue:113
 #: src/component/user/edit/dialog.vue:89 src/component/user/edit/dialog.vue:94
 #: src/page/settings/account.vue:121 src/page/settings/account.vue:126
 msgid "Changes could not be saved"

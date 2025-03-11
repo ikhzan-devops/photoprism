@@ -66,9 +66,10 @@ body.dark-theme {
 /* Notifications */
 
 .v-snackbar__wrapper {
+    min-width: 300px;
+    color: rgba(var(--v-theme-on-surface), 1);
+    background-color: rgba(var(--v-theme-surface), 0.2);
     backdrop-filter: blur(6px);
-    color: rgba(var(--v-theme-on-surface), 1) !important;
-    min-width: 30vw;
 }
 
 .v-snackbar__wrapper .v-snackbar__content {
@@ -78,7 +79,7 @@ body.dark-theme {
     flex-direction: row;
     justify-content: stretch;
     justify-items: center;
-    padding: 12px 14px;
+    padding: 10px 14px;
 }
 
 .v-snackbar.p-notify--success .v-snackbar__wrapper {
@@ -87,7 +88,7 @@ body.dark-theme {
 }
 
 .v-snackbar.p-notify--info .v-snackbar__wrapper {
-    background-color: rgba(var(--v-theme-info), 0.2) !important;
+    background-color: rgba(var(--v-theme-info), 0.22) !important;
     color: rgba(var(--v-theme-on-surface), 1) !important;
 }
 

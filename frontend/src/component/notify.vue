@@ -1,5 +1,5 @@
 <template>
-  <v-snackbar id="p-notify" v-model="visible" :class="'p-notify--' + message.color" :timeout="-1" rounded="pill" location="bottom">
+  <v-snackbar id="p-notify" v-model="visible" :timeout="-1" :class="'p-notify--' + message.color">
     <v-icon v-if="message.icon" :icon="'mdi-' + message.icon" :color="message.color" start></v-icon>
     {{ message.text }}
     <template #actions>
@@ -76,7 +76,7 @@ export default {
     },
 
     addInfoMessage: function (message) {
-      this.addMessage("info", "information", message, 2000);
+      this.addMessage("info", "information-outline", message, 2000);
     },
 
     addWarningMessage: function (message) {
@@ -84,7 +84,7 @@ export default {
     },
 
     addErrorMessage: function (message) {
-      this.addMessage("error", "alert-octagram", message, 8000);
+      this.addMessage("error", "alert-decagram", message, 8000);
     },
 
     addMessage: function (color, icon, text, delay) {
@@ -135,11 +135,6 @@ export default {
         }
       } else {
         this.visible = false;
-        this.$nextTick(function () {
-          this.message.color = "transparent";
-          this.message.icon = "";
-          this.message.text = "";
-        });
       }
     },
   },

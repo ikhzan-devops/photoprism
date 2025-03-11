@@ -280,7 +280,7 @@ let themes = {
       "switch": "#707070",
       "accent": "#EAEAF3",
       "error": "#e57373",
-      "info": "#6E7189",
+      "info": "#7887df",
       "success": "#26A69A",
       "warning": "#bfa965",
       "remove": "#e57373",

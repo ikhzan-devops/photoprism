@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-11 16:41+0000\n"
+"POT-Creation-Date: 2025-03-11 19:22+0000\n"
 "PO-Revision-Date: 2022-10-31 16:44+0100\n"
 "Last-Translator: Michael Mayer <michael@photoprism.org>\n"
 "Language-Team: \n"
@@ -200,7 +200,7 @@ msgid "Too many requests"
 msgstr ""
 
 #: messages.go:149
-msgid "Storage is full"
+msgid "Insufficient storage"
 msgstr ""
 
 #: messages.go:150

@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: ci@photoprism.app\n"
-"POT-Creation-Date: 2025-03-11 16:41+0000\n"
-"PO-Revision-Date: 2025-03-11 17:07+0000\n"
+"POT-Creation-Date: 2025-03-11 19:22+0000\n"
+"PO-Revision-Date: 2025-03-11 19:36+0000\n"
 "Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
 "Language-Team: Hungarian <https://translate.photoprism.app/projects/"
 "photoprism/backend/hu/>\n"
@@ -201,8 +201,8 @@ msgid "Too many requests"
 msgstr "Túl sok kérés"
 
 #: messages.go:149
-msgid "Storage is full"
-msgstr "A tároló megtelt"
+msgid "Insufficient storage"
+msgstr "Elégtelen tárolás"
 
 #: messages.go:150
 msgid "Quota exceeded"
@@ -406,6 +406,9 @@ msgstr "Sikeresen ellenőrizve"
 #: messages.go:198
 msgid "Successfully activated"
 msgstr "Sikeres aktiválás"
+
+#~ msgid "Storage is full"
+#~ msgstr "A tároló megtelt"
 
 #~ msgid "Invalid request"
 #~ msgstr "Érvénytelen kérés"

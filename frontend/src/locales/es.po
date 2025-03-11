@@ -128,7 +128,7 @@ msgstr "Ficha de acceso"
 msgid "Account"
 msgstr "Cuenta"
 
-#: src/component/user/add/dialog.vue:103 src/component/service/add.vue:53
+#: src/component/user/add/dialog.vue:101 src/component/service/add.vue:53
 msgid "Account created"
 msgstr "Cuenta creada"
 
@@ -632,7 +632,7 @@ msgstr "Cambiar títulos, localizaciones y otros metadatos de las fotos."
 msgid "Change private flag"
 msgstr "Cambiar indicador de privado"
 
-#: src/component/user/add/dialog.vue:110 src/component/user/add/dialog.vue:115
+#: src/component/user/add/dialog.vue:108 src/component/user/add/dialog.vue:113
 #: src/component/user/edit/dialog.vue:89 src/component/user/edit/dialog.vue:94
 #: src/page/settings/account.vue:121 src/page/settings/account.vue:126
 msgid "Changes could not be saved"

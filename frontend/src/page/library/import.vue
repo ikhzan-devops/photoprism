@@ -217,7 +217,7 @@ export default {
             return;
           }
 
-          $notify.error(this.$gettext("Import failed"));
+          $notify.error(ctx.$gettext("Import failed"));
 
           ctx.busy = false;
           ctx.completed = 0;

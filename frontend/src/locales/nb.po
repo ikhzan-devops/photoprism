@@ -128,7 +128,7 @@ msgstr "Tilgangstoken"
 msgid "Account"
 msgstr "Konto"
 
-#: src/component/user/add/dialog.vue:103 src/component/service/add.vue:53
+#: src/component/user/add/dialog.vue:101 src/component/service/add.vue:53
 msgid "Account created"
 msgstr "Konto opprettet"
 
@@ -632,7 +632,7 @@ msgstr "Endre fototitler, steder og andre metadata."
 msgid "Change private flag"
 msgstr "Endre private flagg"
 
-#: src/component/user/add/dialog.vue:110 src/component/user/add/dialog.vue:115
+#: src/component/user/add/dialog.vue:108 src/component/user/add/dialog.vue:113
 #: src/component/user/edit/dialog.vue:89 src/component/user/edit/dialog.vue:94
 #: src/page/settings/account.vue:121 src/page/settings/account.vue:126
 msgid "Changes could not be saved"

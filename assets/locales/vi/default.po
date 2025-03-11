@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: ci@photoprism.app\n"
-"POT-Creation-Date: 2025-03-11 16:41+0000\n"
-"PO-Revision-Date: 2025-03-11 17:07+0000\n"
+"POT-Creation-Date: 2025-03-11 19:22+0000\n"
+"PO-Revision-Date: 2025-03-11 19:36+0000\n"
 "Last-Translator: Google Cloud Translation Basic <noreply-mt-google-"
 "translate@weblate.org>\n"
 "Language-Team: none\n"
@@ -201,8 +201,8 @@ msgid "Too many requests"
 msgstr "quá nhiều yêu cầu"
 
 #: messages.go:149
-msgid "Storage is full"
-msgstr "Lưu trữ đã đầy"
+msgid "Insufficient storage"
+msgstr "Không đủ dung lượng lưu trữ"
 
 #: messages.go:150
 msgid "Quota exceeded"
@@ -406,3 +406,6 @@ msgstr "Đã xác minh thành công"
 #: messages.go:198
 msgid "Successfully activated"
 msgstr "Đã kích hoạt thành công"
+
+#~ msgid "Storage is full"
+#~ msgstr "Lưu trữ đã đầy"

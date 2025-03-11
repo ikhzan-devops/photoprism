@@ -128,7 +128,7 @@ msgstr "액세스 토큰"
 msgid "Account"
 msgstr "계정"
 
-#: src/component/user/add/dialog.vue:103 src/component/service/add.vue:53
+#: src/component/user/add/dialog.vue:101 src/component/service/add.vue:53
 msgid "Account created"
 msgstr "계정 생성됨"
 
@@ -632,7 +632,7 @@ msgstr "사진 제목, 위치 및 기타 메타데이터를 변경합니다."
 msgid "Change private flag"
 msgstr "비공개 플래그 변경하기"
 
-#: src/component/user/add/dialog.vue:110 src/component/user/add/dialog.vue:115
+#: src/component/user/add/dialog.vue:108 src/component/user/add/dialog.vue:113
 #: src/component/user/edit/dialog.vue:89 src/component/user/edit/dialog.vue:94
 #: src/page/settings/account.vue:121 src/page/settings/account.vue:126
 msgid "Changes could not be saved"
