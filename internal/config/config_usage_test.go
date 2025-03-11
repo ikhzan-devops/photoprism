@@ -56,19 +56,19 @@ func TestConfig_Quota(t *testing.T) {
 	c.options.UsersQuota = 0
 }
 
-func TestConfig_FilesQuotaReached(t *testing.T) {
+func TestConfig_FilesQuotaExceeded(t *testing.T) {
 	c := TestConfig()
 
 	FlushUsageCache()
-	assert.False(t, c.FilesQuotaReached())
+	assert.False(t, c.FilesQuotaExceeded())
 
 	c.options.FilesQuota = uint64(1)
 	FlushUsageCache()
-	assert.True(t, c.FilesQuotaReached())
+	assert.True(t, c.FilesQuotaExceeded())
 
 	c.options.FilesQuota = uint64(5)
 	FlushUsageCache()
-	assert.False(t, c.FilesQuotaReached())
+	assert.False(t, c.FilesQuotaExceeded())
 
 	c.options.FilesQuota = uint64(0)
 }

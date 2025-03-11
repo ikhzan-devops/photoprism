@@ -118,8 +118,8 @@ func (c *Config) FilesQuotaBytes() uint64 {
 	return c.options.FilesQuota * fs.GB
 }
 
-// FilesQuotaReached checks if the filesystem usage has been reached or exceeded.
-func (c *Config) FilesQuotaReached() bool {
+// FilesQuotaExceeded checks if the filesystem usage has been reached or exceeded.
+func (c *Config) FilesQuotaExceeded() bool {
 	return c.Usage().FilesUsedPct >= 100
 }
 
