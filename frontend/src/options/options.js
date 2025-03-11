@@ -298,6 +298,13 @@ export const Languages = () => [
   },
 ];
 
+export const ItemsPerPage = () => [
+  { text: "10", title: "10", value: 10 },
+  { text: "20", title: "20", value: 20 },
+  { text: "50", title: "50", value: 50 },
+  { text: "100", title: "100", value: 100 },
+];
+
 export const MapsAnimate = () => [
   {
     text: $gettext("None"),

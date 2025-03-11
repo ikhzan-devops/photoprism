@@ -68,6 +68,7 @@
         >
           <v-icon>mdi-view-comfy</v-icon>
         </v-btn>
+
         <v-btn
           v-else-if="settings.view === 'cards' && listView"
           icon
@@ -77,6 +78,7 @@
         >
           <v-icon>mdi-view-list</v-icon>
         </v-btn>
+
         <v-btn
           v-else-if="settings.view === 'cards'"
           icon
@@ -86,9 +88,11 @@
         >
           <v-icon>mdi-view-comfy</v-icon>
         </v-btn>
+
         <v-btn v-else icon class="action-view-cards" :title="$gettext('Toggle View')" @click.stop="setView('cards')">
           <v-icon>mdi-view-column</v-icon>
         </v-btn>
+
         <v-btn
           v-if="canDelete && context === 'archive' && config.count.archived > 0"
           icon
@@ -98,6 +102,7 @@
         >
           <v-icon>mdi-delete-sweep</v-icon>
         </v-btn>
+
         <v-btn
           v-else-if="canUpload"
           icon
@@ -107,6 +112,7 @@
         >
           <v-icon>mdi-cloud-upload</v-icon>
         </v-btn>
+
         <v-btn
           :icon="expanded ? 'mdi-chevron-up' : 'mdi-chevron-down'"
           :title="$gettext('Expand Search')"

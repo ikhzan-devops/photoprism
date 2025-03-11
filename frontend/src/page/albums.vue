@@ -47,9 +47,11 @@
             }
           "
         ></v-text-field>
+
         <v-btn icon class="action-reload" :title="$gettext('Reload')" @click.stop="refresh()">
           <v-icon>mdi-refresh</v-icon>
         </v-btn>
+
         <v-btn
           v-if="canUpload"
           icon
@@ -59,6 +61,7 @@
         >
           <v-icon>mdi-cloud-upload</v-icon>
         </v-btn>
+
         <v-btn
           v-if="canManage && staticFilter.type === 'album'"
           icon
@@ -68,6 +71,7 @@
         >
           <v-icon>mdi-plus</v-icon>
         </v-btn>
+
         <v-btn
           v-if="canManage && !staticFilter['order']"
           :icon="expanded ? 'mdi-chevron-up' : 'mdi-chevron-down'"

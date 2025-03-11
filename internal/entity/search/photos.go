@@ -175,7 +175,7 @@ func searchPhotos(frm form.SearchPhotos, sess *entity.Session, resultCols string
 	switch frm.Order {
 	case sortby.Edited:
 		s = s.Where("photos.edited_at IS NOT NULL").Order("photos.edited_at DESC, files.media_id")
-	case sortby.Updated:
+	case sortby.Updated, sortby.UpdatedAt:
 		s = s.Where("photos.updated_at > photos.created_at").Order("photos.updated_at DESC, files.media_id")
 	case sortby.Archived:
 		s = s.Order("photos.deleted_at DESC, files.media_id")

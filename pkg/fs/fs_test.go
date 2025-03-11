@@ -47,6 +47,7 @@ func TestPathExists(t *testing.T) {
 func TestDeviceExists(t *testing.T) {
 	assert.True(t, DeviceExists("/dev/null"))
 	DeviceExists("/dev/nvidia0")
+	assert.False(t, DeviceExists(""))
 }
 
 func TestPathWritable(t *testing.T) {
