@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: ci@photoprism.app\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-03-11 17:10+0000\n"
+"PO-Revision-Date: 2025-03-11 19:58+0000\n"
 "Last-Translator: Google Cloud Translation Basic <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Hindi <https://translate.photoprism.app/projects/photoprism/frontend/hi/>\n"
 "Language: hi\n"
@@ -1486,6 +1486,10 @@ msgstr "ढेर और संग्रह डाउनलोड करते �
 msgid "Include sidecar files when downloading stacks and archives."
 msgstr "ढेर और संग्रह डाउनलोड करते समय साइडकार फ़ाइलें शामिल करें।"
 
+#: src/component/photo/upload/dialog.vue:134 src/page/library/import.vue:48
+msgid "Increase storage size or delete files to continue."
+msgstr "जारी रखने के लिए संग्रहण आकार बढ़ाएँ या फ़ाइलें हटाएँ।"
+
 #: src/component/navigation.vue:1876 src/page/library.vue:36
 #: src/page/settings/library.vue:32
 msgid "Index"
@@ -1510,6 +1514,10 @@ msgstr "मीडिया और साइडकार फ़ाइलों �
 #: src/component/photo/edit/files.vue:281
 msgid "Instance ID"
 msgstr "इंस्टेंस आईडी"
+
+#: src/component/photo/upload/dialog.vue:134 src/page/library/import.vue:48
+msgid "Insufficient storage."
+msgstr "अपर्याप्त भंडारण"
 
 #: src/component/service/edit.vue:207
 msgid "Interval"
@@ -1943,10 +1951,6 @@ msgstr "कोई मेल खाता रिकॉर्ड नहीं म�
 #: src/locales.js:124
 msgid "No more"
 msgstr "अब और नहीं"
-
-#: src/component/photo/upload/dialog.vue:134 src/page/library/import.vue:48
-msgid "No new files can be added to your library."
-msgstr "आपकी लाइब्रेरी में कोई नई फ़ाइल नहीं जोड़ी जा सकती।"
 
 #: src/component/photo/edit/people.vue:34 src/page/people/new.vue:344
 #: src/page/people/new.vue:433 src/page/people/new.vue:134
@@ -3330,13 +3334,15 @@ msgstr "आपका निरंतर समर्थन हमें नि�
 msgid "Your library is continuously analyzed to automatically create albums of special moments, trips, and places."
 msgstr "विशेष क्षणों, यात्राओं और स्थानों के स्वचालित रूप से एल्बम बनाने के लिए आपकी लाइब्रेरी का लगातार विश्लेषण किया जाता है।"
 
-#: src/component/photo/upload/dialog.vue:134 src/page/library/import.vue:48
-msgid "Your storage is full."
-msgstr "आपका संग्रहण भर गया है।"
-
 #: src/component/lightbox.vue:228
 msgid "Zoom in/out"
 msgstr "ज़ूम इन / आउट करें"
+
+#~ msgid "No new files can be added to your library."
+#~ msgstr "आपकी लाइब्रेरी में कोई नई फ़ाइल नहीं जोड़ी जा सकती।"
+
+#~ msgid "Your storage is full."
+#~ msgstr "आपका संग्रहण भर गया है।"
 
 #~ msgid "Open Folder"
 #~ msgstr "फोल्डर खोलें"

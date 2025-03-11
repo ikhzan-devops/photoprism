@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: ci@photoprism.app\n"
-"PO-Revision-Date: 2025-03-11 17:10+0000\n"
-"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
+"PO-Revision-Date: 2025-03-11 19:58+0000\n"
+"Last-Translator: Weblate Translation Memory <noreply-mt-weblate-translation-memory@weblate.org>\n"
 "Language: sl\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1483,6 +1483,10 @@ msgstr "Vključite slikovne datoteke RAW pri prenašanju skladov in arhivov."
 msgid "Include sidecar files when downloading stacks and archives."
 msgstr "Vključitev stranskih datotek pri prenosu skladov in arhivov."
 
+#: src/component/photo/upload/dialog.vue:134 src/page/library/import.vue:48
+msgid "Increase storage size or delete files to continue."
+msgstr "Če želite nadaljevati, povečajte velikost shrambe ali izbrišite datoteke."
+
 #: src/component/navigation.vue:1876 src/page/library.vue:36
 #: src/page/settings/library.vue:32
 msgid "Index"
@@ -1507,6 +1511,10 @@ msgstr "Indeksiranje medijskih in stranskih datotek…"
 #: src/component/photo/edit/files.vue:281
 msgid "Instance ID"
 msgstr "ID instance"
+
+#: src/component/photo/upload/dialog.vue:134 src/page/library/import.vue:48
+msgid "Insufficient storage."
+msgstr "Nezadostno skladiščenje"
 
 #: src/component/service/edit.vue:207
 msgid "Interval"
@@ -1940,10 +1948,6 @@ msgstr "Ni bilo najdenih ustreznih zapisov"
 #: src/locales.js:124
 msgid "No more"
 msgstr "Ne več"
-
-#: src/component/photo/upload/dialog.vue:134 src/page/library/import.vue:48
-msgid "No new files can be added to your library."
-msgstr "V knjižnico ni mogoče dodajati novih datotek."
 
 #: src/component/photo/edit/people.vue:34 src/page/people/new.vue:344
 #: src/page/people/new.vue:433 src/page/people/new.vue:134
@@ -3327,13 +3331,15 @@ msgstr "Vaša stalna podpora nam pomaga zagotavljati redne posodobitve in ostati
 msgid "Your library is continuously analyzed to automatically create albums of special moments, trips, and places."
 msgstr "Vaša knjižnica se nenehno analizira in samodejno ustvarja albume posebnih trenutkov, potovanj in krajev."
 
-#: src/component/photo/upload/dialog.vue:134 src/page/library/import.vue:48
-msgid "Your storage is full."
-msgstr "Vaš pomnilnik je poln."
-
 #: src/component/lightbox.vue:228
 msgid "Zoom in/out"
 msgstr "Povečanje/pomanjšanje"
+
+#~ msgid "No new files can be added to your library."
+#~ msgstr "V knjižnico ni mogoče dodajati novih datotek."
+
+#~ msgid "Your storage is full."
+#~ msgstr "Vaš pomnilnik je poln."
 
 #~ msgid "Open Folder"
 #~ msgstr "Odpri mapo"

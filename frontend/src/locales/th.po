@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: ci@photoprism.app\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-03-11 17:10+0000\n"
-"Last-Translator: Google Cloud Translation Basic <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2025-03-11 19:58+0000\n"
+"Last-Translator: Weblate Translation Memory <noreply-mt-weblate-translation-memory@weblate.org>\n"
 "Language-Team: \n"
 "Language: th\n"
 "MIME-Version: 1.0\n"
@@ -1486,6 +1486,10 @@ msgstr "รวมไฟล์ภาพ RAW เมื่อดาวน์โห�
 msgid "Include sidecar files when downloading stacks and archives."
 msgstr "รวมไฟล์ sidecar เมื่อดาวน์โหลดสแต็คและไฟล์เก็บถาวร"
 
+#: src/component/photo/upload/dialog.vue:134 src/page/library/import.vue:48
+msgid "Increase storage size or delete files to continue."
+msgstr "เพิ่มขนาดพื้นที่เก็บข้อมูลหรือลบไฟล์เพื่อดำเนินการต่อ"
+
 #: src/component/navigation.vue:1876 src/page/library.vue:36
 #: src/page/settings/library.vue:32
 msgid "Index"
@@ -1510,6 +1514,10 @@ msgstr "กำลังสร้างดัชนีสื่อและไฟ
 #: src/component/photo/edit/files.vue:281
 msgid "Instance ID"
 msgstr "รหัสอินสแตนซ์"
+
+#: src/component/photo/upload/dialog.vue:134 src/page/library/import.vue:48
+msgid "Insufficient storage."
+msgstr "พื้นที่เก็บข้อมูลไม่เพียงพอ"
 
 #: src/component/service/edit.vue:207
 msgid "Interval"
@@ -1943,10 +1951,6 @@ msgstr "ไม่พบรายการที่ตรงกัน"
 #: src/locales.js:124
 msgid "No more"
 msgstr "ไม่มีอีกต่อไป"
-
-#: src/component/photo/upload/dialog.vue:134 src/page/library/import.vue:48
-msgid "No new files can be added to your library."
-msgstr "ไม่สามารถเพิ่มไฟล์ใหม่ลงในไลบรารีของคุณได้"
 
 #: src/component/photo/edit/people.vue:34 src/page/people/new.vue:344
 #: src/page/people/new.vue:433 src/page/people/new.vue:134
@@ -3330,13 +3334,15 @@ msgstr "การสนับสนุนอย่างต่อเนื่อ
 msgid "Your library is continuously analyzed to automatically create albums of special moments, trips, and places."
 msgstr "คลังของคุณได้รับการวิเคราะห์อย่างต่อเนื่องเพื่อสร้างอัลบั้มของช่วงเวลา การเดินทาง และสถานที่พิเศษโดยอัตโนมัติ"
 
-#: src/component/photo/upload/dialog.vue:134 src/page/library/import.vue:48
-msgid "Your storage is full."
-msgstr "พื้นที่เก็บข้อมูลของคุณเต็มแล้ว"
-
 #: src/component/lightbox.vue:228
 msgid "Zoom in/out"
 msgstr "ซูมเข้า/ออก"
+
+#~ msgid "No new files can be added to your library."
+#~ msgstr "ไม่สามารถเพิ่มไฟล์ใหม่ลงในไลบรารีของคุณได้"
+
+#~ msgid "Your storage is full."
+#~ msgstr "พื้นที่เก็บข้อมูลของคุณเต็มแล้ว"
 
 #~ msgid "Open Folder"
 #~ msgstr "เปิดโฟลเดอร์"

@@ -1485,6 +1485,10 @@ msgstr ""
 msgid "Include sidecar files when downloading stacks and archives."
 msgstr ""
 
+#: src/component/photo/upload/dialog.vue:134 src/page/library/import.vue:48
+msgid "Increase storage size or delete files to continue."
+msgstr ""
+
 #: src/component/navigation.vue:1876 src/page/library.vue:36
 #: src/page/settings/library.vue:32
 msgid "Index"
@@ -1508,6 +1512,10 @@ msgstr ""
 
 #: src/component/photo/edit/files.vue:281
 msgid "Instance ID"
+msgstr ""
+
+#: src/component/photo/upload/dialog.vue:134 src/page/library/import.vue:48
+msgid "Insufficient storage."
 msgstr ""
 
 #: src/component/service/edit.vue:207
@@ -1941,10 +1949,6 @@ msgstr ""
 
 #: src/locales.js:124
 msgid "No more"
-msgstr ""
-
-#: src/component/photo/upload/dialog.vue:134 src/page/library/import.vue:48
-msgid "No new files can be added to your library."
 msgstr ""
 
 #: src/component/photo/edit/people.vue:34 src/page/people/new.vue:344
@@ -3327,10 +3331,6 @@ msgstr ""
 
 #: src/page/albums.vue:330
 msgid "Your library is continuously analyzed to automatically create albums of special moments, trips, and places."
-msgstr ""
-
-#: src/component/photo/upload/dialog.vue:134 src/page/library/import.vue:48
-msgid "Your storage is full."
 msgstr ""
 
 #: src/component/lightbox.vue:228

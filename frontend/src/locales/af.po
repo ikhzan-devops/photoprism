@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: ci@photoprism.app\n"
-"PO-Revision-Date: 2025-03-11 17:10+0000\n"
-"Last-Translator: Google Cloud Translation Basic <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2025-03-11 19:58+0000\n"
+"Last-Translator: Weblate Translation Memory <noreply-mt-weblate-translation-memory@weblate.org>\n"
 "Language: af\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1483,6 +1483,10 @@ msgstr "Sluit RAW-beeldlêers in wanneer stapels en argiewe afgelaai word."
 msgid "Include sidecar files when downloading stacks and archives."
 msgstr "Sluit syspanlêers in wanneer stapels en argiewe afgelaai word."
 
+#: src/component/photo/upload/dialog.vue:134 src/page/library/import.vue:48
+msgid "Increase storage size or delete files to continue."
+msgstr "Vergroot stoorgrootte of vee lêers uit om voort te gaan."
+
 #: src/component/navigation.vue:1876 src/page/library.vue:36
 #: src/page/settings/library.vue:32
 msgid "Index"
@@ -1507,6 +1511,10 @@ msgstr "Indekseer tans media- en syspanlêers …"
 #: src/component/photo/edit/files.vue:281
 msgid "Instance ID"
 msgstr "Geval ID"
+
+#: src/component/photo/upload/dialog.vue:134 src/page/library/import.vue:48
+msgid "Insufficient storage."
+msgstr "Onvoldoende berging"
 
 #: src/component/service/edit.vue:207
 msgid "Interval"
@@ -1940,10 +1948,6 @@ msgstr "Geen ooreenstemmende rekords gevind nie"
 #: src/locales.js:124
 msgid "No more"
 msgstr "Nie meer nie"
-
-#: src/component/photo/upload/dialog.vue:134 src/page/library/import.vue:48
-msgid "No new files can be added to your library."
-msgstr "Geen nuwe lêers kan by jou biblioteek gevoeg word nie."
 
 #: src/component/photo/edit/people.vue:34 src/page/people/new.vue:344
 #: src/page/people/new.vue:433 src/page/people/new.vue:134
@@ -3327,13 +3331,15 @@ msgstr "Jou volgehoue ondersteuning help ons om gereelde opdaterings te verskaf 
 msgid "Your library is continuously analyzed to automatically create albums of special moments, trips, and places."
 msgstr "Jou biblioteek word voortdurend ontleed om outomaties albums van spesiale oomblikke, reise en plekke te skep."
 
-#: src/component/photo/upload/dialog.vue:134 src/page/library/import.vue:48
-msgid "Your storage is full."
-msgstr "Jou berging is vol."
-
 #: src/component/lightbox.vue:228
 msgid "Zoom in/out"
 msgstr "Zoem in/uit"
+
+#~ msgid "No new files can be added to your library."
+#~ msgstr "Geen nuwe lêers kan by jou biblioteek gevoeg word nie."
+
+#~ msgid "Your storage is full."
+#~ msgstr "Jou berging is vol."
 
 #~ msgid "Open Folder"
 #~ msgstr "Maak vouer oop"

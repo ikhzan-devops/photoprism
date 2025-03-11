@@ -6,7 +6,8 @@
         <span v-else-if="busy">{{ $gettext(`Importing files to originals…`) }}</span>
         <span v-else-if="completed">{{ $gettext(`Done.`) }}</span>
         <span v-else-if="$config.filesQuotaReached()"
-          >{{ $gettext(`Your storage is full.`) }} {{ $gettext(`No new files can be added to your library.`) }}</span
+          >{{ $gettext(`Insufficient storage.`) }}
+          {{ $gettext(`Increase storage size or delete files to continue.`) }}</span
         >
         <span v-else>{{ $gettext(`Select a source folder to import files…`) }}</span>
       </div>

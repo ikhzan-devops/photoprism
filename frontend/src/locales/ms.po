@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: ci@photoprism.app\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-03-11 17:10+0000\n"
-"Last-Translator: Google Cloud Translation Basic <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2025-03-11 19:58+0000\n"
+"Last-Translator: Weblate Translation Memory <noreply-mt-weblate-translation-memory@weblate.org>\n"
 "Language-Team: \n"
 "Language: ms\n"
 "MIME-Version: 1.0\n"
@@ -1486,6 +1486,10 @@ msgstr "Sertakan fail imej RAW semasa memuat turun tindanan dan arkib."
 msgid "Include sidecar files when downloading stacks and archives."
 msgstr "Sertakan fail sidecar semasa memuat turun tindanan dan arkib."
 
+#: src/component/photo/upload/dialog.vue:134 src/page/library/import.vue:48
+msgid "Increase storage size or delete files to continue."
+msgstr "Tingkatkan saiz storan atau padam fail untuk meneruskan."
+
 #: src/component/navigation.vue:1876 src/page/library.vue:36
 #: src/page/settings/library.vue:32
 msgid "Index"
@@ -1510,6 +1514,10 @@ msgstr "Mengindeks media dan fail sampingan…"
 #: src/component/photo/edit/files.vue:281
 msgid "Instance ID"
 msgstr "ID Contoh"
+
+#: src/component/photo/upload/dialog.vue:134 src/page/library/import.vue:48
+msgid "Insufficient storage."
+msgstr "Storan tidak mencukupi"
 
 #: src/component/service/edit.vue:207
 msgid "Interval"
@@ -1943,10 +1951,6 @@ msgstr "Tiada rekod yang sepadan ditemui"
 #: src/locales.js:124
 msgid "No more"
 msgstr "Tiada lagi"
-
-#: src/component/photo/upload/dialog.vue:134 src/page/library/import.vue:48
-msgid "No new files can be added to your library."
-msgstr "Tiada fail baharu boleh ditambahkan pada pustaka anda."
 
 #: src/component/photo/edit/people.vue:34 src/page/people/new.vue:344
 #: src/page/people/new.vue:433 src/page/people/new.vue:134
@@ -3330,13 +3334,15 @@ msgstr "Sokongan berterusan anda membantu kami menyediakan kemas kini dan perkhi
 msgid "Your library is continuously analyzed to automatically create albums of special moments, trips, and places."
 msgstr "Pustaka anda dianalisis secara berterusan untuk mencipta album detik, perjalanan dan tempat istimewa secara automatik."
 
-#: src/component/photo/upload/dialog.vue:134 src/page/library/import.vue:48
-msgid "Your storage is full."
-msgstr "Storan anda penuh."
-
 #: src/component/lightbox.vue:228
 msgid "Zoom in/out"
 msgstr "Zum masuk/keluar"
+
+#~ msgid "No new files can be added to your library."
+#~ msgstr "Tiada fail baharu boleh ditambahkan pada pustaka anda."
+
+#~ msgid "Your storage is full."
+#~ msgstr "Storan anda penuh."
 
 #~ msgid "Open Folder"
 #~ msgstr "Buka Folder"

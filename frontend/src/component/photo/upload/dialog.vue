@@ -41,8 +41,8 @@
               <span v-else-if="indexing">{{ $gettext(`Upload complete. Indexing…`) }}</span>
               <span v-else-if="completedTotal === 100">{{ $gettext(`Done.`) }}</span>
               <span v-else-if="filesQuotaReached"
-                >{{ $gettext(`Your storage is full.`) }}
-                {{ $gettext(`No new files can be added to your library.`) }}</span
+                >{{ $gettext(`Insufficient storage.`) }}
+                {{ $gettext(`Increase storage size or delete files to continue.`) }}</span
               >
               <span v-else>{{ $gettext(`Select the files to upload…`) }}</span>
             </div>

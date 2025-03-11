@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: ci@photoprism.app\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-03-11 17:10+0000\n"
-"Last-Translator: Google Cloud Translation Basic <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2025-03-11 19:58+0000\n"
+"Last-Translator: Weblate Translation Memory <noreply-mt-weblate-translation-memory@weblate.org>\n"
 "Language-Team: Chinese (Traditional) <https://translate.photoprism.app/projects/photoprism/frontend/zh_Hant/>\n"
 "Language: zh_TW\n"
 "MIME-Version: 1.0\n"
@@ -1486,6 +1486,10 @@ msgstr "在下載堆疊和封存時包含 RAW 圖像一起。"
 msgid "Include sidecar files when downloading stacks and archives."
 msgstr "在下載堆疊和封存時包含 sidecar 檔案一起。"
 
+#: src/component/photo/upload/dialog.vue:134 src/page/library/import.vue:48
+msgid "Increase storage size or delete files to continue."
+msgstr "增加儲存大小或刪除檔案以繼續。"
+
 #: src/component/navigation.vue:1876 src/page/library.vue:36
 #: src/page/settings/library.vue:32
 msgid "Index"
@@ -1510,6 +1514,10 @@ msgstr "正在建立媒體和sidecar檔案的索引…"
 #: src/component/photo/edit/files.vue:281
 msgid "Instance ID"
 msgstr "實例 ID"
+
+#: src/component/photo/upload/dialog.vue:134 src/page/library/import.vue:48
+msgid "Insufficient storage."
+msgstr "儲存空間不足"
 
 #: src/component/service/edit.vue:207
 msgid "Interval"
@@ -1943,10 +1951,6 @@ msgstr "沒有找到符合的記錄"
 #: src/locales.js:124
 msgid "No more"
 msgstr "不再"
-
-#: src/component/photo/upload/dialog.vue:134 src/page/library/import.vue:48
-msgid "No new files can be added to your library."
-msgstr "無法將新檔案新增至您的庫中。"
 
 #: src/component/photo/edit/people.vue:34 src/page/people/new.vue:344
 #: src/page/people/new.vue:433 src/page/people/new.vue:134
@@ -3330,13 +3334,15 @@ msgstr "您的持續支持有助於我們提供定期更新並保持獨立，因
 msgid "Your library is continuously analyzed to automatically create albums of special moments, trips, and places."
 msgstr "您的資料庫會持續進行分析，以自動建立有關特殊時刻、旅行和地點的相簿。"
 
-#: src/component/photo/upload/dialog.vue:134 src/page/library/import.vue:48
-msgid "Your storage is full."
-msgstr "您的儲存空間已滿。"
-
 #: src/component/lightbox.vue:228
 msgid "Zoom in/out"
 msgstr "縮放"
+
+#~ msgid "No new files can be added to your library."
+#~ msgstr "無法將新檔案新增至您的庫中。"
+
+#~ msgid "Your storage is full."
+#~ msgstr "您的儲存空間已滿。"
 
 #~ msgid "Open Folder"
 #~ msgstr "打開資料夾"
