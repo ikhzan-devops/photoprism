@@ -2,7 +2,7 @@
   <div class="p-photos p-photo-view-mosaic">
     <div v-if="photos.length === 0" class="pa-3">
       <v-alert
-        color="primary"
+        color="surface-variant"
         :icon="isSharedView ? 'mdi-image-off' : 'mdi-lightbulb-outline'"
         class="no-results"
         variant="outlined"

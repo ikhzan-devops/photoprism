@@ -376,7 +376,7 @@ var FileFixtures = FileMap{
 		FileRoot:        RootOriginals,
 		OriginalName:    "",
 		FileHash:        "acad9168fa6acc5c5c2965ddf6ec465ca42fd831",
-		FileSize:        7799202,
+		FileSize:        3 * fs.GB,
 		FileCodec:       "avc1",
 		FileType:        "mp4",
 		MediaType:       media.Video.String(),

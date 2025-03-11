@@ -755,12 +755,21 @@
             </v-list-item>
           </v-list>
 
-          <div v-if="!isMini && featUsage" class="nav-info usage-info clickable" @click.stop="showUsageInfo">
+          <div v-if="disconnected" class="nav-info connection-info clickable" @click.stop="showServerConnectionHelp">
+            <div class="nav-info__underlay"></div>
+            <div class="text-center">
+              <v-icon icon="mdi-wifi-off" color="warning" size="21"></v-icon>
+            </div>
+            <div v-if="!isMini" class="text-start text-body-2">
+              {{ $gettext(`No server connection`) }}
+            </div>
+          </div>
+          <div v-else-if="!isMini && featUsage" class="nav-info usage-info clickable" @click.stop="showUsageInfo">
             <div class="nav-info__underlay"></div>
             <div class="nav-info__content">
               <v-progress-linear
                 :model-value="config.usage.filesUsedPct"
-                :color="config.usage.filesUsedPct > 95 ? 'error' : 'surface-variant'"
+                :color="config.usage.filesUsedPct > 95 ? 'error' : 'selected'"
                 height="16"
                 max="100"
                 min="0"
@@ -779,15 +788,6 @@
             </div>
           </div>
 
-          <div v-if="disconnected" class="nav-info connection-info clickable" @click.stop="showServerConnectionHelp">
-            <div class="nav-info__underlay"></div>
-            <div class="text-center my-1">
-              <v-icon color="warning" size="25">mdi-wifi-off</v-icon>
-            </div>
-            <div v-if="!isMini" class="text-start mt-1 text-body-2">
-              {{ $gettext(`No server connection`) }}
-            </div>
-          </div>
           <div v-show="auth && !isPublic && !disconnected" class="nav-info user-info">
             <div class="nav-info__underlay"></div>
             <div class="nav-user-avatar text-center my-1 mx-2 clickable" @click.stop="showAccountSettings">

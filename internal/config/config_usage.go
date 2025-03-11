@@ -6,6 +6,7 @@ import (
 
 	gc "github.com/patrickmn/go-cache"
 
+	"github.com/photoprism/photoprism/internal/entity/query"
 	"github.com/photoprism/photoprism/pkg/fs"
 	"github.com/photoprism/photoprism/pkg/fs/duf"
 )
@@ -24,6 +25,8 @@ type Usage struct {
 	FilesFree    uint64 `json:"filesFree"`
 	FilesFreePct int    `json:"filesFreePct"`
 	FilesTotal   uint64 `json:"filesTotal"`
+	UsersUsedPct int    `json:"usersUsedPct"`
+	UsersFreePct int    `json:"usersFreePct"`
 }
 
 // Usage returns the used, free and total storage size in bytes and caches the result.
@@ -70,7 +73,22 @@ func (c *Config) Usage() Usage {
 		info.FilesUsedPct = 1
 	}
 
+	if info.FilesUsedPct > 100 {
+		info.FilesUsedPct = 100
+	}
+
 	info.FilesFreePct = 100 - info.FilesUsedPct
+
+	if usersTotal := c.UsersQuota(); usersTotal > 0 {
+		usersUsed := query.CountUsers(true, true, nil, []string{"guest"})
+		info.UsersUsedPct = int(math.Floor(float64(usersUsed) / float64(usersTotal) * 100))
+
+		if info.UsersUsedPct > 100 {
+			info.UsersUsedPct = 100
+		}
+
+		info.UsersFreePct = 100 - info.UsersUsedPct
+	}
 
 	usageCache.SetDefault(originalsPath, info)
 
@@ -82,7 +100,7 @@ func (c *Config) UsageInfo() bool {
 	return c.options.UsageInfo || c.options.FilesQuota > 0
 }
 
-// FilesQuota returns the maximum aggregated size of all indexed files in megabytes, or 0 if no quota exists.
+// FilesQuota returns the maximum aggregated size of all indexed files in gigabytes, or 0 if no limit exists.
 func (c *Config) FilesQuota() uint64 {
 	if c.options.FilesQuota <= 0 {
 		return 0
@@ -91,13 +109,13 @@ func (c *Config) FilesQuota() uint64 {
 	return c.options.FilesQuota
 }
 
-// FilesQuotaBytes returns the maximum aggregated size of all indexed files in bytes, or 0 if no quota exists.
+// FilesQuotaBytes returns the maximum aggregated size of all indexed files in bytes, or 0 if no limit exists.
 func (c *Config) FilesQuotaBytes() uint64 {
 	if c.options.FilesQuota <= 0 {
 		return 0
 	}
 
-	return c.options.FilesQuota * fs.MB
+	return c.options.FilesQuota * fs.GB
 }
 
 // FilesQuotaReached checks if the filesystem usage has been reached or exceeded.

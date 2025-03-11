@@ -180,7 +180,7 @@
       ></p-album-clipboard>
 
       <div v-if="results.length === 0" class="pa-3">
-        <v-alert color="primary" icon="mdi-lightbulb-outline" class="no-results" variant="outlined">
+        <v-alert color="surface-variant" icon="mdi-lightbulb-outline" class="no-results" variant="outlined">
           <div class="font-weight-bold">
             {{ $gettext(`No albums found`) }}
           </div>

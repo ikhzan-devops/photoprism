@@ -30,7 +30,7 @@
             @focus="onFocus"
           >
           </v-autocomplete>
-          <v-progress-linear :model-value="completed" :indeterminate="busy" :height="16" color="surface-variant">
+          <v-progress-linear :model-value="completed" :indeterminate="busy" :height="16" color="selected">
             <span v-if="eta" class="eta text-caption opacity-80">{{ eta }}</span>
           </v-progress-linear>
         </div>

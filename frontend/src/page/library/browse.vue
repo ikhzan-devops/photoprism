@@ -35,7 +35,7 @@
       <div class="p-files p-files-cards">
         <v-alert
           v-if="results.length === 0"
-          color="primary"
+          color="surface-variant"
           icon="mdi-lightbulb-outline"
           class="ma-3 no-results opacity-60"
           variant="outlined"

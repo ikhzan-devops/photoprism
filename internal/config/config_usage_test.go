@@ -11,13 +11,14 @@ import (
 func TestConfig_Usage(t *testing.T) {
 	c := TestConfig()
 
+	FlushUsageCache()
 	c.options.UsageInfo = true
 	result := c.Usage()
 	assert.GreaterOrEqual(t, result.FilesUsed, uint64(60000000))
 
 	t.Logf("Storage Used: %d MB (%d%%), Free: %d MB (%d%%), Total %d MB", result.FilesUsed/duf.MB, result.FilesUsedPct, result.FilesFree/duf.MB, result.FilesFreePct, result.FilesTotal/duf.MB)
 
-	c.options.FilesQuota = uint64(18)
+	c.options.FilesQuota = uint64(1)
 	result2 := c.Usage()
 
 	t.Logf("Storage Used: %d MB (%d%%), Free: %d MB (%d%%), Total %d MB", result2.FilesUsed/duf.MB, result2.FilesUsedPct, result2.FilesFree/duf.MB, result2.FilesFreePct, result2.FilesTotal/duf.MB)
@@ -27,7 +28,6 @@ func TestConfig_Usage(t *testing.T) {
 	assert.GreaterOrEqual(t, result2.FilesTotal, uint64(60000000))
 
 	FlushUsageCache()
-
 	result3 := c.Usage()
 
 	t.Logf("Storage Used: %d MB (%d%%), Free: %d MB (%d%%), Total %d MB", result3.FilesUsed/duf.MB, result3.FilesUsedPct, result3.FilesFree/duf.MB, result3.FilesFreePct, result3.FilesTotal/duf.MB)
@@ -43,12 +43,13 @@ func TestConfig_Usage(t *testing.T) {
 func TestConfig_Quota(t *testing.T) {
 	c := TestConfig()
 
+	FlushUsageCache()
 	assert.Equal(t, uint64(0), c.FilesQuota())
 	assert.Equal(t, 0, c.UsersQuota())
 
-	c.options.FilesQuota = uint64(18)
+	c.options.FilesQuota = uint64(1)
 	c.options.UsersQuota = 10
-	assert.Equal(t, uint64(18), c.FilesQuota())
+	assert.Equal(t, uint64(1), c.FilesQuota())
 	assert.Equal(t, 10, c.UsersQuota())
 
 	c.options.FilesQuota = uint64(0)
@@ -58,10 +59,16 @@ func TestConfig_Quota(t *testing.T) {
 func TestConfig_FilesQuotaReached(t *testing.T) {
 	c := TestConfig()
 
+	FlushUsageCache()
 	assert.False(t, c.FilesQuotaReached())
 
-	c.options.FilesQuota = uint64(18)
+	c.options.FilesQuota = uint64(1)
+	FlushUsageCache()
 	assert.True(t, c.FilesQuotaReached())
+
+	c.options.FilesQuota = uint64(5)
+	FlushUsageCache()
+	assert.False(t, c.FilesQuotaReached())
 
 	c.options.FilesQuota = uint64(0)
 }

@@ -48,6 +48,7 @@ const (
 	ErrAccountConnect
 	ErrTooManyRequests
 	ErrStorageIsFull
+	ErrQuotaExceeded
 
 	MsgChangesSaved
 	MsgAlbumCreated
@@ -146,6 +147,7 @@ var Messages = MessageMap{
 	ErrAccountConnect:     gettext("Your account could not be connected"),
 	ErrTooManyRequests:    gettext("Too many requests"),
 	ErrStorageIsFull:      gettext("Storage is full"),
+	ErrQuotaExceeded:      gettext("Quota exceeded"),
 
 	// Info and confirmation messages:
 	MsgChangesSaved:          gettext("Changes successfully saved"),
