@@ -5,6 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
+	"github.com/photoprism/photoprism/pkg/fs"
 	"github.com/photoprism/photoprism/pkg/fs/duf"
 )
 
@@ -49,7 +50,9 @@ func TestConfig_Quota(t *testing.T) {
 
 	c.options.FilesQuota = uint64(1)
 	c.options.UsersQuota = 10
+
 	assert.Equal(t, uint64(1), c.FilesQuota())
+	assert.Equal(t, uint64(fs.GB), c.FilesQuotaBytes())
 	assert.Equal(t, 10, c.UsersQuota())
 
 	c.options.FilesQuota = uint64(0)
@@ -71,4 +74,21 @@ func TestConfig_FilesQuotaExceeded(t *testing.T) {
 	assert.False(t, c.FilesQuotaExceeded())
 
 	c.options.FilesQuota = uint64(0)
+}
+
+func TestConfig_UsersQuotaExceeded(t *testing.T) {
+	c := TestConfig()
+
+	FlushUsageCache()
+	assert.False(t, c.UsersQuotaExceeded())
+
+	c.options.UsersQuota = 1
+	FlushUsageCache()
+	assert.True(t, c.UsersQuotaExceeded())
+
+	c.options.UsersQuota = 100000
+	FlushUsageCache()
+	assert.False(t, c.UsersQuotaExceeded())
+
+	c.options.UsersQuota = 0
 }

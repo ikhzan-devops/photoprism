@@ -862,12 +862,18 @@ export class Photo extends RestModel {
       return;
     }
 
-    if (file.Width && file.Height) {
-      info.push(file.Width + " × " + file.Height);
-    } else if (!file.Primary) {
-      let primary = this.primaryFile();
-      if (primary && primary.Width && primary.Height) {
-        info.push(primary.Width + " × " + primary.Height);
+    if (file?.Pages > 0) {
+      info.push(file.Pages + " " + $gettext("Pages"));
+    }
+
+    if (file?.MediaType !== media.Document) {
+      if (file.Width && file.Height) {
+        info.push(file.Width + " × " + file.Height);
+      } else if (!file.Primary) {
+        let primary = this.primaryFile();
+        if (primary && primary.Width && primary.Height) {
+          info.push(primary.Width + " × " + primary.Height);
+        }
       }
     }
 
@@ -883,7 +889,7 @@ export class Photo extends RestModel {
       return this;
     }
 
-    return this.Files.find((f) => f.MediaType === media.Vector || f.FileType === media.FormatSVG);
+    return this.Files.find((f) => f.MediaType === media.Document || f.MediaType === media.Vector || f.FileType === media.FormatSVG);
   }
 
   getVectorInfo = () => {
@@ -893,15 +899,15 @@ export class Photo extends RestModel {
 
   generateVectorInfo = memoizeOne((file) => {
     if (!file) {
-      return $gettext("Vector");
+      return $gettext("Unknown");
     }
 
     const info = [];
 
-    if (file.MediaType === media.Vector) {
+    if (file.MediaType === media.Vector || file.MediaType === media.Document) {
       info.push($util.fileType(file.FileType));
     } else {
-      info.push($gettext("Vector"));
+      info.push($gettext("Unknown"));
     }
 
     this.addSizeInfo(file, info);

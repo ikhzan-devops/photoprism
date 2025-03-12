@@ -88,8 +88,8 @@
                 <i class="mdi mdi-file-gif-box" />
                 {{ m.getVideoInfo() }}
               </button>
-              <button v-else-if="m.Type === 'vector'" class="meta-vector text-truncate">
-                <i class="mdi mdi-vector-polyline" />
+              <button v-else-if="m.Type === 'document' || m.Type === 'vector'" class="meta-vector text-truncate">
+                <i class="mdi" :class="m.Type === 'document' ? 'mdi-text-box' : 'mdi-vector-polyline'" />
                 {{ m.getVectorInfo() }}
               </button>
               <button v-else class="meta-image text-truncate">
@@ -300,12 +300,12 @@
                 {{ m.getVideoInfo() }}
               </button>
               <button
-                v-else-if="m.Type === 'vector'"
-                :title="$gettext('Vector')"
+                v-else-if="m.Type === 'document' || m.Type === 'vector'"
+                :title="m.Type === 'document' ? $gettext('Document') : $gettext('Vector')"
                 class="meta-vector text-truncate"
                 @click.exact="editPhoto(index)"
               >
-                <i class="mdi mdi-vector-polyline" />
+                <i class="mdi" :class="m.Type === 'document' ? 'mdi-text-box' : 'mdi-vector-polyline'" />
                 {{ m.getVectorInfo() }}
               </button>
               <button

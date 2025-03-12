@@ -322,6 +322,12 @@ func searchPhotos(frm form.SearchPhotos, sess *entity.Session, resultCols string
 		case terms["video"]:
 			frm.Query = strings.ReplaceAll(frm.Query, "video", "")
 			frm.Video = true
+		case terms["documents"]:
+			frm.Query = strings.ReplaceAll(frm.Query, "documents", "")
+			frm.Document = true
+		case terms["document"]:
+			frm.Query = strings.ReplaceAll(frm.Query, "document", "")
+			frm.Document = true
 		case terms["vectors"]:
 			frm.Query = strings.ReplaceAll(frm.Query, "vectors", "")
 			frm.Vector = true
@@ -640,7 +646,7 @@ func searchPhotos(frm form.SearchPhotos, sess *entity.Session, resultCols string
 	} else if frm.Video {
 		s = s.Where("photos.photo_type = ?", media.Video)
 	} else if frm.Photo {
-		s = s.Where("photos.photo_type IN ('image','live','animated','vector','raw')")
+		s = s.Where("photos.photo_type IN ('image','raw','live','animated','vector')")
 	}
 
 	// Filter by storage path.

@@ -172,6 +172,14 @@
                               }}</span>
                             </td>
                           </tr>
+                          <tr v-if="file.FileType">
+                            <td>
+                              {{ $gettext(`Type`) }}
+                            </td>
+                            <td class="text-break">
+                              <span v-tooltip="file?.Mime">{{ file.typeInfo() }}</span>
+                            </td>
+                          </tr>
                           <tr>
                             <td>
                               {{ $gettext(`Size`) }}
@@ -182,19 +190,17 @@
                               }}</span>
                             </td>
                           </tr>
+                          <tr v-if="file.Pages">
+                            <td>
+                              {{ $gettext(`Pages`) }}
+                            </td>
+                            <td>{{ file.Pages }}</td>
+                          </tr>
                           <tr v-if="file.Software">
                             <td>
                               {{ $gettext(`Software`) }}
                             </td>
                             <td class="text-break">{{ file.Software }}</td>
-                          </tr>
-                          <tr v-if="file.FileType">
-                            <td>
-                              {{ $gettext(`Type`) }}
-                            </td>
-                            <td class="text-break">
-                              <span v-tooltip="file?.Mime">{{ file.typeInfo() }}</span>
-                            </td>
                           </tr>
                           <tr v-if="file.isAnimated()">
                             <td>

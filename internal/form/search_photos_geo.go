@@ -34,7 +34,7 @@ type SearchPhotosGeo struct {
 	Live      bool      `form:"live" notes:"Finds Live Photos and short videos"`
 	Vector    bool      `form:"vector" notes:"Finds vector graphics only"`
 	Video     bool      `form:"video" notes:"Finds videos only"`
-	Photo     bool      `form:"photo" notes:"Excludes videos from search results"`
+	Photo     bool      `form:"photo" notes:"Excludes videos and documents from search results"`
 	Scan      string    `form:"scan" example:"scan:true scan:false" notes:"Finds scanned photos and documents"`
 	Mp        string    `form:"mp" example:"mp:3-6" notes:"Resolution in Megapixels (MP)"`
 	Panorama  bool      `form:"panorama"`

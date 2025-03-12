@@ -22,21 +22,21 @@
 }
 
 .map-background {
-    background-color: #0a0a13;
+    background: radial-gradient(circle at center, #0e0e19, #090916);
     z-index: -1;
 }
 
 .map-background .star {
     position: absolute;
     background: white;
-    box-shadow: 0px 0px 20px 0px rgb(255, 255, 255);
+    box-shadow: 0 0 20px 0 rgb(255, 255, 255);
     border-radius: 100%;
 }
 
 .map-background .star.size-1 {
     width: 1px;
     height: 1px;
-    opacity: 0.23;
+    opacity: 0.24;
 }
 
 .map-background .star.size-2 {

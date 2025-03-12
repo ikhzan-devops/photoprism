@@ -316,6 +316,8 @@ export default class $util {
     }
 
     switch (value) {
+      case "pdf":
+        return "PDF";
       case "jpg":
         return "JPEG";
       case media.FormatJpegXL:
@@ -391,8 +393,6 @@ export default class $util {
         return "Windows Media";
       case "svg":
         return "SVG";
-      case "pdf":
-        return "PDF";
       case "ai":
         return "Adobe Illustrator";
       case "ps":

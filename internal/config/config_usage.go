@@ -97,7 +97,7 @@ func (c *Config) Usage() Usage {
 
 // UsageInfo returns true if resource usage information should be displayed in the user interface.
 func (c *Config) UsageInfo() bool {
-	return c.options.UsageInfo || c.options.FilesQuota > 0
+	return c.options.UsageInfo || c.options.FilesQuota > 0 || c.options.UsersQuota > 0
 }
 
 // FilesQuota returns the maximum aggregated size of all indexed files in gigabytes, or 0 if no limit exists.
@@ -118,16 +118,21 @@ func (c *Config) FilesQuotaBytes() uint64 {
 	return c.options.FilesQuota * fs.GB
 }
 
-// FilesQuotaExceeded checks if the filesystem usage has been reached or exceeded.
+// FilesQuotaExceeded checks whether the filesystem usage has been reached or exceeded.
 func (c *Config) FilesQuotaExceeded() bool {
 	return c.Usage().FilesUsedPct >= 100
 }
 
-// UsersQuota returns the maximum number of registered user accounts, or 0 if no quota exists.
+// UsersQuota returns the maximum number of user accounts without guests, or 0 if unlimited.
 func (c *Config) UsersQuota() int {
 	if c.options.UsersQuota <= 0 {
 		return 0
 	}
 
 	return c.options.UsersQuota
+}
+
+// UsersQuotaExceeded checks whether the maximum number of user accounts has been reached or exceeded.
+func (c *Config) UsersQuotaExceeded() bool {
+	return c.Usage().UsersUsedPct >= 100
 }

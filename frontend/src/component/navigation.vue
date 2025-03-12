@@ -169,6 +169,18 @@
                 </v-list-item>
 
                 <v-list-item
+                  :to="{ name: 'photos', query: { q: 'stacks' } }"
+                  :exact="true"
+                  variant="text"
+                  class="nav-stacks"
+                  @click.stop=""
+                >
+                  <v-list-item-title :class="`nav-menu-item menu-item`">
+                    {{ $gettext(`Stacks`) }}
+                  </v-list-item-title>
+                </v-list-item>
+
+                <v-list-item
                   v-show="isSponsor"
                   :to="{ name: 'browse', query: { q: 'vectors' } }"
                   :exact="true"
@@ -182,18 +194,6 @@
                 </v-list-item>
 
                 <v-list-item
-                  :to="{ name: 'photos', query: { q: 'stacks' } }"
-                  :exact="true"
-                  variant="text"
-                  class="nav-stacks"
-                  @click.stop=""
-                >
-                  <v-list-item-title :class="`nav-menu-item menu-item`">
-                    {{ $gettext(`Stacks`) }}
-                  </v-list-item-title>
-                </v-list-item>
-
-                <v-list-item
                   :to="{ name: 'photos', query: { q: 'scans' } }"
                   :exact="true"
                   variant="text"
@@ -202,6 +202,19 @@
                 >
                   <v-list-item-title :class="`nav-menu-item menu-item`">
                     {{ $gettext(`Scans`) }}
+                  </v-list-item-title>
+                </v-list-item>
+
+                <v-list-item
+                  v-show="isSponsor"
+                  :to="{ name: 'browse', query: { q: 'documents' } }"
+                  :exact="true"
+                  variant="text"
+                  class="nav-documents"
+                  @click.stop=""
+                >
+                  <v-list-item-title :class="`nav-menu-item menu-item`">
+                    {{ $gettext(`Documents`) }}
                   </v-list-item-title>
                 </v-list-item>
 

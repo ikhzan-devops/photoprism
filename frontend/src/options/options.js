@@ -387,6 +387,10 @@ export const PhotoTypes = () => [
     text: $gettext("Vector"),
     value: media.Vector,
   },
+  {
+    text: $gettext("Document"),
+    value: media.Document,
+  },
 ];
 
 export const Timeouts = () => [
