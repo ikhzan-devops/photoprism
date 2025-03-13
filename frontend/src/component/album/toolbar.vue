@@ -40,48 +40,7 @@
         <v-btn value="mosaic" icon="mdi-view-comfy" class="pe-1" @click="setView('mosaic')"></v-btn>
       </v-btn-toggle>
 
-      <v-menu transition="slide-y-transition" open-on-click open-on-hover>
-        <template #activator="{ props }">
-          <v-btn density="comfortable" icon="mdi-dots-vertical" v-bind="props" class="action-menu ms-1"></v-btn>
-        </template>
-
-        <v-list min-width="128" density="comfortable" bg-color="navigation" slim class="ra-8 opacity-95">
-          <v-list-item
-            prepend-icon="mdi-refresh"
-            :subtitle="$gettext('Refresh')"
-            class="action-reload action-refresh"
-            @click="refresh"
-          ></v-list-item>
-          <v-list-item
-            v-if="canManage"
-            :subtitle="$gettext('Edit')"
-            prepend-icon="mdi-pencil"
-            class="action-edit"
-            @click="dialog.edit = true"
-          ></v-list-item>
-          <v-list-item
-            v-if="canShare"
-            :subtitle="$gettext('Share')"
-            prepend-icon="mdi-share-variant"
-            class="action-share"
-            @click="dialog.share = true"
-          ></v-list-item>
-          <v-list-item
-            v-if="canDownload"
-            :subtitle="$gettext('Download')"
-            prepend-icon="mdi-download"
-            class="action-download"
-            @click="download"
-          ></v-list-item>
-          <v-list-item
-            v-if="canUpload"
-            :subtitle="$gettext('Upload')"
-            prepend-icon="mdi-cloud-upload"
-            class="action-upload"
-            @click="showUpload"
-          ></v-list-item>
-        </v-list>
-      </v-menu>
+      <p-action-menu :items="menuActions" button-class="ms-1"></p-action-menu>
     </v-toolbar>
 
     <div v-if="album.Description" class="toolbar-details-panel">
@@ -109,8 +68,13 @@ import $notify from "common/notify";
 import download from "common/download";
 import { T } from "common/gettext";
 
+import PActionMenu from "component/action/menu.vue";
+
 export default {
   name: "PAlbumToolbar",
+  components: {
+    PActionMenu,
+  },
   props: {
     album: {
       type: Object,
@@ -177,6 +141,56 @@ export default {
       if (this.expanded) {
         this.expanded = false;
       }
+    },
+    menuActions() {
+      return [
+        {
+          name: "refresh",
+          icon: "mdi-refresh",
+          text: this.$gettext("Refresh"),
+          visible: true,
+          click: () => {
+            this.refresh();
+          },
+        },
+        {
+          name: "edit",
+          icon: "mdi-pencil",
+          text: this.$gettext("Edit"),
+          visible: this.canManage,
+          click: () => {
+            this.dialog.edit = true;
+          },
+        },
+        {
+          name: "share",
+          icon: "mdi-share-variant",
+          text: this.$gettext("Share"),
+          class: "action-share",
+          visible: this.canShare,
+          click: () => {
+            this.dialog.share = true;
+          },
+        },
+        {
+          name: "download",
+          icon: "mdi-download",
+          text: this.$gettext("Download"),
+          visible: this.canDownload,
+          click: () => {
+            this.download();
+          },
+        },
+        {
+          name: "upload",
+          icon: "mdi-cloud-upload",
+          text: this.$gettext("Upload"),
+          visible: this.canUpload,
+          click: () => {
+            this.showUpload();
+          },
+        },
+      ];
     },
     T() {
       return T.apply(this, arguments);

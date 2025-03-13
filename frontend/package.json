@@ -128,6 +128,7 @@
     ">0.25% and last 2 years"
   ],
   "devDependencies": {
-    "@vue/language-server": "^2.2.0"
+    "@vue/language-server": "^2.2.0",
+    "babel-plugin-polyfill-corejs3": "^0.11.1"
   }
 }

@@ -75,40 +75,7 @@
         >
         </v-btn>
 
-        <v-menu v-if="$vuetify.display.mdAndUp" transition="slide-y-transition" open-on-click open-on-hover>
-          <template #activator="{ props }">
-            <v-btn density="comfortable" icon="mdi-dots-vertical" v-bind="props" class="action-menu ms-1"></v-btn>
-          </template>
-
-          <v-list min-width="128" density="comfortable" bg-color="navigation" slim class="ra-8 opacity-95">
-            <v-list-item
-              prepend-icon="mdi-refresh"
-              :subtitle="$gettext('Refresh')"
-              class="action-reload action-refresh"
-              @click="refresh"
-            ></v-list-item>
-            <v-list-item
-              v-if="canUpload && context !== 'archive'"
-              :subtitle="$gettext('Upload')"
-              prepend-icon="mdi-cloud-upload"
-              class="action-upload"
-              @click="showUpload"
-            ></v-list-item>
-            <v-list-item
-              v-if="featSettings && isSuperAdmin"
-              :subtitle="$gettext('Settings')"
-              prepend-icon="mdi-film"
-              :to="{ name: 'settings_media' }"
-            ></v-list-item>
-            <v-list-item
-              :subtitle="$gettext('Get Started')"
-              prepend-icon="mdi-book-open-page-variant"
-              href="https://docs.photoprism.app/user-guide/first-steps/"
-              target="_blank"
-              class="action-docs"
-            ></v-list-item>
-          </v-list>
-        </v-menu>
+        <p-action-menu v-if="$vuetify.display.mdAndUp" :items="menuActions" button-class="ms-1"></p-action-menu>
       </template>
       <template v-else>
         <v-spacer></v-spacer>
@@ -303,7 +270,7 @@
         </v-card>
       </v-expand-transition>
     </div>
-    <p-photo-delete-dialog
+    <p-confirm-dialog
       :visible="dialog.delete"
       :text="$gettext(`Delete all?`)"
       :action="$gettext('Yes')"
@@ -311,18 +278,23 @@
       @close="dialog.delete = false"
       @confirm="batchDelete"
     >
-    </p-photo-delete-dialog>
+    </p-confirm-dialog>
   </v-form>
 </template>
 <script>
 import * as options from "options/options";
 import $api from "common/api";
 import $notify from "common/notify";
-import PConfirmAction from "../confirm/action.vue";
+
+import PActionMenu from "component/action/menu.vue";
+import PConfirmDialog from "component/confirm/dialog.vue";
 
 export default {
   name: "PPhotoToolbar",
-  components: { PConfirmAction },
+  components: {
+    PActionMenu,
+    PConfirmDialog,
+  },
   props: {
     context: {
       type: String,
@@ -466,6 +438,51 @@ export default {
     },
     toggleExpansionPanel() {
       this.expanded = !this.expanded;
+    },
+    menuActions() {
+      return [
+        {
+          name: "refresh",
+          icon: "mdi-refresh",
+          text: this.$gettext("Refresh"),
+          visible: true,
+          click: () => {
+            this.refresh();
+          },
+        },
+        {
+          name: "upload",
+          icon: "mdi-cloud-upload",
+          text: this.$gettext("Upload"),
+          visible: this.canUpload && this.context !== "archive" && this.context !== "hidden",
+          click: () => {
+            this.showUpload();
+          },
+        },
+        {
+          name: "settings",
+          icon: "mdi-cog-outline",
+          text: this.$gettext("Settings"),
+          visible: this.featSettings && this.isSuperAdmin && this.context !== "hidden",
+          to: this.$router.resolve({ name: this.context === "archive" ? "settings" : "settings_media" }),
+        },
+        {
+          name: "docs",
+          icon: "mdi-book-open-page-variant-outline",
+          text: this.$gettext("Get Started"),
+          visible: this.context !== "hidden",
+          href: "https://docs.photoprism.app/user-guide/first-steps/",
+          target: "_blank",
+        },
+        {
+          name: "troubleshooting",
+          icon: "mdi-book-open-page-variant-outline",
+          text: this.$gettext("Troubleshooting"),
+          visible: this.context === "hidden",
+          href: "https://docs.photoprism.app/getting-started/troubleshooting/#missing-pictures",
+          target: "_blank",
+        },
+      ];
     },
     colorOptions() {
       return this.all.colors.concat(options.Colors());

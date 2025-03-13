@@ -34,7 +34,7 @@ import PShareDialog from "component/share/dialog.vue";
 import PSettingsWebdav from "component/settings/webdav.vue";
 
 // Confirm.
-import PConfirmAction from "component/confirm/action.vue";
+import PConfirmDialog from "component/confirm/dialog.vue";
 import PConfirmSponsor from "component/confirm/sponsor.vue";
 
 // Originals.
@@ -61,7 +61,6 @@ import PPhotoPreview from "component/photo/preview.vue";
 import PPhotoArchiveDialog from "component/photo/archive/dialog.vue";
 import PPhotoAlbumDialog from "component/photo/album/dialog.vue";
 import PPhotoEditDialog from "component/photo/edit/dialog.vue";
-import PPhotoDeleteDialog from "component/photo/delete/dialog.vue";
 import PPhotoUploadDialog from "component/photo/upload/dialog.vue";
 
 // Services.
@@ -99,7 +98,7 @@ export function install(app) {
 
   app.component("PShareDialog", PShareDialog);
 
-  app.component("PConfirmAction", PConfirmAction);
+  app.component("PConfirmDialog", PConfirmDialog);
   app.component("PConfirmSponsor", PConfirmSponsor);
 
   app.component("PFileClipboard", PFileClipboard);
@@ -122,7 +121,6 @@ export function install(app) {
   app.component("PPhotoArchiveDialog", PPhotoArchiveDialog);
   app.component("PPhotoAlbumDialog", PPhotoAlbumDialog);
   app.component("PPhotoEditDialog", PPhotoEditDialog);
-  app.component("PPhotoDeleteDialog", PPhotoDeleteDialog);
   app.component("PPhotoUploadDialog", PPhotoUploadDialog);
 
   app.component("PServiceAdd", PServiceAdd);

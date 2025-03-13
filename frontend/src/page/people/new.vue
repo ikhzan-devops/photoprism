@@ -119,14 +119,14 @@
         </div>
       </div>
     </div>
-    <p-confirm-action
+    <p-confirm-dialog
       :visible="confirm.visible"
       icon="mdi-account-plus"
       :icon-size="42"
       :text="confirm?.model?.Name ? $gettext('Add %{s}?', { s: confirm.model.Name }) : $gettext('Add person?')"
       @close="onCancelRename"
       @confirm="onConfirmRename"
-    ></p-confirm-action>
+    ></p-confirm-dialog>
   </div>
 </template>
 
@@ -136,14 +136,14 @@ import RestModel from "model/rest";
 import { MaxItems } from "common/clipboard";
 import $notify from "common/notify";
 import { ClickLong, ClickShort, Input, InputInvalid } from "common/input";
-import PConfirmAction from "component/confirm/action.vue";
+import PConfirmDialog from "component/confirm/dialog.vue";
 import PLoading from "component/loading.vue";
 
 export default {
   name: "PPageFaces",
   components: {
     PLoading,
-    PConfirmAction,
+    PConfirmDialog,
   },
   props: {
     staticFilter: {

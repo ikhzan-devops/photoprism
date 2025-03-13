@@ -64,28 +64,7 @@
           @click.stop="showImportant"
         >
         </v-btn>
-
-        <v-menu v-if="$vuetify.display.mdAndUp" transition="slide-y-transition" open-on-click open-on-hover>
-          <template #activator="{ props }">
-            <v-btn density="comfortable" icon="mdi-dots-vertical" v-bind="props" class="action-menu ms-1"></v-btn>
-          </template>
-
-          <v-list min-width="128" density="comfortable" bg-color="navigation" slim class="ra-8 opacity-95">
-            <v-list-item
-              :subtitle="$gettext('Refresh')"
-              prepend-icon="mdi-refresh"
-              class="action-reload action-refresh"
-              @click="refresh"
-            ></v-list-item>
-            <v-list-item
-              :subtitle="$gettext('Learn More')"
-              prepend-icon="mdi-book-open-page-variant"
-              href="https://docs.photoprism.app/user-guide/organize/labels/"
-              target="_blank"
-              class="action-docs"
-            ></v-list-item>
-          </v-list>
-        </v-menu>
+        <p-action-menu v-if="$vuetify.display.mdAndUp" :items="menuActions" button-class="ms-1"></p-action-menu>
       </v-toolbar>
     </v-form>
 
@@ -203,11 +182,16 @@ import RestModel from "model/rest";
 import { MaxItems } from "common/clipboard";
 import $notify from "common/notify";
 import { Input, InputInvalid, ClickShort, ClickLong } from "common/input";
+
 import PLoading from "component/loading.vue";
+import PActionMenu from "component/action/menu.vue";
 
 export default {
   name: "PPageLabels",
-  components: { PLoading },
+  components: {
+    PLoading,
+    PActionMenu,
+  },
   props: {
     staticFilter: {
       type: Object,
@@ -296,6 +280,27 @@ export default {
     this.$view.leave(this);
   },
   methods: {
+    menuActions() {
+      return [
+        {
+          name: "refresh",
+          icon: "mdi-refresh",
+          text: this.$gettext("Refresh"),
+          visible: true,
+          click: () => {
+            this.refresh();
+          },
+        },
+        {
+          name: "docs",
+          icon: "mdi-book-open-page-variant-outline",
+          text: this.$gettext("Learn More"),
+          visible: true,
+          href: "https://docs.photoprism.app/user-guide/organize/labels/",
+          target: "_blank",
+        },
+      ];
+    },
     onCtrl(ev) {
       if (!ev || !(ev instanceof KeyboardEvent) || !ev.ctrlKey || !this.$view.isActive(this)) {
         return;

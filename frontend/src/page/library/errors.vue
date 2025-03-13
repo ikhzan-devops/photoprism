@@ -50,28 +50,7 @@
           @click.stop="onDelete"
         >
         </v-btn>
-
-        <v-menu v-if="$vuetify.display.mdAndUp" transition="slide-y-transition" open-on-click open-on-hover>
-          <template #activator="{ props }">
-            <v-btn density="comfortable" icon="mdi-dots-vertical" v-bind="props" class="action-menu ms-1"></v-btn>
-          </template>
-
-          <v-list min-width="128" density="comfortable" bg-color="navigation" slim class="ra-8 opacity-95">
-            <v-list-item
-              :subtitle="$gettext('Refresh')"
-              prepend-icon="mdi-refresh"
-              class="action-reload action-refresh"
-              @click="onReload"
-            ></v-list-item>
-            <v-list-item
-              :subtitle="$gettext('Troubleshooting')"
-              prepend-icon="mdi-book-open-page-variant"
-              href="https://docs.photoprism.app/getting-started/troubleshooting/"
-              target="_blank"
-              class="action-bug-report action-troubleshooting"
-            ></v-list-item>
-          </v-list>
-        </v-menu>
+        <p-action-menu v-if="$vuetify.display.mdAndUp" :items="menuActions" button-class="ms-1"></p-action-menu>
       </v-toolbar>
     </v-form>
     <div v-if="loading" class="p-page__loading">
@@ -121,13 +100,13 @@
         </div>
       </v-alert>
     </div>
-    <p-confirm-action
+    <p-confirm-dialog
       :visible="dialog.delete"
       :text="$gettext(`Delete all?`)"
       icon="mdi-delete-sweep-outline"
       @close="dialog.delete = false"
       @confirm="onConfirmDelete"
-    ></p-confirm-action>
+    ></p-confirm-dialog>
     <v-dialog :model-value="details.visible" max-width="550" class="p-dialog">
       <v-card>
         <v-card-title class="d-flex justify-start align-center ga-3">
@@ -157,14 +136,17 @@
 <script>
 import { DateTime } from "luxon";
 import $api from "common/api";
-import PConfirmAction from "component/confirm/action.vue";
+
 import PLoading from "component/loading.vue";
+import PActionMenu from "component/action/menu.vue";
+import PConfirmDialog from "component/confirm/dialog.vue";
 
 export default {
   name: "PPageErrors",
   components: {
     PLoading,
-    PConfirmAction,
+    PActionMenu,
+    PConfirmDialog,
   },
   data() {
     const query = this.$route.query;
@@ -223,6 +205,27 @@ export default {
     this.$view.leave(this);
   },
   methods: {
+    menuActions() {
+      return [
+        {
+          name: "refresh",
+          icon: "mdi-refresh",
+          text: this.$gettext("Refresh"),
+          visible: true,
+          click: () => {
+            this.onReload();
+          },
+        },
+        {
+          name: "troubleshooting",
+          icon: "mdi-book-open-page-variant-outline",
+          text: this.$gettext("Troubleshooting"),
+          visible: true,
+          href: "https://docs.photoprism.app/getting-started/troubleshooting/",
+          target: "_blank",
+        },
+      ];
+    },
     onCtrl(ev) {
       if (!ev || !(ev instanceof KeyboardEvent) || !ev.ctrlKey || !this.$view.isActive(this)) {
         return;
