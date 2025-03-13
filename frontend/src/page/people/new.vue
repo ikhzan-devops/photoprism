@@ -4,36 +4,23 @@
       <v-toolbar density="compact" class="page-toolbar" color="secondary-light">
         <v-spacer></v-spacer>
 
-        <v-divider vertical></v-divider>
-
-        <v-btn
-          icon
-          variant="text"
-          color="surface-variant"
-          class="action-reload"
-          :title="$gettext('Reload')"
-          @click.stop="refresh"
-        >
-          <v-icon>mdi-refresh</v-icon>
-        </v-btn>
+        <v-btn :title="$gettext('Refresh')" icon="mdi-refresh" class="action-reload" @click.stop="refresh"> </v-btn>
 
         <v-btn
           v-if="!filter.hidden"
-          icon
-          class="action-show-hidden"
           :title="$gettext('Show hidden')"
+          icon="mdi-eye"
+          class="action-show-hidden"
           @click.stop="onShowHidden"
         >
-          <v-icon>mdi-eye</v-icon>
         </v-btn>
         <v-btn
           v-else
-          icon
-          class="action-exclude-hidden"
           :title="$gettext('Exclude hidden')"
+          icon="mdi-eye-off"
+          class="action-exclude-hidden"
           @click.stop="onExcludeHidden"
         >
-          <v-icon>mdi-eye-off</v-icon>
         </v-btn>
       </v-toolbar>
     </v-form>

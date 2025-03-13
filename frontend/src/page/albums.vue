@@ -20,27 +20,29 @@
       >
         <v-text-field
           :model-value="filter.q"
+          :density="density"
           hide-details
           clearable
           overflow
           single-line
-          rounded
+          rounded="pill"
           variant="solo-filled"
-          :density="density"
+          color="surface-variant"
           validate-on="invalid-input"
-          :placeholder="$gettext('Search')"
           autocomplete="off"
           autocorrect="off"
           autocapitalize="none"
-          prepend-inner-icon="mdi-magnify"
-          color="surface-variant"
+          :prepend-inner-icon="canExpand ? 'mdi-tune' : 'mdi-magnify'"
+          :placeholder="$gettext('Search')"
           class="input-search background-inherit elevation-0"
+          :class="{ 'input-search--expanded': expanded, 'input-search--focus': !canExpand }"
           @update:model-value="
             (v) => {
               updateFilter({ q: v });
             }
           "
           @keyup.enter="() => updateQuery()"
+          @click:prepend-inner.stop="toggleExpansionPanel"
           @click:clear="
             () => {
               updateQuery({ q: '' });
@@ -48,38 +50,35 @@
           "
         ></v-text-field>
 
-        <v-btn icon class="action-reload" :title="$gettext('Reload')" @click.stop="refresh()">
-          <v-icon>mdi-refresh</v-icon>
-        </v-btn>
-
-        <v-btn
-          v-if="canUpload"
-          icon
-          class="hidden-sm-and-down action-upload"
-          :title="$gettext('Upload')"
-          @click.stop="showUpload()"
-        >
-          <v-icon>mdi-cloud-upload</v-icon>
-        </v-btn>
-
         <v-btn
           v-if="canManage && staticFilter.type === 'album'"
-          icon
-          class="action-add"
           :title="$gettext('Add Album')"
+          icon="mdi-plus"
+          class="action-add ms-1"
           @click.prevent="create()"
-        >
-          <v-icon>mdi-plus</v-icon>
-        </v-btn>
-
-        <v-btn
-          v-if="canManage && !staticFilter['order']"
-          :icon="expanded ? 'mdi-chevron-up' : 'mdi-chevron-down'"
-          :title="$gettext('Expand Search')"
-          class="action-expand"
-          :class="{ 'action-expand--active': expanded }"
-          @click.stop="toggleExpansionPanel"
         ></v-btn>
+
+        <v-menu v-if="$vuetify.display.mdAndUp" transition="slide-y-transition" open-on-click open-on-hover>
+          <template #activator="{ props }">
+            <v-btn density="comfortable" icon="mdi-dots-vertical" v-bind="props" class="action-menu ms-1"></v-btn>
+          </template>
+
+          <v-list min-width="128" density="comfortable" bg-color="navigation" slim class="ra-8 opacity-95">
+            <v-list-item
+              prepend-icon="mdi-refresh"
+              :subtitle="$gettext('Refresh')"
+              class="action-reload action-refresh"
+              @click="refresh"
+            ></v-list-item>
+            <v-list-item
+              v-if="canUpload"
+              :subtitle="$gettext('Upload')"
+              prepend-icon="mdi-cloud-upload"
+              class="action-upload"
+              @click="showUpload"
+            ></v-list-item>
+          </v-list>
+        </v-menu>
       </v-toolbar>
 
       <div class="toolbar-expansion-panel">
@@ -431,8 +430,10 @@ export default {
       canManage: this.$config.allow("albums", "manage"),
       canEdit: this.$config.allow("albums", "update"),
       config: this.$config.values,
+      isSuperAdmin: this.$session.isSuperAdmin(),
       featShare: features.share,
       featPrivate: features.private,
+      featSettings: features.settings,
       categories: categories,
       subscriptions: [],
       listen: false,
@@ -489,6 +490,9 @@ export default {
       }
 
       return "";
+    },
+    canExpand: function () {
+      return this.canManage && !this.staticFilter["order"];
     },
   },
   watch: {
@@ -549,6 +553,10 @@ export default {
       }
     },
     toggleExpansionPanel() {
+      if (!this.canExpand) {
+        return;
+      }
+
       this.expanded = !this.expanded;
     },
     hideExpansionPanel() {

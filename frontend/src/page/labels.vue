@@ -34,7 +34,7 @@
           autocorrect="off"
           autocapitalize="none"
           color="surface-variant"
-          class="input-search background-inherit elevation-0"
+          class="input-search input-search--focus background-inherit elevation-0"
           @update:model-value="
             (v) => {
               updateFilter({ q: v });
@@ -48,16 +48,44 @@
           "
         ></v-text-field>
 
-        <v-btn icon class="action-reload" :title="$gettext('Reload')" @click.stop="refresh()">
-          <v-icon>mdi-refresh</v-icon>
+        <v-btn
+          v-if="!filter.all"
+          icon="mdi-eye"
+          :title="$gettext('Show more')"
+          class="action-show-all ms-1"
+          @click.stop="showAll"
+        >
+        </v-btn>
+        <v-btn
+          v-else
+          icon="mdi-eye-off"
+          :title="$gettext('Show less')"
+          class="action-show-important ms-1"
+          @click.stop="showImportant"
+        >
         </v-btn>
 
-        <v-btn v-if="!filter.all" icon class="action-show-all" :title="$gettext('Show more')" @click.stop="showAll()">
-          <v-icon>mdi-unfold-more-horizontal</v-icon>
-        </v-btn>
-        <v-btn v-else icon class="action-show-important" :title="$gettext('Show less')" @click.stop="showImportant()">
-          <v-icon>mdi-unfold-less-horizontal</v-icon>
-        </v-btn>
+        <v-menu v-if="$vuetify.display.mdAndUp" transition="slide-y-transition" open-on-click open-on-hover>
+          <template #activator="{ props }">
+            <v-btn density="comfortable" icon="mdi-dots-vertical" v-bind="props" class="action-menu ms-1"></v-btn>
+          </template>
+
+          <v-list min-width="128" density="comfortable" bg-color="navigation" slim class="ra-8 opacity-95">
+            <v-list-item
+              :subtitle="$gettext('Refresh')"
+              prepend-icon="mdi-refresh"
+              class="action-reload action-refresh"
+              @click="refresh"
+            ></v-list-item>
+            <v-list-item
+              :subtitle="$gettext('Learn More')"
+              prepend-icon="mdi-book-open-page-variant"
+              href="https://docs.photoprism.app/user-guide/organize/labels/"
+              target="_blank"
+              class="action-docs"
+            ></v-list-item>
+          </v-list>
+        </v-menu>
       </v-toolbar>
     </v-form>
 

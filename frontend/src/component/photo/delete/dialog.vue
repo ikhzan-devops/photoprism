@@ -8,7 +8,7 @@
   >
     <v-card>
       <v-card-title class="d-flex justify-start align-center ga-3">
-        <v-icon size="54" color="primary">mdi-delete-outline</v-icon>
+        <v-icon :icon="icon" size="54" color="primary"></v-icon>
         <p v-if="text === ''" class="text-subtitle-1">
           {{ $gettext(`Are you sure you want to permanently delete these pictures?`) }}
         </p>
@@ -35,6 +35,10 @@ export default {
     visible: {
       type: Boolean,
       default: false,
+    },
+    icon: {
+      type: String,
+      default: "mdi-delete-outline",
     },
     text: {
       type: String,

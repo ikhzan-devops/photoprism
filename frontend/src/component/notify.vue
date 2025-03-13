@@ -84,7 +84,7 @@ export default {
     },
 
     addErrorMessage: function (message) {
-      this.addMessage("error", "alert-decagram", message, 8000);
+      this.addMessage("error", "alert-circle-outline", message, 8000);
     },
 
     addMessage: function (color, icon, text, delay) {

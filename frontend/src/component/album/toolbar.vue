@@ -23,62 +23,65 @@
         {{ album.Title }}
       </v-toolbar-title>
 
-      <v-btn icon class="hidden-xs action-reload" :title="$gettext('Reload')" @click.stop="refresh()">
-        <v-icon>mdi-refresh</v-icon>
-      </v-btn>
-
-      <v-btn v-if="canManage" icon class="action-edit" :title="$gettext('Edit')" @click.stop="dialog.edit = true">
-        <v-icon>mdi-pencil</v-icon>
-      </v-btn>
-
-      <v-btn v-if="canShare" icon class="action-share" :title="$gettext('Share')" @click.stop="dialog.share = true">
-        <v-icon>mdi-share-variant</v-icon>
-      </v-btn>
-
-      <v-btn v-if="canDownload" icon class="action-download" :title="$gettext('Download')" @click.stop="download()">
-        <v-icon>mdi-download</v-icon>
-      </v-btn>
-
-      <v-btn
-        v-if="settings.view === 'list'"
-        icon
-        class="action-view-mosaic"
+      <v-btn-toggle
+        :model-value="settings.view"
         :title="$gettext('Toggle View')"
-        @click.stop="setView('mosaic')"
+        :density="$vuetify.display.smAndDown ? 'comfortable' : 'default'"
+        base-color="secondary"
+        variant="flat"
+        rounded="pill"
+        mandatory
+        border
+        group
+        class="ms-1"
       >
-        <v-icon>mdi-view-comfy</v-icon>
-      </v-btn>
-      <v-btn
-        v-else-if="settings.view === 'cards' && listView"
-        icon
-        class="action-view-list"
-        :title="$gettext('Toggle View')"
-        @click.stop="setView('list')"
-      >
-        <v-icon>mdi-view-list</v-icon>
-      </v-btn>
-      <v-btn
-        v-else-if="settings.view === 'cards'"
-        icon
-        class="action-view-mosaic"
-        :title="$gettext('Toggle View')"
-        @click.stop="setView('mosaic')"
-      >
-        <v-icon>mdi-view-comfy</v-icon>
-      </v-btn>
-      <v-btn v-else icon class="action-view-cards" :title="$gettext('Toggle View')" @click.stop="setView('cards')">
-        <v-icon>mdi-view-column</v-icon>
-      </v-btn>
+        <v-btn value="cards" icon="mdi-view-column" class="ps-1" @click="setView('cards')"></v-btn>
+        <v-btn v-if="listView" value="list" icon="mdi-view-list" @click="setView('list')"></v-btn>
+        <v-btn value="mosaic" icon="mdi-view-comfy" class="pe-1" @click="setView('mosaic')"></v-btn>
+      </v-btn-toggle>
 
-      <v-btn
-        v-if="canUpload"
-        icon
-        class="hidden-sm-and-down action-upload"
-        :title="$gettext('Upload')"
-        @click.stop="showUpload()"
-      >
-        <v-icon>mdi-cloud-upload</v-icon>
-      </v-btn>
+      <v-menu transition="slide-y-transition" open-on-click open-on-hover>
+        <template #activator="{ props }">
+          <v-btn density="comfortable" icon="mdi-dots-vertical" v-bind="props" class="action-menu ms-1"></v-btn>
+        </template>
+
+        <v-list min-width="128" density="comfortable" bg-color="navigation" slim class="ra-8 opacity-95">
+          <v-list-item
+            prepend-icon="mdi-refresh"
+            :subtitle="$gettext('Refresh')"
+            class="action-reload action-refresh"
+            @click="refresh"
+          ></v-list-item>
+          <v-list-item
+            v-if="canManage"
+            :subtitle="$gettext('Edit')"
+            prepend-icon="mdi-pencil"
+            class="action-edit"
+            @click="dialog.edit = true"
+          ></v-list-item>
+          <v-list-item
+            v-if="canShare"
+            :subtitle="$gettext('Share')"
+            prepend-icon="mdi-share-variant"
+            class="action-share"
+            @click="dialog.share = true"
+          ></v-list-item>
+          <v-list-item
+            v-if="canDownload"
+            :subtitle="$gettext('Download')"
+            prepend-icon="mdi-download"
+            class="action-download"
+            @click="download"
+          ></v-list-item>
+          <v-list-item
+            v-if="canUpload"
+            :subtitle="$gettext('Upload')"
+            prepend-icon="mdi-cloud-upload"
+            class="action-upload"
+            @click="showUpload"
+          ></v-list-item>
+        </v-list>
+      </v-menu>
     </v-toolbar>
 
     <div v-if="album.Description" class="toolbar-details-panel">

@@ -4,7 +4,7 @@ import { style, colors, variables } from "ui";
 /* Theme Color Variations */
 
 export const variations = {
-  colors: ["primary", "highlight", "secondary", "surface", "surface-variant", "navigation"],
+  colors: ["primary", "highlight", "secondary", "surface", "surface-variant", "table", "navigation"],
   lighten: 2,
   darken: 1,
 };

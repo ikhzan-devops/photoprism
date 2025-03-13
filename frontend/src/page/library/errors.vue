@@ -28,7 +28,7 @@
           :placeholder="$gettext('Search')"
           prepend-inner-icon="mdi-magnify"
           color="surface-variant"
-          class="input-search background-inherit elevation-0"
+          class="input-search input-search--focus background-inherit elevation-0"
           @update:model-value="
             (v) => {
               updateFilter({ q: v });
@@ -42,21 +42,36 @@
           "
         ></v-text-field>
 
-        <v-btn icon class="action-reload" :title="$gettext('Reload')" @click.stop="onReload()">
-          <v-icon>mdi-refresh</v-icon>
-        </v-btn>
-        <v-btn v-if="!isPublic" icon class="action-delete" :title="$gettext('Delete')" @click.stop="onDelete()">
-          <v-icon>mdi-delete</v-icon>
-        </v-btn>
         <v-btn
-          icon
-          href="https://docs.photoprism.app/getting-started/troubleshooting/"
-          target="_blank"
-          class="action-bug-report"
-          :title="$gettext('Troubleshooting Checklists')"
+          v-if="!isPublic"
+          :title="$gettext('Delete All')"
+          icon="mdi-delete-sweep"
+          class="action-delete action-delete-all ms-1"
+          @click.stop="onDelete"
         >
-          <v-icon>mdi-bug</v-icon>
         </v-btn>
+
+        <v-menu v-if="$vuetify.display.mdAndUp" transition="slide-y-transition" open-on-click open-on-hover>
+          <template #activator="{ props }">
+            <v-btn density="comfortable" icon="mdi-dots-vertical" v-bind="props" class="action-menu ms-1"></v-btn>
+          </template>
+
+          <v-list min-width="128" density="comfortable" bg-color="navigation" slim class="ra-8 opacity-95">
+            <v-list-item
+              :subtitle="$gettext('Refresh')"
+              prepend-icon="mdi-refresh"
+              class="action-reload action-refresh"
+              @click="onReload"
+            ></v-list-item>
+            <v-list-item
+              :subtitle="$gettext('Troubleshooting')"
+              prepend-icon="mdi-book-open-page-variant"
+              href="https://docs.photoprism.app/getting-started/troubleshooting/"
+              target="_blank"
+              class="action-bug-report action-troubleshooting"
+            ></v-list-item>
+          </v-list>
+        </v-menu>
       </v-toolbar>
     </v-form>
     <div v-if="loading" class="p-page__loading">
@@ -108,7 +123,8 @@
     </div>
     <p-confirm-action
       :visible="dialog.delete"
-      icon="mdi-delete-outline"
+      :text="$gettext(`Delete all?`)"
+      icon="mdi-delete-sweep-outline"
       @close="dialog.delete = false"
       @confirm="onConfirmDelete"
     ></p-confirm-action>

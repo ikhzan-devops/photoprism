@@ -43,11 +43,11 @@ body.dark-theme {
 /* Alerts */
 
 .v-alert.v-alert--variant-outlined.text-primary {
-    background-color: rgba(var(--v-theme-primary), 0.06) !important;
+    background-color: rgba(var(--v-theme-primary), 0.04) !important;
 }
 
 .v-alert.v-alert--variant-outlined.text-surface-variant {
-    background-color: rgba(var(--v-theme-surface-variant), 0.06) !important;
+    background-color: rgba(var(--v-theme-surface-variant), 0.04) !important;
 }
 
 .v-alert a {
@@ -83,12 +83,12 @@ body.dark-theme {
 }
 
 .v-snackbar.p-notify--success .v-snackbar__wrapper {
-    background-color: rgba(var(--v-theme-success), 0.2) !important;
+    background-color: rgba(var(--v-theme-success), 0.24) !important;
     color: rgba(var(--v-theme-on-surface), 1) !important;
 }
 
 .v-snackbar.p-notify--info .v-snackbar__wrapper {
-    background-color: rgba(var(--v-theme-info), 0.22) !important;
+    background-color: rgba(var(--v-theme-info), 0.24) !important;
     color: rgba(var(--v-theme-on-surface), 1) !important;
 }
 
@@ -363,11 +363,24 @@ div.v-dialog.v-dialog--fullscreen > div.v-card {
     opacity: var(--v-label-opacity, .7);
 }
 
-.v-field--variant-solo.v-field--focused .v-field__prepend-inner .v-icon,
-.v-field--variant-solo-filled.v-field--focused .v-field__prepend-inner .v-icon,
-.v-field--variant-plain.v-field--focused .v-field__prepend-inner .v-icon {
+.input-search--focus .v-field--variant-solo.v-field--focused .v-field__prepend-inner .v-icon,
+.input-search--focus .v-field--variant-solo-filled.v-field--focused .v-field__prepend-inner .v-icon,
+.input-search--focus .v-field--variant-plain.v-field--focused .v-field__prepend-inner .v-icon,
+.input-search--expanded .v-field--variant-solo .v-field__prepend-inner .v-icon,
+.input-search--expanded .v-field--variant-solo-filled .v-field__prepend-inner .v-icon,
+.input-search--expanded .v-field--variant-plain .v-field__prepend-inner .v-icon {
     color: rgb(var(--v-theme-surface-variant));
     caret-color: rgb(var(--v-theme-surface-variant));
+}
+
+.v-btn-group.v-btn-toggle .v-btn:not(.v-btn--active) .v-btn__content .v-icon {
+    opacity: 0.26;
+}
+
+.v-btn-group.v-btn-toggle .v-btn.v-btn--active .v-btn__content .v-icon {
+    color: rgb(var(--v-theme-surface-variant));
+    caret-color: rgb(var(--v-theme-surface-variant));
+    opacity: var(--v-medium-emphasis-opacity);
 }
 
 .v-input.v-input--density-comfortable .v-field .v-icon.v-icon--size-default {

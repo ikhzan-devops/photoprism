@@ -185,7 +185,7 @@ export default class Config {
 
     if (values.settings) {
       this.setBatchSize(values.settings);
-      this.setLanguage(values.settings.ui.language);
+      this.setLanguage(values.settings.ui.language, true);
       this.setTheme(values.settings.ui.theme);
     }
 
@@ -419,32 +419,35 @@ export default class Config {
 
   // setLanguage sets the ISO/IEC 15897 locale,
   // e.g. "en" or "zh_TW" (minimum 2 letters).
-  setLanguage(locale) {
+  setLanguage(locale, apply) {
     // Skip setting language if no locale is specified.
     if (!locale) {
       return this;
     }
 
-    // Update the Accept-Language header for XHR requests.
-    if ($api) {
-      $api.defaults.headers.common["Accept-Language"] = locale;
-    }
+    // Apply locale to browser window?
+    if (apply) {
+      // Update the Accept-Language header for XHR requests.
+      if ($api) {
+        $api.defaults.headers.common["Accept-Language"] = locale;
+      }
 
-    // Update the language-specific attributes of the <html> and <body> elements.
-    if (document && document.body) {
-      const isRtl = this.isRtl(locale);
+      // Update the language-specific attributes of the <html> and <body> elements.
+      if (document && document.body) {
+        const isRtl = this.isRtl(locale);
 
-      // Update <html> lang attribute and dir attribute to match the current locale.
-      document.documentElement.setAttribute("lang", locale);
-      document.documentElement.setAttribute("dir", this.dir(isRtl));
+        // Update <html> lang attribute and dir attribute to match the current locale.
+        document.documentElement.setAttribute("lang", locale);
+        document.documentElement.setAttribute("dir", this.dir(isRtl));
 
-      // Set body.is-rtl or .is-ltr, depending on the writing direction of the current locale.
-      if (isRtl) {
-        document.body.classList.add("is-rtl");
-        document.body.classList.remove("is-ltr");
-      } else {
-        document.body.classList.remove("is-rtl");
-        document.body.classList.add("is-ltr");
+        // Set body.is-rtl or .is-ltr, depending on the writing direction of the current locale.
+        if (isRtl) {
+          document.body.classList.add("is-rtl");
+          document.body.classList.remove("is-ltr");
+        } else {
+          document.body.classList.remove("is-rtl");
+          document.body.classList.add("is-ltr");
+        }
       }
     }
 
@@ -575,7 +578,9 @@ export default class Config {
   // setSettings updates the current user's configuration settings
   // and then changes the UI language and theme as needed.
   setSettings(settings) {
-    if (!settings) return;
+    if (!settings) {
+      return;
+    }
 
     if (this.debug) {
       console.log("config: new settings", settings);
@@ -584,7 +589,7 @@ export default class Config {
     this.values.settings = settings;
 
     this.setBatchSize(settings);
-    this.setLanguage(settings.ui.language);
+    this.setLanguage(settings.ui.language, false);
     this.setTheme(settings.ui.theme);
 
     return this;

@@ -17,27 +17,31 @@
       <template v-if="!embedded">
         <v-text-field
           :model-value="filter.q"
+          :density="density"
           hide-details
           clearable
           single-line
           overflow
-          rounded
+          rounded="pill"
           variant="solo-filled"
-          :density="density"
+          color="surface-variant"
           validate-on="invalid-input"
           autocorrect="off"
           autocapitalize="none"
           autocomplete="off"
+          prepend-inner-icon="mdi-tune"
+          :append-inner-icon="filter.latlng ? 'mdi-map-marker-off' : ''"
           :placeholder="$gettext('Search')"
-          prepend-inner-icon="mdi-magnify"
-          color="surface-variant"
           class="input-search background-inherit elevation-0"
+          :class="{ 'input-search--expanded': expanded }"
           @update:model-value="
             (v) => {
               updateFilter({ q: v });
             }
           "
           @keyup.enter="() => onUpdate()"
+          @click:prepend-inner.stop="toggleExpansionPanel"
+          @click:append-inner.stop="clearLocation"
           @click:clear="
             () => {
               onUpdate({ q: '' });
@@ -45,81 +49,66 @@
           "
         ></v-text-field>
 
-        <v-btn
-          v-if="filter.latlng"
-          icon
-          :title="$gettext('Show more')"
-          class="action-clear-location"
-          @click.stop="clearLocation()"
-        >
-          <v-icon>mdi-map-marker-off</v-icon>
-        </v-btn>
-
-        <v-btn icon class="hidden-xs action-reload" :title="$gettext('Reload')" @click.stop="refresh()">
-          <v-icon>mdi-refresh</v-icon>
-        </v-btn>
-
-        <v-btn
-          v-if="settings.view === 'list'"
-          icon
-          class="action-view-mosaic"
+        <v-btn-toggle
+          :model-value="settings.view"
           :title="$gettext('Toggle View')"
-          @click.stop="setView('mosaic')"
+          :density="$vuetify.display.smAndDown ? 'comfortable' : 'default'"
+          base-color="secondary"
+          variant="flat"
+          rounded="pill"
+          mandatory
+          border
+          group
+          class="ms-1"
         >
-          <v-icon>mdi-view-comfy</v-icon>
-        </v-btn>
-
-        <v-btn
-          v-else-if="settings.view === 'cards' && listView"
-          icon
-          class="action-view-list"
-          :title="$gettext('Toggle View')"
-          @click.stop="setView('list')"
-        >
-          <v-icon>mdi-view-list</v-icon>
-        </v-btn>
-
-        <v-btn
-          v-else-if="settings.view === 'cards'"
-          icon
-          class="action-view-mosaic"
-          :title="$gettext('Toggle View')"
-          @click.stop="setView('mosaic')"
-        >
-          <v-icon>mdi-view-comfy</v-icon>
-        </v-btn>
-
-        <v-btn v-else icon class="action-view-cards" :title="$gettext('Toggle View')" @click.stop="setView('cards')">
-          <v-icon>mdi-view-column</v-icon>
-        </v-btn>
+          <v-btn value="cards" icon="mdi-view-column" class="ps-1" @click="setView('cards')"></v-btn>
+          <v-btn v-if="listView" value="list" icon="mdi-view-list" @click="setView('list')"></v-btn>
+          <v-btn value="mosaic" icon="mdi-view-comfy" class="pe-1" @click="setView('mosaic')"></v-btn>
+        </v-btn-toggle>
 
         <v-btn
           v-if="canDelete && context === 'archive' && config.count.archived > 0"
-          icon
-          class="action-delete-all"
           :title="$gettext('Delete All')"
-          @click.stop="deleteAll()"
+          icon="mdi-delete-sweep"
+          class="action-delete-all ms-1"
+          @click.stop="deleteAll"
         >
-          <v-icon>mdi-delete-sweep</v-icon>
         </v-btn>
 
-        <v-btn
-          v-else-if="canUpload"
-          icon
-          class="hidden-sm-and-down action-upload"
-          :title="$gettext('Upload')"
-          @click.stop="showUpload()"
-        >
-          <v-icon>mdi-cloud-upload</v-icon>
-        </v-btn>
+        <v-menu v-if="$vuetify.display.mdAndUp" transition="slide-y-transition" open-on-click open-on-hover>
+          <template #activator="{ props }">
+            <v-btn density="comfortable" icon="mdi-dots-vertical" v-bind="props" class="action-menu ms-1"></v-btn>
+          </template>
 
-        <v-btn
-          :icon="expanded ? 'mdi-chevron-up' : 'mdi-chevron-down'"
-          :title="$gettext('Expand Search')"
-          class="action-expand"
-          :class="{ 'action-expand--active': expanded }"
-          @click.stop="toggleExpansionPanel"
-        ></v-btn>
+          <v-list min-width="128" density="comfortable" bg-color="navigation" slim class="ra-8 opacity-95">
+            <v-list-item
+              prepend-icon="mdi-refresh"
+              :subtitle="$gettext('Refresh')"
+              class="action-reload action-refresh"
+              @click="refresh"
+            ></v-list-item>
+            <v-list-item
+              v-if="canUpload && context !== 'archive'"
+              :subtitle="$gettext('Upload')"
+              prepend-icon="mdi-cloud-upload"
+              class="action-upload"
+              @click="showUpload"
+            ></v-list-item>
+            <v-list-item
+              v-if="featSettings && isSuperAdmin"
+              :subtitle="$gettext('Settings')"
+              prepend-icon="mdi-film"
+              :to="{ name: 'settings_media' }"
+            ></v-list-item>
+            <v-list-item
+              :subtitle="$gettext('Get Started')"
+              prepend-icon="mdi-book-open-page-variant"
+              href="https://docs.photoprism.app/user-guide/first-steps/"
+              target="_blank"
+              class="action-docs"
+            ></v-list-item>
+          </v-list>
+        </v-menu>
       </template>
       <template v-else>
         <v-spacer></v-spacer>
@@ -316,8 +305,9 @@
     </div>
     <p-photo-delete-dialog
       :visible="dialog.delete"
-      :text="$gettext('Are you sure you want to delete all archived pictures?')"
-      :action="$gettext('Delete All')"
+      :text="$gettext(`Delete all?`)"
+      :action="$gettext('Yes')"
+      icon="mdi-delete-sweep-outline"
       @close="dialog.delete = false"
       @confirm="batchDelete"
     >
@@ -328,9 +318,11 @@
 import * as options from "options/options";
 import $api from "common/api";
 import $notify from "common/notify";
+import PConfirmAction from "../confirm/action.vue";
 
 export default {
   name: "PPhotoToolbar",
+  components: { PConfirmAction },
   props: {
     context: {
       type: String,
@@ -377,11 +369,13 @@ export default {
       expanded: false,
       experimental: this.$config.get("experimental"),
       isFullScreen: !!document.fullscreenElement,
+      isSuperAdmin: this.$session.isSuperAdmin(),
       config: this.$config.values,
       readonly: readonly,
       canUpload: !readonly && !this.embedded && this.$config.allow("files", "upload") && features.upload,
       canDelete: !readonly && !this.embedded && this.$config.allow("photos", "delete") && features.delete,
       canAccessLibrary: this.$config.allow("photos", "access_library"),
+      featSettings: features.settings,
       listView: this.$config.getSettings()?.search?.listView,
       all: {
         countries: [{ ID: "", Name: this.$gettext("All Countries") }],
