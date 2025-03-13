@@ -522,11 +522,11 @@ div.v-dialog.v-dialog--fullscreen > div.v-card {
     margin-inline-start: 0;
 }
 
-.v-table,
-.v-table .v-field,
-.v-table .v-select,
-.v-table .v-select.v-input .v-field .v-field__input,
-.v-table .v-label {
+.v-table .v-table__wrapper,
+.v-table .v-table__wrapper .v-field,
+.v-table .v-table__wrapper .v-select,
+.v-table .v-table__wrapper .v-select.v-input .v-field .v-field__input,
+.v-table .v-table__wrapper .v-label {
     font-size: 0.8125rem !important;
 }
 
@@ -538,6 +538,10 @@ div.v-dialog.v-dialog--fullscreen > div.v-card {
 .v-table .v-data-table-footer {
     padding-top: 6px;
     padding-bottom: 6px;
+}
+
+.v-table .v-data-table-footer .v-input.v-select.v-input--density-compact > .v-input__control > .v-field .v-select__selection {
+    font-size: 0.875rem;
 }
 
 .v-table .v-data-table-footer .v-data-table-footer__pagination {
