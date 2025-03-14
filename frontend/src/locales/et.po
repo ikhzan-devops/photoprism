@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: ci@photoprism.app\n"
-"PO-Revision-Date: 2025-03-14 15:02+0000\n"
+"PO-Revision-Date: 2025-03-14 15:12+0000\n"
 "Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
 "Language: et\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2706,10 +2706,6 @@ msgstr "Näita"
 msgid "Show all new faces"
 msgstr "Näita kõiki uusi nägusid"
 
-#: src/page/settings/content.vue:313
-msgid "Show caption metadata in search results."
-msgstr "Näita otsingutulemustes pealkirjade metaandmeid."
-
 #: src/page/people/new.vue:62 src/page/people/recognized.vue:97
 msgid "Show hidden"
 msgstr "Näita peidetud"
@@ -2722,13 +2718,17 @@ msgstr "Näita vähem"
 msgid "Show more"
 msgstr "Näita rohkem"
 
+#: src/page/settings/content.vue:313
+msgid "Show picture captions in search results."
+msgstr "Näita pildiallkirju otsingutulemustes."
+
+#: src/page/settings/content.vue:290
+msgid "Show picture titles in search results."
+msgstr "Näita pildi pealkirju otsingutulemustes."
+
 #: src/page/settings/general.vue:469
 msgid "Show server logs in Library."
 msgstr "Näita serverilogisid fototeegis."
-
-#: src/page/settings/content.vue:290
-msgid "Show title metadata in search results."
-msgstr "Näita pealkirja metaandmeid otsingutulemustes."
 
 #: src/component/lightbox.vue:940 src/component/lightbox.vue:941
 msgid "Show/Hide Sidebar"
@@ -3380,6 +3380,12 @@ msgstr "Sinu fototeeki analüüsitakse pidevalt, et luua automaatselt albumied e
 #: src/component/lightbox.vue:228
 msgid "Zoom in/out"
 msgstr "Suumi sisse/välja"
+
+#~ msgid "Show caption metadata in search results."
+#~ msgstr "Näita otsingutulemustes pealkirjade metaandmeid."
+
+#~ msgid "Show title metadata in search results."
+#~ msgstr "Näita pealkirja metaandmeid otsingutulemustes."
 
 #~ msgid "Are you sure you want to delete all archived pictures?"
 #~ msgstr "Kas olete kindel, et soovite kõik arhiveeritud pildid kustutada?"

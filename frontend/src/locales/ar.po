@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: ci@photoprism.app\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-03-14 15:02+0000\n"
+"PO-Revision-Date: 2025-03-14 15:12+0000\n"
 "Last-Translator: Google Cloud Translation Basic <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: \n"
 "Language: ar\n"
@@ -2709,10 +2709,6 @@ msgstr "يعرض"
 msgid "Show all new faces"
 msgstr "إظهار كل الوجوه الجديدة"
 
-#: src/page/settings/content.vue:313
-msgid "Show caption metadata in search results."
-msgstr "إظهار بيانات التعريف التوضيحية في نتائج البحث."
-
 #: src/page/people/new.vue:62 src/page/people/recognized.vue:97
 msgid "Show hidden"
 msgstr "أظهر المخفي"
@@ -2725,13 +2721,17 @@ msgstr "عرض أقل"
 msgid "Show more"
 msgstr "أظهر المزيد"
 
+#: src/page/settings/content.vue:313
+msgid "Show picture captions in search results."
+msgstr "إظهار تعليقات الصور في نتائج البحث."
+
+#: src/page/settings/content.vue:290
+msgid "Show picture titles in search results."
+msgstr "إظهار عناوين الصور في نتائج البحث."
+
 #: src/page/settings/general.vue:469
 msgid "Show server logs in Library."
 msgstr "إظهار سجلات الخادم في المكتبة."
-
-#: src/page/settings/content.vue:290
-msgid "Show title metadata in search results."
-msgstr "إظهار بيانات عنوان الوصف في نتائج البحث."
 
 #: src/component/lightbox.vue:940 src/component/lightbox.vue:941
 msgid "Show/Hide Sidebar"
@@ -3381,6 +3381,12 @@ msgstr "يتم تحليل مكتبتك باستمرار لإنشاء ألبوم�
 #: src/component/lightbox.vue:228
 msgid "Zoom in/out"
 msgstr "التكبير / التصغير"
+
+#~ msgid "Show caption metadata in search results."
+#~ msgstr "إظهار بيانات التعريف التوضيحية في نتائج البحث."
+
+#~ msgid "Show title metadata in search results."
+#~ msgstr "إظهار بيانات عنوان الوصف في نتائج البحث."
 
 #~ msgid "Are you sure you want to delete all archived pictures?"
 #~ msgstr "هل أنت متأكد أنك تريد حذف كافة الصور المؤرشفة؟"

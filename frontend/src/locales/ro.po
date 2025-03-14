@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: ci@photoprism.app\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-03-14 15:02+0000\n"
+"PO-Revision-Date: 2025-03-14 15:12+0000\n"
 "Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
 "Language-Team: Romanian <https://translate.photoprism.app/projects/photoprism/frontend/ro/>\n"
 "Language: ro\n"
@@ -2709,10 +2709,6 @@ msgstr "Arată"
 msgid "Show all new faces"
 msgstr "Afișați toate fețele noi"
 
-#: src/page/settings/content.vue:313
-msgid "Show caption metadata in search results."
-msgstr "Afișați metadatele legendei în rezultatele căutării."
-
 #: src/page/people/new.vue:62 src/page/people/recognized.vue:97
 msgid "Show hidden"
 msgstr "Arată ascuns"
@@ -2725,13 +2721,17 @@ msgstr "Arată mai puțin"
 msgid "Show more"
 msgstr "Arată mai mult"
 
+#: src/page/settings/content.vue:313
+msgid "Show picture captions in search results."
+msgstr "Afișați legendele imaginilor în rezultatele căutării."
+
+#: src/page/settings/content.vue:290
+msgid "Show picture titles in search results."
+msgstr "Afișați titlurile imaginilor în rezultatele căutării."
+
 #: src/page/settings/general.vue:469
 msgid "Show server logs in Library."
 msgstr "Afișați jurnalele serverului în Bibliotecă."
-
-#: src/page/settings/content.vue:290
-msgid "Show title metadata in search results."
-msgstr "Afișați metadatele titlului în rezultatele căutării."
 
 #: src/component/lightbox.vue:940 src/component/lightbox.vue:941
 msgid "Show/Hide Sidebar"
@@ -3381,6 +3381,12 @@ msgstr "Biblioteca dvs. este analizată în permanență pentru a crea automat a
 #: src/component/lightbox.vue:228
 msgid "Zoom in/out"
 msgstr "Măriți/micșorați"
+
+#~ msgid "Show caption metadata in search results."
+#~ msgstr "Afișați metadatele legendei în rezultatele căutării."
+
+#~ msgid "Show title metadata in search results."
+#~ msgstr "Afișați metadatele titlului în rezultatele căutării."
 
 #~ msgid "Are you sure you want to delete all archived pictures?"
 #~ msgstr "Sunteți sigur că doriți să ștergeți toate imaginile arhivate?"

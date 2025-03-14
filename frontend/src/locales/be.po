@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: ci@photoprism.app\n"
-"PO-Revision-Date: 2025-03-14 15:02+0000\n"
+"PO-Revision-Date: 2025-03-14 15:12+0000\n"
 "Last-Translator: Google Cloud Translation Basic <noreply-mt-google-translate@weblate.org>\n"
 "Language: be\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2706,10 +2706,6 @@ msgstr "Паказаць"
 msgid "Show all new faces"
 msgstr "Паказаць усе новыя твары"
 
-#: src/page/settings/content.vue:313
-msgid "Show caption metadata in search results."
-msgstr "Паказваць метаданыя цітраў у выніках пошуку."
-
 #: src/page/people/new.vue:62 src/page/people/recognized.vue:97
 msgid "Show hidden"
 msgstr "Паказаць схаванае"
@@ -2722,13 +2718,17 @@ msgstr "Паказваць менш"
 msgid "Show more"
 msgstr "Паказаць больш"
 
+#: src/page/settings/content.vue:313
+msgid "Show picture captions in search results."
+msgstr "Паказваць подпісы да малюнкаў у выніках пошуку."
+
+#: src/page/settings/content.vue:290
+msgid "Show picture titles in search results."
+msgstr "Паказваць назвы малюнкаў у выніках пошуку."
+
 #: src/page/settings/general.vue:469
 msgid "Show server logs in Library."
 msgstr "Паказаць журналы сервера ў бібліятэцы."
-
-#: src/page/settings/content.vue:290
-msgid "Show title metadata in search results."
-msgstr "Паказаць метаданыя загалоўка ў выніках пошуку."
 
 #: src/component/lightbox.vue:940 src/component/lightbox.vue:941
 msgid "Show/Hide Sidebar"
@@ -3378,6 +3378,12 @@ msgstr "Ваша бібліятэка пастаянна аналізуецца 
 #: src/component/lightbox.vue:228
 msgid "Zoom in/out"
 msgstr "Павелічэнне/памяншэнне"
+
+#~ msgid "Show caption metadata in search results."
+#~ msgstr "Паказваць метаданыя цітраў у выніках пошуку."
+
+#~ msgid "Show title metadata in search results."
+#~ msgstr "Паказаць метаданыя загалоўка ў выніках пошуку."
 
 #~ msgid "Are you sure you want to delete all archived pictures?"
 #~ msgstr "Вы ўпэўнены, што жадаеце выдаліць усе заархіваваныя выявы?"

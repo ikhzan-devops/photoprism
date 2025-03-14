@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: ci@photoprism.app\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-03-14 15:02+0000\n"
+"PO-Revision-Date: 2025-03-14 15:12+0000\n"
 "Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
 "Language-Team: Swedish <https://translate.photoprism.app/projects/photoprism/frontend/sv/>\n"
 "Language: sv\n"
@@ -2709,10 +2709,6 @@ msgstr "Visa"
 msgid "Show all new faces"
 msgstr "Visa alla nya ansikten"
 
-#: src/page/settings/content.vue:313
-msgid "Show caption metadata in search results."
-msgstr "Visa metadata för bildtexter i sökresultaten."
-
 #: src/page/people/new.vue:62 src/page/people/recognized.vue:97
 msgid "Show hidden"
 msgstr "Visa dolda"
@@ -2725,13 +2721,17 @@ msgstr "Visa mindre"
 msgid "Show more"
 msgstr "Visa mer"
 
+#: src/page/settings/content.vue:313
+msgid "Show picture captions in search results."
+msgstr "Visa bildtexter i sökresultaten."
+
+#: src/page/settings/content.vue:290
+msgid "Show picture titles in search results."
+msgstr "Visa bildtitlar i sökresultaten."
+
 #: src/page/settings/general.vue:469
 msgid "Show server logs in Library."
 msgstr "Visa serverloggar i biblioteket."
-
-#: src/page/settings/content.vue:290
-msgid "Show title metadata in search results."
-msgstr "Visa titelmetadata i sökresultaten."
 
 #: src/component/lightbox.vue:940 src/component/lightbox.vue:941
 msgid "Show/Hide Sidebar"
@@ -3381,6 +3381,12 @@ msgstr "Ditt bibliotek analyseras kontinuerligt för att automatiskt skapa album
 #: src/component/lightbox.vue:228
 msgid "Zoom in/out"
 msgstr "Zooma in/ut"
+
+#~ msgid "Show caption metadata in search results."
+#~ msgstr "Visa metadata för bildtexter i sökresultaten."
+
+#~ msgid "Show title metadata in search results."
+#~ msgstr "Visa titelmetadata i sökresultaten."
 
 #~ msgid "Are you sure you want to delete all archived pictures?"
 #~ msgstr "Är du säker på att du vill radera alla arkiverade bilder?"

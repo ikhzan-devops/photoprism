@@ -160,7 +160,7 @@
                 class="ma-0 pa-0 input-search-titles"
                 density="compact"
                 :label="$gettext('Titles')"
-                :hint="$gettext('Show title metadata in search results.')"
+                :hint="$gettext('Show picture titles in search results.')"
                 prepend-icon="mdi-format-text"
                 persistent-hint
                 @update:model-value="onChange"
@@ -175,7 +175,7 @@
                 class="ma-0 pa-0 input-search-captions"
                 density="compact"
                 :label="$gettext('Captions')"
-                :hint="$gettext('Show caption metadata in search results.')"
+                :hint="$gettext('Show picture captions in search results.')"
                 prepend-icon="mdi-text"
                 persistent-hint
                 @update:model-value="onChange"

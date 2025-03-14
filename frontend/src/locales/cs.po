@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: ci@photoprism.app\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-03-14 15:02+0000\n"
+"PO-Revision-Date: 2025-03-14 15:12+0000\n"
 "Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
 "Language-Team: Czech <https://translate.photoprism.app/projects/photoprism/frontend/cs/>\n"
 "Language: cs\n"
@@ -2709,10 +2709,6 @@ msgstr "Zobrazit"
 msgid "Show all new faces"
 msgstr "Zobrazit všechny nové tváře"
 
-#: src/page/settings/content.vue:313
-msgid "Show caption metadata in search results."
-msgstr "Zobrazení metadat titulků ve výsledcích vyhledávání."
-
 #: src/page/people/new.vue:62 src/page/people/recognized.vue:97
 msgid "Show hidden"
 msgstr "Zobrazit skryté"
@@ -2725,13 +2721,17 @@ msgstr "Zobrazit méně"
 msgid "Show more"
 msgstr "Zobrazit více"
 
+#: src/page/settings/content.vue:313
+msgid "Show picture captions in search results."
+msgstr "Zobrazení popisků obrázků ve výsledcích vyhledávání."
+
+#: src/page/settings/content.vue:290
+msgid "Show picture titles in search results."
+msgstr "Zobrazení názvů obrázků ve výsledcích vyhledávání."
+
 #: src/page/settings/general.vue:469
 msgid "Show server logs in Library."
 msgstr "Zobrazit logy serveru v Knihovně."
-
-#: src/page/settings/content.vue:290
-msgid "Show title metadata in search results."
-msgstr "Zobrazení metadat o názvu ve výsledcích vyhledávání."
 
 #: src/component/lightbox.vue:940 src/component/lightbox.vue:941
 msgid "Show/Hide Sidebar"
@@ -3381,6 +3381,12 @@ msgstr "Vaše knihovna je průběžně analyzována a automaticky vytváří alb
 #: src/component/lightbox.vue:228
 msgid "Zoom in/out"
 msgstr "Přiblížit/Oddálit"
+
+#~ msgid "Show caption metadata in search results."
+#~ msgstr "Zobrazení metadat titulků ve výsledcích vyhledávání."
+
+#~ msgid "Show title metadata in search results."
+#~ msgstr "Zobrazení metadat o názvu ve výsledcích vyhledávání."
 
 #~ msgid "Are you sure you want to delete all archived pictures?"
 #~ msgstr "Opravdu chcete odstranit všechny archivované obrázky?"

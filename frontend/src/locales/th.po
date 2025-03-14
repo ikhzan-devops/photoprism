@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: ci@photoprism.app\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-03-14 15:02+0000\n"
+"PO-Revision-Date: 2025-03-14 15:12+0000\n"
 "Last-Translator: Google Cloud Translation Basic <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: \n"
 "Language: th\n"
@@ -2709,10 +2709,6 @@ msgstr "แสดง"
 msgid "Show all new faces"
 msgstr "แสดงใบหน้าใหม่ทั้งหมด"
 
-#: src/page/settings/content.vue:313
-msgid "Show caption metadata in search results."
-msgstr "แสดงข้อมูลเมตาคำบรรยายในผลการค้นหา"
-
 #: src/page/people/new.vue:62 src/page/people/recognized.vue:97
 msgid "Show hidden"
 msgstr "แสดงที่ซ่อนอยู่"
@@ -2725,13 +2721,17 @@ msgstr "แสดงน้อยลง"
 msgid "Show more"
 msgstr "แสดงมากขึ้น"
 
+#: src/page/settings/content.vue:313
+msgid "Show picture captions in search results."
+msgstr "แสดงคำบรรยายภาพในผลการค้นหา"
+
+#: src/page/settings/content.vue:290
+msgid "Show picture titles in search results."
+msgstr "แสดงชื่อรูปภาพในผลการค้นหา"
+
 #: src/page/settings/general.vue:469
 msgid "Show server logs in Library."
 msgstr "แสดงบันทึกเซิร์ฟเวอร์ในไลบรารี"
-
-#: src/page/settings/content.vue:290
-msgid "Show title metadata in search results."
-msgstr "แสดงข้อมูลเมตาของชื่อเรื่องในผลการค้นหา"
 
 #: src/component/lightbox.vue:940 src/component/lightbox.vue:941
 msgid "Show/Hide Sidebar"
@@ -3381,6 +3381,12 @@ msgstr "คลังของคุณได้รับการวิเคร
 #: src/component/lightbox.vue:228
 msgid "Zoom in/out"
 msgstr "ซูมเข้า/ออก"
+
+#~ msgid "Show caption metadata in search results."
+#~ msgstr "แสดงข้อมูลเมตาคำบรรยายในผลการค้นหา"
+
+#~ msgid "Show title metadata in search results."
+#~ msgstr "แสดงข้อมูลเมตาของชื่อเรื่องในผลการค้นหา"
 
 #~ msgid "Are you sure you want to delete all archived pictures?"
 #~ msgstr "คุณแน่ใจหรือไม่ว่าต้องการลบรูปภาพที่เก็บถาวรทั้งหมด"

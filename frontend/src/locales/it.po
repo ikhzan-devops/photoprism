@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: ci@photoprism.app\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-03-14 15:02+0000\n"
+"PO-Revision-Date: 2025-03-14 15:12+0000\n"
 "Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
 "Language-Team: Italian <https://translate.photoprism.app/projects/photoprism/frontend/it/>\n"
 "Language: it\n"
@@ -2709,10 +2709,6 @@ msgstr "Mostra"
 msgid "Show all new faces"
 msgstr "Mostra tutti i volti nuovi"
 
-#: src/page/settings/content.vue:313
-msgid "Show caption metadata in search results."
-msgstr "Mostra i metadati delle didascalie nei risultati della ricerca."
-
 #: src/page/people/new.vue:62 src/page/people/recognized.vue:97
 msgid "Show hidden"
 msgstr "Mostra nascosto"
@@ -2725,13 +2721,17 @@ msgstr "Mostra meno"
 msgid "Show more"
 msgstr "Mostra più"
 
+#: src/page/settings/content.vue:313
+msgid "Show picture captions in search results."
+msgstr "Mostra le didascalie delle immagini nei risultati della ricerca."
+
+#: src/page/settings/content.vue:290
+msgid "Show picture titles in search results."
+msgstr "Mostra i titoli delle immagini nei risultati della ricerca."
+
 #: src/page/settings/general.vue:469
 msgid "Show server logs in Library."
 msgstr "Mostra i log server nella Libreria."
-
-#: src/page/settings/content.vue:290
-msgid "Show title metadata in search results."
-msgstr "Mostra i metadati del titolo nei risultati della ricerca."
 
 #: src/component/lightbox.vue:940 src/component/lightbox.vue:941
 msgid "Show/Hide Sidebar"
@@ -3381,6 +3381,12 @@ msgstr "La tua libreria viene continuamente analizzata per creare automaticament
 #: src/component/lightbox.vue:228
 msgid "Zoom in/out"
 msgstr "Zoom avanti/indietro"
+
+#~ msgid "Show caption metadata in search results."
+#~ msgstr "Mostra i metadati delle didascalie nei risultati della ricerca."
+
+#~ msgid "Show title metadata in search results."
+#~ msgstr "Mostra i metadati del titolo nei risultati della ricerca."
 
 #~ msgid "Are you sure you want to delete all archived pictures?"
 #~ msgstr "Siete sicuri di voler eliminare tutte le immagini archiviate?"

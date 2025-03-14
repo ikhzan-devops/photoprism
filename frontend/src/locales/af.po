@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: ci@photoprism.app\n"
-"PO-Revision-Date: 2025-03-14 15:02+0000\n"
+"PO-Revision-Date: 2025-03-14 15:12+0000\n"
 "Last-Translator: Google Cloud Translation Basic <noreply-mt-google-translate@weblate.org>\n"
 "Language: af\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2706,10 +2706,6 @@ msgstr "Wys"
 msgid "Show all new faces"
 msgstr "Wys alle nuwe gesigte"
 
-#: src/page/settings/content.vue:313
-msgid "Show caption metadata in search results."
-msgstr "Wys onderskrifmetadata in soekresultate."
-
 #: src/page/people/new.vue:62 src/page/people/recognized.vue:97
 msgid "Show hidden"
 msgstr "Wys versteek"
@@ -2722,13 +2718,17 @@ msgstr "Wys minder"
 msgid "Show more"
 msgstr "Wys meer"
 
+#: src/page/settings/content.vue:313
+msgid "Show picture captions in search results."
+msgstr "Wys prentbyskrifte in soekresultate."
+
+#: src/page/settings/content.vue:290
+msgid "Show picture titles in search results."
+msgstr "Wys prenttitels in soekresultate."
+
 #: src/page/settings/general.vue:469
 msgid "Show server logs in Library."
 msgstr "Wys bedienerlogboeke in Biblioteek."
-
-#: src/page/settings/content.vue:290
-msgid "Show title metadata in search results."
-msgstr "Wys titelmetadata in soekresultate."
 
 #: src/component/lightbox.vue:940 src/component/lightbox.vue:941
 msgid "Show/Hide Sidebar"
@@ -3378,6 +3378,12 @@ msgstr "Jou biblioteek word voortdurend ontleed om outomaties albums van spesial
 #: src/component/lightbox.vue:228
 msgid "Zoom in/out"
 msgstr "Zoem in/uit"
+
+#~ msgid "Show caption metadata in search results."
+#~ msgstr "Wys onderskrifmetadata in soekresultate."
+
+#~ msgid "Show title metadata in search results."
+#~ msgstr "Wys titelmetadata in soekresultate."
 
 #~ msgid "Are you sure you want to delete all archived pictures?"
 #~ msgstr "Is jy seker jy wil alle geargiveerde prente uitvee?"

@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: ci@photoprism.app\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-03-14 15:02+0000\n"
+"PO-Revision-Date: 2025-03-14 15:12+0000\n"
 "Last-Translator: Google Cloud Translation Basic <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: \n"
 "Language: hr\n"
@@ -2709,10 +2709,6 @@ msgstr "Prikaži"
 msgid "Show all new faces"
 msgstr "Pokažite sva nova lica"
 
-#: src/page/settings/content.vue:313
-msgid "Show caption metadata in search results."
-msgstr "Prikaži metapodatke naslova u rezultatima pretraživanja."
-
 #: src/page/people/new.vue:62 src/page/people/recognized.vue:97
 msgid "Show hidden"
 msgstr "Prikaži skriveno"
@@ -2725,13 +2721,17 @@ msgstr "Prikaži manje"
 msgid "Show more"
 msgstr "Prikaži više"
 
+#: src/page/settings/content.vue:313
+msgid "Show picture captions in search results."
+msgstr "Prikaži opise slika u rezultatima pretraživanja."
+
+#: src/page/settings/content.vue:290
+msgid "Show picture titles in search results."
+msgstr "Prikaži naslove slika u rezultatima pretraživanja."
+
 #: src/page/settings/general.vue:469
 msgid "Show server logs in Library."
 msgstr "Prikaži zapisnike poslužitelja u knjižnici."
-
-#: src/page/settings/content.vue:290
-msgid "Show title metadata in search results."
-msgstr "Prikaži metapodatke naslova u rezultatima pretraživanja."
 
 #: src/component/lightbox.vue:940 src/component/lightbox.vue:941
 msgid "Show/Hide Sidebar"
@@ -3381,6 +3381,12 @@ msgstr "Vaša se knjižnica kontinuirano analizira kako bi se automatski izradil
 #: src/component/lightbox.vue:228
 msgid "Zoom in/out"
 msgstr "Povećavanje/smanjivanje"
+
+#~ msgid "Show caption metadata in search results."
+#~ msgstr "Prikaži metapodatke naslova u rezultatima pretraživanja."
+
+#~ msgid "Show title metadata in search results."
+#~ msgstr "Prikaži metapodatke naslova u rezultatima pretraživanja."
 
 #~ msgid "Are you sure you want to delete all archived pictures?"
 #~ msgstr "Jeste li sigurni da želite izbrisati sve arhivirane slike?"

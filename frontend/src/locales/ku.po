@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: ci@photoprism.app\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-03-14 15:02+0000\n"
+"PO-Revision-Date: 2025-03-14 15:12+0000\n"
 "Last-Translator: Google Cloud Translation Basic <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Kurdish <https://translate.photoprism.app/projects/photoprism/frontend/ku/>\n"
 "Language: ku\n"
@@ -2709,10 +2709,6 @@ msgstr "Rêdan"
 msgid "Show all new faces"
 msgstr "Hemî rûyên nû nîşan bidin"
 
-#: src/page/settings/content.vue:313
-msgid "Show caption metadata in search results."
-msgstr "Di encamên lêgerînê de metadata sernavê nîşan bide."
-
 #: src/page/people/new.vue:62 src/page/people/recognized.vue:97
 msgid "Show hidden"
 msgstr "Veşartî nîşan bide"
@@ -2725,13 +2721,17 @@ msgstr "کەمتر ببینە"
 msgid "Show more"
 msgstr "زیاتر ببینە"
 
+#: src/page/settings/content.vue:313
+msgid "Show picture captions in search results."
+msgstr "Di encamên lêgerînê de sernavên wêneyan nîşan bidin."
+
+#: src/page/settings/content.vue:290
+msgid "Show picture titles in search results."
+msgstr "Di encamên lêgerînê de sernavên wêneyan nîşan bidin."
+
 #: src/page/settings/general.vue:469
 msgid "Show server logs in Library."
 msgstr "پیشاندانی لۆگەکانی ڕاژە لە کتێبخانە."
-
-#: src/page/settings/content.vue:290
-msgid "Show title metadata in search results."
-msgstr "Di encamên lêgerînê de metadata sernavê nîşan bide."
 
 #: src/component/lightbox.vue:940 src/component/lightbox.vue:941
 msgid "Show/Hide Sidebar"
@@ -3381,6 +3381,12 @@ msgstr "Pirtûkxaneya we bi domdarî tê analîz kirin ku bixweber albumên dem�
 #: src/component/lightbox.vue:228
 msgid "Zoom in/out"
 msgstr "گەورەکردن/بچووکردن"
+
+#~ msgid "Show caption metadata in search results."
+#~ msgstr "Di encamên lêgerînê de metadata sernavê nîşan bide."
+
+#~ msgid "Show title metadata in search results."
+#~ msgstr "Di encamên lêgerînê de metadata sernavê nîşan bide."
 
 #~ msgid "Are you sure you want to delete all archived pictures?"
 #~ msgstr "Ma hûn pê bawer in ku hûn dixwazin hemî wêneyên arşîvkirî jêbirin?"

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: ci@photoprism.app\n"
-"PO-Revision-Date: 2025-03-14 15:02+0000\n"
+"PO-Revision-Date: 2025-03-14 15:12+0000\n"
 "Last-Translator: Google Cloud Translation Basic <noreply-mt-google-translate@weblate.org>\n"
 "Language: eu\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2706,10 +2706,6 @@ msgstr "Erakutsi"
 msgid "Show all new faces"
 msgstr "Erakutsi aurpegi berri guztiak"
 
-#: src/page/settings/content.vue:313
-msgid "Show caption metadata in search results."
-msgstr "Erakutsi epigrafeen metadatuak bilaketa-emaitzetan."
-
 #: src/page/people/new.vue:62 src/page/people/recognized.vue:97
 msgid "Show hidden"
 msgstr "Erakutsi ezkutuan"
@@ -2722,13 +2718,17 @@ msgstr "Erakutsi gutxiago"
 msgid "Show more"
 msgstr "Erakutsi gehiago"
 
+#: src/page/settings/content.vue:313
+msgid "Show picture captions in search results."
+msgstr "Erakutsi irudi-oinak bilaketa-emaitzetan."
+
+#: src/page/settings/content.vue:290
+msgid "Show picture titles in search results."
+msgstr "Erakutsi irudien izenburuak bilaketa-emaitzetan."
+
 #: src/page/settings/general.vue:469
 msgid "Show server logs in Library."
 msgstr "Erakutsi zerbitzariaren erregistroak Liburutegian."
-
-#: src/page/settings/content.vue:290
-msgid "Show title metadata in search results."
-msgstr "Erakutsi izenburuaren metadatuak bilaketa-emaitzetan."
 
 #: src/component/lightbox.vue:940 src/component/lightbox.vue:941
 msgid "Show/Hide Sidebar"
@@ -3378,6 +3378,12 @@ msgstr "Zure liburutegia etengabe aztertzen da momentu, bidai eta leku berezien 
 #: src/component/lightbox.vue:228
 msgid "Zoom in/out"
 msgstr "Handitu/txikiagotu"
+
+#~ msgid "Show caption metadata in search results."
+#~ msgstr "Erakutsi epigrafeen metadatuak bilaketa-emaitzetan."
+
+#~ msgid "Show title metadata in search results."
+#~ msgstr "Erakutsi izenburuaren metadatuak bilaketa-emaitzetan."
 
 #~ msgid "Are you sure you want to delete all archived pictures?"
 #~ msgstr "Ziur artxibatutako argazki guztiak ezabatu nahi dituzula?"

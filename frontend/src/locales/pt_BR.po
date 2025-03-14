@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: ci@photoprism.app\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-03-14 15:02+0000\n"
+"PO-Revision-Date: 2025-03-14 15:12+0000\n"
 "Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://translate.photoprism.app/projects/photoprism/frontend/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -2709,10 +2709,6 @@ msgstr "Mostrar"
 msgid "Show all new faces"
 msgstr "Mostrar todos os rostos novos"
 
-#: src/page/settings/content.vue:313
-msgid "Show caption metadata in search results."
-msgstr "Mostrar metadados da legenda nos resultados da pesquisa."
-
 #: src/page/people/new.vue:62 src/page/people/recognized.vue:97
 msgid "Show hidden"
 msgstr "Mostrar oculto"
@@ -2725,13 +2721,17 @@ msgstr "Mostrar menos"
 msgid "Show more"
 msgstr "Mostrar mais"
 
+#: src/page/settings/content.vue:313
+msgid "Show picture captions in search results."
+msgstr "Mostrar legendas de imagens nos resultados de pesquisa."
+
+#: src/page/settings/content.vue:290
+msgid "Show picture titles in search results."
+msgstr "Mostrar títulos de imagens nos resultados da pesquisa."
+
 #: src/page/settings/general.vue:469
 msgid "Show server logs in Library."
 msgstr "Mostrar registros do servidor na Biblioteca."
-
-#: src/page/settings/content.vue:290
-msgid "Show title metadata in search results."
-msgstr "Mostrar metadados do título nos resultados da pesquisa."
 
 #: src/component/lightbox.vue:940 src/component/lightbox.vue:941
 msgid "Show/Hide Sidebar"
@@ -3381,6 +3381,12 @@ msgstr "Sua biblioteca é continuamente analisada para criar automaticamente ál
 #: src/component/lightbox.vue:228
 msgid "Zoom in/out"
 msgstr "Aproximar/Afastar"
+
+#~ msgid "Show caption metadata in search results."
+#~ msgstr "Mostrar metadados da legenda nos resultados da pesquisa."
+
+#~ msgid "Show title metadata in search results."
+#~ msgstr "Mostrar metadados do título nos resultados da pesquisa."
 
 #~ msgid "Are you sure you want to delete all archived pictures?"
 #~ msgstr "Tem certeza de que deseja excluir todas as fotos arquivadas?"

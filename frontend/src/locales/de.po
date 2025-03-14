@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: ci@photoprism.app\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-03-14 15:02+0000\n"
-"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
+"PO-Revision-Date: 2025-03-14 15:14+0000\n"
+"Last-Translator: Admin <hello@photoprism.app>\n"
 "Language-Team: German <https://translate.photoprism.app/projects/photoprism/frontend/de/>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
@@ -2709,10 +2709,6 @@ msgstr "Anzeigen"
 msgid "Show all new faces"
 msgstr "Alle neuen Gesichter anzeigen"
 
-#: src/page/settings/content.vue:313
-msgid "Show caption metadata in search results."
-msgstr "Zeige die Metadaten der Untertitel in den Suchergebnissen."
-
 #: src/page/people/new.vue:62 src/page/people/recognized.vue:97
 msgid "Show hidden"
 msgstr "Verborgene anzeigen"
@@ -2725,13 +2721,17 @@ msgstr "Weniger zeigen"
 msgid "Show more"
 msgstr "Mehr zeigen"
 
+#: src/page/settings/content.vue:313
+msgid "Show picture captions in search results."
+msgstr "Bildunterschriften in den Suchergebnissen anzeigen."
+
+#: src/page/settings/content.vue:290
+msgid "Show picture titles in search results."
+msgstr "Bildtitel in den Suchergebnissen anzeigen."
+
 #: src/page/settings/general.vue:469
 msgid "Show server logs in Library."
 msgstr "Server-Ereignisprotokoll anzeigen, um Fehler zu finden."
-
-#: src/page/settings/content.vue:290
-msgid "Show title metadata in search results."
-msgstr "Zeige Titel-Metadaten in den Suchergebnissen."
 
 #: src/component/lightbox.vue:940 src/component/lightbox.vue:941
 msgid "Show/Hide Sidebar"
@@ -3247,7 +3247,7 @@ msgstr "Ansicht"
 
 #: src/page/settings/content.vue:267
 msgid "View search results as a list."
-msgstr "Zeige die Suchergebnisse als Liste an."
+msgstr "Suchergebnisse als Liste anzeigen."
 
 #: src/options/admin.js:14 src/options/auth.js:8
 msgid "Viewer"
@@ -3381,6 +3381,12 @@ msgstr "Die vorhandenen Bilder werden fortlaufend analysiert, um automatisch Alb
 #: src/component/lightbox.vue:228
 msgid "Zoom in/out"
 msgstr "Herein/Herauszoomen"
+
+#~ msgid "Show caption metadata in search results."
+#~ msgstr "Zeige die Metadaten der Untertitel in den Suchergebnissen."
+
+#~ msgid "Show title metadata in search results."
+#~ msgstr "Zeige Titel-Metadaten in den Suchergebnissen."
 
 #~ msgid "Are you sure you want to delete all archived pictures?"
 #~ msgstr "Alle archivierten Bilder unwiderruflich löschen?"

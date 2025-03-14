@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: ci@photoprism.app\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-03-14 15:02+0000\n"
+"PO-Revision-Date: 2025-03-14 15:12+0000\n"
 "Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
 "Language-Team: French <https://translate.photoprism.app/projects/photoprism/frontend/fr/>\n"
 "Language: fr\n"
@@ -2731,10 +2731,6 @@ msgstr "Afficher"
 msgid "Show all new faces"
 msgstr "Montrer tous les nouveaux visages"
 
-#: src/page/settings/content.vue:313
-msgid "Show caption metadata in search results."
-msgstr "Afficher les métadonnées des légendes dans les résultats de recherche."
-
 #: src/page/people/new.vue:62 src/page/people/recognized.vue:97
 msgid "Show hidden"
 msgstr "Afficher les éléments masqués"
@@ -2747,13 +2743,17 @@ msgstr "Montrer moins"
 msgid "Show more"
 msgstr "Montre plus"
 
+#: src/page/settings/content.vue:313
+msgid "Show picture captions in search results."
+msgstr "Affiche les légendes des images dans les résultats de recherche."
+
+#: src/page/settings/content.vue:290
+msgid "Show picture titles in search results."
+msgstr "Affiche les titres des images dans les résultats de recherche."
+
 #: src/page/settings/general.vue:469
 msgid "Show server logs in Library."
 msgstr "Afficher les journaux serveurs dans Bibliothèque."
-
-#: src/page/settings/content.vue:290
-msgid "Show title metadata in search results."
-msgstr "Afficher les métadonnées du titre dans les résultats de recherche."
 
 #: src/component/lightbox.vue:940 src/component/lightbox.vue:941
 #, fuzzy
@@ -3406,6 +3406,12 @@ msgstr "Votre bibliothèque est analysée en permanence pour créer automatiquem
 #: src/component/lightbox.vue:228
 msgid "Zoom in/out"
 msgstr "Agrandir/Dézoomer"
+
+#~ msgid "Show caption metadata in search results."
+#~ msgstr "Afficher les métadonnées des légendes dans les résultats de recherche."
+
+#~ msgid "Show title metadata in search results."
+#~ msgstr "Afficher les métadonnées du titre dans les résultats de recherche."
 
 #~ msgid "Are you sure you want to delete all archived pictures?"
 #~ msgstr "Êtes-vous sûr de vouloir supprimer toutes les photos archivées ?"

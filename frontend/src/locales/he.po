@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: ci@photoprism.app\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-03-14 15:03+0000\n"
+"PO-Revision-Date: 2025-03-14 15:12+0000\n"
 "Last-Translator: Google Cloud Translation Basic <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Hebrew <https://translate.photoprism.app/projects/photoprism/frontend/he/>\n"
 "Language: he\n"
@@ -2709,10 +2709,6 @@ msgstr "הצג"
 msgid "Show all new faces"
 msgstr "הצג את כל הפרצופים החדשים"
 
-#: src/page/settings/content.vue:313
-msgid "Show caption metadata in search results."
-msgstr "הצג מטא נתונים של כיתוב בתוצאות החיפוש."
-
 #: src/page/people/new.vue:62 src/page/people/recognized.vue:97
 msgid "Show hidden"
 msgstr "הראה את המוסתר"
@@ -2725,13 +2721,17 @@ msgstr "הצג פחות"
 msgid "Show more"
 msgstr "הצג עוד"
 
+#: src/page/settings/content.vue:313
+msgid "Show picture captions in search results."
+msgstr "הצג כתוביות תמונה בתוצאות החיפוש."
+
+#: src/page/settings/content.vue:290
+msgid "Show picture titles in search results."
+msgstr "הצג כותרות של תמונות בתוצאות החיפוש."
+
 #: src/page/settings/general.vue:469
 msgid "Show server logs in Library."
 msgstr "הצג יומני שרת בספרייה."
-
-#: src/page/settings/content.vue:290
-msgid "Show title metadata in search results."
-msgstr "הצג מטא נתונים של כותרת בתוצאות החיפוש."
 
 #: src/component/lightbox.vue:940 src/component/lightbox.vue:941
 msgid "Show/Hide Sidebar"
@@ -3381,6 +3381,12 @@ msgstr "הספרייה שלך מנותחת באופן רציף ליצירת אל
 #: src/component/lightbox.vue:228
 msgid "Zoom in/out"
 msgstr "זום פנימה\\החוצה"
+
+#~ msgid "Show caption metadata in search results."
+#~ msgstr "הצג מטא נתונים של כיתוב בתוצאות החיפוש."
+
+#~ msgid "Show title metadata in search results."
+#~ msgstr "הצג מטא נתונים של כותרת בתוצאות החיפוש."
 
 #~ msgid "Are you sure you want to delete all archived pictures?"
 #~ msgstr "האם אתה בטוח שברצונך למחוק את כל התמונות בארכיון?"

@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: ci@photoprism.app\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-03-14 15:02+0000\n"
+"PO-Revision-Date: 2025-03-14 15:12+0000\n"
 "Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
 "Language-Team: Chinese (Simplified) <https://translate.photoprism.app/projects/photoprism/frontend/zh_Hans/>\n"
 "Language: zh\n"
@@ -2711,10 +2711,6 @@ msgstr "显示"
 msgid "Show all new faces"
 msgstr "显示所有的新面孔"
 
-#: src/page/settings/content.vue:313
-msgid "Show caption metadata in search results."
-msgstr "在搜索结果中显示标题元数据。"
-
 #: src/page/people/new.vue:62 src/page/people/recognized.vue:97
 msgid "Show hidden"
 msgstr "显示隐藏"
@@ -2727,13 +2723,17 @@ msgstr "显示更少"
 msgid "Show more"
 msgstr "显示更多"
 
+#: src/page/settings/content.vue:313
+msgid "Show picture captions in search results."
+msgstr "在搜索结果中显示图片说明"
+
+#: src/page/settings/content.vue:290
+msgid "Show picture titles in search results."
+msgstr "在搜索结果中显示图片标题"
+
 #: src/page/settings/general.vue:469
 msgid "Show server logs in Library."
 msgstr "在库中显示服务器日志。"
-
-#: src/page/settings/content.vue:290
-msgid "Show title metadata in search results."
-msgstr "在搜索结果中显示标题元数据。"
 
 #: src/component/lightbox.vue:940 src/component/lightbox.vue:941
 msgid "Show/Hide Sidebar"
@@ -3383,6 +3383,12 @@ msgstr "你的库被不断分析，以自动创建特殊时刻、旅行和地点
 #: src/component/lightbox.vue:228
 msgid "Zoom in/out"
 msgstr "缩放"
+
+#~ msgid "Show caption metadata in search results."
+#~ msgstr "在搜索结果中显示标题元数据。"
+
+#~ msgid "Show title metadata in search results."
+#~ msgstr "在搜索结果中显示标题元数据。"
 
 #~ msgid "Are you sure you want to delete all archived pictures?"
 #~ msgstr "您确定要删除所有归档图片吗？"

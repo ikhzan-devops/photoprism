@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: ci@photoprism.app\n"
-"PO-Revision-Date: 2025-03-14 15:02+0000\n"
+"PO-Revision-Date: 2025-03-14 15:12+0000\n"
 "Last-Translator: Google Cloud Translation Basic <noreply-mt-google-translate@weblate.org>\n"
 "Language: vi\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2706,10 +2706,6 @@ msgstr "Trình diễn"
 msgid "Show all new faces"
 msgstr "Hiển thị tất cả các khuôn mặt mới"
 
-#: src/page/settings/content.vue:313
-msgid "Show caption metadata in search results."
-msgstr "Hiển thị siêu dữ liệu chú thích trong kết quả tìm kiếm."
-
 #: src/page/people/new.vue:62 src/page/people/recognized.vue:97
 msgid "Show hidden"
 msgstr "Hiển thị ẩn"
@@ -2722,13 +2718,17 @@ msgstr "Hiện ít hơn"
 msgid "Show more"
 msgstr "Cho xem nhiều hơn"
 
+#: src/page/settings/content.vue:313
+msgid "Show picture captions in search results."
+msgstr "Hiển thị chú thích hình ảnh trong kết quả tìm kiếm."
+
+#: src/page/settings/content.vue:290
+msgid "Show picture titles in search results."
+msgstr "Hiển thị tiêu đề hình ảnh trong kết quả tìm kiếm."
+
 #: src/page/settings/general.vue:469
 msgid "Show server logs in Library."
 msgstr "Hiển thị nhật ký máy chủ trong Thư viện."
-
-#: src/page/settings/content.vue:290
-msgid "Show title metadata in search results."
-msgstr "Hiển thị siêu dữ liệu tiêu đề trong kết quả tìm kiếm."
 
 #: src/component/lightbox.vue:940 src/component/lightbox.vue:941
 msgid "Show/Hide Sidebar"
@@ -3380,6 +3380,12 @@ msgstr "Thư viện của bạn được phân tích liên tục để tự đ�
 #: src/component/lightbox.vue:228
 msgid "Zoom in/out"
 msgstr "Phóng to / thu nhỏ"
+
+#~ msgid "Show caption metadata in search results."
+#~ msgstr "Hiển thị siêu dữ liệu chú thích trong kết quả tìm kiếm."
+
+#~ msgid "Show title metadata in search results."
+#~ msgstr "Hiển thị siêu dữ liệu tiêu đề trong kết quả tìm kiếm."
 
 #~ msgid "Are you sure you want to delete all archived pictures?"
 #~ msgstr "Bạn có chắc chắn muốn xóa tất cả ảnh đã lưu trữ không?"

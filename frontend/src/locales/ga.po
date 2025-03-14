@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: ci@photoprism.app\n"
-"PO-Revision-Date: 2025-03-14 15:02+0000\n"
+"PO-Revision-Date: 2025-03-14 15:12+0000\n"
 "Last-Translator: Google Cloud Translation Basic <noreply-mt-google-translate@weblate.org>\n"
 "Language: ga\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2706,10 +2706,6 @@ msgstr "Taispeáin"
 msgid "Show all new faces"
 msgstr "Taispeáin gach aghaidh nua"
 
-#: src/page/settings/content.vue:313
-msgid "Show caption metadata in search results."
-msgstr "Taispeáin meiteashonraí fotheideal i dtorthaí cuardaigh."
-
 #: src/page/people/new.vue:62 src/page/people/recognized.vue:97
 msgid "Show hidden"
 msgstr "Taispeáin i bhfolach"
@@ -2722,13 +2718,17 @@ msgstr "Taispeáin níos lú"
 msgid "Show more"
 msgstr "Taispeáin níos mó"
 
+#: src/page/settings/content.vue:313
+msgid "Show picture captions in search results."
+msgstr "Taispeáin fotheidil pictiúir i dtorthaí cuardaigh."
+
+#: src/page/settings/content.vue:290
+msgid "Show picture titles in search results."
+msgstr "Taispeáin teidil pictiúir sna torthaí cuardaigh."
+
 #: src/page/settings/general.vue:469
 msgid "Show server logs in Library."
 msgstr "Taispeáin logaí freastalaí sa Leabharlann."
-
-#: src/page/settings/content.vue:290
-msgid "Show title metadata in search results."
-msgstr "Taispeáin meiteashonraí teidil sna torthaí cuardaigh."
 
 #: src/component/lightbox.vue:940 src/component/lightbox.vue:941
 msgid "Show/Hide Sidebar"
@@ -3378,6 +3378,12 @@ msgstr "Déantar anailís leanúnach ar do leabharlann chun albam chuimhneachái
 #: src/component/lightbox.vue:228
 msgid "Zoom in/out"
 msgstr "Súmáil isteach/amach"
+
+#~ msgid "Show caption metadata in search results."
+#~ msgstr "Taispeáin meiteashonraí fotheideal i dtorthaí cuardaigh."
+
+#~ msgid "Show title metadata in search results."
+#~ msgstr "Taispeáin meiteashonraí teidil sna torthaí cuardaigh."
 
 #~ msgid "Are you sure you want to delete all archived pictures?"
 #~ msgstr "An bhfuil tú cinnte gur mhaith leat gach pictiúr sa chartlann a scriosadh?"
