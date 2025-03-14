@@ -5,8 +5,10 @@ UI:
   Language: de
   TimeZone: ""
 Search:
-  BatchSize: 0
+  BatchSize: -1
   ListView: true
+  ShowTitles: true
+  ShowCaptions: true
 Maps:
   Animate: 0
   Style: ""

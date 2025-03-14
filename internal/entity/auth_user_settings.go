@@ -23,6 +23,9 @@ type UserSettings struct {
 	DownloadOriginals    int       `gorm:"default:0;" json:"DownloadOriginals,omitempty" yaml:"DownloadOriginals,omitempty"`
 	DownloadMediaRaw     int       `gorm:"default:0;" json:"DownloadMediaRaw,omitempty" yaml:"DownloadMediaRaw,omitempty"`
 	DownloadMediaSidecar int       `gorm:"default:0;" json:"DownloadMediaSidecar,omitempty" yaml:"DownloadMediaSidecar,omitempty"`
+	SearchListView       int       `gorm:"default:0;" json:"SearchListView,omitempty" yaml:"SearchListView,omitempty"`
+	SearchShowTitles     int       `gorm:"default:0;" json:"SearchShowTitles,omitempty" yaml:"SearchShowTitles,omitempty"`
+	SearchShowCaptions   int       `gorm:"default:0;" json:"SearchShowCaptions,omitempty" yaml:"SearchShowCaptions,omitempty"`
 	UploadPath           string    `gorm:"type:VARBINARY(1024);" json:"UploadPath,omitempty" yaml:"UploadPath,omitempty"`
 	DefaultPage          string    `gorm:"type:VARBINARY(128);" json:"DefaultPage,omitempty" yaml:"DefaultPage,omitempty"`
 	CreatedAt            time.Time `json:"CreatedAt" yaml:"-"`
@@ -133,15 +136,38 @@ func (m *UserSettings) Apply(s *customize.Settings) *UserSettings {
 		} else {
 			m.DownloadOriginals = -1
 		}
+
 		if s.Download.MediaRaw {
 			m.DownloadMediaRaw = 1
 		} else {
 			m.DownloadMediaRaw = -1
 		}
+
 		if s.Download.MediaSidecar {
 			m.DownloadMediaSidecar = 1
 		} else {
 			m.DownloadMediaSidecar = -1
+		}
+	}
+
+	// Search preferences.
+	if s.Search.BatchSize != 0 {
+		if s.Search.ListView {
+			m.SearchListView = 1
+		} else {
+			m.SearchListView = -1
+		}
+
+		if s.Search.ShowTitles {
+			m.SearchShowTitles = 1
+		} else {
+			m.SearchShowTitles = -1
+		}
+
+		if s.Search.ShowCaptions {
+			m.SearchShowCaptions = 1
+		} else {
+			m.SearchShowCaptions = -1
 		}
 	}
 
@@ -208,6 +234,28 @@ func (m *UserSettings) ApplyTo(s *customize.Settings) *customize.Settings {
 		s.Download.MediaSidecar = true
 	} else if m.DownloadMediaSidecar < 0 {
 		s.Download.MediaSidecar = false
+	}
+
+	if s.Search.BatchSize <= 0 {
+		s.Search.BatchSize = -1
+	}
+
+	if m.SearchListView > 0 {
+		s.Search.ListView = true
+	} else if m.SearchListView < 0 {
+		s.Search.ListView = false
+	}
+
+	if m.SearchShowTitles > 0 {
+		s.Search.ShowTitles = true
+	} else if m.SearchShowTitles < 0 {
+		s.Search.ShowTitles = false
+	}
+
+	if m.SearchShowCaptions > 0 {
+		s.Search.ShowCaptions = true
+	} else if m.SearchShowCaptions < 0 {
+		s.Search.ShowCaptions = false
 	}
 
 	return s

@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: photoprism\n"
 "Report-Msgid-Bugs-To: ci@photoprism.app\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-03-14 11:32+0000\n"
-"Last-Translator: Admin <hello@photoprism.app>\n"
+"PO-Revision-Date: 2025-03-14 15:02+0000\n"
+"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
 "Language-Team: Hungarian <https://translate.photoprism.app/projects/photoprism/frontend/hu/>\n"
 "Language: hu\n"
 "MIME-Version: 1.0\n"
@@ -360,8 +360,8 @@ msgid "AM"
 msgstr "AM"
 
 #: src/component/navigation.vue:418 src/component/photo/edit/files.vue:364
-#: src/component/photo/view/cards.vue:326
-#: src/component/photo/view/cards.vue:508 src/component/photo/view/list.vue:172
+#: src/component/photo/view/cards.vue:321
+#: src/component/photo/view/cards.vue:496 src/component/photo/view/list.vue:172
 #: src/component/photo/view/mosaic.vue:170 src/options/options.js:375
 msgid "Animated"
 msgstr "Mozgó"
@@ -388,7 +388,7 @@ msgstr "Alkalmaz"
 
 #: src/component/photo/clipboard.vue:64
 #: src/component/photo/edit/details.vue:640
-#: src/component/photo/view/cards.vue:409
+#: src/component/photo/view/cards.vue:404
 msgid "Approve"
 msgstr "Jóváhagy"
 
@@ -397,7 +397,7 @@ msgid "Apps and Devices"
 msgstr "Alkalmazások és eszközök"
 
 #: src/app/routes.js:266 src/component/navigation.vue:568
-#: src/component/photo/clipboard.vue:142 src/component/photo/view/cards.vue:391
+#: src/component/photo/clipboard.vue:142 src/component/photo/view/cards.vue:386
 #: src/page/settings/general.vue:348
 msgid "Archive"
 msgstr "Archívum"
@@ -542,7 +542,7 @@ msgid "Calendar"
 msgstr "Naptár"
 
 #: src/component/photo/edit/details.vue:346 src/component/photo/toolbar.vue:221
-#: src/component/photo/view/cards.vue:462 src/component/photo/view/list.vue:115
+#: src/component/photo/view/cards.vue:452 src/component/photo/view/list.vue:115
 msgid "Camera"
 msgstr "Kamera"
 
@@ -589,9 +589,13 @@ msgstr "Mégsem"
 
 #: src/component/photo/edit/details.vue:87 src/component/photo/edit/info.vue:59
 #: src/component/photo/edit/labels.vue:42
-#: src/component/photo/view/cards.vue:439
+#: src/component/photo/view/cards.vue:430
 msgid "Caption"
 msgstr "Felirat"
+
+#: src/page/settings/content.vue:312
+msgid "Captions"
+msgstr "Feliratok"
 
 #: src/component/photo/toolbar.vue:100 src/component/photo/toolbar.vue:106
 msgid "Cards"
@@ -639,7 +643,7 @@ msgstr "Módosításokat nem sikerült menteni"
 #: src/component/share/dialog.vue:92 src/component/share/dialog.vue:111
 #: src/page/albums.vue:648 src/page/people/recognized.vue:119
 #: src/page/settings/advanced.vue:58 src/page/settings/content.vue:57
-#: src/page/settings/general.vue:107
+#: src/page/settings/general.vue:108
 msgid "Changes successfully saved"
 msgstr "Módosítások sikeresen mentve"
 
@@ -972,8 +976,8 @@ msgstr "Letiltja a vektorgrafika támogatását."
 msgid "Disables video transcoding and thumbnail extraction."
 msgstr "Letiltja a videó átkódolását és a miniatűrök kinyerését."
 
-#: src/app/routes.js:533 src/app/routes.js:540 src/app/routes.js:547
-#: src/app/routes.js:554
+#: src/app/routes.js:537 src/app/routes.js:544 src/app/routes.js:551
+#: src/app/routes.js:558
 msgid "Discover"
 msgstr "Felfedez"
 
@@ -988,7 +992,7 @@ msgstr "Elutasíthatod"
 msgid "Display Name"
 msgstr "Megjelenített név"
 
-#: src/component/photo/view/cards.vue:518 src/options/options.js:391
+#: src/component/photo/view/cards.vue:506 src/options/options.js:391
 msgid "Document"
 msgstr "Dokumentum"
 
@@ -1025,11 +1029,11 @@ msgstr "Kész."
 #: src/component/file/clipboard.vue:48 src/component/lightbox.vue:1063
 #: src/component/lightbox.vue:1064 src/component/people/clipboard.vue:47
 #: src/component/photo/clipboard.vue:116 src/component/photo/edit/files.vue:168
-#: src/page/settings/content.vue:236 src/page/settings/general.vue:252
+#: src/page/settings/content.vue:339 src/page/settings/general.vue:252
 msgid "Download"
 msgstr "Letöltés"
 
-#: src/page/settings/content.vue:263
+#: src/page/settings/content.vue:366
 msgid "Download only original media files, without any automatically generated files."
 msgstr "Csak eredeti médiafájlok letöltése, automatikusan generált fájlok nélkül."
 
@@ -1045,7 +1049,7 @@ msgstr "Egyedi fájlok és zip-archívumok letöltése."
 #: src/component/file/clipboard.vue:61 src/component/label/clipboard.vue:86
 #: src/component/lightbox.vue:1614 src/component/people/clipboard.vue:59
 #: src/component/photo/clipboard.vue:220 src/component/photo/edit/files.vue:117
-#: src/component/photo/view/cards.vue:164 src/component/photo/view/list.vue:133
+#: src/component/photo/view/cards.vue:169 src/component/photo/view/list.vue:138
 #: src/page/library/browse.vue:126
 msgid "Downloading…"
 msgstr "Letöltés…"
@@ -1160,11 +1164,11 @@ msgstr "Hibák"
 msgid "Estimate"
 msgstr "Becslés"
 
-#: src/page/settings/content.vue:85
+#: src/page/settings/content.vue:87
 msgid "Estimate Locations"
 msgstr "Becsült helyszínek"
 
-#: src/page/settings/content.vue:86
+#: src/page/settings/content.vue:88
 msgid "Estimate the approximate location of pictures without GPS coordinates."
 msgstr "A képek hozzávetőleges helyének becslése GPS-koordináták nélkül."
 
@@ -1198,7 +1202,7 @@ msgstr "Lejár"
 msgid "Exposure"
 msgstr "Kitettség"
 
-#: src/page/settings/content.vue:109
+#: src/page/settings/content.vue:111
 msgid "Extract still images and generate thumbnails while indexing."
 msgstr "Állóképek kivonása és miniatűrök készítése indexelés közben."
 
@@ -1274,6 +1278,7 @@ msgstr "Fájl átalakítás"
 
 #: src/component/album/edit/dialog.vue:28 src/component/photo/toolbar.vue:119
 #: src/component/photo/toolbar.vue:130 src/component/photo/toolbar.vue:141
+#: src/component/photo/view/list.vue:113
 msgid "File Name"
 msgstr "Fájlnév"
 
@@ -1291,7 +1296,7 @@ msgstr "Fájlnév"
 msgid "Files"
 msgstr "Fájlok"
 
-#: src/page/settings/content.vue:207
+#: src/page/settings/content.vue:212
 msgid "Files with sequential names like 'IMG_1234 (2)' and 'IMG_1234 (3)' belong to the same picture."
 msgstr "Az olyan szekvenciális nevű fájlok, mint az „IMG_1234 (2)” és „IMG_1234 (3)”, ugyanahhoz a képhez tartoznak."
 
@@ -1354,7 +1359,7 @@ msgstr "generál"
 msgid "Generate albums of special moments, journeys, and places."
 msgstr "Automatikusan albumokat hoz létre különleges pillanatokról, utazásokról és helyekről."
 
-#: src/page/settings/content.vue:108
+#: src/page/settings/content.vue:110
 msgid "Generate Previews"
 msgstr "Előnézetek generálása"
 
@@ -1441,7 +1446,7 @@ msgid "If you lose access to your authenticator app or device, you can use your 
 msgstr "Ha elveszíti hozzáférését hitelesítő alkalmazásához vagy eszközéhez, a helyreállítási kód segítségével visszaszerezheti a hozzáférést fiókjához."
 
 #: src/component/photo/edit/info.vue:61 src/component/photo/edit/labels.vue:46
-#: src/component/photo/view/cards.vue:529 src/model/file.js:218
+#: src/component/photo/view/cards.vue:517 src/model/file.js:218
 #: src/options/options.js:367
 msgid "Image"
 msgstr "Kép"
@@ -1480,17 +1485,17 @@ msgstr "Fájlok importálása eredetibe…"
 msgid "in"
 msgstr "-ban/-ben"
 
-#: src/component/photo/view/cards.vue:130 src/component/photo/view/list.vue:87
+#: src/component/photo/view/cards.vue:145 src/component/photo/view/list.vue:87
 #: src/component/photo/view/mosaic.vue:72 src/page/labels.vue:153
 #: src/page/library/browse.vue:123
 msgid "In case pictures you expect are missing, please rescan your library and wait until indexing has been completed."
 msgstr "Ha hiányoznak a várt képek, kérjük, ellenőrizze újra a könyvtárát, és várja meg, amíg az indexelés befejeződik."
 
-#: src/page/settings/content.vue:286
+#: src/page/settings/content.vue:389
 msgid "Include RAW image files when downloading stacks and archives."
 msgstr "RAW képfájlok felvétele a verem és az archívumok letöltésekor."
 
-#: src/page/settings/content.vue:309
+#: src/page/settings/content.vue:412
 msgid "Include sidecar files when downloading stacks and archives."
 msgstr "Oldalkocsis fájlok bevonása a verem és az archívumok letöltésekor."
 
@@ -1499,7 +1504,7 @@ msgid "Increase storage size or delete files to continue."
 msgstr "A folytatáshoz növelje a tároló méretét vagy törölje a fájlokat."
 
 #: src/component/navigation.vue:1894 src/page/library.vue:36
-#: src/page/settings/content.vue:32
+#: src/page/settings/content.vue:34
 msgid "Index"
 msgstr "Index"
 
@@ -1666,7 +1671,7 @@ msgid "Legal Information"
 msgstr "Jogi információk"
 
 #: src/component/photo/edit/details.vue:417
-#: src/component/photo/view/cards.vue:476
+#: src/component/photo/view/cards.vue:465
 msgid "Lens"
 msgstr "Lencse"
 
@@ -1705,8 +1710,12 @@ msgstr "Link"
 msgid "List"
 msgstr "Lista"
 
-#: src/app/routes.js:229 src/component/photo/view/cards.vue:318
-#: src/component/photo/view/cards.vue:498 src/component/photo/view/list.vue:163
+#: src/page/settings/content.vue:266
+msgid "List View"
+msgstr "Lista nézet"
+
+#: src/app/routes.js:229 src/component/photo/view/cards.vue:313
+#: src/component/photo/view/cards.vue:486 src/component/photo/view/list.vue:163
 #: src/component/photo/view/mosaic.vue:162 src/options/options.js:379
 msgid "Live"
 msgstr "Élő"
@@ -1738,7 +1747,7 @@ msgstr "Helyi idő"
 #: src/page/settings/account.vue:665 src/page/settings/account.vue:667
 #: src/component/album/edit/dialog.vue:92 src/component/photo/edit/info.vue:63
 #: src/component/photo/edit/labels.vue:48
-#: src/component/photo/view/cards.vue:549 src/component/photo/view/list.vue:116
+#: src/component/photo/view/cards.vue:540 src/component/photo/view/list.vue:116
 #: src/page/albums.vue:98 src/page/settings/account.vue:557
 #: src/page/settings/account.vue:559
 msgid "Location"
@@ -1970,14 +1979,14 @@ msgstr "Nem több"
 msgid "No people found"
 msgstr "Nem találhatók személyek"
 
-#: src/component/lightbox.vue:304 src/component/photo/view/cards.vue:125
+#: src/component/lightbox.vue:304 src/component/photo/view/cards.vue:140
 #: src/component/photo/view/list.vue:82 src/component/photo/view/mosaic.vue:67
 #: src/page/album/photos.vue:463 src/page/library/browse.vue:122
 #: src/page/photos.vue:597 src/page/places.vue:569 src/page/places.vue:666
 msgid "No pictures found"
 msgstr "Nem találhatók képek"
 
-#: src/component/photo/view/cards.vue:124 src/component/photo/view/list.vue:81
+#: src/component/photo/view/cards.vue:139 src/component/photo/view/list.vue:81
 #: src/component/photo/view/mosaic.vue:66
 msgid "No recently edited pictures"
 msgstr "Nincsenek nemrég szerkesztett képek"
@@ -2003,7 +2012,7 @@ msgid "No warnings or error containing this keyword. Note that search is case-se
 msgstr "Nincsenek figyelmeztetések vagy hibák, amelyek ezt a kulcsszót tartalmazzák. Vegye figyelembe, hogy a keresés megkülönbözteti a kis- és nagybetűket."
 
 #: src/component/photo/upload/dialog.vue:206
-#: src/component/photo/view/cards.vue:135 src/component/photo/view/list.vue:58
+#: src/component/photo/view/cards.vue:150 src/component/photo/view/list.vue:58
 #: src/component/photo/view/list.vue:92 src/component/photo/view/mosaic.vue:77
 msgid "Non-photographic and low-quality images require a review before they appear in search results."
 msgstr "A rossz minőségű képek ellenörzésre kerülnek, mielőtt megjelennének a keresési eredmények között."
@@ -2149,7 +2158,7 @@ msgstr "Eredeti Név"
 
 #: src/component/navigation.vue:1252 src/model/file.js:196
 #: src/options/options.js:497 src/page/library/browse.vue:65
-#: src/page/settings/content.vue:262 src/page/settings/general.vue:444
+#: src/page/settings/content.vue:365 src/page/settings/general.vue:444
 msgid "Originals"
 msgstr "Eredetiek"
 
@@ -2252,7 +2261,7 @@ msgstr "Rózsaszín"
 msgid "Place"
 msgstr "Hely"
 
-#: src/page/settings/content.vue:159
+#: src/page/settings/content.vue:164
 msgid "Place & Time"
 msgstr "Hely és idő"
 
@@ -2366,7 +2375,7 @@ msgstr "Kivetítés"
 msgid "Purple"
 msgstr "Lila"
 
-#: src/page/settings/content.vue:58
+#: src/page/settings/content.vue:60
 msgid "Quality Filter"
 msgstr "Minőségi szűrő"
 
@@ -2390,8 +2399,8 @@ msgstr "A {0} minősítés {1}"
 msgid "Raw"
 msgstr "Nyers"
 
-#: src/component/photo/view/cards.vue:312
-#: src/component/photo/view/mosaic.vue:156 src/page/settings/content.vue:285
+#: src/component/photo/view/cards.vue:307
+#: src/component/photo/view/mosaic.vue:156 src/page/settings/content.vue:388
 msgid "RAW"
 msgstr "NYERS"
 
@@ -2460,7 +2469,7 @@ msgid "Reload"
 msgstr "Újratöltés"
 
 #: src/component/navigation.vue:108 src/component/update.vue:26
-#: src/page/settings/content.vue:53 src/page/settings/general.vue:103
+#: src/page/settings/content.vue:53 src/page/settings/general.vue:104
 msgid "Reloading…"
 msgstr "Újratöltés…"
 
@@ -2492,7 +2501,7 @@ msgstr "A kérés sikertelen - offline vagy?"
 msgid "Request failed - invalid response"
 msgstr "Sikertelen kérés – érvénytelen válasz"
 
-#: src/page/settings/content.vue:60
+#: src/page/settings/content.vue:62
 msgid "Require non-photographic and low-quality images to be reviewed before they appear in search results."
 msgstr "A nem fényképes és gyenge minőségű képeket a keresési eredményekben való megjelenésük előtt felül kell vizsgálni."
 
@@ -2569,6 +2578,7 @@ msgstr "Terjedelem"
 #: src/component/photo/toolbar.vue:56 src/page/albums.vue:100
 #: src/page/labels.vue:77 src/page/library/errors.vue:75
 #: src/page/people/recognized.vue:65 src/page/places.vue:78
+#: src/page/settings/content.vue:240
 msgid "Search"
 msgstr "Keresés"
 
@@ -2637,7 +2647,7 @@ msgstr "Kiválasztás visszaállítva"
 msgid "Send"
 msgstr "Küld"
 
-#: src/page/settings/content.vue:205
+#: src/page/settings/content.vue:210
 msgid "Sequential Name"
 msgstr "Sorozati név"
 
@@ -2663,7 +2673,7 @@ msgid "Sessions"
 msgstr "Ülések"
 
 #: src/app/routes.js:101 src/app/routes.js:471 src/app/routes.js:483
-#: src/app/routes.js:496 src/app/routes.js:509 src/app/routes.js:522
+#: src/app/routes.js:500 src/app/routes.js:513 src/app/routes.js:526
 #: src/component/navigation.vue:1342 src/component/navigation.vue:1754
 msgid "Settings"
 msgstr "Beállítások"
@@ -2698,6 +2708,10 @@ msgstr "Előadás"
 msgid "Show all new faces"
 msgstr "Az összes új arc megjelenítése"
 
+#: src/page/settings/content.vue:313
+msgid "Show caption metadata in search results."
+msgstr "A felirat metaadatainak megjelenítése a keresési eredményekben."
+
 #: src/page/people/new.vue:62 src/page/people/recognized.vue:97
 msgid "Show hidden"
 msgstr "Rejtett megjelenítése"
@@ -2714,11 +2728,15 @@ msgstr "Mutass többet"
 msgid "Show server logs in Library."
 msgstr "Szervernaplók megjelenítése a Könyvtárban."
 
+#: src/page/settings/content.vue:290
+msgid "Show title metadata in search results."
+msgstr "A cím metaadatainak megjelenítése a keresési eredményekben."
+
 #: src/component/lightbox.vue:940 src/component/lightbox.vue:941
 msgid "Show/Hide Sidebar"
 msgstr "Oldalsáv megjelenítése/elrejtése"
 
-#: src/model/file.js:214 src/page/settings/content.vue:308
+#: src/model/file.js:214 src/page/settings/content.vue:411
 msgid "Sidecar"
 msgstr "Oldalkocsi"
 
@@ -2777,16 +2795,16 @@ msgstr "Lefelé rendezve."
 msgid "Source"
 msgstr "Forrás"
 
-#: src/component/photo/view/cards.vue:338
+#: src/component/photo/view/cards.vue:333
 #: src/component/photo/view/mosaic.vue:182
 msgid "Stack"
 msgstr "Csoportosítás"
 
-#: src/page/settings/content.vue:183
+#: src/page/settings/content.vue:188
 msgid "Stack files sharing the same unique image or instance identifier."
 msgstr "Fájlok csoportosítása, amelyek ugyanazt az egyedi képet vagy példányazonosítót tartalmazzák."
 
-#: src/page/settings/content.vue:160
+#: src/page/settings/content.vue:165
 msgid "Stack pictures taken at the exact same time and location based on their metadata."
 msgstr "A metaadataik alapján csoportosítsa a pontosan ugyanabban az időben és helyen készült képeket."
 
@@ -2794,7 +2812,7 @@ msgstr "A metaadataik alapján csoportosítsa a pontosan ugyanabban az időben �
 msgid "Stackable"
 msgstr "Egymásra rakható"
 
-#: src/component/navigation.vue:437 src/page/settings/content.vue:133
+#: src/component/navigation.vue:437 src/page/settings/content.vue:138
 msgid "Stacks"
 msgstr "Stackek"
 
@@ -2864,8 +2882,8 @@ msgstr "Szinkronizálás"
 msgid "Sync raw and video files"
 msgstr "Nyers és videofájlok szinkronizálása"
 
-#: src/component/photo/edit/info.vue:183 src/component/photo/view/cards.vue:189
-#: src/component/photo/view/cards.vue:453 src/component/photo/view/list.vue:114
+#: src/component/photo/edit/info.vue:183 src/component/photo/view/cards.vue:194
+#: src/component/photo/view/cards.vue:443 src/component/photo/view/list.vue:114
 msgid "Taken"
 msgstr "Felvett"
 
@@ -2952,6 +2970,10 @@ msgstr "Cím / Pozíció"
 msgid "Title too long"
 msgstr "A cím túl hosszú"
 
+#: src/page/settings/content.vue:289
+msgid "Titles"
+msgstr "Címek"
+
 #: src/locales.js:55
 msgid "to"
 msgstr "nak nek"
@@ -3000,7 +3022,7 @@ msgstr "Topográfiai"
 msgid "Troubleshooting"
 msgstr "Hibaelhárítás"
 
-#: src/component/photo/view/cards.vue:127 src/component/photo/view/list.vue:53
+#: src/component/photo/view/cards.vue:142 src/component/photo/view/list.vue:53
 #: src/component/photo/view/list.vue:84 src/component/photo/view/mosaic.vue:69
 #: src/page/albums.vue:276 src/page/labels.vue:153
 #: src/page/people/recognized.vue:143
@@ -3024,7 +3046,7 @@ msgstr "Jogosulatlan"
 msgid "Undo"
 msgstr "Visszavonás"
 
-#: src/page/settings/content.vue:182
+#: src/page/settings/content.vue:187
 msgid "Unique ID"
 msgstr "Egyéni azonosító"
 
@@ -3187,8 +3209,8 @@ msgstr "Felhasználónév"
 msgid "Users"
 msgstr "Felhasználók"
 
-#: src/component/photo/view/cards.vue:332
-#: src/component/photo/view/cards.vue:518 src/component/photo/view/list.vue:179
+#: src/component/photo/view/cards.vue:327
+#: src/component/photo/view/cards.vue:506 src/component/photo/view/list.vue:179
 #: src/component/photo/view/mosaic.vue:176 src/options/options.js:387
 msgid "Vector"
 msgstr "Vektor"
@@ -3201,8 +3223,8 @@ msgstr "Vektorok"
 msgid "Verification Code"
 msgstr "Ellenőrző kód"
 
-#: src/component/photo/view/cards.vue:356
-#: src/component/photo/view/cards.vue:488 src/component/photo/view/list.vue:186
+#: src/component/photo/view/cards.vue:351
+#: src/component/photo/view/cards.vue:476 src/component/photo/view/list.vue:186
 #: src/component/photo/view/mosaic.vue:200 src/model/file.js:221
 #: src/model/photo.js:928 src/model/photo.js:946 src/options/options.js:383
 msgid "Video"
@@ -3217,10 +3239,14 @@ msgstr "Időtartam"
 msgid "Videos"
 msgstr "Videók"
 
-#: src/component/photo/toolbar.vue:249 src/component/photo/view/cards.vue:343
+#: src/component/photo/toolbar.vue:249 src/component/photo/view/cards.vue:338
 #: src/component/photo/view/mosaic.vue:187
 msgid "View"
 msgstr "Kilátás"
+
+#: src/page/settings/content.vue:267
+msgid "View search results as a list."
+msgstr "A keresési eredmények listaként történő megtekintése."
 
 #: src/options/admin.js:14 src/options/auth.js:8
 msgid "Viewer"

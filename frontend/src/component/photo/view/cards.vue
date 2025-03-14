@@ -49,21 +49,20 @@
           <div class="preview" />
           <div v-if="!isSharedView && m.Quality < 3 && context === 'review'" class="review" />
           <div class="meta">
-            <button v-if="m.Title" class="action-title-edit meta-title text-truncate" :data-uid="m.UID">
-              {{ m.Title }}
+            <button class="action-title-edit meta-title text-truncate">
+              {{ showTitles && m.Title ? m.Title : m.getOriginalName() }}
             </button>
-            <button v-if="m.Caption" class="meta-caption">
+            <button v-if="showCaptions && m.Caption" class="meta-caption">
               {{ m.Caption }}
             </button>
             <div class="meta-details">
-              <button v-if="m.Year > 0" class="action-open-date meta-date text-truncate" :data-uid="m.UID">
+              <button v-if="m.Year > 0" class="action-open-date meta-date text-truncate">
                 <i :title="$gettext('Taken')" class="mdi mdi-calendar-range" />
                 {{ m.getDateString(true) }}
               </button>
               <button
                 v-if="m.CameraID > 1 || m.Iso"
                 class="meta-camera action-camera-edit text-truncate"
-                :data-uid="m.UID"
               >
                 <i class="mdi" :class="m.Type === 'video' ? 'mdi-video-vintage' : 'mdi-camera'" />
                 {{ m.getCameraInfo() }}
@@ -71,7 +70,6 @@
               <button
                 v-if="m.LensID > 1 || m.FocalLength"
                 class="meta-lens action-lens-edit text-truncate"
-                :data-uid="m.UID"
               >
                 <i class="mdi mdi-camera-iris" />
                 {{ m.getLensInfo() }}
@@ -96,12 +94,12 @@
                 <i class="mdi mdi-image" />
                 {{ m.getImageInfo() }}
               </button>
-              <button class="meta-filename text-truncate">
+              <button v-if="showTitles && m.Title" class="meta-filename text-truncate">
                 <i class="mdi" :class="m.Type === 'video' || m.Type === 'live' ? 'mdi-filmstrip' : 'mdi-film'" />
                 {{ m.getOriginalName() }}
               </button>
               <template v-if="featPlaces && m.Country !== 'zz'">
-                <button class="meta-location action-location" :data-uid="m.UID">
+                <button class="meta-location action-location">
                   <i class="mdi mdi-map-marker" />
                   {{ m.locationInfo() }}
                 </button>
@@ -231,22 +229,24 @@
           </div>
           <div class="meta">
             <button
-              v-if="m.Title"
               :title="m.Title"
               class="action-title-edit meta-title text-truncate"
-              :data-uid="m.UID"
               @click.exact="isSharedView ? openPhoto(index) : editPhoto(index)"
             >
-              {{ m.Title }}
+              {{ showTitles && m.Title ? m.Title : m.getOriginalName() }}
             </button>
-            <button v-if="m.Caption" :title="$gettext('Caption')" class="meta-caption" @click.exact="editPhoto(index)">
+            <button
+              v-if="showCaptions && m.Caption"
+              :title="$gettext('Caption')"
+              class="meta-caption"
+              @click.exact="editPhoto(index)"
+            >
               {{ m.Caption }}
             </button>
             <div class="meta-details">
               <button
                 v-if="m.Year > 0"
                 class="action-open-date meta-date text-truncate"
-                :data-uid="m.UID"
                 @click.exact="openDate(index)"
               >
                 <i :title="$gettext('Taken')" class="mdi mdi-calendar-range" />
@@ -256,7 +256,6 @@
                 v-if="m.CameraID > 1 || m.Iso"
                 :title="$gettext('Camera')"
                 class="meta-camera action-camera-edit text-truncate"
-                :data-uid="m.UID"
                 @click.exact="editPhoto(index, 'details')"
               >
                 <i class="mdi" :class="m.Type === 'video' ? 'mdi-video-vintage' : 'mdi-camera'" />
@@ -266,7 +265,6 @@
                 v-if="m.LensID > 1 || m.FocalLength"
                 :title="$gettext('Lens')"
                 class="meta-lens action-lens-edit text-truncate"
-                :data-uid="m.UID"
                 @click.exact="editPhoto(index, 'details')"
               >
                 <i class="mdi mdi-camera-iris" />
@@ -318,6 +316,7 @@
                 {{ m.getImageInfo() }}
               </button>
               <button
+                v-if="showTitles && m.Title"
                 :title="m.getOriginalName()"
                 class="meta-filename text-truncate"
                 @click.exact="editPhoto(index, 'files')"
@@ -329,7 +328,6 @@
                 <button
                   :title="$gettext('Location')"
                   class="meta-location action-location"
-                  :data-uid="m.UID"
                   @click.exact="openLocation(index)"
                 >
                   <i class="mdi mdi-map-marker" />
@@ -398,14 +396,19 @@ export default {
     const input = new Input();
     const debug = this.$config.get("debug");
     const trace = this.$config.get("trace");
-    const featPlaces = this.$config.getSettings().features.places;
-    const featPrivate = this.$config.getSettings().features.private;
-    const featDownload = this.$config.feature("download");
+    const settings = this.$config.getSettings();
+    const featPlaces = settings.features.places;
+    const featPrivate = settings.features.private;
+    const featDownload = settings.features.download;
+    const showTitles = settings.search.showTitles;
+    const showCaptions = settings.search.showCaptions;
 
     return {
       featPlaces,
       featPrivate,
       featDownload,
+      showTitles,
+      showCaptions,
       input,
       debug,
       trace,

@@ -368,7 +368,8 @@ export default {
   },
   data() {
     return {
-      isDemo: this.$config.get("demo"),
+      isDemo: this.$config.isDemo(),
+      isAdmin: this.$session.isAdmin(),
       isSuperAdmin: this.$session.isSuperAdmin(),
       isPublic: this.$config.get("public"),
       config: this.$config.values,

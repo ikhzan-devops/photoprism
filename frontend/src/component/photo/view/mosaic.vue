@@ -55,7 +55,7 @@
             v-else
             :data-id="m.ID"
             :data-uid="m.UID"
-            :title="m.Title"
+            :title="showTitles && m.Title ? m.Title : m.getOriginalName()"
             :style="`background-image: url(${m.thumbnailUrl('tile_224')})`"
             :class="m.classes()"
             class="media result preview"
@@ -189,11 +189,16 @@ export default {
     const input = new Input();
     const debug = this.$config.get("debug");
     const trace = this.$config.get("trace");
+    const settings = this.$config.getSettings();
+    const showTitles = settings.search.showTitles;
+    const showCaptions = settings.search.showCaptions;
 
     return {
       input,
       debug,
       trace,
+      showTitles,
+      showCaptions,
       hidePrivate: this.$config.getSettings().features.private,
       firstVisibleElementIndex: 0,
       lastVisibleElementIndex: 0,

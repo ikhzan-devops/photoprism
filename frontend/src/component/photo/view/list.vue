@@ -43,7 +43,7 @@
               <tr>
                 <th class="p-col-select"></th>
                 <th class="text-start">
-                  {{ $gettext("Title") }}
+                  {{ showTitles ? $gettext("Title") : $gettext("File Name") }}
                 </th>
                 <th class="text-start hidden-xs">
                   {{ $gettext("Taken") }}
@@ -94,10 +94,10 @@
                 </td>
                 <td
                   class="meta-data meta-title clickable"
-                  :data-uid="m.UID"
+                  :title="m.Title"
                   @click.exact="isSharedView ? openPhoto(index) : editPhoto(index)"
                 >
-                  {{ m.Title }}
+                  {{ showTitles && m.Title ? m.Title : m.getOriginalName() }}
                 </td>
                 <td class="meta-data meta-date hidden-xs" :title="m.getDateString()">
                   <button @click.stop.prevent="openDate(index)">
@@ -130,7 +130,6 @@
                         density="comfortable"
                         variant="text"
                         :ripple="false"
-                        :data-uid="m.UID"
                         class="input-favorite"
                         @click.stop.prevent="m.toggleLike()"
                       >
@@ -138,14 +137,12 @@
                           v-if="m.Favorite"
                           icon="mdi-star"
                           color="favorite"
-                          :data-uid="m.UID"
                           class="favorite-on"
                         ></v-icon>
                         <v-icon
                           v-else
                           icon="mdi-star-outline"
                           color="surface"
-                          :data-uid="m.UID"
                           class="favorite-off"
                         ></v-icon>
                       </v-btn>
@@ -220,8 +217,13 @@ export default {
         " " +
         this.$gettext("Non-photographic and low-quality images require a review before they appear in search results.");
     }
+    const settings = this.$config.getSettings();
+    const showTitles = settings.search.showTitles;
+    const showCaptions = settings.search.showCaptions;
 
     return {
+      showTitles,
+      showCaptions,
       config: this.$config.values,
       notFoundMessage: m,
       showName: this.filter.order === "name",

@@ -206,7 +206,7 @@ export default class Config {
       return;
     }
 
-    if (settings.search.batchSize) {
+    if (settings?.search?.batchSize > 0) {
       Photo.setBatchSize(settings.search.batchSize);
     }
   }

@@ -74,7 +74,7 @@ export default {
         public: true,
         admin: true,
         demo: true,
-        show: $config.allow("config", "manage"),
+        show: $config.feature("settings"),
       },
       {
         name: "settings_advanced",

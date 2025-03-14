@@ -23,6 +23,8 @@ func TestNewSettings(t *testing.T) {
 	assert.Equal(t, "fr", s.UI.Language)
 	assert.Equal(t, "fr", s.UI.Language)
 	assert.Equal(t, true, s.Search.ListView)
+	assert.Equal(t, true, s.Search.ShowTitles)
+	assert.Equal(t, true, s.Search.ShowCaptions)
 }
 
 func TestSettings_Load(t *testing.T) {

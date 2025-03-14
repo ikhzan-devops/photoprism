@@ -481,7 +481,6 @@ export default [
     meta: {
       title: $gettext("Settings"),
       requiresAuth: true,
-      admin: true,
       settings: true,
       background: "background",
     },
