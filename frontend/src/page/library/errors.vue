@@ -136,6 +136,7 @@
 <script>
 import { DateTime } from "luxon";
 import $api from "common/api";
+import links from "common/links";
 
 import PLoading from "component/loading.vue";
 import PActionMenu from "component/action/menu.vue";
@@ -221,7 +222,7 @@ export default {
           icon: "mdi-book-open-page-variant-outline",
           text: this.$gettext("Troubleshooting"),
           visible: true,
-          href: "https://docs.photoprism.app/getting-started/troubleshooting/",
+          href: links.troubleshooting,
           target: "_blank",
         },
       ];

@@ -23,13 +23,7 @@
         </span>
       </v-toolbar-title>
 
-      <v-btn
-        icon
-        href="https://link.photoprism.app/personal-editions"
-        target="_blank"
-        class="action-upgrade"
-        :title="$gettext('Learn more')"
-      >
+      <v-btn icon :href="links.compare" target="_blank" class="action-upgrade" :title="$gettext('Learn more')">
         <v-icon size="26" color="surface-variant">mdi-diamond-stone</v-icon>
       </v-btn>
     </v-toolbar>
@@ -49,7 +43,7 @@
             <v-btn
               color="highlight"
               :block="$vuetify.display.xs"
-              href="https://www.photoprism.app/contact"
+              :href="links.contact"
               target="_blank"
               variant="flat"
               class="action-contact"
@@ -207,6 +201,8 @@
 import * as options from "options/options";
 import $api from "common/api";
 import { restart } from "common/server";
+import links from "common/links";
+
 import PAboutFooter from "component/about/footer.vue";
 
 export default {
@@ -217,7 +213,9 @@ export default {
   data() {
     const token = this.$route.params.token ? this.$route.params.token : "";
     const membership = this.$config.getMembership();
+
     return {
+      links,
       success: false,
       busy: false,
       valid: false,
@@ -260,10 +258,10 @@ export default {
       this.error = "";
     },
     compare() {
-      window.open("https://link.photoprism.app/personal-editions", "_blank").focus();
+      window.open(links.compare, "_blank").focus();
     },
     connect() {
-      this.$view.redirect("https://my.photoprism.app/connect/" + encodeURIComponent(window.location));
+      this.$view.redirect(links.connect + encodeURIComponent(window.location));
     },
     activate() {
       if (!this.form.token || this.form.token.length !== this.tokenMask.length) {

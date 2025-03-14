@@ -13,14 +13,14 @@
       class="page-toolbar"
       color="secondary"
     >
-      <v-toolbar-title :title="album.Title" class="flex-grow-1">
-        <span class="hidden-xs">
-          <router-link :to="{ name: collectionRoute }">
-            {{ T(collectionTitle) }}
-          </router-link>
+      <v-toolbar-title :title="album.Title" class="page__title">
+        <router-link :to="{ name: collectionRoute }" class="hidden-xs">
+          {{ T(collectionTitle) }}
           <v-icon>{{ navIcon }}</v-icon>
-        </span>
-        {{ album.Title }}
+        </router-link>
+        <router-link :to="{ name: collectionRoute }">
+          {{ album.Title }}
+        </router-link>
       </v-toolbar-title>
 
       <v-btn-toggle

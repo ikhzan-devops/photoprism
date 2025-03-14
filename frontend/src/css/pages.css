@@ -24,6 +24,21 @@
     padding: 30vh 24px;
 }
 
+.p-page .v-toolbar-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 1.125rem;
+    font-weight: 500;
+    line-height: 1.75rem;
+    letter-spacing: normal;
+    vertical-align: baseline;
+}
+
+.p-page .v-toolbar-title .v-icon {
+    font-size: 1.5rem;
+    line-height: 1;
+}
+
 .p-page-about {
     line-height: 1.5rem;
 }

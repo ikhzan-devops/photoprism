@@ -889,7 +889,9 @@ export class Photo extends RestModel {
       return this;
     }
 
-    return this.Files.find((f) => f.MediaType === media.Document || f.MediaType === media.Vector || f.FileType === media.FormatSVG);
+    return this.Files.find(
+      (f) => f.MediaType === media.Document || f.MediaType === media.Vector || f.FileType === media.FormatSVG
+    );
   }
 
   getVectorInfo = () => {

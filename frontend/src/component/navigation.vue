@@ -930,7 +930,7 @@
             </router-link>
           </div>
           <div class="menu-action nav-manual">
-            <a href="https://link.photoprism.app/docs" target="_blank">
+            <a :href="links.docs" target="_blank">
               <v-icon>mdi-book-open-page-variant</v-icon>
               {{ $gettext(`User Guide`) }}
             </a>
@@ -955,6 +955,8 @@
 </template>
 
 <script>
+import links from "common/links";
+
 export default {
   name: "PNavigation",
   data() {
@@ -977,6 +979,7 @@ export default {
     const tier = this.$config.getTier();
 
     return {
+      links,
       canSearchPlaces: this.$config.allow("places", "search"),
       canAccessPrivate: !isRestricted && this.$config.allow("photos", "access_private"),
       canManagePhotos: canManagePhotos,
