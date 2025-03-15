@@ -595,6 +595,51 @@ export default class Config {
     return this;
   }
 
+  // getDefaultRoute returns the default route to use after login or in case of routing errors.
+  getDefaultRoute() {
+    const albumsRoute = "albums";
+    const browseRoute = "browse";
+
+    if (this.allow("photos", "access_library")) {
+      const features = this.getSettings()?.features;
+      const startPage = this.getSettings()?.ui?.startPage;
+
+      if (features && typeof features === "object" && startPage && typeof startPage === "string") {
+        switch (startPage) {
+          case "default":
+          case "browse":
+            return browseRoute;
+          case "albums":
+            return features.albums ? startPage : browseRoute;
+          case "photos":
+            return features.albums ? startPage : browseRoute;
+          case "videos":
+            return features.library ? startPage : browseRoute;
+          case "people":
+            return features.people && features.edit ? startPage : browseRoute;
+          case "favorites":
+            return features.favorites ? startPage : browseRoute;
+          case "places":
+            return features.places ? startPage : browseRoute;
+          case "calendar":
+            return features.calendar ? startPage : browseRoute;
+          case "moments":
+            return features.moments ? startPage : browseRoute;
+          case "labels":
+            return features.labels ? startPage : browseRoute;
+          case "folders":
+            return features.folders ? startPage : browseRoute;
+          default:
+            return browseRoute;
+        }
+      }
+
+      return browseRoute;
+    }
+
+    return albumsRoute;
+  }
+
   // getValues returns all client configuration values as exposed by the backend.
   getValues() {
     return this.values;

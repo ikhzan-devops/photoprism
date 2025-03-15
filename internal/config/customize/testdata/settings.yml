@@ -4,6 +4,7 @@ UI:
   Theme: onyx
   Language: de
   TimeZone: ""
+  StartPage: ""
 Search:
   BatchSize: -1
   ListView: true
@@ -27,6 +28,7 @@ Features:
   Labels: true
   Library: true
   Logs: true
+  Calendar: true
   Moments: true
   People: true
   Places: true

@@ -35,9 +35,9 @@
         group
         class="ms-1"
       >
-        <v-btn value="cards" icon="mdi-view-column" class="ps-1" @click="setView('cards')"></v-btn>
-        <v-btn v-if="listView" value="list" icon="mdi-view-list" @click="setView('list')"></v-btn>
-        <v-btn value="mosaic" icon="mdi-view-comfy" class="pe-1" @click="setView('mosaic')"></v-btn>
+        <v-btn value="cards" icon="mdi-view-column" class="ps-1 action-view-cards" @click="setView('cards')"></v-btn>
+        <v-btn v-if="listView" value="list" icon="mdi-view-list" class="action-view-list" @click="setView('list')"></v-btn>
+        <v-btn value="mosaic" icon="mdi-view-comfy" class="pe-1 action-view-mosaic" @click="setView('mosaic')"></v-btn>
       </v-btn-toggle>
 
       <p-action-menu :items="menuActions" button-class="ms-1"></p-action-menu>

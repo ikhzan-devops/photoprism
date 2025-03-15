@@ -42,6 +42,8 @@ func NewSettings(theme, lang string) *Settings {
 			Zoom:      false,
 			Theme:     theme,
 			Language:  lang,
+			TimeZone:  "",
+			StartPage: "",
 		},
 		Search: SearchSettings{
 			BatchSize:    -1,
@@ -64,6 +66,7 @@ func NewSettings(theme, lang string) *Settings {
 			Videos:    true,
 			Folders:   true,
 			Albums:    true,
+			Calendar:  true,
 			Moments:   true,
 			Estimates: true,
 			People:    true,

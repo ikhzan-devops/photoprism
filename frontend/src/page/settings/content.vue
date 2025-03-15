@@ -186,7 +186,7 @@
         </v-card-actions>
       </v-card>
 
-      <v-card v-if="settings.features.download" flat tile class="mt-0 px-1 bg-background">
+      <v-card v-if="settings.features.library && settings.features.download" flat tile class="mt-0 px-1 bg-background">
         <v-card-title class="pb-0 text-subtitle-2">
           {{ $gettext(`Download`) }}
         </v-card-title>
@@ -201,7 +201,7 @@
                 density="compact"
                 :label="$gettext('Originals')"
                 :hint="$gettext('Download only original media files, without any automatically generated files.')"
-                prepend-icon="mdi-camera-iris"
+                prepend-icon="mdi-camera"
                 persistent-hint
                 @update:model-value="onChange"
               >

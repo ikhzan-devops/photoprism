@@ -70,7 +70,7 @@ export default {
         label: this.$gettext("Content"),
         class: "",
         path: "/settings/content",
-        icon: "mdi-camera",
+        icon: "mdi-camera-iris",
         public: true,
         admin: true,
         demo: true,

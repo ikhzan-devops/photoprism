@@ -461,7 +461,7 @@
             </template>
 
             <v-list-item
-              v-if="isMini && $config.feature('moments')"
+              v-if="isMini && $config.feature('calendar')"
               :to="{ name: 'calendar' }"
               variant="text"
               class="nav-calendar"
@@ -471,7 +471,7 @@
               <v-icon class="ma-auto">mdi-calendar</v-icon>
             </v-list-item>
             <v-list-item
-              v-else-if="!isMini && $config.feature('moments')"
+              v-else-if="!isMini && $config.feature('calendar')"
               :to="{ name: 'calendar' }"
               variant="text"
               class="nav-calendar"

@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/photoprism/photoprism/internal/config/customize"
+	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/rnd"
 )
 
@@ -12,6 +13,7 @@ import (
 type UserSettings struct {
 	UserUID              string    `gorm:"type:VARBINARY(42);primary_key;auto_increment:false;" json:"-" yaml:"UserUID"`
 	UITheme              string    `gorm:"type:VARBINARY(32);column:ui_theme;" json:"UITheme,omitempty" yaml:"UITheme,omitempty"`
+	UIStartPage          string    `gorm:"size:64;column:ui_start_page;default:'default';" json:"UIStartPage,omitempty" yaml:"UIStartPage,omitempty"`
 	UILanguage           string    `gorm:"type:VARBINARY(32);column:ui_language;" json:"UILanguage,omitempty" yaml:"UILanguage,omitempty"`
 	UITimeZone           string    `gorm:"type:VARBINARY(64);column:ui_time_zone;" json:"UITimeZone,omitempty" yaml:"UITimeZone,omitempty"`
 	MapsStyle            string    `gorm:"type:VARBINARY(32);" json:"MapsStyle,omitempty" yaml:"MapsStyle,omitempty"`
@@ -27,7 +29,6 @@ type UserSettings struct {
 	SearchShowTitles     int       `gorm:"default:0;" json:"SearchShowTitles,omitempty" yaml:"SearchShowTitles,omitempty"`
 	SearchShowCaptions   int       `gorm:"default:0;" json:"SearchShowCaptions,omitempty" yaml:"SearchShowCaptions,omitempty"`
 	UploadPath           string    `gorm:"type:VARBINARY(1024);" json:"UploadPath,omitempty" yaml:"UploadPath,omitempty"`
-	DefaultPage          string    `gorm:"type:VARBINARY(128);" json:"DefaultPage,omitempty" yaml:"DefaultPage,omitempty"`
 	CreatedAt            time.Time `json:"CreatedAt" yaml:"-"`
 	UpdatedAt            time.Time `json:"UpdatedAt" yaml:"-"`
 }
@@ -85,20 +86,24 @@ func (m *UserSettings) Updates(values interface{}) error {
 func (m *UserSettings) Apply(s *customize.Settings) *UserSettings {
 	// UI preferences.
 	if s.UI.Theme != "" {
-		m.UITheme = s.UI.Theme
+		m.UITheme = clean.Type(s.UI.Theme)
+	}
+
+	if s.UI.StartPage != "" {
+		m.UIStartPage = clean.Type(s.UI.StartPage)
 	}
 
 	if s.UI.Language != "" {
-		m.UILanguage = s.UI.Language
+		m.UILanguage = clean.Type(s.UI.Language)
 	}
 
 	if s.UI.TimeZone != "" {
-		m.UITimeZone = s.UI.TimeZone
+		m.UITimeZone = clean.Type(s.UI.TimeZone)
 	}
 
 	// Maps preferences.
 	if s.Maps.Style != "" {
-		m.MapsStyle = s.Maps.Style
+		m.MapsStyle = clean.Type(s.Maps.Style)
 
 		if s.Maps.Animate > 0 {
 			m.MapsAnimate = s.Maps.Animate
@@ -178,6 +183,12 @@ func (m *UserSettings) Apply(s *customize.Settings) *UserSettings {
 func (m *UserSettings) ApplyTo(s *customize.Settings) *customize.Settings {
 	if m.UITheme != "" {
 		s.UI.Theme = m.UITheme
+	}
+
+	if m.UIStartPage != "" {
+		s.UI.StartPage = clean.Type(m.UIStartPage)
+	} else if s.UI.StartPage == "" {
+		s.UI.StartPage = "default"
 	}
 
 	if m.UILanguage != "" {
