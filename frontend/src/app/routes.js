@@ -51,7 +51,9 @@ export default [
   {
     name: "home",
     path: "/",
-    redirect: "/browse",
+    redirect: () => {
+      return { name: $session.getDefaultRoute() };
+    },
   },
   {
     name: "about",
@@ -85,10 +87,8 @@ export default [
     beforeEnter: (to, from, next) => {
       if ($session.loginRequired()) {
         next();
-      } else if ($config.deny("photos", "search")) {
-        next({ name: $session.getDefaultRoute() });
       } else {
-        next({ name: "browse" });
+        next({ name: $session.getDefaultRoute() });
       }
     },
   },

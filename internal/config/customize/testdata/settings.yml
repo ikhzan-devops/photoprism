@@ -4,7 +4,7 @@ UI:
   Theme: onyx
   Language: de
   TimeZone: ""
-  StartPage: ""
+  StartPage: default
 Search:
   BatchSize: -1
   ListView: true

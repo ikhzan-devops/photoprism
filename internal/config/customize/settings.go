@@ -43,7 +43,7 @@ func NewSettings(theme, lang string) *Settings {
 			Theme:     theme,
 			Language:  lang,
 			TimeZone:  "",
-			StartPage: "",
+			StartPage: "default",
 		},
 		Search: SearchSettings{
 			BatchSize:    -1,

@@ -599,45 +599,43 @@ export default class Config {
   getDefaultRoute() {
     const albumsRoute = "albums";
     const browseRoute = "browse";
+    const defaultRoute = this.deny("photos", "access_library") ? albumsRoute : browseRoute;
 
-    if (this.allow("photos", "access_library")) {
+    if (this.allow("settings", "update")) {
       const features = this.getSettings()?.features;
       const startPage = this.getSettings()?.ui?.startPage;
 
       if (features && typeof features === "object" && startPage && typeof startPage === "string") {
         switch (startPage) {
-          case "default":
           case "browse":
-            return browseRoute;
+            return defaultRoute;
           case "albums":
-            return features.albums ? startPage : browseRoute;
+            return features.albums ? startPage : defaultRoute;
           case "photos":
-            return features.albums ? startPage : browseRoute;
+            return features.albums ? startPage : defaultRoute;
           case "videos":
-            return features.library ? startPage : browseRoute;
+            return features.library ? startPage : defaultRoute;
           case "people":
-            return features.people && features.edit ? startPage : browseRoute;
+            return features.people && features.edit ? startPage : defaultRoute;
           case "favorites":
-            return features.favorites ? startPage : browseRoute;
+            return features.favorites ? startPage : defaultRoute;
           case "places":
-            return features.places ? startPage : browseRoute;
+            return features.places ? startPage : defaultRoute;
           case "calendar":
-            return features.calendar ? startPage : browseRoute;
+            return features.calendar ? startPage : defaultRoute;
           case "moments":
-            return features.moments ? startPage : browseRoute;
+            return features.moments ? startPage : defaultRoute;
           case "labels":
-            return features.labels ? startPage : browseRoute;
+            return features.labels ? startPage : defaultRoute;
           case "folders":
-            return features.folders ? startPage : browseRoute;
+            return features.folders ? startPage : defaultRoute;
           default:
-            return browseRoute;
+            return defaultRoute;
         }
       }
-
-      return browseRoute;
     }
 
-    return albumsRoute;
+    return defaultRoute;
   }
 
   // getValues returns all client configuration values as exposed by the backend.
