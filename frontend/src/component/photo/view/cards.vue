@@ -60,17 +60,11 @@
                 <i :title="$gettext('Taken')" class="mdi mdi-calendar-range" />
                 {{ m.getDateString(true) }}
               </button>
-              <button
-                v-if="m.CameraID > 1 || m.Iso"
-                class="meta-camera action-camera-edit text-truncate"
-              >
+              <button v-if="m.CameraID > 1 || m.Iso" class="meta-camera action-camera-edit text-truncate">
                 <i class="mdi" :class="m.Type === 'video' ? 'mdi-video-vintage' : 'mdi-camera'" />
                 {{ m.getCameraInfo() }}
               </button>
-              <button
-                v-if="m.LensID > 1 || m.FocalLength"
-                class="meta-lens action-lens-edit text-truncate"
-              >
+              <button v-if="m.LensID > 1 || m.FocalLength" class="meta-lens action-lens-edit text-truncate">
                 <i class="mdi mdi-camera-iris" />
                 {{ m.getLensInfo() }}
               </button>
@@ -149,6 +143,11 @@
                 class="action-vector mdi mdi-vector-polyline"
                 :title="$gettext('Vector')"
               ></i>
+              <i
+                v-else-if="m.Type === 'document'"
+                class="action-document mdi mdi-file-pdf-box"
+                :title="$gettext('Document')"
+              />
               <i
                 v-else-if="m.Type === 'image' && !selectMode"
                 class="mdi mdi-camera-burst"
@@ -244,11 +243,7 @@
               {{ m.Caption }}
             </button>
             <div class="meta-details">
-              <button
-                v-if="m.Year > 0"
-                class="action-open-date meta-date text-truncate"
-                @click.exact="openDate(index)"
-              >
+              <button v-if="m.Year > 0" class="action-open-date meta-date text-truncate" @click.exact="openDate(index)">
                 <i :title="$gettext('Taken')" class="mdi mdi-calendar-range" />
                 {{ m.getDateString(true) }}
               </button>

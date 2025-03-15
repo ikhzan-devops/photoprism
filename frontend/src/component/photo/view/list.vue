@@ -82,13 +82,8 @@
                       @click.stop.prevent="openPhoto(index, false)"
                     >
                       <i v-if="m.Type === 'live'" class="action-live" :title="$gettext('Live')"><icon-live-photo /></i>
-                      <i v-if="m.Type === 'animated'" class="mdi mdi-file-gif-box" :title="$gettext('Animated')" />
-                      <i
-                        v-if="m.Type === 'vector'"
-                        class="action-vector mdi mdi-vector-polyline"
-                        :title="$gettext('Vector')"
-                      ></i>
-                      <i v-if="m.Type === 'video'" class="mdi mdi-play" :title="$gettext('Video')" />
+                      <i v-else-if="m.Type === 'animated'" class="mdi mdi-file-gif-box" :title="$gettext('Animated')" />
+                      <i v-else-if="m.Type === 'video'" class="mdi mdi-play" :title="$gettext('Video')" />
                     </button>
                   </div>
                 </td>
@@ -133,18 +128,8 @@
                         class="input-favorite"
                         @click.stop.prevent="m.toggleLike()"
                       >
-                        <v-icon
-                          v-if="m.Favorite"
-                          icon="mdi-star"
-                          color="favorite"
-                          class="favorite-on"
-                        ></v-icon>
-                        <v-icon
-                          v-else
-                          icon="mdi-star-outline"
-                          color="surface"
-                          class="favorite-off"
-                        ></v-icon>
+                        <v-icon v-if="m.Favorite" icon="mdi-star" color="favorite" class="favorite-on"></v-icon>
+                        <v-icon v-else icon="mdi-star-outline" color="surface" class="favorite-off"></v-icon>
                       </v-btn>
                     </template>
                   </div>

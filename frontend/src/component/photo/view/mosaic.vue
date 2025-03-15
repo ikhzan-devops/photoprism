@@ -91,6 +91,11 @@
                 :title="$gettext('Vector')"
               ></i>
               <i
+                v-else-if="m.Type === 'document'"
+                class="action-document mdi mdi-file-pdf-box"
+                :title="$gettext('Document')"
+              />
+              <i
                 v-else-if="m.Type === 'image' && !selectMode"
                 class="mdi mdi-camera-burst"
                 :title="$gettext('Stack')"
