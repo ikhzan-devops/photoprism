@@ -114,11 +114,12 @@ export default {
         Name: this.$gettext("All Countries"),
       },
     ].concat(this.$config.get("countries"));
-    const features = this.$config.getSettings().features;
+    const settings = this.$config.getSettings();
+    const features = settings.features;
     return {
       expanded: false,
       canUpload: this.$config.allow("files", "upload") && features.upload,
-      canDownload: this.$config.allow("albums", "download") && features.download,
+      canDownload: this.$config.allow("albums", "download") && features.download && !settings.albums.download.disabled,
       canShare: this.$config.allow("albums", "share") && features.share,
       canManage: this.$config.allow("albums", "manage"),
       experimental: this.$config.get("experimental"),

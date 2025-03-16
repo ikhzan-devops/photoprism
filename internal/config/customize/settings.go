@@ -25,6 +25,7 @@ type Settings struct {
 	Index     IndexSettings    `json:"index" yaml:"Index"`
 	Stack     StackSettings    `json:"stack" yaml:"Stack"`
 	Share     ShareSettings    `json:"share" yaml:"Share"`
+	Albums    AlbumsSettings   `json:"albums" yaml:"Albums"`
 	Download  DownloadSettings `json:"download" yaml:"Download"`
 	Templates TemplateSettings `json:"templates" yaml:"Templates"`
 }
@@ -103,6 +104,7 @@ func NewSettings(theme, lang string) *Settings {
 		Share: ShareSettings{
 			Title: "",
 		},
+		Albums:   NewAlbumSettings(),
 		Download: NewDownloadSettings(),
 		Templates: TemplateSettings{
 			Default: "index.gohtml",

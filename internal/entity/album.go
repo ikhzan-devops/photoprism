@@ -119,7 +119,7 @@ func AddPhotoToUserAlbums(photoUid string, albums []string, userUid string) (err
 		if rnd.IsUID(album, AlbumUID) {
 			albumUid = album
 		} else {
-			a := NewUserAlbum(album, AlbumManual, userUid)
+			a := NewUserAlbum(album, AlbumManual, sortby.Oldest, userUid)
 
 			if found := a.Find(); found != nil {
 				albumUid = found.AlbumUID
@@ -147,11 +147,11 @@ func AddPhotoToUserAlbums(photoUid string, albums []string, userUid string) (err
 
 // NewAlbum creates a new album of the given type.
 func NewAlbum(albumTitle, albumType string) *Album {
-	return NewUserAlbum(albumTitle, albumType, OwnerUnknown)
+	return NewUserAlbum(albumTitle, albumType, sortby.Oldest, OwnerUnknown)
 }
 
 // NewUserAlbum creates a new album owned by a user.
-func NewUserAlbum(albumTitle, albumType, userUid string) *Album {
+func NewUserAlbum(albumTitle, albumType, sortOrder, userUid string) *Album {
 	now := Now()
 
 	// Set default type.
@@ -159,9 +159,14 @@ func NewUserAlbum(albumTitle, albumType, userUid string) *Album {
 		albumType = AlbumManual
 	}
 
+	// Set default sort order.
+	if sortOrder == "" {
+		sortOrder = sortby.Oldest
+	}
+
 	// Set default values.
 	result := &Album{
-		AlbumOrder: sortby.Oldest,
+		AlbumOrder: sortOrder,
 		AlbumType:  albumType,
 		CreatedAt:  now,
 		UpdatedAt:  now,
