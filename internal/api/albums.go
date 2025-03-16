@@ -109,7 +109,9 @@ func CreateAlbum(router *gin.RouterGroup) {
 		albumMutex.Lock()
 		defer albumMutex.Unlock()
 
-		album := entity.NewUserAlbum(frm.AlbumTitle, entity.AlbumManual, s.UserUID)
+		conf := get.Config()
+
+		album := entity.NewUserAlbum(frm.AlbumTitle, entity.AlbumManual, conf.Settings().Albums.DefaultOrder, s.UserUID)
 		album.AlbumFavorite = frm.AlbumFavorite
 
 		// Existing album?

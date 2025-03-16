@@ -56,6 +56,14 @@ Stack:
   Name: false
 Share:
   Title: ""
+Albums:
+  DefaultOrder: oldest
+  Download:
+    Name: share
+    Disabled: false
+    Originals: true
+    MediaRaw: false
+    MediaSidecar: false
 Download:
   Name: file
   Disabled: false
