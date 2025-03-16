@@ -300,7 +300,7 @@ describe("model/photo", () => {
     };
     const photo = new Photo(values);
     const result = photo.shortDateString();
-    assert.equal(result, "Jul 8, 2012");
+    assert.equal(result, "7/8/2012");
     const values2 = { ID: 5, Title: "Crazy Cat", TakenAtLocal: "", TakenAt: "", TimeZone: "UTC" };
     const photo2 = new Photo(values2);
     const result2 = photo2.shortDateString();
@@ -313,7 +313,7 @@ describe("model/photo", () => {
     };
     const photo3 = new Photo(values3);
     const result3 = photo3.shortDateString();
-    assert.equal(result3, "Jul 8, 2012");
+    assert.equal(result3, "7/8/2012");
     const values4 = {
       ID: 5,
       Title: "Crazy Cat",
