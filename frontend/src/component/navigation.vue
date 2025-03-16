@@ -997,7 +997,7 @@ export default {
       featMembership: tier < 3 && isSuperAdmin && !isPublic && !isDemo,
       featFeedback: tier >= 6 && isSuperAdmin && !isPublic && !isDemo,
       featFiles: this.$config.feature("files"),
-      featUsage: !isDemo && canManagePhotos && this.$config.feature("files") && this.$config.values?.usage?.filesTotal,
+      featUsage: canManagePhotos && this.$config.feature("files") && this.$config.values?.usage?.filesTotal,
       isRestricted: isRestricted,
       isMini: localStorage.getItem("last_navigation_mode") !== "false" || isRestricted,
       isDemo: isDemo,

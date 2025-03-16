@@ -820,7 +820,7 @@ export class Photo extends RestModel {
       return this.localDate().toLocaleString({ month: "long", year: "numeric" });
     }
 
-    return this.localDate().toLocaleString(DateTime.DATE_MED);
+    return this.localDate().toLocaleString({ day: "numeric", month: "numeric", year: "numeric" });
   });
 
   hasLocation() {
