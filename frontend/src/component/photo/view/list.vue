@@ -39,10 +39,10 @@
       >
         <div class="v-table__wrapper">
           <table>
-            <thead>
+            <thead class="hidden-xs">
               <tr>
                 <th class="col-select"></th>
-                <th class="col-xs"></th>
+                <th class="col-preview"></th>
                 <th class="col-auto text-start">
                   {{ showTitles ? $gettext("Title") : $gettext("File Name") }}
                 </th>

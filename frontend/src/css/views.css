@@ -317,6 +317,10 @@ body.chrome .search-results .result {
 }
 
 .list-view table .col-xs {
+    width: 44px;
+}
+
+.list-view table .col-preview {
     width: 50px;
 }
 
