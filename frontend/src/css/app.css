@@ -162,10 +162,6 @@ ol, ul {
     padding-right: 24px;
 }
 
-.search-results.list-view .result {
-    padding: 1px 8px 1px !important;
-}
-
 body .v-list__item .v-icon {
     color: inherit;
 }

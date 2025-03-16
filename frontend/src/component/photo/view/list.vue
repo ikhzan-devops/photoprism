@@ -41,43 +41,53 @@
           <table>
             <thead>
               <tr>
-                <th class="p-col-select"></th>
-                <th class="text-start">
+                <th class="col-select"></th>
+                <th class="col-xs"></th>
+                <th class="col-auto text-start">
                   {{ showTitles ? $gettext("Title") : $gettext("File Name") }}
                 </th>
-                <th class="text-start hidden-xs">
+                <th class="col-taken text-start hidden-xs">
                   {{ $gettext("Taken") }}
                 </th>
-                <th class="text-start hidden-sm-and-down">
+                <th class="col-md text-start hidden-sm-and-down">
                   {{ $gettext("Camera") }}
                 </th>
-                <th class="text-start hidden-md-and-down">
+                <th class="col-lg text-start hidden-md-and-down">
                   {{ showName ? $gettext("Name") : $gettext("Location") }}
                 </th>
-                <th v-if="!isSharedView" class="text-center"></th>
+                <th v-if="!isSharedView" class="col-xs text-center"></th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="(m, index) in photos" :key="m.ID" ref="items" :data-index="index">
-                <td :data-id="m.ID" :data-uid="m.UID" class="media result" :class="m.classes()">
+                <td :data-id="m.ID" :data-uid="m.UID" class="col-select" :class="{ 'is-selected': isSelected(m) }">
+                  <button
+                    class="input-select"
+                    @touchstart.passive="onMouseDown($event, index)"
+                    @touchend.stop="onClick($event, index, true)"
+                    @mousedown="onMouseDown($event, index)"
+                    @contextmenu.stop="onContextMenu($event, index)"
+                    @click.stop.prevent="onClick($event, index, true)"
+                  >
+                    <i class="mdi mdi-checkbox-marked select-on" />
+                    <i class="mdi mdi-checkbox-blank-outline select-off" />
+                  </button>
+                </td>
+                <td :data-id="m.ID" :data-uid="m.UID" class="media result col-preview" :class="m.classes()">
                   <div v-if="index < firstVisibleElementIndex || index > lastVisibleElementIndex" class="preview"></div>
                   <div
                     v-else
                     :style="`background-image: url(${m.thumbnailUrl('tile_224')})`"
                     class="preview"
                     @touchstart.passive="onMouseDown($event, index)"
-                    @touchend.stop="onClick($event, index)"
+                    @touchend.stop="onClick($event, index, false)"
                     @mousedown="onMouseDown($event, index)"
                     @contextmenu.stop="onContextMenu($event, index)"
-                    @click.stop.prevent="onClick($event, index)"
+                    @click.stop.prevent="onClick($event, index, false)"
                   >
                     <div class="preview__overlay"></div>
-                    <button v-if="selectMode" class="input-select">
-                      <i class="mdi mdi-check-circle select-on" />
-                      <i class="mdi mdi-circle-outline select-off" />
-                    </button>
                     <button
-                      v-else-if="m.Type === 'video' || m.Type === 'live' || m.Type === 'animated'"
+                      v-if="m.Type === 'video' || m.Type === 'live' || m.Type === 'animated'"
                       class="input-open"
                       @click.stop.prevent="openPhoto(index, false)"
                     >
@@ -88,32 +98,35 @@
                   </div>
                 </td>
                 <td
-                  class="meta-data meta-title clickable"
+                  class="meta-data meta-title col-auto text-start clickable"
                   :title="m.Title"
                   @click.exact="isSharedView ? openPhoto(index) : editPhoto(index)"
                 >
                   {{ showTitles && m.Title ? m.Title : m.getOriginalName() }}
                 </td>
-                <td class="meta-data meta-date hidden-xs" :title="m.getDateString()">
-                  <button @click.stop.prevent="openDate(index)">
+                <td class="meta-data meta-date hidden-xs text-start col-taken" :title="m.getDateString()">
+                  <span class="text-truncate clickable" @click.stop.prevent="openDate(index)">
                     {{ m.shortDateString() }}
-                  </button>
+                  </span>
                 </td>
-                <td class="meta-data hidden-sm-and-down">
-                  <button @click.stop.prevent="editPhoto(index)">{{ m.CameraMake }} {{ m.CameraModel }}</button>
+                <td class="meta-data hidden-sm-and-down text-start col-md">
+                  <span class="text-truncate clickable" @click.stop.prevent="editPhoto(index)">
+                    {{ m.CameraMake }} {{ m.CameraModel }}
+                  </span>
                 </td>
-                <td class="meta-data hidden-md-and-down">
-                  <button v-if="filter.order === 'name'" :title="$gettext('Name')" @click.exact="downloadFile(index)">
-                    {{ m.FileName }}
-                  </button>
-                  <button v-else-if="m.Country !== 'zz' && showLocation" @click.stop.prevent="openLocation(index)">
+                <td class="meta-data hidden-md-and-down text-start col-lg">
+                  <span
+                    v-if="m.Country !== 'zz' && showLocation"
+                    class="text-truncate clickable"
+                    @click.stop.prevent="openLocation(index)"
+                  >
                     {{ m.locationInfo() }}
-                  </button>
-                  <span v-else>
+                  </span>
+                  <span v-else class="text-truncate">
                     {{ m.locationInfo() }}
                   </span>
                 </td>
-                <td v-if="!isSharedView" class="text-center">
+                <td v-if="!isSharedView" class="text-center col-xs">
                   <div class="table-actions">
                     <template v-if="index < firstVisibleElementIndex || index > lastVisibleElementIndex">
                       <div class="v-btn v-btn--icon v-btn--small" />
@@ -147,6 +160,7 @@ import download from "common/download";
 import $notify from "common/notify";
 import { virtualizationTools } from "common/virtualization-tools";
 import IconLivePhoto from "component/icon/live-photo.vue";
+import { PhotoClipboard } from "common/clipboard";
 
 export default {
   name: "PPhotoViewList",
@@ -248,6 +262,9 @@ export default {
     this.intersectionObserver.disconnect();
   },
   methods: {
+    isSelected(m) {
+      return PhotoClipboard.has(m);
+    },
     observeItems() {
       if (this.$refs.items === undefined) {
         return;
@@ -285,27 +302,23 @@ export default {
       const photo = this.photos[index];
       download(`${this.$config.apiUri}/dl/${photo.Hash}?t=${this.$config.downloadToken}`, photo.FileName);
     },
-    onSelect(ev, index) {
-      if (ev.shiftKey) {
-        this.selectRange(index);
-      } else {
-        this.toggle(this.photos[index]);
-      }
-    },
     onMouseDown(ev, index) {
       this.mouseDown.index = index;
       this.mouseDown.scrollY = window.scrollY;
       this.mouseDown.timeStamp = ev.timeStamp;
     },
-    onClick(ev, index) {
+    onClick(ev, index, select) {
       const longClick = this.mouseDown.index === index && ev.timeStamp - this.mouseDown.timeStamp > 400;
       const scrolled = this.mouseDown.scrollY - window.scrollY !== 0;
 
-      if (scrolled) {
+      if (!select && scrolled) {
         return;
       }
 
-      if (longClick || this.selectMode) {
+      ev.preventDefault();
+      ev.stopPropagation();
+
+      if (select !== false && (select || longClick || this.selectMode)) {
         if (longClick || ev.shiftKey) {
           this.selectRange(index);
         } else {
