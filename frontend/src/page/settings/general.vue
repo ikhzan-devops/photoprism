@@ -30,21 +30,6 @@
 
             <v-col cols="12" sm="6">
               <v-select
-                v-model="settings.ui.startPage"
-                :disabled="busy"
-                :items="options.StartPages(settings.features)"
-                item-title="text"
-                item-value="value"
-                :label="$gettext('Start Page')"
-                :menu-props="{ maxHeight: 346 }"
-                hide-details
-                class="input-startpage"
-                @update:model-value="onChange"
-              ></v-select>
-            </v-col>
-
-            <v-col cols="12" sm="6">
-              <v-select
                 v-model="settings.ui.language"
                 :disabled="busy"
                 :items="languages"
@@ -69,6 +54,21 @@
                 :menu-props="{ maxHeight: 346 }"
                 class="input-timezone"
                 @update:model-value="onChangeTheme"
+              ></v-select>
+            </v-col>
+
+            <v-col cols="12" sm="6">
+              <v-select
+                v-model="settings.ui.startPage"
+                :disabled="busy"
+                :items="options.StartPages(settings.features)"
+                item-title="text"
+                item-value="value"
+                :label="$gettext('Start Page')"
+                :menu-props="{ maxHeight: 346 }"
+                hide-details
+                class="input-startpage"
+                @update:model-value="onChange"
               ></v-select>
             </v-col>
           </v-row>
