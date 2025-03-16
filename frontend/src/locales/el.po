@@ -109,7 +109,7 @@ msgstr "Μια νέα έκδοση του %{s} είναι διαθέσιμη:"
 #: src/component/user/edit/dialog.vue:233
 #: src/component/user/edit/dialog.vue:234 src/page/about/about.vue:56
 #: src/page/settings/account.vue:248 src/page/settings/account.vue:249
-#: src/app/routes.js:61 src/component/navigation.vue:1469
+#: src/app/routes.js:63 src/component/navigation.vue:1469
 #: src/page/people/recognized.vue:288
 msgid "About"
 msgstr "Σχετικά"
@@ -206,7 +206,7 @@ msgstr "Προσθέστε άτομο;"
 msgid "Add pictures from search results by selecting them."
 msgstr "Προσθέστε εικόνες από τα αποτελέσματα αναζήτησης επιλέγοντάς τες."
 
-#: src/component/album/clipboard.vue:83 src/component/file/clipboard.vue:61
+#: src/component/album/clipboard.vue:85 src/component/file/clipboard.vue:61
 #: src/component/label/clipboard.vue:48 src/component/people/clipboard.vue:58
 #: src/component/photo/album/dialog.vue:22
 #: src/component/photo/album/dialog.vue:43
@@ -274,13 +274,13 @@ msgstr "Αντίγραφα ασφαλείας άλμπουμ"
 msgid "Album created"
 msgstr "Η Συλλογή δημιουργήθηκε"
 
-#: src/app/routes.js:176 src/component/album/toolbar.vue:61
+#: src/app/routes.js:176 src/component/album/toolbar.vue:62
 #: src/component/navigation.vue:617 src/component/navigation.vue:1830
 #: src/component/photo/edit/info.vue:220 src/options/options.js:311
 msgid "Albums"
 msgstr "Συλλογές"
 
-#: src/component/album/clipboard.vue:93
+#: src/component/album/clipboard.vue:94
 msgid "Albums deleted"
 msgstr "Οι Συλλογές διαγράφηκαν"
 
@@ -358,9 +358,9 @@ msgid "AM"
 msgstr "AM"
 
 #: src/component/navigation.vue:418 src/component/photo/edit/files.vue:364
-#: src/component/photo/view/cards.vue:321
-#: src/component/photo/view/cards.vue:496 src/component/photo/view/list.vue:172
-#: src/component/photo/view/mosaic.vue:170 src/options/options.js:389
+#: src/component/photo/view/cards.vue:322
+#: src/component/photo/view/cards.vue:503 src/component/photo/view/list.vue:184
+#: src/component/photo/view/mosaic.vue:171 src/options/options.js:389
 msgid "Animated"
 msgstr "Κινούμενη εικόνα"
 
@@ -386,7 +386,7 @@ msgstr "Εφαρμογή"
 
 #: src/component/photo/clipboard.vue:64
 #: src/component/photo/edit/details.vue:640
-#: src/component/photo/view/cards.vue:404
+#: src/component/photo/view/cards.vue:411
 msgid "Approve"
 msgstr "Έγκριση"
 
@@ -395,7 +395,7 @@ msgid "Apps and Devices"
 msgstr "Εφαρμογές και συσκευές"
 
 #: src/app/routes.js:266 src/component/navigation.vue:568
-#: src/component/photo/clipboard.vue:142 src/component/photo/view/cards.vue:386
+#: src/component/photo/clipboard.vue:142 src/component/photo/view/cards.vue:393
 #: src/page/settings/general.vue:417
 msgid "Archive"
 msgstr "Αρχείο"
@@ -545,7 +545,7 @@ msgid "Calendar"
 msgstr "Ημερολόγιο"
 
 #: src/component/photo/edit/details.vue:346 src/component/photo/toolbar.vue:222
-#: src/component/photo/view/cards.vue:452 src/component/photo/view/list.vue:115
+#: src/component/photo/view/cards.vue:459 src/component/photo/view/list.vue:116
 msgid "Camera"
 msgstr "Κάμερα"
 
@@ -592,7 +592,7 @@ msgstr "Ακύρωση"
 
 #: src/component/photo/edit/details.vue:87 src/component/photo/edit/info.vue:59
 #: src/component/photo/edit/labels.vue:42
-#: src/component/photo/view/cards.vue:430
+#: src/component/photo/view/cards.vue:437
 msgid "Caption"
 msgstr "Λεζάντα"
 
@@ -793,7 +793,7 @@ msgstr "αντίγραφο"
 msgid "Copyright"
 msgstr "Πνευματικά δικαιώματα"
 
-#: src/component/photo/view/list.vue:51
+#: src/component/photo/view/list.vue:52
 msgid "Couldn't find anything."
 msgstr "Δεν μπόρεσα να βρω τίποτα."
 
@@ -877,7 +877,7 @@ msgstr "Αρχεία καταγραφής σφαλμάτων"
 #: src/options/auth.js:39 src/options/auth.js:40 src/options/options.js:309
 #: src/options/options.js:344 src/options/options.js:412
 #: src/options/themes.js:727 src/page/places.vue:318
-#: src/page/settings/general.vue:127
+#: src/page/settings/general.vue:104
 msgid "Default"
 msgstr "Προεπιλογή"
 
@@ -886,7 +886,7 @@ msgid "Default Folder"
 msgstr "Προεπιλεγμένος φάκελος"
 
 #: src/component/session/remove/dialog.vue:56
-#: src/component/user/remove/dialog.vue:56 src/component/album/clipboard.vue:95
+#: src/component/user/remove/dialog.vue:56 src/component/album/clipboard.vue:97
 #: src/component/album/delete/dialog.vue:54
 #: src/component/file/delete/dialog.vue:58 src/component/label/clipboard.vue:58
 #: src/component/label/delete/dialog.vue:58
@@ -997,7 +997,9 @@ msgstr "Απορρίψτε το"
 msgid "Display Name"
 msgstr "Όνομα οθόνης"
 
-#: src/component/photo/view/cards.vue:506 src/options/options.js:405
+#: src/component/photo/view/cards.vue:334
+#: src/component/photo/view/cards.vue:513
+#: src/component/photo/view/mosaic.vue:183 src/options/options.js:405
 msgid "Document"
 msgstr "Έγγραφο"
 
@@ -1030,7 +1032,7 @@ msgstr "Έγινε"
 msgid "Done."
 msgstr "Έγινε."
 
-#: src/component/album/clipboard.vue:72 src/component/album/toolbar.vue:112
+#: src/component/album/clipboard.vue:73 src/component/album/toolbar.vue:113
 #: src/component/file/clipboard.vue:48 src/component/lightbox.vue:1063
 #: src/component/lightbox.vue:1064 src/component/people/clipboard.vue:47
 #: src/component/photo/clipboard.vue:116 src/component/photo/edit/files.vue:168
@@ -1050,11 +1052,11 @@ msgstr "Λήψη απομακρυσμένων αρχείων"
 msgid "Download single files and zip archives."
 msgstr "Λήψη μεμονωμένων αρχείων και αρχείων συμπίεσης."
 
-#: src/component/album/clipboard.vue:102 src/component/album/toolbar.vue:160
+#: src/component/album/clipboard.vue:103 src/component/album/toolbar.vue:161
 #: src/component/file/clipboard.vue:61 src/component/label/clipboard.vue:86
 #: src/component/lightbox.vue:1614 src/component/people/clipboard.vue:59
 #: src/component/photo/clipboard.vue:220 src/component/photo/edit/files.vue:117
-#: src/component/photo/view/cards.vue:169 src/component/photo/view/list.vue:138
+#: src/component/photo/view/cards.vue:169 src/component/photo/view/list.vue:142
 #: src/page/library/browse.vue:126
 msgid "Downloading…"
 msgstr "Λήψη…"
@@ -1091,7 +1093,7 @@ msgstr "Όριο δυναμικού μεγέθους: %{n}px"
 msgid "E-Mail"
 msgstr "E-Mail"
 
-#: src/component/album/clipboard.vue:61 src/component/album/toolbar.vue:93
+#: src/component/album/clipboard.vue:61 src/component/album/toolbar.vue:94
 #: src/component/lightbox.vue:1044 src/component/lightbox.vue:1045
 #: src/component/photo/clipboard.vue:90 src/page/settings/general.vue:393
 msgid "Edit"
@@ -1283,7 +1285,7 @@ msgstr "Μετατροπή αρχείου"
 
 #: src/component/album/edit/dialog.vue:28 src/component/photo/toolbar.vue:119
 #: src/component/photo/toolbar.vue:130 src/component/photo/toolbar.vue:141
-#: src/component/photo/view/list.vue:113
+#: src/component/photo/view/list.vue:114
 msgid "File Name"
 msgstr "Όνομα αρχείου"
 
@@ -1415,7 +1417,7 @@ msgstr "Κατακερματισμός"
 msgid "Help"
 msgstr "Βοήθεια"
 
-#: src/app/routes.js:73 src/app/routes.js:79
+#: src/app/routes.js:75 src/app/routes.js:81
 msgid "Help & Support"
 msgstr "Βοήθεια & Υποστήριξη"
 
@@ -1452,7 +1454,7 @@ msgid "If you lose access to your authenticator app or device, you can use your 
 msgstr "Εάν χάσετε την πρόσβαση στην εφαρμογή ή τη συσκευή ελέγχου ταυτότητας, μπορείτε να χρησιμοποιήσετε τον κωδικό ανάκτησης για να ανακτήσετε την πρόσβαση στον λογαριασμό σας."
 
 #: src/component/photo/edit/info.vue:61 src/component/photo/edit/labels.vue:46
-#: src/component/photo/view/cards.vue:517 src/model/file.js:218
+#: src/component/photo/view/cards.vue:524 src/model/file.js:218
 #: src/options/options.js:381
 msgid "Image"
 msgstr "Εικόνα"
@@ -1491,8 +1493,8 @@ msgstr "Εισαγωγή αρχείων σε πρωτότυπα…"
 msgid "in"
 msgstr "στο"
 
-#: src/component/photo/view/cards.vue:145 src/component/photo/view/list.vue:87
-#: src/component/photo/view/mosaic.vue:72 src/page/labels.vue:153
+#: src/component/photo/view/cards.vue:146 src/component/photo/view/list.vue:87
+#: src/component/photo/view/mosaic.vue:73 src/page/labels.vue:153
 #: src/page/library/browse.vue:123
 msgid "In case pictures you expect are missing, please rescan your library and wait until indexing has been completed."
 msgstr "Σε περίπτωση που λείπουν οι εικόνες που περιμένατε, παρακαλούμε σαρώστε εκ νέου τη βιβλιοθήκη σας και περιμένετε μέχρι να ολοκληρωθεί η δημιουργία ευρετηρίου."
@@ -1629,7 +1631,7 @@ msgstr "Οι Ετικέτες διαγράφηκαν"
 msgid "Lanczos: Detail Preservation, Minimal Artifacts"
 msgstr "Lanczos: Διατήρηση λεπτομερειών, ελάχιστα τεχνουργήματα"
 
-#: src/page/settings/general.vue:105
+#: src/page/settings/general.vue:82
 msgid "Language"
 msgstr "Γλώσσα"
 
@@ -1678,7 +1680,7 @@ msgid "Legal Information"
 msgstr "Νομικές πληροφορίες"
 
 #: src/component/photo/edit/details.vue:417
-#: src/component/photo/view/cards.vue:465
+#: src/component/photo/view/cards.vue:472
 msgid "Lens"
 msgstr "Φακός"
 
@@ -1687,7 +1689,7 @@ msgstr "Φακός"
 msgid "Library"
 msgstr "Βιβλιοθήκη"
 
-#: src/page/connect.vue:45 src/app/routes.js:67
+#: src/page/connect.vue:45 src/app/routes.js:69
 #: src/component/navigation.vue:1426 src/component/photo/edit/details.vue:559
 #: src/page/about/license.vue:28
 msgid "License"
@@ -1721,9 +1723,9 @@ msgstr "Λίστα"
 msgid "List View"
 msgstr "Προβολή λίστας"
 
-#: src/app/routes.js:229 src/component/photo/view/cards.vue:313
-#: src/component/photo/view/cards.vue:486 src/component/photo/view/list.vue:163
-#: src/component/photo/view/mosaic.vue:162 src/options/options.js:393
+#: src/app/routes.js:229 src/component/photo/view/cards.vue:314
+#: src/component/photo/view/cards.vue:493 src/component/photo/view/list.vue:176
+#: src/component/photo/view/mosaic.vue:163 src/options/options.js:393
 msgid "Live"
 msgstr "Ζωντανό"
 
@@ -1754,7 +1756,7 @@ msgstr "Τοπική ώρα"
 #: src/page/settings/account.vue:665 src/page/settings/account.vue:667
 #: src/component/album/edit/dialog.vue:92 src/component/photo/edit/info.vue:63
 #: src/component/photo/edit/labels.vue:48
-#: src/component/photo/view/cards.vue:540 src/component/photo/view/list.vue:116
+#: src/component/photo/view/cards.vue:547 src/component/photo/view/list.vue:117
 #: src/page/albums.vue:98 src/page/settings/account.vue:557
 #: src/page/settings/account.vue:559
 msgid "Location"
@@ -1903,15 +1905,14 @@ msgstr "Σίγαση"
 #: src/component/people/edit/dialog.vue:71
 #: src/component/photo/edit/files.vue:39 src/component/photo/edit/info.vue:55
 #: src/component/photo/edit/info.vue:125 src/component/photo/edit/people.vue:36
-#: src/component/photo/view/list.vue:116 src/component/photo/view/list.vue:215
-#: src/component/service/edit.vue:308 src/component/settings/apps.vue:52
-#: src/component/settings/apps.vue:286 src/page/albums.vue:97
-#: src/page/auth/login.vue:145 src/page/people/new.vue:68
-#: src/page/settings/services.vue:36
+#: src/component/photo/view/list.vue:117 src/component/service/edit.vue:308
+#: src/component/settings/apps.vue:52 src/component/settings/apps.vue:286
+#: src/page/albums.vue:97 src/page/auth/login.vue:145
+#: src/page/people/new.vue:68 src/page/settings/services.vue:36
 msgid "Name"
 msgstr "Όνομα"
 
-#: src/component/album/edit/dialog.vue:35 src/component/album/toolbar.vue:70
+#: src/component/album/edit/dialog.vue:35 src/component/album/toolbar.vue:71
 #: src/component/label/edit/dialog.vue:19
 #: src/component/people/edit/dialog.vue:19
 #: src/component/photo/edit/labels.vue:30
@@ -1986,15 +1987,15 @@ msgstr "Όχι άλλο"
 msgid "No people found"
 msgstr "Δεν βρέθηκαν άτομα"
 
-#: src/component/lightbox.vue:304 src/component/photo/view/cards.vue:140
-#: src/component/photo/view/list.vue:82 src/component/photo/view/mosaic.vue:67
+#: src/component/lightbox.vue:304 src/component/photo/view/cards.vue:141
+#: src/component/photo/view/list.vue:82 src/component/photo/view/mosaic.vue:68
 #: src/page/album/photos.vue:463 src/page/library/browse.vue:122
 #: src/page/photos.vue:597 src/page/places.vue:569 src/page/places.vue:666
 msgid "No pictures found"
 msgstr "Δεν βρέθηκαν εικόνες"
 
-#: src/component/photo/view/cards.vue:139 src/component/photo/view/list.vue:81
-#: src/component/photo/view/mosaic.vue:66
+#: src/component/photo/view/cards.vue:140 src/component/photo/view/list.vue:81
+#: src/component/photo/view/mosaic.vue:67
 msgid "No recently edited pictures"
 msgstr "Δεν υπάρχουν πρόσφατα επεξεργασμένες εικόνες"
 
@@ -2019,8 +2020,8 @@ msgid "No warnings or error containing this keyword. Note that search is case-se
 msgstr "Δεν υπάρχουν προειδοποιήσεις ή σφάλματα που περιέχουν αυτή τη λέξη-κλειδί. Σημειώστε ότι η αναζήτηση είναι ευαίσθητη σε κεφαλαία-πεζά."
 
 #: src/component/photo/upload/dialog.vue:206
-#: src/component/photo/view/cards.vue:150 src/component/photo/view/list.vue:58
-#: src/component/photo/view/list.vue:92 src/component/photo/view/mosaic.vue:77
+#: src/component/photo/view/cards.vue:151 src/component/photo/view/list.vue:59
+#: src/component/photo/view/list.vue:92 src/component/photo/view/mosaic.vue:78
 msgid "Non-photographic and low-quality images require a review before they appear in search results."
 msgstr "Οι μη φωτογραφικές εικόνες και οι εικόνες χαμηλής ποιότητας απαιτούν επανεξέταση προτού εμφανιστούν στα αποτελέσματα αναζήτησης."
 
@@ -2408,8 +2409,8 @@ msgstr "Βαθμολογία {0} από {1}"
 msgid "Raw"
 msgstr "Raw"
 
-#: src/component/photo/view/cards.vue:307
-#: src/component/photo/view/mosaic.vue:156 src/page/settings/content.vue:388
+#: src/component/photo/view/cards.vue:308
+#: src/component/photo/view/mosaic.vue:157 src/page/settings/content.vue:388
 msgid "RAW"
 msgstr "RAW"
 
@@ -2457,7 +2458,7 @@ msgid "Red"
 msgstr "Κόκκινο"
 
 #: src/page/admin/sessions.vue:99 src/page/admin/users.vue:124
-#: src/component/album/toolbar.vue:84 src/component/photo/toolbar.vue:164
+#: src/component/album/toolbar.vue:85 src/component/photo/toolbar.vue:164
 #: src/page/albums.vue:172 src/page/labels.vue:109
 #: src/page/library/browse.vue:90 src/page/library/errors.vue:78
 #: src/page/people/new.vue:54 src/page/people/recognized.vue:87
@@ -2696,7 +2697,7 @@ msgstr "Οι ρυθμίσεις αποθηκεύτηκαν"
 msgid "Setup"
 msgstr "Ρύθμιση"
 
-#: src/component/album/clipboard.vue:49 src/component/album/toolbar.vue:102
+#: src/component/album/clipboard.vue:49 src/component/album/toolbar.vue:103
 #: src/component/photo/clipboard.vue:51 src/page/settings/general.vue:369
 msgid "Share"
 msgstr "Μοιραστείτε το"
@@ -2804,8 +2805,8 @@ msgstr "Ταξινόμηση κατά φθίνουσα πορεία."
 msgid "Source"
 msgstr "Πηγή"
 
-#: src/component/photo/view/cards.vue:333
-#: src/component/photo/view/mosaic.vue:182
+#: src/component/photo/view/cards.vue:340
+#: src/component/photo/view/mosaic.vue:189
 msgid "Stack"
 msgstr "Στοίβα"
 
@@ -2829,7 +2830,7 @@ msgstr "Στοίβες"
 msgid "Start"
 msgstr "Έναρξη"
 
-#: src/page/settings/general.vue:82
+#: src/page/settings/general.vue:127
 msgid "Start Page"
 msgstr "Σελίδα έναρξης"
 
@@ -2895,8 +2896,8 @@ msgstr "Συγχρονισμός"
 msgid "Sync raw and video files"
 msgstr "Συγχρονισμός αρχείων raw και βίντεο"
 
-#: src/component/photo/edit/info.vue:183 src/component/photo/view/cards.vue:194
-#: src/component/photo/view/cards.vue:443 src/component/photo/view/list.vue:114
+#: src/component/photo/edit/info.vue:183 src/component/photo/view/cards.vue:195
+#: src/component/photo/view/cards.vue:450 src/component/photo/view/list.vue:115
 msgid "Taken"
 msgstr "Λήψη"
 
@@ -2951,7 +2952,7 @@ msgstr "Αυτό προσαρτά το φάκελο πρωτοτύπων ως μ
 msgid "Time UTC"
 msgstr "Ώρα UTC"
 
-#: src/component/photo/edit/details.vue:219 src/page/settings/general.vue:128
+#: src/component/photo/edit/details.vue:219 src/page/settings/general.vue:105
 msgid "Time Zone"
 msgstr "Ζώνη ώρας"
 
@@ -2971,7 +2972,7 @@ msgid "Title"
 msgstr "Τίτλος"
 
 #: src/component/photo/edit/info.vue:57 src/component/photo/edit/info.vue:155
-#: src/component/photo/edit/labels.vue:40 src/component/photo/view/list.vue:113
+#: src/component/photo/edit/labels.vue:40 src/component/photo/view/list.vue:114
 msgid "Title"
 msgstr "Τίτλος"
 
@@ -3035,8 +3036,8 @@ msgstr "Τοπογραφικό"
 msgid "Troubleshooting"
 msgstr "Αντιμετώπιση προβλημάτων"
 
-#: src/component/photo/view/cards.vue:142 src/component/photo/view/list.vue:53
-#: src/component/photo/view/list.vue:84 src/component/photo/view/mosaic.vue:69
+#: src/component/photo/view/cards.vue:143 src/component/photo/view/list.vue:54
+#: src/component/photo/view/list.vue:84 src/component/photo/view/mosaic.vue:70
 #: src/page/albums.vue:276 src/page/labels.vue:153
 #: src/page/people/recognized.vue:143
 msgid "Try again using other filters or keywords."
@@ -3133,7 +3134,7 @@ msgstr "Αναβάθμιση"
 msgid "Upgrade Now"
 msgstr "Αναβάθμιση τώρα"
 
-#: src/component/album/toolbar.vue:121 src/component/navigation.vue:1772
+#: src/component/album/toolbar.vue:122 src/component/navigation.vue:1772
 #: src/component/photo/toolbar.vue:173 src/component/photo/upload/dialog.vue:49
 #: src/component/service/upload.vue:143 src/page/albums.vue:181
 #: src/page/library/import.vue:133 src/page/settings/general.vue:297
@@ -3222,9 +3223,9 @@ msgstr "Όνομα χρήστη"
 msgid "Users"
 msgstr "Χρήστες"
 
-#: src/component/photo/view/cards.vue:327
-#: src/component/photo/view/cards.vue:506 src/component/photo/view/list.vue:179
-#: src/component/photo/view/mosaic.vue:176 src/options/options.js:401
+#: src/component/photo/view/cards.vue:328
+#: src/component/photo/view/cards.vue:513
+#: src/component/photo/view/mosaic.vue:177 src/options/options.js:401
 msgid "Vector"
 msgstr "Διάνυσμα"
 
@@ -3236,9 +3237,9 @@ msgstr "Φορείς"
 msgid "Verification Code"
 msgstr "Κωδικός επαλήθευσης"
 
-#: src/component/photo/view/cards.vue:351
-#: src/component/photo/view/cards.vue:476 src/component/photo/view/list.vue:186
-#: src/component/photo/view/mosaic.vue:200 src/model/file.js:221
+#: src/component/photo/view/cards.vue:358
+#: src/component/photo/view/cards.vue:483 src/component/photo/view/list.vue:190
+#: src/component/photo/view/mosaic.vue:207 src/model/file.js:221
 #: src/model/photo.js:928 src/model/photo.js:946 src/options/options.js:397
 msgid "Video"
 msgstr "Βίντεο"
@@ -3253,8 +3254,8 @@ msgstr "Διάρκεια Βίντεο"
 msgid "Videos"
 msgstr "Βίντεο"
 
-#: src/component/photo/toolbar.vue:250 src/component/photo/view/cards.vue:338
-#: src/component/photo/view/mosaic.vue:187
+#: src/component/photo/toolbar.vue:250 src/component/photo/view/cards.vue:345
+#: src/component/photo/view/mosaic.vue:194
 msgid "View"
 msgstr "Προβολή"
 
@@ -3353,7 +3354,7 @@ msgstr "Ναι"
 msgid "You are welcome to contact us at membership@photoprism.app for questions regarding your membership."
 msgstr "Μπορείτε να επικοινωνήσετε μαζί μας στο membership@photoprism.app για ερωτήσεις σχετικά με τη συνδρομή σας."
 
-#: src/component/album/clipboard.vue:98 src/component/people/clipboard.vue:55
+#: src/component/album/clipboard.vue:99 src/component/people/clipboard.vue:55
 msgid "You can only download one album"
 msgstr "Μπορείτε να κατεβάσετε μόνο μια συλλογή"
 
@@ -3365,7 +3366,7 @@ msgstr "Μπορείτε να κατεβάσετε μόνο μία ετικέτ�
 msgid "You can upload up to %{n} files for test purposes."
 msgstr "Μπορείτε να ανεβάσετε έως και %{n} αρχεία για δοκιμαστικούς σκοπούς."
 
-#: src/component/album/clipboard.vue:55 src/component/album/clipboard.vue:66
+#: src/component/album/clipboard.vue:56 src/component/album/clipboard.vue:67
 msgid "You may only select one item"
 msgstr "Μπορείτε να επιλέξετε μόνο ένα στοιχείο"
 

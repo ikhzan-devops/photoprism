@@ -112,7 +112,7 @@ msgstr "Versi baru dari %{s} telah tersedia:"
 #: src/component/user/edit/dialog.vue:233
 #: src/component/user/edit/dialog.vue:234 src/page/about/about.vue:56
 #: src/page/settings/account.vue:248 src/page/settings/account.vue:249
-#: src/app/routes.js:61 src/component/navigation.vue:1469
+#: src/app/routes.js:63 src/component/navigation.vue:1469
 #: src/page/people/recognized.vue:288
 msgid "About"
 msgstr "Tentang"
@@ -209,7 +209,7 @@ msgstr "Tambah orang?"
 msgid "Add pictures from search results by selecting them."
 msgstr "Tambahkan gambar dari hasil pencarian dengan memilihnya."
 
-#: src/component/album/clipboard.vue:83 src/component/file/clipboard.vue:61
+#: src/component/album/clipboard.vue:85 src/component/file/clipboard.vue:61
 #: src/component/label/clipboard.vue:48 src/component/people/clipboard.vue:58
 #: src/component/photo/album/dialog.vue:22
 #: src/component/photo/album/dialog.vue:43
@@ -277,13 +277,13 @@ msgstr "Cadangan Album"
 msgid "Album created"
 msgstr "Album dibuat"
 
-#: src/app/routes.js:176 src/component/album/toolbar.vue:61
+#: src/app/routes.js:176 src/component/album/toolbar.vue:62
 #: src/component/navigation.vue:617 src/component/navigation.vue:1830
 #: src/component/photo/edit/info.vue:220 src/options/options.js:311
 msgid "Albums"
 msgstr "Koleksi Album"
 
-#: src/component/album/clipboard.vue:93
+#: src/component/album/clipboard.vue:94
 msgid "Albums deleted"
 msgstr "Koleksi album dihapus"
 
@@ -361,9 +361,9 @@ msgid "AM"
 msgstr "AM"
 
 #: src/component/navigation.vue:418 src/component/photo/edit/files.vue:364
-#: src/component/photo/view/cards.vue:321
-#: src/component/photo/view/cards.vue:496 src/component/photo/view/list.vue:172
-#: src/component/photo/view/mosaic.vue:170 src/options/options.js:389
+#: src/component/photo/view/cards.vue:322
+#: src/component/photo/view/cards.vue:503 src/component/photo/view/list.vue:184
+#: src/component/photo/view/mosaic.vue:171 src/options/options.js:389
 msgid "Animated"
 msgstr "Animasi"
 
@@ -389,7 +389,7 @@ msgstr "Terapkan"
 
 #: src/component/photo/clipboard.vue:64
 #: src/component/photo/edit/details.vue:640
-#: src/component/photo/view/cards.vue:404
+#: src/component/photo/view/cards.vue:411
 msgid "Approve"
 msgstr "Setujui"
 
@@ -398,7 +398,7 @@ msgid "Apps and Devices"
 msgstr "Aplikasi dan Perangkat"
 
 #: src/app/routes.js:266 src/component/navigation.vue:568
-#: src/component/photo/clipboard.vue:142 src/component/photo/view/cards.vue:386
+#: src/component/photo/clipboard.vue:142 src/component/photo/view/cards.vue:393
 #: src/page/settings/general.vue:417
 msgid "Archive"
 msgstr "Arsip"
@@ -548,7 +548,7 @@ msgid "Calendar"
 msgstr "Kalender"
 
 #: src/component/photo/edit/details.vue:346 src/component/photo/toolbar.vue:222
-#: src/component/photo/view/cards.vue:452 src/component/photo/view/list.vue:115
+#: src/component/photo/view/cards.vue:459 src/component/photo/view/list.vue:116
 msgid "Camera"
 msgstr "Kamera"
 
@@ -595,7 +595,7 @@ msgstr "Batal"
 
 #: src/component/photo/edit/details.vue:87 src/component/photo/edit/info.vue:59
 #: src/component/photo/edit/labels.vue:42
-#: src/component/photo/view/cards.vue:430
+#: src/component/photo/view/cards.vue:437
 msgid "Caption"
 msgstr "Keterangan"
 
@@ -796,7 +796,7 @@ msgstr "Menyalin"
 msgid "Copyright"
 msgstr "Hak Cipta"
 
-#: src/component/photo/view/list.vue:51
+#: src/component/photo/view/list.vue:52
 msgid "Couldn't find anything."
 msgstr "Tidak dapat menemukan apa pun."
 
@@ -880,7 +880,7 @@ msgstr "Log Debug"
 #: src/options/auth.js:39 src/options/auth.js:40 src/options/options.js:309
 #: src/options/options.js:344 src/options/options.js:412
 #: src/options/themes.js:727 src/page/places.vue:318
-#: src/page/settings/general.vue:127
+#: src/page/settings/general.vue:104
 msgid "Default"
 msgstr "Bawaan"
 
@@ -889,7 +889,7 @@ msgid "Default Folder"
 msgstr "Folder Default"
 
 #: src/component/session/remove/dialog.vue:56
-#: src/component/user/remove/dialog.vue:56 src/component/album/clipboard.vue:95
+#: src/component/user/remove/dialog.vue:56 src/component/album/clipboard.vue:97
 #: src/component/album/delete/dialog.vue:54
 #: src/component/file/delete/dialog.vue:58 src/component/label/clipboard.vue:58
 #: src/component/label/delete/dialog.vue:58
@@ -1000,7 +1000,9 @@ msgstr "Bubarkan."
 msgid "Display Name"
 msgstr "Nama Tampilan"
 
-#: src/component/photo/view/cards.vue:506 src/options/options.js:405
+#: src/component/photo/view/cards.vue:334
+#: src/component/photo/view/cards.vue:513
+#: src/component/photo/view/mosaic.vue:183 src/options/options.js:405
 msgid "Document"
 msgstr "Dokumen"
 
@@ -1033,7 +1035,7 @@ msgstr "Selesai"
 msgid "Done."
 msgstr "Selesai."
 
-#: src/component/album/clipboard.vue:72 src/component/album/toolbar.vue:112
+#: src/component/album/clipboard.vue:73 src/component/album/toolbar.vue:113
 #: src/component/file/clipboard.vue:48 src/component/lightbox.vue:1063
 #: src/component/lightbox.vue:1064 src/component/people/clipboard.vue:47
 #: src/component/photo/clipboard.vue:116 src/component/photo/edit/files.vue:168
@@ -1053,11 +1055,11 @@ msgstr "Unduh file jarak jauh"
 msgid "Download single files and zip archives."
 msgstr "Unduh file tunggal dan arsip zip."
 
-#: src/component/album/clipboard.vue:102 src/component/album/toolbar.vue:160
+#: src/component/album/clipboard.vue:103 src/component/album/toolbar.vue:161
 #: src/component/file/clipboard.vue:61 src/component/label/clipboard.vue:86
 #: src/component/lightbox.vue:1614 src/component/people/clipboard.vue:59
 #: src/component/photo/clipboard.vue:220 src/component/photo/edit/files.vue:117
-#: src/component/photo/view/cards.vue:169 src/component/photo/view/list.vue:138
+#: src/component/photo/view/cards.vue:169 src/component/photo/view/list.vue:142
 #: src/page/library/browse.vue:126
 msgid "Downloading…"
 msgstr "Mengunduh…"
@@ -1094,7 +1096,7 @@ msgstr "Batas Ukuran Dinamis: %{n}px"
 msgid "E-Mail"
 msgstr "Email"
 
-#: src/component/album/clipboard.vue:61 src/component/album/toolbar.vue:93
+#: src/component/album/clipboard.vue:61 src/component/album/toolbar.vue:94
 #: src/component/lightbox.vue:1044 src/component/lightbox.vue:1045
 #: src/component/photo/clipboard.vue:90 src/page/settings/general.vue:393
 msgid "Edit"
@@ -1286,7 +1288,7 @@ msgstr "Konversi File"
 
 #: src/component/album/edit/dialog.vue:28 src/component/photo/toolbar.vue:119
 #: src/component/photo/toolbar.vue:130 src/component/photo/toolbar.vue:141
-#: src/component/photo/view/list.vue:113
+#: src/component/photo/view/list.vue:114
 msgid "File Name"
 msgstr "Nama Berkas"
 
@@ -1418,7 +1420,7 @@ msgstr "Hash"
 msgid "Help"
 msgstr "Bantuan"
 
-#: src/app/routes.js:73 src/app/routes.js:79
+#: src/app/routes.js:75 src/app/routes.js:81
 msgid "Help & Support"
 msgstr "Bantuan & Dukungan"
 
@@ -1455,7 +1457,7 @@ msgid "If you lose access to your authenticator app or device, you can use your 
 msgstr "Jika Anda kehilangan akses ke aplikasi atau perangkat pengautentikasi, Anda dapat menggunakan kode pemulihan untuk mendapatkan kembali akses ke akun Anda."
 
 #: src/component/photo/edit/info.vue:61 src/component/photo/edit/labels.vue:46
-#: src/component/photo/view/cards.vue:517 src/model/file.js:218
+#: src/component/photo/view/cards.vue:524 src/model/file.js:218
 #: src/options/options.js:381
 msgid "Image"
 msgstr "Gambar"
@@ -1494,8 +1496,8 @@ msgstr "Mengimpor file ke aslinya…"
 msgid "in"
 msgstr "dalam"
 
-#: src/component/photo/view/cards.vue:145 src/component/photo/view/list.vue:87
-#: src/component/photo/view/mosaic.vue:72 src/page/labels.vue:153
+#: src/component/photo/view/cards.vue:146 src/component/photo/view/list.vue:87
+#: src/component/photo/view/mosaic.vue:73 src/page/labels.vue:153
 #: src/page/library/browse.vue:123
 msgid "In case pictures you expect are missing, please rescan your library and wait until indexing has been completed."
 msgstr "Jika gambar yang Anda harapkan hilang, silakan pindai ulang perpustakaan Anda dan tunggu."
@@ -1632,7 +1634,7 @@ msgstr "Label dihapus"
 msgid "Lanczos: Detail Preservation, Minimal Artifacts"
 msgstr "Lanczos: Pelestarian Detail, Artefak Minimal"
 
-#: src/page/settings/general.vue:105
+#: src/page/settings/general.vue:82
 msgid "Language"
 msgstr "Bahasa"
 
@@ -1681,7 +1683,7 @@ msgid "Legal Information"
 msgstr "Informasi Hukum"
 
 #: src/component/photo/edit/details.vue:417
-#: src/component/photo/view/cards.vue:465
+#: src/component/photo/view/cards.vue:472
 msgid "Lens"
 msgstr "Lensa"
 
@@ -1690,7 +1692,7 @@ msgstr "Lensa"
 msgid "Library"
 msgstr "Perpustakaan"
 
-#: src/page/connect.vue:45 src/app/routes.js:67
+#: src/page/connect.vue:45 src/app/routes.js:69
 #: src/component/navigation.vue:1426 src/component/photo/edit/details.vue:559
 #: src/page/about/license.vue:28
 msgid "License"
@@ -1724,9 +1726,9 @@ msgstr "Daftar"
 msgid "List View"
 msgstr "Tampilan Daftar"
 
-#: src/app/routes.js:229 src/component/photo/view/cards.vue:313
-#: src/component/photo/view/cards.vue:486 src/component/photo/view/list.vue:163
-#: src/component/photo/view/mosaic.vue:162 src/options/options.js:393
+#: src/app/routes.js:229 src/component/photo/view/cards.vue:314
+#: src/component/photo/view/cards.vue:493 src/component/photo/view/list.vue:176
+#: src/component/photo/view/mosaic.vue:163 src/options/options.js:393
 msgid "Live"
 msgstr "Langsung"
 
@@ -1757,7 +1759,7 @@ msgstr "Waktu Setempat"
 #: src/page/settings/account.vue:665 src/page/settings/account.vue:667
 #: src/component/album/edit/dialog.vue:92 src/component/photo/edit/info.vue:63
 #: src/component/photo/edit/labels.vue:48
-#: src/component/photo/view/cards.vue:540 src/component/photo/view/list.vue:116
+#: src/component/photo/view/cards.vue:547 src/component/photo/view/list.vue:117
 #: src/page/albums.vue:98 src/page/settings/account.vue:557
 #: src/page/settings/account.vue:559
 msgid "Location"
@@ -1906,15 +1908,14 @@ msgstr "Bisu"
 #: src/component/people/edit/dialog.vue:71
 #: src/component/photo/edit/files.vue:39 src/component/photo/edit/info.vue:55
 #: src/component/photo/edit/info.vue:125 src/component/photo/edit/people.vue:36
-#: src/component/photo/view/list.vue:116 src/component/photo/view/list.vue:215
-#: src/component/service/edit.vue:308 src/component/settings/apps.vue:52
-#: src/component/settings/apps.vue:286 src/page/albums.vue:97
-#: src/page/auth/login.vue:145 src/page/people/new.vue:68
-#: src/page/settings/services.vue:36
+#: src/component/photo/view/list.vue:117 src/component/service/edit.vue:308
+#: src/component/settings/apps.vue:52 src/component/settings/apps.vue:286
+#: src/page/albums.vue:97 src/page/auth/login.vue:145
+#: src/page/people/new.vue:68 src/page/settings/services.vue:36
 msgid "Name"
 msgstr "Nama"
 
-#: src/component/album/edit/dialog.vue:35 src/component/album/toolbar.vue:70
+#: src/component/album/edit/dialog.vue:35 src/component/album/toolbar.vue:71
 #: src/component/label/edit/dialog.vue:19
 #: src/component/people/edit/dialog.vue:19
 #: src/component/photo/edit/labels.vue:30
@@ -1989,15 +1990,15 @@ msgstr "Tidak ada lagi."
 msgid "No people found"
 msgstr "Tidak ada orang yang ditemukan"
 
-#: src/component/lightbox.vue:304 src/component/photo/view/cards.vue:140
-#: src/component/photo/view/list.vue:82 src/component/photo/view/mosaic.vue:67
+#: src/component/lightbox.vue:304 src/component/photo/view/cards.vue:141
+#: src/component/photo/view/list.vue:82 src/component/photo/view/mosaic.vue:68
 #: src/page/album/photos.vue:463 src/page/library/browse.vue:122
 #: src/page/photos.vue:597 src/page/places.vue:569 src/page/places.vue:666
 msgid "No pictures found"
 msgstr "Tidak ada gambar yang ditemukan"
 
-#: src/component/photo/view/cards.vue:139 src/component/photo/view/list.vue:81
-#: src/component/photo/view/mosaic.vue:66
+#: src/component/photo/view/cards.vue:140 src/component/photo/view/list.vue:81
+#: src/component/photo/view/mosaic.vue:67
 msgid "No recently edited pictures"
 msgstr "Tidak ada gambar yang baru saja diedit"
 
@@ -2022,8 +2023,8 @@ msgid "No warnings or error containing this keyword. Note that search is case-se
 msgstr "Tidak ada peringatan atau kesalahan yang mengandung kata kunci ini. Perhatikan bahwa pencarian adalah case-sensitive."
 
 #: src/component/photo/upload/dialog.vue:206
-#: src/component/photo/view/cards.vue:150 src/component/photo/view/list.vue:58
-#: src/component/photo/view/list.vue:92 src/component/photo/view/mosaic.vue:77
+#: src/component/photo/view/cards.vue:151 src/component/photo/view/list.vue:59
+#: src/component/photo/view/list.vue:92 src/component/photo/view/mosaic.vue:78
 msgid "Non-photographic and low-quality images require a review before they appear in search results."
 msgstr "Gambar non-fotografis dan berkualitas rendah memerlukan peninjauan sebelum muncul di hasil pencarian."
 
@@ -2411,8 +2412,8 @@ msgstr "Peringkat {0} dari {1}"
 msgid "Raw"
 msgstr "Raw"
 
-#: src/component/photo/view/cards.vue:307
-#: src/component/photo/view/mosaic.vue:156 src/page/settings/content.vue:388
+#: src/component/photo/view/cards.vue:308
+#: src/component/photo/view/mosaic.vue:157 src/page/settings/content.vue:388
 msgid "RAW"
 msgstr "RAW"
 
@@ -2460,7 +2461,7 @@ msgid "Red"
 msgstr "Merah"
 
 #: src/page/admin/sessions.vue:99 src/page/admin/users.vue:124
-#: src/component/album/toolbar.vue:84 src/component/photo/toolbar.vue:164
+#: src/component/album/toolbar.vue:85 src/component/photo/toolbar.vue:164
 #: src/page/albums.vue:172 src/page/labels.vue:109
 #: src/page/library/browse.vue:90 src/page/library/errors.vue:78
 #: src/page/people/new.vue:54 src/page/people/recognized.vue:87
@@ -2699,7 +2700,7 @@ msgstr "Pengaturan disimpan"
 msgid "Setup"
 msgstr "Setelan"
 
-#: src/component/album/clipboard.vue:49 src/component/album/toolbar.vue:102
+#: src/component/album/clipboard.vue:49 src/component/album/toolbar.vue:103
 #: src/component/photo/clipboard.vue:51 src/page/settings/general.vue:369
 msgid "Share"
 msgstr "Bagikan"
@@ -2807,8 +2808,8 @@ msgstr "Diurutkan menurun."
 msgid "Source"
 msgstr "Sumber"
 
-#: src/component/photo/view/cards.vue:333
-#: src/component/photo/view/mosaic.vue:182
+#: src/component/photo/view/cards.vue:340
+#: src/component/photo/view/mosaic.vue:189
 msgid "Stack"
 msgstr "Tumpukan"
 
@@ -2832,7 +2833,7 @@ msgstr "Tumpukan"
 msgid "Start"
 msgstr "Mulai"
 
-#: src/page/settings/general.vue:82
+#: src/page/settings/general.vue:127
 msgid "Start Page"
 msgstr "Halaman Awal"
 
@@ -2898,8 +2899,8 @@ msgstr "Sinkronisasi"
 msgid "Sync raw and video files"
 msgstr "Sinkronkan file mentah dan video"
 
-#: src/component/photo/edit/info.vue:183 src/component/photo/view/cards.vue:194
-#: src/component/photo/view/cards.vue:443 src/component/photo/view/list.vue:114
+#: src/component/photo/edit/info.vue:183 src/component/photo/view/cards.vue:195
+#: src/component/photo/view/cards.vue:450 src/component/photo/view/list.vue:115
 msgid "Taken"
 msgstr "Diambil"
 
@@ -2954,7 +2955,7 @@ msgstr "Ini memasang folder asli sebagai drive tersambung dan memungkinkan Anda 
 msgid "Time UTC"
 msgstr "Waktu UTC"
 
-#: src/component/photo/edit/details.vue:219 src/page/settings/general.vue:128
+#: src/component/photo/edit/details.vue:219 src/page/settings/general.vue:105
 msgid "Time Zone"
 msgstr "Zona Waktu"
 
@@ -2974,7 +2975,7 @@ msgid "Title"
 msgstr "Judul"
 
 #: src/component/photo/edit/info.vue:57 src/component/photo/edit/info.vue:155
-#: src/component/photo/edit/labels.vue:40 src/component/photo/view/list.vue:113
+#: src/component/photo/edit/labels.vue:40 src/component/photo/view/list.vue:114
 msgid "Title"
 msgstr "Judul"
 
@@ -3038,8 +3039,8 @@ msgstr "Topografi"
 msgid "Troubleshooting"
 msgstr "Pemecahan masalah"
 
-#: src/component/photo/view/cards.vue:142 src/component/photo/view/list.vue:53
-#: src/component/photo/view/list.vue:84 src/component/photo/view/mosaic.vue:69
+#: src/component/photo/view/cards.vue:143 src/component/photo/view/list.vue:54
+#: src/component/photo/view/list.vue:84 src/component/photo/view/mosaic.vue:70
 #: src/page/albums.vue:276 src/page/labels.vue:153
 #: src/page/people/recognized.vue:143
 msgid "Try again using other filters or keywords."
@@ -3136,7 +3137,7 @@ msgstr "Tingkatkan"
 msgid "Upgrade Now"
 msgstr "Tingkatkan Sekarang"
 
-#: src/component/album/toolbar.vue:121 src/component/navigation.vue:1772
+#: src/component/album/toolbar.vue:122 src/component/navigation.vue:1772
 #: src/component/photo/toolbar.vue:173 src/component/photo/upload/dialog.vue:49
 #: src/component/service/upload.vue:143 src/page/albums.vue:181
 #: src/page/library/import.vue:133 src/page/settings/general.vue:297
@@ -3225,9 +3226,9 @@ msgstr "Nama pengguna"
 msgid "Users"
 msgstr "Pengguna"
 
-#: src/component/photo/view/cards.vue:327
-#: src/component/photo/view/cards.vue:506 src/component/photo/view/list.vue:179
-#: src/component/photo/view/mosaic.vue:176 src/options/options.js:401
+#: src/component/photo/view/cards.vue:328
+#: src/component/photo/view/cards.vue:513
+#: src/component/photo/view/mosaic.vue:177 src/options/options.js:401
 msgid "Vector"
 msgstr "Vektor"
 
@@ -3239,9 +3240,9 @@ msgstr "Vektor"
 msgid "Verification Code"
 msgstr "Kode verifikasi"
 
-#: src/component/photo/view/cards.vue:351
-#: src/component/photo/view/cards.vue:476 src/component/photo/view/list.vue:186
-#: src/component/photo/view/mosaic.vue:200 src/model/file.js:221
+#: src/component/photo/view/cards.vue:358
+#: src/component/photo/view/cards.vue:483 src/component/photo/view/list.vue:190
+#: src/component/photo/view/mosaic.vue:207 src/model/file.js:221
 #: src/model/photo.js:928 src/model/photo.js:946 src/options/options.js:397
 msgid "Video"
 msgstr "Video"
@@ -3256,8 +3257,8 @@ msgstr "Durasi"
 msgid "Videos"
 msgstr "Koleksi Video"
 
-#: src/component/photo/toolbar.vue:250 src/component/photo/view/cards.vue:338
-#: src/component/photo/view/mosaic.vue:187
+#: src/component/photo/toolbar.vue:250 src/component/photo/view/cards.vue:345
+#: src/component/photo/view/mosaic.vue:194
 msgid "View"
 msgstr "Melihat"
 
@@ -3356,7 +3357,7 @@ msgstr "Ya"
 msgid "You are welcome to contact us at membership@photoprism.app for questions regarding your membership."
 msgstr "Anda dapat menghubungi kami di membership@photoprism.app untuk pertanyaan mengenai keanggotaan Anda."
 
-#: src/component/album/clipboard.vue:98 src/component/people/clipboard.vue:55
+#: src/component/album/clipboard.vue:99 src/component/people/clipboard.vue:55
 msgid "You can only download one album"
 msgstr "Anda hanya dapat mengunduh satu album"
 
@@ -3368,7 +3369,7 @@ msgstr "Anda hanya dapat mengunduh satu label"
 msgid "You can upload up to %{n} files for test purposes."
 msgstr "Anda dapat mengunggah hingga %{n} file untuk tujuan pengujian."
 
-#: src/component/album/clipboard.vue:55 src/component/album/clipboard.vue:66
+#: src/component/album/clipboard.vue:56 src/component/album/clipboard.vue:67
 msgid "You may only select one item"
 msgstr "Anda hanya dapat memilih satu item"
 
