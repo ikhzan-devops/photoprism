@@ -466,14 +466,6 @@ body.chrome .search-results .result {
     text-align: start;
 }
 
-.list-view td.meta-data button {
-    min-width: 84px;
-    text-align: start;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
 .cards-view .result .preview button {
     width: 36px;
     height: 36px;
