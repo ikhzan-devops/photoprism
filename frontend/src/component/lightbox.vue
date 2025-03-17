@@ -28,7 +28,7 @@
         :class="{
           'sidebar-visible': sidebarVisible,
           'slideshow-active': slideshow.active,
-          'is-fullscreen': isFullscreen,
+          'is-fullscreen': isFullscreen(),
           'is-zoomable': isZoomable,
           'is-favorite': model.Favorite,
           'is-playable': model.Playable,
@@ -125,8 +125,8 @@ export default {
       canEdit: this.$config.allow("photos", "update") && this.$config.feature("edit"),
       canLike: this.$config.allow("photos", "manage") && this.$config.feature("favorites"),
       canDownload: this.$config.allow("photos", "download") && this.$config.feature("download"),
-      canFullscreen: !this.$isMobile || this.$config.featExperimental(),
-      isFullscreen: !window.screenTop && !window.screenY,
+      canFullscreen: document.fullscreenEnabled && (!this.$isMobile || this.$config.featExperimental()),
+      wasFullscreen: this.isFullscreen(),
       isZoomable: true,
       mobileBreakpoint: 600, // Minimum viewport width for large screens.
       featExperimental: this.$config.featExperimental(), // Enables features that may be incomplete or unstable.
@@ -214,6 +214,7 @@ export default {
       this.$view.enter(this, this.$refs?.content);
       this.busy = true;
       this.visible = true;
+      this.wasFullscreen = this.isFullscreen();
 
       // Publish init event.
       this.$event.publish("lightbox.init");
@@ -349,6 +350,7 @@ export default {
             this.hideDialog();
           });
       });
+
       this.showDialog();
 
       return Promise.resolve();
@@ -1243,6 +1245,11 @@ export default {
     },
     // Removes any event listeners before the lightbox is fully closed.
     onClose() {
+      // Exit full screen mode only if it was not previously enabled.
+      if (!this.wasFullscreen) {
+        this.exitFullscreen();
+      }
+
       this.clearTimeouts();
       this.removeEventListeners();
     },
@@ -1420,18 +1427,29 @@ export default {
         this.toggleControls();
       }
     },
-    toggleFullscreen() {
-      if (document.fullscreenElement) {
+    isFullscreen() {
+      return !!document.fullscreenElement || !!document.mozFullScreenElement;
+    },
+    exitFullscreen() {
+      if (this.isFullscreen()) {
         document
           .exitFullscreen()
           .then(() => {
-            this.isFullscreen = false;
+            this.resize(true);
+          })
+          .catch((err) => console.error(err));
+      }
+    },
+    toggleFullscreen() {
+      if (this.isFullscreen()) {
+        document
+          .exitFullscreen()
+          .then(() => {
             this.resize(true);
           })
           .catch((err) => console.error(err));
       } else {
         document.documentElement.requestFullscreen({ navigationUI: "hide" }).then(() => {
-          this.isFullscreen = true;
           this.resize(true);
         });
       }
