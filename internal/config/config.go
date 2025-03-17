@@ -66,16 +66,17 @@ var initThumbsMutex sync.Mutex
 
 // Config holds database, cache and all parameters of photoprism
 type Config struct {
-	once     sync.Once
-	cliCtx   *cli.Context
-	options  *Options
-	settings *customize.Settings
-	db       *gorm.DB
-	hub      *hub.Config
-	token    string
-	serial   string
-	env      string
-	start    bool
+	once      sync.Once
+	cliCtx    *cli.Context
+	options   *Options
+	settings  *customize.Settings
+	db        *gorm.DB
+	dbVersion string
+	hub       *hub.Config
+	token     string
+	serial    string
+	env       string
+	start     bool
 }
 
 func init() {
