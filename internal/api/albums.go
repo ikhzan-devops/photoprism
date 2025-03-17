@@ -111,7 +111,7 @@ func CreateAlbum(router *gin.RouterGroup) {
 
 		conf := get.Config()
 
-		album := entity.NewUserAlbum(frm.AlbumTitle, entity.AlbumManual, conf.Settings().Albums.DefaultOrder, s.UserUID)
+		album := entity.NewUserAlbum(frm.AlbumTitle, entity.AlbumManual, conf.Settings().Albums.Order.Album, s.UserUID)
 		album.AlbumFavorite = frm.AlbumFavorite
 
 		// Existing album?

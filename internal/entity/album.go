@@ -28,6 +28,14 @@ const (
 	AlbumState  = "state"
 )
 
+var (
+	DefaultOrderAlbum  = sortby.Oldest
+	DefaultOrderFolder = sortby.Added
+	DefaultOrderMoment = sortby.Oldest
+	DefaultOrderState  = sortby.Newest
+	DefaultOrderMonth  = sortby.Oldest
+)
+
 type Albums []Album
 
 // Album represents a photo album
@@ -161,7 +169,7 @@ func NewUserAlbum(albumTitle, albumType, sortOrder, userUid string) *Album {
 
 	// Set default sort order.
 	if sortOrder == "" {
-		sortOrder = sortby.Oldest
+		sortOrder = DefaultOrderAlbum
 	}
 
 	// Set default values.
@@ -190,7 +198,7 @@ func NewFolderAlbum(albumTitle, albumPath, albumFilter string) *Album {
 	now := Now()
 
 	result := &Album{
-		AlbumOrder:  sortby.Added,
+		AlbumOrder:  DefaultOrderFolder,
 		AlbumType:   AlbumFolder,
 		AlbumSlug:   txt.Clip(albumSlug, txt.ClipSlug),
 		AlbumPath:   txt.Clip(albumPath, txt.ClipPath),
@@ -213,7 +221,7 @@ func NewMomentsAlbum(albumTitle, albumSlug, albumFilter string) *Album {
 	now := Now()
 
 	result := &Album{
-		AlbumOrder:  sortby.Oldest,
+		AlbumOrder:  DefaultOrderMoment,
 		AlbumType:   AlbumMoment,
 		AlbumSlug:   txt.Clip(albumSlug, txt.ClipSlug),
 		AlbumFilter: albumFilter,
@@ -238,7 +246,7 @@ func NewStateAlbum(albumTitle, albumSlug, albumFilter string) *Album {
 	now := Now()
 
 	result := &Album{
-		AlbumOrder:  sortby.Newest,
+		AlbumOrder:  DefaultOrderState,
 		AlbumType:   AlbumState,
 		AlbumSlug:   txt.Clip(albumSlug, txt.ClipSlug),
 		AlbumFilter: albumFilter,
@@ -269,7 +277,7 @@ func NewMonthAlbum(albumTitle, albumSlug string, year, month int) *Album {
 	now := Now()
 
 	result := &Album{
-		AlbumOrder:  sortby.Oldest,
+		AlbumOrder:  DefaultOrderMonth,
 		AlbumType:   AlbumMonth,
 		AlbumSlug:   albumSlug,
 		AlbumFilter: f.Serialize(),
