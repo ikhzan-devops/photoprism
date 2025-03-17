@@ -87,6 +87,7 @@ require (
 	github.com/swaggo/gin-swagger v1.6.0
 	github.com/urfave/cli/v2 v2.27.6
 	github.com/zitadel/oidc/v3 v3.36.1
+	golang.org/x/mod v0.24.0
 	golang.org/x/sys v0.31.0
 )
 
