@@ -10,6 +10,19 @@ Search:
   ListView: true
   ShowTitles: true
   ShowCaptions: true
+Albums:
+  Order:
+    Album: oldest
+    Folder: added
+    Moment: oldest
+    State: newest
+    Month: oldest
+  Download:
+    Name: share
+    Disabled: false
+    Originals: true
+    MediaRaw: false
+    MediaSidecar: false
 Maps:
   Animate: 0
   Style: ""
@@ -56,14 +69,6 @@ Stack:
   Name: false
 Share:
   Title: ""
-Albums:
-  DefaultOrder: oldest
-  Download:
-    Name: share
-    Disabled: false
-    Originals: true
-    MediaRaw: false
-    MediaSidecar: false
 Download:
   Name: file
   Disabled: false

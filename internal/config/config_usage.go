@@ -6,6 +6,7 @@ import (
 
 	gc "github.com/patrickmn/go-cache"
 
+	"github.com/photoprism/photoprism/internal/auth/acl"
 	"github.com/photoprism/photoprism/internal/entity/query"
 	"github.com/photoprism/photoprism/pkg/fs"
 	"github.com/photoprism/photoprism/pkg/fs/duf"
@@ -73,21 +74,20 @@ func (c *Config) Usage() Usage {
 		info.FilesUsedPct = 1
 	}
 
-	if info.FilesUsedPct > 100 {
-		info.FilesUsedPct = 100
-	}
-
 	info.FilesFreePct = 100 - info.FilesUsedPct
+
+	if info.FilesFreePct < 0 {
+		info.FilesFreePct = 0
+	}
 
 	if usersTotal := c.UsersQuota(); usersTotal > 0 {
 		usersUsed := query.CountUsers(true, true, nil, []string{"guest"})
 		info.UsersUsedPct = int(math.Floor(float64(usersUsed) / float64(usersTotal) * 100))
-
-		if info.UsersUsedPct > 100 {
-			info.UsersUsedPct = 100
-		}
-
 		info.UsersFreePct = 100 - info.UsersUsedPct
+
+		if info.UsersFreePct < 0 {
+			info.UsersFreePct = 0
+		}
 	}
 
 	usageCache.SetDefault(originalsPath, info)
@@ -109,7 +109,7 @@ func (c *Config) FilesQuota() uint64 {
 	return c.options.FilesQuota
 }
 
-// FilesQuotaBytes returns the maximum aggregated size of all indexed files in bytes, or 0 if no limit exists.
+// FilesQuotaBytes returns the maximum aggregated size of all indexed files in bytes, or 0 if unlimited.
 func (c *Config) FilesQuotaBytes() uint64 {
 	if c.options.FilesQuota <= 0 {
 		return 0
@@ -118,9 +118,18 @@ func (c *Config) FilesQuotaBytes() uint64 {
 	return c.options.FilesQuota * fs.GB
 }
 
-// FilesQuotaExceeded checks whether the filesystem usage has been reached or exceeded.
-func (c *Config) FilesQuotaExceeded() bool {
-	return c.Usage().FilesUsedPct >= 100
+// FilesQuotaReached checks whether the filesystem usage has been reached or exceeded.
+func (c *Config) FilesQuotaReached() bool {
+	return c.FilesQuotaExceeded(99)
+}
+
+// FilesQuotaExceeded checks if the filesystem quota specified in percent has been exceeded.
+func (c *Config) FilesQuotaExceeded(usedPct int) bool {
+	if c.options.FilesQuota <= 0 {
+		return false
+	}
+
+	return c.Usage().FilesUsedPct > usedPct
 }
 
 // UsersQuota returns the maximum number of user accounts without guests, or 0 if unlimited.
@@ -132,7 +141,21 @@ func (c *Config) UsersQuota() int {
 	return c.options.UsersQuota
 }
 
-// UsersQuotaExceeded checks whether the maximum number of user accounts has been reached or exceeded.
-func (c *Config) UsersQuotaExceeded() bool {
-	return c.Usage().UsersUsedPct >= 100
+// UsersQuotaReached checks whether the maximum number of user accounts has been reached or exceeded.
+func (c *Config) UsersQuotaReached(role acl.Role) bool {
+	return c.UsersQuotaExceeded(99, role)
+}
+
+// UsersQuotaExceeded checks whether the number of user accounts specified in percent has been exceeded.
+func (c *Config) UsersQuotaExceeded(usedPct int, role acl.Role) bool {
+	if c.options.UsersQuota <= 0 {
+		return false
+	}
+
+	switch role {
+	case acl.RoleNone, acl.RoleGuest, acl.RoleVisitor, acl.RoleClient:
+		return false
+	default:
+		return c.Usage().UsersUsedPct > usedPct
+	}
 }

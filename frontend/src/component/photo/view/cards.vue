@@ -49,8 +49,8 @@
           <div class="preview" />
           <div v-if="!isSharedView && m.Quality < 3 && context === 'review'" class="review" />
           <div class="meta">
-            <button class="action-title-edit meta-title text-truncate">
-              {{ showTitles && m.Title ? m.Title : m.getOriginalName() }}
+            <button v-if="!showTitles || m.Title" class="action-title-edit meta-title text-truncate">
+              {{ showTitles ? m.Title : m.getOriginalName() }}
             </button>
             <button v-if="showCaptions && m.Caption" class="meta-caption">
               {{ m.Caption }}
@@ -88,7 +88,7 @@
                 <i class="mdi mdi-image" />
                 {{ m.getImageInfo() }}
               </button>
-              <button v-if="showTitles && m.Title" class="meta-filename text-truncate">
+              <button v-if="showTitles" class="meta-filename text-truncate">
                 <i class="mdi" :class="m.Type === 'video' || m.Type === 'live' ? 'mdi-filmstrip' : 'mdi-film'" />
                 {{ m.getOriginalName() }}
               </button>
@@ -228,11 +228,12 @@
           </div>
           <div class="meta">
             <button
+              v-if="!showTitles || m.Title"
               :title="m.Title"
               class="action-title-edit meta-title text-truncate"
               @click.exact="isSharedView ? openPhoto(index) : editPhoto(index)"
             >
-              {{ showTitles && m.Title ? m.Title : m.getOriginalName() }}
+              {{ showTitles ? m.Title : m.getOriginalName() }}
             </button>
             <button
               v-if="showCaptions && m.Caption"
@@ -311,7 +312,7 @@
                 {{ m.getImageInfo() }}
               </button>
               <button
-                v-if="showTitles && m.Title"
+                v-if="showTitles"
                 :title="m.getOriginalName()"
                 class="meta-filename text-truncate"
                 @click.exact="editPhoto(index, 'files')"

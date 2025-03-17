@@ -307,7 +307,30 @@ func (c *Config) Propagate() {
 	customize.DefaultTheme = c.DefaultTheme()
 	customize.DefaultLocale = c.DefaultLocale()
 
+	// Propagate settings.
 	c.Settings().Propagate()
+
+	// Set default album sort orders.
+	if c.settings.Albums.Order.Album != "" {
+		entity.DefaultOrderAlbum = c.settings.Albums.Order.Album
+	}
+
+	if c.settings.Albums.Order.Folder != "" {
+		entity.DefaultOrderFolder = c.settings.Albums.Order.Folder
+	}
+
+	if c.settings.Albums.Order.Moment != "" {
+		entity.DefaultOrderMoment = c.settings.Albums.Order.Moment
+	}
+
+	if c.settings.Albums.Order.State != "" {
+		entity.DefaultOrderState = c.settings.Albums.Order.State
+	}
+
+	if c.settings.Albums.Order.Month != "" {
+		entity.DefaultOrderMonth = c.settings.Albums.Order.Month
+	}
+
 	c.Hub().Propagate()
 }
 
