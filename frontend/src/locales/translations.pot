@@ -59,10 +59,10 @@ msgstr ""
 msgid "%{n} people found"
 msgstr ""
 
-#: src/page/album/photos.vue:295
-#: src/page/album/photos.vue:468
+#: src/page/album/photos.vue:305
+#: src/page/album/photos.vue:479
 #: src/page/photos.vue:427
-#: src/page/photos.vue:602
+#: src/page/photos.vue:606
 msgid "%{n} pictures found"
 msgstr ""
 
@@ -615,7 +615,7 @@ msgstr ""
 msgid "Can't access your authenticator app or device?"
 msgstr ""
 
-#: src/page/album/photos.vue:302
+#: src/page/album/photos.vue:312
 #: src/page/photos.vue:434
 msgid "Can't load more, limit reached"
 msgstr ""
@@ -2287,9 +2287,9 @@ msgstr ""
 #: src/component/photo/view/cards.vue:141
 #: src/component/photo/view/list.vue:82
 #: src/component/photo/view/mosaic.vue:68
-#: src/page/album/photos.vue:463
+#: src/page/album/photos.vue:474
 #: src/page/library/browse.vue:122
-#: src/page/photos.vue:597
+#: src/page/photos.vue:601
 #: src/page/places.vue:569
 #: src/page/places.vue:666
 msgid "No pictures found"
@@ -2438,8 +2438,8 @@ msgstr ""
 msgid "One person found"
 msgstr ""
 
-#: src/page/album/photos.vue:465
-#: src/page/photos.vue:599
+#: src/page/album/photos.vue:476
+#: src/page/photos.vue:603
 msgid "One picture found"
 msgstr ""
 

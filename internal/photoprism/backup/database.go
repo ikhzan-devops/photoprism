@@ -112,7 +112,6 @@ func Database(backupPath, fileName string, toStdOut, force bool, retain int) (er
 				c.DatabaseName(),
 			)
 		}
-
 	case config.SQLite3:
 		if !fs.FileExistsNotEmpty(c.DatabaseFile()) {
 			return fmt.Errorf("sqlite database file %s not found", clean.LogQuote(c.DatabaseFile()))
@@ -295,7 +294,6 @@ func RestoreDatabase(backupPath, fileName string, fromStdIn, force bool) (err er
 				c.DatabaseName(),
 			)
 		}
-
 	case config.SQLite3:
 		log.Infoln("restore: dropping existing sqlite database tables")
 		tables.Drop(c.Db())

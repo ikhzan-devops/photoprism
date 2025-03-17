@@ -67,8 +67,8 @@ msgstr "Pronađeno je %{n} oznaka"
 msgid "%{n} people found"
 msgstr "Pronađeno je %{n} osoba"
 
-#: src/page/album/photos.vue:295 src/page/album/photos.vue:468
-#: src/page/photos.vue:427 src/page/photos.vue:602
+#: src/page/album/photos.vue:305 src/page/album/photos.vue:479
+#: src/page/photos.vue:427 src/page/photos.vue:606
 msgid "%{n} pictures found"
 msgstr "Pronađeno je %{n} slika"
 
@@ -560,7 +560,7 @@ msgstr "Serijski fotoaparat"
 msgid "Can't access your authenticator app or device?"
 msgstr "Ne možete pristupiti aplikaciji ili uređaju za autentifikaciju?"
 
-#: src/page/album/photos.vue:302 src/page/photos.vue:434
+#: src/page/album/photos.vue:312 src/page/photos.vue:434
 msgid "Can't load more, limit reached"
 msgstr "Nije moguće učitati više, dosegnuto je ograničenje"
 
@@ -1992,8 +1992,8 @@ msgstr "Nisu pronađeni ljudi"
 
 #: src/component/lightbox.vue:304 src/component/photo/view/cards.vue:141
 #: src/component/photo/view/list.vue:82 src/component/photo/view/mosaic.vue:68
-#: src/page/album/photos.vue:463 src/page/library/browse.vue:122
-#: src/page/photos.vue:597 src/page/places.vue:569 src/page/places.vue:666
+#: src/page/album/photos.vue:474 src/page/library/browse.vue:122
+#: src/page/photos.vue:601 src/page/places.vue:569 src/page/places.vue:666
 msgid "No pictures found"
 msgstr "Nema pronađenih slika"
 
@@ -2127,7 +2127,7 @@ msgstr "Pronađena je jedna oznaka"
 msgid "One person found"
 msgstr "Pronađena jedna osoba"
 
-#: src/page/album/photos.vue:465 src/page/photos.vue:599
+#: src/page/album/photos.vue:476 src/page/photos.vue:603
 msgid "One picture found"
 msgstr "Pronađena jedna slika"
 

@@ -67,8 +67,8 @@ msgstr "已找到 %{n} 个标签"
 msgid "%{n} people found"
 msgstr "已找到 %{n} 个人物"
 
-#: src/page/album/photos.vue:295 src/page/album/photos.vue:468
-#: src/page/photos.vue:427 src/page/photos.vue:602
+#: src/page/album/photos.vue:305 src/page/album/photos.vue:479
+#: src/page/photos.vue:427 src/page/photos.vue:606
 msgid "%{n} pictures found"
 msgstr "已找到 %{n} 张图片"
 
@@ -560,7 +560,7 @@ msgstr "相机序列号"
 msgid "Can't access your authenticator app or device?"
 msgstr "无法访问您的身份验证应用程序或设备？"
 
-#: src/page/album/photos.vue:302 src/page/photos.vue:434
+#: src/page/album/photos.vue:312 src/page/photos.vue:434
 msgid "Can't load more, limit reached"
 msgstr "无法加载更多内容，已达上限"
 
@@ -1992,8 +1992,8 @@ msgstr "找不到人物"
 
 #: src/component/lightbox.vue:304 src/component/photo/view/cards.vue:141
 #: src/component/photo/view/list.vue:82 src/component/photo/view/mosaic.vue:68
-#: src/page/album/photos.vue:463 src/page/library/browse.vue:122
-#: src/page/photos.vue:597 src/page/places.vue:569 src/page/places.vue:666
+#: src/page/album/photos.vue:474 src/page/library/browse.vue:122
+#: src/page/photos.vue:601 src/page/places.vue:569 src/page/places.vue:666
 msgid "No pictures found"
 msgstr "找不到图片"
 
@@ -2127,7 +2127,7 @@ msgstr "已找到一个标签"
 msgid "One person found"
 msgstr "已找到一个人物"
 
-#: src/page/album/photos.vue:465 src/page/photos.vue:599
+#: src/page/album/photos.vue:476 src/page/photos.vue:603
 msgid "One picture found"
 msgstr "已发现一张图片"
 

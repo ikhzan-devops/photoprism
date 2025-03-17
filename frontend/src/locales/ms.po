@@ -67,8 +67,8 @@ msgstr "%{n} label ditemui"
 msgid "%{n} people found"
 msgstr "%{n} orang ditemui"
 
-#: src/page/album/photos.vue:295 src/page/album/photos.vue:468
-#: src/page/photos.vue:427 src/page/photos.vue:602
+#: src/page/album/photos.vue:305 src/page/album/photos.vue:479
+#: src/page/photos.vue:427 src/page/photos.vue:606
 msgid "%{n} pictures found"
 msgstr "%{n} gambar ditemui"
 
@@ -560,7 +560,7 @@ msgstr "Siri Kamera"
 msgid "Can't access your authenticator app or device?"
 msgstr "Tidak dapat mengakses apl atau peranti pengesah anda?"
 
-#: src/page/album/photos.vue:302 src/page/photos.vue:434
+#: src/page/album/photos.vue:312 src/page/photos.vue:434
 msgid "Can't load more, limit reached"
 msgstr "Tidak dapat memuatkan lagi, had dicapai"
 
@@ -1992,8 +1992,8 @@ msgstr "Tiada orang ditemui"
 
 #: src/component/lightbox.vue:304 src/component/photo/view/cards.vue:141
 #: src/component/photo/view/list.vue:82 src/component/photo/view/mosaic.vue:68
-#: src/page/album/photos.vue:463 src/page/library/browse.vue:122
-#: src/page/photos.vue:597 src/page/places.vue:569 src/page/places.vue:666
+#: src/page/album/photos.vue:474 src/page/library/browse.vue:122
+#: src/page/photos.vue:601 src/page/places.vue:569 src/page/places.vue:666
 msgid "No pictures found"
 msgstr "Tiada gambar ditemui"
 
@@ -2127,7 +2127,7 @@ msgstr "Satu label ditemui"
 msgid "One person found"
 msgstr "Seorang ditemui"
 
-#: src/page/album/photos.vue:465 src/page/photos.vue:599
+#: src/page/album/photos.vue:476 src/page/photos.vue:603
 msgid "One picture found"
 msgstr "Satu gambar ditemui"
 
