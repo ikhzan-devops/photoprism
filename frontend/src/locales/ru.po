@@ -67,8 +67,8 @@ msgstr "%{n} меток найдено"
 msgid "%{n} people found"
 msgstr "найдено %{n} человек"
 
-#: src/page/album/photos.vue:295 src/page/album/photos.vue:468
-#: src/page/photos.vue:427 src/page/photos.vue:602
+#: src/page/album/photos.vue:305 src/page/album/photos.vue:479
+#: src/page/photos.vue:427 src/page/photos.vue:606
 msgid "%{n} pictures found"
 msgstr "найдено %{n} изображений"
 
@@ -560,7 +560,7 @@ msgstr "Камера"
 msgid "Can't access your authenticator app or device?"
 msgstr "Не можешь получить доступ к своему приложению или устройству аутентификатора?"
 
-#: src/page/album/photos.vue:302 src/page/photos.vue:434
+#: src/page/album/photos.vue:312 src/page/photos.vue:434
 msgid "Can't load more, limit reached"
 msgstr "Не могу загрузить больше, достигнут лимит"
 
@@ -1992,8 +1992,8 @@ msgstr "Люди не найдены"
 
 #: src/component/lightbox.vue:304 src/component/photo/view/cards.vue:141
 #: src/component/photo/view/list.vue:82 src/component/photo/view/mosaic.vue:68
-#: src/page/album/photos.vue:463 src/page/library/browse.vue:122
-#: src/page/photos.vue:597 src/page/places.vue:569 src/page/places.vue:666
+#: src/page/album/photos.vue:474 src/page/library/browse.vue:122
+#: src/page/photos.vue:601 src/page/places.vue:569 src/page/places.vue:666
 msgid "No pictures found"
 msgstr "Фото не найдены"
 
@@ -2127,7 +2127,7 @@ msgstr "Найдена одна метка"
 msgid "One person found"
 msgstr "Найден один человек"
 
-#: src/page/album/photos.vue:465 src/page/photos.vue:599
+#: src/page/album/photos.vue:476 src/page/photos.vue:603
 msgid "One picture found"
 msgstr "Найдена одна фотография"
 
