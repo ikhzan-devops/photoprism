@@ -126,6 +126,7 @@ export default {
       canLike: this.$config.allow("photos", "manage") && this.$config.feature("favorites"),
       canDownload: this.$config.allow("photos", "download") && this.$config.feature("download"),
       canFullscreen: document.fullscreenEnabled && (!this.$isMobile || this.$config.featExperimental()),
+      wasFullscreen: this.isFullscreen(),
       isZoomable: true,
       mobileBreakpoint: 600, // Minimum viewport width for large screens.
       featExperimental: this.$config.featExperimental(), // Enables features that may be incomplete or unstable.
@@ -213,6 +214,7 @@ export default {
       this.$view.enter(this, this.$refs?.content);
       this.busy = true;
       this.visible = true;
+      this.wasFullscreen = this.isFullscreen();
 
       // Publish init event.
       this.$event.publish("lightbox.init");
@@ -348,6 +350,7 @@ export default {
             this.hideDialog();
           });
       });
+
       this.showDialog();
 
       return Promise.resolve();
@@ -1242,7 +1245,11 @@ export default {
     },
     // Removes any event listeners before the lightbox is fully closed.
     onClose() {
-      this.closeFullscreen();
+      // Exit full screen mode only if it was not previously enabled.
+      if (!this.wasFullscreen) {
+        this.exitFullscreen();
+      }
+
       this.clearTimeouts();
       this.removeEventListeners();
     },
@@ -1423,7 +1430,7 @@ export default {
     isFullscreen() {
       return !!document.fullscreenElement || !!document.mozFullScreenElement;
     },
-    closeFullscreen() {
+    exitFullscreen() {
       if (this.isFullscreen()) {
         document
           .exitFullscreen()
