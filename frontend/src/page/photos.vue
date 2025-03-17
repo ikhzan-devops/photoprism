@@ -570,7 +570,9 @@ export default {
     updateQuery(props) {
       this.updateFilter(props);
 
-      if (this.loading) return;
+      if (this.loading) {
+        return;
+      }
 
       const query = {
         view: this.settings.view,
@@ -608,7 +610,9 @@ export default {
     refresh(props) {
       this.updateSettings(props);
 
-      if (this.loading) return;
+      if (this.loading) {
+        return;
+      }
 
       this.loading = true;
       this.page = 0;
@@ -616,7 +620,7 @@ export default {
       this.complete = false;
       this.scrollDisabled = false;
 
-      this.loadMore();
+      this.loadMore(true);
     },
     search() {
       /**

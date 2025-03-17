@@ -105,12 +105,11 @@ export default {
     const uid = this.$route.params.album;
     const query = this.$route.query;
     const routeName = this.$route.name;
-    const order = query["order"] ? query["order"] : "oldest";
     const camera = query["camera"] ? parseInt(query["camera"]) : 0;
     const q = query["q"] ? query["q"] : "";
     const country = query["country"] ? query["country"] : "";
     const view = this.getViewType();
-    const filter = { country: country, camera: camera, order: order, q: q };
+    const filter = { country: country, camera: camera, q: q };
     const settings = { view: view };
     const batchSize = Photo.batchSize();
 
@@ -136,6 +135,7 @@ export default {
       settings: settings,
       filter: filter,
       lastFilter: {},
+      lastParams: {},
       routeName: routeName,
       collectionRoute: this.$route.meta?.collectionRoute ? this.$route.meta.collectionRoute : "albums",
       loading: true,
@@ -185,7 +185,7 @@ export default {
       const routeChanged = this.routeName !== this.$route.name;
 
       if (routeChanged) {
-        this.lastFilter = {};
+        this.resetLastFilter();
       }
 
       this.routeName = this.$route.name;
@@ -230,6 +230,9 @@ export default {
     this.$view.leave(this);
   },
   methods: {
+    resetLastFilter() {
+      this.lastFilter = {};
+    },
     onCtrl(ev) {
       if (!ev || !(ev instanceof KeyboardEvent) || !ev.ctrlKey || !this.$view.isActive(this)) {
         return;
@@ -262,6 +265,10 @@ export default {
       }
 
       return "cards";
+    },
+    getSortOrder() {
+      const query = this.$route.query;
+      return query["order"] ? query["order"] : this.model?.Order;
     },
     openDate(index) {
       if (!this.canEdit) {
@@ -348,6 +355,7 @@ export default {
         offset: offset,
         s: this.uid,
         merged: true,
+        order: this.getSortOrder(),
       };
 
       Object.assign(params, this.lastFilter);
@@ -355,6 +363,8 @@ export default {
       if (this.staticFilter) {
         Object.assign(params, this.staticFilter);
       }
+
+      this.lastParams = params;
 
       Photo.search(params)
         .then((response) => {
@@ -436,10 +446,6 @@ export default {
     updateQuery(props) {
       this.updateFilter(props);
 
-      if (this.model.Order !== this.filter.order) {
-        this.model.Order = this.filter.order;
-      }
-
       if (this.loading) {
         return;
       }
@@ -468,6 +474,7 @@ export default {
         offset: this.offset,
         s: this.uid,
         merged: true,
+        order: this.getSortOrder(),
       };
 
       Object.assign(params, this.filter);
@@ -481,7 +488,9 @@ export default {
     refresh(props) {
       this.updateSettings(props);
 
-      if (this.loading) return;
+      if (this.loading) {
+        return;
+      }
 
       this.loading = true;
       this.page = 0;
@@ -489,7 +498,7 @@ export default {
       this.complete = false;
       this.scrollDisabled = false;
 
-      this.loadMore();
+      this.loadMore(true);
     },
     search() {
       /**
@@ -518,6 +527,8 @@ export default {
       this.complete = false;
 
       const params = this.searchParams();
+
+      this.lastParams = params;
 
       Photo.search(params)
         .then((response) => {
@@ -564,7 +575,6 @@ export default {
         .then((m) => {
           this.model = m;
 
-          this.filter.order = m.Order;
           window.document.title = `${this.$config.get("siteTitle")}: ${this.model.Title}`;
 
           return Promise.resolve(this.model);
@@ -575,7 +585,9 @@ export default {
         });
     },
     onAlbumsUpdated(ev, data) {
-      if (!this.listen) return;
+      if (!this.listen) {
+        return;
+      }
 
       if (!data || !data.entities || !Array.isArray(data.entities)) {
         return;
@@ -597,10 +609,8 @@ export default {
           this.complete = false;
           this.scrollDisabled = false;
 
-          if (this.filter.order !== this.model.Order) {
-            this.filter.order = this.model.Order;
+          if (this.lastParams?.order !== this.model?.Order) {
             this.updateQuery();
-          } else {
             this.loadMore(true);
           }
 
