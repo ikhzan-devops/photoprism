@@ -5,6 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
+	"github.com/photoprism/photoprism/internal/auth/acl"
 	"github.com/photoprism/photoprism/pkg/fs"
 	"github.com/photoprism/photoprism/pkg/fs/duf"
 )
@@ -59,36 +60,52 @@ func TestConfig_Quota(t *testing.T) {
 	c.options.UsersQuota = 0
 }
 
-func TestConfig_FilesQuotaExceeded(t *testing.T) {
+func TestConfig_FilesQuotaReached(t *testing.T) {
 	c := TestConfig()
 
 	FlushUsageCache()
-	assert.False(t, c.FilesQuotaExceeded())
+	assert.False(t, c.FilesQuotaReached())
+	assert.False(t, c.FilesQuotaExceeded(-1))
+	assert.False(t, c.FilesQuotaExceeded(99))
+	assert.False(t, c.FilesQuotaExceeded(99))
 
 	c.options.FilesQuota = uint64(1)
 	FlushUsageCache()
-	assert.True(t, c.FilesQuotaExceeded())
+	assert.True(t, c.FilesQuotaReached())
+	assert.True(t, c.FilesQuotaExceeded(-1))
+	assert.True(t, c.FilesQuotaExceeded(99))
+	assert.True(t, c.FilesQuotaExceeded(100))
 
 	c.options.FilesQuota = uint64(5)
 	FlushUsageCache()
-	assert.False(t, c.FilesQuotaExceeded())
+	assert.False(t, c.FilesQuotaReached())
 
 	c.options.FilesQuota = uint64(0)
 }
 
-func TestConfig_UsersQuotaExceeded(t *testing.T) {
+func TestConfig_UsersQuotaReached(t *testing.T) {
 	c := TestConfig()
 
 	FlushUsageCache()
-	assert.False(t, c.UsersQuotaExceeded())
+	assert.False(t, c.UsersQuotaReached(acl.RoleUser))
 
 	c.options.UsersQuota = 1
 	FlushUsageCache()
-	assert.True(t, c.UsersQuotaExceeded())
+	assert.True(t, c.UsersQuotaExceeded(99, acl.RoleAdmin))
+	assert.True(t, c.UsersQuotaExceeded(100, acl.RoleAdmin))
+	assert.True(t, c.UsersQuotaReached(acl.RoleAdmin))
+	assert.True(t, c.UsersQuotaReached(acl.RoleUser))
+	assert.False(t, c.UsersQuotaReached(acl.RoleNone))
+	assert.False(t, c.UsersQuotaReached(acl.RoleGuest))
+	assert.False(t, c.UsersQuotaReached(acl.RoleVisitor))
 
 	c.options.UsersQuota = 100000
 	FlushUsageCache()
-	assert.False(t, c.UsersQuotaExceeded())
+	assert.False(t, c.UsersQuotaReached(acl.RoleAdmin))
+	assert.False(t, c.UsersQuotaReached(acl.RoleUser))
+	assert.False(t, c.UsersQuotaReached(acl.RoleNone))
+	assert.False(t, c.UsersQuotaReached(acl.RoleGuest))
+	assert.False(t, c.UsersQuotaReached(acl.RoleVisitor))
 
 	c.options.UsersQuota = 0
 }

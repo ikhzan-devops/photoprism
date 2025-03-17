@@ -95,7 +95,7 @@ func WebDAV(dir string, router *gin.RouterGroup, conf *config.Config) {
 		// is not enough free storage to upload new files.
 		switch c.Request.Method {
 		case MethodPut, MethodPost, MethodPatch, MethodCopy:
-			if conf.FilesQuotaExceeded() {
+			if conf.FilesQuotaReached() {
 				c.AbortWithStatus(http.StatusInsufficientStorage)
 				return
 			}
