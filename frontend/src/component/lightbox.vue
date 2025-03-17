@@ -28,7 +28,7 @@
         :class="{
           'sidebar-visible': sidebarVisible,
           'slideshow-active': slideshow.active,
-          'is-fullscreen': isFullscreen,
+          'is-fullscreen': isFullscreen(),
           'is-zoomable': isZoomable,
           'is-favorite': model.Favorite,
           'is-playable': model.Playable,
@@ -125,8 +125,7 @@ export default {
       canEdit: this.$config.allow("photos", "update") && this.$config.feature("edit"),
       canLike: this.$config.allow("photos", "manage") && this.$config.feature("favorites"),
       canDownload: this.$config.allow("photos", "download") && this.$config.feature("download"),
-      canFullscreen: !this.$isMobile || this.$config.featExperimental(),
-      isFullscreen: !window.screenTop && !window.screenY,
+      canFullscreen: document.fullscreenEnabled && (!this.$isMobile || this.$config.featExperimental()),
       isZoomable: true,
       mobileBreakpoint: 600, // Minimum viewport width for large screens.
       featExperimental: this.$config.featExperimental(), // Enables features that may be incomplete or unstable.
@@ -1243,6 +1242,7 @@ export default {
     },
     // Removes any event listeners before the lightbox is fully closed.
     onClose() {
+      this.closeFullscreen();
       this.clearTimeouts();
       this.removeEventListeners();
     },
@@ -1420,18 +1420,29 @@ export default {
         this.toggleControls();
       }
     },
-    toggleFullscreen() {
-      if (document.fullscreenElement) {
+    isFullscreen() {
+      return !!document.fullscreenElement || !!document.mozFullScreenElement;
+    },
+    closeFullscreen() {
+      if (this.isFullscreen()) {
         document
           .exitFullscreen()
           .then(() => {
-            this.isFullscreen = false;
+            this.resize(true);
+          })
+          .catch((err) => console.error(err));
+      }
+    },
+    toggleFullscreen() {
+      if (this.isFullscreen()) {
+        document
+          .exitFullscreen()
+          .then(() => {
             this.resize(true);
           })
           .catch((err) => console.error(err));
       } else {
         document.documentElement.requestFullscreen({ navigationUI: "hide" }).then(() => {
-          this.isFullscreen = true;
           this.resize(true);
         });
       }
