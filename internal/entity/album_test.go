@@ -186,6 +186,15 @@ func TestNewAlbum(t *testing.T) {
 	})
 }
 
+func TestNewUserAlbum(t *testing.T) {
+	t.Run("Success", func(t *testing.T) {
+		album := NewUserAlbum("Christmas 2024", AlbumManual, "", "uqxqg7i1kperxvu7")
+		assert.Equal(t, "Christmas 2024", album.AlbumTitle)
+		assert.Equal(t, "christmas-2024", album.AlbumSlug)
+		assert.Equal(t, "oldest", album.AlbumOrder)
+	})
+}
+
 func TestNewFolderAlbum(t *testing.T) {
 	t.Run("Success", func(t *testing.T) {
 		album := NewFolderAlbum("Dogs", "dogs", "label:dog")
