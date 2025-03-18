@@ -93,7 +93,7 @@ func (c *Config) DatabaseSsl() bool {
 	switch c.DatabaseDriver() {
 	case MySQL:
 		// see https://mariadb.org/mission-impossible-zero-configuration-ssl/
-		return c.IsDatabaseVersion("v11.3")
+		return c.IsDatabaseVersion("v11.4")
 	default:
 		return false
 	}
