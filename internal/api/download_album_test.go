@@ -4,8 +4,24 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/photoprism/photoprism/internal/config/customize"
 )
+
+func TestAlbumDownloadName(t *testing.T) {
+	t.Run("File", func(t *testing.T) {
+		req, err := http.NewRequest(http.MethodGet, "/api/v1/albums?name=file", nil)
+		assert.NoError(t, err)
+
+		c := &gin.Context{
+			Request: req,
+		}
+
+		assert.Equal(t, customize.DownloadNameFile, AlbumDownloadName(c))
+	})
+}
 
 func TestDownloadAlbum(t *testing.T) {
 	t.Run("DownloadNotExistingAlbum", func(t *testing.T) {

@@ -612,6 +612,8 @@ export default {
           if (this.lastParams?.order !== this.model?.Order) {
             this.updateQuery();
             this.loadMore(true);
+          } else {
+            this.loadMore(true);
           }
 
           return;
