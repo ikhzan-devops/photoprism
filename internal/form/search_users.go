@@ -6,6 +6,7 @@ type SearchUsers struct {
 	User    string `form:"user"`
 	Name    string `form:"name"`
 	Email   string `form:"email"`
+	All     bool   `form:"all"`
 	Deleted bool   `form:"deleted"`
 	Order   string `form:"order" serialize:"-"`
 	Count   int    `form:"count" binding:"required" serialize:"-"`

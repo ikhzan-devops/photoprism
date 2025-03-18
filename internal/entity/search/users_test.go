@@ -3,10 +3,10 @@ package search
 import (
 	"testing"
 
-	"github.com/photoprism/photoprism/internal/entity/sortby"
-
 	"github.com/stretchr/testify/assert"
 
+	"github.com/photoprism/photoprism/internal/entity"
+	"github.com/photoprism/photoprism/internal/entity/sortby"
 	"github.com/photoprism/photoprism/internal/form"
 )
 
@@ -15,24 +15,85 @@ func TestUsers(t *testing.T) {
 		if results, err := Users(form.SearchUsers{}); err != nil {
 			t.Fatal(err)
 		} else {
+			//t.Logf("users: %#v", results)
 			assert.LessOrEqual(t, 2, len(results))
-			//t.Logf("sessions: %#v", results)
+		}
+	})
+	t.Run("All", func(t *testing.T) {
+		var all entity.Users
+		var err error
+
+		if all, err = Users(form.SearchUsers{All: true}); err != nil {
+			t.Fatal(err)
+		} else if len(all) < 1 {
+			t.Errorf("expected at least one result: #%v", all)
+		} else {
+			result := all[0]
+			assert.Equal(t, -2, result.ID)
+		}
+
+		if results, filterErr := Users(form.SearchUsers{Query: "all"}); filterErr != nil {
+			t.Fatal(filterErr)
+		} else if len(results) != len(all) {
+			t.Errorf("expected %d results: #%v", len(all), results)
+		} else {
+			result := results[0]
+			assert.Equal(t, -2, result.ID)
+		}
+	})
+	t.Run("Deleted", func(t *testing.T) {
+		if results, err := Users(form.SearchUsers{Deleted: true}); err != nil {
+			t.Fatal(err)
+		} else if len(results) < 1 {
+			t.Errorf("expected at least one result: #%v", results)
+		} else {
+			result := results[0]
+			assert.Equal(t, 10000008, result.ID)
+		}
+	})
+	t.Run("DeletedQuery", func(t *testing.T) {
+		if results, err := Users(form.SearchUsers{Query: "deleted"}); err != nil {
+			t.Fatal(err)
+		} else if len(results) < 1 {
+			t.Errorf("expected at least one result: #%v", results)
+		} else {
+			result := results[0]
+			assert.Equal(t, 10000008, result.ID)
+		}
+	})
+	t.Run("DeletedFlag", func(t *testing.T) {
+		if results, err := Users(form.SearchUsers{Deleted: true}); err != nil {
+			t.Fatal(err)
+		} else if len(results) < 1 {
+			t.Errorf("expected at least one result: #%v", results)
+		} else {
+			result := results[0]
+			assert.Equal(t, 10000008, result.ID)
+		}
+
+		if results, err := Users(form.SearchUsers{Query: "deleted:true"}); err != nil {
+			t.Fatal(err)
+		} else if len(results) < 1 {
+			t.Errorf("expected at least one result: #%v", results)
+		} else {
+			result := results[0]
+			assert.Equal(t, 10000008, result.ID)
 		}
 	})
 	t.Run("Limit", func(t *testing.T) {
 		if results, err := Users(form.SearchUsers{Count: 1}); err != nil {
 			t.Fatal(err)
 		} else {
+			//t.Logf("users: %#v", results)
 			assert.LessOrEqual(t, 1, len(results))
-			//t.Logf("sessions: %#v", results)
 		}
 	})
 	t.Run("Offset", func(t *testing.T) {
 		if results, err := Users(form.SearchUsers{Offset: 1}); err != nil {
 			t.Fatal(err)
 		} else {
+			//t.Logf("users: %#v", results)
 			assert.LessOrEqual(t, 2, len(results))
-			//t.Logf("sessions: %#v", results)
 		}
 	})
 	t.Run("SearchAlice", func(t *testing.T) {

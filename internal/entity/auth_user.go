@@ -1324,6 +1324,11 @@ func (m *User) SaveForm(frm form.User, u *User) error {
 	if u == nil {
 		// Do nothing.
 	} else if u.IsAdmin() {
+		// Restore account.
+		if frm.DeletedAt == nil {
+			m.DeletedAt = nil
+		}
+
 		// Prevent admins from locking themselves out.
 		if u.Equal(m) {
 			m.SetRole(acl.RoleAdmin.String())
