@@ -36,7 +36,13 @@
         class="ms-1"
       >
         <v-btn value="cards" icon="mdi-view-column" class="ps-1 action-view-cards" @click="setView('cards')"></v-btn>
-        <v-btn v-if="listView" value="list" icon="mdi-view-list" class="action-view-list" @click="setView('list')"></v-btn>
+        <v-btn
+          v-if="listView"
+          value="list"
+          icon="mdi-view-list"
+          class="action-view-list"
+          @click="setView('list')"
+        ></v-btn>
         <v-btn value="mosaic" icon="mdi-view-comfy" class="pe-1 action-view-mosaic" @click="setView('mosaic')"></v-btn>
       </v-btn-toggle>
 
@@ -119,7 +125,8 @@ export default {
     return {
       expanded: false,
       canUpload: this.$config.allow("files", "upload") && features.upload,
-      canDownload: this.$config.allow("albums", "download") && features.download && !settings.albums.download.disabled,
+      canDownload:
+        this.$config.allow("albums", "download") && features.download && !settings?.albums?.download?.disabled,
       canShare: this.$config.allow("albums", "share") && features.share,
       canManage: this.$config.allow("albums", "manage"),
       experimental: this.$config.get("experimental"),
