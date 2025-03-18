@@ -145,7 +145,7 @@ test.meta("testID", "sharing-002").meta({ type: "short", mode: "auth" })(
     await toolbar.checkToolbarActionAvailability("edit", false);
     await toolbar.checkToolbarActionAvailability("share", false);
     await toolbar.checkToolbarActionAvailability("upload", false);
-    await toolbar.checkToolbarActionAvailability("reload", true);
+    await toolbar.checkToolbarActionAvailability("refresh", true);
     await toolbar.checkToolbarActionAvailability("download", true);
 
     await photo.triggerHoverAction("nth", 0, "select");

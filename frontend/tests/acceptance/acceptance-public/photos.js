@@ -78,7 +78,7 @@ test.meta("testID", "photos-003").meta({ type: "short", mode: "public" })(
     if (t.browser.platform === "mobile") {
       await t.eval(() => location.reload());
     } else {
-      await toolbar.triggerToolbarAction("reload");
+      await toolbar.triggerToolbarAction("refresh");
     }
 
     await photo.checkPhotoVisibility(FirstPhotoUid, true);
@@ -102,7 +102,7 @@ test.meta("testID", "photos-003").meta({ type: "short", mode: "public" })(
     if (t.browser.platform === "mobile") {
       await t.eval(() => location.reload());
     } else {
-      await toolbar.triggerToolbarAction("reload");
+      await toolbar.triggerToolbarAction("refresh");
     }
 
     await photo.checkPhotoVisibility(FirstPhotoUid, false);
@@ -159,7 +159,7 @@ test.meta("testID", "photos-004").meta({ type: "short", mode: "public" })(
     if (t.browser.platform === "mobile") {
       await t.eval(() => location.reload());
     } else {
-      await toolbar.triggerToolbarAction("reload");
+      await toolbar.triggerToolbarAction("refresh");
     }
 
     await photo.checkPhotoVisibility(FirstPhotoUid, false);
@@ -171,7 +171,7 @@ test.meta("testID", "photos-004").meta({ type: "short", mode: "public" })(
 test.meta("testID", "photos-005").meta({ type: "short", mode: "public" })("Common: Edit photo/video", async (t) => {
   await toolbar.setFilter("view", "Cards");
   const FirstPhotoUid = await photo.getNthPhotoUid("image", 0);
-  await t.click(page.cardTitle.withAttribute("data-uid", FirstPhotoUid));
+  await page.clickCardTitleOfUID(FirstPhotoUid);
 
   await t.expect(photoedit.latitude.visible).ok();
 
@@ -217,8 +217,8 @@ test.meta("testID", "photos-005").meta({ type: "short", mode: "public" })("Commo
 
   await t
     .typeText(photoedit.title, "Not saved photo title", { replace: true })
-    .click(photoedit.detailsClose)
-    .click(Selector("button.action-title-edit").withAttribute("data-uid", FirstPhotoUid));
+    .click(photoedit.detailsClose);
+  await page.clickCardTitleOfUID(FirstPhotoUid);
 
   await t.expect(photoedit.title.value).eql(FirstPhotoTitle);
 
@@ -249,11 +249,11 @@ test.meta("testID", "photos-005").meta({ type: "short", mode: "public" })("Commo
   if (t.browser.platform === "mobile") {
     await t.eval(() => location.reload());
   } else {
-    await toolbar.triggerToolbarAction("reload");
+    await toolbar.triggerToolbarAction("refresh");
   }
   await toolbar.search("uid:" + FirstPhotoUid);
 
-  await t.expect(page.cardTitle.withAttribute("data-uid", FirstPhotoUid).innerText).eql("New Photo Title");
+  await t.expect(Selector('div[data-uid="' +FirstPhotoUid +'"] button.action-title-edit').innerText).eql("New Photo Title");
 
   await photo.triggerHoverAction("uid", FirstPhotoUid, "select");
   await contextmenu.triggerContextMenuAction("edit", "");
@@ -379,11 +379,13 @@ test.meta("testID", "photos-007").meta({ mode: "public" })("Common: Mark photos/
   await photoedit.turnSwitchOff("scan");
   await photoedit.turnSwitchOff("panorama");
   await t.click(photoedit.dialogClose);
-  await contextmenu.clearSelection();
+  await t.wait(9000);
+
+    await contextmenu.clearSelection();
   if (t.browser.platform === "mobile") {
     await t.eval(() => location.reload());
   } else {
-    await toolbar.triggerToolbarAction("reload");
+    await toolbar.triggerToolbarAction("refresh");
   }
 
   await photo.checkPhotoVisibility(FirstPhotoUid, false);
