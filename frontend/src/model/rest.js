@@ -91,6 +91,10 @@ export class Rest extends Model {
     return $api.delete(this.getEntityResource()).then(() => Promise.resolve(this));
   }
 
+  restore() {
+    return $api.put(this.getEntityResource(), { DeletedAt: null }).then(() => Promise.resolve(this));
+  }
+
   getEditForm() {
     return $api.options(this.getEntityResource()).then((resp) => Promise.resolve(new Form(resp.data)));
   }

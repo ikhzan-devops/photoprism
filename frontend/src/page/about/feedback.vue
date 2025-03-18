@@ -26,50 +26,48 @@
         }}
         {{ $gettext(`We do our best to respond within five business days or less.`) }}
       </p>
-      <p class="mt-6 text-center">
-        <img src="https://cdn.photoprism.app/thank-you/colorful.png" width="100%" alt="THANK YOU" />
-      </p>
     </div>
     <v-form v-else ref="form" v-model="valid" autocomplete="off" class="pa-4" validate-on="invalid-input">
       <v-row dense>
         <v-col cols="12">
           <v-select
             v-model="form.Category"
-            validate-on="invalid-input"
-            :disabled="busy"
+            :label="$gettext('Category')"
+            :rules="rules.text(true, 1, 32, $gettext('Category'))"
             :items="options.FeedbackCategories()"
+            :disabled="busy"
+            validate-on="invalid-input"
             item-title="text"
             item-value="value"
-            :label="$gettext('Category')"
             color="surface-variant"
             hide-details
             autocomplete="off"
             class="input-category"
-            :rules="[(v) => !!v || $gettext('Required')]"
           ></v-select>
         </v-col>
 
         <v-col cols="12">
           <v-textarea
             v-model="form.Message"
+            :rules="rules.text(true, 1, 1000, $gettext('Message'))"
+            :placeholder="$gettext('How can we help?')"
             validate-on="invalid-input"
             auto-grow
             hide-details
             autocomplete="off"
             rows="10"
-            :rules="[(v) => !!v || $gettext('Required')]"
-            :label="$gettext('How can we help?')"
           ></v-textarea>
         </v-col>
 
         <v-col cols="12" sm="6">
           <v-text-field
             v-model="form.UserName"
-            validate-on="invalid-input"
+            :rules="rules.text(true, 1, 100, $gettext('Name'))"
+            :label="$gettext('Name')"
+            validate-on="blur"
             hide-details
             autocomplete="off"
             color="surface-variant"
-            :label="$gettext('Name')"
             type="text"
           >
           </v-text-field>
@@ -78,24 +76,20 @@
         <v-col cols="12" sm="6">
           <v-text-field
             v-model="form.UserEmail"
+            :label="$gettext('E-Mail')"
+            :rules="rules.email(true)"
+            validate-on="blur"
             hide-details
             autocapitalize="none"
             color="surface-variant"
-            :rules="[(v) => !!v || $gettext('Required')]"
-            :label="$gettext('E-Mail')"
             type="email"
           >
           </v-text-field>
         </v-col>
 
         <v-col cols="12" class="d-flex grow">
-          <v-btn
-            color="highlight"
-            class="ml-0"
-            :disabled="!form.Category || !form.Message || !form.UserEmail"
-            @click.stop="send"
-          >
-            {{ $gettext(`Send`) }}
+          <v-btn :disabled="!valid" color="highlight" class="ml-0" @click.stop="send">
+            {{ $gettext(`Submit`) }}
             <v-icon end>mdi-send</v-icon>
           </v-btn>
         </v-col>
@@ -108,6 +102,8 @@
 <script>
 import * as options from "options/options";
 import $api from "common/api";
+import { rules } from "common/form";
+
 import PAboutFooter from "component/about/footer.vue";
 
 export default {
@@ -117,6 +113,7 @@ export default {
   },
   data() {
     return {
+      rules,
       sent: false,
       busy: false,
       valid: false,

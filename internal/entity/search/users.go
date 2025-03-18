@@ -10,21 +10,36 @@ import (
 	"github.com/photoprism/photoprism/pkg/txt"
 )
 
-// Users finds registered users.
+// Users finds user accounts based on the specified search parameters.
 func Users(frm form.SearchUsers) (result entity.Users, err error) {
 	result = entity.Users{}
-	stmt := Db()
 
-	if frm.Deleted {
-		stmt.Unscoped()
+	// Parse query string and filter.
+	if err = frm.ParseQueryString(); err != nil {
+		log.Debugf("users: %s", err)
+		return result, ErrBadRequest
 	}
+
+	// Set search filters based on search terms.
+	if terms := txt.SearchTerms(frm.Query); frm.Query != "" && len(terms) > 0 {
+		switch {
+		case terms["all"]:
+			frm.Query = strings.ReplaceAll(frm.Query, "all", "")
+			frm.All = true
+		case terms["deleted"]:
+			frm.Query = strings.ReplaceAll(frm.Query, "deleted", "")
+			frm.Deleted = true
+		}
+	}
+
+	stmt := UnscopedDb()
 
 	search := strings.TrimSpace(frm.Query)
 	sortOrder := frm.Order
 	limit := frm.Count
 	offset := frm.Offset
 
-	if search == "all" {
+	if frm.All {
 		// Don't filter.
 	} else if id := txt.Int(search); id != 0 {
 		stmt = stmt.Where("id = ?", id)
@@ -34,6 +49,13 @@ func Users(frm form.SearchUsers) (result entity.Users, err error) {
 		stmt = stmt.Where("user_name LIKE ? OR user_email LIKE ? OR display_name LIKE ?", search+"%", search+"%", search+"%")
 	} else {
 		stmt = stmt.Where("id > 0")
+	}
+
+	// Find deleted user accounts?
+	if frm.Deleted {
+		stmt = stmt.Where("deleted_at IS NOT NULL")
+	} else if !frm.All {
+		stmt = stmt.Where("deleted_at IS NULL")
 	}
 
 	switch sortOrder {
