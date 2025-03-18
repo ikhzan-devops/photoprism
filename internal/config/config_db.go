@@ -19,7 +19,6 @@ import (
 	"github.com/photoprism/photoprism/internal/entity/migrate"
 	"github.com/photoprism/photoprism/internal/mutex"
 	"github.com/photoprism/photoprism/pkg/clean"
-	"github.com/photoprism/photoprism/pkg/txt"
 )
 
 // SQL Databases.
@@ -390,10 +389,10 @@ func (c *Config) checkDb(db *gorm.DB) error {
 
 		var res Res
 
-		err := db.Raw("SHOW VARIABLES LIKE 'innodb_version'").Scan(&res).Error
+		err := db.Raw("SELECT VERSION() AS Value").Scan(&res).Error
 
 		if err != nil {
-			err = db.Raw("SELECT VERSION() AS Value").Scan(&res).Error
+			err = db.Raw("SHOW VARIABLES LIKE 'innodb_version'").Scan(&res).Error
 		}
 
 		// Version query not supported.
@@ -402,14 +401,14 @@ func (c *Config) checkDb(db *gorm.DB) error {
 			return nil
 		}
 
-		if v := strings.Split(res.Value, "."); len(v) < 3 {
+		c.dbVersion = clean.Version(res.Value)
+
+		if c.dbVersion == "" {
 			log.Warnf("config: unknown database server version")
-		} else if major := txt.UInt(v[0]); major < 10 {
-			return fmt.Errorf("config: MySQL %s is not supported, see https://docs.photoprism.app/getting-started/#databases", res.Value)
-		} else if sub := txt.UInt(v[1]); sub < 5 || sub == 5 && txt.UInt(v[2]) < 12 {
-			return fmt.Errorf("config: MariaDB %s is not supported, see https://docs.photoprism.app/getting-started/#databases", res.Value)
-		} else {
-			c.dbVersion = fmt.Sprintf("v%d.%d", major, sub)
+		} else if !c.IsDatabaseVersion("v10.0.0") {
+			return fmt.Errorf("config: MySQL %s is not supported, see https://docs.photoprism.app/getting-started/#databases", c.dbVersion)
+		} else if !c.IsDatabaseVersion("v10.5.12") {
+			return fmt.Errorf("config: MariaDB %s is not supported, see https://docs.photoprism.app/getting-started/#databases", c.dbVersion)
 		}
 	case SQLite3:
 		type Res struct {
@@ -426,10 +425,10 @@ func (c *Config) checkDb(db *gorm.DB) error {
 			return nil
 		}
 
-		if v := strings.Split(res.Value, "."); len(v) < 3 {
+		c.dbVersion = clean.Version(res.Value)
+
+		if c.dbVersion == "" {
 			log.Warnf("config: unknown database server version")
-		} else {
-			c.dbVersion = fmt.Sprintf("v%d.%d", txt.UInt(v[0]), txt.UInt(v[1]))
 		}
 	}
 
