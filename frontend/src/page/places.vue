@@ -63,6 +63,7 @@
 <script>
 import maplibregl from "maplibre-gl";
 import $api from "common/api";
+import $fullscreen from "common/fullscreen";
 import * as sky from "common/sky";
 import Thumb from "model/thumb";
 import PPagePhotos from "page/photos.vue";
@@ -168,6 +169,10 @@ export default {
       .catch((err) => {
         this.mapError = err;
       });
+  },
+  beforeUnmount() {
+    // Exit fullscreen mode if enabled, has no effect otherwise.
+    $fullscreen.exit();
   },
   unmounted() {
     this.$view.leave(this);

@@ -98,6 +98,7 @@ import PhotoSwipe from "photoswipe";
 import Lightbox from "photoswipe/lightbox";
 import Captions from "common/captions";
 import $api from "common/api";
+import $fullscreen from "common/fullscreen";
 import Thumb from "model/thumb";
 import { Photo } from "model/photo";
 import * as media from "common/media";
@@ -125,8 +126,8 @@ export default {
       canEdit: this.$config.allow("photos", "update") && this.$config.feature("edit"),
       canLike: this.$config.allow("photos", "manage") && this.$config.feature("favorites"),
       canDownload: this.$config.allow("photos", "download") && this.$config.feature("download"),
-      canFullscreen: document.fullscreenEnabled && (!this.$isMobile || this.$config.featExperimental()),
-      wasFullscreen: this.isFullscreen(),
+      canFullscreen: $fullscreen.isSupported() && (!this.$isMobile || this.$config.featExperimental()), // see https://developer.mozilla.org/en-US/docs/Web/API/Document/fullscreenEnabled
+      wasFullscreen: $fullscreen.isEnabled(),
       isZoomable: true,
       mobileBreakpoint: 600, // Minimum viewport width for large screens.
       featExperimental: this.$config.featExperimental(), // Enables features that may be incomplete or unstable.
@@ -173,11 +174,20 @@ export default {
     this.subscriptions["lightbox.close"] = this.$event.subscribe("lightbox.close", this.onClose.bind(this));
   },
   beforeUnmount() {
+    // Exit fullscreen mode if enabled, has no effect otherwise.
+    $fullscreen.exit();
+
+    // Remove timeouts.
     this.clearTimeouts();
     this.removeEventListeners();
+
+    // Pause slideshow and videos.
     this.pauseLightbox();
+
+    // Destroy PhotoSwipe.
     this.destroyLightbox();
 
+    // Remove event listeners.
     for (let i = 0; i < this.subscriptions.length; i++) {
       this.$event.unsubscribe(this.subscriptions[i]);
     }
@@ -214,7 +224,7 @@ export default {
       this.$view.enter(this, this.$refs?.content);
       this.busy = true;
       this.visible = true;
-      this.wasFullscreen = this.isFullscreen();
+      this.wasFullscreen = $fullscreen.isEnabled();
 
       // Publish init event.
       this.$event.publish("lightbox.init");
@@ -1427,32 +1437,33 @@ export default {
         this.toggleControls();
       }
     },
-    isFullscreen() {
-      return !!document.fullscreenElement || !!document.mozFullScreenElement;
-    },
-    exitFullscreen() {
-      if (this.isFullscreen()) {
-        document
-          .exitFullscreen()
-          .then(() => {
-            this.resize(true);
-          })
-          .catch((err) => console.error(err));
-      }
-    },
+    // Toggles fullscreen mode.
     toggleFullscreen() {
-      if (this.isFullscreen()) {
-        document
-          .exitFullscreen()
-          .then(() => {
-            this.resize(true);
-          })
-          .catch((err) => console.error(err));
+      if ($fullscreen.isEnabled()) {
+        this.exitFullscreen();
       } else {
-        document.documentElement.requestFullscreen({ navigationUI: "hide" }).then(() => {
-          this.resize(true);
-        });
+        this.requestFullscreen();
       }
+    },
+    // Returns true if fullscreen mode is enabled.
+    isFullscreen() {
+      // see https://developer.mozilla.org/en-US/docs/Web/API/Document/fullscreenElement
+      return $fullscreen.isEnabled();
+    },
+    // Exits fullscreen mode if enabled.
+    exitFullscreen() {
+      $fullscreen
+        .exit()
+        .then(() => {
+          this.resize(true);
+        })
+        .catch((err) => console.error(err));
+    },
+    // Switches to fullscreen mode if not already enabled.
+    requestFullscreen() {
+      $fullscreen.request().then(() => {
+        this.resize(true);
+      });
     },
     // Toggles the favorite flag of the current picture.
     toggleLike() {

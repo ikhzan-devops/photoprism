@@ -143,7 +143,8 @@ export default {
 
     return {
       canDelete: this.$config.allow("albums", "delete"),
-      canDownload: this.$config.allow("albums", "download") && features.download && !settings.albums.download.disabled,
+      canDownload:
+        this.$config.allow("albums", "download") && features.download && !settings?.albums?.download?.disabled,
       canShare: this.$config.allow("albums", "share") && features.share,
       canManage: this.$config.allow("albums", "manage"),
       deletable: ["album", "moment", "state"],
