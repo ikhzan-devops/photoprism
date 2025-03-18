@@ -102,11 +102,11 @@ func UpdateAlbum(albumUID string, values interface{}) (err error) {
 
 // AddPhotoToAlbums adds a photo UID to multiple albums and automatically creates them if needed.
 func AddPhotoToAlbums(uid string, albums []string) (err error) {
-	return AddPhotoToUserAlbums(uid, albums, OwnerUnknown)
+	return AddPhotoToUserAlbums(uid, albums, DefaultOrderAlbum, OwnerUnknown)
 }
 
 // AddPhotoToUserAlbums adds a photo UID to multiple albums and automatically creates them as a user if needed.
-func AddPhotoToUserAlbums(photoUid string, albums []string, userUid string) (err error) {
+func AddPhotoToUserAlbums(photoUid string, albums []string, sortOrder, userUid string) (err error) {
 	if photoUid == "" || len(albums) == 0 {
 		// Do nothing.
 		return nil
@@ -127,7 +127,7 @@ func AddPhotoToUserAlbums(photoUid string, albums []string, userUid string) (err
 		if rnd.IsUID(album, AlbumUID) {
 			albumUid = album
 		} else {
-			a := NewUserAlbum(album, AlbumManual, sortby.Oldest, userUid)
+			a := NewUserAlbum(album, AlbumManual, sortOrder, userUid)
 
 			if found := a.Find(); found != nil {
 				albumUid = found.AlbumUID
