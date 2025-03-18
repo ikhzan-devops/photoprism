@@ -23,6 +23,26 @@ func TestDownloadName(t *testing.T) {
 
 		assert.Equal(t, customize.DownloadNameFile, DownloadName(c))
 	})
+	t.Run("Share", func(t *testing.T) {
+		req, err := http.NewRequest(http.MethodGet, "api/v1/dl?name=share", nil)
+		assert.NoError(t, err)
+
+		c := &gin.Context{
+			Request: req,
+		}
+
+		assert.Equal(t, customize.DownloadNameShare, DownloadName(c))
+	})
+	t.Run("Original", func(t *testing.T) {
+		req, err := http.NewRequest(http.MethodGet, "api/v1/dl?name=original", nil)
+		assert.NoError(t, err)
+
+		c := &gin.Context{
+			Request: req,
+		}
+
+		assert.Equal(t, customize.DownloadNameOriginal, DownloadName(c))
+	})
 }
 
 func TestGetDownload(t *testing.T) {

@@ -28,6 +28,8 @@ export default class Page {
     this.dateTimeStacksCheckbox = Selector(".input-stack-meta div.v-selection-control__input");
     this.uuidStacksCheckbox = Selector(".input-stack-uuid div.v-selection-control__input");
     this.nameStacksCheckbox = Selector(".input-stack-name div.v-selection-control__input");
+    this.downloadRawCheckbox = Selector(".input-download-raw div.v-selection-control__input");
+    this.hideTitlesCheckbox = Selector(".input-search-titles div.v-selection-control__input");
 
     this.advancedTab = Selector("#tab-settings_advanced");
     this.debugCheckbox = Selector("label").withText("Debug Logs");

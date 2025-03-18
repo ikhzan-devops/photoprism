@@ -15,22 +15,46 @@ export default class Page {
 
   async checkToolbarActionAvailability(action, visible) {
     if (
-      (t.browser.platform === "mobile") &
-      (action !== "edit") &
-      (action !== "share") &
-      (action !== "add") &
-      (action !== "show-all") &
-      (action !== "show-important")
+        (t.browser.platform === "mobile") &
+        (action !== "edit") &
+        (action !== "share") &
+        (action !== "add") &
+        (action !== "show-all") &
+        (action !== "show-important")
     ) {
       if (await this.openMobileToolbar.exists) {
         await t.click(this.openMobileToolbar);
       }
       await this.checkMobileMenuActionAvailability(action, visible);
-      await t.click(Selector("#photoprism"), { offsetX: 1, offsetY: 1 });
+      await t.click(Selector("#photoprism"), {offsetX: 1, offsetY: 1});
     } else if (visible) {
-      await t.expect(Selector("header.v-toolbar button.action-" + action).visible).ok();
+      if (action === "delete-all" ||
+          action === "view-mosaic" ||
+          action === "view-list" ||
+          action === "view-cards" ||
+          action === "add" ||
+          action === "show-hidden" ||
+          action === "show-all" ||
+          action === "show-important") {
+        await t.expect(Selector("button.action-" + action).visible).ok();
+      } else {
+        await t.hover(Selector("button.action-menu__btn"))
+        await t.expect(Selector("div.action-" + action).visible).ok();
+      }
     } else {
-      await t.expect(Selector("header.v-toolbar button.action-" + action).visible).notOk();
+      if (action === "delete-all" ||
+          action === "view-mosaic" ||
+          action === "view-list" ||
+          action === "view-cards" ||
+          action === "add" ||
+          action === "show-hidden" ||
+          action === "show-all" ||
+          action === "show-important") {
+        await t.expect(Selector("button.action-" + action).visible).notOk();
+      } else {
+        await t.hover(Selector("button.action-menu__btn"))
+        await t.expect(Selector("div.action-" + action).visible).notOk();
+      }
     }
   }
 
@@ -79,7 +103,8 @@ export default class Page {
       (action !== "share") &
       (action !== "add") &
       (action !== "show-all") &
-      (action !== "show-important")
+      (action !== "show-important" ||
+       action === "show-important")
     ) {
       if (await this.openMobileToolbar.exists) {
         await t.click(this.openMobileToolbar);
@@ -89,12 +114,20 @@ export default class Page {
       }
       await t.click(Selector("button.nav-menu-" + action));
     } else {
-      await t.click(Selector("header.v-toolbar button.action-" + action));
+      if (action === "delete-all" ||
+      action === "view-mosaic" ||
+      action === "view-list" ||
+      action === "view-cards" ||
+      action === "add" ||
+      action === "show-hidden" ||
+      action === "show-all" ||
+      action === "show-important") {
+        await t.click(Selector("button.action-" + action));
+      } else {
+        await t.hover(Selector("button.action-menu__btn"))
+        await t.click(Selector("div.action-" + action));
+      }
     }
-  }
-
-  async toggleFilterBar() {
-    await t.click(Selector("nav.page-toolbar button.action-expand-search"));
   }
 
   async search(term) {
@@ -124,7 +157,7 @@ export default class Page {
         throw "unknown filter";
     }
     if (!(await Selector(filterSelector).visible)) {
-      await t.click(Selector(".action-expand"));
+      await t.click(Selector("i.mdi-tune"));
     }
     await t.click(filterSelector);
 
@@ -134,6 +167,6 @@ export default class Page {
       await t.click(Selector('div[role="option"]').nth(1));
     }
 
-    await t.click(Selector(".action-expand"));
+    await t.click(Selector("i.mdi-tune"));
   }
 }

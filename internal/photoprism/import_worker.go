@@ -102,7 +102,7 @@ func ImportWorker(jobs <-chan ImportJob) {
 					// Do nothing.
 				} else if file, fileErr := entity.FirstFileByHash(fileHash); fileErr != nil {
 					// Do nothing.
-				} else if albumErr := entity.AddPhotoToUserAlbums(file.PhotoUID, opt.Albums, opt.UID); albumErr != nil {
+				} else if albumErr := entity.AddPhotoToUserAlbums(file.PhotoUID, opt.Albums, imp.conf.Settings().Albums.Order.Album, opt.UID); albumErr != nil {
 					log.Warn(albumErr)
 				}
 
@@ -192,7 +192,7 @@ func ImportWorker(jobs <-chan ImportJob) {
 					photoUID = res.PhotoUID
 
 					// Add photo to album if a list of albums was provided when importing.
-					if albumErr := entity.AddPhotoToUserAlbums(photoUID, opt.Albums, opt.UID); albumErr != nil {
+					if albumErr := entity.AddPhotoToUserAlbums(photoUID, opt.Albums, imp.conf.Settings().Albums.Order.Album, opt.UID); albumErr != nil {
 						log.Warn(albumErr)
 					}
 				}

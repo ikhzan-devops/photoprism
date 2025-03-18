@@ -43,6 +43,10 @@ export default class Page {
     await t.click(Selector("button i.mdi-power"));
   }
 
+  async clickCardTitleOfUID(uid) {
+    await t.click(Selector('div[data-uid="' +uid +'"] button.action-title-edit'));
+  }
+
   async testCreateEditDeleteSharingLink(type) {
     await menu.openPage(type);
     const FirstAlbum = await album.getNthAlbumUid("all", 0);
@@ -94,7 +98,7 @@ export default class Page {
     if (t.browser.platform === "mobile") {
       await t.eval(() => location.reload());
     } else {
-      await toolbar.triggerToolbarAction("reload");
+      await toolbar.triggerToolbarAction("refresh");
     }
     await album.triggerHoverAction("uid", FirstAlbum, "share");
     await t.click(sharedialog.deleteLink);
