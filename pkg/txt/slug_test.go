@@ -25,6 +25,12 @@ func TestSlug(t *testing.T) {
 		assert.Equal(t, "_5cpzfea", Slug("   💐   "))
 		assert.Equal(t, "_5cpzfdxqt5jja", Slug("💎💐"))
 		assert.Equal(t, "photoprism", Slug("PhotoPrism 💎"))
+		assert.Equal(t, "_3kmib24yr3", Slug("_3kmib24yr3"))
+		assert.Equal(t, "-", Slug("-"))
+		assert.Equal(t, "_", Slug("_"))
+		assert.Equal(t, "_a", Slug("_a"))
+		assert.Equal(t, "_5cpzfea", Slug("_5cpzfea"))
+		assert.Equal(t, "_5cpzfdxqt5jja", Slug("_5cpzfdxqt5jja"))
 	})
 }
 
