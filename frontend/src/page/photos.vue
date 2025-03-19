@@ -302,7 +302,7 @@ export default {
       return this.$refs?.toolbar?.hideExpansionPanel();
     },
     searchCount() {
-      const offset = parseInt(window.localStorage.getItem("photos_offset"));
+      const offset = parseInt(window.localStorage.getItem("photos.offset"));
       if (this.offset > 0 || !offset) {
         return this.batchSize;
       }
@@ -310,7 +310,7 @@ export default {
     },
     setOffset(offset) {
       this.offset = offset;
-      window.localStorage.setItem("photos_offset", offset);
+      window.localStorage.setItem("photos.offset", offset);
     },
     getViewType() {
       if (this.embedded) {
@@ -318,10 +318,10 @@ export default {
       }
 
       let queryParam = this.$route.query["view"] ? this.$route.query["view"] : "";
-      let storedType = window.localStorage.getItem("photos_view");
+      let storedType = window.localStorage.getItem("photos.view");
 
       if (queryParam) {
-        window.localStorage.setItem("photos_view", queryParam);
+        window.localStorage.setItem("photos.view", queryParam);
         return queryParam;
       } else if (storedType) {
         return storedType;
@@ -358,23 +358,23 @@ export default {
 
       switch (this.getContext()) {
         case "archive":
-          storageKey = "archive_order";
+          storageKey = "archive.order";
           defaultOrder = "archived";
           break;
         case "favorites":
-          storageKey = "favorites_order";
+          storageKey = "favorites.order";
           defaultOrder = "newest";
           break;
         case "hidden":
-          storageKey = "hidden_order";
+          storageKey = "hidden.order";
           defaultOrder = "added";
           break;
         case "review":
-          storageKey = "review_order";
+          storageKey = "review.order";
           defaultOrder = "added";
           break;
         default:
-          storageKey = "photos_order";
+          storageKey = "photos.order";
           defaultOrder = "newest";
       }
 
@@ -546,7 +546,7 @@ export default {
             this.settings[key] = value;
         }
 
-        window.localStorage.setItem("photos_" + key, this.settings[key]);
+        window.localStorage.setItem("photos." + key, this.settings[key]);
       }
     },
     updateFilter(props) {

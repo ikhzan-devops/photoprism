@@ -329,7 +329,7 @@ export default {
       this.dialog.edit = true;
     },
     searchCount() {
-      const offset = parseInt(window.localStorage.getItem("labels_offset"));
+      const offset = parseInt(window.localStorage.getItem("labels.offset"));
 
       if (this.offset > 0 || !offset) {
         return this.batchSize;
@@ -339,7 +339,7 @@ export default {
     },
     setOffset(offset) {
       this.offset = offset;
-      window.localStorage.setItem("labels_offset", offset);
+      window.localStorage.setItem("labels.offset", offset);
     },
     toggleLike(ev, index) {
       if (!this.canManage) {
@@ -570,7 +570,7 @@ export default {
             this.settings[key] = value;
         }
 
-        window.localStorage.setItem("labels_" + key, this.settings[key]);
+        window.localStorage.setItem("labels." + key, this.settings[key]);
       }
     },
     updateFilter(props) {
