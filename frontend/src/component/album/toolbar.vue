@@ -181,21 +181,21 @@ export default {
           },
         },
         {
-          name: "download",
-          icon: "mdi-download",
-          text: this.$gettext("Download"),
-          visible: this.canDownload,
-          click: () => {
-            this.download();
-          },
-        },
-        {
           name: "upload",
           icon: "mdi-cloud-upload",
           text: this.$gettext("Upload"),
           visible: this.canUpload,
           click: () => {
             this.showUpload();
+          },
+        },
+        {
+          name: "download",
+          icon: "mdi-download",
+          text: this.$gettext("Download"),
+          visible: this.canDownload,
+          click: () => {
+            this.download();
           },
         },
       ];
