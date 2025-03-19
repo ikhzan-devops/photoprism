@@ -41,7 +41,7 @@ export default class Session {
    * @param {object} shared
    */
   constructor(storage, config, shared) {
-    this.storageKey = "sessionStorage";
+    this.storageKey = "session";
     this.loginRedirect = false;
     this.config = config;
     this.provider = "";
@@ -56,18 +56,21 @@ export default class Session {
     }
 
     // Restore authentication from session storage.
-    if (this.applyAuthToken(this.storage.getItem("authToken")) && this.applyId(this.storage.getItem("sessionId"))) {
-      const dataJson = this.storage.getItem("sessionData");
+    if (
+      this.applyAuthToken(this.storage.getItem(this.storageKey + ".token")) &&
+      this.applyId(this.storage.getItem(this.storageKey + ".id"))
+    ) {
+      const dataJson = this.storage.getItem(this.storageKey + ".data");
       if (dataJson !== "undefined") {
         this.data = JSON.parse(dataJson);
       }
 
-      const userJson = this.storage.getItem("user");
+      const userJson = this.storage.getItem(this.storageKey + ".user");
       if (userJson !== "undefined") {
         this.user = new User(JSON.parse(userJson));
       }
 
-      const provider = this.storage.getItem("provider");
+      const provider = this.storage.getItem(this.storageKey + ".provider");
       if (provider !== null) {
         this.provider = provider;
       }
@@ -123,7 +126,7 @@ export default class Session {
 
   setAuthToken(authToken) {
     if (authToken) {
-      this.storage.setItem("authToken", authToken);
+      this.storage.setItem(this.storageKey + ".token", authToken);
       if (authToken === PublicAuthToken) {
         this.setId(PublicSessionID);
       }
@@ -154,7 +157,7 @@ export default class Session {
   }
 
   setId(id) {
-    this.storage.setItem("sessionId", id);
+    this.storage.setItem(this.storageKey + ".id", id);
     this.id = id;
   }
 
@@ -185,20 +188,20 @@ export default class Session {
     this.authToken = null;
     this.provider = "";
 
-    // "sessionId" is the SHA256 hash of the auth token.
-    this.storage.removeItem("sessionId");
-    this.storage.removeItem("authToken");
-    this.storage.removeItem("provider");
+    // "session.id" is the SHA256 hash of the auth token.
+    this.storage.removeItem(this.storageKey + ".id");
+    this.storage.removeItem(this.storageKey + ".token");
+    this.storage.removeItem(this.storageKey + ".provider");
 
-    // The "session_id" storage key is deprecated in favor of "authToken",
+    // The "session_id" storage key is deprecated in favor of "session.token",
     // but should continue to be removed when logging out:
-    this.storage.removeItem("session_id");
+    this.storage.removeItem(this.storageKey + ".id");
 
     delete $api.defaults.headers.common[RequestHeader];
   }
 
   setProvider(provider) {
-    this.storage.setItem("provider", provider);
+    this.storage.setItem(this.storageKey + ".provider", provider);
     this.provider = provider;
   }
 
@@ -264,7 +267,7 @@ export default class Session {
     }
 
     this.data = data;
-    this.storage.setItem("sessionData", JSON.stringify(data));
+    this.storage.setItem(this.storageKey + ".data", JSON.stringify(data));
 
     if (data.user) {
       this.setUser(data.user);
@@ -293,7 +296,7 @@ export default class Session {
     }
 
     this.user = new User(user);
-    this.storage.setItem("user", JSON.stringify(user));
+    this.storage.setItem(this.storageKey + ".user", JSON.stringify(user));
     this.auth = this.isUser();
   }
 
@@ -378,7 +381,7 @@ export default class Session {
 
   deleteData() {
     this.data = null;
-    this.storage.removeItem("sessionData");
+    this.storage.removeItem(this.storageKey + ".data");
   }
 
   deleteUser() {
@@ -389,8 +392,8 @@ export default class Session {
 
   deleteClipboard() {
     this.storage.removeItem("clipboard");
-    this.storage.removeItem("photo_clipboard");
-    this.storage.removeItem("album_clipboard");
+    this.storage.removeItem("clipboard.photos");
+    this.storage.removeItem("clipboard.albums");
   }
 
   reset() {

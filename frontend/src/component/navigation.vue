@@ -999,7 +999,7 @@ export default {
       featFiles: this.$config.feature("files"),
       featUsage: canManagePhotos && this.$config.feature("files") && this.$config.values?.usage?.filesTotal,
       isRestricted: isRestricted,
-      isMini: localStorage.getItem("last_navigation_mode") !== "false" || isRestricted,
+      isMini: localStorage.getItem("navigation.mode") !== "false" || isRestricted,
       isDemo: isDemo,
       isPro: isPro,
       isPublic: isPublic,
@@ -1106,7 +1106,7 @@ export default {
       }
 
       this.isMini = !this.isMini;
-      localStorage.setItem("last_navigation_mode", `${this.isMini}`);
+      localStorage.setItem("navigation.mode", `${this.isMini}`);
     },
     showAccountSettings() {
       if (this.$config.feature("account")) {

@@ -444,7 +444,7 @@ let themes = {
       "primary": "#4ca0b8",
       "highlight": "#519FB6",
       "on-highlight": "#ffffff",
-      "selected": "#519FB6",
+      "selected": "#bae4fa",
       "on-selected": "#3e4757",
       "secondary": "#e4e9f1",
       "on-secondary": "#3e4757",

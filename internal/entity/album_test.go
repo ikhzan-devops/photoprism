@@ -388,7 +388,7 @@ func TestFindAlbum(t *testing.T) {
 		assert.Equal(t, "Christmas 2030", result.AlbumTitle)
 		assert.True(t, result.IsDefault())
 	})
-	t.Run("Success", func(t *testing.T) {
+	t.Run("AlbumFolder", func(t *testing.T) {
 		album := Album{AlbumSlug: "april-1990", AlbumType: AlbumFolder}
 		result := FindAlbum(album)
 
@@ -398,7 +398,7 @@ func TestFindAlbum(t *testing.T) {
 
 		assert.Equal(t, "April 1990", result.AlbumTitle)
 	})
-	t.Run("Success", func(t *testing.T) {
+	t.Run("AlbumFilter", func(t *testing.T) {
 		album := Album{AlbumSlug: "april-1990", AlbumType: AlbumFolder, AlbumFilter: "1990/04"}
 		result := FindAlbum(album)
 
@@ -408,7 +408,7 @@ func TestFindAlbum(t *testing.T) {
 
 		assert.Equal(t, "April 1990", result.AlbumTitle)
 	})
-	t.Run("Success", func(t *testing.T) {
+	t.Run("AlbumManual", func(t *testing.T) {
 		album := Album{AlbumSlug: "berlin-2019", AlbumType: AlbumManual}
 		result := FindAlbum(album)
 
@@ -418,13 +418,13 @@ func TestFindAlbum(t *testing.T) {
 
 		assert.Equal(t, "Berlin 2019", result.AlbumTitle)
 	})
-	t.Run("NoResult", func(t *testing.T) {
+	t.Run("CreatedBy", func(t *testing.T) {
 		album := Album{AlbumSlug: "berlin-2019", AlbumType: AlbumManual, CreatedBy: "xxx"}
 		result := FindAlbum(album)
 
 		assert.Nil(t, result)
 	})
-	t.Run("NoResult", func(t *testing.T) {
+	t.Run("NotFound", func(t *testing.T) {
 		album := Album{AlbumSlug: "xxx-xxx", AlbumType: AlbumFolder}
 		result := FindAlbum(album)
 

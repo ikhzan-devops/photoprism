@@ -69,6 +69,10 @@ import Thumb from "model/thumb";
 import PPagePhotos from "page/photos.vue";
 import MapStyleControl from "component/places/style-control";
 
+const ProjectionGlobe = "globe";
+const ProjectionMercator = "mercator";
+const ProjectionVertical = "vertical-perspective";
+
 // Pixels the map pans when the up or down arrow is clicked:
 const deltaDistance = 100;
 
@@ -141,6 +145,7 @@ export default {
       config: this.$config.values,
       settings: settings.maps,
       animate: settings.maps.animate,
+      skyRendered: false,
     };
   },
   watch: {
@@ -164,7 +169,6 @@ export default {
       .then(() => {
         this.renderMap();
         this.openClusterFromUrl();
-        this.renderSky();
       })
       .catch((err) => {
         this.mapError = err;
@@ -179,9 +183,10 @@ export default {
   },
   methods: {
     renderSky() {
-      if (sky.render && this.$refs.background) {
+      if (!this.skyRendered && sky.render && this.$refs.background) {
         this.$nextTick(() => {
           sky.render(this.$refs.background, 320);
+          this.skyRendered = true;
         });
       }
     },
@@ -244,13 +249,27 @@ export default {
 
       const currentProjection = this.map.getProjection()?.type;
 
-      let newProjection;
-
-      if (currentProjection === "mercator" || !currentProjection) {
-        newProjection = "globe";
-        this.map.setZoom(3);
+      if (currentProjection === ProjectionMercator || !currentProjection) {
+        this.setProjection(ProjectionGlobe);
       } else {
-        newProjection = "mercator";
+        this.setProjection(ProjectionMercator);
+      }
+    },
+    setProjection(newProjection) {
+      const currentProjection = this.map.getProjection()?.type;
+
+      if (currentProjection === newProjection) {
+        return;
+      }
+
+      switch (newProjection) {
+        case ProjectionGlobe:
+          this.map.setZoom(3);
+          break;
+        case ProjectionMercator:
+          break;
+        case ProjectionVertical:
+          break;
       }
 
       this.map.setProjection({ type: newProjection });
@@ -263,7 +282,7 @@ export default {
 
       if (btn && btn instanceof HTMLElement) {
         switch (newProjection) {
-          case "globe":
+          case ProjectionGlobe:
             btn.classList.add("maplibregl-ctrl-globe-enabled");
             btn.classList.remove("maplibregl-ctrl-globe");
             btn.classList.title = this.map._getUIString("GlobeControl.Disable");
@@ -729,6 +748,7 @@ export default {
         .get("geo", options)
         .then((response) => {
           if (!response.data.features || response.data.features.length === 0) {
+            this.initialized = true;
             this.loading = false;
 
             this.$notify.warn(this.$gettext("No pictures found"));
@@ -756,6 +776,7 @@ export default {
           this.updateMarkers();
         })
         .catch(() => {
+          this.initialized = true;
           this.loading = false;
         });
     },
@@ -816,6 +837,15 @@ export default {
       this.map.addControl(new maplibregl.ScaleControl({}), "bottom-left");
 
       this.map.on("load", () => this.onMapLoad());
+    },
+    onProjectionChange(ev) {
+      // Remember last used projection.
+      localStorage.setItem("places.projection", ev.newProjection);
+
+      // Render sky if new project is globe.
+      if (ev.newProjection === ProjectionGlobe) {
+        this.renderSky();
+      }
     },
     getClusterFeatures(clusterId, limit, callback) {
       this.map
@@ -1019,7 +1049,16 @@ export default {
       this.map.on("idle", this.updateMarkers);
 
       // Load pictures.
-      this.search();
+      this.search().finally(() => {
+        // Call this.onProjectionChange when the projection type changes.
+        this.map.on("projectiontransition", (ev) => this.onProjectionChange(ev));
+
+        // Restore globe projection if last used.
+        const projection = localStorage.getItem("places.projection");
+        if (projection === ProjectionGlobe) {
+          this.setProjection(projection);
+        }
+      });
     },
   },
 };

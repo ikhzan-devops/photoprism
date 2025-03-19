@@ -153,7 +153,7 @@ func ImportWorker(jobs <-chan ImportJob) {
 				continue
 			}
 
-			// Find related files.
+			// Find and index related originals.
 			related, err := f.RelatedFiles(imp.conf.Settings().StackSequences())
 
 			// Skip import if the finding related files results in an error.
@@ -167,23 +167,23 @@ func ImportWorker(jobs <-chan ImportJob) {
 			photoUID := ""
 
 			if related.Main != nil {
-				f := related.Main
+				main := related.Main
 
 				// Enforce file size and resolution limits.
-				if limitErr, _ := f.ExceedsBytes(o.ByteLimit); limitErr != nil {
+				if limitErr, _ := main.ExceedsBytes(o.ByteLimit); limitErr != nil {
 					log.Warnf("import: %s", limitErr)
 					continue
-				} else if limitErr, _ = f.ExceedsResolution(o.ResolutionLimit); limitErr != nil {
+				} else if limitErr, _ = main.ExceedsResolution(o.ResolutionLimit); limitErr != nil {
 					log.Warnf("import: %s", limitErr)
 					continue
 				}
 
 				// Index main MediaFile.
-				res := ind.UserMediaFile(f, o, originalName, "", opt.UID)
+				res := ind.UserMediaFile(main, o, originalName, "", opt.UID)
 
 				// Log result.
-				log.Infof("import: %s main %s file %s", res, f.FileType(), clean.Log(f.RootRelName()))
-				done[f.FileName()] = true
+				log.Infof("import: %s main %s file %s", res, main.FileType(), clean.Log(main.RootRelName()))
+				done[main.FileName()] = true
 
 				if !res.Success() {
 					// Skip importing related files if the main file was not indexed successfully.
@@ -200,36 +200,36 @@ func ImportWorker(jobs <-chan ImportJob) {
 				log.Warnf("import: no main media file found for %s, creation of a preview image may have failed", clean.Log(f.RootRelName()))
 			}
 
-			for _, f := range related.Files {
-				if f == nil {
+			for _, file := range related.Files {
+				if file == nil {
 					continue
 				}
 
-				if done[f.FileName()] {
+				if done[file.FileName()] {
 					continue
 				}
 
-				done[f.FileName()] = true
+				done[file.FileName()] = true
 
 				// Show warning if sidecar file exceeds size or resolution limit.
-				if limitErr, _ := f.ExceedsBytes(o.ByteLimit); limitErr != nil {
+				if limitErr, _ := file.ExceedsBytes(o.ByteLimit); limitErr != nil {
 					log.Warnf("import: %s", limitErr)
-				} else if limitErr, _ = f.ExceedsResolution(o.ResolutionLimit); limitErr != nil {
+				} else if limitErr, _ = file.ExceedsResolution(o.ResolutionLimit); limitErr != nil {
 					log.Warnf("import: %s", limitErr)
 				}
 
 				// Extract metadata to a JSON file with Exiftool.
-				if f.NeedsExifToolJson() {
-					if jsonName, err := imp.convert.ToJson(f, false); err != nil {
+				if file.NeedsExifToolJson() {
+					if jsonName, err := imp.convert.ToJson(file, false); err != nil {
 						log.Tracef("exiftool: %s", clean.Error(err))
-						log.Debugf("exiftool: failed parsing %s", clean.Log(f.RootRelName()))
+						log.Debugf("exiftool: failed parsing %s", clean.Log(file.RootRelName()))
 					} else {
 						log.Debugf("import: created %s", filepath.Base(jsonName))
 					}
 				}
 
 				// Index related media file including its original filename.
-				res := ind.UserMediaFile(f, o, relatedOriginalNames[f.FileName()], photoUID, opt.UID)
+				res := ind.UserMediaFile(file, o, relatedOriginalNames[file.FileName()], photoUID, opt.UID)
 
 				// Save file error.
 				if fileUid, fileErr := res.FileError(); fileErr != nil {
@@ -237,7 +237,7 @@ func ImportWorker(jobs <-chan ImportJob) {
 				}
 
 				// Log result.
-				log.Infof("import: %s related %s file %s", res, f.FileType(), clean.Log(f.RootRelName()))
+				log.Infof("import: %s related %s file %s", res, file.FileType(), clean.Log(file.RootRelName()))
 			}
 		}
 	}
