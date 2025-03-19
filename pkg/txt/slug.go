@@ -16,8 +16,12 @@ var SlugEncoding = base32.NewEncoding(SlugCharset).WithPadding(base32.NoPadding)
 func Slug(s string) string {
 	s = strings.TrimSpace(s)
 
-	if s == "" {
-		return ""
+	if s == "" || s == "-" {
+		return s
+	}
+
+	if s[0] == SlugEncoded && ContainsAlnumLower(s[1:]) {
+		return Clip(s, ClipSlug)
 	}
 
 	result := slug.Make(s)

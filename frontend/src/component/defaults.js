@@ -141,6 +141,7 @@ export default {
     rounded: "pill",
     location: "bottom",
     transition: "fade-transition",
+    closeOnBack: true,
   },
   VNavigationDrawer: {
     width: 270,
