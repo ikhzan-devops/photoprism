@@ -56,7 +56,12 @@ export default class Session {
     }
 
     // Restore authentication data stored under previously used keys.
-    if (this.storage.getItem("authToken") && this.storage.getItem("sessionId")) {
+    if (
+      !this.storage.getItem(this.storageKey + ".token") &&
+      this.storage.getItem("authToken") &&
+      !this.storage.getItem(this.storageKey + ".id") &&
+      this.storage.getItem("sessionId")
+    ) {
       this.storage.setItem(this.storageKey + ".token", this.storage.getItem("authToken"));
       this.storage.removeItem("authToken");
 
