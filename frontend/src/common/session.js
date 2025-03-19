@@ -55,12 +55,31 @@ export default class Session {
       this.storage = storage;
     }
 
-    // Temporary fallback for data stored under previously used keys.
+    // Restore authentication data stored under previously used keys.
     if (this.storage.getItem("authToken") && this.storage.getItem("sessionId")) {
       this.storage.setItem(this.storageKey + ".token", this.storage.getItem("authToken"));
-      this.storage.setItem(this.storageKey + ".id", this.storage.getItem("sessionId"));
       this.storage.removeItem("authToken");
+
+      this.storage.setItem(this.storageKey + ".id", this.storage.getItem("sessionId"));
       this.storage.removeItem("sessionId");
+
+      const dataJson = this.storage.getItem("sessionData");
+      if (dataJson && dataJson !== "undefined") {
+        this.storage.setItem(this.storageKey + ".data", dataJson);
+        this.storage.removeItem("sessionData");
+      }
+
+      const userJson = this.storage.getItem("user");
+      if (userJson && userJson !== "undefined") {
+        this.storage.setItem(this.storageKey + ".user", userJson);
+        this.storage.removeItem("user");
+      }
+
+      const provider = this.storage.getItem("provider");
+      if (provider !== null && provider !== "undefined") {
+        this.storage.setItem(this.storageKey + ".provider", provider);
+        this.storage.removeItem("provider");
+      }
     }
 
     // Restore authentication from session storage.
@@ -69,17 +88,17 @@ export default class Session {
       this.applyId(this.storage.getItem(this.storageKey + ".id"))
     ) {
       const dataJson = this.storage.getItem(this.storageKey + ".data");
-      if (dataJson !== "undefined") {
+      if (dataJson && dataJson !== "undefined") {
         this.data = JSON.parse(dataJson);
       }
 
       const userJson = this.storage.getItem(this.storageKey + ".user");
-      if (userJson !== "undefined") {
+      if (userJson && userJson !== "undefined") {
         this.user = new User(JSON.parse(userJson));
       }
 
       const provider = this.storage.getItem(this.storageKey + ".provider");
-      if (provider !== null) {
+      if (provider !== null && provider !== "undefined") {
         this.provider = provider;
       }
     }
@@ -206,9 +225,8 @@ export default class Session {
     this.storage.removeItem("session_id");
     this.storage.removeItem("sessionId");
     this.storage.removeItem("authToken");
-    this.storage.removeItem("provider");
-    this.storage.removeItem("user");
     this.storage.removeItem("authError");
+    this.storage.removeItem("provider");
 
     delete $api.defaults.headers.common[RequestHeader];
   }
@@ -395,11 +413,13 @@ export default class Session {
   deleteData() {
     this.data = null;
     this.storage.removeItem(this.storageKey + ".data");
+    this.storage.removeItem("sessionData");
   }
 
   deleteUser() {
     this.auth = false;
     this.user = new User(false);
+    this.storage.removeItem(this.storageKey + ".user");
     this.storage.removeItem("user");
   }
 
