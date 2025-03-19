@@ -84,6 +84,7 @@ const config = {
     path: PATHS.build,
     filename: '[name].[contenthash].js',
     clean: true,
+    chunkFilename: 'locales/[name].json',
   },
   resolve: {
     modules: isCustom ? [PATHS.custom, PATHS.src, PATHS.modules] : [PATHS.src, PATHS.modules],

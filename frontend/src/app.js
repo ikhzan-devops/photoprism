@@ -71,7 +71,7 @@ window.$isMobile = $isMobile;
 
 $config.progress(50);
 
-$config.update().finally(() => {
+$config.update().finally(async () => {
   // Initialize libs and framework.
   $config.progress(66);
 
@@ -114,9 +114,6 @@ $config.update().finally(() => {
     });
   };
 
-  // Create Vue 3 Gettext instance.
-  const gettext = createGettext($config);
-
   // Create Vuetify 3 instance.
   const vuetify = createVuetify({
     defaults,
@@ -139,7 +136,10 @@ $config.update().finally(() => {
   // Use Vuetify 3.
   app.use(vuetify);
 
-  // Use Vue 3 Gettext.
+  await $config.loadLanguageAsync($config.getLanguageLocale());
+
+  // Create and use Vue 3 Gettext instance.
+  const gettext = createGettext($config);
   app.use(gettext);
 
   // Use HTML sanitizer with v-sanitize directive.

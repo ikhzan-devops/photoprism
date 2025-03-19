@@ -26,7 +26,6 @@ Additional information can be found in our Developer Guide:
 import $api from "common/api";
 import $event from "common/event";
 import * as themes from "options/themes";
-import translations from "locales/translations.json";
 import { Languages } from "options/options";
 import { Photo } from "model/photo";
 import { onInit, onSetTheme } from "common/hooks";
@@ -48,7 +47,7 @@ export default class Config {
     this.updating = false;
 
     this.$vuetify = null;
-    this.translations = translations;
+    this.translations = null;
 
     if (!values || !values.siteTitle) {
       // Omit warning in unit tests.
@@ -416,6 +415,20 @@ export default class Config {
   denyAll(resource, perm) {
     return !this.allowAny(resource, perm);
   }
+
+  // getLanguageJson loading the json file by language abbreviation (e.g. "en" or "zh_TW" (minimum 2 letters).)
+  async loadLanguageAsync (locale) {
+    try {
+      // Dynamically import the translation JSON file based on the selected language
+      const file = await import(/* webpackChunkName: "[request]" */`../../../assets/static/locales/${locale}.json`);
+
+      // Apply translations
+      this.translations = file.default;
+      this.setLanguage(locale, true);
+    } catch (error) {
+      console.error(`Error loading language file for ${locale}:`, error);
+    }
+  };
 
   // setLanguage sets the ISO/IEC 15897 locale,
   // e.g. "en" or "zh_TW" (minimum 2 letters).
