@@ -148,6 +148,7 @@ export default {
     mobileBreakpoint: 960,
     location: "start",
     touchless: true,
+    scrim: true,
   },
   VListItem: {
     ripple: false,
