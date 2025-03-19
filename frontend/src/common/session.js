@@ -55,6 +55,14 @@ export default class Session {
       this.storage = storage;
     }
 
+    // Temporary fallback for data stored under previously used keys.
+    if (this.storage.getItem("authToken") && this.storage.getItem("sessionId")) {
+      this.storage.setItem(this.storageKey + ".token", this.storage.getItem("authToken"));
+      this.storage.setItem(this.storageKey + ".id", this.storage.getItem("sessionId"));
+      this.storage.removeItem("authToken");
+      this.storage.removeItem("sessionId");
+    }
+
     // Restore authentication from session storage.
     if (
       this.applyAuthToken(this.storage.getItem(this.storageKey + ".token")) &&
@@ -193,9 +201,14 @@ export default class Session {
     this.storage.removeItem(this.storageKey + ".token");
     this.storage.removeItem(this.storageKey + ".provider");
 
-    // The "session_id" storage key is deprecated in favor of "session.token",
-    // but should continue to be removed when logging out:
-    this.storage.removeItem(this.storageKey + ".id");
+    // Remove previously used data e.g. "session_id"
+    // is deprecated in favor of "session.token".
+    this.storage.removeItem("session_id");
+    this.storage.removeItem("sessionId");
+    this.storage.removeItem("authToken");
+    this.storage.removeItem("provider");
+    this.storage.removeItem("user");
+    this.storage.removeItem("authError");
 
     delete $api.defaults.headers.common[RequestHeader];
   }
