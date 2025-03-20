@@ -296,6 +296,7 @@ export default {
       this.settings
         .save()
         .then(() => {
+          this.$config.setSettings(this.settings);
           this.$notify.success(this.$gettext("Changes successfully saved"));
         })
         .finally(() => {
