@@ -50,7 +50,7 @@
         </div>
       </div>
       <div ref="background" class="map-background"></div>
-      <div ref="map" class="map-container" :class="{ 'map-loaded': initialized }"></div>
+      <div ref="map" class="map-container" :class="{ 'map-loaded': mapLoaded }"></div>
       <div v-if="showCluster" class="cluster-control">
         <v-card class="cluster-control-container">
           <p-page-photos ref="cluster" :static-filter="cluster" :on-close="closeCluster" :embedded="true" />
@@ -145,6 +145,7 @@ export default {
       config: this.$config.values,
       settings: settings.maps,
       animate: settings.maps.animate,
+      mapLoaded: false,
       skyRendered: false,
     };
   },
@@ -1050,6 +1051,8 @@ export default {
 
       // Load pictures.
       this.search().finally(() => {
+        this.mapLoaded = true;
+
         // Call this.onProjectionChange when the projection type changes.
         this.map.on("projectiontransition", (ev) => this.onProjectionChange(ev));
 

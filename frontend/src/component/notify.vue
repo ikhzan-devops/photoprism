@@ -1,5 +1,5 @@
 <template>
-  <v-snackbar id="p-notify" v-model="visible" :timeout="-1" :class="'p-notify--' + message.color">
+  <v-snackbar id="p-notify" v-model="visible" :class="'p-notify--' + message.color">
     <v-icon v-if="message.icon" :icon="'mdi-' + message.icon" :color="message.color" start></v-icon>
     {{ message.text }}
     <template #actions>
@@ -13,22 +13,39 @@ export default {
   data() {
     return {
       visible: false,
+      messages: [],
       message: {
         icon: "",
         color: "transparent",
         text: "",
+        delay: this.defaultDelay,
       },
-      messages: [],
       lastText: "",
       lastId: 1,
       subscriptionId: "",
       defaultColor: "info",
+      defaultDelay: 2000,
+      warningDelay: 3000,
+      errorDelay: 8000,
     };
+  },
+  watch: {
+    visible: function (show) {
+      if (!show) {
+        if (this.messages.length > 0) {
+          this.show();
+        } else {
+          this.lastText = "";
+        }
+      }
+    },
   },
   created() {
     this.subscriptionId = this.$event.subscribe("notify", this.onNotify);
   },
   beforeUnmount() {
+    this.messages = [];
+    this.visible = false;
     this.$event.unsubscribe(this.subscriptionId);
   },
   methods: {
@@ -72,23 +89,25 @@ export default {
     },
 
     addSuccessMessage: function (message) {
-      this.addMessage("success", "check-circle", message, 2000);
+      this.addMessage("success", "check-circle", message, this.defaultDelay);
     },
 
     addInfoMessage: function (message) {
-      this.addMessage("info", "information-outline", message, 2000);
+      this.addMessage("info", "information-outline", message, this.defaultDelay);
     },
 
     addWarningMessage: function (message) {
-      this.addMessage("warning", "alert", message, 3000);
+      this.addMessage("warning", "alert", message, this.warningDelay);
     },
 
     addErrorMessage: function (message) {
-      this.addMessage("error", "alert-circle-outline", message, 8000);
+      this.addMessage("error", "alert-circle-outline", message, this.errorDelay);
     },
 
     addMessage: function (color, icon, text, delay) {
-      if (text === this.lastText) return;
+      if (!text || text === this.lastText) {
+        return;
+      }
 
       this.lastId++;
       this.lastText = text;
@@ -109,7 +128,6 @@ export default {
     },
     close: function () {
       this.visible = false;
-      this.show();
     },
     show: function () {
       const message = this.messages.shift();
@@ -117,23 +135,26 @@ export default {
       if (message) {
         this.message = message;
 
-        if (!this.message.color) {
-          this.message.color = this.defaultColor;
-        }
-
         if (!this.message.icon) {
           this.message.icon = "";
         }
 
+        if (!this.message.color) {
+          this.message.color = this.defaultColor;
+        }
+
+        if (!this.message.delay || this.message.delay <= 0) {
+          this.message.delay = this.defaultDelay;
+        }
+
         this.visible = true;
 
-        if (message.delay > 0) {
-          setTimeout(() => {
-            this.lastText = "";
-            this.show();
-          }, message.delay);
-        }
+        setTimeout(() => {
+          this.lastText = "";
+          this.show();
+        }, this.message.delay);
       } else {
+        this.lastText = "";
         this.visible = false;
       }
     },
