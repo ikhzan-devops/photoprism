@@ -22,7 +22,7 @@
 }
 
 .map-background {
-    background: radial-gradient(circle at center, #0e0e19, #090916);
+    background: radial-gradient(circle at center, #0f0f21, #090916);
     z-index: -1;
 }
 
@@ -42,7 +42,7 @@
 .map-background .star.size-2 {
     width: 2px;
     height: 2px;
-    opacity: 0.42;
+    opacity: 0.4;
 }
 
 .map-container.map-loaded {
