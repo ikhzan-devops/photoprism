@@ -142,6 +142,8 @@ export default {
     location: "bottom",
     transition: "fade-transition",
     closeOnBack: true,
+    attach: true,
+    timeout: -1,
   },
   VNavigationDrawer: {
     width: 270,
