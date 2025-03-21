@@ -36,7 +36,8 @@ To get a first impression, you are welcome to play with our [public demo](https:
 Being completely [**self-funded and independent**](https://link.photoprism.app/membership), we can promise you that we will [never sell your data](https://www.photoprism.app/privacy) and that we will [always be transparent](https://www.photoprism.app/terms) about our software and services. Your data will never be shared with Google, Amazon, Microsoft or Apple unless you intentionally upload files to one of their services. 🔒
 
 ## Getting Started ##
-<img align="right" width="25%" src="https://dl.photoprism.app/img/ui/2025/iphone-video.png">
+
+<img align="right" height="210" src="https://dl.photoprism.app/img/ui/2025/iphone-video.png">
 
 Step-by-step [installation instructions](https://docs.photoprism.app/getting-started/) for our self-hosted [community edition](https://link.photoprism.app/personal-editions) can be found on [docs.photoprism.app](https://docs.photoprism.app/getting-started/) - all you need is a Web browser and [Docker](https://docs.docker.com/get-docker/) to run the server. It is available for Mac, Linux, and Windows.
 
