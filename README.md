@@ -12,7 +12,7 @@ PhotoPrism® is an AI-Powered Photos App for the [Decentralized Web](https://en.
 It makes use of the latest technologies to tag and find pictures automatically without getting in your way.
 You can run it at home, on a private server, or in the cloud.
 
-![](https://dl.photoprism.app/img/ui/search-cards-view.jpg)
+![](https://dl.photoprism.app/img/ui/2025/desktop-search.jpg)
 
 To get a first impression, you are welcome to play with our [public demo](https://try.photoprism.app/). Please be careful not to upload any private, unlawful or offensive pictures.
 
@@ -36,7 +36,7 @@ To get a first impression, you are welcome to play with our [public demo](https:
 Being completely [**self-funded and independent**](https://link.photoprism.app/membership), we can promise you that we will [never sell your data](https://www.photoprism.app/privacy) and that we will [always be transparent](https://www.photoprism.app/terms) about our software and services. Your data will never be shared with Google, Amazon, Microsoft or Apple unless you intentionally upload files to one of their services. 🔒
 
 ## Getting Started ##
-<img align="right" width="25%" src="https://www.photoprism.app/user/pages/01.home/03._screenshots/iphone-maps-hybrid-540px.png">
+<img align="right" width="25%" src="https://dl.photoprism.app/img/ui/2025/iphone-video.png">
 
 Step-by-step [installation instructions](https://docs.photoprism.app/getting-started/) for our self-hosted [community edition](https://link.photoprism.app/personal-editions) can be found on [docs.photoprism.app](https://docs.photoprism.app/getting-started/) - all you need is a Web browser and [Docker](https://docs.docker.com/get-docker/) to run the server. It is available for Mac, Linux, and Windows.
 
