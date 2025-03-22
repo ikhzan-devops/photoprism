@@ -29,7 +29,7 @@ To get a first impression, you are welcome to play with our [public demo](https:
 * [Play Live Photos](https://try.photoprism.app/library/live) by hovering over them in [albums](https://try.photoprism.app/library/albums) and [search results](https://try.photoprism.app/library/browse?view=cards&q=type%3Alive)
 * Since the [User Interface](https://try.photoprism.app/) is a [Progressive Web App](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps),
   it provides a native app-like experience, and you can conveniently install it on the home screen of all major operating systems and mobile devices
-* Includes four high-resolution [World Maps](https://try.photoprism.app/library/places) to bring back the memories of your favorite trips
+* Includes five high-resolution [World Maps](https://try.photoprism.app/library/places) to bring back the memories of your favorite trips
 * Metadata is extracted and merged from Exif, XMP, and other sources such as Google Photos
 * Many more image properties like [Colors](https://try.photoprism.app/library/browse?view=cards&q=color:red), [Chroma](https://try.photoprism.app/library/browse?view=cards&q=mono%3Atrue), and [Quality](https://try.photoprism.app/library/review) can be searched as well
 * Use [PhotoSync](https://link.photoprism.app/photosync) to securely backup iOS and Android phones in the background
