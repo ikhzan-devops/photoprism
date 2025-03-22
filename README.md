@@ -20,6 +20,8 @@ To get a first impression, you are welcome to play with our [public demo](https:
 
 **Our mission is to provide the most user- and privacy-friendly solution to keep your pictures organized and accessible.** That's why PhotoPrism was built from the ground up to run wherever you need it, without compromising freedom, privacy, or functionality:
 
+<img align="right" height="270" src="https://dl.photoprism.app/img/ui/2025/iphone-crocus-540px.png">
+
 * Browse [all your photos](https://docs.photoprism.app/user-guide/organize/browse/) and [videos](https://try.photoprism.app/library/videos) without worrying about [RAW conversion, duplicates or video formats](https://docs.photoprism.app/user-guide/settings/library/)
 * Easily find specific pictures using [powerful search filters](https://try.photoprism.app/library/browse?view=cards&q=flower%20color%3Ared)
 * Recognizes [the faces of your family and friends](https://try.photoprism.app/library/people)
@@ -36,8 +38,6 @@ To get a first impression, you are welcome to play with our [public demo](https:
 Being completely [**self-funded and independent**](https://link.photoprism.app/membership), we can promise you that we will [never sell your data](https://www.photoprism.app/privacy) and that we will [always be transparent](https://www.photoprism.app/terms) about our software and services. Your data will never be shared with Google, Amazon, Microsoft or Apple unless you intentionally upload files to one of their services. 🔒
 
 ## Getting Started ##
-
-<img align="right" height="210" src="https://dl.photoprism.app/img/ui/2025/iphone-video.png">
 
 Step-by-step [installation instructions](https://docs.photoprism.app/getting-started/) for our self-hosted [community edition](https://link.photoprism.app/personal-editions) can be found on [docs.photoprism.app](https://docs.photoprism.app/getting-started/) - all you need is a Web browser and [Docker](https://docs.docker.com/get-docker/) to run the server. It is available for Mac, Linux, and Windows.
 
