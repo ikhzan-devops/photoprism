@@ -22,16 +22,14 @@ To get a first impression, you are welcome to play with our [public demo](https:
 
 <img align="right" height="270" src="https://dl.photoprism.app/img/ui/2025/iphone-crocus-540px.png">
 
-* Browse [all your photos](https://docs.photoprism.app/user-guide/organize/browse/) and [videos](https://try.photoprism.app/library/videos) without worrying about [RAW conversion, duplicates or video formats](https://docs.photoprism.app/user-guide/settings/library/)
-* Easily find specific pictures using [powerful search filters](https://try.photoprism.app/library/browse?view=cards&q=flower%20color%3Ared)
-* Recognizes [the faces of your family and friends](https://try.photoprism.app/library/people)
+* Browse [all your photos](https://docs.photoprism.app/user-guide/organize/browse/) and [videos](https://try.photoprism.app/library/videos) without worrying about [RAW conversion](https://www.photoprism.app/kb/file-formats), [duplicates](https://docs.photoprism.app/user-guide/library/duplicates/), or [video formats](https://docs.photoprism.app/user-guide/organize/video/)
+* Whether you're using a phone, tablet, or desktop computer, our intuitive [Progressive Web App](https://try.photoprism.app/) provides a native app-like experience and can be [easily installed](https://docs.photoprism.app/user-guide/pwa/) on your home screen
+* Easily find specific photos and videos with [powerful search filters](https://docs.photoprism.app/user-guide/search/filters/) that can be combined and are available for [many different properties](https://docs.photoprism.app/user-guide/search/filters/#filter-reference), including [labels](https://try.photoprism.app/library/labels), [location](https://try.photoprism.app/library/places?q=s2:47a85a63f764), [resolution](https://try.photoprism.app/library/browse?view=cards&q=mp:4), [color](https://try.photoprism.app/library/browse?view=cards&q=color:red), [chroma](https://try.photoprism.app/library/browse?view=cards&q=mono%3Atrue), and [quality](https://try.photoprism.app/library/review)
+* Recognizes the faces of [your family and friends](https://demo.photoprism.app/library/people/new)
 * [Automatic classification](https://try.photoprism.app/library/labels) of pictures based on their content and location
 * [Play Live Photos](https://try.photoprism.app/library/live) by hovering over them in [albums](https://try.photoprism.app/library/albums) and [search results](https://try.photoprism.app/library/browse?view=cards&q=type%3Alive)
-* Since the [User Interface](https://try.photoprism.app/) is a [Progressive Web App](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps),
-  it provides a native app-like experience, and you can conveniently install it on the home screen of all major operating systems and mobile devices
-* Includes five high-resolution [World Maps](https://try.photoprism.app/library/places) to bring back the memories of your favorite trips
-* Metadata is extracted and merged from Exif, XMP, and other sources such as Google Photos
-* Many more image properties like [Colors](https://try.photoprism.app/library/browse?view=cards&q=color:red), [Chroma](https://try.photoprism.app/library/browse?view=cards&q=mono%3Atrue), and [Quality](https://try.photoprism.app/library/review) can be searched as well
+* Five high-resolution [World Maps](https://try.photoprism.app/library/places) and our [privacy-preserving geocoding service](https://docs.photoprism.app/getting-started/#maps-places) help bring back memories of your favorite trips and let you explore the world
+* Metadata can be extracted and merged from Exif, XMP, and proprietary sources such as Google Photos JSON
 * Use [PhotoSync](https://link.photoprism.app/photosync) to securely backup iOS and Android phones in the background
 * WebDAV clients such as Microsoft's Windows Explorer and Apple's Finder [can connect directly](https://docs.photoprism.app/user-guide/sync/webdav/) to PhotoPrism, allowing you to open, edit, and delete files from your computer as if they were local
 
@@ -80,11 +78,15 @@ Common problems can be quickly diagnosed and solved using our [Troubleshooting C
 
 ## Upcoming Features and Enhancements ##
 
+<a href="https://github.com/orgs/photoprism/projects/5"><img align="right" height="240" src="https://dl.photoprism.app/img/ui/2025/upcoming-features-240px.png"></a>
+
 Our [Project Roadmap](https://link.photoprism.app/roadmap) shows what tasks are in progress and what features will be implemented next. You are invited to give ideas you like a thumbs-up, so we know what's most popular.
 
 Be aware that we have a zero-bug policy and do our best to help users when they need support or have other questions. This comes at a price though, as we can't give exact release dates for new features. Our team receives many more requests than can be implemented, so we want to emphasize that we are in no way obligated to implement the features, enhancements, or other changes you request. We do, however, appreciate your feedback and carefully consider all requests.
 
-**Because sustained funding is key to quickly releasing new features, we encourage you to support our mission by [signing up as a sponsor](https://link.photoprism.app/sponsor) or purchasing a [commercial license](https://www.photoprism.app/teams). Ultimately, that's what's best for the product and the community.**
+**Because sustained funding is key to quickly releasing new features, we encourage you to support our mission by [signing up for a personal membership](https://link.photoprism.app/membership) or [purchasing a commercial license](https://www.photoprism.app/teams#compare).**
+
+[Become a Member ›](https://link.photoprism.app/membership)
 
 ## GitHub Issues ⚠️ ##
 
@@ -96,6 +98,8 @@ We kindly ask you not to report bugs via GitHub Issues **unless you are certain 
 - This gives us the opportunity to [improve our documentation](https://docs.photoprism.app/getting-started/troubleshooting/) and provide best-in-class support instead of dealing with unclear/duplicate bug reports or triggering a flood of notifications by replying to comments
 
 ## Connect with the Community ##
+
+<a href="https://link.photoprism.app/chat"><img align="right" width="144" height="144" src="https://dl.photoprism.app/img/brands/element-logo.svg"></a>
 
 Follow us on [Mastodon](https://floss.social/@photoprism), [Bluesky](https://bsky.app/profile/photoprism.app), or join the [Community Chat](https://link.photoprism.app/chat) to get regular updates, connect with other users, and discuss your ideas. Our [Code of Conduct](https://www.photoprism.app/code-of-conduct) explains the "dos and don’ts" when interacting with other community members.
 
