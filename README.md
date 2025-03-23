@@ -29,7 +29,7 @@ To get a first impression, you are welcome to play with our [public demo](https:
 * [Automatic classification](https://try.photoprism.app/library/labels) of pictures based on their content and location
 * [Play Live Photos](https://try.photoprism.app/library/live) by hovering over them in [albums](https://try.photoprism.app/library/albums) and [search results](https://try.photoprism.app/library/browse?view=cards&q=type%3Alive)
 * Five high-resolution [World Maps](https://try.photoprism.app/library/places) and our [privacy-preserving geocoding service](https://docs.photoprism.app/getting-started/#maps-places) help bring back memories of your favorite trips and let you explore the world
-* Metadata can be extracted and merged from Exif, XMP, and proprietary sources such as Google Photos JSON
+* Metadata can be extracted and merged from Exif, XMP, and proprietary sources such as Google Photos
 * Use [PhotoSync](https://link.photoprism.app/photosync) to securely backup iOS and Android phones in the background
 * WebDAV clients such as Microsoft's Windows Explorer and Apple's Finder [can connect directly](https://docs.photoprism.app/user-guide/sync/webdav/) to PhotoPrism, allowing you to open, edit, and delete files from your computer as if they were local
 
