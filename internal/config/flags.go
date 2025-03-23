@@ -139,7 +139,7 @@ var Flags = CliFlags{
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "prod",
-			Usage:   "enable production mode to log startup warnings and errors only, and disable debug logs",
+			Usage:   "disable debug logs and log startup warnings and errors only",
 			EnvVars: EnvVars("PROD"),
 		}}, {
 		Flag: &cli.BoolFlag{
