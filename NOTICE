@@ -9,7 +9,7 @@ The following 3rd-party software packages may be used by or distributed with
 PhotoPrism. Any information relevant to third-party vendors listed below are
 collected using common, reasonable means.
 
-Date generated: 2025-03-20
+Date generated: 2025-03-23
 
 ================================================================================
 
@@ -2316,8 +2316,8 @@ SOFTWARE.
 --------------------------------------------------------------------------------
 
 Package: github.com/golang/geo
-Version: v0.0.0-20250319031623-61885490c193
-License: Apache-2.0 (https://github.com/golang/geo/blob/61885490c193/LICENSE)
+Version: v0.0.0-20250321002858-2bb09a976f49
+License: Apache-2.0 (https://github.com/golang/geo/blob/2bb09a976f49/LICENSE)
 
 
                                  Apache License
@@ -7866,8 +7866,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --------------------------------------------------------------------------------
 
 Package: gonum.org/v1/gonum
-Version: v0.15.1
-License: BSD-3-Clause (https://github.com/gonum/gonum/blob/v0.15.1/LICENSE)
+Version: v0.16.0
+License: BSD-3-Clause (https://github.com/gonum/gonum/blob/v0.16.0/LICENSE)
 
 Copyright ©2013 The Gonum Authors. All rights reserved.
 
