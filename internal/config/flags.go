@@ -139,18 +139,17 @@ var Flags = CliFlags{
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "prod",
-			Hidden:  true,
-			Usage:   "enable production mode, hide non-essential log messages",
+			Usage:   "enable production mode, log warnings and errors only",
 			EnvVars: EnvVars("PROD"),
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "debug",
-			Usage:   "enable debug mode, show non-essential log messages",
+			Usage:   "enable debug mode for development and troubleshooting",
 			EnvVars: EnvVars("DEBUG"),
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "trace",
-			Usage:   "enable trace mode, show all log messages",
+			Usage:   "enable trace mode to display all debug and trace logs",
 			EnvVars: EnvVars("TRACE"),
 		}}, {
 		Flag: &cli.BoolFlag{
