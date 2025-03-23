@@ -603,10 +603,6 @@ msgstr "ยกเลิก"
 msgid "Caption"
 msgstr "คำบรรยาย"
 
-#: src/page/settings/content.vue:312
-msgid "Captions"
-msgstr "คำบรรยาย"
-
 #: src/component/photo/toolbar.vue:100 src/component/photo/toolbar.vue:106
 msgid "Cards"
 msgstr "การ์ด"
@@ -653,7 +649,7 @@ msgstr "ไม่สามารถบันทึกการเปลี่ย
 #: src/component/photo/edit/files.vue:160 src/component/service/edit.vue:90
 #: src/component/share/dialog.vue:92 src/component/share/dialog.vue:111
 #: src/page/albums.vue:648 src/page/people/recognized.vue:119
-#: src/page/settings/advanced.vue:58 src/page/settings/content.vue:57
+#: src/page/settings/advanced.vue:62 src/page/settings/content.vue:62
 #: src/page/settings/general.vue:108
 msgid "Changes successfully saved"
 msgstr "บันทึกการเปลี่ยนแปลงเรียบร้อยแล้ว"
@@ -880,7 +876,7 @@ msgstr "บันทึกการดีบัก"
 #: src/model/user.js:246 src/options/auth.js:20 src/options/auth.js:21
 #: src/options/auth.js:39 src/options/auth.js:40 src/options/options.js:309
 #: src/options/options.js:344 src/options/options.js:412
-#: src/options/themes.js:727 src/page/places.vue:323
+#: src/options/themes.js:727 src/page/places.vue:343
 #: src/page/settings/general.vue:104
 msgid "Default"
 msgstr "ค่าเริ่มต้น"
@@ -1001,6 +997,14 @@ msgstr "อนุญาตให้ออกไป"
 msgid "Display Name"
 msgstr "ชื่อที่แสดง"
 
+#: src/page/settings/content.vue:305
+msgid "Display picture captions in search results."
+msgstr ""
+
+#: src/page/settings/content.vue:283
+msgid "Display picture titles in search results."
+msgstr ""
+
 #: src/component/photo/view/cards.vue:339
 #: src/component/photo/view/cards.vue:521
 #: src/component/photo/view/mosaic.vue:183 src/options/options.js:405
@@ -1032,15 +1036,15 @@ msgstr "เสร็จแล้ว"
 msgid "Done."
 msgstr "เสร็จแล้ว."
 
-#: src/component/album/clipboard.vue:73 src/component/album/toolbar.vue:114
+#: src/component/album/clipboard.vue:73 src/component/album/toolbar.vue:123
 #: src/component/file/clipboard.vue:48 src/component/lightbox.vue:1075
 #: src/component/lightbox.vue:1076 src/component/people/clipboard.vue:47
 #: src/component/photo/clipboard.vue:116 src/component/photo/edit/files.vue:168
-#: src/page/settings/content.vue:339 src/page/settings/general.vue:321
+#: src/page/settings/content.vue:331 src/page/settings/general.vue:321
 msgid "Download"
 msgstr "ดาวน์โหลด"
 
-#: src/page/settings/content.vue:366
+#: src/page/settings/content.vue:357
 msgid "Download only original media files, without any automatically generated files."
 msgstr "ดาวน์โหลดเฉพาะไฟล์มีเดียต้นฉบับ โดยไม่มีไฟล์ที่สร้างขึ้นโดยอัตโนมัติ"
 
@@ -1171,11 +1175,11 @@ msgstr "ข้อผิดพลาด"
 msgid "Estimate"
 msgstr "ประมาณการ"
 
-#: src/page/settings/content.vue:87
+#: src/page/settings/content.vue:85
 msgid "Estimate Locations"
 msgstr "สถานที่ประมาณการ"
 
-#: src/page/settings/content.vue:88
+#: src/page/settings/content.vue:86
 msgid "Estimate the approximate location of pictures without GPS coordinates."
 msgstr "ประมาณตำแหน่งโดยประมาณของรูปภาพโดยปราศจากพิกัด GPS"
 
@@ -1209,7 +1213,7 @@ msgstr "หมดอายุ"
 msgid "Exposure"
 msgstr "การเปิดรับ"
 
-#: src/page/settings/content.vue:111
+#: src/page/settings/content.vue:109
 msgid "Extract still images and generate thumbnails while indexing."
 msgstr "สกัดภาพนิ่งและสร้างภาพขนาดย่อในระหว่างการสร้างดัชนี"
 
@@ -1303,7 +1307,7 @@ msgstr "ชื่อไฟล์"
 msgid "Files"
 msgstr "ไฟล์"
 
-#: src/page/settings/content.vue:212
+#: src/page/settings/content.vue:207
 msgid "Files with sequential names like 'IMG_1234 (2)' and 'IMG_1234 (3)' belong to the same picture."
 msgstr "ไฟล์ที่มีชื่อตามลำดับ เช่น 'IMG_1234 (2)' และ 'IMG_1234 (3)' เป็นของรูปภาพเดียวกัน"
 
@@ -1367,7 +1371,7 @@ msgstr "สร้าง"
 msgid "Generate albums of special moments, journeys, and places."
 msgstr "สร้างอัลบั้มของช่วงเวลาพิเศษ การเดินทาง และสถานที่ต่าง ๆ โดยอัตโนมัติ"
 
-#: src/page/settings/content.vue:110
+#: src/page/settings/content.vue:108
 msgid "Generate Previews"
 msgstr "สร้างการแสดงตัวอย่าง"
 
@@ -1499,11 +1503,11 @@ msgstr "ใน"
 msgid "In case pictures you expect are missing, please rescan your library and wait until indexing has been completed."
 msgstr "ในกรณีที่รูปภาพที่คุณคาดว่าจะหายไป โปรดสแกนไลบรารีของคุณอีกครั้งและรอจนกว่าการจัดทำดัชนีจะเสร็จสมบูรณ์"
 
-#: src/page/settings/content.vue:389
+#: src/page/settings/content.vue:379
 msgid "Include RAW image files when downloading stacks and archives."
 msgstr "รวมไฟล์ภาพ RAW เมื่อดาวน์โหลดสแต็คและไฟล์เก็บถาวร"
 
-#: src/page/settings/content.vue:412
+#: src/page/settings/content.vue:401
 msgid "Include sidecar files when downloading stacks and archives."
 msgstr "รวมไฟล์ sidecar เมื่อดาวน์โหลดสแต็คและไฟล์เก็บถาวร"
 
@@ -1719,7 +1723,7 @@ msgstr "ลิงค์"
 msgid "List"
 msgstr "รายการ"
 
-#: src/page/settings/content.vue:266
+#: src/page/settings/content.vue:260
 msgid "List View"
 msgstr "มุมมองรายการ"
 
@@ -1995,7 +1999,7 @@ msgstr "ไม่พบผู้คน"
 #: src/component/lightbox.vue:316 src/component/photo/view/cards.vue:144
 #: src/component/photo/view/list.vue:82 src/component/photo/view/mosaic.vue:68
 #: src/page/album/photos.vue:474 src/page/library/browse.vue:122
-#: src/page/photos.vue:601 src/page/places.vue:574 src/page/places.vue:671
+#: src/page/photos.vue:601 src/page/places.vue:594 src/page/places.vue:692
 msgid "No pictures found"
 msgstr "ไม่พบรูปภาพ"
 
@@ -2171,7 +2175,7 @@ msgstr "ชื่อจริง"
 
 #: src/component/navigation.vue:1252 src/model/file.js:196
 #: src/options/options.js:509 src/page/library/browse.vue:65
-#: src/page/settings/content.vue:365 src/page/settings/general.vue:513
+#: src/page/settings/content.vue:356 src/page/settings/general.vue:513
 msgid "Originals"
 msgstr "ต้นฉบับ"
 
@@ -2184,7 +2188,7 @@ msgstr "อื่น"
 msgid "Our mission is to provide the most user- and privacy-friendly solution to keep your pictures organized and accessible."
 msgstr "ภารกิจของเราคือการจัดหาโซลูชันที่เป็นมิตรต่อผู้ใช้และความเป็นส่วนตัวมากที่สุด เพื่อให้รูปภาพของคุณเป็นระเบียบและเข้าถึงได้"
 
-#: src/options/options.js:358 src/page/places.vue:339
+#: src/options/options.js:358 src/page/places.vue:359
 msgid "Outdoor"
 msgstr "กลางแจ้ง"
 
@@ -2276,7 +2280,7 @@ msgstr "สีชมพู"
 msgid "Place"
 msgstr "สถานที่"
 
-#: src/page/settings/content.vue:164
+#: src/page/settings/content.vue:161
 msgid "Place & Time"
 msgstr "สถานที่และเวลา"
 
@@ -2391,7 +2395,7 @@ msgstr "การฉายภาพ"
 msgid "Purple"
 msgstr "สีม่วง"
 
-#: src/page/settings/content.vue:60
+#: src/page/settings/content.vue:59
 msgid "Quality Filter"
 msgstr "ตัวกรองคุณภาพ"
 
@@ -2416,7 +2420,7 @@ msgid "Raw"
 msgstr "ดิบ"
 
 #: src/component/photo/view/cards.vue:313
-#: src/component/photo/view/mosaic.vue:157 src/page/settings/content.vue:388
+#: src/component/photo/view/mosaic.vue:157 src/page/settings/content.vue:378
 msgid "RAW"
 msgstr "ดิบ"
 
@@ -2485,7 +2489,7 @@ msgid "Reload"
 msgstr "โหลดซ้ำ"
 
 #: src/component/navigation.vue:108 src/component/update.vue:26
-#: src/page/settings/content.vue:53 src/page/settings/general.vue:104
+#: src/page/settings/general.vue:104
 msgid "Reloading…"
 msgstr "กำลังโหลดซ้ำ…"
 
@@ -2517,7 +2521,7 @@ msgstr "คำขอล้มเหลว - คุณออฟไลน์อย
 msgid "Request failed - invalid response"
 msgstr "คำขอล้มเหลว - ตอบกลับไม่ถูกต้อง"
 
-#: src/page/settings/content.vue:62
+#: src/page/settings/content.vue:61
 msgid "Require non-photographic and low-quality images to be reviewed before they appear in search results."
 msgstr "กำหนดให้ต้องตรวจสอบรูปภาพที่ไม่ใช่ภาพถ่ายและคุณภาพต่ำก่อนที่จะปรากฏในผลการค้นหา"
 
@@ -2555,7 +2559,7 @@ msgstr "บทบาท"
 msgid "Rows per page:"
 msgstr "จำนวนแถวต่อหน้า:"
 
-#: src/options/options.js:353 src/page/places.vue:335
+#: src/options/options.js:353 src/page/places.vue:355
 msgid "Satellite"
 msgstr "ดาวเทียม"
 
@@ -2589,7 +2593,7 @@ msgstr "ขอบเขต"
 #: src/component/photo/toolbar.vue:56 src/options/options.js:310
 #: src/page/albums.vue:100 src/page/labels.vue:77
 #: src/page/library/errors.vue:75 src/page/people/recognized.vue:65
-#: src/page/places.vue:78 src/page/settings/content.vue:240
+#: src/page/places.vue:78 src/page/settings/content.vue:235
 msgid "Search"
 msgstr "ค้นหา"
 
@@ -2654,7 +2658,7 @@ msgstr "การเลือกที่เก็บถาวร"
 msgid "Selection restored"
 msgstr "คืนค่าการเลือกแล้ว"
 
-#: src/page/settings/content.vue:210
+#: src/page/settings/content.vue:205
 msgid "Sequential Name"
 msgstr "ชื่อลำดับ"
 
@@ -2715,6 +2719,10 @@ msgstr "แสดง"
 msgid "Show all new faces"
 msgstr "แสดงใบหน้าใหม่ทั้งหมด"
 
+#: src/page/settings/content.vue:304
+msgid "Show Captions"
+msgstr ""
+
 #: src/page/people/new.vue:62 src/page/people/recognized.vue:97
 msgid "Show hidden"
 msgstr "แสดงที่ซ่อนอยู่"
@@ -2727,23 +2735,19 @@ msgstr "แสดงน้อยลง"
 msgid "Show more"
 msgstr "แสดงมากขึ้น"
 
-#: src/page/settings/content.vue:313
-msgid "Show picture captions in search results."
-msgstr "แสดงคำบรรยายภาพในผลการค้นหา"
-
-#: src/page/settings/content.vue:290
-msgid "Show picture titles in search results."
-msgstr "แสดงชื่อรูปภาพในผลการค้นหา"
-
 #: src/page/settings/general.vue:538
 msgid "Show server logs in Library."
 msgstr "แสดงบันทึกเซิร์ฟเวอร์ในไลบรารี"
+
+#: src/page/settings/content.vue:282
+msgid "Show Titles"
+msgstr ""
 
 #: src/component/lightbox.vue:952 src/component/lightbox.vue:953
 msgid "Show/Hide Sidebar"
 msgstr "แสดง/ซ่อนแถบด้านข้าง"
 
-#: src/model/file.js:214 src/page/settings/content.vue:411
+#: src/model/file.js:214 src/page/settings/content.vue:400
 msgid "Sidecar"
 msgstr "ไซด์คาร์"
 
@@ -2807,11 +2811,11 @@ msgstr "แหล่งที่มา"
 msgid "Stack"
 msgstr "ซ้อนกัน"
 
-#: src/page/settings/content.vue:188
+#: src/page/settings/content.vue:184
 msgid "Stack files sharing the same unique image or instance identifier."
 msgstr "สแต็คไฟล์ที่แชร์รูปภาพที่ไม่ซ้ำกันหรือตัวระบุอินสแตนซ์เดียวกัน"
 
-#: src/page/settings/content.vue:165
+#: src/page/settings/content.vue:162
 msgid "Stack pictures taken at the exact same time and location based on their metadata."
 msgstr "กองรูปภาพที่ถ่ายในเวลาและสถานที่เดียวกันโดยอิงตามข้อมูลเมตา"
 
@@ -2819,7 +2823,7 @@ msgstr "กองรูปภาพที่ถ่ายในเวลาแล
 msgid "Stackable"
 msgstr "วางซ้อนกันได้"
 
-#: src/component/navigation.vue:437 src/page/settings/content.vue:138
+#: src/component/navigation.vue:437 src/page/settings/content.vue:136
 msgid "Stacks"
 msgstr "กอง"
 
@@ -2847,7 +2851,7 @@ msgstr "สถานะ"
 msgid "Storage"
 msgstr "พื้นที่จัดเก็บ"
 
-#: src/options/options.js:348 src/page/places.vue:331
+#: src/options/options.js:348 src/page/places.vue:351
 msgid "Streets"
 msgstr "ถนน"
 
@@ -2985,10 +2989,6 @@ msgstr "ชื่อเรื่องยาวเกินไป"
 msgid "Title too long"
 msgstr "ชื่อเรื่องยาวเกินไป"
 
-#: src/page/settings/content.vue:289
-msgid "Titles"
-msgstr "ชื่อเรื่อง"
-
 #: src/locales.js:55
 msgid "to"
 msgstr "ถึง"
@@ -3029,7 +3029,7 @@ msgstr "เลือกไฟล์มากเกินไป"
 msgid "Too many requests"
 msgstr "คำขอมากเกินไป"
 
-#: src/options/options.js:363 src/page/places.vue:343
+#: src/options/options.js:363 src/page/places.vue:363
 msgid "Topographic"
 msgstr "ภูมิประเทศ"
 
@@ -3061,7 +3061,7 @@ msgstr "ไม่ได้รับอนุญาต"
 msgid "Undo"
 msgstr "เลิกทำ"
 
-#: src/page/settings/content.vue:187
+#: src/page/settings/content.vue:183
 msgid "Unique ID"
 msgstr "ID ไม่ซ้ำกัน"
 
@@ -3135,7 +3135,7 @@ msgstr "อัปเกรด"
 msgid "Upgrade Now"
 msgstr "อัพเกรดเดี๋ยวนี้"
 
-#: src/component/album/toolbar.vue:123 src/component/navigation.vue:1772
+#: src/component/album/toolbar.vue:114 src/component/navigation.vue:1772
 #: src/component/photo/toolbar.vue:173 src/component/photo/upload/dialog.vue:49
 #: src/component/service/upload.vue:143 src/page/albums.vue:181
 #: src/page/library/import.vue:133 src/page/settings/general.vue:297
@@ -3260,7 +3260,7 @@ msgstr "วิดีโอ"
 msgid "View"
 msgstr "ดู"
 
-#: src/page/settings/content.vue:267
+#: src/page/settings/content.vue:261
 msgid "View search results as a list."
 msgstr "ดูผลลัพธ์การค้นหาเป็นรายการ"
 
@@ -3311,7 +3311,7 @@ msgstr "ไคลเอนต์ WebDAV เช่น Windows Explorer ของ 
 msgid "WebDAV Upload"
 msgstr "อัพโหลด WebDAV"
 
-#: src/page/places.vue:232
+#: src/page/places.vue:252
 msgid "WebGL support is disabled in your browser"
 msgstr "การรองรับ WebGL ถูกปิดใช้งานในเบราว์เซอร์ของคุณ"
 
@@ -3380,7 +3380,7 @@ msgstr "คุณสามารถสแกนคลังของคุณเ
 msgid "Your account has been successfully connected."
 msgstr "บัญชีของคุณเชื่อมต่อสำเร็จแล้ว"
 
-#: src/page/places.vue:236
+#: src/page/places.vue:256
 msgid "Your browser does not support WebGL"
 msgstr "เบราว์เซอร์ของคุณไม่รองรับ WebGL"
 
@@ -3396,6 +3396,18 @@ msgstr "คลังของคุณได้รับการวิเคร
 #: src/component/lightbox.vue:239
 msgid "Zoom in/out"
 msgstr "ซูมเข้า/ออก"
+
+#~ msgid "Captions"
+#~ msgstr "คำบรรยาย"
+
+#~ msgid "Show picture captions in search results."
+#~ msgstr "แสดงคำบรรยายภาพในผลการค้นหา"
+
+#~ msgid "Show picture titles in search results."
+#~ msgstr "แสดงชื่อรูปภาพในผลการค้นหา"
+
+#~ msgid "Titles"
+#~ msgstr "ชื่อเรื่อง"
 
 #~ msgid "Customer Support"
 #~ msgstr "สนับสนุนลูกค้า"

@@ -603,10 +603,6 @@ msgstr "取消"
 msgid "Caption"
 msgstr "标题"
 
-#: src/page/settings/content.vue:312
-msgid "Captions"
-msgstr "字幕"
-
 #: src/component/photo/toolbar.vue:100 src/component/photo/toolbar.vue:106
 msgid "Cards"
 msgstr "卡片"
@@ -653,7 +649,7 @@ msgstr "无法保存变更"
 #: src/component/photo/edit/files.vue:160 src/component/service/edit.vue:90
 #: src/component/share/dialog.vue:92 src/component/share/dialog.vue:111
 #: src/page/albums.vue:648 src/page/people/recognized.vue:119
-#: src/page/settings/advanced.vue:58 src/page/settings/content.vue:57
+#: src/page/settings/advanced.vue:62 src/page/settings/content.vue:62
 #: src/page/settings/general.vue:108
 msgid "Changes successfully saved"
 msgstr "更改成功保存"
@@ -880,7 +876,7 @@ msgstr "调试日志"
 #: src/model/user.js:246 src/options/auth.js:20 src/options/auth.js:21
 #: src/options/auth.js:39 src/options/auth.js:40 src/options/options.js:309
 #: src/options/options.js:344 src/options/options.js:412
-#: src/options/themes.js:727 src/page/places.vue:323
+#: src/options/themes.js:727 src/page/places.vue:343
 #: src/page/settings/general.vue:104
 msgid "Default"
 msgstr "默认"
@@ -1001,6 +997,14 @@ msgstr "解散"
 msgid "Display Name"
 msgstr "昵称"
 
+#: src/page/settings/content.vue:305
+msgid "Display picture captions in search results."
+msgstr ""
+
+#: src/page/settings/content.vue:283
+msgid "Display picture titles in search results."
+msgstr ""
+
 #: src/component/photo/view/cards.vue:339
 #: src/component/photo/view/cards.vue:521
 #: src/component/photo/view/mosaic.vue:183 src/options/options.js:405
@@ -1032,15 +1036,15 @@ msgstr "完成"
 msgid "Done."
 msgstr "完成。"
 
-#: src/component/album/clipboard.vue:73 src/component/album/toolbar.vue:114
+#: src/component/album/clipboard.vue:73 src/component/album/toolbar.vue:123
 #: src/component/file/clipboard.vue:48 src/component/lightbox.vue:1075
 #: src/component/lightbox.vue:1076 src/component/people/clipboard.vue:47
 #: src/component/photo/clipboard.vue:116 src/component/photo/edit/files.vue:168
-#: src/page/settings/content.vue:339 src/page/settings/general.vue:321
+#: src/page/settings/content.vue:331 src/page/settings/general.vue:321
 msgid "Download"
 msgstr "下载"
 
-#: src/page/settings/content.vue:366
+#: src/page/settings/content.vue:357
 msgid "Download only original media files, without any automatically generated files."
 msgstr "只下载原始媒体文件，不下载任何自动生成的文件。"
 
@@ -1171,11 +1175,11 @@ msgstr "错误"
 msgid "Estimate"
 msgstr "估算"
 
-#: src/page/settings/content.vue:87
+#: src/page/settings/content.vue:85
 msgid "Estimate Locations"
 msgstr "估计地点"
 
-#: src/page/settings/content.vue:88
+#: src/page/settings/content.vue:86
 msgid "Estimate the approximate location of pictures without GPS coordinates."
 msgstr "在没有 GPS 坐标的情况下估算图片的大致位置。"
 
@@ -1209,7 +1213,7 @@ msgstr "时限"
 msgid "Exposure"
 msgstr "曝光度"
 
-#: src/page/settings/content.vue:111
+#: src/page/settings/content.vue:109
 msgid "Extract still images and generate thumbnails while indexing."
 msgstr "提取静态图像并在编制索引时生成缩略图。"
 
@@ -1303,7 +1307,7 @@ msgstr "文件名"
 msgid "Files"
 msgstr "文件"
 
-#: src/page/settings/content.vue:212
+#: src/page/settings/content.vue:207
 msgid "Files with sequential names like 'IMG_1234 (2)' and 'IMG_1234 (3)' belong to the same picture."
 msgstr "顺序名称的文件如“IMG_1234 (2)”和“IMG_1234 (3)”的文件属于同一图片。"
 
@@ -1367,7 +1371,7 @@ msgstr "产生"
 msgid "Generate albums of special moments, journeys, and places."
 msgstr "自动创建特殊时刻、旅行和地点的相册。"
 
-#: src/page/settings/content.vue:110
+#: src/page/settings/content.vue:108
 msgid "Generate Previews"
 msgstr "生成预览"
 
@@ -1499,11 +1503,11 @@ msgstr "于"
 msgid "In case pictures you expect are missing, please rescan your library and wait until indexing has been completed."
 msgstr "如果您想要的图片丢失，请重新扫描库并等待索引完成。"
 
-#: src/page/settings/content.vue:389
+#: src/page/settings/content.vue:379
 msgid "Include RAW image files when downloading stacks and archives."
 msgstr "在下载堆栈和档案时包括RAW图像文件。"
 
-#: src/page/settings/content.vue:412
+#: src/page/settings/content.vue:401
 msgid "Include sidecar files when downloading stacks and archives."
 msgstr "在下载堆栈和档案时包括sidecar文件。"
 
@@ -1719,7 +1723,7 @@ msgstr "链接"
 msgid "List"
 msgstr "列表"
 
-#: src/page/settings/content.vue:266
+#: src/page/settings/content.vue:260
 msgid "List View"
 msgstr "列表查看"
 
@@ -1995,7 +1999,7 @@ msgstr "找不到人物"
 #: src/component/lightbox.vue:316 src/component/photo/view/cards.vue:144
 #: src/component/photo/view/list.vue:82 src/component/photo/view/mosaic.vue:68
 #: src/page/album/photos.vue:474 src/page/library/browse.vue:122
-#: src/page/photos.vue:601 src/page/places.vue:574 src/page/places.vue:671
+#: src/page/photos.vue:601 src/page/places.vue:594 src/page/places.vue:692
 msgid "No pictures found"
 msgstr "找不到图片"
 
@@ -2172,7 +2176,7 @@ msgstr "源文件名"
 # Originals在本项目里有时代表服务器上的照片的储存文件夹，翻译为来源不妥，但我也没想好咋翻译。
 #: src/component/navigation.vue:1252 src/model/file.js:196
 #: src/options/options.js:509 src/page/library/browse.vue:65
-#: src/page/settings/content.vue:365 src/page/settings/general.vue:513
+#: src/page/settings/content.vue:356 src/page/settings/general.vue:513
 msgid "Originals"
 msgstr "源"
 
@@ -2185,7 +2189,7 @@ msgstr "其他"
 msgid "Our mission is to provide the most user- and privacy-friendly solution to keep your pictures organized and accessible."
 msgstr "我们的使命是提供对绝大部分用户——及隐私最友好的解决方案，以保持你的照片有条理和可访问。"
 
-#: src/options/options.js:358 src/page/places.vue:339
+#: src/options/options.js:358 src/page/places.vue:359
 msgid "Outdoor"
 msgstr "户外地图"
 
@@ -2277,7 +2281,7 @@ msgstr "粉红"
 msgid "Place"
 msgstr "地点"
 
-#: src/page/settings/content.vue:164
+#: src/page/settings/content.vue:161
 msgid "Place & Time"
 msgstr "地点和时间"
 
@@ -2392,7 +2396,7 @@ msgstr "投影"
 msgid "Purple"
 msgstr "紫"
 
-#: src/page/settings/content.vue:60
+#: src/page/settings/content.vue:59
 msgid "Quality Filter"
 msgstr "质量筛选"
 
@@ -2417,7 +2421,7 @@ msgid "Raw"
 msgstr "原始数据"
 
 #: src/component/photo/view/cards.vue:313
-#: src/component/photo/view/mosaic.vue:157 src/page/settings/content.vue:388
+#: src/component/photo/view/mosaic.vue:157 src/page/settings/content.vue:378
 msgid "RAW"
 msgstr "RAW"
 
@@ -2487,7 +2491,7 @@ msgid "Reload"
 msgstr "重载"
 
 #: src/component/navigation.vue:108 src/component/update.vue:26
-#: src/page/settings/content.vue:53 src/page/settings/general.vue:104
+#: src/page/settings/general.vue:104
 msgid "Reloading…"
 msgstr "重载中…"
 
@@ -2519,7 +2523,7 @@ msgstr "请求失败 - 你是否离线？"
 msgid "Request failed - invalid response"
 msgstr "请求失败——无效的响应"
 
-#: src/page/settings/content.vue:62
+#: src/page/settings/content.vue:61
 msgid "Require non-photographic and low-quality images to be reviewed before they appear in search results."
 msgstr "要求非图片和低质量图片在出现在搜索结果中之前必须经过审核。"
 
@@ -2557,7 +2561,7 @@ msgstr "角色"
 msgid "Rows per page:"
 msgstr "每页行数："
 
-#: src/options/options.js:353 src/page/places.vue:335
+#: src/options/options.js:353 src/page/places.vue:355
 msgid "Satellite"
 msgstr "卫星"
 
@@ -2591,7 +2595,7 @@ msgstr "范围"
 #: src/component/photo/toolbar.vue:56 src/options/options.js:310
 #: src/page/albums.vue:100 src/page/labels.vue:77
 #: src/page/library/errors.vue:75 src/page/people/recognized.vue:65
-#: src/page/places.vue:78 src/page/settings/content.vue:240
+#: src/page/places.vue:78 src/page/settings/content.vue:235
 msgid "Search"
 msgstr "搜索"
 
@@ -2656,7 +2660,7 @@ msgstr "所选项已归档"
 msgid "Selection restored"
 msgstr "所选项已恢复"
 
-#: src/page/settings/content.vue:210
+#: src/page/settings/content.vue:205
 msgid "Sequential Name"
 msgstr "顺序名称"
 
@@ -2717,6 +2721,10 @@ msgstr "显示"
 msgid "Show all new faces"
 msgstr "显示所有的新面孔"
 
+#: src/page/settings/content.vue:304
+msgid "Show Captions"
+msgstr ""
+
 #: src/page/people/new.vue:62 src/page/people/recognized.vue:97
 msgid "Show hidden"
 msgstr "显示隐藏"
@@ -2729,23 +2737,19 @@ msgstr "显示更少"
 msgid "Show more"
 msgstr "显示更多"
 
-#: src/page/settings/content.vue:313
-msgid "Show picture captions in search results."
-msgstr "在搜索结果中显示图片说明"
-
-#: src/page/settings/content.vue:290
-msgid "Show picture titles in search results."
-msgstr "在搜索结果中显示图片标题"
-
 #: src/page/settings/general.vue:538
 msgid "Show server logs in Library."
 msgstr "在库中显示服务器日志。"
+
+#: src/page/settings/content.vue:282
+msgid "Show Titles"
+msgstr ""
 
 #: src/component/lightbox.vue:952 src/component/lightbox.vue:953
 msgid "Show/Hide Sidebar"
 msgstr "显示/隐藏侧边栏"
 
-#: src/model/file.js:214 src/page/settings/content.vue:411
+#: src/model/file.js:214 src/page/settings/content.vue:400
 msgid "Sidecar"
 msgstr "附属"
 
@@ -2809,11 +2813,11 @@ msgstr "来源"
 msgid "Stack"
 msgstr "堆"
 
-#: src/page/settings/content.vue:188
+#: src/page/settings/content.vue:184
 msgid "Stack files sharing the same unique image or instance identifier."
 msgstr "文件堆共享相同的唯一图像或实例标识符。"
 
-#: src/page/settings/content.vue:165
+#: src/page/settings/content.vue:162
 msgid "Stack pictures taken at the exact same time and location based on their metadata."
 msgstr "根据图片的元数据，堆叠在相同的时间和地点拍摄的图片。"
 
@@ -2821,7 +2825,7 @@ msgstr "根据图片的元数据，堆叠在相同的时间和地点拍摄的图
 msgid "Stackable"
 msgstr "可堆叠"
 
-#: src/component/navigation.vue:437 src/page/settings/content.vue:138
+#: src/component/navigation.vue:437 src/page/settings/content.vue:136
 msgid "Stacks"
 msgstr "堆"
 
@@ -2849,7 +2853,7 @@ msgstr "状态"
 msgid "Storage"
 msgstr "存储"
 
-#: src/options/options.js:348 src/page/places.vue:331
+#: src/options/options.js:348 src/page/places.vue:351
 msgid "Streets"
 msgstr "街道图"
 
@@ -2987,10 +2991,6 @@ msgstr "职称/职位"
 msgid "Title too long"
 msgstr "标题太长了"
 
-#: src/page/settings/content.vue:289
-msgid "Titles"
-msgstr "标题"
-
 #: src/locales.js:55
 msgid "to"
 msgstr "到"
@@ -3031,7 +3031,7 @@ msgstr "选择的文件过多"
 msgid "Too many requests"
 msgstr "请求太多"
 
-#: src/options/options.js:363 src/page/places.vue:343
+#: src/options/options.js:363 src/page/places.vue:363
 msgid "Topographic"
 msgstr "地形图"
 
@@ -3063,7 +3063,7 @@ msgstr "未经授权的"
 msgid "Undo"
 msgstr "撤销"
 
-#: src/page/settings/content.vue:187
+#: src/page/settings/content.vue:183
 msgid "Unique ID"
 msgstr "唯一标识符"
 
@@ -3137,7 +3137,7 @@ msgstr "升级"
 msgid "Upgrade Now"
 msgstr "立即升级"
 
-#: src/component/album/toolbar.vue:123 src/component/navigation.vue:1772
+#: src/component/album/toolbar.vue:114 src/component/navigation.vue:1772
 #: src/component/photo/toolbar.vue:173 src/component/photo/upload/dialog.vue:49
 #: src/component/service/upload.vue:143 src/page/albums.vue:181
 #: src/page/library/import.vue:133 src/page/settings/general.vue:297
@@ -3262,7 +3262,7 @@ msgstr "视频"
 msgid "View"
 msgstr "视图"
 
-#: src/page/settings/content.vue:267
+#: src/page/settings/content.vue:261
 msgid "View search results as a list."
 msgstr "以列表形式查看搜索结果。"
 
@@ -3313,7 +3313,7 @@ msgstr "WebDAV 客户端（例如 Microsoft 的 Windows 资源管理器或 Apple
 msgid "WebDAV Upload"
 msgstr "WebDAV 上传"
 
-#: src/page/places.vue:232
+#: src/page/places.vue:252
 msgid "WebGL support is disabled in your browser"
 msgstr "您的浏览器已禁用 WebGL 支持"
 
@@ -3382,7 +3382,7 @@ msgstr "你可以重新扫描你的库以找到更多的面部。"
 msgid "Your account has been successfully connected."
 msgstr "您的账户已成功连接。"
 
-#: src/page/places.vue:236
+#: src/page/places.vue:256
 msgid "Your browser does not support WebGL"
 msgstr "您的浏览器不支持 WebGL"
 
@@ -3398,6 +3398,18 @@ msgstr "你的库被不断分析，以自动创建特殊时刻、旅行和地点
 #: src/component/lightbox.vue:239
 msgid "Zoom in/out"
 msgstr "缩放"
+
+#~ msgid "Captions"
+#~ msgstr "字幕"
+
+#~ msgid "Show picture captions in search results."
+#~ msgstr "在搜索结果中显示图片说明"
+
+#~ msgid "Show picture titles in search results."
+#~ msgstr "在搜索结果中显示图片标题"
+
+#~ msgid "Titles"
+#~ msgstr "标题"
 
 #~ msgid "Customer Support"
 #~ msgstr "客户支持"

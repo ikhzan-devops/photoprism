@@ -152,8 +152,8 @@
                 v-model="settings.search.showTitles"
                 class="ma-0 pa-0 input-search-titles"
                 density="compact"
-                :label="$gettext('Titles')"
-                :hint="$gettext('Show picture titles in search results.')"
+                :label="$gettext('Show Titles')"
+                :hint="$gettext('Display picture titles in search results.')"
                 prepend-icon="mdi-format-text"
                 persistent-hint
                 @update:model-value="onChange"
@@ -166,8 +166,8 @@
                 v-model="settings.search.showCaptions"
                 class="ma-0 pa-0 input-search-captions"
                 density="compact"
-                :label="$gettext('Captions')"
-                :hint="$gettext('Show picture captions in search results.')"
+                :label="$gettext('Show Captions')"
+                :hint="$gettext('Display picture captions in search results.')"
                 prepend-icon="mdi-text"
                 persistent-hint
                 @update:model-value="onChange"

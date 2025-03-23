@@ -600,10 +600,6 @@ msgstr "Hủy bỏ"
 msgid "Caption"
 msgstr "Đầu đề"
 
-#: src/page/settings/content.vue:312
-msgid "Captions"
-msgstr "Chú thích"
-
 #: src/component/photo/toolbar.vue:100 src/component/photo/toolbar.vue:106
 msgid "Cards"
 msgstr "thẻ"
@@ -650,7 +646,7 @@ msgstr "Không thể lưu các thay đổi"
 #: src/component/photo/edit/files.vue:160 src/component/service/edit.vue:90
 #: src/component/share/dialog.vue:92 src/component/share/dialog.vue:111
 #: src/page/albums.vue:648 src/page/people/recognized.vue:119
-#: src/page/settings/advanced.vue:58 src/page/settings/content.vue:57
+#: src/page/settings/advanced.vue:62 src/page/settings/content.vue:62
 #: src/page/settings/general.vue:108
 msgid "Changes successfully saved"
 msgstr "Đã lưu thay đổi thành công"
@@ -877,7 +873,7 @@ msgstr "Nhật ký gỡ lỗi"
 #: src/model/user.js:246 src/options/auth.js:20 src/options/auth.js:21
 #: src/options/auth.js:39 src/options/auth.js:40 src/options/options.js:309
 #: src/options/options.js:344 src/options/options.js:412
-#: src/options/themes.js:727 src/page/places.vue:323
+#: src/options/themes.js:727 src/page/places.vue:343
 #: src/page/settings/general.vue:104
 msgid "Default"
 msgstr "Mặc định"
@@ -998,6 +994,14 @@ msgstr "Miễn nhiệm"
 msgid "Display Name"
 msgstr "Tên hiển thị"
 
+#: src/page/settings/content.vue:305
+msgid "Display picture captions in search results."
+msgstr ""
+
+#: src/page/settings/content.vue:283
+msgid "Display picture titles in search results."
+msgstr ""
+
 #: src/component/photo/view/cards.vue:339
 #: src/component/photo/view/cards.vue:521
 #: src/component/photo/view/mosaic.vue:183 src/options/options.js:405
@@ -1029,15 +1033,15 @@ msgstr "Xong"
 msgid "Done."
 msgstr "Xong."
 
-#: src/component/album/clipboard.vue:73 src/component/album/toolbar.vue:114
+#: src/component/album/clipboard.vue:73 src/component/album/toolbar.vue:123
 #: src/component/file/clipboard.vue:48 src/component/lightbox.vue:1075
 #: src/component/lightbox.vue:1076 src/component/people/clipboard.vue:47
 #: src/component/photo/clipboard.vue:116 src/component/photo/edit/files.vue:168
-#: src/page/settings/content.vue:339 src/page/settings/general.vue:321
+#: src/page/settings/content.vue:331 src/page/settings/general.vue:321
 msgid "Download"
 msgstr "Tải xuống"
 
-#: src/page/settings/content.vue:366
+#: src/page/settings/content.vue:357
 msgid "Download only original media files, without any automatically generated files."
 msgstr "Chỉ tải xuống các tệp phương tiện gốc mà không có bất kỳ tệp nào được tạo tự động."
 
@@ -1168,11 +1172,11 @@ msgstr "Lỗi"
 msgid "Estimate"
 msgstr "Ước lượng"
 
-#: src/page/settings/content.vue:87
+#: src/page/settings/content.vue:85
 msgid "Estimate Locations"
 msgstr "Ước tính vị trí"
 
-#: src/page/settings/content.vue:88
+#: src/page/settings/content.vue:86
 msgid "Estimate the approximate location of pictures without GPS coordinates."
 msgstr "Ước tính vị trí gần đúng của hình ảnh mà không cần tọa độ GPS."
 
@@ -1206,7 +1210,7 @@ msgstr "Hết hạn"
 msgid "Exposure"
 msgstr "Phơi bày"
 
-#: src/page/settings/content.vue:111
+#: src/page/settings/content.vue:109
 msgid "Extract still images and generate thumbnails while indexing."
 msgstr "Trích xuất hình ảnh tĩnh và tạo hình thu nhỏ trong khi lập chỉ mục."
 
@@ -1300,7 +1304,7 @@ msgstr "Tên tệp"
 msgid "Files"
 msgstr "Các tập tin"
 
-#: src/page/settings/content.vue:212
+#: src/page/settings/content.vue:207
 msgid "Files with sequential names like 'IMG_1234 (2)' and 'IMG_1234 (3)' belong to the same picture."
 msgstr "Các tệp có tên tuần tự như “IMG_1234 (2)” và “IMG_1234 (3)” thuộc cùng một hình ảnh."
 
@@ -1364,7 +1368,7 @@ msgstr "Phát ra"
 msgid "Generate albums of special moments, journeys, and places."
 msgstr "Tự động tạo album về những khoảnh khắc, chuyến đi và địa điểm đặc biệt."
 
-#: src/page/settings/content.vue:110
+#: src/page/settings/content.vue:108
 msgid "Generate Previews"
 msgstr "Tạo bản xem trước"
 
@@ -1496,11 +1500,11 @@ msgstr "TRONG"
 msgid "In case pictures you expect are missing, please rescan your library and wait until indexing has been completed."
 msgstr "Trong trường hợp hình ảnh bạn mong đợi bị thiếu, vui lòng quét lại thư viện của bạn và đợi cho đến khi quá trình lập chỉ mục hoàn tất."
 
-#: src/page/settings/content.vue:389
+#: src/page/settings/content.vue:379
 msgid "Include RAW image files when downloading stacks and archives."
 msgstr "Bao gồm các tệp hình ảnh RAW khi tải xuống các ngăn xếp và kho lưu trữ."
 
-#: src/page/settings/content.vue:412
+#: src/page/settings/content.vue:401
 msgid "Include sidecar files when downloading stacks and archives."
 msgstr "Bao gồm các tệp sidecar khi tải xuống ngăn xếp và kho lưu trữ."
 
@@ -1716,7 +1720,7 @@ msgstr "liên kết"
 msgid "List"
 msgstr "Danh sách"
 
-#: src/page/settings/content.vue:266
+#: src/page/settings/content.vue:260
 msgid "List View"
 msgstr "Xem danh sách"
 
@@ -1992,7 +1996,7 @@ msgstr "Không tìm thấy người nào"
 #: src/component/lightbox.vue:316 src/component/photo/view/cards.vue:144
 #: src/component/photo/view/list.vue:82 src/component/photo/view/mosaic.vue:68
 #: src/page/album/photos.vue:474 src/page/library/browse.vue:122
-#: src/page/photos.vue:601 src/page/places.vue:574 src/page/places.vue:671
+#: src/page/photos.vue:601 src/page/places.vue:594 src/page/places.vue:692
 msgid "No pictures found"
 msgstr "Không tìm thấy hình ảnh nào"
 
@@ -2168,7 +2172,7 @@ msgstr "Tên khai sinh"
 
 #: src/component/navigation.vue:1252 src/model/file.js:196
 #: src/options/options.js:509 src/page/library/browse.vue:65
-#: src/page/settings/content.vue:365 src/page/settings/general.vue:513
+#: src/page/settings/content.vue:356 src/page/settings/general.vue:513
 msgid "Originals"
 msgstr "Bản gốc"
 
@@ -2181,7 +2185,7 @@ msgstr "Khác"
 msgid "Our mission is to provide the most user- and privacy-friendly solution to keep your pictures organized and accessible."
 msgstr "Sứ mệnh của chúng tôi là cung cấp giải pháp thân thiện với người dùng và quyền riêng tư nhất để giữ cho hình ảnh của bạn được ngăn nắp và dễ truy cập."
 
-#: src/options/options.js:358 src/page/places.vue:339
+#: src/options/options.js:358 src/page/places.vue:359
 msgid "Outdoor"
 msgstr "Ngoài trời"
 
@@ -2273,7 +2277,7 @@ msgstr "Hồng"
 msgid "Place"
 msgstr "Địa điểm"
 
-#: src/page/settings/content.vue:164
+#: src/page/settings/content.vue:161
 msgid "Place & Time"
 msgstr "Địa điểm & Thời gian"
 
@@ -2388,7 +2392,7 @@ msgstr "Chiếu"
 msgid "Purple"
 msgstr "Màu tím"
 
-#: src/page/settings/content.vue:60
+#: src/page/settings/content.vue:59
 msgid "Quality Filter"
 msgstr "Bộ lọc chất lượng"
 
@@ -2413,7 +2417,7 @@ msgid "Raw"
 msgstr "thô"
 
 #: src/component/photo/view/cards.vue:313
-#: src/component/photo/view/mosaic.vue:157 src/page/settings/content.vue:388
+#: src/component/photo/view/mosaic.vue:157 src/page/settings/content.vue:378
 msgid "RAW"
 msgstr "NGUYÊN"
 
@@ -2482,7 +2486,7 @@ msgid "Reload"
 msgstr "Tải lại"
 
 #: src/component/navigation.vue:108 src/component/update.vue:26
-#: src/page/settings/content.vue:53 src/page/settings/general.vue:104
+#: src/page/settings/general.vue:104
 msgid "Reloading…"
 msgstr "Đang tải lại…"
 
@@ -2514,7 +2518,7 @@ msgstr "Yêu cầu không thành công - bạn đang ngoại tuyến phải khô
 msgid "Request failed - invalid response"
 msgstr "Yêu cầu không thành công - phản hồi không hợp lệ"
 
-#: src/page/settings/content.vue:62
+#: src/page/settings/content.vue:61
 msgid "Require non-photographic and low-quality images to be reviewed before they appear in search results."
 msgstr "Yêu cầu xem xét những hình ảnh không phải là ảnh chụp và chất lượng thấp trước khi chúng xuất hiện trong kết quả tìm kiếm."
 
@@ -2552,7 +2556,7 @@ msgstr "Vai trò"
 msgid "Rows per page:"
 msgstr "Số hàng trên mỗi trang:"
 
-#: src/options/options.js:353 src/page/places.vue:335
+#: src/options/options.js:353 src/page/places.vue:355
 msgid "Satellite"
 msgstr "Vệ tinh"
 
@@ -2586,7 +2590,7 @@ msgstr "Phạm vi"
 #: src/component/photo/toolbar.vue:56 src/options/options.js:310
 #: src/page/albums.vue:100 src/page/labels.vue:77
 #: src/page/library/errors.vue:75 src/page/people/recognized.vue:65
-#: src/page/places.vue:78 src/page/settings/content.vue:240
+#: src/page/places.vue:78 src/page/settings/content.vue:235
 msgid "Search"
 msgstr "Tìm kiếm"
 
@@ -2651,7 +2655,7 @@ msgstr "Đã lưu trữ lựa chọn"
 msgid "Selection restored"
 msgstr "Đã khôi phục lựa chọn"
 
-#: src/page/settings/content.vue:210
+#: src/page/settings/content.vue:205
 msgid "Sequential Name"
 msgstr "Tên tuần tự"
 
@@ -2712,6 +2716,10 @@ msgstr "Trình diễn"
 msgid "Show all new faces"
 msgstr "Hiển thị tất cả các khuôn mặt mới"
 
+#: src/page/settings/content.vue:304
+msgid "Show Captions"
+msgstr ""
+
 #: src/page/people/new.vue:62 src/page/people/recognized.vue:97
 msgid "Show hidden"
 msgstr "Hiển thị ẩn"
@@ -2724,23 +2732,19 @@ msgstr "Hiện ít hơn"
 msgid "Show more"
 msgstr "Cho xem nhiều hơn"
 
-#: src/page/settings/content.vue:313
-msgid "Show picture captions in search results."
-msgstr "Hiển thị chú thích hình ảnh trong kết quả tìm kiếm."
-
-#: src/page/settings/content.vue:290
-msgid "Show picture titles in search results."
-msgstr "Hiển thị tiêu đề hình ảnh trong kết quả tìm kiếm."
-
 #: src/page/settings/general.vue:538
 msgid "Show server logs in Library."
 msgstr "Hiển thị nhật ký máy chủ trong Thư viện."
+
+#: src/page/settings/content.vue:282
+msgid "Show Titles"
+msgstr ""
 
 #: src/component/lightbox.vue:952 src/component/lightbox.vue:953
 msgid "Show/Hide Sidebar"
 msgstr "Hiển thị/Ẩn thanh bên"
 
-#: src/model/file.js:214 src/page/settings/content.vue:411
+#: src/model/file.js:214 src/page/settings/content.vue:400
 msgid "Sidecar"
 msgstr "xe sidecar"
 
@@ -2804,11 +2808,11 @@ msgstr "Nguồn"
 msgid "Stack"
 msgstr "Cây rơm"
 
-#: src/page/settings/content.vue:188
+#: src/page/settings/content.vue:184
 msgid "Stack files sharing the same unique image or instance identifier."
 msgstr "Xếp chồng các tệp chia sẻ cùng một hình ảnh hoặc mã định danh cá thể duy nhất."
 
-#: src/page/settings/content.vue:165
+#: src/page/settings/content.vue:162
 msgid "Stack pictures taken at the exact same time and location based on their metadata."
 msgstr "Xếp chồng các ảnh được chụp vào cùng thời điểm và vị trí dựa trên siêu dữ liệu của chúng."
 
@@ -2816,7 +2820,7 @@ msgstr "Xếp chồng các ảnh được chụp vào cùng thời điểm và v
 msgid "Stackable"
 msgstr "có thể xếp chồng lên nhau"
 
-#: src/component/navigation.vue:437 src/page/settings/content.vue:138
+#: src/component/navigation.vue:437 src/page/settings/content.vue:136
 msgid "Stacks"
 msgstr "ngăn xếp"
 
@@ -2844,7 +2848,7 @@ msgstr "Trạng thái"
 msgid "Storage"
 msgstr "Kho"
 
-#: src/options/options.js:348 src/page/places.vue:331
+#: src/options/options.js:348 src/page/places.vue:351
 msgid "Streets"
 msgstr "Đường phố"
 
@@ -2982,10 +2986,6 @@ msgstr "Vị trí tiêu đề"
 msgid "Title too long"
 msgstr "Tiêu đề quá dài"
 
-#: src/page/settings/content.vue:289
-msgid "Titles"
-msgstr "Tiêu đề"
-
 #: src/locales.js:55
 msgid "to"
 msgstr "ĐẾN"
@@ -3026,7 +3026,7 @@ msgstr "Đã chọn quá nhiều tệp"
 msgid "Too many requests"
 msgstr "quá nhiều yêu cầu"
 
-#: src/options/options.js:363 src/page/places.vue:343
+#: src/options/options.js:363 src/page/places.vue:363
 msgid "Topographic"
 msgstr "Địa hình"
 
@@ -3058,7 +3058,7 @@ msgstr "Không được phép"
 msgid "Undo"
 msgstr "Hoàn tác"
 
-#: src/page/settings/content.vue:187
+#: src/page/settings/content.vue:183
 msgid "Unique ID"
 msgstr "ID duy nhất"
 
@@ -3132,7 +3132,7 @@ msgstr "Nâng cấp"
 msgid "Upgrade Now"
 msgstr "Nâng cấp ngay bây giờ"
 
-#: src/component/album/toolbar.vue:123 src/component/navigation.vue:1772
+#: src/component/album/toolbar.vue:114 src/component/navigation.vue:1772
 #: src/component/photo/toolbar.vue:173 src/component/photo/upload/dialog.vue:49
 #: src/component/service/upload.vue:143 src/page/albums.vue:181
 #: src/page/library/import.vue:133 src/page/settings/general.vue:297
@@ -3257,7 +3257,7 @@ msgstr "Video"
 msgid "View"
 msgstr "Xem"
 
-#: src/page/settings/content.vue:267
+#: src/page/settings/content.vue:261
 msgid "View search results as a list."
 msgstr "Xem kết quả tìm kiếm dưới dạng danh sách."
 
@@ -3310,7 +3310,7 @@ msgstr ""
 msgid "WebDAV Upload"
 msgstr "Tải lên WebDAV"
 
-#: src/page/places.vue:232
+#: src/page/places.vue:252
 msgid "WebGL support is disabled in your browser"
 msgstr "Hỗ trợ WebGL bị vô hiệu hóa trong trình duyệt của bạn"
 
@@ -3379,7 +3379,7 @@ msgstr "Bạn có thể quét lại thư viện của mình để tìm thêm khu
 msgid "Your account has been successfully connected."
 msgstr "Tài khoản của bạn đã được kết nối thành công."
 
-#: src/page/places.vue:236
+#: src/page/places.vue:256
 msgid "Your browser does not support WebGL"
 msgstr "Trình duyệt của bạn không hỗ trợ WebGL"
 
@@ -3395,6 +3395,18 @@ msgstr "Thư viện của bạn được phân tích liên tục để tự đ�
 #: src/component/lightbox.vue:239
 msgid "Zoom in/out"
 msgstr "Phóng to / thu nhỏ"
+
+#~ msgid "Captions"
+#~ msgstr "Chú thích"
+
+#~ msgid "Show picture captions in search results."
+#~ msgstr "Hiển thị chú thích hình ảnh trong kết quả tìm kiếm."
+
+#~ msgid "Show picture titles in search results."
+#~ msgstr "Hiển thị tiêu đề hình ảnh trong kết quả tìm kiếm."
+
+#~ msgid "Titles"
+#~ msgstr "Tiêu đề"
 
 #~ msgid "Customer Support"
 #~ msgstr "Hỗ trợ khách hàng"

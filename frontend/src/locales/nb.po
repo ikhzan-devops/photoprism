@@ -603,10 +603,6 @@ msgstr "Avbryt"
 msgid "Caption"
 msgstr "Bildetekst"
 
-#: src/page/settings/content.vue:312
-msgid "Captions"
-msgstr "Bildetekster"
-
 #: src/component/photo/toolbar.vue:100 src/component/photo/toolbar.vue:106
 msgid "Cards"
 msgstr "Kort"
@@ -653,7 +649,7 @@ msgstr "Kan ikke lagre endringer"
 #: src/component/photo/edit/files.vue:160 src/component/service/edit.vue:90
 #: src/component/share/dialog.vue:92 src/component/share/dialog.vue:111
 #: src/page/albums.vue:648 src/page/people/recognized.vue:119
-#: src/page/settings/advanced.vue:58 src/page/settings/content.vue:57
+#: src/page/settings/advanced.vue:62 src/page/settings/content.vue:62
 #: src/page/settings/general.vue:108
 msgid "Changes successfully saved"
 msgstr "Endringene ble lagret"
@@ -880,7 +876,7 @@ msgstr "Feilsøkingslogger"
 #: src/model/user.js:246 src/options/auth.js:20 src/options/auth.js:21
 #: src/options/auth.js:39 src/options/auth.js:40 src/options/options.js:309
 #: src/options/options.js:344 src/options/options.js:412
-#: src/options/themes.js:727 src/page/places.vue:323
+#: src/options/themes.js:727 src/page/places.vue:343
 #: src/page/settings/general.vue:104
 msgid "Default"
 msgstr "Standard"
@@ -1001,6 +997,14 @@ msgstr "Avskjed"
 msgid "Display Name"
 msgstr "Vist navn"
 
+#: src/page/settings/content.vue:305
+msgid "Display picture captions in search results."
+msgstr ""
+
+#: src/page/settings/content.vue:283
+msgid "Display picture titles in search results."
+msgstr ""
+
 #: src/component/photo/view/cards.vue:339
 #: src/component/photo/view/cards.vue:521
 #: src/component/photo/view/mosaic.vue:183 src/options/options.js:405
@@ -1032,15 +1036,15 @@ msgstr "Ferdig"
 msgid "Done."
 msgstr "Ferdig."
 
-#: src/component/album/clipboard.vue:73 src/component/album/toolbar.vue:114
+#: src/component/album/clipboard.vue:73 src/component/album/toolbar.vue:123
 #: src/component/file/clipboard.vue:48 src/component/lightbox.vue:1075
 #: src/component/lightbox.vue:1076 src/component/people/clipboard.vue:47
 #: src/component/photo/clipboard.vue:116 src/component/photo/edit/files.vue:168
-#: src/page/settings/content.vue:339 src/page/settings/general.vue:321
+#: src/page/settings/content.vue:331 src/page/settings/general.vue:321
 msgid "Download"
 msgstr "Last ned"
 
-#: src/page/settings/content.vue:366
+#: src/page/settings/content.vue:357
 msgid "Download only original media files, without any automatically generated files."
 msgstr "Last ned bare originale mediefiler, uten automatisk genererte filer."
 
@@ -1171,11 +1175,11 @@ msgstr "Feil"
 msgid "Estimate"
 msgstr "Anslå"
 
-#: src/page/settings/content.vue:87
+#: src/page/settings/content.vue:85
 msgid "Estimate Locations"
 msgstr "Anslå lokasjoner"
 
-#: src/page/settings/content.vue:88
+#: src/page/settings/content.vue:86
 msgid "Estimate the approximate location of pictures without GPS coordinates."
 msgstr "Anslå omtrentlig plassering av bilder uten GPS-koordinater."
 
@@ -1209,7 +1213,7 @@ msgstr "Utgår"
 msgid "Exposure"
 msgstr "Eksponering"
 
-#: src/page/settings/content.vue:111
+#: src/page/settings/content.vue:109
 msgid "Extract still images and generate thumbnails while indexing."
 msgstr "Trekk ut stillbilder og generer miniatyrbilder mens du indekserer."
 
@@ -1303,7 +1307,7 @@ msgstr "Filnavn"
 msgid "Files"
 msgstr "Filer"
 
-#: src/page/settings/content.vue:212
+#: src/page/settings/content.vue:207
 msgid "Files with sequential names like 'IMG_1234 (2)' and 'IMG_1234 (3)' belong to the same picture."
 msgstr "Filer med sekvensielle navn som \"IMG_1234 (2) og \"IMG_1234 (3)\" tilhører det samme bildet."
 
@@ -1367,7 +1371,7 @@ msgstr "generere"
 msgid "Generate albums of special moments, journeys, and places."
 msgstr "Oppretter automatisk album med spesielle øyeblikk, turer og steder."
 
-#: src/page/settings/content.vue:110
+#: src/page/settings/content.vue:108
 msgid "Generate Previews"
 msgstr "Generer forhåndsvisninger"
 
@@ -1499,11 +1503,11 @@ msgstr "inn"
 msgid "In case pictures you expect are missing, please rescan your library and wait until indexing has been completed."
 msgstr "Hvis bilder du forventer mangler, kan du skanne biblioteket på nytt og vente til indekseringen er fullført."
 
-#: src/page/settings/content.vue:389
+#: src/page/settings/content.vue:379
 msgid "Include RAW image files when downloading stacks and archives."
 msgstr "Ta med RAW-bildefiler når du laster ned stabler og arkiver."
 
-#: src/page/settings/content.vue:412
+#: src/page/settings/content.vue:401
 msgid "Include sidecar files when downloading stacks and archives."
 msgstr "Ta med sidevognfiler når du laster ned stabler og arkiver."
 
@@ -1719,7 +1723,7 @@ msgstr "Lenke"
 msgid "List"
 msgstr "Liste"
 
-#: src/page/settings/content.vue:266
+#: src/page/settings/content.vue:260
 msgid "List View"
 msgstr "Listevisning"
 
@@ -1995,7 +1999,7 @@ msgstr "Ingen personar funne"
 #: src/component/lightbox.vue:316 src/component/photo/view/cards.vue:144
 #: src/component/photo/view/list.vue:82 src/component/photo/view/mosaic.vue:68
 #: src/page/album/photos.vue:474 src/page/library/browse.vue:122
-#: src/page/photos.vue:601 src/page/places.vue:574 src/page/places.vue:671
+#: src/page/photos.vue:601 src/page/places.vue:594 src/page/places.vue:692
 msgid "No pictures found"
 msgstr "Fant ingen bilder"
 
@@ -2171,7 +2175,7 @@ msgstr "Originalnavn"
 
 #: src/component/navigation.vue:1252 src/model/file.js:196
 #: src/options/options.js:509 src/page/library/browse.vue:65
-#: src/page/settings/content.vue:365 src/page/settings/general.vue:513
+#: src/page/settings/content.vue:356 src/page/settings/general.vue:513
 msgid "Originals"
 msgstr "Originaler"
 
@@ -2184,7 +2188,7 @@ msgstr "Andre"
 msgid "Our mission is to provide the most user- and privacy-friendly solution to keep your pictures organized and accessible."
 msgstr "Vårt oppdrag er å tilby den mest bruker- og personvernvennlige løsningen for å holde bildene dine organisert og tilgjengelig."
 
-#: src/options/options.js:358 src/page/places.vue:339
+#: src/options/options.js:358 src/page/places.vue:359
 msgid "Outdoor"
 msgstr "Utendørs"
 
@@ -2276,7 +2280,7 @@ msgstr "Rosa"
 msgid "Place"
 msgstr "Plass"
 
-#: src/page/settings/content.vue:164
+#: src/page/settings/content.vue:161
 msgid "Place & Time"
 msgstr "Sted og tid"
 
@@ -2391,7 +2395,7 @@ msgstr "Projeksjon"
 msgid "Purple"
 msgstr "Lilla"
 
-#: src/page/settings/content.vue:60
+#: src/page/settings/content.vue:59
 msgid "Quality Filter"
 msgstr "Kvalitetsfilter"
 
@@ -2416,7 +2420,7 @@ msgid "Raw"
 msgstr "Raw"
 
 #: src/component/photo/view/cards.vue:313
-#: src/component/photo/view/mosaic.vue:157 src/page/settings/content.vue:388
+#: src/component/photo/view/mosaic.vue:157 src/page/settings/content.vue:378
 msgid "RAW"
 msgstr "RAW"
 
@@ -2485,7 +2489,7 @@ msgid "Reload"
 msgstr "Oppdater"
 
 #: src/component/navigation.vue:108 src/component/update.vue:26
-#: src/page/settings/content.vue:53 src/page/settings/general.vue:104
+#: src/page/settings/general.vue:104
 msgid "Reloading…"
 msgstr "Oppdaterer…"
 
@@ -2517,7 +2521,7 @@ msgstr "Forespørselen mislyktes - er du frakoblet?"
 msgid "Request failed - invalid response"
 msgstr "Forespørselen mislyktes - ugyldig svar"
 
-#: src/page/settings/content.vue:62
+#: src/page/settings/content.vue:61
 msgid "Require non-photographic and low-quality images to be reviewed before they appear in search results."
 msgstr "Krev at bilder som ikke er fotografiske og bilder av lav kvalitet, skal gjennomgås før de vises i søkeresultatene."
 
@@ -2555,7 +2559,7 @@ msgstr "Rolle"
 msgid "Rows per page:"
 msgstr "Rader per side:"
 
-#: src/options/options.js:353 src/page/places.vue:335
+#: src/options/options.js:353 src/page/places.vue:355
 msgid "Satellite"
 msgstr "Satellitt"
 
@@ -2589,7 +2593,7 @@ msgstr "Omfang"
 #: src/component/photo/toolbar.vue:56 src/options/options.js:310
 #: src/page/albums.vue:100 src/page/labels.vue:77
 #: src/page/library/errors.vue:75 src/page/people/recognized.vue:65
-#: src/page/places.vue:78 src/page/settings/content.vue:240
+#: src/page/places.vue:78 src/page/settings/content.vue:235
 msgid "Search"
 msgstr "Søk"
 
@@ -2654,7 +2658,7 @@ msgstr "Utvalg arkivert"
 msgid "Selection restored"
 msgstr "Utvalg gjenopprettet"
 
-#: src/page/settings/content.vue:210
+#: src/page/settings/content.vue:205
 msgid "Sequential Name"
 msgstr "Sekvensielle Navn"
 
@@ -2715,6 +2719,10 @@ msgstr "Vis"
 msgid "Show all new faces"
 msgstr "Vis alle nye ansikter"
 
+#: src/page/settings/content.vue:304
+msgid "Show Captions"
+msgstr ""
+
 #: src/page/people/new.vue:62 src/page/people/recognized.vue:97
 msgid "Show hidden"
 msgstr "Vis skjult"
@@ -2727,23 +2735,19 @@ msgstr "Vis mindre"
 msgid "Show more"
 msgstr "Vis mer"
 
-#: src/page/settings/content.vue:313
-msgid "Show picture captions in search results."
-msgstr "Vis bildetekster i søkeresultatene."
-
-#: src/page/settings/content.vue:290
-msgid "Show picture titles in search results."
-msgstr "Vis bildetitler i søkeresultatene."
-
 #: src/page/settings/general.vue:538
 msgid "Show server logs in Library."
 msgstr "Vis server-logger i Biblioteket."
+
+#: src/page/settings/content.vue:282
+msgid "Show Titles"
+msgstr ""
 
 #: src/component/lightbox.vue:952 src/component/lightbox.vue:953
 msgid "Show/Hide Sidebar"
 msgstr "Vis/skjul sidefelt"
 
-#: src/model/file.js:214 src/page/settings/content.vue:411
+#: src/model/file.js:214 src/page/settings/content.vue:400
 msgid "Sidecar"
 msgstr "Sidevogn"
 
@@ -2807,11 +2811,11 @@ msgstr "Kilde"
 msgid "Stack"
 msgstr "Stabel"
 
-#: src/page/settings/content.vue:188
+#: src/page/settings/content.vue:184
 msgid "Stack files sharing the same unique image or instance identifier."
 msgstr "Stable filer som deler samme unike bildet eller instans-indikator."
 
-#: src/page/settings/content.vue:165
+#: src/page/settings/content.vue:162
 msgid "Stack pictures taken at the exact same time and location based on their metadata."
 msgstr "Stable bilder som er tatt på samme tid og plassa basert på deres metadata."
 
@@ -2819,7 +2823,7 @@ msgstr "Stable bilder som er tatt på samme tid og plassa basert på deres metad
 msgid "Stackable"
 msgstr "Kan stables"
 
-#: src/component/navigation.vue:437 src/page/settings/content.vue:138
+#: src/component/navigation.vue:437 src/page/settings/content.vue:136
 msgid "Stacks"
 msgstr "Stabler"
 
@@ -2847,7 +2851,7 @@ msgstr "Status"
 msgid "Storage"
 msgstr "Lagring"
 
-#: src/options/options.js:348 src/page/places.vue:331
+#: src/options/options.js:348 src/page/places.vue:351
 msgid "Streets"
 msgstr "Gater"
 
@@ -2985,10 +2989,6 @@ msgstr "Tittelen er for lang"
 msgid "Title too long"
 msgstr "Tittelen er for lang"
 
-#: src/page/settings/content.vue:289
-msgid "Titles"
-msgstr "Titler"
-
 #: src/locales.js:55
 msgid "to"
 msgstr "til"
@@ -3029,7 +3029,7 @@ msgstr "For mange filer valgt"
 msgid "Too many requests"
 msgstr "For mange forespørsler"
 
-#: src/options/options.js:363 src/page/places.vue:343
+#: src/options/options.js:363 src/page/places.vue:363
 msgid "Topographic"
 msgstr "Topografisk"
 
@@ -3061,7 +3061,7 @@ msgstr "Uautorisert"
 msgid "Undo"
 msgstr "Angre"
 
-#: src/page/settings/content.vue:187
+#: src/page/settings/content.vue:183
 msgid "Unique ID"
 msgstr "Unik ID"
 
@@ -3135,7 +3135,7 @@ msgstr "Oppgrader"
 msgid "Upgrade Now"
 msgstr "Oppgrader nå"
 
-#: src/component/album/toolbar.vue:123 src/component/navigation.vue:1772
+#: src/component/album/toolbar.vue:114 src/component/navigation.vue:1772
 #: src/component/photo/toolbar.vue:173 src/component/photo/upload/dialog.vue:49
 #: src/component/service/upload.vue:143 src/page/albums.vue:181
 #: src/page/library/import.vue:133 src/page/settings/general.vue:297
@@ -3260,7 +3260,7 @@ msgstr "Videoer"
 msgid "View"
 msgstr "Utseende"
 
-#: src/page/settings/content.vue:267
+#: src/page/settings/content.vue:261
 msgid "View search results as a list."
 msgstr "Vis søkeresultatene som en liste."
 
@@ -3311,7 +3311,7 @@ msgstr "WebDAV-klienter, som Microsoft Windows Explorer eller Apple Finder, kan 
 msgid "WebDAV Upload"
 msgstr "WebDAV-opplasting"
 
-#: src/page/places.vue:232
+#: src/page/places.vue:252
 msgid "WebGL support is disabled in your browser"
 msgstr "WebGL-støtte er deaktivert i nettleseren din"
 
@@ -3380,7 +3380,7 @@ msgstr "Du kan skanne biblioteket ditt på nytt for å finne flere ansikter."
 msgid "Your account has been successfully connected."
 msgstr "Kontoen din har blitt koblet til."
 
-#: src/page/places.vue:236
+#: src/page/places.vue:256
 msgid "Your browser does not support WebGL"
 msgstr "Nettleseren din støtter ikke WebGL"
 
@@ -3396,6 +3396,18 @@ msgstr "Biblioteket ditt blir kontinuerlig analysert for automatisk å lage albu
 #: src/component/lightbox.vue:239
 msgid "Zoom in/out"
 msgstr "Zoom inn/ut"
+
+#~ msgid "Captions"
+#~ msgstr "Bildetekster"
+
+#~ msgid "Show picture captions in search results."
+#~ msgstr "Vis bildetekster i søkeresultatene."
+
+#~ msgid "Show picture titles in search results."
+#~ msgstr "Vis bildetitler i søkeresultatene."
+
+#~ msgid "Titles"
+#~ msgstr "Titler"
 
 #~ msgid "Customer Support"
 #~ msgstr "Kundeservice"

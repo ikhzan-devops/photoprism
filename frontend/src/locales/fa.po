@@ -603,10 +603,6 @@ msgstr "لغو"
 msgid "Caption"
 msgstr "عنوان"
 
-#: src/page/settings/content.vue:312
-msgid "Captions"
-msgstr "زیرنویس ها"
-
 #: src/component/photo/toolbar.vue:100 src/component/photo/toolbar.vue:106
 msgid "Cards"
 msgstr "کارت ها"
@@ -653,7 +649,7 @@ msgstr "تغییرات را نمی توان ذخیره کرد"
 #: src/component/photo/edit/files.vue:160 src/component/service/edit.vue:90
 #: src/component/share/dialog.vue:92 src/component/share/dialog.vue:111
 #: src/page/albums.vue:648 src/page/people/recognized.vue:119
-#: src/page/settings/advanced.vue:58 src/page/settings/content.vue:57
+#: src/page/settings/advanced.vue:62 src/page/settings/content.vue:62
 #: src/page/settings/general.vue:108
 msgid "Changes successfully saved"
 msgstr "تغییرات با موفقیت ذخیره شد"
@@ -880,7 +876,7 @@ msgstr "گزارش‌های اشکال زدایی"
 #: src/model/user.js:246 src/options/auth.js:20 src/options/auth.js:21
 #: src/options/auth.js:39 src/options/auth.js:40 src/options/options.js:309
 #: src/options/options.js:344 src/options/options.js:412
-#: src/options/themes.js:727 src/page/places.vue:323
+#: src/options/themes.js:727 src/page/places.vue:343
 #: src/page/settings/general.vue:104
 msgid "Default"
 msgstr "پیشفرض"
@@ -1001,6 +997,14 @@ msgstr "رد کردن"
 msgid "Display Name"
 msgstr "نام نمایشی"
 
+#: src/page/settings/content.vue:305
+msgid "Display picture captions in search results."
+msgstr ""
+
+#: src/page/settings/content.vue:283
+msgid "Display picture titles in search results."
+msgstr ""
+
 #: src/component/photo/view/cards.vue:339
 #: src/component/photo/view/cards.vue:521
 #: src/component/photo/view/mosaic.vue:183 src/options/options.js:405
@@ -1032,15 +1036,15 @@ msgstr "انجام شده"
 msgid "Done."
 msgstr "انجام شده است."
 
-#: src/component/album/clipboard.vue:73 src/component/album/toolbar.vue:114
+#: src/component/album/clipboard.vue:73 src/component/album/toolbar.vue:123
 #: src/component/file/clipboard.vue:48 src/component/lightbox.vue:1075
 #: src/component/lightbox.vue:1076 src/component/people/clipboard.vue:47
 #: src/component/photo/clipboard.vue:116 src/component/photo/edit/files.vue:168
-#: src/page/settings/content.vue:339 src/page/settings/general.vue:321
+#: src/page/settings/content.vue:331 src/page/settings/general.vue:321
 msgid "Download"
 msgstr "بارگیری"
 
-#: src/page/settings/content.vue:366
+#: src/page/settings/content.vue:357
 msgid "Download only original media files, without any automatically generated files."
 msgstr "فقط فایل های رسانه ای اصلی را دانلود کنید، بدون هیچ فایلی که به طور خودکار تولید می شود."
 
@@ -1171,11 +1175,11 @@ msgstr "خطا ها"
 msgid "Estimate"
 msgstr "تخمین زدن"
 
-#: src/page/settings/content.vue:87
+#: src/page/settings/content.vue:85
 msgid "Estimate Locations"
 msgstr "تخمین مکان ها"
 
-#: src/page/settings/content.vue:88
+#: src/page/settings/content.vue:86
 msgid "Estimate the approximate location of pictures without GPS coordinates."
 msgstr "مکان تقریبی تصاویر را بدون مختصات GPS تخمین بزنید."
 
@@ -1209,7 +1213,7 @@ msgstr "منقضی می شود"
 msgid "Exposure"
 msgstr "قرارگیری در معرض"
 
-#: src/page/settings/content.vue:111
+#: src/page/settings/content.vue:109
 msgid "Extract still images and generate thumbnails while indexing."
 msgstr "در حین نمایه سازی، تصاویر ثابت را استخراج کنید و تصاویر کوچک تولید کنید."
 
@@ -1303,7 +1307,7 @@ msgstr "نام فایل"
 msgid "Files"
 msgstr "فایل ها"
 
-#: src/page/settings/content.vue:212
+#: src/page/settings/content.vue:207
 msgid "Files with sequential names like 'IMG_1234 (2)' and 'IMG_1234 (3)' belong to the same picture."
 msgstr "فایل‌هایی با نام‌های متوالی مانند «IMG_1234 (2)» و «IMG_1234 (3)» متعلق به یک تصویر هستند."
 
@@ -1367,7 +1371,7 @@ msgstr "تولید می کنند"
 msgid "Generate albums of special moments, journeys, and places."
 msgstr "به طور خودکار آلبوم هایی از لحظات، سفرها و مکان های خاص ایجاد می کند."
 
-#: src/page/settings/content.vue:110
+#: src/page/settings/content.vue:108
 msgid "Generate Previews"
 msgstr "ایجاد پیش نمایش"
 
@@ -1499,11 +1503,11 @@ msgstr "به"
 msgid "In case pictures you expect are missing, please rescan your library and wait until indexing has been completed."
 msgstr "در صورتی که تصاویری که انتظار دارید گم شدند، لطفاً کتابخانه خود را مجدداً اسکن کنید و منتظر بمانید تا نمایه سازی کامل شود."
 
-#: src/page/settings/content.vue:389
+#: src/page/settings/content.vue:379
 msgid "Include RAW image files when downloading stacks and archives."
 msgstr "هنگام بارگیری پشته ها و بایگانی ها، فایل های تصویری RAW را اضافه کنید."
 
-#: src/page/settings/content.vue:412
+#: src/page/settings/content.vue:401
 msgid "Include sidecar files when downloading stacks and archives."
 msgstr "هنگام بارگیری پشته ها و بایگانی ها، فایل های sidecar را اضافه کنید."
 
@@ -1719,7 +1723,7 @@ msgstr "لینک"
 msgid "List"
 msgstr "لیست"
 
-#: src/page/settings/content.vue:266
+#: src/page/settings/content.vue:260
 msgid "List View"
 msgstr "نمایش لیست"
 
@@ -1995,7 +1999,7 @@ msgstr "هیچ فردی پیدا نشد"
 #: src/component/lightbox.vue:316 src/component/photo/view/cards.vue:144
 #: src/component/photo/view/list.vue:82 src/component/photo/view/mosaic.vue:68
 #: src/page/album/photos.vue:474 src/page/library/browse.vue:122
-#: src/page/photos.vue:601 src/page/places.vue:574 src/page/places.vue:671
+#: src/page/photos.vue:601 src/page/places.vue:594 src/page/places.vue:692
 msgid "No pictures found"
 msgstr "هیچ تصویری پیدا نشد"
 
@@ -2171,7 +2175,7 @@ msgstr "اسم اصلی"
 
 #: src/component/navigation.vue:1252 src/model/file.js:196
 #: src/options/options.js:509 src/page/library/browse.vue:65
-#: src/page/settings/content.vue:365 src/page/settings/general.vue:513
+#: src/page/settings/content.vue:356 src/page/settings/general.vue:513
 msgid "Originals"
 msgstr "اصلی ها"
 
@@ -2184,7 +2188,7 @@ msgstr "دیگر"
 msgid "Our mission is to provide the most user- and privacy-friendly solution to keep your pictures organized and accessible."
 msgstr "ماموریت ما ارائه کاربرپسندترین راه حل برای حفظ حریم خصوصی برای سازماندهی و در دسترس نگه داشتن تصاویر شماست."
 
-#: src/options/options.js:358 src/page/places.vue:339
+#: src/options/options.js:358 src/page/places.vue:359
 msgid "Outdoor"
 msgstr "بیرون"
 
@@ -2276,7 +2280,7 @@ msgstr "صورتی"
 msgid "Place"
 msgstr "مکان"
 
-#: src/page/settings/content.vue:164
+#: src/page/settings/content.vue:161
 msgid "Place & Time"
 msgstr "مکان و زمان"
 
@@ -2391,7 +2395,7 @@ msgstr "طرح ها"
 msgid "Purple"
 msgstr "بنفش"
 
-#: src/page/settings/content.vue:60
+#: src/page/settings/content.vue:59
 msgid "Quality Filter"
 msgstr "فیلتر کیفیت"
 
@@ -2416,7 +2420,7 @@ msgid "Raw"
 msgstr "خام"
 
 #: src/component/photo/view/cards.vue:313
-#: src/component/photo/view/mosaic.vue:157 src/page/settings/content.vue:388
+#: src/component/photo/view/mosaic.vue:157 src/page/settings/content.vue:378
 msgid "RAW"
 msgstr "خام"
 
@@ -2485,7 +2489,7 @@ msgid "Reload"
 msgstr "بارگذاری مجدد"
 
 #: src/component/navigation.vue:108 src/component/update.vue:26
-#: src/page/settings/content.vue:53 src/page/settings/general.vue:104
+#: src/page/settings/general.vue:104
 msgid "Reloading…"
 msgstr "در حال بارگیری مجدد…"
 
@@ -2517,7 +2521,7 @@ msgstr "درخواست انجام نشد - آفلاین هستید؟"
 msgid "Request failed - invalid response"
 msgstr "درخواست ناموفق - پاسخ نامعتبر است"
 
-#: src/page/settings/content.vue:62
+#: src/page/settings/content.vue:61
 msgid "Require non-photographic and low-quality images to be reviewed before they appear in search results."
 msgstr "لازم است تصاویر غیرعکاسی و با کیفیت پایین قبل از نمایش در نتایج جستجو بررسی شوند."
 
@@ -2555,7 +2559,7 @@ msgstr "نقش"
 msgid "Rows per page:"
 msgstr "ردیف در هر صفحه:"
 
-#: src/options/options.js:353 src/page/places.vue:335
+#: src/options/options.js:353 src/page/places.vue:355
 msgid "Satellite"
 msgstr "ماهواره"
 
@@ -2589,7 +2593,7 @@ msgstr "محدوده"
 #: src/component/photo/toolbar.vue:56 src/options/options.js:310
 #: src/page/albums.vue:100 src/page/labels.vue:77
 #: src/page/library/errors.vue:75 src/page/people/recognized.vue:65
-#: src/page/places.vue:78 src/page/settings/content.vue:240
+#: src/page/places.vue:78 src/page/settings/content.vue:235
 msgid "Search"
 msgstr "جستجو"
 
@@ -2654,7 +2658,7 @@ msgstr "انتخاب بایگانی شد"
 msgid "Selection restored"
 msgstr "انتخاب بازگردانده شد"
 
-#: src/page/settings/content.vue:210
+#: src/page/settings/content.vue:205
 msgid "Sequential Name"
 msgstr "نام ترتیبی"
 
@@ -2715,6 +2719,10 @@ msgstr "نمایش"
 msgid "Show all new faces"
 msgstr "نمایش همه صورت ها"
 
+#: src/page/settings/content.vue:304
+msgid "Show Captions"
+msgstr ""
+
 #: src/page/people/new.vue:62 src/page/people/recognized.vue:97
 msgid "Show hidden"
 msgstr "نمایش مخفی ها"
@@ -2727,23 +2735,19 @@ msgstr "نمایش کمتر"
 msgid "Show more"
 msgstr "نمایش بیشتر"
 
-#: src/page/settings/content.vue:313
-msgid "Show picture captions in search results."
-msgstr "نمایش شرح تصاویر در نتایج جستجو"
-
-#: src/page/settings/content.vue:290
-msgid "Show picture titles in search results."
-msgstr "نمایش عناوین تصاویر در نتایج جستجو"
-
 #: src/page/settings/general.vue:538
 msgid "Show server logs in Library."
 msgstr "نمایش گزارش‌های سرور در کتابخانه."
+
+#: src/page/settings/content.vue:282
+msgid "Show Titles"
+msgstr ""
 
 #: src/component/lightbox.vue:952 src/component/lightbox.vue:953
 msgid "Show/Hide Sidebar"
 msgstr "نمایش/پنهان کردن نوار کناری"
 
-#: src/model/file.js:214 src/page/settings/content.vue:411
+#: src/model/file.js:214 src/page/settings/content.vue:400
 msgid "Sidecar"
 msgstr "جانبی"
 
@@ -2807,11 +2811,11 @@ msgstr "منبع"
 msgid "Stack"
 msgstr "پشته"
 
-#: src/page/settings/content.vue:188
+#: src/page/settings/content.vue:184
 msgid "Stack files sharing the same unique image or instance identifier."
 msgstr "پشته فایل هایی که همان تصویر منحصر به فرد یا شناسه نمونه را به اشتراک می گذارند."
 
-#: src/page/settings/content.vue:165
+#: src/page/settings/content.vue:162
 msgid "Stack pictures taken at the exact same time and location based on their metadata."
 msgstr "عکس‌هایی را که دقیقاً در همان زمان و مکان گرفته شده‌اند، بر اساس ابرداده‌هایشان روی هم قرار دهید."
 
@@ -2819,7 +2823,7 @@ msgstr "عکس‌هایی را که دقیقاً در همان زمان و مک�
 msgid "Stackable"
 msgstr "قابل انباشته شدن"
 
-#: src/component/navigation.vue:437 src/page/settings/content.vue:138
+#: src/component/navigation.vue:437 src/page/settings/content.vue:136
 msgid "Stacks"
 msgstr "پشته ها"
 
@@ -2847,7 +2851,7 @@ msgstr "وضعیت"
 msgid "Storage"
 msgstr "ذخیره سازی"
 
-#: src/options/options.js:348 src/page/places.vue:331
+#: src/options/options.js:348 src/page/places.vue:351
 msgid "Streets"
 msgstr "خیابان ها"
 
@@ -2985,10 +2989,6 @@ msgstr "عنوان خیلی طولانی است"
 msgid "Title too long"
 msgstr "عنوان خیلی طولانی است"
 
-#: src/page/settings/content.vue:289
-msgid "Titles"
-msgstr "عناوین"
-
 #: src/locales.js:55
 msgid "to"
 msgstr "به"
@@ -3029,7 +3029,7 @@ msgstr "تعداد زیادی فایل انتخاب شده است"
 msgid "Too many requests"
 msgstr "درخواست های خیلی زیاد"
 
-#: src/options/options.js:363 src/page/places.vue:343
+#: src/options/options.js:363 src/page/places.vue:363
 msgid "Topographic"
 msgstr "توپوگرافی"
 
@@ -3061,7 +3061,7 @@ msgstr "غیرمجاز"
 msgid "Undo"
 msgstr "باطل کردن"
 
-#: src/page/settings/content.vue:187
+#: src/page/settings/content.vue:183
 msgid "Unique ID"
 msgstr "شناسه منحصربفرد"
 
@@ -3135,7 +3135,7 @@ msgstr "ارتقا دهید"
 msgid "Upgrade Now"
 msgstr "اکنون ارتقا دهید"
 
-#: src/component/album/toolbar.vue:123 src/component/navigation.vue:1772
+#: src/component/album/toolbar.vue:114 src/component/navigation.vue:1772
 #: src/component/photo/toolbar.vue:173 src/component/photo/upload/dialog.vue:49
 #: src/component/service/upload.vue:143 src/page/albums.vue:181
 #: src/page/library/import.vue:133 src/page/settings/general.vue:297
@@ -3260,7 +3260,7 @@ msgstr "ویدیو ها"
 msgid "View"
 msgstr "نمایش"
 
-#: src/page/settings/content.vue:267
+#: src/page/settings/content.vue:261
 msgid "View search results as a list."
 msgstr "نتایج جستجو را به صورت لیست مشاهده کنید."
 
@@ -3313,7 +3313,7 @@ msgstr ""
 msgid "WebDAV Upload"
 msgstr "آپلود WebDAV"
 
-#: src/page/places.vue:232
+#: src/page/places.vue:252
 msgid "WebGL support is disabled in your browser"
 msgstr "پشتیبانی WebGL در مرورگر شما غیرفعال است"
 
@@ -3382,7 +3382,7 @@ msgstr "می‌توانید کتابخانه خود را مجدداً اسکن �
 msgid "Your account has been successfully connected."
 msgstr "حساب شما با موفقیت متصل شد."
 
-#: src/page/places.vue:236
+#: src/page/places.vue:256
 msgid "Your browser does not support WebGL"
 msgstr "مرورگر شما از WebGL پشتیبانی نمی کند"
 
@@ -3398,6 +3398,18 @@ msgstr "کتابخانه شما به طور مداوم تجزیه و تحلیل 
 #: src/component/lightbox.vue:239
 msgid "Zoom in/out"
 msgstr "بزرگنمایی/کوچک کردن"
+
+#~ msgid "Captions"
+#~ msgstr "زیرنویس ها"
+
+#~ msgid "Show picture captions in search results."
+#~ msgstr "نمایش شرح تصاویر در نتایج جستجو"
+
+#~ msgid "Show picture titles in search results."
+#~ msgstr "نمایش عناوین تصاویر در نتایج جستجو"
+
+#~ msgid "Titles"
+#~ msgstr "عناوین"
 
 #~ msgid "Customer Support"
 #~ msgstr "پشتیبانی مشتری"

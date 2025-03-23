@@ -603,10 +603,6 @@ msgstr "Cancel·lar"
 msgid "Caption"
 msgstr "Subtítol"
 
-#: src/page/settings/content.vue:312
-msgid "Captions"
-msgstr "Subtítols"
-
 #: src/component/photo/toolbar.vue:100 src/component/photo/toolbar.vue:106
 msgid "Cards"
 msgstr "Targetes"
@@ -653,7 +649,7 @@ msgstr "No s'han pogut desar els canvis"
 #: src/component/photo/edit/files.vue:160 src/component/service/edit.vue:90
 #: src/component/share/dialog.vue:92 src/component/share/dialog.vue:111
 #: src/page/albums.vue:648 src/page/people/recognized.vue:119
-#: src/page/settings/advanced.vue:58 src/page/settings/content.vue:57
+#: src/page/settings/advanced.vue:62 src/page/settings/content.vue:62
 #: src/page/settings/general.vue:108
 msgid "Changes successfully saved"
 msgstr "Els canvis s'han desat correctament"
@@ -880,7 +876,7 @@ msgstr "Registres de depuració"
 #: src/model/user.js:246 src/options/auth.js:20 src/options/auth.js:21
 #: src/options/auth.js:39 src/options/auth.js:40 src/options/options.js:309
 #: src/options/options.js:344 src/options/options.js:412
-#: src/options/themes.js:727 src/page/places.vue:323
+#: src/options/themes.js:727 src/page/places.vue:343
 #: src/page/settings/general.vue:104
 msgid "Default"
 msgstr "Per defecte"
@@ -1001,6 +997,14 @@ msgstr "Descartar"
 msgid "Display Name"
 msgstr "Nom a mostrar"
 
+#: src/page/settings/content.vue:305
+msgid "Display picture captions in search results."
+msgstr ""
+
+#: src/page/settings/content.vue:283
+msgid "Display picture titles in search results."
+msgstr ""
+
 #: src/component/photo/view/cards.vue:339
 #: src/component/photo/view/cards.vue:521
 #: src/component/photo/view/mosaic.vue:183 src/options/options.js:405
@@ -1032,15 +1036,15 @@ msgstr "Fet"
 msgid "Done."
 msgstr "Fet."
 
-#: src/component/album/clipboard.vue:73 src/component/album/toolbar.vue:114
+#: src/component/album/clipboard.vue:73 src/component/album/toolbar.vue:123
 #: src/component/file/clipboard.vue:48 src/component/lightbox.vue:1075
 #: src/component/lightbox.vue:1076 src/component/people/clipboard.vue:47
 #: src/component/photo/clipboard.vue:116 src/component/photo/edit/files.vue:168
-#: src/page/settings/content.vue:339 src/page/settings/general.vue:321
+#: src/page/settings/content.vue:331 src/page/settings/general.vue:321
 msgid "Download"
 msgstr "Descàrrega"
 
-#: src/page/settings/content.vue:366
+#: src/page/settings/content.vue:357
 msgid "Download only original media files, without any automatically generated files."
 msgstr "Baixeu només fitxers multimèdia originals, sense cap fitxer generat automàticament."
 
@@ -1171,11 +1175,11 @@ msgstr "Errors"
 msgid "Estimate"
 msgstr "Estimació"
 
-#: src/page/settings/content.vue:87
+#: src/page/settings/content.vue:85
 msgid "Estimate Locations"
 msgstr "Estimar Ubicacions"
 
-#: src/page/settings/content.vue:88
+#: src/page/settings/content.vue:86
 msgid "Estimate the approximate location of pictures without GPS coordinates."
 msgstr "Estimar la ubicació aproximada de les imatges sense coordenades GPS."
 
@@ -1209,7 +1213,7 @@ msgstr "Caduca"
 msgid "Exposure"
 msgstr "Exposició"
 
-#: src/page/settings/content.vue:111
+#: src/page/settings/content.vue:109
 msgid "Extract still images and generate thumbnails while indexing."
 msgstr "Extraieu imatges fixes i genereu miniatures mentre indexeu."
 
@@ -1303,7 +1307,7 @@ msgstr "Nom del fitxer"
 msgid "Files"
 msgstr "Arxius"
 
-#: src/page/settings/content.vue:212
+#: src/page/settings/content.vue:207
 msgid "Files with sequential names like 'IMG_1234 (2)' and 'IMG_1234 (3)' belong to the same picture."
 msgstr "Els fitxers amb noms seqüencials com \"IMG_1234 (2)\" i \"IMG_1234 (3)\" pertanyen a la mateixa imatge."
 
@@ -1367,7 +1371,7 @@ msgstr "Generar"
 msgid "Generate albums of special moments, journeys, and places."
 msgstr "Crea automàticament àlbums de moments, viatges i llocs especials."
 
-#: src/page/settings/content.vue:110
+#: src/page/settings/content.vue:108
 msgid "Generate Previews"
 msgstr "Genera visualitzacions prèvies"
 
@@ -1499,11 +1503,11 @@ msgstr "polçades"
 msgid "In case pictures you expect are missing, please rescan your library and wait until indexing has been completed."
 msgstr "En cas que faltin imatges que espereu, torneu a escanejar la vostra biblioteca i espereu fins que s'hagi completat la indexació."
 
-#: src/page/settings/content.vue:389
+#: src/page/settings/content.vue:379
 msgid "Include RAW image files when downloading stacks and archives."
 msgstr "Incloeu fitxers d'imatge RAW quan baixeu piles i arxius."
 
-#: src/page/settings/content.vue:412
+#: src/page/settings/content.vue:401
 msgid "Include sidecar files when downloading stacks and archives."
 msgstr "Incloeu fitxers sidecar quan baixeu piles i arxius."
 
@@ -1719,7 +1723,7 @@ msgstr "Enllaç"
 msgid "List"
 msgstr "Llista"
 
-#: src/page/settings/content.vue:266
+#: src/page/settings/content.vue:260
 msgid "List View"
 msgstr "Vista de llista"
 
@@ -1995,7 +1999,7 @@ msgstr "No s'han trobat persones"
 #: src/component/lightbox.vue:316 src/component/photo/view/cards.vue:144
 #: src/component/photo/view/list.vue:82 src/component/photo/view/mosaic.vue:68
 #: src/page/album/photos.vue:474 src/page/library/browse.vue:122
-#: src/page/photos.vue:601 src/page/places.vue:574 src/page/places.vue:671
+#: src/page/photos.vue:601 src/page/places.vue:594 src/page/places.vue:692
 msgid "No pictures found"
 msgstr "No s'han trobat imatges"
 
@@ -2171,7 +2175,7 @@ msgstr "Nom original"
 
 #: src/component/navigation.vue:1252 src/model/file.js:196
 #: src/options/options.js:509 src/page/library/browse.vue:65
-#: src/page/settings/content.vue:365 src/page/settings/general.vue:513
+#: src/page/settings/content.vue:356 src/page/settings/general.vue:513
 msgid "Originals"
 msgstr "Originals"
 
@@ -2184,7 +2188,7 @@ msgstr "Altres"
 msgid "Our mission is to provide the most user- and privacy-friendly solution to keep your pictures organized and accessible."
 msgstr "La nostra missió és proporcionar la solució més fàcil d'utilitzar i de privadesa per mantenir les vostres imatges organitzades i accessibles."
 
-#: src/options/options.js:358 src/page/places.vue:339
+#: src/options/options.js:358 src/page/places.vue:359
 msgid "Outdoor"
 msgstr "A l'aire lliure"
 
@@ -2276,7 +2280,7 @@ msgstr "Rosa"
 msgid "Place"
 msgstr "Lloc"
 
-#: src/page/settings/content.vue:164
+#: src/page/settings/content.vue:161
 msgid "Place & Time"
 msgstr "Lloc i hora"
 
@@ -2391,7 +2395,7 @@ msgstr "Projecció"
 msgid "Purple"
 msgstr "Lila"
 
-#: src/page/settings/content.vue:60
+#: src/page/settings/content.vue:59
 msgid "Quality Filter"
 msgstr "Filtre de qualitat"
 
@@ -2416,7 +2420,7 @@ msgid "Raw"
 msgstr "Crua"
 
 #: src/component/photo/view/cards.vue:313
-#: src/component/photo/view/mosaic.vue:157 src/page/settings/content.vue:388
+#: src/component/photo/view/mosaic.vue:157 src/page/settings/content.vue:378
 msgid "RAW"
 msgstr "RAW"
 
@@ -2485,7 +2489,7 @@ msgid "Reload"
 msgstr "Recarrega"
 
 #: src/component/navigation.vue:108 src/component/update.vue:26
-#: src/page/settings/content.vue:53 src/page/settings/general.vue:104
+#: src/page/settings/general.vue:104
 msgid "Reloading…"
 msgstr "S'està tornant a carregar…"
 
@@ -2517,7 +2521,7 @@ msgstr "La sol·licitud ha fallat; estàs fora de línia?"
 msgid "Request failed - invalid response"
 msgstr "La sol·licitud ha fallat: resposta no vàlida"
 
-#: src/page/settings/content.vue:62
+#: src/page/settings/content.vue:61
 msgid "Require non-photographic and low-quality images to be reviewed before they appear in search results."
 msgstr "Exigir que es revisin imatges no fotogràfiques i de baixa qualitat abans que apareguin als resultats de la cerca."
 
@@ -2555,7 +2559,7 @@ msgstr "Rol"
 msgid "Rows per page:"
 msgstr "Files per pàgina:"
 
-#: src/options/options.js:353 src/page/places.vue:335
+#: src/options/options.js:353 src/page/places.vue:355
 msgid "Satellite"
 msgstr "Satèl·lit"
 
@@ -2589,7 +2593,7 @@ msgstr "Àmbit"
 #: src/component/photo/toolbar.vue:56 src/options/options.js:310
 #: src/page/albums.vue:100 src/page/labels.vue:77
 #: src/page/library/errors.vue:75 src/page/people/recognized.vue:65
-#: src/page/places.vue:78 src/page/settings/content.vue:240
+#: src/page/places.vue:78 src/page/settings/content.vue:235
 msgid "Search"
 msgstr "Cercar"
 
@@ -2654,7 +2658,7 @@ msgstr "Selecció arxivada"
 msgid "Selection restored"
 msgstr "S'ha restaurat la selecció"
 
-#: src/page/settings/content.vue:210
+#: src/page/settings/content.vue:205
 msgid "Sequential Name"
 msgstr "Nom seqüencial"
 
@@ -2715,6 +2719,10 @@ msgstr "Mostrar"
 msgid "Show all new faces"
 msgstr "Mostra totes les cares noves"
 
+#: src/page/settings/content.vue:304
+msgid "Show Captions"
+msgstr ""
+
 #: src/page/people/new.vue:62 src/page/people/recognized.vue:97
 msgid "Show hidden"
 msgstr "Mostra ocult"
@@ -2727,23 +2735,19 @@ msgstr "Mostra menys"
 msgid "Show more"
 msgstr "Mostra’n més"
 
-#: src/page/settings/content.vue:313
-msgid "Show picture captions in search results."
-msgstr "Mostra subtítols d'imatge als resultats de la cerca."
-
-#: src/page/settings/content.vue:290
-msgid "Show picture titles in search results."
-msgstr "Mostra els títols de les imatges als resultats de la cerca."
-
 #: src/page/settings/general.vue:538
 msgid "Show server logs in Library."
 msgstr "Mostra els registres del servidor a la biblioteca."
+
+#: src/page/settings/content.vue:282
+msgid "Show Titles"
+msgstr ""
 
 #: src/component/lightbox.vue:952 src/component/lightbox.vue:953
 msgid "Show/Hide Sidebar"
 msgstr "Mostra/amaga la barra lateral"
 
-#: src/model/file.js:214 src/page/settings/content.vue:411
+#: src/model/file.js:214 src/page/settings/content.vue:400
 msgid "Sidecar"
 msgstr "Sidecar"
 
@@ -2807,11 +2811,11 @@ msgstr "Origen"
 msgid "Stack"
 msgstr "Pila"
 
-#: src/page/settings/content.vue:188
+#: src/page/settings/content.vue:184
 msgid "Stack files sharing the same unique image or instance identifier."
 msgstr "Apila fitxers que comparteixen la mateixa imatge única o identificador d'instància."
 
-#: src/page/settings/content.vue:165
+#: src/page/settings/content.vue:162
 msgid "Stack pictures taken at the exact same time and location based on their metadata."
 msgstr "Apila imatges fetes a la mateixa hora i ubicació en funció de les seves metadades."
 
@@ -2819,7 +2823,7 @@ msgstr "Apila imatges fetes a la mateixa hora i ubicació en funció de les seve
 msgid "Stackable"
 msgstr "Apilable"
 
-#: src/component/navigation.vue:437 src/page/settings/content.vue:138
+#: src/component/navigation.vue:437 src/page/settings/content.vue:136
 msgid "Stacks"
 msgstr "Piles"
 
@@ -2847,7 +2851,7 @@ msgstr "Estat"
 msgid "Storage"
 msgstr "Emmagatzematge"
 
-#: src/options/options.js:348 src/page/places.vue:331
+#: src/options/options.js:348 src/page/places.vue:351
 msgid "Streets"
 msgstr "Carrers"
 
@@ -2985,10 +2989,6 @@ msgstr "Títol / posició"
 msgid "Title too long"
 msgstr "Títol massa llarg"
 
-#: src/page/settings/content.vue:289
-msgid "Titles"
-msgstr "Títols"
-
 #: src/locales.js:55
 msgid "to"
 msgstr "a"
@@ -3029,7 +3029,7 @@ msgstr "S'han seleccionat massa fitxers"
 msgid "Too many requests"
 msgstr "Massa peticions"
 
-#: src/options/options.js:363 src/page/places.vue:343
+#: src/options/options.js:363 src/page/places.vue:363
 msgid "Topographic"
 msgstr "Topogràfic"
 
@@ -3061,7 +3061,7 @@ msgstr "No autoritzat"
 msgid "Undo"
 msgstr "Desfer"
 
-#: src/page/settings/content.vue:187
+#: src/page/settings/content.vue:183
 msgid "Unique ID"
 msgstr "ID únic"
 
@@ -3135,7 +3135,7 @@ msgstr "Actualitza"
 msgid "Upgrade Now"
 msgstr "Actualitza ara"
 
-#: src/component/album/toolbar.vue:123 src/component/navigation.vue:1772
+#: src/component/album/toolbar.vue:114 src/component/navigation.vue:1772
 #: src/component/photo/toolbar.vue:173 src/component/photo/upload/dialog.vue:49
 #: src/component/service/upload.vue:143 src/page/albums.vue:181
 #: src/page/library/import.vue:133 src/page/settings/general.vue:297
@@ -3260,7 +3260,7 @@ msgstr "Videos"
 msgid "View"
 msgstr "Veure"
 
-#: src/page/settings/content.vue:267
+#: src/page/settings/content.vue:261
 msgid "View search results as a list."
 msgstr "Veure els resultats de la cerca com una llista."
 
@@ -3313,7 +3313,7 @@ msgstr ""
 msgid "WebDAV Upload"
 msgstr "Càrrega WebDAV"
 
-#: src/page/places.vue:232
+#: src/page/places.vue:252
 msgid "WebGL support is disabled in your browser"
 msgstr "El suport de WebGL està desactivat al vostre navegador"
 
@@ -3382,7 +3382,7 @@ msgstr "Podeu tornar a escanejar la vostra biblioteca per trobar cares addiciona
 msgid "Your account has been successfully connected."
 msgstr "El vostre compte s'ha connectat correctament."
 
-#: src/page/places.vue:236
+#: src/page/places.vue:256
 msgid "Your browser does not support WebGL"
 msgstr "El vostre navegador no admet WebGL"
 
@@ -3398,6 +3398,18 @@ msgstr "La vostra biblioteca s'analitza contínuament per crear automàticament 
 #: src/component/lightbox.vue:239
 msgid "Zoom in/out"
 msgstr "Apropa o redueix"
+
+#~ msgid "Captions"
+#~ msgstr "Subtítols"
+
+#~ msgid "Show picture captions in search results."
+#~ msgstr "Mostra subtítols d'imatge als resultats de la cerca."
+
+#~ msgid "Show picture titles in search results."
+#~ msgstr "Mostra els títols de les imatges als resultats de la cerca."
+
+#~ msgid "Titles"
+#~ msgstr "Títols"
 
 #~ msgid "Customer Support"
 #~ msgstr "Atenció al client"

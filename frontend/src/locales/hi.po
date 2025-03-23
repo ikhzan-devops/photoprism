@@ -603,10 +603,6 @@ msgstr "रद्द करना"
 msgid "Caption"
 msgstr "कैप्शन"
 
-#: src/page/settings/content.vue:312
-msgid "Captions"
-msgstr "कैप्शन"
-
 #: src/component/photo/toolbar.vue:100 src/component/photo/toolbar.vue:106
 msgid "Cards"
 msgstr "पत्ते"
@@ -653,7 +649,7 @@ msgstr "परिवर्तन सहेजा नहीं जा सका"
 #: src/component/photo/edit/files.vue:160 src/component/service/edit.vue:90
 #: src/component/share/dialog.vue:92 src/component/share/dialog.vue:111
 #: src/page/albums.vue:648 src/page/people/recognized.vue:119
-#: src/page/settings/advanced.vue:58 src/page/settings/content.vue:57
+#: src/page/settings/advanced.vue:62 src/page/settings/content.vue:62
 #: src/page/settings/general.vue:108
 msgid "Changes successfully saved"
 msgstr "परिवर्तन सफलतापूर्वक सहेजे गए"
@@ -880,7 +876,7 @@ msgstr "दोषमार्जन लॉग"
 #: src/model/user.js:246 src/options/auth.js:20 src/options/auth.js:21
 #: src/options/auth.js:39 src/options/auth.js:40 src/options/options.js:309
 #: src/options/options.js:344 src/options/options.js:412
-#: src/options/themes.js:727 src/page/places.vue:323
+#: src/options/themes.js:727 src/page/places.vue:343
 #: src/page/settings/general.vue:104
 msgid "Default"
 msgstr "चूक"
@@ -1001,6 +997,14 @@ msgstr "नकार देना"
 msgid "Display Name"
 msgstr "प्रदर्शित होने वाला नाम"
 
+#: src/page/settings/content.vue:305
+msgid "Display picture captions in search results."
+msgstr ""
+
+#: src/page/settings/content.vue:283
+msgid "Display picture titles in search results."
+msgstr ""
+
 #: src/component/photo/view/cards.vue:339
 #: src/component/photo/view/cards.vue:521
 #: src/component/photo/view/mosaic.vue:183 src/options/options.js:405
@@ -1032,15 +1036,15 @@ msgstr "किया हुआ"
 msgid "Done."
 msgstr "किया हुआ |"
 
-#: src/component/album/clipboard.vue:73 src/component/album/toolbar.vue:114
+#: src/component/album/clipboard.vue:73 src/component/album/toolbar.vue:123
 #: src/component/file/clipboard.vue:48 src/component/lightbox.vue:1075
 #: src/component/lightbox.vue:1076 src/component/people/clipboard.vue:47
 #: src/component/photo/clipboard.vue:116 src/component/photo/edit/files.vue:168
-#: src/page/settings/content.vue:339 src/page/settings/general.vue:321
+#: src/page/settings/content.vue:331 src/page/settings/general.vue:321
 msgid "Download"
 msgstr "डाउनलोड"
 
-#: src/page/settings/content.vue:366
+#: src/page/settings/content.vue:357
 msgid "Download only original media files, without any automatically generated files."
 msgstr "बिना किसी स्वचालित रूप से जेनरेट की गई फ़ाइलों के केवल मूल मीडिया फ़ाइलें डाउनलोड करें।"
 
@@ -1171,11 +1175,11 @@ msgstr "त्रुटियाँ"
 msgid "Estimate"
 msgstr "अनुमान लगाना"
 
-#: src/page/settings/content.vue:87
+#: src/page/settings/content.vue:85
 msgid "Estimate Locations"
 msgstr "स्थानों का अनुमान लगाएं"
 
-#: src/page/settings/content.vue:88
+#: src/page/settings/content.vue:86
 msgid "Estimate the approximate location of pictures without GPS coordinates."
 msgstr "जीपीएस निर्देशांक के बिना चित्रों के अनुमानित स्थान का अनुमान लगाएं।"
 
@@ -1209,7 +1213,7 @@ msgstr "समय-सीमा समाप्त"
 msgid "Exposure"
 msgstr "संसर्ग"
 
-#: src/page/settings/content.vue:111
+#: src/page/settings/content.vue:109
 msgid "Extract still images and generate thumbnails while indexing."
 msgstr "अनुक्रमण करते समय स्थिर चित्र निकालें और थम्बनेल उत्पन्न करें।"
 
@@ -1303,7 +1307,7 @@ msgstr "फ़ाइल का नाम"
 msgid "Files"
 msgstr "फ़ाइलें"
 
-#: src/page/settings/content.vue:212
+#: src/page/settings/content.vue:207
 msgid "Files with sequential names like 'IMG_1234 (2)' and 'IMG_1234 (3)' belong to the same picture."
 msgstr "क्रमिक नाम वाली फाइलें जैसे 'IMG_1234 (2)' या 'IMG_1234 कॉपी 2' एक ही फोटो से संबंधित हैं।"
 
@@ -1367,7 +1371,7 @@ msgstr "उत्पन्न"
 msgid "Generate albums of special moments, journeys, and places."
 msgstr "स्वचालित रूप से विशेष क्षणों, यात्राओं और स्थानों के एल्बम बनाता है।"
 
-#: src/page/settings/content.vue:110
+#: src/page/settings/content.vue:108
 msgid "Generate Previews"
 msgstr "पूर्वावलोकन उत्पन्न करें"
 
@@ -1499,11 +1503,11 @@ msgstr "में"
 msgid "In case pictures you expect are missing, please rescan your library and wait until indexing has been completed."
 msgstr "यदि आपके द्वारा अपेक्षित चित्र गायब हैं, तो कृपया अपनी लाइब्रेरी को फिर से स्कैन करें और अनुक्रमण पूरा होने तक प्रतीक्षा करें।"
 
-#: src/page/settings/content.vue:389
+#: src/page/settings/content.vue:379
 msgid "Include RAW image files when downloading stacks and archives."
 msgstr "ढेर और संग्रह डाउनलोड करते समय RAW छवि फ़ाइलें शामिल करें।"
 
-#: src/page/settings/content.vue:412
+#: src/page/settings/content.vue:401
 msgid "Include sidecar files when downloading stacks and archives."
 msgstr "ढेर और संग्रह डाउनलोड करते समय साइडकार फ़ाइलें शामिल करें।"
 
@@ -1719,7 +1723,7 @@ msgstr "संपर्क"
 msgid "List"
 msgstr "सूची"
 
-#: src/page/settings/content.vue:266
+#: src/page/settings/content.vue:260
 msgid "List View"
 msgstr "लिस्ट व्यू"
 
@@ -1995,7 +1999,7 @@ msgstr "कोई व्यक्ति नहीं मिला"
 #: src/component/lightbox.vue:316 src/component/photo/view/cards.vue:144
 #: src/component/photo/view/list.vue:82 src/component/photo/view/mosaic.vue:68
 #: src/page/album/photos.vue:474 src/page/library/browse.vue:122
-#: src/page/photos.vue:601 src/page/places.vue:574 src/page/places.vue:671
+#: src/page/photos.vue:601 src/page/places.vue:594 src/page/places.vue:692
 msgid "No pictures found"
 msgstr "कोई चित्र नहीं मिला"
 
@@ -2171,7 +2175,7 @@ msgstr "मूल नाम"
 
 #: src/component/navigation.vue:1252 src/model/file.js:196
 #: src/options/options.js:509 src/page/library/browse.vue:65
-#: src/page/settings/content.vue:365 src/page/settings/general.vue:513
+#: src/page/settings/content.vue:356 src/page/settings/general.vue:513
 msgid "Originals"
 msgstr "मूल"
 
@@ -2184,7 +2188,7 @@ msgstr "अन्य"
 msgid "Our mission is to provide the most user- and privacy-friendly solution to keep your pictures organized and accessible."
 msgstr "हमारा मिशन आपके चित्रों को व्यवस्थित और सुलभ रखने के लिए सबसे अधिक उपयोगकर्ता- और गोपनीयता के अनुकूल समाधान प्रदान करना है।"
 
-#: src/options/options.js:358 src/page/places.vue:339
+#: src/options/options.js:358 src/page/places.vue:359
 msgid "Outdoor"
 msgstr "घर के बाहर"
 
@@ -2276,7 +2280,7 @@ msgstr "गुलाबी"
 msgid "Place"
 msgstr "स्थान"
 
-#: src/page/settings/content.vue:164
+#: src/page/settings/content.vue:161
 msgid "Place & Time"
 msgstr "स्थान और समय"
 
@@ -2391,7 +2395,7 @@ msgstr "प्रक्षेपण"
 msgid "Purple"
 msgstr "बैंगनी"
 
-#: src/page/settings/content.vue:60
+#: src/page/settings/content.vue:59
 msgid "Quality Filter"
 msgstr "गुणवत्ता फ़िल्टर"
 
@@ -2416,7 +2420,7 @@ msgid "Raw"
 msgstr "कच्चा"
 
 #: src/component/photo/view/cards.vue:313
-#: src/component/photo/view/mosaic.vue:157 src/page/settings/content.vue:388
+#: src/component/photo/view/mosaic.vue:157 src/page/settings/content.vue:378
 msgid "RAW"
 msgstr "कच्चा"
 
@@ -2485,7 +2489,7 @@ msgid "Reload"
 msgstr "पुनः लोड करें"
 
 #: src/component/navigation.vue:108 src/component/update.vue:26
-#: src/page/settings/content.vue:53 src/page/settings/general.vue:104
+#: src/page/settings/general.vue:104
 msgid "Reloading…"
 msgstr "पुन: लोड …"
 
@@ -2517,7 +2521,7 @@ msgstr "अनुरोध विफल - क्या आप ऑफ़लाइ
 msgid "Request failed - invalid response"
 msgstr "अनुरोध विफल - अमान्य प्रतिक्रिया"
 
-#: src/page/settings/content.vue:62
+#: src/page/settings/content.vue:61
 msgid "Require non-photographic and low-quality images to be reviewed before they appear in search results."
 msgstr "खोज परिणामों में प्रदर्शित होने से पहले गैर-फोटोग्राफिक और निम्न-गुणवत्ता वाली छवियों की समीक्षा की आवश्यकता होती है।"
 
@@ -2555,7 +2559,7 @@ msgstr "भूमिका"
 msgid "Rows per page:"
 msgstr "प्रति पृष्ठ पंक्तियाँ:"
 
-#: src/options/options.js:353 src/page/places.vue:335
+#: src/options/options.js:353 src/page/places.vue:355
 msgid "Satellite"
 msgstr "उपग्रह"
 
@@ -2589,7 +2593,7 @@ msgstr "दायरा"
 #: src/component/photo/toolbar.vue:56 src/options/options.js:310
 #: src/page/albums.vue:100 src/page/labels.vue:77
 #: src/page/library/errors.vue:75 src/page/people/recognized.vue:65
-#: src/page/places.vue:78 src/page/settings/content.vue:240
+#: src/page/places.vue:78 src/page/settings/content.vue:235
 msgid "Search"
 msgstr "खोज"
 
@@ -2654,7 +2658,7 @@ msgstr "चयन को संग्रहीत किया गया"
 msgid "Selection restored"
 msgstr "चयन बहाल"
 
-#: src/page/settings/content.vue:210
+#: src/page/settings/content.vue:205
 msgid "Sequential Name"
 msgstr "अनुक्रमिक नाम"
 
@@ -2715,6 +2719,10 @@ msgstr "दिखाना"
 msgid "Show all new faces"
 msgstr "सभी नए चेहरे दिखाएं"
 
+#: src/page/settings/content.vue:304
+msgid "Show Captions"
+msgstr ""
+
 #: src/page/people/new.vue:62 src/page/people/recognized.vue:97
 msgid "Show hidden"
 msgstr "छिपा हुआ दिखाएं"
@@ -2727,23 +2735,19 @@ msgstr "कम दिखाएं"
 msgid "Show more"
 msgstr "और दिखाओ"
 
-#: src/page/settings/content.vue:313
-msgid "Show picture captions in search results."
-msgstr "खोज परिणामों में चित्र कैप्शन दिखाएं।"
-
-#: src/page/settings/content.vue:290
-msgid "Show picture titles in search results."
-msgstr "खोज परिणामों में चित्र शीर्षक दिखाएँ।"
-
 #: src/page/settings/general.vue:538
 msgid "Show server logs in Library."
 msgstr "लायब्रेरी में सर्वर लॉग दिखाएं।"
+
+#: src/page/settings/content.vue:282
+msgid "Show Titles"
+msgstr ""
 
 #: src/component/lightbox.vue:952 src/component/lightbox.vue:953
 msgid "Show/Hide Sidebar"
 msgstr "साइडबार दिखाएँ/छिपाएँ"
 
-#: src/model/file.js:214 src/page/settings/content.vue:411
+#: src/model/file.js:214 src/page/settings/content.vue:400
 msgid "Sidecar"
 msgstr "एक प्रकार का मादक द्रव्य"
 
@@ -2807,11 +2811,11 @@ msgstr "स्रोत"
 msgid "Stack"
 msgstr "ढेर"
 
-#: src/page/settings/content.vue:188
+#: src/page/settings/content.vue:184
 msgid "Stack files sharing the same unique image or instance identifier."
 msgstr "समान विशिष्ट छवि या उदाहरण पहचानकर्ता को साझा करने वाली स्टैक फाइलें।"
 
-#: src/page/settings/content.vue:165
+#: src/page/settings/content.vue:162
 msgid "Stack pictures taken at the exact same time and location based on their metadata."
 msgstr "उनके मेटाडेटा के आधार पर ठीक उसी समय और स्थान पर ली गई स्टैक तस्वीरें।"
 
@@ -2819,7 +2823,7 @@ msgstr "उनके मेटाडेटा के आधार पर ठी�
 msgid "Stackable"
 msgstr "ढेर"
 
-#: src/component/navigation.vue:437 src/page/settings/content.vue:138
+#: src/component/navigation.vue:437 src/page/settings/content.vue:136
 msgid "Stacks"
 msgstr "ढेर"
 
@@ -2847,7 +2851,7 @@ msgstr "स्थिति"
 msgid "Storage"
 msgstr "भंडारण"
 
-#: src/options/options.js:348 src/page/places.vue:331
+#: src/options/options.js:348 src/page/places.vue:351
 msgid "Streets"
 msgstr "सड़कें"
 
@@ -2985,10 +2989,6 @@ msgstr "शीर्षक स्थिति"
 msgid "Title too long"
 msgstr "शीर्षक बहुत लंबा है"
 
-#: src/page/settings/content.vue:289
-msgid "Titles"
-msgstr "टाइटल"
-
 #: src/locales.js:55
 msgid "to"
 msgstr "सेवा"
@@ -3029,7 +3029,7 @@ msgstr "बहुत सारी फ़ाइलें चयनित"
 msgid "Too many requests"
 msgstr "बहुत अधिक अनुरोध"
 
-#: src/options/options.js:363 src/page/places.vue:343
+#: src/options/options.js:363 src/page/places.vue:363
 msgid "Topographic"
 msgstr "स्थलाकृतिक"
 
@@ -3061,7 +3061,7 @@ msgstr "अनधिकृत"
 msgid "Undo"
 msgstr "पहले जैसा"
 
-#: src/page/settings/content.vue:187
+#: src/page/settings/content.vue:183
 msgid "Unique ID"
 msgstr "एक अलग पहचान"
 
@@ -3135,7 +3135,7 @@ msgstr "उन्नत करना"
 msgid "Upgrade Now"
 msgstr "अभी अपग्रेड करें"
 
-#: src/component/album/toolbar.vue:123 src/component/navigation.vue:1772
+#: src/component/album/toolbar.vue:114 src/component/navigation.vue:1772
 #: src/component/photo/toolbar.vue:173 src/component/photo/upload/dialog.vue:49
 #: src/component/service/upload.vue:143 src/page/albums.vue:181
 #: src/page/library/import.vue:133 src/page/settings/general.vue:297
@@ -3260,7 +3260,7 @@ msgstr "वीडियो"
 msgid "View"
 msgstr "राय"
 
-#: src/page/settings/content.vue:267
+#: src/page/settings/content.vue:261
 msgid "View search results as a list."
 msgstr "खोज परिणामों को सूची के रूप में देखें।"
 
@@ -3311,7 +3311,7 @@ msgstr "Microsoft के Windows Explorer या Apple के खोजक ज�
 msgid "WebDAV Upload"
 msgstr "WebDAV अपलोड करें"
 
-#: src/page/places.vue:232
+#: src/page/places.vue:252
 msgid "WebGL support is disabled in your browser"
 msgstr "आपके ब्राउज़र में WebGL समर्थन अक्षम है"
 
@@ -3380,7 +3380,7 @@ msgstr "अतिरिक्त चेहरों को खोजने क�
 msgid "Your account has been successfully connected."
 msgstr "आपका खाता सफलतापूर्वक कनेक्ट कर दिया गया है।"
 
-#: src/page/places.vue:236
+#: src/page/places.vue:256
 msgid "Your browser does not support WebGL"
 msgstr "आपका ब्राउज़र WebGL का समर्थन नहीं करता है"
 
@@ -3396,6 +3396,18 @@ msgstr "विशेष क्षणों, यात्राओं और स�
 #: src/component/lightbox.vue:239
 msgid "Zoom in/out"
 msgstr "ज़ूम इन / आउट करें"
+
+#~ msgid "Captions"
+#~ msgstr "कैप्शन"
+
+#~ msgid "Show picture captions in search results."
+#~ msgstr "खोज परिणामों में चित्र कैप्शन दिखाएं।"
+
+#~ msgid "Show picture titles in search results."
+#~ msgstr "खोज परिणामों में चित्र शीर्षक दिखाएँ।"
+
+#~ msgid "Titles"
+#~ msgstr "टाइटल"
 
 #~ msgid "Customer Support"
 #~ msgstr "ग्राहक सहेयता"

@@ -603,10 +603,6 @@ msgstr "İptal"
 msgid "Caption"
 msgstr "Başlık"
 
-#: src/page/settings/content.vue:312
-msgid "Captions"
-msgstr "Başlıklar"
-
 #: src/component/photo/toolbar.vue:100 src/component/photo/toolbar.vue:106
 msgid "Cards"
 msgstr "Kartlar"
@@ -653,7 +649,7 @@ msgstr "Değişiklikler kaydedilemedi"
 #: src/component/photo/edit/files.vue:160 src/component/service/edit.vue:90
 #: src/component/share/dialog.vue:92 src/component/share/dialog.vue:111
 #: src/page/albums.vue:648 src/page/people/recognized.vue:119
-#: src/page/settings/advanced.vue:58 src/page/settings/content.vue:57
+#: src/page/settings/advanced.vue:62 src/page/settings/content.vue:62
 #: src/page/settings/general.vue:108
 msgid "Changes successfully saved"
 msgstr "Değişiklikler başarıyla kaydedildi"
@@ -880,7 +876,7 @@ msgstr "Hata Kayıtları"
 #: src/model/user.js:246 src/options/auth.js:20 src/options/auth.js:21
 #: src/options/auth.js:39 src/options/auth.js:40 src/options/options.js:309
 #: src/options/options.js:344 src/options/options.js:412
-#: src/options/themes.js:727 src/page/places.vue:323
+#: src/options/themes.js:727 src/page/places.vue:343
 #: src/page/settings/general.vue:104
 msgid "Default"
 msgstr "Varsayılan"
@@ -1001,6 +997,14 @@ msgstr "Göz ardı et"
 msgid "Display Name"
 msgstr "Ekran adı"
 
+#: src/page/settings/content.vue:305
+msgid "Display picture captions in search results."
+msgstr ""
+
+#: src/page/settings/content.vue:283
+msgid "Display picture titles in search results."
+msgstr ""
+
 #: src/component/photo/view/cards.vue:339
 #: src/component/photo/view/cards.vue:521
 #: src/component/photo/view/mosaic.vue:183 src/options/options.js:405
@@ -1032,15 +1036,15 @@ msgstr "Tamamlandı"
 msgid "Done."
 msgstr "Tamamlandı."
 
-#: src/component/album/clipboard.vue:73 src/component/album/toolbar.vue:114
+#: src/component/album/clipboard.vue:73 src/component/album/toolbar.vue:123
 #: src/component/file/clipboard.vue:48 src/component/lightbox.vue:1075
 #: src/component/lightbox.vue:1076 src/component/people/clipboard.vue:47
 #: src/component/photo/clipboard.vue:116 src/component/photo/edit/files.vue:168
-#: src/page/settings/content.vue:339 src/page/settings/general.vue:321
+#: src/page/settings/content.vue:331 src/page/settings/general.vue:321
 msgid "Download"
 msgstr "İndirmek"
 
-#: src/page/settings/content.vue:366
+#: src/page/settings/content.vue:357
 msgid "Download only original media files, without any automatically generated files."
 msgstr "Otomatik olarak oluşturulan dosyalar olmadan yalnızca orijinal medya dosyalarını indirin."
 
@@ -1171,11 +1175,11 @@ msgstr "Hatalar"
 msgid "Estimate"
 msgstr "Tahmin"
 
-#: src/page/settings/content.vue:87
+#: src/page/settings/content.vue:85
 msgid "Estimate Locations"
 msgstr "Tahmini Konumlar"
 
-#: src/page/settings/content.vue:88
+#: src/page/settings/content.vue:86
 msgid "Estimate the approximate location of pictures without GPS coordinates."
 msgstr "GPS koordinatları olmadan resimlerin yaklaşık konumunu tahmin edin."
 
@@ -1209,7 +1213,7 @@ msgstr "Süre sonu"
 msgid "Exposure"
 msgstr "Pozlama"
 
-#: src/page/settings/content.vue:111
+#: src/page/settings/content.vue:109
 msgid "Extract still images and generate thumbnails while indexing."
 msgstr "Hareketsiz görüntüleri ayıklayın ve indeksleme sırasında küçük resimler oluşturun."
 
@@ -1303,7 +1307,7 @@ msgstr "Dosya Adı"
 msgid "Files"
 msgstr "Dosyalar"
 
-#: src/page/settings/content.vue:212
+#: src/page/settings/content.vue:207
 msgid "Files with sequential names like 'IMG_1234 (2)' and 'IMG_1234 (3)' belong to the same picture."
 msgstr "'IMG_1234 (2)' ve 'IMG_1234 (3)' gibi sıralı adlara sahip dosyalar aynı resme aittir."
 
@@ -1367,7 +1371,7 @@ msgstr "Oluştur"
 msgid "Generate albums of special moments, journeys, and places."
 msgstr "Özel anların, gezilerin ve yerlerin albümlerini otomatik olarak oluşturur."
 
-#: src/page/settings/content.vue:110
+#: src/page/settings/content.vue:108
 msgid "Generate Previews"
 msgstr "Önizleme Oluşturma"
 
@@ -1499,11 +1503,11 @@ msgstr "içinde"
 msgid "In case pictures you expect are missing, please rescan your library and wait until indexing has been completed."
 msgstr "Beklediğiniz resimlerin eksik olması durumunda lütfen kitaplığınızı yeniden tarayın ve indeksleme tamamlanana kadar bekleyin."
 
-#: src/page/settings/content.vue:389
+#: src/page/settings/content.vue:379
 msgid "Include RAW image files when downloading stacks and archives."
 msgstr "Yığınları ve arşivleri indirirken RAW görüntü dosyalarını ekleyin."
 
-#: src/page/settings/content.vue:412
+#: src/page/settings/content.vue:401
 msgid "Include sidecar files when downloading stacks and archives."
 msgstr "Yığınları ve arşivleri indirirken sidecar dosyalarını ekleyin."
 
@@ -1719,7 +1723,7 @@ msgstr "Link"
 msgid "List"
 msgstr "Liste"
 
-#: src/page/settings/content.vue:266
+#: src/page/settings/content.vue:260
 msgid "List View"
 msgstr "Liste Görünümü"
 
@@ -1995,7 +1999,7 @@ msgstr "Hiç kimse bulunamadı"
 #: src/component/lightbox.vue:316 src/component/photo/view/cards.vue:144
 #: src/component/photo/view/list.vue:82 src/component/photo/view/mosaic.vue:68
 #: src/page/album/photos.vue:474 src/page/library/browse.vue:122
-#: src/page/photos.vue:601 src/page/places.vue:574 src/page/places.vue:671
+#: src/page/photos.vue:601 src/page/places.vue:594 src/page/places.vue:692
 msgid "No pictures found"
 msgstr "Resim bulunamadı"
 
@@ -2171,7 +2175,7 @@ msgstr "Orijinal Adı"
 
 #: src/component/navigation.vue:1252 src/model/file.js:196
 #: src/options/options.js:509 src/page/library/browse.vue:65
-#: src/page/settings/content.vue:365 src/page/settings/general.vue:513
+#: src/page/settings/content.vue:356 src/page/settings/general.vue:513
 msgid "Originals"
 msgstr "Orijinaller"
 
@@ -2184,7 +2188,7 @@ msgstr "Diğer"
 msgid "Our mission is to provide the most user- and privacy-friendly solution to keep your pictures organized and accessible."
 msgstr "Misyonumuz, resimlerinizi düzenli ve erişilebilir tutmak için en kullanıcı ve gizlilik dostu çözümü sunmaktır."
 
-#: src/options/options.js:358 src/page/places.vue:339
+#: src/options/options.js:358 src/page/places.vue:359
 msgid "Outdoor"
 msgstr "Dış mekan"
 
@@ -2276,7 +2280,7 @@ msgstr "Pembe"
 msgid "Place"
 msgstr "Yer"
 
-#: src/page/settings/content.vue:164
+#: src/page/settings/content.vue:161
 msgid "Place & Time"
 msgstr "Yer ve Zaman"
 
@@ -2391,7 +2395,7 @@ msgstr "Projeksiyon"
 msgid "Purple"
 msgstr "Mor"
 
-#: src/page/settings/content.vue:60
+#: src/page/settings/content.vue:59
 msgid "Quality Filter"
 msgstr "Kalite Filtresi"
 
@@ -2416,7 +2420,7 @@ msgid "Raw"
 msgstr "Raw"
 
 #: src/component/photo/view/cards.vue:313
-#: src/component/photo/view/mosaic.vue:157 src/page/settings/content.vue:388
+#: src/component/photo/view/mosaic.vue:157 src/page/settings/content.vue:378
 msgid "RAW"
 msgstr "RAW"
 
@@ -2485,7 +2489,7 @@ msgid "Reload"
 msgstr "Tekrar yükle"
 
 #: src/component/navigation.vue:108 src/component/update.vue:26
-#: src/page/settings/content.vue:53 src/page/settings/general.vue:104
+#: src/page/settings/general.vue:104
 msgid "Reloading…"
 msgstr "Yeniden doldurma…"
 
@@ -2517,7 +2521,7 @@ msgstr "İstek başarısız oldu - çevrimdışı mısınız?"
 msgid "Request failed - invalid response"
 msgstr "İstek başarısız oldu - geçersiz yanıt"
 
-#: src/page/settings/content.vue:62
+#: src/page/settings/content.vue:61
 msgid "Require non-photographic and low-quality images to be reviewed before they appear in search results."
 msgstr "Fotoğrafik olmayan ve düşük kaliteli görsellerin arama sonuçlarında görünmeden önce incelenmesini zorunlu kılın."
 
@@ -2555,7 +2559,7 @@ msgstr "Rol"
 msgid "Rows per page:"
 msgstr "Sayfa başına satır sayısı:"
 
-#: src/options/options.js:353 src/page/places.vue:335
+#: src/options/options.js:353 src/page/places.vue:355
 msgid "Satellite"
 msgstr "Uydu"
 
@@ -2589,7 +2593,7 @@ msgstr "Kapsam"
 #: src/component/photo/toolbar.vue:56 src/options/options.js:310
 #: src/page/albums.vue:100 src/page/labels.vue:77
 #: src/page/library/errors.vue:75 src/page/people/recognized.vue:65
-#: src/page/places.vue:78 src/page/settings/content.vue:240
+#: src/page/places.vue:78 src/page/settings/content.vue:235
 msgid "Search"
 msgstr "Arama"
 
@@ -2654,7 +2658,7 @@ msgstr "Seçim arşivlendi"
 msgid "Selection restored"
 msgstr "Seçim geri yüklendi"
 
-#: src/page/settings/content.vue:210
+#: src/page/settings/content.vue:205
 msgid "Sequential Name"
 msgstr "Sıralı İsim"
 
@@ -2715,6 +2719,10 @@ msgstr "Göster"
 msgid "Show all new faces"
 msgstr "Tüm yeni yüzleri göster"
 
+#: src/page/settings/content.vue:304
+msgid "Show Captions"
+msgstr ""
+
 #: src/page/people/new.vue:62 src/page/people/recognized.vue:97
 msgid "Show hidden"
 msgstr "Gizli göster"
@@ -2727,23 +2735,19 @@ msgstr "Daha Az Göster"
 msgid "Show more"
 msgstr "Daha fazla göster"
 
-#: src/page/settings/content.vue:313
-msgid "Show picture captions in search results."
-msgstr "Arama sonuçlarında resim başlıklarını gösterin."
-
-#: src/page/settings/content.vue:290
-msgid "Show picture titles in search results."
-msgstr "Arama sonuçlarında resim başlıklarını gösterin."
-
 #: src/page/settings/general.vue:538
 msgid "Show server logs in Library."
 msgstr "Kütüphane'de sunucu günlüklerini gösterin."
+
+#: src/page/settings/content.vue:282
+msgid "Show Titles"
+msgstr ""
 
 #: src/component/lightbox.vue:952 src/component/lightbox.vue:953
 msgid "Show/Hide Sidebar"
 msgstr "Kenar Çubuğunu Göster/Gizle"
 
-#: src/model/file.js:214 src/page/settings/content.vue:411
+#: src/model/file.js:214 src/page/settings/content.vue:400
 msgid "Sidecar"
 msgstr "Sidecar"
 
@@ -2807,11 +2811,11 @@ msgstr "Kaynak"
 msgid "Stack"
 msgstr "Yığın"
 
-#: src/page/settings/content.vue:188
+#: src/page/settings/content.vue:184
 msgid "Stack files sharing the same unique image or instance identifier."
 msgstr "Aynı benzersiz görüntü veya örnek tanımlayıcısını paylaşan yığın dosyaları."
 
-#: src/page/settings/content.vue:165
+#: src/page/settings/content.vue:162
 msgid "Stack pictures taken at the exact same time and location based on their metadata."
 msgstr "Aynı zamanda ve konumda çekilen fotoğrafları meta verilerine göre yığınlayın."
 
@@ -2819,7 +2823,7 @@ msgstr "Aynı zamanda ve konumda çekilen fotoğrafları meta verilerine göre y
 msgid "Stackable"
 msgstr "İstiflenebilir"
 
-#: src/component/navigation.vue:437 src/page/settings/content.vue:138
+#: src/component/navigation.vue:437 src/page/settings/content.vue:136
 msgid "Stacks"
 msgstr "Yığınlar"
 
@@ -2847,7 +2851,7 @@ msgstr "Durum"
 msgid "Storage"
 msgstr "Depolama"
 
-#: src/options/options.js:348 src/page/places.vue:331
+#: src/options/options.js:348 src/page/places.vue:351
 msgid "Streets"
 msgstr "Sokaklar"
 
@@ -2985,10 +2989,6 @@ msgstr "Başlık / Pozisyon"
 msgid "Title too long"
 msgstr "Başlık çok uzun"
 
-#: src/page/settings/content.vue:289
-msgid "Titles"
-msgstr "Başlıklar"
-
 #: src/locales.js:55
 msgid "to"
 msgstr "için"
@@ -3029,7 +3029,7 @@ msgstr "Çok fazla dosya seçildi"
 msgid "Too many requests"
 msgstr "Çok fazla istek var"
 
-#: src/options/options.js:363 src/page/places.vue:343
+#: src/options/options.js:363 src/page/places.vue:363
 msgid "Topographic"
 msgstr "Topografik"
 
@@ -3061,7 +3061,7 @@ msgstr "Yetkisiz"
 msgid "Undo"
 msgstr "Geri al"
 
-#: src/page/settings/content.vue:187
+#: src/page/settings/content.vue:183
 msgid "Unique ID"
 msgstr "Benzersiz kimlik"
 
@@ -3135,7 +3135,7 @@ msgstr "Yükseltme"
 msgid "Upgrade Now"
 msgstr "Şimdi Yükselt"
 
-#: src/component/album/toolbar.vue:123 src/component/navigation.vue:1772
+#: src/component/album/toolbar.vue:114 src/component/navigation.vue:1772
 #: src/component/photo/toolbar.vue:173 src/component/photo/upload/dialog.vue:49
 #: src/component/service/upload.vue:143 src/page/albums.vue:181
 #: src/page/library/import.vue:133 src/page/settings/general.vue:297
@@ -3260,7 +3260,7 @@ msgstr "Videolar"
 msgid "View"
 msgstr "Görünüm"
 
-#: src/page/settings/content.vue:267
+#: src/page/settings/content.vue:261
 msgid "View search results as a list."
 msgstr "Arama sonuçlarını liste olarak görüntüleyin."
 
@@ -3311,7 +3311,7 @@ msgstr "Microsoft'un Windows Gezgini veya Apple'ın Finder'ı gibi WebDAV istemc
 msgid "WebDAV Upload"
 msgstr "WebDAV Yükleme"
 
-#: src/page/places.vue:232
+#: src/page/places.vue:252
 msgid "WebGL support is disabled in your browser"
 msgstr "Tarayıcınızda WebGL desteği devre dışı bırakılmış"
 
@@ -3380,7 +3380,7 @@ msgstr "Başka yüzler bulmak için kütüphanenizi yeniden tarayabilirsiniz."
 msgid "Your account has been successfully connected."
 msgstr "Hesabınız başarıyla bağlandı."
 
-#: src/page/places.vue:236
+#: src/page/places.vue:256
 msgid "Your browser does not support WebGL"
 msgstr "Tarayıcınız WebGL'yi desteklemiyor"
 
@@ -3396,6 +3396,18 @@ msgstr "Özel anların, gezilerin ve yerlerin albümlerini otomatik olarak oluş
 #: src/component/lightbox.vue:239
 msgid "Zoom in/out"
 msgstr "Yakınlaştır / uzaklaştır"
+
+#~ msgid "Captions"
+#~ msgstr "Başlıklar"
+
+#~ msgid "Show picture captions in search results."
+#~ msgstr "Arama sonuçlarında resim başlıklarını gösterin."
+
+#~ msgid "Show picture titles in search results."
+#~ msgstr "Arama sonuçlarında resim başlıklarını gösterin."
+
+#~ msgid "Titles"
+#~ msgstr "Başlıklar"
 
 #~ msgid "Customer Support"
 #~ msgstr "Müşteri Hizmetleri"
