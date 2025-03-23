@@ -492,7 +492,7 @@ func (c *Config) connectDb() error {
 	}
 
 	if dbVersion := c.DatabaseVersion(); dbVersion != "" {
-		log.Infof("database: opened connection to %s %s", c.DatabaseDriverName(), dbVersion)
+		log.Debugf("database: opened connection to %s %s", c.DatabaseDriverName(), dbVersion)
 	}
 
 	// Ok.
