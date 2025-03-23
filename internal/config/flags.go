@@ -133,13 +133,13 @@ var Flags = CliFlags{
 		Flag: &cli.StringFlag{
 			Name:    "log-level",
 			Aliases: []string{"l"},
-			Usage:   "log message verbosity `LEVEL` (trace, debug, info, warning, error, fatal, panic)",
+			Usage:   "log message verbosity `LEVEL` (trace, debug, info, warning, error)",
 			Value:   "info",
 			EnvVars: EnvVars("LOG_LEVEL"),
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "prod",
-			Usage:   "enable production mode, log startup warnings and errors only",
+			Usage:   "enable production mode to log startup warnings and errors only, and disable debug logs",
 			EnvVars: EnvVars("PROD"),
 		}}, {
 		Flag: &cli.BoolFlag{
