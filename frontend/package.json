@@ -19,7 +19,7 @@
     "testcafe": "testcafe",
     "acceptance-local": "testcafe chromium --selector-timeout 5000 -S -s tests/acceptance/screenshots tests/acceptance",
     "gettext-extract": "gettext-extract --output src/locales/translations.pot $(find ${SRC:-src} -type f \\( -iname \\*.vue -o -iname \\*.js \\) -not -path src/common/gettext.js)",
-    "gettext-compile": "gettext-compile --output src/locales/translations.json src/locales/*.po",
+    "gettext-compile": "vue-gettext-compile",
     "dep-list": "npx npm-check-updates"
   },
   "dependencies": {

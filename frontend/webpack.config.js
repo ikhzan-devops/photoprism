@@ -46,7 +46,6 @@ const PATHS = {
   share: path.join(__dirname, "src/share.js"),
   splash: path.join(__dirname, "src/splash.js"),
   build: path.join(__dirname, "../assets/static/build"),
-  public: "./",
 };
 
 if (isCustom) {
@@ -72,8 +71,10 @@ const config = {
   },
   output: {
     path: PATHS.build,
-    publicPath: PATHS.public,
+    publicPath: "auto",
     filename: "[name].[contenthash].js",
+    chunkFilename: "chunk/[name].[contenthash].js",
+    asyncChunks: true,
     clean: true,
   },
   resolve: {
@@ -148,15 +149,17 @@ const config = {
         ],
       },
       {
+        test: /\.json$/,
+        include: PATHS.src,
+        type: "json",
+      },
+      {
         test: /\.css$/,
         include: isCustom ? [PATHS.custom, PATHS.css] : [PATHS.css],
         exclude: /node_modules/,
         use: [
           {
             loader: MiniCssExtractPlugin.loader,
-            options: {
-              publicPath: PATHS.public,
-            },
           },
           {
             loader: "css-loader",
@@ -183,9 +186,6 @@ const config = {
         use: [
           {
             loader: MiniCssExtractPlugin.loader,
-            options: {
-              publicPath: PATHS.public,
-            },
           },
           {
             loader: "css-loader",
@@ -211,9 +211,6 @@ const config = {
         use: [
           {
             loader: MiniCssExtractPlugin.loader,
-            options: {
-              publicPath: PATHS.public,
-            },
           },
           {
             loader: "css-loader",
