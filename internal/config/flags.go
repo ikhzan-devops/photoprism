@@ -10,7 +10,7 @@ import (
 	"github.com/photoprism/photoprism/internal/ai/face"
 	"github.com/photoprism/photoprism/internal/config/ttl"
 	"github.com/photoprism/photoprism/internal/entity"
-	"github.com/photoprism/photoprism/internal/ffmpeg"
+	"github.com/photoprism/photoprism/internal/ffmpeg/encode"
 	"github.com/photoprism/photoprism/internal/thumb"
 	"github.com/photoprism/photoprism/pkg/authn"
 	"github.com/photoprism/photoprism/pkg/i18n"
@@ -756,7 +756,7 @@ var Flags = CliFlags{
 		Flag: &cli.StringFlag{
 			Name:    "ffmpeg-bin",
 			Usage:   "FFmpeg `COMMAND` for video transcoding and thumbnail extraction",
-			Value:   ffmpeg.DefaultBin,
+			Value:   encode.FFmpegBin,
 			EnvVars: EnvVars("FFMPEG_BIN"),
 		}}, {
 		Flag: &cli.StringFlag{
@@ -783,15 +783,15 @@ var Flags = CliFlags{
 		Flag: &cli.StringFlag{
 			Name:    "ffmpeg-map-video",
 			Usage:   "video `STREAMS` that should be transcoded",
-			Value:   ffmpeg.MapVideoDefault,
+			Value:   encode.MapVideo,
 			EnvVars: EnvVars("FFMPEG_MAP_VIDEO"),
-		}, DocDefault: fmt.Sprintf("`%s`", ffmpeg.MapVideoDefault)}, {
+		}, DocDefault: fmt.Sprintf("`%s`", encode.MapVideo)}, {
 		Flag: &cli.StringFlag{
 			Name:    "ffmpeg-map-audio",
 			Usage:   "audio `STREAMS` that should be transcoded",
-			Value:   ffmpeg.MapAudioDefault,
+			Value:   encode.MapAudio,
 			EnvVars: EnvVars("FFMPEG_MAP_AUDIO"),
-		}, DocDefault: fmt.Sprintf("`%s`", ffmpeg.MapAudioDefault)}, {
+		}, DocDefault: fmt.Sprintf("`%s`", encode.MapAudio)}, {
 		Flag: &cli.StringFlag{
 			Name:    "exiftool-bin",
 			Usage:   "ExifTool `COMMAND` for extracting metadata",
