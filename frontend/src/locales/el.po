@@ -683,7 +683,7 @@ msgstr "Πελάτης"
 msgid "Client Credentials"
 msgstr "Διαπιστευτήρια πελάτη"
 
-#: src/page/admin/sessions.vue:529 src/component/lightbox.vue:238
+#: src/page/admin/sessions.vue:529 src/component/lightbox.vue:241
 #: src/component/photo/edit/details.vue:627 src/component/photo/toolbar.vue:151
 #: src/component/photo/upload/dialog.vue:226
 #: src/component/settings/apps.vue:224 src/component/settings/apps.vue:437
@@ -873,7 +873,7 @@ msgstr "Αρχεία καταγραφής σφαλμάτων"
 #: src/model/user.js:246 src/options/auth.js:20 src/options/auth.js:21
 #: src/options/auth.js:39 src/options/auth.js:40 src/options/options.js:309
 #: src/options/options.js:344 src/options/options.js:412
-#: src/options/themes.js:727 src/page/places.vue:343
+#: src/options/themes.js:727 src/page/places.vue:360
 #: src/page/settings/general.vue:104
 msgid "Default"
 msgstr "Προεπιλογή"
@@ -1034,10 +1034,11 @@ msgid "Done."
 msgstr "Έγινε."
 
 #: src/component/album/clipboard.vue:73 src/component/album/toolbar.vue:123
-#: src/component/file/clipboard.vue:48 src/component/lightbox.vue:1075
-#: src/component/lightbox.vue:1076 src/component/people/clipboard.vue:47
-#: src/component/photo/clipboard.vue:116 src/component/photo/edit/files.vue:168
-#: src/page/settings/content.vue:331 src/page/settings/general.vue:321
+#: src/component/file/clipboard.vue:48 src/component/lightbox.vue:1097
+#: src/component/lightbox.vue:1098 src/component/lightbox.vue:1128
+#: src/component/people/clipboard.vue:47 src/component/photo/clipboard.vue:116
+#: src/component/photo/edit/files.vue:168 src/page/settings/content.vue:331
+#: src/page/settings/general.vue:321
 msgid "Download"
 msgstr "Λήψη"
 
@@ -1055,7 +1056,7 @@ msgstr "Λήψη μεμονωμένων αρχείων και αρχείων σ�
 
 #: src/component/album/clipboard.vue:104 src/component/album/toolbar.vue:162
 #: src/component/file/clipboard.vue:61 src/component/label/clipboard.vue:86
-#: src/component/lightbox.vue:1643 src/component/people/clipboard.vue:59
+#: src/component/lightbox.vue:1698 src/component/people/clipboard.vue:59
 #: src/component/photo/clipboard.vue:220 src/component/photo/edit/files.vue:117
 #: src/component/photo/view/cards.vue:169 src/component/photo/view/list.vue:142
 #: src/page/library/browse.vue:126
@@ -1095,7 +1096,7 @@ msgid "E-Mail"
 msgstr "E-Mail"
 
 #: src/component/album/clipboard.vue:61 src/component/album/toolbar.vue:95
-#: src/component/lightbox.vue:1056 src/component/lightbox.vue:1057
+#: src/component/lightbox.vue:1059 src/component/lightbox.vue:1060
 #: src/component/photo/clipboard.vue:90 src/page/settings/general.vue:393
 msgid "Edit"
 msgstr "Επεξεργασία"
@@ -1159,7 +1160,7 @@ msgstr "βάλτε κωδικό επιβεβαίωσης"
 msgid "Enter your password to confirm the action and continue:"
 msgstr "Εισαγάγετε τον κωδικό πρόσβασής σας για να επιβεβαιώσετε την ενέργεια και συνεχίστε:"
 
-#: src/page/connect.vue:54 src/component/lightbox.vue:242
+#: src/page/connect.vue:54 src/component/lightbox.vue:245
 #: src/page/connect.vue:57 src/page/library/errors.vue:252
 msgid "Error"
 msgstr "Σφάλμα"
@@ -1352,7 +1353,7 @@ msgstr "Πλαίσια"
 msgid "Full Access"
 msgstr "Πλήρης πρόσβαση"
 
-#: src/component/lightbox.vue:1004 src/component/lightbox.vue:1005
+#: src/component/lightbox.vue:1007 src/component/lightbox.vue:1008
 msgid "Fullscreen"
 msgstr "Πλήρης οθόνη"
 
@@ -1696,7 +1697,7 @@ msgstr "Βιβλιοθήκη"
 msgid "License"
 msgstr "Άδεια"
 
-#: src/component/lightbox.vue:1022 src/component/lightbox.vue:1023
+#: src/component/lightbox.vue:1025 src/component/lightbox.vue:1026
 msgid "Like"
 msgstr "Όπως"
 
@@ -1885,6 +1886,10 @@ msgstr "Μονοχρωμία"
 msgid "Month"
 msgstr "Μήνας"
 
+#: src/component/lightbox.vue:1080
+msgid "More options"
+msgstr ""
+
 #: src/component/photo/toolbar.vue:99 src/component/photo/toolbar.vue:105
 msgid "Mosaic"
 msgstr "Ψηφιδωτό"
@@ -1901,7 +1906,7 @@ msgstr "Μετακίνηση αρχείων"
 msgid "Must have at least %{n} characters."
 msgstr "Πρέπει να έχει τουλάχιστον %{n} χαρακτήρες."
 
-#: src/component/lightbox.vue:971 src/component/lightbox.vue:972
+#: src/component/lightbox.vue:974 src/component/lightbox.vue:975
 msgid "Mute"
 msgstr "Σίγαση"
 
@@ -1947,7 +1952,7 @@ msgstr "Νέος κωδικός πρόσβασης"
 msgid "Newest First"
 msgstr "Το νεότερο πρώτα"
 
-#: src/component/lightbox.vue:241 src/locales.js:113
+#: src/component/lightbox.vue:244 src/locales.js:113
 msgid "Next"
 msgstr "Επόμενο"
 
@@ -1993,10 +1998,10 @@ msgstr "Όχι άλλο"
 msgid "No people found"
 msgstr "Δεν βρέθηκαν άτομα"
 
-#: src/component/lightbox.vue:316 src/component/photo/view/cards.vue:144
+#: src/component/lightbox.vue:319 src/component/photo/view/cards.vue:144
 #: src/component/photo/view/list.vue:82 src/component/photo/view/mosaic.vue:68
 #: src/page/album/photos.vue:474 src/page/library/browse.vue:122
-#: src/page/photos.vue:601 src/page/places.vue:594 src/page/places.vue:692
+#: src/page/photos.vue:601 src/page/places.vue:611 src/page/places.vue:709
 msgid "No pictures found"
 msgstr "Δεν βρέθηκαν εικόνες"
 
@@ -2036,12 +2041,12 @@ msgstr "Οι μη φωτογραφικές εικόνες και οι εικόν
 msgid "None"
 msgstr "Κανένα"
 
-#: src/common/util.js:759 src/component/lightbox.vue:581
+#: src/common/util.js:759 src/component/lightbox.vue:584
 #: src/component/service/upload.vue:75 src/component/service/upload.vue:87
 msgid "Not allowed"
 msgstr "Δεν επιτρέπεται"
 
-#: src/component/lightbox.vue:578
+#: src/component/lightbox.vue:581
 msgid "Not found"
 msgstr "Δεν βρέθηκε"
 
@@ -2049,8 +2054,8 @@ msgstr "Δεν βρέθηκε"
 msgid "Not sorted."
 msgstr "Δεν έχει ταξινομηθεί."
 
-#: src/common/util.js:764 src/component/lightbox.vue:575
-#: src/component/lightbox.vue:692
+#: src/common/util.js:764 src/component/lightbox.vue:578
+#: src/component/lightbox.vue:695
 msgid "Not supported"
 msgstr "Δεν υποστηρίζεται"
 
@@ -2185,7 +2190,7 @@ msgstr "Άλλα"
 msgid "Our mission is to provide the most user- and privacy-friendly solution to keep your pictures organized and accessible."
 msgstr "Αποστολή μας είναι να παρέχουμε την πιο φιλική προς το χρήστη και την προστασία της ιδιωτικής ζωής λύση για να διατηρείτε τις φωτογραφίες σας οργανωμένες και προσβάσιμες."
 
-#: src/options/options.js:358 src/page/places.vue:359
+#: src/options/options.js:358 src/page/places.vue:376
 msgid "Outdoor"
 msgstr "Υπαίθρια"
 
@@ -2357,7 +2362,7 @@ msgstr "Προεπισκόπηση"
 msgid "Preview Images"
 msgstr "Προεπισκόπηση εικόνων"
 
-#: src/component/lightbox.vue:240 src/locales.js:114
+#: src/component/lightbox.vue:243 src/locales.js:114
 msgid "Previous"
 msgstr "Προηγούμενο"
 
@@ -2510,7 +2515,7 @@ msgstr "Αφαιρέση από τη συλλογή"
 msgid "Remove imported files to save storage. Unsupported file types will never be deleted, they remain in their current location."
 msgstr "Αφαιρέστε τα εισαγόμενα αρχεία για εξοικονόμηση χώρου αποθήκευσης. Οι μη υποστηριζόμενοι τύποι αρχείων δεν διαγράφονται ποτέ, παραμένουν στην τρέχουσα θέση τους."
 
-#: src/common/api.js:102 src/component/lightbox.vue:688
+#: src/common/api.js:102 src/component/lightbox.vue:691
 msgid "Request failed - are you offline?"
 msgstr "Το αίτημα απέτυχε - είστε εκτός σύνδεσης;"
 
@@ -2556,7 +2561,7 @@ msgstr "Ρόλος"
 msgid "Rows per page:"
 msgstr "Σειρές ανά σελίδα:"
 
-#: src/options/options.js:353 src/page/places.vue:355
+#: src/options/options.js:353 src/page/places.vue:372
 msgid "Satellite"
 msgstr "Δορυφόρος"
 
@@ -2610,7 +2615,7 @@ msgstr "Μυστικό"
 msgid "Security and Access"
 msgstr "Ασφάλεια και πρόσβαση"
 
-#: src/component/lightbox.vue:1039 src/component/lightbox.vue:1040
+#: src/component/lightbox.vue:1042 src/component/lightbox.vue:1043
 msgid "Select"
 msgstr "Επιλέξτε"
 
@@ -2740,7 +2745,7 @@ msgstr "Εμφάνιση των αρχείων καταγραφής του δι�
 msgid "Show Titles"
 msgstr "Εμφάνιση τίτλων"
 
-#: src/component/lightbox.vue:952 src/component/lightbox.vue:953
+#: src/component/lightbox.vue:955 src/component/lightbox.vue:956
 msgid "Show/Hide Sidebar"
 msgstr "Εμφάνιση/απόκρυψη πλαϊνής γραμμής"
 
@@ -2777,7 +2782,7 @@ msgstr "Λογισμικό"
 msgid "Software Update"
 msgstr "Ενημέρωση λογισμικού"
 
-#: src/component/lightbox.vue:685
+#: src/component/lightbox.vue:688
 msgid "Something went wrong, try again"
 msgstr "Κάτι πήγε στραβά, δοκιμάστε ξανά"
 
@@ -2832,7 +2837,7 @@ msgstr "Έναρξη"
 msgid "Start Page"
 msgstr "Σελίδα έναρξης"
 
-#: src/component/lightbox.vue:987 src/component/lightbox.vue:988
+#: src/component/lightbox.vue:990 src/component/lightbox.vue:991
 msgid "Start/Stop Slideshow"
 msgstr "Έναρξη/διακοπή προβολής διαφανειών"
 
@@ -2848,7 +2853,7 @@ msgstr "Κατάσταση"
 msgid "Storage"
 msgstr "Αποθήκευση"
 
-#: src/options/options.js:348 src/page/places.vue:351
+#: src/options/options.js:348 src/page/places.vue:368
 msgid "Streets"
 msgstr "Δρόμοι"
 
@@ -3026,7 +3031,7 @@ msgstr "Πολλά επιλεγμένα αρχεία"
 msgid "Too many requests"
 msgstr "Πάρα πολλά αιτήματα"
 
-#: src/options/options.js:363 src/page/places.vue:363
+#: src/options/options.js:363 src/page/places.vue:380
 msgid "Topographic"
 msgstr "Τοπογραφικό"
 
@@ -3308,7 +3313,7 @@ msgstr "Οι πελάτες WebDAV, όπως ο Windows Explorer της Microsof
 msgid "WebDAV Upload"
 msgstr "Ανέβασμα WebDAV"
 
-#: src/page/places.vue:252
+#: src/page/places.vue:269
 msgid "WebGL support is disabled in your browser"
 msgstr "Η υποστήριξη WebGL είναι απενεργοποιημένη στο πρόγραμμα περιήγησής σας"
 
@@ -3377,7 +3382,7 @@ msgstr "Μπορείτε να σαρώσετε εκ νέου τη βιβλιοθ
 msgid "Your account has been successfully connected."
 msgstr "Ο λογαριασμός σας έχει συνδεθεί επιτυχώς."
 
-#: src/page/places.vue:256
+#: src/page/places.vue:273
 msgid "Your browser does not support WebGL"
 msgstr "Το πρόγραμμα περιήγησής σας δεν υποστηρίζει WebGL"
 
@@ -3390,7 +3395,7 @@ msgstr "Η συνεχής υποστήριξή σας μας βοηθά να π�
 msgid "Your library is continuously analyzed to automatically create albums of special moments, trips, and places."
 msgstr "Η βιβλιοθήκη σας αναλύεται συνεχώς για να δημιουργούνται αυτόματα συλλογές με ιδιαίτερες στιγμές, ταξίδια και τοπθεσίες."
 
-#: src/component/lightbox.vue:239
+#: src/component/lightbox.vue:242
 msgid "Zoom in/out"
 msgstr "Μεγέθυνση/ σμίκρυνση"
 
