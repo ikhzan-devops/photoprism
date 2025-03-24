@@ -81,9 +81,8 @@ const config = {
     modules: isCustom ? [PATHS.custom, PATHS.src, PATHS.modules] : [PATHS.src, PATHS.modules],
     preferRelative: true,
     alias: {
-      // TODO: change it
-      vue$: "vue/dist/vue.runtime.esm-bundler.js",
-      // vue: isDev ? "vue/dist/vue.js" : "vue/dist/vue.min.js",
+      "vue$": "vue/dist/vue.runtime.esm-bundler.js",
+      "hls.js": "hls.js/dist/hls.light.min.js",
     },
   },
   plugins: [
