@@ -52,7 +52,6 @@ import VueLuxon from "vue-luxon";
 import { passiveSupport } from "passive-events-support/src/utils";
 import * as themes from "options/themes";
 import Hls from "hls.js";
-import "common/maptiler-lang";
 import { createGettext, T } from "common/gettext";
 import { Locale } from "locales";
 import * as offline from "@lcdp/offline-plugin/runtime";

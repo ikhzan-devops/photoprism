@@ -61,7 +61,6 @@
 </template>
 
 <script>
-import maplibregl from "maplibre-gl";
 import $api from "common/api";
 import $fullscreen from "common/fullscreen";
 import * as sky from "common/sky";
@@ -83,6 +82,9 @@ const deltaDegrees = 25;
 const easing = (t) => {
   return t * (2 - t);
 };
+
+// MapLibre GL.
+let maplibregl;
 
 export default {
   name: "PPagePlaces",
@@ -166,14 +168,29 @@ export default {
   },
   mounted() {
     this.$view.enter(this);
-    this.initMap()
-      .then(() => {
-        this.renderMap();
-        this.openClusterFromUrl();
-      })
-      .catch((err) => {
-        this.mapError = err;
+
+    // Dynamically import MapLibre GL JS to reduce bundle size:
+    // https://maplibre.org/maplibre-gl-js/docs/
+    try {
+      import(
+        /* webpackChunkName: "maplibregl" */
+        /* webpackMode: "lazy" */
+        "../common/maplibregl.js"
+      ).then((module) => {
+        maplibregl = module.default;
+
+        this.initMap()
+          .then(() => {
+            this.renderMap();
+            this.openClusterFromUrl();
+          })
+          .catch((err) => {
+            this.mapError = err;
+          });
       });
+    } catch (error) {
+      console.error(`failed to load maplibregl:`, error);
+    }
   },
   beforeUnmount() {
     // Exit fullscreen mode if enabled, has no effect otherwise.
