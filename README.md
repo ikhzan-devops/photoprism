@@ -30,8 +30,8 @@ To get a first impression, you are welcome to play with our [public demo](https:
 * [Play Live Photos](https://try.photoprism.app/library/live) by hovering over them in [albums](https://try.photoprism.app/library/albums) and [search results](https://try.photoprism.app/library/browse?view=cards&q=type%3Alive)
 * Five high-resolution [World Maps](https://try.photoprism.app/library/places) and our [privacy-preserving geocoding service](https://docs.photoprism.app/getting-started/#maps-places) help bring back memories of your favorite trips and let you explore the world
 * Metadata can be extracted and merged from Exif, XMP, and proprietary sources such as Google Photos
-* Use [PhotoSync](https://link.photoprism.app/photosync) to securely backup iOS and Android phones in the background
-* WebDAV clients such as Microsoft's Windows Explorer and Apple's Finder [can connect directly](https://docs.photoprism.app/user-guide/sync/webdav/) to PhotoPrism, allowing you to open, edit, and delete files from your computer as if they were local
+* [Use compatible apps](https://docs.photoprism.app/user-guide/native-apps/) like [PhotoSync](https://link.photoprism.app/photosync) to securely back up iOS and Android phones in the background
+* WebDAV clients such as [Microsoft's Windows Explorer](https://docs.photoprism.app/user-guide/sync/webdav/#__tabbed_1_2) and [Apple's Finder](https://docs.photoprism.app/user-guide/sync/webdav/#connect-to-a-webdav-server) can [connect directly to PhotoPrism](https://docs.photoprism.app/user-guide/sync/webdav/), allowing you to open, edit, and delete files from your computer as if they were local
 
 Being completely [**self-funded and independent**](https://link.photoprism.app/membership), we can promise you that we will [never sell your data](https://www.photoprism.app/privacy) and that we will [always be transparent](https://www.photoprism.app/terms) about our software and services. Your data will never be shared with Google, Amazon, Microsoft or Apple unless you intentionally upload files to one of their services. 🔒
 
