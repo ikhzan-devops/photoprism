@@ -90,6 +90,35 @@
         ></v-icon>
       </div>
     </div>
+    <v-menu
+      v-if="menuElement"
+      transition="slide-y-transition"
+      :activator="menuElement"
+      open-on-click
+      open-on-hover
+      class="p-action-menu action-menu"
+      @update:model-value="onShowMenu"
+    >
+      <v-list slim nav density="compact" :bg-color="menuBgColor" class="action-menu__list">
+        <v-list-item
+          v-for="action in menuActions()"
+          :key="action.name"
+          :value="action.name"
+          :prepend-icon="action.icon"
+          :title="action.text"
+          :class="action.class ? action.class : 'action-' + action.name"
+          :to="action.to ? action.to : undefined"
+          :href="action.href ? action.href : undefined"
+          :link="true"
+          :target="action.target ? '_blank' : '_self'"
+          :disabled="action.disabled"
+          :nav="true"
+          class="action-menu__item"
+          @click="action.click"
+        >
+        </v-list-item>
+      </v-list>
+    </v-menu>
   </v-dialog>
 </template>
 
@@ -114,6 +143,9 @@ export default {
       visible: false,
       busy: false,
       sidebarVisible: false,
+      menuElement: null,
+      menuBgColor: "#252525",
+      menuVisible: false,
       lightbox: null, // Current PhotoSwipe lightbox instance.
       captionPlugin: null, // Current PhotoSwipe caption plugin instance.
       muted: window.sessionStorage.getItem("lightbox.muted") === "true",
@@ -1165,23 +1197,75 @@ export default {
 
         // Add download button control if user has permission to use it.
         if (this.canDownload) {
-          lightbox.pswp.ui.registerElement({
-            name: "download-button",
-            className: "pswp__button--download-button pswp__button--mdi", // Sets the icon style/size in lightbox.css.
-            title: this.$gettext("Download"),
-            ariaLabel: this.$gettext("Download"),
-            order: 10,
-            isButton: true,
-            html: {
-              isCustomSVG: true,
-              inner: `<path d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z" id="pswp__icn-download" />`,
-              outlineID: "pswp__icn-download", // Add this to the <path> in the inner property.
-              size: 24, // Depends on the original SVG viewBox, e.g. use 24 for viewBox="0 0 24 24".
-            },
-            onClick: (ev) => this.onControlClick(ev, this.onDownload),
-          });
+          // When experimental features are enabled, displays an action menu with additional options.
+          if (this.featExperimental) {
+            lightbox.pswp.ui.registerElement({
+              name: "menu-button",
+              className: "pswp__button--menu-button pswp__button--mdi", // Sets the icon style/size in lightbox.css.
+              ariaLabel: this.$gettext("More options"),
+              order: 10,
+              isButton: true,
+              html: {
+                isCustomSVG: true,
+                inner: `<path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>`,
+                outlineID: "pswp__icn-menu-button", // Add this to the <path> in the inner property.
+                size: 16, // Depends on the original SVG viewBox, e.g. use 24 for viewBox="0 0 24 24".
+              },
+              onInit: (el) => {
+                this.menuElement = el;
+              },
+            });
+          } else {
+            lightbox.pswp.ui.registerElement({
+              name: "download-button",
+              className: "pswp__button--download-button pswp__button--mdi", // Sets the icon style/size in lightbox.css.
+              title: this.$gettext("Download"),
+              ariaLabel: this.$gettext("Download"),
+              order: 10,
+              isButton: true,
+              html: {
+                isCustomSVG: true,
+                inner: `<path d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z" id="pswp__icn-download" />`,
+                outlineID: "pswp__icn-download", // Add this to the <path> in the inner property.
+                size: 24, // Depends on the original SVG viewBox, e.g. use 24 for viewBox="0 0 24 24".
+              },
+              onClick: (ev) => this.onControlClick(ev, this.onDownload),
+            });
+          }
         }
       });
+    },
+    // Returns the available menu actions.
+    menuActions() {
+      return [
+        /* {
+          name: "edit",
+          icon: "mdi-pencil",
+          text: this.$gettext("Edit"),
+          visible: this.canEdit,
+          click: () => {
+            this.onEdit();
+          },
+        }, */
+        {
+          name: "download",
+          icon: "mdi-download",
+          text: this.$gettext("Download"),
+          visible: this.canDownload,
+          click: () => {
+            this.onDownload();
+          },
+        },
+      ];
+    },
+    // Opens the action menu.
+    onShowMenu(visible) {
+      if (visible) {
+        this.pauseSlideshow();
+        this.menuVisible = true;
+      } else {
+        this.menuVisible = false;
+      }
     },
     closeLightbox() {
       if (this.isBusy("close lightbox")) {
@@ -1854,6 +1938,10 @@ export default {
       this.hideLightboxControls();
     },
     hideLightboxControls() {
+      if (this.menuVisible) {
+        return;
+      }
+
       this.controlsShown = 0;
       this.hidePswpControls();
     },
