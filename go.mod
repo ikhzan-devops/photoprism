@@ -14,7 +14,7 @@ require (
 	github.com/esimov/pigo v1.4.6
 	github.com/gin-contrib/gzip v1.2.2
 	github.com/gin-gonic/gin v1.10.0
-	github.com/golang/geo v0.0.0-20250321002858-2bb09a976f49
+	github.com/golang/geo v0.0.0-20250324010448-bc23e40121c4
 	github.com/google/open-location-code/go v0.0.0-20250307090349-1695db3c3b15
 	github.com/gorilla/websocket v1.5.3
 	github.com/gosimple/slug v1.15.0
@@ -86,7 +86,7 @@ require (
 	github.com/swaggo/files v1.0.1
 	github.com/swaggo/gin-swagger v1.6.0
 	github.com/urfave/cli/v2 v2.27.6
-	github.com/zitadel/oidc/v3 v3.36.1
+	github.com/zitadel/oidc/v3 v3.37.0
 	golang.org/x/mod v0.24.0
 	golang.org/x/sys v0.31.0
 )
@@ -141,8 +141,8 @@ require (
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.12 // indirect
 	github.com/xrash/smetrics v0.0.0-20240521201337-686a1a2994c1 // indirect
-	github.com/zitadel/logging v0.6.1 // indirect
-	github.com/zitadel/schema v1.3.0 // indirect
+	github.com/zitadel/logging v0.6.2 // indirect
+	github.com/zitadel/schema v1.3.1 // indirect
 	go.opentelemetry.io/auto/sdk v1.1.0 // indirect
 	go.opentelemetry.io/otel v1.35.0 // indirect
 	go.opentelemetry.io/otel/metric v1.35.0 // indirect
@@ -169,6 +169,6 @@ require (
 	github.com/tidwall/pretty v1.2.1 // indirect
 )
 
-go 1.23.5
+go 1.23.7
 
-toolchain go1.24.0
+toolchain go1.24.1
