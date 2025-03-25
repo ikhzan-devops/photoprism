@@ -217,14 +217,28 @@ table td > .action-buttons {
 
 /* Action Menu */
 
-.p-action-menu .v-overlay__content {
+.v-menu.action-menu .v-overlay__content {
     border-radius: 6px;
 }
 
-.p-action-menu .action-menu__list {
-    min-width: 122px;
+.v-menu.action-menu .action-menu__list {
+    min-width: 132px;
     opacity: 0.97;
-    padding: 3px;
+    padding: 5px;
+}
+
+.v-menu.action-menu--lightbox .action-menu__list {
+    min-width: 128px;
+    opacity: 0.92;
+    padding: 4px;
+    background: #191a1c;
+    color: #ffffff;
+    stroke: #ffffff;
+}
+
+.v-menu>.v-overlay__content>.v-list.action-menu__list>.v-list-item.v-list-item--density-compact.action-menu__item {
+    padding-top: 8px;
+    padding-bottom: 8px;
 }
 
 /* Table Actions */

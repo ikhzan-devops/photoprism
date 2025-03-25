@@ -241,8 +241,13 @@
 }
 
 .pswp__dynamic-caption--on-hor-edge {
-    padding-left: 20px;
-    padding-right: 20px;
+    padding-top: 1px;
+    padding-left: 50px;
+    padding-right: 50px;
+}
+
+.pswp__dynamic-caption.pswp__dynamic-caption--on-hor-edge h4 {
+    font-size: 15px;
 }
 
 .pswp__dynamic-caption--mobile {
@@ -353,6 +358,16 @@
 .pswp__top-bar .pswp__button--sidebar-button .pswp__icn {
     width: 20px;
     height: 20px;
+}
+
+.is-ltr .pswp__preloader {
+    margin-left: auto;
+    margin-right: 0;
+}
+
+.is-ltr .pswp__preloader .pswp__icn {
+    left: auto;
+    right: 9px;
 }
 
 /* Video Controls */

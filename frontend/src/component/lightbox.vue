@@ -96,10 +96,10 @@
       :activator="menuElement"
       open-on-click
       open-on-hover
-      class="p-action-menu action-menu"
+      class="p-action-menu action-menu action-menu--lightbox"
       @update:model-value="onShowMenu"
     >
-      <v-list slim nav density="compact" :bg-color="menuBgColor" class="action-menu__list">
+      <v-list slim nav density="compact" class="action-menu__list">
         <v-list-item
           v-for="action in menuActions()"
           :key="action.name"
@@ -340,7 +340,7 @@ export default {
         arrowNext: true,
         loop: false,
         zoom: true,
-        close: true,
+        close: false,
         escKey: false,
         pinchToClose: false,
         counter: false,
@@ -350,13 +350,13 @@ export default {
         closeOnVerticalDrag: false,
         initialZoomLevel: "fit",
         secondaryZoomLevel: "fill",
+        showHideAnimationType: "none",
         hideAnimationDuration: 0,
         showAnimationDuration: 0,
         wheelToZoom: true,
         maxZoomLevel: 8,
         bgOpacity: 1,
         preload: [1, 1],
-        showHideAnimationType: "none",
         mainClass: "p-lightbox__pswp",
         tapAction: (point, ev) => this.onContentTap(ev),
         imageClickAction: (point, ev) => this.onContentClick(ev),
@@ -918,6 +918,7 @@ export default {
       // see https://github.com/dimsemenov/photoswipe-dynamic-caption-plugin.
       this.captionPlugin = new Captions(this.lightbox, {
         type: "below",
+        mobileLayoutBreakpoint: 1024,
         captionContent: (slide) => {
           if (!slide || !this.models || slide?.index < 0) {
             return "";
@@ -1073,6 +1074,24 @@ export default {
       // IDEA: We can later try to add styles that display the sidebar at the bottom
       //       instead of on the side, to allow use on mobile devices.
       lightbox.on("uiRegister", () => {
+        // Add close button.
+        lightbox.pswp.ui.registerElement({
+          name: "close-button",
+          className: "pswp__button--close-button ms-1", // Sets the icon style/size in lightbox.css.
+          title: this.$gettext("Close"),
+          ariaLabel: this.$gettext("Close"),
+          order: 1,
+          isButton: true,
+          html: {
+            isCustomSVG: true,
+            inner: `<path d="M24 10l-2-2-6 6-6-6-2 2 6 6-6 6 2 2 6-6 6 6 2-2-6-6z" id="pswp__icn-close-button" />`,
+            outlineID: "pswp__icn-close-button", // Add this to the <path> in the inner property.
+            size: 32, // Depends on the original SVG viewBox, e.g. use 24 for viewBox="0 0 24 24".
+          },
+          onClick: "close",
+        });
+
+        // Add sidebar view/hide toggle button.
         if (this.featDevelop && this.canEdit && window.innerWidth > this.mobileBreakpoint) {
           lightbox.pswp.ui.registerElement({
             name: "sidebar-button",
@@ -1195,58 +1214,30 @@ export default {
           });
         }
 
-        // Add download button control if user has permission to use it.
+        // Display an action menu with additional options (currently contains only a download button).
         if (this.canDownload) {
-          // When experimental features are enabled, displays an action menu with additional options.
-          if (this.featExperimental) {
-            lightbox.pswp.ui.registerElement({
-              name: "menu-button",
-              className: "pswp__button--menu-button pswp__button--mdi", // Sets the icon style/size in lightbox.css.
-              ariaLabel: this.$gettext("More options"),
-              order: 10,
-              isButton: true,
-              html: {
-                isCustomSVG: true,
-                inner: `<path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>`,
-                outlineID: "pswp__icn-menu-button", // Add this to the <path> in the inner property.
-                size: 16, // Depends on the original SVG viewBox, e.g. use 24 for viewBox="0 0 24 24".
-              },
-              onInit: (el) => {
-                this.menuElement = el;
-              },
-            });
-          } else {
-            lightbox.pswp.ui.registerElement({
-              name: "download-button",
-              className: "pswp__button--download-button pswp__button--mdi", // Sets the icon style/size in lightbox.css.
-              title: this.$gettext("Download"),
-              ariaLabel: this.$gettext("Download"),
-              order: 10,
-              isButton: true,
-              html: {
-                isCustomSVG: true,
-                inner: `<path d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z" id="pswp__icn-download" />`,
-                outlineID: "pswp__icn-download", // Add this to the <path> in the inner property.
-                size: 24, // Depends on the original SVG viewBox, e.g. use 24 for viewBox="0 0 24 24".
-              },
-              onClick: (ev) => this.onControlClick(ev, this.onDownload),
-            });
-          }
+          lightbox.pswp.ui.registerElement({
+            name: "menu-button",
+            className: "pswp__button--menu-button pswp__button--mdi me-1", // Sets the icon style/size in lightbox.css.
+            ariaLabel: this.$gettext("More options"),
+            order: 10,
+            isButton: true,
+            html: {
+              isCustomSVG: true,
+              inner: `<path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" id="pswp__icn-menu-button" />`,
+              outlineID: "pswp__icn-menu-button", // Add this to the <path> in the inner property.
+              size: 16, // Depends on the original SVG viewBox, e.g. use 24 for viewBox="0 0 24 24".
+            },
+            onInit: (el) => {
+              this.menuElement = el;
+            },
+          });
         }
       });
     },
     // Returns the available menu actions.
     menuActions() {
       return [
-        /* {
-          name: "edit",
-          icon: "mdi-pencil",
-          text: this.$gettext("Edit"),
-          visible: this.canEdit,
-          click: () => {
-            this.onEdit();
-          },
-        }, */
         {
           name: "download",
           icon: "mdi-download",
