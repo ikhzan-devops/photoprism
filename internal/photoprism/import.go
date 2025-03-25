@@ -23,17 +23,19 @@ import (
 
 // Import represents an importer that can copy/move MediaFiles to the originals directory.
 type Import struct {
-	conf    *config.Config
-	index   *Index
-	convert *Convert
+	conf     *config.Config
+	index    *Index
+	convert  *Convert
+	AllowExt fs.ExtList
 }
 
 // NewImport returns a new importer and expects its dependencies as arguments.
 func NewImport(conf *config.Config, index *Index, convert *Convert) *Import {
 	instance := &Import{
-		conf:    conf,
-		index:   index,
-		convert: convert,
+		conf:     conf,
+		index:    index,
+		convert:  convert,
+		AllowExt: conf.ImportAllow(),
 	}
 
 	return instance

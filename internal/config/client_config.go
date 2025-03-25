@@ -61,6 +61,7 @@ type ClientConfig struct {
 	Sponsor          bool                `json:"sponsor"`
 	ReadOnly         bool                `json:"readonly"`
 	UploadNSFW       bool                `json:"uploadNSFW"`
+	UploadAllow      string              `json:"uploadAllow"`
 	Public           bool                `json:"public"`
 	AuthMode         string              `json:"authMode"`
 	UsersPath        string              `json:"usersPath"`
@@ -392,6 +393,7 @@ func (c *Config) ClientShare() *ClientConfig {
 		Sponsor:          c.Sponsor(),
 		ReadOnly:         c.ReadOnly(),
 		UploadNSFW:       c.UploadNSFW(),
+		UploadAllow:      c.UploadAllow().Accept(),
 		Public:           c.Public(),
 		AuthMode:         c.AuthMode(),
 		UsersPath:        "",
@@ -491,6 +493,7 @@ func (c *Config) ClientUser(withSettings bool) *ClientConfig {
 		Sponsor:          c.Sponsor(),
 		ReadOnly:         c.ReadOnly(),
 		UploadNSFW:       c.UploadNSFW(),
+		UploadAllow:      c.UploadAllow().Accept(),
 		Public:           c.Public(),
 		AuthMode:         c.AuthMode(),
 		UsersPath:        c.UsersPath(),

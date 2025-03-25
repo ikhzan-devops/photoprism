@@ -238,6 +238,22 @@ var Flags = CliFlags{
 			EnvVars: EnvVars("IMPORT_DEST"),
 		}}, {
 		Flag: &cli.StringFlag{
+			Name:    "import-allow",
+			Usage:   "allow to import these file types (comma-separated list of `EXTENSIONS`; leave blank to allow all)",
+			EnvVars: EnvVars("IMPORT_ALLOW"),
+		}}, {
+		Flag: &cli.BoolFlag{
+			Name:    "upload-nsfw",
+			Aliases: []string{"n"},
+			Usage:   "allow uploads that might be offensive (detecting unsafe content requires TensorFlow)",
+			EnvVars: EnvVars("UPLOAD_NSFW"),
+		}}, {
+		Flag: &cli.StringFlag{
+			Name:    "upload-allow",
+			Usage:   "allow to upload these file types (comma-separated list of `EXTENSIONS`; leave blank to allow all)",
+			EnvVars: EnvVars("UPLOAD_ALLOW"),
+		}}, {
+		Flag: &cli.StringFlag{
 			Name:    "cache-path",
 			Aliases: []string{"ca"},
 			Usage:   "custom cache `PATH` for sessions and thumbnail files *optional*",
@@ -452,18 +468,6 @@ var Flags = CliFlags{
 			Name:    "detect-nsfw",
 			Usage:   "flag newly added pictures as private if they might be offensive (requires TensorFlow)",
 			EnvVars: EnvVars("DETECT_NSFW"),
-		}}, {
-		Flag: &cli.BoolFlag{
-			Name:    "upload-nsfw",
-			Aliases: []string{"n"},
-			Usage:   "allow uploads that might be offensive (detecting unsafe content requires TensorFlow)",
-			EnvVars: EnvVars("UPLOAD_NSFW"),
-		}}, {
-		Flag: &cli.BoolFlag{
-			Name:    "upload-allow",
-			Usage:   "allow these file types for web uploads (comma-separated list of extensions; leave blank to allow all)",
-			EnvVars: EnvVars("UPLOAD_ALLOW"),
-			Hidden:  true,
 		}}, {
 		Flag: &cli.StringFlag{
 			Name:    "default-locale",

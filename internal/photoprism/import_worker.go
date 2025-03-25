@@ -27,6 +27,7 @@ func ImportWorker(jobs <-chan ImportJob) {
 		imp := job.Imp
 		opt := job.ImportOpt
 		src := job.ImportOpt.Path
+		allowExt := job.Imp.AllowExt
 
 		related := job.Related
 
@@ -38,18 +39,27 @@ func ImportWorker(jobs <-chan ImportJob) {
 			continue
 		}
 
-		// Create JSON sidecar file, if needed.
-		if jsonErr := related.Main.CreateExifToolJson(imp.convert); jsonErr != nil {
-			log.Warnf("import: %s", clean.Error(jsonErr))
-		}
-
 		originalName := related.Main.RelName(src)
+		mainFileType := related.Main.FileType()
+
+		if mainFileType == fs.TypeUnknown {
+			log.Warnf("import: skipped %s due to unknown or unsupported extension", clean.Log(originalName))
+			continue
+		} else if allowExt.Excludes(mainFileType.DefaultExt()) {
+			log.Warnf("import: skipped %s because the file type is not allowed", clean.Log(originalName))
+			continue
+		}
 
 		event.Publish("import.file", event.Data{
 			"fileName":  originalName,
 			"baseName":  filepath.Base(related.Main.FileName()),
 			"subFolder": opt.DestFolder,
 		})
+
+		// Create JSON sidecar file, if needed.
+		if jsonErr := related.Main.CreateExifToolJson(imp.convert); jsonErr != nil {
+			log.Warnf("import: %s", clean.Error(jsonErr))
+		}
 
 		for _, f := range related.Files {
 			relFileName := f.RelName(src)

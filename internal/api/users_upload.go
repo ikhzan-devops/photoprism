@@ -87,10 +87,28 @@ func UploadUserFiles(router *gin.RouterGroup) {
 			return
 		}
 
-		// Save uploaded files.
+		// List of allowed file extensions (all types allowed if empty).
+		allowExt := conf.UploadAllow()
+
+		// Save uploaded files if their extension is allowed.
 		for _, file := range files {
 			fileName := filepath.Base(file.Filename)
 			filePath := path.Join(uploadDir, fileName)
+			fileType := fs.FileType(fileName)
+
+			if fileType == fs.TypeUnknown {
+				log.Warnf("upload: rejected %s due to unknown or unsupported extension", clean.Log(fileName))
+				if err = os.Remove(filePath); err != nil {
+					log.Errorf("upload: %s could not be deleted (%s)", clean.Log(fileName), err)
+				}
+				continue
+			} else if allowExt.Excludes(fileType.DefaultExt()) {
+				log.Warnf("upload: rejected %s because the file type is not allowed", clean.Log(fileName))
+				if err = os.Remove(filePath); err != nil {
+					log.Errorf("upload: %s could not be deleted (%s)", clean.Log(fileName), err)
+				}
+				continue
+			}
 
 			if err = c.SaveUploadedFile(file, filePath); err != nil {
 				log.Errorf("upload: failed saving file %s", clean.Log(fileName))
@@ -105,16 +123,16 @@ func UploadUserFiles(router *gin.RouterGroup) {
 		}
 
 		// Check if uploaded file is safe.
-		if !conf.UploadNSFW() {
+		if len(uploads) > 0 && !conf.UploadNSFW() {
 			nd := get.NsfwDetector()
 
 			containsNSFW := false
 
 			for _, filename := range uploads {
-				labels, err := nd.File(filename)
+				labels, nsfwErr := nd.File(filename)
 
-				if err != nil {
-					log.Debug(err)
+				if nsfwErr != nil {
+					log.Debug(nsfwErr)
 					continue
 				}
 
@@ -235,8 +253,8 @@ func ProcessUserUpload(router *gin.RouterGroup) {
 			log.Infof("upload: imported %s", english.Plural(n, "file", "files"))
 			if moments := get.Moments(); moments == nil {
 				log.Warnf("upload: moments service not set - you may have found a bug")
-			} else if err := moments.Start(); err != nil {
-				log.Warnf("moments: %s", err)
+			} else if workerErr := moments.Start(); workerErr != nil {
+				log.Warnf("moments: %s", workerErr)
 			}
 		}
 
@@ -258,8 +276,8 @@ func ProcessUserUpload(router *gin.RouterGroup) {
 		UpdateClientConfig()
 
 		// Update album, label, and subject cover thumbs.
-		if err := query.UpdateCovers(); err != nil {
-			log.Warnf("upload: %s (update covers)", err)
+		if coversErr := query.UpdateCovers(); coversErr != nil {
+			log.Warnf("upload: %s (update covers)", coversErr)
 		}
 
 		c.JSON(http.StatusOK, i18n.Response{Code: http.StatusOK, Msg: msg})
