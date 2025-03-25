@@ -382,7 +382,7 @@
     right: 9px;
 }
 
-.v-menu.action-menu--lightbox .action-menu__list {
+.v-menu.action-menu.action-menu--lightbox .action-menu__list {
     min-width: 128px;
     opacity: 0.87;
     padding: 6px;
