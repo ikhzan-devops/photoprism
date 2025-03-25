@@ -74,7 +74,6 @@ func UploadUserFiles(router *gin.RouterGroup) {
 		event.Publish("upload.start", event.Data{"uid": s.UserUID, "time": start})
 
 		files := f.File["files"]
-		uploaded := len(files)
 
 		var uploads []string
 
@@ -98,15 +97,9 @@ func UploadUserFiles(router *gin.RouterGroup) {
 
 			if fileType == fs.TypeUnknown {
 				log.Warnf("upload: rejected %s due to unknown or unsupported extension", clean.Log(fileName))
-				if err = os.Remove(filePath); err != nil {
-					log.Errorf("upload: %s could not be deleted (%s)", clean.Log(fileName), err)
-				}
 				continue
 			} else if allowExt.Excludes(fileType.DefaultExt()) {
 				log.Warnf("upload: rejected %s because the file type is not allowed", clean.Log(fileName))
-				if err = os.Remove(filePath); err != nil {
-					log.Errorf("upload: %s could not be deleted (%s)", clean.Log(fileName), err)
-				}
 				continue
 			}
 
@@ -159,7 +152,7 @@ func UploadUserFiles(router *gin.RouterGroup) {
 
 		elapsed := int(time.Since(start).Seconds())
 
-		msg := i18n.Msg(i18n.MsgFilesUploadedIn, uploaded, elapsed)
+		msg := i18n.Msg(i18n.MsgFilesUploadedIn, len(uploads), elapsed)
 
 		log.Info(msg)
 
