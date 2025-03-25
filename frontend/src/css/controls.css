@@ -225,15 +225,9 @@ table td > .action-buttons {
     min-width: 132px;
     opacity: 0.97;
     padding: 5px;
-}
-
-.v-menu.action-menu--lightbox .action-menu__list {
-    min-width: 128px;
-    opacity: 0.92;
-    padding: 4px;
-    background: #191a1c;
-    color: #ffffff;
-    stroke: #ffffff;
+    border-color: rgba(var(--v-border-color), var(--v-border-opacity));
+    border-style: solid;
+    border-width: thin;
 }
 
 .v-menu>.v-overlay__content>.v-list.action-menu__list>.v-list-item.v-list-item--density-compact.action-menu__item {

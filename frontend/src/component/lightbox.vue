@@ -1088,7 +1088,12 @@ export default {
             outlineID: "pswp__icn-close-button", // Add this to the <path> in the inner property.
             size: 32, // Depends on the original SVG viewBox, e.g. use 24 for viewBox="0 0 24 24".
           },
-          onClick: "close",
+          onClick: (ev) =>
+            this.onControlClick(ev, () => {
+              if (lightbox && lightbox.pswp) {
+                lightbox.pswp.close();
+              }
+            }),
         });
 
         // Add sidebar view/hide toggle button.
