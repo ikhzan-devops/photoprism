@@ -1077,7 +1077,7 @@ export default {
         // Add close button.
         lightbox.pswp.ui.registerElement({
           name: "close-button",
-          className: "pswp__button--close-button ms-1", // Sets the icon style/size in lightbox.css.
+          className: "pswp__button--close-button", // Sets the icon style/size in lightbox.css.
           title: this.$gettext("Close"),
           ariaLabel: this.$gettext("Close"),
           order: 1,
@@ -1218,7 +1218,7 @@ export default {
         if (this.canDownload) {
           lightbox.pswp.ui.registerElement({
             name: "menu-button",
-            className: "pswp__button--menu-button pswp__button--mdi me-1", // Sets the icon style/size in lightbox.css.
+            className: "pswp__button--menu-button pswp__button--mdi", // Sets the icon style/size in lightbox.css.
             ariaLabel: this.$gettext("More options"),
             order: 10,
             isButton: true,

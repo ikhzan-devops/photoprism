@@ -360,6 +360,14 @@
     height: 20px;
 }
 
+.pswp__top-bar .pswp__button--close-button {
+    margin-inline-start: 4px;
+}
+
+.pswp__top-bar .pswp__button--menu-button {
+    margin-inline-end: 4px;
+}
+
 .is-ltr .pswp__preloader {
     margin-left: auto;
     margin-right: 0;
