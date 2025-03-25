@@ -183,7 +183,15 @@ func (imp *Import) Start(opt ImportOptions) fs.Done {
 			// Report files that have a missing or invalid filename extension,
 			// see https://github.com/photoprism/photoprism/issues/3518.
 			if typeErr := mf.CheckType(); typeErr != nil {
-				log.Warnf("import: %s has %s", clean.Log(mf.RootRelName()), typeErr)
+				if !opt.RemoveInvalidFiles {
+					log.Warnf("import: %s %s and will not be indexed", clean.Log(mf.RootRelName()), typeErr)
+				} else if removeErr := mf.Remove(); removeErr != nil {
+					log.Errorf("import: %s %s and %s", clean.Log(mf.RootRelName()), typeErr, removeErr)
+					return nil
+				} else {
+					log.Warnf("import: %s %s and was deleted", clean.Log(mf.RootRelName()), typeErr)
+					return nil
+				}
 			}
 
 			// Create JSON sidecar file, if needed.

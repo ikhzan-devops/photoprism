@@ -130,11 +130,15 @@ func TestExtList_String(t *testing.T) {
 func TestExtList_Accept(t *testing.T) {
 	t.Run("One", func(t *testing.T) {
 		list := NewExtList("jpg")
-		assert.Equal(t, ".jfi,.jfif,.jif,.jpe,.jpeg,.jpg", list.Accept())
+		assert.Equal(t, ".jpg", list.Accept())
 	})
 	t.Run("Two", func(t *testing.T) {
 		list := NewExtList("mp4, avi")
-		assert.Equal(t, ".avi,.mp,.mp4", list.Accept())
+		assert.Equal(t, ".avi,.mp4", list.Accept())
+	})
+	t.Run("Jpeg", func(t *testing.T) {
+		list := NewExtList("jpg,jpeg,jxl")
+		assert.Equal(t, ".jpeg,.jpg,.jxl", list.Accept())
 	})
 	t.Run("Empty", func(t *testing.T) {
 		list := NewExtList("")

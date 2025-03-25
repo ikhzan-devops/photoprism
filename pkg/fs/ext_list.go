@@ -111,10 +111,9 @@ func (b ExtList) Accept() string {
 
 	list := make([]string, 0, len(b))
 
-	for typeExt := range b {
-		allExt := FileTypesLower[FileType("."+typeExt)]
-		for _, s := range allExt {
-			list = append(list, s)
+	for s := range b {
+		if s = TrimExt(s); s != "" {
+			list = append(list, "."+s)
 		}
 	}
 

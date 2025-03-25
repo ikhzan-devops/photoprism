@@ -86,36 +86,55 @@ func UploadUserFiles(router *gin.RouterGroup) {
 			return
 		}
 
-		// List of allowed file extensions (all types allowed if empty).
-		allowExt := conf.UploadAllow()
+		// If the file extension list is empty, all file types may
+		// be uploaded except raw files if raw support is disabled.
+		allowedExt := conf.UploadAllow()
+		rejectRaw := conf.DisableRaw()
 
-		// Save uploaded files if their extension is allowed.
+		// Save uploaded files and append their names
+		// to "uploads" if they pass all checks.
 		for _, file := range files {
-			fileName := filepath.Base(file.Filename)
-			filePath := path.Join(uploadDir, fileName)
-			fileType := fs.FileType(fileName)
+			baseName := filepath.Base(file.Filename)
+			destName := path.Join(uploadDir, baseName)
+			fileType := fs.FileType(baseName)
 
+			// Reject unsupported files and files with extensions that aren't allowed.
 			if fileType == fs.TypeUnknown {
-				log.Warnf("upload: rejected %s due to unknown or unsupported extension", clean.Log(fileName))
+				log.Warnf("upload: rejected %s because it has an unsupported file extension", clean.Log(baseName))
 				continue
-			} else if allowExt.Excludes(fileType.DefaultExt()) {
-				log.Warnf("upload: rejected %s because the file type is not allowed", clean.Log(fileName))
+			} else if allowedExt.Excludes(fileType.DefaultExt()) {
+				log.Warnf("upload: rejected %s because its extension is not allowed", clean.Log(baseName))
 				continue
 			}
 
-			if err = c.SaveUploadedFile(file, filePath); err != nil {
-				log.Errorf("upload: failed saving file %s", clean.Log(fileName))
+			// Save uploaded file in the user upload path.
+			if err = c.SaveUploadedFile(file, destName); err != nil {
+				log.Errorf("upload: failed to save %s", clean.Log(baseName))
+				log.Debugf("upload: %s in %s", clean.Error(err), clean.Log(baseName))
 				Abort(c, http.StatusBadRequest, i18n.ErrUploadFailed)
 				return
 			} else {
-				log.Debugf("upload: saved file %s", clean.Log(fileName))
-				event.Publish("upload.saved", event.Data{"uid": s.UserUID, "file": fileName})
+				log.Debugf("upload: saved %s in user upload path", clean.Log(baseName))
+				event.Publish("upload.saved", event.Data{"uid": s.UserUID, "file": baseName})
 			}
 
-			uploads = append(uploads, filePath)
+			// Make sure the file is supported and has the correct extension before importing it.
+			if mediaFile, mediaErr := photoprism.NewMediaFile(destName); mediaErr != nil {
+				log.Errorf("upload: rejected %s, %s", clean.Error(err), clean.Log(baseName))
+				logErr("upload", os.Remove(destName))
+			} else if typeErr := mediaFile.CheckType(); typeErr != nil {
+				log.Warnf("upload: rejected %s %s", clean.Log(baseName), typeErr)
+				logErr("upload", os.Remove(destName))
+			} else if rejectRaw && mediaFile.IsRaw() {
+				log.Warnf("upload: rejected %s because raw support is disabled", clean.Log(baseName))
+				logErr("upload", os.Remove(destName))
+			} else {
+				// Successfully validated upload.
+				uploads = append(uploads, destName)
+			}
 		}
 
-		// Check if uploaded file is safe.
+		// Check if the uploaded file may contain inappropriate content.
 		if len(uploads) > 0 && !conf.UploadNSFW() {
 			nd := get.NsfwDetector()
 
@@ -152,6 +171,7 @@ func UploadUserFiles(router *gin.RouterGroup) {
 
 		elapsed := int(time.Since(start).Seconds())
 
+		// Log number of successfully uploaded files.
 		msg := i18n.Msg(i18n.MsgFilesUploadedIn, len(uploads), elapsed)
 
 		log.Info(msg)
@@ -240,7 +260,7 @@ func ProcessUserUpload(router *gin.RouterGroup) {
 		}
 
 		// Update moments if files have been imported.
-		if n := len(imported); n == 0 {
+		if n := imported.Processed(); n == 0 {
 			log.Infof("upload: found no new files to import from %s", clean.Log(uploadPath))
 		} else {
 			log.Infof("upload: imported %s", english.Plural(n, "file", "files"))
