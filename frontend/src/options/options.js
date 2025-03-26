@@ -128,6 +128,7 @@ export const StartPages = (features) => [
   { value: "default", text: $gettext("Default"), visible: true },
   { value: "browse", text: $gettext("Search"), props: { disabled: !features?.library } },
   { value: "albums", text: $gettext("Albums"), props: { disabled: !features?.albums } },
+  { value: "media", text: $gettext("Media"), props: { disabled: !features?.videos } },
   { value: "videos", text: $gettext("Videos"), props: { disabled: !features?.videos } },
   { value: "people", text: $gettext("People"), props: { disabled: !(features?.people && features?.edit) } },
   { value: "favorites", text: $gettext("Favorites"), props: { disabled: !features?.favorites } },
@@ -205,16 +206,20 @@ export const PhotoTypes = () => [
     value: media.Raw,
   },
   {
-    text: $gettext("Animated"),
-    value: media.Animated,
-  },
-  {
     text: $gettext("Live"),
     value: media.Live,
   },
   {
     text: $gettext("Video"),
     value: media.Video,
+  },
+  {
+    text: $gettext("Audio"),
+    value: media.Audio,
+  },
+  {
+    text: $gettext("Animated"),
+    value: media.Animated,
   },
   {
     text: $gettext("Vector"),

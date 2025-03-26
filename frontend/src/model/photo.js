@@ -398,7 +398,7 @@ export class Photo extends RestModel {
   }
 
   generateIsPlayable = memoizeOne((type, files) => {
-    if (type === media.Animated) {
+    if (type === media.Animated || type === media.Audio) {
       return true;
     } else if (!files) {
       return false;

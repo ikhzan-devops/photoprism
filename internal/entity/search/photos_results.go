@@ -189,7 +189,7 @@ func (m *Photo) Restore() error {
 // IsPlayable returns true if the photo has a related video/animation that is playable.
 func (m *Photo) IsPlayable() bool {
 	switch m.PhotoType {
-	case entity.MediaVideo, entity.MediaLive, entity.MediaAnimated:
+	case entity.MediaLive, entity.MediaVideo, entity.MediaAudio, entity.MediaAnimated:
 		return true
 	default:
 		return false

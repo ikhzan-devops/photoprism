@@ -291,13 +291,29 @@ export default class Config {
         this.values.count.all += data.count;
         this.values.count.photos += data.count;
         break;
-      case "live":
+      case "animated":
         this.values.count.all += data.count;
-        this.values.count.live += data.count;
+        this.values.count.media += data.count;
+        this.values.count.animated += data.count;
         break;
       case "videos":
         this.values.count.all += data.count;
+        this.values.count.media += data.count;
         this.values.count.videos += data.count;
+        break;
+      case "live":
+        this.values.count.all += data.count;
+        this.values.count.media += data.count;
+        this.values.count.live += data.count;
+        break;
+      case "audio":
+        this.values.count.all += data.count;
+        this.values.count.media += data.count;
+        this.values.count.audio += data.count;
+        break;
+      case "documents":
+        this.values.count.all += data.count;
+        this.values.count.documents += data.count;
         break;
       case "cameras":
         this.values.count.cameras += data.count;
