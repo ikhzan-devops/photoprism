@@ -11,48 +11,55 @@ export default class Page {
     this.toolbarTitle = Selector("#p-navigation div.v-toolbar-title");
     this.toolbarSecondTitle = Selector("header.v-toolbar div.v-toolbar-title");
     this.openMobileToolbar = Selector("button.mobile-menu-trigger");
+    this.cardsViewAction = Selector("button.action-view-cards");
+    this.mosaicViewAction = Selector("button.action-view-mosaic");
+    this.listViewAction = Selector("button.action-view-list");
   }
 
   async checkToolbarActionAvailability(action, visible) {
     if (
-        (t.browser.platform === "mobile") &
-        (action !== "edit") &
-        (action !== "share") &
-        (action !== "add") &
-        (action !== "show-all") &
-        (action !== "show-important")
+      (t.browser.platform === "mobile") &
+      (action !== "edit") &
+      (action !== "share") &
+      (action !== "add") &
+      (action !== "show-all") &
+      (action !== "show-important")
     ) {
       if (await this.openMobileToolbar.exists) {
         await t.click(this.openMobileToolbar);
       }
       await this.checkMobileMenuActionAvailability(action, visible);
-      await t.click(Selector("#photoprism"), {offsetX: 1, offsetY: 1});
+      await t.click(Selector("#photoprism"), { offsetX: 1, offsetY: 1 });
     } else if (visible) {
-      if (action === "delete-all" ||
-          action === "view-mosaic" ||
-          action === "view-list" ||
-          action === "view-cards" ||
-          action === "add" ||
-          action === "show-hidden" ||
-          action === "show-all" ||
-          action === "show-important") {
+      if (
+        action === "delete-all" ||
+        action === "view-mosaic" ||
+        action === "view-list" ||
+        action === "view-cards" ||
+        action === "add" ||
+        action === "show-hidden" ||
+        action === "show-all" ||
+        action === "show-important"
+      ) {
         await t.expect(Selector("button.action-" + action).visible).ok();
       } else {
-        await t.hover(Selector("button.action-menu__btn"))
+        await t.hover(Selector("button.action-menu__btn"));
         await t.expect(Selector("div.action-" + action).visible).ok();
       }
     } else {
-      if (action === "delete-all" ||
-          action === "view-mosaic" ||
-          action === "view-list" ||
-          action === "view-cards" ||
-          action === "add" ||
-          action === "show-hidden" ||
-          action === "show-all" ||
-          action === "show-important") {
+      if (
+        action === "delete-all" ||
+        action === "view-mosaic" ||
+        action === "view-list" ||
+        action === "view-cards" ||
+        action === "add" ||
+        action === "show-hidden" ||
+        action === "show-all" ||
+        action === "show-important"
+      ) {
         await t.expect(Selector("button.action-" + action).visible).notOk();
       } else {
-        await t.hover(Selector("button.action-menu__btn"))
+        await t.hover(Selector("button.action-menu__btn"));
         await t.expect(Selector("div.action-" + action).visible).notOk();
       }
     }
@@ -103,8 +110,7 @@ export default class Page {
       (action !== "share") &
       (action !== "add") &
       (action !== "show-all") &
-      (action !== "show-important" ||
-       action === "show-important")
+      (action !== "show-important" || action === "show-important")
     ) {
       if (await this.openMobileToolbar.exists) {
         await t.click(this.openMobileToolbar);
@@ -114,17 +120,19 @@ export default class Page {
       }
       await t.click(Selector("button.nav-menu-" + action));
     } else {
-      if (action === "delete-all" ||
-      action === "view-mosaic" ||
-      action === "view-list" ||
-      action === "view-cards" ||
-      action === "add" ||
-      action === "show-hidden" ||
-      action === "show-all" ||
-      action === "show-important") {
+      if (
+        action === "delete-all" ||
+        action === "view-mosaic" ||
+        action === "view-list" ||
+        action === "view-cards" ||
+        action === "add" ||
+        action === "show-hidden" ||
+        action === "show-all" ||
+        action === "show-important"
+      ) {
         await t.click(Selector("button.action-" + action));
       } else {
-        await t.hover(Selector("button.action-menu__btn"))
+        await t.hover(Selector("button.action-menu__btn"));
         await t.click(Selector("div.action-" + action));
       }
     }

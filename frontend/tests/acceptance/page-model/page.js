@@ -22,6 +22,7 @@ export default class Page {
     this.selectOption = Selector('div[role="option"]', { timeout: 15000 });
     this.cardTitle = Selector("button.action-title-edit", { timeout: 7000 });
     this.cardDescription = Selector("button.meta-description", { timeout: 7000 });
+    this.cardCaption = Selector("button.meta-caption", { timeout: 7000 });
     this.cardLocation = Selector("button.action-location", { timeout: 7000 });
     this.cardTaken = Selector("button.action-open-date", { timeout: 7000 });
     this.usernameInput = Selector(".input-username input", { timeout: 7000 });

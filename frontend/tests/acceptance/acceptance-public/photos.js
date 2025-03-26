@@ -47,9 +47,9 @@ test.meta("testID", "photos-002").meta({ mode: "public" })(
     const FirstVideoUid = await photo.getNthPhotoUid("video", 0);
     await photoviewer.openPhotoViewer("uid", SecondPhotoUid);
 
-    await photoviewer.checkPhotoViewerActionAvailability("download-button", true);
+    await photoviewer.checkPhotoViewerActionAvailability("download", true);
 
-    await photoviewer.triggerPhotoViewerAction("close");
+    await photoviewer.triggerPhotoViewerAction("close-button");
     await t.expect(Selector("div.p-lightbox__pswp").visible).notOk();
     await photo.triggerHoverAction("uid", FirstPhotoUid, "select");
     await photo.triggerHoverAction("uid", FirstVideoUid, "select");
@@ -154,7 +154,7 @@ test.meta("testID", "photos-004").meta({ type: "short", mode: "public" })(
     await contextmenu.clearSelection();
     await photoviewer.openPhotoViewer("uid", FirstPhotoUid);
     await photoviewer.triggerPhotoViewerAction("favorite-toggle");
-    await photoviewer.triggerPhotoViewerAction("close");
+    await photoviewer.triggerPhotoViewerAction("close-button");
     await t.expect(Selector("div.p-lightbox__pswp").visible).notOk();
     if (t.browser.platform === "mobile") {
       await t.eval(() => location.reload());
