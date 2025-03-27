@@ -377,7 +377,7 @@ msgstr "Κίνηση"
 msgid "Any private photos and videos remain private and won't be shared."
 msgstr "Οποιεσδήποτε ιδιωτικές φωτογραφίες και βίντεο παραμένουν ιδιωτικές και δεν θα κοινοποιηθούν."
 
-#: src/component/service/edit.vue:370
+#: src/component/service/edit.vue:372
 msgid "API Key"
 msgstr "Κλειδί API"
 
@@ -584,14 +584,14 @@ msgstr "Δεν μπορείτε να επιλέξετε περισσότερα �
 #: src/component/user/add/dialog.vue:27 src/component/user/edit/dialog.vue:473
 #: src/component/user/remove/dialog.vue:45 src/page/connect.vue:119
 #: src/component/album/delete/dialog.vue:43
-#: src/component/album/edit/dialog.vue:198 src/component/confirm/dialog.vue:43
+#: src/component/album/edit/dialog.vue:199 src/component/confirm/dialog.vue:43
 #: src/component/file/delete/dialog.vue:47
 #: src/component/label/delete/dialog.vue:47
 #: src/component/label/edit/dialog.vue:107
 #: src/component/people/edit/dialog.vue:120
 #: src/component/photo/album/dialog.vue:78 src/component/service/add.vue:19
-#: src/component/service/edit.vue:453 src/component/service/remove.vue:49
-#: src/component/service/upload.vue:116 src/component/settings/apps.vue:352
+#: src/component/service/edit.vue:455 src/component/service/remove.vue:49
+#: src/component/service/upload.vue:117 src/component/settings/apps.vue:352
 #: src/component/settings/passcode.vue:249
 #: src/component/settings/passcode.vue:333
 #: src/component/settings/password.vue:159 src/component/share/dialog.vue:28
@@ -615,7 +615,7 @@ msgid "Carousel slide {0} of {1}"
 msgstr "Καρουσέλ διαφάνεια {0} του {1}"
 
 #: src/page/about/feedback.vue:82 src/page/about/feedback.vue:83
-#: src/component/album/edit/dialog.vue:127 src/component/photo/toolbar.vue:381
+#: src/component/album/edit/dialog.vue:128 src/component/photo/toolbar.vue:381
 #: src/page/albums.vue:181
 msgid "Category"
 msgstr "Κατηγορία"
@@ -885,7 +885,7 @@ msgstr "Αρχεία καταγραφής σφαλμάτων"
 msgid "Default"
 msgstr "Προεπιλογή"
 
-#: src/component/service/edit.vue:122
+#: src/component/service/edit.vue:123
 msgid "Default Folder"
 msgstr "Προεπιλεγμένος φάκελος"
 
@@ -1052,7 +1052,7 @@ msgstr "Λήψη"
 msgid "Download only original media files, without any automatically generated files."
 msgstr "Λήψη μόνο πρωτότυπων αρχείων πολυμέσων, χωρίς αυτόματα παραγόμενα αρχεία."
 
-#: src/component/service/edit.vue:235
+#: src/component/service/edit.vue:237
 msgid "Download remote files"
 msgstr "Λήψη απομακρυσμένων αρχείων"
 
@@ -1208,7 +1208,7 @@ msgid "Experimental Features"
 msgstr "Πειραματικά Χαρακτηριστικά"
 
 #: src/page/admin/sessions.vue:62 src/page/admin/sessions.vue:453
-#: src/component/service/edit.vue:156 src/component/settings/apps.vue:72
+#: src/component/service/edit.vue:157 src/component/settings/apps.vue:72
 #: src/component/settings/apps.vue:326 src/component/share/dialog.vue:62
 msgid "Expires"
 msgstr "Λήξη"
@@ -1255,7 +1255,7 @@ msgstr "Επίθετο"
 msgid "Fast"
 msgstr "Γρήγορα"
 
-#: src/component/album/edit/dialog.vue:158
+#: src/component/album/edit/dialog.vue:159
 #: src/component/label/edit/dialog.vue:85
 #: src/component/people/edit/dialog.vue:85
 #: src/component/photo/edit/info.vue:287
@@ -1323,9 +1323,9 @@ msgstr "Πρώτη σελίδα"
 msgid "Focal Length"
 msgstr "Εστιακό μήκος"
 
-#: src/component/photo/edit/info.vue:115 src/component/service/edit.vue:116
-#: src/component/service/edit.vue:186 src/component/service/edit.vue:192
-#: src/component/service/upload.vue:88 src/component/service/upload.vue:95
+#: src/component/photo/edit/info.vue:115 src/component/service/edit.vue:118
+#: src/component/service/edit.vue:189 src/component/service/edit.vue:194
+#: src/component/service/upload.vue:90 src/component/service/upload.vue:96
 #: src/model/folder.js:199 src/page/library/browse.vue:181
 msgid "Folder"
 msgstr "Φάκελος"
@@ -1548,7 +1548,7 @@ msgstr "Αναγνωριστικό περίπτωσης"
 msgid "Insufficient storage."
 msgstr "Ανεπαρκής αποθήκευση."
 
-#: src/component/service/edit.vue:207
+#: src/component/service/edit.vue:209
 msgid "Interval"
 msgstr "Διάστημα"
 
@@ -1927,7 +1927,7 @@ msgstr "Σίγαση"
 #: src/component/people/edit/dialog.vue:71
 #: src/component/photo/edit/files.vue:39 src/component/photo/edit/info.vue:55
 #: src/component/photo/edit/info.vue:125 src/component/photo/edit/people.vue:36
-#: src/component/photo/view/list.vue:117 src/component/service/edit.vue:308
+#: src/component/photo/view/list.vue:117 src/component/service/edit.vue:310
 #: src/component/settings/apps.vue:52 src/component/settings/apps.vue:286
 #: src/page/albums.vue:97 src/page/auth/login.vue:145
 #: src/page/people/new.vue:68 src/page/settings/services.vue:36
@@ -2226,7 +2226,7 @@ msgid "Panoramas"
 msgstr "Πανοράματα"
 
 #: src/component/user/add/dialog.vue:114 src/component/user/add/dialog.vue:115
-#: src/component/service/add.vue:106 src/component/service/edit.vue:350
+#: src/component/service/add.vue:106 src/component/service/edit.vue:352
 #: src/component/settings/apps.vue:121 src/component/settings/passcode.vue:106
 #: src/component/settings/passcode.vue:413 src/component/share/dialog.vue:27
 #: src/options/auth.js:91 src/page/auth/login.vue:173
@@ -2349,7 +2349,7 @@ msgstr "Όριο μεγέθους PNG: %{n}px"
 msgid "Portrait"
 msgstr "Πορτρέτο"
 
-#: src/component/service/edit.vue:271
+#: src/component/service/edit.vue:273
 msgid "Preserve filenames"
 msgstr "Διατήρηση ονομάτων αρχείων"
 
@@ -2390,7 +2390,7 @@ msgstr "Προηγούμενο οπτικό υλικό"
 msgid "Primary"
 msgstr "Βασικό"
 
-#: src/app/routes.js:271 src/component/album/edit/dialog.vue:175
+#: src/app/routes.js:271 src/component/album/edit/dialog.vue:176
 #: src/component/navigation.vue:529 src/component/photo/edit/info.vue:303
 #: src/page/settings/general.vue:271
 msgid "Private"
@@ -2551,7 +2551,7 @@ msgstr "Επανεκκίνηση"
 msgid "Restore"
 msgstr "Επαναφορά"
 
-#: src/component/service/edit.vue:426
+#: src/component/service/edit.vue:428
 msgid "Retry Limit"
 msgstr "Όριο επανάληψης"
 
@@ -2577,9 +2577,9 @@ msgid "Satellite"
 msgstr "Δορυφόρος"
 
 #: src/component/user/edit/dialog.vue:485
-#: src/component/album/edit/dialog.vue:210
+#: src/component/album/edit/dialog.vue:211
 #: src/component/label/edit/dialog.vue:119
-#: src/component/people/edit/dialog.vue:132 src/component/service/edit.vue:464
+#: src/component/people/edit/dialog.vue:132 src/component/service/edit.vue:466
 #: src/component/settings/password.vue:172 src/component/share/dialog.vue:181
 msgid "Save"
 msgstr "Αποθήκευση"
@@ -2675,7 +2675,7 @@ msgstr "Η επιλογή αποκαταστάθηκε"
 msgid "Sequential Name"
 msgstr "Διαδοχικό όνομα"
 
-#: src/component/service/add.vue:67 src/component/service/edit.vue:320
+#: src/component/service/add.vue:67 src/component/service/edit.vue:322
 #: src/component/share/dialog.vue:25
 msgid "Service URL"
 msgstr "URL υπηρεσίας"
@@ -2707,7 +2707,7 @@ msgstr "Ρυθμίσεις"
 msgid "Settings saved"
 msgstr "Οι ρυθμίσεις αποθηκεύτηκαν"
 
-#: src/component/service/upload.vue:130 src/component/settings/passcode.vue:160
+#: src/component/service/upload.vue:131 src/component/settings/passcode.vue:160
 msgid "Setup"
 msgstr "Ρύθμιση"
 
@@ -2777,7 +2777,7 @@ msgid "Similar"
 msgstr "Παρόμοια"
 
 #: src/component/photo/edit/files.vue:49 src/component/photo/edit/files.vue:341
-#: src/component/service/edit.vue:138
+#: src/component/service/edit.vue:139
 msgid "Size"
 msgstr "Μέγεθος"
 
@@ -2801,7 +2801,7 @@ msgstr "Κάτι πήγε στραβά, δοκιμάστε ξανά"
 msgid "Sort by"
 msgstr "Ταξινόμηση κατά"
 
-#: src/component/album/edit/dialog.vue:141 src/component/photo/toolbar.vue:276
+#: src/component/album/edit/dialog.vue:142 src/component/photo/toolbar.vue:276
 #: src/page/albums.vue:207
 msgid "Sort Order"
 msgstr "Σειρά ταξινόμησης"
@@ -2910,7 +2910,7 @@ msgstr "Υποστηρίξτε την αποστολή μας"
 msgid "Sync"
 msgstr "Συγχρονισμός"
 
-#: src/component/service/edit.vue:287
+#: src/component/service/edit.vue:289
 msgid "Sync raw and video files"
 msgstr "Συγχρονισμός αρχείων raw και βίντεο"
 
@@ -2974,7 +2974,7 @@ msgstr "Ώρα UTC"
 msgid "Time Zone"
 msgstr "Ζώνη ώρας"
 
-#: src/component/service/edit.vue:406
+#: src/component/service/edit.vue:408
 msgid "Timeout"
 msgstr "Timeout"
 
@@ -3062,7 +3062,7 @@ msgid "Two-factor authentication has been enabled for your account."
 msgstr "Ο έλεγχος ταυτότητας δύο παραγόντων έχει ενεργοποιηθεί για τον λογαριασμό σας."
 
 #: src/component/photo/edit/files.vue:56 src/component/photo/edit/files.vue:330
-#: src/component/photo/edit/info.vue:87 src/component/service/edit.vue:386
+#: src/component/photo/edit/info.vue:87 src/component/service/edit.vue:388
 msgid "Type"
 msgstr "Τύπος"
 
@@ -3150,7 +3150,7 @@ msgstr "Αναβάθμιση τώρα"
 
 #: src/component/album/toolbar.vue:114 src/component/navigation.vue:1822
 #: src/component/photo/toolbar.vue:173 src/component/photo/upload/dialog.vue:50
-#: src/component/service/upload.vue:143 src/page/albums.vue:181
+#: src/component/service/upload.vue:144 src/page/albums.vue:181
 #: src/page/library/import.vue:133 src/page/settings/general.vue:297
 #: src/page/settings/services.vue:37
 msgid "Upload"
@@ -3170,7 +3170,7 @@ msgstr "Το ανέβασμα ολοκληρώθηκε. Δημιουργία ε�
 msgid "Upload failed"
 msgstr "Αποτυχία αποστολής"
 
-#: src/component/service/edit.vue:255
+#: src/component/service/edit.vue:257
 msgid "Upload local files"
 msgstr "Ανέβασμα τοπικών αρχείων"
 
@@ -3228,7 +3228,7 @@ msgstr "Διεπαφή χρήστη"
 
 #: src/component/user/add/dialog.vue:87 src/component/user/add/dialog.vue:88
 #: src/page/admin/sessions.vue:220 src/page/admin/users.vue:69
-#: src/component/service/add.vue:85 src/component/service/edit.vue:335
+#: src/component/service/add.vue:85 src/component/service/edit.vue:337
 #: src/component/share/dialog.vue:26
 msgid "Username"
 msgstr "Όνομα χρήστη"

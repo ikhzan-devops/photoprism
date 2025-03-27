@@ -380,7 +380,7 @@ msgstr "Animácie"
 msgid "Any private photos and videos remain private and won't be shared."
 msgstr "Všetky súkromné fotky a videá zostanú súkromné a nemôžu byť zdieľané."
 
-#: src/component/service/edit.vue:370
+#: src/component/service/edit.vue:372
 msgid "API Key"
 msgstr "API Kľúč"
 
@@ -587,14 +587,14 @@ msgstr "Nemožno označiť viac položiek"
 #: src/component/user/add/dialog.vue:27 src/component/user/edit/dialog.vue:473
 #: src/component/user/remove/dialog.vue:45 src/page/connect.vue:119
 #: src/component/album/delete/dialog.vue:43
-#: src/component/album/edit/dialog.vue:198 src/component/confirm/dialog.vue:43
+#: src/component/album/edit/dialog.vue:199 src/component/confirm/dialog.vue:43
 #: src/component/file/delete/dialog.vue:47
 #: src/component/label/delete/dialog.vue:47
 #: src/component/label/edit/dialog.vue:107
 #: src/component/people/edit/dialog.vue:120
 #: src/component/photo/album/dialog.vue:78 src/component/service/add.vue:19
-#: src/component/service/edit.vue:453 src/component/service/remove.vue:49
-#: src/component/service/upload.vue:116 src/component/settings/apps.vue:352
+#: src/component/service/edit.vue:455 src/component/service/remove.vue:49
+#: src/component/service/upload.vue:117 src/component/settings/apps.vue:352
 #: src/component/settings/passcode.vue:249
 #: src/component/settings/passcode.vue:333
 #: src/component/settings/password.vue:159 src/component/share/dialog.vue:28
@@ -618,7 +618,7 @@ msgid "Carousel slide {0} of {1}"
 msgstr "Kolotočový posuvník {0} z {1}"
 
 #: src/page/about/feedback.vue:82 src/page/about/feedback.vue:83
-#: src/component/album/edit/dialog.vue:127 src/component/photo/toolbar.vue:381
+#: src/component/album/edit/dialog.vue:128 src/component/photo/toolbar.vue:381
 #: src/page/albums.vue:181
 msgid "Category"
 msgstr "Kategória"
@@ -888,7 +888,7 @@ msgstr "Denníky ladenia"
 msgid "Default"
 msgstr "Predvolená"
 
-#: src/component/service/edit.vue:122
+#: src/component/service/edit.vue:123
 msgid "Default Folder"
 msgstr "Pôvodná zložka"
 
@@ -1055,7 +1055,7 @@ msgstr "Stiahnuť"
 msgid "Download only original media files, without any automatically generated files."
 msgstr "Stiahnite si iba originálne mediálne súbory bez automaticky generovaných súborov."
 
-#: src/component/service/edit.vue:235
+#: src/component/service/edit.vue:237
 msgid "Download remote files"
 msgstr "Stiahnuť vzdialené súbory"
 
@@ -1211,7 +1211,7 @@ msgid "Experimental Features"
 msgstr "Experimentálne funkcie"
 
 #: src/page/admin/sessions.vue:62 src/page/admin/sessions.vue:453
-#: src/component/service/edit.vue:156 src/component/settings/apps.vue:72
+#: src/component/service/edit.vue:157 src/component/settings/apps.vue:72
 #: src/component/settings/apps.vue:326 src/component/share/dialog.vue:62
 msgid "Expires"
 msgstr "Vyprší"
@@ -1258,7 +1258,7 @@ msgstr "Rodinné meno"
 msgid "Fast"
 msgstr "Rýchle"
 
-#: src/component/album/edit/dialog.vue:158
+#: src/component/album/edit/dialog.vue:159
 #: src/component/label/edit/dialog.vue:85
 #: src/component/people/edit/dialog.vue:85
 #: src/component/photo/edit/info.vue:287
@@ -1326,9 +1326,9 @@ msgstr "Prvá strana"
 msgid "Focal Length"
 msgstr "Ohnisková Vzdialenosť"
 
-#: src/component/photo/edit/info.vue:115 src/component/service/edit.vue:116
-#: src/component/service/edit.vue:186 src/component/service/edit.vue:192
-#: src/component/service/upload.vue:88 src/component/service/upload.vue:95
+#: src/component/photo/edit/info.vue:115 src/component/service/edit.vue:118
+#: src/component/service/edit.vue:189 src/component/service/edit.vue:194
+#: src/component/service/upload.vue:90 src/component/service/upload.vue:96
 #: src/model/folder.js:199 src/page/library/browse.vue:181
 msgid "Folder"
 msgstr "Zložka"
@@ -1551,7 +1551,7 @@ msgstr "ID Inštancie"
 msgid "Insufficient storage."
 msgstr "Nedostatočné skladovanie."
 
-#: src/component/service/edit.vue:207
+#: src/component/service/edit.vue:209
 msgid "Interval"
 msgstr "Interval"
 
@@ -1930,7 +1930,7 @@ msgstr "Vypnutie zvuku"
 #: src/component/people/edit/dialog.vue:71
 #: src/component/photo/edit/files.vue:39 src/component/photo/edit/info.vue:55
 #: src/component/photo/edit/info.vue:125 src/component/photo/edit/people.vue:36
-#: src/component/photo/view/list.vue:117 src/component/service/edit.vue:308
+#: src/component/photo/view/list.vue:117 src/component/service/edit.vue:310
 #: src/component/settings/apps.vue:52 src/component/settings/apps.vue:286
 #: src/page/albums.vue:97 src/page/auth/login.vue:145
 #: src/page/people/new.vue:68 src/page/settings/services.vue:36
@@ -2229,7 +2229,7 @@ msgid "Panoramas"
 msgstr "Panorámy"
 
 #: src/component/user/add/dialog.vue:114 src/component/user/add/dialog.vue:115
-#: src/component/service/add.vue:106 src/component/service/edit.vue:350
+#: src/component/service/add.vue:106 src/component/service/edit.vue:352
 #: src/component/settings/apps.vue:121 src/component/settings/passcode.vue:106
 #: src/component/settings/passcode.vue:413 src/component/share/dialog.vue:27
 #: src/options/auth.js:91 src/page/auth/login.vue:173
@@ -2352,7 +2352,7 @@ msgstr "Limit veľkosti PNG: %{n} px"
 msgid "Portrait"
 msgstr "Portrét"
 
-#: src/component/service/edit.vue:271
+#: src/component/service/edit.vue:273
 msgid "Preserve filenames"
 msgstr "Ponechať názvy súborov"
 
@@ -2393,7 +2393,7 @@ msgstr "Predchádzajúci vizuálny"
 msgid "Primary"
 msgstr "Primárne"
 
-#: src/app/routes.js:271 src/component/album/edit/dialog.vue:175
+#: src/app/routes.js:271 src/component/album/edit/dialog.vue:176
 #: src/component/navigation.vue:529 src/component/photo/edit/info.vue:303
 #: src/page/settings/general.vue:271
 msgid "Private"
@@ -2554,7 +2554,7 @@ msgstr "Reštartovanie stránky"
 msgid "Restore"
 msgstr "Obnoviť"
 
-#: src/component/service/edit.vue:426
+#: src/component/service/edit.vue:428
 msgid "Retry Limit"
 msgstr "Limit opakovania"
 
@@ -2580,9 +2580,9 @@ msgid "Satellite"
 msgstr "Satelitná"
 
 #: src/component/user/edit/dialog.vue:485
-#: src/component/album/edit/dialog.vue:210
+#: src/component/album/edit/dialog.vue:211
 #: src/component/label/edit/dialog.vue:119
-#: src/component/people/edit/dialog.vue:132 src/component/service/edit.vue:464
+#: src/component/people/edit/dialog.vue:132 src/component/service/edit.vue:466
 #: src/component/settings/password.vue:172 src/component/share/dialog.vue:181
 msgid "Save"
 msgstr "Uložiť"
@@ -2678,7 +2678,7 @@ msgstr "Označenie obnovené"
 msgid "Sequential Name"
 msgstr "Poradové meno"
 
-#: src/component/service/add.vue:67 src/component/service/edit.vue:320
+#: src/component/service/add.vue:67 src/component/service/edit.vue:322
 #: src/component/share/dialog.vue:25
 msgid "Service URL"
 msgstr "URL Služby"
@@ -2710,7 +2710,7 @@ msgstr "Nastavenia"
 msgid "Settings saved"
 msgstr "Nastavenia uložené"
 
-#: src/component/service/upload.vue:130 src/component/settings/passcode.vue:160
+#: src/component/service/upload.vue:131 src/component/settings/passcode.vue:160
 msgid "Setup"
 msgstr "Prvotné nastavenie"
 
@@ -2780,7 +2780,7 @@ msgid "Similar"
 msgstr "Podobné"
 
 #: src/component/photo/edit/files.vue:49 src/component/photo/edit/files.vue:341
-#: src/component/service/edit.vue:138
+#: src/component/service/edit.vue:139
 msgid "Size"
 msgstr "Veľkosť"
 
@@ -2804,7 +2804,7 @@ msgstr "Niečo sa pokazilo, skúste to znova"
 msgid "Sort by"
 msgstr "Zoradiť podľa"
 
-#: src/component/album/edit/dialog.vue:141 src/component/photo/toolbar.vue:276
+#: src/component/album/edit/dialog.vue:142 src/component/photo/toolbar.vue:276
 #: src/page/albums.vue:207
 msgid "Sort Order"
 msgstr "Zoradiť Poradie"
@@ -2913,7 +2913,7 @@ msgstr "Podporte našu misiu"
 msgid "Sync"
 msgstr "Synchronizácia"
 
-#: src/component/service/edit.vue:287
+#: src/component/service/edit.vue:289
 msgid "Sync raw and video files"
 msgstr "Synchronizovať súbory raw a videá"
 
@@ -2977,7 +2977,7 @@ msgstr "Čas UTC"
 msgid "Time Zone"
 msgstr "Časová Zóna"
 
-#: src/component/service/edit.vue:406
+#: src/component/service/edit.vue:408
 msgid "Timeout"
 msgstr "Časový limit"
 
@@ -3065,7 +3065,7 @@ msgid "Two-factor authentication has been enabled for your account."
 msgstr "Pre váš účet bolo povolené dvojfaktorové overenie."
 
 #: src/component/photo/edit/files.vue:56 src/component/photo/edit/files.vue:330
-#: src/component/photo/edit/info.vue:87 src/component/service/edit.vue:386
+#: src/component/photo/edit/info.vue:87 src/component/service/edit.vue:388
 msgid "Type"
 msgstr "Typ"
 
@@ -3153,7 +3153,7 @@ msgstr "Aktualizujte teraz"
 
 #: src/component/album/toolbar.vue:114 src/component/navigation.vue:1822
 #: src/component/photo/toolbar.vue:173 src/component/photo/upload/dialog.vue:50
-#: src/component/service/upload.vue:143 src/page/albums.vue:181
+#: src/component/service/upload.vue:144 src/page/albums.vue:181
 #: src/page/library/import.vue:133 src/page/settings/general.vue:297
 #: src/page/settings/services.vue:37
 msgid "Upload"
@@ -3173,7 +3173,7 @@ msgstr "Odovzdávanie hotové. Indexuje sa…"
 msgid "Upload failed"
 msgstr "Odovzdávanie zlyhalo"
 
-#: src/component/service/edit.vue:255
+#: src/component/service/edit.vue:257
 msgid "Upload local files"
 msgstr "Odovzdať lokálne súbory"
 
@@ -3231,7 +3231,7 @@ msgstr "Používateľské rozhranie"
 
 #: src/component/user/add/dialog.vue:87 src/component/user/add/dialog.vue:88
 #: src/page/admin/sessions.vue:220 src/page/admin/users.vue:69
-#: src/component/service/add.vue:85 src/component/service/edit.vue:335
+#: src/component/service/add.vue:85 src/component/service/edit.vue:337
 #: src/component/share/dialog.vue:26
 msgid "Username"
 msgstr "Meno používateľa"
