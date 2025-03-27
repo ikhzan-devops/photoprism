@@ -97,7 +97,7 @@ func TestInit(t *testing.T) {
 
 		stmt.Model(m).Count(&count)
 
-		assert.Equal(t, int64(57), count)
+		assert.Equal(t, int64(58), count)
 	})
 
 	t.Run("AlbumCounts", func(t *testing.T) {
@@ -157,7 +157,7 @@ func TestInit(t *testing.T) {
 
 		stmt.Model(m).Count(&count)
 
-		assert.Equal(t, int64(69), count)
+		assert.Equal(t, int64(71), count)
 	})
 
 	t.Run("KeywordCounts", func(t *testing.T) {
