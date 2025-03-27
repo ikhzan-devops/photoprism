@@ -52,7 +52,9 @@ export default [
   {
     name: "home",
     path: "/",
-    redirect: "/browse",
+    redirect: () => {
+      return { name: $session.getDefaultRoute() };
+    },
   },
   {
     name: "about",
@@ -86,10 +88,8 @@ export default [
     beforeEnter: (to, from, next) => {
       if ($session.loginRequired()) {
         next();
-      } else if ($config.deny("photos", "search")) {
-        next({ name: $session.getDefaultRoute() });
       } else {
-        next({ name: "browse" });
+        next({ name: $session.getDefaultRoute() });
       }
     },
   },
@@ -223,10 +223,17 @@ export default [
     props: { staticFilter: { favorite: "true" } },
   },
   {
+    name: "media",
+    path: "/media",
+    component: Photos,
+    meta: { title: $gettext("Media"), requiresAuth: true },
+    props: { staticFilter: { media: "true" } },
+  },
+  {
     name: "live",
     path: "/live",
     component: Photos,
-    meta: { title: $gettext("Live"), requiresAuth: true },
+    meta: { title: $gettext("Live Photos"), requiresAuth: true },
     props: { staticFilter: { live: "true" } },
   },
   {
@@ -235,6 +242,20 @@ export default [
     component: Photos,
     meta: { title: $gettext("Videos"), requiresAuth: true },
     props: { staticFilter: { video: "true" } },
+  },
+  {
+    name: "audio",
+    path: "/audio",
+    component: Photos,
+    meta: { title: $gettext("Audio"), requiresAuth: true },
+    props: { staticFilter: { audio: "true" } },
+  },
+  {
+    name: "animated",
+    path: "/animated",
+    component: Photos,
+    meta: { title: $gettext("Animated"), requiresAuth: true },
+    props: { staticFilter: { animated: "true" } },
   },
   {
     name: "review",
@@ -473,20 +494,24 @@ export default [
       settings: true,
       background: "background",
     },
-    props: { tab: "settings-general" },
+    props: { tab: "settings_general" },
   },
   {
-    name: "settings_media",
-    path: "/settings/media",
+    name: "settings_content",
+    path: "/settings/content",
     component: Settings,
     meta: {
       title: $gettext("Settings"),
       requiresAuth: true,
-      admin: true,
       settings: true,
       background: "background",
     },
-    props: { tab: "settings-media" },
+    props: { tab: "settings_content" },
+  },
+  {
+    name: "settings_media",
+    path: "/settings/media",
+    redirect: "/settings/content",
   },
   {
     name: "settings_advanced",
@@ -499,7 +524,7 @@ export default [
       settings: true,
       background: "background",
     },
-    props: { tab: "settings-advanced" },
+    props: { tab: "settings_advanced" },
   },
   {
     name: "settings_services",
@@ -512,7 +537,7 @@ export default [
       settings: true,
       background: "background",
     },
-    props: { tab: "settings-services" },
+    props: { tab: "settings_services" },
   },
   {
     name: "settings_account",
@@ -524,7 +549,7 @@ export default [
       settings: true,
       background: "background",
     },
-    props: { tab: "settings-account" },
+    props: { tab: "settings_account" },
   },
   {
     name: "discover",

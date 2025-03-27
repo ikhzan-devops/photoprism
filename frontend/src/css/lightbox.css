@@ -241,8 +241,15 @@
 }
 
 .pswp__dynamic-caption--on-hor-edge {
-    padding-left: 20px;
-    padding-right: 20px;
+    padding-top: 0;
+    padding-left: 52px;
+    padding-right: 52px;
+}
+
+.pswp__dynamic-caption.pswp__dynamic-caption--on-hor-edge h4 {
+    margin-top: 0;
+    padding-top: 0;
+    font-size: 16px;
 }
 
 .pswp__dynamic-caption--mobile {
@@ -353,6 +360,40 @@
 .pswp__top-bar .pswp__button--sidebar-button .pswp__icn {
     width: 20px;
     height: 20px;
+}
+
+.pswp__top-bar .pswp__button.pswp__button--close-button {
+    margin-inline-start: 6px;
+    pointer-events: auto;
+    z-index: 20;
+}
+
+.pswp__top-bar .pswp__button.pswp__button--menu-button {
+    margin-inline-end: 6px;
+    pointer-events: auto;
+    z-index: 20;
+}
+
+.is-ltr .pswp__preloader {
+    margin-left: auto;
+    margin-right: 0;
+}
+
+.is-ltr .pswp__preloader .pswp__icn {
+    left: auto;
+    right: 9px;
+}
+
+.v-menu.action-menu.action-menu--lightbox .action-menu__list {
+    min-width: 128px;
+    opacity: 0.87;
+    padding: 6px;
+    background: #191a1c;
+    color: #ffffff;
+    stroke: #ffffff;
+    border-color: #ffffff0d;
+    border-style: solid;
+    border-width: thin;
 }
 
 /* Video Controls */

@@ -215,6 +215,26 @@ table td > .action-buttons {
     }
 }
 
+/* Action Menu */
+
+.v-menu.action-menu .v-overlay__content {
+    border-radius: 6px;
+}
+
+.v-menu.action-menu .action-menu__list {
+    min-width: 132px;
+    opacity: 0.97;
+    padding: 5px;
+    border-color: rgba(var(--v-border-color), var(--v-border-opacity));
+    border-style: solid;
+    border-width: thin;
+}
+
+.v-menu>.v-overlay__content>.v-list.action-menu__list>.v-list-item.v-list-item--density-compact.action-menu__item {
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
 /* Table Actions */
 
 table .table-actions {
@@ -230,3 +250,4 @@ table .table-actions {
         gap: 12px;
     }
 }
+

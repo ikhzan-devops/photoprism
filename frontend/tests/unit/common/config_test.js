@@ -290,18 +290,23 @@ describe("common/config", () => {
     assert.equal(cfg.values.count.all, 139);
   });
 
-  it("should return user interface direction string", () => {
+  it("should return user interface direction string", async () => {
     const cfg = new Config(new StorageShim(), Object.assign({}, window.__CONFIG__));
-    cfg.setLanguage("en");
-    assert.equal(document.dir, "ltr");
+    await cfg.setLanguage("en", true);
+    assert.equal(document.dir, "ltr", "document.dir should be ltr");
     assert.equal(cfg.dir(), "ltr");
     assert.equal(cfg.dir(true), "rtl");
     assert.equal(cfg.dir(false), "ltr");
-    cfg.setLanguage("he");
-    assert.equal(document.dir, "rtl");
+    await cfg.setLanguage("he", false);
+    assert.equal(document.dir, "ltr", "document.dir should still be ltr");
+    await cfg.setLanguage("he", true);
     assert.equal(cfg.dir(), "rtl");
-    cfg.setLanguage("en");
-    assert.equal(document.dir, "ltr");
+    assert.equal(document.dir, "rtl", "document.dir should now be rtl");
+    assert.equal(cfg.dir(), "rtl");
+    assert.equal(cfg.dir(true), "rtl");
+    assert.equal(cfg.dir(false), "ltr");
+    await cfg.setLanguage("en", true);
+    assert.equal(document.dir, "ltr", "document.dir should be ltr again");
     assert.equal(cfg.dir(), "ltr");
   });
 });

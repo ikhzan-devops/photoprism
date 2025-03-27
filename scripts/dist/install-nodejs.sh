@@ -45,10 +45,10 @@ echo "Updating NPM..."
 sudo npm update --unsafe-perm=true --allow-root -g npm
 echo "Installing TestCafe..."
 sudo npm install --unsafe-perm=true --allow-root -g \
-  npm@latest npm-check-updates@latest license-report@latest n@latest testcafe@3.7.1
+  npm@latest npm-check-updates@latest license-report@latest n@latest testcafe@3.7.2
 echo "Installing ESLint..."
 sudo npm install --unsafe-perm=true --allow-root -g \
-  eslint@8 eslint-config-prettier eslint-config-standard eslint-formatter-pretty \
+  eslint globals @eslint/eslintrc @eslint/js eslint-config-prettier eslint-formatter-pretty \
   eslint-plugin-html eslint-plugin-import eslint-plugin-node eslint-plugin-prettier \
   eslint-plugin-promise eslint-plugin-vue eslint-webpack-plugin prettier
 echo "Installing Vue Language Tools..."

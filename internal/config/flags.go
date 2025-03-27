@@ -10,7 +10,7 @@ import (
 	"github.com/photoprism/photoprism/internal/ai/face"
 	"github.com/photoprism/photoprism/internal/config/ttl"
 	"github.com/photoprism/photoprism/internal/entity"
-	"github.com/photoprism/photoprism/internal/ffmpeg"
+	"github.com/photoprism/photoprism/internal/ffmpeg/encode"
 	"github.com/photoprism/photoprism/internal/thumb"
 	"github.com/photoprism/photoprism/pkg/authn"
 	"github.com/photoprism/photoprism/pkg/i18n"
@@ -133,24 +133,23 @@ var Flags = CliFlags{
 		Flag: &cli.StringFlag{
 			Name:    "log-level",
 			Aliases: []string{"l"},
-			Usage:   "log message verbosity `LEVEL` (trace, debug, info, warning, error, fatal, panic)",
+			Usage:   "log message verbosity `LEVEL` (trace, debug, info, warning, error)",
 			Value:   "info",
 			EnvVars: EnvVars("LOG_LEVEL"),
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "prod",
-			Hidden:  true,
-			Usage:   "enable production mode, hide non-essential log messages",
+			Usage:   "disable debug mode and log startup warnings and errors only",
 			EnvVars: EnvVars("PROD"),
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "debug",
-			Usage:   "enable debug mode, show non-essential log messages",
+			Usage:   "enable debug mode for development and troubleshooting",
 			EnvVars: EnvVars("DEBUG"),
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "trace",
-			Usage:   "enable trace mode, show all log messages",
+			Usage:   "enable trace mode to display all debug and trace logs",
 			EnvVars: EnvVars("TRACE"),
 		}}, {
 		Flag: &cli.BoolFlag{
@@ -239,6 +238,22 @@ var Flags = CliFlags{
 			EnvVars: EnvVars("IMPORT_DEST"),
 		}}, {
 		Flag: &cli.StringFlag{
+			Name:    "import-allow",
+			Usage:   "allow to import these file types (comma-separated list of `EXTENSIONS`; leave blank to allow all)",
+			EnvVars: EnvVars("IMPORT_ALLOW"),
+		}}, {
+		Flag: &cli.BoolFlag{
+			Name:    "upload-nsfw",
+			Aliases: []string{"n"},
+			Usage:   "allow uploads that might be offensive (detecting unsafe content requires TensorFlow)",
+			EnvVars: EnvVars("UPLOAD_NSFW"),
+		}}, {
+		Flag: &cli.StringFlag{
+			Name:    "upload-allow",
+			Usage:   "allow to upload these file types (comma-separated list of `EXTENSIONS`; leave blank to allow all)",
+			EnvVars: EnvVars("UPLOAD_ALLOW"),
+		}}, {
+		Flag: &cli.StringFlag{
 			Name:    "cache-path",
 			Aliases: []string{"ca"},
 			Usage:   "custom cache `PATH` for sessions and thumbnail files *optional*",
@@ -274,14 +289,8 @@ var Flags = CliFlags{
 		}}, {
 		Flag: &cli.Uint64Flag{
 			Name:    "files-quota",
-			Usage:   "maximum aggregated size of all indexed files in `MB` (0 to disable)",
+			Usage:   "maximum aggregated size of all indexed files in `GB` (0 for unlimited)",
 			EnvVars: EnvVars("FILES_QUOTA"),
-		}}, {
-		Flag: &cli.IntFlag{
-			Name:    "users-quota",
-			Usage:   "maximum number of registered user accounts, excluding guests (0 to disable)",
-			EnvVars: EnvVars("USERS_QUOTA"),
-			Hidden:  true,
 		}}, {
 		Flag: &cli.StringFlag{
 			Name:    "backup-path",
@@ -459,18 +468,6 @@ var Flags = CliFlags{
 			Name:    "detect-nsfw",
 			Usage:   "flag newly added pictures as private if they might be offensive (requires TensorFlow)",
 			EnvVars: EnvVars("DETECT_NSFW"),
-		}}, {
-		Flag: &cli.BoolFlag{
-			Name:    "upload-nsfw",
-			Aliases: []string{"n"},
-			Usage:   "allow uploads that might be offensive (detecting unsafe content requires TensorFlow)",
-			EnvVars: EnvVars("UPLOAD_NSFW"),
-		}}, {
-		Flag: &cli.BoolFlag{
-			Name:    "upload-allow",
-			Usage:   "allow these file types for web uploads (comma-separated list of extensions; leave blank to allow all)",
-			EnvVars: EnvVars("UPLOAD_ALLOW"),
-			Hidden:  true,
 		}}, {
 		Flag: &cli.StringFlag{
 			Name:    "default-locale",
@@ -763,7 +760,7 @@ var Flags = CliFlags{
 		Flag: &cli.StringFlag{
 			Name:    "ffmpeg-bin",
 			Usage:   "FFmpeg `COMMAND` for video transcoding and thumbnail extraction",
-			Value:   ffmpeg.DefaultBin,
+			Value:   encode.FFmpegBin,
 			EnvVars: EnvVars("FFMPEG_BIN"),
 		}}, {
 		Flag: &cli.StringFlag{
@@ -790,15 +787,15 @@ var Flags = CliFlags{
 		Flag: &cli.StringFlag{
 			Name:    "ffmpeg-map-video",
 			Usage:   "video `STREAMS` that should be transcoded",
-			Value:   ffmpeg.MapVideoDefault,
+			Value:   encode.MapVideo,
 			EnvVars: EnvVars("FFMPEG_MAP_VIDEO"),
-		}, DocDefault: fmt.Sprintf("`%s`", ffmpeg.MapVideoDefault)}, {
+		}, DocDefault: fmt.Sprintf("`%s`", encode.MapVideo)}, {
 		Flag: &cli.StringFlag{
 			Name:    "ffmpeg-map-audio",
 			Usage:   "audio `STREAMS` that should be transcoded",
-			Value:   ffmpeg.MapAudioDefault,
+			Value:   encode.MapAudio,
 			EnvVars: EnvVars("FFMPEG_MAP_AUDIO"),
-		}, DocDefault: fmt.Sprintf("`%s`", ffmpeg.MapAudioDefault)}, {
+		}, DocDefault: fmt.Sprintf("`%s`", encode.MapAudio)}, {
 		Flag: &cli.StringFlag{
 			Name:    "exiftool-bin",
 			Usage:   "ExifTool `COMMAND` for extracting metadata",

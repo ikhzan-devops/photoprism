@@ -28,7 +28,7 @@
         :class="{
           'sidebar-visible': sidebarVisible,
           'slideshow-active': slideshow.active,
-          'is-fullscreen': isFullscreen,
+          'is-fullscreen': isFullscreen(),
           'is-zoomable': isZoomable,
           'is-favorite': model.Favorite,
           'is-playable': model.Playable,
@@ -90,6 +90,35 @@
         ></v-icon>
       </div>
     </div>
+    <v-menu
+      v-if="menuElement"
+      transition="slide-y-transition"
+      :activator="menuElement"
+      open-on-click
+      open-on-hover
+      class="p-action-menu action-menu action-menu--lightbox"
+      @update:model-value="onShowMenu"
+    >
+      <v-list slim nav density="compact" class="action-menu__list">
+        <v-list-item
+          v-for="action in menuActions()"
+          :key="action.name"
+          :value="action.name"
+          :prepend-icon="action.icon"
+          :title="action.text"
+          :class="action.class ? action.class : 'action-' + action.name"
+          :to="action.to ? action.to : undefined"
+          :href="action.href ? action.href : undefined"
+          :link="true"
+          :target="action.target ? '_blank' : '_self'"
+          :disabled="action.disabled"
+          :nav="true"
+          class="action-menu__item"
+          @click="action.click"
+        >
+        </v-list-item>
+      </v-list>
+    </v-menu>
   </v-dialog>
 </template>
 
@@ -98,6 +127,7 @@ import PhotoSwipe from "photoswipe";
 import Lightbox from "photoswipe/lightbox";
 import Captions from "common/captions";
 import $api from "common/api";
+import $fullscreen from "common/fullscreen";
 import Thumb from "model/thumb";
 import { Photo } from "model/photo";
 import * as media from "common/media";
@@ -113,6 +143,9 @@ export default {
       visible: false,
       busy: false,
       sidebarVisible: false,
+      menuElement: null,
+      menuBgColor: "#252525",
+      menuVisible: false,
       lightbox: null, // Current PhotoSwipe lightbox instance.
       captionPlugin: null, // Current PhotoSwipe caption plugin instance.
       muted: window.sessionStorage.getItem("lightbox.muted") === "true",
@@ -125,8 +158,8 @@ export default {
       canEdit: this.$config.allow("photos", "update") && this.$config.feature("edit"),
       canLike: this.$config.allow("photos", "manage") && this.$config.feature("favorites"),
       canDownload: this.$config.allow("photos", "download") && this.$config.feature("download"),
-      canFullscreen: !this.$isMobile || this.$config.featExperimental(),
-      isFullscreen: !window.screenTop && !window.screenY,
+      canFullscreen: $fullscreen.isSupported() && (!this.$isMobile || this.$config.featExperimental()), // see https://developer.mozilla.org/en-US/docs/Web/API/Document/fullscreenEnabled
+      wasFullscreen: $fullscreen.isEnabled(),
       isZoomable: true,
       mobileBreakpoint: 600, // Minimum viewport width for large screens.
       featExperimental: this.$config.featExperimental(), // Enables features that may be incomplete or unstable.
@@ -173,11 +206,20 @@ export default {
     this.subscriptions["lightbox.close"] = this.$event.subscribe("lightbox.close", this.onClose.bind(this));
   },
   beforeUnmount() {
+    // Exit fullscreen mode if enabled, has no effect otherwise.
+    $fullscreen.exit();
+
+    // Remove timeouts.
     this.clearTimeouts();
     this.removeEventListeners();
+
+    // Pause slideshow and videos.
     this.pauseLightbox();
+
+    // Destroy PhotoSwipe.
     this.destroyLightbox();
 
+    // Remove event listeners.
     for (let i = 0; i < this.subscriptions.length; i++) {
       this.$event.unsubscribe(this.subscriptions[i]);
     }
@@ -214,6 +256,7 @@ export default {
       this.$view.enter(this, this.$refs?.content);
       this.busy = true;
       this.visible = true;
+      this.wasFullscreen = $fullscreen.isEnabled();
 
       // Publish init event.
       this.$event.publish("lightbox.init");
@@ -297,7 +340,7 @@ export default {
         arrowNext: true,
         loop: false,
         zoom: true,
-        close: true,
+        close: false,
         escKey: false,
         pinchToClose: false,
         counter: false,
@@ -307,13 +350,13 @@ export default {
         closeOnVerticalDrag: false,
         initialZoomLevel: "fit",
         secondaryZoomLevel: "fill",
+        showHideAnimationType: "none",
         hideAnimationDuration: 0,
         showAnimationDuration: 0,
         wheelToZoom: true,
         maxZoomLevel: 8,
         bgOpacity: 1,
         preload: [1, 1],
-        showHideAnimationType: "none",
         mainClass: "p-lightbox__pswp",
         tapAction: (point, ev) => this.onContentTap(ev),
         imageClickAction: (point, ev) => this.onContentClick(ev),
@@ -349,6 +392,7 @@ export default {
             this.hideDialog();
           });
       });
+
       this.showDialog();
 
       return Promise.resolve();
@@ -874,6 +918,7 @@ export default {
       // see https://github.com/dimsemenov/photoswipe-dynamic-caption-plugin.
       this.captionPlugin = new Captions(this.lightbox, {
         type: "below",
+        mobileLayoutBreakpoint: 1024,
         captionContent: (slide) => {
           if (!slide || !this.models || slide?.index < 0) {
             return "";
@@ -1029,6 +1074,29 @@ export default {
       // IDEA: We can later try to add styles that display the sidebar at the bottom
       //       instead of on the side, to allow use on mobile devices.
       lightbox.on("uiRegister", () => {
+        // Add close button.
+        lightbox.pswp.ui.registerElement({
+          name: "close-button",
+          className: "pswp__button--close-button", // Sets the icon style/size in lightbox.css.
+          title: this.$gettext("Close"),
+          ariaLabel: this.$gettext("Close"),
+          order: 1,
+          isButton: true,
+          html: {
+            isCustomSVG: true,
+            inner: `<path d="M24 10l-2-2-6 6-6-6-2 2 6 6-6 6 2 2 6-6 6 6 2-2-6-6z" id="pswp__icn-close-button" />`,
+            outlineID: "pswp__icn-close-button", // Add this to the <path> in the inner property.
+            size: 32, // Depends on the original SVG viewBox, e.g. use 24 for viewBox="0 0 24 24".
+          },
+          onClick: (ev) =>
+            this.onControlClick(ev, () => {
+              if (lightbox && lightbox.pswp) {
+                lightbox.pswp.close();
+              }
+            }),
+        });
+
+        // Add sidebar view/hide toggle button.
         if (this.featDevelop && this.canEdit && window.innerWidth > this.mobileBreakpoint) {
           lightbox.pswp.ui.registerElement({
             name: "sidebar-button",
@@ -1151,25 +1219,49 @@ export default {
           });
         }
 
-        // Add download button control if user has permission to use it.
+        // Display an action menu with additional options (currently contains only a download button).
         if (this.canDownload) {
           lightbox.pswp.ui.registerElement({
-            name: "download-button",
-            className: "pswp__button--download-button pswp__button--mdi", // Sets the icon style/size in lightbox.css.
-            title: this.$gettext("Download"),
-            ariaLabel: this.$gettext("Download"),
+            name: "menu-button",
+            className: "pswp__button--menu-button pswp__button--mdi", // Sets the icon style/size in lightbox.css.
+            ariaLabel: this.$gettext("More options"),
             order: 10,
             isButton: true,
             html: {
               isCustomSVG: true,
-              inner: `<path d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z" id="pswp__icn-download" />`,
-              outlineID: "pswp__icn-download", // Add this to the <path> in the inner property.
-              size: 24, // Depends on the original SVG viewBox, e.g. use 24 for viewBox="0 0 24 24".
+              inner: `<path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" id="pswp__icn-menu-button" />`,
+              outlineID: "pswp__icn-menu-button", // Add this to the <path> in the inner property.
+              size: 16, // Depends on the original SVG viewBox, e.g. use 24 for viewBox="0 0 24 24".
             },
-            onClick: (ev) => this.onControlClick(ev, this.onDownload),
+            onInit: (el) => {
+              this.menuElement = el;
+            },
           });
         }
       });
+    },
+    // Returns the available menu actions.
+    menuActions() {
+      return [
+        {
+          name: "download",
+          icon: "mdi-download",
+          text: this.$gettext("Download"),
+          visible: this.canDownload,
+          click: () => {
+            this.onDownload();
+          },
+        },
+      ];
+    },
+    // Opens the action menu.
+    onShowMenu(visible) {
+      if (visible) {
+        this.pauseSlideshow();
+        this.menuVisible = true;
+      } else {
+        this.menuVisible = false;
+      }
     },
     closeLightbox() {
       if (this.isBusy("close lightbox")) {
@@ -1243,6 +1335,11 @@ export default {
     },
     // Removes any event listeners before the lightbox is fully closed.
     onClose() {
+      // Exit full screen mode only if it was not previously enabled.
+      if (!this.wasFullscreen) {
+        this.exitFullscreen();
+      }
+
       this.clearTimeouts();
       this.removeEventListeners();
     },
@@ -1420,21 +1517,33 @@ export default {
         this.toggleControls();
       }
     },
+    // Toggles fullscreen mode.
     toggleFullscreen() {
-      if (document.fullscreenElement) {
-        document
-          .exitFullscreen()
-          .then(() => {
-            this.isFullscreen = false;
-            this.resize(true);
-          })
-          .catch((err) => console.error(err));
+      if ($fullscreen.isEnabled()) {
+        this.exitFullscreen();
       } else {
-        document.documentElement.requestFullscreen({ navigationUI: "hide" }).then(() => {
-          this.isFullscreen = true;
-          this.resize(true);
-        });
+        this.requestFullscreen();
       }
+    },
+    // Returns true if fullscreen mode is enabled.
+    isFullscreen() {
+      // see https://developer.mozilla.org/en-US/docs/Web/API/Document/fullscreenElement
+      return $fullscreen.isEnabled();
+    },
+    // Exits fullscreen mode if enabled.
+    exitFullscreen() {
+      $fullscreen
+        .exit()
+        .then(() => {
+          this.resize(true);
+        })
+        .catch((err) => console.error(err));
+    },
+    // Switches to fullscreen mode if not already enabled.
+    requestFullscreen() {
+      $fullscreen.request().then(() => {
+        this.resize(true);
+      });
     },
     // Toggles the favorite flag of the current picture.
     toggleLike() {
@@ -1825,6 +1934,10 @@ export default {
       this.hideLightboxControls();
     },
     hideLightboxControls() {
+      if (this.menuVisible) {
+        return;
+      }
+
       this.controlsShown = 0;
       this.hidePswpControls();
     },

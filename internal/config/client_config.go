@@ -61,6 +61,7 @@ type ClientConfig struct {
 	Sponsor          bool                `json:"sponsor"`
 	ReadOnly         bool                `json:"readonly"`
 	UploadNSFW       bool                `json:"uploadNSFW"`
+	UploadAllow      string              `json:"uploadAllow"`
 	Public           bool                `json:"public"`
 	AuthMode         string              `json:"authMode"`
 	UsersPath        string              `json:"usersPath"`
@@ -105,6 +106,11 @@ func (c *ClientConfig) ApplyACL(a acl.ACL, r acl.Role) *ClientConfig {
 
 	c.ACL = a.Grants(r)
 
+	if !c.ACL[acl.ResourceUsers].Allow(acl.ActionView) {
+		c.Usage.UsersFreePct = -1
+		c.Usage.UsersUsedPct = -1
+	}
+
 	return c
 }
 
@@ -138,8 +144,12 @@ type ClientDisable struct {
 type ClientCounts struct {
 	All            int `json:"all"`
 	Photos         int `json:"photos"`
+	Media          int `json:"media"`
+	Animated       int `json:"animated"`
 	Live           int `json:"live"`
+	Audio          int `json:"audio"`
 	Videos         int `json:"videos"`
+	Documents      int `json:"documents"`
 	Cameras        int `json:"cameras"`
 	Lenses         int `json:"lenses"`
 	Countries      int `json:"countries"`
@@ -387,6 +397,7 @@ func (c *Config) ClientShare() *ClientConfig {
 		Sponsor:          c.Sponsor(),
 		ReadOnly:         c.ReadOnly(),
 		UploadNSFW:       c.UploadNSFW(),
+		UploadAllow:      c.UploadAllow().Accept(),
 		Public:           c.Public(),
 		AuthMode:         c.AuthMode(),
 		UsersPath:        "",
@@ -486,6 +497,7 @@ func (c *Config) ClientUser(withSettings bool) *ClientConfig {
 		Sponsor:          c.Sponsor(),
 		ReadOnly:         c.ReadOnly(),
 		UploadNSFW:       c.UploadNSFW(),
+		UploadAllow:      c.UploadAllow().Accept(),
 		Public:           c.Public(),
 		AuthMode:         c.AuthMode(),
 		UsersPath:        c.UsersPath(),
@@ -543,10 +555,13 @@ func (c *Config) ClientUser(withSettings bool) *ClientConfig {
 	if hidePrivate {
 		c.Db().
 			Table("photos").
-			Select("COUNT(CASE WHEN photo_type = 'video' AND photo_quality > -1 AND photo_private = FALSE THEN 1 END) AS videos, " +
+			Select("COUNT(CASE WHEN photo_type = 'animated' AND photo_quality > -1 AND photo_private = FALSE THEN 1 END) AS animated, " +
+				"COUNT(CASE WHEN photo_type = 'video' AND photo_quality > -1 AND photo_private = FALSE THEN 1 END) AS videos, " +
 				"COUNT(CASE WHEN photo_type = 'live' AND photo_quality > -1 AND photo_private = FALSE THEN 1 END) AS live, " +
+				"COUNT(CASE WHEN photo_type = 'audio' AND photo_quality > -1 AND photo_private = FALSE THEN 1 END) AS audio, " +
+				"COUNT(CASE WHEN photo_type = 'document' AND photo_quality > -1 AND photo_private = FALSE THEN 1 END) AS documents, " +
 				"COUNT(CASE WHEN photo_quality = -1 THEN 1 END) AS hidden, " +
-				"COUNT(CASE WHEN photo_type NOT IN ('live', 'video') AND photo_quality > -1 AND photo_private = FALSE THEN 1 END) AS photos, " +
+				"COUNT(CASE WHEN photo_type NOT IN ('animated','video','live','audio','document') AND photo_quality > -1 AND photo_private = FALSE THEN 1 END) AS photos, " +
 				"COUNT(CASE WHEN photo_quality BETWEEN 0 AND 2 THEN 1 END) AS review, " +
 				"COUNT(CASE WHEN photo_favorite = TRUE AND photo_private = FALSE AND photo_quality > -1 THEN 1 END) AS favorites, " +
 				"COUNT(CASE WHEN photo_private = TRUE AND photo_quality > -1 THEN 1 END) AS private").
@@ -556,10 +571,13 @@ func (c *Config) ClientUser(withSettings bool) *ClientConfig {
 	} else {
 		c.Db().
 			Table("photos").
-			Select("COUNT(CASE WHEN photo_type = 'video' AND photo_quality > -1 THEN 1 END) AS videos, " +
+			Select("COUNT(CASE WHEN photo_type = 'animated' AND photo_quality > -1) AS animated, " +
+				"COUNT(CASE WHEN photo_type = 'video' AND photo_quality > -1) AS videos, " +
 				"COUNT(CASE WHEN photo_type = 'live' AND photo_quality > -1 THEN 1 END) AS live, " +
+				"COUNT(CASE WHEN photo_type = 'audio' AND photo_quality > -1 THEN 1 END) AS audio, " +
+				"COUNT(CASE WHEN photo_type = 'document' AND photo_quality > -1 THEN 1 END) AS documents, " +
 				"COUNT(CASE WHEN photo_quality = -1 THEN 1 END) AS hidden, " +
-				"COUNT(CASE WHEN photo_type NOT IN ('live', 'video') AND photo_quality > -1 THEN 1 END) AS photos, " +
+				"COUNT(CASE WHEN photo_type NOT IN ('animated','video','live','audio','document') AND photo_quality > -1 THEN 1 END) AS photos, " +
 				"COUNT(CASE WHEN photo_quality BETWEEN 0 AND 2 THEN 1 END) AS review, " +
 				"COUNT(CASE WHEN photo_favorite = TRUE AND photo_quality > -1 THEN 1 END) AS favorites, " +
 				"0 AS private").
@@ -577,8 +595,9 @@ func (c *Config) ClientUser(withSettings bool) *ClientConfig {
 			Take(&cfg.Count)
 	}
 
-	// Calculate total count.
-	cfg.Count.All = cfg.Count.Photos + cfg.Count.Live + cfg.Count.Videos
+	// Calculate total counts.
+	cfg.Count.Media = cfg.Count.Animated + cfg.Count.Live + cfg.Count.Videos + cfg.Count.Audio
+	cfg.Count.All = cfg.Count.Photos + cfg.Count.Media + cfg.Count.Documents
 
 	// Exclude pictures in review from total count.
 	if c.Settings().Features.Review {

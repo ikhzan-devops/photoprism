@@ -760,14 +760,7 @@ func (m *User) FullName() string {
 
 // SetRole sets the user role specified as string.
 func (m *User) SetRole(role string) *User {
-	role = clean.Role(role)
-
-	switch role {
-	case "", "0", "false", "nil", "null", "nan":
-		m.UserRole = acl.RoleNone.String()
-	default:
-		m.UserRole = acl.UserRoles[role].String()
-	}
+	m.UserRole = acl.ParseRole(role).String()
 
 	return m
 }
@@ -1339,6 +1332,11 @@ func (m *User) SaveForm(frm form.User, u *User) error {
 	if u == nil {
 		// Do nothing.
 	} else if u.IsAdmin() {
+		// Restore account.
+		if frm.DeletedAt == nil {
+			m.DeletedAt = gorm.DeletedAt{}
+		}
+
 		// Prevent admins from locking themselves out.
 		if u.Equal(m) {
 			m.SetRole(acl.RoleAdmin.String())

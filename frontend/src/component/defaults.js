@@ -137,12 +137,21 @@ export default {
     flat: true,
     transition: false,
   },
+  VSnackbar: {
+    rounded: "pill",
+    location: "bottom",
+    transition: "fade-transition",
+    closeOnBack: true,
+    attach: true,
+    timeout: -1,
+  },
   VNavigationDrawer: {
     width: 270,
     railWidth: 70,
     mobileBreakpoint: 960,
     location: "start",
     touchless: true,
+    scrim: true,
   },
   VListItem: {
     ripple: false,

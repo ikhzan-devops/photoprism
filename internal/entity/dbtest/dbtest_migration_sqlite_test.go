@@ -100,10 +100,10 @@ func TestDialectSQLite3(t *testing.T) {
 			log.Info(strings.Split(buffer.String(), "\n")[i])
 		}
 
-		// Expect 4 errors (auth_? tables missing)
+		// Expect 5 errors (auth_? tables missing)
 		// And a blank record.
-		assert.Equal(t, 5, len(strings.Split(buffer.String(), "\n")))
-		assert.Equal(t, 0, len(strings.Split(buffer.String(), "\n")[4]))
+		assert.Equal(t, 6, len(strings.Split(buffer.String(), "\n")))
+		assert.Equal(t, 0, len(strings.Split(buffer.String(), "\n")[5]))
 
 		stmt := db.Table("photos").Where("photo_caption = '' OR photo_caption IS NULL")
 
@@ -197,10 +197,10 @@ func TestDialectSQLite3(t *testing.T) {
 		// Reset logger
 		log.SetOutput(os.Stdout)
 
-		// Expect 4 errors (auth_? tables missing)
+		// Expect 5 errors (auth_? tables missing)
 		// And a blank record.
-		assert.Equal(t, 5, len(strings.Split(buffer.String(), "\n")))
-		assert.Equal(t, 0, len(strings.Split(buffer.String(), "\n")[4]))
+		assert.Equal(t, 6, len(strings.Split(buffer.String(), "\n")))
+		assert.Equal(t, 0, len(strings.Split(buffer.String(), "\n")[5]))
 
 		stmt := db.Table("photos").Where("photo_caption = '' OR photo_caption IS NULL")
 

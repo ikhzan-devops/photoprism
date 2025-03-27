@@ -20,6 +20,10 @@ func RegisteredUsers() (result entity.Users) {
 
 // CountUsers returns the number of users based on the specified filter options.
 func CountUsers(registered, active bool, roles, excludeRoles []string) (count int) {
+	if !Db().Migrator().HasTable("auth_users") {
+		return 0
+	}
+
 	countData := int64(0)
 	stmt := Db().Model(entity.Users{})
 

@@ -49,13 +49,14 @@
           @click.stop="editDialog()"
         ></v-btn>
         <v-btn
+          v-if="canDownload"
           key="action-download"
           :title="$gettext('Download')"
           icon="mdi-download"
           color="download"
           density="comfortable"
           class="action-download"
-          :disabled="!canDownload || selection.length !== 1"
+          :disabled="selection.length !== 1"
           @click.stop="download()"
         ></v-btn>
         <v-btn
@@ -137,11 +138,13 @@ export default {
     },
   },
   data() {
-    const features = this.$config.getSettings().features;
+    const settings = this.$config.getSettings();
+    const features = settings.features;
 
     return {
       canDelete: this.$config.allow("albums", "delete"),
-      canDownload: this.$config.allow("albums", "download") && features.download,
+      canDownload:
+        this.$config.allow("albums", "download") && features.download && !settings?.albums?.download?.disabled,
       canShare: this.$config.allow("albums", "share") && features.share,
       canManage: this.$config.allow("albums", "manage"),
       deletable: ["album", "moment", "state"],
