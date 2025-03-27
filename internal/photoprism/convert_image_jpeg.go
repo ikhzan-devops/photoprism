@@ -15,7 +15,7 @@ func (w *Convert) JpegConvertCmds(f *MediaFile, jpegName string, xmpName string)
 	result = NewConvertCmds()
 
 	if f == nil {
-		return result, useMutex, fmt.Errorf("file is nil - you may have found a bug")
+		return result, useMutex, fmt.Errorf("no media file provided for processing - you may have found a bug")
 	}
 
 	// Find conversion command depending on the file type and runtime environment.
@@ -109,14 +109,22 @@ func (w *Convert) JpegConvertCmds(f *MediaFile, jpegName string, xmpName string)
 	}
 
 	// Try ImageMagick for other image file formats if allowed.
-	if w.conf.ImageMagickEnabled() && w.imageMagickExclude.Allow(fileExt) &&
-		(f.IsImage() && !f.IsJpegXL() && !f.IsRaw() && !f.IsHeif() || f.IsVector() && w.conf.VectorEnabled()) {
-		quality := fmt.Sprintf("%d", w.conf.JpegQuality())
-		resize := fmt.Sprintf("%dx%d>", w.conf.JpegSize(), w.conf.JpegSize())
-		args := []string{f.FileName(), "-flatten", "-resize", resize, "-quality", quality, jpegName}
-		result = append(result, NewConvertCmd(
-			exec.Command(w.conf.ImageMagickBin(), args...)),
-		)
+	if w.conf.ImageMagickEnabled() && w.imageMagickExclude.Allow(fileExt) {
+		if f.IsImage() && !f.IsJpegXL() && !f.IsRaw() && !f.IsHeif() || f.IsVector() && w.conf.VectorEnabled() {
+			quality := fmt.Sprintf("%d", w.conf.JpegQuality())
+			resize := fmt.Sprintf("%dx%d>", w.conf.JpegSize(), w.conf.JpegSize())
+			args := []string{f.FileName(), "-flatten", "-resize", resize, "-quality", quality, jpegName}
+			result = append(result, NewConvertCmd(
+				exec.Command(w.conf.ImageMagickBin(), args...)),
+			)
+		} else if f.IsDocument() {
+			quality := fmt.Sprintf("%d", w.conf.JpegQuality())
+			resize := fmt.Sprintf("%dx%d>", w.conf.JpegSize(), w.conf.JpegSize())
+			args := []string{f.FileName() + "[0]", "-background", "white", "-alpha", "remove", "-alpha", "off", "-resize", resize, "-quality", quality, jpegName}
+			result = append(result, NewConvertCmd(
+				exec.Command(w.conf.ImageMagickBin(), args...)),
+			)
+		}
 	}
 
 	// No suitable converter found?

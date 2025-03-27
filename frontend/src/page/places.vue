@@ -49,7 +49,8 @@
           ></v-text-field>
         </div>
       </div>
-      <div ref="map" class="map-container" :class="{ 'map-loaded': initialized }"></div>
+      <div ref="background" class="map-background"></div>
+      <div ref="map" class="map-container" :class="{ 'map-loaded': mapLoaded }"></div>
       <div v-if="showCluster" class="cluster-control">
         <v-card class="cluster-control-container">
           <p-page-photos ref="cluster" :static-filter="cluster" :on-close="closeCluster" :embedded="true" />
@@ -60,11 +61,16 @@
 </template>
 
 <script>
-import maplibregl from "maplibre-gl";
 import $api from "common/api";
+import $fullscreen from "common/fullscreen";
+import * as sky from "common/sky";
 import Thumb from "model/thumb";
 import PPagePhotos from "page/photos.vue";
 import MapStyleControl from "component/places/style-control";
+
+const ProjectionGlobe = "globe";
+const ProjectionMercator = "mercator";
+const ProjectionVertical = "vertical-perspective";
 
 // Pixels the map pans when the up or down arrow is clicked:
 const deltaDistance = 100;
@@ -76,6 +82,9 @@ const deltaDegrees = 25;
 const easing = (t) => {
   return t * (2 - t);
 };
+
+// MapLibre GL.
+let maplibregl;
 
 export default {
   name: "PPagePlaces",
@@ -138,6 +147,8 @@ export default {
       config: this.$config.values,
       settings: settings.maps,
       animate: settings.maps.animate,
+      mapLoaded: false,
+      skyRendered: false,
     };
   },
   watch: {
@@ -157,19 +168,46 @@ export default {
   },
   mounted() {
     this.$view.enter(this);
-    this.initMap()
-      .then(() => {
-        this.renderMap();
-        this.openClusterFromUrl();
-      })
-      .catch((err) => {
-        this.mapError = err;
+
+    // Dynamically import MapLibre GL JS to reduce bundle size:
+    // https://maplibre.org/maplibre-gl-js/docs/
+    try {
+      import(
+        /* webpackChunkName: "maplibregl" */
+        /* webpackMode: "lazy" */
+        "../common/maplibregl.js"
+      ).then((module) => {
+        maplibregl = module.default;
+
+        this.initMap()
+          .then(() => {
+            this.renderMap();
+            this.openClusterFromUrl();
+          })
+          .catch((err) => {
+            this.mapError = err;
+          });
       });
+    } catch (error) {
+      console.error(`failed to load maplibregl:`, error);
+    }
+  },
+  beforeUnmount() {
+    // Exit fullscreen mode if enabled, has no effect otherwise.
+    $fullscreen.exit();
   },
   unmounted() {
     this.$view.leave(this);
   },
   methods: {
+    renderSky() {
+      if (!this.skyRendered && sky.render && this.$refs.background) {
+        this.$nextTick(() => {
+          sky.render(this.$refs.background, 320);
+          this.skyRendered = true;
+        });
+      }
+    },
     onKeyDown(ev) {
       if (!ev || !(ev instanceof KeyboardEvent) || !this.$view.isActive(this)) {
         return;
@@ -229,13 +267,27 @@ export default {
 
       const currentProjection = this.map.getProjection()?.type;
 
-      let newProjection;
-
-      if (currentProjection === "mercator" || !currentProjection) {
-        newProjection = "globe";
-        this.map.setZoom(3);
+      if (currentProjection === ProjectionMercator || !currentProjection) {
+        this.setProjection(ProjectionGlobe);
       } else {
-        newProjection = "mercator";
+        this.setProjection(ProjectionMercator);
+      }
+    },
+    setProjection(newProjection) {
+      const currentProjection = this.map.getProjection()?.type;
+
+      if (currentProjection === newProjection) {
+        return;
+      }
+
+      switch (newProjection) {
+        case ProjectionGlobe:
+          this.map.setZoom(3);
+          break;
+        case ProjectionMercator:
+          break;
+        case ProjectionVertical:
+          break;
       }
 
       this.map.setProjection({ type: newProjection });
@@ -248,7 +300,7 @@ export default {
 
       if (btn && btn instanceof HTMLElement) {
         switch (newProjection) {
-          case "globe":
+          case ProjectionGlobe:
             btn.classList.add("maplibregl-ctrl-globe-enabled");
             btn.classList.remove("maplibregl-ctrl-globe");
             btn.classList.title = this.map._getUIString("GlobeControl.Disable");
@@ -714,6 +766,7 @@ export default {
         .get("geo", options)
         .then((response) => {
           if (!response.data.features || response.data.features.length === 0) {
+            this.initialized = true;
             this.loading = false;
 
             this.$notify.warn(this.$gettext("No pictures found"));
@@ -741,6 +794,7 @@ export default {
           this.updateMarkers();
         })
         .catch(() => {
+          this.initialized = true;
           this.loading = false;
         });
     },
@@ -801,6 +855,15 @@ export default {
       this.map.addControl(new maplibregl.ScaleControl({}), "bottom-left");
 
       this.map.on("load", () => this.onMapLoad());
+    },
+    onProjectionChange(ev) {
+      // Remember last used projection.
+      localStorage.setItem("places.projection", ev.newProjection);
+
+      // Render sky if new project is globe.
+      if (ev.newProjection === ProjectionGlobe) {
+        this.renderSky();
+      }
     },
     getClusterFeatures(clusterId, limit, callback) {
       this.map
@@ -1004,7 +1067,18 @@ export default {
       this.map.on("idle", this.updateMarkers);
 
       // Load pictures.
-      this.search();
+      this.search().finally(() => {
+        this.mapLoaded = true;
+
+        // Call this.onProjectionChange when the projection type changes.
+        this.map.on("projectiontransition", (ev) => this.onProjectionChange(ev));
+
+        // Restore globe projection if last used.
+        const projection = localStorage.getItem("places.projection");
+        if (projection === ProjectionGlobe) {
+          this.setProjection(projection);
+        }
+      });
     },
   },
 };

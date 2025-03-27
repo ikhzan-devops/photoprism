@@ -328,6 +328,28 @@ func TestFile_NoJpeg(t *testing.T) {
 	})
 }
 
+func TestFile_NoPng(t *testing.T) {
+	t.Run("true", func(t *testing.T) {
+		file := &File{Photo: nil, FileType: "xmp", FileSize: 500}
+		assert.True(t, file.NoPng())
+	})
+	t.Run("false", func(t *testing.T) {
+		file := &File{Photo: nil, FileType: "png", FileSize: 500}
+		assert.False(t, file.NoPng())
+	})
+}
+
+func TestFile_Type(t *testing.T) {
+	t.Run("xmp", func(t *testing.T) {
+		file := &File{Photo: nil, FileType: "xmp", FileSize: 500}
+		assert.Equal(t, fs.SidecarXMP, file.Type())
+	})
+	t.Run("png", func(t *testing.T) {
+		file := &File{Photo: nil, FileType: "png", FileSize: 500}
+		assert.Equal(t, fs.ImagePng, file.Type())
+	})
+}
+
 func TestFile_Panorama(t *testing.T) {
 	t.Run("3000", func(t *testing.T) {
 		file := &File{Photo: nil, FileType: "jpg", FileSidecar: false, FileWidth: 3000, FileHeight: 1000}
@@ -812,6 +834,26 @@ func TestFile_SetFrames(t *testing.T) {
 		assert.Equal(t, time.Minute, m.FileDuration)
 		assert.Equal(t, 0.5, m.FileFPS)
 		assert.Equal(t, 30, m.FileFrames)
+	})
+}
+
+func TestFile_SetPages(t *testing.T) {
+	t.Run("Success", func(t *testing.T) {
+		m := File{FilePages: 4}
+
+		assert.Equal(t, 4, m.FilePages)
+
+		m.SetPages(120)
+
+		assert.Equal(t, 120, m.FilePages)
+
+		m.SetPages(30)
+
+		assert.Equal(t, 30, m.FilePages)
+
+		m.SetPages(0)
+
+		assert.Equal(t, 30, m.FilePages)
 	})
 }
 

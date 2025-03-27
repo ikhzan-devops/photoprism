@@ -31,7 +31,7 @@ func (ind *Index) MediaFile(m *MediaFile, o IndexOptions, originalName, photoUID
 func (ind *Index) UserMediaFile(m *MediaFile, o IndexOptions, originalName, photoUID, userUID string) (result IndexResult) {
 	if m == nil {
 		result.Status = IndexFailed
-		result.Err = errors.New("index: media file is nil - you may have found a bug")
+		result.Err = errors.New("index: no media file provided for processing - you may have found a bug")
 		return result
 	}
 
@@ -525,6 +525,7 @@ func (ind *Index) UserMediaFile(m *MediaFile, o IndexOptions, originalName, phot
 			file.FileAspectRatio = m.AspectRatio()
 			file.FilePortrait = m.Portrait()
 			file.SetMediaUTC(data.TakenAt)
+			file.SetPages(data.Pages)
 			file.SetProjection(data.Projection)
 			file.SetHDR(data.IsHDR())
 			file.SetColorProfile(data.ColorProfile)
@@ -614,9 +615,7 @@ func (ind *Index) UserMediaFile(m *MediaFile, o IndexOptions, originalName, phot
 			file.FileAspectRatio = m.AspectRatio()
 			file.FilePortrait = m.Portrait()
 			file.SetMediaUTC(data.TakenAt)
-			file.SetDuration(data.Duration)
-			file.SetFPS(data.FPS)
-			file.SetFrames(data.Frames)
+			file.SetPages(data.Pages)
 			file.SetProjection(data.Projection)
 			file.SetHDR(data.IsHDR())
 			file.SetColorProfile(data.ColorProfile)
@@ -631,6 +630,60 @@ func (ind *Index) UserMediaFile(m *MediaFile, o IndexOptions, originalName, phot
 		// Update photo type if not manually modified.
 		if photo.TypeSrc == entity.SrcAuto {
 			photo.PhotoType = entity.MediaVector
+		}
+	case m.IsDocument():
+		if data := m.MetaData(); data.Error == nil {
+			photo.SetTitle(data.Title, entity.SrcMeta)
+			photo.SetCaption(data.Caption, entity.SrcMeta)
+			photo.SetTakenAt(data.TakenAt, data.TakenAtLocal, data.TimeZone, entity.SrcMeta)
+
+			// Update metadata details.
+			details.SetKeywords(data.Keywords.String(), entity.SrcMeta)
+			details.SetNotes(data.Notes, entity.SrcMeta)
+			details.SetSubject(data.Subject, entity.SrcMeta)
+			details.SetArtist(data.Artist, entity.SrcMeta)
+			details.SetCopyright(data.Copyright, entity.SrcMeta)
+			details.SetLicense(data.License, entity.SrcMeta)
+			details.SetSoftware(data.Software, entity.SrcMeta)
+
+			if data.HasDocumentID() && photo.UUID == "" {
+				log.Infof("index: %s has document_id %s", logName, clean.Log(data.DocumentID))
+
+				photo.UUID = data.DocumentID
+			}
+
+			if data.HasInstanceID() {
+				log.Infof("index: %s has instance_id %s", logName, clean.Log(data.InstanceID))
+
+				file.InstanceID = data.InstanceID
+			}
+
+			if file.OriginalName == "" && filepath.Base(file.FileName) != data.FileName {
+				file.OriginalName = data.FileName
+				if photo.OriginalName == "" {
+					photo.OriginalName = fs.StripKnownExt(data.FileName)
+				}
+			}
+
+			file.FileCodec = data.Codec
+			file.FileWidth = m.Width()
+			file.FileHeight = m.Height()
+			file.FileAspectRatio = m.AspectRatio()
+			file.FilePortrait = m.Portrait()
+			file.SetMediaUTC(data.TakenAt)
+			file.SetPages(data.Pages)
+			file.SetColorProfile(data.ColorProfile)
+			file.SetSoftware(data.Software)
+
+			// Set photo resolution based on the largest media file.
+			if res := m.Megapixels(); res > photo.PhotoResolution {
+				photo.PhotoResolution = res
+			}
+		}
+
+		// Update photo type if not manually modified.
+		if photo.TypeSrc == entity.SrcAuto {
+			photo.PhotoType = entity.MediaDocument
 		}
 	case m.IsVideo():
 		if data := m.MetaData(); data.Error == nil {
@@ -847,12 +900,24 @@ func (ind *Index) UserMediaFile(m *MediaFile, o IndexOptions, originalName, phot
 			})
 		}
 
-		if photo.PhotoType == entity.MediaVideo {
-			event.Publish("count.videos", event.Data{
+		if photo.PhotoType == entity.MediaAnimated {
+			event.Publish("count.animated", event.Data{
 				"count": 1,
 			})
 		} else if photo.PhotoType == entity.MediaLive {
 			event.Publish("count.live", event.Data{
+				"count": 1,
+			})
+		} else if photo.PhotoType == entity.MediaAudio {
+			event.Publish("count.audio", event.Data{
+				"count": 1,
+			})
+		} else if photo.PhotoType == entity.MediaVideo {
+			event.Publish("count.videos", event.Data{
+				"count": 1,
+			})
+		} else if photo.PhotoType == entity.MediaDocument {
+			event.Publish("count.documents", event.Data{
 				"count": 1,
 			})
 		} else {

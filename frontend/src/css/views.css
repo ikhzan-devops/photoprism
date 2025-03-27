@@ -5,13 +5,6 @@
     -webkit-touch-callout: none;
 }
 
-/*
-For more information on the contain property, see https://developers.google.com/web/updates/2016/06/css-containment
-*/
-body.chrome .search-results .result {
-    contain: layout style paint;
-}
-
 .v-alert.no-results.v-alert--outline,
 .v-alert.no-outline.v-alert--outline {
     border: 0 !important;
@@ -27,19 +20,6 @@ body.chrome .search-results .result {
 .mosaic-view a,
 .mosaic-view .v-card {
     user-select: none !important;
-}
-
-.p-col-select {
-    width: 66px;
-}
-
-.p-col-primary {
-    width: 44px;
-}
-
-.search-results.list-view tr td:first-child {
-    padding: 0 0 0 8px;
-    text-align: center;
 }
 
 .search-results.list-view .p-photo-select,
@@ -236,7 +216,7 @@ body.chrome .search-results .result {
 
 .mosaic-view .result-container {
     aspect-ratio: 1;
-    contain: layout paint style size;
+    contain: size layout paint style;
     transition: none;
 }
 
@@ -251,8 +231,9 @@ body.chrome .search-results .result {
     cursor: pointer;
 }
 
-.list-view .result {
-    text-align: center;
+.list-view .result,
+.cards-view .result {
+    contain: layout paint style;
 }
 
 .cards-view .result,
@@ -271,6 +252,116 @@ body.chrome .search-results .result {
     background-repeat: no-repeat;
     transition: none !important;
     overflow: hidden !important;
+}
+
+.search-results.list-view .v-table>.v-table__wrapper>table>thead>tr>th {
+    height: 44px;
+    padding: 0 8px;
+}
+
+.search-results.list-view .v-table>.v-table__wrapper>table {
+    table-layout: auto;
+}
+
+.search-results.list-view .v-table>.v-table__wrapper>table>tbody>tr>td {
+    padding: 1px 8px;
+    height: 50px;
+    max-height: 50px;
+    box-sizing: content-box;
+    line-height: normal;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.search-results.list-view .v-table>.v-table__wrapper>table>thead>tr>th.col-auto,
+.search-results.list-view .v-table>.v-table__wrapper>table>tbody>tr>td.col-auto {
+    max-width: 200px;
+}
+
+.search-results.list-view .v-table>.v-table__wrapper>table>tbody>tr>td.result {
+    padding: 1px 4px 1px 0;
+    text-align: center;
+}
+
+.is-rtl .search-results.list-view .v-table>.v-table__wrapper>table>tbody>tr>td.result {
+    padding: 1px 0 1px 4px;
+}
+
+.search-results.list-view .v-table>.v-table__wrapper>table>tbody>tr>td.result .preview {
+    width: 50px;
+    height: 50px;
+}
+
+.list-view tbody td button {
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.list-view table .col-select {
+    width: 32px;
+}
+
+.search-results.list-view tbody td.col-select {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.list-view table .col-xs {
+    width: 44px;
+}
+
+.list-view table .col-preview {
+    width: 50px;
+}
+
+.list-view table .col-taken {
+    width: 12%;
+}
+
+.list-view table .col-md {
+    width: 15%;
+}
+
+.list-view table .col-lg {
+    width: 20%;
+    max-width: 160px;
+}
+
+.list-view tbody td.col-select .input-select {
+    display: block;
+    font-size: 1.275rem;
+    line-height: 1;
+    position: relative;
+}
+
+.list-view tbody td.col-select .input-select .select-off {
+    opacity: 0.52;
+}
+
+.list-view tbody td.col-select .input-select .select-on {
+    display: none;
+}
+
+.list-view tbody td.col-select .input-select .select-off,
+.list-view tbody td.col-select.is-selected .input-select .select-on {
+    display: inline-flex;
+}
+
+.list-view tbody td.col-select.is-selected .input-select .select-off {
+    display: none;
+}
+
+.list-view tbody tr.is-deleted td .item-name,
+.list-view tbody tr.is-deleted td:first-child button {
+    text-decoration: line-through;
+}
+
+.p-col-primary {
+    width: 44px;
 }
 
 .search-results .preview > .preview__overlay {
@@ -372,14 +463,6 @@ body.chrome .search-results .result {
 .list-view td.meta-data {
     min-width: 90px;
     text-align: start;
-}
-
-.list-view td.meta-data button {
-    min-width: 84px;
-    text-align: start;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 
 .cards-view .result .preview button {

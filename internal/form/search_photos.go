@@ -25,15 +25,16 @@ type SearchPhotos struct {
 	Stack     bool      `form:"stack" notes:"Finds pictures with more than one media file"`
 	Unstacked bool      `form:"unstacked" notes:"Finds pictures with a file that has been removed from a stack"`
 	Stackable bool      `form:"stackable" notes:"Finds pictures that can be stacked with additional media files"`
-	Animated  bool      `form:"animated" notes:"Finds animations only"`
-	Audio     bool      `form:"audio" notes:"Finds audio recordings only"`
-	Document  bool      `form:"document" notes:"Finds documents only"`
-	Image     bool      `form:"image" notes:"Finds regular images only"`
-	Raw       bool      `form:"raw" notes:"Finds RAW images only"`
+	Photo     bool      `form:"photo" notes:"Finds regular photos and images, as well as RAW and Live Photos"`
+	Image     bool      `form:"image" notes:"Finds regular photos and images only"`
+	Raw       bool      `form:"raw" notes:"Finds RAW photos only"`
+	Media     bool      `form:"media" notes:"Finds Live Photos, videos, audio and animated content"`
+	Animated  bool      `form:"animated" notes:"Finds animated content only"`
+	Audio     bool      `form:"audio" notes:"Finds audio content only"`
+	Video     bool      `form:"video" notes:"Finds videos not categorized as Live Photos"`
 	Live      bool      `form:"live" notes:"Finds Live Photos and short videos"`
 	Vector    bool      `form:"vector" notes:"Finds vector graphics only"`
-	Video     bool      `form:"video" notes:"Finds videos only"`
-	Photo     bool      `form:"photo" notes:"Excludes videos from search results"`
+	Document  bool      `form:"document" notes:"Finds PDF documents only"`
 	Scan      string    `form:"scan" example:"scan:true scan:false" notes:"Finds scanned photos and documents"`
 	Mp        string    `form:"mp" example:"mp:3-6" notes:"Resolution in Megapixels (MP)"`
 	Panorama  bool      `form:"panorama" notes:"Finds pictures with an aspect ratio > 1.9:1"`
@@ -61,6 +62,7 @@ type SearchPhotos struct {
 	Mm        string    `form:"mm" example:"mm:28-35" notes:"Focal Length (35mm equivalent)"`
 	F         string    `form:"f" example:"f:2.8-4.5" notes:"Aperture (f-number)"`
 	Color     string    `form:"color" example:"color:\"red|blue\"" notes:"Color Name (purple, magenta, pink, red, orange, gold, yellow, lime, green, teal, cyan, blue, brown, white, grey, black) (separate with |)"` // Main color
+	Codec     string    `form:"codec" example:"codec:avc1" notes:"Media Codec (e.g. jpeg, avc1, hvc1); separate with |"`
 	Chroma    int16     `form:"chroma" example:"chroma:70" notes:"Chroma (0-100)"`
 	Mono      bool      `form:"mono" notes:"Finds pictures with few or no colors"`
 	Diff      uint32    `form:"diff" notes:"Differential Perceptual Hash (000000-FFFFFF)"`

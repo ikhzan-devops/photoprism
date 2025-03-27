@@ -29,7 +29,7 @@ func (w *Sync) relatedDownloads(a entity.Service) (result Downloads, err error) 
 	result = make(Downloads)
 	maxResults := 1000
 
-	// Get remote files from database
+	// Get list of remote files from database.
 	files, err := query.FileSyncs(a.ID, entity.FileSyncNew, maxResults)
 
 	if err != nil {
@@ -105,6 +105,11 @@ func (w *Sync) download(a entity.Service) (complete bool, err error) {
 	done := make(map[string]bool)
 
 	for _, files := range relatedFiles {
+		if w.conf.FilesQuotaReached() {
+			log.Warnf("sync: skipped downloading files from %s due to insufficient storage", clean.Log(a.AccName))
+			return false, nil
+		}
+
 		for i, file := range files {
 			if mutex.SyncWorker.Canceled() {
 				return false, nil
@@ -112,14 +117,14 @@ func (w *Sync) download(a entity.Service) (complete bool, err error) {
 
 			// Failed too often?
 			if a.RetryLimit > 0 && file.Errors > a.RetryLimit {
-				log.Debugf("sync: downloading %s failed more than %d times", file.RemoteName, a.RetryLimit)
+				log.Debugf("sync: downloading %s from %s failed more than %d times", file.RemoteName, clean.Log(a.AccName), a.RetryLimit)
 				continue
 			}
 
 			localName := baseDir + file.RemoteName
 
 			if _, err = os.Stat(localName); err == nil {
-				log.Warnf("sync: download skipped, %s already exists", localName)
+				log.Warnf("sync: skipped download of %s from %s because local file %s already exists", file.RemoteName, clean.Log(a.AccName), localName)
 				file.Status = entity.FileSyncExists
 				file.Error = ""
 				file.Errors = 0
@@ -127,8 +132,12 @@ func (w *Sync) download(a entity.Service) (complete bool, err error) {
 				if err = client.Download(file.RemoteName, localName, false); err != nil {
 					file.Errors++
 					file.Error = err.Error()
+
+					if file.Errors > a.RetryLimit {
+						file.Status = entity.FileSyncFailed
+					}
 				} else {
-					log.Infof("sync: downloaded %s from %s", file.RemoteName, a.AccName)
+					log.Infof("sync: downloaded %s from %s", file.RemoteName, clean.Log(a.AccName))
 					file.Status = entity.FileSyncDownloaded
 					file.Error = ""
 					file.Errors = 0

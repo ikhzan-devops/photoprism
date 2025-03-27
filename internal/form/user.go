@@ -1,6 +1,8 @@
 package form
 
 import (
+	"time"
+
 	"github.com/urfave/cli/v2"
 
 	"github.com/photoprism/photoprism/pkg/authn"
@@ -24,6 +26,7 @@ type User struct {
 	BasePath     string       `json:"BasePath,omitempty" yaml:"BasePath,omitempty"`
 	UploadPath   string       `json:"UploadPath,omitempty" yaml:"UploadPath,omitempty"`
 	Password     string       `json:"Password,omitempty" yaml:"Password,omitempty"`
+	DeletedAt    *time.Time   `json:"DeletedAt,omitempty" yaml:"DeletedAt,omitempty"`
 	UserDetails  *UserDetails `json:"Details,omitempty"`
 }
 

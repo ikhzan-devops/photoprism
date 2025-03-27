@@ -86,6 +86,7 @@ type Photo struct {
 	FileDuration     time.Duration  `json:"-" select:"files.file_duration"`
 	FileFPS          float64        `json:"-" select:"files.file_fps"`
 	FileFrames       int            `json:"-" select:"files.file_frames"`
+	FilePages        int            `json:"-" select:"files.file_pages"`
 	FileCodec        string         `json:"-" select:"files.file_codec"`
 	FileType         string         `json:"-" select:"files.file_type"`
 	MediaType        string         `json:"-" select:"files.media_type"`
@@ -188,7 +189,7 @@ func (m *Photo) Restore() error {
 // IsPlayable returns true if the photo has a related video/animation that is playable.
 func (m *Photo) IsPlayable() bool {
 	switch m.PhotoType {
-	case entity.MediaVideo, entity.MediaLive, entity.MediaAnimated:
+	case entity.MediaLive, entity.MediaVideo, entity.MediaAudio, entity.MediaAnimated:
 		return true
 	default:
 		return false

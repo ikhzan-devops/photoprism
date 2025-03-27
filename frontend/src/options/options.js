@@ -3,6 +3,7 @@ import { $gettext } from "common/gettext";
 import { Info } from "luxon";
 import { $config } from "app/session";
 import * as media from "common/media";
+import * as locales from "../locales";
 
 export const GmtOffsets = [
   { ID: "GMT", Name: "Etc/GMT" },
@@ -32,9 +33,9 @@ export const GmtOffsets = [
   { ID: "UTC-12", Name: "Etc/GMT-12:00" },
 ];
 
-export const TimeZones = () =>
+export const TimeZones = (defaultName) =>
   [
-    { ID: "", Name: $gettext("Local Time") },
+    { ID: "", Name: defaultName ? defaultName : $gettext("Local Time") },
     { ID: "UTC", Name: "UTC" },
   ]
     .concat(timeZonesNames)
@@ -114,188 +115,28 @@ export const MonthsShort = () => {
 };
 
 // Available locales sorted by region and alphabet.
-export const Languages = () => [
-  {
-    text: "English", // English
-    translated: "English",
-    value: "en",
-  },
-  {
-    text: "Afrikaans", // Afrikaans (South Africa)
-    value: "af",
-  },
-  {
-    text: "Bahasa Indonesia", // Bahasa Indonesia
-    value: "id",
-  },
-  {
-    text: "Català", // Catalan
-    value: "ca",
-  },
-  {
-    text: "Čeština", // Czech
-    value: "cs",
-  },
-  {
-    text: "Dansk", // Danish
-    value: "da",
-  },
-  {
-    text: "Deutsch", // German
-    value: "de",
-  },
-  {
-    text: "Eesti", // Estonian
-    value: "et",
-  },
-  {
-    text: "Español", // Spanish
-    value: "es",
-  },
-  {
-    text: "Euskara", // Basque
-    value: "eu",
-  },
-  {
-    text: "Français", // French
-    value: "fr",
-  },
-  {
-    text: "Gaeilge", // Irish
-    value: "ga",
-  },
-  {
-    text: "Ελληνικά", // Greek
-    value: "el",
-  },
-  {
-    text: "עברית", // Hebrew
-    value: "he",
-    rtl: true,
-  },
-  {
-    text: "Hrvatski", // Croatian
-    value: "hr",
-  },
-  {
-    text: "Lietuvis", // Lithuanian
-    value: "lt",
-  },
-  {
-    text: "Magyar", // Hungarian
-    value: "hu",
-  },
-  {
-    text: "Melayu", // Malay
-    value: "ms",
-  },
-  {
-    text: "Norsk (Bokmål)", // Norwegian
-    value: "nb",
-  },
-  {
-    text: "Italiano", // Italian
-    value: "it",
-  },
-  {
-    text: "Nederlands", // Dutch
-    value: "nl",
-  },
-  {
-    text: "Polski", // Polish
-    value: "pl",
-  },
-  {
-    text: "Português", // Portuguese (Portugal)
-    value: "pt",
-  },
-  {
-    text: "Português do Brasil", // Portuguese (Brazil)
-    value: "pt_BR",
-  },
-  {
-    text: "Slovenčina", // Slovak
-    value: "sk",
-  },
-  {
-    text: "Slovenščina", // Slovene
-    value: "sl",
-  },
-  {
-    text: "Suomi", // Finnish
-    value: "fi",
-  },
-  {
-    text: "Svenska", // Swedish
-    value: "sv",
-  },
-  {
-    text: "Română", // Romanian
-    value: "ro",
-  },
-  {
-    text: "Türkçe", // Turkish
-    value: "tr",
-  },
-  {
-    text: "عربى", // Arabic
-    value: "ar",
-    rtl: true,
-  },
-  {
-    text: "کوردی", // Kurdish
-    value: "ku",
-    rtl: true,
-  },
-  {
-    text: "Беларуская", // Belarusian
-    value: "be",
-  },
-  {
-    text: "Български", // Bulgarian
-    value: "bg",
-  },
-  {
-    text: "Українська", // Ukrainian
-    value: "uk",
-  },
-  {
-    text: "Русский", // Russian
-    value: "ru",
-  },
-  {
-    text: "简体中文", // Chinese (Simplified)
-    value: "zh",
-  },
-  {
-    text: "繁體中文", // Chinese (Traditional)
-    value: "zh_TW",
-  },
-  {
-    text: "日本語", // Japanese
-    value: "ja_JP",
-  },
-  {
-    text: "한국어", // Korean
-    value: "ko",
-  },
-  {
-    text: "Tiếng Việt", // Vietnamese
-    value: "vi",
-  },
-  {
-    text: "हिन्दी", // Hindi
-    value: "hi",
-  },
-  {
-    text: "ภาษาไทย", // Thai
-    value: "th",
-  },
-  {
-    text: "فارسی", // Persian
-    value: "fa",
-    rtl: true,
-  },
+export const Languages = () => (window.__LOCALES__ ? window.__LOCALES__ : locales.Options);
+
+export const ItemsPerPage = () => [
+  { text: "10", title: "10", value: 10 },
+  { text: "20", title: "20", value: 20 },
+  { text: "50", title: "50", value: 50 },
+  { text: "100", title: "100", value: 100 },
+];
+
+export const StartPages = (features) => [
+  { value: "default", text: $gettext("Default"), visible: true },
+  { value: "browse", text: $gettext("Search"), props: { disabled: !features?.library } },
+  { value: "albums", text: $gettext("Albums"), props: { disabled: !features?.albums } },
+  { value: "media", text: $gettext("Media"), props: { disabled: !features?.videos } },
+  { value: "videos", text: $gettext("Videos"), props: { disabled: !features?.videos } },
+  { value: "people", text: $gettext("People"), props: { disabled: !(features?.people && features?.edit) } },
+  { value: "favorites", text: $gettext("Favorites"), props: { disabled: !features?.favorites } },
+  { value: "places", text: $gettext("Places"), props: { disabled: !features?.places } },
+  { value: "calendar", text: $gettext("Calendar"), props: { disabled: !features?.calendar } },
+  { value: "moments", text: $gettext("Moments"), props: { disabled: !features?.moments } },
+  { value: "labels", text: $gettext("Labels"), props: { disabled: !features?.labels } },
+  { value: "folders", text: $gettext("Folders"), props: { disabled: !features?.folders } },
 ];
 
 export const MapsAnimate = () => [
@@ -365,10 +206,6 @@ export const PhotoTypes = () => [
     value: media.Raw,
   },
   {
-    text: $gettext("Animated"),
-    value: media.Animated,
-  },
-  {
     text: $gettext("Live"),
     value: media.Live,
   },
@@ -377,8 +214,20 @@ export const PhotoTypes = () => [
     value: media.Video,
   },
   {
+    text: $gettext("Audio"),
+    value: media.Audio,
+  },
+  {
+    text: $gettext("Animated"),
+    value: media.Animated,
+  },
+  {
     text: $gettext("Vector"),
     value: media.Vector,
+  },
+  {
+    text: $gettext("Document"),
+    value: media.Document,
   },
 ];
 
@@ -469,11 +318,9 @@ export const Colors = () => [
 ];
 
 export const FeedbackCategories = () => [
-  { value: "help", text: $gettext("Customer Support") },
   { value: "feedback", text: $gettext("Product Feedback") },
   { value: "feature", text: $gettext("Feature Request") },
   { value: "bug", text: $gettext("Bug Report") },
-  { value: "donations", text: $gettext("Donations") },
   { value: "other", text: $gettext("Other") },
 ];
 

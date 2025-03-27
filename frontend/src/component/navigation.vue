@@ -157,14 +157,14 @@
                 </v-list-item>
 
                 <v-list-item
-                  :to="{ name: 'browse', query: { q: 'animated' } }"
+                  :to="{ name: 'photos', query: { q: 'stacks' } }"
                   :exact="true"
                   variant="text"
-                  class="nav-animated"
+                  class="nav-stacks"
                   @click.stop=""
                 >
                   <v-list-item-title :class="`nav-menu-item menu-item`">
-                    {{ $gettext(`Animated`) }}
+                    {{ $gettext(`Stacks`) }}
                   </v-list-item-title>
                 </v-list-item>
 
@@ -182,18 +182,6 @@
                 </v-list-item>
 
                 <v-list-item
-                  :to="{ name: 'photos', query: { q: 'stacks' } }"
-                  :exact="true"
-                  variant="text"
-                  class="nav-stacks"
-                  @click.stop=""
-                >
-                  <v-list-item-title :class="`nav-menu-item menu-item`">
-                    {{ $gettext(`Stacks`) }}
-                  </v-list-item-title>
-                </v-list-item>
-
-                <v-list-item
                   :to="{ name: 'photos', query: { q: 'scans' } }"
                   :exact="true"
                   variant="text"
@@ -203,6 +191,20 @@
                   <v-list-item-title :class="`nav-menu-item menu-item`">
                     {{ $gettext(`Scans`) }}
                   </v-list-item-title>
+                </v-list-item>
+
+                <v-list-item
+                  v-show="config.count.documents > 0"
+                  :to="{ name: 'browse', query: { q: 'documents' } }"
+                  :exact="true"
+                  variant="text"
+                  class="nav-documents"
+                  @click.stop=""
+                >
+                  <v-list-item-title :class="`nav-menu-item menu-item`">
+                    {{ $gettext(`Documents`) }}
+                  </v-list-item-title>
+                  <span v-show="config.count.documents > 0" class="nav-count-item">{{ config.count.documents }}</span>
                 </v-list-item>
 
                 <v-list-item
@@ -292,21 +294,21 @@
 
             <v-list-item
               v-if="isMini && $config.feature('videos')"
-              to="/videos"
+              to="/media"
               variant="text"
-              class="nav-video"
+              class="nav-media"
               :ripple="false"
               @click.stop=""
             >
               <v-icon class="ma-auto">mdi-play-circle</v-icon>
             </v-list-item>
             <div v-else-if="!isMini && $config.feature('videos')">
-              <v-list-item to="/videos" variant="text" class="nav-video activator" @click.stop="">
+              <v-list-item to="/media" variant="text" class="nav-media activator" @click.stop="">
                 <v-list-item-title class="nav-menu-item">
                   <p class="nav-item-title">
-                    {{ $gettext(`Videos`) }}
+                    {{ $gettext(`Media`) }}
                   </p>
-                  <span v-show="config.count.videos > 0" class="nav-count-group">{{ config.count.videos }}</span>
+                  <span v-show="config.count.media > 0" class="nav-count-group">{{ config.count.media }}</span>
                 </v-list-item-title>
               </v-list-item>
 
@@ -317,11 +319,44 @@
                   </v-list-item>
                 </template>
 
+                <v-list-item :to="{ name: 'videos' }" variant="text" class="nav-video nav-videos" @click.stop="">
+                  <v-list-item-title :class="`nav-menu-item menu-item`">
+                    {{ $gettext(`Videos`) }}
+                  </v-list-item-title>
+                  <span v-show="config.count.videos > 0" class="nav-count-item">{{ config.count.videos }}</span>
+                </v-list-item>
+
                 <v-list-item :to="{ name: 'live' }" variant="text" class="nav-live" @click.stop="">
                   <v-list-item-title :class="`nav-menu-item menu-item`">
                     {{ $gettext(`Live Photos`) }}
                   </v-list-item-title>
                   <span v-show="config.count.live > 0" class="nav-count-item">{{ config.count.live }}</span>
+                </v-list-item>
+
+                <v-list-item
+                  v-show="config.count.audio > 0"
+                  :to="{ name: 'audio' }"
+                  variant="text"
+                  class="nav-audio"
+                  @click.stop=""
+                >
+                  <v-list-item-title :class="`nav-menu-item menu-item`">
+                    {{ $gettext(`Audio`) }}
+                  </v-list-item-title>
+                  <span class="nav-count-item">{{ config.count.audio }}</span>
+                </v-list-item>
+
+                <v-list-item
+                  v-show="config.count.animated > 0"
+                  :to="{ name: 'animated' }"
+                  variant="text"
+                  class="nav-animated"
+                  @click.stop=""
+                >
+                  <v-list-item-title :class="`nav-menu-item menu-item`">
+                    {{ $gettext(`Animated`) }}
+                  </v-list-item-title>
+                  <span v-show="config.count.animated > 0" class="nav-count-item">{{ config.count.animated }}</span>
                 </v-list-item>
               </v-list-group>
             </div>
@@ -448,7 +483,7 @@
             </template>
 
             <v-list-item
-              v-if="isMini && $config.feature('moments')"
+              v-if="isMini && $config.feature('calendar')"
               :to="{ name: 'calendar' }"
               variant="text"
               class="nav-calendar"
@@ -458,7 +493,7 @@
               <v-icon class="ma-auto">mdi-calendar</v-icon>
             </v-list-item>
             <v-list-item
-              v-else-if="!isMini && $config.feature('moments')"
+              v-else-if="!isMini && $config.feature('calendar')"
               :to="{ name: 'calendar' }"
               variant="text"
               class="nav-calendar"
@@ -755,16 +790,25 @@
             </v-list-item>
           </v-list>
 
-          <div v-if="!isMini && featUsage" class="nav-info usage-info clickable" @click.stop="showUsageInfo">
+          <div v-if="disconnected" class="nav-info connection-info clickable" @click.stop="showServerConnectionHelp">
+            <div class="nav-info__underlay"></div>
+            <div class="text-center">
+              <v-icon icon="mdi-wifi-off" color="warning" size="21"></v-icon>
+            </div>
+            <div v-if="!isMini" class="text-start text-body-2">
+              {{ $gettext(`No server connection`) }}
+            </div>
+          </div>
+          <div v-else-if="!isMini && featUsage" class="nav-info usage-info clickable" @click.stop="showUsageInfo">
             <div class="nav-info__underlay"></div>
             <div class="nav-info__content">
               <v-progress-linear
-                :color="config.usage.filesUsedPct > 95 ? 'error' : 'surface-variant'"
+                :model-value="config.usage.filesUsedPct"
+                :color="config.usage.filesUsedPct > 95 ? 'error' : 'selected'"
                 height="16"
                 max="100"
                 min="0"
                 width="100%"
-                :model-value="config.usage.filesUsedPct"
                 rounded
               >
                 <div class="text-caption opacity-85">
@@ -779,15 +823,6 @@
             </div>
           </div>
 
-          <div v-if="disconnected" class="nav-info connection-info clickable" @click.stop="showServerConnectionHelp">
-            <div class="nav-info__underlay"></div>
-            <div class="text-center my-1">
-              <v-icon color="warning" size="25">mdi-wifi-off</v-icon>
-            </div>
-            <div v-if="!isMini" class="text-start mt-1 text-body-2">
-              {{ $gettext(`No server connection`) }}
-            </div>
-          </div>
           <div v-show="auth && !isPublic && !disconnected" class="nav-info user-info">
             <div class="nav-info__underlay"></div>
             <div class="nav-user-avatar text-center my-1 mx-2 clickable" @click.stop="showAccountSettings">
@@ -917,7 +952,7 @@
             </router-link>
           </div>
           <div class="menu-action nav-manual">
-            <a href="https://link.photoprism.app/docs" target="_blank">
+            <a :href="links.docs" target="_blank">
               <v-icon>mdi-book-open-page-variant</v-icon>
               {{ $gettext(`User Guide`) }}
             </a>
@@ -942,6 +977,8 @@
 </template>
 
 <script>
+import links from "common/links";
+
 export default {
   name: "PNavigation",
   data() {
@@ -964,6 +1001,7 @@ export default {
     const tier = this.$config.getTier();
 
     return {
+      links,
       canSearchPlaces: this.$config.allow("places", "search"),
       canAccessPrivate: !isRestricted && this.$config.allow("photos", "access_private"),
       canManagePhotos: canManagePhotos,
@@ -981,9 +1019,9 @@ export default {
       featMembership: tier < 3 && isSuperAdmin && !isPublic && !isDemo,
       featFeedback: tier >= 6 && isSuperAdmin && !isPublic && !isDemo,
       featFiles: this.$config.feature("files"),
-      featUsage: !isDemo && canManagePhotos && this.$config.feature("files") && this.$config.values?.usage?.filesTotal,
+      featUsage: canManagePhotos && this.$config.feature("files") && this.$config.values?.usage?.filesTotal,
       isRestricted: isRestricted,
-      isMini: localStorage.getItem("last_navigation_mode") !== "false" || isRestricted,
+      isMini: localStorage.getItem("navigation.mode") !== "false" || isRestricted,
       isDemo: isDemo,
       isPro: isPro,
       isPublic: isPublic,
@@ -1090,7 +1128,7 @@ export default {
       }
 
       this.isMini = !this.isMini;
-      localStorage.setItem("last_navigation_mode", `${this.isMini}`);
+      localStorage.setItem("navigation.mode", `${this.isMini}`);
     },
     showAccountSettings() {
       if (this.$config.feature("account")) {

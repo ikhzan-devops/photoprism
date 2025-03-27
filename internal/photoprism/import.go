@@ -23,17 +23,19 @@ import (
 
 // Import represents an importer that can copy/move MediaFiles to the originals directory.
 type Import struct {
-	conf    *config.Config
-	index   *Index
-	convert *Convert
+	conf     *config.Config
+	index    *Index
+	convert  *Convert
+	AllowExt fs.ExtList
 }
 
 // NewImport returns a new importer and expects its dependencies as arguments.
 func NewImport(conf *config.Config, index *Index, convert *Convert) *Import {
 	instance := &Import{
-		conf:    conf,
-		index:   index,
-		convert: convert,
+		conf:     conf,
+		index:    index,
+		convert:  convert,
+		AllowExt: conf.ImportAllow(),
 	}
 
 	return instance
@@ -181,7 +183,15 @@ func (imp *Import) Start(opt ImportOptions) fs.Done {
 			// Report files that have a missing or invalid filename extension,
 			// see https://github.com/photoprism/photoprism/issues/3518.
 			if typeErr := mf.CheckType(); typeErr != nil {
-				log.Warnf("import: %s has %s", clean.Log(mf.RootRelName()), typeErr)
+				if !opt.RemoveInvalidFiles {
+					log.Warnf("import: %s %s and will not be indexed", clean.Log(mf.RootRelName()), typeErr)
+				} else if removeErr := mf.Remove(); removeErr != nil {
+					log.Errorf("import: %s %s and %s", clean.Log(mf.RootRelName()), typeErr, removeErr)
+					return nil
+				} else {
+					log.Warnf("import: %s %s and was deleted", clean.Log(mf.RootRelName()), typeErr)
+					return nil
+				}
 			}
 
 			// Create JSON sidecar file, if needed.
