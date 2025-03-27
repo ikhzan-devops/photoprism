@@ -3009,7 +3009,7 @@ var FileFixtures = FileMap{
 		CreatedIn:       935962,
 		UpdatedAt:       time.Date(2025, 1, 1, 0, 0, 0, 0, time.UTC),
 		UpdatedIn:       935962,
-		DeletedAt:       nil,
+		DeletedAt:       gorm.DeletedAt{},
 	},
 	"photo55.pdf": {
 		ID:              1000074,
@@ -3051,7 +3051,7 @@ var FileFixtures = FileMap{
 		CreatedIn:       935962,
 		UpdatedAt:       time.Date(2024, 11, 12, 9, 7, 18, 0, time.UTC),
 		UpdatedIn:       935962,
-		DeletedAt:       nil,
+		DeletedAt:       gorm.DeletedAt{},
 	},
 }
 

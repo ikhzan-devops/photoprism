@@ -1334,7 +1334,7 @@ func (m *User) SaveForm(frm form.User, u *User) error {
 	} else if u.IsAdmin() {
 		// Restore account.
 		if frm.DeletedAt == nil {
-			m.DeletedAt = nil
+			m.DeletedAt = gorm.DeletedAt{}
 		}
 
 		// Prevent admins from locking themselves out.
