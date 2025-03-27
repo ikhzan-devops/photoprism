@@ -27,17 +27,14 @@ msgid "{0} files ({1} in total)"
 msgstr "{0} fichiers(s) ({1} au total)"
 
 #: src/locales.js:263
-#, fuzzy
 msgid "{0} more"
 msgstr "{0} de plus"
 
 #: src/locales.js:268
-#, fuzzy
 msgid "{0} prepended action"
 msgstr "{0} action(s) préliminaire(s)"
 
 #: src/locales.js:243
-#, fuzzy
 msgid "{0} selected"
 msgstr "{0} sélectionnée(s)"
 
@@ -209,7 +206,6 @@ msgstr "Ajouter un lien"
 #: src/component/photo/edit/people.vue:25
 #: src/component/photo/edit/people.vue:162 src/page/people/new.vue:57
 #: src/page/people/new.vue:241
-#, fuzzy
 msgid "Add person?"
 msgstr "Ajouter une personne ?"
 
@@ -278,7 +274,6 @@ msgid "Album"
 msgstr "Album"
 
 #: src/page/settings/advanced.vue:343
-#, fuzzy
 msgid "Album Backups"
 msgstr "Sauvegardes d'albums"
 
@@ -466,7 +461,6 @@ msgid "Authentication"
 msgstr "Authentification"
 
 #: src/component/photo/edit/info.vue:43
-#, fuzzy
 msgid "Auto"
 msgstr "Auto"
 
@@ -535,7 +529,6 @@ msgid "Browse and edit image classification labels."
 msgstr "Parcourir et modifier les étiquettes de classification d'images."
 
 #: src/page/settings/general.vue:200
-#, fuzzy
 msgid "Browse and share your pictures organized into monthly albums."
 msgstr "Parcourez et partagez vos photos organisées en albums mensuels."
 
@@ -833,12 +826,10 @@ msgid "Create regular backups based on the configured schedule."
 msgstr "Réaliser des sauvegardes de l'index en suivant la planification programmée."
 
 #: src/page/settings/advanced.vue:344
-#, fuzzy
 msgid "Create YAML files to back up album metadata."
 msgstr "Utiliser des fichiers YAML pour sauvegarder les métadonnées des albums."
 
 #: src/page/settings/advanced.vue:367
-#, fuzzy
 msgid "Create YAML sidecar files to back up picture metadata."
 msgstr "Utiliser des fichiers side-car YAML pour sauvegarder les métadonnées des images."
 
@@ -859,7 +850,6 @@ msgid "Current Password"
 msgstr "Mot de passe actuel"
 
 #: src/options/themes.js:873 src/options/themes.js:882
-#, fuzzy
 msgid "Custom"
 msgstr "Sur mesure"
 
@@ -1193,7 +1183,6 @@ msgid "Estimate"
 msgstr "Estimation"
 
 #: src/page/settings/content.vue:85
-#, fuzzy
 msgid "Estimate Locations"
 msgstr "Reconnaissance de lieux"
 
@@ -1214,7 +1203,6 @@ msgid "Exclude hidden"
 msgstr "Exclure les éléments cachés"
 
 #: src/page/settings/advanced.vue:249
-#, fuzzy
 msgid "ExifTool is required for full support of XMP metadata, videos and Live Photos."
 msgstr "ExifTool est requis pour la prise en charge complète des métadonnées XMP, des vidéos et des Live Photos."
 
@@ -1233,7 +1221,6 @@ msgid "Exposure"
 msgstr "Exposition"
 
 #: src/page/settings/content.vue:109
-#, fuzzy
 msgid "Extract still images and generate thumbnails while indexing."
 msgstr "Extrait les images fixes et génère des vignettes lors de l'indexation."
 
@@ -1304,7 +1291,6 @@ msgid "File Browser"
 msgstr "Explorateur de fichiers"
 
 #: src/page/settings/advanced.vue:603
-#, fuzzy
 msgid "File Conversion"
 msgstr "Conversion de fichiers"
 
@@ -1389,7 +1375,6 @@ msgid "Generate"
 msgstr "Générer"
 
 #: src/page/settings/general.vue:224
-#, fuzzy
 msgid "Generate albums of special moments, journeys, and places."
 msgstr "Création automatique d'albums regroupant des moments, des voyages et des lieux particuliers."
 
@@ -1398,7 +1383,6 @@ msgid "Generate Previews"
 msgstr "Générer des aperçus"
 
 #: src/component/photo/edit/info.vue:177
-#, fuzzy
 msgid "Generated"
 msgstr "Généré"
 
@@ -1585,7 +1569,6 @@ msgstr "Adresse incorrecte"
 
 #: src/common/form.js:300 src/common/form.js:301 src/common/form.js:305
 #: src/common/form.js:306
-#, fuzzy
 msgid "Invalid country"
 msgstr "Pays non valide"
 
@@ -1603,7 +1586,6 @@ msgid "Invalid photo selected"
 msgstr "Photo non valide sélectionnée"
 
 #: src/common/form.js:229 src/common/form.js:231
-#, fuzzy
 msgid "Invalid time"
 msgstr "Heure incorrecte"
 
@@ -1621,7 +1603,6 @@ msgid "Item"
 msgstr "Item"
 
 #: src/locales.js:231
-#, fuzzy
 msgid "Items per page:"
 msgstr "Article(s) par page :"
 
@@ -1768,7 +1749,6 @@ msgid "Load more"
 msgstr "En charger plus"
 
 #: src/locales.js:215
-#, fuzzy
 msgid "Loading items..."
 msgstr "Chargement des articles…"
 
@@ -1863,7 +1843,6 @@ msgstr "Le nombre maximum de comptes a été atteint."
 
 #: src/app/routes.js:229 src/component/navigation.vue:686
 #: src/options/options.js:131
-#, fuzzy
 msgid "Media"
 msgstr "Les médias"
 
@@ -1996,7 +1975,6 @@ msgid "Next page"
 msgstr "Page suivante"
 
 #: src/locales.js:257
-#, fuzzy
 msgid "Next visual"
 msgstr "Visuel suivant"
 
@@ -2025,7 +2003,6 @@ msgid "No matching records found"
 msgstr "Aucun enregistrement correspondant n'a été trouvé"
 
 #: src/locales.js:309
-#, fuzzy
 msgid "No more"
 msgstr "Pas plus"
 
@@ -2408,7 +2385,6 @@ msgid "Previous page"
 msgstr "Page précédente"
 
 #: src/locales.js:256
-#, fuzzy
 msgid "Previous visual"
 msgstr "Visuel précédent"
 
@@ -2784,7 +2760,6 @@ msgid "Show Titles"
 msgstr "Afficher les titres"
 
 #: src/component/lightbox.vue:979 src/component/lightbox.vue:980
-#, fuzzy
 msgid "Show/Hide Sidebar"
 msgstr "Afficher/masquer la barre latérale"
 
@@ -2873,7 +2848,6 @@ msgid "Start"
 msgstr "Démarrer"
 
 #: src/page/settings/general.vue:127
-#, fuzzy
 msgid "Start Page"
 msgstr "Page d'accueil"
 
@@ -3076,7 +3050,6 @@ msgid "Topographic"
 msgstr "Topograpique"
 
 #: src/component/photo/toolbar.vue:190 src/page/library/errors.vue:87
-#, fuzzy
 msgid "Troubleshooting"
 msgstr "Résolution des problèmes"
 
@@ -3368,7 +3341,6 @@ msgid "White"
 msgstr "Blanc"
 
 #: src/page/settings/account.vue:532
-#, fuzzy
 msgid "Work Details"
 msgstr "Détails sur le poste"
 
@@ -3444,11 +3416,9 @@ msgstr "Agrandir/Dézoomer"
 #~ msgid "Captions"
 #~ msgstr "Légendes"
 
-#, fuzzy
 #~ msgid "Show picture captions in search results."
 #~ msgstr "Afficher la légende des images dans les résultats de recherche."
 
-#, fuzzy
 #~ msgid "Show picture titles in search results."
 #~ msgstr "Afficher le titre des images dans les résultats de recherche."
 
@@ -3500,7 +3470,6 @@ msgstr "Agrandir/Dézoomer"
 #~ msgid "Enable new features currently under development."
 #~ msgstr "Activer les nouvelles fonctionnalités en cours de développement."
 
-#, fuzzy
 #~ msgid "Base Folder"
 #~ msgstr "Dossier de base"
 
