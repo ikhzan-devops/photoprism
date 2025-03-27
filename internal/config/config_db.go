@@ -71,7 +71,7 @@ func (c *Config) DatabaseDriverName() string {
 	switch c.DatabaseDriver() {
 	case MySQL, MariaDB:
 		return "MariaDB"
-	case SQLite3, "sqlite", "sqllite", "test", "file", "":
+	case SQLite3, "sqlite3", "sqllite", "test", "file", "":
 		return "SQLite"
 	case "tidb":
 		return "TiDB"
