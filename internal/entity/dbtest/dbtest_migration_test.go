@@ -107,10 +107,10 @@ func TestDialectSQLite3(t *testing.T) {
 			log.Info(strings.Split(buffer.String(), "\n")[i])
 		}
 
-		// Expect 4 errors (auth_? tables missing)
+		// Expect 5 errors (auth_? tables missing)
 		// And a blank record.
-		assert.Equal(t, 5, len(strings.Split(buffer.String(), "\n")))
-		assert.Equal(t, 0, len(strings.Split(buffer.String(), "\n")[4]))
+		assert.Equal(t, 6, len(strings.Split(buffer.String(), "\n")))
+		assert.Equal(t, 0, len(strings.Split(buffer.String(), "\n")[5]))
 
 		stmt := db.Table("photos").Where("photo_caption = '' OR photo_caption IS NULL")
 
@@ -204,10 +204,10 @@ func TestDialectSQLite3(t *testing.T) {
 		// Reset logger
 		log.SetOutput(os.Stdout)
 
-		// Expect 4 errors (auth_? tables missing)
+		// Expect 5 errors (auth_? tables missing)
 		// And a blank record.
-		assert.Equal(t, 5, len(strings.Split(buffer.String(), "\n")))
-		assert.Equal(t, 0, len(strings.Split(buffer.String(), "\n")[4]))
+		assert.Equal(t, 6, len(strings.Split(buffer.String(), "\n")))
+		assert.Equal(t, 0, len(strings.Split(buffer.String(), "\n")[5]))
 
 		stmt := db.Table("photos").Where("photo_caption = '' OR photo_caption IS NULL")
 
@@ -294,8 +294,8 @@ func TestDialectMysql(t *testing.T) {
 		assert.Contains(t, buffer.String(), "Table 'migrate.auth_users_settings' doesn't exist")
 		assert.Contains(t, buffer.String(), "Table 'migrate.auth_users_shares' doesn't exist")
 		// There is a blank record.
-		assert.Equal(t, 5, len(strings.Split(buffer.String(), "\n")))
-		if len(strings.Split(buffer.String(), "\n")) != 5 {
+		assert.Equal(t, 6, len(strings.Split(buffer.String(), "\n")))
+		if len(strings.Split(buffer.String(), "\n")) != 6 {
 			for i := 0; i < len(strings.Split(buffer.String(), "\n")); i++ {
 				assert.Empty(t, strings.Split(buffer.String(), "\n")[i])
 			}
@@ -392,8 +392,8 @@ func TestDialectMysql(t *testing.T) {
 		assert.Contains(t, buffer.String(), "Table 'migrate.auth_users_settings' doesn't exist")
 		assert.Contains(t, buffer.String(), "Table 'migrate.auth_users_shares' doesn't exist")
 		// There is a blank record.
-		assert.Equal(t, 5, len(strings.Split(buffer.String(), "\n")))
-		if len(strings.Split(buffer.String(), "\n")) != 5 {
+		assert.Equal(t, 6, len(strings.Split(buffer.String(), "\n")))
+		if len(strings.Split(buffer.String(), "\n")) != 6 {
 			for i := 0; i < len(strings.Split(buffer.String(), "\n")); i++ {
 				assert.Empty(t, strings.Split(buffer.String(), "\n")[i])
 			}
