@@ -31,7 +31,7 @@ func (ind *Index) MediaFile(m *MediaFile, o IndexOptions, originalName, photoUID
 func (ind *Index) UserMediaFile(m *MediaFile, o IndexOptions, originalName, photoUID, userUID string) (result IndexResult) {
 	if m == nil {
 		result.Status = IndexFailed
-		result.Err = errors.New("index: media file is nil - you may have found a bug")
+		result.Err = errors.New("index: no media file provided for processing - you may have found a bug")
 		return result
 	}
 
