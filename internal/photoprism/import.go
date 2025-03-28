@@ -248,8 +248,8 @@ func (imp *Import) Start(opt ImportOptions) fs.Done {
 		// Remove empty directories from import path.
 		for _, directory := range directories {
 			if fs.DirIsEmpty(directory) {
-				if err := os.Remove(directory); err != nil {
-					log.Errorf("import: failed to delete empty folder %s (%s)", clean.Log(fs.RelName(directory, importPath)), err)
+				if removeErr := os.Remove(directory); removeErr != nil {
+					log.Errorf("import: failed to delete empty folder %s (%s)", clean.Log(fs.RelName(directory, importPath)), removeErr)
 				} else {
 					log.Infof("import: deleted empty folder %s", clean.Log(fs.RelName(directory, importPath)))
 				}
@@ -264,7 +264,9 @@ func (imp *Import) Start(opt ImportOptions) fs.Done {
 				continue
 			}
 
-			if err = os.Remove(file); err != nil {
+			if base := filepath.Base(file); base == ".keep" || base == ".gitkeep" {
+				log.Debugf("import: %s file is preserved", clean.Log(fs.RelName(file, importPath)))
+			} else if err = os.Remove(file); err != nil {
 				log.Errorf("import: failed removing %s (%s)", clean.Log(fs.RelName(file, importPath)), err.Error())
 			}
 		}
