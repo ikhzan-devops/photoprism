@@ -2,7 +2,7 @@
   <div id="p-notify" tabindex="-1">
     <v-snackbar
       v-if="visible && message.text"
-      :model-value="true"
+      v-model="snackbar"
       :class="'p-notify--' + message.color"
       class="p-notify clickable"
       @click.stop.prevent="showNext"
@@ -35,6 +35,7 @@ export default {
   data() {
     return {
       visible: false,
+      snackbar: true,
       messages: [],
       message: {
         icon: "",
@@ -160,6 +161,16 @@ export default {
         }
 
         this.visible = true;
+
+        if (!this.snackbar) {
+          this.snackbar = true;
+        }
+
+        this.$nextTick(() => {
+          if (focusElement && typeof focusElement.focus === "function" && document.activeElement !== focusElement) {
+            focusElement.focus();
+          }
+        });
 
         setTimeout(() => {
           this.lastText = "";
