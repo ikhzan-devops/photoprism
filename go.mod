@@ -42,7 +42,6 @@ require (
 	golang.org/x/crypto v0.36.0
 	golang.org/x/net v0.37.0
 	gonum.org/v1/gonum v0.16.0
-	gopkg.in/photoprism/go-tz.v2 v2.2.0
 	gopkg.in/yaml.v2 v2.4.0
 )
 
@@ -81,6 +80,7 @@ require (
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/swaggo/files v1.0.1
 	github.com/swaggo/gin-swagger v1.6.0
+	github.com/ugjka/go-tz/v2 v2.2.6
 	github.com/urfave/cli/v2 v2.27.6
 	github.com/zitadel/oidc/v3 v3.37.0
 	golang.org/x/mod v0.24.0

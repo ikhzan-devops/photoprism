@@ -29,8 +29,18 @@ func TestConfig_DatabaseVersion(t *testing.T) {
 
 func TestConfig_DatabaseSsl(t *testing.T) {
 	c := TestConfig()
-
-	assert.False(t, c.DatabaseSsl())
+	driver := c.DatabaseDriverName()
+	switch driver {
+	case "SQLite":
+		assert.False(t, c.DatabaseSsl())
+	case "MariaDB":
+		assert.True(t, c.DatabaseSsl())
+	case "PostgreSQL":
+		assert.False(t, c.DatabaseSsl())
+	default:
+		assert.Empty(t, driver)
+		assert.Fail(t, "driver not recognised")
+	}
 }
 
 func TestConfig_ParseDatabaseDsn(t *testing.T) {

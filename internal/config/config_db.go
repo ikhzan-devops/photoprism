@@ -49,7 +49,7 @@ func (c *Config) DatabaseDriver() string {
 	switch strings.ToLower(c.options.DatabaseDriver) {
 	case MySQL, MariaDB:
 		c.options.DatabaseDriver = MySQL
-	case SQLite3, "sqllite", "test", "file", "":
+	case SQLite3, "sqlite3", "test", "file", "":
 		c.options.DatabaseDriver = SQLite3
 	case Postgres:
 		c.options.DatabaseDriver = Postgres
@@ -71,7 +71,7 @@ func (c *Config) DatabaseDriverName() string {
 	switch c.DatabaseDriver() {
 	case MySQL, MariaDB:
 		return "MariaDB"
-	case SQLite3, "sqlite3", "sqllite", "test", "file", "":
+	case SQLite3, "sqlite3", "test", "file", "":
 		return "SQLite"
 	case Postgres:
 		return "PostgreSQL"

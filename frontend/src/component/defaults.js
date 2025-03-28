@@ -142,6 +142,7 @@ export default {
     location: "bottom",
     transition: "fade-transition",
     closeOnBack: true,
+    closeOnContentClick: true,
     attach: true,
     timeout: -1,
   },
