@@ -155,9 +155,7 @@ func (m *Photo) Approve() error {
 	m.DeletedAt = nil
 
 	// Update precalculated photo and file counts.
-	if err := entity.UpdateCounts(); err != nil {
-		log.Warnf("index: %s (update counts)", err)
-	}
+	entity.UpdateCountsAsync()
 
 	event.Publish("count.review", event.Data{
 		"count": -1,
