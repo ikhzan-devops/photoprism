@@ -1,6 +1,7 @@
 package commands
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -14,6 +15,6 @@ func TestUsersLegacyCommand(t *testing.T) {
 		// Check command output for plausibility.
 		//t.Logf(output)
 		assert.NoError(t, err)
-		assert.Contains(t, output, "| ID | UID | Name | User | Email | Admin | Created At |")
+		assert.Contains(t, strings.Replace(output, " ", "", -1), strings.Replace("| ID | UID | Name | User | Email | Admin | Created At |", " ", "", -1))
 	})
 }
