@@ -143,7 +143,7 @@ export default {
     transition: "fade-transition",
     variant: "flat",
     closeOnBack: true,
-    closeOnContentClick: true,
+    closeOnContentClick: false,
     attach: true,
     timeout: -1,
   },
