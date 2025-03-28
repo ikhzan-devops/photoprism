@@ -249,9 +249,16 @@ func (c *Config) DatabasePassword() string {
 		return ""
 	}
 
-	c.ParseDatabaseDsn()
-
-	return c.options.DatabasePassword
+	// Read password from file if requested, otherwise return value from options.
+	if fileName := FlagFilePath("DATABASE_PASSWORD"); fileName == "" {
+		c.ParseDatabaseDsn()
+		return clean.Password(c.options.DatabasePassword)
+	} else if b, err := os.ReadFile(fileName); err != nil || len(b) == 0 {
+		log.Warnf("config: failed to read database password from %s (%s)", fileName, err)
+		return ""
+	} else {
+		return clean.Password(string(b))
+	}
 }
 
 // DatabaseTimeout returns the TCP timeout in seconds for establishing a database connection:
