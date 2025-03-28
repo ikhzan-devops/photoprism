@@ -1,11 +1,13 @@
 <template>
-  <v-snackbar id="p-notify" v-model="visible" :class="'p-notify--' + message.color">
-    <v-icon v-if="message.icon" :icon="'mdi-' + message.icon" :color="message.color" start></v-icon>
-    {{ message.text }}
-    <template #actions>
-      <v-btn icon="mdi-close" :color="'on-' + message.color" variant="text" @click="close"></v-btn>
-    </template>
-  </v-snackbar>
+  <div v-show="visible && message.text" id="p-notify">
+    <v-snackbar v-model="visible" :class="'p-notify--' + message.color" class="p-notify clickable" @click.stop="close">
+      <v-icon v-if="message.icon" :icon="'mdi-' + message.icon" :color="message.color"  class="p-notify_icon" start></v-icon>
+      {{ message.text }}
+      <template #actions>
+        <v-btn icon="mdi-close" :color="'on-' + message.color" variant="text" class="p-notify__close" @click="close"></v-btn>
+      </template>
+    </v-snackbar>
+  </div>
 </template>
 <script>
 export default {
@@ -127,7 +129,9 @@ export default {
       }
     },
     close: function () {
+      this.lastText = "";
       this.visible = false;
+      this.message.text = "";
     },
     show: function () {
       const message = this.messages.shift();
@@ -156,6 +160,7 @@ export default {
       } else {
         this.lastText = "";
         this.visible = false;
+        this.message.text = "";
       }
     },
   },

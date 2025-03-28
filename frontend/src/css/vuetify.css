@@ -66,10 +66,14 @@ body.dark-theme {
 /* Notifications */
 
 .v-snackbar__wrapper {
-    min-width: 300px;
+    min-width: 312px;
     color: rgba(var(--v-theme-on-surface), 1);
     background-color: rgba(var(--v-theme-surface), 0.2);
     backdrop-filter: blur(6px);
+}
+
+.v-snackbar__wrapper .p-notify__close {
+    opacity: 0.8;
 }
 
 .v-snackbar__wrapper .v-snackbar__content {

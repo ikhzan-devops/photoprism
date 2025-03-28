@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/photoprism/photoprism/pkg/list"
+	"github.com/photoprism/photoprism/pkg/txt"
 )
 
 // Develop indicates whether the application is running in development mode.
@@ -38,10 +39,12 @@ func EnvVars(flags ...string) (vars []string) {
 	return vars
 }
 
-// Env checks the presence of environment and command-line flags.
+// Env checks whether the specified boolean command-line or environment flag is set and can be used independently,
+// i.e. before the options are initialized with the values found in config files, the environment or CLI flags.
 func Env(vars ...string) bool {
 	for _, s := range vars {
-		if (os.Getenv(EnvVar(s)) == "true" || list.Contains(os.Args, "--"+s)) && !list.Contains(os.Args, "--"+s+"=false") {
+		if (txt.Bool(os.Getenv(EnvVar(s))) || list.Contains(os.Args, "--"+s)) &&
+			!list.Contains(os.Args, "--"+s+"=false") {
 			return true
 		}
 	}
