@@ -1,6 +1,8 @@
 package entity
 
 import (
+	"time"
+
 	"github.com/photoprism/photoprism/pkg/authn"
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/rnd"
@@ -112,9 +114,9 @@ var SessionFixtures = SessionMap{
 		user:        UserFixtures.Pointer("bob"),
 		UserUID:     UserFixtures.Pointer("bob").UserUID,
 		UserName:    UserFixtures.Pointer("bob").UserName,
-		LoginAt:     Now().Add(-24),
-		CreatedAt:   Now().Add(-24),
-		UpdatedAt:   Now().Add(-24),
+		LoginAt:     Now().Add(time.Millisecond * -24),
+		CreatedAt:   Now().Add(time.Millisecond * -24),
+		UpdatedAt:   Now().Add(time.Millisecond * -24),
 	},
 	"unauthorized": {
 		authToken:   "69be27ac5ca305b394046a83f6fda18167ca3d3f2dbe7ac2",
@@ -167,9 +169,9 @@ var SessionFixtures = SessionMap{
 		user:        UserFixtures.Pointer("friend"),
 		UserUID:     UserFixtures.Pointer("friend").UserUID,
 		UserName:    UserFixtures.Pointer("friend").UserName,
-		LoginAt:     Now().Add(-12),
-		CreatedAt:   Now().Add(-20),
-		UpdatedAt:   Now().Add(-12),
+		LoginAt:     Now().Add(time.Millisecond * -12),
+		CreatedAt:   Now().Add(time.Millisecond * -20),
+		UpdatedAt:   Now().Add(time.Millisecond * -12),
 	},
 	"client_metrics": {
 		authToken:     "9d8b8801ffa23eb52e08ca7766283799ddfd8dd368212345",
