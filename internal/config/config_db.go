@@ -249,10 +249,14 @@ func (c *Config) DatabasePassword() string {
 		return ""
 	}
 
-	// Read password from file if requested, otherwise return value from options.
-	if fileName := FlagFilePath("DATABASE_PASSWORD"); fileName == "" {
-		c.ParseDatabaseDsn()
+	c.ParseDatabaseDsn()
+
+	// Try to read password from file if c.options.DatabasePassword is not set.
+	if c.options.DatabasePassword != "" {
 		return clean.Password(c.options.DatabasePassword)
+	} else if fileName := FlagFilePath("DATABASE_PASSWORD"); fileName == "" {
+		// No password set, this is not an error.
+		return ""
 	} else if b, err := os.ReadFile(fileName); err != nil || len(b) == 0 {
 		log.Warnf("config: failed to read database password from %s (%s)", fileName, err)
 		return ""

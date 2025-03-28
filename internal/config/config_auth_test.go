@@ -54,14 +54,18 @@ func TestAuthMode(t *testing.T) {
 func TestConfig_AdminPassword(t *testing.T) {
 	c := NewConfig(CliTestContext())
 
-	assert.Equal(t, "photoprism", c.AdminPassword())
+	defaultPassword := "photoprism"
+	assert.Equal(t, defaultPassword, c.AdminPassword())
 
 	// Test setting the password via secret file.
 	_ = os.Setenv(FlagFileVar("ADMIN_PASSWORD"), "testdata/secret_admin")
+	assert.Equal(t, defaultPassword, c.AdminPassword())
+	c.options.AdminPassword = ""
 	assert.Equal(t, "Foo-Bar23", c.AdminPassword())
 	_ = os.Setenv(FlagFileVar("ADMIN_PASSWORD"), "")
+	c.options.AdminPassword = defaultPassword
 
-	assert.Equal(t, "photoprism", c.AdminPassword())
+	assert.Equal(t, defaultPassword, c.AdminPassword())
 }
 
 func TestPasswordLength(t *testing.T) {

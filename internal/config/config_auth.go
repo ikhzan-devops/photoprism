@@ -81,9 +81,12 @@ func (c *Config) AdminUser() string {
 
 // AdminPassword returns the initial admin password.
 func (c *Config) AdminPassword() string {
-	// Read password from file if requested, otherwise return value from options.
-	if fileName := FlagFilePath("ADMIN_PASSWORD"); fileName == "" {
+	// Try to read password from file if c.options.AdminPassword is not set.
+	if c.options.AdminPassword != "" {
 		return clean.Password(c.options.AdminPassword)
+	} else if fileName := FlagFilePath("ADMIN_PASSWORD"); fileName == "" {
+		// No password set, this is not an error.
+		return ""
 	} else if b, err := os.ReadFile(fileName); err != nil || len(b) == 0 {
 		log.Warnf("config: failed to read admin password from %s (%s)", fileName, err)
 		return ""
