@@ -73,6 +73,8 @@ func (c *Config) DatabaseDriverName() string {
 		return "MariaDB"
 	case SQLite3, "sqlite3", "sqllite", "test", "file", "":
 		return "SQLite"
+	case Postgres:
+		return "PostgreSQL"
 	case "tidb":
 		return "TiDB"
 	default:
@@ -432,6 +434,20 @@ func (c *Config) checkDb(db *gorm.DB) error {
 			return fmt.Errorf("config: MySQL %s is not supported, see https://docs.photoprism.app/getting-started/#databases", c.dbVersion)
 		} else if !c.IsDatabaseVersion("v10.5.12") {
 			return fmt.Errorf("config: MariaDB %s is not supported, see https://docs.photoprism.app/getting-started/#databases", c.dbVersion)
+		}
+	case Postgres:
+		var versions []string
+		err := db.Raw("SELECT VERSION() AS Value").Pluck("value", &versions).Error
+		// Version query not supported.
+		if err != nil {
+			log.Tracef("config: failed to detect database version (%s)", err)
+			return nil
+		}
+
+		c.dbVersion = clean.Version(versions[0])
+
+		if c.dbVersion == "" {
+			log.Warnf("config: unknown database server version")
 		}
 	case SQLite3:
 		type Res struct {
