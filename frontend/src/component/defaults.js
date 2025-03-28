@@ -141,6 +141,7 @@ export default {
     rounded: "pill",
     location: "bottom",
     transition: "fade-transition",
+    variant: "flat",
     closeOnBack: true,
     closeOnContentClick: true,
     attach: true,

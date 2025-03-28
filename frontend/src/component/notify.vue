@@ -1,15 +1,35 @@
 <template>
-  <div v-show="visible && message.text" id="p-notify">
-    <v-snackbar v-model="visible" :class="'p-notify--' + message.color" class="p-notify clickable" @click.stop="close">
-      <v-icon v-if="message.icon" :icon="'mdi-' + message.icon" :color="message.color"  class="p-notify_icon" start></v-icon>
+  <div id="p-notify" tabindex="-1">
+    <v-snackbar
+      v-if="visible && message.text"
+      :model-value="true"
+      :class="'p-notify--' + message.color"
+      class="p-notify clickable"
+      @click.stop.prevent="showNext"
+    >
+      <v-icon
+        v-if="message.icon"
+        :icon="'mdi-' + message.icon"
+        :color="message.color"
+        class="p-notify_icon"
+        start
+      ></v-icon>
       {{ message.text }}
       <template #actions>
-        <v-btn icon="mdi-close" :color="'on-' + message.color" variant="text" class="p-notify__close" @click="close"></v-btn>
+        <v-btn
+          icon="mdi-close"
+          :color="'on-' + message.color"
+          variant="text"
+          class="p-notify__close"
+          @click.stop.prevent="showNext"
+        ></v-btn>
       </template>
     </v-snackbar>
   </div>
 </template>
 <script>
+let focusElement = null;
+
 export default {
   name: "PNotify",
   data() {
@@ -30,17 +50,6 @@ export default {
       warningDelay: 3000,
       errorDelay: 8000,
     };
-  },
-  watch: {
-    visible: function (show) {
-      if (!show) {
-        if (this.messages.length > 0) {
-          this.show();
-        } else {
-          this.lastText = "";
-        }
-      }
-    },
   },
   created() {
     this.subscriptionId = this.$event.subscribe("notify", this.onNotify);
@@ -125,15 +134,10 @@ export default {
       this.messages.push(m);
 
       if (!this.visible) {
-        this.show();
+        this.showNext();
       }
     },
-    close: function () {
-      this.lastText = "";
-      this.visible = false;
-      this.message.text = "";
-    },
-    show: function () {
+    showNext: function () {
       const message = this.messages.shift();
 
       if (message) {
@@ -151,16 +155,29 @@ export default {
           this.message.delay = this.defaultDelay;
         }
 
+        if (!focusElement) {
+          focusElement = document.activeElement;
+        }
+
         this.visible = true;
 
         setTimeout(() => {
           this.lastText = "";
-          this.show();
+          this.showNext();
         }, this.message.delay);
       } else {
         this.lastText = "";
         this.visible = false;
         this.message.text = "";
+
+        // Return focus to the previously active element, if any.
+        if (focusElement) {
+          if (typeof focusElement.focus === "function" && document.activeElement !== focusElement) {
+            focusElement.focus();
+          }
+
+          focusElement = null;
+        }
       }
     },
   },
