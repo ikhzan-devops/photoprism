@@ -1,9 +1,10 @@
 package entity
 
 import (
+	"gorm.io/gorm"
+
 	"github.com/photoprism/photoprism/internal/auth/acl"
 	"github.com/photoprism/photoprism/pkg/authn"
-	"gorm.io/gorm"
 )
 
 type UserMap map[string]User

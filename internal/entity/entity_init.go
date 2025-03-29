@@ -5,10 +5,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/photoprism/photoprism/internal/entity/migrate"
-	"github.com/photoprism/photoprism/pkg/clean"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+
+	"github.com/photoprism/photoprism/internal/entity/migrate"
+	"github.com/photoprism/photoprism/pkg/clean"
 )
 
 // onReady contains init functions to be called when the

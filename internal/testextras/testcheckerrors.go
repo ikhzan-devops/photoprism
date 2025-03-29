@@ -3,8 +3,9 @@ package testextras
 import (
 	"time"
 
-	"github.com/photoprism/photoprism/internal/event"
 	"gorm.io/gorm"
+
+	"github.com/photoprism/photoprism/internal/event"
 )
 
 // Error represents an error message log.

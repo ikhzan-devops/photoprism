@@ -4,9 +4,10 @@ import (
 	"sort"
 	"testing"
 
-	"github.com/photoprism/photoprism/pkg/rnd"
 	"github.com/stretchr/testify/assert"
 	"gorm.io/gorm"
+
+	"github.com/photoprism/photoprism/pkg/rnd"
 )
 
 func TestPhotos_Photos(t *testing.T) {

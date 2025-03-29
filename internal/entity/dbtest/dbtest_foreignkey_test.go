@@ -3,8 +3,9 @@ package entity
 import (
 	"testing"
 
-	"github.com/photoprism/photoprism/internal/entity"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/photoprism/photoprism/internal/entity"
 )
 
 func TestDbtestForeignKey_Validate(t *testing.T) {

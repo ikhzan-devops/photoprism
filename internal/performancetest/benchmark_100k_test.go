@@ -9,13 +9,14 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/sirupsen/logrus"
+
 	"github.com/photoprism/photoprism/internal/entity"
 	"github.com/photoprism/photoprism/internal/entity/migrate"
 	"github.com/photoprism/photoprism/internal/entity/search"
 	"github.com/photoprism/photoprism/internal/event"
 	"github.com/photoprism/photoprism/internal/form"
 	"github.com/photoprism/photoprism/pkg/fs"
-	"github.com/sirupsen/logrus"
 )
 
 func Benchmark100k_SQLite(b *testing.B) {

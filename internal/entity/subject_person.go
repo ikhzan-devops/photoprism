@@ -3,8 +3,9 @@ package entity
 import (
 	"encoding/json"
 
-	"github.com/photoprism/photoprism/pkg/txt"
 	"gorm.io/gorm"
+
+	"github.com/photoprism/photoprism/pkg/txt"
 )
 
 const (

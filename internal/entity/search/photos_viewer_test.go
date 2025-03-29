@@ -4,8 +4,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/photoprism/photoprism/internal/entity"
 	"gorm.io/gorm"
+
+	"github.com/photoprism/photoprism/internal/entity"
 )
 
 func TestPhotoResults_ViewerJSON(t *testing.T) {

@@ -3,9 +3,10 @@ package legacy
 import (
 	"time"
 
+	"gorm.io/gorm"
+
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/rnd"
-	"gorm.io/gorm"
 )
 
 type Users []User

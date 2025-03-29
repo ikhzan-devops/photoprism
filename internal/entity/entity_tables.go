@@ -407,7 +407,7 @@ func (list Tables) Migrate(db *gorm.DB, opt migrate.Options) {
 		var entity interface{}
 		orderedList := make([]int, len(list))
 		i := 0
-		for id, _ := range list {
+		for id := range list {
 			orderedList[i] = id
 			i++
 		}
