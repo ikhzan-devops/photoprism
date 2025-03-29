@@ -1,6 +1,7 @@
 package migrate
 
 import (
+	"os"
 	"os/exec"
 	"path/filepath"
 	"testing"
@@ -15,6 +16,11 @@ import (
 )
 
 func TestDialectMysql(t *testing.T) {
+	driver := os.Getenv("PHOTOPRISM_TEST_DRIVER")
+	if driver != "mysql" {
+		t.Skip("skipping test as not MariaDB")
+	}
+
 	if dumpName, err := filepath.Abs("./testdata/migrate_mysql.sql"); err != nil {
 		t.Fatal(err)
 	} else if err = exec.Command("mariadb", "-u", "migrate", "-pmigrate", "migrate",

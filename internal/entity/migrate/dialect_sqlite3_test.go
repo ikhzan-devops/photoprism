@@ -18,6 +18,10 @@ import (
 )
 
 func TestDialectSQLite3(t *testing.T) {
+	driver := os.Getenv("PHOTOPRISM_TEST_DRIVER")
+	if driver != "sqlite" {
+		t.Skip("skipping test as not SQLite")
+	}
 	// Prepare temporary sqlite db.
 	testDbOriginal := "./testdata/migrate_sqlite3"
 	testDbTemp := "./testdata/migrate_sqlite3.db"

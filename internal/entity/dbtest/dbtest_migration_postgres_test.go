@@ -24,6 +24,11 @@ func TestDialectPostgreSQL(t *testing.T) {
 	if testing.Short() {
 		t.Skip("skipping test in short mode.")
 	}
+
+	if entity.DbDialect() != entity.Postgres {
+		t.Skip("skipping test as not PostgreSQL")
+	}
+
 	dbtestMutex.Lock()
 	defer dbtestMutex.Unlock()
 	log.Info("Expect many table does not exist or no such table Error or SQLSTATE from migration.go")

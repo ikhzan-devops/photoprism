@@ -26,6 +26,11 @@ func TestDialectSQLite3(t *testing.T) {
 	if testing.Short() {
 		t.Skip("skipping test in short mode.")
 	}
+
+	if entity.DbDialect() != entity.SQLite3 {
+		t.Skip("skipping test as not SQLite")
+	}
+
 	dbtestMutex.Lock()
 	defer dbtestMutex.Unlock()
 	log.Info("Expect many table does not exist or no such table Error or SQLSTATE from migration.go")

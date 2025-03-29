@@ -25,6 +25,11 @@ func TestDialectMysql(t *testing.T) {
 	if testing.Short() {
 		t.Skip("skipping test in short mode.")
 	}
+
+	if entity.DbDialect() != entity.MySQL {
+		t.Skip("skipping test as not MariaDB")
+	}
+
 	dbtestMutex.Lock()
 	defer dbtestMutex.Unlock()
 	log.Info("Expect many table does not exist or no such table Error or SQLSTATE from migration.go")

@@ -1,6 +1,7 @@
 package migrate
 
 import (
+	"os"
 	"os/exec"
 	"path/filepath"
 	"testing"
@@ -15,6 +16,11 @@ import (
 )
 
 func TestDialectPostgreSQL(t *testing.T) {
+	driver := os.Getenv("PHOTOPRISM_TEST_DRIVER")
+	if driver != "postgres" {
+		t.Skip("skipping test as not PostgreSQL")
+	}
+
 	if dumpName, err := filepath.Abs("./testdata/migrate_postgres.sql"); err != nil {
 		t.Fatal(err)
 	} else {

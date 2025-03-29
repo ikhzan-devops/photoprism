@@ -1,6 +1,7 @@
 package performancetest
 
 import (
+	"os"
 	"os/exec"
 	"testing"
 	"time"
@@ -11,6 +12,11 @@ import (
 )
 
 func BenchmarkMigration_SQLite(b *testing.B) {
+	driver := os.Getenv("PHOTOPRISM_TEST_DRIVER")
+	if driver != "sqlite" {
+		b.Skip("skipping benchmark as not SQLite")
+	}
+
 	// Setup here
 	loglevel := event.Log.GetLevel()
 	if !fs.FileExists("../../storage/test-1k.original.sqlite") {
@@ -82,6 +88,11 @@ func BenchmarkMigration_SQLite(b *testing.B) {
 }
 
 func BenchmarkMigration_MySQL(b *testing.B) {
+	driver := os.Getenv("PHOTOPRISM_TEST_DRIVER")
+	if driver != "mysql" {
+		b.Skip("skipping benchmark as not MariaDB")
+	}
+
 	// Setup here
 	loglevel := event.Log.GetLevel()
 	// Prepare temporary mariadb db.
@@ -144,6 +155,11 @@ func BenchmarkMigration_MySQL(b *testing.B) {
 }
 
 func BenchmarkMigration_PostgreSQL(b *testing.B) {
+	driver := os.Getenv("PHOTOPRISM_TEST_DRIVER")
+	if driver != "postgres" {
+		b.Skip("skipping benchmark as not PostgreSQL")
+	}
+
 	// Setup here
 	loglevel := event.Log.GetLevel()
 	postgresqlDSN := "postgresql://migrate:migrate@postgres:5432/migrate"
