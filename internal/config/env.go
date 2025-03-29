@@ -4,6 +4,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/photoprism/photoprism/pkg/fs"
 	"github.com/photoprism/photoprism/pkg/list"
 	"github.com/photoprism/photoprism/pkg/txt"
 )
@@ -50,4 +51,20 @@ func Env(vars ...string) bool {
 	}
 
 	return false
+}
+
+// FlagFileVar returns the name of the environment variable that can contain a filename to load a config value from.
+func FlagFileVar(flag string) string {
+	return EnvVar(flag) + "_FILE"
+}
+
+// FlagFilePath returns the name of the that contains the value of the specified config flag, if any.
+func FlagFilePath(flag string) string {
+	if envVar := os.Getenv(FlagFileVar(flag)); envVar == "" {
+		return ""
+	} else if absName := fs.Abs(envVar); fs.FileExistsNotEmpty(absName) {
+		return absName
+	}
+
+	return ""
 }

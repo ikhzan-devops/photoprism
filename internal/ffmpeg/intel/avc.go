@@ -15,7 +15,6 @@ func TranscodeToAvcCmd(srcName, destName string, opt encode.Options) *exec.Cmd {
 		"-strict", "-2",
 		"-hwaccel", "qsv",
 		"-hwaccel_output_format", "qsv",
-		"-qsv_device", "/dev/dri/renderD128",
 		"-i", srcName,
 		"-c:a", "aac",
 		"-vf", opt.VideoFilter(encode.FormatQSV),

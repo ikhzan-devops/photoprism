@@ -2,6 +2,7 @@ package config
 
 import (
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -57,5 +58,20 @@ func TestEnv(t *testing.T) {
 		assert.False(t, Env("testenv_false"))
 		assert.False(t, Env("testenv_0"))
 		assert.False(t, Env("TESTENV_0"))
+	})
+}
+
+func TestFlagFileVar(t *testing.T) {
+	t.Run("AdminPassword", func(t *testing.T) {
+		assert.Equal(t, "PHOTOPRISM_ADMIN_PASSWORD_FILE", FlagFileVar("ADMIN_PASSWORD"))
+	})
+}
+
+func TestFlagFilePath(t *testing.T) {
+	t.Run("AdminPassword", func(t *testing.T) {
+		_ = os.Setenv("PHOTOPRISM_ADMIN_PASSWORD_FILE", "./testdata/secret_admin")
+		actual := FlagFilePath("ADMIN_PASSWORD")
+		expected := "internal/config/testdata/secret_admin"
+		assert.True(t, strings.Contains(actual, expected), expected+" was expected")
 	})
 }
