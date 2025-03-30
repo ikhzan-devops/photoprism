@@ -10,6 +10,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 
+	"github.com/photoprism/photoprism/internal/functions"
 	"github.com/photoprism/photoprism/internal/testextras"
 	"github.com/photoprism/photoprism/pkg/fs"
 )
@@ -139,14 +140,14 @@ func TestConfig_OptionsYaml(t *testing.T) {
 
 func TestConfig_PIDFilename(t *testing.T) {
 	c := NewConfig(CliTestContext())
-
-	assert.Contains(t, c.PIDFilename(), "/storage/testdata/photoprism.pid")
+	expected := "/storage/testdata/" + functions.PhotoPrismTestToFolderName() + "/photoprism.pid"
+	assert.Contains(t, c.PIDFilename(), expected)
 }
 
 func TestConfig_LogFilename(t *testing.T) {
 	c := NewConfig(CliTestContext())
 
-	assert.Contains(t, c.LogFilename(), "/storage/testdata/photoprism.log")
+	assert.Contains(t, c.LogFilename(), "/storage/testdata/"+functions.PhotoPrismTestToFolderName()+"/photoprism.log")
 }
 
 func TestConfig_DetachServer(t *testing.T) {
@@ -161,7 +162,7 @@ func TestConfig_OriginalsPath(t *testing.T) {
 
 	result := c.OriginalsPath()
 	assert.True(t, strings.HasPrefix(result, "/"))
-	assert.True(t, strings.HasSuffix(result, "/storage/testdata/originals"))
+	assert.True(t, strings.HasSuffix(result, "/storage/testdata/"+functions.PhotoPrismTestToFolderName()+"/originals"))
 }
 
 func TestConfig_ImportPath(t *testing.T) {
@@ -169,20 +170,20 @@ func TestConfig_ImportPath(t *testing.T) {
 
 	result := c.ImportPath()
 	assert.True(t, strings.HasPrefix(result, "/"))
-	assert.True(t, strings.HasSuffix(result, "/storage/testdata/import"))
+	assert.True(t, strings.HasSuffix(result, "/storage/testdata/"+functions.PhotoPrismTestToFolderName()+"/import"))
 }
 
 func TestConfig_CachePath(t *testing.T) {
 	c := NewConfig(CliTestContext())
 
-	assert.True(t, strings.HasSuffix(c.CachePath(), "storage/testdata/cache"))
+	assert.True(t, strings.HasSuffix(c.CachePath(), "storage/testdata/"+functions.PhotoPrismTestToFolderName()+"/cache"))
 }
 
 func TestConfig_MediaCachePath(t *testing.T) {
 	c := NewConfig(CliTestContext())
 
 	assert.True(t, strings.HasPrefix(c.MediaCachePath(), "/"))
-	assert.True(t, strings.HasSuffix(c.MediaCachePath(), "storage/testdata/cache/media"))
+	assert.True(t, strings.HasSuffix(c.MediaCachePath(), "storage/testdata/"+functions.PhotoPrismTestToFolderName()+"/cache/media"))
 }
 
 func TestConfig_MediaFileCachePath(t *testing.T) {
@@ -197,7 +198,7 @@ func TestConfig_ThumbCachePath(t *testing.T) {
 	c := NewConfig(CliTestContext())
 
 	assert.True(t, strings.HasPrefix(c.ThumbCachePath(), "/"))
-	assert.True(t, strings.HasSuffix(c.ThumbCachePath(), "storage/testdata/cache/thumbnails"))
+	assert.True(t, strings.HasSuffix(c.ThumbCachePath(), "storage/testdata/"+functions.PhotoPrismTestToFolderName()+"/cache/thumbnails"))
 }
 
 func TestConfig_AssetsPath(t *testing.T) {
@@ -282,7 +283,8 @@ func TestConfig_ThemePath(t *testing.T) {
 	c := NewConfig(CliTestContext())
 
 	path := c.ThemePath()
-	assert.Equal(t, "/go/src/github.com/photoprism/photoprism/storage/testdata/config/theme", path)
+	expected := "/go/src/github.com/photoprism/photoprism/storage/testdata/" + functions.PhotoPrismTestToFolderName() + "/config/theme"
+	assert.Equal(t, expected, path)
 }
 
 func TestConfig_IndexWorkers(t *testing.T) {

@@ -3,17 +3,20 @@ package config
 import (
 	"testing"
 
+	"github.com/photoprism/photoprism/internal/functions"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestConfig_BackupPath(t *testing.T) {
 	c := NewConfig(CliTestContext())
-	assert.Contains(t, c.BackupPath(""), "/storage/testdata/backup")
+	expected := "/storage/testdata/" + functions.PhotoPrismTestToFolderName() + "/backup"
+	assert.Contains(t, c.BackupPath(""), expected)
 }
 
 func TestConfig_BackupBasePath(t *testing.T) {
 	c := NewConfig(CliTestContext())
-	assert.Contains(t, c.BackupBasePath(), "/storage/testdata/backup")
+	expected := "/storage/testdata/" + functions.PhotoPrismTestToFolderName() + "/backup"
+	assert.Contains(t, c.BackupBasePath(), expected)
 	path := c.options.BackupPath
 	c.options.BackupPath = "./"
 	assert.Contains(t, c.BackupBasePath(), "/photoprism/internal/config")
@@ -56,7 +59,8 @@ func TestConfig_BackupDatabase(t *testing.T) {
 
 func TestConfig_BackupDatabasePath(t *testing.T) {
 	c := NewConfig(CliTestContext())
-	assert.Contains(t, c.BackupDatabasePath(), "/storage/testdata/backup/sqlite")
+	expected := "/storage/testdata/" + functions.PhotoPrismTestToFolderName() + "/backup/sqlite"
+	assert.Contains(t, c.BackupDatabasePath(), expected)
 }
 
 func TestConfig_BackupAlbums(t *testing.T) {

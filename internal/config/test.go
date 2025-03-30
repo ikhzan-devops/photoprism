@@ -54,10 +54,11 @@ func NewTestOptions(pkg string) *Options {
 		storagePath = fs.Abs("../../storage")
 	}
 
-	dataPath := filepath.Join(storagePath, "testdata")
-
 	pkg = PkgNameRegexp.ReplaceAllString(pkg, "")
 	driver, dsn := functions.PhotoPrismTestToDriverDsn()
+
+	// enforce folder separation for testdata folders to prevent parallel tests of DBMS' clashing
+	dataPath := filepath.Join(storagePath, "testdata", functions.PhotoPrismTestToFolderName())
 
 	// Config example for MySQL / MariaDB:
 	//   driver = MySQL,

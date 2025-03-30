@@ -8,6 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/photoprism/photoprism/internal/config"
+	"github.com/photoprism/photoprism/internal/functions"
 	"github.com/photoprism/photoprism/internal/mutex"
 )
 
@@ -51,5 +52,5 @@ func TestMeta_originalsPath(t *testing.T) {
 	worker := NewMeta(conf)
 
 	assert.IsType(t, &Meta{}, worker)
-	assert.True(t, strings.HasSuffix(worker.originalsPath(), "testdata/originals"))
+	assert.True(t, strings.HasSuffix(worker.originalsPath(), "testdata/"+functions.PhotoPrismTestToFolderName()+"/originals"))
 }
