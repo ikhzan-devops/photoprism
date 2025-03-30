@@ -246,6 +246,8 @@
     padding-right: 52px;
 }
 
+.pswp__dynamic-caption.pswp__dynamic-caption--aside h4,
+.pswp__dynamic-caption.pswp__dynamic-caption--below h4,
 .pswp__dynamic-caption.pswp__dynamic-caption--on-hor-edge h4 {
     margin-top: 0;
     padding-top: 0;
@@ -382,18 +384,6 @@
 .is-ltr .pswp__preloader .pswp__icn {
     left: auto;
     right: 9px;
-}
-
-.v-menu.action-menu.action-menu--lightbox .action-menu__list {
-    min-width: 128px;
-    opacity: 0.87;
-    padding: 6px;
-    background: #191a1c;
-    color: #ffffff;
-    stroke: #ffffff;
-    border-color: #ffffff0d;
-    border-style: solid;
-    border-width: thin;
 }
 
 /* Video Controls */

@@ -328,7 +328,7 @@ export default {
       }
 
       if (showMerged) {
-        this.$lightbox.openModels(Thumb.fromFiles([selected]), 0);
+        this.$lightbox.openModels(Thumb.fromFiles([selected]), 0, this.model);
       } else {
         this.$lightbox.openView(this, index);
       }
@@ -374,21 +374,23 @@ export default {
 
           if (this.complete) {
             this.offset = offset;
-
             if (this.results.length > 1) {
-              this.$notify.info(
-                this.$gettextInterpolate(this.$gettext("%{n} pictures found"), { n: this.results.length })
-              );
+              if (!this.lightbox.open) {
+                this.$notify.info(
+                  this.$gettextInterpolate(this.$gettext("%{n} pictures found"), { n: this.results.length })
+                );
+              }
             }
           } else if (this.results.length >= Photo.limit()) {
             this.offset = offset;
             this.scrollDisabled = true;
             this.complete = true;
-            this.$notify.warn(this.$gettext("Can't load more, limit reached"));
+            if (!this.lightbox.open) {
+              this.$notify.warn(this.$gettext("Can't load more, limit reached"));
+            }
           } else {
             this.offset = offset + count;
             this.page++;
-
             this.$nextTick(() => {
               if (this.$root.$el.clientHeight <= window.document.documentElement.clientHeight + 300) {
                 this.loadMore();

@@ -1,22 +1,14 @@
 <template>
   <v-menu
-    class="p-action-menu action-menu action-menu--default"
+    v-if="activator"
     transition="slide-y-transition"
+    :activator="activator"
     open-on-click
     open-on-hover
+    class="p-action-lightbox p-action-menu action-menu action-menu--lightbox"
     @update:model-value="onShow"
   >
-    <template #activator="{ props }">
-      <v-btn
-        v-bind="props"
-        density="comfortable"
-        :icon="buttonIcon"
-        class="action-menu__btn"
-        :class="buttonClass"
-      ></v-btn>
-    </template>
-
-    <v-list slim nav density="compact" bg-color="navigation" class="action-menu__list">
+    <v-list slim nav density="compact" class="action-menu__list">
       <v-list-item
         v-for="action in actions"
         :key="action.name"
@@ -42,21 +34,18 @@
 </template>
 <script>
 export default {
-  name: "PActionMenu",
+  name: "PActionLightbox",
   props: {
     items: {
       type: Function,
       default: () => [],
     },
-    buttonClass: {
-      type: String,
-      default: "",
-    },
-    buttonIcon: {
-      type: String,
-      default: "mdi-dots-vertical",
+    activator: {
+      type: HTMLElement,
+      default: null,
     },
   },
+  emits: ["show", "hide"],
   data() {
     return {
       actions: [],
@@ -65,7 +54,10 @@ export default {
   methods: {
     onShow(visible) {
       if (visible) {
+        this.$emit("show");
         this.actions = this.items().filter((action) => action.visible);
+      } else {
+        this.$emit("hide");
       }
     },
   },

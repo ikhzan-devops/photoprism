@@ -54,7 +54,7 @@
           v-if="canArchive && !album && context === 'archive' && context !== 'hidden'"
           key="action-restore"
           :title="$gettext('Restore')"
-          icon="mdi-check-bold"
+          icon="mdi-archive-arrow-up"
           color="share"
           variant="elevated"
           density="comfortable"

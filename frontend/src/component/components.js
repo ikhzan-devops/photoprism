@@ -5,6 +5,7 @@ import PNavigation from "component/navigation.vue";
 import PUpdate from "component/update.vue";
 import PLoading from "component/loading.vue";
 import PLoadingBar from "component/loading-bar.vue";
+import PActionLightbox from "component/action/lightbox.vue";
 import PLightbox from "component/lightbox.vue";
 
 // Icons.
@@ -76,6 +77,7 @@ export function install(app) {
   app.component("PNavigation", PNavigation);
   app.component("PLoading", PLoading);
   app.component("PLoadingBar", PLoadingBar);
+  app.component("PActionLightbox", PActionLightbox);
   app.component("PLightbox", PLightbox);
   app.component("PUpdate", PUpdate);
 

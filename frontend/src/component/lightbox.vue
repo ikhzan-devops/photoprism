@@ -35,8 +35,9 @@
           'is-muted': muted,
           'is-selected': $clipboard.has(model),
         }"
-        @keydown.space="onKeyDown"
-        @keydown.esc="onKeyDown"
+        @keydown.space.exact="onKeyDown"
+        @keydown.esc.exact="onKeyDown"
+        @keydown.ctrl="onKeyDown"
       ></div>
       <div v-if="sidebarVisible" ref="sidebar" class="p-lightbox__sidebar">
         <!-- TODO: Create a reusable sidebar component that allows users to view/edit metadata. -->
@@ -90,35 +91,12 @@
         ></v-icon>
       </div>
     </div>
-    <v-menu
-      v-if="menuElement"
-      transition="slide-y-transition"
+    <p-action-lightbox
       :activator="menuElement"
-      open-on-click
-      open-on-hover
-      class="p-action-menu action-menu action-menu--lightbox"
-      @update:model-value="onShowMenu"
-    >
-      <v-list slim nav density="compact" class="action-menu__list">
-        <v-list-item
-          v-for="action in menuActions()"
-          :key="action.name"
-          :value="action.name"
-          :prepend-icon="action.icon"
-          :title="action.text"
-          :class="action.class ? action.class : 'action-' + action.name"
-          :to="action.to ? action.to : undefined"
-          :href="action.href ? action.href : undefined"
-          :link="true"
-          :target="action.target ? '_blank' : '_self'"
-          :disabled="action.disabled"
-          :nav="true"
-          class="action-menu__item"
-          @click="action.click"
-        >
-        </v-list-item>
-      </v-list>
-    </v-menu>
+      :items="menuActions"
+      @show="onShowMenu"
+      @hide="onHideMenu"
+    ></p-action-lightbox>
   </v-dialog>
 </template>
 
@@ -130,13 +108,20 @@ import $api from "common/api";
 import $fullscreen from "common/fullscreen";
 import Thumb from "model/thumb";
 import { Photo } from "model/photo";
+import { Album } from "model/album";
 import * as media from "common/media";
+
+import PActionLightbox from "component/action/lightbox.vue";
+import $notify from "../common/notify";
 
 export default {
   name: "PLightbox",
+  components: [PActionLightbox],
+  emits: ["enter", "leave"],
   data() {
     const debug = this.$config.get("debug");
     const trace = this.$config.get("trace");
+    const features = this.$config.getSettings().features;
     return {
       debug,
       trace,
@@ -155,9 +140,11 @@ export default {
       defaultControlHideDelay: 5000, // Automatically hide lightbox controls this time in ms, TODO: add custom settings.
       idleTimer: false,
       controlsShown: -1, // -1 or a positive timestamp indicates that the controls are shown (0 means hidden).
-      canEdit: this.$config.allow("photos", "update") && this.$config.feature("edit"),
-      canLike: this.$config.allow("photos", "manage") && this.$config.feature("favorites"),
-      canDownload: this.$config.allow("photos", "download") && this.$config.feature("download"),
+      canEdit: this.$config.allow("photos", "update") && features.edit,
+      canLike: this.$config.allow("photos", "manage") && features.favorites,
+      canDownload: this.$config.allow("photos", "download") && features.download,
+      canArchive: this.$config.allow("photos", "delete") && features.archive,
+      canManageAlbums: this.$config.allow("albums", "manage"),
       canFullscreen: $fullscreen.isSupported() && (!this.$isMobile || this.$config.featExperimental()), // see https://developer.mozilla.org/en-US/docs/Web/API/Document/fullscreenEnabled
       wasFullscreen: $fullscreen.isEnabled(),
       isZoomable: true,
@@ -166,8 +153,10 @@ export default {
       featDevelop: this.$config.featDevelop(), // Enables new features that are still under development.
       selection: this.$clipboard.selection,
       config: this.$config.values,
-      models: [], // Slide models.
+      album: null,
+      context: "",
       model: new Thumb(), // Current slide.
+      models: [], // Slide models.
       index: 0, // Current slide index in models.
       subscriptions: [], // Event subscriptions.
       // Video properties for rendering the controls.
@@ -226,15 +215,15 @@ export default {
   },
   methods: {
     // Opens and initializes the lightbox with the given options.
-    openLightbox(ev, options) {
-      if (!options) {
+    openLightbox(ev, data) {
+      if (!data) {
         return;
       }
 
-      if (options.view) {
-        this.showView(options.view, options.index);
+      if (data.view) {
+        this.showView(data.view, data.index);
       } else {
-        this.showThumbs(options.models, options.index);
+        this.showThumbs(data.models, data.index, data);
       }
     },
     // Pauses the lightbox slideshow and any videos that are playing.
@@ -371,7 +360,7 @@ export default {
       };
     },
     // Displays the thumbnail images and/or videos that belong to the specified models in the lightbox.
-    showThumbs(models, index = 0) {
+    showThumbs(models, index = 0, view = {}) {
       if (this.isBusy("show thumbs")) {
         return Promise.reject();
       }
@@ -384,7 +373,7 @@ export default {
 
       // Show and initialize the component.
       this.$event.subscribeOnce("lightbox.enter", () => {
-        this.renderLightbox(models, index)
+        this.renderLightbox(models, index, view)
           .then(() => {
             this.busy = false;
           })
@@ -407,6 +396,9 @@ export default {
         return Promise.reject();
       }
 
+      // Get album model from view, if any.
+      const album = view.model && view.model instanceof Album ? view.model : null;
+      const context = view.getContext && typeof view.getContext === "function" ? view.getContext() : "";
       const selected = view.results[index];
 
       if (!view.lightbox.dirty && view.lightbox.results && view.lightbox.results.length > index) {
@@ -424,7 +416,7 @@ export default {
           (((view.lightbox.complete || view.complete) && view.lightbox.results.length >= view.results.length) ||
             i + view.lightbox.batchSize <= view.lightbox.results.length)
         ) {
-          return this.showThumbs(view.lightbox.results, i);
+          return this.showThumbs(view.lightbox.results, i, { album, context });
         }
       }
 
@@ -467,7 +459,7 @@ export default {
           view.lightbox.results = Thumb.wrap(response.data);
 
           // Show pictures.
-          this.showThumbs(view.lightbox.results, i);
+          this.showThumbs(view.lightbox.results, i, { album, context });
           view.lightbox.dirty = false;
         })
         .catch(() => {
@@ -875,12 +867,16 @@ export default {
     },
     // Initializes and opens the PhotoSwipe lightbox with the
     // images and/or videos that belong to the specified models.
-    renderLightbox(models, index = 0) {
+    renderLightbox(models, index = 0, view) {
       // Check if at least one model was passed, as otherwise no content can be displayed.
       if (!Array.isArray(models) || models.length === 0 || index >= models.length) {
         this.log("model list is empty", models);
         return Promise.reject();
       }
+
+      // Set album model and view context, if any.
+      this.album = view.album && view.album instanceof Album ? view.album : null;
+      this.context = view.context ? view.context : "";
 
       // Set the model list and start index.
       // TODO: In the future, additional models should be dynamically loaded when the index reaches the end of the list.
@@ -1219,8 +1215,8 @@ export default {
           });
         }
 
-        // Display an action menu with additional options (currently contains only a download button).
-        if (this.canDownload) {
+        // Add an action menu with additional options if there's at least one menu item.
+        if (this.menuActions().filter((action) => action.visible).length > 0) {
           lightbox.pswp.ui.registerElement({
             name: "menu-button",
             className: "pswp__button--menu-button pswp__button--mdi", // Sets the icon style/size in lightbox.css.
@@ -1244,9 +1240,49 @@ export default {
     menuActions() {
       return [
         {
+          name: "cover",
+          icon: "mdi-image-album",
+          text: this.$gettext("Set as Album Cover"),
+          disabled: !this.model,
+          visible: this.canManageAlbums && this.album && this.album instanceof Album,
+          click: () => {
+            this.onSetAlbumCover();
+          },
+        },
+        {
+          name: "archive",
+          icon: "mdi-archive",
+          text: this.$gettext("Archive"),
+          shortcut: "Ctrl-A",
+          disabled: !this.model,
+          visible:
+            this.canArchive &&
+            this.context !== "hidden" &&
+            ((this.context !== "archive" && !this.model?.Archived) || this.model?.Archived === false),
+          click: () => {
+            this.onArchive();
+          },
+        },
+        {
+          name: "restore",
+          icon: "mdi-archive-arrow-up",
+          text: this.$gettext("Restore"),
+          shortcut: "Ctrl-A",
+          disabled: !this.model,
+          visible:
+            this.canArchive &&
+            this.context !== "hidden" &&
+            (this.model?.Archived || (this.context === "archive" && this.model?.Archived !== false)),
+          click: () => {
+            this.onRestore();
+          },
+        },
+        {
           name: "download",
           icon: "mdi-download",
           text: this.$gettext("Download"),
+          shortcut: "Ctrl-D",
+          disabled: !this.model,
           visible: this.canDownload,
           click: () => {
             this.onDownload();
@@ -1254,14 +1290,12 @@ export default {
         },
       ];
     },
-    // Opens the action menu.
-    onShowMenu(visible) {
-      if (visible) {
-        this.pauseSlideshow();
-        this.menuVisible = true;
-      } else {
-        this.menuVisible = false;
-      }
+    onShowMenu() {
+      this.pauseSlideshow();
+      this.menuVisible = true;
+    },
+    onHideMenu() {
+      this.menuVisible = false;
     },
     closeLightbox() {
       if (this.isBusy("close lightbox")) {
@@ -1314,7 +1348,7 @@ export default {
       let caption = "";
 
       if (model.Title) {
-        caption += `<h4>${this.$util.encodeHTML(model.Title)}</h4>`;
+        caption += `<h4>${this.$util.encodeHTML(model.Title.trim())}</h4>`;
       }
 
       /*
@@ -1325,10 +1359,24 @@ export default {
          caption += `<div>${this.$util.formatDate(model.TakenAtLocal)}</div>`;
       } */
 
-      if (model.Caption) {
-        caption += `<p>${this.$util.encodeHTML(model.Caption)}</p>`;
-      } else if (model.Description) {
-        caption += `<p>${this.$util.encodeHTML(model.Description)}</p>`;
+      if (model.Description && !model.Caption) {
+        model.Caption = model.Description;
+      }
+
+      let text = typeof model.Caption === "string" ? model.Caption.trim() : "";
+
+      if (text) {
+        if (!caption && text.split("\n").length < 2) {
+          // Render large caption if there is no title and it has only one line.
+          caption += `<h4>${this.$util.encodeHTML(text)}</h4>`;
+        } else {
+          // Render small caption otherwise.
+          caption += `<p>${this.$util.encodeHTML(text)}</p>`;
+        }
+      }
+
+      if (!caption && this.album && this.album instanceof Album && this.album.Title) {
+        caption = `<h4>${this.$util.encodeHTML(this.album.Title.trim())}</h4>`;
       }
 
       return this.$util.sanitizeHtml(caption);
@@ -1354,6 +1402,8 @@ export default {
     },
     // Reset the lightbox models and index.
     resetModels() {
+      this.album = null;
+      this.context = "";
       this.model = new Thumb();
       this.models = [];
       this.index = 0;
@@ -1656,6 +1706,24 @@ export default {
           ev.stopPropagation();
           this.closeLightbox();
           break;
+        case "KeyA":
+          ev.preventDefault();
+          ev.stopPropagation();
+          if (this.canArchive && this.context !== "hidden") {
+            if (this.model.Archived || (this.context === "archive" && this.model?.Archived !== false)) {
+              this.onRestore();
+            } else {
+              this.onArchive();
+            }
+          }
+          break;
+        case "KeyD":
+          ev.preventDefault();
+          ev.stopPropagation();
+          if (this.canDownload) {
+            this.onDownload();
+          }
+          break;
       }
     },
     // Toggles video playback on the current video element, if any.
@@ -1801,6 +1869,52 @@ export default {
       this.slideshow.next = -1;
 
       this.showControls();
+    },
+    // Updates the album cover, if an album model exists.
+    onSetAlbumCover() {
+      this.pauseSlideshow();
+
+      if (!this.model || !this.model.Hash) {
+        this.log("photo lightbox: could not update cover because the file hash is unknown");
+        return;
+      }
+
+      if (!this.album) {
+        this.log("photo lightbox: could not update cover because no album is set");
+        return;
+      }
+
+      this.album.setCover(this.model.Hash).then(() => {
+        this.$notify.success(this.$gettext("Changes successfully saved"));
+      });
+    },
+    onArchive() {
+      this.pauseSlideshow();
+
+      if (!this.model || !this.model.UID) {
+        this.log("photo lightbox: could not move photo to archive because model UID is unknown");
+        return;
+      }
+
+      this.model.Archived = true;
+
+      return $api.post("batch/photos/archive", { photos: [this.model.UID] }).then(() => {
+        $notify.success(this.$gettext("Archived"));
+      });
+    },
+    onRestore() {
+      this.pauseSlideshow();
+
+      if (!this.model || !this.model.UID) {
+        this.log("photo lightbox: could remove photo from archive because model UID is unknown");
+        return;
+      }
+
+      this.model.Archived = false;
+
+      $api.post("batch/photos/restore", { photos: [this.model.UID] }).then(() => {
+        $notify.success(this.$gettext("Restored"));
+      });
     },
     // Downloads the original files of the current picture.
     onDownload() {
