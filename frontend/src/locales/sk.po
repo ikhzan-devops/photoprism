@@ -67,8 +67,8 @@ msgstr "%{n} nájdených štítkov"
 msgid "%{n} people found"
 msgstr "%{n} nájdených ľudí"
 
-#: src/page/album/photos.vue:305 src/page/album/photos.vue:479
-#: src/page/photos.vue:427 src/page/photos.vue:606
+#: src/page/album/photos.vue:305 src/page/album/photos.vue:481
+#: src/page/photos.vue:427 src/page/photos.vue:608
 msgid "%{n} pictures found"
 msgstr "%{n} nájdených obrázkov"
 
@@ -269,7 +269,7 @@ msgstr "Po dvoch mesiacoch"
 msgid "After two weeks"
 msgstr "Po dvoch týždňoch"
 
-#: src/model/album.js:229
+#: src/model/album.js:243
 msgid "Album"
 msgstr "Album"
 
@@ -402,13 +402,13 @@ msgstr "Schváliť"
 msgid "Apps and Devices"
 msgstr "Aplikácie a zariadenia"
 
-#: src/app/routes.js:287 src/component/navigation.vue:553
-#: src/component/photo/clipboard.vue:142 src/component/photo/view/cards.vue:398
-#: src/page/settings/general.vue:417
+#: src/app/routes.js:287 src/component/lightbox.vue:1152
+#: src/component/navigation.vue:553 src/component/photo/clipboard.vue:142
+#: src/component/photo/view/cards.vue:398 src/page/settings/general.vue:417
 msgid "Archive"
 msgstr "Archivovať"
 
-#: src/component/photo/edit/info.vue:433
+#: src/component/lightbox.vue:1799 src/component/photo/edit/info.vue:433
 msgid "Archived"
 msgstr "Archivované"
 
@@ -570,7 +570,7 @@ msgstr "Séria Kamery"
 msgid "Can't access your authenticator app or device?"
 msgstr "Nemôžete získať prístup k aplikácii alebo zariadeniu autentifikátora?"
 
-#: src/page/album/photos.vue:312 src/page/photos.vue:434
+#: src/page/album/photos.vue:314 src/page/photos.vue:436
 msgid "Can't load more, limit reached"
 msgstr "Nemožno načítať viac, limit dosiahnutý"
 
@@ -651,7 +651,7 @@ msgstr "Zmeny sa neuložili"
 
 #: src/component/user/edit/dialog.vue:83 src/component/user/edit/dialog.vue:159
 #: src/component/album/edit/dialog.vue:73
-#: src/component/label/edit/dialog.vue:46
+#: src/component/label/edit/dialog.vue:46 src/component/lightbox.vue:1785
 #: src/component/photo/edit/files.vue:160 src/component/service/edit.vue:90
 #: src/component/share/dialog.vue:92 src/component/share/dialog.vue:111
 #: src/page/albums.vue:648 src/page/people/recognized.vue:119
@@ -692,8 +692,8 @@ msgstr "Klient"
 msgid "Client Credentials"
 msgstr "Splnomocnenia klienta"
 
-#: src/page/admin/sessions.vue:529 src/component/lightbox.vue:241
-#: src/component/lightbox.vue:956 src/component/lightbox.vue:957
+#: src/page/admin/sessions.vue:529 src/component/lightbox.vue:252
+#: src/component/lightbox.vue:974 src/component/lightbox.vue:975
 #: src/component/photo/edit/details.vue:627 src/component/photo/toolbar.vue:151
 #: src/component/photo/upload/dialog.vue:228
 #: src/component/settings/apps.vue:224 src/component/settings/apps.vue:437
@@ -923,8 +923,8 @@ msgstr "Popis"
 msgid "Detailed instructions can be found in our User Guide."
 msgstr "Detailný postup môžete nájsť v našej Užívateľskej Príručke."
 
-#: src/component/photo/edit/dialog.vue:150
-#: src/component/photo/edit/dialog.vue:167
+#: src/component/photo/edit/dialog.vue:154
+#: src/component/photo/edit/dialog.vue:171
 msgid "Details"
 msgstr "Detaily"
 
@@ -1044,7 +1044,7 @@ msgid "Done."
 msgstr "Hotovo."
 
 #: src/component/album/clipboard.vue:73 src/component/album/toolbar.vue:123
-#: src/component/file/clipboard.vue:48 src/component/lightbox.vue:1124
+#: src/component/file/clipboard.vue:48 src/component/lightbox.vue:1180
 #: src/component/people/clipboard.vue:47 src/component/photo/clipboard.vue:116
 #: src/component/photo/edit/files.vue:168 src/page/settings/content.vue:331
 #: src/page/settings/general.vue:321
@@ -1065,7 +1065,7 @@ msgstr "Stiahnuť samostatné súbory a zip archívy."
 
 #: src/component/album/clipboard.vue:104 src/component/album/toolbar.vue:162
 #: src/component/file/clipboard.vue:61 src/component/label/clipboard.vue:86
-#: src/component/lightbox.vue:1694 src/component/people/clipboard.vue:59
+#: src/component/lightbox.vue:1830 src/component/people/clipboard.vue:59
 #: src/component/photo/clipboard.vue:220 src/component/photo/edit/files.vue:117
 #: src/component/photo/view/cards.vue:169 src/component/photo/view/list.vue:142
 #: src/page/library/browse.vue:126
@@ -1105,7 +1105,7 @@ msgid "E-Mail"
 msgstr "E-Mail"
 
 #: src/component/album/clipboard.vue:61 src/component/album/toolbar.vue:95
-#: src/component/lightbox.vue:1083 src/component/lightbox.vue:1084
+#: src/component/lightbox.vue:1101 src/component/lightbox.vue:1102
 #: src/component/photo/clipboard.vue:90 src/page/settings/general.vue:393
 msgid "Edit"
 msgstr "Upraviť"
@@ -1120,7 +1120,7 @@ msgstr "Upraviť %{s}"
 msgid "Edit Account"
 msgstr "Upraviť učet"
 
-#: src/component/photo/edit/dialog.vue:63
+#: src/component/photo/edit/dialog.vue:64
 msgid "Edit Photo"
 msgstr "Upraviť Fotku"
 
@@ -1169,7 +1169,7 @@ msgstr "Zadajte overovací kód"
 msgid "Enter your password to confirm the action and continue:"
 msgstr "Zadajte svoje heslo na potvrdenie akcie a pokračujte:"
 
-#: src/page/connect.vue:54 src/component/lightbox.vue:245
+#: src/page/connect.vue:54 src/component/lightbox.vue:256
 #: src/page/connect.vue:57 src/page/library/errors.vue:252
 msgid "Error"
 msgstr "Chyba"
@@ -1309,8 +1309,8 @@ msgstr "Veľkosť súboru"
 msgid "Filename"
 msgstr "Názov súboru"
 
-#: src/component/navigation.vue:1928 src/component/photo/edit/dialog.vue:261
-#: src/component/photo/edit/dialog.vue:278
+#: src/component/navigation.vue:1928 src/component/photo/edit/dialog.vue:265
+#: src/component/photo/edit/dialog.vue:282
 msgid "Files"
 msgstr "Súbory"
 
@@ -1362,7 +1362,7 @@ msgstr "Frames"
 msgid "Full Access"
 msgstr "Úplný prístup"
 
-#: src/component/lightbox.vue:1031 src/component/lightbox.vue:1032
+#: src/component/lightbox.vue:1049 src/component/lightbox.vue:1050
 msgid "Fullscreen"
 msgstr "Plná obrazovka"
 
@@ -1572,7 +1572,7 @@ msgstr "Neplatná adresa"
 msgid "Invalid country"
 msgstr "Neplatná krajina"
 
-#: src/component/photo/edit/details.vue:179
+#: src/component/photo/edit/details.vue:180
 msgid "Invalid date"
 msgstr "Neplatný dátum"
 
@@ -1581,7 +1581,7 @@ msgstr "Neplatný dátum"
 msgid "Invalid parameters"
 msgstr "Neplatné parametre"
 
-#: src/component/photo/edit/dialog.vue:156 src/model/thumb.js:77
+#: src/component/photo/edit/dialog.vue:180 src/model/thumb.js:77
 msgid "Invalid photo selected"
 msgstr "Vybraná neplatná fotografia"
 
@@ -1628,8 +1628,8 @@ msgid "Label"
 msgstr "Štítok"
 
 #: src/app/routes.js:389 src/component/navigation.vue:1175
-#: src/component/photo/edit/dialog.vue:182
-#: src/component/photo/edit/dialog.vue:199 src/options/options.js:138
+#: src/component/photo/edit/dialog.vue:186
+#: src/component/photo/edit/dialog.vue:203 src/options/options.js:138
 #: src/page/settings/general.vue:247
 msgid "Labels"
 msgstr "Štítky"
@@ -1706,7 +1706,7 @@ msgstr "Knižnica"
 msgid "License"
 msgstr "Licencia"
 
-#: src/component/lightbox.vue:1049 src/component/lightbox.vue:1050
+#: src/component/lightbox.vue:1067 src/component/lightbox.vue:1068
 msgid "Like"
 msgstr "Páči sa mi to"
 
@@ -1900,7 +1900,7 @@ msgstr "Monochromatický"
 msgid "Month"
 msgstr "Mesiac"
 
-#: src/component/lightbox.vue:1102
+#: src/component/lightbox.vue:1120
 msgid "More options"
 msgstr "Ďalšie možnosti"
 
@@ -1920,7 +1920,7 @@ msgstr "Presunúť Súbory"
 msgid "Must have at least %{n} characters."
 msgstr "Musí obsahovať aspoň %{n} znakov."
 
-#: src/component/lightbox.vue:998 src/component/lightbox.vue:999
+#: src/component/lightbox.vue:1016 src/component/lightbox.vue:1017
 msgid "Mute"
 msgstr "Vypnutie zvuku"
 
@@ -1966,7 +1966,7 @@ msgstr "Nové heslo"
 msgid "Newest First"
 msgstr "Najnovšie prvé"
 
-#: src/component/lightbox.vue:244 src/locales.js:298
+#: src/component/lightbox.vue:255 src/locales.js:298
 msgid "Next"
 msgstr "Ďalšie"
 
@@ -2012,10 +2012,10 @@ msgstr "Nie viac"
 msgid "No people found"
 msgstr "Neboli nájdení žiadni ľudia"
 
-#: src/component/lightbox.vue:319 src/component/photo/view/cards.vue:144
+#: src/component/lightbox.vue:333 src/component/photo/view/cards.vue:144
 #: src/component/photo/view/list.vue:82 src/component/photo/view/mosaic.vue:68
-#: src/page/album/photos.vue:474 src/page/library/browse.vue:122
-#: src/page/photos.vue:601 src/page/places.vue:611 src/page/places.vue:709
+#: src/page/album/photos.vue:476 src/page/library/browse.vue:122
+#: src/page/photos.vue:603 src/page/places.vue:611 src/page/places.vue:709
 msgid "No pictures found"
 msgstr "Nenašli sa žiadne fotky"
 
@@ -2055,12 +2055,12 @@ msgstr "Nefotografické a fotografie nízkej kvality vyžadujú skontrolovanie p
 msgid "None"
 msgstr "Žiadne"
 
-#: src/common/util.js:759 src/component/lightbox.vue:584
+#: src/common/util.js:759 src/component/lightbox.vue:598
 #: src/component/service/upload.vue:75 src/component/service/upload.vue:87
 msgid "Not allowed"
 msgstr "Nie je povolené"
 
-#: src/component/lightbox.vue:581
+#: src/component/lightbox.vue:595
 msgid "Not found"
 msgstr "Nenájdené"
 
@@ -2068,8 +2068,8 @@ msgstr "Nenájdené"
 msgid "Not sorted."
 msgstr "Nie je vytriedené."
 
-#: src/common/util.js:764 src/component/lightbox.vue:578
-#: src/component/lightbox.vue:695
+#: src/common/util.js:764 src/component/lightbox.vue:592
+#: src/component/lightbox.vue:709
 msgid "Not supported"
 msgstr "Nie je podporované"
 
@@ -2149,7 +2149,7 @@ msgstr "Našiel sa jeden štítok"
 msgid "One person found"
 msgstr "Našla sa jedna osoba"
 
-#: src/page/album/photos.vue:476 src/page/photos.vue:603
+#: src/page/album/photos.vue:478 src/page/photos.vue:605
 msgid "One picture found"
 msgstr "Našla sa jedna fotka"
 
@@ -2241,8 +2241,8 @@ msgid "Password changed"
 msgstr "Heslo bolo zmenené"
 
 #: src/app/routes.js:404 src/app/routes.js:428 src/component/navigation.vue:843
-#: src/component/navigation.vue:1896 src/component/photo/edit/dialog.vue:222
-#: src/component/photo/edit/dialog.vue:239 src/options/options.js:133
+#: src/component/navigation.vue:1896 src/component/photo/edit/dialog.vue:226
+#: src/component/photo/edit/dialog.vue:243 src/options/options.js:133
 #: src/page/settings/general.vue:175
 msgid "People"
 msgstr "Ľudia"
@@ -2376,7 +2376,7 @@ msgstr "Ukážka"
 msgid "Preview Images"
 msgstr "Náhľad obrázkov"
 
-#: src/component/lightbox.vue:243 src/locales.js:299
+#: src/component/lightbox.vue:254 src/locales.js:299
 msgid "Previous"
 msgstr "Predchádzajúci"
 
@@ -2529,7 +2529,7 @@ msgstr "Odstrániť z albumu"
 msgid "Remove imported files to save storage. Unsupported file types will never be deleted, they remain in their current location."
 msgstr "Odstráňte importované súbory pre uvoľnenie miesta. Nepodporované typy súborov nebudú nikdy odstránené. Zostanú na ich momentálnom mieste."
 
-#: src/common/api.js:102 src/component/lightbox.vue:691
+#: src/common/api.js:102 src/component/lightbox.vue:705
 msgid "Request failed - are you offline?"
 msgstr "Žiadosť zlyhala - ste offline?"
 
@@ -2550,9 +2550,14 @@ msgstr "Rozlíšenie"
 msgid "Restart"
 msgstr "Reštartovanie stránky"
 
-#: src/component/user/edit/dialog.vue:485 src/component/photo/clipboard.vue:77
+#: src/component/user/edit/dialog.vue:485 src/component/lightbox.vue:1166
+#: src/component/photo/clipboard.vue:77
 msgid "Restore"
 msgstr "Obnoviť"
+
+#: src/component/lightbox.vue:1813
+msgid "Restored"
+msgstr ""
 
 #: src/component/service/edit.vue:428
 msgid "Retry Limit"
@@ -2629,7 +2634,7 @@ msgstr "Tajomstvo"
 msgid "Security and Access"
 msgstr "Bezpečnosť a prístup"
 
-#: src/component/lightbox.vue:1066 src/component/lightbox.vue:1067
+#: src/component/lightbox.vue:1084 src/component/lightbox.vue:1085
 msgid "Select"
 msgstr "Vybrať"
 
@@ -2699,6 +2704,10 @@ msgstr "ID relácie"
 msgid "Sessions"
 msgstr "Relácie"
 
+#: src/component/lightbox.vue:1142
+msgid "Set as Album Cover"
+msgstr ""
+
 #: src/app/routes.js:101 src/app/routes.js:492 src/app/routes.js:504
 #: src/app/routes.js:521 src/app/routes.js:534 src/app/routes.js:547
 #: src/component/navigation.vue:1392 src/component/navigation.vue:1804
@@ -2759,7 +2768,7 @@ msgstr "Zobraziť serverové záznamy v knižnici."
 msgid "Show Titles"
 msgstr "Zobraziť názvy"
 
-#: src/component/lightbox.vue:979 src/component/lightbox.vue:980
+#: src/component/lightbox.vue:997 src/component/lightbox.vue:998
 msgid "Show/Hide Sidebar"
 msgstr "Zobraziť/skryť bočný panel"
 
@@ -2796,7 +2805,7 @@ msgstr "Softvér"
 msgid "Software Update"
 msgstr "Aktualizácia softvéru"
 
-#: src/component/lightbox.vue:688
+#: src/component/lightbox.vue:702
 msgid "Something went wrong, try again"
 msgstr "Niečo sa pokazilo, skúste to znova"
 
@@ -2851,7 +2860,7 @@ msgstr "Štart"
 msgid "Start Page"
 msgstr "Úvodná stránka"
 
-#: src/component/lightbox.vue:1014 src/component/lightbox.vue:1015
+#: src/component/lightbox.vue:1032 src/component/lightbox.vue:1033
 msgid "Start/Stop Slideshow"
 msgstr "Spustiť/Zastaviť Prezentáciu"
 
@@ -2934,7 +2943,7 @@ msgstr "TensorFlow je potrebný na klasifikáciu obrázkov, rozpoznávanie tvár
 msgid "Text"
 msgstr "Text"
 
-#: src/component/photo/edit/details.vue:31 src/page/people/new.vue:71
+#: src/component/photo/edit/details.vue:32 src/page/people/new.vue:71
 msgid "Text too long"
 msgstr "Text je moc dlhý"
 
@@ -3083,10 +3092,10 @@ msgstr "Unikátne ID"
 
 #: src/page/settings/account.vue:451 src/page/settings/account.vue:476
 #: src/page/settings/account.vue:501 src/common/util.js:432
-#: src/component/photo/edit/details.vue:20
+#: src/component/photo/edit/details.vue:21
 #: src/component/photo/edit/details.vue:111
 #: src/component/photo/edit/details.vue:138
-#: src/component/photo/edit/details.vue:164 src/model/album.js:179
+#: src/component/photo/edit/details.vue:164 src/model/album.js:193
 #: src/model/photo.js:344 src/model/photo.js:795 src/model/photo.js:816
 #: src/model/photo.js:839 src/model/photo.js:857 src/model/photo.js:904
 #: src/model/photo.js:912 src/model/photo.js:1001 src/model/photo.js:1023
@@ -3409,7 +3418,7 @@ msgstr "Vaša podpora nám pomáha poskytovať pravidelné aktualizácie a zosta
 msgid "Your library is continuously analyzed to automatically create albums of special moments, trips, and places."
 msgstr "Vaša knižnica sa priebežne analyzuje aby mohla automaticky vytvárať albumy špeciálnych momentov, výletov a miest."
 
-#: src/component/lightbox.vue:242
+#: src/component/lightbox.vue:253
 msgid "Zoom in/out"
 msgstr "Priblíziť/Oddialiť"
 
