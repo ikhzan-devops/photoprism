@@ -156,6 +156,7 @@ export default {
           name: "refresh",
           icon: "mdi-refresh",
           text: this.$gettext("Refresh"),
+          shortcut: "Ctrl-R",
           visible: true,
           click: () => {
             this.refresh();
@@ -184,6 +185,7 @@ export default {
           name: "upload",
           icon: "mdi-cloud-upload",
           text: this.$gettext("Upload"),
+          shortcut: "Ctrl-U",
           visible: this.canUpload,
           click: () => {
             this.showUpload();

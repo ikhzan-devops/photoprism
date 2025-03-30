@@ -243,6 +243,10 @@ export default {
           ev.preventDefault();
           this.refresh();
           break;
+        case "KeyU":
+          ev.preventDefault();
+          this.$event.publish("dialog.upload");
+          break;
       }
     },
     hideExpansionPanel() {

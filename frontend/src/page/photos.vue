@@ -296,6 +296,10 @@ export default {
           ev.preventDefault();
           this.$view.focus(this.$refs?.toolbar, ".input-search input", true);
           break;
+        case "KeyU":
+          ev.preventDefault();
+          this.$event.publish("dialog.upload");
+          break;
       }
     },
     hideExpansionPanel() {

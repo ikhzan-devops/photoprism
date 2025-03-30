@@ -227,6 +227,10 @@ export default {
             ev.preventDefault();
             this.$view.focus(this.$refs?.search, ".input-search input", false);
             break;
+          case "KeyU":
+            ev.preventDefault();
+            this.$event.publish("dialog.upload");
+            break;
         }
       } else if (this.initialized) {
         // Use the arrow keys to move around the map with game-like controls.
