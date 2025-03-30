@@ -25,7 +25,16 @@ func PhotoPrismTestToDriverDsn() (driver string, dsn string) {
 		dsn = os.Getenv("PHOTOPRISM_TEST_DSN_POSTGRES")
 	default:
 		driver = "sqlite"
-		dsn = ":memory:?cache=shared&_foreign_keys=on"
+		dsn = ""
 	}
 	return driver, dsn
+}
+
+// Gets the folder name to use to enforce folder separation for DBMS tests
+func PhotoPrismTestToFolderName() (folderName string) {
+	folderName = os.Getenv("PHOTOPRISM_TEST_DSN_NAME")
+	if folderName == "" {
+		folderName, _ = PhotoPrismTestToDriverDsn()
+	}
+	return folderName
 }

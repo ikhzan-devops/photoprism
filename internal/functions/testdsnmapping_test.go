@@ -96,7 +96,45 @@ func TestPhotoPrismTestToDriverDsn(t *testing.T) {
 		driver, dsn := PhotoPrismTestToDriverDsn()
 
 		assert.Equal(t, "sqlite", driver)
-		assert.Equal(t, ":memory:?cache=shared&_foreign_keys=on", dsn)
+		assert.Equal(t, "", dsn)
+
+		os.Setenv("PHOTOPRISM_TEST_DSN_NAME", originalDsnName)
+	})
+}
+
+func TestPhotoPrismTestToFolderName(t *testing.T) {
+	t.Run("sqlitefile", func(t *testing.T) {
+		originalDsnName := os.Getenv("PHOTOPRISM_TEST_DSN_NAME")
+
+		os.Setenv("PHOTOPRISM_TEST_DSN_NAME", "sqlitefile")
+
+		folder := PhotoPrismTestToFolderName()
+
+		assert.Equal(t, "sqlitefile", folder)
+
+		os.Setenv("PHOTOPRISM_TEST_DSN_NAME", originalDsnName)
+	})
+
+	t.Run("default", func(t *testing.T) {
+		originalDsnName := os.Getenv("PHOTOPRISM_TEST_DSN_NAME")
+
+		os.Setenv("PHOTOPRISM_TEST_DSN_NAME", "unknown")
+
+		folder := PhotoPrismTestToFolderName()
+
+		assert.Equal(t, "unknown", folder)
+
+		os.Setenv("PHOTOPRISM_TEST_DSN_NAME", originalDsnName)
+	})
+
+	t.Run("empty", func(t *testing.T) {
+		originalDsnName := os.Getenv("PHOTOPRISM_TEST_DSN_NAME")
+
+		os.Setenv("PHOTOPRISM_TEST_DSN_NAME", "")
+
+		folder := PhotoPrismTestToFolderName()
+
+		assert.Equal(t, "sqlite", folder)
 
 		os.Setenv("PHOTOPRISM_TEST_DSN_NAME", originalDsnName)
 	})
