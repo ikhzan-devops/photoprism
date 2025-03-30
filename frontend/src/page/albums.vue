@@ -561,7 +561,9 @@ export default {
           break;
         case "KeyU":
           ev.preventDefault();
-          this.$event.publish("dialog.upload");
+          if (this.$config.allow("files", "upload") && this.$config.feature("upload")) {
+            this.$event.publish("dialog.upload");
+          }
           break;
       }
     },
