@@ -13,6 +13,7 @@ import (
 	"github.com/urfave/cli/v2"
 
 	"github.com/photoprism/photoprism/internal/config/customize"
+	"github.com/photoprism/photoprism/internal/functions"
 	"github.com/photoprism/photoprism/internal/thumb"
 	"github.com/photoprism/photoprism/pkg/authn"
 	"github.com/photoprism/photoprism/pkg/capture"
@@ -56,8 +57,7 @@ func NewTestOptions(pkg string) *Options {
 	dataPath := filepath.Join(storagePath, "testdata")
 
 	pkg = PkgNameRegexp.ReplaceAllString(pkg, "")
-	driver := os.Getenv("PHOTOPRISM_TEST_DRIVER")
-	dsn := os.Getenv("PHOTOPRISM_TEST_DSN")
+	driver, dsn := functions.PhotoPrismTestToDriverDsn()
 
 	// Config example for MySQL / MariaDB:
 	//   driver = MySQL,

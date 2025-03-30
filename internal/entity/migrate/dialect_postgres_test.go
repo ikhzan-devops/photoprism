@@ -1,7 +1,6 @@
 package migrate
 
 import (
-	"os"
 	"os/exec"
 	"path/filepath"
 	"testing"
@@ -10,13 +9,15 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 
+	"github.com/photoprism/photoprism/internal/functions"
+
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
 
 func TestDialectPostgreSQL(t *testing.T) {
-	driver := os.Getenv("PHOTOPRISM_TEST_DRIVER")
+	driver, _ := functions.PhotoPrismTestToDriverDsn()
 	if driver != "postgres" {
 		t.Skip("skipping test as not PostgreSQL")
 	}

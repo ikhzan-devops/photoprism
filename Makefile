@@ -355,10 +355,10 @@ run-test-go:
 	$(GOTEST) -parallel 1 -count 1 -cpu 1 -tags="slow,develop" -timeout 20m ./pkg/... ./internal/...
 run-test-sqlite:
 	$(info Running all Go tests on SQLite...)
-	PHOTOPRISM_TEST_DRIVER="sqlite" PHOTOPRISM_TEST_DSN="file:/go/src/github.com/photoprism/photoprism/storage/testdata/unit.test.db?_foreign_keys=on&_busy_timeout=5000" $(GOTEST) -parallel 1 -count 1 -cpu 1 -tags "slow,develop" -timeout 20m ./internal/... ./pkg/...
+	PHOTOPRISM_TEST_DSN_NAME="sqlitefile" $(GOTEST) -parallel 1 -count 1 -cpu 1 -tags "slow,develop" -timeout 20m ./pkg/... ./internal/...
 run-test-mariadb:
 	$(info Running all Go tests on MariaDB...)
-	PHOTOPRISM_TEST_DRIVER="mysql" PHOTOPRISM_TEST_DSN="root:photoprism@tcp(mariadb:4001)/acceptance?charset=utf8mb4,utf8&collation=utf8mb4_unicode_ci&parseTime=true" $(GOTEST) -parallel 1 -count 1 -cpu 1 -tags="slow,develop" -timeout 20m ./pkg/... ./internal/...
+	PHOTOPRISM_TEST_DSN_NAME="mariadb"  $(GOTEST) -parallel 1 -count 1 -cpu 1 -tags="slow,develop" -timeout 20m ./pkg/... ./internal/...
 run-test-pkg:
 	$(info Running all Go tests in "/pkg"...)
 	$(GOTEST) -parallel 2 -count 1 -cpu 2 -tags="slow,develop" -timeout 20m ./pkg/...
@@ -396,10 +396,10 @@ test-sqlite-benchmark10s:
 	dirname $$(grep --files-with-matches --include "*_test.go" -oP "(?<=func )Benchmark[A-Za-z_]+(?=\(b \*testing\.B)" --recursive ./*) | sort -u | xargs -n1 bash -c 'cd "$$0" && pwd && go test -skip Test -parallel 4 -count 1 -cpu 4 -failfast -tags slow -timeout 30m -benchtime 10s -bench=.'
 test-mariadb-benchmark10x:
 	$(info Running all Go tests with benchmarks...)
-	dirname $$(grep --files-with-matches --include "*_test.go" -oP "(?<=func )Benchmark[A-Za-z_]+(?=\(b \*testing\.B)" --recursive ./*) | sort -u | xargs -n1 bash -c 'cd "$$0" && pwd && PHOTOPRISM_TEST_DRIVER="mysql" PHOTOPRISM_TEST_DSN="root:photoprism@tcp(mariadb:4001)/acceptance?charset=utf8mb4,utf8&collation=utf8mb4_unicode_ci&parseTime=true" go test -skip Test -parallel 4 -count 10 -cpu 4 -failfast -tags slow -timeout 30m -benchtime 1s -bench=.'
+	dirname $$(grep --files-with-matches --include "*_test.go" -oP "(?<=func )Benchmark[A-Za-z_]+(?=\(b \*testing\.B)" --recursive ./*) | sort -u | xargs -n1 bash -c 'cd "$$0" && pwd && PHOTOPRISM_TEST_DSN_NAME="mariadb" go test -skip Test -parallel 4 -count 10 -cpu 4 -failfast -tags slow -timeout 30m -benchtime 1s -bench=.'
 test-mariadb-benchmark10s:
 	$(info Running all Go tests with benchmarks...)
-	dirname $$(grep --files-with-matches --include "*_test.go" -oP "(?<=func )Benchmark[A-Za-z_]+(?=\(b \*testing\.B)" --recursive ./*) | sort -u | xargs -n1 bash -c 'cd "$$0" && pwd && PHOTOPRISM_TEST_DRIVER="mysql" PHOTOPRISM_TEST_DSN="root:photoprism@tcp(mariadb:4001)/acceptance?charset=utf8mb4,utf8&collation=utf8mb4_unicode_ci&parseTime=true" go test -skip Test -parallel 4 -count 1 -cpu 4 -failfast -tags slow -timeout 30m -benchtime 10s -bench=.'
+	dirname $$(grep --files-with-matches --include "*_test.go" -oP "(?<=func )Benchmark[A-Za-z_]+(?=\(b \*testing\.B)" --recursive ./*) | sort -u | xargs -n1 bash -c 'cd "$$0" && pwd && PHOTOPRISM_TEST_DSN_NAME="mariadb" go test -skip Test -parallel 4 -count 1 -cpu 4 -failfast -tags slow -timeout 30m -benchtime 10s -bench=.'
 docker-pull:
 	$(DOCKER_COMPOSE) --profile=all pull --ignore-pull-failures
 	$(DOCKER_COMPOSE) -f compose.latest.yaml pull --ignore-pull-failures
@@ -848,14 +848,13 @@ reset-postgresql-acceptance:
 reset-postgresql-all: reset-postgresql-testdb reset-postgresql-local reset-postgresql-acceptance reset-postgresql-photoprism
 run-test-postgresql:
 	$(info Running all Go tests on PostgreSQL...)
-	PHOTOPRISM_TEST_DRIVER="postgres" PHOTOPRISM_TEST_DSN="postgresql://acceptance:acceptance@postgres:5432/acceptance?TimeZone=UTC&connect_timeout=15&lock_timeout=5000&sslmode=disable" $(GOTEST) -parallel 1 -count 1 -cpu 1 -tags="slow,develop" -timeout 20m ./pkg/... ./internal/...
-#	PHOTOPRISM_TEST_DRIVER="postgres" PHOTOPRISM_TEST_DSN="user=acceptance password=acceptance dbname=acceptance host=localhost port=5432 connect_timeout=15 sslmode=disable TimeZone=UTC" $(GOTEST) -parallel 1 -count 1 -cpu 1 -tags="slow,develop" -timeout 20m ./pkg/... ./internal/...
+	PHOTOPRISM_TEST_DSN_NAME="postgres" $(GOTEST) -parallel 1 -count 1 -cpu 1 -tags="slow,develop" -timeout 20m ./pkg/... ./internal/...
 test-postgresql-benchmark10x:
 	$(info Running all Go tests with benchmarks...)
-	dirname $$(grep --files-with-matches --include "*_test.go" -oP "(?<=func )Benchmark[A-Za-z_]+(?=\(b \*testing\.B)" --recursive ./*) | sort -u | xargs -n1 bash -c 'cd "$$0" && pwd && PHOTOPRISM_TEST_DRIVER="postgres" PHOTOPRISM_TEST_DSN="user=acceptance password=acceptance dbname=acceptance host=localhost port=5432 connect_timeout=15 sslmode=disable TimeZone=UTC" go test -skip Test -parallel 4 -count 10 -cpu 4 -failfast -tags slow -timeout 30m -benchtime 1s -bench=.'
+	dirname $$(grep --files-with-matches --include "*_test.go" -oP "(?<=func )Benchmark[A-Za-z_]+(?=\(b \*testing\.B)" --recursive ./*) | sort -u | xargs -n1 bash -c 'cd "$$0" && pwd && PHOTOPRISM_TEST_DSN_NAME="postgres" go test -skip Test -parallel 4 -count 10 -cpu 4 -failfast -tags slow -timeout 30m -benchtime 1s -bench=.'
 test-postgresql-benchmark10s:
 	$(info Running all Go tests with benchmarks...)
-	dirname $$(grep --files-with-matches --include "*_test.go" -oP "(?<=func )Benchmark[A-Za-z_]+(?=\(b \*testing\.B)" --recursive ./*) | sort -u | xargs -n1 bash -c 'cd "$$0" && pwd && PHOTOPRISM_TEST_DRIVER="postgres" PHOTOPRISM_TEST_DSN="user=acceptance password=acceptance dbname=acceptance host=localhost port=5432 connect_timeout=15 sslmode=disable TimeZone=UTC" go test -skip Test -parallel 4 -count 1 -cpu 4 -failfast -tags slow -timeout 30m -benchtime 10s -bench=.'
+	dirname $$(grep --files-with-matches --include "*_test.go" -oP "(?<=func )Benchmark[A-Za-z_]+(?=\(b \*testing\.B)" --recursive ./*) | sort -u | xargs -n1 bash -c 'cd "$$0" && pwd && PHOTOPRISM_TEST_DSN_NAME="postgres" go test -skip Test -parallel 4 -count 1 -cpu 4 -failfast -tags slow -timeout 30m -benchtime 10s -bench=.'
 
 
 # Declare all targets as "PHONY", see https://www.gnu.org/software/make/manual/html_node/Phony-Targets.html.

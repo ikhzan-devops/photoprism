@@ -10,6 +10,7 @@ import (
 
 	"github.com/photoprism/photoprism/internal/entity"
 	"github.com/photoprism/photoprism/internal/event"
+	"github.com/photoprism/photoprism/internal/functions"
 	"github.com/photoprism/photoprism/internal/testextras"
 	"github.com/photoprism/photoprism/pkg/clean"
 )
@@ -40,8 +41,7 @@ func TestMain(m *testing.M) {
 	}
 	defer testextras.UnlockDBMutex(dbc.Db())
 
-	driver := os.Getenv("PHOTOPRISM_TEST_DRIVER")
-	dsn := os.Getenv("PHOTOPRISM_TEST_DSN")
+	driver, dsn := functions.PhotoPrismTestToDriverDsn()
 
 	// Set default test database driver.
 	if driver == "test" || driver == "sqlite" || driver == "" || dsn == "" {

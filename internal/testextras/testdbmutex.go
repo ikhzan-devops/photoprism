@@ -9,6 +9,7 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/photoprism/photoprism/internal/event"
+	"github.com/photoprism/photoprism/internal/functions"
 	"github.com/photoprism/photoprism/pkg/clean"
 )
 
@@ -62,8 +63,7 @@ func AcquireDBMutex(log event.Logger, caller string) (dbc *DbConn, err error) {
 
 	err = nil
 
-	driver := os.Getenv("PHOTOPRISM_TEST_DRIVER")
-	dsn := os.Getenv("PHOTOPRISM_TEST_DSN")
+	driver, dsn := functions.PhotoPrismTestToDriverDsn()
 
 	// Set default test database driver.
 	if driver == "test" || driver == "sqlite" || driver == "" || dsn == "" {

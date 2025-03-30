@@ -1,7 +1,6 @@
 package performancetest
 
 import (
-	"os"
 	"os/exec"
 	"testing"
 	"time"
@@ -9,11 +8,12 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"github.com/photoprism/photoprism/internal/event"
+	"github.com/photoprism/photoprism/internal/functions"
 	"github.com/photoprism/photoprism/pkg/fs"
 )
 
 func BenchmarkMigration_SQLite(b *testing.B) {
-	driver := os.Getenv("PHOTOPRISM_TEST_DRIVER")
+	driver, _ := functions.PhotoPrismTestToDriverDsn()
 	if driver != "sqlite" {
 		b.Skip("skipping benchmark as not SQLite")
 	}
@@ -89,7 +89,7 @@ func BenchmarkMigration_SQLite(b *testing.B) {
 }
 
 func BenchmarkMigration_MySQL(b *testing.B) {
-	driver := os.Getenv("PHOTOPRISM_TEST_DRIVER")
+	driver, _ := functions.PhotoPrismTestToDriverDsn()
 	if driver != "mysql" {
 		b.Skip("skipping benchmark as not MariaDB")
 	}
@@ -156,7 +156,7 @@ func BenchmarkMigration_MySQL(b *testing.B) {
 }
 
 func BenchmarkMigration_PostgreSQL(b *testing.B) {
-	driver := os.Getenv("PHOTOPRISM_TEST_DRIVER")
+	driver, _ := functions.PhotoPrismTestToDriverDsn()
 	if driver != "postgres" {
 		b.Skip("skipping benchmark as not PostgreSQL")
 	}

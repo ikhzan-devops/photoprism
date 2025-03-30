@@ -8,6 +8,7 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"github.com/photoprism/photoprism/internal/entity"
+	"github.com/photoprism/photoprism/internal/functions"
 	"github.com/photoprism/photoprism/internal/testextras"
 )
 
@@ -23,9 +24,10 @@ func TestMain(m *testing.M) {
 	}
 	defer testextras.UnlockDBMutex(dbc.Db())
 
+	driver, dsn := functions.PhotoPrismTestToDriverDsn()
 	db := entity.InitTestDb(
-		os.Getenv("PHOTOPRISM_TEST_DRIVER"),
-		os.Getenv("PHOTOPRISM_TEST_DSN"))
+		driver,
+		dsn)
 
 	defer db.Close()
 
