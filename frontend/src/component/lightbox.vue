@@ -1263,6 +1263,7 @@ export default {
             this.canManageAlbums &&
             this.album &&
             this.album instanceof Album &&
+            this.album?.Type === "album" &&
             !this.model?.Removed &&
             !this.model?.Archived,
           click: () => {
