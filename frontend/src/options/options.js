@@ -180,13 +180,19 @@ export const MapsStyle = (experimental) => {
     {
       title: $gettext("Satellite"),
       value: "satellite",
-      style: "satellite",
+      style: "0195eda5-6f09-7acd-8520-ab103fc75810",
       sponsor: true,
     },
     {
       title: $gettext("Outdoor"),
       value: "outdoor",
       style: "outdoor-v2",
+      sponsor: true,
+    },
+    {
+      title: $gettext("Topographic"),
+      value: "topographique",
+      style: "topo-v2",
       sponsor: true,
     },
   ];

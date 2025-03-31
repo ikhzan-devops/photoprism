@@ -135,6 +135,7 @@ export default {
       terrain: {
         "topo-v2": "terrain_rgb",
         "outdoor-v2": "terrain-rgb",
+        "0195eda5-6f09-7acd-8520-ab103fc75810": "terrain-rgb-v2",
         "414c531c-926d-4164-a057-455a215c0eee": "terrain_rgb_virtual",
       },
       attribution:
@@ -438,7 +439,7 @@ export default {
           this.style = "414c531c-926d-4164-a057-455a215c0eee";
           break;
         case "satellite":
-          this.style = "satellite";
+          this.style = "0195eda5-6f09-7acd-8520-ab103fc75810";
           break;
         case "outdoor":
           this.style = "outdoor-v2";
