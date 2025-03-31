@@ -40,10 +40,10 @@
         @keydown.ctrl="onKeyDown"
       ></div>
       <div v-if="sidebarVisible" ref="sidebar" class="p-lightbox__sidebar">
-        <!-- TODO: Create a reusable sidebar component that allows users to view/edit metadata. -->
+        <p-sidebar-metadata v-model="model" :album="album" :context="context" @close="hideSidebar"></p-sidebar-metadata>
       </div>
     </div>
-    <div v-show="video.controls && controlsShown !== 0" ref="controls" class="p-lightbox__controls" @click.stop.prevent>
+    <div v-show="video.controls && controlsShown !== 0" ref="controls" class="p-lightbox__controls" :style="`width: ${viewPortWidth}px`" @click.stop.prevent>
       <div :title="video.error" class="video-control video-control--play">
         <v-icon v-if="video.error || video.errorCode > 0" icon="mdi-alert"></v-icon>
         <v-icon v-else-if="video.seeking || video.waiting" icon="mdi-loading" class="animate-loading"></v-icon>
@@ -112,10 +112,11 @@ import { Album } from "model/album";
 import * as media from "common/media";
 
 import PLightboxMenu from "component/lightbox/menu.vue";
+import PSidebarMetadata from "component/sidebar/metadata.vue";
 
 export default {
   name: "PLightbox",
-  components: [PLightboxMenu],
+  components: [PLightboxMenu, PSidebarMetadata],
   emits: ["enter", "leave"],
   data() {
     const debug = this.$config.get("debug");
@@ -130,6 +131,7 @@ export default {
       menuElement: null,
       menuBgColor: "#252525",
       menuVisible: false,
+      viewPortWidth: 0,
       lightbox: null, // Current PhotoSwipe lightbox instance.
       captionPlugin: null, // Current PhotoSwipe caption plugin instance.
       muted: window.sessionStorage.getItem("lightbox.muted") === "true",
@@ -332,7 +334,7 @@ export default {
         escKey: false,
         pinchToClose: false,
         counter: false,
-        trapFocus: true,
+        trapFocus: false,
         returnFocus: true,
         allowPanToNext: false,
         closeOnVerticalDrag: false,
@@ -2017,6 +2019,8 @@ export default {
       });
     },
     resize(force) {
+      this.viewPortWidth = this.getViewport().x;
+
       this.$nextTick(() => {
         if (this.visible && this.getContentElement() && !this.isBusy("resize")) {
           const pswp = this.pswp();

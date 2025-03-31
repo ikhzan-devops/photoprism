@@ -37,34 +37,12 @@ import { PhotoClipboard } from "common/clipboard";
 import download from "common/download";
 import * as src from "common/src";
 import * as media from "common/media";
+import * as formats from "options/formats";
 
 export const YearUnknown = -1;
 export const MonthUnknown = -1;
 export const DayUnknown = -1;
 export const TimeZoneUTC = "UTC";
-
-const num = "numeric";
-const short = "short";
-const long = "long";
-
-export const DATE_FULL = {
-  year: num,
-  month: long,
-  day: num,
-  weekday: long,
-  hour: num,
-  minute: num,
-};
-
-export const DATE_FULL_TZ = {
-  year: num,
-  month: short,
-  day: num,
-  weekday: short,
-  hour: num,
-  minute: num,
-  timeZoneName: short,
-};
 
 export let BatchSize = 156;
 
@@ -807,11 +785,11 @@ export class Photo extends RestModel {
       return this.localYearString();
     } else if (day === DayUnknown) {
       return this.localDate().toLocaleString({
-        month: long,
-        year: num,
+        month: formats.long,
+        year: formats.num,
       });
     } else if (timeZone) {
-      return this.localDate().toLocaleString(showTimeZone ? DATE_FULL_TZ : DATE_FULL);
+      return this.localDate().toLocaleString(showTimeZone ? formats.DATE_FULL_TZ : formats.DATE_FULL);
     }
 
     return this.localDate().toLocaleString(DateTime.DATE_HUGE);

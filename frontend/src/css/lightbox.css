@@ -59,7 +59,12 @@
     overflow: auto;
     width: 300px;
     z-index: 100000;
-    background: #1e1e1e;
+    background-color: rgb(var(--v-theme-surface, #1e1e1e));
+    opacity: 1;
+}
+
+.p-lightbox__container > .p-lightbox__sidebar .v-toolbar {
+    padding: 2px 0 2px 0;
 }
 
 /* Media Content */
