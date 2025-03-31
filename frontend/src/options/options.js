@@ -190,7 +190,7 @@ export const MapsStyle = (experimental) => {
       sponsor: true,
     },
     {
-      title: $gettext("Topographic"),
+      title: $gettext("Terrain"),
       value: "topographique",
       style: "topo-v2",
       sponsor: true,
