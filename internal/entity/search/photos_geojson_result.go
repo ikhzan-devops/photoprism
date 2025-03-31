@@ -20,6 +20,7 @@ type GeoResult struct {
 	PhotoLng      float64       `json:"Lng" select:"photos.photo_lng"`
 	TakenAt       time.Time     `json:"TakenAt" select:"photos.taken_at"`
 	TakenAtLocal  time.Time     `json:"TakenAtLocal" select:"photos.taken_at_local"`
+	TimeZone      string        `json:"TimeZone" select:"photos.time_zone"`
 	PhotoFavorite bool          `json:"Favorite,omitempty" select:"photos.photo_favorite"`
 	PhotoDuration time.Duration `json:"Duration,omitempty" select:"photos.photo_duration"`
 	FileID        uint          `json:"-" select:"files.id AS file_id"` // File
