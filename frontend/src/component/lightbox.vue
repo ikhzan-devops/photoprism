@@ -887,7 +887,7 @@ export default {
         this.index = models.length - (index + 1);
       } else {
         // Keep direction for left-to-right languages.
-        this.models = models;
+        this.models = models.slice();
         this.index = index;
       }
 
