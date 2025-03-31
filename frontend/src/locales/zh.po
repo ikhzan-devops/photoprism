@@ -42,7 +42,7 @@ msgstr "{0}已选定"
 msgid "{0}-{1} of {2}"
 msgstr "{2}的{0}-{1}部分"
 
-#: src/page/albums.vue:593
+#: src/page/albums.vue:601
 msgid "%{n} albums found"
 msgstr "已找到 %{n} 个相册"
 
@@ -58,7 +58,7 @@ msgstr "已找到 %{n} 个文件夹"
 msgid "%{n} GB of %{q} GB used"
 msgstr "%{n}%{q}的 GB使用的 GB"
 
-#: src/page/labels.vue:505
+#: src/page/labels.vue:524
 msgid "%{n} labels found"
 msgstr "已找到 %{n} 个标签"
 
@@ -67,8 +67,8 @@ msgstr "已找到 %{n} 个标签"
 msgid "%{n} people found"
 msgstr "已找到 %{n} 个人物"
 
-#: src/page/album/photos.vue:305 src/page/album/photos.vue:481
-#: src/page/photos.vue:427 src/page/photos.vue:608
+#: src/page/album/photos.vue:311 src/page/album/photos.vue:487
+#: src/page/photos.vue:433 src/page/photos.vue:614
 msgid "%{n} pictures found"
 msgstr "已找到 %{n} 张图片"
 
@@ -277,7 +277,7 @@ msgstr "相册"
 msgid "Album Backups"
 msgstr "相册备份"
 
-#: src/page/albums.vue:645
+#: src/page/albums.vue:653
 msgid "Album created"
 msgstr "相册已创建"
 
@@ -295,11 +295,11 @@ msgstr "相册已删除"
 msgid "All"
 msgstr "全部"
 
-#: src/page/albums.vue:449
+#: src/page/albums.vue:457
 msgid "All %{n} albums loaded"
 msgstr "%{n} 本相册已加载"
 
-#: src/page/labels.vue:354
+#: src/page/labels.vue:373
 msgid "All %{n} labels loaded"
 msgstr "%{n} 个标签已加载"
 
@@ -312,7 +312,7 @@ msgid "All Cameras"
 msgstr "全部相机"
 
 #: src/component/photo/toolbar.vue:74 src/page/albums.vue:43
-#: src/page/albums.vue:224 src/page/albums.vue:717
+#: src/page/albums.vue:232 src/page/albums.vue:725
 msgid "All Categories"
 msgstr "全部分类"
 
@@ -402,13 +402,13 @@ msgstr "批准"
 msgid "Apps and Devices"
 msgstr "应用程序和设备"
 
-#: src/app/routes.js:287 src/component/lightbox.vue:1152
+#: src/app/routes.js:287 src/component/lightbox.vue:1171
 #: src/component/navigation.vue:553 src/component/photo/clipboard.vue:142
 #: src/component/photo/view/cards.vue:398 src/page/settings/general.vue:417
 msgid "Archive"
 msgstr "归档"
 
-#: src/component/lightbox.vue:1799 src/component/photo/edit/info.vue:433
+#: src/component/lightbox.vue:1852 src/component/photo/edit/info.vue:433
 msgid "Archived"
 msgstr "已归档"
 
@@ -570,13 +570,13 @@ msgstr "相机序列号"
 msgid "Can't access your authenticator app or device?"
 msgstr "无法访问您的身份验证应用程序或设备？"
 
-#: src/page/album/photos.vue:314 src/page/photos.vue:436
+#: src/page/album/photos.vue:320 src/page/photos.vue:442
 msgid "Can't load more, limit reached"
 msgstr "无法加载更多内容，已达上限"
 
 #: src/common/clipboard.js:102 src/common/clipboard.js:139
-#: src/page/albums.vue:655 src/page/albums.vue:671 src/page/labels.vue:280
-#: src/page/labels.vue:300 src/page/library/browse.vue:220
+#: src/page/albums.vue:663 src/page/albums.vue:679 src/page/labels.vue:299
+#: src/page/labels.vue:319 src/page/library/browse.vue:220
 #: src/page/library/browse.vue:236 src/page/people/new.vue:276
 #: src/page/people/new.vue:292 src/page/people/recognized.vue:305
 #: src/page/people/recognized.vue:321
@@ -651,10 +651,10 @@ msgstr "无法保存变更"
 
 #: src/component/user/edit/dialog.vue:83 src/component/user/edit/dialog.vue:159
 #: src/component/album/edit/dialog.vue:73
-#: src/component/label/edit/dialog.vue:46 src/component/lightbox.vue:1785
+#: src/component/label/edit/dialog.vue:46 src/component/lightbox.vue:1808
 #: src/component/photo/edit/files.vue:160 src/component/service/edit.vue:90
 #: src/component/share/dialog.vue:92 src/component/share/dialog.vue:111
-#: src/page/albums.vue:648 src/page/people/recognized.vue:119
+#: src/page/albums.vue:656 src/page/people/recognized.vue:119
 #: src/page/settings/advanced.vue:62 src/page/settings/content.vue:62
 #: src/page/settings/general.vue:108
 msgid "Changes successfully saved"
@@ -883,7 +883,7 @@ msgstr "调试日志"
 #: src/model/user.js:246 src/options/auth.js:20 src/options/auth.js:21
 #: src/options/auth.js:39 src/options/auth.js:40 src/options/options.js:128
 #: src/options/options.js:164 src/options/options.js:236
-#: src/options/themes.js:727 src/page/places.vue:360
+#: src/options/themes.js:727 src/page/places.vue:364
 #: src/page/settings/general.vue:104
 msgid "Default"
 msgstr "默认"
@@ -1043,8 +1043,8 @@ msgstr "完成"
 msgid "Done."
 msgstr "完成。"
 
-#: src/component/album/clipboard.vue:73 src/component/album/toolbar.vue:123
-#: src/component/file/clipboard.vue:48 src/component/lightbox.vue:1180
+#: src/component/album/clipboard.vue:73 src/component/album/toolbar.vue:125
+#: src/component/file/clipboard.vue:48 src/component/lightbox.vue:1199
 #: src/component/people/clipboard.vue:47 src/component/photo/clipboard.vue:116
 #: src/component/photo/edit/files.vue:168 src/page/settings/content.vue:331
 #: src/page/settings/general.vue:321
@@ -1063,9 +1063,9 @@ msgstr "下载远端文件"
 msgid "Download single files and zip archives."
 msgstr "下载单个文件并用 zip 压缩。"
 
-#: src/component/album/clipboard.vue:104 src/component/album/toolbar.vue:162
+#: src/component/album/clipboard.vue:104 src/component/album/toolbar.vue:164
 #: src/component/file/clipboard.vue:61 src/component/label/clipboard.vue:86
-#: src/component/lightbox.vue:1830 src/component/people/clipboard.vue:59
+#: src/component/lightbox.vue:1891 src/component/people/clipboard.vue:59
 #: src/component/photo/clipboard.vue:220 src/component/photo/edit/files.vue:117
 #: src/component/photo/view/cards.vue:169 src/component/photo/view/list.vue:142
 #: src/page/library/browse.vue:126
@@ -1104,7 +1104,7 @@ msgstr "动态尺寸限制：%{n}px"
 msgid "E-Mail"
 msgstr "电子邮件"
 
-#: src/component/album/clipboard.vue:61 src/component/album/toolbar.vue:95
+#: src/component/album/clipboard.vue:61 src/component/album/toolbar.vue:96
 #: src/component/lightbox.vue:1101 src/component/lightbox.vue:1102
 #: src/component/photo/clipboard.vue:90 src/page/settings/general.vue:393
 msgid "Edit"
@@ -1170,7 +1170,7 @@ msgid "Enter your password to confirm the action and continue:"
 msgstr "输入您的密码确认操作并继续："
 
 #: src/page/connect.vue:54 src/component/lightbox.vue:256
-#: src/page/connect.vue:57 src/page/library/errors.vue:252
+#: src/page/connect.vue:57 src/page/library/errors.vue:253
 msgid "Error"
 msgstr "错误"
 
@@ -1386,7 +1386,7 @@ msgstr "生成预览"
 msgid "Generated"
 msgstr "生成"
 
-#: src/component/photo/toolbar.vue:182
+#: src/component/photo/toolbar.vue:184
 msgid "Get Started"
 msgstr "开始"
 
@@ -1682,7 +1682,7 @@ msgid "Learn more"
 msgstr "进一步了解"
 
 #: src/page/admin/sessions.vue:108 src/page/admin/users.vue:133
-#: src/page/labels.vue:118
+#: src/page/labels.vue:131
 msgid "Learn More"
 msgstr "了解更多"
 
@@ -1941,7 +1941,7 @@ msgstr "名称"
 #: src/component/label/edit/dialog.vue:19
 #: src/component/people/edit/dialog.vue:19
 #: src/component/photo/edit/labels.vue:30
-#: src/component/photo/edit/people.vue:39 src/page/labels.vue:51
+#: src/component/photo/edit/people.vue:39 src/page/labels.vue:53
 #: src/page/library/browse.vue:45 src/page/people/new.vue:51
 #: src/page/people/recognized.vue:46
 msgid "Name too long"
@@ -1986,7 +1986,7 @@ msgstr "下一个视觉"
 msgid "No"
 msgstr "否"
 
-#: src/page/albums.vue:588 src/page/albums.vue:274
+#: src/page/albums.vue:596 src/page/albums.vue:274
 msgid "No albums found"
 msgstr "找不到相册"
 
@@ -1994,7 +1994,7 @@ msgstr "找不到相册"
 msgid "No data available"
 msgstr "无数据"
 
-#: src/page/labels.vue:500 src/page/labels.vue:152
+#: src/page/labels.vue:519 src/page/labels.vue:152
 msgid "No labels found"
 msgstr "找不到标签"
 
@@ -2014,8 +2014,8 @@ msgstr "找不到人物"
 
 #: src/component/lightbox.vue:333 src/component/photo/view/cards.vue:144
 #: src/component/photo/view/list.vue:82 src/component/photo/view/mosaic.vue:68
-#: src/page/album/photos.vue:476 src/page/library/browse.vue:122
-#: src/page/photos.vue:603 src/page/places.vue:611 src/page/places.vue:709
+#: src/page/album/photos.vue:482 src/page/library/browse.vue:122
+#: src/page/photos.vue:609 src/page/places.vue:615 src/page/places.vue:713
 msgid "No pictures found"
 msgstr "找不到图片"
 
@@ -2124,7 +2124,7 @@ msgstr "按需生成缩略图可能会导致较高的 CPU 和内存使用率。�
 msgid "Once a week"
 msgstr "每周一次"
 
-#: src/page/albums.vue:590
+#: src/page/albums.vue:598
 msgid "One album found"
 msgstr "已找到一本相册"
 
@@ -2140,7 +2140,7 @@ msgstr "已上传一个文件"
 msgid "One folder found"
 msgstr "已找到一个文件夹"
 
-#: src/page/labels.vue:502
+#: src/page/labels.vue:521
 msgid "One label found"
 msgstr "已找到一个标签"
 
@@ -2149,7 +2149,7 @@ msgstr "已找到一个标签"
 msgid "One person found"
 msgstr "已找到一个人物"
 
-#: src/page/album/photos.vue:478 src/page/photos.vue:605
+#: src/page/album/photos.vue:484 src/page/photos.vue:611
 msgid "One picture found"
 msgstr "已发现一张图片"
 
@@ -2205,7 +2205,7 @@ msgstr "其他"
 msgid "Our mission is to provide the most user- and privacy-friendly solution to keep your pictures organized and accessible."
 msgstr "我们的使命是提供对绝大部分用户——及隐私最友好的解决方案，以保持你的照片有条理和可访问。"
 
-#: src/options/options.js:178 src/page/places.vue:376
+#: src/options/options.js:178 src/page/places.vue:380
 msgid "Outdoor"
 msgstr "户外地图"
 
@@ -2252,7 +2252,7 @@ msgstr "人物"
 msgid "People you share a link with will be able to view public contents."
 msgstr "与您共享链接的人将可以查看公共内容。"
 
-#: src/component/photo/clipboard.vue:126 src/component/photo/toolbar.vue:255
+#: src/component/photo/clipboard.vue:126 src/component/photo/toolbar.vue:257
 msgid "Permanently deleted"
 msgstr "已永久删除"
 
@@ -2487,7 +2487,7 @@ msgstr "红"
 
 #: src/page/admin/sessions.vue:99 src/page/admin/users.vue:124
 #: src/component/album/toolbar.vue:86 src/component/photo/toolbar.vue:164
-#: src/page/albums.vue:172 src/page/labels.vue:109
+#: src/page/albums.vue:172 src/page/labels.vue:111
 #: src/page/library/browse.vue:90 src/page/library/errors.vue:78
 #: src/page/people/new.vue:54 src/page/people/recognized.vue:87
 msgid "Refresh"
@@ -2523,7 +2523,7 @@ msgstr "移除"
 msgid "remove failed: unknown album"
 msgstr "移除失败：未知相册"
 
-#: src/component/photo/clipboard.vue:155
+#: src/component/lightbox.vue:1157 src/component/photo/clipboard.vue:155
 msgid "Remove from Album"
 msgstr "从相册中移除"
 
@@ -2552,12 +2552,12 @@ msgstr "分辨率"
 msgid "Restart"
 msgstr "重新启动"
 
-#: src/component/user/edit/dialog.vue:485 src/component/lightbox.vue:1166
+#: src/component/user/edit/dialog.vue:485 src/component/lightbox.vue:1185
 #: src/component/photo/clipboard.vue:77
 msgid "Restore"
 msgstr "恢复"
 
-#: src/component/lightbox.vue:1813
+#: src/component/lightbox.vue:1870
 msgid "Restored"
 msgstr "恢复"
 
@@ -2582,7 +2582,7 @@ msgstr "角色"
 msgid "Rows per page:"
 msgstr "每页行数："
 
-#: src/options/options.js:173 src/page/places.vue:372
+#: src/options/options.js:173 src/page/places.vue:376
 msgid "Satellite"
 msgstr "卫星"
 
@@ -2725,7 +2725,7 @@ msgstr "设置已保存"
 msgid "Setup"
 msgstr "设置"
 
-#: src/component/album/clipboard.vue:49 src/component/album/toolbar.vue:104
+#: src/component/album/clipboard.vue:49 src/component/album/toolbar.vue:105
 #: src/component/photo/clipboard.vue:51 src/page/settings/general.vue:369
 msgid "Share"
 msgstr "分享"
@@ -2878,7 +2878,7 @@ msgstr "状态"
 msgid "Storage"
 msgstr "存储"
 
-#: src/options/options.js:168 src/page/places.vue:368
+#: src/options/options.js:168 src/page/places.vue:372
 msgid "Streets"
 msgstr "街道图"
 
@@ -3056,11 +3056,11 @@ msgstr "选择的文件过多"
 msgid "Too many requests"
 msgstr "请求太多"
 
-#: src/options/options.js:183 src/page/places.vue:380
+#: src/options/options.js:183 src/page/places.vue:384
 msgid "Topographic"
 msgstr "地形图"
 
-#: src/component/photo/toolbar.vue:190 src/page/library/errors.vue:87
+#: src/component/photo/toolbar.vue:192 src/page/library/errors.vue:88
 msgid "Troubleshooting"
 msgstr "故障排除"
 
@@ -3104,8 +3104,8 @@ msgstr "唯一标识符"
 #: src/model/photo.js:1068 src/model/photo.js:1081 src/model/user.js:157
 #: src/options/options.js:51 src/options/options.js:69
 #: src/options/options.js:86 src/options/options.js:100
-#: src/options/options.js:112 src/page/library/errors.vue:244
-#: src/page/library/errors.vue:261
+#: src/options/options.js:112 src/page/library/errors.vue:245
+#: src/page/library/errors.vue:262
 msgid "Unknown"
 msgstr "未知"
 
@@ -3162,11 +3162,11 @@ msgstr "升级"
 msgid "Upgrade Now"
 msgstr "立即升级"
 
-#: src/component/album/toolbar.vue:114 src/component/navigation.vue:1822
-#: src/component/photo/toolbar.vue:173 src/component/photo/upload/dialog.vue:50
-#: src/component/service/upload.vue:144 src/page/albums.vue:181
-#: src/page/library/import.vue:133 src/page/settings/general.vue:297
-#: src/page/settings/services.vue:37
+#: src/component/album/toolbar.vue:115 src/component/navigation.vue:1822
+#: src/component/photo/toolbar.vue:174 src/component/photo/upload/dialog.vue:50
+#: src/component/service/upload.vue:144 src/page/albums.vue:182
+#: src/page/labels.vue:121 src/page/library/import.vue:133
+#: src/page/settings/general.vue:297 src/page/settings/services.vue:37
 msgid "Upload"
 msgstr "上传"
 
@@ -3303,7 +3303,7 @@ msgstr "访客"
 msgid "Visual Similarity"
 msgstr "视觉相似性"
 
-#: src/page/library/errors.vue:254
+#: src/page/library/errors.vue:255
 msgid "Warning"
 msgstr "警告"
 
@@ -3338,7 +3338,7 @@ msgstr "WebDAV 客户端（例如 Microsoft 的 Windows 资源管理器或 Apple
 msgid "WebDAV Upload"
 msgstr "WebDAV 上传"
 
-#: src/page/places.vue:269
+#: src/page/places.vue:273
 msgid "WebGL support is disabled in your browser"
 msgstr "您的浏览器已禁用 WebGL 支持"
 
@@ -3407,7 +3407,7 @@ msgstr "你可以重新扫描你的库以找到更多的面部。"
 msgid "Your account has been successfully connected."
 msgstr "您的账户已成功连接。"
 
-#: src/page/places.vue:273
+#: src/page/places.vue:277
 msgid "Your browser does not support WebGL"
 msgstr "您的浏览器不支持 WebGL"
 
