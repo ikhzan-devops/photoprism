@@ -6,7 +6,7 @@
     :class="$config.aclClasses('places')"
     @keydown="onKeyDown"
   >
-    <div class="places">
+    <div class="places" :class="'places--' + projection">
       <div v-if="mapError">
         <v-toolbar
           flat
@@ -64,6 +64,7 @@
 import $api from "common/api";
 import $fullscreen from "common/fullscreen";
 import * as sky from "common/sky";
+import * as options from "options/options";
 import Thumb from "model/thumb";
 import PPagePhotos from "page/photos.vue";
 import MapStyleControl from "component/places/style-control";
@@ -104,10 +105,9 @@ export default {
     };
 
     const settings = this.$config.getSettings();
+    const features = settings.features;
 
-    if (settings) {
-      const features = settings.features;
-
+    if (features) {
       if (features.private) {
         filter.public = "true";
       }
@@ -120,6 +120,8 @@ export default {
     return {
       isRtl: this.$config.isRtl(),
       canSearch: this.$config.allow("places", "search"),
+      canUpload: this.$config.allow("files", "upload") && features.upload,
+      featExperimental: this.$config.featExperimental(),
       initialized: false,
       map: null,
       mapError: false,
@@ -128,6 +130,7 @@ export default {
       clusterIds: [],
       loading: false,
       style: "",
+      projection: "",
       mapStyles: [],
       terrain: {
         "topo-v2": "terrain_rgb",
@@ -165,6 +168,13 @@ export default {
 
       this.search();
     },
+  },
+  created() {
+    if (this.$config.has("mapKey")) {
+      this.mapStyles = options.MapsStyle(this.featExperimental);
+    } else {
+      this.mapStyles = options.MapsStyle(this.featExperimental).filter((s) => !s.Sponsor);
+    }
   },
   mounted() {
     this.$view.enter(this);
@@ -229,7 +239,9 @@ export default {
             break;
           case "KeyU":
             ev.preventDefault();
-            this.$event.publish("dialog.upload");
+            if (this.canUpload) {
+              this.$event.publish("dialog.upload");
+            }
             break;
         }
       } else if (this.initialized) {
@@ -269,7 +281,7 @@ export default {
         return;
       }
 
-      const currentProjection = this.map.getProjection()?.type;
+      const currentProjection = this.getProjection();
 
       if (currentProjection === ProjectionMercator || !currentProjection) {
         this.setProjection(ProjectionGlobe);
@@ -277,8 +289,16 @@ export default {
         this.setProjection(ProjectionMercator);
       }
     },
+    getProjection(fromStorage) {
+      if (fromStorage || !this.map || typeof this.map.getProjection !== "function") {
+        const lastProjection = localStorage.getItem("places.projection");
+        return lastProjection ? lastProjection : "";
+      }
+
+      return this.map.getProjection()?.type;
+    },
     setProjection(newProjection) {
-      const currentProjection = this.map.getProjection()?.type;
+      const currentProjection = this.getProjection();
 
       if (currentProjection === newProjection) {
         return;
@@ -295,6 +315,7 @@ export default {
       }
 
       this.map.setProjection({ type: newProjection });
+      this.projection = newProjection;
 
       if (!(this.$refs?.map instanceof HTMLElement)) {
         return;
@@ -315,6 +336,18 @@ export default {
             btn.classList.title = this.map._getUIString("GlobeControl.Enable");
             break;
         }
+      }
+    },
+    onProjectionChange(ev) {
+      // Update current projection.
+      this.projection = ev.newProjection;
+
+      // Remember last used projection.
+      localStorage.setItem("places.projection", ev.newProjection);
+
+      // Render sky if new project is globe.
+      if (ev.newProjection === ProjectionGlobe) {
+        this.renderSky();
       }
     },
     noWebGlSupport() {
@@ -396,13 +429,16 @@ export default {
       switch (style) {
         case "basic":
         case "offline":
-          this.style = "";
+          this.style = this.featExperimental ? "low-resolution" : "default";
           break;
         case "streets":
           this.style = "streets-v2";
           break;
         case "hybrid":
           this.style = "414c531c-926d-4164-a057-455a215c0eee";
+          break;
+        case "satellite":
+          this.style = "satellite";
           break;
         case "outdoor":
           this.style = "outdoor-v2";
@@ -419,35 +455,6 @@ export default {
 
       if (!mapKey && this.style !== "low-resolution") {
         this.style = "default";
-      }
-
-      // Set available map styles.
-      this.mapStyles = [
-        {
-          title: this.$gettext("Default"),
-          style: "default",
-        },
-      ];
-
-      if (mapKey) {
-        this.mapStyles.push(
-          {
-            title: this.$gettext("Streets"),
-            style: "streets",
-          },
-          {
-            title: this.$gettext("Satellite"),
-            style: "414c531c-926d-4164-a057-455a215c0eee",
-          },
-          {
-            title: this.$gettext("Outdoor"),
-            style: "outdoor-v2",
-          },
-          {
-            title: this.$gettext("Topographic"),
-            style: "topo-v2",
-          }
-        );
       }
 
       let mapOptions = {
@@ -803,8 +810,25 @@ export default {
         });
     },
     renderMap() {
+      const lastProjection = this.getProjection(true);
+
       this.map = new maplibregl.Map(this.options);
       this.map.setLanguage(this.$config.values.settings.ui.language.split("-")[0]);
+
+      // Get informed about projection type changes.
+      this.map.on("projectiontransition", (ev) => this.onProjectionChange(ev));
+
+      // Restore last used projection type, if any.
+      if (lastProjection) {
+        this.projection = lastProjection;
+
+        // Restore last used projection type.
+        this.map.on("style.load", () => {
+          this.map.setProjection({
+            type: lastProjection,
+          });
+        });
+      }
 
       const controlPos = "top-right";
 
@@ -859,15 +883,6 @@ export default {
       this.map.addControl(new maplibregl.ScaleControl({}), "bottom-left");
 
       this.map.on("load", () => this.onMapLoad());
-    },
-    onProjectionChange(ev) {
-      // Remember last used projection.
-      localStorage.setItem("places.projection", ev.newProjection);
-
-      // Render sky if new project is globe.
-      if (ev.newProjection === ProjectionGlobe) {
-        this.renderSky();
-      }
     },
     getClusterFeatures(clusterId, limit, callback) {
       this.map
@@ -1034,6 +1049,9 @@ export default {
     onMapLoad() {
       this.minimizeAttribCtrl();
 
+      // Get projection type from map.
+      this.projection = this.getProjection();
+
       // Add 'photos' data source.
       this.map.addSource("photos", {
         type: "geojson",
@@ -1073,15 +1091,6 @@ export default {
       // Load pictures.
       this.search().finally(() => {
         this.mapLoaded = true;
-
-        // Call this.onProjectionChange when the projection type changes.
-        this.map.on("projectiontransition", (ev) => this.onProjectionChange(ev));
-
-        // Restore globe projection if last used.
-        const projection = localStorage.getItem("places.projection");
-        if (projection === ProjectionGlobe) {
-          this.setProjection(projection);
-        }
       });
     },
   },
