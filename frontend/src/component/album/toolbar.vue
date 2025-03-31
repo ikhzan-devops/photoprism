@@ -108,18 +108,6 @@ export default {
     },
   },
   data() {
-    const cameras = [
-      {
-        ID: 0,
-        Name: this.$gettext("All Cameras"),
-      },
-    ].concat(this.$config.get("cameras"));
-    const countries = [
-      {
-        ID: "",
-        Name: this.$gettext("All Countries"),
-      },
-    ].concat(this.$config.get("countries"));
     const settings = this.$config.getSettings();
     const features = settings.features;
     return {
