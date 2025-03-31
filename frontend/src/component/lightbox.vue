@@ -91,12 +91,12 @@
         ></v-icon>
       </div>
     </div>
-    <p-action-lightbox
+    <p-lightbox-menu
       :activator="menuElement"
       :items="menuActions"
       @show="onShowMenu"
       @hide="onHideMenu"
-    ></p-action-lightbox>
+    ></p-lightbox-menu>
   </v-dialog>
 </template>
 
@@ -111,11 +111,11 @@ import { Photo } from "model/photo";
 import { Album } from "model/album";
 import * as media from "common/media";
 
-import PActionLightbox from "component/action/lightbox.vue";
+import PLightboxMenu from "component/lightbox/menu.vue";
 
 export default {
   name: "PLightbox",
-  components: [PActionLightbox],
+  components: [PLightboxMenu],
   emits: ["enter", "leave"],
   data() {
     const debug = this.$config.get("debug");

@@ -5,7 +5,7 @@
     :activator="activator"
     open-on-click
     open-on-hover
-    class="p-action-lightbox p-action-menu action-menu action-menu--lightbox"
+    class="p-lightbox-menu p-action-menu action-menu action-menu--lightbox"
     @update:model-value="onShow"
   >
     <v-list slim nav density="compact" class="action-menu__list">
@@ -34,7 +34,7 @@
 </template>
 <script>
 export default {
-  name: "PActionLightbox",
+  name: "PLightboxMenu",
   props: {
     items: {
       type: Function,
