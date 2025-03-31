@@ -1244,9 +1244,28 @@ export default {
           icon: "mdi-image-album",
           text: this.$gettext("Set as Album Cover"),
           disabled: !this.model,
-          visible: this.canManageAlbums && this.album && this.album instanceof Album,
+          visible:
+            this.canManageAlbums &&
+            this.album &&
+            this.album instanceof Album &&
+            !this.model?.Removed &&
+            !this.model?.Archived,
           click: () => {
             this.onSetAlbumCover();
+          },
+        },
+        {
+          name: "remove",
+          icon: "mdi-eject",
+          text: this.$gettext("Remove from Album"),
+          visible:
+            this.canManageAlbums &&
+            this.album &&
+            this.album instanceof Album &&
+            !this.model?.Removed &&
+            !this.model?.Archived,
+          click: () => {
+            this.onRemoveFromAlbum();
           },
         },
         {
@@ -1872,15 +1891,19 @@ export default {
     },
     // Updates the album cover, if an album model exists.
     onSetAlbumCover() {
-      this.pauseSlideshow();
-
-      if (!this.model || !this.model.Hash) {
-        this.log("photo lightbox: could not update cover because the file hash is unknown");
+      if (!this.canManageAlbums || !this.album) {
         return;
       }
 
-      if (!this.album) {
-        this.log("photo lightbox: could not update cover because no album is set");
+      this.pauseSlideshow();
+
+      if (!this.model || !this.model.Hash) {
+        this.log("viewer: could not update album cover because the file hash is missing");
+        return;
+      }
+
+      if (!this.album || !this.album?.UID) {
+        this.log("viewer: could not update album cover because the album is not defined");
         return;
       }
 
@@ -1888,11 +1911,41 @@ export default {
         this.$notify.success(this.$gettext("Changes successfully saved"));
       });
     },
+    onRemoveFromAlbum() {
+      if (!this.canManageAlbums || !this.album) {
+        return;
+      }
+
+      this.pauseSlideshow();
+
+      if (!this.model || !this.model?.UID) {
+        this.log("viewer: could not remove picture from album because the model UID is not defined");
+        return;
+      }
+
+      if (!this.album || !this.album?.UID) {
+        this.log("viewer: could not remove picture from album because the album is not defined");
+        return;
+      }
+
+      const album = this.album;
+      const model = this.model;
+
+      this.model.Removed = true;
+
+      $api.delete(`albums/${album.UID}/photos`, { data: { photos: [model.UID] } }).then(() => {
+        this.model.Removed = true;
+      });
+    },
     onArchive() {
+      if (!this.canArchive) {
+        return;
+      }
+
       this.pauseSlideshow();
 
       if (!this.model || !this.model.UID) {
-        this.log("photo lightbox: could not move photo to archive because model UID is unknown");
+        this.log("viewer: could not move photo to archive because model UID is unknown");
         return;
       }
 
@@ -1903,10 +1956,14 @@ export default {
       });
     },
     onRestore() {
+      if (!this.canArchive) {
+        return;
+      }
+
       this.pauseSlideshow();
 
       if (!this.model || !this.model.UID) {
-        this.log("photo lightbox: could remove photo from archive because model UID is unknown");
+        this.log("viewer: could remove photo from archive because model UID is unknown");
         return;
       }
 
@@ -1918,6 +1975,10 @@ export default {
     },
     // Downloads the original files of the current picture.
     onDownload() {
+      if (!this.canDownload) {
+        return;
+      }
+
       this.pauseSlideshow();
 
       /*
@@ -1926,7 +1987,7 @@ export default {
        */
 
       if (!this.model || !this.model.DownloadUrl) {
-        this.log("photo lightbox: no download url");
+        this.log("viewer: no download url");
         return;
       }
 

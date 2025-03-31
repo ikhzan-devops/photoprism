@@ -2519,7 +2519,7 @@ msgid "remove failed: unknown album"
 msgstr "kendu huts egin du: album ezezaguna"
 
 #: src/component/photo/clipboard.vue:155
-msgid "Remove from album"
+msgid "Remove from Album"
 msgstr "Kendu albumetik"
 
 #: src/page/library/import.vue:99

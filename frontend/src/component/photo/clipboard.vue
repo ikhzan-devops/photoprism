@@ -125,7 +125,7 @@
         <v-btn
           v-if="canEditAlbum && isAlbum"
           key="action-remove"
-          :title="$gettext('Remove from album')"
+          :title="$gettext('Remove from Album')"
           icon="mdi-eject"
           color="remove"
           variant="elevated"

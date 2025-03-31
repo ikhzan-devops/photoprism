@@ -2519,7 +2519,7 @@ msgid "remove failed: unknown album"
 msgstr "bhaint theip: albam anaithnid"
 
 #: src/component/photo/clipboard.vue:155
-msgid "Remove from album"
+msgid "Remove from Album"
 msgstr "Bain as an albam"
 
 #: src/page/library/import.vue:99
