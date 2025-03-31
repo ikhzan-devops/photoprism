@@ -1928,13 +1928,10 @@ export default {
         return;
       }
 
-      const album = this.album;
-      const model = this.model;
-
       this.model.Removed = true;
 
-      $api.delete(`albums/${album.UID}/photos`, { data: { photos: [model.UID] } }).then(() => {
-        this.model.Removed = true;
+      $api.delete(`albums/${this.album.UID}/photos`, { data: { photos: [this.model.UID] } }).catch(() => {
+        this.model.Removed = false;
       });
     },
     onArchive() {
