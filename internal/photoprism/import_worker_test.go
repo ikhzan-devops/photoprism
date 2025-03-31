@@ -13,6 +13,10 @@ import (
 )
 
 func TestImportWorker_OriginalFileNames(t *testing.T) {
+	if testing.Short() {
+		t.Skip("skipping test in short mode.")
+	}
+
 	c := config.TestConfig()
 
 	if err := c.InitializeTestData(); err != nil {
