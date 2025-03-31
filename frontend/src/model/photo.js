@@ -468,13 +468,13 @@ export class Photo extends RestModel {
 
     if (vw < width + 90) {
       let newWidth = vw - 100;
-      height = Math.round(newWidth * (actualHeight / actualWidth));
+      height = Math.ceil(newWidth * (actualHeight / actualWidth));
       width = newWidth;
     }
 
     if (vh < height + 90) {
       let newHeight = vh - 100;
-      width = Math.round(newHeight * (actualWidth / actualHeight));
+      width = Math.ceil(newHeight * (actualWidth / actualHeight));
       height = newHeight;
     }
 
@@ -526,6 +526,16 @@ export class Photo extends RestModel {
       return $util.videoContentType(file?.Codec, file?.Mime);
     } else {
       return media.ContentTypeMp4AvcMain;
+    }
+  }
+
+  videoCodec() {
+    const file = this.videoFile();
+
+    if (file) {
+      return file?.Codec;
+    } else {
+      return "";
     }
   }
 
@@ -777,10 +787,10 @@ export class Photo extends RestModel {
 
     if (srcAspectRatio > maxAspectRatio) {
       newW = width;
-      newH = Math.round(newW / srcAspectRatio);
+      newH = Math.ceil(newW / srcAspectRatio);
     } else {
       newH = height;
-      newW = Math.round(newH * srcAspectRatio);
+      newW = Math.ceil(newH * srcAspectRatio);
     }
 
     return { width: newW, height: newH };

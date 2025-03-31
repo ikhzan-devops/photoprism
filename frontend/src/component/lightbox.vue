@@ -112,7 +112,6 @@ import { Album } from "model/album";
 import * as media from "common/media";
 
 import PActionLightbox from "component/action/lightbox.vue";
-import $notify from "../common/notify";
 
 export default {
   name: "PLightbox",
@@ -360,7 +359,7 @@ export default {
       };
     },
     // Displays the thumbnail images and/or videos that belong to the specified models in the lightbox.
-    showThumbs(models, index = 0, view = {}) {
+    showThumbs(models, index = 0, ctx = {}) {
       if (this.isBusy("show thumbs")) {
         return Promise.reject();
       }
@@ -373,7 +372,7 @@ export default {
 
       // Show and initialize the component.
       this.$event.subscribeOnce("lightbox.enter", () => {
-        this.renderLightbox(models, index, view)
+        this.renderLightbox(models, index, ctx)
           .then(() => {
             this.busy = false;
           })
@@ -867,7 +866,7 @@ export default {
     },
     // Initializes and opens the PhotoSwipe lightbox with the
     // images and/or videos that belong to the specified models.
-    renderLightbox(models, index = 0, view) {
+    renderLightbox(models, index = 0, ctx) {
       // Check if at least one model was passed, as otherwise no content can be displayed.
       if (!Array.isArray(models) || models.length === 0 || index >= models.length) {
         this.log("model list is empty", models);
@@ -875,8 +874,8 @@ export default {
       }
 
       // Set album model and view context, if any.
-      this.album = view.album && view.album instanceof Album ? view.album : null;
-      this.context = view.context ? view.context : "";
+      this.album = ctx.album && ctx.album instanceof Album ? ctx.album : null;
+      this.context = ctx.context ? ctx.context : "";
 
       // Set the model list and start index.
       // TODO: In the future, additional models should be dynamically loaded when the index reaches the end of the list.
@@ -1949,7 +1948,7 @@ export default {
       this.model.Archived = true;
 
       return $api.post("batch/photos/archive", { photos: [this.model.UID] }).then(() => {
-        $notify.success(this.$gettext("Archived"));
+        this.$notify.success(this.$gettext("Archived"));
       });
     },
     onRestore() {
@@ -1967,7 +1966,7 @@ export default {
       this.model.Archived = false;
 
       $api.post("batch/photos/restore", { photos: [this.model.UID] }).then(() => {
-        $notify.success(this.$gettext("Restored"));
+        this.$notify.success(this.$gettext("Restored"));
       });
     },
     // Downloads the original files of the current picture.
