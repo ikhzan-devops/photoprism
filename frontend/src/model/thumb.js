@@ -122,8 +122,8 @@ export class Thumb extends Model {
     const result = {
       UID: photo.UID,
       Title: photo.Title,
-      TakenAtLocal: photo.getDateString(),
       Caption: photo.Caption,
+      TakenAtLocal: photo.getDateString(),
       Favorite: photo.Favorite,
       Playable: photo.isPlayable(),
       DownloadUrl: this.downloadUrl(photo),
@@ -131,6 +131,9 @@ export class Thumb extends Model {
       Height: photo.Height,
       Hash: photo.Hash,
       Thumbs: {},
+      Duration: photo.Duration,
+      Mime: photo.videoContentType(),
+      Type: photo.Type,
     };
 
     for (let i = 0; i < thumbs.length; i++) {

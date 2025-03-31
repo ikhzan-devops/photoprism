@@ -462,6 +462,8 @@ export default {
 
       if (showMerged) {
         this.$lightbox.openModels(Thumb.fromFiles([selected]), 0);
+      } else if (this.filter?.order === "random") {
+        this.$lightbox.openModels(Thumb.fromPhotos(this.results), index);
       } else {
         this.$lightbox.openView(this, index);
       }
