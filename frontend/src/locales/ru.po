@@ -187,6 +187,14 @@ msgstr "Добавить"
 msgid "Add %{s}?"
 msgstr "Добавь %{s}?"
 
+#: src/component/sidebar/metadata.vue:59
+msgid "Add a caption"
+msgstr ""
+
+#: src/component/sidebar/metadata.vue:46
+msgid "Add a title"
+msgstr ""
+
 #: src/component/user/add/dialog.vue:56 src/component/service/add.vue:49
 msgid "Add Account"
 msgstr "Добавить учётную запись"
@@ -402,13 +410,13 @@ msgstr "Подтвердить"
 msgid "Apps and Devices"
 msgstr "Приложения и устройства"
 
-#: src/app/routes.js:287 src/component/lightbox.vue:1170
+#: src/app/routes.js:287 src/component/lightbox.vue:1173
 #: src/component/navigation.vue:553 src/component/photo/clipboard.vue:142
 #: src/component/photo/view/cards.vue:398 src/page/settings/general.vue:417
 msgid "Archive"
 msgstr "Архивировать"
 
-#: src/component/lightbox.vue:1848 src/component/photo/edit/info.vue:433
+#: src/component/lightbox.vue:1851 src/component/photo/edit/info.vue:433
 msgid "Archived"
 msgstr "Заархивировано"
 
@@ -651,7 +659,7 @@ msgstr "Изменения не будут сохранены"
 
 #: src/component/user/edit/dialog.vue:83 src/component/user/edit/dialog.vue:159
 #: src/component/album/edit/dialog.vue:73
-#: src/component/label/edit/dialog.vue:46 src/component/lightbox.vue:1807
+#: src/component/label/edit/dialog.vue:46 src/component/lightbox.vue:1810
 #: src/component/photo/edit/files.vue:160 src/component/service/edit.vue:90
 #: src/component/share/dialog.vue:92 src/component/share/dialog.vue:111
 #: src/page/albums.vue:656 src/page/people/recognized.vue:119
@@ -692,8 +700,8 @@ msgstr "Клиент"
 msgid "Client Credentials"
 msgstr "Учетные данные клиента"
 
-#: src/page/admin/sessions.vue:529 src/component/lightbox.vue:251
-#: src/component/lightbox.vue:973 src/component/lightbox.vue:974
+#: src/page/admin/sessions.vue:529 src/component/lightbox.vue:253
+#: src/component/lightbox.vue:975 src/component/lightbox.vue:976
 #: src/component/photo/edit/details.vue:627 src/component/photo/toolbar.vue:151
 #: src/component/photo/upload/dialog.vue:228
 #: src/component/settings/apps.vue:224 src/component/settings/apps.vue:437
@@ -792,7 +800,7 @@ msgstr "Вкладчик"
 msgid "Converting"
 msgstr "Конвертация"
 
-#: src/common/util.js:752
+#: src/common/util.js:784
 msgid "Copied to clipboard"
 msgstr "Скопировано в буфер обмена"
 
@@ -1013,7 +1021,8 @@ msgstr "Отображай названия картинок в результа
 
 #: src/component/photo/view/cards.vue:339
 #: src/component/photo/view/cards.vue:521
-#: src/component/photo/view/mosaic.vue:183 src/options/options.js:241
+#: src/component/photo/view/mosaic.vue:183
+#: src/component/sidebar/metadata.vue:108 src/options/options.js:241
 msgid "Document"
 msgstr "Документ"
 
@@ -1043,7 +1052,7 @@ msgid "Done."
 msgstr "Готово."
 
 #: src/component/album/clipboard.vue:73 src/component/album/toolbar.vue:113
-#: src/component/file/clipboard.vue:48 src/component/lightbox.vue:1198
+#: src/component/file/clipboard.vue:48 src/component/lightbox.vue:1201
 #: src/component/people/clipboard.vue:47 src/component/photo/clipboard.vue:116
 #: src/component/photo/edit/files.vue:168 src/page/settings/content.vue:331
 #: src/page/settings/general.vue:321
@@ -1064,7 +1073,7 @@ msgstr "Скачать отдельные файлы и zip-архивы."
 
 #: src/component/album/clipboard.vue:104 src/component/album/toolbar.vue:152
 #: src/component/file/clipboard.vue:61 src/component/label/clipboard.vue:86
-#: src/component/lightbox.vue:1887 src/component/people/clipboard.vue:59
+#: src/component/lightbox.vue:1890 src/component/people/clipboard.vue:59
 #: src/component/photo/clipboard.vue:220 src/component/photo/edit/files.vue:117
 #: src/component/photo/view/cards.vue:169 src/component/photo/view/list.vue:142
 #: src/page/library/browse.vue:126
@@ -1104,7 +1113,7 @@ msgid "E-Mail"
 msgstr "E-Mail"
 
 #: src/component/album/clipboard.vue:61 src/component/album/toolbar.vue:84
-#: src/component/lightbox.vue:1100 src/component/lightbox.vue:1101
+#: src/component/lightbox.vue:1102 src/component/lightbox.vue:1103
 #: src/component/photo/clipboard.vue:90 src/page/settings/general.vue:393
 msgid "Edit"
 msgstr "Редактировать"
@@ -1168,7 +1177,7 @@ msgstr "введите код подтверждения"
 msgid "Enter your password to confirm the action and continue:"
 msgstr "Введите пароль, чтобы подтвердить действие и продолжить:"
 
-#: src/page/connect.vue:54 src/component/lightbox.vue:255
+#: src/page/connect.vue:54 src/component/lightbox.vue:257
 #: src/page/connect.vue:57 src/page/library/errors.vue:253
 msgid "Error"
 msgstr "Ошибка"
@@ -1361,7 +1370,7 @@ msgstr "ფრეიმი"
 msgid "Full Access"
 msgstr "Полный доступ"
 
-#: src/component/lightbox.vue:1048 src/component/lightbox.vue:1049
+#: src/component/lightbox.vue:1050 src/component/lightbox.vue:1051
 msgid "Fullscreen"
 msgstr "Полный экран"
 
@@ -1546,6 +1555,10 @@ msgstr "Индексирование не удалось"
 msgid "Indexing media and sidecar files…"
 msgstr "Индексирование мультимедийных и сопутствующих файлов…"
 
+#: src/component/sidebar/metadata.vue:27
+msgid "Info"
+msgstr ""
+
 #: src/component/photo/edit/files.vue:282
 msgid "Instance ID"
 msgstr "Идентификатор узла"
@@ -1709,7 +1722,7 @@ msgstr "Библиотека"
 msgid "License"
 msgstr "Лицензия"
 
-#: src/component/lightbox.vue:1066 src/component/lightbox.vue:1067
+#: src/component/lightbox.vue:1068 src/component/lightbox.vue:1069
 msgid "Like"
 msgstr "Нравится"
 
@@ -1739,7 +1752,8 @@ msgstr "Вид списка"
 
 #: src/component/photo/view/cards.vue:319
 #: src/component/photo/view/cards.vue:501 src/component/photo/view/list.vue:176
-#: src/component/photo/view/mosaic.vue:163 src/options/options.js:221
+#: src/component/photo/view/mosaic.vue:163
+#: src/component/sidebar/metadata.vue:99 src/options/options.js:221
 msgid "Live"
 msgstr "Прямой эфир"
 
@@ -1899,7 +1913,7 @@ msgstr "Монохромные"
 msgid "Month"
 msgstr "Месяц"
 
-#: src/component/lightbox.vue:1119
+#: src/component/lightbox.vue:1121
 msgid "More options"
 msgstr "Больше вариантов"
 
@@ -1919,7 +1933,7 @@ msgstr "Перемещать файлы"
 msgid "Must have at least %{n} characters."
 msgstr "Должно быть не менее %{n} символов."
 
-#: src/component/lightbox.vue:1015 src/component/lightbox.vue:1016
+#: src/component/lightbox.vue:1017 src/component/lightbox.vue:1018
 msgid "Mute"
 msgstr "Отключи звук"
 
@@ -1965,7 +1979,7 @@ msgstr "Новый пароль"
 msgid "Newest First"
 msgstr "Сначала новые"
 
-#: src/component/lightbox.vue:254 src/locales.js:298
+#: src/component/lightbox.vue:256 src/locales.js:298
 msgid "Next"
 msgstr "Следующее"
 
@@ -2011,7 +2025,7 @@ msgstr "Не больше"
 msgid "No people found"
 msgstr "Люди не найдены"
 
-#: src/component/lightbox.vue:332 src/component/photo/view/cards.vue:144
+#: src/component/lightbox.vue:334 src/component/photo/view/cards.vue:144
 #: src/component/photo/view/list.vue:82 src/component/photo/view/mosaic.vue:68
 #: src/page/album/photos.vue:484 src/page/library/browse.vue:122
 #: src/page/photos.vue:611 src/page/places.vue:623 src/page/places.vue:721
@@ -2054,12 +2068,12 @@ msgstr "Файлы, не являющиеся фотографиями, или �
 msgid "None"
 msgstr "Ничего"
 
-#: src/common/util.js:759 src/component/lightbox.vue:597
+#: src/common/util.js:791 src/component/lightbox.vue:599
 #: src/component/service/upload.vue:75 src/component/service/upload.vue:87
 msgid "Not allowed"
 msgstr "Не разрешается"
 
-#: src/component/lightbox.vue:594
+#: src/component/lightbox.vue:596
 msgid "Not found"
 msgstr "Не найдено"
 
@@ -2067,8 +2081,8 @@ msgstr "Не найдено"
 msgid "Not sorted."
 msgstr "Не отсортировано."
 
-#: src/common/util.js:764 src/component/lightbox.vue:591
-#: src/component/lightbox.vue:708
+#: src/common/util.js:796 src/component/lightbox.vue:593
+#: src/component/lightbox.vue:710
 msgid "Not supported"
 msgstr "Не поддерживается"
 
@@ -2215,7 +2229,7 @@ msgstr "Активности на открытом воздухе"
 msgid "Page {0}, Current page"
 msgstr "Страница {0}, текущая страница"
 
-#: src/component/photo/edit/files.vue:352 src/model/photo.js:876
+#: src/component/photo/edit/files.vue:352 src/model/photo.js:854
 msgid "Pages"
 msgstr "Страницы"
 
@@ -2270,7 +2284,7 @@ msgstr "Человек"
 msgid "Personal"
 msgstr "Личный"
 
-#: src/model/photo.js:1290
+#: src/model/photo.js:1268
 msgid "Photo"
 msgstr "Фотография"
 
@@ -2379,7 +2393,7 @@ msgstr "Предпросмотр"
 msgid "Preview Images"
 msgstr "Предварительные изображения"
 
-#: src/component/lightbox.vue:253 src/locales.js:299
+#: src/component/lightbox.vue:255 src/locales.js:299
 msgid "Previous"
 msgstr "Предыдущий"
 
@@ -2439,7 +2453,8 @@ msgid "Raw"
 msgstr "Исходный"
 
 #: src/component/photo/view/cards.vue:313
-#: src/component/photo/view/mosaic.vue:157 src/page/settings/content.vue:378
+#: src/component/photo/view/mosaic.vue:157
+#: src/component/sidebar/metadata.vue:89 src/page/settings/content.vue:378
 msgid "RAW"
 msgstr "RAW"
 
@@ -2524,7 +2539,7 @@ msgstr "Удалить"
 msgid "remove failed: unknown album"
 msgstr "не могу удалить: неизвестный альбом"
 
-#: src/component/lightbox.vue:1156 src/component/photo/clipboard.vue:155
+#: src/component/lightbox.vue:1158 src/component/photo/clipboard.vue:155
 msgid "Remove from Album"
 msgstr "Удалить из альбома"
 
@@ -2532,7 +2547,7 @@ msgstr "Удалить из альбома"
 msgid "Remove imported files to save storage. Unsupported file types will never be deleted, they remain in their current location."
 msgstr "Удалять импортированные файлы для освобождения места. Неподдерживаемые типы файлов никогда не будут удалены, они остаются в их текущем местоположении."
 
-#: src/common/api.js:102 src/component/lightbox.vue:704
+#: src/common/api.js:102 src/component/lightbox.vue:706
 msgid "Request failed - are you offline?"
 msgstr "Запрос не прошел - вы не в сети?"
 
@@ -2553,12 +2568,12 @@ msgstr "Разрешение"
 msgid "Restart"
 msgstr "Перезапустить"
 
-#: src/component/user/edit/dialog.vue:485 src/component/lightbox.vue:1184
+#: src/component/user/edit/dialog.vue:485 src/component/lightbox.vue:1187
 #: src/component/photo/clipboard.vue:77
 msgid "Restore"
 msgstr "Восстановить"
 
-#: src/component/lightbox.vue:1866
+#: src/component/lightbox.vue:1869
 msgid "Restored"
 msgstr "Восстановленный"
 
@@ -2637,7 +2652,7 @@ msgstr "Секрет"
 msgid "Security and Access"
 msgstr "Безопасность и доступ"
 
-#: src/component/lightbox.vue:1083 src/component/lightbox.vue:1084
+#: src/component/lightbox.vue:1085 src/component/lightbox.vue:1086
 msgid "Select"
 msgstr "Выбрать"
 
@@ -2707,7 +2722,7 @@ msgstr "Идентификатор сессии"
 msgid "Sessions"
 msgstr "Сессии"
 
-#: src/component/lightbox.vue:1141
+#: src/component/lightbox.vue:1143
 msgid "Set as Album Cover"
 msgstr "Установи в качестве обложки альбома"
 
@@ -2771,7 +2786,7 @@ msgstr "Показывать журналы сервера в Библиотек
 msgid "Show Titles"
 msgstr "Показать названия"
 
-#: src/component/lightbox.vue:996 src/component/lightbox.vue:997
+#: src/component/lightbox.vue:998 src/component/lightbox.vue:999
 msgid "Show/Hide Sidebar"
 msgstr "Показать/скрыть боковую панель"
 
@@ -2808,7 +2823,7 @@ msgstr "Программное обеспечение"
 msgid "Software Update"
 msgstr "Обновление программного обеспечения"
 
-#: src/component/lightbox.vue:701
+#: src/component/lightbox.vue:703
 msgid "Something went wrong, try again"
 msgstr "Что-то пошло не так, попробуйте еще раз"
 
@@ -2863,7 +2878,7 @@ msgstr "Начать"
 msgid "Start Page"
 msgstr "Стартовая страница"
 
-#: src/component/lightbox.vue:1031 src/component/lightbox.vue:1032
+#: src/component/lightbox.vue:1033 src/component/lightbox.vue:1034
 msgid "Start/Stop Slideshow"
 msgstr "Начать/Остановить слайд-шоу"
 
@@ -3094,15 +3109,15 @@ msgid "Unique ID"
 msgstr "Уникальный ID"
 
 #: src/page/settings/account.vue:451 src/page/settings/account.vue:476
-#: src/page/settings/account.vue:501 src/common/util.js:432
+#: src/page/settings/account.vue:501 src/common/util.js:464
 #: src/component/photo/edit/details.vue:21
 #: src/component/photo/edit/details.vue:111
 #: src/component/photo/edit/details.vue:138
 #: src/component/photo/edit/details.vue:164 src/model/album.js:193
-#: src/model/photo.js:344 src/model/photo.js:805 src/model/photo.js:826
-#: src/model/photo.js:849 src/model/photo.js:867 src/model/photo.js:914
-#: src/model/photo.js:922 src/model/photo.js:1011 src/model/photo.js:1033
-#: src/model/photo.js:1078 src/model/photo.js:1091 src/model/user.js:157
+#: src/model/photo.js:322 src/model/photo.js:783 src/model/photo.js:804
+#: src/model/photo.js:827 src/model/photo.js:845 src/model/photo.js:892
+#: src/model/photo.js:900 src/model/photo.js:989 src/model/photo.js:1011
+#: src/model/photo.js:1056 src/model/photo.js:1069 src/model/user.js:157
 #: src/options/options.js:51 src/options/options.js:69
 #: src/options/options.js:86 src/options/options.js:100
 #: src/options/options.js:112 src/page/library/errors.vue:245
@@ -3269,7 +3284,7 @@ msgstr "Проверочный код"
 #: src/component/photo/view/cards.vue:363
 #: src/component/photo/view/cards.vue:491 src/component/photo/view/list.vue:190
 #: src/component/photo/view/mosaic.vue:207 src/model/file.js:221
-#: src/model/photo.js:938 src/model/photo.js:956 src/options/options.js:225
+#: src/model/photo.js:916 src/model/photo.js:934 src/options/options.js:225
 msgid "Video"
 msgstr "Видео"
 
@@ -3421,7 +3436,7 @@ msgstr "Ваша постоянная поддержка помогает нам
 msgid "Your library is continuously analyzed to automatically create albums of special moments, trips, and places."
 msgstr "Ваша библиотека постоянно анализируется для автоматического создания альбомов особых моментов, поездок и мест."
 
-#: src/component/lightbox.vue:252
+#: src/component/lightbox.vue:254
 msgid "Zoom in/out"
 msgstr "Увеличение/уменьшение масштаба"
 

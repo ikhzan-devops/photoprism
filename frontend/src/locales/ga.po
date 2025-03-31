@@ -184,6 +184,14 @@ msgstr "Cuir"
 msgid "Add %{s}?"
 msgstr "Cuir %{s} leis?"
 
+#: src/component/sidebar/metadata.vue:59
+msgid "Add a caption"
+msgstr ""
+
+#: src/component/sidebar/metadata.vue:46
+msgid "Add a title"
+msgstr ""
+
 #: src/component/user/add/dialog.vue:56 src/component/service/add.vue:49
 msgid "Add Account"
 msgstr "Cuir Cuntas leis"
@@ -399,13 +407,13 @@ msgstr "Cheadaigh"
 msgid "Apps and Devices"
 msgstr "Aipeanna agus Gléasanna"
 
-#: src/app/routes.js:287 src/component/lightbox.vue:1170
+#: src/app/routes.js:287 src/component/lightbox.vue:1173
 #: src/component/navigation.vue:553 src/component/photo/clipboard.vue:142
 #: src/component/photo/view/cards.vue:398 src/page/settings/general.vue:417
 msgid "Archive"
 msgstr "Cartlann"
 
-#: src/component/lightbox.vue:1848 src/component/photo/edit/info.vue:433
+#: src/component/lightbox.vue:1851 src/component/photo/edit/info.vue:433
 msgid "Archived"
 msgstr "Cartlannaithe"
 
@@ -648,7 +656,7 @@ msgstr "Níorbh fhéidir na hathruithe a shábháil"
 
 #: src/component/user/edit/dialog.vue:83 src/component/user/edit/dialog.vue:159
 #: src/component/album/edit/dialog.vue:73
-#: src/component/label/edit/dialog.vue:46 src/component/lightbox.vue:1807
+#: src/component/label/edit/dialog.vue:46 src/component/lightbox.vue:1810
 #: src/component/photo/edit/files.vue:160 src/component/service/edit.vue:90
 #: src/component/share/dialog.vue:92 src/component/share/dialog.vue:111
 #: src/page/albums.vue:656 src/page/people/recognized.vue:119
@@ -689,8 +697,8 @@ msgstr "Cliant"
 msgid "Client Credentials"
 msgstr "Dintiúir Cliant"
 
-#: src/page/admin/sessions.vue:529 src/component/lightbox.vue:251
-#: src/component/lightbox.vue:973 src/component/lightbox.vue:974
+#: src/page/admin/sessions.vue:529 src/component/lightbox.vue:253
+#: src/component/lightbox.vue:975 src/component/lightbox.vue:976
 #: src/component/photo/edit/details.vue:627 src/component/photo/toolbar.vue:151
 #: src/component/photo/upload/dialog.vue:228
 #: src/component/settings/apps.vue:224 src/component/settings/apps.vue:437
@@ -789,7 +797,7 @@ msgstr "ranníocóir"
 msgid "Converting"
 msgstr "Tiontú"
 
-#: src/common/util.js:752
+#: src/common/util.js:784
 msgid "Copied to clipboard"
 msgstr "Cóipeáladh chuig an ngearrthaisce"
 
@@ -1010,7 +1018,8 @@ msgstr "Taispeáin teidil pictiúir sna torthaí cuardaigh."
 
 #: src/component/photo/view/cards.vue:339
 #: src/component/photo/view/cards.vue:521
-#: src/component/photo/view/mosaic.vue:183 src/options/options.js:241
+#: src/component/photo/view/mosaic.vue:183
+#: src/component/sidebar/metadata.vue:108 src/options/options.js:241
 msgid "Document"
 msgstr "Doiciméad"
 
@@ -1040,7 +1049,7 @@ msgid "Done."
 msgstr "Déanta."
 
 #: src/component/album/clipboard.vue:73 src/component/album/toolbar.vue:113
-#: src/component/file/clipboard.vue:48 src/component/lightbox.vue:1198
+#: src/component/file/clipboard.vue:48 src/component/lightbox.vue:1201
 #: src/component/people/clipboard.vue:47 src/component/photo/clipboard.vue:116
 #: src/component/photo/edit/files.vue:168 src/page/settings/content.vue:331
 #: src/page/settings/general.vue:321
@@ -1061,7 +1070,7 @@ msgstr "Íoslódáil comhaid aonair agus cartlanna zip."
 
 #: src/component/album/clipboard.vue:104 src/component/album/toolbar.vue:152
 #: src/component/file/clipboard.vue:61 src/component/label/clipboard.vue:86
-#: src/component/lightbox.vue:1887 src/component/people/clipboard.vue:59
+#: src/component/lightbox.vue:1890 src/component/people/clipboard.vue:59
 #: src/component/photo/clipboard.vue:220 src/component/photo/edit/files.vue:117
 #: src/component/photo/view/cards.vue:169 src/component/photo/view/list.vue:142
 #: src/page/library/browse.vue:126
@@ -1101,7 +1110,7 @@ msgid "E-Mail"
 msgstr "R-phost"
 
 #: src/component/album/clipboard.vue:61 src/component/album/toolbar.vue:84
-#: src/component/lightbox.vue:1100 src/component/lightbox.vue:1101
+#: src/component/lightbox.vue:1102 src/component/lightbox.vue:1103
 #: src/component/photo/clipboard.vue:90 src/page/settings/general.vue:393
 msgid "Edit"
 msgstr "Cuir in eagar"
@@ -1165,7 +1174,7 @@ msgstr "Cuir isteach cód fíorúcháin"
 msgid "Enter your password to confirm the action and continue:"
 msgstr "Cuir isteach do phasfhocal chun an gníomh a dhearbhú agus lean ar aghaidh:"
 
-#: src/page/connect.vue:54 src/component/lightbox.vue:255
+#: src/page/connect.vue:54 src/component/lightbox.vue:257
 #: src/page/connect.vue:57 src/page/library/errors.vue:253
 msgid "Error"
 msgstr "Earráid"
@@ -1358,7 +1367,7 @@ msgstr "Frámaí"
 msgid "Full Access"
 msgstr "Rochtain Iomlán"
 
-#: src/component/lightbox.vue:1048 src/component/lightbox.vue:1049
+#: src/component/lightbox.vue:1050 src/component/lightbox.vue:1051
 msgid "Fullscreen"
 msgstr "Lánscáileán"
 
@@ -1543,6 +1552,10 @@ msgstr "Theip ar an innéacsú"
 msgid "Indexing media and sidecar files…"
 msgstr "Meáin agus comhaid taobhcharr á innéacsú…"
 
+#: src/component/sidebar/metadata.vue:27
+msgid "Info"
+msgstr ""
+
 #: src/component/photo/edit/files.vue:282
 msgid "Instance ID"
 msgstr "Aitheantas an Cháis"
@@ -1706,7 +1719,7 @@ msgstr "Leabharlann"
 msgid "License"
 msgstr "Ceadúnas"
 
-#: src/component/lightbox.vue:1066 src/component/lightbox.vue:1067
+#: src/component/lightbox.vue:1068 src/component/lightbox.vue:1069
 msgid "Like"
 msgstr "Cosúil"
 
@@ -1736,7 +1749,8 @@ msgstr "Amharc Liosta"
 
 #: src/component/photo/view/cards.vue:319
 #: src/component/photo/view/cards.vue:501 src/component/photo/view/list.vue:176
-#: src/component/photo/view/mosaic.vue:163 src/options/options.js:221
+#: src/component/photo/view/mosaic.vue:163
+#: src/component/sidebar/metadata.vue:99 src/options/options.js:221
 msgid "Live"
 msgstr "Beo"
 
@@ -1896,7 +1910,7 @@ msgstr "Monacrómach"
 msgid "Month"
 msgstr "Mí"
 
-#: src/component/lightbox.vue:1119
+#: src/component/lightbox.vue:1121
 msgid "More options"
 msgstr "Tuilleadh roghanna"
 
@@ -1916,7 +1930,7 @@ msgstr "Bog Comhaid"
 msgid "Must have at least %{n} characters."
 msgstr "Caithfidh %{n} carachtar ar a laghad a bheith ann."
 
-#: src/component/lightbox.vue:1015 src/component/lightbox.vue:1016
+#: src/component/lightbox.vue:1017 src/component/lightbox.vue:1018
 msgid "Mute"
 msgstr "Balbhaigh"
 
@@ -1962,7 +1976,7 @@ msgstr "Pasfhocal Nua"
 msgid "Newest First"
 msgstr "Is Déanaí ar dtús"
 
-#: src/component/lightbox.vue:254 src/locales.js:298
+#: src/component/lightbox.vue:256 src/locales.js:298
 msgid "Next"
 msgstr "Ar aghaidh"
 
@@ -2008,7 +2022,7 @@ msgstr "Níl níos mó"
 msgid "No people found"
 msgstr "Níor aimsíodh daoine"
 
-#: src/component/lightbox.vue:332 src/component/photo/view/cards.vue:144
+#: src/component/lightbox.vue:334 src/component/photo/view/cards.vue:144
 #: src/component/photo/view/list.vue:82 src/component/photo/view/mosaic.vue:68
 #: src/page/album/photos.vue:484 src/page/library/browse.vue:122
 #: src/page/photos.vue:611 src/page/places.vue:623 src/page/places.vue:721
@@ -2051,12 +2065,12 @@ msgstr "Teastaíonn athbhreithniú ar íomhánna nach bhfuil grianghrafadóireac
 msgid "None"
 msgstr "Dada"
 
-#: src/common/util.js:759 src/component/lightbox.vue:597
+#: src/common/util.js:791 src/component/lightbox.vue:599
 #: src/component/service/upload.vue:75 src/component/service/upload.vue:87
 msgid "Not allowed"
 msgstr "Ní cheadaítear"
 
-#: src/component/lightbox.vue:594
+#: src/component/lightbox.vue:596
 msgid "Not found"
 msgstr "Ní bhfuarthas"
 
@@ -2064,8 +2078,8 @@ msgstr "Ní bhfuarthas"
 msgid "Not sorted."
 msgstr "Gan sórtáilte."
 
-#: src/common/util.js:764 src/component/lightbox.vue:591
-#: src/component/lightbox.vue:708
+#: src/common/util.js:796 src/component/lightbox.vue:593
+#: src/component/lightbox.vue:710
 msgid "Not supported"
 msgstr "Ní thacaítear leis"
 
@@ -2212,7 +2226,7 @@ msgstr "Amuigh faoin aer"
 msgid "Page {0}, Current page"
 msgstr "Leathanach {0}, leathanach reatha"
 
-#: src/component/photo/edit/files.vue:352 src/model/photo.js:876
+#: src/component/photo/edit/files.vue:352 src/model/photo.js:854
 msgid "Pages"
 msgstr "Leathanaigh"
 
@@ -2267,7 +2281,7 @@ msgstr "Duine"
 msgid "Personal"
 msgstr "Pearsanta"
 
-#: src/model/photo.js:1290
+#: src/model/photo.js:1268
 msgid "Photo"
 msgstr "Grianghraf"
 
@@ -2376,7 +2390,7 @@ msgstr "Réamhamharc"
 msgid "Preview Images"
 msgstr "Íomhánna Réamhamhairc"
 
-#: src/component/lightbox.vue:253 src/locales.js:299
+#: src/component/lightbox.vue:255 src/locales.js:299
 msgid "Previous"
 msgstr "Roimhe Seo"
 
@@ -2436,7 +2450,8 @@ msgid "Raw"
 msgstr "amh"
 
 #: src/component/photo/view/cards.vue:313
-#: src/component/photo/view/mosaic.vue:157 src/page/settings/content.vue:378
+#: src/component/photo/view/mosaic.vue:157
+#: src/component/sidebar/metadata.vue:89 src/page/settings/content.vue:378
 msgid "RAW"
 msgstr "RAW"
 
@@ -2521,7 +2536,7 @@ msgstr "Bain"
 msgid "remove failed: unknown album"
 msgstr "bhaint theip: albam anaithnid"
 
-#: src/component/lightbox.vue:1156 src/component/photo/clipboard.vue:155
+#: src/component/lightbox.vue:1158 src/component/photo/clipboard.vue:155
 msgid "Remove from Album"
 msgstr "Bain as an albam"
 
@@ -2529,7 +2544,7 @@ msgstr "Bain as an albam"
 msgid "Remove imported files to save storage. Unsupported file types will never be deleted, they remain in their current location."
 msgstr "Bain comhaid iompórtáilte chun stóras a shábháil. Ní scriosfar cineálacha comhaid nach dtacaítear leo go deo, fanann siad ina suíomh reatha."
 
-#: src/common/api.js:102 src/component/lightbox.vue:704
+#: src/common/api.js:102 src/component/lightbox.vue:706
 msgid "Request failed - are you offline?"
 msgstr "Theip ar an iarratas - an bhfuil tú as líne?"
 
@@ -2550,12 +2565,12 @@ msgstr "Rún"
 msgid "Restart"
 msgstr "Atosaigh"
 
-#: src/component/user/edit/dialog.vue:485 src/component/lightbox.vue:1184
+#: src/component/user/edit/dialog.vue:485 src/component/lightbox.vue:1187
 #: src/component/photo/clipboard.vue:77
 msgid "Restore"
 msgstr "Athchóirigh"
 
-#: src/component/lightbox.vue:1866
+#: src/component/lightbox.vue:1869
 msgid "Restored"
 msgstr "Athchóiríodh"
 
@@ -2634,7 +2649,7 @@ msgstr "Rúnda"
 msgid "Security and Access"
 msgstr "Slándáil agus Rochtain"
 
-#: src/component/lightbox.vue:1083 src/component/lightbox.vue:1084
+#: src/component/lightbox.vue:1085 src/component/lightbox.vue:1086
 msgid "Select"
 msgstr "Roghnaigh"
 
@@ -2704,7 +2719,7 @@ msgstr "Aitheantas an tseisiúin"
 msgid "Sessions"
 msgstr "Seisiúin"
 
-#: src/component/lightbox.vue:1141
+#: src/component/lightbox.vue:1143
 msgid "Set as Album Cover"
 msgstr "Socraigh mar Chlúdach Albam"
 
@@ -2768,7 +2783,7 @@ msgstr "Taispeáin logaí freastalaí sa Leabharlann."
 msgid "Show Titles"
 msgstr "Taispeáin Teidil"
 
-#: src/component/lightbox.vue:996 src/component/lightbox.vue:997
+#: src/component/lightbox.vue:998 src/component/lightbox.vue:999
 msgid "Show/Hide Sidebar"
 msgstr "Taispeáin/Folaigh Barra Taoibh"
 
@@ -2805,7 +2820,7 @@ msgstr "Bogearraí"
 msgid "Software Update"
 msgstr "Nuashonrú Bogearraí"
 
-#: src/component/lightbox.vue:701
+#: src/component/lightbox.vue:703
 msgid "Something went wrong, try again"
 msgstr "Chuaigh rud éigin mícheart, bain triail eile as"
 
@@ -2860,7 +2875,7 @@ msgstr "Tosaigh"
 msgid "Start Page"
 msgstr "Leathanach Tosaigh"
 
-#: src/component/lightbox.vue:1031 src/component/lightbox.vue:1032
+#: src/component/lightbox.vue:1033 src/component/lightbox.vue:1034
 msgid "Start/Stop Slideshow"
 msgstr "Tosaigh/Stop Taispeántas Sleamhnán"
 
@@ -3091,15 +3106,15 @@ msgid "Unique ID"
 msgstr "Aitheantas uathúil"
 
 #: src/page/settings/account.vue:451 src/page/settings/account.vue:476
-#: src/page/settings/account.vue:501 src/common/util.js:432
+#: src/page/settings/account.vue:501 src/common/util.js:464
 #: src/component/photo/edit/details.vue:21
 #: src/component/photo/edit/details.vue:111
 #: src/component/photo/edit/details.vue:138
 #: src/component/photo/edit/details.vue:164 src/model/album.js:193
-#: src/model/photo.js:344 src/model/photo.js:805 src/model/photo.js:826
-#: src/model/photo.js:849 src/model/photo.js:867 src/model/photo.js:914
-#: src/model/photo.js:922 src/model/photo.js:1011 src/model/photo.js:1033
-#: src/model/photo.js:1078 src/model/photo.js:1091 src/model/user.js:157
+#: src/model/photo.js:322 src/model/photo.js:783 src/model/photo.js:804
+#: src/model/photo.js:827 src/model/photo.js:845 src/model/photo.js:892
+#: src/model/photo.js:900 src/model/photo.js:989 src/model/photo.js:1011
+#: src/model/photo.js:1056 src/model/photo.js:1069 src/model/user.js:157
 #: src/options/options.js:51 src/options/options.js:69
 #: src/options/options.js:86 src/options/options.js:100
 #: src/options/options.js:112 src/page/library/errors.vue:245
@@ -3266,7 +3281,7 @@ msgstr "Cód Fíoraithe"
 #: src/component/photo/view/cards.vue:363
 #: src/component/photo/view/cards.vue:491 src/component/photo/view/list.vue:190
 #: src/component/photo/view/mosaic.vue:207 src/model/file.js:221
-#: src/model/photo.js:938 src/model/photo.js:956 src/options/options.js:225
+#: src/model/photo.js:916 src/model/photo.js:934 src/options/options.js:225
 msgid "Video"
 msgstr "Físeán"
 
@@ -3418,7 +3433,7 @@ msgstr "Cuidíonn do thacaíocht leanúnach linn nuashonruithe rialta a sholáth
 msgid "Your library is continuously analyzed to automatically create albums of special moments, trips, and places."
 msgstr "Déantar anailís leanúnach ar do leabharlann chun albam chuimhneacháin, thurais agus áiteanna speisialta a chruthú go huathoibríoch."
 
-#: src/component/lightbox.vue:252
+#: src/component/lightbox.vue:254
 msgid "Zoom in/out"
 msgstr "Súmáil isteach/amach"
 
