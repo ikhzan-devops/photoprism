@@ -2942,6 +2942,10 @@ msgstr "Krikand"
 msgid "TensorFlow is required for image classification, facial recognition, and detecting unsafe content."
 msgstr "TensorFlow er nødvendig til billedklassificering, ansigtsgenkendelse og til at opdage potentielt stødende indhold."
 
+#: src/options/options.js:193
+msgid "Terrain"
+msgstr ""
+
 #: src/common/form.js:256
 msgid "Text"
 msgstr "Tekst"
@@ -3056,10 +3060,6 @@ msgstr "For mange filer valgt"
 #: src/common/api.js:124
 msgid "Too many requests"
 msgstr "For mange anmodninger"
-
-#: src/options/options.js:193
-msgid "Topographic"
-msgstr "Topografisk"
 
 #: src/component/photo/toolbar.vue:192 src/page/library/errors.vue:88
 msgid "Troubleshooting"
@@ -3424,6 +3424,9 @@ msgstr "Dit bibliotek analyseres løbende for automatisk at oprette album med s�
 #: src/component/lightbox.vue:252
 msgid "Zoom in/out"
 msgstr "Zoom ind/ud"
+
+#~ msgid "Topographic"
+#~ msgstr "Topografisk"
 
 #~ msgid "Low Resolution"
 #~ msgstr "Lav opløsning"

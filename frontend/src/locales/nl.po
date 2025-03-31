@@ -2942,6 +2942,10 @@ msgstr "Groenblauw"
 msgid "TensorFlow is required for image classification, facial recognition, and detecting unsafe content."
 msgstr "TensorFlow is nodig voor beeldclassificatie, gezichtsherkenning en het detecteren van onveilige inhoud."
 
+#: src/options/options.js:193
+msgid "Terrain"
+msgstr ""
+
 #: src/common/form.js:256
 msgid "Text"
 msgstr "Tekst"
@@ -3056,10 +3060,6 @@ msgstr "Te veel bestanden geselecteerd"
 #: src/common/api.js:124
 msgid "Too many requests"
 msgstr "Te veel verzoeken"
-
-#: src/options/options.js:193
-msgid "Topographic"
-msgstr "Topografische"
 
 #: src/component/photo/toolbar.vue:192 src/page/library/errors.vue:88
 msgid "Troubleshooting"
@@ -3424,6 +3424,9 @@ msgstr "Uw bibliotheek wordt voortdurend geanalyseerd om automatisch albums te m
 #: src/component/lightbox.vue:252
 msgid "Zoom in/out"
 msgstr "In-/uitzoomen"
+
+#~ msgid "Topographic"
+#~ msgstr "Topografische"
 
 #~ msgid "Low Resolution"
 #~ msgstr "Lage resolutie"

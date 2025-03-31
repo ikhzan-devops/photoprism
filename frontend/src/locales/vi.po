@@ -2939,6 +2939,10 @@ msgstr "màu xanh mòng két"
 msgid "TensorFlow is required for image classification, facial recognition, and detecting unsafe content."
 msgstr "TensorFlow cần thiết để phân loại hình ảnh, nhận dạng khuôn mặt và phát hiện nội dung không an toàn."
 
+#: src/options/options.js:193
+msgid "Terrain"
+msgstr ""
+
 #: src/common/form.js:256
 msgid "Text"
 msgstr "Chữ"
@@ -3053,10 +3057,6 @@ msgstr "Đã chọn quá nhiều tệp"
 #: src/common/api.js:124
 msgid "Too many requests"
 msgstr "quá nhiều yêu cầu"
-
-#: src/options/options.js:193
-msgid "Topographic"
-msgstr "Địa hình"
 
 #: src/component/photo/toolbar.vue:192 src/page/library/errors.vue:88
 msgid "Troubleshooting"
@@ -3423,6 +3423,9 @@ msgstr "Thư viện của bạn được phân tích liên tục để tự đ�
 #: src/component/lightbox.vue:252
 msgid "Zoom in/out"
 msgstr "Phóng to / thu nhỏ"
+
+#~ msgid "Topographic"
+#~ msgstr "Địa hình"
 
 #~ msgid "Low Resolution"
 #~ msgstr "Độ phân giải thấp"

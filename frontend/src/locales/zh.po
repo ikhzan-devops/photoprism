@@ -2944,6 +2944,10 @@ msgstr "蓝绿"
 msgid "TensorFlow is required for image classification, facial recognition, and detecting unsafe content."
 msgstr "图像分类、面部识别和检测不安全内容都需要使用 TensorFlow。"
 
+#: src/options/options.js:193
+msgid "Terrain"
+msgstr ""
+
 #: src/common/form.js:256
 msgid "Text"
 msgstr "文本"
@@ -3058,10 +3062,6 @@ msgstr "选择的文件过多"
 #: src/common/api.js:124
 msgid "Too many requests"
 msgstr "请求太多"
-
-#: src/options/options.js:193
-msgid "Topographic"
-msgstr "地形图"
 
 #: src/component/photo/toolbar.vue:192 src/page/library/errors.vue:88
 msgid "Troubleshooting"
@@ -3426,6 +3426,9 @@ msgstr "你的库被不断分析，以自动创建特殊时刻、旅行和地点
 #: src/component/lightbox.vue:252
 msgid "Zoom in/out"
 msgstr "缩放"
+
+#~ msgid "Topographic"
+#~ msgstr "地形图"
 
 #~ msgid "Low Resolution"
 #~ msgstr "低分辨率"

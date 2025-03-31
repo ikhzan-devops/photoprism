@@ -2939,6 +2939,10 @@ msgstr "Zertzeta"
 msgid "TensorFlow is required for image classification, facial recognition, and detecting unsafe content."
 msgstr "TensorFlow beharrezkoa da irudiak sailkatzeko, aurpegia ezagutzeko eta eduki ez-segurua detektatzeko."
 
+#: src/options/options.js:193
+msgid "Terrain"
+msgstr ""
+
 #: src/common/form.js:256
 msgid "Text"
 msgstr "Testua"
@@ -3053,10 +3057,6 @@ msgstr "Fitxategi gehiegi hautatu dira"
 #: src/common/api.js:124
 msgid "Too many requests"
 msgstr "Eskaera gehiegi"
-
-#: src/options/options.js:193
-msgid "Topographic"
-msgstr "Topografikoa"
 
 #: src/component/photo/toolbar.vue:192 src/page/library/errors.vue:88
 msgid "Troubleshooting"
@@ -3421,6 +3421,9 @@ msgstr "Zure liburutegia etengabe aztertzen da momentu, bidai eta leku berezien 
 #: src/component/lightbox.vue:252
 msgid "Zoom in/out"
 msgstr "Handitu/txikiagotu"
+
+#~ msgid "Topographic"
+#~ msgstr "Topografikoa"
 
 #~ msgid "Low Resolution"
 #~ msgstr "Bereizmen baxua"

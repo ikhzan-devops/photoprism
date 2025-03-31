@@ -2942,6 +2942,10 @@ msgstr "Morski"
 msgid "TensorFlow is required for image classification, facial recognition, and detecting unsafe content."
 msgstr "TensorFlow jest wymagany do klasyfikacji obrazów, rozpoznawania twarzy i wykrywania niebezpiecznych treści."
 
+#: src/options/options.js:193
+msgid "Terrain"
+msgstr ""
+
 #: src/common/form.js:256
 msgid "Text"
 msgstr "Tekst"
@@ -3056,10 +3060,6 @@ msgstr "Wybrano zbyt wiele plików"
 #: src/common/api.js:124
 msgid "Too many requests"
 msgstr "Zbyt wiele żądań"
-
-#: src/options/options.js:193
-msgid "Topographic"
-msgstr "Topograficzny"
 
 #: src/component/photo/toolbar.vue:192 src/page/library/errors.vue:88
 msgid "Troubleshooting"
@@ -3424,6 +3424,9 @@ msgstr "Twoja biblioteka jest na bieżąco analizowana, aby automatycznie tworzy
 #: src/component/lightbox.vue:252
 msgid "Zoom in/out"
 msgstr "Powiększ / Pomniejsz"
+
+#~ msgid "Topographic"
+#~ msgstr "Topograficzny"
 
 #~ msgid "Low Resolution"
 #~ msgstr "Niska rozdzielczość"

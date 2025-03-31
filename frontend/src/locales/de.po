@@ -2942,6 +2942,10 @@ msgstr "Blaugrün"
 msgid "TensorFlow is required for image classification, facial recognition, and detecting unsafe content."
 msgstr "TensorFlow wird für die Bildklassifizierung sowie die Erkennung von Gesichtern und unsicheren Inhalten benötigt."
 
+#: src/options/options.js:193
+msgid "Terrain"
+msgstr ""
+
 #: src/common/form.js:256
 msgid "Text"
 msgstr "Text"
@@ -3056,10 +3060,6 @@ msgstr "Zu viele Dateien ausgewählt"
 #: src/common/api.js:124
 msgid "Too many requests"
 msgstr "Zu viele Anfragen"
-
-#: src/options/options.js:193
-msgid "Topographic"
-msgstr "Topographisch"
 
 #: src/component/photo/toolbar.vue:192 src/page/library/errors.vue:88
 msgid "Troubleshooting"
@@ -3424,6 +3424,9 @@ msgstr "Die vorhandenen Bilder werden fortlaufend analysiert, um automatisch Alb
 #: src/component/lightbox.vue:252
 msgid "Zoom in/out"
 msgstr "Herein/Herauszoomen"
+
+#~ msgid "Topographic"
+#~ msgstr "Topographisch"
 
 #~ msgid "Low Resolution"
 #~ msgstr "Niedrige Auflösung"

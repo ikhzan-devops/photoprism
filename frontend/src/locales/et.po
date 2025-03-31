@@ -2939,6 +2939,10 @@ msgstr "Sinakasroheline"
 msgid "TensorFlow is required for image classification, facial recognition, and detecting unsafe content."
 msgstr "TensorFlow on vajalik piltide klassifitseerimiseks, näotuvastuseks ja ohtliku sisu tuvastamiseks."
 
+#: src/options/options.js:193
+msgid "Terrain"
+msgstr ""
+
 #: src/common/form.js:256
 msgid "Text"
 msgstr "Tekst"
@@ -3053,10 +3057,6 @@ msgstr "Liiga palju valitud faile"
 #: src/common/api.js:124
 msgid "Too many requests"
 msgstr "Liiga palju taotlusi"
-
-#: src/options/options.js:193
-msgid "Topographic"
-msgstr "Topograafiline"
 
 #: src/component/photo/toolbar.vue:192 src/page/library/errors.vue:88
 msgid "Troubleshooting"
@@ -3423,6 +3423,9 @@ msgstr "Sinu fototeeki analüüsitakse pidevalt, et luua automaatselt albumied e
 #: src/component/lightbox.vue:252
 msgid "Zoom in/out"
 msgstr "Suumi sisse/välja"
+
+#~ msgid "Topographic"
+#~ msgstr "Topograafiline"
 
 #~ msgid "Low Resolution"
 #~ msgstr "Madal resolutsioon"

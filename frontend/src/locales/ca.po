@@ -2942,6 +2942,10 @@ msgstr "Blau Cerseta"
 msgid "TensorFlow is required for image classification, facial recognition, and detecting unsafe content."
 msgstr "TensorFlow és necessari per a la classificació d'imatges, el reconeixement facial i la detecció de contingut no segur."
 
+#: src/options/options.js:193
+msgid "Terrain"
+msgstr ""
+
 #: src/common/form.js:256
 msgid "Text"
 msgstr "Text"
@@ -3056,10 +3060,6 @@ msgstr "S'han seleccionat massa fitxers"
 #: src/common/api.js:124
 msgid "Too many requests"
 msgstr "Massa peticions"
-
-#: src/options/options.js:193
-msgid "Topographic"
-msgstr "Topogràfic"
 
 #: src/component/photo/toolbar.vue:192 src/page/library/errors.vue:88
 msgid "Troubleshooting"
@@ -3426,6 +3426,9 @@ msgstr "La vostra biblioteca s'analitza contínuament per crear automàticament 
 #: src/component/lightbox.vue:252
 msgid "Zoom in/out"
 msgstr "Apropa o redueix"
+
+#~ msgid "Topographic"
+#~ msgstr "Topogràfic"
 
 #~ msgid "Low Resolution"
 #~ msgstr "Baixa resolució"

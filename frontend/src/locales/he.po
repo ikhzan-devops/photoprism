@@ -2943,6 +2943,10 @@ msgstr "ירוק כחלחל"
 msgid "TensorFlow is required for image classification, facial recognition, and detecting unsafe content."
 msgstr "TensorFlow נדרש לסיווג תמונות, זיהוי פנים וזיהוי תוכן לא בטוח."
 
+#: src/options/options.js:193
+msgid "Terrain"
+msgstr ""
+
 #: src/common/form.js:256
 msgid "Text"
 msgstr "טֶקסט"
@@ -3057,10 +3061,6 @@ msgstr "נבחרו יותר מדי קבצים"
 #: src/common/api.js:124
 msgid "Too many requests"
 msgstr "יותר מדי בקשות"
-
-#: src/options/options.js:193
-msgid "Topographic"
-msgstr "טופוגרפית"
 
 #: src/component/photo/toolbar.vue:192 src/page/library/errors.vue:88
 msgid "Troubleshooting"
@@ -3425,6 +3425,9 @@ msgstr "הספרייה שלך מנותחת באופן רציף ליצירת אל
 #: src/component/lightbox.vue:252
 msgid "Zoom in/out"
 msgstr "זום פנימה\\החוצה"
+
+#~ msgid "Topographic"
+#~ msgstr "טופוגרפית"
 
 #~ msgid "Low Resolution"
 #~ msgstr "רזולוציה נמוכה"

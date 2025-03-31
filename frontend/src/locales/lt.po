@@ -2942,6 +2942,10 @@ msgstr "Teal"
 msgid "TensorFlow is required for image classification, facial recognition, and detecting unsafe content."
 msgstr "\"TensorFlow\" reikalingas vaizdų klasifikavimui, veido atpažinimui ir nesaugaus turinio aptikimui."
 
+#: src/options/options.js:193
+msgid "Terrain"
+msgstr ""
+
 #: src/common/form.js:256
 msgid "Text"
 msgstr "Tekstas"
@@ -3056,10 +3060,6 @@ msgstr "Pasirinkta per daug failų"
 #: src/common/api.js:124
 msgid "Too many requests"
 msgstr "Per daug prašymų"
-
-#: src/options/options.js:193
-msgid "Topographic"
-msgstr "Topografinis"
 
 #: src/component/photo/toolbar.vue:192 src/page/library/errors.vue:88
 msgid "Troubleshooting"
@@ -3424,6 +3424,9 @@ msgstr "Jūsų biblioteka nuolat analizuojama, kad būtų galima automatiškai k
 #: src/component/lightbox.vue:252
 msgid "Zoom in/out"
 msgstr "Priartinimas / atitolinimas"
+
+#~ msgid "Topographic"
+#~ msgstr "Topografinis"
 
 #~ msgid "Low Resolution"
 #~ msgstr "Maža skiriamoji geba"

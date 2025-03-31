@@ -2942,6 +2942,10 @@ msgstr "นกเป็ดน้ำ"
 msgid "TensorFlow is required for image classification, facial recognition, and detecting unsafe content."
 msgstr "ต้องใช้ TensorFlow สำหรับการจัดหมวดหมู่รูปภาพ การจดจำใบหน้า และการตรวจจับเนื้อหาที่ไม่ปลอดภัย"
 
+#: src/options/options.js:193
+msgid "Terrain"
+msgstr ""
+
 #: src/common/form.js:256
 msgid "Text"
 msgstr "ข้อความ"
@@ -3056,10 +3060,6 @@ msgstr "เลือกไฟล์มากเกินไป"
 #: src/common/api.js:124
 msgid "Too many requests"
 msgstr "คำขอมากเกินไป"
-
-#: src/options/options.js:193
-msgid "Topographic"
-msgstr "ภูมิประเทศ"
 
 #: src/component/photo/toolbar.vue:192 src/page/library/errors.vue:88
 msgid "Troubleshooting"
@@ -3424,6 +3424,9 @@ msgstr "คลังของคุณได้รับการวิเคร
 #: src/component/lightbox.vue:252
 msgid "Zoom in/out"
 msgstr "ซูมเข้า/ออก"
+
+#~ msgid "Topographic"
+#~ msgstr "ภูมิประเทศ"
 
 #~ msgid "Low Resolution"
 #~ msgstr "ความละเอียดต่ำ"

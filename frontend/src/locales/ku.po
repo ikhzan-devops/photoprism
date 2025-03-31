@@ -2942,6 +2942,10 @@ msgstr "سەوزی شینباو"
 msgid "TensorFlow is required for image classification, facial recognition, and detecting unsafe content."
 msgstr "TensorFlow ji bo dabeşkirina wêneyê, naskirina rû, û tespîtkirina naveroka ne ewle hewce ye."
 
+#: src/options/options.js:193
+msgid "Terrain"
+msgstr ""
+
 #: src/common/form.js:256
 msgid "Text"
 msgstr "Nivîstok"
@@ -3056,10 +3060,6 @@ msgstr "Gelek pel hatine hilbijartin"
 #: src/common/api.js:124
 msgid "Too many requests"
 msgstr "Pir daxwazî"
-
-#: src/options/options.js:193
-msgid "Topographic"
-msgstr "تۆپۆگرافیک"
 
 #: src/component/photo/toolbar.vue:192 src/page/library/errors.vue:88
 msgid "Troubleshooting"
@@ -3424,6 +3424,9 @@ msgstr "Pirtûkxaneya we bi domdarî tê analîz kirin ku bixweber albumên dem�
 #: src/component/lightbox.vue:252
 msgid "Zoom in/out"
 msgstr "گەورەکردن/بچووکردن"
+
+#~ msgid "Topographic"
+#~ msgstr "تۆپۆگرافیک"
 
 #~ msgid "Low Resolution"
 #~ msgstr "Resolution kêm"

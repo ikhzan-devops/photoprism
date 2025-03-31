@@ -2943,6 +2943,10 @@ msgstr "टील"
 msgid "TensorFlow is required for image classification, facial recognition, and detecting unsafe content."
 msgstr "छवि वर्गीकरण, चेहरे की पहचान और असुरक्षित सामग्री का पता लगाने के लिए TensorFlow आवश्यक है।"
 
+#: src/options/options.js:193
+msgid "Terrain"
+msgstr ""
+
 #: src/common/form.js:256
 msgid "Text"
 msgstr "मूलपाठ"
@@ -3057,10 +3061,6 @@ msgstr "बहुत सारी फ़ाइलें चयनित"
 #: src/common/api.js:124
 msgid "Too many requests"
 msgstr "बहुत अधिक अनुरोध"
-
-#: src/options/options.js:193
-msgid "Topographic"
-msgstr "स्थलाकृतिक"
 
 #: src/component/photo/toolbar.vue:192 src/page/library/errors.vue:88
 msgid "Troubleshooting"
@@ -3425,6 +3425,9 @@ msgstr "विशेष क्षणों, यात्राओं और स�
 #: src/component/lightbox.vue:252
 msgid "Zoom in/out"
 msgstr "ज़ूम इन / आउट करें"
+
+#~ msgid "Topographic"
+#~ msgstr "स्थलाकृतिक"
 
 #~ msgid "Low Resolution"
 #~ msgstr "कम दृश्यता"

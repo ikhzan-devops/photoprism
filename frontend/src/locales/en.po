@@ -2941,6 +2941,10 @@ msgstr ""
 msgid "TensorFlow is required for image classification, facial recognition, and detecting unsafe content."
 msgstr ""
 
+#: src/options/options.js:193
+msgid "Terrain"
+msgstr ""
+
 #: src/common/form.js:256
 msgid "Text"
 msgstr ""
@@ -3054,10 +3058,6 @@ msgstr ""
 
 #: src/common/api.js:124
 msgid "Too many requests"
-msgstr ""
-
-#: src/options/options.js:193
-msgid "Topographic"
 msgstr ""
 
 #: src/component/photo/toolbar.vue:192 src/page/library/errors.vue:88

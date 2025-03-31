@@ -2941,6 +2941,10 @@ msgstr "A zöldeskék"
 msgid "TensorFlow is required for image classification, facial recognition, and detecting unsafe content."
 msgstr "A TensorFlow-ra a képosztályozáshoz, az arcfelismeréshez és a nem biztonságos tartalom felismeréséhez van szükség."
 
+#: src/options/options.js:193
+msgid "Terrain"
+msgstr ""
+
 #: src/common/form.js:256
 msgid "Text"
 msgstr "Szöveg"
@@ -3055,10 +3059,6 @@ msgstr "Túl sok fájl van kiválasztva"
 #: src/common/api.js:124
 msgid "Too many requests"
 msgstr "Túl sok kérés"
-
-#: src/options/options.js:193
-msgid "Topographic"
-msgstr "Topográfiai"
 
 #: src/component/photo/toolbar.vue:192 src/page/library/errors.vue:88
 msgid "Troubleshooting"
@@ -3423,6 +3423,9 @@ msgstr "Könyvtárát folyamatosan elemzi a rendszer, hogy automatikusan létreh
 #: src/component/lightbox.vue:252
 msgid "Zoom in/out"
 msgstr "Nagyítás/kicsinyítés"
+
+#~ msgid "Topographic"
+#~ msgstr "Topográfiai"
 
 #~ msgid "Low Resolution"
 #~ msgstr "Alacsony felbontás"

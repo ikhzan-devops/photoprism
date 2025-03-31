@@ -2942,6 +2942,10 @@ msgstr "Sarcelle"
 msgid "TensorFlow is required for image classification, facial recognition, and detecting unsafe content."
 msgstr "TensorFlow est requis pour la classification des images, la reconnaissance faciale et la détection des contenus choquants."
 
+#: src/options/options.js:193
+msgid "Terrain"
+msgstr ""
+
 #: src/common/form.js:256
 msgid "Text"
 msgstr "Texte"
@@ -3056,10 +3060,6 @@ msgstr "Trop de fichiers sélectionnés"
 #: src/common/api.js:124
 msgid "Too many requests"
 msgstr "Trop de demandes"
-
-#: src/options/options.js:193
-msgid "Topographic"
-msgstr "Topograpique"
 
 #: src/component/photo/toolbar.vue:192 src/page/library/errors.vue:88
 msgid "Troubleshooting"
@@ -3424,6 +3424,9 @@ msgstr "Votre bibliothèque est analysée en permanence pour créer automatiquem
 #: src/component/lightbox.vue:252
 msgid "Zoom in/out"
 msgstr "Agrandir/Dézoomer"
+
+#~ msgid "Topographic"
+#~ msgstr "Topograpique"
 
 #~ msgid "Low Resolution"
 #~ msgstr "Basse résolution"

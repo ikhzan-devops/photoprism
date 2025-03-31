@@ -2942,6 +2942,10 @@ msgstr "Turkuaz"
 msgid "TensorFlow is required for image classification, facial recognition, and detecting unsafe content."
 msgstr "TensorFlow görüntü sınıflandırma, yüz tanıma ve güvenli olmayan içeriği tespit etmek için gereklidir."
 
+#: src/options/options.js:193
+msgid "Terrain"
+msgstr ""
+
 #: src/common/form.js:256
 msgid "Text"
 msgstr "Metin"
@@ -3056,10 +3060,6 @@ msgstr "Çok fazla dosya seçildi"
 #: src/common/api.js:124
 msgid "Too many requests"
 msgstr "Çok fazla istek var"
-
-#: src/options/options.js:193
-msgid "Topographic"
-msgstr "Topografik"
 
 #: src/component/photo/toolbar.vue:192 src/page/library/errors.vue:88
 msgid "Troubleshooting"
@@ -3424,6 +3424,9 @@ msgstr "Özel anların, gezilerin ve yerlerin albümlerini otomatik olarak oluş
 #: src/component/lightbox.vue:252
 msgid "Zoom in/out"
 msgstr "Yakınlaştır / uzaklaştır"
+
+#~ msgid "Topographic"
+#~ msgstr "Topografik"
 
 #~ msgid "Low Resolution"
 #~ msgstr "Düşük Çözünürlük"

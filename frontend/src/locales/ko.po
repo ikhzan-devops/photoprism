@@ -2943,6 +2943,10 @@ msgstr "암녹색"
 msgid "TensorFlow is required for image classification, facial recognition, and detecting unsafe content."
 msgstr "이미지 분류, 얼굴 인식, 안전하지 않은 콘텐츠 감지에는 TensorFlow가 필요합니다."
 
+#: src/options/options.js:193
+msgid "Terrain"
+msgstr ""
+
 #: src/common/form.js:256
 msgid "Text"
 msgstr "텍스트"
@@ -3057,10 +3061,6 @@ msgstr "선택한 파일이 너무 많습니다."
 #: src/common/api.js:124
 msgid "Too many requests"
 msgstr "너무 많은 요청"
-
-#: src/options/options.js:193
-msgid "Topographic"
-msgstr "지형"
 
 #: src/component/photo/toolbar.vue:192 src/page/library/errors.vue:88
 msgid "Troubleshooting"
@@ -3425,6 +3425,9 @@ msgstr "라이브러리는 지속적으로 분석되어 특별한 순간, 여행
 #: src/component/lightbox.vue:252
 msgid "Zoom in/out"
 msgstr "확대/축소"
+
+#~ msgid "Topographic"
+#~ msgstr "지형"
 
 #~ msgid "Low Resolution"
 #~ msgstr "저해상도"

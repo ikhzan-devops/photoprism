@@ -2942,6 +2942,10 @@ msgstr "Teal"
 msgid "TensorFlow is required for image classification, facial recognition, and detecting unsafe content."
 msgstr "TensorFlow е необходим за класификация на изображения, разпознаване на лица и откриване на опасно съдържание."
 
+#: src/options/options.js:193
+msgid "Terrain"
+msgstr ""
+
 #: src/common/form.js:256
 msgid "Text"
 msgstr "Текст"
@@ -3056,10 +3060,6 @@ msgstr "Избрани са твърде много файлове"
 #: src/common/api.js:124
 msgid "Too many requests"
 msgstr "Твърде много заявки"
-
-#: src/options/options.js:193
-msgid "Topographic"
-msgstr "Топографски"
 
 #: src/component/photo/toolbar.vue:192 src/page/library/errors.vue:88
 msgid "Troubleshooting"
@@ -3424,6 +3424,9 @@ msgstr "Библиотеката ви се анализира непрекъсн
 #: src/component/lightbox.vue:252
 msgid "Zoom in/out"
 msgstr "Увеличаване/намаляване на мащаба"
+
+#~ msgid "Topographic"
+#~ msgstr "Топографски"
 
 #~ msgid "Low Resolution"
 #~ msgstr "Ниска разделителна способност"

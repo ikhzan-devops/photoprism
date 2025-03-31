@@ -2942,6 +2942,10 @@ msgstr "Modrozelený"
 msgid "TensorFlow is required for image classification, facial recognition, and detecting unsafe content."
 msgstr "TensorFlow je potrebný na klasifikáciu obrázkov, rozpoznávanie tváre a zisťovanie nebezpečného obsahu."
 
+#: src/options/options.js:193
+msgid "Terrain"
+msgstr ""
+
 #: src/common/form.js:256
 msgid "Text"
 msgstr "Text"
@@ -3056,10 +3060,6 @@ msgstr "Príliš veľa vybraných súborov"
 #: src/common/api.js:124
 msgid "Too many requests"
 msgstr "Príliš veľa požiadaviek"
-
-#: src/options/options.js:193
-msgid "Topographic"
-msgstr "Topografický"
 
 #: src/component/photo/toolbar.vue:192 src/page/library/errors.vue:88
 msgid "Troubleshooting"
@@ -3424,6 +3424,9 @@ msgstr "Vaša knižnica sa priebežne analyzuje aby mohla automaticky vytvárať
 #: src/component/lightbox.vue:252
 msgid "Zoom in/out"
 msgstr "Priblíziť/Oddialiť"
+
+#~ msgid "Topographic"
+#~ msgstr "Topografický"
 
 #~ msgid "Low Resolution"
 #~ msgstr "Nízke rozlíšenie"

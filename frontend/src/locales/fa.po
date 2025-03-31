@@ -2942,6 +2942,10 @@ msgstr "آبی رنگ"
 msgid "TensorFlow is required for image classification, facial recognition, and detecting unsafe content."
 msgstr "TensorFlow برای طبقه بندی تصویر، تشخیص چهره و تشخیص محتوای ناامن مورد نیاز است."
 
+#: src/options/options.js:193
+msgid "Terrain"
+msgstr ""
+
 #: src/common/form.js:256
 msgid "Text"
 msgstr "متن"
@@ -3056,10 +3060,6 @@ msgstr "تعداد زیادی فایل انتخاب شده است"
 #: src/common/api.js:124
 msgid "Too many requests"
 msgstr "درخواست های خیلی زیاد"
-
-#: src/options/options.js:193
-msgid "Topographic"
-msgstr "توپوگرافی"
 
 #: src/component/photo/toolbar.vue:192 src/page/library/errors.vue:88
 msgid "Troubleshooting"
@@ -3426,6 +3426,9 @@ msgstr "کتابخانه شما به طور مداوم تجزیه و تحلیل 
 #: src/component/lightbox.vue:252
 msgid "Zoom in/out"
 msgstr "بزرگنمایی/کوچک کردن"
+
+#~ msgid "Topographic"
+#~ msgstr "توپوگرافی"
 
 #~ msgid "Low Resolution"
 #~ msgstr "وضوح کم"
