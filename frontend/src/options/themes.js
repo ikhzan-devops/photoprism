@@ -649,6 +649,48 @@ let themes = {
     },
   },
 
+  /* Special theme used for the photo/video viewer */
+  lightbox: {
+    dark: true,
+    title: "Lightbox",
+    name: "lightbox",
+    colors: {
+      "background": "#131313",
+      "surface": "#131313",
+      "on-surface": "#ffffff",
+      "surface-bright": "#333333",
+      "surface-variant": "#cccccc",
+      "on-surface-variant": "#f6f6f6",
+      "card": "#171717",
+      "selected": "#9c9c9c",
+      "table": "#242424", // Variations: 242628, 212325, 1E2022, 1C1D1F, 191A1C, 161718, 131415, 111112
+      "button": "#1D1E1F",
+      "switch": "#101112",
+      "primary": "#ebebeb",
+      "highlight": "#9c9c9c",
+      "secondary": "#191919",
+      "secondary-light": "#1e1e1e",
+      "accent": "#2D2E2E",
+      "error": "#e57373",
+      "info": "#9E7BEA",
+      "success": "#8763d5",
+      "warning": "#ecc434",
+      "favorite": "#FFD600",
+      "remove": "#da4e4c",
+      "restore": "#00d48a",
+      "album": "#ed9e00",
+      "on-album": "#ffffff",
+      "download": "#00bfa5",
+      "private": "#00b8d4",
+      "edit": "#2196F3",
+      "share": "#3F51B5",
+      "love": "#ef5350",
+      "terminal": "#4A464F",
+      "navigation": "#121212",
+      "navigation-home": "#121212",
+    },
+  },
+
   /* Special theme used on the login page */
   login: {
     dark: false,

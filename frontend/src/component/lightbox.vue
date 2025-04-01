@@ -7,6 +7,7 @@
     scrim
     persistent
     tiled
+    theme="lightbox"
     class="p-dialog p-lightbox v-dialog--lightbox"
     @after-enter="afterEnter"
     @after-leave="afterLeave"
@@ -39,11 +40,17 @@
         @keydown.esc.exact="onKeyDown"
         @keydown.ctrl="onKeyDown"
       ></div>
-      <div v-if="sidebarVisible" ref="sidebar" class="p-lightbox__sidebar">
+      <div v-if="sidebarVisible" ref="sidebar" class="p-lightbox__sidebar bg-background">
         <p-sidebar-metadata v-model="model" :album="album" :context="context" @close="hideSidebar"></p-sidebar-metadata>
       </div>
     </div>
-    <div v-show="video.controls && controlsShown !== 0" ref="controls" class="p-lightbox__controls" :style="`width: ${viewPortWidth}px`" @click.stop.prevent>
+    <div
+      v-show="video.controls && controlsShown !== 0"
+      ref="controls"
+      class="p-lightbox__controls"
+      :style="`width: ${viewPortWidth}px`"
+      @click.stop.prevent
+    >
       <div :title="video.error" class="video-control video-control--play">
         <v-icon v-if="video.error || video.errorCode > 0" icon="mdi-alert"></v-icon>
         <v-icon v-else-if="video.seeking || video.waiting" icon="mdi-loading" class="animate-loading"></v-icon>
@@ -127,7 +134,7 @@ export default {
       trace,
       visible: false,
       busy: false,
-      sidebarVisible: false,
+      sidebarVisible: localStorage.getItem("lightbox.sidebar.visible") === "true",
       menuElement: null,
       menuBgColor: "#252525",
       menuVisible: false,
@@ -247,6 +254,7 @@ export default {
       this.busy = true;
       this.visible = true;
       this.wasFullscreen = $fullscreen.isEnabled();
+      this.sidebarVisible = localStorage.getItem("lightbox.sidebar.visible") === "true";
 
       // Publish init event.
       this.$event.publish("lightbox.init");
@@ -257,7 +265,7 @@ export default {
       this.onReset();
 
       // Hide sidebar.
-      this.hideSidebar();
+      this.sidebarVisible = false;
 
       // Remove lightbox focus and hide lightbox.
       if (this.visible) {
@@ -2050,6 +2058,8 @@ export default {
 
       this.sidebarVisible = true;
 
+      localStorage.setItem("lightbox.sidebar.visible", `${this.sidebarVisible.toString()}`);
+
       // Set focus to sidebar and resize the content element.
       this.$nextTick(() => {
         this.getSidebarElement().focus();
@@ -2063,6 +2073,8 @@ export default {
       }
 
       this.sidebarVisible = false;
+
+      localStorage.setItem("lightbox.sidebar.visible", `${this.sidebarVisible.toString()}`);
 
       // Return focus and resize the content element.
       this.$nextTick(() => {

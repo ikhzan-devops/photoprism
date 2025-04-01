@@ -59,8 +59,18 @@
     overflow: auto;
     width: 300px;
     z-index: 100000;
-    background-color: rgb(var(--v-theme-surface, #1e1e1e));
     opacity: 1;
+    border-color: rgba(var(--v-border-color), var(--v-border-opacity));
+}
+
+.is-ltr .p-lightbox__container > .p-lightbox__sidebar {
+    border-left-style: solid;
+    border-left-width: thin;
+}
+
+.is-rtl .p-lightbox__container > .p-lightbox__sidebar {
+    border-right-style: solid;
+    border-right-width: thin;
 }
 
 .p-lightbox__container > .p-lightbox__sidebar .v-toolbar {
