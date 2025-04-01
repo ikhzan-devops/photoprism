@@ -323,7 +323,6 @@ export default {
       return {
         appendToEl: this.getContentElement(),
         pswpModule: PhotoSwipe,
-        dataSource: this.models,
         index: this.index,
         mouseMovePan: true,
         arrowPrev: true,
@@ -471,6 +470,9 @@ export default {
           // Unblock.
           view.lightbox.loading = false;
         });
+    },
+    getNumItems() {
+      return this.models.length;
     },
     getItemData(el, i) {
       // Get the slide model.
@@ -971,6 +973,7 @@ export default {
 
       // Processes model data for rendering slides with PhotoSwipe,
       // see https://photoswipe.com/filters/#itemdata.
+      this.lightbox.addFilter("numItems", this.getNumItems.bind(this));
       this.lightbox.addFilter("itemData", this.getItemData.bind(this));
       this.lightbox.addFilter("isContentZoomable", this.isContentZoomable.bind(this));
 
