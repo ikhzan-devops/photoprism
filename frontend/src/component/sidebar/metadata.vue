@@ -40,6 +40,7 @@
           <v-icon icon="mdi-pencil" size="20"></v-icon>
         </template -->
       </v-list-item>
+
       <v-list-item
         v-if="modelValue.Type === 'image'"
         prepend-icon="mdi-image"
@@ -73,6 +74,16 @@
         :title="$gettext('Document')"
         class="metadata__item"
       >
+      </v-list-item>
+
+      <v-list-item
+        prepend-icon="mdi-map-marker"
+        title="Add location"
+        class="metadata__item"
+      >
+        <!-- template #append>
+          <v-icon icon="mdi-pencil" size="20"></v-icon>
+        </template -->
       </v-list-item>
     </v-list>
   </div>
