@@ -39,6 +39,7 @@
         @keydown.space.exact="onKeyDown"
         @keydown.esc.exact="onKeyDown"
         @keydown.ctrl="onKeyDown"
+        @keydown.meta="onKeyDown"
       ></div>
       <div v-if="sidebarVisible" ref="sidebar" class="p-lightbox__sidebar bg-background">
         <p-sidebar-info v-model="model" :album="album" :context="context" @close="hideSidebar"></p-sidebar-info>

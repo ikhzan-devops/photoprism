@@ -5,6 +5,7 @@
     class="p-page p-page-album-photos"
     :class="$config.aclClasses('photos')"
     @keydown.ctrl="onCtrl"
+    @keydown.meta="onCtrl"
   >
     <p-album-toolbar
       ref="toolbar"
@@ -234,7 +235,7 @@ export default {
       this.lastFilter = {};
     },
     onCtrl(ev) {
-      if (!ev || !(ev instanceof KeyboardEvent) || !ev.ctrlKey || !this.$view.isActive(this)) {
+      if (!ev || !(ev instanceof KeyboardEvent) || !(ev.ctrlKey || ev.metaKey) || !this.$view.isActive(this)) {
         return;
       }
 

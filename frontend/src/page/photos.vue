@@ -5,6 +5,7 @@
     class="p-page p-page-photos not-selectable"
     :class="$config.aclClasses('photos')"
     @keydown.ctrl="onCtrl"
+    @keydown.meta="onCtrl"
   >
     <p-photo-toolbar
       ref="toolbar"
@@ -283,7 +284,7 @@ export default {
   },
   methods: {
     onCtrl(ev) {
-      if (!ev || !(ev instanceof KeyboardEvent) || !ev.ctrlKey || !this.$view.isActive(this)) {
+      if (!ev || !(ev instanceof KeyboardEvent) || !(ev.ctrlKey || ev.metaKey) || !this.$view.isActive(this)) {
         return;
       }
 
