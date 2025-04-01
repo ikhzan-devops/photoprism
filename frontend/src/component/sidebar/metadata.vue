@@ -5,18 +5,20 @@
       <v-toolbar-title class="text-h6 ms-2">{{ $gettext("Info") }}</v-toolbar-title>
     </v-toolbar>
     <v-list nav slim tile density="compact" class="metadata__list mt-2">
-      <v-list-item class="metadata__item">
-        <v-text-field
+      <v-list-item v-if="modelValue.Title" class="metadata__item">
+        <div class="text-subtitle-1 font-weight-bold">{{ modelValue.Title }}</div>
+        <!-- v-text-field
           :model-value="modelValue.Title"
           :placeholder="$gettext('Add a title')"
           density="comfortable"
           variant="solo-filled"
           hide-details
           class="pa-0 font-weight-bold"
-        ></v-text-field>
+        ></v-text-field -->
       </v-list-item>
-      <v-list-item class="metadata__item">
-        <v-textarea
+      <v-list-item v-if="modelValue.Caption" class="metadata__item">
+        <div class="text-body-2">{{ modelValue.Caption }}</div>
+        <!-- v-textarea
           :model-value="modelValue.Caption"
           :placeholder="$gettext('Add a caption')"
           density="comfortable"
@@ -26,9 +28,9 @@
           auto-grow
           :rows="1"
           class="pa-0"
-        ></v-textarea>
+        ></v-textarea -->
       </v-list-item>
-      <v-divider class="my-4"></v-divider>
+      <v-divider v-if="modelValue.Title || modelValue.Caption" class="my-4"></v-divider>
       <v-list-item
         prepend-icon="mdi-calendar"
         :title="$util.formatDate(modelValue.TakenAtLocal, 'date_med_tz', modelValue.TimeZone)"
