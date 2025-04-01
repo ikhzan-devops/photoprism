@@ -161,35 +161,47 @@ export const MapsAnimate = () => [
 export const MapsStyle = (experimental) => {
   const styles = [
     {
-      text: $gettext("Default"),
+      title: $gettext("Default"),
       value: "",
+      style: "default",
     },
     {
-      text: $gettext("Streets"),
+      title: $gettext("Streets"),
       value: "streets",
+      style: "streets-v2",
       sponsor: true,
     },
     {
-      text: $gettext("Satellite"),
+      title: $gettext("Hybrid"),
       value: "hybrid",
+      style: "414c531c-926d-4164-a057-455a215c0eee",
       sponsor: true,
     },
     {
-      text: $gettext("Outdoor"),
+      title: $gettext("Satellite"),
+      value: "satellite",
+      style: "0195eda5-6f09-7acd-8520-ab103fc75810",
+      sponsor: true,
+    },
+    {
+      title: $gettext("Outdoor"),
       value: "outdoor",
+      style: "outdoor-v2",
       sponsor: true,
     },
     {
-      text: $gettext("Topographic"),
+      title: $gettext("Terrain"),
       value: "topographique",
+      style: "topo-v2",
       sponsor: true,
     },
   ];
 
   if (experimental) {
-    styles.splice(1, 0, {
-      text: $gettext("Low Resolution"),
+    styles.push({
+      title: $gettext("Offline"),
       value: "low-resolution",
+      style: "low-resolution",
     });
   }
 

@@ -296,6 +296,12 @@ export default {
           ev.preventDefault();
           this.$view.focus(this.$refs?.toolbar, ".input-search input", true);
           break;
+        case "KeyU":
+          ev.preventDefault();
+          if (this.$config.allow("files", "upload") && this.$config.feature("upload")) {
+            this.$event.publish("dialog.upload");
+          }
+          break;
       }
     },
     hideExpansionPanel() {
@@ -456,6 +462,8 @@ export default {
 
       if (showMerged) {
         this.$lightbox.openModels(Thumb.fromFiles([selected]), 0);
+      } else if (this.filter?.order === "random") {
+        this.$lightbox.openModels(Thumb.fromPhotos(this.results), index);
       } else {
         this.$lightbox.openView(this, index);
       }
@@ -497,22 +505,24 @@ export default {
 
           if (this.complete) {
             this.setOffset(response.offset);
-
             if (!this.embedded && this.results.length > 1) {
-              this.$notify.info(
-                this.$gettextInterpolate(this.$gettext("%{n} pictures found"), { n: this.results.length })
-              );
+              if (!this.lightbox.open) {
+                this.$notify.info(
+                  this.$gettextInterpolate(this.$gettext("%{n} pictures found"), { n: this.results.length })
+                );
+              }
             }
           } else if (this.results.length >= Photo.limit()) {
             this.setOffset(response.offset);
             this.complete = true;
             this.scrollDisabled = true;
-            this.$notify.warn(this.$gettext("Can't load more, limit reached"));
+            if (!this.lightbox.open) {
+              this.$notify.warn(this.$gettext("Can't load more, limit reached"));
+            }
           } else {
             this.setOffset(response.offset + response.limit);
             this.offset = offset + count;
             this.page++;
-
             this.$nextTick(() => {
               if (this.$root.$el.clientHeight <= window.document.documentElement.clientHeight + 300) {
                 this.loadMore();
