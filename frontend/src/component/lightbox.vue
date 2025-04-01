@@ -1058,6 +1058,7 @@ export default {
 
       // Init PhotoSwipe.
       this.lightbox.init();
+      this.viewPortWidth = this.getViewport().x;
 
       // Show first image.
       this.lightbox.loadAndOpen(this.index);
@@ -1397,10 +1398,6 @@ export default {
           // Render small caption otherwise.
           caption += `<p>${this.$util.encodeHTML(text)}</p>`;
         }
-      }
-
-      if (!caption && this.album && this.album instanceof Album && this.album.Title) {
-        caption = `<h4>${this.$util.encodeHTML(this.album.Title.trim())}</h4>`;
       }
 
       return this.$util.sanitizeHtml(caption);
