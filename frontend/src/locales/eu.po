@@ -2,13 +2,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: ci@photoprism.app\n"
-"PO-Revision-Date: 2025-03-26 11:54+0000\n"
+"PO-Revision-Date: 2025-03-31 23:53+0000\n"
 "Last-Translator: Google Cloud Translation Basic <noreply-mt-google-translate@weblate.org>\n"
 "Language: eu\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.9.2\n"
+"X-Generator: Weblate 5.10.4\n"
 "Generated-By: easygettext\n"
 
 #: src/locales.js:269
@@ -39,7 +39,7 @@ msgstr "{0} hautatuta"
 msgid "{0}-{1} of {2}"
 msgstr "{0}-{1}/{2}"
 
-#: src/page/albums.vue:593
+#: src/page/albums.vue:601
 msgid "%{n} albums found"
 msgstr "%{n} album aurkitu dira"
 
@@ -55,7 +55,7 @@ msgstr "%{n} karpeta aurkitu dira"
 msgid "%{n} GB of %{q} GB used"
 msgstr "%{n} GB-tik %{q} GB erabilita"
 
-#: src/page/labels.vue:505
+#: src/page/labels.vue:524
 msgid "%{n} labels found"
 msgstr "%{n} etiketa aurkitu dira"
 
@@ -64,8 +64,8 @@ msgstr "%{n} etiketa aurkitu dira"
 msgid "%{n} people found"
 msgstr "%{n} pertsona aurkitu dira"
 
-#: src/page/album/photos.vue:305 src/page/album/photos.vue:479
-#: src/page/photos.vue:427 src/page/photos.vue:606
+#: src/page/album/photos.vue:313 src/page/album/photos.vue:489
+#: src/page/photos.vue:435 src/page/photos.vue:616
 msgid "%{n} pictures found"
 msgstr "%{n} argazki aurkitu dira"
 
@@ -77,11 +77,11 @@ msgstr "%{s} luzeegia da"
 msgid "%{s} is too short"
 msgstr "%{s} laburregia da"
 
-#: src/options/options.js:282
+#: src/options/options.js:294
 msgid "1 hour"
 msgstr "1 ordu"
 
-#: src/options/options.js:284
+#: src/options/options.js:296
 msgid "12 hours"
 msgstr "12 ordu"
 
@@ -94,7 +94,7 @@ msgstr "2 faktoreko autentifikazioa"
 msgid "2FA"
 msgstr "2FA"
 
-#: src/options/options.js:283
+#: src/options/options.js:295
 msgid "4 hours"
 msgstr "4 ordu"
 
@@ -230,15 +230,15 @@ msgstr "Admin"
 msgid "Advanced"
 msgstr "Aurreratua"
 
-#: src/options/options.js:292
+#: src/options/options.js:304
 msgid "After 1 day"
 msgstr "Egun 1 igaro ondoren"
 
-#: src/options/options.js:293
+#: src/options/options.js:305
 msgid "After 3 days"
 msgstr "3 egun igaro ondoren"
 
-#: src/options/options.js:294
+#: src/options/options.js:306
 msgid "After 7 days"
 msgstr "7 egun igaro ondoren"
 
@@ -246,11 +246,11 @@ msgstr "7 egun igaro ondoren"
 msgid "After entering your password for confirmation, you can set up two-factor authentication with a compatible authenticator app or device:"
 msgstr "Pasahitza berresteko pasahitza sartu ondoren, bi faktoreko autentifikazioa konfigura dezakezu autentifikazio-aplikazio edo gailu bateragarri batekin:"
 
-#: src/options/options.js:296
+#: src/options/options.js:308
 msgid "After one month"
 msgstr "Hilabete baten ondoren"
 
-#: src/options/options.js:298
+#: src/options/options.js:310
 msgid "After one year"
 msgstr "Urtebeteren buruan"
 
@@ -258,15 +258,15 @@ msgstr "Urtebeteren buruan"
 msgid "After selecting pictures from search results, you can add them to an album using the context menu."
 msgstr "Bilaketa-emaitzetan argazkiak hautatu ondoren, album batean gehi ditzakezu testuinguru-menua erabiliz."
 
-#: src/options/options.js:297
+#: src/options/options.js:309
 msgid "After two months"
 msgstr "Bi hilabeteren ondoren"
 
-#: src/options/options.js:295
+#: src/options/options.js:307
 msgid "After two weeks"
 msgstr "Bi asteren ondoren"
 
-#: src/model/album.js:229
+#: src/model/album.js:243
 msgid "Album"
 msgstr "Albuma"
 
@@ -274,11 +274,11 @@ msgstr "Albuma"
 msgid "Album Backups"
 msgstr "Albumen babeskopiak"
 
-#: src/page/albums.vue:645
+#: src/page/albums.vue:653
 msgid "Album created"
 msgstr "Sortu da albuma"
 
-#: src/app/routes.js:176 src/component/album/toolbar.vue:63
+#: src/app/routes.js:176 src/component/album/toolbar.vue:51
 #: src/component/navigation.vue:602 src/component/navigation.vue:1880
 #: src/component/photo/edit/info.vue:220 src/options/options.js:130
 msgid "Albums"
@@ -292,11 +292,11 @@ msgstr "Albumak ezabatu dira"
 msgid "All"
 msgstr "Denak"
 
-#: src/page/albums.vue:449
+#: src/page/albums.vue:457
 msgid "All %{n} albums loaded"
 msgstr "%{n} album guztiak kargatu dira"
 
-#: src/page/labels.vue:354
+#: src/page/labels.vue:373
 msgid "All %{n} labels loaded"
 msgstr "%{n} etiketa guztiak kargatu dira"
 
@@ -304,12 +304,12 @@ msgstr "%{n} etiketa guztiak kargatu dira"
 msgid "All %{n} people loaded"
 msgstr "%{n} pertsona guztiak kargatu dira"
 
-#: src/component/album/toolbar.vue:42 src/component/photo/toolbar.vue:71
+#: src/component/photo/toolbar.vue:71
 msgid "All Cameras"
 msgstr "Kamera guztiak"
 
 #: src/component/photo/toolbar.vue:74 src/page/albums.vue:43
-#: src/page/albums.vue:224 src/page/albums.vue:717
+#: src/page/albums.vue:232 src/page/albums.vue:725
 msgid "All Categories"
 msgstr "Kategoria guztiak"
 
@@ -317,7 +317,7 @@ msgstr "Kategoria guztiak"
 msgid "All Colors"
 msgstr "Kolore guztiak"
 
-#: src/component/album/toolbar.vue:48 src/component/photo/toolbar.vue:70
+#: src/component/photo/toolbar.vue:70
 msgid "All Countries"
 msgstr "Herrialde guztiak"
 
@@ -365,7 +365,7 @@ msgstr "AM"
 #: src/component/photo/edit/files.vue:364
 #: src/component/photo/view/cards.vue:327
 #: src/component/photo/view/cards.vue:511 src/component/photo/view/list.vue:184
-#: src/component/photo/view/mosaic.vue:171 src/options/options.js:221
+#: src/component/photo/view/mosaic.vue:171 src/options/options.js:233
 msgid "Animated"
 msgstr "Animatua"
 
@@ -399,13 +399,13 @@ msgstr "Onartu"
 msgid "Apps and Devices"
 msgstr "Aplikazioak eta gailuak"
 
-#: src/app/routes.js:287 src/component/navigation.vue:553
-#: src/component/photo/clipboard.vue:142 src/component/photo/view/cards.vue:398
-#: src/page/settings/general.vue:417
+#: src/app/routes.js:287 src/component/lightbox.vue:1178
+#: src/component/navigation.vue:553 src/component/photo/clipboard.vue:142
+#: src/component/photo/view/cards.vue:398 src/page/settings/general.vue:417
 msgid "Archive"
 msgstr "Artxiboa"
 
-#: src/component/photo/edit/info.vue:433
+#: src/component/lightbox.vue:1852 src/component/photo/edit/info.vue:433
 msgid "Archived"
 msgstr "Artxibatuta"
 
@@ -447,7 +447,7 @@ msgid "Aspect Ratio"
 msgstr "Aspektu-erlazioa"
 
 #: src/app/routes.js:250 src/component/navigation.vue:768
-#: src/options/options.js:217
+#: src/options/options.js:229
 msgid "Audio"
 msgstr "Audioa"
 
@@ -500,19 +500,19 @@ msgstr "Bio"
 msgid "Birth Date"
 msgstr "Urtebetetze data"
 
-#: src/options/options.js:317
+#: src/options/options.js:329
 msgid "Black"
 msgstr "Beltza"
 
-#: src/options/options.js:345
+#: src/options/options.js:357
 msgid "Blackman: Lanczos Modification, Less Ringing Artifacts"
 msgstr "Blackman: Lanczos Modification, Less Ringing Artifacts"
 
-#: src/options/options.js:313
+#: src/options/options.js:325
 msgid "Blue"
 msgstr "Urdina"
 
-#: src/options/options.js:314
+#: src/options/options.js:326
 msgid "Brown"
 msgstr "Marroia"
 
@@ -537,7 +537,7 @@ msgstr "Arakatu fitxategiak"
 msgid "Browse indexed files and folders in Library."
 msgstr "Arakatu indexatutako fitxategiak eta karpetak Liburutegian."
 
-#: src/page/about/feedback.vue:10 src/options/options.js:323
+#: src/page/about/feedback.vue:10 src/options/options.js:335
 msgid "Bug Report"
 msgstr "Akatsen txostena"
 
@@ -567,13 +567,13 @@ msgstr "Kamera seriea"
 msgid "Can't access your authenticator app or device?"
 msgstr "Ezin duzu sartu autentifikatzaile-aplikazio edo gailuan?"
 
-#: src/page/album/photos.vue:312 src/page/photos.vue:434
+#: src/page/album/photos.vue:322 src/page/photos.vue:444
 msgid "Can't load more, limit reached"
 msgstr "Ezin da gehiago kargatu, mugara iritsi da"
 
 #: src/common/clipboard.js:102 src/common/clipboard.js:139
-#: src/page/albums.vue:655 src/page/albums.vue:671 src/page/labels.vue:280
-#: src/page/labels.vue:300 src/page/library/browse.vue:220
+#: src/page/albums.vue:663 src/page/albums.vue:679 src/page/labels.vue:299
+#: src/page/labels.vue:319 src/page/library/browse.vue:220
 #: src/page/library/browse.vue:236 src/page/people/new.vue:276
 #: src/page/people/new.vue:292 src/page/people/recognized.vue:305
 #: src/page/people/recognized.vue:321
@@ -648,10 +648,10 @@ msgstr "Ezin izan dira aldaketak gorde"
 
 #: src/component/user/edit/dialog.vue:83 src/component/user/edit/dialog.vue:159
 #: src/component/album/edit/dialog.vue:73
-#: src/component/label/edit/dialog.vue:46
+#: src/component/label/edit/dialog.vue:46 src/component/lightbox.vue:1811
 #: src/component/photo/edit/files.vue:160 src/component/service/edit.vue:90
 #: src/component/share/dialog.vue:92 src/component/share/dialog.vue:111
-#: src/page/albums.vue:648 src/page/people/recognized.vue:119
+#: src/page/albums.vue:656 src/page/people/recognized.vue:119
 #: src/page/settings/advanced.vue:62 src/page/settings/content.vue:62
 #: src/page/settings/general.vue:108
 msgid "Changes successfully saved"
@@ -689,8 +689,8 @@ msgstr "Bezeroa"
 msgid "Client Credentials"
 msgstr "Bezeroaren kredentzialak"
 
-#: src/page/admin/sessions.vue:529 src/component/lightbox.vue:241
-#: src/component/lightbox.vue:956 src/component/lightbox.vue:957
+#: src/page/admin/sessions.vue:529 src/component/lightbox.vue:253
+#: src/component/lightbox.vue:980 src/component/lightbox.vue:981
 #: src/component/photo/edit/details.vue:627 src/component/photo/toolbar.vue:151
 #: src/component/photo/upload/dialog.vue:228
 #: src/component/settings/apps.vue:224 src/component/settings/apps.vue:437
@@ -789,7 +789,7 @@ msgstr "Laguntzailea"
 msgid "Converting"
 msgstr "Bihurtzea"
 
-#: src/common/util.js:752
+#: src/common/util.js:784
 msgid "Copied to clipboard"
 msgstr "Arbelean kopiatu da"
 
@@ -838,7 +838,7 @@ msgstr "Sortu"
 msgid "Creating thumbnails for"
 msgstr "Miniaturak sortzen"
 
-#: src/options/options.js:347
+#: src/options/options.js:359
 msgid "Cubic: Moderate Quality, Good Performance"
 msgstr "Kubikoa: kalitate ertaina, errendimendu ona"
 
@@ -846,15 +846,15 @@ msgstr "Kubikoa: kalitate ertaina, errendimendu ona"
 msgid "Current Password"
 msgstr "oraingo pasahitza"
 
-#: src/options/themes.js:873 src/options/themes.js:882
+#: src/options/themes.js:915 src/options/themes.js:924
 msgid "Custom"
 msgstr "Pertsonalizatua"
 
-#: src/options/options.js:312
+#: src/options/options.js:324
 msgid "Cyan"
 msgstr "Zian"
 
-#: src/options/options.js:285
+#: src/options/options.js:297
 msgid "Daily"
 msgstr "Egunero"
 
@@ -879,9 +879,8 @@ msgstr "Arazte-erregistroak"
 #: src/component/photo/edit/info.vue:110 src/model/session.js:66
 #: src/model/user.js:246 src/options/auth.js:20 src/options/auth.js:21
 #: src/options/auth.js:39 src/options/auth.js:40 src/options/options.js:128
-#: src/options/options.js:164 src/options/options.js:236
-#: src/options/themes.js:727 src/page/places.vue:360
-#: src/page/settings/general.vue:104
+#: src/options/options.js:164 src/options/options.js:248
+#: src/options/themes.js:769 src/page/settings/general.vue:104
 msgid "Default"
 msgstr "Lehenetsia"
 
@@ -920,8 +919,8 @@ msgstr "Deskribapena"
 msgid "Detailed instructions can be found in our User Guide."
 msgstr "Argibide zehatzak gure Erabiltzailearen Gidan aurki daitezke."
 
-#: src/component/photo/edit/dialog.vue:150
-#: src/component/photo/edit/dialog.vue:167
+#: src/component/photo/edit/dialog.vue:154
+#: src/component/photo/edit/dialog.vue:171
 msgid "Details"
 msgstr "Xehetasunak"
 
@@ -1011,7 +1010,8 @@ msgstr "Bistaratu irudien izenburuak bilaketa-emaitzetan."
 
 #: src/component/photo/view/cards.vue:339
 #: src/component/photo/view/cards.vue:521
-#: src/component/photo/view/mosaic.vue:183 src/options/options.js:229
+#: src/component/photo/view/mosaic.vue:183 src/component/sidebar/info.vue:108
+#: src/options/options.js:241
 msgid "Document"
 msgstr "Dokumentua"
 
@@ -1040,8 +1040,8 @@ msgstr "Eginda"
 msgid "Done."
 msgstr "Eginda."
 
-#: src/component/album/clipboard.vue:73 src/component/album/toolbar.vue:123
-#: src/component/file/clipboard.vue:48 src/component/lightbox.vue:1124
+#: src/component/album/clipboard.vue:73 src/component/album/toolbar.vue:113
+#: src/component/file/clipboard.vue:48 src/component/lightbox.vue:1206
 #: src/component/people/clipboard.vue:47 src/component/photo/clipboard.vue:116
 #: src/component/photo/edit/files.vue:168 src/page/settings/content.vue:331
 #: src/page/settings/general.vue:321
@@ -1060,9 +1060,9 @@ msgstr "Deskargatu urruneko fitxategiak"
 msgid "Download single files and zip archives."
 msgstr "Deskargatu fitxategi bakarrak eta zip artxiboak."
 
-#: src/component/album/clipboard.vue:104 src/component/album/toolbar.vue:162
+#: src/component/album/clipboard.vue:104 src/component/album/toolbar.vue:152
 #: src/component/file/clipboard.vue:61 src/component/label/clipboard.vue:86
-#: src/component/lightbox.vue:1694 src/component/people/clipboard.vue:59
+#: src/component/lightbox.vue:1891 src/component/people/clipboard.vue:59
 #: src/component/photo/clipboard.vue:220 src/component/photo/edit/files.vue:117
 #: src/component/photo/view/cards.vue:169 src/component/photo/view/list.vue:142
 #: src/page/library/browse.vue:126
@@ -1101,8 +1101,8 @@ msgstr "Tamaina dinamikoaren muga: %{n}px"
 msgid "E-Mail"
 msgstr "Posta elektronikoa"
 
-#: src/component/album/clipboard.vue:61 src/component/album/toolbar.vue:95
-#: src/component/lightbox.vue:1083 src/component/lightbox.vue:1084
+#: src/component/album/clipboard.vue:61 src/component/album/toolbar.vue:84
+#: src/component/lightbox.vue:1107 src/component/lightbox.vue:1108
 #: src/component/photo/clipboard.vue:90 src/page/settings/general.vue:393
 msgid "Edit"
 msgstr "Editatu"
@@ -1117,7 +1117,7 @@ msgstr "Editatu %{s}"
 msgid "Edit Account"
 msgstr "Editatu kontua"
 
-#: src/component/photo/edit/dialog.vue:63
+#: src/component/photo/edit/dialog.vue:64
 msgid "Edit Photo"
 msgstr "Editatu argazkia"
 
@@ -1166,8 +1166,8 @@ msgstr "Sartu egiaztapen-kodea"
 msgid "Enter your password to confirm the action and continue:"
 msgstr "Sartu pasahitza ekintza berresteko eta jarraitu:"
 
-#: src/page/connect.vue:54 src/component/lightbox.vue:245
-#: src/page/connect.vue:57 src/page/library/errors.vue:252
+#: src/page/connect.vue:54 src/component/lightbox.vue:257
+#: src/page/connect.vue:57 src/page/library/errors.vue:253
 msgid "Error"
 msgstr "Errorea"
 
@@ -1187,7 +1187,7 @@ msgstr "Estimatu kokapenak"
 msgid "Estimate the approximate location of pictures without GPS coordinates."
 msgstr "Kalkulatu argazkien gutxi gorabeherako kokapena GPS koordenaturik gabe."
 
-#: src/options/options.js:286
+#: src/options/options.js:298
 msgid "Every two days"
 msgstr "Bi egunetik behin"
 
@@ -1267,7 +1267,7 @@ msgstr "Gogokoena"
 msgid "Favorites"
 msgstr "Gogokoak"
 
-#: src/page/about/feedback.vue:9 src/options/options.js:322
+#: src/page/about/feedback.vue:9 src/options/options.js:334
 msgid "Feature Request"
 msgstr "Ezaugarrien eskaera"
 
@@ -1275,7 +1275,7 @@ msgstr "Ezaugarrien eskaera"
 msgid "Feedback"
 msgstr "Iritzia"
 
-#: src/options/options.js:353
+#: src/options/options.js:365
 msgid "Female"
 msgstr "Emakumezkoa"
 
@@ -1306,8 +1306,8 @@ msgstr "Fitxategiaren Tamaina"
 msgid "Filename"
 msgstr "Fitxategi izena"
 
-#: src/component/navigation.vue:1928 src/component/photo/edit/dialog.vue:261
-#: src/component/photo/edit/dialog.vue:278
+#: src/component/navigation.vue:1928 src/component/photo/edit/dialog.vue:265
+#: src/component/photo/edit/dialog.vue:282
 msgid "Files"
 msgstr "Fitxategiak"
 
@@ -1359,7 +1359,7 @@ msgstr "Markoak"
 msgid "Full Access"
 msgstr "Sarbide osoa"
 
-#: src/component/lightbox.vue:1031 src/component/lightbox.vue:1032
+#: src/component/lightbox.vue:1055 src/component/lightbox.vue:1056
 msgid "Fullscreen"
 msgstr "Pantaila osoa"
 
@@ -1383,7 +1383,7 @@ msgstr "Sortu Aurrebistak"
 msgid "Generated"
 msgstr "Sortutakoa"
 
-#: src/component/photo/toolbar.vue:182
+#: src/component/photo/toolbar.vue:184
 msgid "Get Started"
 msgstr "Hasi"
 
@@ -1401,15 +1401,15 @@ msgstr "Aukera globalak"
 msgid "Go to page {0}"
 msgstr "Joan {0} orrialdera"
 
-#: src/options/options.js:307
+#: src/options/options.js:319
 msgid "Gold"
 msgstr "Urrea"
 
-#: src/options/options.js:310
+#: src/options/options.js:322
 msgid "Green"
 msgstr "Berdea"
 
-#: src/options/options.js:316
+#: src/options/options.js:328
 msgid "Grey"
 msgstr "Grisa"
 
@@ -1445,7 +1445,7 @@ msgstr "Ezkutatu"
 msgid "Hide photos that have been moved to archive."
 msgstr "Ezkutatu artxibora eraman diren argazkiak."
 
-#: src/options/options.js:240
+#: src/options/options.js:252
 msgid "High"
 msgstr "Alta"
 
@@ -1457,13 +1457,17 @@ msgstr "Gama dinamiko handia (HDR)"
 msgid "How can we help?"
 msgstr "Nola lagundu dezakegu?"
 
+#: src/options/options.js:175
+msgid "Hybrid"
+msgstr "Hibridoa"
+
 #: src/component/settings/passcode.vue:389
 msgid "If you lose access to your authenticator app or device, you can use your recovery code to regain access to your account."
 msgstr "Zure autentifikazio-aplikaziorako edo gailurako sarbidea galtzen baduzu, berreskuratzeko kodea erabil dezakezu zure konturako sarbidea berreskuratzeko."
 
 #: src/component/photo/edit/info.vue:61 src/component/photo/edit/labels.vue:46
 #: src/component/photo/view/cards.vue:532 src/model/file.js:218
-#: src/options/options.js:201
+#: src/options/options.js:213
 msgid "Image"
 msgstr "Irudia"
 
@@ -1540,6 +1544,10 @@ msgstr "Ezin izan da indexatu"
 msgid "Indexing media and sidecar files…"
 msgstr "Multimedia eta sidecar fitxategiak indexatzen…"
 
+#: src/component/sidebar/info.vue:28
+msgid "Info"
+msgstr "Info"
+
 #: src/component/photo/edit/files.vue:282
 msgid "Instance ID"
 msgstr "Instantziaren IDa"
@@ -1569,7 +1577,7 @@ msgstr "Helbide baliogabea"
 msgid "Invalid country"
 msgstr "Herrialde baliogabea"
 
-#: src/component/photo/edit/details.vue:179
+#: src/component/photo/edit/details.vue:180
 msgid "Invalid date"
 msgstr "Data baliogabea"
 
@@ -1578,7 +1586,7 @@ msgstr "Data baliogabea"
 msgid "Invalid parameters"
 msgstr "Parametro baliogabeak"
 
-#: src/component/photo/edit/dialog.vue:156 src/model/thumb.js:77
+#: src/component/photo/edit/dialog.vue:180 src/model/thumb.js:83
 msgid "Invalid photo selected"
 msgstr "Argazki baliogabea hautatu da"
 
@@ -1625,8 +1633,8 @@ msgid "Label"
 msgstr "Etiketa"
 
 #: src/app/routes.js:389 src/component/navigation.vue:1175
-#: src/component/photo/edit/dialog.vue:182
-#: src/component/photo/edit/dialog.vue:199 src/options/options.js:138
+#: src/component/photo/edit/dialog.vue:186
+#: src/component/photo/edit/dialog.vue:203 src/options/options.js:138
 #: src/page/settings/general.vue:247
 msgid "Labels"
 msgstr "Etiketak"
@@ -1635,7 +1643,7 @@ msgstr "Etiketak"
 msgid "Labels deleted"
 msgstr "Etiketak ezabatu dira"
 
-#: src/options/options.js:346
+#: src/options/options.js:358
 msgid "Lanczos: Detail Preservation, Minimal Artifacts"
 msgstr "Lanczos: Xehetasunen kontserbazioa, artefaktu minimoak"
 
@@ -1679,7 +1687,7 @@ msgid "Learn more"
 msgstr "Gehiago ikasi"
 
 #: src/page/admin/sessions.vue:108 src/page/admin/users.vue:133
-#: src/page/labels.vue:118
+#: src/page/labels.vue:131
 msgid "Learn More"
 msgstr "Argibide gehiago"
 
@@ -1703,11 +1711,11 @@ msgstr "Liburutegia"
 msgid "License"
 msgstr "Lizentzia"
 
-#: src/component/lightbox.vue:1049 src/component/lightbox.vue:1050
+#: src/component/lightbox.vue:1073 src/component/lightbox.vue:1074
 msgid "Like"
 msgstr "Atsegin dut"
 
-#: src/options/options.js:309
+#: src/options/options.js:321
 msgid "Lime"
 msgstr "Karea"
 
@@ -1715,7 +1723,7 @@ msgstr "Karea"
 msgid "Limit reached, showing first %{n} files"
 msgstr "Muga iritsi da, lehen %{n} fitxategi erakusten"
 
-#: src/options/options.js:348
+#: src/options/options.js:360
 msgid "Linear: Very Smooth, Best Performance"
 msgstr "Lineala: oso leuna, errendimendu onena"
 
@@ -1733,7 +1741,8 @@ msgstr "Zerrenda Ikuspegia"
 
 #: src/component/photo/view/cards.vue:319
 #: src/component/photo/view/cards.vue:501 src/component/photo/view/list.vue:176
-#: src/component/photo/view/mosaic.vue:163 src/options/options.js:209
+#: src/component/photo/view/mosaic.vue:163 src/component/sidebar/info.vue:99
+#: src/options/options.js:221
 msgid "Live"
 msgstr "Zuzenean"
 
@@ -1792,15 +1801,11 @@ msgstr "Erregistroak"
 msgid "Longitude"
 msgstr "Luzera"
 
-#: src/options/options.js:244
+#: src/options/options.js:256
 msgid "Low"
 msgstr "Baxua"
 
-#: src/options/options.js:191
-msgid "Low Resolution"
-msgstr "Bereizmen baxua"
-
-#: src/options/options.js:303
+#: src/options/options.js:315
 msgid "Magenta"
 msgstr "Magenta"
 
@@ -1808,7 +1813,7 @@ msgstr "Magenta"
 msgid "Main Color"
 msgstr "Kolore Nagusia"
 
-#: src/options/options.js:352
+#: src/options/options.js:364
 msgid "Male"
 msgstr "Gizonezkoa"
 
@@ -1897,7 +1902,7 @@ msgstr "Monokromoa"
 msgid "Month"
 msgstr "Hilabetea"
 
-#: src/component/lightbox.vue:1102
+#: src/component/lightbox.vue:1126
 msgid "More options"
 msgstr "Aukera gehiago"
 
@@ -1917,7 +1922,7 @@ msgstr "Mugitu fitxategiak"
 msgid "Must have at least %{n} characters."
 msgstr "Gutxienez %{n} karaktere izan behar ditu."
 
-#: src/component/lightbox.vue:998 src/component/lightbox.vue:999
+#: src/component/lightbox.vue:1022 src/component/lightbox.vue:1023
 msgid "Mute"
 msgstr "Isildu"
 
@@ -1934,18 +1939,18 @@ msgstr "Isildu"
 msgid "Name"
 msgstr "Izena"
 
-#: src/component/album/edit/dialog.vue:35 src/component/album/toolbar.vue:72
+#: src/component/album/edit/dialog.vue:35 src/component/album/toolbar.vue:60
 #: src/component/label/edit/dialog.vue:19
 #: src/component/people/edit/dialog.vue:19
 #: src/component/photo/edit/labels.vue:30
-#: src/component/photo/edit/people.vue:39 src/page/labels.vue:51
+#: src/component/photo/edit/people.vue:39 src/page/labels.vue:53
 #: src/page/library/browse.vue:45 src/page/people/new.vue:51
 #: src/page/people/recognized.vue:46
 msgid "Name too long"
 msgstr "Izena luzeegia"
 
-#: src/page/admin/users.vue:202 src/options/options.js:281
-#: src/options/options.js:291 src/page/settings/services.vue:74
+#: src/page/admin/users.vue:202 src/options/options.js:293
+#: src/options/options.js:303 src/page/settings/services.vue:74
 msgid "Never"
 msgstr "Inoiz ez"
 
@@ -1963,7 +1968,7 @@ msgstr "pasahitz berria"
 msgid "Newest First"
 msgstr "Berriena Lehenengoa"
 
-#: src/component/lightbox.vue:244 src/locales.js:298
+#: src/component/lightbox.vue:256 src/locales.js:298
 msgid "Next"
 msgstr "Hurrengoa"
 
@@ -1983,7 +1988,7 @@ msgstr "Hurrengo bisuala"
 msgid "No"
 msgstr "Ez"
 
-#: src/page/albums.vue:588 src/page/albums.vue:274
+#: src/page/albums.vue:596 src/page/albums.vue:274
 msgid "No albums found"
 msgstr "Ez da albumik aurkitu"
 
@@ -1991,7 +1996,7 @@ msgstr "Ez da albumik aurkitu"
 msgid "No data available"
 msgstr "Ez dago daturik eskuragarri"
 
-#: src/page/labels.vue:500 src/page/labels.vue:152
+#: src/page/labels.vue:519 src/page/labels.vue:152
 msgid "No labels found"
 msgstr "Ez da etiketarik aurkitu"
 
@@ -2009,10 +2014,10 @@ msgstr "Ez gehiago"
 msgid "No people found"
 msgstr "Ez da jenderik aurkitu"
 
-#: src/component/lightbox.vue:319 src/component/photo/view/cards.vue:144
+#: src/component/lightbox.vue:334 src/component/photo/view/cards.vue:144
 #: src/component/photo/view/list.vue:82 src/component/photo/view/mosaic.vue:68
-#: src/page/album/photos.vue:474 src/page/library/browse.vue:122
-#: src/page/photos.vue:601 src/page/places.vue:611 src/page/places.vue:709
+#: src/page/album/photos.vue:484 src/page/library/browse.vue:122
+#: src/page/photos.vue:611 src/page/places.vue:623 src/page/places.vue:721
 msgid "No pictures found"
 msgstr "Ez da argazkirik aurkitu"
 
@@ -2048,16 +2053,16 @@ msgid "Non-photographic and low-quality images require a review before they appe
 msgstr "Argazkiak ez diren eta kalitate baxuko irudiak berrikusi behar dira bilaketa-emaitzetan agertu aurretik."
 
 #: src/options/admin.js:47 src/options/auth.js:32 src/options/options.js:144
-#: src/options/options.js:248
+#: src/options/options.js:260
 msgid "None"
 msgstr "Bat ere ez"
 
-#: src/common/util.js:759 src/component/lightbox.vue:584
+#: src/common/util.js:791 src/component/lightbox.vue:602
 #: src/component/service/upload.vue:75 src/component/service/upload.vue:87
 msgid "Not allowed"
 msgstr "Ez da onartzen"
 
-#: src/component/lightbox.vue:581
+#: src/component/lightbox.vue:599
 msgid "Not found"
 msgstr "Ez da aurkitu"
 
@@ -2065,8 +2070,8 @@ msgstr "Ez da aurkitu"
 msgid "Not sorted."
 msgstr "Ez dago sailkatuta."
 
-#: src/common/util.js:764 src/component/lightbox.vue:578
-#: src/component/lightbox.vue:695
+#: src/common/util.js:796 src/component/lightbox.vue:596
+#: src/component/lightbox.vue:713
 msgid "Not supported"
 msgstr "Ez da onartzen"
 
@@ -2095,6 +2100,10 @@ msgstr "Hemen oraindik ez dago ezer ikusteko."
 msgid "Nothing was found."
 msgstr "Ez da ezer aurkitu."
 
+#: src/options/options.js:202
+msgid "Offline"
+msgstr "Lineaz kanpo"
+
 #: src/options/admin.js:39 src/options/auth.js:28
 msgid "OIDC"
 msgstr "OIDC"
@@ -2117,11 +2126,11 @@ msgstr "Windows-en, sartu baliabide hau konexio-koadroan:"
 msgid "On-demand generation of thumbnails may cause high CPU and memory usage. It is not recommended for resource-constrained servers and NAS devices."
 msgstr "Irudi txikiak eskatuz sortzeak CPU eta memoria erabilera handia eragin dezake. Ez da gomendagarria baliabideak mugatutako zerbitzarietarako eta NAS gailuetarako."
 
-#: src/options/options.js:287
+#: src/options/options.js:299
 msgid "Once a week"
 msgstr "Astean behin"
 
-#: src/page/albums.vue:590
+#: src/page/albums.vue:598
 msgid "One album found"
 msgstr "Album bat aurkitu da"
 
@@ -2137,7 +2146,7 @@ msgstr "Fitxategi bat kargatu da"
 msgid "One folder found"
 msgstr "Karpeta bat aurkitu da"
 
-#: src/page/labels.vue:502
+#: src/page/labels.vue:521
 msgid "One label found"
 msgstr "Etiketa bat aurkitu da"
 
@@ -2146,7 +2155,7 @@ msgstr "Etiketa bat aurkitu da"
 msgid "One person found"
 msgstr "Pertsona bat aurkitu du"
 
-#: src/page/album/photos.vue:476 src/page/photos.vue:603
+#: src/page/album/photos.vue:486 src/page/photos.vue:613
 msgid "One picture found"
 msgstr "Irudi bat aurkitu da"
 
@@ -2166,7 +2175,7 @@ msgstr "aukerakoa"
 msgid "or"
 msgstr "edo"
 
-#: src/options/options.js:306
+#: src/options/options.js:318
 msgid "Orange"
 msgstr "Laranja"
 
@@ -2187,13 +2196,13 @@ msgid "Original Name"
 msgstr "Jatorrizko izena"
 
 #: src/component/navigation.vue:1302 src/model/file.js:196
-#: src/options/options.js:333 src/page/library/browse.vue:65
+#: src/options/options.js:345 src/page/library/browse.vue:65
 #: src/page/settings/content.vue:356 src/page/settings/general.vue:513
 msgid "Originals"
 msgstr "Jatorrizkoak"
 
-#: src/page/about/feedback.vue:11 src/options/options.js:324
-#: src/options/options.js:354
+#: src/page/about/feedback.vue:11 src/options/options.js:336
+#: src/options/options.js:366
 msgid "Other"
 msgstr "Bestela"
 
@@ -2201,7 +2210,7 @@ msgstr "Bestela"
 msgid "Our mission is to provide the most user- and privacy-friendly solution to keep your pictures organized and accessible."
 msgstr "Gure eginkizuna da erabiltzaileentzako eta pribatutasunerako irtenbiderik egokiena eskaintzea zure argazkiak antolatuta eta eskuragarri mantentzeko."
 
-#: src/options/options.js:178 src/page/places.vue:376
+#: src/options/options.js:187
 msgid "Outdoor"
 msgstr "Kanpoan"
 
@@ -2209,7 +2218,7 @@ msgstr "Kanpoan"
 msgid "Page {0}, Current page"
 msgstr "{0} orria, uneko orria"
 
-#: src/component/photo/edit/files.vue:352 src/model/photo.js:866
+#: src/component/photo/edit/files.vue:352 src/model/photo.js:854
 msgid "Pages"
 msgstr "Orriak"
 
@@ -2238,8 +2247,8 @@ msgid "Password changed"
 msgstr "Pasahitza aldatu da"
 
 #: src/app/routes.js:404 src/app/routes.js:428 src/component/navigation.vue:843
-#: src/component/navigation.vue:1896 src/component/photo/edit/dialog.vue:222
-#: src/component/photo/edit/dialog.vue:239 src/options/options.js:133
+#: src/component/navigation.vue:1896 src/component/photo/edit/dialog.vue:226
+#: src/component/photo/edit/dialog.vue:243 src/options/options.js:133
 #: src/page/settings/general.vue:175
 msgid "People"
 msgstr "Jendea"
@@ -2248,7 +2257,7 @@ msgstr "Jendea"
 msgid "People you share a link with will be able to view public contents."
 msgstr "Esteka partekatzen duzun pertsonek eduki publikoak ikusi ahal izango dituzte."
 
-#: src/component/photo/clipboard.vue:126 src/component/photo/toolbar.vue:255
+#: src/component/photo/clipboard.vue:126 src/component/photo/toolbar.vue:257
 msgid "Permanently deleted"
 msgstr "Betiko ezabatu da"
 
@@ -2264,7 +2273,7 @@ msgstr "Pertsona"
 msgid "Personal"
 msgstr "Pertsonalak"
 
-#: src/model/photo.js:1280
+#: src/model/photo.js:1268
 msgid "Photo"
 msgstr "Argazkia"
 
@@ -2285,7 +2294,7 @@ msgstr "Argazkiak"
 msgid "Picture Title"
 msgstr "Irudiaren izenburua"
 
-#: src/options/options.js:304
+#: src/options/options.js:316
 msgid "Pink"
 msgstr "Arrosa"
 
@@ -2300,7 +2309,7 @@ msgstr "Lekua eta Ordua"
 #: src/app/routes.js:303 src/app/routes.js:309 src/app/routes.js:315
 #: src/app/routes.js:330 src/component/navigation.vue:984
 #: src/component/navigation.vue:1912 src/options/options.js:135
-#: src/page/places.vue:50 src/page/settings/general.vue:587
+#: src/page/places.vue:51 src/page/settings/general.vue:587
 #: src/page/settings/general.vue:616
 msgid "Places"
 msgstr "Lekuak"
@@ -2373,7 +2382,7 @@ msgstr "Aurrebista"
 msgid "Preview Images"
 msgstr "Aurrebista Irudiak"
 
-#: src/component/lightbox.vue:243 src/locales.js:299
+#: src/component/lightbox.vue:255 src/locales.js:299
 msgid "Previous"
 msgstr "Aurrekoa"
 
@@ -2396,7 +2405,7 @@ msgstr "Lehen mailakoa"
 msgid "Private"
 msgstr "Pribatua"
 
-#: src/page/about/feedback.vue:8 src/options/options.js:321
+#: src/page/about/feedback.vue:8 src/options/options.js:333
 msgid "Product Feedback"
 msgstr "Produktuaren iritzia"
 
@@ -2404,7 +2413,7 @@ msgstr "Produktuaren iritzia"
 msgid "Projection"
 msgstr "Proiekzioa"
 
-#: src/options/options.js:302
+#: src/options/options.js:314
 msgid "Purple"
 msgstr "Morea"
 
@@ -2428,12 +2437,13 @@ msgstr "Ausazko"
 msgid "Rating {0} of {1}"
 msgstr "{0}/{1} balorazioa"
 
-#: src/options/options.js:205
+#: src/options/options.js:217
 msgid "Raw"
 msgstr "Gordinik"
 
 #: src/component/photo/view/cards.vue:313
-#: src/component/photo/view/mosaic.vue:157 src/page/settings/content.vue:378
+#: src/component/photo/view/mosaic.vue:157 src/component/sidebar/info.vue:90
+#: src/page/settings/content.vue:378
 msgid "RAW"
 msgstr "GORDINA"
 
@@ -2476,13 +2486,13 @@ msgstr "Aitortua"
 msgid "Recovery Code"
 msgstr "Berreskuratzeko Kodea"
 
-#: src/options/options.js:305
+#: src/options/options.js:317
 msgid "Red"
 msgstr "Gorria"
 
 #: src/page/admin/sessions.vue:99 src/page/admin/users.vue:124
-#: src/component/album/toolbar.vue:86 src/component/photo/toolbar.vue:164
-#: src/page/albums.vue:172 src/page/labels.vue:109
+#: src/component/album/toolbar.vue:74 src/component/photo/toolbar.vue:164
+#: src/page/albums.vue:172 src/page/labels.vue:111
 #: src/page/library/browse.vue:90 src/page/library/errors.vue:78
 #: src/page/people/new.vue:54 src/page/people/recognized.vue:87
 msgid "Refresh"
@@ -2518,15 +2528,15 @@ msgstr "Kendu"
 msgid "remove failed: unknown album"
 msgstr "kendu huts egin du: album ezezaguna"
 
-#: src/component/photo/clipboard.vue:155
-msgid "Remove from album"
+#: src/component/lightbox.vue:1163 src/component/photo/clipboard.vue:155
+msgid "Remove from Album"
 msgstr "Kendu albumetik"
 
 #: src/page/library/import.vue:99
 msgid "Remove imported files to save storage. Unsupported file types will never be deleted, they remain in their current location."
 msgstr "Kendu inportatutako fitxategiak biltegia gordetzeko. Onartu gabeko fitxategi motak ez dira inoiz ezabatuko, uneko kokapenan geratzen dira."
 
-#: src/common/api.js:102 src/component/lightbox.vue:691
+#: src/common/api.js:102 src/component/lightbox.vue:709
 msgid "Request failed - are you offline?"
 msgstr "Eskaerak huts egin du - konexiorik gabe zaude?"
 
@@ -2547,9 +2557,14 @@ msgstr "Ebazpena"
 msgid "Restart"
 msgstr "Berriro hasi"
 
-#: src/component/user/edit/dialog.vue:485 src/component/photo/clipboard.vue:77
+#: src/component/user/edit/dialog.vue:485 src/component/lightbox.vue:1192
+#: src/component/photo/clipboard.vue:77
 msgid "Restore"
 msgstr "Berreskuratu"
+
+#: src/component/lightbox.vue:1870
+msgid "Restored"
+msgstr "Zaharberritua"
 
 #: src/component/service/edit.vue:428
 msgid "Retry Limit"
@@ -2572,7 +2587,7 @@ msgstr "Rola"
 msgid "Rows per page:"
 msgstr "Orrialde bakoitzeko errenkadak:"
 
-#: src/options/options.js:173 src/page/places.vue:372
+#: src/options/options.js:181
 msgid "Satellite"
 msgstr "Satelitea"
 
@@ -2606,7 +2621,7 @@ msgstr "Eremua"
 #: src/component/photo/toolbar.vue:56 src/options/options.js:129
 #: src/page/albums.vue:100 src/page/labels.vue:77
 #: src/page/library/errors.vue:75 src/page/people/recognized.vue:65
-#: src/page/places.vue:78 src/page/settings/content.vue:235
+#: src/page/places.vue:79 src/page/settings/content.vue:235
 msgid "Search"
 msgstr "Bilatu"
 
@@ -2626,7 +2641,7 @@ msgstr "Sekretua"
 msgid "Security and Access"
 msgstr "Segurtasuna eta Sarbidea"
 
-#: src/component/lightbox.vue:1066 src/component/lightbox.vue:1067
+#: src/component/lightbox.vue:1090 src/component/lightbox.vue:1091
 msgid "Select"
 msgstr "Hautatu"
 
@@ -2696,6 +2711,10 @@ msgstr "Saioaren ID"
 msgid "Sessions"
 msgstr "Saioak"
 
+#: src/component/lightbox.vue:1148
+msgid "Set as Album Cover"
+msgstr "Ezarri albumaren azala"
+
 #: src/app/routes.js:101 src/app/routes.js:492 src/app/routes.js:504
 #: src/app/routes.js:521 src/app/routes.js:534 src/app/routes.js:547
 #: src/component/navigation.vue:1392 src/component/navigation.vue:1804
@@ -2711,7 +2730,7 @@ msgstr "Ezarpenak gorde dira"
 msgid "Setup"
 msgstr "Konfigurazioa"
 
-#: src/component/album/clipboard.vue:49 src/component/album/toolbar.vue:104
+#: src/component/album/clipboard.vue:49 src/component/album/toolbar.vue:93
 #: src/component/photo/clipboard.vue:51 src/page/settings/general.vue:369
 msgid "Share"
 msgstr "Partekatu"
@@ -2756,7 +2775,7 @@ msgstr "Erakutsi zerbitzariaren erregistroak Liburutegian."
 msgid "Show Titles"
 msgstr "Erakutsi Izenburuak"
 
-#: src/component/lightbox.vue:979 src/component/lightbox.vue:980
+#: src/component/lightbox.vue:1003 src/component/lightbox.vue:1004
 msgid "Show/Hide Sidebar"
 msgstr "Erakutsi/Ezkutatu alboko barra"
 
@@ -2793,7 +2812,7 @@ msgstr "Softwarea"
 msgid "Software Update"
 msgstr "Software eguneratzea"
 
-#: src/component/lightbox.vue:688
+#: src/component/lightbox.vue:706
 msgid "Something went wrong, try again"
 msgstr "Arazoren bat izan da. Saiatu berriro"
 
@@ -2848,7 +2867,7 @@ msgstr "Hasi"
 msgid "Start Page"
 msgstr "Hasiera orria"
 
-#: src/component/lightbox.vue:1014 src/component/lightbox.vue:1015
+#: src/component/lightbox.vue:1038 src/component/lightbox.vue:1039
 msgid "Start/Stop Slideshow"
 msgstr "Hasi/gelditu diaporama"
 
@@ -2864,7 +2883,7 @@ msgstr "Egoera"
 msgid "Storage"
 msgstr "Biltegiratzea"
 
-#: src/options/options.js:168 src/page/places.vue:368
+#: src/options/options.js:169
 msgid "Streets"
 msgstr "Kaleak"
 
@@ -2919,7 +2938,7 @@ msgstr "Sinkronizatu raw eta bideo fitxategiak"
 msgid "Taken"
 msgstr "Hartua"
 
-#: src/options/options.js:311
+#: src/options/options.js:323
 msgid "Teal"
 msgstr "Zertzeta"
 
@@ -2927,11 +2946,15 @@ msgstr "Zertzeta"
 msgid "TensorFlow is required for image classification, facial recognition, and detecting unsafe content."
 msgstr "TensorFlow beharrezkoa da irudiak sailkatzeko, aurpegia ezagutzeko eta eduki ez-segurua detektatzeko."
 
+#: src/options/options.js:193
+msgid "Terrain"
+msgstr "Lurra"
+
 #: src/common/form.js:256
 msgid "Text"
 msgstr "Testua"
 
-#: src/component/photo/edit/details.vue:31 src/page/people/new.vue:71
+#: src/component/photo/edit/details.vue:32 src/page/people/new.vue:71
 msgid "Text too long"
 msgstr "Testua luzeegia"
 
@@ -3042,11 +3065,7 @@ msgstr "Fitxategi gehiegi hautatu dira"
 msgid "Too many requests"
 msgstr "Eskaera gehiegi"
 
-#: src/options/options.js:183 src/page/places.vue:380
-msgid "Topographic"
-msgstr "Topografikoa"
-
-#: src/component/photo/toolbar.vue:190 src/page/library/errors.vue:87
+#: src/component/photo/toolbar.vue:192 src/page/library/errors.vue:88
 msgid "Troubleshooting"
 msgstr "Arazoak konpontzea"
 
@@ -3079,19 +3098,19 @@ msgid "Unique ID"
 msgstr "ID bakarra"
 
 #: src/page/settings/account.vue:451 src/page/settings/account.vue:476
-#: src/page/settings/account.vue:501 src/common/util.js:432
-#: src/component/photo/edit/details.vue:20
+#: src/page/settings/account.vue:501 src/common/util.js:464
+#: src/component/photo/edit/details.vue:21
 #: src/component/photo/edit/details.vue:111
 #: src/component/photo/edit/details.vue:138
-#: src/component/photo/edit/details.vue:164 src/model/album.js:179
-#: src/model/photo.js:344 src/model/photo.js:795 src/model/photo.js:816
-#: src/model/photo.js:839 src/model/photo.js:857 src/model/photo.js:904
-#: src/model/photo.js:912 src/model/photo.js:1001 src/model/photo.js:1023
-#: src/model/photo.js:1068 src/model/photo.js:1081 src/model/user.js:157
+#: src/component/photo/edit/details.vue:164 src/model/album.js:193
+#: src/model/photo.js:322 src/model/photo.js:783 src/model/photo.js:804
+#: src/model/photo.js:827 src/model/photo.js:845 src/model/photo.js:892
+#: src/model/photo.js:900 src/model/photo.js:989 src/model/photo.js:1011
+#: src/model/photo.js:1056 src/model/photo.js:1069 src/model/user.js:157
 #: src/options/options.js:51 src/options/options.js:69
 #: src/options/options.js:86 src/options/options.js:100
-#: src/options/options.js:112 src/page/library/errors.vue:244
-#: src/page/library/errors.vue:261
+#: src/options/options.js:112 src/page/library/errors.vue:245
+#: src/page/library/errors.vue:262
 msgid "Unknown"
 msgstr "Ezezaguna"
 
@@ -3148,11 +3167,11 @@ msgstr "Berritu"
 msgid "Upgrade Now"
 msgstr "Berritu orain"
 
-#: src/component/album/toolbar.vue:114 src/component/navigation.vue:1822
-#: src/component/photo/toolbar.vue:173 src/component/photo/upload/dialog.vue:50
-#: src/component/service/upload.vue:144 src/page/albums.vue:181
-#: src/page/library/import.vue:133 src/page/settings/general.vue:297
-#: src/page/settings/services.vue:37
+#: src/component/album/toolbar.vue:103 src/component/navigation.vue:1822
+#: src/component/photo/toolbar.vue:174 src/component/photo/upload/dialog.vue:50
+#: src/component/service/upload.vue:144 src/page/albums.vue:182
+#: src/page/labels.vue:121 src/page/library/import.vue:133
+#: src/page/settings/general.vue:297 src/page/settings/services.vue:37
 msgid "Upload"
 msgstr "Kargatu"
 
@@ -3239,7 +3258,7 @@ msgstr "Erabiltzaileak"
 
 #: src/component/photo/view/cards.vue:333
 #: src/component/photo/view/cards.vue:521
-#: src/component/photo/view/mosaic.vue:177 src/options/options.js:225
+#: src/component/photo/view/mosaic.vue:177 src/options/options.js:237
 msgid "Vector"
 msgstr "Bektorea"
 
@@ -3254,7 +3273,7 @@ msgstr "Egiaztapen Kodea"
 #: src/component/photo/view/cards.vue:363
 #: src/component/photo/view/cards.vue:491 src/component/photo/view/list.vue:190
 #: src/component/photo/view/mosaic.vue:207 src/model/file.js:221
-#: src/model/photo.js:928 src/model/photo.js:946 src/options/options.js:213
+#: src/model/photo.js:916 src/model/photo.js:934 src/options/options.js:225
 msgid "Video"
 msgstr "Bideoa"
 
@@ -3289,7 +3308,7 @@ msgstr "Bisitaria"
 msgid "Visual Similarity"
 msgstr "Antzekotasun bisuala"
 
-#: src/page/library/errors.vue:254
+#: src/page/library/errors.vue:255
 msgid "Warning"
 msgstr "Abisua"
 
@@ -3308,7 +3327,7 @@ msgstr "Web Sarrera"
 
 #: src/component/user/add/dialog.vue:248 src/component/user/edit/dialog.vue:432
 #: src/page/admin/users.vue:80 src/options/auth.js:55 src/options/auth.js:68
-#: src/options/options.js:364
+#: src/options/options.js:376
 msgid "WebDAV"
 msgstr "WebDAV"
 
@@ -3324,7 +3343,7 @@ msgstr "WebDAV bezeroak, Microsoft-en Windows Explorer edo Apple-ren Finder beza
 msgid "WebDAV Upload"
 msgstr "WebDAV igoera"
 
-#: src/page/places.vue:269
+#: src/page/places.vue:307
 msgid "WebGL support is disabled in your browser"
 msgstr "WebGL laguntza desgaituta dago zure arakatzailean"
 
@@ -3333,7 +3352,7 @@ msgstr "WebGL laguntza desgaituta dago zure arakatzailean"
 msgid "Website"
 msgstr "Webgunea"
 
-#: src/options/options.js:315
+#: src/options/options.js:327
 msgid "White"
 msgstr "Zuria"
 
@@ -3346,7 +3365,7 @@ msgstr "Lanaren xehetasunak"
 msgid "Year"
 msgstr "Urtea"
 
-#: src/options/options.js:308
+#: src/options/options.js:320
 msgid "Yellow"
 msgstr "Horia"
 
@@ -3393,7 +3412,7 @@ msgstr "Zure liburutegia berriro eskaneatu dezakezu aurpegi gehigarriak aurkitze
 msgid "Your account has been successfully connected."
 msgstr "Zure kontua behar bezala konektatu da."
 
-#: src/page/places.vue:273
+#: src/page/places.vue:311
 msgid "Your browser does not support WebGL"
 msgstr "Zure arakatzaileak ez du WebGL onartzen"
 
@@ -3406,9 +3425,21 @@ msgstr "Zure etengabeko laguntzak aldizkako eguneraketak eskaintzen eta independ
 msgid "Your library is continuously analyzed to automatically create albums of special moments, trips, and places."
 msgstr "Zure liburutegia etengabe aztertzen da momentu, bidai eta leku berezien albumak automatikoki sortzeko."
 
-#: src/component/lightbox.vue:242
+#: src/component/lightbox.vue:254
 msgid "Zoom in/out"
 msgstr "Handitu/txikiagotu"
+
+#~ msgid "Add a caption"
+#~ msgstr "Gehitu epigrafe bat"
+
+#~ msgid "Add a title"
+#~ msgstr "Gehitu izenburu bat"
+
+#~ msgid "Topographic"
+#~ msgstr "Topografikoa"
+
+#~ msgid "Low Resolution"
+#~ msgstr "Bereizmen baxua"
 
 #~ msgid "Captions"
 #~ msgstr "Epigrafeak"
@@ -3553,9 +3584,6 @@ msgstr "Handitu/txikiagotu"
 
 #~ msgid "Gender"
 #~ msgstr "Generoa"
-
-#~ msgid "Offline"
-#~ msgstr "Lineaz kanpo"
 
 #~ msgid "Phone"
 #~ msgstr "Mugikorra"
