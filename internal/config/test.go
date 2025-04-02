@@ -79,11 +79,11 @@ func NewTestOptions(pkg string) *Options {
 				log.Errorf("sqlite: failed to remove existing test database %s (%s)", clean.Log(dsnFile), err)
 			}
 		} else if dsn == "" || dsn == SQLiteTestDB {
-			dsn = SQLiteTestDB
-			if !fs.FileExists(dsn) {
-				log.Debugf("sqlite: test database %s does not already exist", clean.Log(dsn))
-			} else if err := os.Remove(dsn); err != nil {
-				log.Errorf("sqlite: failed to remove existing test database %s (%s)", clean.Log(dsn), err)
+			dsn = fmt.Sprintf("%s?_foreign_keys=on", SQLiteTestDB)
+			if !fs.FileExists(SQLiteTestDB) {
+				log.Debugf("sqlite: test database %s does not already exist", clean.Log(SQLiteTestDB))
+			} else if err := os.Remove(SQLiteTestDB); err != nil {
+				log.Errorf("sqlite: failed to remove existing test database %s (%s)", clean.Log(SQLiteTestDB), err)
 			}
 		}
 	}
