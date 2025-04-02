@@ -62,11 +62,13 @@ func InitTestDb(driver, dsn string) *DbConn {
 
 	// Set default database DSN.
 	if driver == SQLite3 {
-		dsn = SQLiteTestDB
-		if !fs.FileExists(dsn) {
-			log.Debugf("sqlite: test database %s does not already exist", clean.Log(dsn))
-		} else if err := os.Remove(dsn); err != nil {
-			log.Errorf("sqlite: failed to remove existing test database %s (%s)", clean.Log(dsn), err)
+		if dsn == "" || dsn == SQLiteTestDB {
+			dsn = SQLiteTestDB
+			if !fs.FileExists(dsn) {
+				log.Debugf("sqlite: test database %s does not already exist", clean.Log(dsn))
+			} else if err := os.Remove(dsn); err != nil {
+				log.Errorf("sqlite: failed to remove existing test database %s (%s)", clean.Log(dsn), err)
+			}
 		}
 	}
 
