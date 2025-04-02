@@ -40,6 +40,9 @@ esac
 if [[ $1 == "auto" ]]; then
   TF_DRIVER="auto";
   DESTDIR="/usr";
+elif [[ $1 == "gpu" ]]; then
+  TF_DRIVER="gpu";
+  DESTDIR="/usr";
 else
   DESTDIR=$(realpath "${1:-/usr}")
 fi
@@ -63,14 +66,18 @@ if [[ $TF_DRIVER == "auto" ]]; then
 
   CPU_DETECTED=$(lshw -c processor -json 2>/dev/null)
 
-  if [[ $(lshw -c display -json 2>/dev/null | jq -r '.[0].configuration.driver') == "nvidia" ]]; then
-    TF_DRIVER="gpu"
-  elif [[ $(echo "${CPU_DETECTED}" | jq -r '.[0].capabilities.avx2') == "true" ]]; then
+  if [[ $(echo "${CPU_DETECTED}" | jq -r '.[0].capabilities.avx2') == "true" ]]; then
     TF_DRIVER="avx2"
+    echo "✅ Your CPU supports AVX2 instructions"
+    if [[ $(lshw -c display -json 2>/dev/null | jq -r '.[0].configuration.driver') == "nvidia" ]]; then
+      echo "✅ You can optionally install the tensorflow-gpu version as an Nvidia GPU was detected"
+    fi
   elif [[ $(echo "${CPU_DETECTED}" | jq -r '.[0].capabilities.avx') == "true" ]]; then
     TF_DRIVER="avx"
+    echo "✅ Your CPU supports AVX instructions"
   else
     TF_DRIVER=""
+    echo "❌ Your CPU does not support AVX or AVX2 instructions"
   fi
 fi
 
