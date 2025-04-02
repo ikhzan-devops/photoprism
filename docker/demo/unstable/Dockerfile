@@ -1,9 +1,9 @@
 FROM photoprism/photoprism:unstable-ce AS build
 
 # Set environment variables
-ENV TF_CPP_MIN_LOG_LEVEL="2" \
-    TF_ENABLE_ONEDNN_OPTS="0" \
-    MALLOC_ARENA_MAX="4" \
+ENV TF_CPP_MIN_LOG_LEVEL=2 \
+    TF_ENABLE_ONEDNN_OPTS=1 \
+    MALLOC_ARENA_MAX=4 \
     PHOTOPRISM_STORAGE_PATH="/photoprism/storage" \
     PHOTOPRISM_DEBUG="false" \
     PHOTOPRISM_READONLY="false" \
