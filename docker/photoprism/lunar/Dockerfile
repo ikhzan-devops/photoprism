@@ -43,6 +43,7 @@ ENV PHOTOPRISM_ARCH=$TARGETARCH \
     TMPDIR="/tmp" \
     DEBIAN_FRONTEND="noninteractive" \
     TF_CPP_MIN_LOG_LEVEL="2" \
+    TF_ENABLE_ONEDNN_OPTS="0" \
     MALLOC_ARENA_MAX="4" \
     PROG="photoprism" \
     PHOTOPRISM_ASSETS_PATH="/opt/photoprism/assets" \

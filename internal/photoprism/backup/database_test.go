@@ -7,21 +7,30 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/photoprism/photoprism/internal/config"
-	"github.com/photoprism/photoprism/internal/photoprism/get"
 	"github.com/photoprism/photoprism/pkg/fs"
 )
 
 func TestDatabase(t *testing.T) {
-	t.Run("DatabaseNotFoundToStdOut", func(t *testing.T) {
-		c := get.Config()
+	t.Run("Force", func(t *testing.T) {
+		backupPath, err := filepath.Abs("./testdata/sqlite")
 
-		if c.DatabaseDriver() != config.SQLite3 {
-			t.Skip("Not executing against sqlite")
+		if err != nil {
+			t.Fatal(err)
 		}
-		if fs.FileExistsNotEmpty(c.DatabaseFile()) {
-			t.Skip("Using a real existing sqlite database") // This test only works against a memory database
+
+		if err = os.MkdirAll(backupPath, fs.ModeDir); err != nil {
+			t.Fatal(err)
 		}
+
+		err = Database(backupPath, "", false, true, 2)
+
+		assert.NoError(t, err)
+
+		if err = os.RemoveAll(backupPath); err != nil {
+			t.Fatal(err)
+		}
+	})
+	t.Run("ForceStdOut", func(t *testing.T) {
 		backupPath, err := filepath.Abs("./testdata/sqlite")
 
 		if err != nil {
@@ -34,62 +43,10 @@ func TestDatabase(t *testing.T) {
 
 		err = Database(backupPath, "", true, true, 2)
 
-		assert.Error(t, err)
+		assert.NoError(t, err)
 
 		if err = os.RemoveAll(backupPath); err != nil {
 			t.Fatal(err)
 		}
 	})
-	t.Run("DatabaseNotFound", func(t *testing.T) {
-		c := get.Config()
-
-		if c.DatabaseDriver() != config.SQLite3 {
-			t.Skip("Not executing against sqlite")
-		}
-		if fs.FileExistsNotEmpty(c.DatabaseFile()) {
-			t.Skip("Using a real existing sqlite database")
-		}
-		backupPath, err := filepath.Abs("./testdata/sqlite")
-
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		if err = os.MkdirAll(backupPath, fs.ModeDir); err != nil {
-			t.Fatal(err)
-		}
-
-		err = Database(backupPath, "", false, true, 2)
-
-		assert.Error(t, err)
-
-		if err = os.RemoveAll(backupPath); err != nil {
-			t.Fatal(err)
-		}
-	})
-	t.Run("Success", func(t *testing.T) {
-		c := get.Config()
-
-		if c.DatabaseDriver() == config.SQLite3 {
-			t.Skip("Executing against sqlite")
-		}
-		backupPath, err := filepath.Abs("./testdata/sqlite")
-
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		if err = os.MkdirAll(backupPath, fs.ModeDir); err != nil {
-			t.Fatal(err)
-		}
-
-		err = Database(backupPath, "", false, true, 2)
-
-		assert.Nil(t, err)
-
-		if err = os.RemoveAll(backupPath); err != nil {
-			t.Fatal(err)
-		}
-	})
-
 }

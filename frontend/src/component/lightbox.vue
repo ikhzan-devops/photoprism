@@ -39,6 +39,7 @@
         @keydown.space.exact="onKeyDown"
         @keydown.esc.exact="onKeyDown"
         @keydown.ctrl="onKeyDown"
+        @keydown.meta="onKeyDown"
       ></div>
       <div v-if="sidebarVisible" ref="sidebar" class="p-lightbox__sidebar bg-background">
         <p-sidebar-info v-model="model" :album="album" :context="context" @close="hideSidebar"></p-sidebar-info>
@@ -1716,6 +1717,7 @@ export default {
         return;
       }
 
+      // Handle space and escape key events.
       switch (ev.code) {
         case "Space":
           ev.preventDefault();
@@ -1735,6 +1737,15 @@ export default {
           ev.stopPropagation();
           this.closeLightbox();
           break;
+      }
+
+      // Return if Ctrl or Cmd is not pressed.
+      if (!(ev.ctrlKey || ev.metaKey)) {
+        return;
+      }
+
+      // Handle Ctrl/Cmd + key combinations:
+      switch (ev.code) {
         case "KeyA":
           ev.preventDefault();
           ev.stopPropagation();
