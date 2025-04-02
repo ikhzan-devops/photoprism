@@ -1774,11 +1774,6 @@ export default {
             this.toggleFullscreen();
           }
           break;
-        case "KeyH":
-          ev.preventDefault();
-          ev.stopPropagation();
-          this.onHideMenu();
-          break;
         case "KeyI":
           ev.preventDefault();
           ev.stopPropagation();
