@@ -7,7 +7,7 @@ PATH="/usr/local/sbin:/usr/sbin:/sbin:/usr/local/bin:/usr/bin:/bin:/scripts:$PAT
 
 set -e
 
-TF_VERSION=${TF_VERSION:-1.15.2}
+TF_VERSION=${TF_VERSION:-2.18.0}
 
 # Determine target architecture.
 if [[ $PHOTOPRISM_ARCH ]]; then
@@ -54,14 +54,20 @@ fi
 
 mkdir -p "$DESTDIR"
 
+if [[ $DESTARCH != "amd64" ]]; then
+  TF_DRIVER=""
+fi
+
 if [[ $TF_DRIVER == "auto" ]]; then
   echo "Detecting driver..."
 
   CPU_DETECTED=$(lshw -c processor -json 2>/dev/null)
 
-  if [[ $(echo "${CPU_DETECTED}" | jq -r '.[].capabilities.avx2') == "true" ]]; then
+  if [[ $(lshw -c display -json 2>/dev/null | jq -r '.[0].configuration.driver') == "nvidia" ]]; then
+    TF_DRIVER="gpu"
+  elif [[ $(echo "${CPU_DETECTED}" | jq -r '.[0].capabilities.avx2') == "true" ]]; then
     TF_DRIVER="avx2"
-  elif [[ $(echo "${CPU_DETECTED}" | jq -r '.[].capabilities.avx') == "true" ]]; then
+  elif [[ $(echo "${CPU_DETECTED}" | jq -r '.[0].capabilities.avx') == "true" ]]; then
     TF_DRIVER="avx"
   else
     TF_DRIVER=""
