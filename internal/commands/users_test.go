@@ -10,7 +10,7 @@ func TestUsersCommand(t *testing.T) {
 	t.Run("AddModifyAndRemoveJohn", func(t *testing.T) {
 		// Add John
 		// Run command with test context.
-		output, err := RunWithTestContext(UsersAddCommand, []string{"add", "--name=John", "--email=john@test.de", "--password=test1234", "--role=admin", "john"})
+		output, err := RunWithTestContext(UsersAddCommand, []string{"add", "--name=John", "--email=john@test.de", "--password=test1234", "--role=admin", "john.admin"})
 
 		// Check command output for plausibility.
 		// t.Logf(output)
@@ -18,7 +18,7 @@ func TestUsersCommand(t *testing.T) {
 		assert.Empty(t, output)
 
 		// Run command with test context.
-		output2, err := RunWithTestContext(UsersShowCommand, []string{"show", "john"})
+		output2, err := RunWithTestContext(UsersShowCommand, []string{"show", "john.admin"})
 
 		//t.Logf(output2)
 		assert.NoError(t, err)
@@ -27,9 +27,9 @@ func TestUsersCommand(t *testing.T) {
 		assert.Contains(t, output2, "john@test.de")
 		assert.NotContains(t, output2, "DeletedAt")
 
-		//Modify John
+		// Modify John
 		// Run command with test context.
-		output3, err := RunWithTestContext(UsersModCommand, []string{"mod", "--name=Johnny", "--email=johnnny@test.de", "--password=test12345", "john"})
+		output3, err := RunWithTestContext(UsersModCommand, []string{"mod", "--name=Johnny", "--email=johnnny@test.de", "--password=test12345", "john.admin"})
 
 		// Check command output for plausibility.
 		// t.Logf(output3)
@@ -37,7 +37,7 @@ func TestUsersCommand(t *testing.T) {
 		assert.Empty(t, output3)
 
 		// Run command with test context.
-		output4, err := RunWithTestContext(UsersShowCommand, []string{"show", "john"})
+		output4, err := RunWithTestContext(UsersShowCommand, []string{"show", "john.admin"})
 
 		//t.Logf(output4)
 		assert.NoError(t, err)
@@ -46,9 +46,9 @@ func TestUsersCommand(t *testing.T) {
 		assert.Contains(t, output4, "johnnny@test.de")
 		assert.NotContains(t, output4, "DeletedAt")
 
-		//Remove John
+		// Remove John
 		// Run command with test context.
-		output5, err := RunWithTestContext(UsersRemoveCommand, []string{"rm", "--force", "john"})
+		output5, err := RunWithTestContext(UsersRemoveCommand, []string{"rm", "--force", "john.admin"})
 
 		// Check command output for plausibility.
 		// t.Logf(output5)
@@ -56,7 +56,7 @@ func TestUsersCommand(t *testing.T) {
 		assert.Empty(t, output5)
 
 		// Run command with test context.
-		output6, err := RunWithTestContext(UsersShowCommand, []string{"show", "john"})
+		output6, err := RunWithTestContext(UsersShowCommand, []string{"show", "john.admin"})
 
 		//t.Logf(output6)
 		assert.NoError(t, err)

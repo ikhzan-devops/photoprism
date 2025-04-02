@@ -72,7 +72,13 @@ func NewTestOptions(pkg string) *Options {
 	// Set default database DSN.
 	if driver == SQLite3 {
 		if dsn == "" && pkg != "" {
-			dsn = fmt.Sprintf("file:%s?mode=memory&cache=shared&_foreign_keys=on", pkg)
+			dsnFile := fmt.Sprintf(".%s.db", clean.TypeLower(pkg))
+			dsn = fmt.Sprintf("%s?_foreign_keys=on", dsnFile)
+			if !fs.FileExists(dsnFile) {
+				log.Debugf("sqlite: test database %s does not already exist", clean.Log(dsnFile))
+			} else if err := os.Remove(dsnFile); err != nil {
+				log.Errorf("sqlite: failed to remove existing test database %s (%s)", clean.Log(dsnFile), err)
+			}
 		} else if dsn == "" {
 			dsn = SQLiteMemoryDSN
 		} else if dsn != SQLiteTestDB {
