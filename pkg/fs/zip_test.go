@@ -5,12 +5,13 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/photoprism/photoprism/internal/functions"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestZip(t *testing.T) {
 	t.Run("Compressed", func(t *testing.T) {
-		zipDir := filepath.Join(os.TempDir(), "pkg/fs")
+		zipDir := filepath.Join(os.TempDir(), functions.PhotoPrismTestToFolderName(), "pkg/fs")
 		zipName := filepath.Join(zipDir, "compressed.zip")
 		unzipDir := filepath.Join(zipDir, "compressed")
 		files := []string{"./testdata/directory/example.jpg"}
@@ -42,7 +43,7 @@ func TestZip(t *testing.T) {
 		}
 	})
 	t.Run("Uncompressed", func(t *testing.T) {
-		zipDir := filepath.Join(os.TempDir(), "pkg/fs")
+		zipDir := filepath.Join(os.TempDir(), functions.PhotoPrismTestToFolderName(), "pkg/fs")
 		zipName := filepath.Join(zipDir, "uncompressed.zip")
 		unzipDir := filepath.Join(zipDir, "uncompressed")
 		files := []string{"./testdata/directory/example.jpg"}

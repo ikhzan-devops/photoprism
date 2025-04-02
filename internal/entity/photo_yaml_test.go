@@ -7,6 +7,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
+	"github.com/photoprism/photoprism/internal/functions"
 	"github.com/photoprism/photoprism/pkg/fs"
 )
 
@@ -29,7 +30,7 @@ func TestPhoto_SaveAsYaml(t *testing.T) {
 		m := PhotoFixtures.Get("Photo01")
 		m.PreloadFiles()
 
-		fileName := filepath.Join(os.TempDir(), ".photoprism_test.yml")
+		fileName := filepath.Join(os.TempDir(), functions.PhotoPrismTestToFolderName(), ".photoprism_test.yml")
 
 		if err := m.SaveAsYaml(fileName); err != nil {
 			t.Fatal(err)
@@ -83,7 +84,7 @@ func TestPhoto_SaveSidecarYaml(t *testing.T) {
 		m := PhotoFixtures.Get("Photo01")
 		m.PreloadFiles()
 
-		basePath := fs.Abs("testdata/yaml")
+		basePath := fs.Abs(functions.PhotoPrismTestToFolderName() + "/testdata/yaml")
 		originalsPath := filepath.Join(basePath, "originals")
 		sidecarPath := filepath.Join(basePath, "sidecar")
 
@@ -112,7 +113,7 @@ func TestPhoto_SaveSidecarYaml(t *testing.T) {
 		m := Photo{}
 		m.PreloadFiles()
 
-		basePath := fs.Abs("testdata/yaml")
+		basePath := fs.Abs(functions.PhotoPrismTestToFolderName() + "/testdata/yaml")
 		originalsPath := filepath.Join(basePath, "originals")
 		sidecarPath := filepath.Join(basePath, "sidecar")
 
@@ -141,7 +142,7 @@ func TestPhoto_SaveSidecarYaml(t *testing.T) {
 		m := Photo{PhotoName: "testphoto"}
 		m.PreloadFiles()
 
-		basePath := fs.Abs("testdata/yaml")
+		basePath := fs.Abs(functions.PhotoPrismTestToFolderName() + "/testdata/yaml")
 		originalsPath := filepath.Join(basePath, "originals")
 		sidecarPath := filepath.Join(basePath, "sidecar")
 
