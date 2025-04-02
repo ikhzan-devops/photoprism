@@ -571,8 +571,8 @@ func (c *Config) ClientUser(withSettings bool) *ClientConfig {
 	} else {
 		c.Db().
 			Table("photos").
-			Select("COUNT(CASE WHEN photo_type = 'animated' AND photo_quality > -1) AS animated, " +
-				"COUNT(CASE WHEN photo_type = 'video' AND photo_quality > -1) AS videos, " +
+			Select("COUNT(CASE WHEN photo_type = 'animated' AND photo_quality > -1 THEN 1 END) AS animated, " +
+				"COUNT(CASE WHEN photo_type = 'video' AND photo_quality > -1 THEN 1 END) AS videos, " +
 				"COUNT(CASE WHEN photo_type = 'live' AND photo_quality > -1 THEN 1 END) AS live, " +
 				"COUNT(CASE WHEN photo_type = 'audio' AND photo_quality > -1 THEN 1 END) AS audio, " +
 				"COUNT(CASE WHEN photo_type = 'document' AND photo_quality > -1 THEN 1 END) AS documents, " +
