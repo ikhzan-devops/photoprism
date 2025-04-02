@@ -7,6 +7,7 @@ import (
 
 	"github.com/photoprism/photoprism/internal/entity/migrate"
 	"github.com/photoprism/photoprism/pkg/clean"
+	"github.com/photoprism/photoprism/pkg/fs"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -64,12 +65,13 @@ func InitTestDb(driver, dsn string) *DbConn {
 
 	// Set default database DSN.
 	if driver == SQLite3 {
-		if dsn == "" {
-			dsn = SQLiteMemoryDSN
-		} else if dsn != SQLiteTestDB {
-			// Continue.
-		} else if err := os.Remove(dsn); err == nil {
-			log.Debugf("sqlite: test file %s removed", clean.Log(dsn))
+		if dsn == "" || dsn == SQLiteTestDB {
+			dsn = SQLiteTestDB
+			if !fs.FileExists(dsn) {
+				log.Debugf("sqlite: test database %s does not already exist", clean.Log(dsn))
+			} else if err := os.Remove(dsn); err != nil {
+				log.Errorf("sqlite: failed to remove existing test database %s (%s)", clean.Log(dsn), err)
+			}
 		}
 	}
 
