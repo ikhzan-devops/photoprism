@@ -6,7 +6,6 @@
       :activator="activator"
       :attach="attach"
       :z-index="2000"
-      anchor="left"
       open-on-click
       open-on-hover
       class="p-action-menu action-menu action-menu--lightbox"
