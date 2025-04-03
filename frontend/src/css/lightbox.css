@@ -449,6 +449,7 @@
     justify-content: space-between;
     align-items: center;
     overflow: hidden;
+    user-select: none;
     border-radius: 0;
     z-index: 10;
     margin: 0;
