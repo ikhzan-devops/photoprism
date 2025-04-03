@@ -51,7 +51,7 @@
             prepend-icon="mdi-map-marker"
             :title="model.getLatLng()"
             class="clickable metadata__item"
-            @click.stop="model.copyLatLng"
+            @click.stop="model.copyLatLng()"
           >
           </v-list-item>
         </template>
