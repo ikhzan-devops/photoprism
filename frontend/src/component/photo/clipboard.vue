@@ -413,7 +413,11 @@ export default {
     },
     edit() {
       // Open Edit Dialog
-      this.$event.PubSub.publish("dialog.edit", { selection: this.selection, album: this.album, index: 0 });
+      if (this.selection.length == 1) {
+        this.$event.PubSub.publish("dialog.edit", { selection: this.selection, album: this.album, index: 0 });
+      } else {
+        this.$event.PubSub.publish("dialog.editBatch", { selection: this.selection, album: this.album, index: 0 });
+      }
     },
     onShared() {
       this.dialog.share = false;

@@ -8,6 +8,11 @@
       :tab="edit.tab"
       @close="closeEditDialog"
     ></p-photo-edit-dialog>
+    <p-photo-edit-batch
+      :visible="editBatch.visible"
+      :selection="editBatch.selection"
+      @close="closeEditBatch"
+    ></p-photo-edit-batch>
     <p-upload-dialog
       :visible="upload.visible"
       :data="upload.data"
@@ -22,6 +27,7 @@
 import Album from "model/album";
 
 import PPhotoEditDialog from "component/photo/edit/dialog.vue";
+import PPhotoEditBatch from "component/photo/edit/batch.vue";
 import PUploadDialog from "component/upload/dialog.vue";
 import PUpdate from "component/update.vue";
 import PLightbox from "component/lightbox.vue";
@@ -30,6 +36,7 @@ export default {
   name: "PDialogs",
   components: {
     PPhotoEditDialog,
+    PPhotoEditBatch,
     PUploadDialog,
     PUpdate,
     PLightbox,
@@ -42,6 +49,10 @@ export default {
         selection: [],
         index: 0,
         tab: "",
+      },
+      editBatch: {
+        visible: false,
+        selection: [],
       },
       upload: {
         visible: false,
@@ -57,10 +68,17 @@ export default {
     };
   },
   created() {
-    // Opens the photo edit dialog.
+    // Opens the photo edit dialog (when 1 image is selected).
     this.subscriptions.push(
       this.$event.subscribe("dialog.edit", (ev, data) => {
         this.onEdit(data);
+      })
+    );
+
+    // Opens the photo edit dialog (when more than 1 image are selected).
+    this.subscriptions.push(
+      this.$event.subscribe("dialog.editBatch", (ev, data) => {
+        this.onEditBatch(data);
       })
     );
 
@@ -101,9 +119,22 @@ export default {
       this.edit.tab = data?.tab ? data.tab : "";
       this.edit.visible = true;
     },
+    onEditBatch(data) {
+      if (this.editBatch.visible || !this.hasAuth()) {
+        return;
+      }
+
+      this.editBatch.selection = data.selection;
+      this.editBatch.visible = true;
+    },
     closeEditDialog() {
       if (this.edit.visible) {
         this.edit.visible = false;
+      }
+    },
+    closeEditBatch() {
+      if (this.editBatch.visible) {
+        this.editBatch.visible = false;
       }
     },
     onUpload(data) {
