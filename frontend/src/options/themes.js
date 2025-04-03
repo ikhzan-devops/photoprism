@@ -686,8 +686,8 @@ let themes = {
       "share": "#3F51B5",
       "love": "#ef5350",
       "terminal": "#4A464F",
-      "navigation": "#101114",
-      "navigation-home": "#101114",
+      "navigation": "#121213",
+      "navigation-home": "#121213",
     },
   },
 

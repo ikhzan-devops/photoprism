@@ -67,7 +67,7 @@
     display: block;
     overflow: auto;
     width: 300px;
-    z-index: 100000;
+    z-index: 1;
     opacity: 1;
     user-select: none;
     border-color: rgba(var(--v-border-color), var(--v-border-opacity));

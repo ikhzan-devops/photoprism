@@ -41,10 +41,11 @@
           'is-selected': $clipboard.has(model),
         }"
       >
-        <div ref="lightbox" class="p-lightbox__pswp"></div>
+        <div ref="lightbox" tabindex="2" class="p-lightbox__pswp"></div>
         <div
           v-show="video.controls && controlsShown !== 0"
           ref="controls"
+          tabindex="3"
           class="p-lightbox__controls"
           @click.stop.prevent
         >
@@ -101,8 +102,10 @@
       </div>
     </div>
     <p-lightbox-menu
-      :activator="menuElement"
+      ref="menu"
       :items="menuActions"
+      :activator="menuElement"
+      attach=".v-dialog--lightbox.v-overlay--active"
       @show="onShowMenu"
       @hide="onHideMenu"
     ></p-lightbox-menu>
@@ -251,7 +254,7 @@ export default {
     },
     // Triggered before the lightbox content is initialized.
     showDialog() {
-      this.$view.enter(this, this.$refs?.container);
+      this.$view.enter(this, this.$refs?.content);
       this.busy = true;
       this.visible = true;
       this.wasFullscreen = $fullscreen.isEnabled();
@@ -294,7 +297,7 @@ export default {
     },
     // Traps the focus inside the lightbox dialog.
     onFocusOut(ev) {
-      if (this.trace) {
+      if (this.debug) {
         this.log(`dialog.${ev.type}`, ev);
       }
 
@@ -302,9 +305,20 @@ export default {
         return;
       }
 
-      if (ev.target && ev.target instanceof HTMLElement && this.$refs?.container instanceof HTMLElement) {
-        if (!ev.target.closest(".p-lightbox") || ev.target?.disabled) {
-          this.$refs.container.focus();
+      // Keep content element focused.
+      if (this.$refs.content && this.$refs.content instanceof HTMLElement) {
+        if (
+          (ev.target &&
+            ev.target instanceof HTMLElement &&
+            (!ev.target.closest(".v-dialog--lightbox") || ev.target?.tabIndex < 0 || ev.target.disabled)) ||
+          (ev.relatedTarget &&
+            ev.relatedTarget instanceof HTMLElement &&
+            (!ev.relatedTarget.closest(".v-dialog--lightbox") || ev.relatedTarget.tabIndex < 0))
+        ) {
+          this.$refs.content.focus();
+          if (this.debug) {
+            this.log(`returned focus to content`, { target: ev.target });
+          }
         }
       }
     },
@@ -353,7 +367,7 @@ export default {
         pinchToClose: false,
         counter: false,
         trapFocus: false,
-        returnFocus: true,
+        returnFocus: false,
         allowPanToNext: false,
         closeOnVerticalDrag: false,
         initialZoomLevel: "fit",
@@ -920,9 +934,8 @@ export default {
         return Promise.reject();
       }
 
-      // Focus lightbox element.
-      // TODO: Move to common/view.js
-      this.getLightboxElement().focus();
+      // Focus content element.
+      this.$refs.content.focus();
 
       // Create PhotoSwipe instance.
       let lightbox = new Lightbox(options);
@@ -1462,6 +1475,11 @@ export default {
         return;
       }
 
+      // Hide action menu when slide changes.
+      if (this.$refs.menu) {
+        this.$refs.menu.hide();
+      }
+
       // Set current slide (model) list index.
       if (typeof pswp.currIndex === "number") {
         this.index = pswp.currIndex;
@@ -1476,6 +1494,9 @@ export default {
       if (this.slideshow.next !== this.index) {
         this.pauseSlideshow();
       }
+
+      // Ensure that content is focused.
+      this.$refs.content.focus();
     },
     // Called when the user clicks on the PhotoSwipe lightbox background,
     // see https://photoswipe.com/click-and-tap-actions.
@@ -2147,10 +2168,10 @@ export default {
 
       localStorage.setItem("lightbox.sidebar.visible", `${this.sidebarVisible.toString()}`);
 
-      // Set focus to sidebar and resize the content element.
+      // Resize and focus content element.
       this.$nextTick(() => {
-        this.getSidebarElement().focus();
         this.resize(true);
+        this.$refs.content.focus();
       });
     },
     // Hides the lightbox sidebar, if visible.
@@ -2163,10 +2184,10 @@ export default {
 
       localStorage.setItem("lightbox.sidebar.visible", `${this.sidebarVisible.toString()}`);
 
-      // Return focus and resize the content element.
+      // Resize and focus content element.
       this.$nextTick(() => {
-        this.getLightboxElement().focus();
         this.resize(true);
+        this.$refs.content.focus();
       });
     },
     toggleControls() {
