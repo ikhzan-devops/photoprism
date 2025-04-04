@@ -2420,8 +2420,8 @@ export default {
       // Find thumbnail size that best matches the current slide size and zoom level.
       const thumbSize = this.$util.thumbSize(slideWidth, slideHeight);
 
-      // Do not proceed if no matching size was found.
-      if (!thumbSize) {
+      // Do not change image if no matching thumbnail size was found or is available.
+      if (!thumbSize || !model.Thumbs[thumbSize]) {
         return;
       }
 
