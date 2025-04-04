@@ -801,6 +801,7 @@ msgstr ""
 #: src/component/settings/passcode.vue:497
 #: src/component/settings/webdav.vue:131
 #: src/component/share/dialog.vue:231
+#: src/component/sidebar/info.vue:24
 #: src/component/update.vue:57
 #: src/component/upload/dialog.vue:229
 #: src/locales.js:207
@@ -1759,7 +1760,7 @@ msgstr ""
 
 #: src/component/lightbox.vue:1021
 #: src/component/lightbox.vue:1022
-#: src/component/sidebar/info.vue:28
+#: src/component/sidebar/info.vue:29
 msgid "Information"
 msgstr ""
 
@@ -3202,6 +3203,11 @@ msgstr ""
 msgid "Size"
 msgstr ""
 
+#: src/component/lightbox.vue:1056
+#: src/component/lightbox.vue:1057
+msgid "Slideshow"
+msgstr ""
+
 #: src/options/options.js:156
 msgid "Slow"
 msgstr ""
@@ -3269,11 +3275,6 @@ msgstr ""
 
 #: src/page/settings/general.vue:127
 msgid "Start Page"
-msgstr ""
-
-#: src/component/lightbox.vue:1056
-#: src/component/lightbox.vue:1057
-msgid "Start/Stop Slideshow"
 msgstr ""
 
 #: src/page/settings/advanced.vue:426

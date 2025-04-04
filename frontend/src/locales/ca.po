@@ -700,8 +700,9 @@ msgstr "Credencials del client"
 #: src/component/settings/passcode.vue:456
 #: src/component/settings/passcode.vue:497
 #: src/component/settings/webdav.vue:131 src/component/share/dialog.vue:231
-#: src/component/update.vue:57 src/component/upload/dialog.vue:229
-#: src/locales.js:207 src/page/library/errors.vue:251
+#: src/component/sidebar/info.vue:24 src/component/update.vue:57
+#: src/component/upload/dialog.vue:229 src/locales.js:207
+#: src/page/library/errors.vue:251
 msgid "Close"
 msgstr "Tancar"
 
@@ -1547,7 +1548,7 @@ msgid "Indexing media and sidecar files…"
 msgstr "S'estan indexant fitxers multimèdia i sidecar..."
 
 #: src/component/lightbox.vue:1021 src/component/lightbox.vue:1022
-#: src/component/sidebar/info.vue:28
+#: src/component/sidebar/info.vue:29
 msgid "Information"
 msgstr "Informació"
 
@@ -2796,6 +2797,10 @@ msgstr "Similars"
 msgid "Size"
 msgstr "Mida"
 
+#: src/component/lightbox.vue:1056 src/component/lightbox.vue:1057
+msgid "Slideshow"
+msgstr ""
+
 #: src/options/options.js:156
 msgid "Slow"
 msgstr "Lenta"
@@ -2862,10 +2867,6 @@ msgstr "Inici"
 #: src/page/settings/general.vue:127
 msgid "Start Page"
 msgstr "Pàgina d'inici"
-
-#: src/component/lightbox.vue:1056 src/component/lightbox.vue:1057
-msgid "Start/Stop Slideshow"
-msgstr "Inicia/atura la presentació de diapositives"
 
 #: src/page/settings/advanced.vue:426
 msgid "Static Size Limit: %{n}px"
@@ -3424,6 +3425,9 @@ msgstr "La vostra biblioteca s'analitza contínuament per crear automàticament 
 #: src/component/lightbox.vue:274
 msgid "Zoom in/out"
 msgstr "Apropa o redueix"
+
+#~ msgid "Start/Stop Slideshow"
+#~ msgstr "Inicia/atura la presentació de diapositives"
 
 #~ msgid "Info"
 #~ msgstr "Informació"

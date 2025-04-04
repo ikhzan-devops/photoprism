@@ -697,8 +697,9 @@ msgstr "Уліковыя даныя кліента"
 #: src/component/settings/passcode.vue:456
 #: src/component/settings/passcode.vue:497
 #: src/component/settings/webdav.vue:131 src/component/share/dialog.vue:231
-#: src/component/update.vue:57 src/component/upload/dialog.vue:229
-#: src/locales.js:207 src/page/library/errors.vue:251
+#: src/component/sidebar/info.vue:24 src/component/update.vue:57
+#: src/component/upload/dialog.vue:229 src/locales.js:207
+#: src/page/library/errors.vue:251
 msgid "Close"
 msgstr "Закрыць"
 
@@ -1544,7 +1545,7 @@ msgid "Indexing media and sidecar files…"
 msgstr "Ідзе індэксацыя мультымедыйных і дадатковых файлаў…"
 
 #: src/component/lightbox.vue:1021 src/component/lightbox.vue:1022
-#: src/component/sidebar/info.vue:28
+#: src/component/sidebar/info.vue:29
 msgid "Information"
 msgstr "інфармацыя"
 
@@ -2793,6 +2794,10 @@ msgstr "Падобныя"
 msgid "Size"
 msgstr "Памер"
 
+#: src/component/lightbox.vue:1056 src/component/lightbox.vue:1057
+msgid "Slideshow"
+msgstr ""
+
 #: src/options/options.js:156
 msgid "Slow"
 msgstr "павольна"
@@ -2859,10 +2864,6 @@ msgstr "Пачаць"
 #: src/page/settings/general.vue:127
 msgid "Start Page"
 msgstr "Пачатковая старонка"
-
-#: src/component/lightbox.vue:1056 src/component/lightbox.vue:1057
-msgid "Start/Stop Slideshow"
-msgstr "Пачаць/спыніць слайд-шоў"
 
 #: src/page/settings/advanced.vue:426
 msgid "Static Size Limit: %{n}px"
@@ -3419,6 +3420,9 @@ msgstr "Ваша бібліятэка пастаянна аналізуецца 
 #: src/component/lightbox.vue:274
 msgid "Zoom in/out"
 msgstr "Павелічэнне/памяншэнне"
+
+#~ msgid "Start/Stop Slideshow"
+#~ msgstr "Пачаць/спыніць слайд-шоў"
 
 #~ msgid "Info"
 #~ msgstr "Інфармацыя"

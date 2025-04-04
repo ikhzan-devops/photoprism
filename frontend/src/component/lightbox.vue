@@ -1168,8 +1168,8 @@ export default {
         lightbox.pswp.ui.registerElement({
           name: "slideshow-toggle",
           className: "pswp__button--slideshow-toggle pswp__button--mdi", // Sets the icon style/size in lightbox.css.
-          title: this.$gettext("Start/Stop Slideshow"),
-          ariaLabel: this.$gettext("Start/Stop Slideshow"),
+          title: this.$gettext("Slideshow"),
+          ariaLabel: this.$gettext("Slideshow"),
           order: 10,
           isButton: true,
           html: {

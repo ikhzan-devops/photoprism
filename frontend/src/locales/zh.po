@@ -700,8 +700,9 @@ msgstr "客户证书"
 #: src/component/settings/passcode.vue:456
 #: src/component/settings/passcode.vue:497
 #: src/component/settings/webdav.vue:131 src/component/share/dialog.vue:231
-#: src/component/update.vue:57 src/component/upload/dialog.vue:229
-#: src/locales.js:207 src/page/library/errors.vue:251
+#: src/component/sidebar/info.vue:24 src/component/update.vue:57
+#: src/component/upload/dialog.vue:229 src/locales.js:207
+#: src/page/library/errors.vue:251
 msgid "Close"
 msgstr "关闭"
 
@@ -1547,7 +1548,7 @@ msgid "Indexing media and sidecar files…"
 msgstr "索引媒体和附属文件…"
 
 #: src/component/lightbox.vue:1021 src/component/lightbox.vue:1022
-#: src/component/sidebar/info.vue:28
+#: src/component/sidebar/info.vue:29
 msgid "Information"
 msgstr "信息"
 
@@ -2798,6 +2799,10 @@ msgstr "相似"
 msgid "Size"
 msgstr "尺寸"
 
+#: src/component/lightbox.vue:1056 src/component/lightbox.vue:1057
+msgid "Slideshow"
+msgstr ""
+
 #: src/options/options.js:156
 msgid "Slow"
 msgstr "慢"
@@ -2864,10 +2869,6 @@ msgstr "开始"
 #: src/page/settings/general.vue:127
 msgid "Start Page"
 msgstr "起始页"
-
-#: src/component/lightbox.vue:1056 src/component/lightbox.vue:1057
-msgid "Start/Stop Slideshow"
-msgstr "开始/停止幻灯片"
 
 #: src/page/settings/advanced.vue:426
 msgid "Static Size Limit: %{n}px"
@@ -3424,6 +3425,9 @@ msgstr "你的库被不断分析，以自动创建特殊时刻、旅行和地点
 #: src/component/lightbox.vue:274
 msgid "Zoom in/out"
 msgstr "缩放"
+
+#~ msgid "Start/Stop Slideshow"
+#~ msgstr "开始/停止幻灯片"
 
 #~ msgid "Info"
 #~ msgstr "信息"

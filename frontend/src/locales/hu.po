@@ -699,8 +699,9 @@ msgstr "Ügyfél hitelesítő adatok"
 #: src/component/settings/passcode.vue:456
 #: src/component/settings/passcode.vue:497
 #: src/component/settings/webdav.vue:131 src/component/share/dialog.vue:231
-#: src/component/update.vue:57 src/component/upload/dialog.vue:229
-#: src/locales.js:207 src/page/library/errors.vue:251
+#: src/component/sidebar/info.vue:24 src/component/update.vue:57
+#: src/component/upload/dialog.vue:229 src/locales.js:207
+#: src/page/library/errors.vue:251
 msgid "Close"
 msgstr "Bezárás"
 
@@ -1546,7 +1547,7 @@ msgid "Indexing media and sidecar files…"
 msgstr "Média- és oldalsó fájlok indexelése…"
 
 #: src/component/lightbox.vue:1021 src/component/lightbox.vue:1022
-#: src/component/sidebar/info.vue:28
+#: src/component/sidebar/info.vue:29
 msgid "Information"
 msgstr "Információ"
 
@@ -2795,6 +2796,10 @@ msgstr "Hasonló"
 msgid "Size"
 msgstr "Méret"
 
+#: src/component/lightbox.vue:1056 src/component/lightbox.vue:1057
+msgid "Slideshow"
+msgstr ""
+
 #: src/options/options.js:156
 msgid "Slow"
 msgstr "Lassú"
@@ -2861,10 +2866,6 @@ msgstr "Rajt"
 #: src/page/settings/general.vue:127
 msgid "Start Page"
 msgstr "Kezdőlap"
-
-#: src/component/lightbox.vue:1056 src/component/lightbox.vue:1057
-msgid "Start/Stop Slideshow"
-msgstr "Diavetítés indítása/leállítása"
 
 #: src/page/settings/advanced.vue:426
 msgid "Static Size Limit: %{n}px"
@@ -3421,6 +3422,9 @@ msgstr "Könyvtárát folyamatosan elemzi a rendszer, hogy automatikusan létreh
 #: src/component/lightbox.vue:274
 msgid "Zoom in/out"
 msgstr "Nagyítás/kicsinyítés"
+
+#~ msgid "Start/Stop Slideshow"
+#~ msgstr "Diavetítés indítása/leállítása"
 
 #~ msgid "Info"
 #~ msgstr "Info"

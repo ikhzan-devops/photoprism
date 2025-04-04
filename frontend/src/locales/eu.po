@@ -697,8 +697,9 @@ msgstr "Bezeroaren kredentzialak"
 #: src/component/settings/passcode.vue:456
 #: src/component/settings/passcode.vue:497
 #: src/component/settings/webdav.vue:131 src/component/share/dialog.vue:231
-#: src/component/update.vue:57 src/component/upload/dialog.vue:229
-#: src/locales.js:207 src/page/library/errors.vue:251
+#: src/component/sidebar/info.vue:24 src/component/update.vue:57
+#: src/component/upload/dialog.vue:229 src/locales.js:207
+#: src/page/library/errors.vue:251
 msgid "Close"
 msgstr "Itxi"
 
@@ -1544,7 +1545,7 @@ msgid "Indexing media and sidecar files…"
 msgstr "Multimedia eta sidecar fitxategiak indexatzen…"
 
 #: src/component/lightbox.vue:1021 src/component/lightbox.vue:1022
-#: src/component/sidebar/info.vue:28
+#: src/component/sidebar/info.vue:29
 msgid "Information"
 msgstr "Informazioa"
 
@@ -2793,6 +2794,10 @@ msgstr "Antzekoa"
 msgid "Size"
 msgstr "Tamaina"
 
+#: src/component/lightbox.vue:1056 src/component/lightbox.vue:1057
+msgid "Slideshow"
+msgstr ""
+
 #: src/options/options.js:156
 msgid "Slow"
 msgstr "Astiro"
@@ -2859,10 +2864,6 @@ msgstr "Hasi"
 #: src/page/settings/general.vue:127
 msgid "Start Page"
 msgstr "Hasiera orria"
-
-#: src/component/lightbox.vue:1056 src/component/lightbox.vue:1057
-msgid "Start/Stop Slideshow"
-msgstr "Hasi/gelditu diaporama"
 
 #: src/page/settings/advanced.vue:426
 msgid "Static Size Limit: %{n}px"
@@ -3419,6 +3420,9 @@ msgstr "Zure liburutegia etengabe aztertzen da momentu, bidai eta leku berezien 
 #: src/component/lightbox.vue:274
 msgid "Zoom in/out"
 msgstr "Handitu/txikiagotu"
+
+#~ msgid "Start/Stop Slideshow"
+#~ msgstr "Hasi/gelditu diaporama"
 
 #~ msgid "Info"
 #~ msgstr "Info"

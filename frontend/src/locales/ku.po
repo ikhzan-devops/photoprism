@@ -700,8 +700,9 @@ msgstr "Bawernameyên Client"
 #: src/component/settings/passcode.vue:456
 #: src/component/settings/passcode.vue:497
 #: src/component/settings/webdav.vue:131 src/component/share/dialog.vue:231
-#: src/component/update.vue:57 src/component/upload/dialog.vue:229
-#: src/locales.js:207 src/page/library/errors.vue:251
+#: src/component/sidebar/info.vue:24 src/component/update.vue:57
+#: src/component/upload/dialog.vue:229 src/locales.js:207
+#: src/page/library/errors.vue:251
 msgid "Close"
 msgstr "داخستن"
 
@@ -1547,7 +1548,7 @@ msgid "Indexing media and sidecar files…"
 msgstr "پێڕستکردنی پەڕگەکانی میدیا و لاتەنیشتەکان…"
 
 #: src/component/lightbox.vue:1021 src/component/lightbox.vue:1022
-#: src/component/sidebar/info.vue:28
+#: src/component/sidebar/info.vue:29
 msgid "Information"
 msgstr "Agahî"
 
@@ -2796,6 +2797,10 @@ msgstr "وەکویەک"
 msgid "Size"
 msgstr "ڕووبەر"
 
+#: src/component/lightbox.vue:1056 src/component/lightbox.vue:1057
+msgid "Slideshow"
+msgstr ""
+
 #: src/options/options.js:156
 msgid "Slow"
 msgstr "خاو"
@@ -2862,10 +2867,6 @@ msgstr "ده‌ستپێك"
 #: src/page/settings/general.vue:127
 msgid "Start Page"
 msgstr "Rûpelê Destpêkê"
-
-#: src/component/lightbox.vue:1056 src/component/lightbox.vue:1057
-msgid "Start/Stop Slideshow"
-msgstr "دەستپێکردن/وەستانی سلایدشۆ"
 
 #: src/page/settings/advanced.vue:426
 msgid "Static Size Limit: %{n}px"
@@ -3422,6 +3423,9 @@ msgstr "Pirtûkxaneya we bi domdarî tê analîz kirin ku bixweber albumên dem�
 #: src/component/lightbox.vue:274
 msgid "Zoom in/out"
 msgstr "گەورەکردن/بچووکردن"
+
+#~ msgid "Start/Stop Slideshow"
+#~ msgstr "دەستپێکردن/وەستانی سلایدشۆ"
 
 #~ msgid "Info"
 #~ msgstr "Info"

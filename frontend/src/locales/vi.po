@@ -697,8 +697,9 @@ msgstr "Thông tin xác thực của khách hàng"
 #: src/component/settings/passcode.vue:456
 #: src/component/settings/passcode.vue:497
 #: src/component/settings/webdav.vue:131 src/component/share/dialog.vue:231
-#: src/component/update.vue:57 src/component/upload/dialog.vue:229
-#: src/locales.js:207 src/page/library/errors.vue:251
+#: src/component/sidebar/info.vue:24 src/component/update.vue:57
+#: src/component/upload/dialog.vue:229 src/locales.js:207
+#: src/page/library/errors.vue:251
 msgid "Close"
 msgstr "Đóng"
 
@@ -1544,7 +1545,7 @@ msgid "Indexing media and sidecar files…"
 msgstr "Lập chỉ mục các tập tin media và sidecar…"
 
 #: src/component/lightbox.vue:1021 src/component/lightbox.vue:1022
-#: src/component/sidebar/info.vue:28
+#: src/component/sidebar/info.vue:29
 msgid "Information"
 msgstr "Thông tin"
 
@@ -2793,6 +2794,10 @@ msgstr "Tương tự"
 msgid "Size"
 msgstr "Kích cỡ"
 
+#: src/component/lightbox.vue:1056 src/component/lightbox.vue:1057
+msgid "Slideshow"
+msgstr ""
+
 #: src/options/options.js:156
 msgid "Slow"
 msgstr "Chậm"
@@ -2859,10 +2864,6 @@ msgstr "Bắt đầu"
 #: src/page/settings/general.vue:127
 msgid "Start Page"
 msgstr "Trang Bắt Đầu"
-
-#: src/component/lightbox.vue:1056 src/component/lightbox.vue:1057
-msgid "Start/Stop Slideshow"
-msgstr "Bắt đầu/Dừng trình chiếu"
 
 #: src/page/settings/advanced.vue:426
 msgid "Static Size Limit: %{n}px"
@@ -3421,6 +3422,9 @@ msgstr "Thư viện của bạn được phân tích liên tục để tự đ�
 #: src/component/lightbox.vue:274
 msgid "Zoom in/out"
 msgstr "Phóng to / thu nhỏ"
+
+#~ msgid "Start/Stop Slideshow"
+#~ msgstr "Bắt đầu/Dừng trình chiếu"
 
 #~ msgid "Info"
 #~ msgstr "Thông tin"
