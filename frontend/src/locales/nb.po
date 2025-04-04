@@ -42,7 +42,7 @@ msgstr "{0} valgt"
 msgid "{0}-{1} of {2}"
 msgstr "{0}-{1} av {2}"
 
-#: src/page/albums.vue:601
+#: src/page/albums.vue:609
 msgid "%{n} albums found"
 msgstr "%{n} album funnet"
 
@@ -50,7 +50,7 @@ msgstr "%{n} album funnet"
 msgid "%{n} files uploaded"
 msgstr "%{n} filer lastet opp"
 
-#: src/page/library/browse.vue:338
+#: src/page/library/browse.vue:364
 msgid "%{n} folders found"
 msgstr "%{n} mapper funnet"
 
@@ -58,17 +58,17 @@ msgstr "%{n} mapper funnet"
 msgid "%{n} GB of %{q} GB used"
 msgstr "%{n} GB av %{q} GB brukt"
 
-#: src/page/labels.vue:524
+#: src/page/labels.vue:531
 msgid "%{n} labels found"
 msgstr "%{n} merkelapper funnet"
 
-#: src/page/people/new.vue:348 src/page/people/new.vue:437
-#: src/page/people/recognized.vue:526
+#: src/page/people/new.vue:350 src/page/people/new.vue:444
+#: src/page/people/recognized.vue:533
 msgid "%{n} people found"
 msgstr "%{n} personer ble funnet"
 
-#: src/page/album/photos.vue:313 src/page/album/photos.vue:489
-#: src/page/photos.vue:435 src/page/photos.vue:616
+#: src/page/album/photos.vue:313 src/page/album/photos.vue:494
+#: src/page/photos.vue:441 src/page/photos.vue:627
 msgid "%{n} pictures found"
 msgstr "%{n} bilder funnet"
 
@@ -105,7 +105,7 @@ msgstr "4 timer"
 msgid "A click will copy it to your clipboard."
 msgstr "Et klikk vil kopiere det til utklippstavlen."
 
-#: src/component/update.vue:17
+#: src/component/update.vue:18
 msgid "A new version of %{s} is available:"
 msgstr "En ny versjon av %{s} er tilgjengelig:"
 
@@ -191,7 +191,7 @@ msgstr "Legg til %{s}?"
 msgid "Add Account"
 msgstr "Legg til konto"
 
-#: src/page/albums.vue:118 src/page/albums.vue:302
+#: src/page/albums.vue:124 src/page/albums.vue:308
 msgid "Add Album"
 msgstr "Legg til Album"
 
@@ -209,7 +209,7 @@ msgstr "Legg til Lenke"
 msgid "Add person?"
 msgstr "Legg til person?"
 
-#: src/page/albums.vue:412
+#: src/page/albums.vue:418
 msgid "Add pictures from search results by selecting them."
 msgstr "Legg til bilder fra søkeresultatene ved å velge dem."
 
@@ -257,7 +257,7 @@ msgstr "Etter én måned"
 msgid "After one year"
 msgstr "Etter ett år"
 
-#: src/page/albums.vue:279
+#: src/page/albums.vue:285
 msgid "After selecting pictures from search results, you can add them to an album using the context menu."
 msgstr "Etter at du har valgt bilder fra søkeresultatene, kan du legge dem til i et album ved hjelp av hurtigmenyen."
 
@@ -277,7 +277,7 @@ msgstr "Album"
 msgid "Album Backups"
 msgstr "Sikkerhetskopiering av album"
 
-#: src/page/albums.vue:653
+#: src/page/albums.vue:668
 msgid "Album created"
 msgstr "Album opprettet"
 
@@ -295,7 +295,7 @@ msgstr "Album slettet"
 msgid "All"
 msgstr "Alle"
 
-#: src/page/albums.vue:457
+#: src/page/albums.vue:465
 msgid "All %{n} albums loaded"
 msgstr "Alle %{n} album lastet"
 
@@ -312,7 +312,7 @@ msgid "All Cameras"
 msgstr "Alle Kameraer"
 
 #: src/component/photo/toolbar.vue:74 src/page/albums.vue:43
-#: src/page/albums.vue:232 src/page/albums.vue:725
+#: src/page/albums.vue:240 src/page/albums.vue:740
 msgid "All Categories"
 msgstr "Alle Kategorier"
 
@@ -402,13 +402,13 @@ msgstr "Godkjenn"
 msgid "Apps and Devices"
 msgstr "Apper og enheter"
 
-#: src/app/routes.js:287 src/component/lightbox.vue:1178
+#: src/app/routes.js:287 src/component/lightbox.vue:1196
 #: src/component/navigation.vue:553 src/component/photo/clipboard.vue:142
 #: src/component/photo/view/cards.vue:398 src/page/settings/general.vue:417
 msgid "Archive"
 msgstr "Arkivér"
 
-#: src/component/lightbox.vue:1852 src/component/photo/edit/info.vue:433
+#: src/component/lightbox.vue:1957 src/component/photo/edit/info.vue:433
 msgid "Archived"
 msgstr "Arkivert"
 
@@ -519,8 +519,8 @@ msgstr "Blå"
 msgid "Brown"
 msgstr "Brun"
 
-#: src/component/photo/edit/files.vue:263 src/component/photo/toolbar.vue:132
-#: src/component/photo/upload/dialog.vue:240
+#: src/component/photo/edit/files.vue:263 src/component/photo/toolbar.vue:135
+#: src/component/upload/dialog.vue:241
 msgid "Browse"
 msgstr "Bla gjennom"
 
@@ -557,7 +557,7 @@ msgstr "Ved å bruke programvaren og tjenestene vi tilbyr, godtar du våre vilk�
 msgid "Calendar"
 msgstr "Kalender"
 
-#: src/component/photo/edit/details.vue:346 src/component/photo/toolbar.vue:222
+#: src/component/photo/edit/details.vue:346 src/component/photo/toolbar.vue:225
 #: src/component/photo/view/cards.vue:467 src/component/photo/view/list.vue:116
 msgid "Camera"
 msgstr "Kamera"
@@ -570,15 +570,15 @@ msgstr "Kamera-serienummer"
 msgid "Can't access your authenticator app or device?"
 msgstr "Får du ikke tilgang til autentiseringsappen eller -enheten din?"
 
-#: src/page/album/photos.vue:322 src/page/photos.vue:444
+#: src/page/album/photos.vue:322 src/page/photos.vue:450
 msgid "Can't load more, limit reached"
 msgstr "Kan ikke laste inn mer, grensen nådd"
 
 #: src/common/clipboard.js:102 src/common/clipboard.js:139
-#: src/page/albums.vue:663 src/page/albums.vue:679 src/page/labels.vue:299
-#: src/page/labels.vue:319 src/page/library/browse.vue:220
-#: src/page/library/browse.vue:236 src/page/people/new.vue:276
-#: src/page/people/new.vue:292 src/page/people/recognized.vue:305
+#: src/page/albums.vue:678 src/page/albums.vue:694 src/page/labels.vue:299
+#: src/page/labels.vue:319 src/page/library/browse.vue:238
+#: src/page/library/browse.vue:254 src/page/people/new.vue:278
+#: src/page/people/new.vue:294 src/page/people/recognized.vue:305
 #: src/page/people/recognized.vue:321
 msgid "Can't select more items"
 msgstr "Kan ikke velge flere elementer"
@@ -618,8 +618,8 @@ msgid "Carousel slide {0} of {1}"
 msgstr "Karusellbilde {0} av {1}"
 
 #: src/page/about/feedback.vue:82 src/page/about/feedback.vue:83
-#: src/component/album/edit/dialog.vue:128 src/component/photo/toolbar.vue:381
-#: src/page/albums.vue:181
+#: src/component/album/edit/dialog.vue:128 src/component/photo/toolbar.vue:384
+#: src/page/albums.vue:187
 msgid "Category"
 msgstr "Kategori"
 
@@ -651,10 +651,10 @@ msgstr "Kan ikke lagre endringer"
 
 #: src/component/user/edit/dialog.vue:83 src/component/user/edit/dialog.vue:159
 #: src/component/album/edit/dialog.vue:73
-#: src/component/label/edit/dialog.vue:46 src/component/lightbox.vue:1811
+#: src/component/label/edit/dialog.vue:46 src/component/lightbox.vue:1916
 #: src/component/photo/edit/files.vue:160 src/component/service/edit.vue:90
 #: src/component/share/dialog.vue:92 src/component/share/dialog.vue:111
-#: src/page/albums.vue:656 src/page/people/recognized.vue:119
+#: src/page/albums.vue:671 src/page/people/recognized.vue:119
 #: src/page/settings/advanced.vue:62 src/page/settings/content.vue:62
 #: src/page/settings/general.vue:108
 msgid "Changes successfully saved"
@@ -692,17 +692,16 @@ msgstr "Kunde"
 msgid "Client Credentials"
 msgstr "Kundens legitimasjon"
 
-#: src/page/admin/sessions.vue:529 src/component/lightbox.vue:253
-#: src/component/lightbox.vue:980 src/component/lightbox.vue:981
-#: src/component/photo/edit/details.vue:627 src/component/photo/toolbar.vue:151
-#: src/component/photo/upload/dialog.vue:228
+#: src/page/admin/sessions.vue:529 src/component/lightbox.vue:273
+#: src/component/lightbox.vue:998 src/component/lightbox.vue:999
+#: src/component/photo/edit/details.vue:627 src/component/photo/toolbar.vue:154
 #: src/component/settings/apps.vue:224 src/component/settings/apps.vue:437
 #: src/component/settings/passcode.vue:148
 #: src/component/settings/passcode.vue:456
 #: src/component/settings/passcode.vue:497
 #: src/component/settings/webdav.vue:131 src/component/share/dialog.vue:231
-#: src/component/update.vue:57 src/locales.js:207
-#: src/page/library/errors.vue:248
+#: src/component/update.vue:57 src/component/upload/dialog.vue:229
+#: src/locales.js:207 src/page/library/errors.vue:251
 msgid "Close"
 msgstr "Lukk"
 
@@ -710,7 +709,7 @@ msgstr "Lukk"
 msgid "Codec"
 msgstr "Kodeks"
 
-#: src/component/photo/toolbar.vue:354
+#: src/component/photo/toolbar.vue:357
 msgid "Color"
 msgstr "Farge"
 
@@ -762,12 +761,12 @@ msgstr "Kontaktinformasjon"
 msgid "Contact Us"
 msgstr "Kontakt Oss"
 
-#: src/page/albums.vue:425 src/page/labels.vue:234
+#: src/page/albums.vue:431 src/page/labels.vue:237
 #: src/page/people/recognized.vue:302
 msgid "Contains %{n} pictures."
 msgstr "Inneholder %{n} bilder."
 
-#: src/page/albums.vue:419 src/page/labels.vue:228
+#: src/page/albums.vue:425 src/page/labels.vue:231
 #: src/page/people/recognized.vue:296
 msgid "Contains one picture."
 msgstr "Inneholder ett bilde."
@@ -792,7 +791,7 @@ msgstr "Bidragsyter"
 msgid "Converting"
 msgstr "Konverterer"
 
-#: src/common/util.js:784
+#: src/common/util.js:788
 msgid "Copied to clipboard"
 msgstr "Kopiert til utklippstavlen"
 
@@ -809,7 +808,7 @@ msgid "Couldn't find anything."
 msgstr "Kunne ikke finne noe."
 
 #: src/page/settings/account.vue:685 src/component/photo/edit/details.vue:242
-#: src/component/photo/toolbar.vue:194 src/page/settings/account.vue:577
+#: src/component/photo/toolbar.vue:197 src/page/settings/account.vue:577
 msgid "Country"
 msgstr "Land"
 
@@ -849,7 +848,7 @@ msgstr "Kubisk: Moderat kvalitet, god ytelse"
 msgid "Current Password"
 msgstr "Nåværende Passord"
 
-#: src/options/themes.js:915 src/options/themes.js:924
+#: src/options/themes.js:919 src/options/themes.js:928
 msgid "Custom"
 msgstr "Tilpasset"
 
@@ -883,7 +882,7 @@ msgstr "Feilsøkingslogger"
 #: src/model/user.js:246 src/options/auth.js:20 src/options/auth.js:21
 #: src/options/auth.js:39 src/options/auth.js:40 src/options/options.js:128
 #: src/options/options.js:164 src/options/options.js:248
-#: src/options/themes.js:769 src/page/settings/general.vue:104
+#: src/options/themes.js:773 src/page/settings/general.vue:104
 msgid "Default"
 msgstr "Standard"
 
@@ -902,11 +901,11 @@ msgstr "Standardmappe"
 msgid "Delete"
 msgstr "Slett"
 
-#: src/component/photo/toolbar.vue:112 src/page/library/errors.vue:94
+#: src/component/photo/toolbar.vue:115 src/page/library/errors.vue:97
 msgid "Delete All"
 msgstr "Slett alle"
 
-#: src/component/photo/toolbar.vue:416 src/page/library/errors.vue:190
+#: src/component/photo/toolbar.vue:419 src/page/library/errors.vue:193
 msgid "Delete all?"
 msgstr "Slett alt?"
 
@@ -914,7 +913,7 @@ msgstr "Slett alt?"
 msgid "Delete orphaned index entries, sidecar files and thumbnails."
 msgstr "Slett foreldreløse indeksoppføringer, sidefiler og miniatyrbilder."
 
-#: src/component/album/edit/dialog.vue:107 src/page/albums.vue:403
+#: src/component/album/edit/dialog.vue:107 src/page/albums.vue:409
 msgid "Description"
 msgstr "Beskrivelse"
 
@@ -922,8 +921,8 @@ msgstr "Beskrivelse"
 msgid "Detailed instructions can be found in our User Guide."
 msgstr "Detaljerte instruksjoner finner du i vår Brukerhåndbok."
 
-#: src/component/photo/edit/dialog.vue:154
-#: src/component/photo/edit/dialog.vue:171
+#: src/component/photo/edit/dialog.vue:156
+#: src/component/photo/edit/dialog.vue:173
 msgid "Details"
 msgstr "Detaljer"
 
@@ -1013,7 +1012,7 @@ msgstr "Vis bildetitler i søkeresultatene."
 
 #: src/component/photo/view/cards.vue:339
 #: src/component/photo/view/cards.vue:521
-#: src/component/photo/view/mosaic.vue:183 src/component/sidebar/info.vue:108
+#: src/component/photo/view/mosaic.vue:183 src/model/thumb.js:141
 #: src/options/options.js:241
 msgid "Document"
 msgstr "Dokument"
@@ -1038,13 +1037,13 @@ msgstr "Ikke bruk RawTherapee til å konvertere RAW-bilder."
 msgid "Done"
 msgstr "Ferdig"
 
-#: src/component/photo/upload/dialog.vue:134 src/page/library/import.vue:46
+#: src/component/upload/dialog.vue:135 src/page/library/import.vue:46
 #: src/page/library/index.vue:52
 msgid "Done."
 msgstr "Ferdig."
 
-#: src/component/album/clipboard.vue:73 src/component/album/toolbar.vue:113
-#: src/component/file/clipboard.vue:48 src/component/lightbox.vue:1206
+#: src/component/album/clipboard.vue:73 src/component/album/toolbar.vue:118
+#: src/component/file/clipboard.vue:48 src/component/lightbox.vue:1224
 #: src/component/people/clipboard.vue:47 src/component/photo/clipboard.vue:116
 #: src/component/photo/edit/files.vue:168 src/page/settings/content.vue:331
 #: src/page/settings/general.vue:321
@@ -1063,12 +1062,12 @@ msgstr "Last ned eksterne filer"
 msgid "Download single files and zip archives."
 msgstr "Last ned enkelte filer og zip-arkiver."
 
-#: src/component/album/clipboard.vue:104 src/component/album/toolbar.vue:152
+#: src/component/album/clipboard.vue:104 src/component/album/toolbar.vue:157
 #: src/component/file/clipboard.vue:61 src/component/label/clipboard.vue:86
-#: src/component/lightbox.vue:1891 src/component/people/clipboard.vue:59
+#: src/component/lightbox.vue:1996 src/component/people/clipboard.vue:59
 #: src/component/photo/clipboard.vue:220 src/component/photo/edit/files.vue:117
 #: src/component/photo/view/cards.vue:169 src/component/photo/view/list.vue:142
-#: src/page/library/browse.vue:126
+#: src/page/library/browse.vue:144
 msgid "Downloading…"
 msgstr "Laster ned…"
 
@@ -1084,7 +1083,7 @@ msgstr "Dra og slipp filer her"
 msgid "Due to the high volume of emails we receive, our team may be unable to get back to you immediately."
 msgstr "På grunn av det store antallet e-poster vi mottar, kan det hende at teamet vårt ikke kan svare deg umiddelbart."
 
-#: src/page/library/browse.vue:123
+#: src/page/library/browse.vue:126
 msgid "Duplicates will be skipped and only appear once."
 msgstr "Duplikater hopes over og vises bare én gang."
 
@@ -1104,8 +1103,8 @@ msgstr "Grense for Dynamisk Størrelse:%{n}px"
 msgid "E-Mail"
 msgstr "E-post"
 
-#: src/component/album/clipboard.vue:61 src/component/album/toolbar.vue:84
-#: src/component/lightbox.vue:1107 src/component/lightbox.vue:1108
+#: src/component/album/clipboard.vue:61 src/component/album/toolbar.vue:89
+#: src/component/lightbox.vue:1125 src/component/lightbox.vue:1126
 #: src/component/photo/clipboard.vue:90 src/page/settings/general.vue:393
 msgid "Edit"
 msgstr "Rediger"
@@ -1169,7 +1168,7 @@ msgstr "Angi verifikasjonskode"
 msgid "Enter your password to confirm the action and continue:"
 msgstr "Skriv inn passordet ditt for å bekrefte handlingen og fortsett:"
 
-#: src/page/connect.vue:54 src/component/lightbox.vue:257
+#: src/page/connect.vue:54 src/component/lightbox.vue:277
 #: src/page/connect.vue:57 src/page/library/errors.vue:253
 msgid "Error"
 msgstr "Feil"
@@ -1309,8 +1308,8 @@ msgstr "Filstørrelse"
 msgid "Filename"
 msgstr "Filnavn"
 
-#: src/component/navigation.vue:1928 src/component/photo/edit/dialog.vue:265
-#: src/component/photo/edit/dialog.vue:282
+#: src/component/navigation.vue:1928 src/component/photo/edit/dialog.vue:267
+#: src/component/photo/edit/dialog.vue:284
 msgid "Files"
 msgstr "Filer"
 
@@ -1329,15 +1328,15 @@ msgstr "Brennvidde"
 #: src/component/photo/edit/info.vue:115 src/component/service/edit.vue:118
 #: src/component/service/edit.vue:189 src/component/service/edit.vue:194
 #: src/component/service/upload.vue:90 src/component/service/upload.vue:96
-#: src/model/folder.js:199 src/page/library/browse.vue:181
+#: src/model/folder.js:199 src/page/library/browse.vue:184
 msgid "Folder"
 msgstr "Mappe"
 
-#: src/page/library/browse.vue:341
+#: src/page/library/browse.vue:367
 msgid "Folder contains %{n} files"
 msgstr "Mappen inneholder %{n} filer"
 
-#: src/page/library/browse.vue:332
+#: src/page/library/browse.vue:358
 msgid "Folder is empty"
 msgstr "Mappen er tom"
 
@@ -1362,7 +1361,7 @@ msgstr "Rammer"
 msgid "Full Access"
 msgstr "Full tilgang"
 
-#: src/component/lightbox.vue:1055 src/component/lightbox.vue:1056
+#: src/component/lightbox.vue:1073 src/component/lightbox.vue:1074
 msgid "Fullscreen"
 msgstr "Fullskjerm"
 
@@ -1386,7 +1385,7 @@ msgstr "Generer forhåndsvisninger"
 msgid "Generated"
 msgstr "Generert"
 
-#: src/component/photo/toolbar.vue:184
+#: src/component/photo/toolbar.vue:189
 msgid "Get Started"
 msgstr "Kom i gang"
 
@@ -1509,8 +1508,8 @@ msgid "in"
 msgstr "inn"
 
 #: src/component/photo/view/cards.vue:149 src/component/photo/view/list.vue:87
-#: src/component/photo/view/mosaic.vue:73 src/page/labels.vue:153
-#: src/page/library/browse.vue:123
+#: src/component/photo/view/mosaic.vue:73 src/page/labels.vue:156
+#: src/page/library/browse.vue:126
 msgid "In case pictures you expect are missing, please rescan your library and wait until indexing has been completed."
 msgstr "Hvis bilder du forventer mangler, kan du skanne biblioteket på nytt og vente til indekseringen er fullført."
 
@@ -1522,7 +1521,7 @@ msgstr "Ta med RAW-bildefiler når du laster ned stabler og arkiver."
 msgid "Include sidecar files when downloading stacks and archives."
 msgstr "Ta med sidevognfiler når du laster ned stabler og arkiver."
 
-#: src/component/photo/upload/dialog.vue:136 src/page/library/import.vue:48
+#: src/component/upload/dialog.vue:137 src/page/library/import.vue:48
 msgid "Increase storage size or delete files to continue."
 msgstr "Øk lagringsstørrelsen eller slett filer for å fortsette."
 
@@ -1547,15 +1546,16 @@ msgstr "Indeksering feilet"
 msgid "Indexing media and sidecar files…"
 msgstr "Indekserer media- og sidevognfiler…"
 
+#: src/component/lightbox.vue:1021 src/component/lightbox.vue:1022
 #: src/component/sidebar/info.vue:28
-msgid "Info"
-msgstr "Info"
+msgid "Information"
+msgstr ""
 
 #: src/component/photo/edit/files.vue:282
 msgid "Instance ID"
 msgstr "Instans-ID"
 
-#: src/component/photo/upload/dialog.vue:136 src/page/library/import.vue:48
+#: src/component/upload/dialog.vue:137 src/page/library/import.vue:48
 msgid "Insufficient storage."
 msgstr "Utilstrekkelig lagringsplass."
 
@@ -1589,7 +1589,7 @@ msgstr "Ugyldig dato"
 msgid "Invalid parameters"
 msgstr "Ugyldige verdier"
 
-#: src/component/photo/edit/dialog.vue:180 src/model/thumb.js:83
+#: src/component/photo/edit/dialog.vue:191 src/model/thumb.js:154
 msgid "Invalid photo selected"
 msgstr "Ugyldig bilde er valgt"
 
@@ -1636,8 +1636,8 @@ msgid "Label"
 msgstr "Merkelapp"
 
 #: src/app/routes.js:389 src/component/navigation.vue:1175
-#: src/component/photo/edit/dialog.vue:186
-#: src/component/photo/edit/dialog.vue:203 src/options/options.js:138
+#: src/component/photo/edit/dialog.vue:188
+#: src/component/photo/edit/dialog.vue:205 src/options/options.js:138
 #: src/page/settings/general.vue:247
 msgid "Labels"
 msgstr "Merkelapper"
@@ -1714,7 +1714,7 @@ msgstr "Bibliotek"
 msgid "License"
 msgstr "Lisens"
 
-#: src/component/lightbox.vue:1073 src/component/lightbox.vue:1074
+#: src/component/lightbox.vue:1091 src/component/lightbox.vue:1092
 msgid "Like"
 msgstr "Lik"
 
@@ -1722,7 +1722,7 @@ msgstr "Lik"
 msgid "Lime"
 msgstr "Lime"
 
-#: src/page/library/browse.vue:345
+#: src/page/library/browse.vue:371
 msgid "Limit reached, showing first %{n} files"
 msgstr "Grensen nådd, viser de første €{n} filene"
 
@@ -1744,8 +1744,7 @@ msgstr "Listevisning"
 
 #: src/component/photo/view/cards.vue:319
 #: src/component/photo/view/cards.vue:501 src/component/photo/view/list.vue:176
-#: src/component/photo/view/mosaic.vue:163 src/component/sidebar/info.vue:99
-#: src/options/options.js:221
+#: src/component/photo/view/mosaic.vue:163 src/options/options.js:221
 msgid "Live"
 msgstr "Direkte"
 
@@ -1782,7 +1781,7 @@ msgstr "Lokaltid"
 msgid "Location"
 msgstr "Plassering"
 
-#: src/page/library/errors.vue:181
+#: src/page/library/errors.vue:184
 msgid "Log messages appear here whenever PhotoPrism comes across broken files, or there are other potential issues."
 msgstr "Loggmeldinger vises her når PhotoPrism kommer over ødelagte filer eller det er andre potensielle problemer."
 
@@ -1901,11 +1900,11 @@ msgid "Monochrome"
 msgstr "Monokrom"
 
 #: src/page/settings/account.vue:475 src/component/photo/edit/details.vue:137
-#: src/component/photo/toolbar.vue:328
+#: src/component/photo/toolbar.vue:331
 msgid "Month"
 msgstr "Måned"
 
-#: src/component/lightbox.vue:1126
+#: src/component/lightbox.vue:1144
 msgid "More options"
 msgstr "Flere alternativer"
 
@@ -1925,7 +1924,7 @@ msgstr "Flytt Filer"
 msgid "Must have at least %{n} characters."
 msgstr "Må ha minst %{n} tegn."
 
-#: src/component/lightbox.vue:1022 src/component/lightbox.vue:1023
+#: src/component/lightbox.vue:1040 src/component/lightbox.vue:1041
 msgid "Mute"
 msgstr "Mute"
 
@@ -1971,7 +1970,7 @@ msgstr "Nytt Passord"
 msgid "Newest First"
 msgstr "Nyeste først"
 
-#: src/component/lightbox.vue:256 src/locales.js:298
+#: src/component/lightbox.vue:276 src/locales.js:298
 msgid "Next"
 msgstr "Neste"
 
@@ -1991,7 +1990,7 @@ msgstr "Neste visuelle"
 msgid "No"
 msgstr "Nei"
 
-#: src/page/albums.vue:596 src/page/albums.vue:274
+#: src/page/albums.vue:604 src/page/albums.vue:280
 msgid "No albums found"
 msgstr "Ingen album funnet"
 
@@ -1999,7 +1998,7 @@ msgstr "Ingen album funnet"
 msgid "No data available"
 msgstr "Ingen data tilgjengelig"
 
-#: src/page/labels.vue:519 src/page/labels.vue:152
+#: src/page/labels.vue:526 src/page/labels.vue:155
 msgid "No labels found"
 msgstr "Ingen merkelapper funnet"
 
@@ -2011,16 +2010,16 @@ msgstr "Ingen matchende poster funnet"
 msgid "No more"
 msgstr "Ikke mer"
 
-#: src/component/photo/edit/people.vue:34 src/page/people/new.vue:344
-#: src/page/people/new.vue:433 src/page/people/new.vue:100
-#: src/page/people/recognized.vue:521 src/page/people/recognized.vue:142
+#: src/component/photo/edit/people.vue:34 src/page/people/new.vue:346
+#: src/page/people/new.vue:440 src/page/people/new.vue:100
+#: src/page/people/recognized.vue:528 src/page/people/recognized.vue:142
 msgid "No people found"
 msgstr "Ingen personar funne"
 
-#: src/component/lightbox.vue:334 src/component/photo/view/cards.vue:144
+#: src/component/lightbox.vue:354 src/component/photo/view/cards.vue:144
 #: src/component/photo/view/list.vue:82 src/component/photo/view/mosaic.vue:68
-#: src/page/album/photos.vue:484 src/page/library/browse.vue:122
-#: src/page/photos.vue:611 src/page/places.vue:623 src/page/places.vue:721
+#: src/page/album/photos.vue:489 src/page/library/browse.vue:125
+#: src/page/photos.vue:622 src/page/places.vue:623 src/page/places.vue:721
 msgid "No pictures found"
 msgstr "Fant ingen bilder"
 
@@ -2045,13 +2044,13 @@ msgstr "Ingen tjenester konfigurert."
 msgid "No thanks"
 msgstr "Nei takk"
 
-#: src/page/library/errors.vue:180
+#: src/page/library/errors.vue:183
 msgid "No warnings or error containing this keyword. Note that search is case-sensitive."
 msgstr "Ingen advarsler eller feilmeldinger inneholder dette nøkkelordet. Merk at søket skiller mellom store og små bokstaver."
 
-#: src/component/photo/upload/dialog.vue:208
 #: src/component/photo/view/cards.vue:154 src/component/photo/view/list.vue:59
 #: src/component/photo/view/list.vue:92 src/component/photo/view/mosaic.vue:78
+#: src/component/upload/dialog.vue:209
 msgid "Non-photographic and low-quality images require a review before they appear in search results."
 msgstr "Bilder som ikke er fotografiske eller har lav kvalitet må gjennomgås før de kommer i søkeresultater."
 
@@ -2060,12 +2059,12 @@ msgstr "Bilder som ikke er fotografiske eller har lav kvalitet må gjennomgås f
 msgid "None"
 msgstr "Ingen"
 
-#: src/common/util.js:791 src/component/lightbox.vue:602
+#: src/common/util.js:795 src/component/lightbox.vue:622
 #: src/component/service/upload.vue:75 src/component/service/upload.vue:87
 msgid "Not allowed"
 msgstr "Ikke tillatt"
 
-#: src/component/lightbox.vue:599
+#: src/component/lightbox.vue:619
 msgid "Not found"
 msgstr "Ikke funnet"
 
@@ -2073,8 +2072,8 @@ msgstr "Ikke funnet"
 msgid "Not sorted."
 msgstr "Ikke sortert."
 
-#: src/common/util.js:796 src/component/lightbox.vue:596
-#: src/component/lightbox.vue:713
+#: src/common/util.js:800 src/component/lightbox.vue:616
+#: src/component/lightbox.vue:733
 msgid "Not supported"
 msgstr "Ikke støttet"
 
@@ -2133,11 +2132,11 @@ msgstr "Generering av miniatyrbilder på forespørsel kan føre til høy CPU- og
 msgid "Once a week"
 msgstr "Én gang i uken"
 
-#: src/page/albums.vue:598
+#: src/page/albums.vue:606
 msgid "One album found"
 msgstr "Ett album funnet"
 
-#: src/page/library/browse.vue:334
+#: src/page/library/browse.vue:360
 msgid "One file found"
 msgstr "Én fil funnet"
 
@@ -2145,20 +2144,20 @@ msgstr "Én fil funnet"
 msgid "One file uploaded"
 msgstr "En fil lastet opp"
 
-#: src/page/library/browse.vue:336
+#: src/page/library/browse.vue:362
 msgid "One folder found"
 msgstr "Én mappe funnet"
 
-#: src/page/labels.vue:521
+#: src/page/labels.vue:528
 msgid "One label found"
 msgstr "En etikett funnet"
 
-#: src/page/people/new.vue:346 src/page/people/new.vue:435
-#: src/page/people/recognized.vue:523
+#: src/page/people/new.vue:348 src/page/people/new.vue:442
+#: src/page/people/recognized.vue:530
 msgid "One person found"
 msgstr "En person funnet"
 
-#: src/page/album/photos.vue:486 src/page/photos.vue:613
+#: src/page/album/photos.vue:491 src/page/photos.vue:624
 msgid "One picture found"
 msgstr "Ett bilde funnet"
 
@@ -2199,7 +2198,7 @@ msgid "Original Name"
 msgstr "Originalnavn"
 
 #: src/component/navigation.vue:1302 src/model/file.js:196
-#: src/options/options.js:345 src/page/library/browse.vue:65
+#: src/options/options.js:345 src/page/library/browse.vue:68
 #: src/page/settings/content.vue:356 src/page/settings/general.vue:513
 msgid "Originals"
 msgstr "Originaler"
@@ -2250,8 +2249,8 @@ msgid "Password changed"
 msgstr "Passord endret"
 
 #: src/app/routes.js:404 src/app/routes.js:428 src/component/navigation.vue:843
-#: src/component/navigation.vue:1896 src/component/photo/edit/dialog.vue:226
-#: src/component/photo/edit/dialog.vue:243 src/options/options.js:133
+#: src/component/navigation.vue:1896 src/component/photo/edit/dialog.vue:228
+#: src/component/photo/edit/dialog.vue:245 src/options/options.js:133
 #: src/page/settings/general.vue:175
 msgid "People"
 msgstr "Personer"
@@ -2260,7 +2259,7 @@ msgstr "Personer"
 msgid "People you share a link with will be able to view public contents."
 msgstr "Personer du deler en lenke med vil kunne se offentlig innhold."
 
-#: src/component/photo/clipboard.vue:126 src/component/photo/toolbar.vue:257
+#: src/component/photo/clipboard.vue:126 src/component/photo/toolbar.vue:262
 msgid "Permanently deleted"
 msgstr "Permanent slettet"
 
@@ -2325,11 +2324,11 @@ msgstr "Vennligst bekreft ditt nye passord."
 msgid "Please copy the following randomly generated app password and keep it in a safe place, as you will not be able to see it again:"
 msgstr "Vennligst kopier følgende tilfeldig genererte app-passord og oppbevar det på et trygt sted, siden du ikke vil kunne se det igjen:"
 
-#: src/component/photo/upload/dialog.vue:203
+#: src/component/upload/dialog.vue:204
 msgid "Please do not upload any private, unlawful or offensive pictures."
 msgstr "Vennligst ikke last opp private, ulovlige eller støtende bilder."
 
-#: src/component/photo/upload/dialog.vue:205
+#: src/component/upload/dialog.vue:206
 msgid "Please don't upload photos containing offensive content."
 msgstr "Vennligst ikke last opp bilder som inneholder støtende innhold."
 
@@ -2365,7 +2364,7 @@ msgstr "Portrett"
 msgid "Preserve filenames"
 msgstr "Behold filnavn"
 
-#: src/component/photo/upload/dialog.vue:162
+#: src/component/upload/dialog.vue:163
 msgid "Press enter to create a new album."
 msgstr "Trykk på Enter for å lage et nytt album."
 
@@ -2385,7 +2384,7 @@ msgstr "Forhåndsvisning"
 msgid "Preview Images"
 msgstr "Forhåndsvisning av bilder"
 
-#: src/component/lightbox.vue:255 src/locales.js:299
+#: src/component/lightbox.vue:275 src/locales.js:299
 msgid "Previous"
 msgstr "Tidligere"
 
@@ -2445,8 +2444,7 @@ msgid "Raw"
 msgstr "Raw"
 
 #: src/component/photo/view/cards.vue:313
-#: src/component/photo/view/mosaic.vue:157 src/component/sidebar/info.vue:90
-#: src/page/settings/content.vue:378
+#: src/component/photo/view/mosaic.vue:157 src/page/settings/content.vue:378
 msgid "RAW"
 msgstr "RAW"
 
@@ -2494,9 +2492,9 @@ msgid "Red"
 msgstr "Rød"
 
 #: src/page/admin/sessions.vue:99 src/page/admin/users.vue:124
-#: src/component/album/toolbar.vue:74 src/component/photo/toolbar.vue:164
+#: src/component/album/toolbar.vue:79 src/component/photo/toolbar.vue:169
 #: src/page/albums.vue:172 src/page/labels.vue:111
-#: src/page/library/browse.vue:90 src/page/library/errors.vue:78
+#: src/page/library/browse.vue:93 src/page/library/errors.vue:78
 #: src/page/people/new.vue:54 src/page/people/recognized.vue:87
 msgid "Refresh"
 msgstr "Oppdater"
@@ -2514,7 +2512,7 @@ msgstr "Registrere"
 msgid "Reload"
 msgstr "Oppdater"
 
-#: src/component/navigation.vue:108 src/component/update.vue:26
+#: src/component/navigation.vue:108 src/component/update.vue:27
 #: src/page/settings/general.vue:104
 msgid "Reloading…"
 msgstr "Oppdaterer…"
@@ -2531,7 +2529,7 @@ msgstr "Fjern"
 msgid "remove failed: unknown album"
 msgstr "fjerning mislyktes: ukjent album"
 
-#: src/component/lightbox.vue:1163 src/component/photo/clipboard.vue:155
+#: src/component/lightbox.vue:1181 src/component/photo/clipboard.vue:155
 msgid "Remove from Album"
 msgstr "Fjern fra albumet"
 
@@ -2539,7 +2537,7 @@ msgstr "Fjern fra albumet"
 msgid "Remove imported files to save storage. Unsupported file types will never be deleted, they remain in their current location."
 msgstr "Fjern importerte filer for å spare lagringsplass. Filtyper som ikke støttes vil ikke bli slettet, men vil forbli der de er lagret nå."
 
-#: src/common/api.js:102 src/component/lightbox.vue:709
+#: src/common/api.js:102 src/component/lightbox.vue:729
 msgid "Request failed - are you offline?"
 msgstr "Forespørselen mislyktes - er du frakoblet?"
 
@@ -2560,12 +2558,12 @@ msgstr "Oppløsning"
 msgid "Restart"
 msgstr "Start på nytt"
 
-#: src/component/user/edit/dialog.vue:485 src/component/lightbox.vue:1192
+#: src/component/user/edit/dialog.vue:485 src/component/lightbox.vue:1210
 #: src/component/photo/clipboard.vue:77
 msgid "Restore"
 msgstr "Gjenopprett"
 
-#: src/component/lightbox.vue:1870
+#: src/component/lightbox.vue:1975
 msgid "Restored"
 msgstr "Gjenopprettet"
 
@@ -2622,8 +2620,8 @@ msgstr "Omfang"
 #: src/page/admin/sessions.vue:70 src/page/admin/users.vue:62
 #: src/component/navigation.vue:340 src/component/navigation.vue:1864
 #: src/component/photo/toolbar.vue:56 src/options/options.js:129
-#: src/page/albums.vue:100 src/page/labels.vue:77
-#: src/page/library/errors.vue:75 src/page/people/recognized.vue:65
+#: src/page/albums.vue:103 src/page/labels.vue:80
+#: src/page/library/errors.vue:78 src/page/people/recognized.vue:65
 #: src/page/places.vue:79 src/page/settings/content.vue:235
 msgid "Search"
 msgstr "Søk"
@@ -2644,7 +2642,7 @@ msgstr "Hemmelig"
 msgid "Security and Access"
 msgstr "Sikkerhet og tilgang"
 
-#: src/component/lightbox.vue:1090 src/component/lightbox.vue:1091
+#: src/component/lightbox.vue:1108 src/component/lightbox.vue:1109
 msgid "Select"
 msgstr "Velg"
 
@@ -2660,12 +2658,11 @@ msgstr "Velg dato"
 msgid "Select dates"
 msgstr "Velg datoer"
 
-#: src/component/photo/album/dialog.vue:54
-#: src/component/photo/upload/dialog.vue:154
+#: src/component/photo/album/dialog.vue:54 src/component/upload/dialog.vue:155
 msgid "Select or create an album"
 msgstr "Velg eller opprett et album"
 
-#: src/component/photo/upload/dialog.vue:137
+#: src/component/upload/dialog.vue:138
 msgid "Select the files to upload…"
 msgstr "Velg filene du vil laste opp…"
 
@@ -2714,7 +2711,7 @@ msgstr "Sesjons-ID"
 msgid "Sessions"
 msgstr "Sesjoner"
 
-#: src/component/lightbox.vue:1148
+#: src/component/lightbox.vue:1166
 msgid "Set as Album Cover"
 msgstr "Sett som albumomslag"
 
@@ -2733,7 +2730,7 @@ msgstr "Innstillinger lagret"
 msgid "Setup"
 msgstr "Oppsett"
 
-#: src/component/album/clipboard.vue:49 src/component/album/toolbar.vue:93
+#: src/component/album/clipboard.vue:49 src/component/album/toolbar.vue:98
 #: src/component/photo/clipboard.vue:51 src/page/settings/general.vue:369
 msgid "Share"
 msgstr "Del"
@@ -2762,11 +2759,11 @@ msgstr "Vis bildetekster"
 msgid "Show hidden"
 msgstr "Vis skjult"
 
-#: src/page/labels.vue:107
+#: src/page/labels.vue:110
 msgid "Show less"
 msgstr "Vis mindre"
 
-#: src/page/labels.vue:100
+#: src/page/labels.vue:103
 msgid "Show more"
 msgstr "Vis mer"
 
@@ -2777,10 +2774,6 @@ msgstr "Vis server-logger i Biblioteket."
 #: src/page/settings/content.vue:282
 msgid "Show Titles"
 msgstr "Vis titler"
-
-#: src/component/lightbox.vue:1003 src/component/lightbox.vue:1004
-msgid "Show/Hide Sidebar"
-msgstr "Vis/skjul sidefelt"
 
 #: src/model/file.js:214 src/page/settings/content.vue:400
 msgid "Sidecar"
@@ -2815,7 +2808,7 @@ msgstr "Programvare"
 msgid "Software Update"
 msgstr "Oppdatering av programvare"
 
-#: src/component/lightbox.vue:706
+#: src/component/lightbox.vue:726
 msgid "Something went wrong, try again"
 msgstr "Noe gikk galt, prøv igjen"
 
@@ -2823,8 +2816,8 @@ msgstr "Noe gikk galt, prøv igjen"
 msgid "Sort by"
 msgstr "Sorter etter"
 
-#: src/component/album/edit/dialog.vue:142 src/component/photo/toolbar.vue:276
-#: src/page/albums.vue:207
+#: src/component/album/edit/dialog.vue:142 src/component/photo/toolbar.vue:279
+#: src/page/albums.vue:213
 msgid "Sort Order"
 msgstr "Sorteringsrekkefølge"
 
@@ -2870,7 +2863,7 @@ msgstr "Start"
 msgid "Start Page"
 msgstr "Startside"
 
-#: src/component/lightbox.vue:1038 src/component/lightbox.vue:1039
+#: src/component/lightbox.vue:1056 src/component/lightbox.vue:1057
 msgid "Start/Stop Slideshow"
 msgstr "Start/Stopp Lysbildefremvisning"
 
@@ -3052,7 +3045,7 @@ msgstr "For å oppgradere kan du enten skrive inn en aktiveringskode eller klikk
 msgid "Today"
 msgstr "I dag"
 
-#: src/component/album/toolbar.vue:70 src/component/photo/toolbar.vue:74
+#: src/component/album/toolbar.vue:70 src/component/photo/toolbar.vue:77
 msgid "Toggle View"
 msgstr "Veksle Visning"
 
@@ -3060,7 +3053,7 @@ msgstr "Veksle Visning"
 msgid "Token"
 msgstr "Token"
 
-#: src/component/photo/upload/dialog.vue:202
+#: src/component/upload/dialog.vue:214
 msgid "Too many files selected"
 msgstr "For mange filer valgt"
 
@@ -3068,13 +3061,13 @@ msgstr "For mange filer valgt"
 msgid "Too many requests"
 msgstr "For mange forespørsler"
 
-#: src/component/photo/toolbar.vue:192 src/page/library/errors.vue:88
+#: src/component/photo/toolbar.vue:197 src/page/library/errors.vue:88
 msgid "Troubleshooting"
 msgstr "Feilsøking"
 
 #: src/component/photo/view/cards.vue:146 src/component/photo/view/list.vue:54
 #: src/component/photo/view/list.vue:84 src/component/photo/view/mosaic.vue:70
-#: src/page/albums.vue:276 src/page/labels.vue:153
+#: src/page/albums.vue:282 src/page/labels.vue:156
 #: src/page/people/recognized.vue:143
 msgid "Try again using other filters or keywords."
 msgstr "Prøv igjen med andre filtre eller nøkkelord."
@@ -3101,7 +3094,7 @@ msgid "Unique ID"
 msgstr "Unik ID"
 
 #: src/page/settings/account.vue:451 src/page/settings/account.vue:476
-#: src/page/settings/account.vue:501 src/common/util.js:464
+#: src/page/settings/account.vue:501 src/common/util.js:468
 #: src/component/photo/edit/details.vue:21
 #: src/component/photo/edit/details.vue:111
 #: src/component/photo/edit/details.vue:138
@@ -3170,25 +3163,24 @@ msgstr "Oppgrader"
 msgid "Upgrade Now"
 msgstr "Oppgrader nå"
 
-#: src/component/album/toolbar.vue:103 src/component/navigation.vue:1822
-#: src/component/photo/toolbar.vue:174 src/component/photo/upload/dialog.vue:50
-#: src/component/service/upload.vue:144 src/page/albums.vue:182
+#: src/component/album/toolbar.vue:108 src/component/navigation.vue:1822
+#: src/component/photo/toolbar.vue:179 src/component/service/upload.vue:144
+#: src/component/upload/dialog.vue:51 src/page/albums.vue:182
 #: src/page/labels.vue:121 src/page/library/import.vue:133
 #: src/page/settings/general.vue:297 src/page/settings/services.vue:37
 msgid "Upload"
 msgstr "Last opp"
 
-#: src/component/photo/upload/dialog.vue:295
+#: src/component/upload/dialog.vue:307
 msgid "Upload complete"
 msgstr "Opplasting fullført"
 
-#: src/component/photo/upload/dialog.vue:132
+#: src/component/upload/dialog.vue:133
 msgid "Upload complete. Indexing…"
 msgstr "Opplasting fullført. Indekserer…"
 
-#: src/component/photo/upload/dialog.vue:281
-#: src/component/photo/upload/dialog.vue:300
-#: src/component/photo/upload/dialog.vue:128
+#: src/component/upload/dialog.vue:293 src/component/upload/dialog.vue:312
+#: src/component/upload/dialog.vue:129
 msgid "Upload failed"
 msgstr "Opplasting mislyktes"
 
@@ -3205,13 +3197,12 @@ msgstr "Last opp bane"
 msgid "Upload to WebDAV and share links with friends."
 msgstr "Last opp til WebDAV og del lenker med venner."
 
-#: src/component/photo/upload/dialog.vue:130
+#: src/component/upload/dialog.vue:131
 msgid "Uploading %{n} of %{t}…"
 msgstr "Laster opp %{n} av %{t}…"
 
-#: src/component/photo/upload/dialog.vue:116
-#: src/component/photo/upload/dialog.vue:124
-#: src/component/photo/upload/dialog.vue:238
+#: src/component/upload/dialog.vue:128 src/component/upload/dialog.vue:136
+#: src/component/upload/dialog.vue:250
 msgid "Uploading photos…"
 msgstr "Laster opp bilder…"
 
@@ -3219,7 +3210,7 @@ msgstr "Laster opp bilder…"
 msgid "Uploading…"
 msgstr "Laster opp …"
 
-#: src/component/photo/upload/dialog.vue:205
+#: src/component/upload/dialog.vue:206
 msgid "Uploads that may contain such images will be rejected automatically."
 msgstr "Opplastinger som kan inneholde slike bilder blir avvist automatisk."
 
@@ -3290,7 +3281,7 @@ msgstr "Varighet"
 msgid "Videos"
 msgstr "Videoer"
 
-#: src/component/photo/toolbar.vue:250 src/component/photo/view/cards.vue:350
+#: src/component/photo/toolbar.vue:253 src/component/photo/view/cards.vue:350
 #: src/component/photo/view/mosaic.vue:194
 msgid "View"
 msgstr "Utseende"
@@ -3364,7 +3355,7 @@ msgid "Work Details"
 msgstr "Detaljer"
 
 #: src/page/settings/account.vue:500 src/component/photo/edit/details.vue:163
-#: src/component/photo/toolbar.vue:302 src/page/albums.vue:154
+#: src/component/photo/toolbar.vue:305 src/page/albums.vue:160
 msgid "Year"
 msgstr "År"
 
@@ -3381,7 +3372,7 @@ msgstr "Gul"
 #: src/component/photo/edit/files.vue:510 src/component/photo/edit/info.vue:281
 #: src/component/photo/edit/info.vue:297 src/component/photo/edit/info.vue:313
 #: src/component/photo/edit/info.vue:329 src/component/photo/edit/info.vue:344
-#: src/component/photo/toolbar.vue:417
+#: src/component/photo/toolbar.vue:420
 msgid "Yes"
 msgstr "Ja"
 
@@ -3398,7 +3389,7 @@ msgstr "Du kan bare laste ned ett album"
 msgid "You can only download one label"
 msgstr "Du kan bare laste ned én merkelapp"
 
-#: src/component/photo/upload/dialog.vue:203
+#: src/component/upload/dialog.vue:204
 msgid "You can upload up to %{n} files for test purposes."
 msgstr "Du kan laste opp opptil %{n} filer for testformål."
 
@@ -3424,13 +3415,19 @@ msgstr "Nettleseren din støtter ikke WebGL"
 msgid "Your continued support helps us provide regular updates and remain independent, so we can fulfill our mission and protect your privacy."
 msgstr "Din fortsatte støtte hjelper oss med å gi regelmessige oppdateringer og forbli uavhengige, slik at vi kan oppfylle vårt oppdrag og beskytte personvernet ditt."
 
-#: src/page/albums.vue:284
+#: src/page/albums.vue:290
 msgid "Your library is continuously analyzed to automatically create albums of special moments, trips, and places."
 msgstr "Biblioteket ditt blir kontinuerlig analysert for automatisk å lage album med spesielle øyeblikk, turer og steder."
 
-#: src/component/lightbox.vue:254
+#: src/component/lightbox.vue:274
 msgid "Zoom in/out"
 msgstr "Zoom inn/ut"
+
+#~ msgid "Info"
+#~ msgstr "Info"
+
+#~ msgid "Show/Hide Sidebar"
+#~ msgstr "Vis/skjul sidefelt"
 
 #~ msgid "Add a caption"
 #~ msgstr "Legg til en bildetekst"

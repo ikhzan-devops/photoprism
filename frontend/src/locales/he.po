@@ -42,7 +42,7 @@ msgstr "נבחרו {0}"
 msgid "{0}-{1} of {2}"
 msgstr "{0}-{1} מתוך {2}"
 
-#: src/page/albums.vue:601
+#: src/page/albums.vue:609
 msgid "%{n} albums found"
 msgstr "%{n} אלבומים נמצאו"
 
@@ -50,7 +50,7 @@ msgstr "%{n} אלבומים נמצאו"
 msgid "%{n} files uploaded"
 msgstr "%{n} קבצים הועלו"
 
-#: src/page/library/browse.vue:338
+#: src/page/library/browse.vue:364
 msgid "%{n} folders found"
 msgstr "%{n} תיקיות הועלו"
 
@@ -58,17 +58,17 @@ msgstr "%{n} תיקיות הועלו"
 msgid "%{n} GB of %{q} GB used"
 msgstr "%{n} GB מתוך %{q} GB בשימוש"
 
-#: src/page/labels.vue:524
+#: src/page/labels.vue:531
 msgid "%{n} labels found"
 msgstr "%{n} תוויות נמצאו"
 
-#: src/page/people/new.vue:348 src/page/people/new.vue:437
-#: src/page/people/recognized.vue:526
+#: src/page/people/new.vue:350 src/page/people/new.vue:444
+#: src/page/people/recognized.vue:533
 msgid "%{n} people found"
 msgstr "%{n} אנשים מצאו"
 
-#: src/page/album/photos.vue:313 src/page/album/photos.vue:489
-#: src/page/photos.vue:435 src/page/photos.vue:616
+#: src/page/album/photos.vue:313 src/page/album/photos.vue:494
+#: src/page/photos.vue:441 src/page/photos.vue:627
 msgid "%{n} pictures found"
 msgstr "נמצאו %{n} תמונות"
 
@@ -105,7 +105,7 @@ msgstr "4 שעות"
 msgid "A click will copy it to your clipboard."
 msgstr "לחיצה תעתיק את זה."
 
-#: src/component/update.vue:17
+#: src/component/update.vue:18
 msgid "A new version of %{s} is available:"
 msgstr "גרסה חדשה של %{s} זמינה:"
 
@@ -191,7 +191,7 @@ msgstr "להוסיף %{s}?"
 msgid "Add Account"
 msgstr "הוספת חשבון"
 
-#: src/page/albums.vue:118 src/page/albums.vue:302
+#: src/page/albums.vue:124 src/page/albums.vue:308
 msgid "Add Album"
 msgstr "הוספת אלבום"
 
@@ -209,7 +209,7 @@ msgstr "הוספת קישור"
 msgid "Add person?"
 msgstr "להוסיף אדם?"
 
-#: src/page/albums.vue:412
+#: src/page/albums.vue:418
 msgid "Add pictures from search results by selecting them."
 msgstr "הוסף תמונות מתוצאות החיפוש על ידי בחירתן."
 
@@ -257,7 +257,7 @@ msgstr "אחרי חודש"
 msgid "After one year"
 msgstr "אחרי שנה"
 
-#: src/page/albums.vue:279
+#: src/page/albums.vue:285
 msgid "After selecting pictures from search results, you can add them to an album using the context menu."
 msgstr "לאחר בחירת תמונות מתוצאות החיפוש, אפשר להוסיף אותן לאלבום באמצעות תפריט ההקשר."
 
@@ -277,7 +277,7 @@ msgstr "אלבום"
 msgid "Album Backups"
 msgstr "גיבויי אלבומים"
 
-#: src/page/albums.vue:653
+#: src/page/albums.vue:668
 msgid "Album created"
 msgstr "האלבום נוצר"
 
@@ -295,7 +295,7 @@ msgstr "אלבומים נמחקו"
 msgid "All"
 msgstr "כֹּל"
 
-#: src/page/albums.vue:457
+#: src/page/albums.vue:465
 msgid "All %{n} albums loaded"
 msgstr "כל %{n} האלבומים נטענו"
 
@@ -312,7 +312,7 @@ msgid "All Cameras"
 msgstr "כל המצלמות"
 
 #: src/component/photo/toolbar.vue:74 src/page/albums.vue:43
-#: src/page/albums.vue:232 src/page/albums.vue:725
+#: src/page/albums.vue:240 src/page/albums.vue:740
 msgid "All Categories"
 msgstr "כל הקטגוריות"
 
@@ -402,13 +402,13 @@ msgstr "לאשר"
 msgid "Apps and Devices"
 msgstr "אפליקציות והתקנים"
 
-#: src/app/routes.js:287 src/component/lightbox.vue:1178
+#: src/app/routes.js:287 src/component/lightbox.vue:1196
 #: src/component/navigation.vue:553 src/component/photo/clipboard.vue:142
 #: src/component/photo/view/cards.vue:398 src/page/settings/general.vue:417
 msgid "Archive"
 msgstr "ארכיון"
 
-#: src/component/lightbox.vue:1852 src/component/photo/edit/info.vue:433
+#: src/component/lightbox.vue:1957 src/component/photo/edit/info.vue:433
 msgid "Archived"
 msgstr "אורכב"
 
@@ -519,8 +519,8 @@ msgstr "כחול"
 msgid "Brown"
 msgstr "חום"
 
-#: src/component/photo/edit/files.vue:263 src/component/photo/toolbar.vue:132
-#: src/component/photo/upload/dialog.vue:240
+#: src/component/photo/edit/files.vue:263 src/component/photo/toolbar.vue:135
+#: src/component/upload/dialog.vue:241
 msgid "Browse"
 msgstr "לְדַפדֵף"
 
@@ -557,7 +557,7 @@ msgstr "על ידי שימוש בתוכנה ובשירותים שאנו מספק
 msgid "Calendar"
 msgstr "לוח שנה"
 
-#: src/component/photo/edit/details.vue:346 src/component/photo/toolbar.vue:222
+#: src/component/photo/edit/details.vue:346 src/component/photo/toolbar.vue:225
 #: src/component/photo/view/cards.vue:467 src/component/photo/view/list.vue:116
 msgid "Camera"
 msgstr "מצלמה"
@@ -570,15 +570,15 @@ msgstr "מזהה מצלמה"
 msgid "Can't access your authenticator app or device?"
 msgstr "לא מצליח לגשת לאפליקציית המאמת או למכשיר שלך?"
 
-#: src/page/album/photos.vue:322 src/page/photos.vue:444
+#: src/page/album/photos.vue:322 src/page/photos.vue:450
 msgid "Can't load more, limit reached"
 msgstr "לא ניתן לטעון יותר, הגעת למגבלה"
 
 #: src/common/clipboard.js:102 src/common/clipboard.js:139
-#: src/page/albums.vue:663 src/page/albums.vue:679 src/page/labels.vue:299
-#: src/page/labels.vue:319 src/page/library/browse.vue:220
-#: src/page/library/browse.vue:236 src/page/people/new.vue:276
-#: src/page/people/new.vue:292 src/page/people/recognized.vue:305
+#: src/page/albums.vue:678 src/page/albums.vue:694 src/page/labels.vue:299
+#: src/page/labels.vue:319 src/page/library/browse.vue:238
+#: src/page/library/browse.vue:254 src/page/people/new.vue:278
+#: src/page/people/new.vue:294 src/page/people/recognized.vue:305
 #: src/page/people/recognized.vue:321
 msgid "Can't select more items"
 msgstr "לא ניתן לבחור עוד פרטים"
@@ -618,8 +618,8 @@ msgid "Carousel slide {0} of {1}"
 msgstr "שקופית קרוסלה {0} מתוך {1}"
 
 #: src/page/about/feedback.vue:82 src/page/about/feedback.vue:83
-#: src/component/album/edit/dialog.vue:128 src/component/photo/toolbar.vue:381
-#: src/page/albums.vue:181
+#: src/component/album/edit/dialog.vue:128 src/component/photo/toolbar.vue:384
+#: src/page/albums.vue:187
 msgid "Category"
 msgstr "קטגוריה"
 
@@ -651,10 +651,10 @@ msgstr "לא ניתן לשמור שינויים"
 
 #: src/component/user/edit/dialog.vue:83 src/component/user/edit/dialog.vue:159
 #: src/component/album/edit/dialog.vue:73
-#: src/component/label/edit/dialog.vue:46 src/component/lightbox.vue:1811
+#: src/component/label/edit/dialog.vue:46 src/component/lightbox.vue:1916
 #: src/component/photo/edit/files.vue:160 src/component/service/edit.vue:90
 #: src/component/share/dialog.vue:92 src/component/share/dialog.vue:111
-#: src/page/albums.vue:656 src/page/people/recognized.vue:119
+#: src/page/albums.vue:671 src/page/people/recognized.vue:119
 #: src/page/settings/advanced.vue:62 src/page/settings/content.vue:62
 #: src/page/settings/general.vue:108
 msgid "Changes successfully saved"
@@ -692,17 +692,16 @@ msgstr "לָקוּחַ"
 msgid "Client Credentials"
 msgstr "אישורי לקוח"
 
-#: src/page/admin/sessions.vue:529 src/component/lightbox.vue:253
-#: src/component/lightbox.vue:980 src/component/lightbox.vue:981
-#: src/component/photo/edit/details.vue:627 src/component/photo/toolbar.vue:151
-#: src/component/photo/upload/dialog.vue:228
+#: src/page/admin/sessions.vue:529 src/component/lightbox.vue:273
+#: src/component/lightbox.vue:998 src/component/lightbox.vue:999
+#: src/component/photo/edit/details.vue:627 src/component/photo/toolbar.vue:154
 #: src/component/settings/apps.vue:224 src/component/settings/apps.vue:437
 #: src/component/settings/passcode.vue:148
 #: src/component/settings/passcode.vue:456
 #: src/component/settings/passcode.vue:497
 #: src/component/settings/webdav.vue:131 src/component/share/dialog.vue:231
-#: src/component/update.vue:57 src/locales.js:207
-#: src/page/library/errors.vue:248
+#: src/component/update.vue:57 src/component/upload/dialog.vue:229
+#: src/locales.js:207 src/page/library/errors.vue:251
 msgid "Close"
 msgstr "סגור"
 
@@ -710,7 +709,7 @@ msgstr "סגור"
 msgid "Codec"
 msgstr "קודק"
 
-#: src/component/photo/toolbar.vue:354
+#: src/component/photo/toolbar.vue:357
 msgid "Color"
 msgstr "צבע"
 
@@ -762,12 +761,12 @@ msgstr "פרטי התקשרות"
 msgid "Contact Us"
 msgstr "צור קשר"
 
-#: src/page/albums.vue:425 src/page/labels.vue:234
+#: src/page/albums.vue:431 src/page/labels.vue:237
 #: src/page/people/recognized.vue:302
 msgid "Contains %{n} pictures."
 msgstr "מכיל %{n} תמונות."
 
-#: src/page/albums.vue:419 src/page/labels.vue:228
+#: src/page/albums.vue:425 src/page/labels.vue:231
 #: src/page/people/recognized.vue:296
 msgid "Contains one picture."
 msgstr "מכיל תמונה אחת."
@@ -792,7 +791,7 @@ msgstr "תוֹרֵם"
 msgid "Converting"
 msgstr "ממיר"
 
-#: src/common/util.js:784
+#: src/common/util.js:788
 msgid "Copied to clipboard"
 msgstr "הועתק ללוח"
 
@@ -809,7 +808,7 @@ msgid "Couldn't find anything."
 msgstr "לא נמצא דבר."
 
 #: src/page/settings/account.vue:685 src/component/photo/edit/details.vue:242
-#: src/component/photo/toolbar.vue:194 src/page/settings/account.vue:577
+#: src/component/photo/toolbar.vue:197 src/page/settings/account.vue:577
 msgid "Country"
 msgstr "מדינה"
 
@@ -849,7 +848,7 @@ msgstr "מעוקב: איכות בינונית, ביצועים טובים"
 msgid "Current Password"
 msgstr "צור סיסמה"
 
-#: src/options/themes.js:915 src/options/themes.js:924
+#: src/options/themes.js:919 src/options/themes.js:928
 msgid "Custom"
 msgstr "מִנְהָג"
 
@@ -883,7 +882,7 @@ msgstr "Debug Logs"
 #: src/model/user.js:246 src/options/auth.js:20 src/options/auth.js:21
 #: src/options/auth.js:39 src/options/auth.js:40 src/options/options.js:128
 #: src/options/options.js:164 src/options/options.js:248
-#: src/options/themes.js:769 src/page/settings/general.vue:104
+#: src/options/themes.js:773 src/page/settings/general.vue:104
 msgid "Default"
 msgstr "ברירת מחדל"
 
@@ -902,11 +901,11 @@ msgstr "תיקיית ברירת מחדל"
 msgid "Delete"
 msgstr "מחק"
 
-#: src/component/photo/toolbar.vue:112 src/page/library/errors.vue:94
+#: src/component/photo/toolbar.vue:115 src/page/library/errors.vue:97
 msgid "Delete All"
 msgstr "מחק הכל"
 
-#: src/component/photo/toolbar.vue:416 src/page/library/errors.vue:190
+#: src/component/photo/toolbar.vue:419 src/page/library/errors.vue:193
 msgid "Delete all?"
 msgstr "למחוק הכל?"
 
@@ -914,7 +913,7 @@ msgstr "למחוק הכל?"
 msgid "Delete orphaned index entries, sidecar files and thumbnails."
 msgstr "מחק ערכי אינדקס יתומים, קבצי צדדיות ותמונות ממוזערות."
 
-#: src/component/album/edit/dialog.vue:107 src/page/albums.vue:403
+#: src/component/album/edit/dialog.vue:107 src/page/albums.vue:409
 msgid "Description"
 msgstr "תיאור"
 
@@ -922,8 +921,8 @@ msgstr "תיאור"
 msgid "Detailed instructions can be found in our User Guide."
 msgstr "הוראות מפורטות ניתן למצוא במדריך למשתמש שלנו."
 
-#: src/component/photo/edit/dialog.vue:154
-#: src/component/photo/edit/dialog.vue:171
+#: src/component/photo/edit/dialog.vue:156
+#: src/component/photo/edit/dialog.vue:173
 msgid "Details"
 msgstr "פרטים"
 
@@ -1013,7 +1012,7 @@ msgstr "הצג כותרות של תמונות בתוצאות החיפוש."
 
 #: src/component/photo/view/cards.vue:339
 #: src/component/photo/view/cards.vue:521
-#: src/component/photo/view/mosaic.vue:183 src/component/sidebar/info.vue:108
+#: src/component/photo/view/mosaic.vue:183 src/model/thumb.js:141
 #: src/options/options.js:241
 msgid "Document"
 msgstr "מִסְמָך"
@@ -1038,13 +1037,13 @@ msgstr "אל תשתמש ב- RawTherapee להמרת קבצי RAW."
 msgid "Done"
 msgstr "בוצע"
 
-#: src/component/photo/upload/dialog.vue:134 src/page/library/import.vue:46
+#: src/component/upload/dialog.vue:135 src/page/library/import.vue:46
 #: src/page/library/index.vue:52
 msgid "Done."
 msgstr "בוצע."
 
-#: src/component/album/clipboard.vue:73 src/component/album/toolbar.vue:113
-#: src/component/file/clipboard.vue:48 src/component/lightbox.vue:1206
+#: src/component/album/clipboard.vue:73 src/component/album/toolbar.vue:118
+#: src/component/file/clipboard.vue:48 src/component/lightbox.vue:1224
 #: src/component/people/clipboard.vue:47 src/component/photo/clipboard.vue:116
 #: src/component/photo/edit/files.vue:168 src/page/settings/content.vue:331
 #: src/page/settings/general.vue:321
@@ -1063,12 +1062,12 @@ msgstr "הורד קבצים מרוחקים"
 msgid "Download single files and zip archives."
 msgstr "הורד קבצים בודדים וארכיוני zip."
 
-#: src/component/album/clipboard.vue:104 src/component/album/toolbar.vue:152
+#: src/component/album/clipboard.vue:104 src/component/album/toolbar.vue:157
 #: src/component/file/clipboard.vue:61 src/component/label/clipboard.vue:86
-#: src/component/lightbox.vue:1891 src/component/people/clipboard.vue:59
+#: src/component/lightbox.vue:1996 src/component/people/clipboard.vue:59
 #: src/component/photo/clipboard.vue:220 src/component/photo/edit/files.vue:117
 #: src/component/photo/view/cards.vue:169 src/component/photo/view/list.vue:142
-#: src/page/library/browse.vue:126
+#: src/page/library/browse.vue:144
 msgid "Downloading…"
 msgstr "מוריד…"
 
@@ -1084,7 +1083,7 @@ msgstr "גרור ושחרר קבצים כאן"
 msgid "Due to the high volume of emails we receive, our team may be unable to get back to you immediately."
 msgstr "בשל כמות המיילים הגבוהה שאנו מקבלים, ייתכן שהצוות שלנו לא יוכל לחזור אליך באופן מיידי."
 
-#: src/page/library/browse.vue:123
+#: src/page/library/browse.vue:126
 msgid "Duplicates will be skipped and only appear once."
 msgstr "התעלם מכפילויות, והצג רק אחד."
 
@@ -1104,8 +1103,8 @@ msgstr "גודל דינמי מקסימלי לשמירה במטמון: %{n} פי�
 msgid "E-Mail"
 msgstr "דוא\"ל"
 
-#: src/component/album/clipboard.vue:61 src/component/album/toolbar.vue:84
-#: src/component/lightbox.vue:1107 src/component/lightbox.vue:1108
+#: src/component/album/clipboard.vue:61 src/component/album/toolbar.vue:89
+#: src/component/lightbox.vue:1125 src/component/lightbox.vue:1126
 #: src/component/photo/clipboard.vue:90 src/page/settings/general.vue:393
 msgid "Edit"
 msgstr "ערוך"
@@ -1169,7 +1168,7 @@ msgstr "הכנס קוד אימות"
 msgid "Enter your password to confirm the action and continue:"
 msgstr "הזן את הסיסמה שלך כדי לאשר את הפעולה והמשך:"
 
-#: src/page/connect.vue:54 src/component/lightbox.vue:257
+#: src/page/connect.vue:54 src/component/lightbox.vue:277
 #: src/page/connect.vue:57 src/page/library/errors.vue:253
 msgid "Error"
 msgstr "שגיאה"
@@ -1309,8 +1308,8 @@ msgstr "גודל הקובץ"
 msgid "Filename"
 msgstr "שם קובץ"
 
-#: src/component/navigation.vue:1928 src/component/photo/edit/dialog.vue:265
-#: src/component/photo/edit/dialog.vue:282
+#: src/component/navigation.vue:1928 src/component/photo/edit/dialog.vue:267
+#: src/component/photo/edit/dialog.vue:284
 msgid "Files"
 msgstr "קבצים"
 
@@ -1329,15 +1328,15 @@ msgstr "אורך המוקד"
 #: src/component/photo/edit/info.vue:115 src/component/service/edit.vue:118
 #: src/component/service/edit.vue:189 src/component/service/edit.vue:194
 #: src/component/service/upload.vue:90 src/component/service/upload.vue:96
-#: src/model/folder.js:199 src/page/library/browse.vue:181
+#: src/model/folder.js:199 src/page/library/browse.vue:184
 msgid "Folder"
 msgstr "תיקייה"
 
-#: src/page/library/browse.vue:341
+#: src/page/library/browse.vue:367
 msgid "Folder contains %{n} files"
 msgstr "התיקייה מכילה %{n} קבצים"
 
-#: src/page/library/browse.vue:332
+#: src/page/library/browse.vue:358
 msgid "Folder is empty"
 msgstr "התיקייה ריקה"
 
@@ -1362,7 +1361,7 @@ msgstr "מסגרות"
 msgid "Full Access"
 msgstr "גישה מלאה"
 
-#: src/component/lightbox.vue:1055 src/component/lightbox.vue:1056
+#: src/component/lightbox.vue:1073 src/component/lightbox.vue:1074
 msgid "Fullscreen"
 msgstr "מסך מלא"
 
@@ -1386,7 +1385,7 @@ msgstr "צור תצוגות מקדימות"
 msgid "Generated"
 msgstr "נוצר"
 
-#: src/component/photo/toolbar.vue:184
+#: src/component/photo/toolbar.vue:189
 msgid "Get Started"
 msgstr "התחל"
 
@@ -1509,8 +1508,8 @@ msgid "in"
 msgstr "ב"
 
 #: src/component/photo/view/cards.vue:149 src/component/photo/view/list.vue:87
-#: src/component/photo/view/mosaic.vue:73 src/page/labels.vue:153
-#: src/page/library/browse.vue:123
+#: src/component/photo/view/mosaic.vue:73 src/page/labels.vue:156
+#: src/page/library/browse.vue:126
 msgid "In case pictures you expect are missing, please rescan your library and wait until indexing has been completed."
 msgstr "אם חסרות תמונות שאתה מצפה, סרוק מחדש את הספרייה שלך והמתן עד להשלמת האינדקס."
 
@@ -1522,7 +1521,7 @@ msgstr "כלול קובצי תמונה RAW בעת הורדת ערימות ואר
 msgid "Include sidecar files when downloading stacks and archives."
 msgstr "כלול קבצי Sidecar בעת הורדת ערימות וארכיונים."
 
-#: src/component/photo/upload/dialog.vue:136 src/page/library/import.vue:48
+#: src/component/upload/dialog.vue:137 src/page/library/import.vue:48
 msgid "Increase storage size or delete files to continue."
 msgstr "הגדל את נפח האחסון או מחק קבצים כדי להמשיך."
 
@@ -1547,15 +1546,16 @@ msgstr "אינדוקס נכשל"
 msgid "Indexing media and sidecar files…"
 msgstr "יצירת אינדקס של קבצי מדיה וקבצי עזר…"
 
+#: src/component/lightbox.vue:1021 src/component/lightbox.vue:1022
 #: src/component/sidebar/info.vue:28
-msgid "Info"
-msgstr "מידע"
+msgid "Information"
+msgstr ""
 
 #: src/component/photo/edit/files.vue:282
 msgid "Instance ID"
 msgstr "מזהה מופע"
 
-#: src/component/photo/upload/dialog.vue:136 src/page/library/import.vue:48
+#: src/component/upload/dialog.vue:137 src/page/library/import.vue:48
 msgid "Insufficient storage."
 msgstr "אחסון לא מספיק."
 
@@ -1589,7 +1589,7 @@ msgstr "תאריך לא תקין"
 msgid "Invalid parameters"
 msgstr "פרמטרים שגויים"
 
-#: src/component/photo/edit/dialog.vue:180 src/model/thumb.js:83
+#: src/component/photo/edit/dialog.vue:191 src/model/thumb.js:154
 msgid "Invalid photo selected"
 msgstr "נבחרה תמונה לא חוקית"
 
@@ -1636,8 +1636,8 @@ msgid "Label"
 msgstr "תווית"
 
 #: src/app/routes.js:389 src/component/navigation.vue:1175
-#: src/component/photo/edit/dialog.vue:186
-#: src/component/photo/edit/dialog.vue:203 src/options/options.js:138
+#: src/component/photo/edit/dialog.vue:188
+#: src/component/photo/edit/dialog.vue:205 src/options/options.js:138
 #: src/page/settings/general.vue:247
 msgid "Labels"
 msgstr "תוויות"
@@ -1714,7 +1714,7 @@ msgstr "ספריה"
 msgid "License"
 msgstr "רשיון"
 
-#: src/component/lightbox.vue:1073 src/component/lightbox.vue:1074
+#: src/component/lightbox.vue:1091 src/component/lightbox.vue:1092
 msgid "Like"
 msgstr "אהבתי"
 
@@ -1722,7 +1722,7 @@ msgstr "אהבתי"
 msgid "Lime"
 msgstr "ליים"
 
-#: src/page/library/browse.vue:345
+#: src/page/library/browse.vue:371
 msgid "Limit reached, showing first %{n} files"
 msgstr "לא ניתן להציג יותר, מציג את ה-%{n} קבצים הראשונים"
 
@@ -1744,8 +1744,7 @@ msgstr "תצוגת רשימה"
 
 #: src/component/photo/view/cards.vue:319
 #: src/component/photo/view/cards.vue:501 src/component/photo/view/list.vue:176
-#: src/component/photo/view/mosaic.vue:163 src/component/sidebar/info.vue:99
-#: src/options/options.js:221
+#: src/component/photo/view/mosaic.vue:163 src/options/options.js:221
 msgid "Live"
 msgstr "חי"
 
@@ -1782,7 +1781,7 @@ msgstr "זמן מוקמי"
 msgid "Location"
 msgstr "מיקום"
 
-#: src/page/library/errors.vue:181
+#: src/page/library/errors.vue:184
 msgid "Log messages appear here whenever PhotoPrism comes across broken files, or there are other potential issues."
 msgstr "הודעות יומן מופיעות כאן בכל פעם ש- PhotoPrism נתקל בקבצים שבורים, או שיש בעיות פוטנציאליות אחרות."
 
@@ -1901,11 +1900,11 @@ msgid "Monochrome"
 msgstr "שקפים"
 
 #: src/page/settings/account.vue:475 src/component/photo/edit/details.vue:137
-#: src/component/photo/toolbar.vue:328
+#: src/component/photo/toolbar.vue:331
 msgid "Month"
 msgstr "חודש"
 
-#: src/component/lightbox.vue:1126
+#: src/component/lightbox.vue:1144
 msgid "More options"
 msgstr "אפשרויות נוספות"
 
@@ -1925,7 +1924,7 @@ msgstr "העבר קבצים"
 msgid "Must have at least %{n} characters."
 msgstr "חייב להכיל לפחות %{n} תווים."
 
-#: src/component/lightbox.vue:1022 src/component/lightbox.vue:1023
+#: src/component/lightbox.vue:1040 src/component/lightbox.vue:1041
 msgid "Mute"
 msgstr "לְהַשְׁתִיק"
 
@@ -1971,7 +1970,7 @@ msgstr "סיסמה חדשה"
 msgid "Newest First"
 msgstr "הכי חדש ראשון"
 
-#: src/component/lightbox.vue:256 src/locales.js:298
+#: src/component/lightbox.vue:276 src/locales.js:298
 msgid "Next"
 msgstr "הַבָּא"
 
@@ -1991,7 +1990,7 @@ msgstr "הוויזואלי הבא"
 msgid "No"
 msgstr "לא"
 
-#: src/page/albums.vue:596 src/page/albums.vue:274
+#: src/page/albums.vue:604 src/page/albums.vue:280
 msgid "No albums found"
 msgstr "לא נמצאו אלבומים"
 
@@ -1999,7 +1998,7 @@ msgstr "לא נמצאו אלבומים"
 msgid "No data available"
 msgstr "אין נתונים זמינים"
 
-#: src/page/labels.vue:519 src/page/labels.vue:152
+#: src/page/labels.vue:526 src/page/labels.vue:155
 msgid "No labels found"
 msgstr "לא נמצאו תוויות"
 
@@ -2011,16 +2010,16 @@ msgstr "לא נמצאו רשומות תואמות"
 msgid "No more"
 msgstr "לא יותר"
 
-#: src/component/photo/edit/people.vue:34 src/page/people/new.vue:344
-#: src/page/people/new.vue:433 src/page/people/new.vue:100
-#: src/page/people/recognized.vue:521 src/page/people/recognized.vue:142
+#: src/component/photo/edit/people.vue:34 src/page/people/new.vue:346
+#: src/page/people/new.vue:440 src/page/people/new.vue:100
+#: src/page/people/recognized.vue:528 src/page/people/recognized.vue:142
 msgid "No people found"
 msgstr "לא נמצאו אנשים"
 
-#: src/component/lightbox.vue:334 src/component/photo/view/cards.vue:144
+#: src/component/lightbox.vue:354 src/component/photo/view/cards.vue:144
 #: src/component/photo/view/list.vue:82 src/component/photo/view/mosaic.vue:68
-#: src/page/album/photos.vue:484 src/page/library/browse.vue:122
-#: src/page/photos.vue:611 src/page/places.vue:623 src/page/places.vue:721
+#: src/page/album/photos.vue:489 src/page/library/browse.vue:125
+#: src/page/photos.vue:622 src/page/places.vue:623 src/page/places.vue:721
 msgid "No pictures found"
 msgstr "לא נמצאו תמונות"
 
@@ -2045,13 +2044,13 @@ msgstr "לא הוגדרו שירותים."
 msgid "No thanks"
 msgstr "לא תודה"
 
-#: src/page/library/errors.vue:180
+#: src/page/library/errors.vue:183
 msgid "No warnings or error containing this keyword. Note that search is case-sensitive."
 msgstr "אין אזהרות או שגיאות המכילות מילת מפתח זו. שים לב שהחיפוש תלוי רישיות."
 
-#: src/component/photo/upload/dialog.vue:208
 #: src/component/photo/view/cards.vue:154 src/component/photo/view/list.vue:59
 #: src/component/photo/view/list.vue:92 src/component/photo/view/mosaic.vue:78
+#: src/component/upload/dialog.vue:209
 msgid "Non-photographic and low-quality images require a review before they appear in search results."
 msgstr "תמונות שאינן נראות צילום או באיכות נמוכה דורשות בדיקה לפני שהן מופיעות בתוצאות החיפוש."
 
@@ -2060,12 +2059,12 @@ msgstr "תמונות שאינן נראות צילום או באיכות נמוכ
 msgid "None"
 msgstr "ללא"
 
-#: src/common/util.js:791 src/component/lightbox.vue:602
+#: src/common/util.js:795 src/component/lightbox.vue:622
 #: src/component/service/upload.vue:75 src/component/service/upload.vue:87
 msgid "Not allowed"
 msgstr "אסור"
 
-#: src/component/lightbox.vue:599
+#: src/component/lightbox.vue:619
 msgid "Not found"
 msgstr "לא נמצא"
 
@@ -2073,8 +2072,8 @@ msgstr "לא נמצא"
 msgid "Not sorted."
 msgstr "לא ממוין."
 
-#: src/common/util.js:796 src/component/lightbox.vue:596
-#: src/component/lightbox.vue:713
+#: src/common/util.js:800 src/component/lightbox.vue:616
+#: src/component/lightbox.vue:733
 msgid "Not supported"
 msgstr "לא נתמך"
 
@@ -2133,11 +2132,11 @@ msgstr "יצירת תמונות ממוזערות לפי דרישה עשויה ל
 msgid "Once a week"
 msgstr "פעם בשבוע"
 
-#: src/page/albums.vue:598
+#: src/page/albums.vue:606
 msgid "One album found"
 msgstr "אלבום אחד נמצא"
 
-#: src/page/library/browse.vue:334
+#: src/page/library/browse.vue:360
 msgid "One file found"
 msgstr "קובץ אחד נמצא"
 
@@ -2145,20 +2144,20 @@ msgstr "קובץ אחד נמצא"
 msgid "One file uploaded"
 msgstr "קובץ אחד הועלה"
 
-#: src/page/library/browse.vue:336
+#: src/page/library/browse.vue:362
 msgid "One folder found"
 msgstr "תיקייה אחת נמצאה"
 
-#: src/page/labels.vue:521
+#: src/page/labels.vue:528
 msgid "One label found"
 msgstr "נמצאה תווית אחת"
 
-#: src/page/people/new.vue:346 src/page/people/new.vue:435
-#: src/page/people/recognized.vue:523
+#: src/page/people/new.vue:348 src/page/people/new.vue:442
+#: src/page/people/recognized.vue:530
 msgid "One person found"
 msgstr "אדם אחד נמצא"
 
-#: src/page/album/photos.vue:486 src/page/photos.vue:613
+#: src/page/album/photos.vue:491 src/page/photos.vue:624
 msgid "One picture found"
 msgstr "תמונה אחת נמצאה"
 
@@ -2199,7 +2198,7 @@ msgid "Original Name"
 msgstr "השם המקורי"
 
 #: src/component/navigation.vue:1302 src/model/file.js:196
-#: src/options/options.js:345 src/page/library/browse.vue:65
+#: src/options/options.js:345 src/page/library/browse.vue:68
 #: src/page/settings/content.vue:356 src/page/settings/general.vue:513
 msgid "Originals"
 msgstr "קבצי מקור"
@@ -2250,8 +2249,8 @@ msgid "Password changed"
 msgstr "סיסמא שונתה"
 
 #: src/app/routes.js:404 src/app/routes.js:428 src/component/navigation.vue:843
-#: src/component/navigation.vue:1896 src/component/photo/edit/dialog.vue:226
-#: src/component/photo/edit/dialog.vue:243 src/options/options.js:133
+#: src/component/navigation.vue:1896 src/component/photo/edit/dialog.vue:228
+#: src/component/photo/edit/dialog.vue:245 src/options/options.js:133
 #: src/page/settings/general.vue:175
 msgid "People"
 msgstr "אנשים"
@@ -2260,7 +2259,7 @@ msgstr "אנשים"
 msgid "People you share a link with will be able to view public contents."
 msgstr "אנשים שעימם אתה חולק קישור יוכלו להציג תכנים ציבוריים."
 
-#: src/component/photo/clipboard.vue:126 src/component/photo/toolbar.vue:257
+#: src/component/photo/clipboard.vue:126 src/component/photo/toolbar.vue:262
 msgid "Permanently deleted"
 msgstr "נמחק לצמיתות"
 
@@ -2325,11 +2324,11 @@ msgstr "אנא אשר את הסיסמה החדשה שלך."
 msgid "Please copy the following randomly generated app password and keep it in a safe place, as you will not be able to see it again:"
 msgstr "אנא העתק את סיסמת האפליקציה הבאה שנוצרה באופן אקראי ושמור אותה במקום בטוח, מכיוון שלא תוכל לראות אותה שוב:"
 
-#: src/component/photo/upload/dialog.vue:203
+#: src/component/upload/dialog.vue:204
 msgid "Please do not upload any private, unlawful or offensive pictures."
 msgstr "נא לא להעלות תמונות פרטיות, לא חוקיות או פוגעניות."
 
-#: src/component/photo/upload/dialog.vue:205
+#: src/component/upload/dialog.vue:206
 msgid "Please don't upload photos containing offensive content."
 msgstr "נא לא להעלות תמונות המכילות תוכן פוגעני."
 
@@ -2365,7 +2364,7 @@ msgstr "דיוקן"
 msgid "Preserve filenames"
 msgstr "שמור שמות קבצים"
 
-#: src/component/photo/upload/dialog.vue:162
+#: src/component/upload/dialog.vue:163
 msgid "Press enter to create a new album."
 msgstr "לחץ על Enter בכדי ליצור אלבום חדש."
 
@@ -2385,7 +2384,7 @@ msgstr "תצוגה מקדימה"
 msgid "Preview Images"
 msgstr "תצוגה מקדימה של תמונות"
 
-#: src/component/lightbox.vue:255 src/locales.js:299
+#: src/component/lightbox.vue:275 src/locales.js:299
 msgid "Previous"
 msgstr "קוֹדֵם"
 
@@ -2445,8 +2444,7 @@ msgid "Raw"
 msgstr "גלמי"
 
 #: src/component/photo/view/cards.vue:313
-#: src/component/photo/view/mosaic.vue:157 src/component/sidebar/info.vue:90
-#: src/page/settings/content.vue:378
+#: src/component/photo/view/mosaic.vue:157 src/page/settings/content.vue:378
 msgid "RAW"
 msgstr "גלם"
 
@@ -2494,9 +2492,9 @@ msgid "Red"
 msgstr "אדום"
 
 #: src/page/admin/sessions.vue:99 src/page/admin/users.vue:124
-#: src/component/album/toolbar.vue:74 src/component/photo/toolbar.vue:164
+#: src/component/album/toolbar.vue:79 src/component/photo/toolbar.vue:169
 #: src/page/albums.vue:172 src/page/labels.vue:111
-#: src/page/library/browse.vue:90 src/page/library/errors.vue:78
+#: src/page/library/browse.vue:93 src/page/library/errors.vue:78
 #: src/page/people/new.vue:54 src/page/people/recognized.vue:87
 msgid "Refresh"
 msgstr "לְרַעֲנֵן"
@@ -2514,7 +2512,7 @@ msgstr "הירשם"
 msgid "Reload"
 msgstr "טען מחדש"
 
-#: src/component/navigation.vue:108 src/component/update.vue:26
+#: src/component/navigation.vue:108 src/component/update.vue:27
 #: src/page/settings/general.vue:104
 msgid "Reloading…"
 msgstr "טוען מחדש…"
@@ -2531,7 +2529,7 @@ msgstr "הסר"
 msgid "remove failed: unknown album"
 msgstr "הסרה נכשלה: אלבום לא ידוע"
 
-#: src/component/lightbox.vue:1163 src/component/photo/clipboard.vue:155
+#: src/component/lightbox.vue:1181 src/component/photo/clipboard.vue:155
 #, fuzzy
 msgid "Remove from Album"
 msgstr "הסר מהאלבום"
@@ -2540,7 +2538,7 @@ msgstr "הסר מהאלבום"
 msgid "Remove imported files to save storage. Unsupported file types will never be deleted, they remain in their current location."
 msgstr "הסר קבצים מיובאים כדי לחסוך שטח אחסון. סוגי קבצים שאינם נתמכים לעולם לא יימחקו, ויישארו במיקומם הנוכחי."
 
-#: src/common/api.js:102 src/component/lightbox.vue:709
+#: src/common/api.js:102 src/component/lightbox.vue:729
 msgid "Request failed - are you offline?"
 msgstr "הבקשה נכשלה - האם אתה במצב לא מקוון?"
 
@@ -2561,12 +2559,12 @@ msgstr "רזולוציה"
 msgid "Restart"
 msgstr "איתחול"
 
-#: src/component/user/edit/dialog.vue:485 src/component/lightbox.vue:1192
+#: src/component/user/edit/dialog.vue:485 src/component/lightbox.vue:1210
 #: src/component/photo/clipboard.vue:77
 msgid "Restore"
 msgstr "לשחזר"
 
-#: src/component/lightbox.vue:1870
+#: src/component/lightbox.vue:1975
 msgid "Restored"
 msgstr "מְשׁוּחזָר"
 
@@ -2623,8 +2621,8 @@ msgstr "תְחוּם"
 #: src/page/admin/sessions.vue:70 src/page/admin/users.vue:62
 #: src/component/navigation.vue:340 src/component/navigation.vue:1864
 #: src/component/photo/toolbar.vue:56 src/options/options.js:129
-#: src/page/albums.vue:100 src/page/labels.vue:77
-#: src/page/library/errors.vue:75 src/page/people/recognized.vue:65
+#: src/page/albums.vue:103 src/page/labels.vue:80
+#: src/page/library/errors.vue:78 src/page/people/recognized.vue:65
 #: src/page/places.vue:79 src/page/settings/content.vue:235
 msgid "Search"
 msgstr "חיפוש"
@@ -2645,7 +2643,7 @@ msgstr "קוד סודי"
 msgid "Security and Access"
 msgstr "אבטחה וגישה"
 
-#: src/component/lightbox.vue:1090 src/component/lightbox.vue:1091
+#: src/component/lightbox.vue:1108 src/component/lightbox.vue:1109
 msgid "Select"
 msgstr "בחר"
 
@@ -2661,12 +2659,11 @@ msgstr "בחר תאריך"
 msgid "Select dates"
 msgstr "בחר תאריכים"
 
-#: src/component/photo/album/dialog.vue:54
-#: src/component/photo/upload/dialog.vue:154
+#: src/component/photo/album/dialog.vue:54 src/component/upload/dialog.vue:155
 msgid "Select or create an album"
 msgstr "בחר או צור אלבום"
 
-#: src/component/photo/upload/dialog.vue:137
+#: src/component/upload/dialog.vue:138
 msgid "Select the files to upload…"
 msgstr "בחר את הקבצים להעלאה…"
 
@@ -2715,7 +2712,7 @@ msgstr "מזהה הפעלה"
 msgid "Sessions"
 msgstr "הפעלות"
 
-#: src/component/lightbox.vue:1148
+#: src/component/lightbox.vue:1166
 msgid "Set as Album Cover"
 msgstr "מוגדר ככריכת אלבום"
 
@@ -2734,7 +2731,7 @@ msgstr "ההגדרות נשמרו"
 msgid "Setup"
 msgstr "הגדר"
 
-#: src/component/album/clipboard.vue:49 src/component/album/toolbar.vue:93
+#: src/component/album/clipboard.vue:49 src/component/album/toolbar.vue:98
 #: src/component/photo/clipboard.vue:51 src/page/settings/general.vue:369
 msgid "Share"
 msgstr "שתף"
@@ -2763,11 +2760,11 @@ msgstr "הצג כיתובים"
 msgid "Show hidden"
 msgstr "הראה את המוסתר"
 
-#: src/page/labels.vue:107
+#: src/page/labels.vue:110
 msgid "Show less"
 msgstr "הצג פחות"
 
-#: src/page/labels.vue:100
+#: src/page/labels.vue:103
 msgid "Show more"
 msgstr "הצג עוד"
 
@@ -2778,10 +2775,6 @@ msgstr "הצג יומני שרת בספרייה."
 #: src/page/settings/content.vue:282
 msgid "Show Titles"
 msgstr "הצג כותרות"
-
-#: src/component/lightbox.vue:1003 src/component/lightbox.vue:1004
-msgid "Show/Hide Sidebar"
-msgstr "הצג/הסתר סרגל צד"
 
 #: src/model/file.js:214 src/page/settings/content.vue:400
 msgid "Sidecar"
@@ -2816,7 +2809,7 @@ msgstr "תוֹכנָה"
 msgid "Software Update"
 msgstr "עדכון תוכנה"
 
-#: src/component/lightbox.vue:706
+#: src/component/lightbox.vue:726
 msgid "Something went wrong, try again"
 msgstr "קרתה תקלה נסה שוב"
 
@@ -2824,8 +2817,8 @@ msgstr "קרתה תקלה נסה שוב"
 msgid "Sort by"
 msgstr "מיין לפי"
 
-#: src/component/album/edit/dialog.vue:142 src/component/photo/toolbar.vue:276
-#: src/page/albums.vue:207
+#: src/component/album/edit/dialog.vue:142 src/component/photo/toolbar.vue:279
+#: src/page/albums.vue:213
 msgid "Sort Order"
 msgstr "סדר המיון"
 
@@ -2871,7 +2864,7 @@ msgstr "התחל"
 msgid "Start Page"
 msgstr "דף התחלה"
 
-#: src/component/lightbox.vue:1038 src/component/lightbox.vue:1039
+#: src/component/lightbox.vue:1056 src/component/lightbox.vue:1057
 msgid "Start/Stop Slideshow"
 msgstr "התחל / עצור מצגת"
 
@@ -3053,7 +3046,7 @@ msgstr "כדי לשדרג, אתה יכול להזין קוד הפעלה או ל�
 msgid "Today"
 msgstr "הַיוֹם"
 
-#: src/component/album/toolbar.vue:70 src/component/photo/toolbar.vue:74
+#: src/component/album/toolbar.vue:70 src/component/photo/toolbar.vue:77
 msgid "Toggle View"
 msgstr "החלף תצוגה"
 
@@ -3061,7 +3054,7 @@ msgstr "החלף תצוגה"
 msgid "Token"
 msgstr "טוקן"
 
-#: src/component/photo/upload/dialog.vue:202
+#: src/component/upload/dialog.vue:214
 msgid "Too many files selected"
 msgstr "נבחרו יותר מדי קבצים"
 
@@ -3069,13 +3062,13 @@ msgstr "נבחרו יותר מדי קבצים"
 msgid "Too many requests"
 msgstr "יותר מדי בקשות"
 
-#: src/component/photo/toolbar.vue:192 src/page/library/errors.vue:88
+#: src/component/photo/toolbar.vue:197 src/page/library/errors.vue:88
 msgid "Troubleshooting"
 msgstr "פתרון בעיות"
 
 #: src/component/photo/view/cards.vue:146 src/component/photo/view/list.vue:54
 #: src/component/photo/view/list.vue:84 src/component/photo/view/mosaic.vue:70
-#: src/page/albums.vue:276 src/page/labels.vue:153
+#: src/page/albums.vue:282 src/page/labels.vue:156
 #: src/page/people/recognized.vue:143
 msgid "Try again using other filters or keywords."
 msgstr "נסה שוב להשתמש בסינון או במילת מפתח שונה."
@@ -3102,7 +3095,7 @@ msgid "Unique ID"
 msgstr "מזהה ייחודי"
 
 #: src/page/settings/account.vue:451 src/page/settings/account.vue:476
-#: src/page/settings/account.vue:501 src/common/util.js:464
+#: src/page/settings/account.vue:501 src/common/util.js:468
 #: src/component/photo/edit/details.vue:21
 #: src/component/photo/edit/details.vue:111
 #: src/component/photo/edit/details.vue:138
@@ -3171,25 +3164,24 @@ msgstr "שדרוג"
 msgid "Upgrade Now"
 msgstr "שדרג עכשיו"
 
-#: src/component/album/toolbar.vue:103 src/component/navigation.vue:1822
-#: src/component/photo/toolbar.vue:174 src/component/photo/upload/dialog.vue:50
-#: src/component/service/upload.vue:144 src/page/albums.vue:182
+#: src/component/album/toolbar.vue:108 src/component/navigation.vue:1822
+#: src/component/photo/toolbar.vue:179 src/component/service/upload.vue:144
+#: src/component/upload/dialog.vue:51 src/page/albums.vue:182
 #: src/page/labels.vue:121 src/page/library/import.vue:133
 #: src/page/settings/general.vue:297 src/page/settings/services.vue:37
 msgid "Upload"
 msgstr "העלה"
 
-#: src/component/photo/upload/dialog.vue:295
+#: src/component/upload/dialog.vue:307
 msgid "Upload complete"
 msgstr "העלאה הושלמה"
 
-#: src/component/photo/upload/dialog.vue:132
+#: src/component/upload/dialog.vue:133
 msgid "Upload complete. Indexing…"
 msgstr "העלאה הושלמה, מאנדקס…"
 
-#: src/component/photo/upload/dialog.vue:281
-#: src/component/photo/upload/dialog.vue:300
-#: src/component/photo/upload/dialog.vue:128
+#: src/component/upload/dialog.vue:293 src/component/upload/dialog.vue:312
+#: src/component/upload/dialog.vue:129
 msgid "Upload failed"
 msgstr "העלאה נכשלה"
 
@@ -3206,13 +3198,12 @@ msgstr "נתיב העלאה"
 msgid "Upload to WebDAV and share links with friends."
 msgstr "העלה ל- WebDAV ושתף קישורים עם חברים."
 
-#: src/component/photo/upload/dialog.vue:130
+#: src/component/upload/dialog.vue:131
 msgid "Uploading %{n} of %{t}…"
 msgstr "מעלה %{n} מתוך %{t}…"
 
-#: src/component/photo/upload/dialog.vue:116
-#: src/component/photo/upload/dialog.vue:124
-#: src/component/photo/upload/dialog.vue:238
+#: src/component/upload/dialog.vue:128 src/component/upload/dialog.vue:136
+#: src/component/upload/dialog.vue:250
 msgid "Uploading photos…"
 msgstr "מעלה תמונות…"
 
@@ -3220,7 +3211,7 @@ msgstr "מעלה תמונות…"
 msgid "Uploading…"
 msgstr "מעלה..."
 
-#: src/component/photo/upload/dialog.vue:205
+#: src/component/upload/dialog.vue:206
 msgid "Uploads that may contain such images will be rejected automatically."
 msgstr "העלאות שעשויות להכיל תמונות כאלה יידחו אוטומטית."
 
@@ -3291,7 +3282,7 @@ msgstr "משך הסרטון"
 msgid "Videos"
 msgstr "סרטונים"
 
-#: src/component/photo/toolbar.vue:250 src/component/photo/view/cards.vue:350
+#: src/component/photo/toolbar.vue:253 src/component/photo/view/cards.vue:350
 #: src/component/photo/view/mosaic.vue:194
 msgid "View"
 msgstr "תצוגה"
@@ -3365,7 +3356,7 @@ msgid "Work Details"
 msgstr "פרטי העבודה"
 
 #: src/page/settings/account.vue:500 src/component/photo/edit/details.vue:163
-#: src/component/photo/toolbar.vue:302 src/page/albums.vue:154
+#: src/component/photo/toolbar.vue:305 src/page/albums.vue:160
 msgid "Year"
 msgstr "שנה"
 
@@ -3382,7 +3373,7 @@ msgstr "צהוב"
 #: src/component/photo/edit/files.vue:510 src/component/photo/edit/info.vue:281
 #: src/component/photo/edit/info.vue:297 src/component/photo/edit/info.vue:313
 #: src/component/photo/edit/info.vue:329 src/component/photo/edit/info.vue:344
-#: src/component/photo/toolbar.vue:417
+#: src/component/photo/toolbar.vue:420
 msgid "Yes"
 msgstr "כן"
 
@@ -3399,7 +3390,7 @@ msgstr "ניתן להוריד רק אלבום אחד"
 msgid "You can only download one label"
 msgstr "ניתן להוריד רק תווית אחת"
 
-#: src/component/photo/upload/dialog.vue:203
+#: src/component/upload/dialog.vue:204
 msgid "You can upload up to %{n} files for test purposes."
 msgstr "אתה יכול להעלות עד %{n} קבצים למטרות בדיקה."
 
@@ -3425,13 +3416,19 @@ msgstr "הדפדפן שלך אינו תומך ב-WebGL"
 msgid "Your continued support helps us provide regular updates and remain independent, so we can fulfill our mission and protect your privacy."
 msgstr "התמיכה המתמשכת שלך עוזרת לנו לספק עדכונים שוטפים ולהישאר עצמאיים, כדי שנוכל למלא את המשימה שלנו ולהגן על פרטיותך."
 
-#: src/page/albums.vue:284
+#: src/page/albums.vue:290
 msgid "Your library is continuously analyzed to automatically create albums of special moments, trips, and places."
 msgstr "הספרייה שלך מנותחת באופן רציף ליצירת אלבומים של רגעים מיוחדים, טיולים ומקומות באופן אוטומטי."
 
-#: src/component/lightbox.vue:254
+#: src/component/lightbox.vue:274
 msgid "Zoom in/out"
 msgstr "זום פנימה\\החוצה"
+
+#~ msgid "Info"
+#~ msgstr "מידע"
+
+#~ msgid "Show/Hide Sidebar"
+#~ msgstr "הצג/הסתר סרגל צד"
 
 #~ msgid "Add a caption"
 #~ msgstr "הוסף כיתוב"
