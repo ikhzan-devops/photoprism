@@ -1,7 +1,11 @@
 <template>
   <div class="p-sidebar-info metadata">
     <v-toolbar density="comfortable" color="navigation">
-      <v-btn :icon="$isRtl ? 'mdi-chevron-left' : 'mdi-chevron-right'" @click.stop="close()"></v-btn>
+      <v-btn
+        :icon="$isRtl ? 'mdi-chevron-left' : 'mdi-chevron-right'"
+        :title="$gettext('Close')"
+        @click.stop="close()"
+      ></v-btn>
       <v-toolbar-title>{{ $gettext("Information") }}</v-toolbar-title>
     </v-toolbar>
     <div v-if="model.UID">
