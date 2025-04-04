@@ -72,6 +72,7 @@
             :max="video.duration"
             class="video-control video-control--slider"
             @update:model-value="seekVideo"
+            @update:focused="focusContent"
           >
           </v-slider>
           <div class="video-control video-control--duration text-body-2">
@@ -313,10 +314,16 @@ export default {
             ev.relatedTarget instanceof HTMLElement &&
             (!ev.relatedTarget.closest(".v-dialog--lightbox") || ev.relatedTarget.tabIndex < 0))
         ) {
-          this.$refs.content.focus();
-          if (this.debug) {
-            this.log(`returned focus to content`, { target: ev.target });
-          }
+          this.focusContent(ev);
+        }
+      }
+    },
+    focusContent(ev) {
+      if (this.$refs.content && this.$refs.content instanceof HTMLElement) {
+        this.$refs.content.focus();
+
+        if (this.debug && ev) {
+          this.log(`set focus to content`, { ev });
         }
       }
     },
@@ -868,11 +875,11 @@ export default {
 
       // Enable seeking if the video has a seekable time range.
       if (video.seekable && video.seekable instanceof TimeRanges) {
-        this.video.seekable = video.seekable.length > 0;
+        this.video.seekable = video.readyState > 0 && video.seekable.length > 0;
       }
 
-      // Disable seeking if video is broken or not loaded.
-      if (this.video.errorCode > 0 || this.video.state <= 0) {
+      // Disable seeking if video doesn't load or there is an error.
+      if (video.readyState < 1 || this.video.errorCode > 0) {
         this.video.seekable = false;
       }
 
@@ -1818,14 +1825,19 @@ export default {
         case "ArrowLeft":
           ev.preventDefault();
           ev.stopPropagation();
-          if (this.index > 0) {
+          if (this.model?.Playable && this.video.controls && this.video.playing) {
+            this.seekVideoSeconds(this.$isRtl ? 10 : -10);
+          } else if (this.index > 0) {
             this.pswp().prev();
           }
           break;
         case "ArrowRight":
           ev.preventDefault();
           ev.stopPropagation();
-          if (this.models.length > this.index + 1) {
+
+          if (this.model?.Playable && this.video.controls && this.video.playing) {
+            this.seekVideoSeconds(this.$isRtl ? -10 : 10);
+          } else if (this.models.length > this.index + 1) {
             this.pswp().next();
           }
           break;
@@ -1860,8 +1872,9 @@ export default {
         this.pauseVideo(video);
       }
     },
-    seekVideo(time) {
-      if (typeof time !== "number") {
+    // Jumps to the specified time index when a video is loaded and seekable.
+    seekVideo(seekTo) {
+      if (typeof seekTo !== "number") {
         return false;
       }
 
@@ -1870,9 +1883,36 @@ export default {
 
       if (!video) {
         return false;
+      } else if (!video?.readyState || video.readyState < 1 || !video.duration || !this.video.seekable) {
+        return;
       }
 
-      video.currentTime = time;
+      if (seekTo > video.duration) {
+        video.currentTime = video.duration;
+      } else if (seekTo <= 0) {
+        video.currentTime = 0;
+      } else {
+        video.currentTime = seekTo;
+      }
+
+      return true;
+    },
+    // Skips the specified number of seconds when a video is loaded and seekable.
+    seekVideoSeconds(seconds) {
+      if (!seconds || typeof seconds !== "number") {
+        return false;
+      } else if (!this.video.playing) {
+        return false;
+      }
+
+      // Get active video element, if any.
+      const { video } = this.getContent();
+
+      if (!video || !video.currentTime) {
+        return false;
+      }
+
+      this.seekVideo(video.currentTime + seconds);
 
       return true;
     },
