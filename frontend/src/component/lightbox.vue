@@ -12,10 +12,7 @@
     @after-enter="afterEnter"
     @after-leave="afterLeave"
     @focusout="onFocusOut"
-    @keydown.ctrl="onKeyCtrl"
-    @keydown.meta="onKeyCtrl"
     @keydown.space.exact="onKeyDown"
-    @keydown.esc.exact="onKeyDown"
     @keydown.left.exact="onKeyDown"
     @keydown.right.exact="onKeyDown"
   >
@@ -31,7 +28,7 @@
         tabindex="1"
         class="p-lightbox__content"
         :class="{
-          'sidebar-visible': sidebarVisible,
+          'sidebar-visible': info,
           'slideshow-active': slideshow.active,
           'is-fullscreen': isFullscreen(),
           'is-zoomable': isZoomable,
@@ -97,8 +94,8 @@
           </div>
         </div>
       </div>
-      <div v-if="sidebarVisible" ref="sidebar" tabindex="-1" class="p-lightbox__sidebar bg-background">
-        <p-sidebar-info v-model="model" :album="album" :context="context" @close="hideSidebar"></p-sidebar-info>
+      <div v-if="info" ref="sidebar" tabindex="-1" class="p-lightbox__sidebar bg-background">
+        <p-sidebar-info v-model="model" :album="album" :context="context" @close="hideInfo"></p-sidebar-info>
       </div>
     </div>
     <p-lightbox-menu
@@ -130,6 +127,7 @@ export default {
   name: "PLightbox",
   components: [PLightboxMenu, PSidebarInfo],
   emits: ["enter", "leave"],
+  expose: ["onShortCut"],
   data() {
     const debug = this.$config.get("debug");
     const trace = this.$config.get("trace");
@@ -139,7 +137,7 @@ export default {
       trace,
       visible: false,
       busy: false,
-      sidebarVisible: localStorage.getItem("lightbox.sidebar.visible") === "true",
+      info: localStorage.getItem("lightbox.info") === "true",
       menuElement: null,
       menuBgColor: "#252525",
       menuVisible: false,
@@ -258,7 +256,7 @@ export default {
       this.busy = true;
       this.visible = true;
       this.wasFullscreen = $fullscreen.isEnabled();
-      this.sidebarVisible = localStorage.getItem("lightbox.sidebar.visible") === "true";
+      this.info = localStorage.getItem("lightbox.info") === "true";
 
       // Publish init event.
       this.$event.publish("lightbox.init");
@@ -269,7 +267,7 @@ export default {
       this.onReset();
 
       // Hide sidebar.
-      this.sidebarVisible = false;
+      this.info = false;
 
       // Remove lightbox focus and hide lightbox.
       if (this.visible) {
@@ -1144,7 +1142,7 @@ export default {
               outlineID: "pswp__icn-info", // Add this to the <path> in the inner property.
               size: 24, // Depends on the original SVG viewBox, e.g. use 24 for viewBox="0 0 24 24".
             },
-            onClick: (ev) => this.onControlClick(ev, this.toggleSidebar),
+            onClick: (ev) => this.onControlClick(ev, this.toggleInfo),
           });
         }
 
@@ -1161,7 +1159,7 @@ export default {
             inner: `<use class="pswp__icn-shadow pswp__icn-sound-on" xlink:href="#pswp__icn-sound-on"></use><path d="M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.84 14,18.7V20.77C18,19.86 21,16.28 21,12C21,7.72 18,4.14 14,3.23M16.5,12C16.5,10.23 15.5,8.71 14,7.97V16C15.5,15.29 16.5,13.76 16.5,12M3,9V15H7L12,20V4L7,9H3Z" id="pswp__icn-sound-on" class="pswp__icn-sound-on" /><use class="pswp__icn-shadow pswp__icn-sound-off" xlink:href="#pswp__icn-sound-off"></use><path d="M12,4L9.91,6.09L12,8.18M4.27,3L3,4.27L7.73,9H3V15H7L12,20V13.27L16.25,17.53C15.58,18.04 14.83,18.46 14,18.7V20.77C15.38,20.45 16.63,19.82 17.68,18.96L19.73,21L21,19.73L12,10.73M19,12C19,12.94 18.8,13.82 18.46,14.64L19.97,16.15C20.62,14.91 21,13.5 21,12C21,7.72 18,4.14 14,3.23V5.29C16.89,6.15 19,8.83 19,12M16.5,12C16.5,10.23 15.5,8.71 14,7.97V10.18L16.45,12.63C16.5,12.43 16.5,12.21 16.5,12Z" id="pswp__icn-sound-off" class="pswp__icn-sound-off" />`,
             size: 24, // Depends on the original SVG viewBox, e.g. use 24 for viewBox="0 0 24 24".
           },
-          onClick: (ev) => this.onControlClick(ev, this.toggleSound),
+          onClick: (ev) => this.onControlClick(ev, this.toggleMute),
         });
 
         // Add slideshow play/pause toggle control.
@@ -1742,25 +1740,20 @@ export default {
       }
     },
     // Handles Ctrl/Cmd + key combinations.
-    onKeyCtrl(ev) {
-      if (!ev || !ev.code || !this.visible || !this.$view.isActive(this)) {
-        return;
-      }
-
+    onShortCut(ev) {
       if (this.trace) {
-        this.log("key.ctrl", { ev });
+        this.log("shortcut", { ev });
       }
 
       switch (ev.code) {
+        case "Escape":
+          this.closeLightbox();
+          return true;
         case "Period":
-          ev.preventDefault();
-          ev.stopPropagation();
           this.onShowMenu();
           this.toggleSelect();
-          break;
+          return true;
         case "KeyA":
-          ev.preventDefault();
-          ev.stopPropagation();
           if (this.canArchive && this.context !== "hidden") {
             if (this.model.Archived || (this.context === "archive" && this.model?.Archived !== false)) {
               this.onRestore();
@@ -1768,46 +1761,37 @@ export default {
               this.onArchive();
             }
           }
-          break;
+          return true;
         case "KeyD":
-          ev.preventDefault();
-          ev.stopPropagation();
           if (this.canDownload) {
             this.onDownload();
           }
-          break;
+          return true;
         case "KeyE":
-          ev.preventDefault();
-          ev.stopPropagation();
           if (this.canEdit) {
             this.onEdit();
           }
-          break;
+          return true;
         case "KeyF":
-          ev.preventDefault();
-          ev.stopPropagation();
           if (this.canFullscreen) {
             this.toggleFullscreen();
           }
           break;
         case "KeyI":
-          ev.preventDefault();
-          ev.stopPropagation();
-          this.toggleSidebar();
-          break;
+          this.toggleInfo();
+          return true;
         case "KeyL":
-          ev.preventDefault();
-          ev.stopPropagation();
           this.onShowMenu();
           if (this.canLike) {
             this.toggleLike();
           }
-          break;
+          return true;
+        case "KeyM":
+          this.toggleMute();
+          return true;
         case "KeyS":
-          ev.preventDefault();
-          ev.stopPropagation();
           this.toggleSlideshow();
-          break;
+          return true;
       }
     },
     // Handles other key events.
@@ -1817,7 +1801,7 @@ export default {
       }
 
       if (
-        this.sidebarVisible &&
+        this.info &&
         (document.activeElement instanceof HTMLInputElement || document.activeElement instanceof HTMLTextAreaElement)
       ) {
         return;
@@ -1857,11 +1841,6 @@ export default {
           } else {
             this.toggleControls();
           }
-          break;
-        case "Escape":
-          ev.preventDefault();
-          ev.stopPropagation();
-          this.closeLightbox();
           break;
       }
     },
@@ -1913,7 +1892,7 @@ export default {
       }
     },
     // Mutes/unmutes the sound for videos.
-    toggleSound() {
+    toggleMute() {
       this.muted = !this.muted;
 
       window.sessionStorage.setItem("lightbox.muted", this.muted.toString());
@@ -2147,26 +2126,26 @@ export default {
         }
       });
     },
-    toggleSidebar() {
+    toggleInfo() {
       if (!this.visible) {
         return;
       }
 
-      if (this.sidebarVisible) {
-        this.hideSidebar();
+      if (this.info) {
+        this.hideInfo();
       } else {
-        this.showSidebar();
+        this.showInfo();
       }
     },
     // Shows the lightbox sidebar, if hidden.
-    showSidebar() {
-      if (!this.visible || this.sidebarVisible || !this.featExperimental) {
+    showInfo() {
+      if (!this.visible || this.info || !this.featExperimental) {
         return;
       }
 
-      this.sidebarVisible = true;
+      this.info = true;
 
-      localStorage.setItem("lightbox.sidebar.visible", `${this.sidebarVisible.toString()}`);
+      localStorage.setItem("lightbox.info", `${this.info.toString()}`);
 
       // Resize and focus content element.
       this.$nextTick(() => {
@@ -2175,14 +2154,14 @@ export default {
       });
     },
     // Hides the lightbox sidebar, if visible.
-    hideSidebar() {
-      if (!this.visible || !this.sidebarVisible || !this.featExperimental) {
+    hideInfo() {
+      if (!this.visible || !this.info || !this.featExperimental) {
         return;
       }
 
-      this.sidebarVisible = false;
+      this.info = false;
 
-      localStorage.setItem("lightbox.sidebar.visible", `${this.sidebarVisible.toString()}`);
+      localStorage.setItem("lightbox.info", `${this.info.toString()}`);
 
       // Resize and focus content element.
       this.$nextTick(() => {
