@@ -245,7 +245,7 @@ var Flags = CliFlags{
 		}}, {
 		Flag: &cli.StringFlag{
 			Name:    "import-allow",
-			Usage:   "allow to import these file types (comma-separated list of `EXTENSIONS`; leave blank to allow all)",
+			Usage:   "restrict imports to these file types (comma-separated list of `EXTENSIONS`; leave blank to allow all)",
 			EnvVars: EnvVars("IMPORT_ALLOW"),
 		}}, {
 		Flag: &cli.BoolFlag{
