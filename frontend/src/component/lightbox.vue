@@ -519,14 +519,14 @@ export default {
       // Get the estimated slide (viewport) size in real pixels.
       const pixels = this.getSlidePixels(model);
 
-      // Get initial thumbnail size that best matches the viewport size in real pixels.
-      const thumbSize = this.$util.thumbSize(pixels.width, pixels.height);
+      // Find thumbnail size that best matches the current slide size and zoom level.
+      const thumb = this.$util.thumb(model.Thumbs, pixels.width, pixels.height);
 
-      // Get thumbnail image URL, width, and height.
-      const thumb = {
-        src: model.Thumbs[thumbSize].src,
-        width: model.Thumbs[thumbSize].w,
-        height: model.Thumbs[thumbSize].h,
+      // Set thumbnail image URL, width, and height.
+      const img = {
+        src: thumb.src,
+        width: thumb.w,
+        height: thumb.h,
         alt: model?.Title,
         model: model,
         loading: false,
@@ -545,28 +545,28 @@ export default {
           : false;
 
         // Set the slide data needed to render and play the video.
-        const data = {
+        const video = {
           type: "html", // Render custom HTML.
           html: `<div class="pswp__html"></div>`, // Replaced with the <video> element.
           model: model, // Content model.
           duration: model.Duration > 0 ? model.Duration / 1000000000 : 0,
           format: this.$util.videoFormat(model?.Codec, model?.Mime), // Content format.
           loop: model?.Type !== media.Live && (isShort || model?.Type === media.Animated), // If possible, loop these types.
-          msrc: thumb.src, // Image URL.
+          msrc: img.src, // Image URL.
           loading: true,
         };
 
         if (model?.Type === media.Live) {
-          data.width = thumb.width;
-          data.height = thumb.height;
+          video.width = img.width;
+          video.height = img.height;
         }
 
-        return data;
+        return video;
       }
 
       // Return the image data so that PhotoSwipe can render it in the lightbox,
       // see https://photoswipe.com/data-sources/#dynamically-generated-data.
-      return thumb;
+      return img;
     },
     isContentZoomable(isContentZoomable, content) {
       if (content.data?.model?.Type === media.Live) {
@@ -2418,19 +2418,12 @@ export default {
       const slideHeight = Math.ceil(slide.height * zoomLevel * window.devicePixelRatio);
 
       // Find thumbnail size that best matches the current slide size and zoom level.
-      const thumbSize = this.$util.thumbSize(slideWidth, slideHeight);
+      const thumb = this.$util.thumb(model.Thumbs, slideWidth, slideHeight);
 
       // Do not change image if no matching thumbnail size was found or is available.
-      if (!thumbSize || !model.Thumbs[thumbSize]) {
+      if (!thumb || !thumb.src || !thumb.w || !thumb.h) {
         return;
       }
-
-      // Get new thumbnail URL based on the calculated size.
-      const thumb = {
-        src: model.Thumbs[thumbSize].src,
-        width: model.Thumbs[thumbSize].w,
-        height: model.Thumbs[thumbSize].h,
-      };
 
       // Get the thumbnail URL of the currently displayed image.
       const currentSrc = data.src;
@@ -2484,7 +2477,7 @@ export default {
           }
 
           if (this.debug) {
-            this.log(`loaded thumbnail ${thumbSize} from ${ev.target.currentSrc}`);
+            this.log(`loaded thumbnail ${thumb.size} from ${ev.target.currentSrc}`);
           }
 
           // Update the slide's HTMLImageElement to use the new thumbnail image.
@@ -2494,15 +2487,15 @@ export default {
 
           // Update PhotoSwipe's slide data.
           data.src = thumb.src;
-          data.width = thumb.width;
-          data.height = thumb.height;
+          data.width = thumb.w;
+          data.height = thumb.h;
           data.loading = false;
         });
 
         // Set thumbnail src to load the new image.
         image.src = thumb.src;
       } catch (err) {
-        this.log(`failed to load image size ${thumbSize}`, err);
+        this.log(`failed to load image size ${thumb.size}`, err);
         data.loading = false;
       }
     },
