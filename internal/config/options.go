@@ -68,8 +68,8 @@ type Options struct {
 	ImportDest             string        `yaml:"ImportDest" json:"-" flag:"import-dest"`
 	ImportAllow            string        `yaml:"ImportAllow" json:"ImportAllow" flag:"import-allow"`
 	UploadNSFW             bool          `yaml:"UploadNSFW" json:"-" flag:"upload-nsfw"`
-	UploadAllow            string        `yaml:"UploadAllow" json:"UploadAllow" flag:"upload-allow"`
-	UploadArchives         bool          `yaml:"UploadArchives" json:"UploadArchives" flag:"upload-archives"`
+	UploadAllow            string        `yaml:"UploadAllow" json:"-" flag:"upload-allow"`
+	UploadArchives         bool          `yaml:"UploadArchives" json:"-" flag:"upload-archives"`
 	CachePath              string        `yaml:"CachePath" json:"-" flag:"cache-path"`
 	TempPath               string        `yaml:"TempPath" json:"-" flag:"temp-path"`
 	AssetsPath             string        `yaml:"AssetsPath" json:"-" flag:"assets-path"`
