@@ -91,7 +91,7 @@ func ZipFile(zipWriter *zip.Writer, fileName, fileAlias string, compress bool) (
 }
 
 // Unzip extracts the contents of a zip file to the target directory.
-func Unzip(zipName, dir string) (files []string, err error) {
+func Unzip(zipName, dir string, sizeLimit int64) (files []string, err error) {
 	zipReader, err := zip.OpenReader(zipName)
 
 	if err != nil {
@@ -103,6 +103,8 @@ func Unzip(zipName, dir string) (files []string, err error) {
 	for _, zipFile := range zipReader.File {
 		// Skip directories like __OSX and potentially malicious file names containing "..".
 		if strings.HasPrefix(zipFile.Name, "__") || strings.Contains(zipFile.Name, "..") {
+			continue
+		} else if sizeLimit > 0 && zipFile.UncompressedSize64 > uint64(sizeLimit) {
 			continue
 		}
 

@@ -92,6 +92,7 @@ func UploadUserFiles(router *gin.RouterGroup) {
 		allowedExt := conf.UploadAllow()
 		rejectArchives := !conf.UploadArchives()
 		rejectRaw := conf.DisableRaw()
+		sizeLimit := conf.OriginalsLimitBytes()
 
 		// Save uploaded files and append their names
 		// to "uploads" if they pass all checks.
@@ -106,6 +107,9 @@ func UploadUserFiles(router *gin.RouterGroup) {
 				continue
 			} else if allowedExt.Excludes(fileType.DefaultExt()) {
 				log.Errorf("upload: rejected %s because its extension is not allowed", clean.Log(baseName))
+				continue
+			} else if sizeLimit > 0 && file.Size > sizeLimit {
+				log.Errorf("upload: rejected %s because its size exceeds the file size limit", clean.Log(baseName))
 				continue
 			}
 
@@ -128,7 +132,7 @@ func UploadUserFiles(router *gin.RouterGroup) {
 					continue
 				}
 
-				zipFiles, zipErr := fs.Unzip(destName, uploadDir)
+				zipFiles, zipErr := fs.Unzip(destName, uploadDir, sizeLimit)
 
 				logWarn("upload", os.Remove(destName))
 

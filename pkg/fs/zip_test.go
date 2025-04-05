@@ -27,7 +27,7 @@ func TestZip(t *testing.T) {
 			t.Logf("%s: %d bytes", zipName, info.Size())
 		}
 
-		if unzipFiles, err := Unzip(zipName, unzipDir); err != nil {
+		if unzipFiles, err := Unzip(zipName, unzipDir, 2*GB); err != nil {
 			t.Error(err)
 		} else {
 			t.Logf("%s: %#v", zipName, unzipFiles)
@@ -59,7 +59,7 @@ func TestZip(t *testing.T) {
 			t.Logf("%s: %d bytes", zipName, info.Size())
 		}
 
-		if unzipFiles, err := Unzip(zipName, unzipDir); err != nil {
+		if unzipFiles, err := Unzip(zipName, unzipDir, 2*GB); err != nil {
 			t.Error(err)
 		} else {
 			t.Logf("%s: %#v", zipName, unzipFiles)
