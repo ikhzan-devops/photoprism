@@ -140,6 +140,12 @@ describe("common/util", () => {
     };
     assert.equal($util.thumb(thumbs, 1200, 900).size, "fit_1280");
     assert.equal($util.thumb(thumbs, 1300, 900).size, "fit_1920");
+    assert.equal($util.thumb(thumbs, 1300, 900).w, 1800);
+    assert.equal($util.thumb(thumbs, 1300, 900).h, 1200);
+    assert.equal(
+      $util.thumb(thumbs, 1300, 900).src,
+      "/api/v1/t/bfdcf45e58b1978af66bbf6212c195851dc65814/174usyd0/fit_1920"
+    );
     assert.equal($util.thumb(thumbs, 1400, 1200).size, "fit_1920");
     assert.equal($util.thumb(thumbs, 100000, 120000).size, "fit_7680");
   });
