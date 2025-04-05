@@ -70,6 +70,7 @@ type Options struct {
 	UploadNSFW             bool          `yaml:"UploadNSFW" json:"-" flag:"upload-nsfw"`
 	UploadAllow            string        `yaml:"UploadAllow" json:"-" flag:"upload-allow"`
 	UploadArchives         bool          `yaml:"UploadArchives" json:"-" flag:"upload-archives"`
+	UploadLimit            int           `yaml:"UploadLimit" json:"-" flag:"upload-limit"`
 	CachePath              string        `yaml:"CachePath" json:"-" flag:"cache-path"`
 	TempPath               string        `yaml:"TempPath" json:"-" flag:"temp-path"`
 	AssetsPath             string        `yaml:"AssetsPath" json:"-" flag:"assets-path"`

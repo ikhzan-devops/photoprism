@@ -264,6 +264,12 @@ var Flags = CliFlags{
 			Usage:   "allow upload of zip archives (will be extracted before import)",
 			EnvVars: EnvVars("UPLOAD_ARCHIVES"),
 		}}, {
+		Flag: &cli.IntFlag{
+			Name:    "upload-limit",
+			Value:   1000,
+			Usage:   "maximum total size of uploaded files in `MB` (1-100000; -1 to disable)",
+			EnvVars: EnvVars("UPLOAD_LIMIT"),
+		}}, {
 		Flag: &cli.PathFlag{
 			Name:      "cache-path",
 			Aliases:   []string{"ca"},
@@ -303,7 +309,7 @@ var Flags = CliFlags{
 		}}, {
 		Flag: &cli.Uint64Flag{
 			Name:    "files-quota",
-			Usage:   "maximum aggregated size of all indexed files in `GB` (0 for unlimited)",
+			Usage:   "maximum total size of all indexed files in `GB` (0 for unlimited)",
 			EnvVars: EnvVars("FILES_QUOTA"),
 		}}, {
 		Flag: &cli.PathFlag{

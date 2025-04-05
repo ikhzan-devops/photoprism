@@ -18,3 +18,21 @@ func (c *Config) UploadAllow() fs.ExtList {
 func (c *Config) UploadArchives() bool {
 	return c.options.UploadArchives
 }
+
+// UploadLimit returns the maximum aggregated size of uploaded files in MB.
+func (c *Config) UploadLimit() int {
+	if c.options.UploadLimit <= 0 || c.options.UploadLimit > 100000 {
+		return -1
+	}
+
+	return c.options.UploadLimit
+}
+
+// UploadLimitBytes returns the maximum aggregated size of uploaded files in bytes.
+func (c *Config) UploadLimitBytes() int64 {
+	if result := c.UploadLimit(); result <= 0 {
+		return -1
+	} else {
+		return int64(result) * 1024 * 1024
+	}
+}
