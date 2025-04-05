@@ -67,6 +67,7 @@ func (c *Config) Report() (rows [][]string, cols []string) {
 		{"import-allow", c.ImportAllow().String()},
 		{"upload-nsfw", fmt.Sprintf("%t", c.UploadNSFW())},
 		{"upload-allow", c.UploadAllow().String()},
+		{"upload-archives", fmt.Sprintf("%t", c.UploadArchives())},
 		{"cache-path", c.CachePath()},
 		{"cmd-cache-path", c.CmdCachePath()},
 		{"media-cache-path", c.MediaCachePath()},

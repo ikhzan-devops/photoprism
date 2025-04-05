@@ -259,6 +259,11 @@ var Flags = CliFlags{
 			Usage:   "allow to upload these file types (comma-separated list of `EXTENSIONS`; leave blank to allow all)",
 			EnvVars: EnvVars("UPLOAD_ALLOW"),
 		}}, {
+		Flag: &cli.BoolFlag{
+			Name:    "upload-archives",
+			Usage:   "allow upload of zip archives (will be extracted before import)",
+			EnvVars: EnvVars("UPLOAD_ARCHIVES"),
+		}}, {
 		Flag: &cli.PathFlag{
 			Name:      "cache-path",
 			Aliases:   []string{"ca"},

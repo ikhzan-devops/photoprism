@@ -13,3 +13,8 @@ func (c *Config) UploadNSFW() bool {
 func (c *Config) UploadAllow() fs.ExtList {
 	return fs.NewExtList(c.options.UploadAllow)
 }
+
+// UploadArchives checks if zip and tar.gz archives are allowed to be uploaded.
+func (c *Config) UploadArchives() bool {
+	return c.options.UploadArchives
+}
