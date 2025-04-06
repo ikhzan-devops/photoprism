@@ -19,5 +19,5 @@ libtensorflow-vnni:
 	bazel build -c opt //tensorflow:libtensorflow.so --copt=-O2 --copt=-mavx2 --copt=-mavxvnni --copt=-mfma --copt=-mfpmath=both --copt=-msse4.2
 	./create_archive.sh amd64-vnni $(TF_VERSION)
 libtensorflow-avx512:
-	bazel build -c opt //tensorflow:libtensorflow.so --copt=-O2 -copt=-mamx-avx512 --copt=-mfma --copt=-mfpmath=both --copt=-msse4.2
+	bazel build -c opt //tensorflow:libtensorflow.so --copt=-O2 --copt=-mavx2 --copt=-mamx-avx512 --copt=-mfma --copt=-mfpmath=both --copt=-msse4.2
 	./create_archive.sh amd64-avx512 $(TF_VERSION)
