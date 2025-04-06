@@ -7,7 +7,7 @@ PATH="/usr/local/sbin:/usr/sbin:/sbin:/usr/local/bin:/usr/bin:/bin:/scripts:$PAT
 
 set -e
 
-TF_VERSION=${TF_VERSION:-2.18.0}
+TF_VERSION=${TF_VERSION:-1.15.2}
 
 # Determine target architecture.
 if [[ $PHOTOPRISM_ARCH ]]; then
