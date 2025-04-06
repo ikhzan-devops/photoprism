@@ -28,7 +28,8 @@ RUN apt-get update && apt-get upgrade && \
     curl \
     wget \
     git \
-    jq 
+    jq \
+    nano
 
 # Install bazelisk
 RUN ln -s /usr/bin/python3 /usr/bin/python && \

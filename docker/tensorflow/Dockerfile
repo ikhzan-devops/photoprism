@@ -29,7 +29,8 @@ RUN apt-get update && apt-get upgrade && \
     lsb-release \
     software-properties-common \
     gnupg \
-    jq 
+    jq \
+    nano
 
 # Install bazelisk
 RUN wget https://apt.llvm.org/llvm.sh && chmod u+x llvm.sh && \
