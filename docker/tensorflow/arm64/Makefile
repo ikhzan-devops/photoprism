@@ -7,5 +7,5 @@ download:
 # Clang command line argument reference:
 # https://clang.llvm.org/docs/ClangCommandLineReference.html#aarch64
 libtensorflow:
-	bazel build -c opt //tensorflow:libtensorflow.so --copt=-march=armv8-a
+	bazel build -c opt //tensorflow:libtensorflow.so --copt=-O2 --copt=-march=armv8-a
 	./create_archive.sh arm64 $(TF_VERSION)
