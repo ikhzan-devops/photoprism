@@ -196,7 +196,7 @@ func (c *Config) CreateDirectories() error {
 	}
 
 	// Create TensorFlow model path if it doesn't exist yet.
-	if dir := c.TensorFlowModelPath(); dir == "" {
+	if dir := c.NasnetModelPath(); dir == "" {
 		return notFoundError("tensorflow model")
 	} else if err := fs.MkdirAll(dir); err != nil {
 		return createError(dir, err)
@@ -255,6 +255,11 @@ func (c *Config) OptionsYaml() string {
 // DefaultsYaml returns the default options YAML filename.
 func (c *Config) DefaultsYaml() string {
 	return fs.Abs(c.options.DefaultsYaml)
+}
+
+// VisionYaml returns the vision config YAML filename.
+func (c *Config) VisionYaml() string {
+	return filepath.Join(c.ConfigPath(), "vision.yml")
 }
 
 // HubConfigFile returns the backend api config file name.

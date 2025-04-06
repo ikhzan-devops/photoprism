@@ -11,8 +11,8 @@ func (c *Config) TensorFlowVersion() string {
 	return tf.Version()
 }
 
-// TensorFlowModelPath returns the TensorFlow model path.
-func (c *Config) TensorFlowModelPath() string {
+// NasnetModelPath returns the TensorFlow model path.
+func (c *Config) NasnetModelPath() string {
 	return filepath.Join(c.AssetsPath(), "nasnet")
 }
 

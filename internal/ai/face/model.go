@@ -14,24 +14,25 @@ import (
 	"github.com/photoprism/photoprism/pkg/clean"
 )
 
-// Net is a wrapper for the TensorFlow Facenet model.
-type Net struct {
-	model     *tf.SavedModel
-	modelPath string
-	cachePath string
-	disabled  bool
-	modelName string
-	modelTags []string
-	mutex     sync.Mutex
+// Model is a wrapper for the TensorFlow Facenet model.
+type Model struct {
+	model      *tf.SavedModel
+	modelName  string
+	modelPath  string
+	cachePath  string
+	resolution int
+	modelTags  []string
+	disabled   bool
+	mutex      sync.Mutex
 }
 
-// NewNet returns a new TensorFlow Facenet instance.
-func NewNet(modelPath, cachePath string, disabled bool) *Net {
-	return &Net{modelPath: modelPath, cachePath: cachePath, disabled: disabled, modelTags: []string{"serve"}}
+// NewModel returns a new TensorFlow Facenet instance.
+func NewModel(modelPath, cachePath string, disabled bool) *Model {
+	return &Model{modelPath: modelPath, cachePath: cachePath, resolution: CropSize.Width, modelTags: []string{"serve"}, disabled: disabled}
 }
 
 // Detect runs the detection and facenet algorithms over the provided source image.
-func (t *Net) Detect(fileName string, minSize int, cacheCrop bool, expected int) (faces Faces, err error) {
+func (t *Model) Detect(fileName string, minSize int, cacheCrop bool, expected int) (faces Faces, err error) {
 	faces, err = Detect(fileName, false, minSize)
 
 	if err != nil {
@@ -56,8 +57,8 @@ func (t *Net) Detect(fileName string, minSize int, cacheCrop bool, expected int)
 			continue
 		}
 
-		if img, err := crop.ImageFromThumb(fileName, f.CropArea(), CropSize, cacheCrop); err != nil {
-			log.Errorf("faces: failed to decode image: %s", err)
+		if img, imgErr := crop.ImageFromThumb(fileName, f.CropArea(), CropSize, cacheCrop); imgErr != nil {
+			log.Errorf("faces: failed to decode image: %s", imgErr)
 		} else if embeddings := t.getEmbeddings(img); !embeddings.Empty() {
 			faces[i].Embeddings = embeddings
 		}
@@ -67,12 +68,12 @@ func (t *Net) Detect(fileName string, minSize int, cacheCrop bool, expected int)
 }
 
 // ModelLoaded tests if the TensorFlow model is loaded.
-func (t *Net) ModelLoaded() bool {
+func (t *Model) ModelLoaded() bool {
 	return t.model != nil
 }
 
 // loadModel loads the TensorFlow model.
-func (t *Net) loadModel() error {
+func (t *Model) loadModel() error {
 	t.mutex.Lock()
 	defer t.mutex.Unlock()
 
@@ -97,8 +98,8 @@ func (t *Net) loadModel() error {
 }
 
 // getEmbeddings returns the face embeddings for an image.
-func (t *Net) getEmbeddings(img image.Image) Embeddings {
-	tensor, err := imageToTensor(img, CropSize.Width, CropSize.Height)
+func (t *Model) getEmbeddings(img image.Image) Embeddings {
+	tensor, err := imageToTensor(img, t.resolution)
 
 	if err != nil {
 		log.Errorf("faces: failed to convert image to tensor: %s", err)
@@ -131,25 +132,25 @@ func (t *Net) getEmbeddings(img image.Image) Embeddings {
 	return nil
 }
 
-func imageToTensor(img image.Image, imageHeight, imageWidth int) (tfTensor *tf.Tensor, err error) {
+func imageToTensor(img image.Image, resolution int) (tfTensor *tf.Tensor, err error) {
 	defer func() {
 		if r := recover(); r != nil {
 			err = fmt.Errorf("faces: %s (panic)\nstack: %s", r, debug.Stack())
 		}
 	}()
 
-	if imageHeight <= 0 || imageWidth <= 0 {
-		return tfTensor, fmt.Errorf("faces: image width and height must be > 0")
+	if resolution <= 0 {
+		return tfTensor, fmt.Errorf("faces: invalid model resolution")
 	}
 
 	var tfImage [1][][][3]float32
 
-	for j := 0; j < imageHeight; j++ {
-		tfImage[0] = append(tfImage[0], make([][3]float32, imageWidth))
+	for j := 0; j < resolution; j++ {
+		tfImage[0] = append(tfImage[0], make([][3]float32, resolution))
 	}
 
-	for i := 0; i < imageWidth; i++ {
-		for j := 0; j < imageHeight; j++ {
+	for i := 0; i < resolution; i++ {
+		for j := 0; j < resolution; j++ {
 			r, g, b, _ := img.At(i, j).RGBA()
 			tfImage[0][j][i][0] = convertValue(r)
 			tfImage[0][j][i][1] = convertValue(g)

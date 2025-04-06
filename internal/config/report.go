@@ -134,10 +134,12 @@ func (c *Config) Report() (rows [][]string, cols []string) {
 		{"raw-presets", fmt.Sprintf("%t", c.RawPresets())},
 		{"exif-bruteforce", fmt.Sprintf("%t", c.ExifBruteForce())},
 
-		// TensorFlow.
+		// Computer Vision.
 		{"detect-nsfw", fmt.Sprintf("%t", c.DetectNSFW())},
+		{"nsfw-model-path", c.NSFWModelPath()},
+		{"nasnet-model-path", c.NasnetModelPath()},
+		{"facenet-model-path", c.FaceNetModelPath()},
 		{"tensorflow-version", c.TensorFlowVersion()},
-		{"tensorflow-model-path", c.TensorFlowModelPath()},
 
 		// Customization.
 		{"default-locale", c.DefaultLocale()},

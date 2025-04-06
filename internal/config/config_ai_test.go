@@ -16,7 +16,7 @@ func TestConfig_TensorFlowVersion(t *testing.T) {
 func TestConfig_TensorFlowModelPath(t *testing.T) {
 	c := NewConfig(CliTestContext())
 
-	path := c.TensorFlowModelPath()
+	path := c.NasnetModelPath()
 	assert.Equal(t, "/go/src/github.com/photoprism/photoprism/assets/nasnet", path)
 }
 

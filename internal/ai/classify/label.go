@@ -44,6 +44,17 @@ func LocationLabel(name string, uncertainty int) Label {
 }
 
 // Title returns a formatted label title as string.
-func (l Label) Title() string {
+func (l *Label) Title() string {
 	return txt.Title(txt.Clip(l.Name, txt.ClipDefault))
+}
+
+// Confidence returns a matching confidence in percent.
+func (l *Label) Confidence() int {
+	if l.Uncertainty > 100 {
+		return 0
+	} else if l.Uncertainty < 0 {
+		return 100
+	} else {
+		return 100 - l.Uncertainty
+	}
 }

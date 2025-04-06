@@ -15,22 +15,28 @@ import (
 	"github.com/photoprism/photoprism/pkg/media/http/header"
 )
 
-// Detector uses TensorFlow to label drawing, hentai, neutral, porn and sexy images.
-type Detector struct {
-	model     *tf.SavedModel
-	modelPath string
-	modelTags []string
-	labels    []string
-	mutex     sync.Mutex
+const (
+	Mean  = float32(117)
+	Scale = float32(1)
+)
+
+// Model uses TensorFlow to label drawing, hentai, neutral, porn and sexy images.
+type Model struct {
+	model      *tf.SavedModel
+	modelPath  string
+	resolution int
+	modelTags  []string
+	labels     []string
+	mutex      sync.Mutex
 }
 
-// New returns a new detector instance.
-func New(modelPath string) *Detector {
-	return &Detector{modelPath: modelPath, modelTags: []string{"serve"}}
+// NewModel returns a new detector instance.
+func NewModel(modelPath string) *Model {
+	return &Model{modelPath: modelPath, resolution: 224, modelTags: []string{"serve"}}
 }
 
 // File returns matching labels for a jpeg media file.
-func (t *Detector) File(filename string) (result Labels, err error) {
+func (t *Model) File(filename string) (result Labels, err error) {
 	if fs.MimeType(filename) != header.ContentTypeJpeg {
 		return result, fmt.Errorf("nsfw: %s is not a jpeg file", clean.Log(filepath.Base(filename)))
 	}
@@ -45,13 +51,13 @@ func (t *Detector) File(filename string) (result Labels, err error) {
 }
 
 // Labels returns matching labels for a jpeg media string.
-func (t *Detector) Labels(img []byte) (result Labels, err error) {
-	if err := t.loadModel(); err != nil {
-		return result, err
+func (t *Model) Labels(img []byte) (result Labels, err error) {
+	if loadErr := t.loadModel(); loadErr != nil {
+		return result, loadErr
 	}
 
 	// Make tensor
-	tensor, err := createTensorFromImage(img, "jpeg")
+	tensor, err := createTensorFromImage(img, "jpeg", t.resolution)
 
 	if err != nil {
 		return result, fmt.Errorf("nsfw: %s", err)
@@ -83,7 +89,7 @@ func (t *Detector) Labels(img []byte) (result Labels, err error) {
 	return result, nil
 }
 
-func (t *Detector) loadLabels(path string) error {
+func (t *Model) loadLabels(path string) error {
 	modelLabels := path + "/labels.txt"
 
 	log.Infof("nsfw: loading labels from labels.txt")
@@ -111,7 +117,7 @@ func (t *Detector) loadLabels(path string) error {
 	return nil
 }
 
-func (t *Detector) loadModel() error {
+func (t *Model) loadModel() error {
 	t.mutex.Lock()
 	defer t.mutex.Unlock()
 
@@ -134,7 +140,7 @@ func (t *Detector) loadModel() error {
 	return t.loadLabels(t.modelPath)
 }
 
-func (t *Detector) getLabels(p []float32) Labels {
+func (t *Model) getLabels(p []float32) Labels {
 	return Labels{
 		Drawing: p[0],
 		Hentai:  p[1],
@@ -144,12 +150,9 @@ func (t *Detector) getLabels(p []float32) Labels {
 	}
 }
 
-func transformImageGraph(imageFormat string) (graph *tf.Graph, input, output tf.Output, err error) {
-	const (
-		H, W  = 224, 224
-		Mean  = float32(117)
-		Scale = float32(1)
-	)
+func transformImageGraph(imageFormat string, resolution int) (graph *tf.Graph, input, output tf.Output, err error) {
+	var H, W = int32(resolution), int32(resolution)
+
 	s := op.NewScope()
 	input = op.Placeholder(s, tf.String)
 	// Decode PNG or JPEG
@@ -176,12 +179,12 @@ func transformImageGraph(imageFormat string) (graph *tf.Graph, input, output tf.
 	return graph, input, output, err
 }
 
-func createTensorFromImage(image []byte, imageFormat string) (*tf.Tensor, error) {
+func createTensorFromImage(image []byte, imageFormat string, resolution int) (*tf.Tensor, error) {
 	tensor, err := tf.NewTensor(string(image))
 	if err != nil {
 		return nil, err
 	}
-	graph, input, output, err := transformImageGraph(imageFormat)
+	graph, input, output, err := transformImageGraph(imageFormat, resolution)
 	if err != nil {
 		return nil, err
 	}

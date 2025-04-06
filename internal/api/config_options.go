@@ -30,7 +30,7 @@ func GetConfigOptions(router *gin.RouterGroup) {
 		s := Auth(c, acl.ResourceConfig, acl.AccessAll)
 		conf := get.Config()
 
-		// Abort if permission was not granted.
+		// Abort if permission is not granted.
 		if s.Invalid() || conf.Public() || conf.DisableSettings() {
 			AbortForbidden(c)
 			return
@@ -111,7 +111,7 @@ func SaveConfigOptions(router *gin.RouterGroup) {
 		}
 
 		// Write YAML data to file.
-		if err = fs.WriteFile(fileName, yamlData); err != nil {
+		if err = fs.WriteFile(fileName, yamlData, fs.ModeConfigFile); err != nil {
 			log.Errorf("config: failed writing values to %s (%s)", clean.Log(fileName), err)
 			c.AbortWithStatusJSON(http.StatusInternalServerError, err)
 			return

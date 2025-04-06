@@ -12,6 +12,7 @@ import (
 	"runtime/debug"
 	"sort"
 	"strings"
+	"sync"
 
 	"github.com/disintegration/imaging"
 	tf "github.com/wamuir/graft/tensorflow"
@@ -19,33 +20,40 @@ import (
 	"github.com/photoprism/photoprism/pkg/clean"
 )
 
-// TensorFlow is a wrapper for tensorflow low-level API.
-type TensorFlow struct {
+// Model represents a TensorFlow classification model.
+type Model struct {
 	model      *tf.SavedModel
-	modelsPath string
-	disabled   bool
-	modelName  string
+	modelPath  string
+	assetsPath string
+	resolution int
 	modelTags  []string
 	labels     []string
+	disabled   bool
+	mutex      sync.Mutex
 }
 
-// New returns new TensorFlow instance with Nasnet model.
-func New(modelsPath string, disabled bool) *TensorFlow {
-	return &TensorFlow{modelsPath: modelsPath, disabled: disabled, modelName: "nasnet", modelTags: []string{"photoprism"}}
+// NewModel returns new TensorFlow classification model instance.
+func NewModel(assetsPath, modelPath string, resolution int, modelTags []string, disabled bool) *Model {
+	return &Model{assetsPath: assetsPath, modelPath: modelPath, resolution: resolution, modelTags: modelTags, disabled: disabled}
+}
+
+// NewNasnet returns new Nasnet TensorFlow classification model instance.
+func NewNasnet(assetsPath string, disabled bool) *Model {
+	return NewModel(assetsPath, "nasnet", 224, []string{"photoprism"}, disabled)
 }
 
 // Init initialises tensorflow models if not disabled
-func (t *TensorFlow) Init() (err error) {
-	if t.disabled {
+func (m *Model) Init() (err error) {
+	if m.disabled {
 		return nil
 	}
 
-	return t.loadModel()
+	return m.loadModel()
 }
 
 // File returns matching labels for a jpeg media file.
-func (t *TensorFlow) File(filename string) (result Labels, err error) {
-	if t.disabled {
+func (m *Model) File(filename string, confidenceThreshold int) (result Labels, err error) {
+	if m.disabled {
 		return result, nil
 	}
 
@@ -55,39 +63,39 @@ func (t *TensorFlow) File(filename string) (result Labels, err error) {
 		return nil, err
 	}
 
-	return t.Labels(imageBuffer)
+	return m.Labels(imageBuffer, confidenceThreshold)
 }
 
 // Labels returns matching labels for a jpeg media string.
-func (t *TensorFlow) Labels(img []byte) (result Labels, err error) {
+func (m *Model) Labels(img []byte, confidenceThreshold int) (result Labels, err error) {
 	defer func() {
 		if r := recover(); r != nil {
 			err = fmt.Errorf("classify: %s (inference panic)\nstack: %s", r, debug.Stack())
 		}
 	}()
 
-	if t.disabled {
+	if m.disabled {
 		return result, nil
 	}
 
-	if err := t.loadModel(); err != nil {
-		return nil, err
+	if loadErr := m.loadModel(); loadErr != nil {
+		return nil, loadErr
 	}
 
 	// Create tensor from image.
-	tensor, err := t.createTensor(img, "jpeg")
+	tensor, err := m.createTensor(img)
 
 	if err != nil {
 		return nil, err
 	}
 
 	// Run inference.
-	output, err := t.model.Session.Run(
+	output, err := m.model.Session.Run(
 		map[tf.Output]*tf.Tensor{
-			t.model.Graph.Operation("input_1").Output(0): tensor,
+			m.model.Graph.Operation("input_1").Output(0): tensor,
 		},
 		[]tf.Output{
-			t.model.Graph.Operation("predictions/Softmax").Output(0),
+			m.model.Graph.Operation("predictions/Softmax").Output(0),
 		},
 		nil)
 
@@ -100,7 +108,7 @@ func (t *TensorFlow) Labels(img []byte) (result Labels, err error) {
 	}
 
 	// Return best labels
-	result = t.bestLabels(output[0].Value().([][]float32)[0])
+	result = m.bestLabels(output[0].Value().([][]float32)[0], confidenceThreshold)
 
 	if len(result) > 0 {
 		log.Tracef("classify: image classified as %+v", result)
@@ -109,7 +117,7 @@ func (t *TensorFlow) Labels(img []byte) (result Labels, err error) {
 	return result, nil
 }
 
-func (t *TensorFlow) loadLabels(path string) error {
+func (m *Model) loadLabels(path string) error {
 	modelLabels := path + "/labels.txt"
 
 	log.Infof("classify: loading labels from labels.txt")
@@ -127,7 +135,7 @@ func (t *TensorFlow) loadLabels(path string) error {
 
 	// Labels are separated by newlines
 	for scanner.Scan() {
-		t.labels = append(t.labels, scanner.Text())
+		m.labels = append(m.labels, scanner.Text())
 	}
 
 	if err := scanner.Err(); err != nil {
@@ -138,37 +146,40 @@ func (t *TensorFlow) loadLabels(path string) error {
 }
 
 // ModelLoaded tests if the TensorFlow model is loaded.
-func (t *TensorFlow) ModelLoaded() bool {
-	return t.model != nil
+func (m *Model) ModelLoaded() bool {
+	return m.model != nil
 }
 
-func (t *TensorFlow) loadModel() error {
-	if t.ModelLoaded() {
+func (m *Model) loadModel() error {
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+
+	if m.ModelLoaded() {
 		return nil
 	}
 
-	modelPath := path.Join(t.modelsPath, t.modelName)
+	modelPath := path.Join(m.assetsPath, m.modelPath)
 
 	log.Infof("classify: loading %s", clean.Log(filepath.Base(modelPath)))
 
 	// Load model
-	model, err := tf.LoadSavedModel(modelPath, t.modelTags, nil)
+	model, err := tf.LoadSavedModel(modelPath, m.modelTags, nil)
 
 	if err != nil {
 		return err
 	}
 
-	t.model = model
+	m.model = model
 
-	return t.loadLabels(modelPath)
+	return m.loadLabels(modelPath)
 }
 
 // bestLabels returns the best 5 labels (if enough high probability labels) from the prediction of the model
-func (t *TensorFlow) bestLabels(probabilities []float32) Labels {
+func (m *Model) bestLabels(probabilities []float32, confidenceThreshold int) Labels {
 	var result Labels
 
 	for i, p := range probabilities {
-		if i >= len(t.labels) {
+		if i >= len(m.labels) {
 			// break if probabilities and labels does not match
 			break
 		}
@@ -178,7 +189,7 @@ func (t *TensorFlow) bestLabels(probabilities []float32) Labels {
 			continue
 		}
 
-		labelText := strings.ToLower(t.labels[i])
+		labelText := strings.ToLower(m.labels[i])
 
 		rule, _ := Rules.Find(labelText)
 
@@ -194,9 +205,11 @@ func (t *TensorFlow) bestLabels(probabilities []float32) Labels {
 
 		labelText = strings.TrimSpace(labelText)
 
-		uncertainty := 100 - int(math.Round(float64(p*100)))
+		confidence := int(math.Round(float64(p * 100)))
 
-		result = append(result, Label{Name: labelText, Source: SrcImage, Uncertainty: uncertainty, Priority: rule.Priority, Categories: rule.Categories})
+		if confidence >= confidenceThreshold {
+			result = append(result, Label{Name: labelText, Source: SrcImage, Uncertainty: 100 - confidence, Priority: rule.Priority, Categories: rule.Categories})
+		}
 	}
 
 	// Sort by probability
@@ -211,14 +224,14 @@ func (t *TensorFlow) bestLabels(probabilities []float32) Labels {
 }
 
 // createTensor converts bytes jpeg image in a tensor object required as tensorflow model input
-func (t *TensorFlow) createTensor(image []byte, imageFormat string) (*tf.Tensor, error) {
+func (m *Model) createTensor(image []byte) (*tf.Tensor, error) {
 	img, err := imaging.Decode(bytes.NewReader(image), imaging.AutoOrientation(true))
 
 	if err != nil {
 		return nil, err
 	}
 
-	width, height := 224, 224
+	width, height := m.resolution, m.resolution
 
 	img = imaging.Fill(img, width, height, imaging.Center, imaging.Lanczos)
 
