@@ -7,8 +7,8 @@ import (
 	"path/filepath"
 	"sync"
 
-	tf "github.com/wamuir/graft/tensorflow"
-	"github.com/wamuir/graft/tensorflow/op"
+	tf "github.com/tensorflow/tensorflow/tensorflow/go"
+	"github.com/tensorflow/tensorflow/tensorflow/go/op"
 
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/fs"

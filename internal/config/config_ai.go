@@ -3,7 +3,7 @@ package config
 import (
 	"path/filepath"
 
-	tf "github.com/wamuir/graft/tensorflow"
+	tf "github.com/tensorflow/tensorflow/tensorflow/go"
 )
 
 // TensorFlowVersion returns the TenorFlow framework version.

@@ -83,9 +83,9 @@ require (
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/swaggo/files v1.0.1
 	github.com/swaggo/gin-swagger v1.6.0
+	github.com/tensorflow/tensorflow v1.15.2
 	github.com/ugjka/go-tz/v2 v2.2.6
 	github.com/urfave/cli/v2 v2.27.6
-	github.com/wamuir/graft v0.10.0
 	github.com/zitadel/oidc/v3 v3.37.0
 	golang.org/x/mod v0.24.0
 	golang.org/x/sys v0.31.0

@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/wamuir/graft/tensorflow"
+	tensorflow "github.com/tensorflow/tensorflow/tensorflow/go"
 
 	"github.com/photoprism/photoprism/pkg/fs"
 )
