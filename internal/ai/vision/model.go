@@ -14,10 +14,11 @@ type Model struct {
 	Name          string   `yaml:"Name,omitempty" json:"name,omitempty"`
 	Version       string   `yaml:"Version,omitempty" json:"version,omitempty"`
 	Resolution    int      `yaml:"Resolution,omitempty" json:"resolution,omitempty"`
-	Url           string   `yaml:"Url,omitempty" json:"-"`
+	Uri           string   `yaml:"Uri,omitempty" json:"-"`
+	Key           string   `yaml:"Key,omitempty" json:"-"`
 	Method        string   `yaml:"Method,omitempty" json:"-"`
-	Format        string   `yaml:"Format,omitempty" json:"-"`
 	Path          string   `yaml:"Path,omitempty" json:"-"`
+	Format        string   `yaml:"Format,omitempty" json:"-"`
 	Tags          []string `yaml:"Tags,omitempty" json:"-"`
 	Disabled      bool     `yaml:"Disabled,omitempty" json:"-"`
 	classifyModel *classify.Model

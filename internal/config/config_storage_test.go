@@ -412,11 +412,6 @@ func TestConfig_CreateDirectories2(t *testing.T) {
 }
 */
 
-func TestConfig_VisionYaml(t *testing.T) {
-	c := NewConfig(CliTestContext())
-	assert.Equal(t, "/go/src/github.com/photoprism/photoprism/storage/testdata/config/vision.yml", c.VisionYaml())
-}
-
 func TestConfig_PIDFilename2(t *testing.T) {
 	c := NewConfig(CliTestContext())
 	assert.Equal(t, "/go/src/github.com/photoprism/photoprism/storage/testdata/photoprism.pid", c.PIDFilename())

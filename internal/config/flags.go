@@ -196,13 +196,6 @@ var Flags = CliFlags{
 			EnvVars:   EnvVars("DEFAULTS_YAML"),
 			TakesFile: true,
 		}}, {
-		Flag: &cli.StringFlag{
-			Name:      "vision-yaml",
-			Usage:     "load computer vision model configuration from `FILE` *optional*",
-			Value:     "",
-			EnvVars:   EnvVars("VISION_YAML"),
-			TakesFile: true,
-		}}, {
 		Flag: &cli.PathFlag{
 			Name:      "originals-path",
 			Aliases:   []string{"o"},
@@ -491,11 +484,6 @@ var Flags = CliFlags{
 			Name:    "exif-bruteforce",
 			Usage:   "always perform a brute-force search if no Exif headers were found",
 			EnvVars: EnvVars("EXIF_BRUTEFORCE"),
-		}}, {
-		Flag: &cli.BoolFlag{
-			Name:    "detect-nsfw",
-			Usage:   "flag newly added pictures as private if they might be offensive (requires TensorFlow)",
-			EnvVars: EnvVars("DETECT_NSFW"),
 		}}, {
 		Flag: &cli.StringFlag{
 			Name:    "default-locale",
@@ -971,6 +959,35 @@ var Flags = CliFlags{
 			Usage:   "maximum size of generated PNG images in `PIXELS` (720-30000)",
 			Value:   7680,
 			EnvVars: EnvVars("PNG_SIZE"),
+		}}, {
+		Flag: &cli.StringFlag{
+			Name:      "vision-yaml",
+			Usage:     "computer vision model configuration `FILE` *optional*",
+			Value:     "",
+			EnvVars:   EnvVars("VISION_YAML"),
+			TakesFile: true,
+		}}, {
+		Flag: &cli.BoolFlag{
+			Name:    "vision-api",
+			Usage:   "enable computer vision server API endpoints",
+			EnvVars: EnvVars("VISION_API"),
+		}}, {
+		Flag: &cli.StringFlag{
+			Name:    "vision-uri",
+			Usage:   "remote computer vision endpoint `URI`, e.g. https://example.com/api/v1/vision (leave blank to disable)",
+			Value:   "",
+			EnvVars: EnvVars("VISION_URI"),
+		}}, {
+		Flag: &cli.StringFlag{
+			Name:    "vision-key",
+			Usage:   "remote computer vision endpoint access `TOKEN` *optional*",
+			Value:   "",
+			EnvVars: EnvVars("VISION_KEY"),
+		}}, {
+		Flag: &cli.BoolFlag{
+			Name:    "detect-nsfw",
+			Usage:   "flag newly added pictures as private if they might be offensive (requires TensorFlow)",
+			EnvVars: EnvVars("DETECT_NSFW"),
 		}}, {
 		Flag: &cli.IntFlag{
 			Name:    "face-size",

@@ -7,6 +7,7 @@ import (
 
 	"github.com/photoprism/photoprism/internal/ai/vision"
 	"github.com/photoprism/photoprism/internal/auth/acl"
+	"github.com/photoprism/photoprism/internal/photoprism/get"
 )
 
 // PostVisionLabels returns suitable labels for an image.
@@ -34,6 +35,13 @@ func PostVisionLabels(router *gin.RouterGroup) {
 		// Assign and validate request form values.
 		if err := c.BindJSON(&request); err != nil {
 			c.JSON(http.StatusBadRequest, vision.NewApiError(request.GetId(), http.StatusBadRequest))
+			return
+		}
+
+		// Check if the Computer Vision API is enabled, otherwise abort with an error.
+		if !get.Config().VisionApi() {
+			AbortFeatureDisabled(c)
+			c.JSON(http.StatusForbidden, vision.NewApiError(request.GetId(), http.StatusForbidden))
 			return
 		}
 
