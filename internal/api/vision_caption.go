@@ -8,6 +8,7 @@ import (
 	"github.com/photoprism/photoprism/internal/ai/vision"
 	"github.com/photoprism/photoprism/internal/auth/acl"
 	"github.com/photoprism/photoprism/internal/photoprism/get"
+	"github.com/photoprism/photoprism/pkg/media/http/header"
 )
 
 // PostVisionCaption returns a suitable caption for an image.
@@ -30,6 +31,12 @@ func PostVisionCaption(router *gin.RouterGroup) {
 		}
 
 		var request vision.ApiRequest
+
+		// File uploads are not currently supported for this API endpoint.
+		if header.HasContentType(&c.Request.Header, header.ContentTypeMultipart) {
+			c.JSON(http.StatusBadRequest, vision.NewApiError(request.GetId(), http.StatusBadRequest))
+			return
+		}
 
 		// Assign and validate request form values.
 		if err := c.BindJSON(&request); err != nil {
