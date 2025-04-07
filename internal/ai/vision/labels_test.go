@@ -25,6 +25,19 @@ func TestLabels(t *testing.T) {
 		assert.Equal(t, "chameleon", result[0].Name)
 		assert.Equal(t, 7, result[0].Uncertainty)
 	})
+	t.Run("Cats", func(t *testing.T) {
+		result, err := Labels([]string{examplesPath + "/cat_720.jpeg"})
+
+		assert.NoError(t, err)
+		assert.IsType(t, classify.Labels{}, result)
+		assert.Equal(t, 1, len(result))
+
+		t.Log(result)
+
+		assert.Equal(t, "cat", result[0].Name)
+		assert.Equal(t, 60, result[0].Uncertainty)
+		assert.Equal(t, 40, result[0].Confidence())
+	})
 	t.Run("InvalidFile", func(t *testing.T) {
 		_, err := Labels([]string{examplesPath + "/notexisting.jpg"})
 		assert.Error(t, err)

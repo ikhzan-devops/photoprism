@@ -51,7 +51,7 @@ func Labels(thumbnails []string) (result classify.Labels, err error) {
 			}
 
 			if !found {
-				result = append(result, labels...)
+				result = append(result, labels[j])
 			}
 		}
 	}

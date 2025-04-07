@@ -28,9 +28,12 @@ type Models []*Model
 
 // ClassifyModel returns the matching classify model instance, if any.
 func (m *Model) ClassifyModel() *classify.Model {
+	// Use mutex to prevent models from being loaded and
+	// initialized twice by different indexing workers.
 	modelMutex.Lock()
 	defer modelMutex.Unlock()
 
+	// Return the existing model instance if it has already been created.
 	if m.classifyModel != nil {
 		return m.classifyModel
 	}
@@ -40,6 +43,7 @@ func (m *Model) ClassifyModel() *classify.Model {
 		log.Warnf("vision: missing name, model instance cannot be created")
 		return nil
 	case NasnetModel.Name, "nasnet":
+		// Load and initialize the Nasnet image classification model.
 		if model := classify.NewNasnet(AssetsPath, m.Disabled); model == nil {
 			return nil
 		} else if err := model.Init(); err != nil {
@@ -49,14 +53,22 @@ func (m *Model) ClassifyModel() *classify.Model {
 			m.classifyModel = model
 		}
 	default:
+		// Set model path from model name if no path is configured.
 		if m.Path == "" {
 			m.Path = clean.TypeLowerUnderscore(m.Name)
 		}
 
+		// Set default thumbnail resolution if no tags are configured.
 		if m.Resolution <= 0 {
 			m.Resolution = DefaultResolution
 		}
 
+		// Set default tag if no tags are configured.
+		if len(m.Tags) == 0 {
+			m.Tags = []string{"serve"}
+		}
+
+		// Try to load custom model based on the configuration values.
 		if model := classify.NewModel(AssetsPath, m.Path, m.Resolution, m.Tags, m.Disabled); model == nil {
 			return nil
 		} else if err := model.Init(); err != nil {

@@ -50,6 +50,7 @@ frontend/coverage/
 /assets/nsfw
 /assets/static/build/
 /assets/*net
+/assets/vision
 /pro
 /plus
 

@@ -12,5 +12,5 @@ var DefaultResolution = 224
 
 // NasnetModel is a standard TensorFlow model used for label generation.
 var (
-	NasnetModel = &Model{Name: "Nasnet", Resolution: 224, Tags: []string{"photoprism"}}
+	NasnetModel = &Model{Name: "Nasnet", Version: "Mobile", Resolution: 224, Tags: []string{"photoprism"}}
 )

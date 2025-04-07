@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/wamuir/graft/tensorflow"
 
 	"github.com/photoprism/photoprism/pkg/fs"
 )
@@ -31,24 +30,66 @@ func NewModelTest(t *testing.T) *Model {
 func TestModel_LabelsFromFile(t *testing.T) {
 	t.Run("chameleon_lime.jpg", func(t *testing.T) {
 		tensorFlow := NewModelTest(t)
-
 		result, err := tensorFlow.File(examplesPath+"/chameleon_lime.jpg", 10)
 
-		assert.Nil(t, err)
-
-		if err != nil {
-			t.Fatal(err)
-		}
-
+		assert.NoError(t, err)
 		assert.NotNil(t, result)
 		assert.IsType(t, Labels{}, result)
 		assert.Equal(t, 1, len(result))
 
-		t.Log(result)
+		if len(result) > 0 {
+			t.Logf("result: %#v", result[0])
+			assert.Equal(t, "chameleon", result[0].Name)
 
-		assert.Equal(t, "chameleon", result[0].Name)
+			assert.Equal(t, 7, result[0].Uncertainty)
+		}
+	})
+	t.Run("cat_224.jpeg", func(t *testing.T) {
+		tensorFlow := NewModelTest(t)
+		result, err := tensorFlow.File(examplesPath+"/cat_224.jpeg", 10)
 
-		assert.Equal(t, 7, result[0].Uncertainty)
+		assert.NoError(t, err)
+		assert.NotNil(t, result)
+		assert.IsType(t, Labels{}, result)
+		assert.Equal(t, 1, len(result))
+
+		if len(result) > 0 {
+			assert.Equal(t, "cat", result[0].Name)
+
+			assert.Equal(t, 59, result[0].Uncertainty)
+		}
+	})
+	t.Run("cat_720.jpeg", func(t *testing.T) {
+		tensorFlow := NewModelTest(t)
+		result, err := tensorFlow.File(examplesPath+"/cat_720.jpeg", 10)
+
+		assert.NoError(t, err)
+		assert.NotNil(t, result)
+		assert.IsType(t, Labels{}, result)
+		assert.Equal(t, 3, len(result))
+
+		// t.Logf("labels: %#v", result)
+
+		if len(result) > 0 {
+			assert.Equal(t, "cat", result[0].Name)
+			assert.Equal(t, 60, result[0].Uncertainty)
+		}
+	})
+	t.Run("green.jpg", func(t *testing.T) {
+		tensorFlow := NewModelTest(t)
+		result, err := tensorFlow.File(examplesPath+"/green.jpg", 10)
+
+		t.Logf("labels: %#v", result)
+		assert.NoError(t, err)
+		assert.NotNil(t, result)
+		assert.IsType(t, Labels{}, result)
+		assert.Equal(t, 1, len(result))
+
+		if len(result) > 0 {
+			assert.Equal(t, "outdoor", result[0].Name)
+
+			assert.Equal(t, 70, result[0].Uncertainty)
+		}
 	})
 	t.Run("not existing file", func(t *testing.T) {
 		tensorFlow := NewModelTest(t)
@@ -180,11 +221,13 @@ func TestModel_LoadModel(t *testing.T) {
 	})
 	t.Run("model path does not exist", func(t *testing.T) {
 		tensorFlow := NewNasnet(assetsPath+"foo", false)
-		if err := tensorFlow.loadModel(); err != nil {
-			assert.Contains(t, err.Error(), "Could not find SavedModel")
-		} else {
-			t.Fatal("err should NOT be nil")
+		err := tensorFlow.loadModel()
+
+		if err != nil {
+			assert.Contains(t, err.Error(), "no such file or directory")
 		}
+
+		assert.Error(t, err)
 	})
 }
 
@@ -217,36 +260,4 @@ func TestModel_BestLabels(t *testing.T) {
 		assert.Equal(t, "image", result[0].Source)
 		t.Log(result)
 	})
-}
-
-func TestModel_MakeTensor(t *testing.T) {
-	t.Run("cat_brown.jpg", func(t *testing.T) {
-		tensorFlow := NewModelTest(t)
-
-		imageBuffer, err := os.ReadFile(examplesPath + "/cat_brown.jpg")
-
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		result, err := tensorFlow.createTensor(imageBuffer)
-		assert.Equal(t, tensorflow.DataType(0x1), result.DataType())
-		assert.Equal(t, int64(1), result.Shape()[0])
-		assert.Equal(t, int64(224), result.Shape()[2])
-	})
-	t.Run("Random.docx", func(t *testing.T) {
-		tensorFlow := NewModelTest(t)
-
-		imageBuffer, err := os.ReadFile(examplesPath + "/Random.docx")
-		assert.Nil(t, err)
-		result, err := tensorFlow.createTensor(imageBuffer)
-
-		assert.Empty(t, result)
-		assert.EqualError(t, err, "image: unknown format")
-	})
-}
-
-func Test_convertValue(t *testing.T) {
-	result := convertValue(uint32(98765432))
-	assert.Equal(t, float32(3024.898), result)
 }

@@ -1,14 +1,11 @@
 package classify
 
 import (
-	"bufio"
 	"bytes"
 	"fmt"
-	"image"
 	"math"
 	"os"
 	"path"
-	"path/filepath"
 	"runtime/debug"
 	"sort"
 	"strings"
@@ -17,7 +14,7 @@ import (
 	"github.com/disintegration/imaging"
 	tf "github.com/wamuir/graft/tensorflow"
 
-	"github.com/photoprism/photoprism/pkg/clean"
+	"github.com/photoprism/photoprism/internal/ai/tensorflow"
 )
 
 // Model represents a TensorFlow classification model.
@@ -82,7 +79,7 @@ func (m *Model) Labels(img []byte, confidenceThreshold int) (result Labels, err 
 		return nil, loadErr
 	}
 
-	// Create tensor from image.
+	// Create input tensor from image.
 	tensor, err := m.createTensor(img)
 
 	if err != nil {
@@ -112,37 +109,16 @@ func (m *Model) Labels(img []byte, confidenceThreshold int) (result Labels, err 
 
 	if len(result) > 0 {
 		log.Tracef("classify: image classified as %+v", result)
+	} else {
+		result = Labels{}
 	}
 
 	return result, nil
 }
 
-func (m *Model) loadLabels(path string) error {
-	modelLabels := path + "/labels.txt"
-
-	log.Infof("classify: loading labels from labels.txt")
-
-	// Load labels
-	f, err := os.Open(modelLabels)
-
-	if err != nil {
-		return err
-	}
-
-	defer f.Close()
-
-	scanner := bufio.NewScanner(f)
-
-	// Labels are separated by newlines
-	for scanner.Scan() {
-		m.labels = append(m.labels, scanner.Text())
-	}
-
-	if err := scanner.Err(); err != nil {
-		return err
-	}
-
-	return nil
+func (m *Model) loadLabels(modelPath string) (err error) {
+	m.labels, err = tensorflow.LoadLabels(modelPath)
+	return err
 }
 
 // ModelLoaded tests if the TensorFlow model is loaded.
@@ -150,7 +126,9 @@ func (m *Model) ModelLoaded() bool {
 	return m.model != nil
 }
 
-func (m *Model) loadModel() error {
+func (m *Model) loadModel() (err error) {
+	// Use mutex to prevent the model from being loaded and
+	// initialized twice by different indexing workers.
 	m.mutex.Lock()
 	defer m.mutex.Unlock()
 
@@ -160,16 +138,7 @@ func (m *Model) loadModel() error {
 
 	modelPath := path.Join(m.assetsPath, m.modelPath)
 
-	log.Infof("classify: loading %s", clean.Log(filepath.Base(modelPath)))
-
-	// Load model
-	model, err := tf.LoadSavedModel(modelPath, m.modelTags, nil)
-
-	if err != nil {
-		return err
-	}
-
-	m.model = model
+	m.model, err = tensorflow.SavedModel(modelPath, m.modelTags)
 
 	return m.loadLabels(modelPath)
 }
@@ -184,8 +153,10 @@ func (m *Model) bestLabels(probabilities []float32, confidenceThreshold int) Lab
 			break
 		}
 
+		confidence := int(math.Round(float64(p * 100)))
+
 		// discard labels with low probabilities
-		if p < 0.1 {
+		if confidence < confidenceThreshold {
 			continue
 		}
 
@@ -204,12 +175,7 @@ func (m *Model) bestLabels(probabilities []float32, confidenceThreshold int) Lab
 		}
 
 		labelText = strings.TrimSpace(labelText)
-
-		confidence := int(math.Round(float64(p * 100)))
-
-		if confidence >= confidenceThreshold {
-			result = append(result, Label{Name: labelText, Source: SrcImage, Uncertainty: 100 - confidence, Priority: rule.Priority, Categories: rule.Categories})
-		}
+		result = append(result, Label{Name: labelText, Source: SrcImage, Uncertainty: 100 - confidence, Priority: rule.Priority, Categories: rule.Categories})
 	}
 
 	// Sort by probability
@@ -231,42 +197,7 @@ func (m *Model) createTensor(image []byte) (*tf.Tensor, error) {
 		return nil, err
 	}
 
-	width, height := m.resolution, m.resolution
+	img = imaging.Fill(img, m.resolution, m.resolution, imaging.Center, imaging.Lanczos)
 
-	img = imaging.Fill(img, width, height, imaging.Center, imaging.Lanczos)
-
-	return imageToTensor(img, width, height)
-}
-
-func imageToTensor(img image.Image, imageHeight, imageWidth int) (tfTensor *tf.Tensor, err error) {
-	defer func() {
-		if r := recover(); r != nil {
-			err = fmt.Errorf("classify: %s (panic)\nstack: %s", r, debug.Stack())
-		}
-	}()
-
-	if imageHeight <= 0 || imageWidth <= 0 {
-		return tfTensor, fmt.Errorf("classify: image width and height must be > 0")
-	}
-
-	var tfImage [1][][][3]float32
-
-	for j := 0; j < imageHeight; j++ {
-		tfImage[0] = append(tfImage[0], make([][3]float32, imageWidth))
-	}
-
-	for i := 0; i < imageWidth; i++ {
-		for j := 0; j < imageHeight; j++ {
-			r, g, b, _ := img.At(i, j).RGBA()
-			tfImage[0][j][i][0] = convertValue(r)
-			tfImage[0][j][i][1] = convertValue(g)
-			tfImage[0][j][i][2] = convertValue(b)
-		}
-	}
-
-	return tf.NewTensor(tfImage)
-}
-
-func convertValue(value uint32) float32 {
-	return (float32(value>>8) - float32(127.5)) / float32(127.5)
+	return tensorflow.Image(img, m.resolution)
 }

@@ -32,7 +32,7 @@ func NewModel(modelPath, cachePath string, disabled bool) *Model {
 }
 
 // Detect runs the detection and facenet algorithms over the provided source image.
-func (t *Model) Detect(fileName string, minSize int, cacheCrop bool, expected int) (faces Faces, err error) {
+func (m *Model) Detect(fileName string, minSize int, cacheCrop bool, expected int) (faces Faces, err error) {
 	faces, err = Detect(fileName, false, minSize)
 
 	if err != nil {
@@ -40,13 +40,13 @@ func (t *Model) Detect(fileName string, minSize int, cacheCrop bool, expected in
 	}
 
 	// Skip FaceNet?
-	if t.disabled {
+	if m.disabled {
 		return faces, nil
 	} else if c := len(faces); c == 0 || expected > 0 && c == expected {
 		return faces, nil
 	}
 
-	err = t.loadModel()
+	err = m.loadModel()
 
 	if err != nil {
 		return faces, err
@@ -59,7 +59,7 @@ func (t *Model) Detect(fileName string, minSize int, cacheCrop bool, expected in
 
 		if img, imgErr := crop.ImageFromThumb(fileName, f.CropArea(), CropSize, cacheCrop); imgErr != nil {
 			log.Errorf("faces: failed to decode image: %s", imgErr)
-		} else if embeddings := t.getEmbeddings(img); !embeddings.Empty() {
+		} else if embeddings := m.getEmbeddings(img); !embeddings.Empty() {
 			faces[i].Embeddings = embeddings
 		}
 	}
@@ -68,38 +68,40 @@ func (t *Model) Detect(fileName string, minSize int, cacheCrop bool, expected in
 }
 
 // ModelLoaded tests if the TensorFlow model is loaded.
-func (t *Model) ModelLoaded() bool {
-	return t.model != nil
+func (m *Model) ModelLoaded() bool {
+	return m.model != nil
 }
 
 // loadModel loads the TensorFlow model.
-func (t *Model) loadModel() error {
-	t.mutex.Lock()
-	defer t.mutex.Unlock()
+func (m *Model) loadModel() error {
+	// Use mutex to prevent the model from being loaded and
+	// initialized twice by different indexing workers.
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
 
-	if t.ModelLoaded() {
+	if m.ModelLoaded() {
 		return nil
 	}
 
-	modelPath := path.Join(t.modelPath)
+	modelPath := path.Join(m.modelPath)
 
 	log.Infof("faces: loading %s", clean.Log(filepath.Base(modelPath)))
 
 	// Load model
-	model, err := tf.LoadSavedModel(modelPath, t.modelTags, nil)
+	model, err := tf.LoadSavedModel(modelPath, m.modelTags, nil)
 
 	if err != nil {
 		return err
 	}
 
-	t.model = model
+	m.model = model
 
 	return nil
 }
 
 // getEmbeddings returns the face embeddings for an image.
-func (t *Model) getEmbeddings(img image.Image) Embeddings {
-	tensor, err := imageToTensor(img, t.resolution)
+func (m *Model) getEmbeddings(img image.Image) Embeddings {
+	tensor, err := imageToTensor(img, m.resolution)
 
 	if err != nil {
 		log.Errorf("faces: failed to convert image to tensor: %s", err)
@@ -109,13 +111,13 @@ func (t *Model) getEmbeddings(img image.Image) Embeddings {
 
 	trainPhaseBoolTensor, err := tf.NewTensor(false)
 
-	output, err := t.model.Session.Run(
+	output, err := m.model.Session.Run(
 		map[tf.Output]*tf.Tensor{
-			t.model.Graph.Operation("input").Output(0):       tensor,
-			t.model.Graph.Operation("phase_train").Output(0): trainPhaseBoolTensor,
+			m.model.Graph.Operation("input").Output(0):       tensor,
+			m.model.Graph.Operation("phase_train").Output(0): trainPhaseBoolTensor,
 		},
 		[]tf.Output{
-			t.model.Graph.Operation("embeddings").Output(0),
+			m.model.Graph.Operation("embeddings").Output(0),
 		},
 		nil)
 
