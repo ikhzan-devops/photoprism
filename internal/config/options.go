@@ -59,6 +59,7 @@ type Options struct {
 	Sponsor                bool          `yaml:"-" json:"-" flag:"sponsor"`
 	ConfigPath             string        `yaml:"ConfigPath" json:"-" flag:"config-path"`
 	DefaultsYaml           string        `json:"-" yaml:"-" flag:"defaults-yaml"`
+	VisionYaml             string        `json:"-" yaml:"-" flag:"vision-yaml"`
 	OriginalsPath          string        `yaml:"OriginalsPath" json:"-" flag:"originals-path"`
 	OriginalsLimit         int           `yaml:"OriginalsLimit" json:"OriginalsLimit" flag:"originals-limit"`
 	ResolutionLimit        int           `yaml:"ResolutionLimit" json:"ResolutionLimit" flag:"resolution-limit"`

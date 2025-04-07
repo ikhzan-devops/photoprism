@@ -259,7 +259,11 @@ func (c *Config) DefaultsYaml() string {
 
 // VisionYaml returns the vision config YAML filename.
 func (c *Config) VisionYaml() string {
-	return filepath.Join(c.ConfigPath(), "vision.yml")
+	if c.options.VisionYaml != "" {
+		return fs.Abs(c.options.VisionYaml)
+	} else {
+		return filepath.Join(c.ConfigPath(), "vision.yml")
+	}
 }
 
 // HubConfigFile returns the backend api config file name.

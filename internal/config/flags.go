@@ -196,6 +196,13 @@ var Flags = CliFlags{
 			EnvVars:   EnvVars("DEFAULTS_YAML"),
 			TakesFile: true,
 		}}, {
+		Flag: &cli.StringFlag{
+			Name:      "vision-yaml",
+			Usage:     "load computer vision model configuration from `FILE` *optional*",
+			Value:     "",
+			EnvVars:   EnvVars("VISION_YAML"),
+			TakesFile: true,
+		}}, {
 		Flag: &cli.PathFlag{
 			Name:      "originals-path",
 			Aliases:   []string{"o"},

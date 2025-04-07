@@ -51,6 +51,7 @@ func (c *Config) Report() (rows [][]string, cols []string) {
 
 	rows = append(rows, [][]string{
 		{"settings-yaml", c.SettingsYaml()},
+		{"vision-yaml", c.VisionYaml()},
 
 		// Originals.
 		{"originals-path", c.OriginalsPath()},
