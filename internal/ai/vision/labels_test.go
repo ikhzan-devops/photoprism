@@ -36,7 +36,7 @@ func TestLabels(t *testing.T) {
 
 		assert.Equal(t, "cat", result[0].Name)
 		assert.Equal(t, 60, result[0].Uncertainty)
-		assert.Equal(t, 40, result[0].Confidence())
+		assert.InDelta(t, float32(0.4), result[0].Confidence(), 0.01)
 	})
 	t.Run("InvalidFile", func(t *testing.T) {
 		_, err := Labels([]string{examplesPath + "/notexisting.jpg"})

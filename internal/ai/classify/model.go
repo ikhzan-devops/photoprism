@@ -3,7 +3,10 @@ package classify
 import (
 	"bytes"
 	"fmt"
+	"io"
 	"math"
+	"net/http"
+	"net/url"
 	"os"
 	"path"
 	"runtime/debug"
@@ -49,18 +52,35 @@ func (m *Model) Init() (err error) {
 }
 
 // File returns matching labels for a jpeg media file.
-func (m *Model) File(filename string, confidenceThreshold int) (result Labels, err error) {
+func (m *Model) File(imageUri string, confidenceThreshold int) (result Labels, err error) {
 	if m.disabled {
-		return result, nil
+		return nil, nil
 	}
 
-	imageBuffer, err := os.ReadFile(filename)
+	var data []byte
 
+	u, err := url.Parse(imageUri)
 	if err != nil {
+		log.Fatal(err)
+	}
+
+	if u.Scheme == "http" || u.Scheme == "https" {
+		resp, httpErr := http.Get(imageUri)
+
+		if httpErr != nil {
+			return nil, httpErr
+		}
+
+		defer resp.Body.Close()
+
+		if data, err = io.ReadAll(resp.Body); err != nil {
+			return nil, err
+		}
+	} else if data, err = os.ReadFile(imageUri); err != nil {
 		return nil, err
 	}
 
-	return m.Labels(imageBuffer, confidenceThreshold)
+	return m.Labels(data, confidenceThreshold)
 }
 
 // Labels returns matching labels for a jpeg media string.

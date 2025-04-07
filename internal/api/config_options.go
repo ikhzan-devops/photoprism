@@ -49,7 +49,7 @@ func GetConfigOptions(router *gin.RouterGroup) {
 //	@Produce	json
 //	@Success	200					{object}	config.Options
 //	@Failure	400,401,403,429,500	{object}	i18n.Response
-//	@Param		options					body		config.Options	true	"properties to be updated (only submit values that should be changed)"
+//	@Param		options				body		config.Options	true	"properties to be updated (only submit values that should be changed)"
 //	@Router		/api/v1/config/options [post]
 func SaveConfigOptions(router *gin.RouterGroup) {
 	router.POST("/config/options", func(c *gin.Context) {

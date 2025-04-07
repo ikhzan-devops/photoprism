@@ -4860,7 +4860,24 @@
                 ],
                 "summary": "returns a suitable caption for an image",
                 "operationId": "PostVisionCaption",
+                "parameters": [
+                    {
+                        "description": "list of image file urls",
+                        "name": "images",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/vision.ApiRequest"
+                        }
+                    }
+                ],
                 "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/vision.ApiResponse"
+                        }
+                    },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
@@ -4904,7 +4921,24 @@
                 ],
                 "summary": "returns the positions and embeddings of detected faces",
                 "operationId": "PostVisionFaces",
+                "parameters": [
+                    {
+                        "description": "list of image file urls",
+                        "name": "images",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/vision.ApiRequest"
+                        }
+                    }
+                ],
                 "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/vision.ApiResponse"
+                        }
+                    },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
@@ -4934,6 +4968,9 @@
         },
         "/api/v1/vision/labels": {
             "post": {
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -4942,11 +4979,22 @@
                 ],
                 "summary": "returns suitable labels for an image",
                 "operationId": "PostVisionLabels",
+                "parameters": [
+                    {
+                        "description": "list of image file urls",
+                        "name": "images",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/vision.ApiRequest"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/vision.LabelsResponse"
+                            "$ref": "#/definitions/vision.ApiResponse"
                         }
                     },
                     "401": {
@@ -7556,12 +7604,6 @@
                 1000000,
                 1000000000,
                 60000000000,
-                3600000000000,
-                1,
-                1000,
-                1000000,
-                1000000000,
-                60000000000,
                 3600000000000
             ],
             "x-enum-varnames": [
@@ -7580,14 +7622,76 @@
                 "Millisecond",
                 "Second",
                 "Minute",
-                "Hour",
-                "Nanosecond",
-                "Microsecond",
-                "Millisecond",
-                "Second",
-                "Minute",
                 "Hour"
             ]
+        },
+        "vision.ApiRequest": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "images": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "model": {
+                    "type": "string"
+                },
+                "videos": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "vision.ApiResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "model": {
+                    "$ref": "#/definitions/vision.Model"
+                },
+                "result": {
+                    "$ref": "#/definitions/vision.ApiResult"
+                }
+            }
+        },
+        "vision.ApiResult": {
+            "type": "object",
+            "properties": {
+                "caption": {
+                    "$ref": "#/definitions/vision.CaptionResult"
+                },
+                "faces": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "labels": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/vision.LabelResult"
+                    }
+                }
+            }
+        },
+        "vision.CaptionResult": {
+            "type": "object",
+            "properties": {
+                "confidence": {
+                    "type": "number"
+                },
+                "text": {
+                    "type": "string"
+                }
+            }
         },
         "vision.LabelResult": {
             "type": "object",
@@ -7598,31 +7702,11 @@
                 "confidence": {
                     "type": "number"
                 },
-                "id": {
-                    "type": "string"
-                },
                 "name": {
                     "type": "string"
                 },
                 "topicality": {
                     "type": "number"
-                }
-            }
-        },
-        "vision.LabelsResponse": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "string"
-                },
-                "model": {
-                    "$ref": "#/definitions/vision.Model"
-                },
-                "result": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/vision.LabelResult"
-                    }
                 }
             }
         },

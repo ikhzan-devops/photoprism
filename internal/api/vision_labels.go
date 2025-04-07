@@ -7,18 +7,19 @@ import (
 
 	"github.com/photoprism/photoprism/internal/ai/vision"
 	"github.com/photoprism/photoprism/internal/auth/acl"
-	"github.com/photoprism/photoprism/pkg/rnd"
 )
 
 // PostVisionLabels returns suitable labels for an image.
 //
-//	@Summary		returns suitable labels for an image
-//	@Id				PostVisionLabels
-//	@Tags			Vision
-//	@Produce		json
-//	@Success		200				{object}	vision.LabelsResponse
-//	@Failure		401,403,429		{object}	i18n.Response
-//	@Router			/api/v1/vision/labels [post]
+//	@Summary	returns suitable labels for an image
+//	@Id			PostVisionLabels
+//	@Tags		Vision
+//	@Accept		json
+//	@Produce	json
+//	@Success	200			{object}	vision.ApiResponse
+//	@Failure	401,403,429	{object}	i18n.Response
+//	@Param		images		body		vision.ApiRequest	true	"list of image file urls"
+//	@Router		/api/v1/vision/labels [post]
 func PostVisionLabels(router *gin.RouterGroup) {
 	router.POST("/vision/labels", func(c *gin.Context) {
 		s := Auth(c, acl.ResourceVision, acl.AccessAll)
@@ -28,7 +29,24 @@ func PostVisionLabels(router *gin.RouterGroup) {
 			return
 		}
 
-		response := vision.NewLabelsResponse(rnd.UUID(), vision.NasnetModel, nil)
+		var request vision.ApiRequest
+
+		// Assign and validate request form values.
+		if err := c.BindJSON(&request); err != nil {
+			AbortBadRequest(c)
+			return
+		}
+
+		// Run inference to find matching labels.
+		labels, err := vision.Labels(request.Images)
+
+		if err != nil {
+			AbortBadRequest(c)
+			return
+		}
+
+		// Generate Vision API service response.
+		response := vision.NewLabelsResponse(request.GetId(), vision.NasnetModel, labels)
 
 		c.JSON(http.StatusOK, response)
 	})
