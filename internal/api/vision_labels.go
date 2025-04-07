@@ -33,7 +33,7 @@ func PostVisionLabels(router *gin.RouterGroup) {
 
 		// Assign and validate request form values.
 		if err := c.BindJSON(&request); err != nil {
-			AbortBadRequest(c)
+			c.JSON(http.StatusBadRequest, vision.NewApiError(request.GetId(), http.StatusBadRequest))
 			return
 		}
 
@@ -41,7 +41,7 @@ func PostVisionLabels(router *gin.RouterGroup) {
 		labels, err := vision.Labels(request.Images)
 
 		if err != nil {
-			AbortBadRequest(c)
+			c.JSON(http.StatusBadRequest, vision.NewApiError(request.GetId(), http.StatusBadRequest))
 			return
 		}
 

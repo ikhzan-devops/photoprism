@@ -1,14 +1,19 @@
 package vision
 
 import (
+	"net/http"
+
 	"github.com/photoprism/photoprism/internal/ai/classify"
+	"github.com/photoprism/photoprism/pkg/clean"
 )
 
 // ApiResponse represents a Vision API service response.
 type ApiResponse struct {
 	Id     string     `yaml:"Id,omitempty" json:"id,omitempty"`
-	Model  *Model     `yaml:"Model,omitempty" json:"model"`
-	Result *ApiResult `yaml:"Result,omitempty" json:"result"`
+	Code   int        `yaml:"Code,omitempty" json:"code,omitempty"`
+	Error  string     `yaml:"Error,omitempty" json:"error,omitempty"`
+	Model  *Model     `yaml:"Model,omitempty" json:"model,omitempty"`
+	Result *ApiResult `yaml:"Result,omitempty" json:"result,omitempty"`
 }
 
 // ApiResult represents the model response(s) to a Vision API service
@@ -33,6 +38,15 @@ type LabelResult struct {
 	Topicality float32 `yaml:"Topicality,omitempty" json:"topicality,omitempty"`
 }
 
+// NewApiError generates a Vision API error response based on the specified HTTP status code.
+func NewApiError(id string, code int) ApiResponse {
+	return ApiResponse{
+		Id:    clean.Type(id),
+		Code:  code,
+		Error: http.StatusText(code),
+	}
+}
+
 // NewLabelsResponse generates a new Vision API image classification service response.
 func NewLabelsResponse(id string, model *Model, results classify.Labels) ApiResponse {
 	if model == nil {
@@ -46,7 +60,8 @@ func NewLabelsResponse(id string, model *Model, results classify.Labels) ApiResp
 	}
 
 	return ApiResponse{
-		Id:     id,
+		Id:     clean.Type(id),
+		Code:   http.StatusOK,
 		Model:  model,
 		Result: &ApiResult{Labels: labels},
 	}

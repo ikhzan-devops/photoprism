@@ -32,17 +32,19 @@ func PostVisionCaption(router *gin.RouterGroup) {
 
 		// Assign and validate request form values.
 		if err := c.BindJSON(&request); err != nil {
-			AbortBadRequest(c)
+			c.JSON(http.StatusBadRequest, vision.NewApiError(request.GetId(), http.StatusBadRequest))
 			return
 		}
 
 		// Generate Vision API service response.
 		response := vision.ApiResponse{
 			Id:     request.GetId(),
-			Model:  &vision.Model{Name: "Caption", Version: "Test", Resolution: 224},
-			Result: &vision.ApiResult{Caption: &vision.CaptionResult{Text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.", Confidence: 0.42424}},
+			Code:   http.StatusNotImplemented,
+			Error:  http.StatusText(http.StatusNotImplemented),
+			Model:  &vision.Model{Name: "Caption"},
+			Result: &vision.ApiResult{Caption: &vision.CaptionResult{Text: "This is a test.", Confidence: 0.14159265359}},
 		}
 
-		c.JSON(http.StatusOK, response)
+		c.JSON(http.StatusNotImplemented, response)
 	})
 }

@@ -32,17 +32,19 @@ func PostVisionFaces(router *gin.RouterGroup) {
 
 		// Assign and validate request form values.
 		if err := c.BindJSON(&request); err != nil {
-			AbortBadRequest(c)
+			c.JSON(http.StatusBadRequest, vision.NewApiError(request.GetId(), http.StatusBadRequest))
 			return
 		}
 
 		// Generate Vision API service response.
 		response := vision.ApiResponse{
 			Id:     request.GetId(),
-			Model:  &vision.Model{Name: "Faces", Version: "Test", Resolution: 224},
-			Result: &vision.ApiResult{Faces: &[]string{}},
+			Code:   http.StatusNotImplemented,
+			Error:  http.StatusText(http.StatusNotImplemented),
+			Model:  &vision.Model{Name: "Faces"},
+			Result: &vision.ApiResult{},
 		}
 
-		c.JSON(http.StatusOK, response)
+		c.JSON(http.StatusNotImplemented, response)
 	})
 }
