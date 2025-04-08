@@ -3,11 +3,7 @@ package classify
 import (
 	"bytes"
 	"fmt"
-	"io"
 	"math"
-	"net/http"
-	"net/url"
-	"os"
 	"path"
 	"runtime/debug"
 	"sort"
@@ -18,6 +14,7 @@ import (
 	tf "github.com/wamuir/graft/tensorflow"
 
 	"github.com/photoprism/photoprism/internal/ai/tensorflow"
+	"github.com/photoprism/photoprism/pkg/media"
 )
 
 // Model represents a TensorFlow classification model.
@@ -59,24 +56,7 @@ func (m *Model) File(imageUri string, confidenceThreshold int) (result Labels, e
 
 	var data []byte
 
-	u, err := url.Parse(imageUri)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	if u.Scheme == "http" || u.Scheme == "https" {
-		resp, httpErr := http.Get(imageUri)
-
-		if httpErr != nil {
-			return nil, httpErr
-		}
-
-		defer resp.Body.Close()
-
-		if data, err = io.ReadAll(resp.Body); err != nil {
-			return nil, err
-		}
-	} else if data, err = os.ReadFile(imageUri); err != nil {
+	if data, err = media.ReadUri(imageUri); err != nil {
 		return nil, err
 	}
 

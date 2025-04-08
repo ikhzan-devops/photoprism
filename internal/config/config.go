@@ -282,6 +282,9 @@ func (c *Config) Propagate() {
 
 	// Configure computer vision package.
 	vision.AssetsPath = c.AssetsPath()
+	vision.ServiceUri = c.VisionUri()
+	vision.ServiceKey = c.VisionKey()
+	vision.DownloadUrl = c.DownloadUrl()
 
 	// Set cache expiration defaults.
 	ttl.CacheDefault = c.HttpCacheMaxAge()

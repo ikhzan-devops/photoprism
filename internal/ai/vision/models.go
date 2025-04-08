@@ -6,9 +6,13 @@ import (
 
 type ModelType = string
 
-// AssetsPath specifies the default path to load local TensorFlow models from.
-var AssetsPath = fs.Abs("../../../assets")
-var DefaultResolution = 224
+var (
+	AssetsPath        = fs.Abs("../../../assets")
+	ServiceUri        = ""
+	ServiceKey        = ""
+	DownloadUrl       = ""
+	DefaultResolution = 224
+)
 
 // NasnetModel is a standard TensorFlow model used for label generation.
 var (

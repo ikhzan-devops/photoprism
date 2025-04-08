@@ -969,18 +969,18 @@ var Flags = CliFlags{
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "vision-api",
-			Usage:   "enable computer vision server API endpoints",
+			Usage:   "enable computer vision service API endpoints under /api/v1/vision (requires authorized access token)",
 			EnvVars: EnvVars("VISION_API"),
 		}}, {
 		Flag: &cli.StringFlag{
 			Name:    "vision-uri",
-			Usage:   "remote computer vision endpoint `URI`, e.g. https://example.com/api/v1/vision (leave blank to disable)",
+			Usage:   "remote computer vision service `URI`, e.g. https://example.com/api/v1/vision (leave blank to disable)",
 			Value:   "",
 			EnvVars: EnvVars("VISION_URI"),
 		}}, {
 		Flag: &cli.StringFlag{
 			Name:    "vision-key",
-			Usage:   "remote computer vision endpoint access `TOKEN` *optional*",
+			Usage:   "remote computer vision service access `TOKEN` *optional*",
 			Value:   "",
 			EnvVars: EnvVars("VISION_KEY"),
 		}}, {

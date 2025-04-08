@@ -24,12 +24,12 @@ func (c *Config) VisionApi() bool {
 	return c.options.VisionApi
 }
 
-// VisionUri returns the remote computer vision endpoint URI, e.g. https://example.com/api/v1/vision.
+// VisionUri returns the remote computer vision service URI, e.g. https://example.com/api/v1/vision.
 func (c *Config) VisionUri() string {
 	return clean.Uri(c.options.VisionUri)
 }
 
-// VisionKey returns the remote computer vision endpoint access token.
+// VisionKey returns the remote computer vision service access token, if any.
 func (c *Config) VisionKey() string {
 	// Try to read access token from file if c.options.VisionKey is not set.
 	if c.options.VisionKey != "" {

@@ -1,6 +1,8 @@
 package vision
 
 import (
+	"net/http"
+	"path"
 	"sync"
 
 	"github.com/photoprism/photoprism/internal/ai/classify"
@@ -26,6 +28,36 @@ type Model struct {
 
 // Models represents a set of computer vision models.
 type Models []*Model
+
+// Endpoint returns the remote service request method and endpoint URL, if any.
+func (m *Model) Endpoint(name string) (method, uri string) {
+	if m.Uri == "" && ServiceUri == "" {
+		return "", ""
+	}
+
+	if m.Method != "" {
+		method = m.Method
+	} else {
+		method = http.MethodPost
+	}
+
+	if m.Uri != "" {
+		return m.Uri, method
+	} else {
+		return path.Join(ServiceUri, name), method
+	}
+}
+
+// EndpointKey returns the access token belonging to the remote service endpoint, if any.
+func (m *Model) EndpointKey() string {
+	if m.Key != "" {
+		return m.Key
+	} else if ServiceKey != "" {
+		return ServiceKey
+	}
+
+	return ""
+}
 
 // ClassifyModel returns the matching classify model instance, if any.
 func (m *Model) ClassifyModel() *classify.Model {
