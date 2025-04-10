@@ -46,7 +46,7 @@ func Faces(fileName string, minSize int, cacheCrop bool, expected int) (result f
 				}
 			}
 
-			apiRequest, apiRequestErr := NewClientRequest(faceCrops, scheme.Data)
+			apiRequest, apiRequestErr := NewApiRequest(faceCrops, scheme.Data)
 
 			if apiRequestErr != nil {
 				return result, apiRequestErr

@@ -22,7 +22,7 @@ func TestPostVisionNsfw(t *testing.T) {
 			fs.Abs("./testdata/nsfw_224x224.jpg"),
 		}
 
-		req, err := vision.NewClientRequest(files, scheme.Data)
+		req, err := vision.NewApiRequest(files, scheme.Data)
 
 		if err != nil {
 			t.Fatal(err)
@@ -74,7 +74,7 @@ func TestPostVisionNsfw(t *testing.T) {
 			fs.Abs("./testdata/green_224x224.jpg"),
 		}
 
-		req, err := vision.NewClientRequest(files, scheme.Data)
+		req, err := vision.NewApiRequest(files, scheme.Data)
 
 		if err != nil {
 			t.Fatal(err)
@@ -108,7 +108,7 @@ func TestPostVisionNsfw(t *testing.T) {
 
 		files := vision.Files{}
 
-		req, err := vision.NewClientRequest(files, scheme.Data)
+		req, err := vision.NewApiRequest(files, scheme.Data)
 
 		if err != nil {
 			t.Fatal(err)

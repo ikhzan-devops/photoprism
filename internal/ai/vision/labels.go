@@ -24,7 +24,7 @@ func Labels(images Files, src media.Src) (result classify.Labels, err error) {
 	} else if model := Config.Model(ModelTypeLabels); model != nil {
 		// Use remote service API if a server endpoint has been configured.
 		if uri, method := model.Endpoint(); uri != "" && method != "" {
-			apiRequest, apiRequestErr := NewClientRequest(images, scheme.Data)
+			apiRequest, apiRequestErr := NewApiRequest(images, scheme.Data)
 
 			if apiRequestErr != nil {
 				return result, apiRequestErr
