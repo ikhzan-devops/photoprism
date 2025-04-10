@@ -20,12 +20,12 @@ import (
 func Labels(images Files, src media.Src) (result classify.Labels, err error) {
 	// Return if no thumbnail filenames were given.
 	if len(images) == 0 {
-		return result, errors.New("missing image filenames")
+		return result, errors.New("at least one image required")
 	}
 
 	// Return if there is no configuration or no image classification models are configured.
 	if Config == nil {
-		return result, errors.New("missing configuration")
+		return result, errors.New("vision service is not configured")
 	} else if model := Config.Model(ModelTypeLabels); model != nil {
 		// Use remote service API if a server endpoint has been configured.
 		if uri, method := model.Endpoint(); uri != "" && method != "" {

@@ -16,7 +16,7 @@ func FaceEmbeddings(imgData []byte) (embeddings face.Embeddings, err error) {
 	}
 
 	if Config == nil {
-		return embeddings, errors.New("missing configuration")
+		return embeddings, errors.New("vision service is not configured")
 	} else if model := Config.Model(ModelTypeFaceEmbeddings); model != nil {
 		img, imgErr := jpeg.Decode(bytes.NewReader(imgData))
 

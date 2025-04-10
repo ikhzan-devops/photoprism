@@ -8,6 +8,7 @@ import (
 	"runtime/debug"
 	"sync"
 
+	"github.com/disintegration/imaging"
 	tf "github.com/wamuir/graft/tensorflow"
 
 	"github.com/photoprism/photoprism/internal/thumb/crop"
@@ -116,6 +117,7 @@ func (m *Model) loadModel() error {
 
 // Run returns the face embeddings for an image.
 func (m *Model) Run(img image.Image) Embeddings {
+	// Create input tensor from image.
 	tensor, err := imageToTensor(img, m.resolution)
 
 	if err != nil {
@@ -158,6 +160,11 @@ func imageToTensor(img image.Image, resolution int) (tfTensor *tf.Tensor, err er
 
 	if resolution <= 0 {
 		return tfTensor, fmt.Errorf("faces: invalid model resolution")
+	}
+
+	// Resize the image only if its resolution does not match the model.
+	if img.Bounds().Dx() != resolution || img.Bounds().Dy() != resolution {
+		img = imaging.Fill(img, resolution, resolution, imaging.Center, imaging.Lanczos)
 	}
 
 	var tfImage [1][][][3]float32

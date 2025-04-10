@@ -21,7 +21,7 @@ func Faces(fileName string, minSize int, cacheCrop bool, expected int) (faces fa
 
 	// Return if there is no configuration or no image classification models are configured.
 	if Config == nil {
-		return faces, errors.New("missing configuration")
+		return faces, errors.New("vision service is not configured")
 	} else if model := Config.Model(ModelTypeFaceEmbeddings); model != nil {
 		faces, err = face.Detect(fileName, false, minSize)
 

@@ -54,6 +54,13 @@ func PostVisionFaceEmbeddings(router *gin.RouterGroup) {
 			return
 		}
 
+		// Return if no thumbnail filenames were given.
+		if len(request.Images) == 0 {
+			log.Errorf("vision: at least one image required (run face embeddings)")
+			c.JSON(http.StatusBadRequest, vision.NewApiError(request.GetId(), http.StatusBadRequest))
+			return
+		}
+
 		// Run inference to find matching labels.
 		results := make([]face.Embeddings, len(request.Images))
 
@@ -63,7 +70,7 @@ func PostVisionFaceEmbeddings(router *gin.RouterGroup) {
 				log.Errorf("vision: %s (read face embedding from url)", err)
 			} else if result, faceErr := vision.FaceEmbeddings(data); faceErr != nil {
 				results[i] = face.Embeddings{}
-				log.Errorf("vision: %s (generate face embedding)", faceErr)
+				log.Errorf("vision: %s (run face embeddings)", faceErr)
 			} else {
 				results[i] = result
 			}
@@ -73,10 +80,10 @@ func PostVisionFaceEmbeddings(router *gin.RouterGroup) {
 		response := vision.ApiResponse{
 			Id:     request.GetId(),
 			Code:   http.StatusOK,
-			Model:  &vision.Model{Name: vision.FacenetModel.Name},
-			Result: &vision.ApiResult{Embeddings: results},
+			Model:  &vision.Model{Type: vision.ModelTypeFaceEmbeddings},
+			Result: vision.ApiResult{Embeddings: results},
 		}
 
-		c.JSON(http.StatusNotImplemented, response)
+		c.JSON(http.StatusOK, response)
 	})
 }

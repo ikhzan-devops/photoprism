@@ -214,7 +214,10 @@ func (m *Model) createTensor(image []byte) (*tf.Tensor, error) {
 		return nil, err
 	}
 
-	img = imaging.Fill(img, m.resolution, m.resolution, imaging.Center, imaging.Lanczos)
+	// Resize the image only if its resolution does not match the model.
+	if img.Bounds().Dx() != m.resolution || img.Bounds().Dy() != m.resolution {
+		img = imaging.Fill(img, m.resolution, m.resolution, imaging.Center, imaging.Lanczos)
+	}
 
 	return tensorflow.Image(img, m.resolution)
 }

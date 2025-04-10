@@ -46,11 +46,11 @@ type Result struct {
 
 // IsSafe returns true if the image is probably safe for work.
 func (l *Result) IsSafe() bool {
-	return !l.NSFW(ThresholdSafe)
+	return !l.IsNsfw(ThresholdSafe)
 }
 
-// NSFW returns true if the image is may not be safe for work.
-func (l *Result) NSFW(threshold float32) bool {
+// IsNsfw returns true if the image is may not be safe for work.
+func (l *Result) IsNsfw(threshold float32) bool {
 	if l.Neutral > 0.25 {
 		return false
 	}

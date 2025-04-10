@@ -57,6 +57,7 @@ func PostVisionNsfw(router *gin.RouterGroup) {
 		results, err := vision.Nsfw(request.Images, media.SrcRemote)
 
 		if err != nil {
+			log.Errorf("vision: %s (run nsfw)", err)
 			c.JSON(http.StatusBadRequest, vision.NewApiError(request.GetId(), http.StatusBadRequest))
 			return
 		}
@@ -65,8 +66,8 @@ func PostVisionNsfw(router *gin.RouterGroup) {
 		response := vision.ApiResponse{
 			Id:     request.GetId(),
 			Code:   http.StatusOK,
-			Model:  &vision.Model{Name: vision.NsfwModel.Name},
-			Result: &vision.ApiResult{Nsfw: results},
+			Model:  &vision.Model{Type: vision.ModelTypeNsfw},
+			Result: vision.ApiResult{Nsfw: results},
 		}
 
 		c.JSON(http.StatusOK, response)

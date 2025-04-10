@@ -23,7 +23,7 @@ func (ind *Index) IsNsfw(m *MediaFile) bool {
 	} else if len(results) < 1 {
 		log.Errorf("index: nsfw model returned no result for %s", m.RootRelName())
 		return false
-	} else if results[0].NSFW(nsfw.ThresholdHigh) {
+	} else if results[0].IsNsfw(nsfw.ThresholdHigh) {
 		log.Warnf("index: %s might contain offensive content", clean.Log(m.RelName(Config().OriginalsPath())))
 		return true
 	}

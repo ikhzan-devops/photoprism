@@ -54,9 +54,10 @@ func PostVisionLabels(router *gin.RouterGroup) {
 		}
 
 		// Run inference to find matching labels.
-		labels, err := vision.Labels(request.Images, media.SrcLocal)
+		labels, err := vision.Labels(request.Images, media.SrcRemote)
 
 		if err != nil {
+			log.Errorf("vision: %s (run labels)", err)
 			c.JSON(http.StatusBadRequest, vision.NewApiError(request.GetId(), http.StatusBadRequest))
 			return
 		}
