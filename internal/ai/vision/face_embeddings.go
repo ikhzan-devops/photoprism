@@ -9,7 +9,7 @@ import (
 	"github.com/photoprism/photoprism/internal/ai/face"
 )
 
-// FaceEmbeddings returns the embeddings for the specified face jpeg.
+// FaceEmbeddings returns the embeddings for the specified face crop image.
 func FaceEmbeddings(imgData []byte) (embeddings face.Embeddings, err error) {
 	if len(imgData) == 0 {
 		return embeddings, errors.New("missing image")

@@ -8,7 +8,7 @@ import (
 	"github.com/photoprism/photoprism/pkg/media/http/scheme"
 )
 
-// Faces runs face detection and facenet algorithms over the provided source image.
+// Faces detects faces in the specified image and generates embeddings from them.
 func Faces(fileName string, minSize int, cacheCrop bool, expected int) (result face.Faces, err error) {
 	if fileName == "" {
 		return result, errors.New("missing image filename")
@@ -39,7 +39,7 @@ func Faces(fileName string, minSize int, cacheCrop bool, expected int) (result f
 				}
 
 				if _, faceCrop, imgErr := crop.ImageFromThumb(fileName, f.CropArea(), face.CropSize, cacheCrop); imgErr != nil {
-					log.Errorf("faces: failed to decode image: %s", imgErr)
+					log.Errorf("vision: failed to create face crop (%s)", imgErr)
 					faceCrops[i] = ""
 				} else if faceCrop != "" {
 					faceCrops[i] = faceCrop
@@ -74,7 +74,7 @@ func Faces(fileName string, minSize int, cacheCrop bool, expected int) (result f
 				}
 
 				if img, _, imgErr := crop.ImageFromThumb(fileName, f.CropArea(), face.CropSize, cacheCrop); imgErr != nil {
-					log.Errorf("faces: failed to decode image: %s", imgErr)
+					log.Errorf("vision: failed to create face crop (%s)", imgErr)
 				} else if embeddings := tf.Run(img); !embeddings.Empty() {
 					result[i].Embeddings = embeddings
 				}

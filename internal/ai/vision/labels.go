@@ -11,7 +11,7 @@ import (
 	"github.com/photoprism/photoprism/pkg/media/http/scheme"
 )
 
-// Labels returns suitable labels for the specified image thumbnail.
+// Labels finds matching labels for the specified image.
 func Labels(images Files, src media.Src) (result classify.Labels, err error) {
 	// Return if no thumbnail filenames were given.
 	if len(images) == 0 {
