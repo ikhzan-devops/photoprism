@@ -97,7 +97,7 @@ var Rules = ACL{
 	},
 	ResourceVision: Roles{
 		RoleAdmin:  GrantFullAccess,
-		RoleClient: GrantCreateAll,
+		RoleClient: GrantUse,
 	},
 	ResourceFeedback: Roles{
 		RoleAdmin: GrantFullAccess,

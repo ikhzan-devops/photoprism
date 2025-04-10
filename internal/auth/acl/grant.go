@@ -67,10 +67,6 @@ var (
 		AccessOwn:    true,
 		ActionUpdate: true,
 	}
-	GrantCreateAll = Grant{
-		AccessAll:    true,
-		ActionCreate: true,
-	}
 	GrantViewOwn = Grant{
 		AccessOwn:  true,
 		ActionView: true,
@@ -125,6 +121,10 @@ var (
 	GrantSubscribeAll = Grant{
 		AccessAll:       true,
 		ActionSubscribe: true,
+	}
+	GrantUse = Grant{
+		Use:          true,
+		ActionCreate: true,
 	}
 	GrantNone = Grant{}
 )

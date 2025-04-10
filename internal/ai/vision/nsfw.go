@@ -1,17 +1,12 @@
 package vision
 
 import (
-	"bytes"
-	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
-	"net/http"
 
 	"github.com/photoprism/photoprism/internal/ai/nsfw"
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/media"
-	"github.com/photoprism/photoprism/pkg/media/http/header"
 	"github.com/photoprism/photoprism/pkg/media/http/scheme"
 )
 
@@ -40,34 +35,9 @@ func Nsfw(images Files, src media.Src) (result []nsfw.Result, err error) {
 				apiRequest.Model = model.Name
 			}
 
-			data, jsonErr := apiRequest.MarshalJSON()
+			apiResponse, apiErr := PerformApiRequest(apiRequest, uri, method, model.EndpointKey())
 
-			if jsonErr != nil {
-				return result, jsonErr
-			}
-
-			// Create HTTP client and authenticated service API request.
-			client := http.Client{}
-			req, reqErr := http.NewRequest(method, uri, bytes.NewReader(data))
-			header.SetAuthorization(req, model.EndpointKey())
-
-			if reqErr != nil {
-				return result, reqErr
-			}
-
-			// Perform API request.
-			clientResp, clientErr := client.Do(req)
-
-			if clientErr != nil {
-				return result, clientErr
-			}
-
-			apiResponse := &ApiResponse{}
-
-			// Unmarshal response and add labels, if returned.
-			if apiJson, apiErr := io.ReadAll(clientResp.Body); apiErr != nil {
-				return result, apiErr
-			} else if apiErr = json.Unmarshal(apiJson, apiResponse); apiErr != nil {
+			if apiErr != nil {
 				return result, apiErr
 			}
 

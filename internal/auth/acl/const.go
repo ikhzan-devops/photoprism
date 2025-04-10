@@ -20,6 +20,7 @@ const (
 	AccessPrivate   Permission = "access_private"
 	AccessOwn       Permission = "access_own"
 	AccessAll       Permission = "access_all"
+	Use             Permission = "use"
 	ActionSearch    Permission = "search"
 	ActionView      Permission = "view"
 	ActionUpload    Permission = "upload"

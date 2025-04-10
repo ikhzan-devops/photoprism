@@ -26,7 +26,7 @@ import (
 //	@Router		/api/v1/vision/face/embeddings [post]
 func PostVisionFaceEmbeddings(router *gin.RouterGroup) {
 	router.POST("/vision/face/embeddings", func(c *gin.Context) {
-		s := Auth(c, acl.ResourceVision, acl.AccessAll)
+		s := Auth(c, acl.ResourceVision, acl.Use)
 
 		// Abort if permission is not granted.
 		if s.Abort(c) {

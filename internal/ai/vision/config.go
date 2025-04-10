@@ -1,6 +1,8 @@
 package vision
 
 import (
+	"time"
+
 	"github.com/photoprism/photoprism/pkg/fs"
 )
 
@@ -11,6 +13,7 @@ var (
 	CachePath         = fs.Abs("../../../storage/cache")
 	ServiceUri        = ""
 	ServiceKey        = ""
+	ServiceTimeout    = time.Minute
 	DownloadUrl       = ""
 	DefaultResolution = 224
 )
