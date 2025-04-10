@@ -6,6 +6,7 @@ import (
 	"github.com/dustin/go-humanize/english"
 
 	"github.com/photoprism/photoprism/internal/ai/face"
+	"github.com/photoprism/photoprism/internal/ai/vision"
 	"github.com/photoprism/photoprism/internal/thumb"
 	"github.com/photoprism/photoprism/pkg/clean"
 )
@@ -39,7 +40,7 @@ func (ind *Index) Faces(jpeg *MediaFile, expected int) face.Faces {
 
 	start := time.Now()
 
-	faces, err := ind.faceNet.Detect(thumbName, Config().FaceSize(), true, expected)
+	faces, err := vision.Faces(thumbName, Config().FaceSize(), true, expected)
 
 	if err != nil {
 		log.Debugf("%s in %s", err, clean.Log(jpeg.BaseName()))

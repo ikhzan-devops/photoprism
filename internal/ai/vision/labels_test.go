@@ -7,6 +7,7 @@ import (
 
 	"github.com/photoprism/photoprism/internal/ai/classify"
 	"github.com/photoprism/photoprism/pkg/fs"
+	"github.com/photoprism/photoprism/pkg/media"
 )
 
 func TestLabels(t *testing.T) {
@@ -14,7 +15,7 @@ func TestLabels(t *testing.T) {
 	var examplesPath = assetsPath + "/examples"
 
 	t.Run("Success", func(t *testing.T) {
-		result, err := Labels([]string{examplesPath + "/chameleon_lime.jpg"})
+		result, err := Labels(Files{examplesPath + "/chameleon_lime.jpg"}, media.SrcLocal)
 
 		assert.NoError(t, err)
 		assert.IsType(t, classify.Labels{}, result)
@@ -26,7 +27,7 @@ func TestLabels(t *testing.T) {
 		assert.Equal(t, 7, result[0].Uncertainty)
 	})
 	t.Run("Cats", func(t *testing.T) {
-		result, err := Labels([]string{examplesPath + "/cat_720.jpeg"})
+		result, err := Labels(Files{examplesPath + "/cat_720.jpeg"}, media.SrcLocal)
 
 		assert.NoError(t, err)
 		assert.IsType(t, classify.Labels{}, result)
@@ -39,7 +40,7 @@ func TestLabels(t *testing.T) {
 		assert.InDelta(t, float32(0.4), result[0].Confidence(), 0.01)
 	})
 	t.Run("InvalidFile", func(t *testing.T) {
-		_, err := Labels([]string{examplesPath + "/notexisting.jpg"})
+		_, err := Labels(Files{examplesPath + "/notexisting.jpg"}, media.SrcLocal)
 		assert.Error(t, err)
 	})
 }

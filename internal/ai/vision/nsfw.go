@@ -7,26 +7,27 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"sort"
 
-	"github.com/photoprism/photoprism/internal/ai/classify"
+	"github.com/photoprism/photoprism/internal/ai/nsfw"
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/media"
 	"github.com/photoprism/photoprism/pkg/media/http/header"
 	"github.com/photoprism/photoprism/pkg/media/http/scheme"
 )
 
-// Labels returns suitable labels for the specified image thumbnail.
-func Labels(images Files, src media.Src) (result classify.Labels, err error) {
+// Nsfw checks the specified images for inappropriate content.
+func Nsfw(images Files, src media.Src) (result []nsfw.Result, err error) {
 	// Return if no thumbnail filenames were given.
 	if len(images) == 0 {
 		return result, errors.New("missing image filenames")
 	}
 
+	result = make([]nsfw.Result, len(images))
+
 	// Return if there is no configuration or no image classification models are configured.
 	if Config == nil {
 		return result, errors.New("missing configuration")
-	} else if model := Config.Model(ModelTypeLabels); model != nil {
+	} else if model := Config.Model(ModelTypeNsfw); model != nil {
 		// Use remote service API if a server endpoint has been configured.
 		if uri, method := model.Endpoint(); uri != "" && method != "" {
 			apiRequest, apiRequestErr := NewClientRequest(images, scheme.Data)
@@ -70,68 +71,33 @@ func Labels(images Files, src media.Src) (result classify.Labels, err error) {
 				return result, apiErr
 			}
 
-			for _, label := range apiResponse.Result.Labels {
-				result = append(result, label.ToClassify())
-			}
-		} else if tf := model.ClassifyModel(); tf != nil {
+			result = apiResponse.Result.Nsfw
+		} else if tf := model.NsfwModel(); tf != nil {
 			// Predict labels with local TensorFlow model.
 			for i := range images {
-				var labels classify.Labels
+				var labels nsfw.Result
 
 				switch src {
 				case media.SrcLocal:
-					labels, err = tf.File(images[i], Config.Thresholds.Confidence)
+					labels, err = tf.File(images[i])
 				case media.SrcRemote:
-					labels, err = tf.Url(images[i], Config.Thresholds.Confidence)
+					labels, err = tf.Url(images[i])
 				default:
 					return result, fmt.Errorf("invalid image source %s", clean.Log(src))
 				}
 
 				if err != nil {
-					return result, err
+					log.Errorf("nsfw: %s", err)
 				}
 
-				result = mergeLabels(result, labels)
+				result[i] = labels
 			}
 		} else {
-			return result, errors.New("invalid labels model configuration")
+			return result, errors.New("invalid nsfw model configuration")
 		}
 	} else {
-		return result, errors.New("missing labels model")
+		return result, errors.New("missing nsfw model")
 	}
-
-	sort.Sort(result)
 
 	return result, nil
-}
-
-// mergeLabels combines existing labels with newly detected labels and returns the result.
-func mergeLabels(result, labels classify.Labels) classify.Labels {
-	if len(labels) == 0 {
-		return result
-	}
-
-	for j := range labels {
-		found := false
-
-		for k := range result {
-			if labels[j].Name == result[k].Name {
-				found = true
-
-				if labels[j].Uncertainty < result[k].Uncertainty {
-					result[k].Uncertainty = labels[j].Uncertainty
-				}
-
-				if labels[j].Priority > result[k].Priority {
-					result[k].Priority = labels[j].Priority
-				}
-			}
-		}
-
-		if !found {
-			result = append(result, labels[j])
-		}
-	}
-
-	return result
 }

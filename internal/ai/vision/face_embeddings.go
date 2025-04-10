@@ -1,0 +1,37 @@
+package vision
+
+import (
+	"bytes"
+	"errors"
+	"fmt"
+	"image/jpeg"
+
+	"github.com/photoprism/photoprism/internal/ai/face"
+)
+
+// FaceEmbeddings returns the embeddings for the specified face jpeg.
+func FaceEmbeddings(imgData []byte) (embeddings face.Embeddings, err error) {
+	if len(imgData) == 0 {
+		return embeddings, errors.New("missing image")
+	}
+
+	if Config == nil {
+		return embeddings, errors.New("missing configuration")
+	} else if model := Config.Model(ModelTypeFaceEmbeddings); model != nil {
+		img, imgErr := jpeg.Decode(bytes.NewReader(imgData))
+
+		if imgErr != nil {
+			return embeddings, imgErr
+		}
+
+		if tf := model.FaceModel(); tf == nil {
+			return embeddings, fmt.Errorf("invalid face model configuration")
+		} else if embeddings = tf.Run(img); !embeddings.Empty() {
+			return embeddings, nil
+		} else {
+			return face.Embeddings{}, nil
+		}
+	} else {
+		return embeddings, fmt.Errorf("no face model configured")
+	}
+}

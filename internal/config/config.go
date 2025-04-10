@@ -282,6 +282,9 @@ func (c *Config) Propagate() {
 
 	// Configure computer vision package.
 	vision.AssetsPath = c.AssetsPath()
+	vision.FaceNetModelPath = c.FaceNetModelPath()
+	vision.NsfwModelPath = c.NSFWModelPath()
+	vision.CachePath = c.CachePath()
 	vision.ServiceUri = c.VisionUri()
 	vision.ServiceKey = c.VisionKey()
 	vision.DownloadUrl = c.DownloadUrl()

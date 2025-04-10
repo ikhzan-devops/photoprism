@@ -1,7 +1,6 @@
 package media
 
 import (
-	"bytes"
 	"io"
 	"strings"
 	"testing"
@@ -16,17 +15,14 @@ func gopherPng() io.Reader { return ReadBase64(strings.NewReader(gopher)) }
 
 func TestDataUrl(t *testing.T) {
 	t.Run("Gopher", func(t *testing.T) {
-		buf := new(bytes.Buffer)
-		_, bufErr := buf.ReadFrom(gopherPng())
-		assert.NoError(t, bufErr)
-		assert.Equal(t, "data:image/png;base64,"+gopher, DataUrl(buf))
+		assert.Equal(t, "data:image/png;base64,"+gopher, DataUrl(gopherPng()))
 	})
 }
 
 func TestReadUrl(t *testing.T) {
 	t.Run("Gopher", func(t *testing.T) {
 		dataUrl := "data:image/png;base64," + gopher
-		if data, err := ReadUrl(dataUrl); err != nil {
+		if data, err := ReadUrl(dataUrl, []string{"https", "data"}); err != nil {
 			t.Fatal(err)
 		} else {
 			expected, _ := DecodeBase64(gopher)
