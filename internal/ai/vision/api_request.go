@@ -12,6 +12,7 @@ type Files = []string
 type ApiRequest struct {
 	Id     string `form:"id" yaml:"Id,omitempty" json:"id,omitempty"`
 	Model  string `form:"model" yaml:"Model,omitempty" json:"model,omitempty"`
+	Url    string `form:"url" yaml:"Url,omitempty" json:"url,omitempty"`
 	Images Files  `form:"images" yaml:"Images,omitempty" json:"images,omitempty"`
 }
 

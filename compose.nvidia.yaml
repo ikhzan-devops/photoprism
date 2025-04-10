@@ -22,6 +22,8 @@ services:
     links:
       - "traefik:localssl.dev"
       - "traefik:app.localssl.dev"
+      - "traefik:vision.localssl.dev"
+      - "traefik:qdrant.localssl.dev"
       - "traefik:keycloak.localssl.dev"
       - "traefik:dummy-oidc.localssl.dev"
       - "traefik:dummy-webdav.localssl.dev"
@@ -112,7 +114,7 @@ services:
       TF_CPP_MIN_LOG_LEVEL: 0                        # show TensorFlow log messages for development
       ## Nvidia Video Transcoding (https://docs.photoprism.app/getting-started/advanced/transcoding/#nvidia-container-toolkit):
       NVIDIA_VISIBLE_DEVICES: "all"
-      NVIDIA_DRIVER_CAPABILITIES: "compute,video,utility"
+      NVIDIA_DRIVER_CAPABILITIES: "all"
       PHOTOPRISM_FFMPEG_ENCODER: "nvidia"            # H.264/AVC encoder (software, intel, nvidia, apple, raspberry, or vaapi)
       PHOTOPRISM_FFMPEG_SIZE: "1920"                 # video size limit in pixels (720-7680) (default: 3840)
       PHOTOPRISM_FFMPEG_BITRATE: "50"                # video bitrate limit in Mbit/s (default: 50)
@@ -144,7 +146,24 @@ services:
     extends:
       file: ./compose.yaml
       service: mariadb
+  photoprism-vision:
+    profiles: ["all", "vision"]
+    environment:
+      TF_CPP_MIN_LOG_LEVEL: 2
+      NVIDIA_VISIBLE_DEVICES: "all"
+      NVIDIA_DRIVER_CAPABILITIES: "all"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: "nvidia"
+              count: 1
+              capabilities: [ gpu ]
+    extends:
+      file: ./compose.yaml
+      service: photoprism-vision
   qdrant:
+    profiles: ["all", "vision"]
     extends:
       file: ./compose.yaml
       service: qdrant

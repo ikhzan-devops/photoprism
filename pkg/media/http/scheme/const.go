@@ -14,4 +14,5 @@ const (
 
 var (
 	HttpsData = []string{Https, Data}
+	HttpsHttp = []string{Https, Http}
 )

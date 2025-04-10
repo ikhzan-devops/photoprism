@@ -69,6 +69,10 @@ func PerformApiRequest(apiRequest *ApiRequest, uri, method, key string) (apiResp
 	client := http.Client{Timeout: ServiceTimeout}
 	req, reqErr := http.NewRequest(method, uri, bytes.NewReader(data))
 
+	// Add "application/json" content type header.
+	header.SetContentType(req, header.ContentTypeJson)
+
+	// Add an authentication header if an access token is configured.
 	if key != "" {
 		header.SetAuthorization(req, key)
 	}
@@ -91,6 +95,8 @@ func PerformApiRequest(apiRequest *ApiRequest, uri, method, key string) (apiResp
 		return apiResponse, apiErr
 	} else if apiErr = json.Unmarshal(apiJson, apiResponse); apiErr != nil {
 		return apiResponse, apiErr
+	} else if clientResp.StatusCode >= 300 {
+		log.Debugf("vision: %s (status code %d)", apiJson, clientResp.StatusCode)
 	}
 
 	return apiResponse, nil

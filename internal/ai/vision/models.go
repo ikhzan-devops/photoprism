@@ -29,8 +29,8 @@ var (
 	}
 	CaptionModel = &Model{
 		Type:       ModelTypeCaption,
-		Name:       "Caption",
-		Uri:        "http://photoprism-vision/api/v1/vision/describe",
+		Name:       "kosmos-2",
+		Uri:        "http://photoprism-vision:5000/api/v1/vision/caption",
 		Method:     http.MethodPost,
 		Resolution: 720,
 	}
