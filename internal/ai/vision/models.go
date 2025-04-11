@@ -17,7 +17,7 @@ var (
 		Tags:       []string{"serve"},
 	}
 	FacenetModel = &Model{
-		Type:       ModelTypeFaceEmbeddings,
+		Type:       ModelTypeFace,
 		Name:       "FaceNet",
 		Version:    "",
 		Resolution: 160,

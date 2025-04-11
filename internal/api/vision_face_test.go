@@ -13,10 +13,10 @@ import (
 	"github.com/photoprism/photoprism/pkg/media/http/scheme"
 )
 
-func TestPostVisionFaceEmbeddings(t *testing.T) {
+func TestPostVisionFace(t *testing.T) {
 	t.Run("Face", func(t *testing.T) {
 		app, router, _ := NewApiTest()
-		PostVisionFaceEmbeddings(router)
+		PostVisionFace(router)
 
 		files := vision.Files{
 			fs.Abs("./testdata/face_160x160.jpg"),
@@ -36,7 +36,7 @@ func TestPostVisionFaceEmbeddings(t *testing.T) {
 
 		// t.Logf("request: %s", string(jsonReq))
 
-		r := PerformRequestWithBody(app, http.MethodPost, "/api/v1/vision/face/embeddings", string(jsonReq))
+		r := PerformRequestWithBody(app, http.MethodPost, "/api/v1/vision/face", string(jsonReq))
 
 		apiResponse := &vision.ApiResponse{}
 
@@ -54,12 +54,12 @@ func TestPostVisionFaceEmbeddings(t *testing.T) {
 			t.Fatal("one nsfw result expected")
 		}
 
-		assert.Equal(t, vision.ModelTypeFaceEmbeddings, apiResponse.Model.Type)
+		assert.Equal(t, vision.ModelTypeFace, apiResponse.Model.Type)
 		assert.Equal(t, http.StatusOK, r.Code)
 	})
 	t.Run("London", func(t *testing.T) {
 		app, router, _ := NewApiTest()
-		PostVisionFaceEmbeddings(router)
+		PostVisionFace(router)
 
 		files := vision.Files{
 			fs.Abs("./testdata/london_160x160.jpg"),
@@ -79,7 +79,7 @@ func TestPostVisionFaceEmbeddings(t *testing.T) {
 
 		// t.Logf("request: %s", string(jsonReq))
 
-		r := PerformRequestWithBody(app, http.MethodPost, "/api/v1/vision/face/embeddings", string(jsonReq))
+		r := PerformRequestWithBody(app, http.MethodPost, "/api/v1/vision/face", string(jsonReq))
 
 		apiResponse := &vision.ApiResponse{}
 
@@ -90,12 +90,12 @@ func TestPostVisionFaceEmbeddings(t *testing.T) {
 		}
 
 		assert.Len(t, apiResponse.Result.Embeddings, 1)
-		assert.Equal(t, vision.ModelTypeFaceEmbeddings, apiResponse.Model.Type)
+		assert.Equal(t, vision.ModelTypeFace, apiResponse.Model.Type)
 		assert.Equal(t, http.StatusOK, r.Code)
 	})
 	t.Run("WrongResolution", func(t *testing.T) {
 		app, router, _ := NewApiTest()
-		PostVisionFaceEmbeddings(router)
+		PostVisionFace(router)
 
 		files := vision.Files{
 			fs.Abs("./testdata/face_320x320.jpg"),
@@ -115,7 +115,7 @@ func TestPostVisionFaceEmbeddings(t *testing.T) {
 
 		// t.Logf("request: %s", string(jsonReq))
 
-		r := PerformRequestWithBody(app, http.MethodPost, "/api/v1/vision/face/embeddings", string(jsonReq))
+		r := PerformRequestWithBody(app, http.MethodPost, "/api/v1/vision/face", string(jsonReq))
 
 		apiResponse := &vision.ApiResponse{}
 
@@ -133,12 +133,12 @@ func TestPostVisionFaceEmbeddings(t *testing.T) {
 			t.Fatal("one nsfw result expected")
 		}
 
-		assert.Equal(t, vision.ModelTypeFaceEmbeddings, apiResponse.Model.Type)
+		assert.Equal(t, vision.ModelTypeFace, apiResponse.Model.Type)
 		assert.Equal(t, http.StatusOK, r.Code)
 	})
 	t.Run("NoImages", func(t *testing.T) {
 		app, router, _ := NewApiTest()
-		PostVisionFaceEmbeddings(router)
+		PostVisionFace(router)
 
 		files := vision.Files{}
 
@@ -156,7 +156,7 @@ func TestPostVisionFaceEmbeddings(t *testing.T) {
 
 		// t.Logf("request: %s", string(jsonReq))
 
-		r := PerformRequestWithBody(app, http.MethodPost, "/api/v1/vision/face/embeddings", string(jsonReq))
+		r := PerformRequestWithBody(app, http.MethodPost, "/api/v1/vision/face", string(jsonReq))
 
 		apiResponse := &vision.ApiResponse{}
 
@@ -178,8 +178,8 @@ func TestPostVisionFaceEmbeddings(t *testing.T) {
 	})
 	t.Run("NoBody", func(t *testing.T) {
 		app, router, _ := NewApiTest()
-		PostVisionFaceEmbeddings(router)
-		r := PerformRequest(app, http.MethodPost, "/api/v1/vision/face/embeddings")
+		PostVisionFace(router)
+		r := PerformRequest(app, http.MethodPost, "/api/v1/vision/face")
 		assert.Equal(t, http.StatusBadRequest, r.Code)
 	})
 }

@@ -14,7 +14,7 @@ func TestResolution(t *testing.T) {
 		assert.Equal(t, DefaultResolution, result)
 	})
 	t.Run("Facenet", func(t *testing.T) {
-		result := Resolution(ModelTypeFaceEmbeddings)
+		result := Resolution(ModelTypeFace)
 		assert.Equal(t, FacenetModel.Resolution, result)
 	})
 	t.Run("Nasnet", func(t *testing.T) {
@@ -29,7 +29,7 @@ func TestThumb(t *testing.T) {
 		assert.Equal(t, thumb.SizeTile224, size)
 	})
 	t.Run("Facenet", func(t *testing.T) {
-		size := Thumb(ModelTypeFaceEmbeddings)
+		size := Thumb(ModelTypeFace)
 		assert.Equal(t, thumb.SizeTile224, size)
 	})
 	t.Run("Nasnet", func(t *testing.T) {

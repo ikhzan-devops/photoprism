@@ -9,10 +9,10 @@ type ModelType = string
 type ModelTypes = []ModelType
 
 const (
-	ModelTypeLabels         ModelType = "labels"
-	ModelTypeNsfw           ModelType = "nsfw"
-	ModelTypeFaceEmbeddings ModelType = "face/embeddings"
-	ModelTypeCaption        ModelType = "caption"
+	ModelTypeLabels  ModelType = "labels"
+	ModelTypeNsfw    ModelType = "nsfw"
+	ModelTypeFace    ModelType = "face"
+	ModelTypeCaption ModelType = "caption"
 )
 
 // ParseTypes parses a model type string.
@@ -27,7 +27,7 @@ func ParseTypes(s string) (types ModelTypes) {
 	for _, t := range strings.Split(s, ",") {
 		t = strings.TrimSpace(t)
 		switch t {
-		case ModelTypeLabels, ModelTypeNsfw, ModelTypeFaceEmbeddings, ModelTypeCaption:
+		case ModelTypeLabels, ModelTypeNsfw, ModelTypeFace, ModelTypeCaption:
 			if !slices.Contains(types, t) {
 				types = append(types, t)
 			}

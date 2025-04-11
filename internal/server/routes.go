@@ -166,7 +166,7 @@ func registerRoutes(router *gin.Engine, conf *config.Config) {
 	// Computer Vision.
 	api.PostVisionLabels(APIv1)
 	api.PostVisionNsfw(APIv1)
-	api.PostVisionFaceEmbeddings(APIv1)
+	api.PostVisionFace(APIv1)
 	api.PostVisionCaption(APIv1)
 
 	// People.

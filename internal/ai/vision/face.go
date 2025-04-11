@@ -9,15 +9,15 @@ import (
 	"github.com/photoprism/photoprism/internal/ai/face"
 )
 
-// FaceEmbeddings returns the embeddings for the specified face crop image.
-func FaceEmbeddings(imgData []byte) (embeddings face.Embeddings, err error) {
+// Face returns the embeddings for the specified face crop image.
+func Face(imgData []byte) (embeddings face.Embeddings, err error) {
 	if len(imgData) == 0 {
 		return embeddings, errors.New("missing image")
 	}
 
 	if Config == nil {
 		return embeddings, errors.New("vision service is not configured")
-	} else if model := Config.Model(ModelTypeFaceEmbeddings); model != nil {
+	} else if model := Config.Model(ModelTypeFace); model != nil {
 		img, imgErr := jpeg.Decode(bytes.NewReader(imgData))
 
 		if imgErr != nil {

@@ -10,7 +10,7 @@ Models:
   Resolution: 224
   Tags:
   - serve
-- Type: face/embeddings
+- Type: face
   Name: FaceNet
   Resolution: 160
   Tags:

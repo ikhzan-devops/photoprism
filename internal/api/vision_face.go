@@ -14,18 +14,18 @@ import (
 	"github.com/photoprism/photoprism/pkg/media/http/scheme"
 )
 
-// PostVisionFaceEmbeddings returns the embeddings of detected faces.
+// PostVisionFace returns the embeddings of a face.
 //
-//	@Summary	returns the positions and embeddings of detected faces
-//	@Id			PostVisionFaceEmbeddings
+//	@Summary	returns the embeddings of a face image
+//	@Id			PostVisionFace
 //	@Tags		Vision
 //	@Produce	json
 //	@Success	200				{object}	vision.ApiResponse
 //	@Failure	401,403,429,501	{object}	i18n.Response
 //	@Param		images			body		vision.ApiRequest	true	"list of image file urls"
-//	@Router		/api/v1/vision/face/embeddings [post]
-func PostVisionFaceEmbeddings(router *gin.RouterGroup) {
-	router.POST("/vision/face/embeddings", func(c *gin.Context) {
+//	@Router		/api/v1/vision/face [post]
+func PostVisionFace(router *gin.RouterGroup) {
+	router.POST("/vision/face", func(c *gin.Context) {
 		s := Auth(c, acl.ResourceVision, acl.Use)
 
 		// Abort if permission is not granted.
@@ -68,7 +68,7 @@ func PostVisionFaceEmbeddings(router *gin.RouterGroup) {
 			if data, err := media.ReadUrl(request.Images[i], scheme.HttpsData); err != nil {
 				results[i] = face.Embeddings{}
 				log.Errorf("vision: %s (read face embedding from url)", err)
-			} else if result, faceErr := vision.FaceEmbeddings(data); faceErr != nil {
+			} else if result, faceErr := vision.Face(data); faceErr != nil {
 				results[i] = face.Embeddings{}
 				log.Errorf("vision: %s (run face embeddings)", faceErr)
 			} else {
@@ -80,7 +80,7 @@ func PostVisionFaceEmbeddings(router *gin.RouterGroup) {
 		response := vision.ApiResponse{
 			Id:     request.GetId(),
 			Code:   http.StatusOK,
-			Model:  &vision.Model{Type: vision.ModelTypeFaceEmbeddings},
+			Model:  &vision.Model{Type: vision.ModelTypeFace},
 			Result: vision.ApiResult{Embeddings: results},
 		}
 
