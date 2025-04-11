@@ -20,6 +20,9 @@ func AddSoftmax(graph *tf.Graph, info *ModelInfo) (*tf.Operation, error) {
 		},
 	}
 
+	// We add this reshape operation becase TF seems unable to infere the input
+	// shape for softmax operation, eventhough it is perfectly recoverable by
+	// inspecting the models.
 	reshapeOp, err := graph.AddOperation(reshapeOpSpec)
 	if err != nil {
 		return nil, err
