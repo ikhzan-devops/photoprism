@@ -1,12 +1,5 @@
 <template>
-  <div
-    ref="page"
-    tabindex="1"
-    class="p-page p-page-albums not-selectable"
-    :class="$config.aclClasses('albums')"
-    @keydown.ctrl="onCtrl"
-    @keydown.meta="onCtrl"
-  >
+  <div ref="page" tabindex="1" class="p-page p-page-albums not-selectable" :class="$config.aclClasses('albums')">
     <v-form
       ref="form"
       validate-on="invalid-input"
@@ -43,6 +36,7 @@
             }
           "
           @keyup.enter="() => updateQuery()"
+          @keyup.esc.exact="() => hideExpansionPanel()"
           @click:prepend-inner.stop="toggleExpansionPanel"
           @click:clear="
             () => {
@@ -387,6 +381,7 @@ export default {
       default: "",
     },
   },
+  expose: ["onShortCut"],
   data() {
     const query = this.$route.query;
     const routeName = this.$route.name;
@@ -546,26 +541,28 @@ export default {
         },
       ];
     },
-    onCtrl(ev) {
-      if (!ev || !(ev instanceof KeyboardEvent) || !(ev.ctrlKey || ev.metaKey) || !this.$view.isActive(this)) {
-        return;
-      }
-
+    onShortCut(ev) {
       switch (ev.code) {
+        case "Escape":
+          if (document.activeElement instanceof HTMLInputElement) {
+            document.activeElement.blur();
+          }
+          this.hideExpansionPanel();
+          return true;
         case "KeyR":
-          ev.preventDefault();
           this.refresh();
-          break;
+          return true;
         case "KeyF":
-          ev.preventDefault();
+          if (ev.shiftKey) {
+            this.showExpansionPanel();
+          }
           this.$view.focus(this.$refs?.form, ".input-search input", true);
-          break;
+          return true;
         case "KeyU":
-          ev.preventDefault();
           if (this.$config.allow("files", "upload") && this.$config.feature("upload")) {
             this.$event.publish("dialog.upload");
           }
-          break;
+          return true;
       }
     },
     toggleExpansionPanel() {
@@ -574,6 +571,11 @@ export default {
       }
 
       this.expanded = !this.expanded;
+    },
+    showExpansionPanel() {
+      if (!this.expanded) {
+        this.expanded = true;
+      }
     },
     hideExpansionPanel() {
       if (this.expanded) {

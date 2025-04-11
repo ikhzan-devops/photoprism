@@ -127,6 +127,7 @@ export default {
       default: () => {},
     },
   },
+  expose: ["onShortCut"],
   data() {
     const query = this.$route.query;
     const routeName = this.$route.name;
@@ -204,6 +205,18 @@ export default {
     this.$view.leave(this);
   },
   methods: {
+    onShortCut(ev) {
+      switch (ev.code) {
+        case "KeyR":
+          this.refresh();
+          return true;
+        case "KeyU":
+          if (this.$config.allow("files", "upload") && this.$config.feature("upload")) {
+            this.$event.publish("dialog.upload");
+          }
+          return true;
+      }
+    },
     getBreadcrumbs() {
       let result = [];
       let uri = "/index/files";

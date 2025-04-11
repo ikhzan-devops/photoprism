@@ -5,22 +5,16 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/photoprism/photoprism/internal/ai/classify"
-	"github.com/photoprism/photoprism/internal/ai/face"
-	"github.com/photoprism/photoprism/internal/ai/nsfw"
 	"github.com/photoprism/photoprism/internal/config"
 )
 
 func TestNewImport(t *testing.T) {
-	conf := config.TestConfig()
+	cfg := config.TestConfig()
 
-	tf := classify.New(conf.AssetsPath(), conf.DisableTensorFlow())
-	nd := nsfw.New(conf.NSFWModelPath())
-	fn := face.NewNet(conf.FaceNetModelPath(), "", conf.DisableTensorFlow())
-	convert := NewConvert(conf)
+	convert := NewConvert(cfg)
 
-	ind := NewIndex(conf, tf, nd, fn, convert, NewFiles(), NewPhotos())
-	imp := NewImport(conf, ind, convert)
+	ind := NewIndex(cfg, convert, NewFiles(), NewPhotos())
+	imp := NewImport(cfg, ind, convert)
 
 	assert.IsType(t, &Import{}, imp)
 }
@@ -30,22 +24,19 @@ func TestImport_DestinationFilename(t *testing.T) {
 		t.Skip("skipping test in short mode.")
 	}
 
-	conf := config.TestConfig()
+	cfg := config.TestConfig()
 
-	if err := conf.InitializeTestData(); err != nil {
+	if err := cfg.InitializeTestData(); err != nil {
 		t.Fatal(err)
 	}
 
-	tf := classify.New(conf.AssetsPath(), conf.DisableTensorFlow())
-	nd := nsfw.New(conf.NSFWModelPath())
-	fn := face.NewNet(conf.FaceNetModelPath(), "", conf.DisableTensorFlow())
-	convert := NewConvert(conf)
+	convert := NewConvert(cfg)
 
-	ind := NewIndex(conf, tf, nd, fn, convert, NewFiles(), NewPhotos())
+	ind := NewIndex(cfg, convert, NewFiles(), NewPhotos())
 
-	imp := NewImport(conf, ind, convert)
+	imp := NewImport(cfg, ind, convert)
 
-	rawFile, err := NewMediaFile(conf.ImportPath() + "/raw/IMG_2567.CR2")
+	rawFile, err := NewMediaFile(cfg.ImportPath() + "/raw/IMG_2567.CR2")
 
 	if err != nil {
 		t.Fatal(err)
@@ -58,7 +49,7 @@ func TestImport_DestinationFilename(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		assert.Equal(t, conf.OriginalsPath()+"/2019/07/20190705_153230_C167C6FD.cr2", fileName)
+		assert.Equal(t, cfg.OriginalsPath()+"/2019/07/20190705_153230_C167C6FD.cr2", fileName)
 	})
 
 	t.Run("WithBasePath", func(t *testing.T) {
@@ -68,7 +59,7 @@ func TestImport_DestinationFilename(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		assert.Equal(t, conf.OriginalsPath()+"/users/guest/2019/07/20190705_153230_C167C6FD.cr2", fileName)
+		assert.Equal(t, cfg.OriginalsPath()+"/users/guest/2019/07/20190705_153230_C167C6FD.cr2", fileName)
 	})
 }
 
@@ -77,20 +68,17 @@ func TestImport_Start(t *testing.T) {
 		t.Skip("skipping test in short mode.")
 	}
 
-	conf := config.TestConfig()
+	cfg := config.TestConfig()
 
-	conf.InitializeTestData()
+	cfg.InitializeTestData()
 
-	tf := classify.New(conf.AssetsPath(), conf.DisableTensorFlow())
-	nd := nsfw.New(conf.NSFWModelPath())
-	fn := face.NewNet(conf.FaceNetModelPath(), "", conf.DisableTensorFlow())
-	convert := NewConvert(conf)
+	convert := NewConvert(cfg)
 
-	ind := NewIndex(conf, tf, nd, fn, convert, NewFiles(), NewPhotos())
+	ind := NewIndex(cfg, convert, NewFiles(), NewPhotos())
 
-	imp := NewImport(conf, ind, convert)
+	imp := NewImport(cfg, ind, convert)
 
-	opt := ImportOptionsMove(conf.ImportPath(), "")
+	opt := ImportOptionsMove(cfg.ImportPath(), "")
 
 	imp.Start(opt)
 }

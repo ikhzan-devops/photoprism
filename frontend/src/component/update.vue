@@ -4,7 +4,7 @@
     persistent
     max-width="400"
     class="p-dialog p-update"
-    @keydown.esc="close"
+    @keydown.esc.exact="close"
     @after-enter="afterEnter"
     @after-leave="afterLeave"
   >
@@ -40,6 +40,7 @@ export default {
       default: false,
     },
   },
+  emits: ["close"],
   methods: {
     afterEnter() {
       this.$view.enter(this);

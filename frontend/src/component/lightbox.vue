@@ -11,9 +11,10 @@
     class="p-dialog p-lightbox v-dialog--lightbox"
     @after-enter="afterEnter"
     @after-leave="afterLeave"
-    @focus="onDialogFocus"
-    @focusin="onDialogFocus"
-    @focusout="onDialogFocus"
+    @focusout="onFocusOut"
+    @keydown.space.exact="onKeyDown"
+    @keydown.left.exact="onKeyDown"
+    @keydown.right.exact="onKeyDown"
   >
     <div class="p-lightbox__underlay"></div>
     <div
@@ -27,7 +28,7 @@
         tabindex="1"
         class="p-lightbox__content"
         :class="{
-          'sidebar-visible': sidebarVisible,
+          'sidebar-visible': info,
           'slideshow-active': slideshow.active,
           'is-fullscreen': isFullscreen(),
           'is-zoomable': isZoomable,
@@ -36,72 +37,73 @@
           'is-muted': muted,
           'is-selected': $clipboard.has(model),
         }"
-        @keydown.space.exact="onKeyDown"
-        @keydown.esc.exact="onKeyDown"
-        @keydown.ctrl="onKeyDown"
-        @keydown.meta="onKeyDown"
-      ></div>
-      <div v-if="sidebarVisible" ref="sidebar" class="p-lightbox__sidebar bg-background">
-        <p-sidebar-info v-model="model" :album="album" :context="context" @close="hideSidebar"></p-sidebar-info>
-      </div>
-    </div>
-    <div
-      v-show="video.controls && controlsShown !== 0"
-      ref="controls"
-      class="p-lightbox__controls"
-      :style="`width: ${viewPortWidth}px`"
-      @click.stop.prevent
-    >
-      <div :title="video.error" class="video-control video-control--play">
-        <v-icon v-if="video.error || video.errorCode > 0" icon="mdi-alert"></v-icon>
-        <v-icon v-else-if="video.seeking || video.waiting" icon="mdi-loading" class="animate-loading"></v-icon>
-        <v-icon
-          v-else-if="video.playing"
-          icon="mdi-pause"
-          class="clickable"
-          @pointerdown.stop.prevent="toggleVideo"
-        ></v-icon>
-        <v-icon v-else icon="mdi-play" class="clickable" @pointerdown.stop.prevent="toggleVideo"></v-icon>
-      </div>
-      <div class="video-control video-control--time text-body-2">
-        {{ $util.formatSeconds(video.ended ? Math.ceil(video.time) : Math.floor(video.time)) }}
-      </div>
-      <v-slider
-        :model-value="video.time"
-        :disabled="!video.seekable"
-        :readonly="video.seeking"
-        :thumb-size="12"
-        :track-size="3"
-        hide-details
-        :error="video.errorCode > 0"
-        :min="0"
-        :max="video.duration"
-        class="video-control video-control--slider"
-        @update:model-value="seekVideo"
       >
-      </v-slider>
-      <div class="video-control video-control--duration text-body-2">
-        {{ $util.formatRemainingSeconds(video.time, video.duration) }}
+        <div ref="lightbox" tabindex="2" class="p-lightbox__pswp"></div>
+        <div
+          v-show="video.controls && controlsShown !== 0"
+          ref="controls"
+          tabindex="3"
+          class="p-lightbox__controls"
+          @click.stop.prevent
+        >
+          <div :title="video.error" class="video-control video-control--play">
+            <v-icon v-if="video.error || video.errorCode > 0" icon="mdi-alert"></v-icon>
+            <v-icon v-else-if="video.seeking || video.waiting" icon="mdi-loading" class="animate-loading"></v-icon>
+            <v-icon
+              v-else-if="video.playing"
+              icon="mdi-pause"
+              class="clickable"
+              @pointerdown.stop.prevent="toggleVideo"
+            ></v-icon>
+            <v-icon v-else icon="mdi-play" class="clickable" @pointerdown.stop.prevent="toggleVideo"></v-icon>
+          </div>
+          <div class="video-control video-control--time text-body-2">
+            {{ $util.formatSeconds(video.ended ? Math.ceil(video.time) : Math.floor(video.time)) }}
+          </div>
+          <v-slider
+            :model-value="video.time"
+            :disabled="!video.seekable"
+            :readonly="video.seeking"
+            :thumb-size="12"
+            :track-size="3"
+            hide-details
+            :error="video.errorCode > 0"
+            :min="0"
+            :max="video.duration"
+            class="video-control video-control--slider"
+            @update:model-value="seekVideo"
+            @update:focused="focusContent"
+          >
+          </v-slider>
+          <div class="video-control video-control--duration text-body-2">
+            {{ $util.formatRemainingSeconds(video.time, video.duration) }}
+          </div>
+          <div v-if="featExperimental && video.castable" class="video-control video-control--cast">
+            <v-icon
+              v-if="video.casting"
+              icon="mdi-cast-connected"
+              class="clickable"
+              @pointerdown.stop.prevent="toggleVideoRemote"
+            ></v-icon>
+            <v-icon
+              v-else
+              icon="mdi-cast"
+              :disabled="video.remote === 'connecting'"
+              class="clickable"
+              @pointerdown.stop.prevent="toggleVideoRemote"
+            ></v-icon>
+          </div>
+        </div>
       </div>
-      <div v-if="featExperimental && video.castable" class="video-control video-control--cast">
-        <v-icon
-          v-if="video.casting"
-          icon="mdi-cast-connected"
-          class="clickable"
-          @pointerdown.stop.prevent="toggleVideoRemote"
-        ></v-icon>
-        <v-icon
-          v-else
-          icon="mdi-cast"
-          :disabled="video.remote === 'connecting'"
-          class="clickable"
-          @pointerdown.stop.prevent="toggleVideoRemote"
-        ></v-icon>
+      <div v-if="info" ref="sidebar" tabindex="-1" class="p-lightbox__sidebar bg-background">
+        <p-sidebar-info v-model="model" :album="album" :context="context" @close="hideInfo"></p-sidebar-info>
       </div>
     </div>
     <p-lightbox-menu
-      :activator="menuElement"
+      ref="menu"
       :items="menuActions"
+      :activator="menuElement"
+      attach=".v-dialog--lightbox.v-overlay--active"
       @show="onShowMenu"
       @hide="onHideMenu"
     ></p-lightbox-menu>
@@ -126,6 +128,7 @@ export default {
   name: "PLightbox",
   components: [PLightboxMenu, PSidebarInfo],
   emits: ["enter", "leave"],
+  expose: ["onShortCut"],
   data() {
     const debug = this.$config.get("debug");
     const trace = this.$config.get("trace");
@@ -135,11 +138,10 @@ export default {
       trace,
       visible: false,
       busy: false,
-      sidebarVisible: localStorage.getItem("lightbox.sidebar.visible") === "true",
+      info: localStorage.getItem("lightbox.info") === "true",
       menuElement: null,
       menuBgColor: "#252525",
       menuVisible: false,
-      viewPortWidth: 0,
       lightbox: null, // Current PhotoSwipe lightbox instance.
       captionPlugin: null, // Current PhotoSwipe caption plugin instance.
       muted: window.sessionStorage.getItem("lightbox.muted") === "true",
@@ -255,7 +257,7 @@ export default {
       this.busy = true;
       this.visible = true;
       this.wasFullscreen = $fullscreen.isEnabled();
-      this.sidebarVisible = localStorage.getItem("lightbox.sidebar.visible") === "true";
+      this.info = localStorage.getItem("lightbox.info") === "true";
 
       // Publish init event.
       this.$event.publish("lightbox.init");
@@ -266,7 +268,7 @@ export default {
       this.onReset();
 
       // Hide sidebar.
-      this.sidebarVisible = false;
+      this.info = false;
 
       // Remove lightbox focus and hide lightbox.
       if (this.visible) {
@@ -292,12 +294,38 @@ export default {
       this.$event.publish("lightbox.leave");
       this.$emit("leave");
     },
-    // Triggered when the dialog focus changes.
-    onDialogFocus(ev) {
-      if (this.trace) {
-        this.log(`dialog.${ev.type}`);
+    // Traps the focus inside the lightbox dialog.
+    onFocusOut(ev) {
+      if (this.debug) {
+        this.log(`dialog.${ev.type}`, ev);
       }
-      return false;
+
+      if (!this.$view.isActive(this)) {
+        return;
+      }
+
+      // Keep content element focused.
+      if (this.$refs.content && this.$refs.content instanceof HTMLElement) {
+        if (
+          (ev.target &&
+            ev.target instanceof HTMLElement &&
+            (!ev.target.closest(".v-dialog--lightbox") || ev.target?.tabIndex < 0 || ev.target.disabled)) ||
+          (ev.relatedTarget &&
+            ev.relatedTarget instanceof HTMLElement &&
+            (!ev.relatedTarget.closest(".v-dialog--lightbox") || ev.relatedTarget.tabIndex < 0))
+        ) {
+          this.focusContent(ev);
+        }
+      }
+    },
+    focusContent(ev) {
+      if (this.$refs.content && this.$refs.content instanceof HTMLElement) {
+        this.$refs.content.focus();
+
+        if (this.debug && ev) {
+          this.log(`set focus to content`, { ev });
+        }
+      }
     },
     log(ev, data) {
       if (!ev) {
@@ -310,13 +338,13 @@ export default {
       }
     },
     // Returns the PhotoSwipe content element.
-    getContentElement() {
-      if (!this.$refs.content) {
-        this.log("content element is not visible");
+    getLightboxElement() {
+      if (!this.$refs.lightbox) {
+        this.log("lightbox element is not visible");
         return null;
       }
 
-      return this.$refs.content;
+      return this.$refs.lightbox;
     },
     // Returns the metadata sidebar element.
     getSidebarElement() {
@@ -330,7 +358,7 @@ export default {
     // Returns the PhotoSwipe config options, see https://photoswipe.com/options/.
     getOptions() {
       return {
-        appendToEl: this.getContentElement(),
+        appendToEl: this.getLightboxElement(),
         pswpModule: PhotoSwipe,
         index: this.index,
         mouseMovePan: true,
@@ -340,10 +368,11 @@ export default {
         zoom: true,
         close: false,
         escKey: false,
+        arrowKeys: false,
         pinchToClose: false,
         counter: false,
         trapFocus: false,
-        returnFocus: true,
+        returnFocus: false,
         allowPanToNext: false,
         closeOnVerticalDrag: false,
         initialZoomLevel: "fit",
@@ -490,14 +519,14 @@ export default {
       // Get the estimated slide (viewport) size in real pixels.
       const pixels = this.getSlidePixels(model);
 
-      // Get initial thumbnail size that best matches the viewport size in real pixels.
-      const thumbSize = this.$util.thumbSize(pixels.width, pixels.height);
+      // Find thumbnail size that best matches the current slide size and zoom level.
+      const thumb = this.$util.thumb(model.Thumbs, pixels.width, pixels.height);
 
-      // Get thumbnail image URL, width, and height.
-      const thumb = {
-        src: model.Thumbs[thumbSize].src,
-        width: model.Thumbs[thumbSize].w,
-        height: model.Thumbs[thumbSize].h,
+      // Set thumbnail image URL, width, and height.
+      const img = {
+        src: thumb.src,
+        width: thumb.w,
+        height: thumb.h,
         alt: model?.Title,
         model: model,
         loading: false,
@@ -516,28 +545,28 @@ export default {
           : false;
 
         // Set the slide data needed to render and play the video.
-        const data = {
+        const video = {
           type: "html", // Render custom HTML.
           html: `<div class="pswp__html"></div>`, // Replaced with the <video> element.
           model: model, // Content model.
           duration: model.Duration > 0 ? model.Duration / 1000000000 : 0,
           format: this.$util.videoFormat(model?.Codec, model?.Mime), // Content format.
           loop: model?.Type !== media.Live && (isShort || model?.Type === media.Animated), // If possible, loop these types.
-          msrc: thumb.src, // Image URL.
+          msrc: img.src, // Image URL.
           loading: true,
         };
 
         if (model?.Type === media.Live) {
-          data.width = thumb.width;
-          data.height = thumb.height;
+          video.width = img.width;
+          video.height = img.height;
         }
 
-        return data;
+        return video;
       }
 
       // Return the image data so that PhotoSwipe can render it in the lightbox,
       // see https://photoswipe.com/data-sources/#dynamically-generated-data.
-      return thumb;
+      return img;
     },
     isContentZoomable(isContentZoomable, content) {
       if (content.data?.model?.Type === media.Live) {
@@ -846,11 +875,11 @@ export default {
 
       // Enable seeking if the video has a seekable time range.
       if (video.seekable && video.seekable instanceof TimeRanges) {
-        this.video.seekable = video.seekable.length > 0;
+        this.video.seekable = video.readyState > 0 && video.seekable.length > 0;
       }
 
-      // Disable seeking if video is broken or not loaded.
-      if (this.video.errorCode > 0 || this.video.state <= 0) {
+      // Disable seeking if video doesn't load or there is an error.
+      if (video.readyState < 1 || this.video.errorCode > 0) {
         this.video.seekable = false;
       }
 
@@ -910,9 +939,8 @@ export default {
         return Promise.reject();
       }
 
-      // Focus lightbox element.
-      // TODO: Move to common/view.js
-      this.getContentElement().focus();
+      // Focus content element.
+      this.$refs.content.focus();
 
       // Create PhotoSwipe instance.
       let lightbox = new Lightbox(options);
@@ -1067,7 +1095,6 @@ export default {
 
       // Init PhotoSwipe.
       this.lightbox.init();
-      this.viewPortWidth = this.getViewport().x;
 
       // Show first image.
       this.lightbox.loadAndOpen(this.index);
@@ -1106,23 +1133,23 @@ export default {
             }),
         });
 
-        // Add sidebar view/hide toggle button.
-        if (this.featExperimental && this.canEdit && window.innerWidth > this.mobileBreakpoint) {
+        // Add information toggle button.
+        if (this.featExperimental && window.innerWidth > this.mobileBreakpoint) {
           lightbox.pswp.ui.registerElement({
             name: "sidebar-button",
-            className: "pswp__button--sidebar-button pswp__button--mdi", // Sets the icon style/size in lightbox.css.
-            title: this.$gettext("Show/Hide Sidebar"),
-            ariaLabel: this.$gettext("Show/Hide Sidebar"),
+            className: "pswp__button--info-button pswp__button--mdi", // Sets the icon style/size in lightbox.css.
+            title: this.$gettext("Information"),
+            ariaLabel: this.$gettext("Information"),
             order: 9,
             isButton: true,
             html: {
               isCustomSVG: true,
               inner:
-                '<path d="M11 7V9H13V7H11M14 17V15H13V11H10V13H11V15H10V17H14M22 12C22 17.5 17.5 22 12 22C6.5 22 2 17.5 2 12C2 6.5 6.5 2 12 2C17.5 2 22 6.5 22 12M20 12C20 7.58 16.42 4 12 4C7.58 4 4 7.58 4 12C4 16.42 7.58 20 12 20C16.42 20 20 16.42 20 12Z" id="pswp__icn-sidebar"/>',
-              outlineID: "pswp__icn-sidebar", // Add this to the <path> in the inner property.
+                '<path d="M11 7V9H13V7H11M14 17V15H13V11H10V13H11V15H10V17H14M22 12C22 17.5 17.5 22 12 22C6.5 22 2 17.5 2 12C2 6.5 6.5 2 12 2C17.5 2 22 6.5 22 12M20 12C20 7.58 16.42 4 12 4C7.58 4 4 7.58 4 12C4 16.42 7.58 20 12 20C16.42 20 20 16.42 20 12Z" id="pswp__icn-info"/>',
+              outlineID: "pswp__icn-info", // Add this to the <path> in the inner property.
               size: 24, // Depends on the original SVG viewBox, e.g. use 24 for viewBox="0 0 24 24".
             },
-            onClick: (ev) => this.onControlClick(ev, this.toggleSidebar),
+            onClick: (ev) => this.onControlClick(ev, this.toggleInfo),
           });
         }
 
@@ -1139,15 +1166,15 @@ export default {
             inner: `<use class="pswp__icn-shadow pswp__icn-sound-on" xlink:href="#pswp__icn-sound-on"></use><path d="M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.84 14,18.7V20.77C18,19.86 21,16.28 21,12C21,7.72 18,4.14 14,3.23M16.5,12C16.5,10.23 15.5,8.71 14,7.97V16C15.5,15.29 16.5,13.76 16.5,12M3,9V15H7L12,20V4L7,9H3Z" id="pswp__icn-sound-on" class="pswp__icn-sound-on" /><use class="pswp__icn-shadow pswp__icn-sound-off" xlink:href="#pswp__icn-sound-off"></use><path d="M12,4L9.91,6.09L12,8.18M4.27,3L3,4.27L7.73,9H3V15H7L12,20V13.27L16.25,17.53C15.58,18.04 14.83,18.46 14,18.7V20.77C15.38,20.45 16.63,19.82 17.68,18.96L19.73,21L21,19.73L12,10.73M19,12C19,12.94 18.8,13.82 18.46,14.64L19.97,16.15C20.62,14.91 21,13.5 21,12C21,7.72 18,4.14 14,3.23V5.29C16.89,6.15 19,8.83 19,12M16.5,12C16.5,10.23 15.5,8.71 14,7.97V10.18L16.45,12.63C16.5,12.43 16.5,12.21 16.5,12Z" id="pswp__icn-sound-off" class="pswp__icn-sound-off" />`,
             size: 24, // Depends on the original SVG viewBox, e.g. use 24 for viewBox="0 0 24 24".
           },
-          onClick: (ev) => this.onControlClick(ev, this.toggleSound),
+          onClick: (ev) => this.onControlClick(ev, this.toggleMute),
         });
 
         // Add slideshow play/pause toggle control.
         lightbox.pswp.ui.registerElement({
           name: "slideshow-toggle",
           className: "pswp__button--slideshow-toggle pswp__button--mdi", // Sets the icon style/size in lightbox.css.
-          title: this.$gettext("Start/Stop Slideshow"),
-          ariaLabel: this.$gettext("Start/Stop Slideshow"),
+          title: this.$gettext("Slideshow"),
+          ariaLabel: this.$gettext("Slideshow"),
           order: 10,
           isButton: true,
           html: {
@@ -1453,6 +1480,11 @@ export default {
         return;
       }
 
+      // Hide action menu when slide changes.
+      if (this.$refs.menu) {
+        this.$refs.menu.hide();
+      }
+
       // Set current slide (model) list index.
       if (typeof pswp.currIndex === "number") {
         this.index = pswp.currIndex;
@@ -1467,6 +1499,9 @@ export default {
       if (this.slideshow.next !== this.index) {
         this.pauseSlideshow();
       }
+
+      // Ensure that content is focused.
+      this.$refs.content.focus();
     },
     // Called when the user clicks on the PhotoSwipe lightbox background,
     // see https://photoswipe.com/click-and-tap-actions.
@@ -1711,14 +1746,101 @@ export default {
         }
       }
     },
-    // Handles keyboard events.
+    // Handles Ctrl/Cmd + key combinations.
+    onShortCut(ev) {
+      if (this.trace) {
+        this.log("shortcut", { ev });
+      }
+
+      switch (ev.code) {
+        case "Escape":
+          this.closeLightbox();
+          return true;
+        case "Period":
+          this.onShowMenu();
+          this.toggleSelect();
+          return true;
+        case "KeyA":
+          if (this.canArchive && this.context !== "hidden") {
+            if (this.model.Archived || (this.context === "archive" && this.model?.Archived !== false)) {
+              this.onRestore();
+            } else {
+              this.onArchive();
+            }
+          }
+          return true;
+        case "KeyD":
+          if (this.canDownload) {
+            this.onDownload();
+          }
+          return true;
+        case "KeyE":
+          if (this.canEdit) {
+            this.onEdit();
+          }
+          return true;
+        case "KeyF":
+          if (this.canFullscreen) {
+            this.toggleFullscreen();
+          }
+          break;
+        case "KeyI":
+          this.toggleInfo();
+          return true;
+        case "KeyL":
+          this.onShowMenu();
+          if (this.canLike) {
+            this.toggleLike();
+          }
+          return true;
+        case "KeyM":
+          this.toggleMute();
+          return true;
+        case "KeyS":
+          this.toggleSlideshow();
+          return true;
+      }
+    },
+    // Handles other key events.
     onKeyDown(ev) {
-      if (!ev || !ev.code || !this.visible || this.sidebarVisible) {
+      if (!ev || !ev.code || !this.visible || !this.$view.isActive(this)) {
         return;
       }
 
+      if (
+        this.info &&
+        (document.activeElement instanceof HTMLInputElement || document.activeElement instanceof HTMLTextAreaElement)
+      ) {
+        return;
+      }
+
+      if (this.trace) {
+        this.log("key.down", { ev });
+      }
+
+      this.pauseSlideshow();
+
       // Handle space and escape key events.
       switch (ev.code) {
+        case "ArrowLeft":
+          ev.preventDefault();
+          ev.stopPropagation();
+          if (this.model?.Playable && this.video.controls && this.video.playing) {
+            this.seekVideoSeconds(this.$isRtl ? 10 : -10);
+          } else if (this.index > 0) {
+            this.pswp().prev();
+          }
+          break;
+        case "ArrowRight":
+          ev.preventDefault();
+          ev.stopPropagation();
+
+          if (this.model?.Playable && this.video.controls && this.video.playing) {
+            this.seekVideoSeconds(this.$isRtl ? -10 : 10);
+          } else if (this.models.length > this.index + 1) {
+            this.pswp().next();
+          }
+          break;
         case "Space":
           ev.preventDefault();
           ev.stopPropagation();
@@ -1730,38 +1852,6 @@ export default {
             this.toggleVideo();
           } else {
             this.toggleControls();
-          }
-          break;
-        case "Escape":
-          ev.preventDefault();
-          ev.stopPropagation();
-          this.closeLightbox();
-          break;
-      }
-
-      // Return if Ctrl or Cmd is not pressed.
-      if (!(ev.ctrlKey || ev.metaKey)) {
-        return;
-      }
-
-      // Handle Ctrl/Cmd + key combinations:
-      switch (ev.code) {
-        case "KeyA":
-          ev.preventDefault();
-          ev.stopPropagation();
-          if (this.canArchive && this.context !== "hidden") {
-            if (this.model.Archived || (this.context === "archive" && this.model?.Archived !== false)) {
-              this.onRestore();
-            } else {
-              this.onArchive();
-            }
-          }
-          break;
-        case "KeyD":
-          ev.preventDefault();
-          ev.stopPropagation();
-          if (this.canDownload) {
-            this.onDownload();
           }
           break;
       }
@@ -1782,8 +1872,9 @@ export default {
         this.pauseVideo(video);
       }
     },
-    seekVideo(time) {
-      if (typeof time !== "number") {
+    // Jumps to the specified time index when a video is loaded and seekable.
+    seekVideo(seekTo) {
+      if (typeof seekTo !== "number") {
         return false;
       }
 
@@ -1792,9 +1883,36 @@ export default {
 
       if (!video) {
         return false;
+      } else if (!video?.readyState || video.readyState < 1 || !video.duration || !this.video.seekable) {
+        return;
       }
 
-      video.currentTime = time;
+      if (seekTo > video.duration) {
+        video.currentTime = video.duration;
+      } else if (seekTo <= 0) {
+        video.currentTime = 0;
+      } else {
+        video.currentTime = seekTo;
+      }
+
+      return true;
+    },
+    // Skips the specified number of seconds when a video is loaded and seekable.
+    seekVideoSeconds(seconds) {
+      if (!seconds || typeof seconds !== "number") {
+        return false;
+      } else if (!this.video.playing) {
+        return false;
+      }
+
+      // Get active video element, if any.
+      const { video } = this.getContent();
+
+      if (!video || !video.currentTime) {
+        return false;
+      }
+
+      this.seekVideo(video.currentTime + seconds);
 
       return true;
     },
@@ -1814,7 +1932,7 @@ export default {
       }
     },
     // Mutes/unmutes the sound for videos.
-    toggleSound() {
+    toggleMute() {
       this.muted = !this.muted;
 
       window.sessionStorage.setItem("lightbox.muted", this.muted.toString());
@@ -2039,10 +2157,8 @@ export default {
       });
     },
     resize(force) {
-      this.viewPortWidth = this.getViewport().x;
-
       this.$nextTick(() => {
-        if (this.visible && this.getContentElement() && !this.isBusy("resize")) {
+        if (this.visible && this.getLightboxElement() && !this.isBusy("resize")) {
           const pswp = this.pswp();
           if (pswp && pswp?.updateSize) {
             pswp.updateSize(force);
@@ -2050,47 +2166,47 @@ export default {
         }
       });
     },
-    toggleSidebar() {
+    toggleInfo() {
       if (!this.visible) {
         return;
       }
 
-      if (this.sidebarVisible) {
-        this.hideSidebar();
+      if (this.info) {
+        this.hideInfo();
       } else {
-        this.showSidebar();
+        this.showInfo();
       }
     },
     // Shows the lightbox sidebar, if hidden.
-    showSidebar() {
-      if (!this.visible || this.sidebarVisible || !this.featExperimental || !this.canEdit) {
+    showInfo() {
+      if (!this.visible || this.info || !this.featExperimental) {
         return;
       }
 
-      this.sidebarVisible = true;
+      this.info = true;
 
-      localStorage.setItem("lightbox.sidebar.visible", `${this.sidebarVisible.toString()}`);
+      localStorage.setItem("lightbox.info", `${this.info.toString()}`);
 
-      // Set focus to sidebar and resize the content element.
+      // Resize and focus content element.
       this.$nextTick(() => {
-        this.getSidebarElement().focus();
         this.resize(true);
+        this.$refs.content.focus();
       });
     },
     // Hides the lightbox sidebar, if visible.
-    hideSidebar() {
-      if (!this.visible || !this.sidebarVisible || !this.featExperimental || !this.canEdit) {
+    hideInfo() {
+      if (!this.visible || !this.info || !this.featExperimental) {
         return;
       }
 
-      this.sidebarVisible = false;
+      this.info = false;
 
-      localStorage.setItem("lightbox.sidebar.visible", `${this.sidebarVisible.toString()}`);
+      localStorage.setItem("lightbox.info", `${this.info.toString()}`);
 
-      // Return focus and resize the content element.
+      // Resize and focus content element.
       this.$nextTick(() => {
-        this.getContentElement().focus();
         this.resize(true);
+        this.$refs.content.focus();
       });
     },
     toggleControls() {
@@ -2197,7 +2313,7 @@ export default {
     },
     // Returns the viewport size without sidebar, if visible.
     getViewport() {
-      const el = this.getContentElement();
+      const el = this.$refs?.content;
 
       if (el) {
         return {
@@ -2302,19 +2418,12 @@ export default {
       const slideHeight = Math.ceil(slide.height * zoomLevel * window.devicePixelRatio);
 
       // Find thumbnail size that best matches the current slide size and zoom level.
-      const thumbSize = this.$util.thumbSize(slideWidth, slideHeight);
+      const thumb = this.$util.thumb(model.Thumbs, slideWidth, slideHeight);
 
-      // Do not proceed if no matching size was found.
-      if (!thumbSize) {
+      // Do not change image if no matching thumbnail size was found or is available.
+      if (!thumb || !thumb.src || !thumb.w || !thumb.h) {
         return;
       }
-
-      // Get new thumbnail URL based on the calculated size.
-      const thumb = {
-        src: model.Thumbs[thumbSize].src,
-        width: model.Thumbs[thumbSize].w,
-        height: model.Thumbs[thumbSize].h,
-      };
 
       // Get the thumbnail URL of the currently displayed image.
       const currentSrc = data.src;
@@ -2368,7 +2477,7 @@ export default {
           }
 
           if (this.debug) {
-            this.log(`loaded thumbnail ${thumbSize} from ${ev.target.currentSrc}`);
+            this.log(`loaded thumbnail ${thumb.size} from ${ev.target.currentSrc}`);
           }
 
           // Update the slide's HTMLImageElement to use the new thumbnail image.
@@ -2378,15 +2487,15 @@ export default {
 
           // Update PhotoSwipe's slide data.
           data.src = thumb.src;
-          data.width = thumb.width;
-          data.height = thumb.height;
+          data.width = thumb.w;
+          data.height = thumb.h;
           data.loading = false;
         });
 
         // Set thumbnail src to load the new image.
         image.src = thumb.src;
       } catch (err) {
-        this.log(`failed to load image size ${thumbSize}`, err);
+        this.log(`failed to load image size ${thumb.size}`, err);
         data.loading = false;
       }
     },

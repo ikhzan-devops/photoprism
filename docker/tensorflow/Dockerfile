@@ -1,11 +1,13 @@
-FROM ubuntu:24.10
+FROM ubuntu:22.04
 
 LABEL maintainer="PhotoPrism UG <hello@photoprism.app>"
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TMP=/tmp
 
-ENV TF_VERSION=2.18.0
+# see https://docs.docker.com/build/building/variables/#env-usage-example
+ARG TF_VERSION=2.18.0
+ENV TF_VERSION=$TF_VERSION
 
 # apt default settings
 RUN echo 'APT::Acquire::Retries "3";' > /etc/apt/apt.conf.d/80retries && \
@@ -21,15 +23,19 @@ RUN apt-get update && apt-get upgrade && \
     build-essential \
     python3 \
     ca-certificates \
-    llvm-17 \
-    clang-17 \
     curl \
     wget \
     git \
-    jq 
+    lsb-release \
+    software-properties-common \
+    gnupg \
+    jq \
+    nano
 
-# Install bazelisk
-RUN ln -s /usr/bin/python3 /usr/bin/python && \
+# Install bazelisk and llvm
+RUN wget https://apt.llvm.org/llvm.sh && chmod u+x llvm.sh && \
+    ./llvm.sh 17 && rm llvm.sh && \
+    ln -s /usr/bin/python3 /usr/bin/python && \
     ln -s /usr/bin/clang-17 /usr/bin/clang && \
     ln -s /usr/bin/clang++-17 /usr/bin/clang++ && \
     ln -s /usr/bin/clang-cpp /usr/bin/clang-cpp && \
