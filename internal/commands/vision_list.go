@@ -45,7 +45,7 @@ func visionListAction(ctx *cli.Context) error {
 				model.Version,
 				fmt.Sprintf("%d", model.Resolution),
 				modelUri,
-				strings.Join(model.Tags, ", "),
+				strings.Join(model.Meta.Tags, ", "),
 				report.Bool(model.Disabled, report.Yes, report.No),
 			}
 		}

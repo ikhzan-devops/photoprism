@@ -15,6 +15,7 @@ import (
 	tf "github.com/wamuir/graft/tensorflow"
 
 	"github.com/photoprism/photoprism/internal/ai/tensorflow"
+	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/media"
 	"github.com/photoprism/photoprism/pkg/media/http/scheme"
 )
@@ -24,21 +25,45 @@ type Model struct {
 	model      *tf.SavedModel
 	modelPath  string
 	assetsPath string
-	resolution int
-	modelTags  []string
 	labels     []string
 	disabled   bool
+	meta       *tensorflow.ModelInfo
 	mutex      sync.Mutex
 }
 
 // NewModel returns new TensorFlow classification model instance.
-func NewModel(assetsPath, modelPath string, resolution int, modelTags []string, disabled bool) *Model {
-	return &Model{assetsPath: assetsPath, modelPath: modelPath, resolution: resolution, modelTags: modelTags, disabled: disabled}
+func NewModel(assetsPath, modelPath string, meta *tensorflow.ModelInfo, disabled bool) *Model {
+	if meta == nil {
+		meta = new(tensorflow.ModelInfo)
+	}
+
+	return &Model{
+		modelPath:  modelPath,
+		assetsPath: assetsPath,
+		meta:       meta,
+		disabled:   disabled,
+	}
 }
 
 // NewNasnet returns new Nasnet TensorFlow classification model instance.
 func NewNasnet(assetsPath string, disabled bool) *Model {
-	return NewModel(assetsPath, "nasnet", 224, []string{"photoprism"}, disabled)
+	return NewModel(assetsPath, "nasnet", &tensorflow.ModelInfo{
+		TFVersion: "1.12.0",
+		Tags:      []string{"photoprism"},
+		Input: &tensorflow.PhotoInput{
+			Name:        "input_1",
+			Height:      224,
+			Width:       224,
+			Channels:    3,
+			OutputIndex: 0,
+		},
+		Output: &tensorflow.ModelOutput{
+			Name:          "predictions/Softmax",
+			NumOutputs:    1000,
+			OutputIndex:   0,
+			OutputsLogits: false,
+		},
+	}, disabled)
 }
 
 // Init initialises tensorflow models if not disabled
@@ -106,10 +131,10 @@ func (m *Model) Run(img []byte, confidenceThreshold int) (result Labels, err err
 	// Run inference.
 	output, err := m.model.Session.Run(
 		map[tf.Output]*tf.Tensor{
-			m.model.Graph.Operation("input_1").Output(0): tensor,
+			m.model.Graph.Operation(m.meta.Input.Name).Output(m.meta.Input.OutputIndex): tensor,
 		},
 		[]tf.Output{
-			m.model.Graph.Operation("predictions/Softmax").Output(0),
+			m.model.Graph.Operation(m.meta.Output.Name).Output(m.meta.Output.OutputIndex),
 		},
 		nil)
 
@@ -155,7 +180,45 @@ func (m *Model) loadModel() (err error) {
 
 	modelPath := path.Join(m.assetsPath, m.modelPath)
 
-	m.model, err = tensorflow.SavedModel(modelPath, m.modelTags)
+	if len(m.meta.Tags) == 0 {
+		infos, err := tensorflow.GetModelInfo(modelPath)
+		if err != nil {
+			log.Errorf("classify: could not get the model info at %s: %v", clean.Log(modelPath), err)
+		} else if len(infos) == 1 {
+			log.Debugf("classify: model info: %+v", infos[0])
+			m.meta.Merge(&infos[0])
+		} else {
+			log.Warnf("classify: found %d metagraphs... thats too many", len(infos))
+		}
+	}
+
+	m.model, err = tensorflow.SavedModel(modelPath, m.meta.Tags)
+	if err != nil {
+		return err
+	}
+
+	if !m.meta.IsComplete() {
+		input, output, err := tensorflow.GetInputAndOutputFromSavedModel(m.model)
+		if err != nil {
+			log.Errorf("classify: could not get info from signatures: %v", err)
+			input, output, err = tensorflow.GuessInputAndOutput(m.model)
+			if err != nil {
+				return fmt.Errorf("classify: %w", err)
+			}
+		}
+
+		m.meta.Merge(&tensorflow.ModelInfo{
+			Input:  input,
+			Output: output,
+		})
+	}
+
+	if m.meta.Output.OutputsLogits {
+		_, err = tensorflow.AddSoftmax(m.model.Graph, m.meta)
+		if err != nil {
+			return fmt.Errorf("classify: could not add softmax: %w")
+		}
+	}
 
 	return m.loadLabels(modelPath)
 }
@@ -215,9 +278,9 @@ func (m *Model) createTensor(image []byte) (*tf.Tensor, error) {
 	}
 
 	// Resize the image only if its resolution does not match the model.
-	if img.Bounds().Dx() != m.resolution || img.Bounds().Dy() != m.resolution {
-		img = imaging.Fill(img, m.resolution, m.resolution, imaging.Center, imaging.Lanczos)
+	if img.Bounds().Dx() != m.meta.Input.Resolution() || img.Bounds().Dy() != m.meta.Input.Resolution() {
+		img = imaging.Fill(img, m.meta.Input.Resolution(), m.meta.Input.Resolution(), imaging.Center, imaging.Lanczos)
 	}
 
-	return tensorflow.Image(img, m.resolution)
+	return tensorflow.Image(img, m.meta.Input.Resolution())
 }

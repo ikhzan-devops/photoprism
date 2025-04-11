@@ -1,5 +1,7 @@
 package vision
 
+import "github.com/photoprism/photoprism/internal/ai/tensorflow"
+
 // Default computer vision model configuration.
 var (
 	NasnetModel = &Model{
@@ -7,21 +9,69 @@ var (
 		Name:       "NASNet",
 		Version:    "Mobile",
 		Resolution: 224,
-		Tags:       []string{"photoprism"},
+		Meta: &tensorflow.ModelInfo{
+			TFVersion: "1.12.0",
+			Tags:      []string{"photoprism"},
+			Input: &tensorflow.PhotoInput{
+				Name:        "input_1",
+				Height:      224,
+				Width:       224,
+				Channels:    3,
+				OutputIndex: 0,
+			},
+			Output: &tensorflow.ModelOutput{
+				Name:          "predictions/Softmax",
+				NumOutputs:    1000,
+				OutputIndex:   0,
+				OutputsLogits: false,
+			},
+		},
 	}
 	NsfwModel = &Model{
 		Type:       ModelTypeNsfw,
 		Name:       "Nsfw",
 		Version:    "",
 		Resolution: 224,
-		Tags:       []string{"serve"},
+		Meta: &tensorflow.ModelInfo{
+			TFVersion: "1.12.0",
+			Tags:      []string{"serve"},
+			Input: &tensorflow.PhotoInput{
+				Name:        "input_tensor",
+				Height:      224,
+				Width:       224,
+				Channels:    3,
+				OutputIndex: 0,
+			},
+			Output: &tensorflow.ModelOutput{
+				Name:          "nsfw_cls_model/final_prediction",
+				NumOutputs:    5,
+				OutputIndex:   0,
+				OutputsLogits: false,
+			},
+		},
 	}
 	FacenetModel = &Model{
 		Type:       ModelTypeFace,
 		Name:       "FaceNet",
 		Version:    "",
 		Resolution: 160,
-		Tags:       []string{"serve"},
+		Meta: &tensorflow.ModelInfo{
+			TFVersion: "1.7.1",
+			Tags:      []string{"serve"},
+			Input: &tensorflow.PhotoInput{
+				Name:        "input",
+				Height:      160,
+				Width:       160,
+				Channels:    3,
+				OutputIndex: 0,
+			},
+			Output: &tensorflow.ModelOutput{
+				Name:          "embeddings",
+				NumOutputs:    512,
+				OutputIndex:   0,
+				OutputsLogits: false,
+			},
+		},
 	}
 	CaptionModel = &Model{
 		Type:       ModelTypeCaption,
