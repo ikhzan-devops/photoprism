@@ -11,5 +11,6 @@ export default class Page {
     this.logsTab = Selector("#tab-library_logs", { timeout: 15000 });
     this.moveCheckbox = Selector("label").withText("Move Files");
     this.completeRescanCheckbox = Selector("label").withText("Complete Rescan");
+    this.searchInput = Selector(".input-search input");
   }
 }

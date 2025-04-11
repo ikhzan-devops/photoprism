@@ -4,10 +4,14 @@ export default class Page {
   constructor() {}
 
   async openNav() {
-    if (await Selector("div.nav-expand").visible) {
-      await t.click(Selector("div.nav-expand i"));
-    } else if (await Selector("div.nav-expand").visible) {
-      await t.click(Selector("div.nav-expand i"));
+    const navDrawer = Selector(".v-navigation-drawer");
+    const expandButton = Selector("div.nav-expand i");
+    const expandButtonContainer = Selector("div.nav-expand");
+
+    if (!(await navDrawer.visible)) {
+      if (await expandButtonContainer.visible) {
+        await t.click(expandButton.with({ boundTestRun: t }));
+      }
     }
   }
 
