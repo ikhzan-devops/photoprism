@@ -39,13 +39,13 @@ func Caption(imgName string, src media.Src) (result CaptionResult, err error) {
 					imgUrl = media.DataUrl(file)
 				} */
 
-				dlId, dlErr := download.Register(imgName)
+				fileUuid := rnd.UUID()
 
-				if dlErr != nil {
+				if dlErr := download.Register(imgName, fileUuid); dlErr != nil {
 					return result, fmt.Errorf("%s (create download url)", err)
 				}
 
-				imgUrl = fmt.Sprintf("%s/%s", DownloadUrl, dlId)
+				imgUrl = fmt.Sprintf("%s/%s", DownloadUrl, fileUuid)
 			case media.SrcRemote:
 				var u *url.URL
 				if u, err = url.Parse(imgName); err != nil {

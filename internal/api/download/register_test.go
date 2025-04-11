@@ -11,27 +11,34 @@ import (
 
 func TestRegister(t *testing.T) {
 	t.Run("Success", func(t *testing.T) {
+		fileUuid := rnd.UUID()
 		fileName := fs.Abs("./testdata/image.jpg")
-		uniqueId, err := Register(fileName)
+		err := Register(fileUuid, fileName)
 		assert.NoError(t, err)
-		assert.True(t, rnd.IsUUID(uniqueId))
+		assert.True(t, rnd.IsUUID(fileUuid))
 
-		findName, findErr := Find(uniqueId)
+		findName, findErr := Find(fileUuid)
 
 		assert.NoError(t, findErr)
 		assert.Equal(t, fileName, findName)
 
 		Flush()
 
-		findName, findErr = Find(uniqueId)
+		findName, findErr = Find(fileUuid)
 
 		assert.Error(t, findErr)
 		assert.Equal(t, "", findName)
 	})
 	t.Run("NotFound", func(t *testing.T) {
+		fileUuid := rnd.UUID()
 		fileName := fs.Abs("./testdata/invalid.jpg")
-		uniqueId, err := Register(fileName)
+		err := Register(fileUuid, fileName)
 		assert.Error(t, err)
-		assert.Equal(t, "", uniqueId)
+		assert.True(t, rnd.IsUUID(fileUuid))
+
+		findName, findErr := Find(fileUuid)
+
+		assert.Error(t, findErr)
+		assert.Equal(t, "", findName)
 	})
 }
