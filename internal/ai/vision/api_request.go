@@ -25,7 +25,7 @@ func (r *ApiRequest) GetId() string {
 	return r.Id
 }
 
-// MarshalJSON returns request as JSON.
-func (r *ApiRequest) MarshalJSON() ([]byte, error) {
+// JSON returns the request data as JSON-encoded bytes.
+func (r *ApiRequest) JSON() ([]byte, error) {
 	return json.Marshal(*r)
 }

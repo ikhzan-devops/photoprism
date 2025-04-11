@@ -65,7 +65,7 @@ func Caption(imgName string, src media.Src) (result CaptionResult, err error) {
 				Url:   imgUrl,
 			}
 
-			/* if json, _ := apiRequest.MarshalJSON(); len(json) > 0 {
+			/* if json, _ := apiRequest.JSON(); len(json) > 0 {
 				log.Debugf("request: %s", json)
 			} */
 

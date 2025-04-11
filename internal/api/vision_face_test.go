@@ -28,7 +28,7 @@ func TestPostVisionFace(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		jsonReq, jsonErr := req.MarshalJSON()
+		jsonReq, jsonErr := req.JSON()
 
 		if jsonErr != nil {
 			t.Fatal(err)
@@ -71,7 +71,7 @@ func TestPostVisionFace(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		jsonReq, jsonErr := req.MarshalJSON()
+		jsonReq, jsonErr := req.JSON()
 
 		if jsonErr != nil {
 			t.Fatal(err)
@@ -107,7 +107,7 @@ func TestPostVisionFace(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		jsonReq, jsonErr := req.MarshalJSON()
+		jsonReq, jsonErr := req.JSON()
 
 		if jsonErr != nil {
 			t.Fatal(err)
@@ -148,7 +148,7 @@ func TestPostVisionFace(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		jsonReq, jsonErr := req.MarshalJSON()
+		jsonReq, jsonErr := req.JSON()
 
 		if jsonErr != nil {
 			t.Fatal(err)

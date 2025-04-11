@@ -59,7 +59,7 @@ func PerformApiRequest(apiRequest *ApiRequest, uri, method, key string) (apiResp
 		return apiResponse, errors.New("api request is nil")
 	}
 
-	data, jsonErr := apiRequest.MarshalJSON()
+	data, jsonErr := apiRequest.JSON()
 
 	if jsonErr != nil {
 		return apiResponse, jsonErr

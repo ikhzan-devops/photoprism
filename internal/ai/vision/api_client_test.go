@@ -22,7 +22,7 @@ func TestNewApiRequest(t *testing.T) {
 		// t.Logf("request: %#v", result)
 
 		if result != nil {
-			json, jsonErr := result.MarshalJSON()
+			json, jsonErr := result.JSON()
 			assert.NoError(t, jsonErr)
 			assert.NotEmpty(t, json)
 			// t.Logf("json: %s", json)
@@ -36,7 +36,7 @@ func TestNewApiRequest(t *testing.T) {
 		assert.NotNil(t, result)
 		// t.Logf("request: %#v", result)
 		if result != nil {
-			json, jsonErr := result.MarshalJSON()
+			json, jsonErr := result.JSON()
 			assert.NoError(t, jsonErr)
 			assert.NotEmpty(t, json)
 			t.Logf("json: %s", json)
