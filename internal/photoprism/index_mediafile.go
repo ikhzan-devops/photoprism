@@ -809,7 +809,7 @@ func (ind *Index) UserMediaFile(m *MediaFile, o IndexOptions, originalName, phot
 			}
 
 			if !photoExists && Config().Settings().Features.Private && Config().DetectNSFW() {
-				photo.PhotoPrivate = ind.NSFW(m)
+				photo.PhotoPrivate = ind.IsNsfw(m)
 			}
 		}
 

@@ -5,9 +5,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/photoprism/photoprism/internal/ai/classify"
-	"github.com/photoprism/photoprism/internal/ai/face"
-	"github.com/photoprism/photoprism/internal/ai/nsfw"
 	"github.com/photoprism/photoprism/internal/config"
 	"github.com/photoprism/photoprism/internal/entity"
 )
@@ -22,12 +19,9 @@ func TestIndex_MediaFile(t *testing.T) {
 
 		cfg.InitializeTestData()
 
-		tf := classify.New(cfg.AssetsPath(), cfg.DisableTensorFlow())
-		nd := nsfw.New(cfg.NSFWModelPath())
-		fn := face.NewNet(cfg.FaceNetModelPath(), "", cfg.DisableTensorFlow())
 		convert := NewConvert(cfg)
 
-		ind := NewIndex(cfg, tf, nd, fn, convert, NewFiles(), NewPhotos())
+		ind := NewIndex(cfg, convert, NewFiles(), NewPhotos())
 		indexOpt := IndexOptionsAll()
 		mediaFile, err := NewMediaFile("testdata/flash.jpg")
 
@@ -59,12 +53,9 @@ func TestIndex_MediaFile(t *testing.T) {
 
 		cfg.InitializeTestData()
 
-		tf := classify.New(cfg.AssetsPath(), cfg.DisableTensorFlow())
-		nd := nsfw.New(cfg.NSFWModelPath())
-		fn := face.NewNet(cfg.FaceNetModelPath(), "", cfg.DisableTensorFlow())
 		convert := NewConvert(cfg)
 
-		ind := NewIndex(cfg, tf, nd, fn, convert, NewFiles(), NewPhotos())
+		ind := NewIndex(cfg, convert, NewFiles(), NewPhotos())
 		indexOpt := IndexOptionsAll()
 		mediaFile, err := NewMediaFile(cfg.ExamplesPath() + "/blue-go-video.mp4")
 		if err != nil {
@@ -93,12 +84,9 @@ func TestIndex_MediaFile(t *testing.T) {
 			}
 		}
 
-		tf := classify.New(cfg.AssetsPath(), cfg.DisableTensorFlow())
-		nd := nsfw.New(cfg.NSFWModelPath())
-		fn := face.NewNet(cfg.FaceNetModelPath(), "", cfg.DisableTensorFlow())
 		convert := NewConvert(cfg)
 
-		ind := NewIndex(cfg, tf, nd, fn, convert, NewFiles(), NewPhotos())
+		ind := NewIndex(cfg, convert, NewFiles(), NewPhotos())
 		indexOpt := IndexOptionsAll()
 		mediaFile, err := NewMediaFile(cfg.ExamplesPath() + "/beach_sand.jpg")
 		if err != nil {
@@ -157,12 +145,9 @@ func TestIndex_MediaFile(t *testing.T) {
 
 		cfg.InitializeTestData()
 
-		tf := classify.New(cfg.AssetsPath(), cfg.DisableTensorFlow())
-		nd := nsfw.New(cfg.NSFWModelPath())
-		fn := face.NewNet(cfg.FaceNetModelPath(), "", cfg.DisableTensorFlow())
 		convert := NewConvert(cfg)
 
-		ind := NewIndex(cfg, tf, nd, fn, convert, NewFiles(), NewPhotos())
+		ind := NewIndex(cfg, convert, NewFiles(), NewPhotos())
 		indexOpt := IndexOptionsAll()
 
 		result := ind.MediaFile(nil, indexOpt, "blue-go-video.mp4", "")

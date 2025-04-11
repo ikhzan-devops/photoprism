@@ -20,6 +20,7 @@ const (
 	AccessPrivate   Permission = "access_private"
 	AccessOwn       Permission = "access_own"
 	AccessAll       Permission = "access_all"
+	Use             Permission = "use"
 	ActionSearch    Permission = "search"
 	ActionView      Permission = "view"
 	ActionUpload    Permission = "upload"
@@ -59,6 +60,7 @@ const (
 	ResourceLogs      Resource = "logs"
 	ResourceWebDAV    Resource = "webdav"
 	ResourceMetrics   Resource = "metrics"
+	ResourceVision    Resource = "vision"
 	ResourceFeedback  Resource = "feedback"
 	ResourceDefault   Resource = "default"
 )

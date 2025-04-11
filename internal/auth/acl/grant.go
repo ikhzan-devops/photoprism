@@ -122,6 +122,10 @@ var (
 		AccessAll:       true,
 		ActionSubscribe: true,
 	}
+	GrantUse = Grant{
+		Use:          true,
+		ActionCreate: true,
+	}
 	GrantNone = Grant{}
 )
 

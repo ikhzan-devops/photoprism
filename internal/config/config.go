@@ -43,6 +43,7 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/photoprism/photoprism/internal/ai/face"
+	"github.com/photoprism/photoprism/internal/ai/vision"
 	"github.com/photoprism/photoprism/internal/config/customize"
 	"github.com/photoprism/photoprism/internal/config/ttl"
 	"github.com/photoprism/photoprism/internal/entity"
@@ -237,8 +238,15 @@ func (c *Config) Init() error {
 	// Initialize extensions.
 	Ext().Init(c)
 
-	// Initialize the thumbnail generation package.
+	// Initialize thumbnail package.
 	thumb.Init(memory.FreeMemory(), c.IndexWorkers(), c.ThumbLibrary())
+
+	// Load optional vision package configuration.
+	if visionYaml := c.VisionYaml(); !fs.FileExistsNotEmpty(visionYaml) {
+		// Do nothing.
+	} else if loadErr := vision.Config.Load(visionYaml); loadErr != nil {
+		log.Warnf("vision: %s", loadErr)
+	}
 
 	// Update package defaults.
 	c.Propagate()
@@ -260,7 +268,7 @@ func (c *Config) Propagate() {
 	FlushCache()
 	log.SetLevel(c.LogLevel())
 
-	// Initialize the thumbnail generation package.
+	// Configure thumbnail package.
 	thumb.Library = c.ThumbLibrary()
 	thumb.Color = c.ThumbColor()
 	thumb.Filter = c.ThumbFilter()
@@ -269,6 +277,15 @@ func (c *Config) Propagate() {
 	thumb.JpegQualityDefault = c.JpegQuality()
 	thumb.CachePublic = c.HttpCachePublic()
 	initThumbs()
+
+	// Configure computer vision package.
+	vision.AssetsPath = c.AssetsPath()
+	vision.FaceNetModelPath = c.FaceNetModelPath()
+	vision.NsfwModelPath = c.NSFWModelPath()
+	vision.CachePath = c.CachePath()
+	vision.ServiceUri = c.VisionUri()
+	vision.ServiceKey = c.VisionKey()
+	vision.DownloadUrl = c.DownloadUrl()
 
 	// Set cache expiration defaults.
 	ttl.CacheDefault = c.HttpCacheMaxAge()

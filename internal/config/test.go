@@ -101,7 +101,6 @@ func NewTestOptions(pkg string) *Options {
 		Trace:           false,
 		Experimental:    true,
 		ReadOnly:        false,
-		DetectNSFW:      true,
 		UploadNSFW:      false,
 		ExifBruteForce:  false,
 		AssetsPath:      assetsPath,
@@ -122,6 +121,8 @@ func NewTestOptions(pkg string) *Options {
 		AdminPassword:   "photoprism",
 		OriginalsLimit:  66,
 		ResolutionLimit: 33,
+		VisionApi:       true,
+		DetectNSFW:      true,
 	}
 
 	return c
@@ -253,6 +254,7 @@ func CliTestContext() *cli.Context {
 	globalSet.String("darktable-exclude", config.DarktableExclude, "doc")
 	globalSet.String("sips-exclude", config.SipsExclude, "doc")
 	globalSet.String("wakeup-interval", "1h34m9s", "doc")
+	globalSet.Bool("vision-api", config.VisionApi, "doc")
 	globalSet.Bool("detect-nsfw", config.DetectNSFW, "doc")
 	globalSet.Bool("debug", false, "doc")
 	globalSet.Bool("sponsor", true, "doc")
@@ -287,6 +289,7 @@ func CliTestContext() *cli.Context {
 	LogErr(c.Set("darktable-exclude", "raf, cr3"))
 	LogErr(c.Set("sips-exclude", "avif, avifs, thm"))
 	LogErr(c.Set("wakeup-interval", "1h34m9s"))
+	LogErr(c.Set("vision-api", "true"))
 	LogErr(c.Set("detect-nsfw", "true"))
 	LogErr(c.Set("debug", "false"))
 	LogErr(c.Set("sponsor", "true"))
@@ -346,7 +349,7 @@ func (c *Config) DownloadTestData() error {
 
 // UnzipTestData extracts tests files from the zip archive.
 func (c *Config) UnzipTestData() error {
-	if _, err := fs.Unzip(TestDataZip, c.StoragePath()); err != nil {
+	if _, _, err := fs.Unzip(TestDataZip, c.StoragePath(), 2*fs.GB, -1); err != nil {
 		return fmt.Errorf("config: could not unzip test data: %s", err.Error())
 	}
 

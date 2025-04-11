@@ -245,7 +245,7 @@ var Flags = CliFlags{
 		}}, {
 		Flag: &cli.StringFlag{
 			Name:    "import-allow",
-			Usage:   "allow to import these file types (comma-separated list of `EXTENSIONS`; leave blank to allow all)",
+			Usage:   "restrict imports to these file types (comma-separated list of `EXTENSIONS`; leave blank to allow all)",
 			EnvVars: EnvVars("IMPORT_ALLOW"),
 		}}, {
 		Flag: &cli.BoolFlag{
@@ -256,8 +256,19 @@ var Flags = CliFlags{
 		}}, {
 		Flag: &cli.StringFlag{
 			Name:    "upload-allow",
-			Usage:   "allow to upload these file types (comma-separated list of `EXTENSIONS`; leave blank to allow all)",
+			Usage:   "restrict uploads to these file types (comma-separated list of `EXTENSIONS`; leave blank to allow all)",
 			EnvVars: EnvVars("UPLOAD_ALLOW"),
+		}}, {
+		Flag: &cli.BoolFlag{
+			Name:    "upload-archives",
+			Usage:   "allow upload of zip archives (will be extracted before import)",
+			EnvVars: EnvVars("UPLOAD_ARCHIVES"),
+		}}, {
+		Flag: &cli.IntFlag{
+			Name:    "upload-limit",
+			Value:   1000,
+			Usage:   "maximum total size of uploaded files in `MB` (1-100000; -1 to disable)",
+			EnvVars: EnvVars("UPLOAD_LIMIT"),
 		}}, {
 		Flag: &cli.PathFlag{
 			Name:      "cache-path",
@@ -298,7 +309,7 @@ var Flags = CliFlags{
 		}}, {
 		Flag: &cli.Uint64Flag{
 			Name:    "files-quota",
-			Usage:   "maximum aggregated size of all indexed files in `GB` (0 for unlimited)",
+			Usage:   "maximum total size of all indexed files in `GB` (0 for unlimited)",
 			EnvVars: EnvVars("FILES_QUOTA"),
 		}}, {
 		Flag: &cli.PathFlag{
@@ -473,11 +484,6 @@ var Flags = CliFlags{
 			Name:    "exif-bruteforce",
 			Usage:   "always perform a brute-force search if no Exif headers were found",
 			EnvVars: EnvVars("EXIF_BRUTEFORCE"),
-		}}, {
-		Flag: &cli.BoolFlag{
-			Name:    "detect-nsfw",
-			Usage:   "flag newly added pictures as private if they might be offensive (requires TensorFlow)",
-			EnvVars: EnvVars("DETECT_NSFW"),
 		}}, {
 		Flag: &cli.StringFlag{
 			Name:    "default-locale",
@@ -953,6 +959,35 @@ var Flags = CliFlags{
 			Usage:   "maximum size of generated PNG images in `PIXELS` (720-30000)",
 			Value:   7680,
 			EnvVars: EnvVars("PNG_SIZE"),
+		}}, {
+		Flag: &cli.StringFlag{
+			Name:      "vision-yaml",
+			Usage:     "computer vision model configuration `FILE` *optional*",
+			Value:     "",
+			EnvVars:   EnvVars("VISION_YAML"),
+			TakesFile: true,
+		}}, {
+		Flag: &cli.BoolFlag{
+			Name:    "vision-api",
+			Usage:   "enable computer vision service API endpoints under /api/v1/vision (requires authorized access token)",
+			EnvVars: EnvVars("VISION_API"),
+		}}, {
+		Flag: &cli.StringFlag{
+			Name:    "vision-uri",
+			Usage:   "remote computer vision service `URI`, e.g. https://example.com/api/v1/vision (leave blank to disable)",
+			Value:   "",
+			EnvVars: EnvVars("VISION_URI"),
+		}}, {
+		Flag: &cli.StringFlag{
+			Name:    "vision-key",
+			Usage:   "remote computer vision service access `TOKEN` *optional*",
+			Value:   "",
+			EnvVars: EnvVars("VISION_KEY"),
+		}}, {
+		Flag: &cli.BoolFlag{
+			Name:    "detect-nsfw",
+			Usage:   "flag newly added pictures as private if they might be offensive (requires TensorFlow)",
+			EnvVars: EnvVars("DETECT_NSFW"),
 		}}, {
 		Flag: &cli.IntFlag{
 			Name:    "face-size",

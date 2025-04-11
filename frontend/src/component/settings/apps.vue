@@ -4,7 +4,7 @@
     persistent
     max-width="610"
     class="p-dialog modal-dialog p-settings-apps"
-    @keydown.esc="close"
+    @keydown.esc.exact="close"
     @after-enter="afterEnter"
     @after-leave="afterLeave"
   >
@@ -503,7 +503,7 @@ export default {
         });
     },
     find() {
-      this.$notify.blockUI();
+      this.$notify.blockUI("busy");
       this.model
         .findApps()
         .then((resp) => {

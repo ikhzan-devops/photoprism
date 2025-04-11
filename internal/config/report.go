@@ -67,6 +67,8 @@ func (c *Config) Report() (rows [][]string, cols []string) {
 		{"import-allow", c.ImportAllow().String()},
 		{"upload-nsfw", fmt.Sprintf("%t", c.UploadNSFW())},
 		{"upload-allow", c.UploadAllow().String()},
+		{"upload-archives", fmt.Sprintf("%t", c.UploadArchives())},
+		{"upload-limit", fmt.Sprintf("%d", c.UploadLimit())},
 		{"cache-path", c.CachePath()},
 		{"cmd-cache-path", c.CmdCachePath()},
 		{"media-cache-path", c.MediaCachePath()},
@@ -131,11 +133,6 @@ func (c *Config) Report() (rows [][]string, cols []string) {
 		// Format Flags.
 		{"raw-presets", fmt.Sprintf("%t", c.RawPresets())},
 		{"exif-bruteforce", fmt.Sprintf("%t", c.ExifBruteForce())},
-
-		// TensorFlow.
-		{"detect-nsfw", fmt.Sprintf("%t", c.DetectNSFW())},
-		{"tensorflow-version", c.TensorFlowVersion()},
-		{"tensorflow-model-path", c.TensorFlowModelPath()},
 
 		// Customization.
 		{"default-locale", c.DefaultLocale()},
@@ -243,6 +240,17 @@ func (c *Config) Report() (rows [][]string, cols []string) {
 		{"jpeg-quality", fmt.Sprintf("%d", c.JpegQuality())},
 		{"jpeg-size", fmt.Sprintf("%d", c.JpegSize())},
 		{"png-size", fmt.Sprintf("%d", c.PngSize())},
+
+		// Computer Vision.
+		{"vision-yaml", c.VisionYaml()},
+		{"vision-api", fmt.Sprintf("%t", c.VisionApi())},
+		{"vision-uri", c.VisionUri()},
+		{"vision-key", strings.Repeat("*", utf8.RuneCountInString(c.VisionKey()))},
+		{"tensorflow-version", c.TensorFlowVersion()},
+		{"nasnet-model-path", c.NasnetModelPath()},
+		{"facenet-model-path", c.FaceNetModelPath()},
+		{"nsfw-model-path", c.NSFWModelPath()},
+		{"detect-nsfw", fmt.Sprintf("%t", c.DetectNSFW())},
 
 		// Facial Recognition.
 		{"face-size", fmt.Sprintf("%d", c.FaceSize())},

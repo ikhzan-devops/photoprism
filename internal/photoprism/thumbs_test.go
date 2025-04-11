@@ -9,9 +9,6 @@ import (
 
 	"github.com/disintegration/imaging"
 
-	"github.com/photoprism/photoprism/internal/ai/classify"
-	"github.com/photoprism/photoprism/internal/ai/face"
-	"github.com/photoprism/photoprism/internal/ai/nsfw"
 	"github.com/photoprism/photoprism/internal/config"
 	"github.com/photoprism/photoprism/internal/entity"
 	"github.com/photoprism/photoprism/internal/thumb"
@@ -22,27 +19,23 @@ func TestResample_Start(t *testing.T) {
 		t.Skip("skipping test in short mode.")
 	}
 
-	conf := config.TestConfig()
+	cfg := config.TestConfig()
 
-	if err := conf.CreateDirectories(); err != nil {
+	if err := cfg.CreateDirectories(); err != nil {
 		t.Fatal(err)
 	}
 
-	conf.InitializeTestData()
+	cfg.InitializeTestData()
 
-	tf := classify.New(conf.AssetsPath(), conf.DisableTensorFlow())
-	nd := nsfw.New(conf.NSFWModelPath())
-	fn := face.NewNet(conf.FaceNetModelPath(), "", conf.DisableTensorFlow())
-	convert := NewConvert(conf)
+	convert := NewConvert(cfg)
+	ind := NewIndex(cfg, convert, NewFiles(), NewPhotos())
 
-	ind := NewIndex(conf, tf, nd, fn, convert, NewFiles(), NewPhotos())
-
-	imp := NewImport(conf, ind, convert)
-	opt := ImportOptionsMove(conf.ImportPath(), "")
+	imp := NewImport(cfg, ind, convert)
+	opt := ImportOptionsMove(cfg.ImportPath(), "")
 
 	imp.Start(opt)
 
-	rs := NewThumbs(conf)
+	rs := NewThumbs(cfg)
 
 	err := rs.Start("", true, false)
 

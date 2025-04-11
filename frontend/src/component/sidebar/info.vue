@@ -1,13 +1,17 @@
 <template>
   <div class="p-sidebar-info metadata">
     <v-toolbar density="comfortable" color="navigation">
-      <v-btn :icon="$isRtl ? 'mdi-chevron-left' : 'mdi-chevron-right'" @click.stop="close()"></v-btn>
-      <v-toolbar-title class="text-h6 ms-2">{{ $gettext("Info") }}</v-toolbar-title>
+      <v-btn
+        :icon="$isRtl ? 'mdi-chevron-left' : 'mdi-chevron-right'"
+        :title="$gettext('Close')"
+        @click.stop="close()"
+      ></v-btn>
+      <v-toolbar-title>{{ $gettext("Information") }}</v-toolbar-title>
     </v-toolbar>
     <div v-if="model.UID">
       <v-list nav slim tile density="compact" class="metadata__list mt-2">
         <v-list-item v-if="model.Title" class="metadata__item">
-          <div class="text-subtitle-1 font-weight-bold">{{ model.Title }}</div>
+          <div v-tooltip="$gettext('Title')" class="text-subtitle-2 meta-title">{{ model.Title }}</div>
           <!-- v-text-field
         :model-value="modelValue.Title"
         :placeholder="$gettext('Add a title')"
@@ -18,7 +22,7 @@
       ></v-text-field -->
         </v-list-item>
         <v-list-item v-if="model.Caption" class="metadata__item">
-          <div class="text-body-2">{{ model.Caption }}</div>
+          <div v-tooltip="$gettext('Caption')" class="text-body-2 meta-caption">{{ model.Caption }}</div>
           <!-- v-textarea
         :model-value="modelValue.Caption"
         :placeholder="$gettext('Add a caption')"
@@ -33,8 +37,9 @@
         </v-list-item>
         <v-divider v-if="model.Title || model.Caption" class="my-4"></v-divider>
         <v-list-item
-          prepend-icon="mdi-calendar"
+          v-tooltip="$gettext('Taken')"
           :title="$util.formatDate(model.TakenAtLocal, 'date_med_tz', model.TimeZone)"
+          prepend-icon="mdi-calendar"
           class="metadata__item"
         >
           <!-- template #append>
@@ -43,35 +48,9 @@
         </v-list-item>
 
         <v-list-item
-          v-if="model.Type === 'image'"
-          prepend-icon="mdi-image"
-          :title="`${((model.Width * modelValue.Height) / 1000000).toFixed(1)}MP ${model.Width}×${model.Height}`"
-          class="metadata__item"
-        >
-        </v-list-item>
-        <v-list-item
-          v-else-if="model.Type === 'raw'"
-          prepend-icon="mdi-camera"
-          :title="
-            $gettext('RAW') + ` ${((model.Width * model.Height) / 1000000).toFixed(1)}MP ${model.Width}×${model.Height}`
-          "
-          class="metadata__item"
-        >
-        </v-list-item>
-        <v-list-item
-          v-else-if="modelValue.Type === 'live'"
-          prepend-icon="mdi-play-circle-outline"
-          :title="
-            $gettext('Live') +
-            ` ${((model.Width * model.Height) / 1000000).toFixed(1)}MP ${model.Width}×${model.Height}`
-          "
-          class="metadata__item"
-        >
-        </v-list-item>
-        <v-list-item
-          v-else-if="model.Type === 'document'"
-          prepend-icon="mdi-file-pdf-box"
-          :title="$gettext('Document')"
+          v-tooltip="$gettext('Size')"
+          :title="model.getTypeInfo()"
+          :prepend-icon="model.getTypeIcon()"
           class="metadata__item"
         >
         </v-list-item>
@@ -79,10 +58,11 @@
         <template v-if="model.Lat && model.Lng">
           <v-divider class="my-4"></v-divider>
           <v-list-item
+            v-tooltip="$gettext('Location')"
+            :title="model.getLatLng()"
             prepend-icon="mdi-map-marker"
-            :title="`${model.Lat.toFixed(5)}°N ${model.Lng.toFixed(5)}°E`"
             class="clickable metadata__item"
-            @click.stop="$util.copyText(`${model.Lat},${model.Lng}`)"
+            @click.stop="model.copyLatLng()"
           >
           </v-list-item>
         </template>
