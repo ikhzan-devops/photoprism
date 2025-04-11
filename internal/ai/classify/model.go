@@ -188,7 +188,7 @@ func (m *Model) loadModel() (err error) {
 			log.Debugf("classify: model info: %+v", infos[0])
 			m.meta.Merge(&infos[0])
 		} else {
-			log.Warnf("classify: found %d metagraphs... thats too many", len(infos))
+			log.Warnf("classify: found %d metagraphs... that's too many", len(infos))
 		}
 	}
 
