@@ -1,9 +1,5 @@
 package vision
 
-import (
-	"net/http"
-)
-
 // Default computer vision model configuration.
 var (
 	NasnetModel = &Model{
@@ -29,10 +25,8 @@ var (
 	}
 	CaptionModel = &Model{
 		Type:       ModelTypeCaption,
-		Name:       "kosmos-2",
+		Resolution: 224,
 		Uri:        "http://photoprism-vision:5000/api/v1/vision/caption",
-		Method:     http.MethodPost,
-		Resolution: 720,
 	}
 	DefaultModels     = Models{NasnetModel, NsfwModel, FacenetModel, CaptionModel}
 	DefaultThresholds = Thresholds{Confidence: 10}
