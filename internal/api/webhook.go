@@ -1,13 +1,11 @@
 package api
 
 import (
-	"fmt"
 	"net/http"
 	"strings"
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/photoprism/photoprism/internal/api/download"
 	"github.com/photoprism/photoprism/internal/api/hooks"
 	"github.com/photoprism/photoprism/internal/auth/acl"
 	"github.com/photoprism/photoprism/internal/event"
@@ -18,9 +16,9 @@ import (
 	"github.com/photoprism/photoprism/pkg/media/http/header"
 )
 
-// Webhook listens for webhook events and checks their authorization.
+// Webhook handles web event hooks and checks their authorization.
 //
-//	@Summary	listens for webhook events and checks their authorization
+//	@Summary	handles web event hooks and checks their authorization
 //	@Id			Webhook
 //	@Tags		Webhook
 //	@Accept		json
@@ -29,22 +27,7 @@ import (
 //	@Param		payload	body	hooks.Payload	true	"webhook event data"
 //	@Router		/api/v1/webhook/{channel} [post]
 func Webhook(router *gin.RouterGroup) {
-	requestHandler := func(c *gin.Context) {
-		// Prevent API response caching.
-		c.Header(header.CacheControl, header.CacheControlNoStore)
-
-		// Only the instance channel is currently implemented.
-		if !acl.ChannelInstance.Equal(clean.Token(c.Param("channel"))) {
-			AbortNotImplemented(c)
-			return
-		}
-
-		// For security reasons, this endpoint is not available in public or demo mode.
-		if conf := get.Config(); conf.Public() || conf.Demo() {
-			Abort(c, http.StatusForbidden, i18n.ErrFeatureDisabled)
-			return
-		}
-
+	instanceRequestHandler := func(c *gin.Context) {
 		s := Auth(c, acl.ResourceWebhooks, acl.ActionPublish)
 
 		if s.Abort(c) {
@@ -90,29 +73,53 @@ func Webhook(router *gin.RouterGroup) {
 			return
 		}
 
+		ev := "instance." + eventType
+
 		if s.IsClient() {
 			if acl.Rules.Deny(acl.Resource(resource), s.ClientRole(), acl.ActionPublish) {
-				event.AuditWarn([]string{ClientIP(c), "session %s", "webhook", "%s", authn.Denied}, s.RefID, eventType)
+				event.AuditWarn([]string{ClientIP(c), "client %s", "session %s", "webhook", "%s", authn.Denied}, clean.Log(s.ClientInfo()), s.RefID, ev)
+				AbortForbidden(c)
+				return
+			} else if s.InsufficientScope(acl.Resource(resource), acl.Permissions{acl.ActionPublish}) {
+				event.AuditErr([]string{ClientIP(c), "client %s", "session %s", "webhook", "%s", authn.ErrInsufficientScope.Error()}, clean.Log(s.ClientInfo()), s.RefID, ev)
 				AbortForbidden(c)
 				return
 			}
 		} else {
-			if acl.Rules.Deny(acl.Resource(resource), s.UserRole(), acl.ActionPublish) {
-				event.AuditWarn([]string{ClientIP(c), "session %s", "webhook", "%s", authn.Denied}, s.RefID, eventType)
-				AbortForbidden(c)
-				return
-			}
+			event.AuditWarn([]string{ClientIP(c), "session %s", "webhook", "%s", authn.Denied}, s.RefID, eventType)
+			AbortForbidden(c)
+			return
 		}
 
-		ev := "instance." + eventType
-
 		switch ev {
-		case "instance.api.downloads.register":
-			_ = download.Register(fmt.Sprintf("%v", request.Data["uuid"]), fmt.Sprintf("%v", request.Data["filename"]))
+		// case "instance.api.downloads.register":
+		//	_ = download.Register(fmt.Sprintf("%v", request.Data["uuid"]), fmt.Sprintf("%v", request.Data["filename"]))
 		default:
 			event.Publish(ev, request.Data)
 		}
 
+	}
+
+	requestHandler := func(c *gin.Context) {
+		// Prevent API response caching.
+		c.Header(header.CacheControl, header.CacheControlNoStore)
+
+		// For security reasons, this endpoint is not available in public or demo mode.
+		if conf := get.Config(); conf.Public() || conf.Demo() {
+			Abort(c, http.StatusForbidden, i18n.ErrFeatureDisabled)
+			return
+		}
+
+		// Only the instance channel is currently implemented.
+		channel := clean.Token(c.Param("channel"))
+
+		switch channel {
+		case acl.ChannelInstance.String():
+			instanceRequestHandler(c)
+		default:
+			AbortNotImplemented(c)
+			return
+		}
 	}
 
 	router.GET("/webhook/:channel", requestHandler)
