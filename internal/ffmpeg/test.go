@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/photoprism/photoprism/internal/ffmpeg/encode"
+	"github.com/photoprism/photoprism/internal/functions"
 	"github.com/photoprism/photoprism/pkg/fs"
 )
 
@@ -19,8 +20,11 @@ func RunCommandTest(t *testing.T, encoder encode.Encoder, srcName, destName stri
 	cmd.Stdout = &out
 	cmd.Stderr = &stderr
 	cmd.Env = append(cmd.Env, []string{
-		fmt.Sprintf("HOME=%s", fs.Abs("./testdata")),
+		fmt.Sprintf("HOME=%s", fs.Abs("./testdata/"+functions.PhotoPrismTestToFolderName())),
 	}...)
+
+	// create required folder
+	_ = os.Mkdir("./testdata/"+functions.PhotoPrismTestToFolderName(), os.ModePerm)
 
 	// Transcode source media file to AVC.
 	start := time.Now()
@@ -55,4 +59,7 @@ func RunCommandTest(t *testing.T, encoder encode.Encoder, srcName, destName stri
 	if removeErr := os.Remove(destName); removeErr != nil {
 		t.Fatalf("%s: failed to remove %s after successful test (%s)", encoder, srcName, removeErr)
 	}
+	// remove created folder
+	_ = os.Remove("./testdata/" + functions.PhotoPrismTestToFolderName())
+
 }

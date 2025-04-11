@@ -4,6 +4,7 @@ import (
 	"os"
 	"testing"
 
+	"github.com/photoprism/photoprism/internal/functions"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -74,13 +75,15 @@ func TestSettings_Save(t *testing.T) {
 		assert.Equal(t, "onyx", s.UI.Theme)
 		assert.Equal(t, "de", s.UI.Language)
 
-		if err := s.Save("testdata/settings_tmp.yml"); err != nil {
+		_ = os.Mkdir("testdata/"+functions.PhotoPrismTestToFolderName(), os.ModePerm)
+		if err := s.Save("testdata/" + functions.PhotoPrismTestToFolderName() + "/settings_tmp.yml"); err != nil {
 			t.Fatal(err)
 		}
 
-		if err := os.Remove("testdata/settings_tmp.yml"); err != nil {
+		if err := os.Remove("testdata/" + functions.PhotoPrismTestToFolderName() + "/settings_tmp.yml"); err != nil {
 			t.Fatal(err)
 		}
+		_ = os.Remove("testdata/" + functions.PhotoPrismTestToFolderName())
 	})
 }
 

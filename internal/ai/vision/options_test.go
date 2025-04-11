@@ -7,11 +7,13 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
+	"github.com/photoprism/photoprism/internal/functions"
 	"github.com/photoprism/photoprism/pkg/fs"
 )
 
 func TestOptions(t *testing.T) {
-	var configPath = fs.Abs("testdata")
+	var configPath = fs.Abs("testdata/" + functions.PhotoPrismTestToFolderName())
+	_ = os.Mkdir(configPath, os.ModePerm)
 	var configFile = filepath.Join(configPath, "vision.yml")
 
 	t.Run("Save", func(t *testing.T) {
@@ -27,4 +29,5 @@ func TestOptions(t *testing.T) {
 		err := options.Load(filepath.Join(configPath, "invalid.yml"))
 		assert.Error(t, err)
 	})
+	_ = os.RemoveAll(configPath)
 }
