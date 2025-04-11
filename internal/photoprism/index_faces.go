@@ -29,12 +29,12 @@ func (ind *Index) Faces(jpeg *MediaFile, expected int) face.Faces {
 	thumbName, err := jpeg.Thumbnail(Config().ThumbCachePath(), thumbSize)
 
 	if err != nil {
-		log.Debugf("index: %s in %s (faces)", err, clean.Log(jpeg.BaseName()))
+		log.Debugf("vision: %s in %s (detect faces)", err, clean.Log(jpeg.BaseName()))
 		return face.Faces{}
 	}
 
 	if thumbName == "" {
-		log.Debugf("index: thumb %s not found in %s (faces)", thumbSize, clean.Log(jpeg.BaseName()))
+		log.Debugf("vision: thumb %s not found in %s (detect faces)", thumbSize, clean.Log(jpeg.BaseName()))
 		return face.Faces{}
 	}
 
@@ -43,11 +43,11 @@ func (ind *Index) Faces(jpeg *MediaFile, expected int) face.Faces {
 	faces, err := vision.Faces(thumbName, Config().FaceSize(), true, expected)
 
 	if err != nil {
-		log.Debugf("%s in %s", err, clean.Log(jpeg.BaseName()))
+		log.Debugf("vision: %s in %s (detect faces)", err, clean.Log(jpeg.BaseName()))
 	}
 
 	if l := len(faces); l > 0 {
-		log.Infof("index: found %s in %s [%s]", english.Plural(l, "face", "faces"), clean.Log(jpeg.BaseName()), time.Since(start))
+		log.Infof("vision: found %s in %s [%s]", english.Plural(l, "face", "faces"), clean.Log(jpeg.BaseName()), time.Since(start))
 	}
 
 	return faces

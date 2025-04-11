@@ -19,3 +19,18 @@ func TestModel(t *testing.T) {
 		assert.Equal(t, "", method)
 	})
 }
+
+func TestParseTypes(t *testing.T) {
+	t.Run("Valid", func(t *testing.T) {
+		result := ParseTypes("nsfw, labels, Caption")
+		assert.Equal(t, ModelTypes{"nsfw", "labels", "caption"}, result)
+	})
+	t.Run("None", func(t *testing.T) {
+		result := ParseTypes("")
+		assert.Equal(t, ModelTypes{}, result)
+	})
+	t.Run("Invalid", func(t *testing.T) {
+		result := ParseTypes("foo, captions")
+		assert.Equal(t, ModelTypes{}, result)
+	})
+}

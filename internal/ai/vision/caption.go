@@ -7,6 +7,7 @@ import (
 	"slices"
 
 	"github.com/photoprism/photoprism/internal/api/download"
+	"github.com/photoprism/photoprism/internal/entity"
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/fs"
 	"github.com/photoprism/photoprism/pkg/media"
@@ -30,6 +31,13 @@ func Caption(imgName string, src media.Src) (result CaptionResult, err error) {
 				if !fs.FileExistsNotEmpty(imgName) {
 					return result, errors.New("invalid image file name")
 				}
+
+				/* TODO: Add support for data URLs to the service.
+				if file, fileErr := os.Open(imgName); fileErr != nil {
+					return result, fmt.Errorf("%s (open image file)", err)
+				} else {
+					imgUrl = media.DataUrl(file)
+				} */
 
 				dlId, dlErr := download.Register(imgName)
 
@@ -57,9 +65,9 @@ func Caption(imgName string, src media.Src) (result CaptionResult, err error) {
 				Url:   imgUrl,
 			}
 
-			if json, _ := apiRequest.MarshalJSON(); len(json) > 0 {
+			/* if json, _ := apiRequest.MarshalJSON(); len(json) > 0 {
 				log.Debugf("request: %s", json)
-			}
+			} */
 
 			apiResponse, apiErr := PerformApiRequest(apiRequest, uri, method, model.EndpointKey())
 
@@ -67,6 +75,11 @@ func Caption(imgName string, src media.Src) (result CaptionResult, err error) {
 				return result, apiErr
 			} else if apiResponse.Result.Caption == nil {
 				return result, errors.New("invalid caption model response")
+			}
+
+			// Set image as the default caption source.
+			if apiResponse.Result.Caption.Text != "" && apiResponse.Result.Caption.Source == "" {
+				apiResponse.Result.Caption.Source = entity.SrcImage
 			}
 
 			result = *apiResponse.Result.Caption

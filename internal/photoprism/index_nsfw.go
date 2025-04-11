@@ -18,13 +18,13 @@ func (ind *Index) IsNsfw(m *MediaFile) bool {
 	}
 
 	if results, modelErr := vision.Nsfw([]string{filename}, media.SrcLocal); modelErr != nil {
-		log.Errorf("index: %s in %s (detect nsfw)", modelErr, m.RootRelName())
+		log.Errorf("vision: %s in %s (detect nsfw)", modelErr, m.RootRelName())
 		return false
 	} else if len(results) < 1 {
-		log.Errorf("index: nsfw model returned no result for %s", m.RootRelName())
+		log.Errorf("vision: nsfw model returned no result for %s", m.RootRelName())
 		return false
 	} else if results[0].IsNsfw(nsfw.ThresholdHigh) {
-		log.Warnf("index: %s might contain offensive content", clean.Log(m.RelName(Config().OriginalsPath())))
+		log.Warnf("vision: %s might contain offensive content", clean.Log(m.RelName(Config().OriginalsPath())))
 		return true
 	}
 
