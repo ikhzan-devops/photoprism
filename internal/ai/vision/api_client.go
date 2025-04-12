@@ -30,10 +30,11 @@ func NewApiRequest(images Files, fileScheme string) (*ApiRequest, error) {
 	for i := range images {
 		switch fileScheme {
 		case scheme.Https:
-			if id, err := download.Register(images[i]); err != nil {
+			fileUuid := rnd.UUID()
+			if err := download.Register(fileUuid, images[i]); err != nil {
 				return nil, fmt.Errorf("%s (create download url)", err)
 			} else {
-				imageUrls[i] = fmt.Sprintf("%s/%s", DownloadUrl, id)
+				imageUrls[i] = fmt.Sprintf("%s/%s", DownloadUrl, fileUuid)
 			}
 		case scheme.Data:
 			if file, err := os.Open(images[i]); err != nil {

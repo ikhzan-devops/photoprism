@@ -1602,7 +1602,7 @@
                 }
             }
         },
-        "/api/v1/dl/{hash}": {
+        "/api/v1/dl/{file}": {
             "get": {
                 "produces": [
                     "application/octet-stream"
@@ -1616,8 +1616,8 @@
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "File Hash",
-                        "name": "hash",
+                        "description": "file hash or unique download id",
+                        "name": "file",
                         "in": "path",
                         "required": true
                     }
@@ -4911,7 +4911,7 @@
                 }
             }
         },
-        "/api/v1/vision/faces": {
+        "/api/v1/vision/face": {
             "post": {
                 "produces": [
                     "application/json"
@@ -4919,8 +4919,8 @@
                 "tags": [
                     "Vision"
                 ],
-                "summary": "returns the positions and embeddings of detected faces",
-                "operationId": "PostVisionFaces",
+                "summary": "returns the embeddings of a face image",
+                "operationId": "PostVisionFace",
                 "parameters": [
                     {
                         "description": "list of image file urls",
@@ -5014,6 +5014,95 @@
                         "schema": {
                             "$ref": "#/definitions/i18n.Response"
                         }
+                    }
+                }
+            }
+        },
+        "/api/v1/vision/nsfw": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Vision"
+                ],
+                "summary": "checks the specified images for inappropriate content",
+                "operationId": "PostVisionNsfw",
+                "parameters": [
+                    {
+                        "description": "list of image file urls",
+                        "name": "images",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/vision.ApiRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/vision.ApiResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "429": {
+                        "description": "Too Many Requests",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/webhook/{channel}": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Webhook"
+                ],
+                "summary": "listens for webhook events and checks their authorization",
+                "operationId": "Webhook",
+                "parameters": [
+                    {
+                        "description": "webhook event data",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/hooks.Payload"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "429": {
+                        "description": "Too Many Requests"
                     }
                 }
             }
@@ -6568,6 +6657,10 @@
                 }
             }
         },
+        "event.Data": {
+            "type": "object",
+            "additionalProperties": true
+        },
         "form.Album": {
             "type": "object",
             "properties": {
@@ -7041,6 +7134,20 @@
             "type": "object",
             "additionalProperties": {}
         },
+        "hooks.Payload": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/event.Data"
+                },
+                "timestamp": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
         "i18n.Response": {
             "type": "object",
             "properties": {
@@ -7055,6 +7162,26 @@
                 },
                 "message": {
                     "type": "string"
+                }
+            }
+        },
+        "nsfw.Result": {
+            "type": "object",
+            "properties": {
+                "drawing": {
+                    "type": "number"
+                },
+                "hentai": {
+                    "type": "number"
+                },
+                "neutral": {
+                    "type": "number"
+                },
+                "porn": {
+                    "type": "number"
+                },
+                "sexy": {
+                    "type": "number"
                 }
             }
         },
@@ -7652,11 +7779,8 @@
                 "model": {
                     "type": "string"
                 },
-                "videos": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
+                "url": {
+                    "type": "string"
                 }
             }
         },
@@ -7686,16 +7810,28 @@
                 "caption": {
                     "$ref": "#/definitions/vision.CaptionResult"
                 },
-                "faces": {
+                "embeddings": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "type": "array",
+                        "items": {
+                            "type": "array",
+                            "items": {
+                                "type": "number"
+                            }
+                        }
                     }
                 },
                 "labels": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/vision.LabelResult"
+                    }
+                },
+                "nsfw": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/nsfw.Result"
                     }
                 }
             }
@@ -7706,6 +7842,9 @@
                 "confidence": {
                     "type": "number"
                 },
+                "source": {
+                    "type": "string"
+                },
                 "text": {
                     "type": "string"
                 }
@@ -7714,13 +7853,22 @@
         "vision.LabelResult": {
             "type": "object",
             "properties": {
-                "category": {
-                    "type": "string"
+                "categories": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "confidence": {
                     "type": "number"
                 },
                 "name": {
+                    "type": "string"
+                },
+                "priority": {
+                    "type": "integer"
+                },
+                "source": {
                     "type": "string"
                 },
                 "topicality": {
@@ -7737,10 +7885,28 @@
                 "resolution": {
                     "type": "integer"
                 },
+                "type": {
+                    "$ref": "#/definitions/vision.ModelType"
+                },
                 "version": {
                     "type": "string"
                 }
             }
+        },
+        "vision.ModelType": {
+            "type": "string",
+            "enum": [
+                "labels",
+                "nsfw",
+                "face",
+                "caption"
+            ],
+            "x-enum-varnames": [
+                "ModelTypeLabels",
+                "ModelTypeNsfw",
+                "ModelTypeFace",
+                "ModelTypeCaption"
+            ]
         }
     },
     "externalDocs": {
