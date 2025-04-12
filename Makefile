@@ -399,9 +399,9 @@ docker-build:
 	$(DOCKER_COMPOSE) build --pull
 docker-nvidia: docker-nvidia-up
 docker-nvidia-up:
-	docker compose --profile=vision -f compose.nvidia.yaml up
+	docker compose --profile=qdrant -f compose.nvidia.yaml up
 docker-nvidia-build:
-	docker compose --profile=vision -f compose.nvidia.yaml build
+	docker compose --profile=qdrant -f compose.nvidia.yaml build
 docker-intel: docker-intel-up
 docker-intel-up:
 	docker compose -f compose.intel.yaml up
