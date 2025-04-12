@@ -51,6 +51,7 @@ test.meta("testID", "shortcuts-001").meta({ type: "short", mode: "public" })(
   async (t) => {
     await menu.openPage("browse");
     await t.wait(500);
+    await t.expect(toolbar.search1.focused).notOk();
     await triggerKeyPress('f', 'KeyF', 70, true, false);
     await t.expect(toolbar.search1.focused).ok();
 
