@@ -400,6 +400,8 @@ docker-build:
 docker-nvidia: docker-nvidia-up
 docker-nvidia-up:
 	docker compose --profile=qdrant -f compose.nvidia.yaml up
+docker-nvidia-down:
+	docker compose --profile=qdrant -f compose.nvidia.yaml down --remove-orphans
 docker-nvidia-build:
 	docker compose --profile=qdrant -f compose.nvidia.yaml build
 docker-intel: docker-intel-up
