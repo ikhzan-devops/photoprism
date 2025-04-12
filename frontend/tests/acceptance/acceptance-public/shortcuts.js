@@ -60,7 +60,7 @@ test.meta("testID", "shortcuts-001").meta({ type: "short", mode: "public" })(
 
     await t.wait(500);
     await triggerKeyPress('u', 'KeyU', 85, true, false);
-    await t.expect(Selector('div').withText('Upload').nth(3).visible).ok();
+    await t.expect(Selector(".p-upload-dialog").visible).ok();
     await t.pressKey("esc");
     await t.expect(Selector(".p-upload-dialog").visible).notOk();
   }
