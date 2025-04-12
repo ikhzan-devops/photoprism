@@ -45,10 +45,6 @@
     margin: 0;
 }
 
-.is-rtl #p-notify .v-snackbar__wrapper .v-snackbar__content {
-    flex-direction: row-reverse;
-}
-
 #p-notify .v-snackbar__wrapper .v-snackbar__content .p-notify__icon {
     margin: 0 6px;
     align-self: center;
@@ -58,12 +54,7 @@
     flex-grow: 1;
     margin: 2px 0;
     padding: 0;
-    text-align: left;
-    align-self: center;
-}
-
-.is-rtl #p-notify .v-snackbar__wrapper .v-snackbar__content .p-notify__text {
-    text-align: right;
+    text-align: start;
     align-self: center;
 }
 
