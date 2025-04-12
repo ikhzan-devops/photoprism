@@ -8,7 +8,7 @@
       >
         <div class="v-snackbar__wrapper v-theme--default rounded-pill v-snackbar--variant-flat">
           <span class="v-snackbar__underlay"></span>
-          <div role="status" aria-live="polite" class="v-snackbar__content text-body-2">
+          <div role="status" aria-live="polite" class="v-snackbar__content">
             <v-icon
               v-if="message.icon"
               :icon="'mdi-' + message.icon"
