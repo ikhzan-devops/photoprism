@@ -98,11 +98,11 @@ test.meta("testID", "shortcuts-002").meta({ type: "short", mode: "public" })(
     await t.wait(500);
     await triggerKeyPress('s', 'KeyS', 83, true, false, 'div.p-lightbox__pswp');
     await t.wait(500);
-    await t.expect(Selector('.p-lightbox__content').hasClass("slideshow-active")).ok("Video should be playing after first Ctrl+S");
+    await t.expect(Selector('.p-lightbox__content').hasClass("slideshow-active")).ok("Slideshow should be active after first Ctrl+S");
     await t.wait(500);
     await triggerKeyPress('s', 'KeyS', 83, true, false, 'div.p-lightbox__pswp');
     await t.wait(500);
-    await t.expect(Selector('.p-lightbox__content').hasClass("slideshow-active")).notOk("Video should be paused after second Ctrl+S");
+    await t.expect(Selector('.p-lightbox__content').hasClass("slideshow-active")).notOk("Slideshow should be inactive after second Ctrl+S");
 
     await triggerKeyPress('Escape', 'Escape', 27, false, false, 'div.p-lightbox__pswp');
   }
