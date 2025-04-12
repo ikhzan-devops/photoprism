@@ -1,31 +1,36 @@
 <template>
-  <div v-if="visible" id="p-notify" tabindex="-1">
-    <v-snackbar
-      :model-value="snackbar"
-      :class="'p-notify--' + message.color"
-      class="p-notify clickable"
-      @click.stop.prevent="showNext"
-      @update:model-value="onSnackbar"
-    >
-      <v-icon
-        v-if="message.icon"
-        :icon="'mdi-' + message.icon"
-        :color="message.color"
-        class="p-notify_icon"
-        start
-      ></v-icon>
-      {{ message.text }}
-      <template #actions>
-        <v-btn
-          icon="mdi-close"
-          :color="'on-' + message.color"
-          variant="text"
-          class="p-notify__close"
-          @click.stop.prevent="showNext"
-        ></v-btn>
-      </template>
-    </v-snackbar>
-  </div>
+  <teleport to="body">
+    <div v-if="visible" id="p-notify" tabindex="-1">
+      <div
+        :class="'p-notify--' + message.color"
+        class="v-theme--default v-locale--is-ltr v-snackbar v-snackbar--active v-snackbar--bottom v-snackbar--center p-notify clickable"
+        @click.stop.prevent="showNext"
+      >
+        <div class="v-snackbar__wrapper v-theme--default rounded-pill v-snackbar--variant-flat">
+          <span class="v-snackbar__underlay"></span>
+          <div role="status" aria-live="polite" class="v-snackbar__content text-body-2">
+            <v-icon
+              v-if="message.icon"
+              :icon="'mdi-' + message.icon"
+              :color="message.color"
+              class="p-notify__icon"
+            ></v-icon>
+            <div class="p-notify__text">
+              {{ message.text }}
+            </div>
+            <v-btn
+              icon="mdi-close"
+              :color="'on-' + message.color"
+              variant="text"
+              density="comfortable"
+              class="p-notify__close"
+              @click.stop.prevent="showNext"
+            ></v-btn>
+          </div>
+        </div>
+      </div>
+    </div>
+  </teleport>
 </template>
 <script>
 let focusElement = null;
