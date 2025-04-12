@@ -3,10 +3,10 @@
     <div v-if="visible" id="p-notify" tabindex="-1">
       <div
         :class="'p-notify--' + message.color"
-        class="v-theme--default v-locale--is-ltr v-snackbar v-snackbar--active v-snackbar--bottom v-snackbar--center p-notify clickable"
+        class="v-snackbar v-snackbar--active v-snackbar--bottom v-snackbar--center p-notify clickable"
         @click.stop.prevent="showNext"
       >
-        <div class="v-snackbar__wrapper v-theme--default rounded-pill v-snackbar--variant-flat">
+        <div class="v-snackbar__wrapper rounded-pill v-snackbar--variant-flat">
           <span class="v-snackbar__underlay"></span>
           <div role="status" aria-live="polite" class="v-snackbar__content">
             <v-icon
