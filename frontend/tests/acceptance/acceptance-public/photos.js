@@ -10,7 +10,7 @@ import Page from "../page-model/page";
 import PhotoEdit from "../page-model/photo-edit";
 
 const scroll = ClientFunction((x, y) => window.scrollTo(x, y));
-const getcurrentPosition = ClientFunction(() => window.pageYOffset);
+const getcurrentPosition = ClientFunction(() => window.scrollY);
 
 fixture`Test photos`.page`${testcafeconfig.url}`;
 
@@ -22,7 +22,7 @@ const photoviewer = new PhotoViewer();
 const page = new Page();
 const photoedit = new PhotoEdit();
 
-test.meta("testID", "photos-001").meta({ mode: "public" })("Common: Scroll to top", async (t) => {
+test.only.meta("testID", "photos-001").meta({ mode: "public" })("Common: Scroll to top", async (t) => {
   await t.click(toolbar.cardsViewAction);
 
   await t

@@ -45,21 +45,29 @@ const triggerKeyPress = ClientFunction((key, code, keyCode, ctrlKey, shiftKey, t
 });
 
 const isFullscreen = ClientFunction(() => !!document.fullscreenElement);
+const getcurrentPosition = ClientFunction(() => window.scrollY);
 
 test.meta("testID", "shortcuts-001").meta({ type: "short", mode: "public" })(
   "Common: Test General Page Shortcuts",
   async (t) => {
     await menu.openPage("browse");
-    await t.wait(500);
     await t.expect(toolbar.search1.focused).notOk();
     await triggerKeyPress('f', 'KeyF', 70, true, false);
     await t.expect(toolbar.search1.focused).ok();
 
+    // Test Refresh (Ctrl+R) with scroll restoration
     await t.wait(500);
-    await triggerKeyPress('r', 'KeyR', 82, true, false);
-    await t.expect(Selector("div.is-photo").exists).ok();
+    await t.scroll(0, 500); // Scroll down
+    const initialScrollY = await getcurrentPosition();
+    await t.expect(initialScrollY).gt(0, "Should have scrolled down before refresh");
 
-    await t.wait(500);
+    await triggerKeyPress('r', 'KeyR', 82, true, false);
+    await t.wait(2000); // Wait for page to reload
+
+    const finalScrollY = await getcurrentPosition();
+    await t.expect(finalScrollY).eql(initialScrollY, "Scroll position should be restored after refresh");
+
+    // Test Upload (Ctrl+U)
     await triggerKeyPress('u', 'KeyU', 85, true, false);
     await t.expect(Selector(".p-upload-dialog").visible).ok();
     await t.pressKey("esc");
@@ -80,29 +88,21 @@ test.meta("testID", "shortcuts-002").meta({ type: "short", mode: "public" })(
     await t.expect(infoPanelSelector.visible).notOk("Information panel should not be visible initially");
 
     await triggerKeyPress('i', 'KeyI', 73, true, false, 'div.p-lightbox__pswp');
-    await t.wait(500);
     await t.expect(infoPanelSelector.visible).ok("Information panel should be visible after first Ctrl+I");
 
     await triggerKeyPress('i', 'KeyI', 73, true, false, 'div.p-lightbox__pswp');
-    await t.wait(500);
     await t.expect(infoPanelSelector.visible).notOk("Information panel should be hidden after second Ctrl+I");
 
-    await t.wait(500);
     await triggerKeyPress('m', 'KeyM', 77, true, false, 'div.p-lightbox__pswp');
-    await t.wait(500);
     await t.expect(Selector('.p-lightbox__content').hasClass("is-muted")).ok("Video should be muted after first Ctrl+M");
-    await t.wait(500);
+
     await triggerKeyPress('m', 'KeyM', 77, true, false, 'div.p-lightbox__pswp');
-    await t.wait(500);
     await t.expect(Selector('.p-lightbox__content').hasClass("is-muted")).notOk("Video should be unmuted after second Ctrl+M");
 
-    await t.wait(500);
     await triggerKeyPress('s', 'KeyS', 83, true, false, 'div.p-lightbox__pswp');
-    await t.wait(500);
     await t.expect(Selector('.p-lightbox__content').hasClass("slideshow-active")).ok("Slideshow should be active after first Ctrl+S");
-    await t.wait(500);
+
     await triggerKeyPress('s', 'KeyS', 83, true, false, 'div.p-lightbox__pswp');
-    await t.wait(500);
     await t.expect(Selector('.p-lightbox__content').hasClass("slideshow-active")).notOk("Slideshow should be inactive after second Ctrl+S");
 
     await triggerKeyPress('Escape', 'Escape', 27, false, false, 'div.p-lightbox__pswp');
@@ -142,28 +142,26 @@ test.meta("testID", "shortcuts-004").meta({ type: "short", mode: "public" })(
     await menu.openPage("browse");
     const FirstPhotoUid = await photo.getNthPhotoUid("image", 0);
     await photoviewer.openPhotoViewer("uid", FirstPhotoUid);
+    await t.wait(500); // Wait for lightbox
 
     // Edit Test
-    await t.wait(500);
     await triggerKeyPress('e', 'KeyE', 69, true, false);
     await t.expect(photoEdit.dialog.visible).ok();
     await t.pressKey("esc");
 
     await photoviewer.openPhotoViewer("uid", FirstPhotoUid);
+    await t.wait(500); // Wait for lightbox again
 
     // Fullscreen Test
-    await t.wait(500);
     await triggerKeyPress('f', 'KeyF', 70, true, false, 'div.p-lightbox__pswp');
     await t.wait(1000);
     await t.expect(isFullscreen()).ok("Browser did not enter fullscreen mode.");
 
-    await t.wait(1000);
     await triggerKeyPress('f', 'KeyF', 70, true, false, 'div.p-lightbox__pswp');
     await t.wait(1000);
     await t.expect(isFullscreen()).notOk("Browser did not exit fullscreen mode.");
 
     // Like Test
-    await t.wait(500);
     const isLikedInitially = await Selector('.p-lightbox__content').hasClass('is-favorite');
     await triggerKeyPress('l', 'KeyL', 76, true, false, 'div.p-lightbox__pswp');
     await t.wait(2000); // Wait for potential UI updates
