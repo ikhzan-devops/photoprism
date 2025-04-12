@@ -83,11 +83,4 @@ curl -fsSL "$S6_NOARCH_URL" | tar -C "${S6_OVERLAY_DESTDIR}" -Jxp
 echo "Extracting \"$S6_BINARY_URL\" to \"$S6_OVERLAY_DESTDIR\"..."
 curl -fsSL "$S6_BINARY_URL" | tar -C "${S6_OVERLAY_DESTDIR}" -Jxp
 
-S6_USER2_BUNDLE="${S6_OVERLAY_DESTDIR}etc/s6-overlay/s6-rc.d/user2"
-
-if [ -d "$S6_USER2_BUNDLE" ]; then
-  echo "Removing \"${S6_USER2_BUNDLE}\"..."
-  rm -rf "${S6_OVERLAY_DESTDIR}etc/s6-overlay/s6-rc.d/user2"
-fi
-
 echo "Done."
