@@ -109,8 +109,7 @@ test.meta("testID", "shortcuts-002").meta({ type: "short", mode: "public" })(
   }
 );
 
-// NOT WORKING SKIPPED FOR NOW
-test.meta("testID", "shortcuts-003").meta({ type: "short", mode: "public" }).skip(
+test.meta("testID", "shortcuts-003").meta({ type: "short", mode: "public" })(
   "Common: Test Lightbox Archive and Download Shortcuts",
   async (t) => {
     await menu.openPage("browse");
@@ -118,19 +117,22 @@ test.meta("testID", "shortcuts-003").meta({ type: "short", mode: "public" }).ski
     await photoviewer.openPhotoViewer("uid", FirstPhotoUid);
 
     await t.expect(photoviewer.viewer.visible).ok();
-    
-    await triggerKeyPress('a', 'KeyA', 65, true, false, 'div.p-lightbox__pswp');
-    
-    await t.wait(3000);
-    
-    const snackbarVisible = await Selector('.v-snackbar').visible;
-    
-    if (snackbarVisible) {
-        await Selector('.v-snackbar__content').innerText;
-    }
-    
-    await triggerKeyPress('d', 'KeyD', 68, true, false, 'div.p-lightbox__pswp');
-    await t.wait(2000);
+
+    await t.getBrowserConsoleMessages();
+
+    await triggerKeyPress('a', 'KeyA', 65, true, false);
+
+    await t.wait(500);
+    let consoleMessages = await t.getBrowserConsoleMessages();
+    await t.expect(consoleMessages.log).contains('success: archived', 'Console should contain "success: archived" after Ctrl+A');
+
+    await t.getBrowserConsoleMessages();
+
+    await triggerKeyPress('d', 'KeyD', 68, true, false);
+
+    await t.wait(500);
+    consoleMessages = await t.getBrowserConsoleMessages();
+    await t.expect(consoleMessages.log).contains('success: downloading\u2026', 'Console should contain "success: downloading..." after Ctrl+D');
 
     await t.pressKey("esc");
   }
