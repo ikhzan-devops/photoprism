@@ -22,7 +22,7 @@ const photoviewer = new PhotoViewer();
 const page = new Page();
 const photoedit = new PhotoEdit();
 
-test.only.meta("testID", "photos-001").meta({ mode: "public" })("Common: Scroll to top", async (t) => {
+test.meta("testID", "photos-001").meta({ mode: "public" })("Common: Scroll to top", async (t) => {
   await t.click(toolbar.cardsViewAction);
 
   await t
