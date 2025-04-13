@@ -104,17 +104,18 @@ func (m *Model) ClassifyModel() *classify.Model {
 		// Set default thumbnail resolution if no tags are configured.
 		if m.Resolution <= 0 {
 			m.Resolution = DefaultResolution
-		} else {
-			if m.Meta.Input == nil {
-				m.Meta.Input = new(tensorflow.PhotoInput)
-			}
-
-			m.Meta.Input.SetResolution(m.Resolution)
-			m.Meta.Input.Channels = 3
 		}
 
+		if m.Meta.Input == nil {
+			m.Meta.Input = new(tensorflow.PhotoInput)
+		}
+
+		m.Meta.Input.SetResolution(m.Resolution)
+		m.Meta.Input.Channels = 3
+
 		// Try to load custom model based on the configuration values.
-		if model := classify.NewModel(AssetsPath, m.Path, m.Meta, m.Disabled); model == nil {
+		defaultPath := filepath.Join(AssetsPath, "nasnet")
+		if model := classify.NewModel(AssetsPath, m.Path, defaultPath, m.Meta, m.Disabled); model == nil {
 			return nil
 		} else if err := model.Init(); err != nil {
 			log.Errorf("vision: %s (init %s)", err, m.Path)
@@ -222,14 +223,14 @@ func (m *Model) NsfwModel() *nsfw.Model {
 		// Set default thumbnail resolution if no tags are configured.
 		if m.Resolution <= 0 {
 			m.Resolution = DefaultResolution
-		} else {
-			if m.Meta.Input == nil {
-				m.Meta.Input = new(tensorflow.PhotoInput)
-			}
-
-			m.Meta.Input.SetResolution(m.Resolution)
-			m.Meta.Input.Channels = 3
 		}
+
+		if m.Meta.Input == nil {
+			m.Meta.Input = new(tensorflow.PhotoInput)
+		}
+
+		m.Meta.Input.SetResolution(m.Resolution)
+		m.Meta.Input.Channels = 3
 
 		if m.Meta == nil {
 			m.Meta = &tensorflow.ModelInfo{}

@@ -22,32 +22,34 @@ import (
 
 // Model represents a TensorFlow classification model.
 type Model struct {
-	model      *tf.SavedModel
-	modelPath  string
-	assetsPath string
-	labels     []string
-	disabled   bool
-	meta       *tensorflow.ModelInfo
-	mutex      sync.Mutex
+	model             *tf.SavedModel
+	modelPath         string
+	assetsPath        string
+	defaultLabelsPath string
+	labels            []string
+	disabled          bool
+	meta              *tensorflow.ModelInfo
+	mutex             sync.Mutex
 }
 
 // NewModel returns new TensorFlow classification model instance.
-func NewModel(assetsPath, modelPath string, meta *tensorflow.ModelInfo, disabled bool) *Model {
+func NewModel(assetsPath, modelPath, defaultLabelsPath string, meta *tensorflow.ModelInfo, disabled bool) *Model {
 	if meta == nil {
 		meta = new(tensorflow.ModelInfo)
 	}
 
 	return &Model{
-		modelPath:  modelPath,
-		assetsPath: assetsPath,
-		meta:       meta,
-		disabled:   disabled,
+		modelPath:         modelPath,
+		assetsPath:        assetsPath,
+		defaultLabelsPath: defaultLabelsPath,
+		meta:              meta,
+		disabled:          disabled,
 	}
 }
 
 // NewNasnet returns new Nasnet TensorFlow classification model instance.
 func NewNasnet(assetsPath string, disabled bool) *Model {
-	return NewModel(assetsPath, "nasnet", &tensorflow.ModelInfo{
+	return NewModel(assetsPath, "nasnet", "", &tensorflow.ModelInfo{
 		TFVersion: "1.12.0",
 		Tags:      []string{"photoprism"},
 		Input: &tensorflow.PhotoInput{
@@ -159,7 +161,13 @@ func (m *Model) Run(img []byte, confidenceThreshold int) (result Labels, err err
 }
 
 func (m *Model) loadLabels(modelPath string) (err error) {
-	m.labels, err = tensorflow.LoadLabels(modelPath)
+	numLabels := int(m.meta.Output.NumOutputs)
+
+	m.labels, err = tensorflow.LoadLabels(modelPath, numLabels)
+	if os.IsNotExist(err) {
+		log.Infof("Model does not seem to have tags at %s, trying %s", modelPath, m.defaultLabelsPath)
+		m.labels, err = tensorflow.LoadLabels(m.defaultLabelsPath, numLabels)
+	}
 	return err
 }
 
@@ -216,7 +224,7 @@ func (m *Model) loadModel() (err error) {
 	if m.meta.Output.OutputsLogits {
 		_, err = tensorflow.AddSoftmax(m.model.Graph, m.meta)
 		if err != nil {
-			return fmt.Errorf("classify: could not add softmax: %w")
+			return fmt.Errorf("classify: could not add softmax: %w", nil)
 		}
 	}
 

@@ -170,7 +170,7 @@ func (m *Model) loadModel() error {
 	if m.meta.Output.OutputsLogits {
 		_, err = tensorflow.AddSoftmax(m.model.Graph, m.meta)
 		if err != nil {
-			return fmt.Errorf("nsfw: could not add softmax: %w")
+			return fmt.Errorf("nsfw: could not add softmax: %w", nil)
 		}
 	}
 
@@ -178,7 +178,7 @@ func (m *Model) loadModel() error {
 }
 
 func (m *Model) loadLabels(modelPath string) (err error) {
-	m.labels, err = tensorflow.LoadLabels(modelPath)
+	m.labels, err = tensorflow.LoadLabels(modelPath, int(m.meta.Output.NumOutputs))
 	return nil
 }
 
