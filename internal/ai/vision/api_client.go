@@ -7,52 +7,10 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"os"
-	"strings"
 
-	"github.com/photoprism/photoprism/internal/api/download"
 	"github.com/photoprism/photoprism/pkg/clean"
-	"github.com/photoprism/photoprism/pkg/media"
 	"github.com/photoprism/photoprism/pkg/media/http/header"
-	"github.com/photoprism/photoprism/pkg/media/http/scheme"
-	"github.com/photoprism/photoprism/pkg/rnd"
 )
-
-// NewApiRequest returns a new Vision API request with the specified file payload and scheme.
-func NewApiRequest(images Files, fileScheme string) (*ApiRequest, error) {
-	imageUrls := make(Files, len(images))
-
-	if fileScheme == scheme.Https && !strings.HasPrefix(DownloadUrl, "https://") {
-		log.Tracef("vision: file request scheme changed from https to data because https is not configured")
-		fileScheme = scheme.Data
-	}
-
-	for i := range images {
-		switch fileScheme {
-		case scheme.Https:
-			fileUuid := rnd.UUID()
-			if err := download.Register(fileUuid, images[i]); err != nil {
-				return nil, fmt.Errorf("%s (create download url)", err)
-			} else {
-				imageUrls[i] = fmt.Sprintf("%s/%s", DownloadUrl, fileUuid)
-			}
-		case scheme.Data:
-			if file, err := os.Open(images[i]); err != nil {
-				return nil, fmt.Errorf("%s (create data url)", err)
-			} else {
-				imageUrls[i] = media.DataUrl(file)
-			}
-		default:
-			return nil, fmt.Errorf("invalid file scheme %s", clean.Log(fileScheme))
-		}
-	}
-
-	return &ApiRequest{
-		Id:     rnd.UUID(),
-		Model:  "",
-		Images: imageUrls,
-	}, nil
-}
 
 // PerformApiRequest performs a Vision API request and returns the result.
 func PerformApiRequest(apiRequest *ApiRequest, uri, method, key string) (apiResponse *ApiResponse, err error) {
@@ -89,15 +47,19 @@ func PerformApiRequest(apiRequest *ApiRequest, uri, method, key string) (apiResp
 		return apiResponse, clientErr
 	}
 
-	apiResponse = &ApiResponse{}
-
-	// Unmarshal response and add labels, if returned.
-	if apiJson, apiErr := io.ReadAll(clientResp.Body); apiErr != nil {
-		return apiResponse, apiErr
-	} else if apiErr = json.Unmarshal(apiJson, apiResponse); apiErr != nil {
-		return apiResponse, apiErr
-	} else if clientResp.StatusCode >= 300 {
-		log.Debugf("vision: %s (status code %d)", apiJson, clientResp.StatusCode)
+	// Parse and return response, or an error if the request failed.
+	switch apiRequest.GetResponseFormat() {
+	case ApiFormatVision:
+		apiResponse = &ApiResponse{}
+		if apiJson, apiErr := io.ReadAll(clientResp.Body); apiErr != nil {
+			return apiResponse, apiErr
+		} else if apiErr = json.Unmarshal(apiJson, apiResponse); apiErr != nil {
+			return apiResponse, apiErr
+		} else if clientResp.StatusCode >= 300 {
+			log.Debugf("vision: %s (status code %d)", apiJson, clientResp.StatusCode)
+		}
+	default:
+		return apiResponse, fmt.Errorf("unsupported response format %s", clean.Log(apiRequest.responseFormat))
 	}
 
 	return apiResponse, nil

@@ -15,7 +15,7 @@ func TestNewApiRequest(t *testing.T) {
 
 	t.Run("Data", func(t *testing.T) {
 		thumbnails := Files{examplesPath + "/chameleon_lime.jpg"}
-		result, err := NewApiRequest(thumbnails, scheme.Data)
+		result, err := NewApiRequestImages(thumbnails, scheme.Data)
 
 		assert.NoError(t, err)
 		assert.NotNil(t, result)
@@ -30,7 +30,7 @@ func TestNewApiRequest(t *testing.T) {
 	})
 	t.Run("Https", func(t *testing.T) {
 		thumbnails := Files{examplesPath + "/chameleon_lime.jpg"}
-		result, err := NewApiRequest(thumbnails, scheme.Https)
+		result, err := NewApiRequestImages(thumbnails, scheme.Https)
 
 		assert.NoError(t, err)
 		assert.NotNil(t, result)
