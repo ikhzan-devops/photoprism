@@ -53,10 +53,14 @@ func NewNasnet(assetsPath string, disabled bool) *Model {
 		TFVersion: "1.12.0",
 		Tags:      []string{"photoprism"},
 		Input: &tensorflow.PhotoInput{
-			Name:        "input_1",
-			Height:      224,
-			Width:       224,
-			Channels:    3,
+			Name:     "input_1",
+			Height:   224,
+			Width:    224,
+			Channels: 3,
+			Interval: &tensorflow.Interval{
+				Start: -1,
+				End:   1,
+			},
 			OutputIndex: 0,
 		},
 		Output: &tensorflow.ModelOutput{
@@ -290,5 +294,5 @@ func (m *Model) createTensor(image []byte) (*tf.Tensor, error) {
 		img = imaging.Fill(img, m.meta.Input.Resolution(), m.meta.Input.Resolution(), imaging.Center, imaging.Lanczos)
 	}
 
-	return tensorflow.Image(img, m.meta.Input.Resolution())
+	return tensorflow.Image(img, m.meta.Input)
 }

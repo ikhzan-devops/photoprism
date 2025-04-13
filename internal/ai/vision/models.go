@@ -16,9 +16,13 @@ var (
 			TFVersion: "1.12.0",
 			Tags:      []string{"photoprism"},
 			Input: &tensorflow.PhotoInput{
-				Name:        "input_1",
-				Height:      224,
-				Width:       224,
+				Name:   "input_1",
+				Height: 224,
+				Width:  224,
+				Interval: &tensorflow.Interval{
+					Start: -1.0,
+					End:   1.0,
+				},
 				Channels:    3,
 				OutputIndex: 0,
 			},

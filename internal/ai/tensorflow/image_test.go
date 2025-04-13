@@ -10,9 +10,15 @@ import (
 	"github.com/photoprism/photoprism/pkg/fs"
 )
 
+var defaultImageInput = &PhotoInput{
+	Height:   224,
+	Width:    224,
+	Channels: 3,
+}
+
 func TestConvertValue(t *testing.T) {
-	result := convertValue(uint32(98765432), 127.5)
-	assert.Equal(t, float32(3024.898), result)
+	result := convertValue(uint32(98765432), &Interval{Start: -1, End: 1})
+	assert.Equal(t, float32(3024.8982), result)
 }
 
 func TestImageFromBytes(t *testing.T) {
@@ -26,7 +32,7 @@ func TestImageFromBytes(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		result, err := ImageFromBytes(imageBuffer, 224)
+		result, err := ImageFromBytes(imageBuffer, defaultImageInput)
 		assert.Equal(t, tensorflow.DataType(0x1), result.DataType())
 		assert.Equal(t, int64(1), result.Shape()[0])
 		assert.Equal(t, int64(224), result.Shape()[2])
@@ -34,7 +40,7 @@ func TestImageFromBytes(t *testing.T) {
 	t.Run("Document", func(t *testing.T) {
 		imageBuffer, err := os.ReadFile(examplesPath + "/Random.docx")
 		assert.Nil(t, err)
-		result, err := ImageFromBytes(imageBuffer, 224)
+		result, err := ImageFromBytes(imageBuffer, defaultImageInput)
 
 		assert.Empty(t, result)
 		assert.EqualError(t, err, "image: unknown format")

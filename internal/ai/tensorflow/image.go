@@ -20,11 +20,11 @@ const (
 	Scale = float32(1)
 )
 
-func ImageFromFile(fileName string, resolution int) (*tf.Tensor, error) {
+func ImageFromFile(fileName string, input *PhotoInput) (*tf.Tensor, error) {
 	if img, err := OpenImage(fileName); err != nil {
 		return nil, err
 	} else {
-		return Image(img, resolution)
+		return Image(img, input)
 	}
 }
 
@@ -39,39 +39,39 @@ func OpenImage(fileName string) (image.Image, error) {
 	return img, err
 }
 
-func ImageFromBytes(b []byte, resolution int) (*tf.Tensor, error) {
+func ImageFromBytes(b []byte, input *PhotoInput) (*tf.Tensor, error) {
 	img, _, imgErr := image.Decode(bytes.NewReader(b))
 
 	if imgErr != nil {
 		return nil, imgErr
 	}
 
-	return Image(img, resolution)
+	return Image(img, input)
 }
 
-func Image(img image.Image, resolution int) (tfTensor *tf.Tensor, err error) {
+func Image(img image.Image, input *PhotoInput) (tfTensor *tf.Tensor, err error) {
 	defer func() {
 		if r := recover(); r != nil {
 			err = fmt.Errorf("tensorflow: %s (panic)\nstack: %s", r, debug.Stack())
 		}
 	}()
 
-	if resolution <= 0 {
+	if input.Resolution() <= 0 {
 		return tfTensor, fmt.Errorf("tensorflow: resolution must be larger 0")
 	}
 
 	var tfImage [1][][][3]float32
 
-	for j := 0; j < resolution; j++ {
-		tfImage[0] = append(tfImage[0], make([][3]float32, resolution))
+	for j := 0; j < input.Resolution(); j++ {
+		tfImage[0] = append(tfImage[0], make([][3]float32, input.Resolution()))
 	}
 
-	for i := 0; i < resolution; i++ {
-		for j := 0; j < resolution; j++ {
+	for i := 0; i < input.Resolution(); i++ {
+		for j := 0; j < input.Resolution(); j++ {
 			r, g, b, _ := img.At(i, j).RGBA()
-			tfImage[0][j][i][0] = convertValue(r, 127.5)
-			tfImage[0][j][i][1] = convertValue(g, 127.5)
-			tfImage[0][j][i][2] = convertValue(b, 127.5)
+			tfImage[0][j][i][0] = convertValue(r, input.GetInterval())
+			tfImage[0][j][i][1] = convertValue(g, input.GetInterval())
+			tfImage[0][j][i][2] = convertValue(b, input.GetInterval())
 		}
 	}
 
@@ -136,10 +136,9 @@ func transformImageGraph(imageFormat fs.Type, resolution int) (graph *tf.Graph, 
 	return graph, input, output, err
 }
 
-func convertValue(value uint32, mean float32) float32 {
-	if mean == 0 {
-		mean = 127.5
-	}
+func convertValue(value uint32, interval *Interval) float32 {
+	scale := interval.Size() / 255.0
+	offset := interval.Start
 
-	return (float32(value>>8) - mean) / mean
+	return (float32(value>>8))*scale + offset
 }

@@ -11,13 +11,33 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
+// Interval of allowed values
+type Interval struct {
+	Start float32 `yaml:"Start,omitempty" json:"start,omitempty"`
+	End   float32 `yaml:"End,omitempty" json:"end,omitempty"`
+}
+
+// The size of the interval
+func (i Interval) Size() float32 {
+	return i.End - i.Start
+}
+
+// The standard interval returned by decodeImage is [0, 1]
+func StandardInterval() *Interval {
+	return &Interval{
+		Start: 0.0,
+		End:   1.0,
+	}
+}
+
 // Input description for a photo input for a model
 type PhotoInput struct {
-	Name        string `yaml:"Name,omitempty" json:"name,omitempty"`
-	OutputIndex int    `yaml:"Index,omitempty" json:"index,omitempty"`
-	Height      int64  `yaml:"Height,omitempty" json:"height,omitempty"`
-	Width       int64  `yaml:"Width,omitempty" json:"width,omitempty"`
-	Channels    int64  `yaml:"Channels,omitempty" json:"channels,omitempty"`
+	Name        string    `yaml:"Name,omitempty" json:"name,omitempty"`
+	Interval    *Interval `yaml:"Interval,omitempty" json:"interval,omitempty"`
+	OutputIndex int       `yaml:"Index,omitempty" json:"index,omitempty"`
+	Height      int64     `yaml:"Height,omitempty" json:"height,omitempty"`
+	Width       int64     `yaml:"Width,omitempty" json:"width,omitempty"`
+	Channels    int64     `yaml:"Channels,omitempty" json:"channels,omitempty"`
 }
 
 // When dimensions are not defined, it means the model accepts any size of
@@ -37,10 +57,23 @@ func (p *PhotoInput) SetResolution(resolution int) {
 	p.Width = int64(resolution)
 }
 
+// Get the interval or the default one
+func (p PhotoInput) GetInterval() *Interval {
+	if p.Interval == nil {
+		return StandardInterval()
+	} else {
+		return p.Interval
+	}
+}
+
 // Merge other input with this.
 func (p *PhotoInput) Merge(other *PhotoInput) {
 	if p.Name == "" {
 		p.Name = other.Name
+	}
+
+	if p.Interval == nil && other.Interval != nil {
+		p.Interval = other.Interval
 	}
 
 	if p.OutputIndex == 0 {
