@@ -13,7 +13,7 @@ import (
 
 var modelPath, _ = filepath.Abs("../../../assets/nsfw")
 
-var detector = NewModel(modelPath, 224, nil, false)
+var detector = NewModel(modelPath, nil, false)
 
 func TestIsSafe(t *testing.T) {
 	detect := func(filename string) Result {
