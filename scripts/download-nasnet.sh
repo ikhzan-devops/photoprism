@@ -9,6 +9,7 @@ MODEL_ZIP="/tmp/photoprism/nasnet.zip"
 MODEL_HASH="f18b801354e95cade497b4f12e8d2537d04c04f6  $MODEL_ZIP"
 MODEL_VERSION="$MODEL_PATH/version.txt"
 MODEL_BACKUP="storage/backup/nasnet-$TODAY"
+MODEL_21K_LABELS_URL="https://dl.photoprism.app/tensorflow/vision/labels-imagenet21k.txt"
 
 echo "Installing $MODEL_NAME model for TensorFlow..."
 
@@ -42,5 +43,6 @@ fi
 # Unzip model
 unzip ${MODEL_ZIP} -d assets
 echo "$MODEL_NAME $TODAY $MODEL_HASH" > ${MODEL_VERSION}
+wget --inet4-only -c "${MODEL_21K_LABELS_URL}" -O ${MODEL_PATH}/labels21k.txt
 
 echo "Latest $MODEL_NAME installed."
