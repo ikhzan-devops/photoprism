@@ -182,8 +182,8 @@ github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0/go.mod h1:E/TSTwGw
 github.com/golang/geo v0.0.0-20190916061304-5b978397cfec/go.mod h1:QZ0nwyI2jOfgRAoBvP+ab5aRr7c9x7lhGEJrKvBwjWI=
 github.com/golang/geo v0.0.0-20200319012246-673a6f80352d/go.mod h1:QZ0nwyI2jOfgRAoBvP+ab5aRr7c9x7lhGEJrKvBwjWI=
 github.com/golang/geo v0.0.0-20210211234256-740aa86cb551/go.mod h1:QZ0nwyI2jOfgRAoBvP+ab5aRr7c9x7lhGEJrKvBwjWI=
-github.com/golang/geo v0.0.0-20250410091149-9ff723126794 h1:sYWK0P7YCim7xkB7IqMX6k4YtrcqLVSdCZqmMnqhBAI=
-github.com/golang/geo v0.0.0-20250410091149-9ff723126794/go.mod h1:J+F9/3Ofc8ysEOY2/cNjxTMl2eB1gvPIywEHUplPgDA=
+github.com/golang/geo v0.0.0-20250411042641-97e19c1a7ce7 h1:HNykSFq2QowNxC/zZc1IEbRuj30sMiY4aCSLb4EK/zA=
+github.com/golang/geo v0.0.0-20250411042641-97e19c1a7ce7/go.mod h1:J+F9/3Ofc8ysEOY2/cNjxTMl2eB1gvPIywEHUplPgDA=
 github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b/go.mod h1:SBH7ygxi8pfUlaOkMMuAQtPIUF8ecWP5IEl/CR7VP2Q=
 github.com/golang/groupcache v0.0.0-20190702054246-869f871628b6/go.mod h1:cIg4eruTrX1D+g88fzRXU5OdNfaM+9IcxsU14FzY7Hc=
 github.com/golang/groupcache v0.0.0-20191227052852-215e87163ea7/go.mod h1:cIg4eruTrX1D+g88fzRXU5OdNfaM+9IcxsU14FzY7Hc=
@@ -209,8 +209,8 @@ github.com/google/gofuzz v1.0.0/go.mod h1:dBl0BpW6vV/+mYPU4Po3pmUjxk6FQPldtuIdl/
 github.com/google/gofuzz v1.2.0 h1:xRy4A+RhZaiKjJ1bPfwQ8sedCA+YS2YcCHW6ec7JMi0=
 github.com/google/gofuzz v1.2.0/go.mod h1:dBl0BpW6vV/+mYPU4Po3pmUjxk6FQPldtuIdl/M65Eg=
 github.com/google/martian v2.1.0+incompatible/go.mod h1:9I4somxYTbIHy5NJKHRl3wXiIaQGbYVAs8BPL6v8lEs=
-github.com/google/open-location-code/go v0.0.0-20250404115940-e760de81d3c4 h1:iwgo0bYcHhpWlsTZr3jIG7kiB1vrh4rk1wRC3j6CF2I=
-github.com/google/open-location-code/go v0.0.0-20250404115940-e760de81d3c4/go.mod h1:eJfRN6aj+kR/rnua/rw9jAgYhqoMHldQkdTi+sePRKk=
+github.com/google/open-location-code/go v0.0.0-20250412170143-cff6d0b3fec9 h1:B43DA5D33P7i20Y0ZK0WfY+W0ZRf/frierrFj/nNwLQ=
+github.com/google/open-location-code/go v0.0.0-20250412170143-cff6d0b3fec9/go.mod h1:eJfRN6aj+kR/rnua/rw9jAgYhqoMHldQkdTi+sePRKk=
 github.com/google/pprof v0.0.0-20181206194817-3ea8567a2e57/go.mod h1:zfwlbNMJ+OItoe0UupaVj+oy1omPYYDuagoSzA8v9mc=
 github.com/google/pprof v0.0.0-20190515194954-54271f7e092f/go.mod h1:zfwlbNMJ+OItoe0UupaVj+oy1omPYYDuagoSzA8v9mc=
 github.com/google/pprof v0.0.0-20200212024743-f11f1df84d12/go.mod h1:ZgVRPoUq/hfqzAqh7sHMqb3I9Rq5C59dIz2SbBwJ4eM=
