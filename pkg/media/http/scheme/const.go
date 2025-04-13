@@ -1,15 +1,18 @@
 package scheme
 
+// Type represents a URL scheme type.
+type Type = string
+
 const (
-	File       = "file"
-	Data       = "data"
-	Http       = "http"
-	Https      = "https"
-	HttpUnix   = Http + "+" + Unix
-	Websocket  = "wss"
-	Unix       = "unix"
-	Unixgram   = "unixgram"
-	Unixpacket = "unixpacket"
+	File       Type = "file"
+	Data       Type = "data"
+	Http       Type = "http"
+	Https      Type = "https"
+	Websocket  Type = "wss"
+	Unix       Type = "unix"
+	HttpUnix   Type = "http+unix"
+	Unixgram   Type = "unixgram"
+	Unixpacket Type = "unixpacket"
 )
 
 var (

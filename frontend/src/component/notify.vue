@@ -1,35 +1,36 @@
 <template>
-  <div v-if="visible" id="p-notify" tabindex="-1">
-    <v-snackbar
-      :model-value="snackbar"
-      :class="'p-notify--' + message.color"
-      class="p-notify clickable"
-      @click.stop.prevent="showNext"
-      @update:model-value="onSnackbar"
-    >
-      <v-icon
-        v-if="message.icon"
-        :icon="'mdi-' + message.icon"
-        :color="message.color"
-        class="p-notify_icon"
-        start
-      ></v-icon>
-      {{ message.text }}
-      <template #actions>
-        <v-btn
-          icon="mdi-close"
-          :color="'on-' + message.color"
-          variant="text"
-          class="p-notify__close"
-          @click.stop.prevent="showNext"
-        ></v-btn>
-      </template>
-    </v-snackbar>
-  </div>
+  <teleport to="body">
+    <div v-if="visible" id="p-notify" tabindex="-1">
+      <div
+        :class="'p-notify--' + message.color"
+        class="v-snackbar v-snackbar--bottom v-snackbar--center p-notify"
+        role="alert"
+        @click.stop.prevent="showNext"
+      >
+        <div class="v-snackbar__wrapper rounded-pill v-snackbar--variant-flat">
+          <span class="v-snackbar__underlay"></span>
+          <div class="v-snackbar__content">
+            <i
+              v-if="message.icon"
+              :class="['text-' + message.color, 'mdi-' + message.icon]"
+              class="mdi v-icon notranslate p-notify__icon"
+              aria-hidden="true"
+            ></i>
+            <div class="p-notify__text">
+              {{ message.text }}
+            </div>
+            <i
+              :class="'text-on-' + message.color"
+              class="mdi-close mdi v-icon notranslate p-notify__close"
+              aria-hidden="true"
+            ></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </teleport>
 </template>
 <script>
-let focusElement = null;
-
 export default {
   name: "PNotify",
   data() {
@@ -164,21 +165,11 @@ export default {
           this.message.delay = this.defaultDelay;
         }
 
-        if (!focusElement) {
-          focusElement = document.activeElement;
-        }
-
         if (!this.snackbar) {
           this.snackbar = true;
         }
 
         this.visible = true;
-
-        this.$nextTick(() => {
-          if (focusElement && typeof focusElement.focus === "function" && document.activeElement !== focusElement) {
-            focusElement.focus();
-          }
-        });
 
         setTimeout(() => {
           this.lastText = "";
@@ -188,15 +179,6 @@ export default {
         this.lastText = "";
         this.visible = false;
         this.message.text = "";
-
-        // Return focus to the previously active element, if any.
-        if (focusElement) {
-          if (typeof focusElement.focus === "function" && document.activeElement !== focusElement) {
-            focusElement.focus();
-          }
-
-          focusElement = null;
-        }
       }
     },
   },

@@ -31,6 +31,7 @@
           <v-text-field
             v-model.lazy.trim="filter.q"
             :placeholder="$gettext('Search')"
+            tabindex="1"
             density="compact"
             flat
             single-line

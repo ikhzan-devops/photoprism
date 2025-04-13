@@ -146,27 +146,14 @@ services:
     extends:
       file: ./compose.yaml
       service: mariadb
-  photoprism-vision:
-    profiles: ["all", "vision"]
-    environment:
-      TF_CPP_MIN_LOG_LEVEL: 2
-      NVIDIA_VISIBLE_DEVICES: "all"
-      NVIDIA_DRIVER_CAPABILITIES: "all"
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: "nvidia"
-              count: 1
-              capabilities: [ gpu ]
-    extends:
-      file: ./compose.yaml
-      service: photoprism-vision
   qdrant:
-    profiles: ["all", "vision"]
     extends:
       file: ./compose.yaml
       service: qdrant
+  photoprism-vision:
+    extends:
+      file: ./compose.yaml
+      service: photoprism-vision
   traefik:
     extends:
       file: ./compose.yaml
@@ -198,9 +185,3 @@ volumes:
     driver: local
   mariadb:
     driver: local
-
-## Create shared "photoprism-develop" network for connecting with services in other compose.yaml files
-networks:
-  default:
-    name: photoprism
-    driver: bridge

@@ -2,7 +2,6 @@ package vision
 
 import (
 	"fmt"
-	"net/http"
 	"path/filepath"
 	"sync"
 
@@ -11,6 +10,7 @@ import (
 	"github.com/photoprism/photoprism/internal/ai/nsfw"
 	"github.com/photoprism/photoprism/internal/ai/tensorflow"
 	"github.com/photoprism/photoprism/pkg/clean"
+	"github.com/photoprism/photoprism/pkg/media/http/scheme"
 )
 
 var modelMutex = sync.Mutex{}
@@ -22,11 +22,9 @@ type Model struct {
 	Version       string                `yaml:"Version,omitempty" json:"version,omitempty"`
 	Resolution    int                   `yaml:"Resolution,omitempty" json:"resolution,omitempty"`
 	Meta          *tensorflow.ModelInfo `yaml:"Meta,omitempty" json:"meta,omitempty"`
-	Uri           string                `yaml:"Uri,omitempty" json:"-"`
-	Key           string                `yaml:"Key,omitempty" json:"-"`
-	Method        string                `yaml:"Method,omitempty" json:"-"`
+	Service       Service               `yaml:"Service,omitempty" json:"Service,omitempty"`
 	Path          string                `yaml:"Path,omitempty" json:"-"`
-	Disabled      bool                  `yaml:"Disabled,omitempty" json:"-"`
+	Disabled      bool                  `yaml:"Disabled,omitempty" json:"disabled,omitempty"`
 	classifyModel *classify.Model
 	faceModel     *face.Model
 	nsfwModel     *nsfw.Model
@@ -37,32 +35,51 @@ type Models []*Model
 
 // Endpoint returns the remote service request method and endpoint URL, if any.
 func (m *Model) Endpoint() (uri, method string) {
-	if m.Uri == "" && ServiceUri == "" || m.Type == "" {
+	if uri, method = m.Service.Endpoint(); uri != "" && method != "" {
+		return uri, method
+	} else if ServiceUri == "" {
 		return "", ""
-	}
-
-	if m.Method != "" {
-		method = m.Method
+	} else if serviceType := clean.TypeLowerUnderscore(m.Type); serviceType == "" {
+		return "", ""
 	} else {
-		method = http.MethodPost
-	}
-
-	if m.Uri != "" {
-		return m.Uri, method
-	} else {
-		return fmt.Sprintf("%s/%s", ServiceUri, clean.TypeLowerUnderscore(m.Type)), method
+		return fmt.Sprintf("%s/%s", ServiceUri, serviceType), ServiceMethod
 	}
 }
 
 // EndpointKey returns the access token belonging to the remote service endpoint, if any.
-func (m *Model) EndpointKey() string {
-	if m.Key != "" {
-		return m.Key
-	} else if ServiceKey != "" {
+func (m *Model) EndpointKey() (key string) {
+	if key = m.Service.EndpointKey(); key != "" {
+		return key
+	} else {
 		return ServiceKey
 	}
+}
 
-	return ""
+// EndpointFileScheme returns the endpoint API request file scheme type.
+func (m *Model) EndpointFileScheme() (fileScheme scheme.Type) {
+	if fileScheme = m.Service.EndpointFileScheme(); fileScheme != "" {
+		return fileScheme
+	}
+
+	return ServiceFileScheme
+}
+
+// EndpointRequestFormat returns the endpoint API request format.
+func (m *Model) EndpointRequestFormat() (format ApiFormat) {
+	if format = m.Service.EndpointRequestFormat(); format != "" {
+		return format
+	}
+
+	return ServiceRequestFormat
+}
+
+// EndpointResponseFormat returns the endpoint API response format.
+func (m *Model) EndpointResponseFormat() (format ApiFormat) {
+	if format = m.Service.EndpointResponseFormat(); format != "" {
+		return format
+	}
+
+	return ServiceResponseFormat
 }
 
 // ClassifyModel returns the matching classify model instance, if any.
