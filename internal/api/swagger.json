@@ -5070,43 +5070,6 @@
                 }
             }
         },
-        "/api/v1/webhook/{channel}": {
-            "post": {
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Webhook"
-                ],
-                "summary": "listens for webhook events and checks their authorization",
-                "operationId": "Webhook",
-                "parameters": [
-                    {
-                        "description": "webhook event data",
-                        "name": "payload",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/hooks.Payload"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    },
-                    "429": {
-                        "description": "Too Many Requests"
-                    }
-                }
-            }
-        },
         "/api/v1/zip": {
             "post": {
                 "tags": [
@@ -6657,10 +6620,6 @@
                 }
             }
         },
-        "event.Data": {
-            "type": "object",
-            "additionalProperties": true
-        },
         "form.Album": {
             "type": "object",
             "properties": {
@@ -7133,20 +7092,6 @@
         "gin.H": {
             "type": "object",
             "additionalProperties": {}
-        },
-        "hooks.Payload": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "$ref": "#/definitions/event.Data"
-                },
-                "timestamp": {
-                    "type": "string"
-                },
-                "type": {
-                    "type": "string"
-                }
-            }
         },
         "i18n.Response": {
             "type": "object",
@@ -7716,16 +7661,6 @@
         "time.Duration": {
             "type": "integer",
             "enum": [
-                -9223372036854775808,
-                9223372036854775807,
-                1,
-                1000,
-                1000000,
-                1000000000,
-                60000000000,
-                3600000000000,
-                -9223372036854775808,
-                9223372036854775807,
                 1,
                 1000,
                 1000000,
@@ -7740,16 +7675,6 @@
                 3600000000000
             ],
             "x-enum-varnames": [
-                "minDuration",
-                "maxDuration",
-                "Nanosecond",
-                "Microsecond",
-                "Millisecond",
-                "Second",
-                "Minute",
-                "Hour",
-                "minDuration",
-                "maxDuration",
                 "Nanosecond",
                 "Microsecond",
                 "Millisecond",
@@ -7762,6 +7687,19 @@
                 "Second",
                 "Minute",
                 "Hour"
+            ]
+        },
+        "vision.ApiFormat": {
+            "type": "string",
+            "enum": [
+                "url",
+                "images",
+                "vision"
+            ],
+            "x-enum-varnames": [
+                "ApiFormatUrl",
+                "ApiFormatImages",
+                "ApiFormatVision"
             ]
         },
         "vision.ApiRequest": {
@@ -7879,6 +7817,12 @@
         "vision.Model": {
             "type": "object",
             "properties": {
+                "Service": {
+                    "$ref": "#/definitions/vision.Service"
+                },
+                "disabled": {
+                    "type": "boolean"
+                },
                 "name": {
                     "type": "string"
                 },
@@ -7907,6 +7851,29 @@
                 "ModelTypeFace",
                 "ModelTypeCaption"
             ]
+        },
+        "vision.Service": {
+            "type": "object",
+            "properties": {
+                "disabled": {
+                    "type": "boolean"
+                },
+                "fileScheme": {
+                    "type": "string"
+                },
+                "method": {
+                    "type": "string"
+                },
+                "requestFormat": {
+                    "$ref": "#/definitions/vision.ApiFormat"
+                },
+                "responseFormat": {
+                    "$ref": "#/definitions/vision.ApiFormat"
+                },
+                "uri": {
+                    "type": "string"
+                }
+            }
         }
     },
     "externalDocs": {
