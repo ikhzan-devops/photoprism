@@ -471,9 +471,9 @@
     border-radius: 0;
     z-index: 10;
     margin: 0;
-    padding: 24px 12px 12px 12px;
+    padding: 20px 12px 12px 12px;
     gap: 6px;
-    background: linear-gradient(0deg, #000000CC, #00000000);
+    background: linear-gradient(0deg, #000000BF, #00000000);
 }
 
 .p-lightbox__controls .video-label,
