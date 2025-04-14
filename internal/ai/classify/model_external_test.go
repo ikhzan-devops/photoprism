@@ -81,6 +81,18 @@ var modelsInfo = map[string]*tensorflow.ModelInfo{
 	},
 }
 
+func isSafePath(target, baseDir string) bool {
+
+	// Resolve the absolute path of the target
+	absTarget := filepath.Join(baseDir, target)
+	absBase, err := filepath.Abs(baseDir)
+	if err != nil {
+		return false
+	}
+
+	return strings.HasPrefix(absTarget, absBase)
+}
+
 func TestExternalModel_AllModels(t *testing.T) {
 
 	if os.Getenv(ExternalModelsTestLabel) == "" {
@@ -149,13 +161,18 @@ func downloadRemoteModel(t *testing.T, url, tmpPath string) (model string) {
 			t.Fatalf("Could not extract the file: %v", err)
 		}
 
+		target := filepath.Join(tmpPath, header.Name)
+		if !isSafePath(target, tmpPath) {
+			t.Fatalf("The model file contains an invalid path: %s", header.Name)
+		}
+
 		switch header.Typeflag {
 		case tar.TypeDir:
-			if err := os.Mkdir(filepath.Join(tmpPath, header.Name), 0755); err != nil {
+			if err := os.Mkdir(target, 0755); err != nil {
 				t.Fatalf("Could not make the dir %s: %v", header.Name, err)
 			}
 		case tar.TypeReg:
-			outFile, err := os.Create(filepath.Join(tmpPath, header.Name))
+			outFile, err := os.Create(target)
 			if err != nil {
 				t.Fatalf("Could not create file %s: %v", header.Name, err)
 			}
