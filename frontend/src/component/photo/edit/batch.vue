@@ -20,7 +20,7 @@
       </v-toolbar>
 
       <v-row dense>
-        <v-col cols="12" md="4">
+        <v-col v-if="!$vuetify.display.smAndDown" cols="12" md="4">
           <div class="edit-batch photo-results list-view v-table">
             <table>
               <tbody>
@@ -81,6 +81,83 @@
                 </tr>
               </tbody>
             </table>
+          </div>
+        </v-col>
+
+        <v-col v-else cols="12">
+          <div class="edit-batch photo-results list-view v-table">
+            <v-expansion-panels
+              v-model="expanded"
+              variant="accordion"
+              density="compact"
+              rounded="6"
+              tabindex="1"
+              class="elevation-0"
+            >
+              <v-expansion-panel title="Open photos" color="secondary" class="pa-0 elevation-0">
+                <v-expansion-panel-text>
+                  <table class="w-100">
+                    <tbody>
+                      <tr v-for="(m, index) in selectedPhotos" :key="m.ID" ref="items" :data-index="index">
+                        <td :data-id="m.ID" :data-uid="m.UID" class="col-select" :class="{ 'is-selected': isSelected(m) }">
+                          <button
+                            class="input-select"
+                            @touchstart.passive="onMouseDown($event, index)"
+                            @touchend.stop="onSelectClick($event, index, true)"
+                            @mousedown="onMouseDown($event, index)"
+                            @contextmenu.stop="onContextMenu($event, index)"
+                            @click.stop.prevent="onSelectClick($event, index, true)"
+                          >
+                            <i class="mdi mdi-checkbox-marked select-on" />
+                            <i class="mdi mdi-checkbox-blank-outline select-off" />
+                          </button>
+                        </td>
+                        <td :data-id="m.ID" :data-uid="m.UID" class="media result col-preview">
+                          <!--                    <div v-if="index < firstVisibleElementIndex || index > lastVisibleElementIndex" class="preview"></div>-->
+                          <!--                    <div-->
+                          <!--                        v-else-->
+                          <!--                        :style="`background-image: url(${m.thumbnailUrl('tile_224')})`"-->
+                          <!--                        class="preview"-->
+                          <!--                        @touchstart.passive="onMouseDown($event, index)"-->
+                          <!--                        @touchend.stop="onClick($event, index, false)"-->
+                          <!--                        @mousedown="onMouseDown($event, index)"-->
+                          <!--                        @contextmenu.stop="onContextMenu($event, index)"-->
+                          <!--                        @click.stop.prevent="onClick($event, index, false)"-->
+                          <!--                    >-->
+                          <div
+                            :style="`background-image: url(${m.thumbnailUrl('tile_224')})`"
+                            class="preview"
+                            @touchstart.passive="onMouseDown($event, index)"
+                            @touchend.stop="onSelectClick($event, index, false)"
+                            @mousedown="onMouseDown($event, index)"
+                            @contextmenu.stop="onContextMenu($event, index)"
+                            @click.stop.prevent="onSelectClick($event, index, false)"
+                          >
+                            <div class="preview__overlay"></div>
+                            <button
+                              v-if="m.Type === 'video' || m.Type === 'live' || m.Type === 'animated'"
+                              class="input-open"
+                              @click.stop.prevent="openPhoto(index)"
+                            >
+                              <i v-if="m.Type === 'live'" class="action-live" :title="$gettext('Live')"><icon-live-photo /></i>
+                              <i v-else-if="m.Type === 'animated'" class="mdi mdi-file-gif-box" :title="$gettext('Animated')" />
+                              <i v-else-if="m.Type === 'video'" class="mdi mdi-play" :title="$gettext('Video')" />
+                            </button>
+                          </div>
+                        </td>
+                        <td
+                          class="meta-data meta-title col-auto text-start clickable"
+                          :title="m.Title"
+                          @click.exact="openPhoto(index)"
+                        >
+                          {{ m.Title }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </v-expansion-panel-text>
+              </v-expansion-panel>
+            </v-expansion-panels>
           </div>
         </v-col>
 
@@ -447,6 +524,7 @@ export default {
       subscriptions: [],
 
       selections: [],
+      expanded: [0],
       view: this.$view.data(),
       options,
       countries,
@@ -1490,20 +1568,9 @@ export default {
   watch: {
     visible: function (show) {
       if (show) {
-        this.find(this.index);
-
-        // Set currently selected photos.
-        // if (this.data && Array.isArray(this.data.albums)) {
-        //   this.selectedPhotos = this.data.albums;
-        // } else {
-        //   this.selectedPhotos = [];
-        // }
+        this.expanded = [];
       }
     },
-    // selection: function () {
-    //   this.getSelection();
-    //   console.log('this.$view.data()', this.$view.data());
-    // },
   },
   created() {
     this.subscriptions.push(this.$event.subscribe("photos.updated", (ev, data) => this.onUpdate(ev, data)));
@@ -1595,48 +1662,6 @@ export default {
       //   this.syncTime();
       // });
     },
-    find(index) {
-      if (this.loading) {
-        return Promise.reject();
-      }
-
-      if (!this.selection) {
-        this.$notify.error(this.$gettext("Invalid photos selected"));
-        return Promise.reject();
-      }
-
-      this.loading = true;
-      this.selected = index;
-      this.selectedId = this.selection[index];
-      this.loading = false;
-
-      // const a = this.model
-      //   .find(this.selectedId)
-      //   .then((model) => {
-      //     model.refreshFileAttr();
-      //     this.model = model;
-      //     this.loading = false;
-      //     this.uid = this.selectedId;
-      //   })
-      //   .catch(() => (this.loading = false));
-      // console.log('a', a);
-      // return a;
-    },
-    // getImageData() {
-    //   this.model.find(0).then((model) => {
-    //     model.refreshFileAttr();
-    //     this.model = model;
-    //   });
-    // },
-    // getSelection() {
-    //   if (!this.selection) {
-    //     return Promise.reject();
-    //   }
-    //
-    //   console.log("getImageData", this.getImageData());
-    //   // this.selections = this.selection.find((val, index) => this.find(index));
-    //   // console.log('this.selections', this.selections);
-    // },
   },
 };
 </script>
