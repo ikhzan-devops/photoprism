@@ -7,6 +7,13 @@ export default class Page {
     this.countries = Selector("div.p-countries-select", { timeout: 15000 });
     this.time = Selector("div.p-time-select", { timeout: 15000 });
     this.search1 = Selector("div.input-search input", { timeout: 15000 });
+    this.menuButton = Selector("button.action-menu__btn", { timeout: 15000 });
+    this.viewer = Selector("div.p-lightbox__pswp", { timeout: 15000 });
+    this.caption = Selector("div.pswp__caption__center", { timeout: 5000 });
+    this.muteButton = Selector("button.pswp__button--mute", { timeout: 5000 });
+    this.playButton = Selector('[class^="pswp__button pswp__button--slideshow-toggle pswp__"]', { timeout: 5000 });
+    this.favoriteOnIcon = Selector("button.action-favorite i.icon-favorite", { timeout: 5000 });
+    this.favoriteOffIcon = Selector("button.action-favorite i.icon-favorite-border", { timeout: 5000 });
   }
 
   async openPhotoViewer(mode, uidOrNth) {

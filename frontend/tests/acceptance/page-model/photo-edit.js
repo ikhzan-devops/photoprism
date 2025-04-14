@@ -2,6 +2,7 @@ import { Selector, t } from "testcafe";
 
 export default class Page {
   constructor() {
+    this.dialog = Selector("div.v-dialog");
     this.dialogClose = Selector("div.v-dialog button.action-close", { timeout: 15000 });
     this.dialogNext = Selector("div.v-dialog button.action-next", { timeout: 15000 });
     this.dialogPrevious = Selector("div.v-dialog button.action-previous", { timeout: 15000 });

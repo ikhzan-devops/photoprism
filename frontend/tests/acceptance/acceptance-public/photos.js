@@ -10,7 +10,7 @@ import Page from "../page-model/page";
 import PhotoEdit from "../page-model/photo-edit";
 
 const scroll = ClientFunction((x, y) => window.scrollTo(x, y));
-const getcurrentPosition = ClientFunction(() => window.pageYOffset);
+const getcurrentPosition = ClientFunction(() => window.scrollY);
 
 fixture`Test photos`.page`${testcafeconfig.url}`;
 
