@@ -63,7 +63,7 @@
                       <button
                         v-if="m.Type === 'video' || m.Type === 'live' || m.Type === 'animated'"
                         class="input-open"
-                        @click.stop.prevent="openPhoto(index, false)"
+                        @click.stop.prevent="openPhoto(index)"
                       >
                         <i v-if="m.Type === 'live'" class="action-live" :title="$gettext('Live')"><icon-live-photo /></i>
                         <i v-else-if="m.Type === 'animated'" class="mdi mdi-file-gif-box" :title="$gettext('Animated')" />
@@ -411,6 +411,7 @@ import countries from "options/countries.json";
 import IconLivePhoto from "../../icon/live-photo.vue";
 import { PhotoClipboard } from "common/clipboard";
 import { Photo } from "model/photo";
+import Thumb from "../../../model/thumb";
 
 export default {
   name: "PPhotoEditBatch",
@@ -423,10 +424,6 @@ export default {
     selection: {
       type: Array,
       default: () => [],
-    },
-    openPhoto: {
-      type: Function,
-      default: () => {},
     },
     openDate: {
       type: Function,
@@ -1517,6 +1514,9 @@ export default {
     }
   },
   methods: {
+    openPhoto(index) {
+      this.$lightbox.openModels(Thumb.fromFiles([this.selectedPhotos[index]]), 0);
+    },
     isSelected(m) {
       return PhotoClipboard.has(m);
     },
