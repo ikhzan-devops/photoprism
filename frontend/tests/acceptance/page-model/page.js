@@ -30,6 +30,7 @@ export default class Page {
     this.passcodeInput = Selector(".input-code input", { timeout: 7000 });
     this.togglePasswordMode = Selector(".v-field__append-inner", { timeout: 7000 });
     this.loginAction = Selector(".action-confirm", { timeout: 7000 });
+    this.snackbar = Selector(".v-snackbar__content");
   }
 
   async login(username, password) {
