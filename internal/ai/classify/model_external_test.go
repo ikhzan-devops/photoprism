@@ -34,6 +34,11 @@ var modelsInfo = map[string]*tensorflow.ModelInfo{
 		},
 	},
 	"efficientnet-v2-tensorflow2-imagenet1k-m-classification-v2.tar.gz": &tensorflow.ModelInfo{
+		Input: &tensorflow.PhotoInput{
+			Height:   480,
+			Width:    480,
+			Channels: 3,
+		},
 		Output: &tensorflow.ModelOutput{
 			OutputsLogits: true,
 		},
@@ -44,6 +49,11 @@ var modelsInfo = map[string]*tensorflow.ModelInfo{
 		},
 	},
 	"inception-v3-tensorflow2-classification-v2.tar.gz": &tensorflow.ModelInfo{
+		Input: &tensorflow.PhotoInput{
+			Height:   299,
+			Width:    299,
+			Channels: 3,
+		},
 		Output: &tensorflow.ModelOutput{
 			OutputsLogits: true,
 		},
