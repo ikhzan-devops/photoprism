@@ -742,33 +742,24 @@ export default class Config {
       return;
     }
 
-    if (tokens.previewToken) {
-      if (this.previewToken !== tokens.previewToken) {
-        this.previewToken = tokens.previewToken;
-      }
-
-      if (this.values.previewToken !== tokens.previewToken) {
-        this.values.previewToken = tokens.previewToken;
-      }
+    if (tokens.previewToken && this.values?.previewToken !== tokens.previewToken) {
+      this.values.previewToken = tokens.previewToken;
     }
 
-    if (tokens.downloadToken) {
-      if (this.downloadToken !== tokens.downloadToken) {
-        this.downloadToken = tokens.downloadToken;
-      }
-
-      if ((this.values.downloadToken = tokens.downloadToken)) {
-        this.values.downloadToken = tokens.downloadToken;
-      }
+    if (tokens.downloadToken && this.values?.downloadToken !== tokens.downloadToken) {
+      this.values.downloadToken = tokens.downloadToken;
     }
+
+    this.updateTokens();
   }
 
   // updateTokens updates the security tokens required to load thumbnails and download files from the server.
   updateTokens() {
-    if (this.values["previewToken"]) {
+    if (this.values?.previewToken && this.previewToken !== this.values.previewToken) {
       this.previewToken = this.values.previewToken;
     }
-    if (this.values["downloadToken"]) {
+
+    if (this.values?.downloadToken && this.downloadToken !== this.values.downloadToken) {
       this.downloadToken = this.values.downloadToken;
     }
   }
