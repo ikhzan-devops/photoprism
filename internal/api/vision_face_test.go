@@ -22,7 +22,7 @@ func TestPostVisionFace(t *testing.T) {
 			fs.Abs("./testdata/face_160x160.jpg"),
 		}
 
-		req, err := vision.NewApiRequest(files, scheme.Data)
+		req, err := vision.NewApiRequestImages(files, scheme.Data)
 
 		if err != nil {
 			t.Fatal(err)
@@ -65,7 +65,7 @@ func TestPostVisionFace(t *testing.T) {
 			fs.Abs("./testdata/london_160x160.jpg"),
 		}
 
-		req, err := vision.NewApiRequest(files, scheme.Data)
+		req, err := vision.NewApiRequestImages(files, scheme.Data)
 
 		if err != nil {
 			t.Fatal(err)
@@ -101,7 +101,7 @@ func TestPostVisionFace(t *testing.T) {
 			fs.Abs("./testdata/face_320x320.jpg"),
 		}
 
-		req, err := vision.NewApiRequest(files, scheme.Data)
+		req, err := vision.NewApiRequestImages(files, scheme.Data)
 
 		if err != nil {
 			t.Fatal(err)
@@ -142,7 +142,7 @@ func TestPostVisionFace(t *testing.T) {
 
 		files := vision.Files{}
 
-		req, err := vision.NewApiRequest(files, scheme.Data)
+		req, err := vision.NewApiRequestImages(files, scheme.Data)
 
 		if err != nil {
 			t.Fatal(err)

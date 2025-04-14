@@ -172,7 +172,7 @@ services:
   ## Web UI: https://qdrant.localssl.dev/dashboard
   qdrant:
     image: qdrant/qdrant:latest
-    profiles: ["all", "vision"]
+    profiles: ["all", "qdrant"]
     links:
       - "traefik:localssl.dev"
       - "traefik:app.localssl.dev"
@@ -199,6 +199,8 @@ services:
   ## See: https://github.com/photoprism/photoprism-vision
   photoprism-vision:
     image: photoprism/vision:latest
+    entrypoint: [ "/app/venv/bin/flask" ]
+    command: [ "--app", "app", "run", "--debug", "--host", "0.0.0.0" ]
     profiles: ["all", "vision"]
     stop_grace_period: 5s
     working_dir: "/app"

@@ -5,7 +5,6 @@ import (
 
 	"github.com/photoprism/photoprism/internal/ai/face"
 	"github.com/photoprism/photoprism/internal/thumb/crop"
-	"github.com/photoprism/photoprism/pkg/media/http/scheme"
 )
 
 // Faces detects faces in the specified image and generates embeddings from them.
@@ -30,7 +29,11 @@ func Faces(fileName string, minSize int, cacheCrop bool, expected int) (result f
 		}
 
 		if uri, method := model.Endpoint(); uri != "" && method != "" {
-			faceCrops := make([]string, len(result))
+			var faceCrops []string
+			var apiRequest *ApiRequest
+			var apiResponse *ApiResponse
+
+			faceCrops = make([]string, len(result))
 
 			for i, f := range result {
 				if f.Area.Col == 0 && f.Area.Row == 0 {
@@ -46,20 +49,16 @@ func Faces(fileName string, minSize int, cacheCrop bool, expected int) (result f
 				}
 			}
 
-			apiRequest, apiRequestErr := NewApiRequest(faceCrops, scheme.Data)
-
-			if apiRequestErr != nil {
-				return result, apiRequestErr
+			if apiRequest, err = NewApiRequest(model.EndpointRequestFormat(), faceCrops, model.EndpointFileScheme()); err != nil {
+				return result, err
 			}
 
 			if model.Name != "" {
 				apiRequest.Model = model.Name
 			}
 
-			apiResponse, apiErr := PerformApiRequest(apiRequest, uri, method, model.EndpointKey())
-
-			if apiErr != nil {
-				return result, apiErr
+			if apiResponse, err = PerformApiRequest(apiRequest, uri, method, model.EndpointKey()); err != nil {
+				return result, err
 			}
 
 			for i := range result {
