@@ -1,18 +1,17 @@
 <template>
   <teleport to="body">
-    <div id="p-notify" tabindex="-1">
+    <div id="notify">
       <transition name="fade-transition">
         <div
           v-if="visible"
           :class="'p-notify--' + message.color"
-          class="v-snackbar v-snackbar--bottom v-snackbar--center p-notify"
+          class="p-notify v-snackbar"
           role="alert"
-          tabindex="-1"
           @click.stop.prevent="showNext"
         >
-          <div class="v-snackbar__wrapper v-snackbar--variant-flat">
+          <div class="v-snackbar__wrapper">
             <span class="v-snackbar__underlay"></span>
-            <div tabindex="-1" class="v-snackbar__content">
+            <div class="v-snackbar__content">
               <i
                 v-if="message.icon"
                 :class="['text-' + message.color, 'mdi-' + message.icon]"
@@ -54,7 +53,7 @@ export default {
       defaultColor: "info",
       defaultDelay: 2000,
       warningDelay: 3000,
-      errorDelay: 8000,
+      errorDelay: 6000,
     };
   },
   created() {
