@@ -15,7 +15,7 @@ require (
 	github.com/gin-contrib/gzip v1.2.3
 	github.com/gin-gonic/gin v1.10.0
 	github.com/golang/geo v0.0.0-20250411042641-97e19c1a7ce7
-	github.com/google/open-location-code/go v0.0.0-20250412170143-cff6d0b3fec9
+	github.com/google/open-location-code/go v0.0.0-20250413133937-894dfd253334
 	github.com/gorilla/websocket v1.5.3
 	github.com/gosimple/slug v1.15.0
 	github.com/jinzhu/gorm v1.9.16
