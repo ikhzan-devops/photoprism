@@ -38,7 +38,7 @@ func TestConfig_TensorFlowVersion(t *testing.T) {
 	c := NewConfig(CliTestContext())
 
 	version := c.TensorFlowVersion()
-	assert.IsType(t, "2.18.0", version)
+	assert.IsType(t, "1.15.2", version)
 }
 
 func TestConfig_TensorFlowModelPath(t *testing.T) {

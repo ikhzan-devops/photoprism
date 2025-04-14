@@ -28,7 +28,7 @@ BUILD_TAG ?= $(BUILD_DATE)-$(BUILD_VERSION)
 BUILD_OS ?= $(shell uname -s)
 BUILD_ARCH ?= $(shell scripts/dist/arch.sh)
 JS_BUILD_PATH ?= $(shell realpath "./assets/static/build")
-TF_VERSION ?= 2.18.0
+TF_VERSION ?= 1.15.2
 
 # Install parameters.
 INSTALL_PATH ?= $(BUILD_PATH)/photoprism-ce_$(BUILD_TAG)-$(shell echo $(BUILD_OS) | tr '[:upper:]' '[:lower:]')-$(BUILD_ARCH)
