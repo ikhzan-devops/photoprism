@@ -1,8 +1,9 @@
 <template>
   <teleport to="body">
-    <transition name="fade-transition">
-      <div v-if="visible" id="p-notify" tabindex="-1">
+    <div id="p-notify" tabindex="-1">
+      <transition name="fade-transition">
         <div
+          v-if="visible"
           :class="'p-notify--' + message.color"
           class="v-snackbar v-snackbar--bottom v-snackbar--center p-notify"
           role="alert"
@@ -29,8 +30,8 @@
             </div>
           </div>
         </div>
-      </div>
-    </transition>
+      </transition>
+    </div>
   </teleport>
 </template>
 <script>
@@ -139,14 +140,6 @@ export default {
       this.messages.push(m);
 
       if (!this.visible) {
-        this.showNext();
-      }
-    },
-    onSnackbar(show) {
-      if (show) {
-        this.snackbar = true;
-      } else {
-        this.snackbar = false;
         this.showNext();
       }
     },
