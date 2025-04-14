@@ -1,33 +1,36 @@
 <template>
   <teleport to="body">
-    <div v-if="visible" id="p-notify" tabindex="-1">
-      <div
-        :class="'p-notify--' + message.color"
-        class="v-snackbar v-snackbar--bottom v-snackbar--center p-notify"
-        role="alert"
-        @click.stop.prevent="showNext"
-      >
-        <div class="v-snackbar__wrapper rounded-pill v-snackbar--variant-flat">
-          <span class="v-snackbar__underlay"></span>
-          <div class="v-snackbar__content">
-            <i
-              v-if="message.icon"
-              :class="['text-' + message.color, 'mdi-' + message.icon]"
-              class="mdi v-icon notranslate p-notify__icon"
-              aria-hidden="true"
-            ></i>
-            <div class="p-notify__text">
-              {{ message.text }}
+    <transition name="fade-transition">
+      <div v-if="visible" id="p-notify" tabindex="-1">
+        <div
+          :class="'p-notify--' + message.color"
+          class="v-snackbar v-snackbar--bottom v-snackbar--center p-notify"
+          role="alert"
+          tabindex="-1"
+          @click.stop.prevent="showNext"
+        >
+          <div class="v-snackbar__wrapper v-snackbar--variant-flat">
+            <span class="v-snackbar__underlay"></span>
+            <div tabindex="-1" class="v-snackbar__content">
+              <i
+                v-if="message.icon"
+                :class="['text-' + message.color, 'mdi-' + message.icon]"
+                class="mdi v-icon notranslate p-notify__icon"
+                aria-hidden="true"
+              ></i>
+              <div class="p-notify__text">
+                {{ message.text }}
+              </div>
+              <i
+                :class="'text-on-' + message.color"
+                class="mdi-close mdi v-icon notranslate p-notify__close"
+                aria-hidden="true"
+              ></i>
             </div>
-            <i
-              :class="'text-on-' + message.color"
-              class="mdi-close mdi v-icon notranslate p-notify__close"
-              aria-hidden="true"
-            ></i>
           </div>
         </div>
       </div>
-    </div>
+    </transition>
   </teleport>
 </template>
 <script>
