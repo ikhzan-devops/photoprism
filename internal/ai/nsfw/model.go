@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"sync"
 
-	tf "github.com/wamuir/graft/tensorflow"
+	tf "github.com/tensorflow/tensorflow/tensorflow/go"
 
 	"github.com/photoprism/photoprism/internal/ai/tensorflow"
 	"github.com/photoprism/photoprism/pkg/clean"
