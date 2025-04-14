@@ -1,16 +1,16 @@
 import { Selector, t } from "testcafe";
 
 export default class Page {
-  constructor() {}
+  constructor() {
+    this.navDrawer = Selector(".v-navigation-drawer");
+    this.expandButton = Selector("div.nav-expand i");
+    this.expandButtonContainer = Selector("div.nav-expand");
+  }
 
   async openNav() {
-    const navDrawer = Selector(".v-navigation-drawer");
-    const expandButton = Selector("div.nav-expand i");
-    const expandButtonContainer = Selector("div.nav-expand");
-
-    if (!(await navDrawer.visible)) {
-      if (await expandButtonContainer.visible) {
-        await t.click(expandButton.with({ boundTestRun: t }));
+    if (!(await this.navDrawer.visible)) {
+      if (await this.expandButtonContainer.visible) {
+        await t.click(this.expandButton.with({ boundTestRun: t }));
       }
     }
   }
