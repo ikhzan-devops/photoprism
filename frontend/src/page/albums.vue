@@ -917,6 +917,9 @@ export default {
 
       return params;
     },
+    reset() {
+      this.results = [];
+    },
     search() {
       /**
        * re-creating the last scroll-position should only ever happen when using
@@ -974,6 +977,9 @@ export default {
               }
             });
           }
+        })
+        .catch(() => {
+          this.reset();
         })
         .finally(() => {
           this.dirty = false;

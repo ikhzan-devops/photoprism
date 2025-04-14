@@ -751,6 +751,13 @@ export default {
 
       this.search(true);
     },
+    reset() {
+      Object.assign(this.result, { features: [] });
+      if (this.map) {
+        this.map.getSource("photos").setData(this.result);
+        this.updateMarkers();
+      }
+    },
     search(force) {
       if (this.loading) {
         return;
@@ -779,6 +786,7 @@ export default {
         .get("geo", options)
         .then((response) => {
           if (!response.data.features || response.data.features.length === 0) {
+            this.reset();
             this.initialized = true;
             this.loading = false;
 
@@ -807,6 +815,7 @@ export default {
           this.updateMarkers();
         })
         .catch(() => {
+          this.reset();
           this.initialized = true;
           this.loading = false;
         });

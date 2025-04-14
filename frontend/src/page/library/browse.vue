@@ -437,6 +437,9 @@ export default {
 
       return "";
     },
+    reset() {
+      this.results = [];
+    },
     search() {
       // Don't query the same data more than once
       if (!this.dirty && JSON.stringify(this.lastFilter) === JSON.stringify(this.filter)) {
@@ -478,6 +481,9 @@ export default {
               this.$gettextInterpolate(this.$gettext("Limit reached, showing first %{n} files"), { n: response.files })
             );
           }
+        })
+        .catch(() => {
+          this.reset();
         })
         .finally(() => {
           this.dirty = false;

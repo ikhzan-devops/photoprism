@@ -546,6 +546,9 @@ export default {
 
       this.loadMore();
     },
+    reset() {
+      this.results = [];
+    },
     search() {
       this.scrollDisabled = true;
 
@@ -578,6 +581,9 @@ export default {
           } else {
             this.$notify.info(this.$gettextInterpolate(this.$gettext("%{n} people found"), { n: this.results.length }));
           }
+        })
+        .catch(() => {
+          this.reset();
         })
         .finally(() => {
           this.dirty = false;
