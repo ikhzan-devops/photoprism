@@ -28,6 +28,7 @@ import (
 
 	"github.com/photoprism/photoprism/internal/entity"
 	"github.com/photoprism/photoprism/internal/meta"
+	"github.com/photoprism/photoprism/internal/thumb"
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/fs"
 	"github.com/photoprism/photoprism/pkg/media"
@@ -1184,40 +1185,13 @@ func (m *MediaFile) DecodeConfig() (_ *image.Config, err error) {
 		return nil, fmt.Errorf("%s not supported natively", clean.Log(m.Extension()))
 	}
 
-	m.fileMutex.Lock()
-	defer m.fileMutex.Unlock()
+	var info image.Config
 
-	fileName := m.FileName()
-
-	// Resolve symlinks.
-	if fileName, err = fs.Resolve(fileName); err != nil {
-		return nil, fmt.Errorf("%s %s", err, clean.Log(m.RootRelName()))
+	if info, err = thumb.FileInfo(m.FileName()); err != nil {
+		return nil, fmt.Errorf("%s while decoding %s dimensions", err, clean.Log(m.Extension()))
 	}
 
-	file, err := os.Open(fileName)
-
-	if err != nil || file == nil {
-		return nil, err
-	}
-
-	defer file.Close()
-
-	// Reset file offset.
-	// see https://github.com/golang/go/issues/45902#issuecomment-1007953723
-	_, err = file.Seek(0, 0)
-
-	if err != nil {
-		return nil, fmt.Errorf("%s on seek", err)
-	}
-
-	// Decode image config (dimensions).
-	cfg, _, err := image.DecodeConfig(file)
-
-	if err != nil {
-		return nil, fmt.Errorf("%s while decoding", err)
-	}
-
-	m.imageConfig = &cfg
+	m.imageConfig = &info
 
 	return m.imageConfig, nil
 }
