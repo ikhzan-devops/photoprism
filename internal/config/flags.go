@@ -50,6 +50,12 @@ var Flags = CliFlags{
 			Usage:   fmt.Sprintf("initial `PASSWORD` of the superadmin account (%d-%d characters)", entity.PasswordLength, txt.ClipPassword),
 			EnvVars: EnvVars("ADMIN_PASSWORD"),
 		}}, {
+		Flag: &cli.IntFlag{
+			Name:    "password-length",
+			Usage:   "minimum password `LENGTH` in characters",
+			Value:   8,
+			EnvVars: EnvVars("PASSWORD_LENGTH"),
+		}}, {
 		Flag: &cli.StringFlag{
 			Name:    "oidc-uri",
 			Usage:   "issuer `URI` for single sign-on via OpenID Connect, e.g. https://accounts.google.com",
@@ -184,14 +190,14 @@ var Flags = CliFlags{
 		Flag: &cli.PathFlag{
 			Name:      "config-path",
 			Aliases:   []string{"c"},
-			Usage:     "config storage `PATH`, values in options.yml override CLI flags and environment variables if present",
+			Usage:     "config storage `PATH` or options.yml filename, values in this file override CLI flags and environment variables if present",
 			EnvVars:   EnvVars("CONFIG_PATH"),
 			TakesFile: true,
 		}}, {
 		Flag: &cli.StringFlag{
 			Name:      "defaults-yaml",
 			Aliases:   []string{"y"},
-			Usage:     "load config defaults from `FILE` if exists, does not override CLI flags and environment variables",
+			Usage:     "load default config values from `FILENAME` if it exists, does not override CLI flags or environment variables",
 			Value:     "/etc/photoprism/defaults.yml",
 			EnvVars:   EnvVars("DEFAULTS_YAML"),
 			TakesFile: true,
@@ -589,6 +595,12 @@ var Flags = CliFlags{
 			EnvVars: EnvVars("SITE_DESCRIPTION"),
 		}}, {
 		Flag: &cli.StringFlag{
+			Name:      "site-favicon",
+			Usage:     "site favicon `FILENAME` *optional*",
+			EnvVars:   EnvVars("SITE_FAVICON"),
+			TakesFile: true,
+		}}, {
+		Flag: &cli.StringFlag{
 			Name:    "site-preview",
 			Usage:   "sharing preview image `URL`",
 			EnvVars: EnvVars("SITE_PREVIEW"),
@@ -667,12 +679,12 @@ var Flags = CliFlags{
 		}}, {
 		Flag: &cli.StringFlag{
 			Name:    "tls-cert",
-			Usage:   "public HTTPS certificate `FILE` (.crt), ignored for Unix domain sockets",
+			Usage:   "public HTTPS certificate `FILENAME` (.crt), ignored for Unix domain sockets",
 			EnvVars: EnvVars("TLS_CERT"),
 		}}, {
 		Flag: &cli.StringFlag{
 			Name:    "tls-key",
-			Usage:   "private HTTPS key `FILE` (.key), ignored for Unix domain sockets",
+			Usage:   "private HTTPS key `FILENAME` (.key), ignored for Unix domain sockets",
 			EnvVars: EnvVars("TLS_KEY"),
 		}}, {
 		Flag: &cli.StringFlag{
@@ -962,7 +974,7 @@ var Flags = CliFlags{
 		}}, {
 		Flag: &cli.StringFlag{
 			Name:      "vision-yaml",
-			Usage:     "computer vision model configuration `FILE` *optional*",
+			Usage:     "computer vision model configuration `FILENAME` *optional*",
 			Value:     "",
 			EnvVars:   EnvVars("VISION_YAML"),
 			TakesFile: true,
@@ -1039,13 +1051,13 @@ var Flags = CliFlags{
 		}}, {
 		Flag: &cli.StringFlag{
 			Name:      "pid-filename",
-			Usage:     "process id `FILE` *daemon-mode only*",
+			Usage:     "process id `FILENAME` *daemon-mode only*",
 			EnvVars:   EnvVars("PID_FILENAME"),
 			TakesFile: true,
 		}}, {
 		Flag: &cli.StringFlag{
 			Name:      "log-filename",
-			Usage:     "server log `FILE` *daemon-mode only*",
+			Usage:     "server log `FILENAME` *daemon-mode only*",
 			Value:     "",
 			EnvVars:   EnvVars("LOG_FILENAME"),
 			TakesFile: true,

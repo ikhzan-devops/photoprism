@@ -151,6 +151,11 @@ func (c *Config) LoginUri() string {
 	return c.options.LoginUri
 }
 
+// LoginInfo returns the login info text for the page footer.
+func (c *Config) LoginInfo() string {
+	return c.options.LoginInfo
+}
+
 // SessionMaxAge returns the standard session expiration time in seconds.
 func (c *Config) SessionMaxAge() int64 {
 	if c.options.SessionMaxAge < 0 {

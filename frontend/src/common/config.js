@@ -859,6 +859,10 @@ export default class Config {
   }
 
   getIcon() {
+    if (this.theme?.variables?.icon) {
+      return this.theme.variables.icon;
+    }
+
     switch (this.get("appIcon")) {
       case "crisp":
       case "mint":
@@ -867,6 +871,15 @@ export default class Config {
       default:
         return `${this.staticUri}/icons/logo.svg`;
     }
+  }
+
+  getLoginIcon() {
+    const loginTheme = themes.Get("login");
+    if (loginTheme?.variables?.icon) {
+      return loginTheme?.variables?.icon;
+    }
+
+    return this.getIcon();
   }
 
   getVersion() {

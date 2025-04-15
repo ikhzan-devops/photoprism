@@ -4,12 +4,15 @@ import (
 	"fmt"
 	"net/url"
 	"os"
+	"path"
+	"path/filepath"
 	"strings"
 	"unicode/utf8"
 
 	"github.com/photoprism/photoprism/internal/auth/acl"
 	"github.com/photoprism/photoprism/pkg/authn"
 	"github.com/photoprism/photoprism/pkg/clean"
+	"github.com/photoprism/photoprism/pkg/fs"
 )
 
 const (
@@ -90,11 +93,15 @@ func (c *Config) OIDCProvider() string {
 
 // OIDCIcon returns the OIDC provider icon URI.
 func (c *Config) OIDCIcon() string {
-	if c.options.OIDCIcon == "" {
-		return c.StaticAssetUri(OidcDefaultProviderIcon)
+	if c.options.OIDCIcon != "" {
+		if themeIcon := filepath.Join(c.ThemePath(), c.options.OIDCIcon); fs.FileExistsNotEmpty(themeIcon) {
+			return path.Join(ThemeUri, c.options.OIDCIcon)
+		}
+
+		return c.options.OIDCIcon
 	}
 
-	return c.options.OIDCIcon
+	return c.StaticAssetUri(OidcDefaultProviderIcon)
 }
 
 // OIDCRedirect checks if unauthenticated users should automatically be redirected to the OIDC login page.

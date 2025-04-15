@@ -131,7 +131,7 @@
                       </v-btn>
                       <v-btn
                         :disabled="loginDisabled"
-                        :block="$vuetify.display.xs"
+                        :block="$vuetify.display.xs || !(registerUri || enterCode)"
                         tabindex="4"
                         color="highlight"
                         variant="flat"

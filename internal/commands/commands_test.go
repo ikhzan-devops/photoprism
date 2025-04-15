@@ -15,7 +15,7 @@ import (
 )
 
 func TestMain(m *testing.M) {
-	_ = os.Setenv("TF_CPP_MIN_LOG_LEVEL", "2")
+	_ = os.Setenv("TF_CPP_MIN_LOG_LEVEL", "3")
 
 	log = logrus.StandardLogger()
 	log.SetLevel(logrus.TraceLevel)

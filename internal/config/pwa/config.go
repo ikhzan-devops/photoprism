@@ -12,4 +12,6 @@ type Config struct {
 	StaticUri     string `json:"staticUri"`
 	SiteUrl       string `json:"siteUrl"`
 	CdnUrl        string `json:"cdnUrl"`
+	ThemeUri      string `json:"themeUri"`
+	ThemePath     string `json:"themePath"`
 }

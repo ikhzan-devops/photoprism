@@ -111,7 +111,7 @@ services:
       PHOTOPRISM_THUMB_LIBRARY: "auto"               # image processing library to be used for generating thumbnails (auto, imaging, vips)
       PHOTOPRISM_THUMB_FILTER: "auto"                # downscaling filter (imaging best to worst: blackman, lanczos, cubic, linear, nearest)
       PHOTOPRISM_THUMB_UNCACHED: "true"              # enables on-demand thumbnail rendering (high memory and cpu usage)
-      TF_CPP_MIN_LOG_LEVEL: 0                        # show TensorFlow log messages for development
+      TF_CPP_MIN_LOG_LEVEL: 1                        # show TensorFlow log messages for development
       ## Nvidia Video Transcoding (https://docs.photoprism.app/getting-started/advanced/transcoding/#nvidia-container-toolkit):
       NVIDIA_VISIBLE_DEVICES: "all"
       NVIDIA_DRIVER_CAPABILITIES: "all"

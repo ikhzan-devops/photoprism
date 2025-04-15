@@ -28,6 +28,7 @@ func (c *Config) Report() (rows [][]string, cols []string) {
 		{"password-reset-uri", c.PasswordResetUri()},
 		{"register-uri", c.RegisterUri()},
 		{"login-uri", c.LoginUri()},
+		{"login-info", c.LoginInfo()},
 		{"session-maxage", fmt.Sprintf("%d", c.SessionMaxAge())},
 		{"session-timeout", fmt.Sprintf("%d", c.SessionTimeout())},
 		{"session-cache", fmt.Sprintf("%d", c.SessionCache())},
@@ -154,6 +155,7 @@ func (c *Config) Report() (rows [][]string, cols []string) {
 		{"site-title", c.SiteTitle()},
 		{"site-caption", c.SiteCaption()},
 		{"site-description", c.SiteDescription()},
+		{"site-favicon", c.SiteFavicon()},
 		{"site-preview", c.SitePreview()},
 
 		// CDN and Cross-Origin Resource Sharing (CORS).
@@ -246,7 +248,6 @@ func (c *Config) Report() (rows [][]string, cols []string) {
 		{"vision-api", fmt.Sprintf("%t", c.VisionApi())},
 		{"vision-uri", c.VisionUri()},
 		{"vision-key", strings.Repeat("*", utf8.RuneCountInString(c.VisionKey()))},
-		{"tensorflow-version", c.TensorFlowVersion()},
 		{"nasnet-model-path", c.NasnetModelPath()},
 		{"facenet-model-path", c.FaceNetModelPath()},
 		{"nsfw-model-path", c.NSFWModelPath()},

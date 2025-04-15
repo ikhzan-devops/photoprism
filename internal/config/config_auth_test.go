@@ -68,7 +68,7 @@ func TestConfig_AdminPassword(t *testing.T) {
 	assert.Equal(t, defaultPassword, c.AdminPassword())
 }
 
-func TestPasswordLength(t *testing.T) {
+func TestConfig_PasswordLength(t *testing.T) {
 	c := NewConfig(CliTestContext())
 	assert.Equal(t, 8, c.PasswordLength())
 	c.options.PasswordLength = 2
@@ -90,14 +90,23 @@ func TestPasswordResetUri(t *testing.T) {
 	assert.Equal(t, "", c.PasswordResetUri())
 }
 
-func TestRegisterUri(t *testing.T) {
+func TestConfig_RegisterUri(t *testing.T) {
 	c := NewConfig(CliTestContext())
 	assert.Equal(t, "", c.RegisterUri())
 }
 
-func TestLoginUri(t *testing.T) {
+func TestConfig_LoginUri(t *testing.T) {
 	c := NewConfig(CliTestContext())
 	assert.Equal(t, "/library/login", c.LoginUri())
+}
+
+func TestConfig_LoginInfo(t *testing.T) {
+	c := NewConfig(CliTestContext())
+	assert.Equal(t, "", c.LoginInfo())
+	c.options.LoginInfo = "Foo Bar"
+	assert.Equal(t, "Foo Bar", c.LoginInfo())
+	c.options.LoginInfo = ""
+	assert.Equal(t, "", c.LoginInfo())
 }
 
 func TestSessionMaxAge(t *testing.T) {

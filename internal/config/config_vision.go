@@ -4,8 +4,6 @@ import (
 	"os"
 	"path/filepath"
 
-	tf "github.com/wamuir/graft/tensorflow"
-
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/fs"
 )
@@ -43,11 +41,6 @@ func (c *Config) VisionKey() string {
 	} else {
 		return clean.Password(string(b))
 	}
-}
-
-// TensorFlowVersion returns the TenorFlow framework version.
-func (c *Config) TensorFlowVersion() string {
-	return tf.Version()
 }
 
 // NasnetModelPath returns the TensorFlow model path.

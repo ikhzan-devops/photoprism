@@ -66,6 +66,7 @@ type ClientConfig struct {
 	AuthMode         string              `json:"authMode"`
 	UsersPath        string              `json:"usersPath"`
 	LoginUri         string              `json:"loginUri"`
+	LoginInfo        string              `json:"loginInfo"`
 	RegisterUri      string              `json:"registerUri"`
 	PasswordLength   int                 `json:"passwordLength"`
 	PasswordResetUri string              `json:"passwordResetUri"`
@@ -308,6 +309,7 @@ func (c *Config) ClientPublic() *ClientConfig {
 		AuthMode:         c.AuthMode(),
 		UsersPath:        c.UsersPath(),
 		LoginUri:         c.LoginUri(),
+		LoginInfo:        c.LoginInfo(),
 		RegisterUri:      c.RegisterUri(),
 		PasswordResetUri: c.PasswordResetUri(),
 		Develop:          c.Develop(),
@@ -402,6 +404,7 @@ func (c *Config) ClientShare() *ClientConfig {
 		AuthMode:         c.AuthMode(),
 		UsersPath:        "",
 		LoginUri:         c.LoginUri(),
+		LoginInfo:        c.LoginInfo(),
 		RegisterUri:      c.RegisterUri(),
 		PasswordResetUri: c.PasswordResetUri(),
 		Develop:          c.Develop(),
@@ -502,6 +505,7 @@ func (c *Config) ClientUser(withSettings bool) *ClientConfig {
 		AuthMode:         c.AuthMode(),
 		UsersPath:        c.UsersPath(),
 		LoginUri:         c.LoginUri(),
+		LoginInfo:        c.LoginInfo(),
 		RegisterUri:      c.RegisterUri(),
 		PasswordLength:   c.PasswordLength(),
 		PasswordResetUri: c.PasswordResetUri(),
