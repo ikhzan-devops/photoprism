@@ -9,7 +9,7 @@ import (
 
 // TimeZone returns a time zone for the given UTC offset string.
 func TimeZone(offset string) *time.Location {
-	if offset == "" {
+	if offset == "" || strings.EqualFold(offset, "local") {
 		// Local time.
 	} else if offset == "UTC" || offset == "Z" {
 		return time.UTC

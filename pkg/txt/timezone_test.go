@@ -15,6 +15,9 @@ func TestTimeZone(t *testing.T) {
 	})
 	t.Run("LocalTime", func(t *testing.T) {
 		assert.Equal(t, "", TimeZone("").String())
+		assert.Equal(t, "", TimeZone("local").String())
+		assert.Equal(t, "", TimeZone("Local").String())
+		assert.Equal(t, "", TimeZone("LOCAL").String())
 		assert.Equal(t, "", TimeZone("0").String())
 		assert.Equal(t, "", TimeZone("UTC+0").String())
 		assert.Equal(t, "", TimeZone("UTC+00:00").String())
