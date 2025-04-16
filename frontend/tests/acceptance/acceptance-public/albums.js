@@ -269,3 +269,63 @@ test.meta("testID", "albums-008").meta({ type: "short", mode: "public" })(
     await album.checkSortOptions("album");
   }
 );
+
+test.only.meta("testID", "albums-009").meta({ type: "short", mode: "public" })("Common: Set album cover", async (t) => {
+  await menu.openPage("albums");
+  await toolbar.search("Holiday");
+  const AlbumUid = await album.getNthAlbumUid("all", 0);
+
+  await t.wait(1000);
+
+  const initialCoverStyle = await album.getAlbumCoverStyle(AlbumUid);
+
+  await album.openAlbumWithUid(AlbumUid);
+
+  let CoverPhotoUid = null;
+  let expectedCoverStyle = null;
+  const maxPhotosToCheck = 5;
+
+  for (let i = 0; i < maxPhotosToCheck; i++) {
+    const potentialUid = await photo.getNthPhotoUid("all", i);
+    if (!potentialUid) {
+      break;
+    }
+
+    const potentialStyle = await photo.getPhotoPreviewStyle(potentialUid);
+
+    if (potentialStyle && potentialStyle !== initialCoverStyle) {
+      CoverPhotoUid = potentialUid;
+      expectedCoverStyle = potentialStyle;
+      break;
+    }
+  }
+
+  await t
+    .expect(CoverPhotoUid).ok(`Could not find a suitable photo (different from initial cover) within the first ${maxPhotosToCheck} photos.`);
+
+  await photoviewer.openPhotoViewer("uid", CoverPhotoUid);
+
+  await t.click(photoviewer.menuButton);
+
+  const setCoverActionSelector = photoviewer.setCoverMenuItem;
+  await t
+    .expect(setCoverActionSelector.visible).ok('"Set as an Album Cover" action should be visible in menu')
+    .click(setCoverActionSelector);
+
+  await photoviewer.triggerPhotoViewerAction("close-button");
+
+  await menu.openPage("albums");
+  await toolbar.search("Holiday");
+
+  const newCoverStyle = await album.getAlbumCoverStyle(AlbumUid);
+
+  await t
+    .expect(newCoverStyle)
+    .notEql(initialCoverStyle, "Album card cover background image should change")
+    .expect(newCoverStyle)
+    .eql(
+      expectedCoverStyle, // The new style should match the specific photo's thumbnail style
+      "Album card cover background image URL should match the thumbnail of the photo set as cover"
+    );
+});
+

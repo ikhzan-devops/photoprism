@@ -14,6 +14,7 @@ export default class Page {
     this.playButton = Selector('[class^="pswp__button pswp__button--slideshow-toggle pswp__"]', { timeout: 5000 });
     this.favoriteOnIcon = Selector("button.action-favorite i.icon-favorite", { timeout: 5000 });
     this.favoriteOffIcon = Selector("button.action-favorite i.icon-favorite-border", { timeout: 5000 });
+    this.setCoverMenuItem = Selector(".action-cover", { timeout: 5000 });
   }
 
   async openPhotoViewer(mode, uidOrNth) {
