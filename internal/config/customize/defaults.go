@@ -10,6 +10,6 @@ var (
 	DefaultTheme     = "default"
 	DefaultStartPage = "default"
 	DefaultMapsStyle = "default"
-	DefaultLocale    = i18n.Default.Locale()
-	DefaultTimezone  = time.Local.String()
+	DefaultLanguage  = i18n.Default.Locale()
+	DefaultTimeZone  = time.Local.String()
 )

@@ -7,25 +7,37 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestNewDefaultSettings(t *testing.T) {
-	s := NewDefaultSettings()
-
-	assert.IsType(t, new(Settings), s)
-	assert.Equal(t, DefaultTheme, s.UI.Theme)
-	assert.Equal(t, DefaultLocale, s.UI.Language)
-}
-
 func TestNewSettings(t *testing.T) {
-	s := NewSettings("test", "fr", "Europe/Paris")
-
-	assert.IsType(t, new(Settings), s)
-	assert.Equal(t, "test", s.UI.Theme)
-	assert.Equal(t, "fr", s.UI.Language)
-	assert.Equal(t, "Europe/Paris", s.UI.TimeZone)
-	assert.Equal(t, "default", s.UI.StartPage)
-	assert.Equal(t, true, s.Search.ListView)
-	assert.Equal(t, true, s.Search.ShowTitles)
-	assert.Equal(t, true, s.Search.ShowCaptions)
+	t.Run("Default", func(t *testing.T) {
+		s := NewDefaultSettings()
+		assert.IsType(t, new(Settings), s)
+		assert.Equal(t, DefaultTheme, s.UI.Theme)
+		assert.Equal(t, DefaultLanguage, s.UI.Language)
+		assert.Equal(t, DefaultTimeZone, s.UI.TimeZone)
+		assert.Equal(t, DefaultStartPage, s.UI.StartPage)
+		assert.Equal(t, DefaultMapsStyle, s.Maps.Style)
+	})
+	t.Run("Custom", func(t *testing.T) {
+		s := NewSettings("test", "fr", "Europe/Paris")
+		assert.IsType(t, new(Settings), s)
+		assert.Equal(t, "test", s.UI.Theme)
+		assert.Equal(t, "fr", s.UI.Language)
+		assert.Equal(t, "Europe/Paris", s.UI.TimeZone)
+		assert.Equal(t, true, s.Search.ListView)
+		assert.Equal(t, true, s.Search.ShowTitles)
+		assert.Equal(t, true, s.Search.ShowCaptions)
+		assert.Equal(t, DefaultStartPage, s.UI.StartPage)
+		assert.Equal(t, DefaultMapsStyle, s.Maps.Style)
+		s.UI.Language = ""
+		s.UI.TimeZone = ""
+		s.UI.StartPage = ""
+		s.Maps.Style = ""
+		s.Propagate()
+		assert.Equal(t, DefaultLanguage, s.UI.Language)
+		assert.Equal(t, DefaultTimeZone, s.UI.TimeZone)
+		assert.Equal(t, DefaultStartPage, s.UI.StartPage)
+		assert.Equal(t, DefaultMapsStyle, s.Maps.Style)
+	})
 }
 
 func TestSettings_Load(t *testing.T) {

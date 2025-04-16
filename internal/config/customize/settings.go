@@ -32,17 +32,29 @@ type Settings struct {
 
 // NewDefaultSettings creates a new default Settings instance.
 func NewDefaultSettings() *Settings {
-	return NewSettings(DefaultTheme, DefaultLocale, DefaultTimezone)
+	return NewSettings(DefaultTheme, DefaultLanguage, DefaultTimeZone)
 }
 
 // NewSettings creates a new Settings instance.
-func NewSettings(theme, locale, timeZone string) *Settings {
+func NewSettings(theme, language, timeZone string) *Settings {
+	if theme == "" {
+		theme = DefaultTheme
+	}
+
+	if language == "" {
+		language = DefaultLanguage
+	}
+
+	if timeZone == "" {
+		timeZone = DefaultTimeZone
+	}
+
 	return &Settings{
 		UI: UISettings{
 			Scrollbar: true,
 			Zoom:      false,
 			Theme:     theme,
-			Language:  locale,
+			Language:  language,
 			TimeZone:  timeZone,
 			StartPage: DefaultStartPage,
 		},
@@ -114,6 +126,22 @@ func NewSettings(theme, locale, timeZone string) *Settings {
 
 // Propagate updates settings in other packages as needed.
 func (s *Settings) Propagate() {
+	if s.UI.Language == "" {
+		s.UI.Language = DefaultLanguage
+	}
+
+	if s.UI.TimeZone == "" {
+		s.UI.TimeZone = DefaultTimeZone
+	}
+
+	if s.UI.StartPage == "" {
+		s.UI.StartPage = DefaultStartPage
+	}
+
+	if s.Maps.Style == "" {
+		s.Maps.Style = DefaultMapsStyle
+	}
+
 	i18n.SetLocale(s.UI.Language)
 }
 
