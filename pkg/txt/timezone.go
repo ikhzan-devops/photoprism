@@ -9,9 +9,11 @@ import (
 
 // TimeZone returns a time zone for the given UTC offset string.
 func TimeZone(offset string) *time.Location {
-	if offset == "" || strings.EqualFold(offset, "local") {
-		// Local time.
+	if offset == "" || offset == time.Local.String() {
+		// Local Time.
+		return time.Local
 	} else if offset == "UTC" || offset == "Z" {
+		// Coordinated Universal Time.
 		return time.UTC
 	} else if seconds, err := TimeOffset(offset); err == nil {
 		if h := seconds / 3600; h > 0 || h < 0 {
@@ -21,7 +23,7 @@ func TimeZone(offset string) *time.Location {
 		return zone
 	}
 
-	return time.FixedZone("", 0)
+	return time.FixedZone("GMT", 0)
 }
 
 // NormalizeUtcOffset returns a normalized UTC time offset string.
@@ -89,7 +91,7 @@ func NormalizeUtcOffset(s string) string {
 }
 
 // UtcOffset returns the time difference as UTC offset string.
-func UtcOffset(local, utc time.Time, offset string) string {
+func UtcOffset(utc, local time.Time, offset string) string {
 	if offset = NormalizeUtcOffset(offset); offset != "" {
 		return offset
 	}
@@ -116,6 +118,8 @@ func UtcOffset(local, utc time.Time, offset string) string {
 // TimeOffset returns the UTC time offset in seconds or an error if it is invalid.
 func TimeOffset(utcOffset string) (seconds int, err error) {
 	switch utcOffset {
+	case "Z", "GMT", "Etc/GMT", "UTC", "UTC+0", "UTC-0", "UTC+00:00", "UTC-00:00":
+		seconds = 0
 	case "-12", "-12:00", "UTC-12", "UTC-12:00":
 		seconds = -12 * 3600
 	case "-11", "-11:00", "UTC-11", "UTC-11:00":
@@ -164,8 +168,6 @@ func TimeOffset(utcOffset string) (seconds int, err error) {
 		seconds = 11 * 3600
 	case "12:00", "+12", "+12:00", "UTC+12", "UTC+12:00":
 		seconds = 12 * 3600
-	case "Z", "UTC", "UTC+0", "UTC-0", "UTC+00:00", "UTC-00:00":
-		seconds = 0
 	default:
 		return 0, fmt.Errorf("invalid UTC offset")
 	}

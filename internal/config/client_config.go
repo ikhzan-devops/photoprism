@@ -39,7 +39,6 @@ type ClientConfig struct {
 	ApiUri           string              `json:"apiUri"`
 	ContentUri       string              `json:"contentUri"`
 	VideoUri         string              `json:"videoUri"`
-	WallpaperUri     string              `json:"wallpaperUri"`
 	SiteUrl          string              `json:"siteUrl"`
 	SiteDomain       string              `json:"siteDomain"`
 	SiteAuthor       string              `json:"siteAuthor"`
@@ -53,6 +52,9 @@ type ClientConfig struct {
 	AppMode          string              `json:"appMode"`
 	AppIcon          string              `json:"appIcon"`
 	AppColor         string              `json:"appColor"`
+	DefaultLocale    string              `json:"defaultLocale"`
+	DefaultTimezone  string              `json:"defaultTimezone"`
+	WallpaperUri     string              `json:"wallpaperUri"`
 	Restart          bool                `json:"restart"`
 	Debug            bool                `json:"debug"`
 	Trace            bool                `json:"trace"`
@@ -295,6 +297,8 @@ func (c *Config) ClientPublic() *ClientConfig {
 		AppMode:          c.AppMode(),
 		AppIcon:          c.AppIcon(),
 		AppColor:         c.AppColor(),
+		DefaultLocale:    c.DefaultLocale(),
+		DefaultTimezone:  c.DefaultTimezone().String(),
 		WallpaperUri:     c.WallpaperUri(),
 		Version:          c.Version(),
 		Copyright:        c.Copyright(),
@@ -388,6 +392,8 @@ func (c *Config) ClientShare() *ClientConfig {
 		AppMode:          c.AppMode(),
 		AppIcon:          c.AppIcon(),
 		AppColor:         c.AppColor(),
+		DefaultLocale:    c.DefaultLocale(),
+		DefaultTimezone:  c.DefaultTimezone().String(),
 		WallpaperUri:     c.WallpaperUri(),
 		Version:          c.Version(),
 		Copyright:        c.Copyright(),
@@ -489,6 +495,8 @@ func (c *Config) ClientUser(withSettings bool) *ClientConfig {
 		AppMode:          c.AppMode(),
 		AppIcon:          c.AppIcon(),
 		AppColor:         c.AppColor(),
+		DefaultLocale:    c.DefaultLocale(),
+		DefaultTimezone:  c.DefaultTimezone().String(),
 		WallpaperUri:     c.WallpaperUri(),
 		Version:          c.Version(),
 		Copyright:        c.Copyright(),

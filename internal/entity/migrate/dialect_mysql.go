@@ -213,4 +213,10 @@ var DialectMySQL = Migrations{
 		Stage:      "pre",
 		Statements: []string{"ALTER TABLE auth_users_settings CHANGE COLUMN IF EXISTS default_page ui_start_page VARCHAR(64) DEFAULT 'default';"},
 	},
+	{
+		ID:         "20250416-000001",
+		Dialect:    "mysql",
+		Stage:      "main",
+		Statements: []string{"UPDATE photos SET time_zone = 'Local' WHERE time_zone = '' OR time_zone IS NULL;"},
+	},
 }

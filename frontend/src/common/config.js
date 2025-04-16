@@ -174,6 +174,10 @@ export default class Config {
       $event.publish("dialog.update", { values });
     }
 
+    if (values.DefaultLocale && options.DefaultLocale !== values.DefaultLocale) {
+      options.SetDefaultLocale(values.DefaultLocale);
+    }
+
     for (let key in values) {
       if (values.hasOwnProperty(key) && values[key] != null) {
         this.set(key, values[key]);

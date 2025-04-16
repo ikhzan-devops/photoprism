@@ -43,6 +43,7 @@ export const YearUnknown = -1;
 export const MonthUnknown = -1;
 export const DayUnknown = -1;
 export const TimeZoneUTC = "UTC";
+export const TimeZoneLocal = "Local";
 
 export let BatchSize = 156;
 
@@ -788,8 +789,8 @@ export class Photo extends RestModel {
         month: formats.long,
         year: formats.num,
       });
-    } else if (timeZone) {
-      return this.localDate().toLocaleString(showTimeZone ? formats.DATE_FULL_TZ : formats.DATE_FULL);
+    } else if (showTimeZone && timeZone && timeZone !== TimeZoneLocal) {
+      return this.localDate().toLocaleString(formats.DATE_FULL_TZ);
     }
 
     return this.localDate().toLocaleString(DateTime.DATE_HUGE);

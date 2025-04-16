@@ -343,12 +343,12 @@ func TestPhoto_HasPlace(t *testing.T) {
 	})
 }
 
-func TestPhoto_GetTimeZone(t *testing.T) {
+func TestPhoto_LocationTimeZone(t *testing.T) {
 	m := Photo{}
 	m.PhotoLat = 48.533905555
 	m.PhotoLng = 9.01
 
-	result := m.GetTimeZone()
+	result := m.LocationTimeZone()
 
 	if result != "Europe/Berlin" {
 		t.Fatalf("time zone should be Europe/Berlin: %s", result)
@@ -361,7 +361,7 @@ func TestPhoto_GetTakenAt(t *testing.T) {
 	m.PhotoLng = 9.01
 	m.TakenAt, _ = time.Parse(time.RFC3339, "2020-02-04T11:54:34Z")
 	m.TakenAtLocal, _ = time.Parse(time.RFC3339, "2020-02-04T11:54:34Z")
-	m.TimeZone = m.GetTimeZone()
+	m.TimeZone = m.LocationTimeZone()
 
 	if m.TimeZone != "Europe/Berlin" {
 		t.Fatalf("time zone should be Europe/Berlin: %s", m.TimeZone)
