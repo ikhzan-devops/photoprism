@@ -12,7 +12,7 @@ Search:
   ShowCaptions: true
 Maps:
   Animate: 0
-  Style: ""
+  Style: default
 Features:
   Account: true
   Albums: true

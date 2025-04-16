@@ -54,7 +54,7 @@ func NewSettings(theme, locale, timeZone string) *Settings {
 		},
 		Maps: MapsSettings{
 			Animate: 0,
-			Style:   "",
+			Style:   DefaultMapsStyle,
 		},
 		Features: FeatureSettings{
 			Favorites: true,
