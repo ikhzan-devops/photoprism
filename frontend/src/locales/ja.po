@@ -14,31 +14,31 @@ msgstr ""
 "X-Generator: Weblate 5.10.4\n"
 "Generated-By: easygettext\n"
 
-#: src/locales.js:269
+#: src/locales.js:268
 msgid "{0} appended action"
 msgstr "{0}アクションを追加した"
 
-#: src/locales.js:273
+#: src/locales.js:272
 msgid "{0} files"
 msgstr "{0}ファイル"
 
-#: src/locales.js:274
+#: src/locales.js:273
 msgid "{0} files ({1} in total)"
 msgstr "{0}個のファイル（合計{1}個）"
 
-#: src/locales.js:263
+#: src/locales.js:262
 msgid "{0} more"
 msgstr "{0}もっと"
 
-#: src/locales.js:268
+#: src/locales.js:267
 msgid "{0} prepended action"
 msgstr "{0}前置アクション"
 
-#: src/locales.js:243
+#: src/locales.js:242
 msgid "{0} selected"
 msgstr "{0}が選択された"
 
-#: src/locales.js:237
+#: src/locales.js:236
 msgid "{0}-{1} of {2}"
 msgstr "{2}の{0}-{1}である。"
 
@@ -80,11 +80,11 @@ msgstr "s}は長すぎる"
 msgid "%{s} is too short"
 msgstr "s}は短すぎる"
 
-#: src/options/options.js:338
+#: src/options/options.js:362
 msgid "1 hour"
 msgstr "1時間"
 
-#: src/options/options.js:340
+#: src/options/options.js:364
 msgid "12 hours"
 msgstr "12時間"
 
@@ -97,7 +97,7 @@ msgstr "2要素認証"
 msgid "2FA"
 msgstr "2FA"
 
-#: src/options/options.js:339
+#: src/options/options.js:363
 msgid "4 hours"
 msgstr "4時間"
 
@@ -162,15 +162,15 @@ msgstr "アクション"
 msgid "Activate"
 msgstr "アクティベート"
 
-#: src/locales.js:224
+#: src/locales.js:223
 msgid "Activate to remove sorting."
 msgstr "ソートを解除するにはアクティブにする。"
 
-#: src/locales.js:226
+#: src/locales.js:225
 msgid "Activate to sort ascending."
 msgstr "昇順にソートする。"
 
-#: src/locales.js:225
+#: src/locales.js:224
 msgid "Activate to sort descending."
 msgstr "降順にソートする。"
 
@@ -233,15 +233,15 @@ msgstr "管理者"
 msgid "Advanced"
 msgstr "高度"
 
-#: src/options/options.js:348
+#: src/options/options.js:372
 msgid "After 1 day"
 msgstr "1日後"
 
-#: src/options/options.js:349
+#: src/options/options.js:373
 msgid "After 3 days"
 msgstr "3日後"
 
-#: src/options/options.js:350
+#: src/options/options.js:374
 msgid "After 7 days"
 msgstr "1週間後"
 
@@ -249,11 +249,11 @@ msgstr "1週間後"
 msgid "After entering your password for confirmation, you can set up two-factor authentication with a compatible authenticator app or device:"
 msgstr "確認のためにパスワードを入力した後、互換性のある認証アプリまたはデバイスを使用して2要素認証を設定できます:"
 
-#: src/options/options.js:352
+#: src/options/options.js:376
 msgid "After one month"
 msgstr "1ヶ月後"
 
-#: src/options/options.js:354
+#: src/options/options.js:378
 msgid "After one year"
 msgstr "1年後"
 
@@ -261,11 +261,11 @@ msgstr "1年後"
 msgid "After selecting pictures from search results, you can add them to an album using the context menu."
 msgstr "検索結果から写真を選んだ後、コンテキストメニューでアルバムに追加することができます。"
 
-#: src/options/options.js:353
+#: src/options/options.js:377
 msgid "After two months"
 msgstr "2ヶ月後"
 
-#: src/options/options.js:351
+#: src/options/options.js:375
 msgid "After two weeks"
 msgstr "2週間後"
 
@@ -283,7 +283,7 @@ msgstr "アルバムを作成しました"
 
 #: src/app/routes.js:176 src/component/album/toolbar.vue:51
 #: src/component/navigation.vue:604 src/component/navigation.vue:1882
-#: src/component/photo/edit/info.vue:220 src/options/options.js:174
+#: src/component/photo/edit/info.vue:220 src/options/options.js:198
 msgid "Albums"
 msgstr "アルバム"
 
@@ -291,7 +291,7 @@ msgstr "アルバム"
 msgid "Albums deleted"
 msgstr "アルバムが削除されました"
 
-#: src/locales.js:219 src/locales.js:232
+#: src/locales.js:218 src/locales.js:231
 msgid "All"
 msgstr "すべて"
 
@@ -360,7 +360,7 @@ msgstr "高度"
 msgid "Altitude (m)"
 msgstr "高度 (m)"
 
-#: src/locales.js:282
+#: src/locales.js:281
 msgid "AM"
 msgstr "AM"
 
@@ -368,7 +368,7 @@ msgstr "AM"
 #: src/component/photo/edit/files.vue:364
 #: src/component/photo/view/cards.vue:327
 #: src/component/photo/view/cards.vue:511 src/component/photo/view/list.vue:184
-#: src/component/photo/view/mosaic.vue:171 src/options/options.js:277
+#: src/component/photo/view/mosaic.vue:171 src/options/options.js:301
 msgid "Animated"
 msgstr "アニメーション"
 
@@ -450,7 +450,7 @@ msgid "Aspect Ratio"
 msgstr "アスペクト比"
 
 #: src/app/routes.js:250 src/component/navigation.vue:770
-#: src/options/options.js:273
+#: src/options/options.js:297
 msgid "Audio"
 msgstr "オーディオ"
 
@@ -476,7 +476,7 @@ msgstr "トップに戻る"
 msgid "Backup"
 msgstr "バックアップ"
 
-#: src/locales.js:205
+#: src/locales.js:204
 msgid "Badge"
 msgstr "バッジ"
 
@@ -503,19 +503,19 @@ msgstr "自己紹介"
 msgid "Birth Date"
 msgstr "生年月日"
 
-#: src/options/options.js:373
+#: src/options/options.js:397
 msgid "Black"
 msgstr "黒"
 
-#: src/options/options.js:401
+#: src/options/options.js:425
 msgid "Blackman: Lanczos Modification, Less Ringing Artifacts"
 msgstr "Blackman: 修正されたLanczos法、低リンギングノイズ"
 
-#: src/options/options.js:369
+#: src/options/options.js:393
 msgid "Blue"
 msgstr "青"
 
-#: src/options/options.js:370
+#: src/options/options.js:394
 msgid "Brown"
 msgstr "茶"
 
@@ -532,7 +532,7 @@ msgstr "画像を分類するラベルを参照および編集します。"
 msgid "Browse and share your pictures organized into monthly albums."
 msgstr "毎月のアルバムに整理された写真を閲覧、共有できる。"
 
-#: src/locales.js:279
+#: src/locales.js:278
 msgid "Browse Files"
 msgstr "ファイルを閲覧する"
 
@@ -540,7 +540,7 @@ msgstr "ファイルを閲覧する"
 msgid "Browse indexed files and folders in Library."
 msgstr "ライブラリ内にあるインデックスされたファイルやフォルダを参照します。"
 
-#: src/page/about/feedback.vue:10 src/options/options.js:379
+#: src/page/about/feedback.vue:10 src/options/options.js:403
 msgid "Bug Report"
 msgstr "バグ報告"
 
@@ -553,7 +553,7 @@ msgid "By using the software and services we provide, you agree to our terms of 
 msgstr "当社が提供するソフトウェアおよびサービスを利用することにより、お客様は当社の利用規約、プライバシーポリシー、および行動規範に同意したものとみなされます。"
 
 #: src/app/routes.js:189 src/component/navigation.vue:1081
-#: src/options/options.js:180 src/page/settings/general.vue:205
+#: src/options/options.js:204 src/page/settings/general.vue:205
 msgid "Calendar"
 msgstr "カレンダー"
 
@@ -598,7 +598,7 @@ msgstr "これ以上項目を選択することはできません"
 #: src/component/settings/passcode.vue:249
 #: src/component/settings/passcode.vue:333
 #: src/component/settings/password.vue:159 src/component/share/dialog.vue:28
-#: src/locales.js:211 src/page/auth/login.vue:232 src/page/connect.vue:123
+#: src/locales.js:210 src/page/auth/login.vue:232 src/page/connect.vue:123
 #: src/page/library/import.vue:119 src/page/library/index.vue:128
 msgid "Cancel"
 msgstr "キャンセル"
@@ -613,7 +613,7 @@ msgstr "キャプション"
 msgid "Cards"
 msgstr "カード"
 
-#: src/locales.js:259
+#: src/locales.js:258
 msgid "Carousel slide {0} of {1}"
 msgstr "1}のカルーセル・スライド{0}。"
 
@@ -680,7 +680,7 @@ msgstr "インデックスとキャッシュのクリーニング"
 msgid "Cleanup"
 msgstr "クリーンアップ"
 
-#: src/locales.js:267
+#: src/locales.js:266
 msgid "Clear {0}"
 msgstr "0}をクリアする"
 
@@ -701,7 +701,7 @@ msgstr "クライアント資格情報"
 #: src/component/settings/passcode.vue:497
 #: src/component/settings/webdav.vue:131 src/component/share/dialog.vue:231
 #: src/component/sidebar/info.vue:25 src/component/update.vue:57
-#: src/component/upload/dialog.vue:228 src/locales.js:207
+#: src/component/upload/dialog.vue:228 src/locales.js:206
 #: src/page/library/errors.vue:251
 msgid "Close"
 msgstr "閉じる"
@@ -841,7 +841,7 @@ msgstr "作成日時"
 msgid "Creating thumbnails for"
 msgstr "次の項目のサムネイルを作成しています"
 
-#: src/options/options.js:403
+#: src/options/options.js:427
 msgid "Cubic: Moderate Quality, Good Performance"
 msgstr "Cubic: 適度な品質、良いパフォーマンス"
 
@@ -853,11 +853,11 @@ msgstr "現在のパスワード"
 msgid "Custom"
 msgstr "カスタム"
 
-#: src/options/options.js:368
+#: src/options/options.js:392
 msgid "Cyan"
 msgstr "シアン"
 
-#: src/options/options.js:341
+#: src/options/options.js:365
 msgid "Daily"
 msgstr "毎日"
 
@@ -881,9 +881,9 @@ msgstr "デバッグログ"
 #: src/page/admin/users.vue:174 src/component/photo/edit/info.vue:45
 #: src/component/photo/edit/info.vue:110 src/model/session.js:66
 #: src/model/user.js:246 src/options/auth.js:20 src/options/auth.js:21
-#: src/options/auth.js:39 src/options/auth.js:40 src/options/options.js:172
-#: src/options/options.js:208 src/options/options.js:292
-#: src/options/themes.js:773 src/page/settings/general.vue:107
+#: src/options/auth.js:39 src/options/auth.js:40 src/options/options.js:196
+#: src/options/options.js:232 src/options/options.js:316
+#: src/options/themes.js:773
 msgid "Default"
 msgstr "既定"
 
@@ -992,7 +992,7 @@ msgstr "ビデオのトランスコードとサムネイル抽出を無効にし
 msgid "Discover"
 msgstr "発見"
 
-#: src/locales.js:208
+#: src/locales.js:207
 msgid "Dismiss"
 msgstr "解任する"
 
@@ -1014,7 +1014,7 @@ msgstr "検索結果に画像のタイトルを表示する。"
 #: src/component/photo/view/cards.vue:339
 #: src/component/photo/view/cards.vue:521
 #: src/component/photo/view/mosaic.vue:183 src/model/thumb.js:141
-#: src/options/options.js:285
+#: src/options/options.js:309
 msgid "Document"
 msgstr "ドキュメント"
 
@@ -1076,7 +1076,7 @@ msgstr "ダウンロードしています…"
 msgid "Downscaling Filter"
 msgstr "ダウンスケーリングフィルター"
 
-#: src/locales.js:277
+#: src/locales.js:276
 msgid "Drag and drop files here"
 msgstr "ここにファイルをドラッグ＆ドロップする"
 
@@ -1149,11 +1149,11 @@ msgstr "RAW現像機のプリセットを有効にします。パフォーマン
 msgid "Enabling two-factor authentication means that you will need a randomly generated verification code to log in, so even if someone gains access to your password, they will not be able to access your account."
 msgstr "2要素認証を有効にすると、ログイン時にランダムに生成された確認コードが必要になるため、誰かがパスワードを使っても、アカウントにアクセスできなくなります。"
 
-#: src/locales.js:249 src/locales.js:251
+#: src/locales.js:248 src/locales.js:250
 msgid "Enter date"
 msgstr "日付を入力する"
 
-#: src/locales.js:246
+#: src/locales.js:245
 msgid "Enter dates"
 msgstr "日付を入力する"
 
@@ -1190,7 +1190,7 @@ msgstr "見積もり場所"
 msgid "Estimate the approximate location of pictures without GPS coordinates."
 msgstr "GPS座標なしで写真のおおよその位置を推定する。"
 
-#: src/options/options.js:342
+#: src/options/options.js:366
 msgid "Every two days"
 msgstr "2日毎"
 
@@ -1254,7 +1254,7 @@ msgstr "リンクを更新できませんでした"
 msgid "Family Name"
 msgstr "姓"
 
-#: src/options/options.js:192
+#: src/options/options.js:216
 msgid "Fast"
 msgstr "高速"
 
@@ -1266,11 +1266,11 @@ msgid "Favorite"
 msgstr "お気に入り"
 
 #: src/app/routes.js:222 src/component/navigation.vue:893
-#: src/options/options.js:178 src/page/albums.vue:97
+#: src/options/options.js:202 src/page/albums.vue:97
 msgid "Favorites"
 msgstr "お気に入り"
 
-#: src/page/about/feedback.vue:9 src/options/options.js:378
+#: src/page/about/feedback.vue:9 src/options/options.js:402
 msgid "Feature Request"
 msgstr "機能のリクエスト"
 
@@ -1278,7 +1278,7 @@ msgstr "機能のリクエスト"
 msgid "Feedback"
 msgstr "フィードバック"
 
-#: src/options/options.js:409
+#: src/options/options.js:433
 msgid "Female"
 msgstr "女性"
 
@@ -1318,7 +1318,7 @@ msgstr "ファイル"
 msgid "Files with sequential names like 'IMG_1234 (2)' and 'IMG_1234 (3)' belong to the same picture."
 msgstr "「IMG_1234 (2)」や「IMG_1234 (3)」のような連名のファイルは同じ写真として扱います。"
 
-#: src/locales.js:235 src/locales.js:293
+#: src/locales.js:234 src/locales.js:292
 msgid "First page"
 msgstr "最初のページ"
 
@@ -1342,7 +1342,7 @@ msgid "Folder is empty"
 msgstr "フォルダは空です"
 
 #: src/app/routes.js:202 src/component/navigation.vue:1225
-#: src/options/options.js:183
+#: src/options/options.js:207
 msgid "Folders"
 msgstr "フォルダ"
 
@@ -1400,19 +1400,19 @@ msgstr "名"
 msgid "Global Options"
 msgstr "グローバルオプション"
 
-#: src/locales.js:291
+#: src/locales.js:290
 msgid "Go to page {0}"
 msgstr "0}ページに戻る"
 
-#: src/options/options.js:363
+#: src/options/options.js:387
 msgid "Gold"
 msgstr "金"
 
-#: src/options/options.js:366
+#: src/options/options.js:390
 msgid "Green"
 msgstr "緑"
 
-#: src/options/options.js:372
+#: src/options/options.js:396
 msgid "Grey"
 msgstr "グレー"
 
@@ -1448,7 +1448,7 @@ msgstr "非表示"
 msgid "Hide photos that have been moved to archive."
 msgstr "アーカイブに移動された写真を隠します。"
 
-#: src/options/options.js:296
+#: src/options/options.js:320
 msgid "High"
 msgstr "高"
 
@@ -1460,7 +1460,7 @@ msgstr "ハイダイナミックレンジ（HDR）"
 msgid "How can we help?"
 msgstr "私達にできることはありますか？"
 
-#: src/options/options.js:219
+#: src/options/options.js:243
 msgid "Hybrid"
 msgstr "ハイブリッド"
 
@@ -1470,7 +1470,7 @@ msgstr "認証アプリまたはデバイスにアクセスできなくなった
 
 #: src/component/photo/edit/info.vue:61 src/component/photo/edit/labels.vue:46
 #: src/component/photo/view/cards.vue:532 src/model/file.js:218
-#: src/options/options.js:257
+#: src/options/options.js:281
 msgid "Image"
 msgstr "写真"
 
@@ -1611,7 +1611,7 @@ msgstr "これは1回のみ使えるコードであり、使用するとアカ�
 msgid "Item"
 msgstr "項目"
 
-#: src/locales.js:231
+#: src/locales.js:230
 msgid "Items per page:"
 msgstr "ページごとの項目："
 
@@ -1638,7 +1638,7 @@ msgstr "ラベル"
 
 #: src/app/routes.js:389 src/component/navigation.vue:1177
 #: src/component/photo/edit/dialog.vue:188
-#: src/component/photo/edit/dialog.vue:205 src/options/options.js:182
+#: src/component/photo/edit/dialog.vue:205 src/options/options.js:206
 #: src/page/settings/general.vue:255
 msgid "Labels"
 msgstr "ラベル"
@@ -1647,7 +1647,7 @@ msgstr "ラベル"
 msgid "Labels deleted"
 msgstr "ラベルが削除されました"
 
-#: src/options/options.js:402
+#: src/options/options.js:426
 msgid "Lanczos: Detail Preservation, Minimal Artifacts"
 msgstr "ランチョス法: 鮮明な細部、最小限のノイズ"
 
@@ -1663,7 +1663,7 @@ msgstr "最終アクティブ"
 msgid "Last Login"
 msgstr "最終ログイン"
 
-#: src/locales.js:236 src/locales.js:294
+#: src/locales.js:235 src/locales.js:293
 msgid "Last page"
 msgstr "最終ページ"
 
@@ -1719,7 +1719,7 @@ msgstr "ライセンス"
 msgid "Like"
 msgstr "お気に入り"
 
-#: src/options/options.js:365
+#: src/options/options.js:389
 msgid "Lime"
 msgstr "黄緑"
 
@@ -1727,7 +1727,7 @@ msgstr "黄緑"
 msgid "Limit reached, showing first %{n} files"
 msgstr "制限に達しました。最初の %{n} 個のファイルを表示しています"
 
-#: src/options/options.js:404
+#: src/options/options.js:428
 msgid "Linear: Very Smooth, Best Performance"
 msgstr "リニア: とても滑らか、ベストパフォーマンス"
 
@@ -1745,7 +1745,7 @@ msgstr "リスト表示"
 
 #: src/component/photo/view/cards.vue:319
 #: src/component/photo/view/cards.vue:501 src/component/photo/view/list.vue:176
-#: src/component/photo/view/mosaic.vue:163 src/options/options.js:265
+#: src/component/photo/view/mosaic.vue:163 src/options/options.js:289
 msgid "Live"
 msgstr "ライブ"
 
@@ -1753,23 +1753,24 @@ msgstr "ライブ"
 msgid "Live Photos"
 msgstr "ライブ写真"
 
-#: src/locales.js:308
+#: src/locales.js:307
 msgid "Load more"
 msgstr "もっと読み込む"
 
-#: src/locales.js:215
+#: src/locales.js:214
 msgid "Loading items..."
 msgstr "項目をロードする..."
 
-#: src/locales.js:306
+#: src/locales.js:305
 msgid "Loading..."
 msgstr "読み込み中..."
 
 #: src/options/admin.js:35 src/options/auth.js:22 src/options/auth.js:27
+#: src/options/options.js:38 src/page/settings/general.vue:107
 msgid "Local"
 msgstr "ローカル"
 
-#: src/component/photo/edit/details.vue:193 src/options/options.js:38
+#: src/component/photo/edit/details.vue:193
 msgid "Local Time"
 msgstr "現地時間"
 
@@ -1804,11 +1805,11 @@ msgstr "ログ"
 msgid "Longitude"
 msgstr "経度"
 
-#: src/options/options.js:300
+#: src/options/options.js:324
 msgid "Low"
 msgstr "低"
 
-#: src/options/options.js:359
+#: src/options/options.js:383
 msgid "Magenta"
 msgstr "マゼンタ"
 
@@ -1816,7 +1817,7 @@ msgstr "マゼンタ"
 msgid "Main Color"
 msgstr "主な色"
 
-#: src/options/options.js:408
+#: src/options/options.js:432
 msgid "Male"
 msgstr "男性"
 
@@ -1847,11 +1848,11 @@ msgid "Maximum number of accounts has been reached."
 msgstr "アカウント数が上限に達した。"
 
 #: src/app/routes.js:229 src/component/navigation.vue:688
-#: src/options/options.js:175
+#: src/options/options.js:199
 msgid "Media"
 msgstr "メディア"
 
-#: src/options/options.js:196
+#: src/options/options.js:220
 msgid "Medium"
 msgstr "中"
 
@@ -1892,7 +1893,7 @@ msgid "Missing or invalid configuration"
 msgstr "設定がない、または無効である"
 
 #: src/app/routes.js:163 src/component/navigation.vue:1129
-#: src/options/options.js:181 src/page/settings/general.vue:230
+#: src/options/options.js:205 src/page/settings/general.vue:230
 msgid "Moments"
 msgstr "モーメント"
 
@@ -1952,8 +1953,8 @@ msgstr "名前"
 msgid "Name too long"
 msgstr "名前が長すぎます"
 
-#: src/page/admin/users.vue:202 src/options/options.js:337
-#: src/options/options.js:347 src/page/settings/services.vue:74
+#: src/page/admin/users.vue:202 src/options/options.js:361
+#: src/options/options.js:371 src/page/settings/services.vue:74
 msgid "Never"
 msgstr "なし"
 
@@ -1971,15 +1972,15 @@ msgstr "新しいパスワード"
 msgid "Newest First"
 msgstr "新しい順"
 
-#: src/component/lightbox.vue:287 src/locales.js:298
+#: src/component/lightbox.vue:287 src/locales.js:297
 msgid "Next"
 msgstr "次のページ"
 
-#: src/locales.js:233 src/locales.js:289
+#: src/locales.js:232 src/locales.js:288
 msgid "Next page"
 msgstr "次のページ"
 
-#: src/locales.js:257
+#: src/locales.js:256
 msgid "Next visual"
 msgstr "次のビジュアル"
 
@@ -1995,7 +1996,7 @@ msgstr "いいえ"
 msgid "No albums found"
 msgstr "アルバムが見つかりませんでした"
 
-#: src/locales.js:254
+#: src/locales.js:253
 msgid "No data available"
 msgstr "データなし"
 
@@ -2003,11 +2004,11 @@ msgstr "データなし"
 msgid "No labels found"
 msgstr "ラベルが見つかりませんでした"
 
-#: src/locales.js:214
+#: src/locales.js:213
 msgid "No matching records found"
 msgstr "該当する記録は見つからない"
 
-#: src/locales.js:309
+#: src/locales.js:308
 msgid "No more"
 msgstr "これ以上ない"
 
@@ -2055,8 +2056,8 @@ msgstr "このキーワードを含む警告やエラーが見つかりません
 msgid "Non-photographic and low-quality images require a review before they appear in search results."
 msgstr "写真ではないものや、低品質な画像は検索結果に表示される前にレビューが必要です。"
 
-#: src/options/admin.js:47 src/options/auth.js:32 src/options/options.js:188
-#: src/options/options.js:304
+#: src/options/admin.js:47 src/options/auth.js:32 src/options/options.js:212
+#: src/options/options.js:328
 msgid "None"
 msgstr "なし"
 
@@ -2069,7 +2070,7 @@ msgstr "不可"
 msgid "Not found"
 msgstr "見つかりませんでした"
 
-#: src/locales.js:223
+#: src/locales.js:222
 msgid "Not sorted."
 msgstr "選別されていない。"
 
@@ -2103,7 +2104,7 @@ msgstr "まだ何もありません。"
 msgid "Nothing was found."
 msgstr "何も見つかりませんでした。"
 
-#: src/options/options.js:246
+#: src/options/options.js:270
 msgid "Offline"
 msgstr "オフライン"
 
@@ -2111,7 +2112,7 @@ msgstr "オフライン"
 msgid "OIDC"
 msgstr "OIDC"
 
-#: src/locales.js:210
+#: src/locales.js:209
 msgid "OK"
 msgstr "OK"
 
@@ -2129,7 +2130,7 @@ msgstr "Windowsの場合、接続ダイアログに以下の内容を入力し�
 msgid "On-demand generation of thumbnails may cause high CPU and memory usage. It is not recommended for resource-constrained servers and NAS devices."
 msgstr "サムネイルのオンデマンド生成は、CPUとメモリの使用率が高くなる可能性があります。リソースに制限のあるサーバーやNASデバイスには推奨されません。"
 
-#: src/options/options.js:343
+#: src/options/options.js:367
 msgid "Once a week"
 msgstr "1週間に1度"
 
@@ -2166,7 +2167,7 @@ msgstr "1 枚の写真が見つかりました"
 msgid "Only locally managed accounts can be set up for authentication with 2FA."
 msgstr "2FAによる認証を設定できるのは、ローカルで管理されているアカウントのみです。"
 
-#: src/locales.js:206
+#: src/locales.js:205
 msgid "Open"
 msgstr "オープン"
 
@@ -2174,11 +2175,11 @@ msgstr "オープン"
 msgid "optional"
 msgstr "任意"
 
-#: src/locales.js:278
+#: src/locales.js:277
 msgid "or"
 msgstr "または"
 
-#: src/options/options.js:362
+#: src/options/options.js:386
 msgid "Orange"
 msgstr "オレンジ"
 
@@ -2199,13 +2200,13 @@ msgid "Original Name"
 msgstr "オリジナルの名前"
 
 #: src/component/navigation.vue:1304 src/model/file.js:196
-#: src/options/options.js:389 src/page/library/browse.vue:65
+#: src/options/options.js:413 src/page/library/browse.vue:65
 #: src/page/settings/content.vue:356 src/page/settings/general.vue:532
 msgid "Originals"
 msgstr "オリジナル"
 
-#: src/page/about/feedback.vue:11 src/options/options.js:380
-#: src/options/options.js:410
+#: src/page/about/feedback.vue:11 src/options/options.js:404
+#: src/options/options.js:434
 msgid "Other"
 msgstr "他"
 
@@ -2213,19 +2214,19 @@ msgstr "他"
 msgid "Our mission is to provide the most user- and privacy-friendly solution to keep your pictures organized and accessible."
 msgstr "私たちのビジョンは、あなたの写真コレクションを閲覧、整理、共有するための最もユーザーフレンドリーなソリューションを提供することです。"
 
-#: src/options/options.js:231
+#: src/options/options.js:255
 msgid "Outdoor"
 msgstr "アウトドア"
 
-#: src/locales.js:292
+#: src/locales.js:291
 msgid "Page {0}, Current page"
 msgstr "ページ {0}、現在のページ"
 
-#: src/component/photo/edit/files.vue:352 src/model/photo.js:854
+#: src/component/photo/edit/files.vue:352 src/model/photo.js:855
 msgid "Pages"
 msgstr "ページ"
 
-#: src/locales.js:288
+#: src/locales.js:287
 msgid "Pagination Navigation"
 msgstr "ページネーション・ナビゲーション"
 
@@ -2251,7 +2252,7 @@ msgstr "パスワードが変更されました"
 
 #: src/app/routes.js:404 src/app/routes.js:428 src/component/navigation.vue:845
 #: src/component/navigation.vue:1898 src/component/photo/edit/dialog.vue:228
-#: src/component/photo/edit/dialog.vue:245 src/options/options.js:177
+#: src/component/photo/edit/dialog.vue:245 src/options/options.js:201
 #: src/page/settings/general.vue:180
 msgid "People"
 msgstr "人"
@@ -2276,7 +2277,7 @@ msgstr "人物"
 msgid "Personal"
 msgstr "個人"
 
-#: src/model/photo.js:1268
+#: src/model/photo.js:1269
 msgid "Photo"
 msgstr "写真"
 
@@ -2297,7 +2298,7 @@ msgstr "写真"
 msgid "Picture Title"
 msgstr "写真のタイトル"
 
-#: src/options/options.js:360
+#: src/options/options.js:384
 msgid "Pink"
 msgstr "ピンク"
 
@@ -2311,7 +2312,7 @@ msgstr "場所と時間"
 
 #: src/app/routes.js:303 src/app/routes.js:309 src/app/routes.js:315
 #: src/app/routes.js:330 src/component/navigation.vue:986
-#: src/component/navigation.vue:1914 src/options/options.js:179
+#: src/component/navigation.vue:1914 src/options/options.js:203
 #: src/page/places.vue:51 src/page/settings/general.vue:609
 #: src/page/settings/general.vue:638
 msgid "Places"
@@ -2333,7 +2334,7 @@ msgstr "私的、違法、不快な写真はアップロードしないでくだ
 msgid "Please don't upload photos containing offensive content."
 msgstr "過激な内容を含む写真はアップロードしないでください。"
 
-#: src/locales.js:270
+#: src/locales.js:269
 msgid "Please enter OTP character {0}"
 msgstr "OTP文字{0}を入力してください"
 
@@ -2349,7 +2350,7 @@ msgstr "変更を有効にするために、インスタンスを再起動して
 msgid "Please wait…"
 msgstr "お待ちください…"
 
-#: src/locales.js:283
+#: src/locales.js:282
 msgid "PM"
 msgstr "PM"
 
@@ -2385,15 +2386,15 @@ msgstr "プレビュー"
 msgid "Preview Images"
 msgstr "プレビュー画像"
 
-#: src/component/lightbox.vue:286 src/locales.js:299
+#: src/component/lightbox.vue:286 src/locales.js:298
 msgid "Previous"
 msgstr "前へ"
 
-#: src/locales.js:234 src/locales.js:290
+#: src/locales.js:233 src/locales.js:289
 msgid "Previous page"
 msgstr "前のページ"
 
-#: src/locales.js:256
+#: src/locales.js:255
 msgid "Previous visual"
 msgstr "以前のビジュアル"
 
@@ -2408,7 +2409,7 @@ msgstr "プライマリ"
 msgid "Private"
 msgstr "プライベート"
 
-#: src/page/about/feedback.vue:8 src/options/options.js:377
+#: src/page/about/feedback.vue:8 src/options/options.js:401
 msgid "Product Feedback"
 msgstr "製品のフィードバック"
 
@@ -2416,7 +2417,7 @@ msgstr "製品のフィードバック"
 msgid "Projection"
 msgstr "投影"
 
-#: src/options/options.js:358
+#: src/options/options.js:382
 msgid "Purple"
 msgstr "紫"
 
@@ -2436,11 +2437,11 @@ msgstr "r"
 msgid "Random"
 msgstr "ランダム"
 
-#: src/locales.js:303
+#: src/locales.js:302
 msgid "Rating {0} of {1}"
 msgstr "1}の{0}評価"
 
-#: src/options/options.js:261
+#: src/options/options.js:285
 msgid "Raw"
 msgstr "Raw"
 
@@ -2488,7 +2489,7 @@ msgstr "認識済み"
 msgid "Recovery Code"
 msgstr "リカバリーコード"
 
-#: src/options/options.js:361
+#: src/options/options.js:385
 msgid "Red"
 msgstr "赤"
 
@@ -2585,11 +2586,11 @@ msgstr "レビュー"
 msgid "Role"
 msgstr "役割"
 
-#: src/locales.js:218
+#: src/locales.js:217
 msgid "Rows per page:"
 msgstr "ページあたりの行数："
 
-#: src/options/options.js:225
+#: src/options/options.js:249
 msgid "Satellite"
 msgstr "衛星"
 
@@ -2620,7 +2621,7 @@ msgstr "スコープ"
 
 #: src/page/admin/sessions.vue:70 src/page/admin/users.vue:62
 #: src/component/navigation.vue:342 src/component/navigation.vue:1866
-#: src/component/photo/toolbar.vue:57 src/options/options.js:173
+#: src/component/photo/toolbar.vue:57 src/options/options.js:197
 #: src/page/albums.vue:100 src/page/labels.vue:77
 #: src/page/library/errors.vue:76 src/page/people/recognized.vue:66
 #: src/page/places.vue:79 src/page/settings/content.vue:235
@@ -2651,11 +2652,11 @@ msgstr "選択"
 msgid "Select a source folder to import files…"
 msgstr "ファイルをインポートするソースフォルダーを選択する…"
 
-#: src/locales.js:248
+#: src/locales.js:247
 msgid "Select date"
 msgstr "日付を選択する"
 
-#: src/locales.js:245
+#: src/locales.js:244
 msgid "Select dates"
 msgstr "日付を選択する"
 
@@ -2671,7 +2672,7 @@ msgstr "アップロードするファイルを選択する"
 msgid "Select the folder to be indexed…"
 msgstr "インデックスを作成するフォルダを選択する。"
 
-#: src/locales.js:284
+#: src/locales.js:283
 msgid "Select Time"
 msgstr "時間を選択する"
 
@@ -2801,7 +2802,7 @@ msgstr "サイズ"
 msgid "Slideshow"
 msgstr "スライドショー"
 
-#: src/options/options.js:200
+#: src/options/options.js:224
 msgid "Slow"
 msgstr "低速"
 
@@ -2817,7 +2818,7 @@ msgstr "ソフトウェア・アップデート"
 msgid "Something went wrong, try again"
 msgstr "何かが間違っている、もう一度やり直してください"
 
-#: src/locales.js:228
+#: src/locales.js:227
 msgid "Sort by"
 msgstr "並べ替え"
 
@@ -2826,11 +2827,11 @@ msgstr "並べ替え"
 msgid "Sort Order"
 msgstr "並び替え順"
 
-#: src/locales.js:222
+#: src/locales.js:221
 msgid "Sorted ascending."
 msgstr "昇順にソートされる。"
 
-#: src/locales.js:221
+#: src/locales.js:220
 msgid "Sorted descending."
 msgstr "降順にソートされている。"
 
@@ -2880,7 +2881,7 @@ msgstr "状態"
 msgid "Storage"
 msgstr "ストレージフォルダ"
 
-#: src/options/options.js:213
+#: src/options/options.js:237
 msgid "Streets"
 msgstr "市街"
 
@@ -2936,7 +2937,7 @@ msgstr "Rawファイルや動画ファイルを同期"
 msgid "Taken"
 msgstr "撮影済み"
 
-#: src/options/options.js:367
+#: src/options/options.js:391
 msgid "Teal"
 msgstr "青緑"
 
@@ -2944,7 +2945,7 @@ msgstr "青緑"
 msgid "TensorFlow is required for image classification, facial recognition, and detecting unsafe content."
 msgstr "TensorFlowは画像分類、顔認識、安全でないコンテンツの検出に必要です。"
 
-#: src/options/options.js:237
+#: src/options/options.js:261
 msgid "Terrain"
 msgstr "地形"
 
@@ -3024,7 +3025,7 @@ msgstr "タイトル / 位置"
 msgid "Title too long"
 msgstr "タイトルが長すぎます"
 
-#: src/locales.js:240
+#: src/locales.js:239
 msgid "to"
 msgstr "対象"
 
@@ -3044,7 +3045,7 @@ msgstr "新しい認証アプリまたはデバイスに切り替えるには、
 msgid "To upgrade, you can either enter an activation code or click \"Register\" to sign up on our website:"
 msgstr "アップグレードするには、アクティベーションコードを入力するか、「登録」をクリックして当社ウェブサイトからサインアップしてください:"
 
-#: src/locales.js:264
+#: src/locales.js:263
 msgid "Today"
 msgstr "今日"
 
@@ -3102,10 +3103,10 @@ msgstr "一意のID"
 #: src/component/photo/edit/details.vue:111
 #: src/component/photo/edit/details.vue:138
 #: src/component/photo/edit/details.vue:164 src/model/album.js:193
-#: src/model/photo.js:322 src/model/photo.js:783 src/model/photo.js:804
-#: src/model/photo.js:827 src/model/photo.js:845 src/model/photo.js:892
-#: src/model/photo.js:900 src/model/photo.js:989 src/model/photo.js:1011
-#: src/model/photo.js:1056 src/model/photo.js:1069 src/model/user.js:157
+#: src/model/photo.js:323 src/model/photo.js:784 src/model/photo.js:805
+#: src/model/photo.js:828 src/model/photo.js:846 src/model/photo.js:893
+#: src/model/photo.js:901 src/model/photo.js:990 src/model/photo.js:1012
+#: src/model/photo.js:1057 src/model/photo.js:1070 src/model/user.js:157
 #: src/options/options.js:51 src/options/options.js:69
 #: src/options/options.js:86 src/options/options.js:100
 #: src/options/options.js:112 src/page/library/errors.vue:240
@@ -3255,7 +3256,7 @@ msgstr "ユーザー"
 
 #: src/component/photo/view/cards.vue:333
 #: src/component/photo/view/cards.vue:521
-#: src/component/photo/view/mosaic.vue:177 src/options/options.js:281
+#: src/component/photo/view/mosaic.vue:177 src/options/options.js:305
 msgid "Vector"
 msgstr "ベクター"
 
@@ -3270,7 +3271,7 @@ msgstr "検証コード"
 #: src/component/photo/view/cards.vue:363
 #: src/component/photo/view/cards.vue:491 src/component/photo/view/list.vue:190
 #: src/component/photo/view/mosaic.vue:207 src/model/file.js:221
-#: src/model/photo.js:916 src/model/photo.js:934 src/options/options.js:269
+#: src/model/photo.js:917 src/model/photo.js:935 src/options/options.js:293
 msgid "Video"
 msgstr "動画"
 
@@ -3280,7 +3281,7 @@ msgid "Video Duration"
 msgstr "動画の長さ"
 
 #: src/app/routes.js:243 src/component/navigation.vue:728
-#: src/options/options.js:176
+#: src/options/options.js:200
 msgid "Videos"
 msgstr "動画"
 
@@ -3324,7 +3325,7 @@ msgstr "ウェブログイン"
 
 #: src/component/user/add/dialog.vue:248 src/component/user/edit/dialog.vue:432
 #: src/page/admin/users.vue:80 src/options/auth.js:55 src/options/auth.js:68
-#: src/options/options.js:420
+#: src/options/options.js:444
 msgid "WebDAV"
 msgstr "WebDAV"
 
@@ -3349,7 +3350,7 @@ msgstr "お使いのブラウザでWebGLのサポートが無効になってい�
 msgid "Website"
 msgstr "ウェブサイト"
 
-#: src/options/options.js:371
+#: src/options/options.js:395
 msgid "White"
 msgstr "白"
 
@@ -3362,7 +3363,7 @@ msgstr "業務内容"
 msgid "Year"
 msgstr "年"
 
-#: src/options/options.js:364
+#: src/options/options.js:388
 msgid "Yellow"
 msgstr "黄"
 
