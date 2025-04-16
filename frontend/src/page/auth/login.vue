@@ -8,6 +8,24 @@
     :style="wallpaper()"
   >
     <v-theme-provider theme="login">
+      <div class="auth-language">
+        <v-select
+          v-model="settings.ui.language"
+          prepend-inner-icon="mdi-web"
+          :items="options.Languages()"
+          tabindex="10"
+          item-title="text"
+          item-value="value"
+          rounded="pill"
+          density="compact"
+          :menu-props="{ maxHeight: 346 }"
+          flat
+          hide-details
+          variant="outlined"
+          class="input-language"
+          @update:model-value="onChangeLanguage"
+        ></v-select>
+      </div>
       <v-row id="auth-layout" class="auth-layout">
         <v-col cols="12" sm="9" md="6" lg="5" xl="3">
           <v-form ref="form" class="auth-login-form" accept-charset="UTF-8" @submit.prevent="onLogin">
@@ -191,6 +209,8 @@
 <script>
 import PAuthHeader from "component/auth/header.vue";
 import PAuthFooter from "component/auth/footer.vue";
+import Settings from "model/settings";
+import * as options from "options/options";
 
 export default {
   name: "PPageLogin",
@@ -213,6 +233,8 @@ export default {
       wallpaperUri: this.$config.values.wallpaperUri,
       registerUri: this.$config.values.registerUri,
       passwordResetUri: this.$config.values.passwordResetUri,
+      settings: new Settings(this.$config.getSettings()),
+      options,
       rtl: this.$config.isRtl(),
     };
   },
@@ -263,6 +285,16 @@ export default {
       this.useRecoveryCode = false;
       this.code = "";
       this.enterCode = false;
+    },
+    onChangeLanguage() {
+      // Return if no language is set or the language has not been changed.
+      if (!this.settings?.ui?.language || !this.settings.changed("ui", "language")) {
+        return;
+      }
+
+      // Reload login page with locale query parameter to change UI language.
+      const route = { name: "login", query: { locale: this.settings.ui.language } };
+      window.window.location = this.$router.resolve(route).href;
     },
     onCancel() {
       if (this.loading) {

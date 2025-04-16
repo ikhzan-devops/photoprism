@@ -26,7 +26,7 @@ Additional information can be found in our Developer Guide:
 import $api from "common/api";
 import $event from "common/event";
 import * as themes from "options/themes";
-import { Languages } from "options/options";
+import * as options from "options/options";
 import { Photo } from "model/photo";
 import { onInit, onSetTheme } from "common/hooks";
 import { ref, reactive } from "vue";
@@ -184,7 +184,7 @@ export default class Config {
 
     if (values.settings) {
       this.setBatchSize(values.settings);
-      await this.setLanguage(values.settings.ui.language, true);
+      await this.setLanguage(this.getLanguageLocale(), true);
       this.setTheme(values.settings.ui.theme);
     }
 
@@ -505,18 +505,39 @@ export default class Config {
   // getLanguageLocale returns the ISO/IEC 15897 locale,
   // e.g. "en" or "zh_TW" (minimum 2 letters).
   getLanguageLocale() {
-    let locale = "en";
+    // Get default locale from web browser.
+    let locale = navigator?.language;
 
+    // Override language locale with query parameter?
+    if (window.location?.search) {
+      const query = new URLSearchParams(window.location.search);
+      const queryLocale = query.get("locale");
+      if (queryLocale && queryLocale.length > 1 && queryLocale.length < 6) {
+        // Change the locale settings.
+        locale = options.FindLocale(queryLocale);
+        this.storage.setItem(this.storageKey + ".locale", locale);
+        if (this.values?.settings?.ui) {
+          this.values.settings.ui.language = locale;
+        }
+      }
+    }
+
+    // Get user locale from localStorage if settings have not yet been loaded from backend.
     if (this.loading()) {
       const stored = this.storage.getItem(this.storageKey + ".locale");
       if (stored) {
         locale = stored;
+
+        if (this.values?.settings?.ui) {
+          this.values.settings.ui.language = locale;
+        }
       }
-    } else if (this.values.settings && this.values.settings.ui && this.values.settings.ui.language) {
+    } else if (this.values?.settings?.ui?.language) {
       locale = this.values.settings.ui.language;
     }
 
-    return locale;
+    // Find and return the best matching language locale that exists.
+    return options.FindLocale(locale);
   }
 
   // getLanguageCode returns the ISO 639-1 language code (2 letters),
@@ -531,7 +552,7 @@ export default class Config {
       locale = this.getLanguageLocale();
     }
 
-    return Languages().some((l) => l.value === locale && l.rtl);
+    return options.Languages().some((l) => l.value === locale && l.rtl);
   }
 
   // dir returns the user interface direction (for the current locale if no argument is given).

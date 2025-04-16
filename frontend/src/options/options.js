@@ -117,6 +117,50 @@ export const MonthsShort = () => {
 // Available locales sorted by region and alphabet.
 export const Languages = () => (window.__LOCALES__ ? window.__LOCALES__ : locales.Options);
 
+// Finds the best matching language by locale.
+export const FindLanguage = (locale) => {
+  if (!locale || locale.length < 2) {
+    return null;
+  }
+
+  let found;
+  const code = locale.substring(0, 2).toLowerCase();
+  const languages = Languages();
+
+  if (locale.length > 4) {
+    const region = locale.substring(3, 5).toUpperCase();
+    const exact = `${code}_${region}`;
+    found = languages.findLast((l) => l.value === exact || l.value === code);
+  } else {
+    found = languages.findLast((l) => l.value === code);
+  }
+
+  if (found) {
+    return found;
+  } else if (languages.length > 0) {
+    return languages[0];
+  } else {
+    return locales.Options[0];
+  }
+};
+
+// Specifies the default language locale string.
+export var DefaultLocale = "en";
+
+// Finds the best matching language locale based on the specified locale;
+export const FindLocale = (locale) => {
+  if (!locale) {
+    return DefaultLocale;
+  }
+
+  const language = FindLanguage(locale);
+
+  if (language) {
+    return language.value;
+  }
+
+  return DefaultLocale;
+};
 export const ItemsPerPage = () => [
   { text: "10", title: "10", value: 10 },
   { text: "20", title: "20", value: 20 },
