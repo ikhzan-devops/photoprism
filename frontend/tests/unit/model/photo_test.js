@@ -248,11 +248,11 @@ describe("model/photo", () => {
       ID: 5,
       Title: "Crazy Cat",
       TakenAtLocal: "2012-07-08T14:45:39Z",
-      TakenAt: "2012-07-08T14:45:39Z",
-      TimeZone: "UTC",
+      TakenAt: "2012-07-08T12:45:39Z",
+      TimeZone: "Europe/Berlin",
     };
     const photo = new Photo(values);
-    const result = photo.getDateString().replaceAll("\u202f", " ");
+    const result = photo.getDateString(false).replaceAll("\u202f", " ");
     assert.isTrue(result.startsWith("Sunday, July 8, 2012"));
     assert.isTrue(result.endsWith("2:45 PM"));
     const values2 = { ID: 5, Title: "Crazy Cat", TakenAtLocal: "", TakenAt: "", TimeZone: "UTC" };
@@ -1221,7 +1221,7 @@ describe("model/photo", () => {
       TakenAt: "2018-10-05T08:47:32Z",
       TakenAtLocal: "2018-10-05T08:47:32Z",
       TakenSrc: "meta",
-      TimeZone: "",
+      TimeZone: "Local",
       Path: "raw images/Canon EOS 700 D",
       Name: "_MG_9509",
       OriginalName: "",

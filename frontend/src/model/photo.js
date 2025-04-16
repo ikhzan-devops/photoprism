@@ -789,8 +789,12 @@ export class Photo extends RestModel {
         month: formats.long,
         year: formats.num,
       });
-    } else if (showTimeZone && timeZone && timeZone !== TimeZoneLocal) {
-      return this.localDate().toLocaleString(formats.DATE_FULL_TZ);
+    } else if (timeZone && timeZone !== TimeZoneLocal) {
+      if (showTimeZone) {
+        return this.localDate().toLocaleString(formats.DATETIME_FULL_TZ);
+      } else {
+        return this.localDate().toLocaleString(formats.DATETIME_FULL);
+      }
     }
 
     return this.localDate().toLocaleString(DateTime.DATE_HUGE);

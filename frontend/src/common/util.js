@@ -90,18 +90,6 @@ export default class $util {
     let options;
 
     switch (format) {
-      case "date_full":
-      case "DATE_FULL":
-        options = formats.DATE_FULL;
-        break;
-      case "date_full_tz":
-      case "DATE_FULL_TZ":
-        options = formats.DATE_FULL_TZ;
-        break;
-      case "date_med_tz":
-      case "DATE_MED_TZ":
-        options = formats.DATE_MED_TZ;
-        break;
       case "date_med":
       case "DATE_MED":
         options = formats.DATE_MED;
@@ -110,8 +98,26 @@ export default class $util {
       case "DATETIME_MED":
         options = formats.DATETIME_MED;
         break;
+      case "date_med_tz":
+      case "DATE_MED_TZ":
+      case "datetime_med_tz":
+      case "DATETIME_MED_TZ":
+        options = formats.DATETIME_MED_TZ;
+        break;
+      case "date_full":
+      case "DATE_FULL":
+      case "datetime_full":
+      case "DATETIME_FULL":
+        options = formats.DATETIME_FULL;
+        break;
+      case "date_full_tz":
+      case "datetime_full_tz":
+      case "DATE_FULL_TZ":
+      case "DATETIME_FULL_TZ":
+        options = formats.DATETIME_FULL_TZ;
+        break;
       default:
-        options = formats.DATE_FULL;
+        options = formats.DATETIME_FULL;
         break;
     }
 

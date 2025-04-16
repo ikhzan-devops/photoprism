@@ -52,7 +52,12 @@
           @click.stop="onDelete"
         >
         </v-btn>
-        <p-action-menu v-if="$vuetify.display.mdAndUp" :items="menuActions" :tabindex="3" button-class="ms-1"></p-action-menu>
+        <p-action-menu
+          v-if="$vuetify.display.mdAndUp"
+          :items="menuActions"
+          :tabindex="3"
+          button-class="ms-1"
+        ></p-action-menu>
       </v-toolbar>
     </v-form>
     <div v-if="loading" class="p-page__loading">
