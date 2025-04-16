@@ -230,7 +230,7 @@ export const MapsStyle = (experimental) => {
   const styles = [
     {
       title: $gettext("Default"),
-      value: "",
+      value: "default",
       style: "default",
     },
     {
