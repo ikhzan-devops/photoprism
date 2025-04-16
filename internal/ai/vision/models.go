@@ -23,7 +23,6 @@ var (
 					Start: -1.0,
 					End:   1.0,
 				},
-				Channels:    3,
 				OutputIndex: 0,
 			},
 			Output: &tensorflow.ModelOutput{
@@ -46,7 +45,6 @@ var (
 				Name:        "input_tensor",
 				Height:      224,
 				Width:       224,
-				Channels:    3,
 				OutputIndex: 0,
 			},
 			Output: &tensorflow.ModelOutput{
@@ -69,7 +67,6 @@ var (
 				Name:        "input",
 				Height:      160,
 				Width:       160,
-				Channels:    3,
 				OutputIndex: 0,
 			},
 			Output: &tensorflow.ModelOutput{

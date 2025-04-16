@@ -11,6 +11,11 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
+// The number of channels expected. This is a fixed value because there
+// seems to be an standard for input images defined as "What decodeImage
+// returns"
+const ExpectedChannels = 3
+
 // Interval of allowed values
 type Interval struct {
 	Start float32 `yaml:"Start,omitempty" json:"start,omitempty"`
@@ -37,7 +42,6 @@ type PhotoInput struct {
 	OutputIndex int       `yaml:"Index,omitempty" json:"index,omitempty"`
 	Height      int64     `yaml:"Height,omitempty" json:"height,omitempty"`
 	Width       int64     `yaml:"Width,omitempty" json:"width,omitempty"`
-	Channels    int64     `yaml:"Channels,omitempty" json:"channels,omitempty"`
 }
 
 // When dimensions are not defined, it means the model accepts any size of
@@ -86,10 +90,6 @@ func (p *PhotoInput) Merge(other *PhotoInput) {
 
 	if p.Width == 0 {
 		p.Width = other.Width
-	}
-
-	if p.Channels == 0 {
-		p.Channels = other.Channels
 	}
 }
 
@@ -166,7 +166,7 @@ func GetInputAndOutputFromMetaSignature(meta *pb.MetaGraphDef) (*PhotoInput, *Mo
 	}
 
 	sig := meta.GetSignatureDef()
-	for _, v := range sig {
+	for k, v := range sig {
 		inputs := v.GetInputs()
 		outputs := v.GetOutputs()
 
@@ -179,7 +179,14 @@ func GetInputAndOutputFromMetaSignature(meta *pb.MetaGraphDef) (*PhotoInput, *Mo
 				inputDims := (*inputTensor).GetTensorShape().Dim
 				outputDims := (*outputTensor).GetTensorShape().Dim
 
-				if len(inputDims) == 4 && len(outputDims) == 2 {
+				if inputDims[3].GetSize() != ExpectedChannels {
+					log.Warnf("tensorflow: skipping signature %v because channels are expected to be %d, have %d",
+						k, ExpectedChannels, inputDims[3].GetSize())
+				}
+
+				if len(inputDims) == 4 &&
+					inputDims[3].GetSize() == ExpectedChannels &&
+					len(outputDims) == 2 {
 					var err error
 					var inputIdx, outputIdx = 0, 0
 
@@ -206,7 +213,6 @@ func GetInputAndOutputFromMetaSignature(meta *pb.MetaGraphDef) (*PhotoInput, *Mo
 							OutputIndex: inputIdx,
 							Height:      inputDims[1].GetSize(),
 							Width:       inputDims[2].GetSize(),
-							Channels:    inputDims[3].GetSize(),
 						}, &ModelOutput{
 							Name:          outputName,
 							OutputIndex:   outputIdx,

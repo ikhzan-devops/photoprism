@@ -128,7 +128,6 @@ func (m *Model) ClassifyModel() *classify.Model {
 		}
 
 		m.Meta.Input.SetResolution(m.Resolution)
-		m.Meta.Input.Channels = 3
 
 		// Try to load custom model based on the configuration values.
 		defaultPath := filepath.Join(AssetsPath, "nasnet")
@@ -247,7 +246,6 @@ func (m *Model) NsfwModel() *nsfw.Model {
 		}
 
 		m.Meta.Input.SetResolution(m.Resolution)
-		m.Meta.Input.Channels = 3
 
 		if m.Meta == nil {
 			m.Meta = &tensorflow.ModelInfo{}

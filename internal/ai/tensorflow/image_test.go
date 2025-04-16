@@ -11,9 +11,8 @@ import (
 )
 
 var defaultImageInput = &PhotoInput{
-	Height:   224,
-	Width:    224,
-	Channels: 3,
+	Height: 224,
+	Width:  224,
 }
 
 func TestConvertValue(t *testing.T) {
