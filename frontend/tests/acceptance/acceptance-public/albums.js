@@ -270,7 +270,7 @@ test.meta("testID", "albums-008").meta({ type: "short", mode: "public" })(
   }
 );
 
-test.only.meta("testID", "albums-009").meta({ type: "short", mode: "public" })("Common: Set album cover", async (t) => {
+test.meta("testID", "albums-009").meta({ type: "short", mode: "public" })("Common: Set album cover", async (t) => {
   await menu.openPage("albums");
   await toolbar.search("Holiday");
   const AlbumUid = await album.getNthAlbumUid("all", 0);
