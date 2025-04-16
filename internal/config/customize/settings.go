@@ -32,19 +32,19 @@ type Settings struct {
 
 // NewDefaultSettings creates a new default Settings instance.
 func NewDefaultSettings() *Settings {
-	return NewSettings(DefaultTheme, DefaultLocale)
+	return NewSettings(DefaultTheme, DefaultLocale, DefaultTimezone)
 }
 
 // NewSettings creates a new Settings instance.
-func NewSettings(theme, lang string) *Settings {
+func NewSettings(theme, locale, timeZone string) *Settings {
 	return &Settings{
 		UI: UISettings{
 			Scrollbar: true,
 			Zoom:      false,
 			Theme:     theme,
-			Language:  lang,
-			TimeZone:  "",
-			StartPage: "default",
+			Language:  locale,
+			TimeZone:  timeZone,
+			StartPage: DefaultStartPage,
 		},
 		Search: SearchSettings{
 			BatchSize:    -1,
