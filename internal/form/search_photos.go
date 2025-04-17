@@ -51,15 +51,15 @@ type SearchPhotos struct {
 	Favorite    string    `form:"favorite" example:"favorite:true favorite:false" notes:"Finds favorites"`
 	Unsorted    bool      `form:"unsorted" notes:"Pictures not in an album"`
 	Near        string    `form:"near" example:"near:pqbcf5j446s0futy" notes:"Finds nearby pictures (UID)"`
-	S2          string    `form:"s2" example:"s2:4799e370ca54c8b9"  notes:"S2 Position (Cell ID)"`
-	Olc         string    `form:"olc" example:"olc:8FWCHX7W+" notes:"OLC Position (Open Location Code)"`
-	Lat         float64   `form:"lat" example:"lat:41.894043" notes:"GPS Position (Latitude)"`
-	Lng         float64   `form:"lng" example:"lng:-87.62448" notes:"GPS Position (Longitude)"`
-	Alt         string    `form:"alt" example:"alt:300-500" notes:"GPS Altitude (m)"`
-	Dist        float64   `form:"dist" example:"dist:50" notes:"Distance to Position (km)"`
-	Latlng      string    `form:"latlng" notes:"GPS Bounding Box (Lat N, Lng E, Lat S, Lng W)"`
-	Camera      string    `form:"camera" example:"camera:canon" notes:"Camera Make/Model Name"` // Camera UID or name
-	Lens        string    `form:"lens" example:"lens:ef24" notes:"Lens Make/Model Name"`        // Lens UID or name
+	S2          string    `form:"s2" example:"s2:4799e370ca54c8b9"  notes:"Position (S2 Cell ID)"`
+	Olc         string    `form:"olc" example:"olc:8FWCHX7W+" notes:"Open Location Code (OLC)"`
+	Lat         float64   `form:"lat" example:"lat:41.894043" notes:"Latitude (-90.0 to 90.0 degrees)"`
+	Lng         float64   `form:"lng" example:"lng:-87.62448" notes:"Longitude (-180.0 to 180.0 degrees)"`
+	Alt         string    `form:"alt" example:"alt:300-500" notes:"Altitude (m)"`
+	Dist        float64   `form:"dist" example:"dist:50" notes:"Maximum Distance to Lat and Lng in km"`
+	Latlng      string    `form:"latlng" example:"latlng:49.4,13.41,46.5,2.331" notes:"Location Bounding Box (Lat N, Lng E, Lat S, Lng W)"`
+	Camera      string    `form:"camera" example:"camera:canon" notes:"Camera Make/Model Name"`
+	Lens        string    `form:"lens" example:"lens:ef24" notes:"Lens Make/Model Name"`
 	Iso         string    `form:"iso" example:"iso:200-400" notes:"ISO Number (light sensitivity)"`
 	Mm          string    `form:"mm" example:"mm:28-35" notes:"Focal Length (35mm equivalent)"`
 	F           string    `form:"f" example:"f:2.8-4.5" notes:"Aperture (f-number)"`
