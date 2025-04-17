@@ -68,7 +68,7 @@ type SearchPhotos struct {
 	Chroma      int16     `form:"chroma" example:"chroma:70" notes:"Chroma (0-100)"`
 	Mono        bool      `form:"mono" notes:"Pictures with few or no colors"`
 	Diff        uint32    `form:"diff" notes:"Differential Perceptual Hash (000000-FFFFFF)"`
-	Geo         string    `form:"geo" example:"geo:yes" notes:"Pictures with or without coordinates"`
+	Geo         string    `form:"geo" example:"geo:yes" notes:"Pictures with or without Position"`
 	Keywords    string    `form:"keywords" example:"keywords:\"sand&water\"" notes:"Keywords (combinable with & and |)"`
 	Label       string    `form:"label" example:"label:cat|dog" notes:"Label Names (separated by |)"`
 	Category    string    `form:"category" example:"category:airport" notes:"Location Category"`
