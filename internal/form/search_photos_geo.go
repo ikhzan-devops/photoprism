@@ -11,15 +11,15 @@ type SearchPhotosGeo struct {
 	Query       string    `form:"q"`
 	Scope       string    `form:"s" serialize:"-" example:"s:ariqwb43p5dh9h13" notes:"Limits the results to one album or another scope, if specified"`
 	Filter      string    `form:"filter" serialize:"-" notes:"-"`
-	ID          string    `form:"id" example:"id:123e4567-e89b-..." notes:"Finds pictures by Exif UID, XMP Document ID or Instance ID"`
+	ID          string    `form:"id" example:"id:123e4567-e89b-..." notes:"Exif UID, XMP Document ID or Instance ID"`
 	UID         string    `form:"uid" example:"uid:pqbcf5j446s0futy" notes:"Limits results to the specified internal unique IDs"`
 	Type        string    `form:"type" example:"type:raw" notes:"Media Type (image, video, raw, live, animated); separate with |"`
-	Path        string    `form:"path" example:"path:2020/Holiday" notes:"Path Name (separate with |), supports * wildcards"`
-	Folder      string    `form:"folder" example:"folder:\"*/2020\"" notes:"Path Name (separate with |), supports * wildcards"` // Alias for Path
-	Name        string    `form:"name" example:"name:\"IMG_9831-112*\"" notes:"File Name without path and extension (separate with |)"`
-	Title       string    `form:"title" example:"title:\"Lake*\"" notes:"Finds pictures by Title (separate with |)"`
-	Caption     string    `form:"caption" example:"caption:\"Lake*\"" notes:"Finds pictures by Caption (separate with |)"`
-	Description string    `form:"description" example:"description:\"Lake*\"" notes:"Finds pictures by Title or Caption (separate with |)"`
+	Path        string    `form:"path" example:"path:2020/Holiday" notes:"Path Name (separated by |), supports * wildcards"`
+	Folder      string    `form:"folder" example:"folder:\"*/2020\"" notes:"Path Name (separated by |), supports * wildcards"` // Alias for Path
+	Name        string    `form:"name" example:"name:\"IMG_9831-112*\"" notes:"File Name without path and extension (separated by |)"`
+	Title       string    `form:"title" example:"title:\"Lake*\"" notes:"Searches Titles (separate terms with | or use false to find pictures without a Title)"`
+	Caption     string    `form:"caption" example:"caption:\"Lake*\"" notes:"Searches Captions (separate terms with | or use false to find pictures without a Caption)"`
+	Description string    `form:"description" example:"description:\"Lake*\"" notes:"Searches Titles and Captions (separate terms with | or use false to find pictures without a Title or Caption)"`
 	Added       time.Time `form:"added" example:"added:\"2006-01-02T15:04:05Z\"" time_format:"2006-01-02T15:04:05Z07:00" notes:"Finds pictures added at or after this time"`
 	Updated     time.Time `form:"updated" example:"updated:\"2006-01-02T15:04:05Z\"" time_format:"2006-01-02T15:04:05Z07:00" notes:"Finds pictures updated at or after this time"`
 	Edited      time.Time `form:"edited" example:"edited:\"2006-01-02T15:04:05Z\"" time_format:"2006-01-02T15:04:05Z07:00" notes:"Finds pictures edited at or after this time"`
@@ -40,14 +40,14 @@ type SearchPhotosGeo struct {
 	Document    bool      `form:"document" notes:"Finds PDF documents only"`
 	Scan        string    `form:"scan" example:"scan:true scan:false" notes:"Finds scanned photos and documents"`
 	Mp          string    `form:"mp" example:"mp:3-6" notes:"Resolution in Megapixels (MP)"`
-	Panorama    bool      `form:"panorama"`
-	Portrait    bool      `form:"portrait"`
-	Landscape   bool      `form:"landscape"`
-	Square      bool      `form:"square"`
-	Archived    bool      `form:"archived"`
-	Public      bool      `form:"public"`
-	Private     bool      `form:"private"`
-	Review      bool      `form:"review"`
+	Panorama    bool      `form:"panorama" notes:"Pictures with an aspect ratio > 1.9:1"`
+	Portrait    bool      `form:"portrait" notes:"Portrait format"`
+	Landscape   bool      `form:"landscape" notes:"Landscape format"`
+	Square      bool      `form:"square" notes:"Aspect ratio of 1:1"`
+	Archived    bool      `form:"archived" notes:"Archived pictures"`
+	Public      bool      `form:"public" notes:"Excludes private pictures"`
+	Private     bool      `form:"private" notes:"Private pictures"`
+	Review      bool      `form:"review" notes:"Pictures in review"`
 	Quality     int       `form:"quality" notes:"Minimum quality score (1-7)"`
 	Face        string    `form:"face" notes:"Face ID, yes, no, new, or kind"`
 	Faces       string    `form:"faces"` // Find or exclude faces if detected.
