@@ -59,7 +59,7 @@ type SearchPhotosGeo struct {
 	Lng         float64   `form:"lng" example:"lng:-87.62448" notes:"Position Longitude (-180.0 to 180.0 deg)"`
 	Alt         string    `form:"alt" example:"alt:300-500" notes:"Altitude (m)"`
 	Dist        float64   `form:"dist" example:"dist:50" notes:"Maximum Distance to Position in km"`
-	Latlng      string    `form:"latlng" example:"latlng:49.4,13.41,46.5,2.331" notes:"Location Bounding Box (Lat N, Lng E, Lat S, Lng W)"`
+	Latlng      string    `form:"latlng" example:"latlng:49.4,13.41,46.5,2.331" notes:"Position Bounding Box (Lat N, Lng E, Lat S, Lng W)"`
 	Camera      int       `form:"camera"`
 	Lens        int       `form:"lens"`
 	Iso         string    `form:"iso" example:"iso:200-400" notes:"ISO Number (light sensitivity)"`
