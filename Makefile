@@ -422,7 +422,7 @@ docker-develop: docker-develop-latest
 docker-develop-all: docker-develop-latest docker-develop-other
 docker-develop-latest: docker-develop-ubuntu
 docker-develop-debian: docker-develop-bookworm docker-develop-bookworm-slim
-docker-develop-ubuntu: docker-develop-oracular docker-develop-oracular-slim
+docker-develop-ubuntu: docker-develop-plucky docker-develop-plucky-slim
 docker-develop-other: docker-develop-debian docker-develop-bullseye docker-develop-bullseye-slim docker-develop-buster
 docker-develop-bookworm:
 	docker pull --platform=amd64 debian:bookworm-slim
@@ -489,7 +489,7 @@ docker-develop-noble-slim:
 docker-develop-oracular:
 	docker pull --platform=amd64 ubuntu:oracular
 	docker pull --platform=arm64 ubuntu:oracular
-	scripts/docker/buildx-multi.sh develop linux/amd64,linux/arm64 oracular /oracular "-t photoprism/develop:latest -t photoprism/develop:ubuntu"
+	scripts/docker/buildx-multi.sh develop linux/amd64,linux/arm64 oracular /oracular
 docker-develop-oracular-slim:
 	docker pull --platform=amd64 ubuntu:oracular
 	docker pull --platform=arm64 ubuntu:oracular
@@ -497,7 +497,7 @@ docker-develop-oracular-slim:
 docker-develop-plucky:
 	docker pull --platform=amd64 ubuntu:plucky
 	docker pull --platform=arm64 ubuntu:plucky
-	scripts/docker/buildx-multi.sh develop linux/amd64,linux/arm64 plucky /plucky
+	scripts/docker/buildx-multi.sh develop linux/amd64,linux/arm64 plucky /plucky "-t photoprism/develop:latest -t photoprism/develop:ubuntu"
 docker-develop-plucky-slim:
 	docker pull --platform=amd64 ubuntu:plucky
 	docker pull --platform=arm64 ubuntu:plucky
@@ -519,10 +519,10 @@ docker-unstable-mantic:
 preview: docker-preview-ce
 docker-preview: docker-preview-ce
 docker-preview-all: docker-preview-latest docker-preview-other
-docker-preview-ce: docker-preview-oracular
+docker-preview-ce: docker-preview-plucky
 docker-preview-latest: docker-preview-ubuntu
 docker-preview-debian: docker-preview-bookworm
-docker-preview-ubuntu: docker-preview-oracular
+docker-preview-ubuntu: docker-preview-plucky
 docker-preview-other: docker-preview-debian docker-preview-bullseye
 docker-preview-arm: docker-preview-arm64 docker-preview-armv7
 docker-preview-bookworm:
@@ -598,7 +598,7 @@ docker-release: docker-release-latest
 docker-release-all: docker-release-latest docker-release-other
 docker-release-latest: docker-release-ubuntu
 docker-release-debian: docker-release-bookworm
-docker-release-ubuntu: docker-release-oracular
+docker-release-ubuntu: docker-release-plucky
 docker-release-other: docker-release-debian docker-release-bullseye
 docker-release-arm: docker-release-arm64 docker-release-armv7
 docker-release-bookworm:
@@ -711,8 +711,8 @@ terminal-preview:
 	$(DOCKER_COMPOSE) -f compose.preview.yaml exec photoprism-preview bash
 logs-preview:
 	$(DOCKER_COMPOSE) -f compose.preview.yaml logs -f photoprism-preview
-docker-local: docker-local-oracular
-docker-local-all: docker-local-oracular docker-local-noble docker-local-mantic docker-local-lunar docker-local-jammy docker-local-bookworm docker-local-bullseye docker-local-buster
+docker-local: docker-local-plucky
+docker-local-all: docker-local-plucky docker-local-oracular docker-local-noble docker-local-mantic docker-local-lunar docker-local-jammy docker-local-bookworm docker-local-bullseye docker-local-buster
 docker-local-bookworm:
 	docker pull photoprism/develop:bookworm
 	docker pull photoprism/develop:bookworm-slim
