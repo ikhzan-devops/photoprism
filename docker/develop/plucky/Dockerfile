@@ -87,7 +87,7 @@ RUN echo 'APT::Acquire::Retries "3";' > /etc/apt/apt.conf.d/80retries && \
     echo 'export PS1="\u@$DOCKER_TAG:\w\$ "' >> /etc/skel/.bashrc && \
     /scripts/install-dircolors.sh && \
     cp /etc/skel/.bashrc /root/.bashrc && \
-    cp /scripts/convert/policy.xml /etc/ImageMagick-6/policy.xml && \
+    cp /scripts/convert/policy.xml /etc/ImageMagick-7/policy.xml && \
     /scripts/create-users.sh && \
     install -d -m 0777 -o 1000 -g 1000 \
         /photoprism/originals \
