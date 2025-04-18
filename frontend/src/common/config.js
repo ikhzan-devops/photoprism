@@ -550,6 +550,15 @@ export default class Config {
     return this.getLanguageLocale().substring(0, 2);
   }
 
+  // getTimeZone returns user time zone.
+  getTimeZone() {
+    if (this.values?.settings?.ui?.timeZone) {
+      return this.values?.settings?.ui?.timeZone;
+    }
+
+    return "Local";
+  }
+
   // isRtl returns true if a right-to-left language is currently used.
   isRtl(locale) {
     if (!locale) {

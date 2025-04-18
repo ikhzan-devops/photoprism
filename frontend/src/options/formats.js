@@ -1,5 +1,6 @@
 export const num = "numeric";
 export const short = "short";
+export const shortGeneric = "shortGeneric";
 export const long = "long";
 
 export const DATE_MED = {
@@ -18,7 +19,7 @@ export const DATETIME_MED = {
 
 export const DATETIME_MED_TZ = {
   year: num,
-  month: short,
+  month: long,
   day: num,
   hour: num,
   minute: num,
@@ -42,4 +43,25 @@ export const DATETIME_FULL_TZ = {
   hour: num,
   minute: num,
   timeZoneName: short,
+};
+
+export const TIMESTAMP_TZ = {
+  year: num,
+  month: long,
+  day: num,
+  hour: num,
+  minute: num,
+  second: num,
+  timeZoneName: shortGeneric,
+};
+
+export const TIMESTAMP_LONG_TZ = {
+  year: num,
+  month: long,
+  day: num,
+  weekday: long,
+  hour: num,
+  minute: num,
+  second: num,
+  timeZoneName: shortGeneric,
 };
