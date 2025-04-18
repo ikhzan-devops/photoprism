@@ -284,6 +284,7 @@ export default {
       showPassword: false,
       minLength: this.$config.get("passwordLength"),
       maxLength: 72,
+      timeZone: this.$config.getTimeZone(),
       rtl: this.$isRtl,
       action: "",
       confirmAction: "",
@@ -365,12 +366,12 @@ export default {
       }
 
       if (!Number.isInteger(d)) {
-        return DateTime.fromISO(d).toLocaleString(DateTime.DATE_SHORT);
+        return DateTime.fromISO(d, { zone: this.timeZone }).toLocaleString(DateTime.DATE_SHORT);
       } else if (d <= 0) {
         return "–";
       }
 
-      return DateTime.fromSeconds(d).toLocaleString(DateTime.DATE_SHORT);
+      return DateTime.fromSeconds(d, { zone: this.timeZone }).toLocaleString(DateTime.DATE_SHORT);
     },
     formatDateTime(d) {
       if (!d) {
@@ -378,12 +379,12 @@ export default {
       }
 
       if (!Number.isInteger(d)) {
-        return DateTime.fromISO(d).toLocaleString(DateTime.DATETIME_SHORT);
+        return DateTime.fromISO(d, { zone: this.timeZone }).toLocaleString(DateTime.DATETIME_SHORT);
       } else if (d <= 0) {
         return "–";
       }
 
-      return DateTime.fromSeconds(d).toLocaleString(DateTime.DATETIME_SHORT);
+      return DateTime.fromSeconds(d, { zone: this.timeZone }).toLocaleString(DateTime.DATETIME_SHORT);
     },
     scopeInfo(s) {
       let info = memoizeOne(auth.Scopes)()[s];

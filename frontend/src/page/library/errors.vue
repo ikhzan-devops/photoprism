@@ -151,7 +151,6 @@ import * as formats from "options/formats";
 import PLoading from "component/loading.vue";
 import PActionMenu from "component/action/menu.vue";
 import PConfirmDialog from "component/confirm/dialog.vue";
-import { TIMESTAMP_LONG_TZ } from "options/formats";
 
 export default {
   name: "PPageErrors",
