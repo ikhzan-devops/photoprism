@@ -490,6 +490,14 @@ docker-develop-oracular-slim:
 	docker pull --platform=amd64 ubuntu:oracular
 	docker pull --platform=arm64 ubuntu:oracular
 	scripts/docker/buildx-multi.sh develop linux/amd64,linux/arm64 oracular-slim /oracular-slim
+docker-develop-plucky:
+	docker pull --platform=amd64 ubuntu:plucky
+	docker pull --platform=arm64 ubuntu:plucky
+	scripts/docker/buildx-multi.sh develop linux/amd64,linux/arm64 plucky /plucky
+docker-develop-plucky-slim:
+	docker pull --platform=amd64 ubuntu:plucky
+	docker pull --platform=arm64 ubuntu:plucky
+	scripts/docker/buildx-multi.sh develop linux/amd64,linux/arm64 plucky-slim /plucky-slim
 unstable: docker-unstable
 docker-unstable: docker-unstable-mantic
 docker-unstable-jammy:
@@ -575,6 +583,12 @@ docker-preview-oracular:
 	docker pull --platform=arm64 photoprism/develop:oracular
 	docker pull --platform=arm64 photoprism/develop:oracular-slim
 	scripts/docker/buildx-multi.sh photoprism linux/amd64,linux/arm64 preview-ce /oracular
+docker-preview-plucky:
+	docker pull --platform=amd64 photoprism/develop:plucky
+	docker pull --platform=amd64 photoprism/develop:plucky-slim
+	docker pull --platform=arm64 photoprism/develop:plucky
+	docker pull --platform=arm64 photoprism/develop:plucky-slim
+	scripts/docker/buildx-multi.sh photoprism linux/amd64,linux/arm64 preview-ce /plucky
 release: docker-release
 docker-release: docker-release-latest
 docker-release-all: docker-release-latest docker-release-other
@@ -645,6 +659,12 @@ docker-release-oracular:
 	docker pull --platform=arm64 photoprism/develop:oracular
 	docker pull --platform=arm64 photoprism/develop:oracular-slim
 	scripts/docker/buildx-multi.sh photoprism linux/amd64,linux/arm64 ce /oracular
+docker-release-plucky:
+	docker pull --platform=amd64 photoprism/develop:plucky
+	docker pull --platform=amd64 photoprism/develop:plucky-slim
+	docker pull --platform=arm64 photoprism/develop:plucky
+	docker pull --platform=arm64 photoprism/develop:plucky-slim
+	scripts/docker/buildx-multi.sh photoprism linux/amd64,linux/arm64 ce /plucky
 start-local:
 	$(DOCKER_COMPOSE) -f compose.local.yaml up -d --wait
 stop-local:
@@ -725,6 +745,10 @@ docker-local-oracular:
 	docker pull photoprism/develop:oracular
 	docker pull ubuntu:oracular
 	scripts/docker/build.sh photoprism ce-oracular /oracular "-t photoprism/photoprism:local"
+docker-local-plucky:
+	docker pull photoprism/develop:plucky
+	docker pull ubuntu:plucky
+	scripts/docker/build.sh photoprism ce-plucky /plucky "-t photoprism/photoprism:local"
 local-develop: docker-local-develop
 docker-local-develop: docker-local-develop-oracular
 docker-local-develop-all: docker-local-develop-oracular docker-local-develop-noble docker-local-develop-mantic docker-local-develop-lunar docker-local-develop-jammy docker-local-develop-bookworm docker-local-develop-bullseye docker-local-develop-buster docker-local-develop-impish
@@ -755,6 +779,9 @@ docker-local-develop-noble:
 docker-local-develop-oracular:
 	docker pull ubuntu:oracular
 	scripts/docker/build.sh develop oracular /oracular
+docker-local-develop-plucky:
+	docker pull ubuntu:plucky
+	scripts/docker/build.sh develop plucky /plucky
 docker-ddns:
 	docker pull golang:alpine
 	scripts/docker/buildx-multi.sh ddns linux/amd64,linux/arm64 $(BUILD_DATE)
