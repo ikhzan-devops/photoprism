@@ -7,7 +7,9 @@ export GO111MODULE=on
 
 -include .semver
 -include .env
-export
+export SEMVER_MAJOR
+export SEMVER_MINOR
+export SEMVER_PATCH
 
 # Binary file names.
 BINARY_NAME=photoprism

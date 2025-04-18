@@ -1,7 +1,6 @@
 MAKEFLAGS += --always-make
 
 -include .env
-export
 
 all: pull restart
 uninstall: down remove
