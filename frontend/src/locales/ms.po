@@ -792,7 +792,7 @@ msgstr "Penyumbang"
 msgid "Converting"
 msgstr "Menukar"
 
-#: src/common/util.js:827
+#: src/common/util.js:833
 msgid "Copied to clipboard"
 msgstr "Disalin ke papan keratan"
 
@@ -2061,7 +2061,7 @@ msgstr "Imej bukan fotografi dan berkualiti rendah memerlukan semakan sebelum ia
 msgid "None"
 msgstr "Tiada"
 
-#: src/common/util.js:834 src/component/lightbox.vue:633
+#: src/common/util.js:840 src/component/lightbox.vue:633
 #: src/component/service/upload.vue:75 src/component/service/upload.vue:87
 msgid "Not allowed"
 msgstr "Tidak dibenarkan"
@@ -2074,7 +2074,7 @@ msgstr "Tidak dijumpai"
 msgid "Not sorted."
 msgstr "Tidak disusun."
 
-#: src/common/util.js:839 src/component/lightbox.vue:627
+#: src/common/util.js:845 src/component/lightbox.vue:627
 #: src/component/lightbox.vue:744
 msgid "Not supported"
 msgstr "Tidak disokong"
@@ -2222,7 +2222,7 @@ msgstr "Luar"
 msgid "Page {0}, Current page"
 msgstr "Halaman {0}, Halaman semasa"
 
-#: src/component/photo/edit/files.vue:352 src/model/photo.js:855
+#: src/component/photo/edit/files.vue:352 src/model/photo.js:859
 msgid "Pages"
 msgstr "muka surat"
 
@@ -2277,7 +2277,7 @@ msgstr "Orang"
 msgid "Personal"
 msgstr "Peribadi"
 
-#: src/model/photo.js:1269
+#: src/model/photo.js:1273
 msgid "Photo"
 msgstr "Foto"
 
@@ -3098,15 +3098,15 @@ msgid "Unique ID"
 msgstr "ID unik"
 
 #: src/page/settings/account.vue:451 src/page/settings/account.vue:476
-#: src/page/settings/account.vue:501 src/common/util.js:468
+#: src/page/settings/account.vue:501 src/common/util.js:474
 #: src/component/photo/edit/details.vue:21
 #: src/component/photo/edit/details.vue:111
 #: src/component/photo/edit/details.vue:138
 #: src/component/photo/edit/details.vue:164 src/model/album.js:193
-#: src/model/photo.js:323 src/model/photo.js:784 src/model/photo.js:805
-#: src/model/photo.js:828 src/model/photo.js:846 src/model/photo.js:893
-#: src/model/photo.js:901 src/model/photo.js:990 src/model/photo.js:1012
-#: src/model/photo.js:1057 src/model/photo.js:1070 src/model/user.js:157
+#: src/model/photo.js:323 src/model/photo.js:784 src/model/photo.js:809
+#: src/model/photo.js:832 src/model/photo.js:850 src/model/photo.js:897
+#: src/model/photo.js:905 src/model/photo.js:994 src/model/photo.js:1016
+#: src/model/photo.js:1061 src/model/photo.js:1074 src/model/user.js:157
 #: src/options/options.js:51 src/options/options.js:69
 #: src/options/options.js:86 src/options/options.js:100
 #: src/options/options.js:112 src/page/library/errors.vue:240
@@ -3271,7 +3271,7 @@ msgstr "Kod pengesahan"
 #: src/component/photo/view/cards.vue:363
 #: src/component/photo/view/cards.vue:491 src/component/photo/view/list.vue:190
 #: src/component/photo/view/mosaic.vue:207 src/model/file.js:221
-#: src/model/photo.js:917 src/model/photo.js:935 src/options/options.js:293
+#: src/model/photo.js:921 src/model/photo.js:939 src/options/options.js:293
 msgid "Video"
 msgstr "Video"
 
