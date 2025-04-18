@@ -47,12 +47,12 @@ export const DATETIME_FULL_TZ = {
 
 export const TIMESTAMP_TZ = {
   year: num,
-  month: long,
+  month: short,
   day: num,
   hour: num,
   minute: num,
   second: num,
-  timeZoneName: shortGeneric,
+  timeZoneName: short,
 };
 
 export const TIMESTAMP_LONG_TZ = {
@@ -63,5 +63,5 @@ export const TIMESTAMP_LONG_TZ = {
   hour: num,
   minute: num,
   second: num,
-  timeZoneName: shortGeneric,
+  timeZoneName: short,
 };
