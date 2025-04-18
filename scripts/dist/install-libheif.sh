@@ -73,22 +73,18 @@ echo "ARCHIVE: $ARCHIVE"
 echo "DESTDIR: $DESTDIR"
 echo "------------------------------------------------"
 
-echo "Extracting \"$URL\" to \"$DESTDIR\"."
-if curl --head --silent --fail "$URL" 2> /dev/null; then
-  curl -fsSL "$URL" | tar --overwrite --mode=755 -xz -C "$DESTDIR"
+if curl -fsSL "$URL" | tar --overwrite --mode=755 -xz -C "$DESTDIR" 2> /dev/null; then
+  echo "✅ Extracted \"$URL\" to \"$DESTDIR\""
 else
-  echo "A libheif build for this distribution is not yet available!"
+  echo "❌ libheif binaries are not yet available for this architecture or distribution"
   exit 0
 fi
 
-echo "Extracting \"$URL\" to \"$DESTDIR\"."
-curl -fsSL "$URL" | tar --overwrite --mode=755 -xz -C "$DESTDIR"
-
 if [[ $DESTDIR == "/usr" || $DESTDIR == "/usr/local" ]]; then
-  echo "Running \"ldconfig\"."
+  echo "Running \"ldconfig\"..."
   ldconfig
 else
-  echo "Running \"ldconfig -n $DESTDIR/lib\"."
+  echo "Running \"ldconfig -n $DESTDIR/lib\"..."
   ldconfig -n "$DESTDIR/lib"
 fi
 
