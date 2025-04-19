@@ -52,7 +52,12 @@
           @click.stop="onDelete"
         >
         </v-btn>
-        <p-action-menu v-if="$vuetify.display.mdAndUp" :items="menuActions" :tabindex="3" button-class="ms-1"></p-action-menu>
+        <p-action-menu
+          v-if="$vuetify.display.mdAndUp"
+          :items="menuActions"
+          :tabindex="3"
+          button-class="ms-1"
+        ></p-action-menu>
       </v-toolbar>
     </v-form>
     <div v-if="loading" class="p-page__loading">
@@ -73,7 +78,7 @@
           :prepend-icon="err.Level === 'error' ? 'mdi-alert-circle-outline' : 'mdi-alert'"
           density="default"
           :title="err.Message"
-          :subtitle="formatTime(err.Time)"
+          :subtitle="localTime(err.Time)"
           class="py-2"
           @click="showDetails(err)"
         >
@@ -120,8 +125,10 @@
 
         <v-card-text>
           <div :class="'p-log-' + details.err.Level" class="p-log-message text-body-2 text-selectable" dir="ltr">
-            <span class="font-weight-medium">{{ formatTime(details.err.Time) }}</span
-            >&puncsp;<span class="text-break">{{ details.err.Message }}</span>
+            <div :title="utcTime(details.err.Time) + ' UTC'" class="p-log-message__time cursor-help mb-3">
+              {{ localTime(details.err.Time) }}
+            </div>
+            <div class="text-break p-log-message__text">{{ details.err.Message }}</div>
           </div>
         </v-card-text>
 
@@ -139,6 +146,7 @@
 import { DateTime } from "luxon";
 import $api from "common/api";
 import links from "common/links";
+import * as formats from "options/formats";
 
 import PLoading from "component/loading.vue";
 import PActionMenu from "component/action/menu.vue";
@@ -163,6 +171,7 @@ export default {
       scrollDistance: window.innerHeight * 2,
       filter: { q },
       isPublic: this.$config.get("public"),
+      timeZone: this.$config.getTimeZone(),
       batchSize: 100,
       offset: 0,
       page: 0,
@@ -372,14 +381,6 @@ export default {
     level(s) {
       return s.substring(0, 4).toUpperCase();
     },
-
-    localTime(s) {
-      if (!s) {
-        return this.$gettext("Unknown");
-      }
-
-      return DateTime.fromISO(s).toLocaleString(DateTime.DATETIME_FULL_WITH_SECONDS);
-    },
     formatLevel(level) {
       switch (level) {
         case "error":
@@ -390,12 +391,19 @@ export default {
 
       return level;
     },
-    formatTime(s) {
+    localTime(s) {
       if (!s) {
-        return this.$gettext("Unknown");
+        return "0000-00-00 00:00:00";
       }
 
-      return DateTime.fromISO(s).toFormat("yyyy-LL-dd HH:mm:ss");
+      return DateTime.fromISO(s, { zone: this.timeZone }).toLocaleString(formats.TIMESTAMP_LONG_TZ);
+    },
+    utcTime(s) {
+      if (!s) {
+        return "0000-00-00 00:00:00";
+      }
+
+      return DateTime.fromISO(s, { zone: "UTC" }).toFormat("yyyy-LL-dd HH:mm:ss");
     },
   },
 };

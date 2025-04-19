@@ -4,7 +4,8 @@
       <v-toolbar density="compact" class="page-toolbar" color="secondary-light">
         <v-spacer></v-spacer>
 
-        <v-btn :title="$gettext('Refresh')" icon="mdi-refresh" tabindex="2" class="action-reload" @click.stop="refresh"> </v-btn>
+        <v-btn :title="$gettext('Refresh')" icon="mdi-refresh" tabindex="2" class="action-reload" @click.stop="refresh">
+        </v-btn>
 
         <v-btn
           v-if="!filter.hidden"

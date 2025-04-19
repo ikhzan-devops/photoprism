@@ -18,7 +18,8 @@
           </router-link>
         </v-toolbar-title>
 
-        <v-btn :title="$gettext('Refresh')" icon="mdi-refresh" tabindex="1" class="action-reload" @click.stop="refresh"> </v-btn>
+        <v-btn :title="$gettext('Refresh')" icon="mdi-refresh" tabindex="1" class="action-reload" @click.stop="refresh">
+        </v-btn>
       </v-toolbar>
     </v-form>
 

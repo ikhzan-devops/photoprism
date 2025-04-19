@@ -174,6 +174,10 @@ export default class Config {
       $event.publish("dialog.update", { values });
     }
 
+    if (values.DefaultLocale && options.DefaultLocale !== values.DefaultLocale) {
+      options.SetDefaultLocale(values.DefaultLocale);
+    }
+
     for (let key in values) {
       if (values.hasOwnProperty(key) && values[key] != null) {
         this.set(key, values[key]);
@@ -544,6 +548,15 @@ export default class Config {
   // see https://www.loc.gov/standards/iso639-2/php/code_list.php.
   getLanguageCode() {
     return this.getLanguageLocale().substring(0, 2);
+  }
+
+  // getTimeZone returns user time zone.
+  getTimeZone() {
+    if (this.values?.settings?.ui?.timeZone) {
+      return this.values?.settings?.ui?.timeZone;
+    }
+
+    return "Local";
   }
 
   // isRtl returns true if a right-to-left language is currently used.

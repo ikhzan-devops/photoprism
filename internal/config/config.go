@@ -327,7 +327,8 @@ func (c *Config) Propagate() {
 
 	// Set default theme and locale.
 	customize.DefaultTheme = c.DefaultTheme()
-	customize.DefaultLocale = c.DefaultLocale()
+	customize.DefaultLanguage = c.DefaultLocale()
+	customize.DefaultTimeZone = c.DefaultTimezone().String()
 
 	// Propagate settings.
 	c.Settings().Propagate()

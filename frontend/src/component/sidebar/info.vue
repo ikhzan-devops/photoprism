@@ -38,7 +38,7 @@
         <v-divider v-if="model.Title || model.Caption" class="my-4"></v-divider>
         <v-list-item
           v-tooltip="$gettext('Taken')"
-          :title="$util.formatDate(model.TakenAtLocal, 'date_med_tz', model.TimeZone)"
+          :title="$util.formatDate(model.TakenAtLocal, 'datetime_med_tz', model.TimeZone)"
           prepend-icon="mdi-calendar"
           class="metadata__item"
         >

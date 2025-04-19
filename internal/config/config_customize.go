@@ -23,12 +23,12 @@ func (c *Config) DefaultLocale() string {
 // DefaultTimezone returns the default time zone, e.g. for scheduling backups
 func (c *Config) DefaultTimezone() *time.Location {
 	if c.options.DefaultTimezone == "" {
-		return time.UTC
+		return time.Local
 	}
 
 	// Returns time zone if a valid identifier name was provided and UTC otherwise.
-	if timeZone, err := time.LoadLocation(c.options.DefaultTimezone); err != nil {
-		return time.UTC
+	if timeZone, err := time.LoadLocation(c.options.DefaultTimezone); err != nil || timeZone == nil {
+		return time.Local
 	} else {
 		return timeZone
 	}

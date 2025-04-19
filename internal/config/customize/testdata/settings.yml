@@ -3,7 +3,7 @@ UI:
   Zoom: false
   Theme: onyx
   Language: de
-  TimeZone: ""
+  TimeZone: Local
   StartPage: default
 Search:
   BatchSize: -1
@@ -12,7 +12,7 @@ Search:
   ShowCaptions: true
 Maps:
   Animate: 0
-  Style: ""
+  Style: default
 Features:
   Account: true
   Albums: true

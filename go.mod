@@ -14,7 +14,7 @@ require (
 	github.com/esimov/pigo v1.4.6
 	github.com/gin-contrib/gzip v1.2.3
 	github.com/gin-gonic/gin v1.10.0
-	github.com/golang/geo v0.0.0-20250414194827-ce8b7816b692
+	github.com/golang/geo v0.0.0-20250417192230-a483f6ae7110
 	github.com/google/open-location-code/go v0.0.0-20250415120251-fa6d7f9d4765
 	github.com/gorilla/websocket v1.5.3
 	github.com/gosimple/slug v1.15.0
@@ -57,7 +57,7 @@ require github.com/google/uuid v1.6.0
 
 require github.com/chzyer/readline v1.5.1 // indirect
 
-require github.com/gabriel-vasile/mimetype v1.4.8
+require github.com/gabriel-vasile/mimetype v1.4.9
 
 require (
 	golang.org/x/sync v0.13.0

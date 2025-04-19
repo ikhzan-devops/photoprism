@@ -13,7 +13,7 @@ func (m *Photo) TrustedTime() bool {
 		return false
 	} else if m.TakenAt.IsZero() || m.TakenAtLocal.IsZero() {
 		return false
-	} else if m.TimeZone == "" {
+	} else if m.TimeZone == "" || m.TimeZone == time.Local.String() {
 		return false
 	}
 
@@ -21,37 +21,50 @@ func (m *Photo) TrustedTime() bool {
 }
 
 // SetTakenAt changes the photo date if not empty and from the same source.
-func (m *Photo) SetTakenAt(taken, local time.Time, zone, source string) {
-	if taken.IsZero() || taken.Year() < 1000 || taken.Year() > txt.YearMax {
+func (m *Photo) SetTakenAt(utc, local time.Time, zone, source string) {
+	if utc.IsZero() || utc.Year() < 1000 || utc.Year() > txt.YearMax {
 		return
 	}
 
+	// Prevent the existing time from being overwritten by lower priority sources.
 	if SrcPriority[source] < SrcPriority[m.TakenSrc] && !m.TakenAt.IsZero() {
 		return
 	}
 
-	// Remove time zone if time was extracted from file name.
-	if source == SrcName {
-		zone = ""
-	}
-
 	// Round times to avoid jitter.
-	taken = taken.UTC().Truncate(time.Second)
+	utc = utc.UTC().Truncate(time.Second)
 
 	// Default local time to taken if zero or invalid.
 	if local.IsZero() || local.Year() < 1000 {
-		local = taken
+		local = utc
 	} else {
 		local = local.Truncate(time.Second)
 	}
 
+	// If no zone is specified, assume the current zone or try to determine
+	// the time zone based on the time offset. Otherwise, default to Local.
+	if source == SrcName && m.TimeZone == "" {
+		// Assume Local timezone if the time was extracted from a filename.
+		zone = time.Local.String()
+	} else if zone == "" {
+		if m.TimeZone != "" {
+			zone = m.TimeZone
+		} else if !utc.Equal(local) {
+			zone = txt.UtcOffset(utc, local, "")
+		}
+
+		if zone == "" {
+			zone = time.Local.String()
+		}
+	}
+
 	// Don't update older date.
-	if SrcPriority[source] <= SrcPriority[SrcAuto] && !m.TakenAt.IsZero() && taken.After(m.TakenAt) {
+	if SrcPriority[source] <= SrcPriority[SrcAuto] && !m.TakenAt.IsZero() && utc.After(m.TakenAt) {
 		return
 	}
 
 	// Set UTC time and date source.
-	m.TakenAt = taken
+	m.TakenAt = utc
 	m.TakenAtLocal = local
 	m.TakenSrc = source
 
@@ -66,7 +79,7 @@ func (m *Photo) SetTakenAt(taken, local time.Time, zone, source string) {
 		m.TimeZone = zone
 		// Keep UTC?
 		if m.TimeZoneUTC() {
-			m.TakenAtLocal = taken
+			m.TakenAtLocal = utc
 		}
 	} else if m.TimeZone != "" {
 		// Apply existing time zone.
@@ -87,7 +100,7 @@ func (m *Photo) UpdateTimeZone(zone string) {
 		return
 	}
 
-	if SrcPriority[m.TakenSrc] >= SrcPriority[SrcManual] && m.TimeZone != "" {
+	if SrcPriority[m.TakenSrc] >= SrcPriority[SrcManual] && m.TimeZone != "" && m.TimeZone != time.Local.String() {
 		return
 	}
 

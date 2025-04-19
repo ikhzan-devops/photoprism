@@ -295,14 +295,15 @@ func (m *Photo) UnknownCountry() bool {
 	return m.CountryCode() == UnknownCountry.ID
 }
 
-// GetTimeZone uses PhotoLat and PhotoLng to guess the time zone of the photo.
-func (m *Photo) GetTimeZone() string {
-	result := "UTC"
+// LocationTimeZone uses the GPS location to determine the time zone of the photo,
+// and returns "Local" if no location is set or no time zone is found.
+func (m *Photo) LocationTimeZone() string {
+	result := time.Local.String()
 
 	if m.HasLatLng() {
 		zones, err := tz.GetZone(tz.Point{
-			Lat: float64(m.PhotoLat),
-			Lon: float64(m.PhotoLng),
+			Lat: m.PhotoLat,
+			Lon: m.PhotoLng,
 		})
 
 		if err == nil && len(zones) > 0 {
@@ -388,7 +389,8 @@ func (m *Photo) UpdateLocation() (keywords []string, labels classify.Labels) {
 			m.PhotoCountry = loc.CountryCode()
 
 			if changed && m.TakenSrc != SrcManual {
-				m.UpdateTimeZone(m.GetTimeZone())
+				// Use GPS location to determine time zone.
+				m.UpdateTimeZone(m.LocationTimeZone())
 			}
 
 			FirstOrCreateCountry(NewCountry(loc.CountryCode(), loc.CountryName()))

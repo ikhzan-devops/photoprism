@@ -283,7 +283,7 @@ func (data *Data) Exiftool(jsonData []byte, originalName string) (err error) {
 	// Set UTC offset as time zone?
 	if data.TimeZone != "" && data.TimeZone != "UTC" || data.TakenAt.IsZero() {
 		// Don't change existing time zone.
-	} else if utcOffset := txt.UtcOffset(data.TakenAtLocal, data.TakenAt, data.TimeOffset); utcOffset != "" {
+	} else if utcOffset := txt.UtcOffset(data.TakenAt, data.TakenAtLocal, data.TimeOffset); utcOffset != "" {
 		data.TimeZone = utcOffset
 		log.Infof("metadata: %s has time offset %s (exiftool)", logName, clean.Log(utcOffset))
 	} else if data.TimeOffset != "" {

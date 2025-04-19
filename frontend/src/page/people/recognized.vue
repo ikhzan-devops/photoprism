@@ -33,7 +33,13 @@
           "
         ></v-text-field>
 
-        <v-btn :title="$gettext('Refresh')" icon="mdi-refresh" tabindex="2" class="action-reload" @click.stop="refresh"></v-btn>
+        <v-btn
+          :title="$gettext('Refresh')"
+          icon="mdi-refresh"
+          tabindex="2"
+          class="action-reload"
+          @click.stop="refresh"
+        ></v-btn>
 
         <template v-if="canManage">
           <v-btn

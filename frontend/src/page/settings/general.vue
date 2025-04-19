@@ -52,7 +52,7 @@
                 tabindex="2"
                 item-value="ID"
                 item-title="Name"
-                :items="options.TimeZones($gettext('Default'))"
+                :items="options.TimeZones($gettext('Local'))"
                 :label="$gettext('Time Zone')"
                 :menu-props="{ maxHeight: 346 }"
                 class="input-timezone"

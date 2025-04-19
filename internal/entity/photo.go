@@ -61,7 +61,7 @@ type Photo struct {
 	PhotoPrivate     bool          `json:"Private" yaml:"Private,omitempty"`
 	PhotoScan        bool          `json:"Scan" yaml:"Scan,omitempty"`
 	PhotoPanorama    bool          `json:"Panorama" yaml:"Panorama,omitempty"`
-	TimeZone         string        `gorm:"type:VARBINARY(64);" json:"TimeZone" yaml:"TimeZone,omitempty"`
+	TimeZone         string        `gorm:"type:VARBINARY(64);default:'Local'" json:"TimeZone" yaml:"TimeZone,omitempty"`
 	PlaceID          string        `gorm:"type:VARBINARY(42);index;default:'zz'" json:"PlaceID" yaml:"-"`
 	PlaceSrc         string        `gorm:"type:VARBINARY(8);" json:"PlaceSrc" yaml:"PlaceSrc,omitempty"`
 	CellID           string        `gorm:"type:VARBINARY(42);index;default:'zz'" json:"CellID" yaml:"-"`

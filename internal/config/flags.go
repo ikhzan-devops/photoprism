@@ -502,7 +502,7 @@ var Flags = CliFlags{
 			Name:    "default-timezone",
 			Aliases: []string{"tz"},
 			Usage:   "default time zone `NAME`, e.g. for scheduling backups",
-			Value:   time.UTC.String(),
+			Value:   time.Local.String(),
 			EnvVars: EnvVars("DEFAULT_TIMEZONE"),
 		}}, {
 		Flag: &cli.StringFlag{

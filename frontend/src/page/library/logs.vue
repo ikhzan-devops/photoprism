@@ -9,7 +9,11 @@
           class="p-log-message text-selectable text-break"
           :class="'p-log-' + log.level"
         >
-          {{ formatTime(log.time) }} {{ formatLevel(log.level) }} <span>{{ log.message }}</span>
+          <span :title="utcTime(log.time) + ' UTC'" class="cursor-help p-log-message__time">{{
+            localTime(log.time)
+          }}</span>
+          {{ formatLevel(log.level) }}
+          <span class="p-log-message__text">{{ log.message }}</span>
         </div>
       </v-col>
     </v-row>
@@ -24,6 +28,7 @@ export default {
   data() {
     return {
       logs: this.$log.logs,
+      timeZone: this.$config.getTimeZone(),
     };
   },
   methods: {
@@ -34,12 +39,19 @@ export default {
 
       return s.substring(0, 4).toUpperCase();
     },
-    formatTime(s) {
+    localTime(s) {
       if (!s) {
         return "0000-00-00 00:00:00";
       }
 
-      return DateTime.fromISO(s).toFormat("yyyy-LL-dd HH:mm:ss");
+      return DateTime.fromISO(s, { zone: this.timeZone }).toFormat("yyyy-LL-dd HH:mm:ss");
+    },
+    utcTime(s) {
+      if (!s) {
+        return "0000-00-00 00:00:00";
+      }
+
+      return DateTime.fromISO(s, { zone: "UTC" }).toFormat("yyyy-LL-dd HH:mm:ss");
     },
   },
 };

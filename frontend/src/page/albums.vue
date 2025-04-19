@@ -55,7 +55,12 @@
           @click.prevent="create()"
         ></v-btn>
 
-        <p-action-menu v-if="$vuetify.display.mdAndUp" :items="menuActions" :tabindex="3" button-class="ms-1"></p-action-menu>
+        <p-action-menu
+          v-if="$vuetify.display.mdAndUp"
+          :items="menuActions"
+          :tabindex="3"
+          button-class="ms-1"
+        ></p-action-menu>
       </v-toolbar>
 
       <div class="toolbar-expansion-panel">
