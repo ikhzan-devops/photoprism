@@ -1138,7 +1138,7 @@ export default {
         });
 
         // Add information toggle button.
-        if (this.featExperimental && window.innerWidth > this.mobileBreakpoint) {
+        if (window.innerWidth > this.mobileBreakpoint) {
           lightbox.pswp.ui.registerElement({
             name: "sidebar-button",
             className: "pswp__button--info-button pswp__button--mdi", // Sets the icon style/size in lightbox.css.
