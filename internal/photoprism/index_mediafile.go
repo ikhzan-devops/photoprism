@@ -424,6 +424,10 @@ func (ind *Index) UserMediaFile(m *MediaFile, o IndexOptions, originalName, phot
 				file.SetFPS(info.FPS)
 				file.SetFrames(info.Frames)
 
+				if file.FileDuration > photo.PhotoDuration {
+					photo.PhotoDuration = file.FileDuration
+				}
+
 				// Change file and photo type to "live" if the file has a video embedded.
 				file.FileVideo = true
 				file.MediaType = entity.MediaLive
@@ -446,6 +450,10 @@ func (ind *Index) UserMediaFile(m *MediaFile, o IndexOptions, originalName, phot
 				log.Infof("index: %s has instance_id %s", logName, clean.Log(data.InstanceID))
 
 				file.InstanceID = data.InstanceID
+			}
+
+			if m.IsAnimatedImage() && file.FileDuration > photo.PhotoDuration {
+				photo.PhotoDuration = file.FileDuration
 			}
 		}
 
@@ -536,6 +544,10 @@ func (ind *Index) UserMediaFile(m *MediaFile, o IndexOptions, originalName, phot
 				file.SetDuration(info.Duration)
 				file.SetFPS(info.FPS)
 				file.SetFrames(info.Frames)
+
+				if file.FileDuration > photo.PhotoDuration {
+					photo.PhotoDuration = file.FileDuration
+				}
 
 				// Change file and photo type to "live" if the file has a video embedded.
 				file.FileVideo = true

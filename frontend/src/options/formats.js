@@ -18,7 +18,7 @@ export const DATETIME_MED = {
 
 export const DATETIME_MED_TZ = {
   year: num,
-  month: long,
+  month: short,
   day: num,
   hour: num,
   minute: num,

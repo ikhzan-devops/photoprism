@@ -38,7 +38,7 @@
         <v-divider v-if="model.Title || model.Caption" class="my-4"></v-divider>
         <v-list-item
           v-tooltip="$gettext('Taken')"
-          :title="$util.formatDate(model.TakenAtLocal, 'datetime_med_tz', model.TimeZone)"
+          :title="formatTime(model)"
           prepend-icon="mdi-calendar"
           class="metadata__item"
         >
@@ -75,6 +75,9 @@
 </template>
 
 <script>
+import { DateTime } from "luxon";
+import * as formats from "options/formats";
+
 import PMap from "component/map.vue";
 
 export default {
@@ -111,6 +114,17 @@ export default {
   methods: {
     close() {
       this.$emit("close");
+    },
+    formatTime(model) {
+      if (!model || !model.TakenAtLocal) {
+        return this.$gettext("Unknown");
+      }
+
+      if (model.TimeZone && model.TimeZone !== "Local") {
+        return DateTime.fromISO(model.TakenAtLocal, { zone: model.TimeZone }).toLocaleString(formats.DATETIME_MED_TZ);
+      } else {
+        return DateTime.fromISO(model.TakenAtLocal, { zone: "UTC" }).toLocaleString(formats.DATETIME_MED);
+      }
     },
   },
 };

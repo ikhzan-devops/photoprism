@@ -95,7 +95,7 @@ export class Thumb extends Model {
 
   getMegaPixels() {
     if (!this.Width || !this.Height) {
-      return "0MP";
+      return "0.0MP";
     }
 
     return `${((this.Width * this.Height) / 1000000).toFixed(1)}MP`;
@@ -122,18 +122,51 @@ export class Thumb extends Model {
 
   getTypeInfo() {
     let info = [];
+    const mp = this.getMegaPixels();
 
     switch (this.Type) {
+      case "image":
+        if (this.Codec) {
+          info.push($util.formatCodec(this.Codec));
+        }
+
+        if (mp !== "0.0MP") {
+          info.push(mp);
+        }
+
+        if (this.Width) {
+          info.push(`${this.Width}×${this.Height}`);
+        }
+        break;
+      case "raw":
+      case "vector":
+        if (this.Codec && this.Codec !== "jpeg") {
+          info.push($util.formatCodec(this.Codec));
+        }
+
+        if (mp !== "0.0MP") {
+          info.push(mp);
+        }
+
+        if (this.Width) {
+          info.push(`${this.Width}×${this.Height}`);
+        }
+        break;
       case "live":
       case "video":
+      case "animated":
         if (this.Duration) {
           info.push($util.formatDuration(this.Duration));
         }
 
-        info.push(this.getMegaPixels(), `${this.Width}×${this.Height}`);
-
-        if (this.codec && this.codec !== "jpeg") {
+        if (mp !== "0.0MP") {
+          info.push(mp);
+        } else if (this.Codec && this.Codec !== "jpeg") {
           info.push($util.formatCodec(this.Codec));
+        }
+
+        if (this.Width) {
+          info.push(`${this.Width}×${this.Height}`);
         }
 
         break;
@@ -141,7 +174,17 @@ export class Thumb extends Model {
         info.push($gettext("Document"));
         break;
       default:
-        info.push(this.getMegaPixels(), `${this.Width}×${this.Height}`);
+        if (this.Codec) {
+          info.push($util.formatCodec(this.Codec));
+        }
+
+        if (mp !== "0.0MP") {
+          info.push(mp);
+        }
+
+        if (this.Width) {
+          info.push(`${this.Width}×${this.Height}`);
+        }
     }
 
     return info.join("\u2003");
@@ -194,12 +237,28 @@ export class Thumb extends Model {
   }
 
   static fromPhoto(photo) {
-    if (photo.Files) {
-      return this.fromFile(photo, photo.primaryFile());
-    }
-
     if (!photo || !photo.Hash) {
       return this.notFound();
+    }
+
+    let file, width, height, hash, codec, mime;
+
+    if (photo.Files && photo.Files.length) {
+      file = photo.originalFile();
+    }
+
+    if (file) {
+      width = file.Width ? file.Width : photo.Width;
+      height = file.Height ? file.Height : photo.Height;
+      hash = file.Hash ? file.Hash : photo.Hash;
+      codec = file.Codec ? file.Codec : photo.videoCodec();
+      mime = file.Mime ? file.Mime : photo.videoContentType();
+    } else {
+      width = photo.Width;
+      height = photo.Height;
+      hash = photo.Hash;
+      codec = photo.videoCodec();
+      mime = photo.videoContentType();
     }
 
     const result = {
@@ -214,11 +273,11 @@ export class Thumb extends Model {
       Favorite: photo.Favorite,
       Playable: photo.isPlayable(),
       Duration: photo.Duration,
-      Width: photo.Width,
-      Height: photo.Height,
-      Hash: photo.Hash,
-      Codec: photo.videoCodec(),
-      Mime: photo.videoContentType(),
+      Width: width,
+      Height: height,
+      Hash: hash,
+      Codec: codec,
+      Mime: mime,
       Thumbs: {},
       DownloadUrl: this.downloadUrl(photo),
     };
@@ -244,7 +303,7 @@ export class Thumb extends Model {
 
     const result = {
       UID: photo.UID,
-      Type: file.MediaType,
+      Type: file.MediaType ? file.MediaType : photo.Type,
       Title: photo.Title,
       Caption: photo.Caption,
       Lat: photo.Lat,
