@@ -62,6 +62,8 @@
     z-index: 1;
 }
 
+/* Sidebar Info */
+
 .p-lightbox__container > .p-lightbox__sidebar {
     position: relative;
     display: block;
@@ -122,6 +124,16 @@
     word-break: break-word;
     text-align: start;
     hyphens: auto;
+}
+
+.p-lightbox__container > .p-lightbox__sidebar .p-map {
+    display: block;
+    min-height: 259px;
+    aspect-ratio: 1;
+    width: auto;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
 }
 
 /* Media Content */
@@ -609,16 +621,6 @@
 .p-lightbox__container > .p-lightbox__content > .pswp--touch .pswp__button--arrow .pswp__icn {
     display: none;
 }
-
-/* Sidebar Info */
-
-.metadata__map {
-    display: block;
-    height: 300px;
-    margin: 15px -12px 6px;
-    overflow: hidden;
-    width: calc(100% + 24px);
-} 
 
 /* Other / Unused Styles */
 

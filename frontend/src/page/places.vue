@@ -51,7 +51,7 @@
         </div>
       </div>
       <div ref="background" class="map-background"></div>
-      <div ref="map" class="map-container" :class="{ 'map-loaded': mapLoaded }"></div>
+      <div ref="map" class="map-container" :class="{ 'map-loaded': loaded }"></div>
       <div v-if="showCluster" class="cluster-control">
         <v-card class="cluster-control-container">
           <p-page-photos ref="cluster" :static-filter="cluster" :on-close="closeCluster" :embedded="true" />
@@ -65,6 +65,7 @@
 import $api from "common/api";
 import $fullscreen from "common/fullscreen";
 import * as sky from "common/sky";
+import * as map from "common/map";
 import * as options from "options/options";
 import Thumb from "model/thumb";
 import PPagePhotos from "page/photos.vue";
@@ -152,7 +153,7 @@ export default {
       config: this.$config.values,
       settings: settings.maps,
       animate: settings.maps.animate,
-      mapLoaded: false,
+      loaded: false,
       skyRendered: false,
     };
   },
@@ -181,28 +182,17 @@ export default {
   mounted() {
     this.$view.enter(this);
 
-    // Dynamically import MapLibre GL JS to reduce bundle size:
-    // https://maplibre.org/maplibre-gl-js/docs/
-    try {
-      import(
-        /* webpackChunkName: "maplibregl" */
-        /* webpackMode: "lazy" */
-        "../common/maplibregl.js"
-      ).then((module) => {
-        maplibregl = module.default;
-
-        this.initMap()
-          .then(() => {
-            this.renderMap();
-            this.openClusterFromUrl();
-          })
-          .catch((err) => {
-            this.mapError = err;
-          });
-      });
-    } catch (error) {
-      console.error(`failed to load maplibregl:`, error);
-    }
+    map.load().then((m) => {
+      maplibregl = m;
+      this.initMap()
+        .then(() => {
+          this.renderMap();
+          this.openClusterFromUrl();
+        })
+        .catch((err) => {
+          this.mapError = err;
+        });
+    });
   },
   beforeUnmount() {
     // Exit fullscreen mode if enabled, has no effect otherwise.
@@ -891,7 +881,7 @@ export default {
       }
 
       // Add map scale control.
-      this.map.addControl(new maplibregl.ScaleControl({}), "bottom-left");
+      this.map.addControl(new maplibregl.ScaleControl({ maxWidth: 120, unit: "metric" }), "bottom-left");
 
       this.map.on("load", () => this.onMapLoad());
     },
@@ -1101,7 +1091,7 @@ export default {
 
       // Load pictures.
       this.search().finally(() => {
-        this.mapLoaded = true;
+        this.loaded = true;
       });
     },
   },

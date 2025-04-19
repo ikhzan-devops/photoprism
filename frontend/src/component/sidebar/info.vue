@@ -57,18 +57,17 @@
 
         <template v-if="model.Lat && model.Lng">
           <v-divider class="my-4"></v-divider>
-          <!-- Clickable version commented out
           <v-list-item
             v-tooltip="$gettext('Location')"
-            :title="model.getLatLng()"
             prepend-icon="mdi-map-marker"
+            :title="model.getLatLng()"
             class="clickable metadata__item"
             @click.stop="model.copyLatLng()"
           >
           </v-list-item>
-          -->
-          <v-list-item v-tooltip="$gettext('Location')" prepend-icon="mdi-map-marker" :title="model.getLatLng()" class="metadata__item"> </v-list-item>
-          <PMap :lat="model.Lat" :lng="model.Lng" />
+          <v-list-item class="mx-0 px-0">
+            <p-map :lat="model.Lat" :lng="model.Lng"></p-map>
+          </v-list-item>
         </template>
       </v-list>
     </div>
@@ -76,7 +75,7 @@
 </template>
 
 <script>
-import PMap from "./map.vue";
+import PMap from "component/map.vue";
 
 export default {
   name: "PSidebarInfo",
