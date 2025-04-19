@@ -103,47 +103,50 @@ test.meta("testID", "albums-002").meta({ type: "short", mode: "public" })(
   }
 );
 
-test.meta("testID", "albums-003").meta({ type: "short", mode: "public" })("Common: Update album details", async (t) => {
-  await menu.openPage("albums");
-  await toolbar.search("Holiday");
-  const AlbumUid = await album.getNthAlbumUid("all", 0);
+test.meta("testID", "albums-003").meta({ type: "short", mode: "public" })(
+  "Common: Update album details",
+  async (t) => {
+    await menu.openPage("albums");
+    await toolbar.search("Holiday");
+    const AlbumUid = await album.getNthAlbumUid("all", 0);
 
-  await t.expect(page.cardTitle.nth(0).innerText).contains("Holiday");
+    await t.expect(page.cardTitle.nth(0).innerText).contains("Holiday");
 
-  await t.click(page.cardTitle.nth(0)).typeText(albumdialog.title, "Animals", { replace: true });
+    await t.click(page.cardTitle.nth(0)).typeText(albumdialog.title, "Animals", { replace: true });
 
-  await t.expect(albumdialog.description.value).eql("").expect(albumdialog.category.value).eql("");
+    await t.expect(albumdialog.description.value).eql("").expect(albumdialog.category.value).eql("");
 
-  await t
-    .typeText(albumdialog.description, "All my animals")
-    .typeText(albumdialog.category, "Pets")
-    .pressKey("enter")
-    .click(albumdialog.dialogSave);
+    await t
+      .typeText(albumdialog.description, "All my animals")
+      .typeText(albumdialog.category, "Pets")
+      .pressKey("enter")
+      .click(albumdialog.dialogSave);
 
-  await t.expect(page.cardTitle.nth(0).innerText).contains("Animals");
+    await t.expect(page.cardTitle.nth(0).innerText).contains("Animals");
 
-  await album.openAlbumWithUid(AlbumUid);
-  await toolbar.triggerToolbarAction("edit");
-  await t.typeText(albumdialog.title, "Holiday", { replace: true });
+    await album.openAlbumWithUid(AlbumUid);
+    await toolbar.triggerToolbarAction("edit");
+    await t.typeText(albumdialog.title, "Holiday", { replace: true });
 
-  await t.expect(albumdialog.description.value).eql("All my animals").expect(albumdialog.category.value).eql("Pets");
+    await t.expect(albumdialog.description.value).eql("All my animals").expect(albumdialog.category.value).eql("Pets");
 
-  await t
-    .click(albumdialog.description)
-    .pressKey("ctrl+a delete")
-    .pressKey("enter")
-    .click(albumdialog.category)
-    .pressKey("ctrl+a delete")
-    .pressKey("enter")
-    .click(albumdialog.dialogSave);
-  await menu.openPage("albums");
+    await t
+      .click(albumdialog.description)
+      .pressKey("ctrl+a delete")
+      .pressKey("enter")
+      .click(albumdialog.category)
+      .pressKey("ctrl+a delete")
+      .pressKey("enter")
+      .click(albumdialog.dialogSave);
+    await menu.openPage("albums");
 
-  await t
-    .expect(Selector("div").withText("Holiday").visible)
-    .ok()
-    .expect(Selector("div").withText("Animals").exists)
-    .notOk();
-});
+    await t
+      .expect(Selector("div").withText("Holiday").visible)
+      .ok()
+      .expect(Selector("div").withText("Animals").exists)
+      .notOk();
+  }
+);
 
 test.meta("testID", "albums-004").meta({ type: "short", mode: "public" })(
   "Common: Add/Remove Photos to/from album",
@@ -207,53 +210,59 @@ test.meta("testID", "albums-004").meta({ type: "short", mode: "public" })(
   }
 );
 
-test.meta("testID", "albums-005").meta({ mode: "public" })("Common: Use album search and filters", async (t) => {
-  await menu.openPage("albums");
-  if (t.browser.platform === "mobile") {
-    await toolbar.search("category:Family");
-  } else {
-    await toolbar.setFilter("category", "Family");
+test.meta("testID", "albums-005").meta({ mode: "public" })(
+  "Common: Use album search and filters",
+  async (t) => {
+    await menu.openPage("albums");
+    if (t.browser.platform === "mobile") {
+      await toolbar.search("category:Family");
+    } else {
+      await toolbar.setFilter("category", "Family");
+    }
+
+    await t.expect(page.cardTitle.nth(0).innerText).contains("Christmas");
+    const AlbumCount = await album.getAlbumCount("all");
+    await t.expect(AlbumCount).eql(1);
+
+    if (t.browser.platform === "mobile") {
+    } else {
+      await toolbar.setFilter("category", "All Categories");
+    }
+
+    await toolbar.search("Holiday");
+
+    await t.expect(page.cardTitle.nth(0).innerText).contains("Holiday");
+    const AlbumCount2 = await album.getAlbumCount("all");
+    await t.expect(AlbumCount2).eql(1);
   }
+);
 
-  await t.expect(page.cardTitle.nth(0).innerText).contains("Christmas");
-  const AlbumCount = await album.getAlbumCount("all");
-  await t.expect(AlbumCount).eql(1);
+test.meta("testID", "albums-006").meta({ mode: "public" })(
+  "Common: Test album autocomplete",
+  async (t) => {
+    await toolbar.search("photo:true");
+    const FirstPhotoUid = await photo.getNthPhotoUid("image", 0);
+    await photo.selectPhotoFromUID(FirstPhotoUid);
+    await contextmenu.openContextMenu();
+    await t.click(Selector("button.action-album")).click(Selector(".input-album input"));
 
-  if (t.browser.platform === "mobile") {
-  } else {
-    await toolbar.setFilter("category", "All Categories");
+    await t
+      .expect(page.selectOption.withText("Holiday").visible)
+      .ok()
+      .expect(page.selectOption.withText("Christmas").visible)
+      .ok();
+
+    await t.typeText(Selector(".input-album input"), "C", { replace: true });
+
+    await t
+      .expect(page.selectOption.withText("Holiday").visible)
+      .notOk()
+      .expect(page.selectOption.withText("Christmas").visible)
+      .ok()
+      .expect(page.selectOption.withText("C").visible)
+      .ok();
   }
-
-  await toolbar.search("Holiday");
-
-  await t.expect(page.cardTitle.nth(0).innerText).contains("Holiday");
-  const AlbumCount2 = await album.getAlbumCount("all");
-  await t.expect(AlbumCount2).eql(1);
-});
-
-test.meta("testID", "albums-006").meta({ mode: "public" })("Common: Test album autocomplete", async (t) => {
-  await toolbar.search("photo:true");
-  const FirstPhotoUid = await photo.getNthPhotoUid("image", 0);
-  await photo.selectPhotoFromUID(FirstPhotoUid);
-  await contextmenu.openContextMenu();
-  await t.click(Selector("button.action-album")).click(Selector(".input-album input"));
-
-  await t
-    .expect(page.selectOption.withText("Holiday").visible)
-    .ok()
-    .expect(page.selectOption.withText("Christmas").visible)
-    .ok();
-
-  await t.typeText(Selector(".input-album input"), "C", { replace: true });
-
-  await t
-    .expect(page.selectOption.withText("Holiday").visible)
-    .notOk()
-    .expect(page.selectOption.withText("Christmas").visible)
-    .ok()
-    .expect(page.selectOption.withText("C").visible)
-    .ok();
-});
+);
 
 test.meta("testID", "albums-007").meta({ type: "short", mode: "public" })(
   "Common: Create, Edit, delete sharing link",
@@ -270,58 +279,10 @@ test.meta("testID", "albums-008").meta({ type: "short", mode: "public" })(
   }
 );
 
-test.only.meta("testID", "albums-009").meta({ type: "short", mode: "public" })("Common: Set album cover", async (t) => {
-  await menu.openPage("albums");
-  await toolbar.search("Holiday");
-  const AlbumUid = await album.getNthAlbumUid("all", 0);
-
-  await t.wait(1000);
-
-  const initialCoverStyle = await album.getAlbumCoverStyle(AlbumUid);
-
-  await album.openAlbumWithUid(AlbumUid);
-
-  let CoverPhotoUid = null;
-  let expectedCoverStyle = null;
-  const maxPhotosToCheck = 5;
-
-  for (let i = 0; i < maxPhotosToCheck; i++) {
-    const potentialUid = await photo.getNthPhotoUid("all", i);
-    if (!potentialUid) {
-      break;
-    }
-
-    const potentialStyle = await photo.getPhotoPreviewStyle(potentialUid);
-
-    if (potentialStyle && potentialStyle !== initialCoverStyle) {
-      CoverPhotoUid = potentialUid;
-      expectedCoverStyle = potentialStyle;
-      break;
-    }
+test.meta("testID", "albums-009").meta({ type: "short", mode: "public" })(
+  "Common: Set album cover from Albums Page",
+  async (t) => {
+    await page.testSetAlbumCover("albums");
   }
-
-  await t
-    .expect(CoverPhotoUid).ok(`Could not find a suitable photo (different from initial cover) within the first ${maxPhotosToCheck} photos.`);
-
-  await photoviewer.openPhotoViewer("uid", CoverPhotoUid);
-
-    await photoviewer.checkPhotoViewerActionAvailability("cover", true);
-    await photoviewer.triggerPhotoViewerAction("cover");
-
-  await photoviewer.triggerPhotoViewerAction("close-button");
-
-  await menu.openPage("albums");
-  await toolbar.search("Holiday");
-
-  const newCoverStyle = await album.getAlbumCoverStyle(AlbumUid);
-
-  await t
-    .expect(newCoverStyle)
-    .notEql(initialCoverStyle, "Album card cover background image should change")
-    .expect(newCoverStyle)
-    .eql(
-      expectedCoverStyle, // The new style should match the specific photo's thumbnail style
-      "Album card cover background image URL should match the thumbnail of the photo set as cover"
-    );
-});
+);
 
