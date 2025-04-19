@@ -44,54 +44,54 @@ func TestIsFloat(t *testing.T) {
 	})
 }
 
-func TestFloat(t *testing.T) {
+func TestFloat64(t *testing.T) {
 	t.Run("Empty", func(t *testing.T) {
-		result := Float("")
+		result := Float64("")
 		assert.Equal(t, 0.0, result)
 	})
 
 	t.Run("NonNumeric", func(t *testing.T) {
-		result := Float("   Screenshot  ")
+		result := Float64("   Screenshot  ")
 		assert.Equal(t, 0.0, result)
 	})
 
 	t.Run("Zero", func(t *testing.T) {
-		result := Float("0")
+		result := Float64("0")
 		assert.Equal(t, 0.0, result)
 	})
 
 	t.Run("0.5", func(t *testing.T) {
-		result := Float("0.5")
+		result := Float64("0.5")
 		assert.Equal(t, 0.5, result)
 	})
 
 	t.Run("01:00", func(t *testing.T) {
-		result := Float("01:00")
+		result := Float64("01:00")
 		assert.Equal(t, 100.0, result)
 	})
 
 	t.Run("LeadingZeros", func(t *testing.T) {
-		result := Float(" 000123")
+		result := Float64(" 000123")
 		assert.Equal(t, 123.0, result)
 	})
 
 	t.Run("WhitespacePadding", func(t *testing.T) {
-		result := Float("   123,556\t  ")
+		result := Float64("   123,556\t  ")
 		assert.Equal(t, 123.556, result)
 	})
 
 	t.Run("PositiveFloat", func(t *testing.T) {
-		result := Float("123,000.45245 ")
+		result := Float64("123,000.45245 ")
 		assert.Equal(t, 123000.45245, result)
 	})
 
 	t.Run("NegativeFloat", func(t *testing.T) {
-		result := Float(" - 123,000.45245 ")
+		result := Float64(" - 123,000.45245 ")
 		assert.Equal(t, -123000.45245, result)
 	})
 
 	t.Run("MultipleDots", func(t *testing.T) {
-		result := Float("123.000.45245.44 m")
+		result := Float64("123.000.45245.44 m")
 		assert.Equal(t, 1230004524544.0, result)
 	})
 }

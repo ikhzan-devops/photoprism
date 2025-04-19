@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/photoprism/photoprism/pkg/fs"
+	"github.com/photoprism/photoprism/pkg/txt"
 )
 
 // SearchPhotosGeo represents search form fields for "/api/v1/geo".
@@ -123,7 +124,7 @@ func (f *SearchPhotosGeo) ParseQueryString() error {
 	}
 
 	if f.Filter != "" {
-		if err := Unserialize(f, f.Filter); err != nil {
+		if err = Unserialize(f, f.Filter); err != nil {
 			return err
 		}
 	}
@@ -131,6 +132,20 @@ func (f *SearchPhotosGeo) ParseQueryString() error {
 	// Strip file extensions if any.
 	if f.Name != "" {
 		f.Name = fs.StripKnownExt(f.Name)
+	}
+
+	// Try to parse remaining query into latitude and longitude.
+	if q := f.GetQuery(); q == "" {
+		// No remaining query to parse.
+	} else if lat, lng, parseErr := txt.Position(q); parseErr == nil {
+		// Use coordinates only if no other coordinates are set.
+		if f.Lat == 0.0 && f.Lng == 0.0 && f.Latlng == "" {
+			f.Lat = lat
+			f.Lng = lng
+		}
+
+		// Remove from query.
+		f.SetQuery("")
 	}
 
 	return err

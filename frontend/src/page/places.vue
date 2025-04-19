@@ -211,7 +211,12 @@ export default {
       }
     },
     onKeyDown(ev) {
-      if (!ev || !(ev instanceof KeyboardEvent) || !this.$view.isActive(this)) {
+      if (
+        !ev ||
+        !(ev instanceof KeyboardEvent) ||
+        !this.$view.isActive(this) ||
+        document.activeElement instanceof HTMLInputElement
+      ) {
         return;
       }
 
