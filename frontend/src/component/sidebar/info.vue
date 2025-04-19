@@ -65,7 +65,7 @@
             @click.stop="model.copyLatLng()"
           >
           </v-list-item>
-          <v-list-item class="mx-0 px-0">
+          <v-list-item v-if="featPlaces" class="mx-0 px-0">
             <p-map :lat="model.Lat" :lng="model.Lng"></p-map>
           </v-list-item>
         </template>
@@ -100,6 +100,7 @@ export default {
   data() {
     return {
       actions: [],
+      featPlaces: this.$config.feature("places"),
     };
   },
   computed: {
