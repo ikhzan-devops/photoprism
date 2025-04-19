@@ -14,7 +14,6 @@ export default class Page {
     this.playButton = Selector('[class^="pswp__button pswp__button--slideshow-toggle pswp__"]', { timeout: 5000 });
     this.favoriteOnIcon = Selector("button.action-favorite i.icon-favorite", { timeout: 5000 });
     this.favoriteOffIcon = Selector("button.action-favorite i.icon-favorite-border", { timeout: 5000 });
-    this.setCoverMenuItem = Selector(".action-cover", { timeout: 5000 });
   }
 
   async openPhotoViewer(mode, uidOrNth) {
@@ -37,17 +36,23 @@ export default class Page {
   }
 
   async checkPhotoViewerActionAvailability(action, visible) {
-    if (visible) {
-      if (action === "download") {
-        await t.hover(Selector("button.action-menu__btn"));
+    if (action === "cover") {
+      await t.hover(Selector("button.action-menu__btn"));
+      if (visible) {
+        await t.expect(Selector(".action-cover").visible).ok();
+      } else {
+        await t.expect(Selector(".action-cover").visible).notOk();
+      }
+    } else if (action === "download") {
+      await t.hover(Selector("button.action-menu__btn"));
+      if (visible) {
         await t.expect(Selector("div.action-" + action).visible).ok();
       } else {
-        await t.expect(Selector("button.pswp__button--" + action).visible).ok();
+        await t.expect(Selector("div.action-" + action).visible).notOk();
       }
     } else {
-      if (action === "download") {
-        await t.hover(Selector("button.action-menu__btn"));
-        await t.expect(Selector("div.action-" + action).visible).notOk();
+      if (visible) {
+        await t.expect(Selector("button.pswp__button--" + action).visible).ok();
       } else {
         await t.expect(Selector("button.pswp__button--" + action).visible).notOk();
       }
@@ -55,7 +60,10 @@ export default class Page {
   }
 
   async triggerPhotoViewerAction(action) {
-    if (action === "download") {
+    if (action === "cover") {
+      await t.hover(Selector("button.action-menu__btn"));
+      await t.click(Selector(".action-cover"));
+    } else if (action === "download") {
       await t.hover(Selector("button.action-menu__btn"));
       await t.click(Selector("div.action-" + action));
     } else {

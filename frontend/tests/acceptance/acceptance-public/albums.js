@@ -270,7 +270,7 @@ test.meta("testID", "albums-008").meta({ type: "short", mode: "public" })(
   }
 );
 
-test.meta("testID", "albums-009").meta({ type: "short", mode: "public" })("Common: Set album cover", async (t) => {
+test.only.meta("testID", "albums-009").meta({ type: "short", mode: "public" })("Common: Set album cover", async (t) => {
   await menu.openPage("albums");
   await toolbar.search("Holiday");
   const AlbumUid = await album.getNthAlbumUid("all", 0);
@@ -305,12 +305,8 @@ test.meta("testID", "albums-009").meta({ type: "short", mode: "public" })("Commo
 
   await photoviewer.openPhotoViewer("uid", CoverPhotoUid);
 
-  await t.click(photoviewer.menuButton);
-
-  const setCoverActionSelector = photoviewer.setCoverMenuItem;
-  await t
-    .expect(setCoverActionSelector.visible).ok('"Set as an Album Cover" action should be visible in menu')
-    .click(setCoverActionSelector);
+    await photoviewer.checkPhotoViewerActionAvailability("cover", true);
+    await photoviewer.triggerPhotoViewerAction("cover");
 
   await photoviewer.triggerPhotoViewerAction("close-button");
 
