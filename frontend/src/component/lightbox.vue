@@ -2183,7 +2183,7 @@ export default {
     },
     // Shows the lightbox sidebar, if hidden.
     showInfo() {
-      if (!this.visible || this.info || !this.featExperimental) {
+      if (!this.visible || this.info) {
         return;
       }
 
@@ -2199,7 +2199,7 @@ export default {
     },
     // Hides the lightbox sidebar, if visible.
     hideInfo() {
-      if (!this.visible || !this.info || !this.featExperimental) {
+      if (!this.visible || !this.info) {
         return;
       }
 
