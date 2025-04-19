@@ -24,17 +24,18 @@ export default {
       map: null,
       marker: null,
       position: [0.0, 0.0],
-      loaded: false,
       options: {
         container: null,
-        // To test new styles, put a custom style file in /assets/static/geo
+        // To test new styles, put the style file in /assets/static/geo
         // and include it from there e.g. "/static/geo/embedded.json".
+        // Styles can be edited/created with https://maplibre.org/maputnik/.
         style: "https://cdn.photoprism.app/maps/embedded.json",
         glyphs: `https://cdn.photoprism.app/maps/font/{fontstack}/{range}.pbf`,
         zoom: 9,
         interactive: true,
         attributionControl: false,
       },
+      loaded: false,
     };
   },
   watch: {
