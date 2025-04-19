@@ -174,7 +174,7 @@ export class Thumb extends Model {
         info.push($gettext("Document"));
         break;
       default:
-        if (this.Codec) {
+        if (this.Codec && this.Codec !== "jpeg") {
           info.push($util.formatCodec(this.Codec));
         }
 
