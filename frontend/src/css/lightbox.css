@@ -610,6 +610,16 @@
     display: none;
 }
 
+/* Sidebar Info */
+
+.metadata__map {
+    display: block;
+    height: 300px;
+    margin: 15px -12px 6px;
+    overflow: hidden;
+    width: calc(100% + 24px);
+} 
+
 /* Other / Unused Styles */
 
 .pswp__taken {
