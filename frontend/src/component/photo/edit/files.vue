@@ -555,7 +555,7 @@ export default {
         });
     },
     formatTime(s) {
-      return DateTime.fromISO(s, { zone: this.timeZone }).toLocaleString(formats.TIMESTAMP_TZ);
+      return DateTime.fromISO(s, { zone: this.timeZone }).toLocaleString(formats.TIMESTAMP);
     },
     refresh() {},
   },

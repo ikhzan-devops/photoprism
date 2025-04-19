@@ -125,7 +125,7 @@
 
         <v-card-text>
           <div :class="'p-log-' + details.err.Level" class="p-log-message text-body-2 text-selectable" dir="ltr">
-            <div :title="utcTime(details.err.Time) + ' UTC'" class="p-log-message__time cursor-help mb-3">
+            <div :title="utcTime(details.err.Time)" class="p-log-message__time cursor-help mb-3">
               {{ localTime(details.err.Time) }}
             </div>
             <div class="text-break p-log-message__text">{{ details.err.Message }}</div>
@@ -393,17 +393,17 @@ export default {
     },
     localTime(s) {
       if (!s) {
-        return "0000-00-00 00:00:00";
+        return this.$gettext("Unknown");
       }
 
       return DateTime.fromISO(s, { zone: this.timeZone }).toLocaleString(formats.TIMESTAMP_LONG_TZ);
     },
     utcTime(s) {
       if (!s) {
-        return "0000-00-00 00:00:00";
+        return this.$gettext("Unknown");
       }
 
-      return DateTime.fromISO(s, { zone: "UTC" }).toFormat("yyyy-LL-dd HH:mm:ss");
+      return DateTime.fromISO(s, { zone: "UTC" }).toLocaleString(formats.TIMESTAMP_LONG_TZ);
     },
   },
 };

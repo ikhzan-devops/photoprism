@@ -393,13 +393,10 @@ export default {
       }
     },
     formatTime(s) {
-      return DateTime.fromISO(s, { zone: this.timeZone }).toLocaleString(formats.TIMESTAMP_TZ);
+      return DateTime.fromISO(s, { zone: this.timeZone }).toLocaleString(formats.TIMESTAMP);
     },
     save() {
       this.view.model.update();
-    },
-    close() {
-      this.$emit("close");
     },
     albumUrl(m) {
       if (!m) {

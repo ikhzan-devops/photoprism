@@ -108,16 +108,16 @@ export default class $util {
       case "DATE_FULL":
       case "datetime_full":
       case "DATETIME_FULL":
-        options = formats.DATETIME_FULL;
+        options = formats.DATETIME_LONG;
         break;
       case "date_full_tz":
       case "datetime_full_tz":
       case "DATE_FULL_TZ":
       case "DATETIME_FULL_TZ":
-        options = formats.DATETIME_FULL_TZ;
+        options = formats.DATETIME_LONG_TZ;
         break;
       default:
-        options = formats.DATETIME_FULL;
+        options = formats.DATETIME_LONG;
         break;
     }
 

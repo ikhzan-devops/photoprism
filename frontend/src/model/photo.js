@@ -791,9 +791,9 @@ export class Photo extends RestModel {
       });
     } else if (timeZone && timeZone !== TimeZoneLocal) {
       if (showTimeZone) {
-        return this.localDate().toLocaleString(formats.DATETIME_FULL_TZ);
+        return this.localDate().toLocaleString(formats.DATETIME_LONG_TZ);
       } else {
-        return this.localDate().toLocaleString(formats.DATETIME_FULL);
+        return this.localDate().toLocaleString(formats.DATETIME_LONG);
       }
     }
 
