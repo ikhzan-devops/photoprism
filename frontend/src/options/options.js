@@ -234,6 +234,11 @@ export const MapsStyle = (experimental) => {
       style: "default",
     },
     {
+      title: $gettext("Buildings"),
+      value: "buildings",
+      style: "buildings",
+    },
+    {
       title: $gettext("Streets"),
       value: "streets",
       style: "streets-v2",

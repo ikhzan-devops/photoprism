@@ -462,10 +462,10 @@ export default {
         zoom: 0,
       };
 
-      if (this.style === "" || this.style === "default") {
+      if (this.style === "default" || this.style === "buildings") {
         mapOptions = {
           container: this.$refs.map,
-          style: "https://cdn.photoprism.app/maps/default.json",
+          style: `https://cdn.photoprism.app/maps/${this.style}.json`,
           glyphs: `https://cdn.photoprism.app/maps/font/{fontstack}/{range}.pbf`,
           zoom: 0,
         };
