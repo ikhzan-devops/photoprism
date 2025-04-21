@@ -424,7 +424,6 @@ export default {
       }
 
       switch (style) {
-        case "basic":
         case "offline":
           this.style = this.featExperimental ? "low-resolution" : "default";
           break;
@@ -444,6 +443,9 @@ export default {
           this.style = "topo-v2";
           break;
         case "":
+        case "basic":
+        case "standard":
+        case "buildings":
           this.style = "default";
           break;
         default:
@@ -462,10 +464,11 @@ export default {
         zoom: 0,
       };
 
-      if (this.style === "default" || this.style === "buildings") {
+      if (this.style === "default") {
         mapOptions = {
           container: this.$refs.map,
           style: `https://cdn.photoprism.app/maps/${this.style}.json`,
+          // style: `/static/maps/${this.style}.json`,
           glyphs: `https://cdn.photoprism.app/maps/font/{fontstack}/{range}.pbf`,
           zoom: 0,
         };
