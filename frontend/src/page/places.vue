@@ -458,8 +458,8 @@ export default {
 
       let mapOptions = {
         container: this.$refs.map,
-        style: "https://api.maptiler.com/maps/" + this.style + "/style.json?key=" + mapKey,
-        glyphs: "https://api.maptiler.com/fonts/{fontstack}/{range}.pbf?key=" + mapKey,
+        style: `https://api.maptiler.com/maps/${this.style}/style.json?key=${mapKey}`,
+        glyphs: `https://api.maptiler.com/fonts/{fontstack}/{range}.pbf?key=${mapKey}`,
         attributionControl: { compact: true },
         zoom: 0,
       };
@@ -467,8 +467,11 @@ export default {
       if (this.style === "default") {
         mapOptions = {
           container: this.$refs.map,
-          style: `https://cdn.photoprism.app/maps/${this.style}.json`,
+          // Styles can be edited/created with https://maplibre.org/maputnik/.
+          // To test new styles, put the style file in /assets/static/maps
+          // and include it from there e.g. "/static/maps/default.json":
           // style: `/static/maps/${this.style}.json`,
+          style: `https://cdn.photoprism.app/maps/${this.style}.json`,
           glyphs: `https://cdn.photoprism.app/maps/font/{fontstack}/{range}.pbf`,
           zoom: 0,
         };

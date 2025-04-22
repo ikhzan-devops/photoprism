@@ -12,11 +12,19 @@ export default {
   props: {
     lat: {
       type: Number,
-      required: true,
+      default: 0.0,
     },
     lng: {
       type: Number,
-      required: true,
+      default: 0.0,
+    },
+    zoom: {
+      type: Number,
+      default: 9,
+    },
+    style: {
+      type: String,
+      default: "embedded",
     },
   },
   data() {
@@ -26,12 +34,13 @@ export default {
       position: [0.0, 0.0],
       options: {
         container: null,
-        // To test new styles, put the style file in /assets/static/geo
-        // and include it from there e.g. "/static/geo/embedded.json".
         // Styles can be edited/created with https://maplibre.org/maputnik/.
-        style: "https://cdn.photoprism.app/maps/embedded.json",
+        // To test new styles, put the style file in /assets/static/maps
+        // and include it from there e.g. "/static/maps/embedded.json":
+        // style: "/static/maps/embedded.json",
+        style: `https://cdn.photoprism.app/maps/${this.style}.json`,
         glyphs: `https://cdn.photoprism.app/maps/font/{fontstack}/{range}.pbf`,
-        zoom: 9,
+        zoom: this.zoom,
         interactive: true,
         attributionControl: false,
       },
