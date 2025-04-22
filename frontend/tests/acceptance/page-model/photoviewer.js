@@ -36,17 +36,23 @@ export default class Page {
   }
 
   async checkPhotoViewerActionAvailability(action, visible) {
-    if (visible) {
-      if (action === "download") {
-        await t.hover(Selector("button.action-menu__btn"));
+    if (action === "cover") {
+      await t.hover(Selector("button.action-menu__btn"));
+      if (visible) {
         await t.expect(Selector("div.action-" + action).visible).ok();
       } else {
-        await t.expect(Selector("button.pswp__button--" + action).visible).ok();
+        await t.expect(Selector("div.action-" + action).visible).notOk();
+      }
+    } else if (action === "download") {
+      await t.hover(Selector("button.action-menu__btn"));
+      if (visible) {
+        await t.expect(Selector("div.action-" + action).visible).ok();
+      } else {
+        await t.expect(Selector("div.action-" + action).visible).notOk();
       }
     } else {
-      if (action === "download") {
-        await t.hover(Selector("button.action-menu__btn"));
-        await t.expect(Selector("div.action-" + action).visible).notOk();
+      if (visible) {
+        await t.expect(Selector("button.pswp__button--" + action).visible).ok();
       } else {
         await t.expect(Selector("button.pswp__button--" + action).visible).notOk();
       }
@@ -54,7 +60,10 @@ export default class Page {
   }
 
   async triggerPhotoViewerAction(action) {
-    if (action === "download") {
+    if (action === "cover") {
+      await t.hover(Selector("button.action-menu__btn"));
+      await t.click(Selector("div.action-" + action));
+    } else if (action === "download") {
       await t.hover(Selector("button.action-menu__btn"));
       await t.click(Selector("div.action-" + action));
     } else {

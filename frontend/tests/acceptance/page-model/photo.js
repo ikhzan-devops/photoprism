@@ -134,4 +134,14 @@ export default class Page {
       await t.expect(Selector(`td button.input-` + action).visible).notOk();
     }
   }
+
+  getPhotoCardPreviewSelector(uid) {
+    return Selector(`div.is-photo[data-uid="${uid}"] .preview`);
+  }
+
+  async getPhotoPreviewStyle(uid) {
+    const selector = this.getPhotoCardPreviewSelector(uid);
+    const style = await selector.getStyleProperty('background-image');
+    return style;
+  }
 }
