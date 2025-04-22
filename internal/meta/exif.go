@@ -260,12 +260,12 @@ func (data *Data) Exif(fileName string, fileFormat fs.Type, bruteForce bool) (er
 	}
 
 	if data.Lat != 0 && data.Lng != 0 {
-		zones, err := tz.GetZone(tz.Point{
+		zones, zoneErr := tz.GetZone(tz.Point{
 			Lat: data.Lat,
 			Lon: data.Lng,
 		})
 
-		if err == nil && len(zones) > 0 {
+		if zoneErr == nil && len(zones) > 0 {
 			data.TimeZone = zones[0]
 		}
 	}

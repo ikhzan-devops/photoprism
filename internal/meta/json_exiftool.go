@@ -281,7 +281,7 @@ func (data *Data) Exiftool(jsonData []byte, originalName string) (err error) {
 	}
 
 	// Set UTC offset as time zone?
-	if data.TimeZone != "" && data.TimeZone != "UTC" || data.TakenAt.IsZero() {
+	if data.TimeZone != "" && data.TimeZone != "Local" && data.TimeZone != "UTC" || data.TakenAt.IsZero() {
 		// Don't change existing time zone.
 	} else if utcOffset := txt.UtcOffset(data.TakenAt, data.TakenAtLocal, data.TimeOffset); utcOffset != "" {
 		data.TimeZone = utcOffset
@@ -292,7 +292,7 @@ func (data *Data) Exiftool(jsonData []byte, originalName string) (err error) {
 
 	// Set local time if still empty.
 	if data.TakenAtLocal.IsZero() && !data.TakenAt.IsZero() {
-		if loc := txt.TimeZone(data.TimeZone); data.TimeZone == "" || loc == nil {
+		if loc := txt.TimeZone(data.TimeZone); data.TimeZone == "" || data.TimeZone == "Local" || loc == nil {
 			data.TakenAtLocal = data.TakenAt
 		} else if localUtc, err := time.ParseInLocation("2006:01:02 15:04:05", data.TakenAt.In(loc).Format("2006:01:02 15:04:05"), time.UTC); err == nil {
 			data.TakenAtLocal = localUtc

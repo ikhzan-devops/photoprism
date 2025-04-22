@@ -3,6 +3,7 @@ package photoprism
 import (
 	"fmt"
 	"path/filepath"
+	"time"
 
 	"github.com/photoprism/photoprism/internal/meta"
 	"github.com/photoprism/photoprism/pkg/clean"
@@ -122,6 +123,8 @@ func (m *MediaFile) MetaData() (result meta.Data) {
 		if err != nil {
 			m.metaData.Error = err
 			log.Debugf("%s in %s", err, clean.Log(m.BaseName()))
+		} else if m.metaData.TimeZone == "" {
+			m.metaData.TimeZone = time.Local.String()
 		}
 	})
 

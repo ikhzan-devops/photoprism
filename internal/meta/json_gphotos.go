@@ -139,22 +139,22 @@ func (data *Data) GPhoto(jsonData []byte) (err error) {
 
 	// Set time zone and calculate UTC time.
 	if data.Lat != 0 && data.Lng != 0 {
-		zones, err := tz.GetZone(tz.Point{
-			Lat: float64(data.Lat),
-			Lon: float64(data.Lng),
+		zones, zoneErr := tz.GetZone(tz.Point{
+			Lat: data.Lat,
+			Lon: data.Lng,
 		})
 
-		if err == nil && len(zones) > 0 {
+		if zoneErr == nil && len(zones) > 0 {
 			data.TimeZone = zones[0]
 		}
 
 		if !data.TakenAtLocal.IsZero() {
 			if loc := txt.TimeZone(data.TimeZone); loc == nil {
 				log.Warnf("metadata: invalid time zone %s (gphotos)", data.TimeZone)
-			} else if tl, err := time.ParseInLocation("2006:01:02 15:04:05", data.TakenAtLocal.Format("2006:01:02 15:04:05"), loc); err == nil {
+			} else if tl, locErr := time.ParseInLocation("2006:01:02 15:04:05", data.TakenAtLocal.Format("2006:01:02 15:04:05"), loc); locErr == nil {
 				data.TakenAt = tl.UTC().Truncate(time.Second)
 			} else {
-				log.Errorf("metadata: %s (gphotos)", err.Error()) // this should never happen
+				log.Errorf("metadata: %s (gphotos)", locErr.Error()) // this should never happen
 			}
 		}
 	}
