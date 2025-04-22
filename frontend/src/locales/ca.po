@@ -136,7 +136,7 @@ msgstr "Compte creat"
 msgid "Account deleted"
 msgstr "Compte suprimit"
 
-#: src/page/admin/users.vue:333
+#: src/page/admin/users.vue:335
 msgid "Account restored"
 msgstr "S'ha restaurat el compte"
 
@@ -455,12 +455,12 @@ msgid "Audio"
 msgstr "Àudio"
 
 #: src/component/user/add/dialog.vue:190 src/component/user/edit/dialog.vue:309
-#: src/page/admin/sessions.vue:58 src/page/admin/sessions.vue:281
-#: src/page/admin/users.vue:73
+#: src/page/admin/sessions.vue:60 src/page/admin/sessions.vue:281
+#: src/page/admin/users.vue:75
 msgid "Authentication"
 msgstr "Autenticació"
 
-#: src/component/photo/edit/info.vue:43
+#: src/component/photo/edit/info.vue:45
 msgid "Auto"
 msgstr "Automàtic"
 
@@ -603,9 +603,9 @@ msgstr "No es poden seleccionar més elements"
 msgid "Cancel"
 msgstr "Cancel·lar"
 
-#: src/component/photo/edit/details.vue:87 src/component/photo/edit/info.vue:59
+#: src/component/photo/edit/details.vue:87 src/component/photo/edit/info.vue:61
 #: src/component/photo/edit/labels.vue:42
-#: src/component/photo/view/cards.vue:445 src/component/sidebar/info.vue:71
+#: src/component/photo/view/cards.vue:445 src/component/sidebar/info.vue:72
 msgid "Caption"
 msgstr "Subtítol"
 
@@ -652,7 +652,7 @@ msgstr "No s'han pogut desar els canvis"
 #: src/component/user/edit/dialog.vue:83 src/component/user/edit/dialog.vue:159
 #: src/component/album/edit/dialog.vue:73
 #: src/component/label/edit/dialog.vue:46 src/component/lightbox.vue:1941
-#: src/component/photo/edit/files.vue:160 src/component/service/edit.vue:90
+#: src/component/photo/edit/files.vue:162 src/component/service/edit.vue:90
 #: src/component/share/dialog.vue:92 src/component/share/dialog.vue:111
 #: src/page/albums.vue:677 src/page/people/recognized.vue:119
 #: src/page/settings/advanced.vue:62 src/page/settings/content.vue:62
@@ -700,9 +700,9 @@ msgstr "Credencials del client"
 #: src/component/settings/passcode.vue:456
 #: src/component/settings/passcode.vue:497
 #: src/component/settings/webdav.vue:131 src/component/share/dialog.vue:231
-#: src/component/sidebar/info.vue:25 src/component/update.vue:57
+#: src/component/sidebar/info.vue:26 src/component/update.vue:57
 #: src/component/upload/dialog.vue:228 src/locales.js:206
-#: src/page/library/errors.vue:251
+#: src/page/library/errors.vue:253
 msgid "Close"
 msgstr "Tancar"
 
@@ -877,8 +877,8 @@ msgstr "Desactivar"
 msgid "Debug Logs"
 msgstr "Registres de depuració"
 
-#: src/options/admin.js:31 src/page/admin/sessions.vue:134
-#: src/page/admin/users.vue:174 src/component/photo/edit/info.vue:45
+#: src/options/admin.js:31 src/page/admin/sessions.vue:136
+#: src/page/admin/users.vue:176 src/component/photo/edit/info.vue:47
 #: src/component/photo/edit/info.vue:110 src/model/session.js:66
 #: src/model/user.js:246 src/options/auth.js:20 src/options/auth.js:21
 #: src/options/auth.js:39 src/options/auth.js:40 src/options/options.js:196
@@ -927,7 +927,7 @@ msgstr "Podeu trobar instruccions detallades a la nostra Guia d'usuari."
 msgid "Details"
 msgstr "Detalls"
 
-#: src/component/photo/edit/files.vue:41
+#: src/component/photo/edit/files.vue:43
 msgid "Dimensions"
 msgstr "Dimensions"
 
@@ -998,7 +998,7 @@ msgstr "Descartar"
 
 #: src/component/user/add/dialog.vue:133 src/component/user/add/dialog.vue:134
 #: src/component/user/edit/dialog.vue:163
-#: src/component/user/edit/dialog.vue:164 src/page/admin/users.vue:70
+#: src/component/user/edit/dialog.vue:164 src/page/admin/users.vue:72
 #: src/page/settings/account.vue:149 src/page/settings/account.vue:151
 msgid "Display Name"
 msgstr "Nom a mostrar"
@@ -1013,7 +1013,7 @@ msgstr "Mostra els títols de les imatges als resultats de la cerca."
 
 #: src/component/photo/view/cards.vue:339
 #: src/component/photo/view/cards.vue:521
-#: src/component/photo/view/mosaic.vue:183 src/model/thumb.js:141
+#: src/component/photo/view/mosaic.vue:183 src/model/thumb.js:174
 #: src/options/options.js:309
 msgid "Document"
 msgstr "Document"
@@ -1066,7 +1066,7 @@ msgstr "Baixeu fitxers únics i arxius zip."
 #: src/component/album/clipboard.vue:104 src/component/album/toolbar.vue:157
 #: src/component/file/clipboard.vue:61 src/component/label/clipboard.vue:86
 #: src/component/lightbox.vue:2021 src/component/people/clipboard.vue:59
-#: src/component/photo/clipboard.vue:220 src/component/photo/edit/files.vue:117
+#: src/component/photo/clipboard.vue:220 src/component/photo/edit/files.vue:119
 #: src/component/photo/view/cards.vue:169 src/component/photo/view/list.vue:142
 #: src/page/library/browse.vue:139
 msgid "Downloading…"
@@ -1170,7 +1170,7 @@ msgid "Enter your password to confirm the action and continue:"
 msgstr "Introduïu la vostra contrasenya per confirmar l'acció i continueu:"
 
 #: src/page/connect.vue:54 src/component/lightbox.vue:288
-#: src/page/connect.vue:57 src/page/library/errors.vue:248
+#: src/page/connect.vue:57 src/page/library/errors.vue:242
 msgid "Error"
 msgstr "Error"
 
@@ -1178,7 +1178,7 @@ msgstr "Error"
 msgid "Errors"
 msgstr "Errors"
 
-#: src/component/photo/edit/info.vue:53
+#: src/component/photo/edit/info.vue:55
 msgid "Estimate"
 msgstr "Estimació"
 
@@ -1210,8 +1210,8 @@ msgstr "L'extracció de metadades amb ExifTool és necessària per a un suport c
 msgid "Experimental Features"
 msgstr "Característiques experimentals"
 
-#: src/page/admin/sessions.vue:62 src/page/admin/sessions.vue:453
-#: src/component/service/edit.vue:157 src/component/settings/apps.vue:72
+#: src/page/admin/sessions.vue:64 src/page/admin/sessions.vue:453
+#: src/component/service/edit.vue:157 src/component/settings/apps.vue:73
 #: src/component/settings/apps.vue:326 src/component/share/dialog.vue:62
 msgid "Expires"
 msgstr "Caduca"
@@ -1468,7 +1468,7 @@ msgstr "Híbrid"
 msgid "If you lose access to your authenticator app or device, you can use your recovery code to regain access to your account."
 msgstr "Si perdeu l'accés a l'aplicació o al dispositiu d'autenticació, podeu utilitzar el codi de recuperació per recuperar l'accés al vostre compte."
 
-#: src/component/photo/edit/info.vue:61 src/component/photo/edit/labels.vue:46
+#: src/component/photo/edit/info.vue:63 src/component/photo/edit/labels.vue:46
 #: src/component/photo/view/cards.vue:532 src/model/file.js:218
 #: src/options/options.js:281
 msgid "Image"
@@ -1548,7 +1548,7 @@ msgid "Indexing media and sidecar files…"
 msgstr "S'estan indexant fitxers multimèdia i sidecar..."
 
 #: src/component/lightbox.vue:1032 src/component/lightbox.vue:1033
-#: src/component/sidebar/info.vue:30
+#: src/component/sidebar/info.vue:31
 msgid "Information"
 msgstr "Informació"
 
@@ -1581,7 +1581,7 @@ msgstr "Adreça no vàlida"
 msgid "Invalid country"
 msgstr "País no vàlid"
 
-#: src/component/photo/edit/details.vue:180
+#: src/component/photo/edit/details.vue:174
 msgid "Invalid date"
 msgstr "Data no vàlida"
 
@@ -1590,7 +1590,7 @@ msgstr "Data no vàlida"
 msgid "Invalid parameters"
 msgstr "Paràmetres no és vàlida"
 
-#: src/component/photo/edit/dialog.vue:194 src/model/thumb.js:154
+#: src/component/photo/edit/dialog.vue:194 src/model/thumb.js:197
 msgid "Invalid photo selected"
 msgstr "S'ha seleccionat una foto no vàlida"
 
@@ -1655,11 +1655,11 @@ msgstr "Lanczos: Preservació de detalls, artefactes mínims"
 msgid "Language"
 msgstr "Idioma"
 
-#: src/page/admin/sessions.vue:61 src/page/admin/sessions.vue:435
+#: src/page/admin/sessions.vue:63 src/page/admin/sessions.vue:435
 msgid "Last Active"
 msgstr "Últim actiu"
 
-#: src/page/admin/users.vue:79
+#: src/page/admin/users.vue:81
 msgid "Last Login"
 msgstr "Últim inici de sessió"
 
@@ -1667,11 +1667,11 @@ msgstr "Últim inici de sessió"
 msgid "Last page"
 msgstr "Última pàgina"
 
-#: src/page/settings/services.vue:40
+#: src/page/settings/services.vue:41
 msgid "Last Sync"
 msgstr "Última sincronització"
 
-#: src/component/settings/apps.vue:63
+#: src/component/settings/apps.vue:64
 msgid "Last Used"
 msgstr "Últim utilitzat"
 
@@ -1690,7 +1690,7 @@ msgstr "LDAP/AD"
 msgid "Learn more"
 msgstr "Saber-ne més"
 
-#: src/page/admin/sessions.vue:108 src/page/admin/users.vue:133
+#: src/page/admin/sessions.vue:110 src/page/admin/users.vue:135
 #: src/page/labels.vue:132
 msgid "Learn More"
 msgstr "Saber-ne més"
@@ -1775,10 +1775,10 @@ msgid "Local Time"
 msgstr "Hora local"
 
 #: src/page/settings/account.vue:665 src/page/settings/account.vue:667
-#: src/component/album/edit/dialog.vue:92 src/component/photo/edit/info.vue:63
+#: src/component/album/edit/dialog.vue:92 src/component/photo/edit/info.vue:65
 #: src/component/photo/edit/labels.vue:48
 #: src/component/photo/view/cards.vue:555 src/component/photo/view/list.vue:117
-#: src/component/sidebar/info.vue:106 src/page/albums.vue:99
+#: src/component/sidebar/info.vue:107 src/page/albums.vue:99
 #: src/page/settings/account.vue:557 src/page/settings/account.vue:559
 msgid "Location"
 msgstr "Ubicació"
@@ -1827,7 +1827,7 @@ msgstr "Home"
 msgid "Manage Account"
 msgstr "Gestiona el compte"
 
-#: src/component/photo/edit/info.vue:47 src/component/photo/edit/labels.vue:38
+#: src/component/photo/edit/info.vue:49 src/component/photo/edit/labels.vue:38
 msgid "Manual"
 msgstr "Manual"
 
@@ -1872,7 +1872,7 @@ msgstr "Missatge"
 msgid "Message sent"
 msgstr "Missatge enviat"
 
-#: src/component/photo/edit/info.vue:49
+#: src/component/photo/edit/info.vue:51
 msgid "Metadata"
 msgstr "Metadades"
 
@@ -1934,12 +1934,12 @@ msgstr "Silenciar"
 #: src/component/album/edit/dialog.vue:77
 #: src/component/label/edit/dialog.vue:71
 #: src/component/people/edit/dialog.vue:71
-#: src/component/photo/edit/files.vue:39 src/component/photo/edit/info.vue:55
+#: src/component/photo/edit/files.vue:41 src/component/photo/edit/info.vue:57
 #: src/component/photo/edit/info.vue:125 src/component/photo/edit/people.vue:36
 #: src/component/photo/view/list.vue:117 src/component/service/edit.vue:310
-#: src/component/settings/apps.vue:52 src/component/settings/apps.vue:286
+#: src/component/settings/apps.vue:53 src/component/settings/apps.vue:286
 #: src/page/albums.vue:98 src/page/auth/login.vue:168
-#: src/page/people/new.vue:68 src/page/settings/services.vue:36
+#: src/page/people/new.vue:68 src/page/settings/services.vue:37
 msgid "Name"
 msgstr "Nom"
 
@@ -1953,8 +1953,8 @@ msgstr "Nom"
 msgid "Name too long"
 msgstr "Nom massa llarg"
 
-#: src/page/admin/users.vue:202 src/options/options.js:361
-#: src/options/options.js:371 src/page/settings/services.vue:74
+#: src/page/admin/users.vue:204 src/options/options.js:361
+#: src/options/options.js:371 src/page/settings/services.vue:75
 msgid "Never"
 msgstr "Mai"
 
@@ -2021,7 +2021,7 @@ msgstr "No s'han trobat persones"
 #: src/component/lightbox.vue:365 src/component/photo/view/cards.vue:144
 #: src/component/photo/view/list.vue:82 src/component/photo/view/mosaic.vue:68
 #: src/page/album/photos.vue:488 src/page/library/browse.vue:123
-#: src/page/photos.vue:626 src/page/places.vue:623 src/page/places.vue:729
+#: src/page/photos.vue:626 src/page/places.vue:624 src/page/places.vue:730
 msgid "No pictures found"
 msgstr "No s'han trobat imatges"
 
@@ -2095,7 +2095,7 @@ msgstr "Nota: només els servidors WebDAV, com Nextcloud o PhotoPrism, es poden 
 msgid "Notes"
 msgstr "Notes"
 
-#: src/page/library/logs.vue:23
+#: src/page/library/logs.vue:25
 msgid "Nothing to see here yet."
 msgstr "Encara no hi ha res a veure aquí."
 
@@ -2398,7 +2398,7 @@ msgstr "Pàgina anterior"
 msgid "Previous visual"
 msgstr "Visual anterior"
 
-#: src/component/photo/edit/files.vue:33 src/component/photo/edit/files.vue:194
+#: src/component/photo/edit/files.vue:35 src/component/photo/edit/files.vue:194
 #: src/component/photo/edit/files.vue:394
 msgid "Primary"
 msgstr "Primari"
@@ -2429,7 +2429,7 @@ msgstr "Filtre de qualitat"
 msgid "Quality Score"
 msgstr "Nivell de qualitat"
 
-#: src/page/admin/users.vue:167
+#: src/page/admin/users.vue:169
 msgid "r"
 msgstr "r"
 
@@ -2493,10 +2493,10 @@ msgstr "Codi de recuperació"
 msgid "Red"
 msgstr "Vermell"
 
-#: src/page/admin/sessions.vue:99 src/page/admin/users.vue:124
+#: src/page/admin/sessions.vue:101 src/page/admin/users.vue:126
 #: src/component/album/toolbar.vue:79 src/component/photo/toolbar.vue:169
 #: src/page/albums.vue:173 src/page/labels.vue:112
-#: src/page/library/browse.vue:90 src/page/library/errors.vue:79
+#: src/page/library/browse.vue:90 src/page/library/errors.vue:81
 #: src/page/people/new.vue:54 src/page/people/recognized.vue:88
 msgid "Refresh"
 msgstr "Actualitzar"
@@ -2582,7 +2582,7 @@ msgid "Review"
 msgstr "Valoració"
 
 #: src/component/user/add/dialog.vue:171 src/component/user/edit/dialog.vue:284
-#: src/page/admin/sessions.vue:262 src/page/admin/users.vue:71
+#: src/page/admin/sessions.vue:262 src/page/admin/users.vue:73
 msgid "Role"
 msgstr "Rol"
 
@@ -2614,8 +2614,8 @@ msgstr "Escanegeu el codi QR amb la vostra aplicació d'autenticació o utilitze
 msgid "Scans"
 msgstr "Escaneigs"
 
-#: src/page/admin/sessions.vue:59 src/page/admin/sessions.vue:377
-#: src/component/settings/apps.vue:54 src/component/settings/apps.vue:310
+#: src/page/admin/sessions.vue:61 src/page/admin/sessions.vue:377
+#: src/component/settings/apps.vue:55 src/component/settings/apps.vue:310
 msgid "Scope"
 msgstr "Àmbit"
 
@@ -2705,7 +2705,7 @@ msgstr "Serveis"
 msgid "Session"
 msgstr "Sessió"
 
-#: src/page/admin/sessions.vue:56
+#: src/page/admin/sessions.vue:58
 msgid "Session ID"
 msgstr "ID de sessió"
 
@@ -2793,8 +2793,8 @@ msgstr "Iniciar sessió"
 msgid "Similar"
 msgstr "Similars"
 
-#: src/component/photo/edit/files.vue:49 src/component/photo/edit/files.vue:341
-#: src/component/service/edit.vue:139 src/component/sidebar/info.vue:95
+#: src/component/photo/edit/files.vue:51 src/component/photo/edit/files.vue:341
+#: src/component/service/edit.vue:139 src/component/sidebar/info.vue:96
 msgid "Size"
 msgstr "Mida"
 
@@ -2873,7 +2873,7 @@ msgstr "Pàgina d'inici"
 msgid "Static Size Limit: %{n}px"
 msgstr "Límit de mida estàtica: %{n}px"
 
-#: src/component/photo/edit/files.vue:57
+#: src/component/photo/edit/files.vue:59
 msgid "Status"
 msgstr "Estat"
 
@@ -2903,7 +2903,7 @@ msgid "Successfully Connected"
 msgstr "Connectat correctament"
 
 #: src/component/session/remove/dialog.vue:32
-#: src/component/settings/apps.vue:217
+#: src/component/settings/apps.vue:218
 msgid "Successfully deleted"
 msgstr "S'ha suprimit correctament"
 
@@ -2911,7 +2911,7 @@ msgstr "S'ha suprimit correctament"
 msgid "Successfully verified"
 msgstr "Verificat correctament"
 
-#: src/component/user/edit/dialog.vue:398 src/page/admin/users.vue:161
+#: src/component/user/edit/dialog.vue:398 src/page/admin/users.vue:163
 msgid "Super Admin"
 msgstr "Super Administrador"
 
@@ -2923,7 +2923,7 @@ msgstr "Amb el temps s'afegirà suport per a serveis addicionals, com ara Google
 msgid "Support Our Mission"
 msgstr "Donar suport a la nostra missió"
 
-#: src/page/settings/services.vue:38
+#: src/page/settings/services.vue:39
 msgid "Sync"
 msgstr "Sincronitza"
 
@@ -2933,7 +2933,7 @@ msgstr "Sincronitza fitxers en brut i de vídeo"
 
 #: src/component/photo/edit/info.vue:183 src/component/photo/view/cards.vue:200
 #: src/component/photo/view/cards.vue:458 src/component/photo/view/list.vue:115
-#: src/component/sidebar/info.vue:88
+#: src/component/sidebar/info.vue:89
 msgid "Taken"
 msgstr "Pres"
 
@@ -3011,9 +3011,9 @@ msgctxt "Photo"
 msgid "Title"
 msgstr "Títol"
 
-#: src/component/photo/edit/info.vue:57 src/component/photo/edit/info.vue:155
+#: src/component/photo/edit/info.vue:59 src/component/photo/edit/info.vue:155
 #: src/component/photo/edit/labels.vue:40 src/component/photo/view/list.vue:114
-#: src/component/sidebar/info.vue:56
+#: src/component/sidebar/info.vue:57
 msgid "Title"
 msgstr "Títol"
 
@@ -3065,7 +3065,7 @@ msgstr "S'han seleccionat massa fitxers"
 msgid "Too many requests"
 msgstr "Massa peticions"
 
-#: src/component/photo/toolbar.vue:197 src/page/library/errors.vue:89
+#: src/component/photo/toolbar.vue:197 src/page/library/errors.vue:91
 msgid "Troubleshooting"
 msgstr "Resolució de problemes"
 
@@ -3080,7 +3080,7 @@ msgstr "Torna-ho a provar amb altres filtres o paraules clau."
 msgid "Two-factor authentication has been enabled for your account."
 msgstr "S'ha activat l'autenticació de dos factors per al vostre compte."
 
-#: src/component/photo/edit/files.vue:56 src/component/photo/edit/files.vue:330
+#: src/component/photo/edit/files.vue:58 src/component/photo/edit/files.vue:330
 #: src/component/photo/edit/info.vue:87 src/component/service/edit.vue:388
 msgid "Type"
 msgstr "Tipus"
@@ -3102,15 +3102,15 @@ msgstr "ID únic"
 #: src/component/photo/edit/details.vue:21
 #: src/component/photo/edit/details.vue:111
 #: src/component/photo/edit/details.vue:138
-#: src/component/photo/edit/details.vue:164 src/model/album.js:193
-#: src/model/photo.js:323 src/model/photo.js:784 src/model/photo.js:809
-#: src/model/photo.js:832 src/model/photo.js:850 src/model/photo.js:897
-#: src/model/photo.js:905 src/model/photo.js:994 src/model/photo.js:1016
-#: src/model/photo.js:1061 src/model/photo.js:1074 src/model/user.js:157
-#: src/options/options.js:51 src/options/options.js:69
+#: src/component/photo/edit/details.vue:164 src/component/sidebar/info.vue:43
+#: src/model/album.js:193 src/model/photo.js:323 src/model/photo.js:784
+#: src/model/photo.js:809 src/model/photo.js:832 src/model/photo.js:850
+#: src/model/photo.js:897 src/model/photo.js:905 src/model/photo.js:994
+#: src/model/photo.js:1016 src/model/photo.js:1061 src/model/photo.js:1074
+#: src/model/user.js:157 src/options/options.js:51 src/options/options.js:69
 #: src/options/options.js:86 src/options/options.js:100
-#: src/options/options.js:112 src/page/library/errors.vue:240
-#: src/page/library/errors.vue:257
+#: src/options/options.js:112 src/page/library/errors.vue:251
+#: src/page/library/errors.vue:258
 msgid "Unknown"
 msgstr "Desconegut"
 
@@ -3171,7 +3171,7 @@ msgstr "Actualitza ara"
 #: src/component/photo/toolbar.vue:179 src/component/service/upload.vue:144
 #: src/component/upload/dialog.vue:51 src/page/albums.vue:183
 #: src/page/labels.vue:122 src/page/library/import.vue:133
-#: src/page/settings/general.vue:307 src/page/settings/services.vue:37
+#: src/page/settings/general.vue:307 src/page/settings/services.vue:38
 msgid "Upload"
 msgstr "Pujar"
 
@@ -3230,7 +3230,7 @@ msgstr "Utilitzeu el codi de recuperació següent per accedir al vostre compte 
 msgid "Use your recovery code or contact an administrator for help."
 msgstr "Utilitzeu el vostre codi de recuperació o poseu-vos en contacte amb un administrador per obtenir ajuda."
 
-#: src/options/admin.js:10 src/page/admin/sessions.vue:57
+#: src/options/admin.js:10 src/page/admin/sessions.vue:59
 #: src/page/admin/sessions.vue:242 src/model/user.js:361 src/options/auth.js:7
 msgid "User"
 msgstr "Usuari"
@@ -3244,7 +3244,7 @@ msgid "User Interface"
 msgstr "Interfície d'usuari"
 
 #: src/component/user/add/dialog.vue:87 src/component/user/add/dialog.vue:88
-#: src/page/admin/sessions.vue:220 src/page/admin/users.vue:69
+#: src/page/admin/sessions.vue:220 src/page/admin/users.vue:71
 #: src/component/service/add.vue:85 src/component/service/edit.vue:337
 #: src/component/share/dialog.vue:26
 msgid "Username"
@@ -3306,7 +3306,7 @@ msgstr "Visitant"
 msgid "Visual Similarity"
 msgstr "Similitud visual"
 
-#: src/page/library/errors.vue:250
+#: src/page/library/errors.vue:244
 msgid "Warning"
 msgstr "Avís"
 
@@ -3319,12 +3319,12 @@ msgid "We do our best to respond within five business days or less."
 msgstr "Fem tot el possible per respondre en un termini de cinc dies laborables o menys."
 
 #: src/component/user/add/dialog.vue:235 src/component/user/edit/dialog.vue:415
-#: src/page/admin/users.vue:78
+#: src/page/admin/users.vue:80
 msgid "Web Login"
 msgstr "Inici de sessió web"
 
 #: src/component/user/add/dialog.vue:248 src/component/user/edit/dialog.vue:432
-#: src/page/admin/users.vue:80 src/options/auth.js:55 src/options/auth.js:68
+#: src/page/admin/users.vue:82 src/options/auth.js:55 src/options/auth.js:68
 #: src/options/options.js:444
 msgid "WebDAV"
 msgstr "WebDAV"
@@ -3343,7 +3343,7 @@ msgstr ""
 msgid "WebDAV Upload"
 msgstr "Càrrega WebDAV"
 
-#: src/page/places.vue:307
+#: src/page/places.vue:302
 msgid "WebGL support is disabled in your browser"
 msgstr "El suport de WebGL està desactivat al vostre navegador"
 
@@ -3412,7 +3412,7 @@ msgstr "Podeu tornar a escanejar la vostra biblioteca per trobar cares addiciona
 msgid "Your account has been successfully connected."
 msgstr "El vostre compte s'ha connectat correctament."
 
-#: src/page/places.vue:311
+#: src/page/places.vue:306
 msgid "Your browser does not support WebGL"
 msgstr "El vostre navegador no admet WebGL"
 
