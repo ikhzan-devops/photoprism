@@ -388,8 +388,8 @@ func (m *Photo) UpdateLocation() (keywords []string, labels classify.Labels) {
 			m.PlaceID = loc.PlaceID
 			m.PhotoCountry = loc.CountryCode()
 
-			if changed && m.TakenSrc != SrcManual {
-				// Use GPS location to determine time zone.
+			// Set time zone based on location.
+			if changed {
 				m.UpdateTimeZone(m.LocationTimeZone())
 			}
 
