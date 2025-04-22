@@ -9,7 +9,7 @@ The following 3rd-party software packages may be used by or distributed with
 PhotoPrism. Any information relevant to third-party vendors listed below are
 collected using common, reasonable means.
 
-Date generated: 2025-04-16
+Date generated: 2025-04-22
 
 ================================================================================
 
@@ -1011,8 +1011,8 @@ SOFTWARE.
 --------------------------------------------------------------------------------
 
 Package: github.com/gabriel-vasile/mimetype
-Version: v1.4.8
-License: MIT (https://github.com/gabriel-vasile/mimetype/blob/v1.4.8/LICENSE)
+Version: v1.4.9
+License: MIT (https://github.com/gabriel-vasile/mimetype/blob/v1.4.9/LICENSE)
 
 MIT License
 
@@ -2316,8 +2316,8 @@ SOFTWARE.
 --------------------------------------------------------------------------------
 
 Package: github.com/golang/geo
-Version: v0.0.0-20250414194827-ce8b7816b692
-License: Apache-2.0 (https://github.com/golang/geo/blob/ce8b7816b692/LICENSE)
+Version: v0.0.0-20250421144338-16367f2bbb6a
+License: Apache-2.0 (https://github.com/golang/geo/blob/16367f2bbb6a/LICENSE)
 
 
                                  Apache License
@@ -8239,6 +8239,7 @@ Package                           License       Copyright
 @lcdp/offline-plugin              MIT           Le Comptoir Des Pharmacies <webmaster@lecomptoirdespharmacies.fr>
 @mdi/font                         Apache-2.0    Austin Andrews
 @vue/compiler-sfc                 MIT           Evan You
+@vue/language-server              MIT           n/a
 @vvo/tzdb                         MIT           Vincent Voyer <vincent@codeagain.com>
 axios                             MIT           Matt Zabriskie
 axios-mock-adapter                MIT           Colin Timmermans <colintimmermans@gmail.com>
