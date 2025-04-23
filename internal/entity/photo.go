@@ -126,6 +126,7 @@ func NewUserPhoto(stackable bool, userUid string) Photo {
 		LensID:       UnknownLens.ID,
 		CellID:       UnknownLocation.ID,
 		PlaceID:      UnknownPlace.ID,
+		TimeZone:     tz.Local,
 		Camera:       &UnknownCamera,
 		Lens:         &UnknownLens,
 		Cell:         &UnknownLocation,

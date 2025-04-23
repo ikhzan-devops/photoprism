@@ -2,13 +2,13 @@ package meta
 
 import (
 	"testing"
-	"time"
 
 	"github.com/stretchr/testify/assert"
 
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/media/projection"
 	"github.com/photoprism/photoprism/pkg/media/video"
+	"github.com/photoprism/photoprism/pkg/time/tz"
 )
 
 func TestJSON(t *testing.T) {
@@ -166,7 +166,7 @@ func TestJSON(t *testing.T) {
 		assert.Equal(t, "2020-05-11 14:18:35 +0000 UTC", data.TakenAtLocal.String())
 		assert.Equal(t, "2020-05-11 14:18:35 +0000 UTC", data.TakenAt.String())
 		assert.Equal(t, 0, data.TakenNs)
-		assert.Equal(t, time.UTC.String(), data.TimeZone)
+		assert.Equal(t, tz.UTC, data.TimeZone)
 		assert.Equal(t, "", data.TimeOffset)
 		assert.Equal(t, 270, data.Width)
 		assert.Equal(t, 480, data.Height)
@@ -1072,7 +1072,7 @@ func TestJSON(t *testing.T) {
 
 		assert.Equal(t, "2021-07-12T22:56:37Z", data.TakenAt.Format("2006-01-02T15:04:05Z"))
 		assert.Equal(t, "2021-07-12T22:56:37Z", data.TakenAtLocal.Format("2006-01-02T15:04:05Z"))
-		assert.Equal(t, time.UTC.String(), data.TimeZone)
+		assert.Equal(t, tz.UTC, data.TimeZone)
 		assert.Equal(t, 1080, data.Height)
 		assert.Equal(t, 1920, data.Width)
 		assert.Equal(t, 0.0, data.Lat)
@@ -1090,7 +1090,7 @@ func TestJSON(t *testing.T) {
 
 		assert.Equal(t, "2021-07-06T13:51:36Z", data.TakenAt.Format("2006-01-02T15:04:05Z"))
 		assert.Equal(t, "2021-07-06T13:51:36Z", data.TakenAtLocal.Format("2006-01-02T15:04:05Z"))
-		assert.Equal(t, time.UTC.String(), data.TimeZone)
+		assert.Equal(t, tz.UTC, data.TimeZone)
 		assert.Equal(t, 1080, data.Height)
 		assert.Equal(t, 1920, data.Width)
 		assert.Equal(t, 0.0, data.Lat)

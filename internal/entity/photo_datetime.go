@@ -77,22 +77,24 @@ func (m *Photo) SetTakenAt(utc, local time.Time, zone, source string) {
 	m.TakenAt = utc
 	m.TakenAtLocal = local
 	m.TakenSrc = source
+	m.TimeZone = tz.Name(m.TimeZone)
 
-	if zone == time.UTC.String() && m.TimeZone != tz.Local {
-		// Location exists, set local time from UTC.
+	if zone == tz.UTC && m.TimeZone != tz.Local {
+		// Set local time from UTC and keep existing time zone.
 		m.TakenAtLocal = m.GetTakenAtLocal()
 	} else if zone != tz.Local {
 		// Apply new time zone.
 		m.TimeZone = zone
-		m.TakenAt = m.GetTakenAt()
-	} else if m.TimeZoneUTC() {
-		m.TimeZone = zone
-		// Keep UTC?
+
 		if m.TimeZoneUTC() {
 			m.TakenAtLocal = utc
+		} else {
+			m.TakenAt = m.GetTakenAt()
 		}
-	} else if m.TimeZone != tz.Local {
-		// Apply existing time zone.
+	} else if m.TimeZoneUTC() {
+		m.TakenAtLocal = utc
+	} else if !m.TimeZoneLocal() {
+		// Keep existing time zone.
 		m.TakenAt = m.GetTakenAt()
 	}
 
@@ -102,6 +104,11 @@ func (m *Photo) SetTakenAt(utc, local time.Time, zone, source string) {
 // TimeZoneUTC tests if the current time zone is UTC.
 func (m *Photo) TimeZoneUTC() bool {
 	return tz.IsUTC(m.TimeZone)
+}
+
+// TimeZoneLocal tests if the current time zone is Local.
+func (m *Photo) TimeZoneLocal() bool {
+	return tz.IsLocal(m.TimeZone)
 }
 
 // UpdateTimeZone updates the time zone.

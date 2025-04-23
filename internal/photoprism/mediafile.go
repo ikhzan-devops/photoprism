@@ -189,7 +189,7 @@ func (m *MediaFile) TakenAt() (time.Time, string) {
 		return m.takenAt, m.takenAtSrc
 	}
 
-	// Otherwiese, try to determine creation time from file name and path.
+	// Otherwise, try to determine creation time from file name and path.
 	if nameTime := txt.DateFromFilePath(m.fileName); !nameTime.IsZero() {
 		m.takenAt = nameTime
 		m.takenAtSrc = entity.SrcName

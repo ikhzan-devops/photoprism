@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
-	"time"
 
 	"github.com/gin-gonic/gin"
 
@@ -19,6 +18,7 @@ import (
 	"github.com/photoprism/photoprism/pkg/i18n"
 	"github.com/photoprism/photoprism/pkg/media/http/header"
 	"github.com/photoprism/photoprism/pkg/rnd"
+	"github.com/photoprism/photoprism/pkg/time/tz"
 	"github.com/photoprism/photoprism/pkg/time/unix"
 	"github.com/photoprism/photoprism/pkg/txt"
 )
@@ -184,8 +184,8 @@ func OIDCRedirect(router *gin.RouterGroup) {
 			user.Settings().UILanguage = clean.Locale(userInfo.Locale.String(), user.Settings().UILanguage)
 
 			// Update UI timezone.
-			if tz := userInfo.Zoneinfo; tz != "" && tz != time.UTC.String() {
-				user.Settings().UITimeZone = tz
+			if zone := userInfo.Zoneinfo; zone != "" && zone != tz.UTC {
+				user.Settings().UITimeZone = zone
 			}
 
 			// Update user location, if available.

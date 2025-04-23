@@ -214,7 +214,7 @@ func (data *Data) Exiftool(jsonData []byte, originalName string) (err error) {
 
 	// Fallback to GPS UTC Time?
 	if data.TakenAt.IsZero() && data.TakenAtLocal.IsZero() && !data.TakenGps.IsZero() {
-		data.TimeZone = time.UTC.String()
+		data.TimeZone = tz.UTC
 		data.TakenAt = data.TakenGps.UTC()
 		data.TakenAtLocal = time.Time{}
 	}
@@ -236,7 +236,7 @@ func (data *Data) Exiftool(jsonData []byte, originalName string) (err error) {
 		// Assume default time zone for MP4 & Quicktime videos is UTC.
 		// see https://exiftool.org/TagNames/QuickTime.html
 		log.Debugf("metadata: default time zone for %s is UTC (%s)", logName, clean.Log(mt))
-		data.TimeZone = time.UTC.String()
+		data.TimeZone = tz.UTC
 		data.TakenAt = data.TakenAt.UTC()
 		data.TakenAtLocal = time.Time{}
 	}

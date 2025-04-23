@@ -4,11 +4,10 @@ import (
 	"fmt"
 	"path/filepath"
 	"runtime/debug"
-	"time"
-
-	"github.com/photoprism/photoprism/pkg/fs"
 
 	"github.com/photoprism/photoprism/pkg/clean"
+	"github.com/photoprism/photoprism/pkg/fs"
+	"github.com/photoprism/photoprism/pkg/time/tz"
 )
 
 // XMP parses an XMP file and returns a Data struct.
@@ -68,7 +67,7 @@ func (data *Data) XMP(fileName string) (err error) {
 	if takenAt := doc.TakenAt(data.TimeZone); !takenAt.IsZero() {
 		data.TakenAt = takenAt.UTC()
 		if data.TimeZone == "" {
-			data.TimeZone = time.UTC.String()
+			data.TimeZone = tz.UTC
 		}
 	}
 

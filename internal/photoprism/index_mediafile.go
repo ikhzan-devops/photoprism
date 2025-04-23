@@ -19,6 +19,7 @@ import (
 	"github.com/photoprism/photoprism/pkg/media"
 	"github.com/photoprism/photoprism/pkg/media/video"
 	"github.com/photoprism/photoprism/pkg/rnd"
+	"github.com/photoprism/photoprism/pkg/time/tz"
 	"github.com/photoprism/photoprism/pkg/txt"
 	"github.com/photoprism/photoprism/pkg/txt/clip"
 )
@@ -792,11 +793,11 @@ func (ind *Index) UserMediaFile(m *MediaFile, o IndexOptions, originalName, phot
 	if m.IsMedia() && entity.SrcPriority[photo.TakenSrc] <= entity.SrcPriority[entity.SrcName] {
 		// Try to extract time from original file name first.
 		if taken := txt.DateFromFilePath(photo.OriginalName); !taken.IsZero() {
-			photo.SetTakenAt(taken, taken, "", entity.SrcName)
-		} else if taken, takenSrc := m.TakenAt(); takenSrc == entity.SrcName {
-			photo.SetTakenAt(taken, taken, "", entity.SrcName)
-		} else if !taken.IsZero() {
-			photo.SetTakenAt(taken, taken, time.UTC.String(), takenSrc)
+			photo.SetTakenAt(taken, taken, tz.Local, entity.SrcName)
+		} else if takenAt, takenSrc := m.TakenAt(); takenSrc == entity.SrcName {
+			photo.SetTakenAt(takenAt, takenAt, tz.Local, entity.SrcName)
+		} else if !takenAt.IsZero() {
+			photo.SetTakenAt(takenAt, takenAt, tz.UTC, takenSrc)
 		}
 	}
 

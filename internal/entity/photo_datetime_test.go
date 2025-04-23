@@ -145,7 +145,7 @@ func TestPhoto_SetTakenAt(t *testing.T) {
 		assert.Equal(t, time.Date(2013, 11, 11, 9, 7, 18, 0, time.UTC), m.TakenAt)
 		assert.Equal(t, time.Date(2013, 11, 11, 9, 7, 18, 0, time.UTC), m.TakenAtLocal)
 	})
-	t.Run("SuccessLocalEmpty", func(t *testing.T) {
+	t.Run("LocalIsZero", func(t *testing.T) {
 		m := PhotoFixtures.Get("Photo15")
 		assert.Equal(t, time.Date(2013, 11, 11, 9, 7, 18, 0, time.UTC), m.TakenAt)
 		assert.Equal(t, time.Date(2013, 11, 11, 9, 7, 18, 0, time.UTC), m.TakenAtLocal)
@@ -154,32 +154,53 @@ func TestPhoto_SetTakenAt(t *testing.T) {
 		assert.Equal(t, time.Date(2019, 12, 11, 9, 7, 18, 0, time.UTC), m.TakenAt)
 		assert.Equal(t, time.Date(2019, 12, 11, 9, 7, 18, 0, time.UTC), m.TakenAtLocal)
 	})
-	t.Run("SkipUpdate", func(t *testing.T) {
+	t.Run("Ignore", func(t *testing.T) {
 		photo := &Photo{TakenAt: time.Date(2013, 11, 11, 9, 7, 18, 0, time.UTC)}
 		photo.SetTakenAt(time.Date(2014, 12, 11, 9, 7, 18, 0, time.UTC),
 			time.Date(2014, 12, 11, 10, 7, 18, 0, time.UTC), "", SrcAuto)
 		assert.Equal(t, time.Date(2013, 11, 11, 9, 7, 18, 0, time.UTC), photo.TakenAt)
 	})
-	t.Run("LocalFromUTC", func(t *testing.T) {
+	t.Run("SetFromUTC", func(t *testing.T) {
 		photo := &Photo{TakenAt: time.Date(2015, 11, 11, 9, 7, 18, 0, time.UTC), TimeZone: "Europe/Berlin"}
 		photo.SetTakenAt(time.Date(2014, 12, 11, 9, 7, 18, 0, time.UTC),
-			time.Date(2014, 12, 11, 10, 7, 18, 0, time.UTC), time.UTC.String(), SrcManual)
+			time.Date(2014, 12, 11, 10, 7, 18, 0, time.UTC), tz.UTC, SrcManual)
+		assert.Equal(t, "Europe/Berlin", photo.TimeZone)
 		assert.Equal(t, time.Date(2014, 12, 11, 9, 7, 18, 0, time.UTC), photo.TakenAt)
 		assert.Equal(t, time.Date(2014, 12, 11, 10, 07, 18, 0, time.UTC), photo.TakenAtLocal)
 	})
-	t.Run("KeepUTC", func(t *testing.T) {
-		photo := &Photo{TakenAt: time.Date(2015, 11, 11, 9, 7, 18, 0, time.UTC), TimeZone: time.UTC.String()}
+	t.Run("SetUtc", func(t *testing.T) {
+		photo := &Photo{TakenAt: time.Date(2015, 11, 11, 9, 7, 18, 0, time.UTC), TimeZone: tz.UTC}
 		photo.SetTakenAt(time.Date(2014, 12, 11, 9, 7, 18, 0, time.UTC),
-			time.Date(2014, 12, 11, 10, 7, 18, 0, time.UTC), time.UTC.String(), SrcManual)
+			time.Date(2014, 12, 11, 10, 7, 18, 0, time.UTC), tz.UTC, SrcManual)
+		assert.Equal(t, tz.UTC, photo.TimeZone)
 		assert.Equal(t, time.Date(2014, 12, 11, 9, 7, 18, 0, time.UTC), photo.TakenAt)
 		assert.Equal(t, time.Date(2014, 12, 11, 9, 07, 18, 0, time.UTC), photo.TakenAtLocal)
 	})
-	t.Run("UTCToLocal", func(t *testing.T) {
-		photo := &Photo{TakenAt: time.Date(2015, 11, 11, 9, 7, 18, 0, time.UTC), TimeZone: time.UTC.String()}
+	t.Run("KeepUtc", func(t *testing.T) {
+		photo := &Photo{TakenAt: time.Date(2015, 11, 11, 9, 7, 18, 0, time.UTC), TimeZone: tz.UTC}
 		photo.SetTakenAt(time.Date(2014, 12, 11, 9, 7, 18, 0, time.UTC),
 			time.Date(2014, 12, 11, 10, 7, 18, 0, time.UTC), "", SrcManual)
+		assert.Equal(t, tz.UTC, photo.TimeZone)
+		assert.Equal(t, time.Date(2014, 12, 11, 9, 7, 18, 0, time.UTC), photo.TakenAt)
+		assert.Equal(t, time.Date(2014, 12, 11, 9, 7, 18, 0, time.UTC), photo.TakenAtLocal)
+	})
+	t.Run("NoTimeZone", func(t *testing.T) {
+		photo := &Photo{TakenAt: time.Date(2015, 11, 11, 9, 7, 18, 0, time.UTC), TimeZone: ""}
+		photo.SetTakenAt(time.Date(2014, 12, 11, 9, 7, 18, 0, time.UTC),
+			time.Date(2014, 12, 11, 10, 7, 18, 0, time.UTC), "", SrcMeta)
+		assert.Equal(t, tz.Local, photo.TimeZone)
 		assert.Equal(t, time.Date(2014, 12, 11, 9, 7, 18, 0, time.UTC), photo.TakenAt)
 		assert.Equal(t, time.Date(2014, 12, 11, 10, 7, 18, 0, time.UTC), photo.TakenAtLocal)
+		photo.SetTakenAt(time.Date(2014, 12, 11, 9, 7, 18, 0, time.UTC),
+			time.Date(2014, 12, 11, 10, 7, 18, 0, time.UTC), tz.Local, SrcMeta)
+		assert.Equal(t, tz.Local, photo.TimeZone)
+		assert.Equal(t, time.Date(2014, 12, 11, 9, 7, 18, 0, time.UTC), photo.TakenAt)
+		assert.Equal(t, time.Date(2014, 12, 11, 10, 7, 18, 0, time.UTC), photo.TakenAtLocal)
+		photo.SetTakenAt(time.Date(2014, 12, 11, 9, 7, 18, 0, time.UTC),
+			time.Date(2014, 12, 11, 10, 7, 18, 0, time.UTC), tz.UTC, SrcMeta)
+		assert.Equal(t, tz.UTC, photo.TimeZone)
+		assert.Equal(t, time.Date(2014, 12, 11, 9, 7, 18, 0, time.UTC), photo.TakenAt)
+		assert.Equal(t, time.Date(2014, 12, 11, 9, 7, 18, 0, time.UTC), photo.TakenAtLocal)
 	})
 }
 
