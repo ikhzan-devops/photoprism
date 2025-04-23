@@ -20,6 +20,7 @@ import (
 	"github.com/photoprism/photoprism/pkg/media/video"
 	"github.com/photoprism/photoprism/pkg/rnd"
 	"github.com/photoprism/photoprism/pkg/txt"
+	"github.com/photoprism/photoprism/pkg/txt/clip"
 )
 
 // MediaFile indexes a single media file.
@@ -378,7 +379,7 @@ func (ind *Index) UserMediaFile(m *MediaFile, o IndexOptions, originalName, phot
 		// Update color information, if available.
 		if color, colorErr := m.Colors(Config().ThumbCachePath()); colorErr != nil {
 			log.Debugf("%s while detecting colors", colorErr.Error())
-			file.FileError = txt.Clip(colorErr.Error(), txt.ClipError)
+			file.FileError = clip.Chars(colorErr.Error(), txt.ClipError)
 			file.FilePrimary = false
 		} else {
 			file.FileMainColor = color.MainColor.Name()
@@ -484,7 +485,7 @@ func (ind *Index) UserMediaFile(m *MediaFile, o IndexOptions, originalName, phot
 			}
 		} else {
 			log.Warn(dataErr.Error())
-			file.FileError = txt.Clip(dataErr.Error(), txt.ClipError)
+			file.FileError = clip.Chars(dataErr.Error(), txt.ClipError)
 		}
 	case m.IsRaw(), m.IsImage():
 		if data := m.MetaData(); data.Error == nil {

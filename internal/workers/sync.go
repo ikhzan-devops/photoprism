@@ -13,6 +13,7 @@ import (
 	"github.com/photoprism/photoprism/internal/mutex"
 	"github.com/photoprism/photoprism/internal/service"
 	"github.com/photoprism/photoprism/pkg/txt"
+	"github.com/photoprism/photoprism/pkg/txt/clip"
 )
 
 // Sync represents a sync worker.
@@ -124,7 +125,7 @@ func (w *Sync) Start() (err error) {
 		case entity.SyncStatusUpload:
 			if complete, uploadErr := w.upload(a); uploadErr != nil {
 				accErrors++
-				accError = txt.Clip(uploadErr.Error(), txt.ClipError)
+				accError = clip.Chars(uploadErr.Error(), txt.ClipError)
 				syncStatus = entity.SyncStatusRefresh
 			} else if complete {
 				synced = true

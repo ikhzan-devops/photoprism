@@ -13,6 +13,7 @@ import (
 	"github.com/photoprism/photoprism/internal/service/webdav"
 	"github.com/photoprism/photoprism/pkg/fs"
 	"github.com/photoprism/photoprism/pkg/txt"
+	"github.com/photoprism/photoprism/pkg/txt/clip"
 )
 
 const (
@@ -90,7 +91,7 @@ func (m *Service) LogErr(err error) error {
 	}
 
 	// Update error message and increase count.
-	m.AccError = txt.Clip(err.Error(), txt.ClipError)
+	m.AccError = clip.Chars(err.Error(), txt.ClipError)
 	m.AccErrors++
 
 	// Disable sharing when retry limit is reached.
