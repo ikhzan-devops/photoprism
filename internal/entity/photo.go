@@ -19,6 +19,7 @@ import (
 	"github.com/photoprism/photoprism/pkg/media"
 	"github.com/photoprism/photoprism/pkg/react"
 	"github.com/photoprism/photoprism/pkg/rnd"
+	"github.com/photoprism/photoprism/pkg/time/tz"
 	"github.com/photoprism/photoprism/pkg/txt"
 )
 
@@ -629,6 +630,11 @@ func (m *Photo) NormalizeValues() (normalized bool) {
 		m.CaptionSrc = m.DescriptionSrc
 		m.PhotoDescription = ""
 		m.DescriptionSrc = ""
+		normalized = true
+	}
+
+	if timeZone := tz.Name(m.TimeZone); timeZone != m.TimeZone {
+		m.TimeZone = timeZone
 		normalized = true
 	}
 
