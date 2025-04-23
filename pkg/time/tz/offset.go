@@ -148,8 +148,8 @@ func UtcOffset(utc, local time.Time, offset string) string {
 	if local.IsZero() {
 		if _, sec := utc.Zone(); sec == 0 {
 			return ""
-		} else {
-			return fmt.Sprintf("UTC%+d", sec/3600)
+		} else if h := sec / 3600; h != 0 && h >= -12 && h <= 12 {
+			return fmt.Sprintf("UTC%+d", h)
 		}
 	}
 
@@ -163,9 +163,9 @@ func UtcOffset(utc, local time.Time, offset string) string {
 	}
 
 	// Check if time difference is within expected range (hours).
-	if h := int(d); h == 0 || h < -12 || h > 12 {
-		return ""
-	} else {
+	if h := int(d); h != 0 && h >= -12 && h <= 12 {
 		return fmt.Sprintf("UTC%+d", h)
 	}
+
+	return ""
 }

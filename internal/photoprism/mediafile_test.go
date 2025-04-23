@@ -122,8 +122,9 @@ func TestMediaFile_TakenAt(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		date, src := mediaFile.TakenAt()
+		date, local, src := mediaFile.TakenAt()
 		assert.Equal(t, "2018-04-12 19:24:49 +0000 UTC", date.String())
+		assert.Equal(t, "2018-04-12 19:24:49 +0000 UTC", local.String())
 		assert.Equal(t, entity.SrcName, src)
 	})
 	t.Run("testdata/2018-04-12 19_24_49.jpg", func(t *testing.T) {
@@ -132,8 +133,9 @@ func TestMediaFile_TakenAt(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		date, src := mediaFile.TakenAt()
+		date, local, src := mediaFile.TakenAt()
 		assert.Equal(t, "2018-04-12 19:24:49 +0000 UTC", date.String())
+		assert.Equal(t, "2018-04-12 19:24:49 +0000 UTC", local.String())
 		assert.Equal(t, entity.SrcName, src)
 	})
 	t.Run("telegram_2020-01-30_09-57-18.jpg", func(t *testing.T) {
@@ -142,8 +144,9 @@ func TestMediaFile_TakenAt(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		date, src := mediaFile.TakenAt()
+		date, local, src := mediaFile.TakenAt()
 		assert.Equal(t, "2020-01-30 09:57:18 +0000 UTC", date.String())
+		assert.Equal(t, "2020-01-30 09:57:18 +0000 UTC", local.String())
 		assert.Equal(t, entity.SrcName, src)
 	})
 	t.Run("Screenshot 2019-05-21 at 10.45.52.png", func(t *testing.T) {
@@ -152,8 +155,9 @@ func TestMediaFile_TakenAt(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		date, src := mediaFile.TakenAt()
+		date, local, src := mediaFile.TakenAt()
 		assert.Equal(t, "2019-05-21 10:45:52 +0000 UTC", date.String())
+		assert.Equal(t, "2019-05-21 10:45:52 +0000 UTC", local.String())
 		assert.Equal(t, entity.SrcName, src)
 	})
 	t.Run("iphone_7.heic", func(t *testing.T) {
@@ -162,8 +166,9 @@ func TestMediaFile_TakenAt(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		date, src := mediaFile.TakenAt()
+		date, local, src := mediaFile.TakenAt()
 		assert.Equal(t, "2018-09-10 03:16:13 +0000 UTC", date.String())
+		assert.Equal(t, "2018-09-10 03:16:13 +0000 UTC", local.String())
 		assert.Equal(t, entity.SrcMeta, src)
 	})
 	t.Run("canon_eos_6d.dng", func(t *testing.T) {
@@ -172,8 +177,9 @@ func TestMediaFile_TakenAt(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		date, src := mediaFile.TakenAt()
+		date, local, src := mediaFile.TakenAt()
 		assert.Equal(t, "2019-06-06 07:29:51 +0000 UTC", date.String())
+		assert.Equal(t, "2019-06-06 07:29:51 +0000 UTC", local.String())
 		assert.Equal(t, entity.SrcMeta, src)
 	})
 	t.Run("elephants.jpg", func(t *testing.T) {
@@ -182,8 +188,9 @@ func TestMediaFile_TakenAt(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		date, src := mediaFile.TakenAt()
+		date, local, src := mediaFile.TakenAt()
 		assert.Equal(t, "2013-11-26 13:53:55 +0000 UTC", date.String())
+		assert.Equal(t, "2013-11-26 13:53:55 +0000 UTC", local.String())
 		assert.Equal(t, entity.SrcMeta, src)
 	})
 	t.Run("dog_created_1919.jpg", func(t *testing.T) {
@@ -192,8 +199,9 @@ func TestMediaFile_TakenAt(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		date, src := mediaFile.TakenAt()
+		date, local, src := mediaFile.TakenAt()
 		assert.Equal(t, "1919-05-04 05:59:26 +0000 UTC", date.String())
+		assert.Equal(t, "1919-05-04 05:59:26 +0000 UTC", local.String())
 		assert.Equal(t, entity.SrcMeta, src)
 	})
 }

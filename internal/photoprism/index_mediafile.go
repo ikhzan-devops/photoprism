@@ -794,10 +794,10 @@ func (ind *Index) UserMediaFile(m *MediaFile, o IndexOptions, originalName, phot
 		// Try to extract time from original file name first.
 		if taken := txt.DateFromFilePath(photo.OriginalName); !taken.IsZero() {
 			photo.SetTakenAt(taken, taken, tz.Local, entity.SrcName)
-		} else if takenAt, takenSrc := m.TakenAt(); takenSrc == entity.SrcName {
-			photo.SetTakenAt(takenAt, takenAt, tz.Local, entity.SrcName)
-		} else if !takenAt.IsZero() {
-			photo.SetTakenAt(takenAt, takenAt, tz.UTC, takenSrc)
+		} else if takenAt, takenAtLocal, takenSrc := m.TakenAt(); takenSrc == entity.SrcName {
+			photo.SetTakenAt(takenAt, takenAtLocal, tz.Local, entity.SrcName)
+		} else if !takenAt.IsZero() && !takenAtLocal.IsZero() {
+			photo.SetTakenAt(takenAt, takenAtLocal, tz.Local, takenSrc)
 		}
 	}
 

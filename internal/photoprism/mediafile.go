@@ -49,6 +49,7 @@ type MediaFile struct {
 	mimeType         string
 	contentType      string
 	takenAt          time.Time
+	takenAtLocal     time.Time
 	takenAtSrc       string
 	hash             string
 	checksum         string
@@ -163,40 +164,41 @@ func (m *MediaFile) FileSize() int64 {
 
 // DateCreated returns the media creation time in UTC.
 func (m *MediaFile) DateCreated() time.Time {
-	takenAt, _ := m.TakenAt()
+	takenAt, _, _ := m.TakenAt()
 
 	return takenAt
 }
 
 // TakenAt returns the media creation time in UTC and the source from which it originates.
-func (m *MediaFile) TakenAt() (time.Time, string) {
+func (m *MediaFile) TakenAt() (utc time.Time, local time.Time, source string) {
 	// Check if creation time has been cached.
 	if !m.takenAt.IsZero() {
-		return m.takenAt, m.takenAtSrc
+		return m.takenAt, m.takenAtLocal, m.takenAtSrc
 	}
 
-	m.takenAt = time.Now().UTC()
+	m.takenAtLocal = time.Now().Truncate(time.Second).Local()
+	m.takenAt = m.takenAtLocal.UTC()
 
 	// First try to extract the creation time from the file metadata,
 	data := m.MetaData()
 
 	if data.Error == nil && !data.TakenAt.IsZero() && data.TakenAt.Year() > 1000 {
-		m.takenAt = data.TakenAt.UTC()
+		m.takenAtLocal = data.TakenAt.Truncate(time.Second).Local()
+		m.takenAt = m.takenAtLocal.UTC()
 		m.takenAtSrc = entity.SrcMeta
 
 		log.Infof("media: %s was taken at %s (%s)", clean.Log(filepath.Base(m.fileName)), m.takenAt.String(), m.takenAtSrc)
 
-		return m.takenAt, m.takenAtSrc
+		return m.takenAt, m.takenAtLocal, m.takenAtSrc
 	}
 
 	// Otherwise, try to determine creation time from file name and path.
 	if nameTime := txt.DateFromFilePath(m.fileName); !nameTime.IsZero() {
-		m.takenAt = nameTime
+		m.takenAtLocal = nameTime.Truncate(time.Second).Local()
+		m.takenAt = nameTime.Truncate(time.Second).UTC()
 		m.takenAtSrc = entity.SrcName
-
 		log.Infof("media: %s was taken at %s (%s)", clean.Log(filepath.Base(m.fileName)), m.takenAt.String(), m.takenAtSrc)
-
-		return m.takenAt, m.takenAtSrc
+		return m.takenAt, m.takenAtLocal, m.takenAtSrc
 	}
 
 	m.takenAtSrc = entity.SrcAuto
@@ -206,16 +208,15 @@ func (m *MediaFile) TakenAt() (time.Time, string) {
 	if err != nil {
 		log.Warnf("media: %s (stat call failed)", err.Error())
 		log.Infof("media: %s was taken at %s (unknown mod time)", clean.Log(filepath.Base(m.fileName)), m.takenAt.String())
-
-		return m.takenAt, m.takenAtSrc
+		return m.takenAt, m.takenAtLocal, m.takenAtSrc
 	}
 
 	// Use file modification time as fallback.
-	m.takenAt = fileInfo.ModTime().UTC()
-
+	m.takenAtLocal = fileInfo.ModTime().Truncate(time.Second).Local()
+	m.takenAt = m.takenAtLocal.UTC()
 	log.Infof("media: %s was taken at %s (file mod time)", clean.Log(filepath.Base(m.fileName)), m.takenAt.String())
 
-	return m.takenAt, m.takenAtSrc
+	return m.takenAt, m.takenAtLocal, m.takenAtSrc
 }
 
 func (m *MediaFile) HasTimeAndPlace() bool {
