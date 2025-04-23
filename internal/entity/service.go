@@ -90,7 +90,7 @@ func (m *Service) LogErr(err error) error {
 	}
 
 	// Update error message and increase count.
-	m.AccError = err.Error()
+	m.AccError = txt.Clip(err.Error(), txt.ClipError)
 	m.AccErrors++
 
 	// Disable sharing when retry limit is reached.

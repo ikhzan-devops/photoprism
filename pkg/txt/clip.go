@@ -21,6 +21,7 @@ const (
 	ClipDefault   = 160
 	ClipName      = 160
 	ClipLongName  = 200
+	ClipError     = 255
 	ClipEmail     = 255
 	ClipPath      = 500
 	ClipComment   = 512

@@ -12,6 +12,7 @@ import (
 	"github.com/photoprism/photoprism/internal/form"
 	"github.com/photoprism/photoprism/internal/mutex"
 	"github.com/photoprism/photoprism/internal/service"
+	"github.com/photoprism/photoprism/pkg/txt"
 )
 
 // Sync represents a sync worker.
@@ -121,9 +122,9 @@ func (w *Sync) Start() (err error) {
 				}
 			}
 		case entity.SyncStatusUpload:
-			if complete, err := w.upload(a); err != nil {
+			if complete, uploadErr := w.upload(a); uploadErr != nil {
 				accErrors++
-				accError = err.Error()
+				accError = txt.Clip(uploadErr.Error(), txt.ClipError)
 				syncStatus = entity.SyncStatusRefresh
 			} else if complete {
 				synced = true
@@ -144,12 +145,12 @@ func (w *Sync) Start() (err error) {
 		}
 
 		// Only update the following fields to avoid overwriting other settings
-		if err := a.Updates(map[string]interface{}{
+		if updateErr := a.Updates(map[string]interface{}{
 			"AccError":   accError,
 			"AccErrors":  accErrors,
 			"SyncStatus": syncStatus,
-			"SyncDate":   syncDate}); err != nil {
-			w.logErr(err)
+			"SyncDate":   syncDate}); updateErr != nil {
+			w.logErr(updateErr)
 		} else if synced {
 			event.Publish("sync.synced", event.Data{"account": a})
 		}
