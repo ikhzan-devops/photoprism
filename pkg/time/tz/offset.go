@@ -10,32 +10,8 @@ import (
 // Offset returns the UTC time offset in seconds or an error if it is invalid.
 func Offset(utcOffset string) (seconds int, err error) {
 	switch utcOffset {
-	case "Z", "GMT", "Etc/GMT", "UTC", "UTC+0", "UTC-0", "UTC+00:00", "UTC-00:00":
+	case "Z", "UTC", "UTC+0", "UTC-0", "UTC+00:00", "UTC-00:00":
 		seconds = 0
-	case "-12", "-12:00", "UTC-12", "UTC-12:00":
-		seconds = -12 * 3600
-	case "-11", "-11:00", "UTC-11", "UTC-11:00":
-		seconds = -11 * 3600
-	case "-10", "-10:00", "UTC-10", "UTC-10:00":
-		seconds = -10 * 3600
-	case "-9", "-09", "-09:00", "UTC-9", "UTC-09:00":
-		seconds = -9 * 3600
-	case "-8", "-08", "-08:00", "UTC-8", "UTC-08:00":
-		seconds = -8 * 3600
-	case "-7", "-07", "-07:00", "UTC-7", "UTC-07:00":
-		seconds = -7 * 3600
-	case "-6", "-06", "-06:00", "UTC-6", "UTC-06:00":
-		seconds = -6 * 3600
-	case "-5", "-05", "-05:00", "UTC-5", "UTC-05:00":
-		seconds = -5 * 3600
-	case "-4", "-04", "-04:00", "UTC-4", "UTC-04:00":
-		seconds = -4 * 3600
-	case "-3", "-03", "-03:00", "UTC-3", "UTC-03:00":
-		seconds = -3 * 3600
-	case "-2", "-02", "-02:00", "UTC-2", "UTC-02:00":
-		seconds = -2 * 3600
-	case "-1", "-01", "-01:00", "UTC-1", "UTC-01:00":
-		seconds = -1 * 3600
 	case "01:00", "+1", "+01", "+01:00", "UTC+1", "UTC+01:00":
 		seconds = 1 * 3600
 	case "02:00", "+2", "+02", "+02:00", "UTC+2", "UTC+02:00":
@@ -60,6 +36,30 @@ func Offset(utcOffset string) (seconds int, err error) {
 		seconds = 11 * 3600
 	case "12:00", "+12", "+12:00", "UTC+12", "UTC+12:00":
 		seconds = 12 * 3600
+	case "-12", "-12:00", "UTC-12", "UTC-12:00":
+		seconds = -12 * 3600
+	case "-11", "-11:00", "UTC-11", "UTC-11:00":
+		seconds = -11 * 3600
+	case "-10", "-10:00", "UTC-10", "UTC-10:00":
+		seconds = -10 * 3600
+	case "-9", "-09", "-09:00", "UTC-9", "UTC-09:00":
+		seconds = -9 * 3600
+	case "-8", "-08", "-08:00", "UTC-8", "UTC-08:00":
+		seconds = -8 * 3600
+	case "-7", "-07", "-07:00", "UTC-7", "UTC-07:00":
+		seconds = -7 * 3600
+	case "-6", "-06", "-06:00", "UTC-6", "UTC-06:00":
+		seconds = -6 * 3600
+	case "-5", "-05", "-05:00", "UTC-5", "UTC-05:00":
+		seconds = -5 * 3600
+	case "-4", "-04", "-04:00", "UTC-4", "UTC-04:00":
+		seconds = -4 * 3600
+	case "-3", "-03", "-03:00", "UTC-3", "UTC-03:00":
+		seconds = -3 * 3600
+	case "-2", "-02", "-02:00", "UTC-2", "UTC-02:00":
+		seconds = -2 * 3600
+	case "-1", "-01", "-01:00", "UTC-1", "UTC-01:00":
+		seconds = -1 * 3600
 	default:
 		return 0, fmt.Errorf("invalid UTC offset")
 	}
