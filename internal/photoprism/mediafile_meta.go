@@ -120,12 +120,14 @@ func (m *MediaFile) MetaData() (result meta.Data) {
 			}
 		}
 
+		// Log error, if any.
 		if err != nil {
 			m.metaData.Error = err
 			log.Debugf("%s in %s", err, clean.Log(m.BaseName()))
-		} else if m.metaData.TimeZone == "" {
-			m.metaData.TimeZone = tz.Local
 		}
+
+		// Normalize time zone name.
+		m.metaData.TimeZone = tz.Name(m.metaData.TimeZone)
 	})
 
 	return m.metaData
