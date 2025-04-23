@@ -28,8 +28,8 @@ func TruncateUTC(t time.Time) time.Time {
 // LocationUTC returns the time at the locale with the time zone set to UTC.
 func LocationUTC(t time.Time, loc *time.Location) (result time.Time) {
 	var err error
-	if result, err = time.ParseInLocation("2006-01-02T15:04:05", t.In(loc).Format("2006-01-02T15:04:05"), time.UTC); err != nil {
-		return result
+	if result, err = time.ParseInLocation("2006-01-02T15:04:05", t.In(loc).Format("2006-01-02T15:04:05"), time.UTC); err == nil {
+		return result.Truncate(time.Second)
 	} else {
 		return t
 	}

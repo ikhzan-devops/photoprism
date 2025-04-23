@@ -35,3 +35,23 @@ func TestTruncateUTC(t *testing.T) {
 		assert.NotEqual(t, ns, result.Nanosecond())
 	}
 }
+
+func TestLocationUTC(t *testing.T) {
+	loc := Find("Europe/Berlin")
+	now := time.Now().In(loc).UTC()
+	ns := now.Nanosecond()
+
+	t.Logf("now: %s", now.String())
+
+	result := LocationUTC(now, loc)
+
+	t.Logf("result: %s", result.String())
+
+	assert.Equal(t, TimeUTC, result.Location())
+	timeZone, _ := result.Zone()
+	assert.Equal(t, UTC, timeZone)
+	assert.Equal(t, 0, result.Nanosecond())
+	if ns > 0 {
+		assert.NotEqual(t, ns, result.Nanosecond())
+	}
+}
