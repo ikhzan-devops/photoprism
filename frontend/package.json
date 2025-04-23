@@ -38,7 +38,7 @@
     "@lcdp/offline-plugin": "^5.1.1",
     "@mdi/font": "^7.4.47",
     "@vue/compiler-sfc": "^3.5.13",
-    "@vue/language-server": "^2.2.8",
+    "@vue/language-server": "^2.2.10",
     "@vvo/tzdb": "^6.161.0",
     "axios": "^1.8.4",
     "axios-mock-adapter": "^2.1.0",
