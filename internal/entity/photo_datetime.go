@@ -69,6 +69,9 @@ func (m *Photo) SetTakenAt(utc, local time.Time, zone, source string) {
 	// Use location time zone if it has a higher priority.
 	if SrcPriority[source] < SrcPriority[m.PlaceSrc] && m.HasLatLng() {
 		if locZone := m.LocationTimeZone(); locZone != "" {
+			if zone == tz.UTC {
+				local = tz.LocationUTC(utc, tz.Find(locZone))
+			}
 			zone = locZone
 		}
 	}
