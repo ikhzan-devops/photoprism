@@ -6,9 +6,7 @@ import (
 	"runtime/debug"
 	"time"
 
-	"github.com/ugjka/go-tz/v2"
-
-	"github.com/photoprism/photoprism/pkg/txt"
+	"github.com/photoprism/photoprism/pkg/time/tz"
 )
 
 type GPhoto struct {
@@ -139,25 +137,21 @@ func (data *Data) GPhoto(jsonData []byte) (err error) {
 
 	// Set time zone and calculate UTC time.
 	if data.Lat != 0 && data.Lng != 0 {
-		zones, zoneErr := tz.GetZone(tz.Point{
-			Lat: data.Lat,
-			Lon: data.Lng,
-		})
-
-		if zoneErr == nil && len(zones) > 0 {
-			data.TimeZone = zones[0]
+		if zone := tz.Position(data.Lat, data.Lng); zone != "" {
+			data.TimeZone = zone
 		}
 
-		if !data.TakenAtLocal.IsZero() {
-			if loc := txt.TimeZone(data.TimeZone); loc == nil {
-				log.Warnf("metadata: invalid time zone %s (gphotos)", data.TimeZone)
-			} else if tl, locErr := time.ParseInLocation("2006:01:02 15:04:05", data.TakenAtLocal.Format("2006:01:02 15:04:05"), loc); locErr == nil {
+		if loc := tz.Find(data.TimeZone); !data.TakenAtLocal.IsZero() {
+			if tl, locErr := time.ParseInLocation("2006:01:02 15:04:05", data.TakenAtLocal.Format("2006:01:02 15:04:05"), loc); locErr == nil {
 				data.TakenAt = tl.UTC().Truncate(time.Second)
 			} else {
 				log.Errorf("metadata: %s (gphotos)", locErr.Error()) // this should never happen
 			}
 		}
 	}
+
+	// Normalize time zone name.
+	data.TimeZone = tz.Name(data.TimeZone)
 
 	return nil
 }

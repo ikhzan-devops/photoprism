@@ -1,4 +1,4 @@
-package txt
+package tz
 
 import (
 	"testing"
@@ -7,44 +7,52 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestTimeZone(t *testing.T) {
-	t.Run("UTC", func(t *testing.T) {
-		assert.Equal(t, time.UTC.String(), TimeZone(time.UTC.String()).String())
-		assert.Equal(t, time.UTC.String(), TimeZone("Z").String())
-		assert.Equal(t, time.UTC.String(), TimeZone("UTC").String())
-		assert.Equal(t, time.UTC, TimeZone("UTC"))
+func TestOffset(t *testing.T) {
+	t.Run("Valid", func(t *testing.T) {
+		sec, err := Offset("UTC-2")
+		assert.Equal(t, -2*3600, sec)
+		assert.NoError(t, err)
+
+		sec, err = Offset("UTC")
+		assert.Equal(t, 0, sec)
+		assert.NoError(t, err)
+
+		sec, err = Offset("UTC+1")
+		assert.Equal(t, 3600, sec)
+		assert.NoError(t, err)
+
+		sec, err = Offset("UTC+2")
+		assert.Equal(t, 2*3600, sec)
+		assert.NoError(t, err)
+
+		sec, err = Offset("UTC+12")
+		assert.Equal(t, 12*3600, sec)
+		assert.NoError(t, err)
 	})
-	t.Run("GMT", func(t *testing.T) {
-		assert.Equal(t, "GMT", TimeZone("0").String())
-		assert.Equal(t, "GMT", TimeZone("UTC+0").String())
-		assert.Equal(t, "GMT", TimeZone("UTC+00:00").String())
-	})
-	t.Run("Local", func(t *testing.T) {
-		assert.Equal(t, "Local", TimeZone("").String())
-		assert.Equal(t, time.Local, TimeZone(""))
-		assert.Equal(t, "Local", TimeZone("Local").String())
-		assert.Equal(t, time.Local, TimeZone("Local"))
-	})
-	t.Run("UTC+2", func(t *testing.T) {
-		local, err := time.Parse("2006-01-02 15:04:05 Z07:00", "2023-10-02 13:20:17 +00:00")
+	t.Run("Invalid", func(t *testing.T) {
+		sec, err := Offset("UTC-15")
+		assert.Equal(t, 0, sec)
+		assert.Error(t, err)
 
-		if err != nil {
-			t.Fatal(err)
-		}
+		sec, err = Offset("UTC--2")
+		assert.Equal(t, 0, sec)
+		assert.Error(t, err)
 
-		utc, err := time.Parse("2006-01-02 15:04:05 Z07:00", "2023-10-02 11:20:17 +00:00")
+		sec, err = Offset("UTC0")
+		assert.Equal(t, 0, sec)
+		assert.Error(t, err)
 
-		if err != nil {
-			t.Fatal(err)
-		}
+		sec, err = Offset("UTC1")
+		assert.Equal(t, 0, sec)
+		assert.Error(t, err)
 
-		timeZone := UtcOffset(utc, local, "")
+		sec, err = Offset("UTC13")
+		assert.Equal(t, 0, sec)
+		assert.Error(t, err)
 
-		assert.Equal(t, "UTC+2", timeZone)
-
-		loc := TimeZone(timeZone)
-
-		assert.Equal(t, "UTC+2", loc.String())
+		sec, err = Offset("UTC+13")
+		assert.Equal(t, 0, sec)
+		assert.Error(t, err)
 	})
 }
 
@@ -208,53 +216,16 @@ func TestUtcOffset(t *testing.T) {
 
 		assert.Equal(t, "", UtcOffset(utc, local, ""))
 	})
-}
+	t.Run("UTC+02:00", func(t *testing.T) {
+		utc, err := time.Parse("2006-01-02 15:04:05 Z07:00", "2023-10-02 13:50:17 +02:00")
 
-func TestTimeOffset(t *testing.T) {
-	t.Run("Valid", func(t *testing.T) {
-		sec, err := TimeOffset("UTC-2")
-		assert.Equal(t, -2*3600, sec)
-		assert.NoError(t, err)
+		if err != nil {
+			t.Fatal(err)
+		}
 
-		sec, err = TimeOffset("UTC")
-		assert.Equal(t, 0, sec)
-		assert.NoError(t, err)
+		result := UtcOffset(utc, time.Time{}, "")
 
-		sec, err = TimeOffset("UTC+1")
-		assert.Equal(t, 3600, sec)
-		assert.NoError(t, err)
-
-		sec, err = TimeOffset("UTC+2")
-		assert.Equal(t, 2*3600, sec)
-		assert.NoError(t, err)
-
-		sec, err = TimeOffset("UTC+12")
-		assert.Equal(t, 12*3600, sec)
-		assert.NoError(t, err)
+		assert.Equal(t, "UTC+2", result)
 	})
-	t.Run("Invalid", func(t *testing.T) {
-		sec, err := TimeOffset("UTC-15")
-		assert.Equal(t, 0, sec)
-		assert.Error(t, err)
 
-		sec, err = TimeOffset("UTC--2")
-		assert.Equal(t, 0, sec)
-		assert.Error(t, err)
-
-		sec, err = TimeOffset("UTC0")
-		assert.Equal(t, 0, sec)
-		assert.Error(t, err)
-
-		sec, err = TimeOffset("UTC1")
-		assert.Equal(t, 0, sec)
-		assert.Error(t, err)
-
-		sec, err = TimeOffset("UTC13")
-		assert.Equal(t, 0, sec)
-		assert.Error(t, err)
-
-		sec, err = TimeOffset("UTC+13")
-		assert.Equal(t, 0, sec)
-		assert.Error(t, err)
-	})
 }

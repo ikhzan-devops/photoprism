@@ -1,9 +1,8 @@
 package customize
 
 import (
-	"time"
-
 	"github.com/photoprism/photoprism/pkg/i18n"
+	"github.com/photoprism/photoprism/pkg/time/tz"
 )
 
 var (
@@ -11,5 +10,5 @@ var (
 	DefaultStartPage = "default"
 	DefaultMapsStyle = "default"
 	DefaultLanguage  = i18n.Default.Locale()
-	DefaultTimeZone  = time.Local.String()
+	DefaultTimeZone  = tz.Local
 )

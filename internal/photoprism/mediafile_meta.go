@@ -3,12 +3,12 @@ package photoprism
 import (
 	"fmt"
 	"path/filepath"
-	"time"
 
 	"github.com/photoprism/photoprism/internal/meta"
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/fs"
 	"github.com/photoprism/photoprism/pkg/media/video"
+	"github.com/photoprism/photoprism/pkg/time/tz"
 )
 
 // HasSidecarJson returns true if this file has or is a json sidecar file.
@@ -124,7 +124,7 @@ func (m *MediaFile) MetaData() (result meta.Data) {
 			m.metaData.Error = err
 			log.Debugf("%s in %s", err, clean.Log(m.BaseName()))
 		} else if m.metaData.TimeZone == "" {
-			m.metaData.TimeZone = time.Local.String()
+			m.metaData.TimeZone = tz.Local
 		}
 	})
 

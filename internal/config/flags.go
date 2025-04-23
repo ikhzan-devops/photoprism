@@ -2,7 +2,6 @@ package config
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/klauspost/cpuid/v2"
 	"github.com/urfave/cli/v2"
@@ -17,6 +16,7 @@ import (
 	"github.com/photoprism/photoprism/pkg/media"
 	"github.com/photoprism/photoprism/pkg/media/http/header"
 	"github.com/photoprism/photoprism/pkg/media/http/scheme"
+	"github.com/photoprism/photoprism/pkg/time/tz"
 	"github.com/photoprism/photoprism/pkg/txt"
 )
 
@@ -502,7 +502,7 @@ var Flags = CliFlags{
 			Name:    "default-timezone",
 			Aliases: []string{"tz"},
 			Usage:   "default time zone `NAME`, e.g. for scheduling backups",
-			Value:   time.Local.String(),
+			Value:   tz.Local,
 			EnvVars: EnvVars("DEFAULT_TIMEZONE"),
 		}}, {
 		Flag: &cli.StringFlag{

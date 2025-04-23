@@ -14,6 +14,7 @@ import (
 	"github.com/photoprism/photoprism/pkg/media"
 	"github.com/photoprism/photoprism/pkg/media/projection"
 	"github.com/photoprism/photoprism/pkg/media/video"
+	"github.com/photoprism/photoprism/pkg/time/tz"
 )
 
 func TestMediaFile_HasSidecarJson(t *testing.T) {
@@ -216,7 +217,7 @@ func TestMediaFile_Exif_Jpeg(t *testing.T) {
 		assert.Equal(t, "EF100mm f/2.8L Macro IS USM", info.LensModel)
 		assert.Equal(t, "", info.LensMake)
 		assert.Equal(t, "Local", info.TimeZone)
-		assert.Equal(t, time.Local.String(), info.TimeZone)
+		assert.Equal(t, tz.Local, info.TimeZone)
 		assert.Equal(t, "", info.Artist)
 		assert.Equal(t, 100, info.FocalLength)
 		assert.Equal(t, "1/250", info.Exposure)

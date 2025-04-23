@@ -4,9 +4,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/photoprism/photoprism/pkg/txt"
-
 	"github.com/stretchr/testify/assert"
+
+	"github.com/photoprism/photoprism/pkg/time/tz"
 )
 
 func TestPhoto_TrustedTime(t *testing.T) {
@@ -20,7 +20,7 @@ func TestPhoto_TrustedTime(t *testing.T) {
 	})
 	t.Run("MissingTimeZone", func(t *testing.T) {
 		n := Now()
-		m := Photo{ID: 1, TakenAt: n, TakenAtLocal: n, TakenSrc: SrcMeta, TimeZone: time.Local.String()}
+		m := Photo{ID: 1, TakenAt: n, TakenAtLocal: n, TakenSrc: SrcMeta, TimeZone: tz.Local}
 		assert.False(t, m.TrustedTime())
 	})
 	t.Run("SrcAuto", func(t *testing.T) {
@@ -56,8 +56,9 @@ func TestPhoto_SetTakenAt(t *testing.T) {
 	})
 	t.Run("FromName", func(t *testing.T) {
 		m := PhotoFixtures.Get("Photo15")
-		m.TimeZone = time.Local.String()
+		m.TimeZone = tz.Local
 		m.TakenSrc = SrcAuto
+		m.PlaceSrc = SrcAuto
 
 		assert.Equal(t, time.Date(2013, 11, 11, 9, 7, 18, 0, time.UTC), m.TakenAt)
 		assert.Equal(t, time.Date(2013, 11, 11, 9, 7, 18, 0, time.UTC), m.TakenAtLocal)
@@ -72,6 +73,14 @@ func TestPhoto_SetTakenAt(t *testing.T) {
 
 		assert.Equal(t, time.Date(2019, 11, 11, 15, 7, 18, 0, time.UTC), m.TakenAt)
 		assert.Equal(t, time.Date(2019, 11, 11, 10, 7, 18, 0, time.UTC), m.TakenAtLocal)
+
+		m.PlaceSrc = SrcMeta
+
+		m.SetTakenAt(time.Date(2011, 12, 11, 9, 7, 18, 0, time.UTC),
+			time.Date(2019, 11, 11, 10, 7, 18, 0, time.UTC), "America/New_York", SrcName)
+
+		assert.Equal(t, "Europe/Berlin", m.TimeZone)
+		assert.Equal(t, SrcName, m.TakenSrc)
 	})
 	t.Run("Success", func(t *testing.T) {
 		m := PhotoFixtures.Get("Photo15")
@@ -117,7 +126,7 @@ func TestPhoto_SetTakenAt(t *testing.T) {
 		m := PhotoFixtures.Get("Photo15")
 
 		timeZone := "Europe/Berlin"
-		loc := txt.TimeZone(timeZone)
+		loc := tz.Find(timeZone)
 		utcTime := time.Date(2013, 11, 11, 9, 7, 18, 0, loc)
 		localTime := utcTime
 
@@ -170,7 +179,7 @@ func TestPhoto_SetTakenAt(t *testing.T) {
 		photo.SetTakenAt(time.Date(2014, 12, 11, 9, 7, 18, 0, time.UTC),
 			time.Date(2014, 12, 11, 10, 7, 18, 0, time.UTC), "", SrcManual)
 		assert.Equal(t, time.Date(2014, 12, 11, 9, 7, 18, 0, time.UTC), photo.TakenAt)
-		assert.Equal(t, time.Date(2014, 12, 11, 9, 7, 18, 0, time.UTC), photo.TakenAtLocal)
+		assert.Equal(t, time.Date(2014, 12, 11, 10, 7, 18, 0, time.UTC), photo.TakenAtLocal)
 	})
 }
 
@@ -183,7 +192,7 @@ func TestPhoto_UpdateTimeZone(t *testing.T) {
 		takenShanghaiUtc := time.Date(2015, time.May, 17, 15, 2, 46, 0, time.UTC)
 
 		assert.Equal(t, "Local", m.TimeZone)
-		assert.Equal(t, time.Local.String(), m.TimeZone)
+		assert.Equal(t, tz.Local, m.TimeZone)
 		assert.Equal(t, takenLocal, m.TakenAt)
 		assert.Equal(t, takenLocal, m.TakenAtLocal)
 
