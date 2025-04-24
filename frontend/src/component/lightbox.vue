@@ -677,12 +677,12 @@ export default {
         nativeSource.type = model.Mime;
         nativeSource.src = this.$util.videoFormatUrl(model.Hash, format);
         video.appendChild(nativeSource);
+      } else {
+        const avcSource = document.createElement("source");
+        avcSource.type = media.ContentTypeMp4AvcMain;
+        avcSource.src = this.$util.videoFormatUrl(model.Hash, media.FormatAvc);
+        video.appendChild(avcSource);
       }
-
-      const avcSource = document.createElement("source");
-      avcSource.type = media.ContentTypeMp4AvcMain;
-      avcSource.src = this.$util.videoFormatUrl(model.Hash, media.FormatAvc);
-      video.appendChild(avcSource);
 
       if (video.remote && video.remote instanceof RemotePlayback) {
         if (!this.video.castable) {
