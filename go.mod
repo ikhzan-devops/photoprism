@@ -14,7 +14,7 @@ require (
 	github.com/esimov/pigo v1.4.6
 	github.com/gin-contrib/gzip v1.2.3
 	github.com/gin-gonic/gin v1.10.0
-	github.com/golang/geo v0.0.0-20250422092327-39c32da97703
+	github.com/golang/geo v0.0.0-20250423161548-e5eee4042175
 	github.com/google/open-location-code/go v0.0.0-20250415120251-fa6d7f9d4765
 	github.com/gorilla/websocket v1.5.3
 	github.com/gosimple/slug v1.15.0
