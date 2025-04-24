@@ -121,9 +121,9 @@ services:
       TF_CPP_MIN_LOG_LEVEL: 1                        # show TensorFlow log messages for development
       ## Video Transcoding (https://docs.photoprism.app/getting-started/advanced/transcoding/):
       # PHOTOPRISM_FFMPEG_ENCODER: "software"        # H.264/AVC encoder (software, intel, nvidia, apple, raspberry, or vaapi)
-      # PHOTOPRISM_FFMPEG_SIZE: "1920"               # video size limit in pixels (720-7680) (default: 3840)
-      # PHOTOPRISM_FFMPEG_BITRATE: "32"              # video bitrate limit in Mbit/s (default: 50)
       # LIBVA_DRIVER_NAME: "i965"                    # For Intel architectures Haswell and older which do not support QSV yet but use VAAPI instead
+      PHOTOPRISM_FFMPEG_SIZE: "1920"                 # video size limit in pixels (720-7680) (default: 3840)
+      # PHOTOPRISM_FFMPEG_BITRATE: "60"              # video bitrate limit in Mbps (default: 60)
       ## Run/install on first startup (options: update https gpu ffmpeg tensorflow davfs clitools clean):
       PHOTOPRISM_INIT: "https"
     ## Share hardware devices with FFmpeg and TensorFlow (optional):

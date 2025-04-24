@@ -117,7 +117,7 @@ services:
       NVIDIA_DRIVER_CAPABILITIES: "all"
       PHOTOPRISM_FFMPEG_ENCODER: "nvidia"            # H.264/AVC encoder (software, intel, nvidia, apple, raspberry, or vaapi)
       PHOTOPRISM_FFMPEG_SIZE: "1920"                 # video size limit in pixels (720-7680) (default: 3840)
-      PHOTOPRISM_FFMPEG_BITRATE: "50"                # video bitrate limit in Mbit/s (default: 50)
+      # PHOTOPRISM_FFMPEG_BITRATE: "60"              # video bitrate limit in Mbps (default: 60)
       ## Run/install on first startup (options: update https gpu ffmpeg tensorflow davfs clitools clean):
       PHOTOPRISM_INIT: "https tensorflow"
     ## Share hardware devices with FFmpeg and TensorFlow (optional):

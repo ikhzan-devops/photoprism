@@ -32,13 +32,13 @@ func TestConfig_FFmpegEnabled(t *testing.T) {
 
 func TestConfig_FFmpegBitrate(t *testing.T) {
 	c := NewConfig(CliTestContext())
-	assert.Equal(t, 50, c.FFmpegBitrate())
+	assert.Equal(t, 60, c.FFmpegBitrate())
 
 	c.options.FFmpegBitrate = 1000
 	assert.Equal(t, 960, c.FFmpegBitrate())
 
 	c.options.FFmpegBitrate = -5
-	assert.Equal(t, 50, c.FFmpegBitrate())
+	assert.Equal(t, 60, c.FFmpegBitrate())
 
 	c.options.FFmpegBitrate = 800
 	assert.Equal(t, 800, c.FFmpegBitrate())

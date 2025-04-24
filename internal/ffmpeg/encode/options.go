@@ -35,7 +35,7 @@ func NewVideoOptions(ffmpegBin string, encoder Encoder, sizeLimit int, bitrateLi
 	}
 
 	if bitrateLimit == "" {
-		bitrateLimit = "50M"
+		bitrateLimit = "60M"
 	}
 
 	if mapVideo == "" {

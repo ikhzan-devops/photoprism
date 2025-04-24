@@ -13,7 +13,7 @@ func TestNewOptions(t *testing.T) {
 		assert.Equal(t, FFmpegBin, opt.Bin)
 		assert.Equal(t, DefaultAvcEncoder(), opt.Encoder)
 		assert.Equal(t, 1920, opt.SizeLimit)
-		assert.Equal(t, "50M", opt.BitrateLimit)
+		assert.Equal(t, "60M", opt.BitrateLimit)
 		assert.Equal(t, "0:v:0", opt.MapVideo)
 		assert.Equal(t, "0:a:0?", opt.MapAudio)
 		assert.Equal(t, MapVideo, opt.MapVideo)
@@ -27,7 +27,7 @@ func TestOptions_VideoFilter(t *testing.T) {
 		Bin:          "",
 		Encoder:      "intel",
 		SizeLimit:    1500,
-		BitrateLimit: "50M",
+		BitrateLimit: "60M",
 		MapVideo:     "",
 		MapAudio:     "",
 		MovFlags:     "",

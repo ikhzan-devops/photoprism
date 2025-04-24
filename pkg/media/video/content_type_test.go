@@ -112,6 +112,7 @@ func TestContentType(t *testing.T) {
 
 func TestCompatible(t *testing.T) {
 	t.Run("True", func(t *testing.T) {
+		assert.True(t, Compatible(header.ContentTypeWebm, "video/webm"))
 		assert.True(t, Compatible(header.ContentTypeAv1, "video/av1"))
 		assert.True(t, Compatible(header.ContentTypeAv1, "Video/Av1"))
 		assert.True(t, Compatible(header.ContentTypeJpeg, header.ContentTypeJpeg))

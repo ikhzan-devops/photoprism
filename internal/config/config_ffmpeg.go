@@ -33,11 +33,11 @@ func (c *Config) FFmpegSize() int {
 	return thumb.VideoSize(c.options.FFmpegSize).Width
 }
 
-// FFmpegBitrate returns the ffmpeg bitrate limit in MBit/s.
+// FFmpegBitrate returns the ffmpeg bitrate limit in Mbps.
 func (c *Config) FFmpegBitrate() int {
 	switch {
 	case c.options.FFmpegBitrate <= 0:
-		return 50
+		return 60
 	case c.options.FFmpegBitrate >= 960:
 		return 960
 	default:
@@ -45,14 +45,14 @@ func (c *Config) FFmpegBitrate() int {
 	}
 }
 
-// FFmpegBitrateExceeded tests if the ffmpeg bitrate limit is exceeded.
-func (c *Config) FFmpegBitrateExceeded(mbit float64) bool {
-	if mbit <= 0 {
+// FFmpegBitrateExceeded tests if the ffmpeg bitrate limit in Mbps is exceeded.
+func (c *Config) FFmpegBitrateExceeded(bitrate float64) bool {
+	if bitrate <= 0 {
 		return false
-	} else if max := c.FFmpegBitrate(); max <= 0 {
+	} else if limit := c.FFmpegBitrate(); limit <= 0 {
 		return false
 	} else {
-		return mbit > float64(max)
+		return bitrate > float64(limit)
 	}
 }
 

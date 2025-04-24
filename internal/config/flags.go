@@ -808,8 +808,8 @@ var Flags = CliFlags{
 		Flag: &cli.IntFlag{
 			Name:    "ffmpeg-bitrate",
 			Aliases: []string{"vb"},
-			Usage:   "maximum video `BITRATE` in Mbit/s",
-			Value:   50,
+			Usage:   "maximum video `BITRATE` in Mbps",
+			Value:   60,
 			EnvVars: EnvVars("FFMPEG_BITRATE"),
 		}}, {
 		Flag: &cli.StringFlag{
