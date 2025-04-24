@@ -1,9 +1,12 @@
 package config
 
 import (
+	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+
+	"github.com/photoprism/photoprism/pkg/fs"
 )
 
 func TestConfig_BaseUri(t *testing.T) {
@@ -113,6 +116,12 @@ func TestConfig_SiteHost(t *testing.T) {
 	assert.Equal(t, "foo.bar.com:2342", c.SiteHost())
 	c.options.SiteUrl = ""
 	assert.Equal(t, "localhost:2342", c.SiteHost())
+}
+
+func TestConfig_SiteFavicon(t *testing.T) {
+	c := NewConfig(CliTestContext())
+	assert.Equal(t, "favicon.ico", filepath.Base(c.SiteFavicon()))
+	assert.True(t, fs.FileExistsNotEmpty(c.SiteFavicon()))
 }
 
 func TestConfig_SitePreview(t *testing.T) {

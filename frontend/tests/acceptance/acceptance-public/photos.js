@@ -10,7 +10,7 @@ import Page from "../page-model/page";
 import PhotoEdit from "../page-model/photo-edit";
 
 const scroll = ClientFunction((x, y) => window.scrollTo(x, y));
-const getcurrentPosition = ClientFunction(() => window.pageYOffset);
+const getcurrentPosition = ClientFunction(() => window.scrollY);
 
 fixture`Test photos`.page`${testcafeconfig.url}`;
 
@@ -23,7 +23,7 @@ const page = new Page();
 const photoedit = new PhotoEdit();
 
 test.meta("testID", "photos-001").meta({ mode: "public" })("Common: Scroll to top", async (t) => {
-  await toolbar.setFilter("view", "Cards");
+  await t.click(toolbar.cardsViewAction);
 
   await t
     .expect(Selector("button.is-photo-scroll-top").exists)
@@ -33,8 +33,8 @@ test.meta("testID", "photos-001").meta({ mode: "public" })("Common: Scroll to to
     .expect(Selector("div.type-image.result").nth(0).visible)
     .ok();
 
-    await t.scroll("bottom")
-    await t.pressKey("pageUp")
+  await t.scroll("bottom");
+  await t.pressKey("pageUp");
 
   await t.click(Selector("button.p-scroll")).expect(getcurrentPosition()).eql(0);
 });
@@ -96,7 +96,7 @@ test.meta("testID", "photos-003").meta({ type: "short", mode: "public" })(
       .typeText(photoedit.latitude, "9.999", { replace: true })
       .typeText(photoedit.longitude, "9.999", { replace: true });
     await t.click(photoedit.detailsApply).click(photoedit.detailsClose);
-    await toolbar.setFilter("view", "Cards");
+    await t.click(toolbar.cardsViewAction);
     const ApproveButtonThirdPhoto = 'div.is-photo[data-uid="' + ThirdPhotoUid + '"] button.action-approve';
     await t.click(Selector(ApproveButtonThirdPhoto));
     if (t.browser.platform === "mobile") {
@@ -169,7 +169,7 @@ test.meta("testID", "photos-004").meta({ type: "short", mode: "public" })(
 );
 
 test.meta("testID", "photos-005").meta({ type: "short", mode: "public" })("Common: Edit photo/video", async (t) => {
-  await toolbar.setFilter("view", "Cards");
+  await t.click(toolbar.cardsViewAction);
   const FirstPhotoUid = await photo.getNthPhotoUid("image", 0);
   await page.clickCardTitleOfUID(FirstPhotoUid);
 
@@ -215,9 +215,7 @@ test.meta("testID", "photos-005").meta({ type: "short", mode: "public" })("Commo
   const FirstPhotoKeywords = await photoedit.keywords.value;
   const FirstPhotoNotes = await photoedit.notes.value;
 
-  await t
-    .typeText(photoedit.title, "Not saved photo title", { replace: true })
-    .click(photoedit.detailsClose);
+  await t.typeText(photoedit.title, "Not saved photo title", { replace: true }).click(photoedit.detailsClose);
   await page.clickCardTitleOfUID(FirstPhotoUid);
 
   await t.expect(photoedit.title.value).eql(FirstPhotoTitle);
@@ -253,7 +251,9 @@ test.meta("testID", "photos-005").meta({ type: "short", mode: "public" })("Commo
   }
   await toolbar.search("uid:" + FirstPhotoUid);
 
-  await t.expect(Selector('div[data-uid="' +FirstPhotoUid +'"] button.action-title-edit').innerText).eql("New Photo Title");
+  await t
+    .expect(Selector('div[data-uid="' + FirstPhotoUid + '"] button.action-title-edit').innerText)
+    .eql("New Photo Title");
 
   await photo.triggerHoverAction("uid", FirstPhotoUid, "select");
   await contextmenu.triggerContextMenuAction("edit", "");
@@ -319,7 +319,7 @@ test.meta("testID", "photos-005").meta({ type: "short", mode: "public" })("Commo
 test.meta("testID", "photos-006").meta({ mode: "public" })(
   "Multi-Window: Navigate from card view to place",
   async (t) => {
-    await toolbar.setFilter("view", "Cards");
+    await t.click(toolbar.cardsViewAction);
     await t.click(page.cardLocation.nth(0));
 
     await t
@@ -381,7 +381,7 @@ test.meta("testID", "photos-007").meta({ mode: "public" })("Common: Mark photos/
   await t.click(photoedit.dialogClose);
   await t.wait(9000);
 
-    await contextmenu.clearSelection();
+  await contextmenu.clearSelection();
   if (t.browser.platform === "mobile") {
     await t.eval(() => location.reload());
   } else {
@@ -395,7 +395,7 @@ test.meta("testID", "photos-007").meta({ mode: "public" })("Common: Mark photos/
 test.meta("testID", "photos-008").meta({ mode: "public" })(
   "Multi-Window: Navigate from card view to photos taken at the same date",
   async (t) => {
-    await toolbar.setFilter("view", "Cards");
+    await t.click(toolbar.cardsViewAction);
     await toolbar.search("flower");
     await t.click(page.cardTaken.nth(0));
 

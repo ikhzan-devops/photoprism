@@ -3,6 +3,7 @@ package config
 import "math/bits"
 
 var Sponsor = Env(EnvDemo, EnvSponsor, EnvTest)
+var Features = Community
 
 // DisableSettings checks if users should not be allowed to change settings.
 func (c *Config) DisableSettings() bool {

@@ -1,6 +1,7 @@
 package config
 
 import (
+	"path"
 	"path/filepath"
 	"strings"
 
@@ -44,12 +45,14 @@ func (c *Config) AppMode() string {
 func (c *Config) AppIcon() string {
 	defaultIcon := "logo"
 
-	if c.options.AppIcon == "" || c.options.AppIcon == defaultIcon {
-		// Default.
-	} else if strings.Contains(c.options.AppIcon, "/") {
-		return c.options.AppIcon
-	} else if fs.FileExists(c.AppIconsPath(c.options.AppIcon, "16.png")) {
-		return c.options.AppIcon
+	if c.options.AppIcon != "" && c.options.AppIcon != defaultIcon {
+		if themeIcon := filepath.Join(c.ThemePath(), c.options.AppIcon); fs.FileExistsNotEmpty(themeIcon) {
+			return path.Join(ThemeUri, c.options.AppIcon)
+		} else if strings.Contains(c.options.AppIcon, "/") {
+			return c.options.AppIcon
+		} else if fs.FileExistsNotEmpty(c.AppIconsPath(c.options.AppIcon, "16.png")) {
+			return c.options.AppIcon
+		}
 	}
 
 	return defaultIcon
@@ -88,6 +91,8 @@ func (c *Config) AppConfig() pwa.Config {
 		StaticUri:     c.StaticUri(),
 		SiteUrl:       c.SiteUrl(),
 		CdnUrl:        c.CdnUrl("/"),
+		ThemeUri:      ThemeUri,
+		ThemePath:     c.ThemePath(),
 	}
 }
 

@@ -2,7 +2,6 @@ package config
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/klauspost/cpuid/v2"
 	"github.com/urfave/cli/v2"
@@ -17,6 +16,7 @@ import (
 	"github.com/photoprism/photoprism/pkg/media"
 	"github.com/photoprism/photoprism/pkg/media/http/header"
 	"github.com/photoprism/photoprism/pkg/media/http/scheme"
+	"github.com/photoprism/photoprism/pkg/time/tz"
 	"github.com/photoprism/photoprism/pkg/txt"
 )
 
@@ -49,6 +49,12 @@ var Flags = CliFlags{
 			Aliases: []string{"pw"},
 			Usage:   fmt.Sprintf("initial `PASSWORD` of the superadmin account (%d-%d characters)", entity.PasswordLength, txt.ClipPassword),
 			EnvVars: EnvVars("ADMIN_PASSWORD"),
+		}}, {
+		Flag: &cli.IntFlag{
+			Name:    "password-length",
+			Usage:   "minimum password `LENGTH` in characters",
+			Value:   8,
+			EnvVars: EnvVars("PASSWORD_LENGTH"),
 		}}, {
 		Flag: &cli.StringFlag{
 			Name:    "oidc-uri",
@@ -184,14 +190,14 @@ var Flags = CliFlags{
 		Flag: &cli.PathFlag{
 			Name:      "config-path",
 			Aliases:   []string{"c"},
-			Usage:     "config storage `PATH`, values in options.yml override CLI flags and environment variables if present",
+			Usage:     "config storage `PATH` or options.yml filename, values in this file override CLI flags and environment variables if present",
 			EnvVars:   EnvVars("CONFIG_PATH"),
 			TakesFile: true,
 		}}, {
 		Flag: &cli.StringFlag{
 			Name:      "defaults-yaml",
 			Aliases:   []string{"y"},
-			Usage:     "load config defaults from `FILE` if exists, does not override CLI flags and environment variables",
+			Usage:     "load default config values from `FILENAME` if it exists, does not override CLI flags or environment variables",
 			Value:     "/etc/photoprism/defaults.yml",
 			EnvVars:   EnvVars("DEFAULTS_YAML"),
 			TakesFile: true,
@@ -245,7 +251,7 @@ var Flags = CliFlags{
 		}}, {
 		Flag: &cli.StringFlag{
 			Name:    "import-allow",
-			Usage:   "allow to import these file types (comma-separated list of `EXTENSIONS`; leave blank to allow all)",
+			Usage:   "restrict imports to these file types (comma-separated list of `EXTENSIONS`; leave blank to allow all)",
 			EnvVars: EnvVars("IMPORT_ALLOW"),
 		}}, {
 		Flag: &cli.BoolFlag{
@@ -256,8 +262,19 @@ var Flags = CliFlags{
 		}}, {
 		Flag: &cli.StringFlag{
 			Name:    "upload-allow",
-			Usage:   "allow to upload these file types (comma-separated list of `EXTENSIONS`; leave blank to allow all)",
+			Usage:   "restrict uploads to these file types (comma-separated list of `EXTENSIONS`; leave blank to allow all)",
 			EnvVars: EnvVars("UPLOAD_ALLOW"),
+		}}, {
+		Flag: &cli.BoolFlag{
+			Name:    "upload-archives",
+			Usage:   "allow upload of zip archives (will be extracted before import)",
+			EnvVars: EnvVars("UPLOAD_ARCHIVES"),
+		}}, {
+		Flag: &cli.IntFlag{
+			Name:    "upload-limit",
+			Value:   1000,
+			Usage:   "maximum total size of uploaded files in `MB` (1-100000; -1 to disable)",
+			EnvVars: EnvVars("UPLOAD_LIMIT"),
 		}}, {
 		Flag: &cli.PathFlag{
 			Name:      "cache-path",
@@ -298,7 +315,7 @@ var Flags = CliFlags{
 		}}, {
 		Flag: &cli.Uint64Flag{
 			Name:    "files-quota",
-			Usage:   "maximum aggregated size of all indexed files in `GB` (0 for unlimited)",
+			Usage:   "maximum total size of all indexed files in `GB` (0 for unlimited)",
 			EnvVars: EnvVars("FILES_QUOTA"),
 		}}, {
 		Flag: &cli.PathFlag{
@@ -474,11 +491,6 @@ var Flags = CliFlags{
 			Usage:   "always perform a brute-force search if no Exif headers were found",
 			EnvVars: EnvVars("EXIF_BRUTEFORCE"),
 		}}, {
-		Flag: &cli.BoolFlag{
-			Name:    "detect-nsfw",
-			Usage:   "flag newly added pictures as private if they might be offensive (requires TensorFlow)",
-			EnvVars: EnvVars("DETECT_NSFW"),
-		}}, {
 		Flag: &cli.StringFlag{
 			Name:    "default-locale",
 			Aliases: []string{"lang"},
@@ -490,7 +502,7 @@ var Flags = CliFlags{
 			Name:    "default-timezone",
 			Aliases: []string{"tz"},
 			Usage:   "default time zone `NAME`, e.g. for scheduling backups",
-			Value:   time.UTC.String(),
+			Value:   tz.Local,
 			EnvVars: EnvVars("DEFAULT_TIMEZONE"),
 		}}, {
 		Flag: &cli.StringFlag{
@@ -583,6 +595,12 @@ var Flags = CliFlags{
 			EnvVars: EnvVars("SITE_DESCRIPTION"),
 		}}, {
 		Flag: &cli.StringFlag{
+			Name:      "site-favicon",
+			Usage:     "site favicon `FILENAME` *optional*",
+			EnvVars:   EnvVars("SITE_FAVICON"),
+			TakesFile: true,
+		}}, {
+		Flag: &cli.StringFlag{
 			Name:    "site-preview",
 			Usage:   "sharing preview image `URL`",
 			EnvVars: EnvVars("SITE_PREVIEW"),
@@ -661,12 +679,12 @@ var Flags = CliFlags{
 		}}, {
 		Flag: &cli.StringFlag{
 			Name:    "tls-cert",
-			Usage:   "public HTTPS certificate `FILE` (.crt), ignored for Unix domain sockets",
+			Usage:   "public HTTPS certificate `FILENAME` (.crt), ignored for Unix domain sockets",
 			EnvVars: EnvVars("TLS_CERT"),
 		}}, {
 		Flag: &cli.StringFlag{
 			Name:    "tls-key",
-			Usage:   "private HTTPS key `FILE` (.key), ignored for Unix domain sockets",
+			Usage:   "private HTTPS key `FILENAME` (.key), ignored for Unix domain sockets",
 			EnvVars: EnvVars("TLS_KEY"),
 		}}, {
 		Flag: &cli.StringFlag{
@@ -790,8 +808,8 @@ var Flags = CliFlags{
 		Flag: &cli.IntFlag{
 			Name:    "ffmpeg-bitrate",
 			Aliases: []string{"vb"},
-			Usage:   "maximum video `BITRATE` in Mbit/s",
-			Value:   50,
+			Usage:   "maximum video `BITRATE` in Mbps",
+			Value:   60,
 			EnvVars: EnvVars("FFMPEG_BITRATE"),
 		}}, {
 		Flag: &cli.StringFlag{
@@ -954,6 +972,35 @@ var Flags = CliFlags{
 			Value:   7680,
 			EnvVars: EnvVars("PNG_SIZE"),
 		}}, {
+		Flag: &cli.StringFlag{
+			Name:      "vision-yaml",
+			Usage:     "computer vision model configuration `FILENAME` *optional*",
+			Value:     "",
+			EnvVars:   EnvVars("VISION_YAML"),
+			TakesFile: true,
+		}}, {
+		Flag: &cli.BoolFlag{
+			Name:    "vision-api",
+			Usage:   "enable computer vision service API endpoints under /api/v1/vision (requires authorized access token)",
+			EnvVars: EnvVars("VISION_API"),
+		}}, {
+		Flag: &cli.StringFlag{
+			Name:    "vision-uri",
+			Usage:   "remote computer vision service `URI`, e.g. https://example.com/api/v1/vision (leave blank to disable)",
+			Value:   "",
+			EnvVars: EnvVars("VISION_URI"),
+		}}, {
+		Flag: &cli.StringFlag{
+			Name:    "vision-key",
+			Usage:   "remote computer vision service access `TOKEN` *optional*",
+			Value:   "",
+			EnvVars: EnvVars("VISION_KEY"),
+		}}, {
+		Flag: &cli.BoolFlag{
+			Name:    "detect-nsfw",
+			Usage:   "flag newly added pictures as private if they might be offensive (requires TensorFlow)",
+			EnvVars: EnvVars("DETECT_NSFW"),
+		}}, {
 		Flag: &cli.IntFlag{
 			Name:    "face-size",
 			Usage:   "minimum size of faces in `PIXELS` (20-10000)",
@@ -1004,13 +1051,13 @@ var Flags = CliFlags{
 		}}, {
 		Flag: &cli.StringFlag{
 			Name:      "pid-filename",
-			Usage:     "process id `FILE` *daemon-mode only*",
+			Usage:     "process id `FILENAME` *daemon-mode only*",
 			EnvVars:   EnvVars("PID_FILENAME"),
 			TakesFile: true,
 		}}, {
 		Flag: &cli.StringFlag{
 			Name:      "log-filename",
-			Usage:     "server log `FILE` *daemon-mode only*",
+			Usage:     "server log `FILENAME` *daemon-mode only*",
 			Value:     "",
 			EnvVars:   EnvVars("LOG_FILENAME"),
 			TakesFile: true,

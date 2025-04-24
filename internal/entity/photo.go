@@ -19,6 +19,7 @@ import (
 	"github.com/photoprism/photoprism/pkg/media"
 	"github.com/photoprism/photoprism/pkg/react"
 	"github.com/photoprism/photoprism/pkg/rnd"
+	"github.com/photoprism/photoprism/pkg/time/tz"
 	"github.com/photoprism/photoprism/pkg/txt"
 )
 
@@ -61,7 +62,7 @@ type Photo struct {
 	PhotoPrivate     bool          `json:"Private" yaml:"Private,omitempty"`
 	PhotoScan        bool          `json:"Scan" yaml:"Scan,omitempty"`
 	PhotoPanorama    bool          `json:"Panorama" yaml:"Panorama,omitempty"`
-	TimeZone         string        `gorm:"type:VARBINARY(64);" json:"TimeZone" yaml:"TimeZone,omitempty"`
+	TimeZone         string        `gorm:"type:VARBINARY(64);default:'Local'" json:"TimeZone" yaml:"TimeZone,omitempty"`
 	PlaceID          string        `gorm:"type:VARBINARY(42);index;default:'zz'" json:"PlaceID" yaml:"-"`
 	PlaceSrc         string        `gorm:"type:VARBINARY(8);" json:"PlaceSrc" yaml:"PlaceSrc,omitempty"`
 	CellID           string        `gorm:"type:VARBINARY(42);index;default:'zz'" json:"CellID" yaml:"-"`
@@ -125,6 +126,7 @@ func NewUserPhoto(stackable bool, userUid string) Photo {
 		LensID:       UnknownLens.ID,
 		CellID:       UnknownLocation.ID,
 		PlaceID:      UnknownPlace.ID,
+		TimeZone:     tz.Local,
 		Camera:       &UnknownCamera,
 		Lens:         &UnknownLens,
 		Cell:         &UnknownLocation,
@@ -629,6 +631,11 @@ func (m *Photo) NormalizeValues() (normalized bool) {
 		m.CaptionSrc = m.DescriptionSrc
 		m.PhotoDescription = ""
 		m.DescriptionSrc = ""
+		normalized = true
+	}
+
+	if timeZone := tz.Name(m.TimeZone); timeZone != m.TimeZone {
+		m.TimeZone = timeZone
 		normalized = true
 	}
 

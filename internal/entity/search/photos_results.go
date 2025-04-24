@@ -195,28 +195,48 @@ func (m *Photo) IsPlayable() bool {
 }
 
 // MediaInfo returns the media file hash and codec depending on the media type.
-func (m *Photo) MediaInfo() (mediaHash, mediaCodec, mediaMime string) {
-	if m.PhotoType == entity.MediaVideo || m.PhotoType == entity.MediaLive {
+func (m *Photo) MediaInfo() (mediaHash, mediaCodec, mediaMime string, width, height int) {
+	switch m.PhotoType {
+	case entity.MediaVideo, entity.MediaLive:
 		for _, f := range m.Files {
 			if f.FileVideo && f.FileHash != "" {
-				return f.FileHash, f.FileCodec, video.ContentType(f.FileMime, f.FileType, f.FileCodec, f.IsHDR())
+				return f.FileHash, f.FileCodec, video.ContentType(f.FileMime, f.FileType, f.FileCodec, f.IsHDR()), f.FileWidth, f.FileHeight
 			}
 		}
-	} else if m.PhotoType == entity.MediaVector {
+	case entity.MediaImage:
+		for _, f := range m.Files {
+			if f.MediaType == entity.MediaImage && f.FileCodec != "jpeg" && f.FileHash != "" {
+				return f.FileHash, f.FileCodec, clean.ContentType(f.FileMime), f.FileWidth, f.FileHeight
+			}
+		}
+		return m.FileHash, m.FileCodec, m.FileMime, m.FileWidth, m.FileHeight
+	case entity.MediaAnimated:
+		for _, f := range m.Files {
+			if f.MediaType == entity.MediaImage && (f.FileType == "gif" || f.FileType == "png" || f.FileDuration > 0 || f.FileFrames > 0) {
+				return f.FileHash, f.FileCodec, clean.ContentType(f.FileMime), f.FileWidth, f.FileHeight
+			}
+		}
+	case entity.MediaRaw:
+		for _, f := range m.Files {
+			if f.MediaType == entity.MediaRaw && f.FileWidth > 0 && f.FileHeight > 0 {
+				return m.FileHash, f.FileCodec, clean.ContentType(f.FileMime), f.FileWidth, f.FileHeight
+			}
+		}
+	case entity.MediaVector:
 		for _, f := range m.Files {
 			if f.MediaType == entity.MediaVector && f.FileHash != "" {
-				return f.FileHash, f.FileCodec, clean.ContentType(f.FileMime)
+				return f.FileHash, f.FileCodec, clean.ContentType(f.FileMime), f.FileWidth, f.FileHeight
 			}
 		}
-	} else if m.PhotoType == entity.MediaDocument {
+	case entity.MediaDocument:
 		for _, f := range m.Files {
 			if f.MediaType == entity.MediaDocument && f.FileHash != "" {
-				return f.FileHash, f.FileCodec, clean.ContentType(f.FileMime)
+				return f.FileHash, f.FileCodec, clean.ContentType(f.FileMime), f.FileWidth, f.FileHeight
 			}
 		}
 	}
 
-	return m.FileHash, "", m.FileMime
+	return m.FileHash, "", m.FileMime, m.FileWidth, m.FileHeight
 }
 
 // ShareBase returns a meaningful file name for sharing.

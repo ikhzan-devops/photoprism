@@ -1,9 +1,9 @@
 package entity
 
 import (
-	"strings"
 	"time"
 
+	"github.com/photoprism/photoprism/pkg/time/tz"
 	"github.com/photoprism/photoprism/pkg/txt"
 )
 
@@ -13,7 +13,7 @@ func (m *Photo) TrustedTime() bool {
 		return false
 	} else if m.TakenAt.IsZero() || m.TakenAtLocal.IsZero() {
 		return false
-	} else if m.TimeZone == "" {
+	} else if tz.Name(m.TimeZone) == tz.Local {
 		return false
 	}
 
@@ -21,55 +21,83 @@ func (m *Photo) TrustedTime() bool {
 }
 
 // SetTakenAt changes the photo date if not empty and from the same source.
-func (m *Photo) SetTakenAt(taken, local time.Time, zone, source string) {
-	if taken.IsZero() || taken.Year() < 1000 || taken.Year() > txt.YearMax {
+func (m *Photo) SetTakenAt(utc, local time.Time, zone, source string) {
+	if utc.IsZero() || utc.Year() < 1000 || utc.Year() > txt.YearMax {
 		return
 	}
 
+	// Prevent the existing time from being overwritten by lower priority sources.
 	if SrcPriority[source] < SrcPriority[m.TakenSrc] && !m.TakenAt.IsZero() {
 		return
 	}
 
-	// Remove time zone if time was extracted from file name.
-	if source == SrcName {
-		zone = ""
-	}
+	// Normalize time zone string.
+	zone = tz.Name(zone)
 
-	// Round times to avoid jitter.
-	taken = taken.UTC().Truncate(time.Second)
+	// Ignore sub-seconds to avoid jitter.
+	utc = tz.TruncateUTC(utc)
 
 	// Default local time to taken if zero or invalid.
 	if local.IsZero() || local.Year() < 1000 {
-		local = taken
+		local = utc
 	} else {
-		local = local.Truncate(time.Second)
+		local = tz.TruncateLocal(local)
+	}
+
+	// If no zone is specified, assume the current zone or try to determine
+	// the time zone based on the time offset. Otherwise, default to Local.
+	if source == SrcName && tz.Name(zone) == tz.Local && tz.Name(m.TimeZone) == tz.Local {
+		// Assume Local timezone if the time was extracted from a filename.
+		zone = tz.Local
+	} else if zone == tz.Unknown {
+		if m.TimeZone != tz.Unknown {
+			zone = m.TimeZone
+		} else if !utc.Equal(local) {
+			zone = tz.UtcOffset(utc, local, "")
+		}
+
+		if zone == tz.Unknown {
+			zone = tz.Local
+		}
 	}
 
 	// Don't update older date.
-	if SrcPriority[source] <= SrcPriority[SrcAuto] && !m.TakenAt.IsZero() && taken.After(m.TakenAt) {
+	if SrcPriority[source] <= SrcPriority[SrcAuto] && !m.TakenAt.IsZero() && utc.After(m.TakenAt) {
 		return
 	}
 
+	// Use location time zone if it has a higher priority.
+	if SrcPriority[source] < SrcPriority[m.PlaceSrc] && m.HasLatLng() {
+		if locZone := m.LocationTimeZone(); locZone != "" {
+			if zone == tz.UTC {
+				local = tz.LocationUTC(utc, tz.Find(locZone))
+			}
+			zone = locZone
+		}
+	}
+
 	// Set UTC time and date source.
-	m.TakenAt = taken
+	m.TakenAt = utc
 	m.TakenAtLocal = local
 	m.TakenSrc = source
+	m.TimeZone = tz.Name(m.TimeZone)
 
-	if zone == time.UTC.String() && m.TimeZone != "" {
-		// Location exists, set local time from UTC.
+	if zone == tz.UTC && m.TimeZone != tz.Local {
+		// Set local time from UTC and keep existing time zone.
 		m.TakenAtLocal = m.GetTakenAtLocal()
-	} else if zone != "" {
+	} else if zone != tz.Local {
 		// Apply new time zone.
 		m.TimeZone = zone
-		m.TakenAt = m.GetTakenAt()
-	} else if m.TimeZoneUTC() {
-		m.TimeZone = zone
-		// Keep UTC?
+
 		if m.TimeZoneUTC() {
-			m.TakenAtLocal = taken
+			m.TakenAtLocal = utc
+		} else {
+			m.TakenAt = m.GetTakenAt()
 		}
-	} else if m.TimeZone != "" {
-		// Apply existing time zone.
+	} else if m.TimeZoneUTC() {
+		m.TakenAtLocal = utc
+	} else if !m.TimeZoneLocal() {
+		// Keep existing time zone.
 		m.TakenAt = m.GetTakenAt()
 	}
 
@@ -78,16 +106,23 @@ func (m *Photo) SetTakenAt(taken, local time.Time, zone, source string) {
 
 // TimeZoneUTC tests if the current time zone is UTC.
 func (m *Photo) TimeZoneUTC() bool {
-	return strings.EqualFold(m.TimeZone, time.UTC.String())
+	return tz.IsUTC(m.TimeZone)
+}
+
+// TimeZoneLocal tests if the current time zone is Local.
+func (m *Photo) TimeZoneLocal() bool {
+	return tz.IsLocal(m.TimeZone)
 }
 
 // UpdateTimeZone updates the time zone.
 func (m *Photo) UpdateTimeZone(zone string) {
-	if zone == "" || zone == time.UTC.String() || zone == m.TimeZone {
+	if zone == "" {
+		return
+	} else if zone = tz.Name(zone); zone == tz.Local || zone == tz.UTC || zone == tz.Name(m.TimeZone) {
 		return
 	}
 
-	if SrcPriority[m.TakenSrc] >= SrcPriority[SrcManual] && m.TimeZone != "" {
+	if SrcPriority[m.TakenSrc] >= SrcPriority[SrcManual] && !tz.IsLocal(m.TimeZone) {
 		return
 	}
 

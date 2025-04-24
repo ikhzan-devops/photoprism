@@ -1,5 +1,5 @@
 <template>
-  <div ref="page" tabindex="1" class="p-page p-page-errors" @keydown.ctrl="onKeyCtrl" @keydown.meta="onKeyCtrl">
+  <div ref="page" tabindex="1" class="p-page p-page-errors">
     <v-form
       ref="form"
       validate-on="invalid-input"
@@ -19,6 +19,7 @@
           overflow
           single-line
           rounded
+          tabindex="1"
           variant="solo-filled"
           :density="density"
           validate-on="invalid-input"
@@ -45,12 +46,18 @@
         <v-btn
           v-if="!isPublic"
           :title="$gettext('Delete All')"
+          tabindex="2"
           icon="mdi-delete-sweep"
           class="action-delete action-delete-all ms-1"
           @click.stop="onDelete"
         >
         </v-btn>
-        <p-action-menu v-if="$vuetify.display.mdAndUp" :items="menuActions" button-class="ms-1"></p-action-menu>
+        <p-action-menu
+          v-if="$vuetify.display.mdAndUp"
+          :items="menuActions"
+          :tabindex="3"
+          button-class="ms-1"
+        ></p-action-menu>
       </v-toolbar>
     </v-form>
     <div v-if="loading" class="p-page__loading">
@@ -71,7 +78,7 @@
           :prepend-icon="err.Level === 'error' ? 'mdi-alert-circle-outline' : 'mdi-alert'"
           density="default"
           :title="err.Message"
-          :subtitle="formatTime(err.Time)"
+          :subtitle="localTime(err.Time)"
           class="py-2"
           @click="showDetails(err)"
         >
@@ -118,8 +125,10 @@
 
         <v-card-text>
           <div :class="'p-log-' + details.err.Level" class="p-log-message text-body-2 text-selectable" dir="ltr">
-            <span class="font-weight-medium">{{ formatTime(details.err.Time) }}</span
-            >&puncsp;<span class="text-break">{{ details.err.Message }}</span>
+            <div :title="utcTime(details.err.Time)" class="p-log-message__time cursor-help mb-3">
+              {{ localTime(details.err.Time) }}
+            </div>
+            <div class="text-break p-log-message__text">{{ details.err.Message }}</div>
           </div>
         </v-card-text>
 
@@ -137,6 +146,7 @@
 import { DateTime } from "luxon";
 import $api from "common/api";
 import links from "common/links";
+import * as formats from "options/formats";
 
 import PLoading from "component/loading.vue";
 import PActionMenu from "component/action/menu.vue";
@@ -149,6 +159,7 @@ export default {
     PActionMenu,
     PConfirmDialog,
   },
+  expose: ["onShortCut"],
   data() {
     const query = this.$route.query;
     const q = query["q"] ? query["q"] : "";
@@ -160,6 +171,7 @@ export default {
       scrollDistance: window.innerHeight * 2,
       filter: { q },
       isPublic: this.$config.get("public"),
+      timeZone: this.$config.getTimeZone(),
       batchSize: 100,
       offset: 0,
       page: 0,
@@ -228,20 +240,14 @@ export default {
         },
       ];
     },
-    onKeyCtrl(ev) {
-      if (!ev || !(ev instanceof KeyboardEvent) || !(ev.ctrlKey || ev.metaKey) || !this.$view.isActive(this)) {
-        return;
-      }
-
+    onShortCut(ev) {
       switch (ev.code) {
         case "KeyR":
-          ev.preventDefault();
           this.onReload();
-          break;
+          return true;
         case "KeyF":
-          ev.preventDefault();
           this.$view.focus(this.$refs?.form, ".input-search input", true);
-          break;
+          return true;
       }
     },
     updateFilter(props) {
@@ -375,14 +381,6 @@ export default {
     level(s) {
       return s.substring(0, 4).toUpperCase();
     },
-
-    localTime(s) {
-      if (!s) {
-        return this.$gettext("Unknown");
-      }
-
-      return DateTime.fromISO(s).toLocaleString(DateTime.DATETIME_FULL_WITH_SECONDS);
-    },
     formatLevel(level) {
       switch (level) {
         case "error":
@@ -393,12 +391,19 @@ export default {
 
       return level;
     },
-    formatTime(s) {
+    localTime(s) {
       if (!s) {
         return this.$gettext("Unknown");
       }
 
-      return DateTime.fromISO(s).toFormat("yyyy-LL-dd HH:mm:ss");
+      return DateTime.fromISO(s, { zone: this.timeZone }).toLocaleString(formats.TIMESTAMP_LONG_TZ);
+    },
+    utcTime(s) {
+      if (!s) {
+        return this.$gettext("Unknown");
+      }
+
+      return DateTime.fromISO(s, { zone: "UTC" }).toLocaleString(formats.TIMESTAMP_LONG_TZ);
     },
   },
 };

@@ -1,6 +1,7 @@
 package header
 
 import (
+	"net/http"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -15,6 +16,7 @@ func TestContent(t *testing.T) {
 		assert.Equal(t, "Content-Type", ContentType)
 		assert.Equal(t, "Content-Disposition", ContentDisposition)
 		assert.Equal(t, "Content-Encoding", ContentEncoding)
+		assert.Equal(t, "Content-Length", ContentLength)
 		assert.Equal(t, "Content-Range", ContentRange)
 		assert.Equal(t, "Location", Location)
 		assert.Equal(t, "Origin", Origin)
@@ -34,5 +36,15 @@ func TestContent(t *testing.T) {
 		assert.Equal(t, "video/mp4; codecs=\"avc1.4d0028\"", ContentTypeMp4AvcMain)
 		assert.Equal(t, "video/mp4; codecs=\"avc1.640028\"", ContentTypeMp4AvcHigh)
 		assert.Equal(t, "video/mp4; codecs=\"hvc1\"", ContentTypeMp4Hvc)
+	})
+}
+
+func TestHasContentType(t *testing.T) {
+	t.Run("True", func(t *testing.T) {
+		assert.True(t, HasContentType(&http.Header{"Content-Type": []string{"multipart/form-data"}}, ContentTypeMultipart))
+	})
+	t.Run("False", func(t *testing.T) {
+		assert.False(t, HasContentType(nil, ContentTypeMultipart))
+		assert.False(t, HasContentType(&http.Header{"Content-Type": []string{"application/json"}}, ContentTypeMultipart))
 	})
 }

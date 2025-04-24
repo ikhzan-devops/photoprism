@@ -45,10 +45,11 @@ import (
 	"github.com/urfave/cli/v2"
 
 	"github.com/photoprism/photoprism/internal/ai/face"
+	"github.com/photoprism/photoprism/internal/ai/vision"
+	"github.com/photoprism/photoprism/internal/api/download"
 	"github.com/photoprism/photoprism/internal/config/customize"
 	"github.com/photoprism/photoprism/internal/config/ttl"
 	"github.com/photoprism/photoprism/internal/entity"
-	"github.com/photoprism/photoprism/internal/event"
 	"github.com/photoprism/photoprism/internal/mutex"
 	"github.com/photoprism/photoprism/internal/service/hub"
 	"github.com/photoprism/photoprism/internal/service/hub/places"
@@ -60,8 +61,6 @@ import (
 	"github.com/photoprism/photoprism/pkg/rnd"
 )
 
-// log points to the global logger.
-var log = event.Log
 var initThumbsMutex sync.Mutex
 
 // Config holds database, cache and all parameters of photoprism
@@ -121,13 +120,13 @@ func initLogger() {
 		})
 
 		if Env(EnvProd) {
-			log.SetLevel(logrus.WarnLevel)
+			SetLogLevel(logrus.WarnLevel)
 		} else if Env(EnvTrace) {
-			log.SetLevel(logrus.TraceLevel)
+			SetLogLevel(logrus.TraceLevel)
 		} else if Env(EnvDebug) {
-			log.SetLevel(logrus.DebugLevel)
+			SetLogLevel(logrus.DebugLevel)
 		} else {
-			log.SetLevel(logrus.InfoLevel)
+			SetLogLevel(logrus.InfoLevel)
 		}
 	})
 }
@@ -239,8 +238,15 @@ func (c *Config) Init() error {
 	// Initialize extensions.
 	Ext().Init(c)
 
-	// Initialize the thumbnail generation package.
+	// Initialize thumbnail package.
 	thumb.Init(memory.FreeMemory(), c.IndexWorkers(), c.ThumbLibrary())
+
+	// Load optional vision package configuration.
+	if visionYaml := c.VisionYaml(); !fs.FileExistsNotEmpty(visionYaml) {
+		// Do nothing.
+	} else if loadErr := vision.Config.Load(visionYaml); loadErr != nil {
+		log.Warnf("vision: %s", loadErr)
+	}
 
 	// Update package defaults.
 	c.Propagate()
@@ -262,7 +268,7 @@ func (c *Config) Propagate() {
 	FlushCache()
 	log.SetLevel(c.LogLevel())
 
-	// Initialize the thumbnail generation package.
+	// Configure thumbnail package.
 	thumb.Library = c.ThumbLibrary()
 	thumb.Color = c.ThumbColor()
 	thumb.Filter = c.ThumbFilter()
@@ -271,6 +277,22 @@ func (c *Config) Propagate() {
 	thumb.JpegQualityDefault = c.JpegQuality()
 	thumb.CachePublic = c.HttpCachePublic()
 	initThumbs()
+
+	// Configure computer vision package.
+	vision.AssetsPath = c.AssetsPath()
+	vision.FaceNetModelPath = c.FaceNetModelPath()
+	vision.NsfwModelPath = c.NSFWModelPath()
+	vision.CachePath = c.CachePath()
+	vision.ServiceUri = c.VisionUri()
+	vision.ServiceKey = c.VisionKey()
+	vision.DownloadUrl = c.DownloadUrl()
+
+	// Set allowed path in download package.
+	download.AllowedPaths = []string{
+		c.SidecarPath(),
+		c.OriginalsPath(),
+		c.ThumbCachePath(),
+	}
 
 	// Set cache expiration defaults.
 	ttl.CacheDefault = c.HttpCacheMaxAge()
@@ -305,7 +327,8 @@ func (c *Config) Propagate() {
 
 	// Set default theme and locale.
 	customize.DefaultTheme = c.DefaultTheme()
-	customize.DefaultLocale = c.DefaultLocale()
+	customize.DefaultLanguage = c.DefaultLocale()
+	customize.DefaultTimeZone = c.DefaultTimezone().String()
 
 	// Propagate settings.
 	c.Settings().Propagate()
@@ -558,9 +581,9 @@ func (c *Config) LogLevel() logrus.Level {
 	}
 }
 
-// SetLogLevel sets the Logrus log level.
+// SetLogLevel sets the application log level.
 func (c *Config) SetLogLevel(level logrus.Level) {
-	log.SetLevel(level)
+	SetLogLevel(level)
 }
 
 // Shutdown shuts down the active processes and closes the database connection.

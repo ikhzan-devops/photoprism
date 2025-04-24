@@ -18,7 +18,6 @@ export const Locale = () => {
 export let Options = [
   {
     text: "English", // English
-    translated: "English",
     value: "en",
   },
   {

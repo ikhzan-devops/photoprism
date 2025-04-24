@@ -37,7 +37,7 @@ let themes = {
       "error": "#e57373",
       "info": "#9E7BEA",
       "success": "#8763d5",
-      "warning": "#ecc434",
+      "warning": "#bc9714",
       "favorite": "#FFD600",
       "remove": "#da4e4c",
       "restore": "#00d48a",
@@ -76,7 +76,7 @@ let themes = {
       "error": "#e57373",
       "info": "#00acc1",
       "success": "#26A69A",
-      "warning": "#ffd740",
+      "warning": "#bc9714",
       "remove": "#9575cd",
       "restore": "#64b5f6",
       "album": "#7e57c2",
@@ -115,7 +115,7 @@ let themes = {
       "error": "#e57373",
       "info": "#00acc1",
       "success": "#26A69A",
-      "warning": "#ffd740",
+      "warning": "#bc9714",
       "remove": "#e57373",
       "restore": "#64b5f6",
       "album": "#ffab00",
@@ -326,7 +326,7 @@ let themes = {
       "error": "#e57373",
       "info": "#00acc1",
       "success": "#26A69A",
-      "warning": "#ffd740",
+      "warning": "#bc9714",
       "remove": "#e57373",
       "restore": "#64b5f6",
       "album": "#ffab00",
@@ -450,10 +450,14 @@ let themes = {
       "on-secondary": "#3e4757",
       "secondary-light": "#f3f5f8",
       "accent": "#F2F5FA",
-      "error": "#BF616A",
-      "info": "#88C0D0",
-      "success": "#8FBCBB",
-      "warning": "#f0d8a8",
+      "error": "#d5303f",
+      "on-error": "#cd1b2b",
+      "info": "#4aa2bc",
+      "on-info": "#323742",
+      "success": "#1ac5c1",
+      "on-success": "#323742",
+      "warning": "#d88a0b",
+      "on-warning": "#b87d16",
       "favorite": "#EBCB8B",
       "remove": "#BF616A",
       "restore": "#81A1C1",
@@ -546,7 +550,7 @@ let themes = {
       "error": "#e57373",
       "info": "#00acc1",
       "success": "#26A69A",
-      "warning": "#ffd740",
+      "warning": "#bc9714",
       "remove": "#e57373",
       "restore": "#64b5f6",
       "album": "#ffab00",
@@ -587,7 +591,7 @@ let themes = {
       "error": "#e57373",
       "info": "#00acc1",
       "success": "#26A69A",
-      "warning": "#ffd740",
+      "warning": "#bc9714",
       "remove": "#e57373",
       "restore": "#64b5f6",
       "album": "#ffab00",
@@ -628,7 +632,7 @@ let themes = {
       "error": "#e57373",
       "info": "#00acc1",
       "success": "#26A69A",
-      "warning": "#ffd740",
+      "warning": "#bc9714",
       "remove": "#e57373",
       "restore": "#64b5f6",
       "album": "#ffab00",
@@ -659,7 +663,7 @@ let themes = {
       "surface": "#141417",
       "on-surface": "#ffffff",
       "surface-bright": "#333333",
-      "surface-variant": "#cccccc",
+      "surface-variant": "#242628",
       "on-surface-variant": "#f6f6f6",
       "card": "#171717",
       "selected": "#9c9c9c",
@@ -714,7 +718,7 @@ let themes = {
       "error": "#e57373",
       "info": "#00acc1",
       "success": "#4db6ac",
-      "warning": "#ffd740",
+      "warning": "#bc9714",
       "remove": "#DF5353",
       "restore": "#3EA2F4",
       "album": "#ffab00",
@@ -928,6 +932,15 @@ export const Set = (name, theme) => {
   }
 
   themes[name] = theme;
+};
+
+// Assign adds or replaces multiple themes at once.
+export const Assign = (t) => {
+  for (const theme of t) {
+    if (theme?.name && theme?.colors) {
+      Set(theme.name, theme);
+    }
+  }
 };
 
 // Remove deletes a theme by name.

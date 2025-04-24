@@ -15,12 +15,17 @@ import (
 )
 
 func TestMain(m *testing.M) {
+	_ = os.Setenv("TF_CPP_MIN_LOG_LEVEL", "3")
+
 	log = logrus.StandardLogger()
 	log.SetLevel(logrus.TraceLevel)
 	event.AuditLog = log
 
 	c := config.NewTestConfig("commands")
 	get.SetConfig(c)
+
+	// Remember to close database connection.
+	defer c.CloseDb()
 
 	// Init config and connect to database.
 	InitConfig = func(ctx *cli.Context) (*config.Config, error) {
@@ -29,9 +34,6 @@ func TestMain(m *testing.M) {
 
 	// Run unit tests.
 	code := m.Run()
-
-	// Close database connection.
-	_ = c.CloseDb()
 
 	os.Exit(code)
 }

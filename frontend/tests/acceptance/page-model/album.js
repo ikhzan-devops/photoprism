@@ -164,4 +164,14 @@ export default class Page {
       await t.expect(sortOptionsCount).eql(6);
     }
   }
+
+  getAlbumCardPreviewSelector(uid) {
+    return Selector(`div.result.is-album[data-uid="${uid}"] .preview`);
+  }
+
+  async getAlbumCoverStyle(uid) {
+    const selector = this.getAlbumCardPreviewSelector(uid);
+    const style = await selector.getStyleProperty('background-image');
+    return style;
+  }
 }

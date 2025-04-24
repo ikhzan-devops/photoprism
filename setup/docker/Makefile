@@ -1,7 +1,6 @@
 MAKEFLAGS += --always-make
 
 -include .env
-export
 
 # Ensure compatibility with "docker-compose" (old) and "docker compose" (new).
 HAS_DOCKER_COMPOSE_WITH_DASH := $(shell which docker-compose)

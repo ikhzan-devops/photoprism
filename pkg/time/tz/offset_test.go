@@ -1,0 +1,231 @@
+package tz
+
+import (
+	"testing"
+	"time"
+
+	"github.com/stretchr/testify/assert"
+)
+
+func TestOffset(t *testing.T) {
+	t.Run("Valid", func(t *testing.T) {
+		sec, err := Offset("UTC-2")
+		assert.Equal(t, -2*3600, sec)
+		assert.NoError(t, err)
+
+		sec, err = Offset("UTC")
+		assert.Equal(t, 0, sec)
+		assert.NoError(t, err)
+
+		sec, err = Offset("UTC+1")
+		assert.Equal(t, 3600, sec)
+		assert.NoError(t, err)
+
+		sec, err = Offset("UTC+2")
+		assert.Equal(t, 2*3600, sec)
+		assert.NoError(t, err)
+
+		sec, err = Offset("UTC+12")
+		assert.Equal(t, 12*3600, sec)
+		assert.NoError(t, err)
+	})
+	t.Run("Invalid", func(t *testing.T) {
+		sec, err := Offset("UTC-15")
+		assert.Equal(t, 0, sec)
+		assert.Error(t, err)
+
+		sec, err = Offset("UTC--2")
+		assert.Equal(t, 0, sec)
+		assert.Error(t, err)
+
+		sec, err = Offset("UTC0")
+		assert.Equal(t, 0, sec)
+		assert.Error(t, err)
+
+		sec, err = Offset("UTC1")
+		assert.Equal(t, 0, sec)
+		assert.Error(t, err)
+
+		sec, err = Offset("UTC13")
+		assert.Equal(t, 0, sec)
+		assert.Error(t, err)
+
+		sec, err = Offset("UTC+13")
+		assert.Equal(t, 0, sec)
+		assert.Error(t, err)
+	})
+}
+
+func TestNormalizeUtcOffset(t *testing.T) {
+	t.Run("Valid", func(t *testing.T) {
+		assert.Equal(t, "UTC-2", NormalizeUtcOffset("UTC-2"))
+		assert.Equal(t, "UTC-2", NormalizeUtcOffset("UTC-02:00"))
+		assert.Equal(t, "UTC-2", NormalizeUtcOffset("-02:00"))
+		assert.Equal(t, "UTC-2", NormalizeUtcOffset("-02"))
+		assert.Equal(t, "UTC-2", NormalizeUtcOffset("-2"))
+		assert.Equal(t, "UTC", NormalizeUtcOffset("UTC"))
+		assert.Equal(t, "UTC", NormalizeUtcOffset("UTC+0"))
+		assert.Equal(t, "UTC", NormalizeUtcOffset("UTC-00:00"))
+		assert.Equal(t, "UTC", NormalizeUtcOffset("UTC+00:00"))
+		assert.Equal(t, "UTC", NormalizeUtcOffset("Z"))
+		assert.Equal(t, "UTC+1", NormalizeUtcOffset("UTC+1"))
+		assert.Equal(t, "UTC+2", NormalizeUtcOffset("UTC+2"))
+		assert.Equal(t, "UTC+12", NormalizeUtcOffset("UTC+12"))
+		assert.Equal(t, "UTC+12", NormalizeUtcOffset("+12"))
+		assert.Equal(t, "UTC+12", NormalizeUtcOffset("+12:00"))
+		assert.Equal(t, "UTC+12", NormalizeUtcOffset("12:00"))
+		assert.Equal(t, "UTC+12", NormalizeUtcOffset("UTC+12:00"))
+	})
+	t.Run("Invalid", func(t *testing.T) {
+		assert.Equal(t, "", NormalizeUtcOffset("UTC-15"))
+		assert.Equal(t, "", NormalizeUtcOffset("UTC-14:00"))
+		assert.Equal(t, "", NormalizeUtcOffset("UTC-14"))
+		assert.Equal(t, "", NormalizeUtcOffset("UTC--2"))
+		assert.Equal(t, "", NormalizeUtcOffset("UTC1"))
+		assert.Equal(t, "", NormalizeUtcOffset("UTC13"))
+		assert.Equal(t, "", NormalizeUtcOffset("UTC+13"))
+	})
+}
+
+func TestUtcOffset(t *testing.T) {
+	t.Run("GMT", func(t *testing.T) {
+		local, err := time.Parse("2006-01-02 15:04:05 Z07:00", "2023-10-02 13:20:17 +00:00")
+
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		utc, err := time.Parse("2006-01-02 15:04:05 Z07:00", "2023-10-02 13:20:17 +00:00")
+
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		assert.Equal(t, "", UtcOffset(utc, local, ""))
+	})
+	t.Run("UTC", func(t *testing.T) {
+		local, err := time.Parse("2006-01-02 15:04:05 Z07:00", "2023-10-02 13:20:17 +00:00")
+
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		utc, err := time.Parse("2006-01-02 15:04:05 Z07:00", "2023-10-02 13:20:17 +00:00")
+
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		assert.Equal(t, "", UtcOffset(utc, local, "00:00"))
+		assert.Equal(t, "", UtcOffset(utc, local, "+00:00"))
+		assert.Equal(t, "UTC", UtcOffset(utc, local, "Z"))
+	})
+	t.Run("UTC+2", func(t *testing.T) {
+		local, err := time.Parse("2006-01-02 15:04:05 Z07:00", "2023-10-02 13:20:17 +00:00")
+
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		utc, err := time.Parse("2006-01-02 15:04:05 Z07:00", "2023-10-02 11:20:17 +00:00")
+
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		timeZone := UtcOffset(utc, local, "")
+
+		assert.Equal(t, "UTC+2", timeZone)
+
+		loc := time.FixedZone("UTC+2", 2*3600)
+
+		assert.Equal(t, "UTC+2", loc.String())
+	})
+	t.Run("+02:00", func(t *testing.T) {
+		local, err := time.Parse("2006-01-02 15:04:05 Z07:00", "2023-10-02 13:20:17 +00:00")
+
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		utc, err := time.Parse("2006-01-02 15:04:05 Z07:00", "2023-10-02 13:20:17 +00:00")
+
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		assert.Equal(t, "UTC+2", UtcOffset(utc, local, "02:00"))
+	})
+	t.Run("UTC+2.5", func(t *testing.T) {
+		local, err := time.Parse("2006-01-02 15:04:05 Z07:00", "2023-10-02 13:50:17 +00:00")
+
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		utc, err := time.Parse("2006-01-02 15:04:05 Z07:00", "2023-10-02 11:20:17 +00:00")
+
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		assert.Equal(t, "", UtcOffset(utc, local, ""))
+	})
+	t.Run("+02:30", func(t *testing.T) {
+		local, err := time.Parse("2006-01-02 15:04:05 Z07:00", "2023-10-02 13:50:17 +00:00")
+
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		utc, err := time.Parse("2006-01-02 15:04:05 Z07:00", "2023-10-02 11:20:17 +00:00")
+
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		assert.Equal(t, "", UtcOffset(utc, local, "+02:30"))
+	})
+	t.Run("UTC-14", func(t *testing.T) {
+		local, err := time.Parse("2006-01-02 15:04:05 Z07:00", "2023-10-02 00:20:17 +00:00")
+
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		utc, err := time.Parse("2006-01-02 15:04:05 Z07:00", "2023-10-02 14:20:17 +00:00")
+
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		assert.Equal(t, "", UtcOffset(utc, local, ""))
+	})
+	t.Run("UTC-15", func(t *testing.T) {
+		local, err := time.Parse("2006-01-02 15:04:05 Z07:00", "2023-10-02 00:20:17 +00:00")
+
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		utc, err := time.Parse("2006-01-02 15:04:05 Z07:00", "2023-10-02 15:20:17 +00:00")
+
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		assert.Equal(t, "", UtcOffset(utc, local, ""))
+	})
+	t.Run("UTC+02:00", func(t *testing.T) {
+		utc, err := time.Parse("2006-01-02 15:04:05 Z07:00", "2023-10-02 13:50:17 +02:00")
+
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		result := UtcOffset(utc, time.Time{}, "")
+
+		assert.Equal(t, "UTC+2", result)
+	})
+
+}

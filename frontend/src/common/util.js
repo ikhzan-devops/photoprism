@@ -90,18 +90,6 @@ export default class $util {
     let options;
 
     switch (format) {
-      case "date_full":
-      case "DATE_FULL":
-        options = formats.DATE_FULL;
-        break;
-      case "date_full_tz":
-      case "DATE_FULL_TZ":
-        options = formats.DATE_FULL_TZ;
-        break;
-      case "date_med_tz":
-      case "DATE_MED_TZ":
-        options = formats.DATE_MED_TZ;
-        break;
       case "date_med":
       case "DATE_MED":
         options = formats.DATE_MED;
@@ -110,8 +98,26 @@ export default class $util {
       case "DATETIME_MED":
         options = formats.DATETIME_MED;
         break;
+      case "date_med_tz":
+      case "DATE_MED_TZ":
+      case "datetime_med_tz":
+      case "DATETIME_MED_TZ":
+        options = formats.DATETIME_MED_TZ;
+        break;
+      case "date_full":
+      case "DATE_FULL":
+      case "datetime_full":
+      case "DATETIME_FULL":
+        options = formats.DATETIME_LONG;
+        break;
+      case "date_full_tz":
+      case "datetime_full_tz":
+      case "DATE_FULL_TZ":
+      case "DATETIME_FULL_TZ":
+        options = formats.DATETIME_LONG_TZ;
+        break;
       default:
-        options = formats.DATE_FULL;
+        options = formats.DATETIME_LONG;
         break;
     }
 
@@ -328,7 +334,11 @@ export default class $util {
   }
 
   static hasTouch() {
-    return navigator.maxTouchPoints && navigator.maxTouchPoints > 0;
+    if (!navigator.maxTouchPoints) {
+      return false;
+    }
+
+    return navigator.maxTouchPoints > 0;
   }
 
   static isMobile() {
@@ -430,7 +440,7 @@ export default class $util {
       case "ps":
         return "Adobe PostScript";
       case "eps":
-        return "Encapsulated PostScript";
+        return "EPS";
       default:
         return value.toUpperCase();
     }
@@ -674,18 +684,57 @@ export default class $util {
     }
   }
 
-  static thumbSize(viewportWidth, viewportHeight) {
-    const thumbs = $config.values.thumbs;
+  // Returns the best matching thumbnail based on the provided list of available images,
+  // as well as the viewport width and height.
+  static thumb(thumbs, viewportWidth, viewportHeight) {
+    const sizes = $config.values.thumbs;
 
-    for (let i = 0; i < thumbs.length; i++) {
-      let t = thumbs[i];
+    if (!sizes || !thumbs || typeof thumbs !== "object") {
+      return {
+        src: `${$config.staticUri}/img/404.jpg`,
+        w: 1280,
+        h: 720,
+        size: "fit_1280",
+      };
+    }
+
+    for (let i = 0; i < sizes.length; i++) {
+      const t = thumbs[sizes[i].size];
+
+      if (t && (t.w >= viewportWidth || t.h >= viewportHeight)) {
+        return Object.assign({}, sizes[i], t);
+      }
+    }
+
+    let fallback = sizes[sizes.length - 1];
+
+    if (!fallback?.size || !thumbs[fallback.size]) {
+      fallback = sizes[0];
+    }
+
+    return Object.assign({}, fallback, thumbs[fallback.size]);
+  }
+
+  // Returns the approximate best thumbnail size based on the maximum image dimensions,
+  // viewport width, and viewport height.
+  static thumbSize(viewportWidth, viewportHeight) {
+    const sizes = $config.values.thumbs;
+
+    for (let i = 0; i < sizes.length; i++) {
+      let t = sizes[i];
 
       if (t.w >= viewportWidth || t.h >= viewportHeight) {
         return t.size;
       }
     }
 
-    return "fit_7680";
+    const largest = sizes[sizes.length - 1];
+
+    if (largest?.size) {
+      return largest?.size;
+    }
+
+    return "fit_720";
   }
 
   static videoFormat(codec, mime) {

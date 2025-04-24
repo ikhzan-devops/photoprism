@@ -28,6 +28,7 @@ import (
 
 	"github.com/photoprism/photoprism/internal/entity"
 	"github.com/photoprism/photoprism/internal/meta"
+	"github.com/photoprism/photoprism/internal/thumb"
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/fs"
 	"github.com/photoprism/photoprism/pkg/media"
@@ -48,6 +49,7 @@ type MediaFile struct {
 	mimeType         string
 	contentType      string
 	takenAt          time.Time
+	takenAtLocal     time.Time
 	takenAtSrc       string
 	hash             string
 	checksum         string
@@ -162,40 +164,41 @@ func (m *MediaFile) FileSize() int64 {
 
 // DateCreated returns the media creation time in UTC.
 func (m *MediaFile) DateCreated() time.Time {
-	takenAt, _ := m.TakenAt()
+	takenAt, _, _ := m.TakenAt()
 
 	return takenAt
 }
 
 // TakenAt returns the media creation time in UTC and the source from which it originates.
-func (m *MediaFile) TakenAt() (time.Time, string) {
+func (m *MediaFile) TakenAt() (utc time.Time, local time.Time, source string) {
 	// Check if creation time has been cached.
 	if !m.takenAt.IsZero() {
-		return m.takenAt, m.takenAtSrc
+		return m.takenAt, m.takenAtLocal, m.takenAtSrc
 	}
 
-	m.takenAt = time.Now().UTC()
+	m.takenAtLocal = time.Now().Truncate(time.Second).Local()
+	m.takenAt = m.takenAtLocal.UTC()
 
 	// First try to extract the creation time from the file metadata,
 	data := m.MetaData()
 
 	if data.Error == nil && !data.TakenAt.IsZero() && data.TakenAt.Year() > 1000 {
-		m.takenAt = data.TakenAt.UTC()
+		m.takenAtLocal = data.TakenAt.Truncate(time.Second).Local()
+		m.takenAt = m.takenAtLocal.UTC()
 		m.takenAtSrc = entity.SrcMeta
 
 		log.Infof("media: %s was taken at %s (%s)", clean.Log(filepath.Base(m.fileName)), m.takenAt.String(), m.takenAtSrc)
 
-		return m.takenAt, m.takenAtSrc
+		return m.takenAt, m.takenAtLocal, m.takenAtSrc
 	}
 
-	// Otherwiese, try to determine creation time from file name and path.
+	// Otherwise, try to determine creation time from file name and path.
 	if nameTime := txt.DateFromFilePath(m.fileName); !nameTime.IsZero() {
-		m.takenAt = nameTime
+		m.takenAtLocal = nameTime.Truncate(time.Second).Local()
+		m.takenAt = nameTime.Truncate(time.Second).UTC()
 		m.takenAtSrc = entity.SrcName
-
 		log.Infof("media: %s was taken at %s (%s)", clean.Log(filepath.Base(m.fileName)), m.takenAt.String(), m.takenAtSrc)
-
-		return m.takenAt, m.takenAtSrc
+		return m.takenAt, m.takenAtLocal, m.takenAtSrc
 	}
 
 	m.takenAtSrc = entity.SrcAuto
@@ -205,16 +208,15 @@ func (m *MediaFile) TakenAt() (time.Time, string) {
 	if err != nil {
 		log.Warnf("media: %s (stat call failed)", err.Error())
 		log.Infof("media: %s was taken at %s (unknown mod time)", clean.Log(filepath.Base(m.fileName)), m.takenAt.String())
-
-		return m.takenAt, m.takenAtSrc
+		return m.takenAt, m.takenAtLocal, m.takenAtSrc
 	}
 
 	// Use file modification time as fallback.
-	m.takenAt = fileInfo.ModTime().UTC()
-
+	m.takenAtLocal = fileInfo.ModTime().Truncate(time.Second).Local()
+	m.takenAt = m.takenAtLocal.UTC()
 	log.Infof("media: %s was taken at %s (file mod time)", clean.Log(filepath.Base(m.fileName)), m.takenAt.String())
 
-	return m.takenAt, m.takenAtSrc
+	return m.takenAt, m.takenAtLocal, m.takenAtSrc
 }
 
 func (m *MediaFile) HasTimeAndPlace() bool {
@@ -950,12 +952,12 @@ func (m *MediaFile) IsRaw() bool {
 	return m.HasFileType(fs.ImageRaw) || m.HasMediaType(media.Raw) || m.IsDng()
 }
 
-// IsAnimated returns true if it is a video or animated image.
+// IsAnimated returns true if this is a video or animated image.
 func (m *MediaFile) IsAnimated() bool {
 	return m.IsVideo() || m.IsAnimatedImage()
 }
 
-// NotAnimated checks if the file is not a video or an animated image.
+// NotAnimated checks if this is not a video or an animated image.
 func (m *MediaFile) NotAnimated() bool {
 	return !m.IsAnimated()
 }
@@ -978,6 +980,11 @@ func (m *MediaFile) IsVideo() bool {
 // IsSidecar checks if the file is a metadata sidecar file, independent of the storage location.
 func (m *MediaFile) IsSidecar() bool {
 	return !m.Media().Main()
+}
+
+// IsArchive returns true if this is an archive file.
+func (m *MediaFile) IsArchive() bool {
+	return m.HasFileType(fs.ArchiveZip) || m.HasMediaType(media.Archive)
 }
 
 // IsThumb checks if the file is a thumbnail image.
@@ -1179,40 +1186,13 @@ func (m *MediaFile) DecodeConfig() (_ *image.Config, err error) {
 		return nil, fmt.Errorf("%s not supported natively", clean.Log(m.Extension()))
 	}
 
-	m.fileMutex.Lock()
-	defer m.fileMutex.Unlock()
+	var info image.Config
 
-	fileName := m.FileName()
-
-	// Resolve symlinks.
-	if fileName, err = fs.Resolve(fileName); err != nil {
-		return nil, fmt.Errorf("%s %s", err, clean.Log(m.RootRelName()))
+	if info, err = thumb.FileInfo(m.FileName()); err != nil {
+		return nil, fmt.Errorf("%s while decoding %s dimensions", err, clean.Log(m.Extension()))
 	}
 
-	file, err := os.Open(fileName)
-
-	if err != nil || file == nil {
-		return nil, err
-	}
-
-	defer file.Close()
-
-	// Reset file offset.
-	// see https://github.com/golang/go/issues/45902#issuecomment-1007953723
-	_, err = file.Seek(0, 0)
-
-	if err != nil {
-		return nil, fmt.Errorf("%s on seek", err)
-	}
-
-	// Decode image config (dimensions).
-	cfg, _, err := image.DecodeConfig(file)
-
-	if err != nil {
-		return nil, fmt.Errorf("%s while decoding", err)
-	}
-
-	m.imageConfig = &cfg
+	m.imageConfig = &info
 
 	return m.imageConfig, nil
 }

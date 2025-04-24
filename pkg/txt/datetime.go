@@ -5,6 +5,8 @@ import (
 	"regexp"
 	"strings"
 	"time"
+
+	"github.com/photoprism/photoprism/pkg/time/tz"
 )
 
 // regex tester: https://regoio.herokuapp.com/
@@ -152,23 +154,13 @@ func ParseTime(s, timeZone string) (t time.Time) {
 		return time.Time{}
 	}
 
-	// Default to UTC.
-	tz := time.UTC
-
-	// Local time zone currently not supported (undefined).
-	if timeZone == time.Local.String() {
-		timeZone = ""
-	}
-
-	// Set time zone.
-	loc := TimeZone(timeZone)
+	loc := tz.Find(timeZone)
+	zone := tz.TimeUTC
 
 	// Location found?
-	if loc != nil && timeZone != "" && tz != time.Local {
-		tz = loc
-		timeZone = tz.String()
-	} else {
-		timeZone = ""
+	if timeZone != "" {
+		zone = loc
+		timeZone = loc.String()
 	}
 
 	// Does the timestamp contain a time zone offset?
@@ -181,19 +173,19 @@ func ParseTime(s, timeZone string) (t time.Time) {
 		// Offset timezone name example: UTC+03:30
 		if z == "+" {
 			// Positive offset relative to UTC.
-			tz = time.FixedZone(fmt.Sprintf("UTC+%02d:%02d", zh, zm), offset)
+			zone = time.FixedZone(fmt.Sprintf("UTC+%02d:%02d", zh, zm), offset)
 		} else if z == "-" {
 			// Negative offset relative to UTC.
-			tz = time.FixedZone(fmt.Sprintf("UTC-%02d:%02d", zh, zm), -1*offset)
+			zone = time.FixedZone(fmt.Sprintf("UTC-%02d:%02d", zh, zm), -1*offset)
 		}
 	}
 
-	var nsec int
+	var ns int
 
-	if subsec := m[v["subsec"]]; subsec != "" {
-		nsec = Int(subsec + strings.Repeat("0", 9-len(subsec)))
+	if subSec := m[v["subsec"]]; subSec != "" {
+		ns = Int(subSec + strings.Repeat("0", 9-len(subSec)))
 	} else {
-		nsec = 0
+		ns = 0
 	}
 
 	// Create rounded timestamp from parsed input values.
@@ -215,10 +207,10 @@ func ParseTime(s, timeZone string) (t time.Time) {
 		IntVal(m[v["h"]], 0, 23, 0),
 		IntVal(m[v["m"]], 0, 59, 0),
 		IntVal(m[v["s"]], 0, 59, 0),
-		nsec,
-		tz)
+		ns,
+		zone)
 
-	if timeZone != "" && loc != nil && loc != tz {
+	if timeZone != "" && timeZone != tz.Local && loc != zone {
 		return t.In(loc)
 	}
 

@@ -326,6 +326,7 @@
 import { DateTime } from "luxon";
 import * as options from "options/options";
 import { $gettext, T } from "common/gettext";
+import * as formats from "options/formats";
 
 export default {
   name: "PTabPhotoAdvanced",
@@ -337,9 +338,10 @@ export default {
   },
   data() {
     return {
-      view: this.$view.data(),
+      view: this.$view.getData(),
       options: options,
       config: this.$config.values,
+      timeZone: this.$config.getTimeZone(),
       readonly: this.$config.get("readonly"),
     };
   },
@@ -391,13 +393,10 @@ export default {
       }
     },
     formatTime(s) {
-      return DateTime.fromISO(s).toLocaleString(DateTime.DATETIME_MED);
+      return DateTime.fromISO(s, { zone: this.timeZone }).toLocaleString(formats.TIMESTAMP);
     },
     save() {
       this.view.model.update();
-    },
-    close() {
-      this.$emit("close");
     },
     albumUrl(m) {
       if (!m) {

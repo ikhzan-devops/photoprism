@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/tidwall/gjson"
-	"github.com/ugjka/go-tz/v2"
 
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/media"
@@ -18,6 +17,7 @@ import (
 	"github.com/photoprism/photoprism/pkg/media/projection"
 	"github.com/photoprism/photoprism/pkg/media/video"
 	"github.com/photoprism/photoprism/pkg/rnd"
+	"github.com/photoprism/photoprism/pkg/time/tz"
 	"github.com/photoprism/photoprism/pkg/txt"
 )
 
@@ -120,7 +120,7 @@ func (data *Data) Exiftool(jsonData []byte, originalName string) (err error) {
 
 				if f := jsonValue.Float(); f != 0 {
 					fieldValue.SetFloat(f)
-				} else if f = txt.Float(jsonValue.String()); f != 0 {
+				} else if f = txt.Float64(jsonValue.String()); f != 0 {
 					fieldValue.SetFloat(f)
 				}
 			case uint, uint64:
@@ -214,7 +214,7 @@ func (data *Data) Exiftool(jsonData []byte, originalName string) (err error) {
 
 	// Fallback to GPS UTC Time?
 	if data.TakenAt.IsZero() && data.TakenAtLocal.IsZero() && !data.TakenGps.IsZero() {
-		data.TimeZone = time.UTC.String()
+		data.TimeZone = tz.UTC
 		data.TakenAt = data.TakenGps.UTC()
 		data.TakenAtLocal = time.Time{}
 	}
@@ -236,40 +236,30 @@ func (data *Data) Exiftool(jsonData []byte, originalName string) (err error) {
 		// Assume default time zone for MP4 & Quicktime videos is UTC.
 		// see https://exiftool.org/TagNames/QuickTime.html
 		log.Debugf("metadata: default time zone for %s is UTC (%s)", logName, clean.Log(mt))
-		data.TimeZone = time.UTC.String()
+		data.TimeZone = tz.UTC
 		data.TakenAt = data.TakenAt.UTC()
 		data.TakenAtLocal = time.Time{}
 	}
 
 	// Set time zone and calculate UTC time.
 	if data.Lat != 0 && data.Lng != 0 {
-		zones, zoneErr := tz.GetZone(tz.Point{
-			Lat: float64(data.Lat),
-			Lon: float64(data.Lng),
-		})
-
-		if zoneErr == nil && len(zones) > 0 {
-			data.TimeZone = zones[0]
+		if zone := tz.Position(data.Lat, data.Lng); zone != "" {
+			data.TimeZone = zone
 		}
 
-		if loc := txt.TimeZone(data.TimeZone); loc == nil {
-			log.Warnf("metadata: %s has invalid time zone %s (exiftool)", logName)
-		} else if !data.TakenAtLocal.IsZero() {
+		if loc := tz.Find(data.TimeZone); !data.TakenAtLocal.IsZero() {
 			if tl, parseErr := time.ParseInLocation("2006:01:02 15:04:05", data.TakenAtLocal.Format("2006:01:02 15:04:05"), loc); parseErr == nil {
-				if localUtc, err := time.ParseInLocation("2006:01:02 15:04:05", data.TakenAtLocal.Format("2006:01:02 15:04:05"), time.UTC); err == nil {
-					data.TakenAtLocal = localUtc
-				}
-
+				data.TakenAtLocal = tz.Strip(data.TakenAtLocal)
 				data.TakenAt = tl.Truncate(time.Second).UTC()
 			} else {
-				log.Errorf("metadata: %s (exiftool)", parseErr.Error()) // this should never happen
+				log.Errorf("metadata: %s (exiftool)", clean.Error(parseErr)) // this should never happen
 			}
 		} else if !data.TakenAt.IsZero() {
 			if localUtc, parseErr := time.ParseInLocation("2006:01:02 15:04:05", data.TakenAt.In(loc).Format("2006:01:02 15:04:05"), time.UTC); parseErr == nil {
 				data.TakenAtLocal = localUtc
 				data.TakenAt = data.TakenAt.UTC()
 			} else {
-				log.Errorf("metadata: %s (exiftool)", parseErr.Error()) // this should never happen
+				log.Errorf("metadata: %s (exiftool)", clean.Error(parseErr)) // this should never happen
 			}
 		}
 	} else if hasTimeOffset {
@@ -281,24 +271,34 @@ func (data *Data) Exiftool(jsonData []byte, originalName string) (err error) {
 	}
 
 	// Set UTC offset as time zone?
-	if data.TimeZone != "" && data.TimeZone != "UTC" || data.TakenAt.IsZero() {
+	if data.TimeZone != "" && data.TimeZone != tz.Local && data.TimeZone != tz.UTC || data.TakenAt.IsZero() {
 		// Don't change existing time zone.
-	} else if utcOffset := txt.UtcOffset(data.TakenAtLocal, data.TakenAt, data.TimeOffset); utcOffset != "" {
+	} else if utcOffset := tz.UtcOffset(data.TakenAt, data.TakenAtLocal, data.TimeOffset); utcOffset != "" {
 		data.TimeZone = utcOffset
+
+		if data.TakenAtLocal.IsZero() {
+			data.TakenAtLocal = tz.Strip(data.TakenAt)
+		}
+
+		data.TakenAt = data.TakenAt.UTC()
 		log.Infof("metadata: %s has time offset %s (exiftool)", logName, clean.Log(utcOffset))
 	} else if data.TimeOffset != "" {
 		log.Infof("metadata: %s has invalid time offset %s (exiftool)", logName, clean.Log(data.TimeOffset))
 	}
 
-	// Set local time if still empty.
+	// Normalize time zone name.
+	data.TimeZone = tz.Name(data.TimeZone)
+
+	// Set local time based on UTC time if empty.
 	if data.TakenAtLocal.IsZero() && !data.TakenAt.IsZero() {
-		if loc := txt.TimeZone(data.TimeZone); data.TimeZone == "" || loc == nil {
-			data.TakenAtLocal = data.TakenAt
-		} else if localUtc, err := time.ParseInLocation("2006:01:02 15:04:05", data.TakenAt.In(loc).Format("2006:01:02 15:04:05"), time.UTC); err == nil {
+		if loc := tz.Find(data.TimeZone); loc.String() == tz.Local {
+			data.TakenAtLocal = tz.Strip(data.TakenAt)
+			data.TakenAt = data.TakenAt.UTC()
+		} else if localUtc, parseErr := time.ParseInLocation("2006:01:02 15:04:05", data.TakenAt.In(loc).Format("2006:01:02 15:04:05"), time.UTC); parseErr == nil {
 			data.TakenAtLocal = localUtc
 			data.TakenAt = data.TakenAt.UTC()
 		} else {
-			log.Errorf("metadata: %s (exiftool)", err.Error()) // this should never happen
+			log.Errorf("metadata: %s (exiftool)", clean.Error(parseErr)) // this should never happen
 		}
 	}
 

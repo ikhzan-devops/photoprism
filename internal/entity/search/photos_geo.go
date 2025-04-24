@@ -206,10 +206,11 @@ func UserPhotosGeo(frm form.SearchPhotosGeo, sess *entity.Session) (results GeoR
 	}
 
 	// Filter by label, label category and keywords.
-	var categories []entity.Category
-	var labels []entity.Label
-	var labelIds []uint
 	if txt.NotEmpty(frm.Label) {
+		var categories []entity.Category
+		var labels []entity.Label
+		var labelIds []uint
+
 		if labelErr := Db().Where(AnySlug("label_slug", frm.Label, txt.Or)).Or(AnySlug("custom_slug", frm.Label, txt.Or)).Find(&labels).Error; len(labels) == 0 || labelErr != nil {
 			log.Debugf("search: label %s not found", txt.LogParamLower(frm.Label))
 			return GeoResults{}, nil
@@ -232,8 +233,8 @@ func UserPhotosGeo(frm form.SearchPhotosGeo, sess *entity.Session) (results GeoR
 
 	// Set search filters based on search terms.
 	if terms := txt.SearchTerms(frm.Query); frm.Query != "" && len(terms) == 0 {
-		if frm.Title == "" {
-			frm.Title = fmt.Sprintf("%s*", strings.Trim(frm.Query, "%*"))
+		if frm.Title == "" && frm.Caption == "" && frm.Description == "" {
+			frm.Description = fmt.Sprintf("%s*", strings.Trim(frm.Query, "%*"))
 			frm.Query = ""
 		}
 	} else if len(terms) > 0 {
@@ -310,7 +311,7 @@ func UserPhotosGeo(frm form.SearchPhotosGeo, sess *entity.Session) (results GeoR
 		var labels []entity.Label
 		var labelIds []uint
 
-		if err := Db().Where(AnySlug("custom_slug", frm.Query, " ")).Find(&labels).Error; len(labels) == 0 || err != nil {
+		if labelsErr := Db().Where(AnySlug("custom_slug", frm.Query, " ")).Find(&labels).Error; len(labels) == 0 || labelsErr != nil {
 			log.Tracef("search: label %s not found, using fuzzy search", txt.LogParamLower(frm.Query))
 
 			for _, where := range LikeAnyKeyword("k.keyword", frm.Query) {
@@ -581,9 +582,39 @@ func UserPhotosGeo(frm form.SearchPhotosGeo, sess *entity.Session) (results GeoR
 	}
 
 	// Filter by title.
-	if frm.Title != "" {
-		where, values := OrLike("photos.photo_title", frm.Title)
-		s = s.Where(where, values...)
+	if txt.NotEmpty(frm.Title) {
+		if frm.Title == txt.False {
+			s = s.Where("photos.photo_title = ''")
+		} else if frm.Title == txt.True {
+			s = s.Where("photos.photo_title <> ''")
+		} else {
+			where, values := OrLike("photos.photo_title", frm.Title)
+			s = s.Where(where, values...)
+		}
+	}
+
+	// Filter by caption.
+	if txt.NotEmpty(frm.Caption) {
+		if frm.Caption == txt.False {
+			s = s.Where("photos.photo_caption = ''")
+		} else if frm.Caption == txt.True {
+			s = s.Where("photos.photo_caption <> ''")
+		} else {
+			where, values := OrLike("photos.photo_caption", frm.Caption)
+			s = s.Where(where, values...)
+		}
+	}
+
+	// Filter by description.
+	if txt.NotEmpty(frm.Description) {
+		if frm.Description == txt.False {
+			s = s.Where("photos.photo_title = '' AND photos.photo_caption = ''")
+		} else if frm.Description == txt.True {
+			s = s.Where("photos.photo_title <> '' OR photos.photo_caption <> ''")
+		} else {
+			where, values := OrLikeCols([]string{"photos.photo_title", "photos.photo_caption"}, frm.Description)
+			s = s.Where(where, values...)
+		}
 	}
 
 	// Filter by status.

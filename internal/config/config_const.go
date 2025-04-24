@@ -9,6 +9,9 @@ import (
 // ApiUri defines the standard path for handling REST requests.
 const ApiUri = "/api/v1"
 
+// DownloadUri defines the file download URI based on the ApiUri.
+const DownloadUri = ApiUri + "/dl"
+
 // LibraryUri defines the path for user interface routes.
 const LibraryUri = "/library"
 
@@ -17,6 +20,9 @@ const StaticUri = "/static"
 
 // CustomStaticUri defines the standard path for serving custom static content.
 const CustomStaticUri = "/c/static"
+
+// ThemeUri defines the optional theme URI path for serving theme assets.
+const ThemeUri = "/_theme"
 
 // DefaultIndexSchedule defines the default indexing schedule in cron format.
 const DefaultIndexSchedule = "" // e.g. "0 */3 * * *" for every 3 hours
@@ -65,4 +71,5 @@ const (
 	Pro        = "pro"
 	Plus       = "plus"
 	Essentials = "essentials"
+	Community  = "ce"
 )

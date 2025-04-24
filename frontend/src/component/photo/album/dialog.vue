@@ -4,7 +4,7 @@
     persistent
     max-width="390"
     class="p-dialog p-photo-album-dialog"
-    @keydown.esc="close"
+    @keydown.esc.exact="close"
     @after-enter="afterEnter"
     @after-leave="afterLeave"
   >
@@ -122,13 +122,17 @@ export default {
     onLoad() {
       this.loading = true;
       this.$nextTick(() => {
-        this.$refs.input.focus();
+        if (document.activeElement !== this.$refs.input) {
+          this.$refs.input.focus();
+        }
       });
     },
     onLoaded() {
       this.loading = false;
       this.$nextTick(() => {
-        this.$refs.input.focus();
+        if (document.activeElement !== this.$refs.input) {
+          this.$refs.input.focus();
+        }
       });
     },
     reset() {

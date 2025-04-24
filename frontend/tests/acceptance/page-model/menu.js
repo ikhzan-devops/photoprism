@@ -1,13 +1,17 @@
 import { Selector, t } from "testcafe";
 
 export default class Page {
-  constructor() {}
+  constructor() {
+    this.navDrawer = Selector(".v-navigation-drawer");
+    this.expandButton = Selector("div.nav-expand i");
+    this.expandButtonContainer = Selector("div.nav-expand");
+  }
 
   async openNav() {
-    if (await Selector("div.nav-expand").visible) {
-      await t.click(Selector("div.nav-expand i"));
-    } else if (await Selector("div.nav-expand").visible) {
-      await t.click(Selector("div.nav-expand i"));
+    if (await this.expandButton.visible) {
+      await t.click(this.expandButton);
+    } else if (await this.expandButtonContainer.visible) {
+      await t.click(this.expandButton);
     }
   }
 

@@ -452,7 +452,7 @@ export default {
   emits: ["close"],
   data() {
     return {
-      view: this.$view.data(),
+      view: this.$view.getData(),
       disabled: !this.$config.feature("edit"),
       config: this.$config.values,
       all: {
@@ -604,14 +604,8 @@ export default {
         this.view.model.TakenAt = isoTime;
       }
     },
-    left() {
-      this.$emit("next");
-    },
-    right() {
-      this.$emit("prev");
-    },
     openPhoto() {
-      this.$lightbox.openModels(Thumb.fromFiles([this.view.model]), 0);
+      this.$lightbox.openModels(Thumb.fromPhotos([this.view.model]), 0);
     },
     save(close) {
       if (this.invalidDate) {

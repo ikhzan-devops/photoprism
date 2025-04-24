@@ -28,6 +28,7 @@ func (c *Config) Report() (rows [][]string, cols []string) {
 		{"password-reset-uri", c.PasswordResetUri()},
 		{"register-uri", c.RegisterUri()},
 		{"login-uri", c.LoginUri()},
+		{"login-info", c.LoginInfo()},
 		{"session-maxage", fmt.Sprintf("%d", c.SessionMaxAge())},
 		{"session-timeout", fmt.Sprintf("%d", c.SessionTimeout())},
 		{"session-cache", fmt.Sprintf("%d", c.SessionCache())},
@@ -67,6 +68,8 @@ func (c *Config) Report() (rows [][]string, cols []string) {
 		{"import-allow", c.ImportAllow().String()},
 		{"upload-nsfw", fmt.Sprintf("%t", c.UploadNSFW())},
 		{"upload-allow", c.UploadAllow().String()},
+		{"upload-archives", fmt.Sprintf("%t", c.UploadArchives())},
+		{"upload-limit", fmt.Sprintf("%d", c.UploadLimit())},
 		{"cache-path", c.CachePath()},
 		{"cmd-cache-path", c.CmdCachePath()},
 		{"media-cache-path", c.MediaCachePath()},
@@ -132,11 +135,6 @@ func (c *Config) Report() (rows [][]string, cols []string) {
 		{"raw-presets", fmt.Sprintf("%t", c.RawPresets())},
 		{"exif-bruteforce", fmt.Sprintf("%t", c.ExifBruteForce())},
 
-		// TensorFlow.
-		{"detect-nsfw", fmt.Sprintf("%t", c.DetectNSFW())},
-		{"tensorflow-version", c.TensorFlowVersion()},
-		{"tensorflow-model-path", c.TensorFlowModelPath()},
-
 		// Customization.
 		{"default-locale", c.DefaultLocale()},
 		{"default-timezone", c.DefaultTimezone().String()},
@@ -157,6 +155,7 @@ func (c *Config) Report() (rows [][]string, cols []string) {
 		{"site-title", c.SiteTitle()},
 		{"site-caption", c.SiteCaption()},
 		{"site-description", c.SiteDescription()},
+		{"site-favicon", c.SiteFavicon()},
 		{"site-preview", c.SitePreview()},
 
 		// CDN and Cross-Origin Resource Sharing (CORS).
@@ -243,6 +242,16 @@ func (c *Config) Report() (rows [][]string, cols []string) {
 		{"jpeg-quality", fmt.Sprintf("%d", c.JpegQuality())},
 		{"jpeg-size", fmt.Sprintf("%d", c.JpegSize())},
 		{"png-size", fmt.Sprintf("%d", c.PngSize())},
+
+		// Computer Vision.
+		{"vision-yaml", c.VisionYaml()},
+		{"vision-api", fmt.Sprintf("%t", c.VisionApi())},
+		{"vision-uri", c.VisionUri()},
+		{"vision-key", strings.Repeat("*", utf8.RuneCountInString(c.VisionKey()))},
+		{"nasnet-model-path", c.NasnetModelPath()},
+		{"facenet-model-path", c.FaceNetModelPath()},
+		{"nsfw-model-path", c.NSFWModelPath()},
+		{"detect-nsfw", fmt.Sprintf("%t", c.DetectNSFW())},
 
 		// Facial Recognition.
 		{"face-size", fmt.Sprintf("%d", c.FaceSize())},

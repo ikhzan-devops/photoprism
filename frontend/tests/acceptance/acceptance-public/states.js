@@ -40,7 +40,7 @@ test.meta("testID", "states-001").meta({ mode: "public" })("Common: Update state
   await t
     .typeText(albumdialog.title, "Wonderland", { replace: true })
     .typeText(albumdialog.location, "Earth", { replace: true })
-    .typeText(albumdialog.description, "We love earth")
+    .typeText(albumdialog.description, "We love earth", { replace: true })
     .typeText(albumdialog.category, "Mountains")
     .pressKey("enter")
     .click(albumdialog.dialogSave);
@@ -149,5 +149,12 @@ test.meta("testID", "states-003").meta({ mode: "public" })(
     await album.openAlbumWithUid(FirstStateUid);
     await photo.checkPhotoVisibility(FirstPhotoUid, true);
     await photo.checkPhotoVisibility(SecondPhotoUid, true);
+  }
+);
+
+test.meta("testID", "states-004").meta({ type: "short", mode: "public" })(
+  "Common: Set album cover from States Page",
+  async (t) => {
+    await page.testSetAlbumCover("states");
   }
 );

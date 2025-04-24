@@ -1,4 +1,7 @@
 export default {
+  global: {
+    ripple: false,
+  },
   VBtn: {
     flat: true,
     variant: "flat",
@@ -81,10 +84,34 @@ export default {
     density: "default",
   },
   VMenu: {
-    closeOnBack: true,
-    closeOnContentClick: true,
+    origin: "auto",
+    location: "bottom end",
     locationStrategy: "connected",
     density: "compact",
+    transition: "slide-y-transition",
+    openOnClick: true,
+    openOnFocus: false,
+    closeOnBack: true,
+    closeOnContentClick: true,
+    persistent: false,
+    scrim: false,
+    zIndex: 1,
+  },
+  VSnackbar: {
+    origin: "auto",
+    location: "bottom center",
+    variant: "flat",
+    rounded: "pill",
+    transition: false,
+    attach: true,
+    closeOnBack: true,
+    closeOnContentClick: false,
+    openOnFocus: false,
+    openOnClick: false,
+    openOnHover: false,
+    timeout: -1,
+    openDelay: 0,
+    closeDelay: 0,
   },
   VSpeedDial: {
     attach: true,
@@ -137,16 +164,6 @@ export default {
     flat: true,
     transition: false,
   },
-  VSnackbar: {
-    rounded: "pill",
-    location: "bottom",
-    transition: "fade-transition",
-    variant: "flat",
-    closeOnBack: true,
-    closeOnContentClick: false,
-    attach: true,
-    timeout: -1,
-  },
   VNavigationDrawer: {
     width: 270,
     railWidth: 70,
@@ -177,11 +194,9 @@ export default {
     attach: document.body,
   },
   VOverlay: {
-    scrim: true,
     transition: false,
     openDelay: 0,
     closeDelay: 0,
-    attach: document.body,
   },
   VExpansionPanel: {
     tile: true,

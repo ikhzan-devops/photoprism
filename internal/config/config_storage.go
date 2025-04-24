@@ -196,7 +196,7 @@ func (c *Config) CreateDirectories() error {
 	}
 
 	// Create TensorFlow model path if it doesn't exist yet.
-	if dir := c.TensorFlowModelPath(); dir == "" {
+	if dir := c.NasnetModelPath(); dir == "" {
 		return notFoundError("tensorflow model")
 	} else if err := fs.MkdirAll(dir); err != nil {
 		return createError(dir, err)
@@ -242,6 +242,12 @@ func (c *Config) ConfigPath() string {
 		}
 
 		return filepath.Join(c.StoragePath(), "config")
+	} else if fs.FileExists(c.options.ConfigPath) {
+		if c.options.OptionsYaml == "" {
+			c.options.OptionsYaml = c.options.ConfigPath
+		}
+
+		c.options.ConfigPath = filepath.Dir(c.options.ConfigPath)
 	}
 
 	return fs.Abs(c.options.ConfigPath)
@@ -249,7 +255,13 @@ func (c *Config) ConfigPath() string {
 
 // OptionsYaml returns the config options YAML filename.
 func (c *Config) OptionsYaml() string {
-	return filepath.Join(c.ConfigPath(), "options.yml")
+	configPath := c.ConfigPath()
+
+	if c.options.OptionsYaml == "" {
+		return filepath.Join(configPath, "options.yml")
+	}
+
+	return fs.Abs(c.options.OptionsYaml)
 }
 
 // DefaultsYaml returns the default options YAML filename.

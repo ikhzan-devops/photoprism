@@ -1,12 +1,5 @@
 <template>
-  <div
-    ref="page"
-    tabindex="1"
-    class="p-page p-page-albums not-selectable"
-    :class="$config.aclClasses('albums')"
-    @keydown.ctrl="onKeyCtrl"
-    @keydown.meta="onKeyCtrl"
-  >
+  <div ref="page" tabindex="1" class="p-page p-page-albums not-selectable" :class="$config.aclClasses('albums')">
     <v-form
       ref="form"
       validate-on="invalid-input"
@@ -22,6 +15,7 @@
         <v-text-field
           :model-value="filter.q"
           :density="density"
+          tabindex="1"
           hide-details
           clearable
           overflow
@@ -55,12 +49,18 @@
         <v-btn
           v-if="canManage && staticFilter.type === 'album'"
           :title="$gettext('Add Album')"
+          tabindex="2"
           icon="mdi-plus"
           class="action-add ms-1"
           @click.prevent="create()"
         ></v-btn>
 
-        <p-action-menu v-if="$vuetify.display.mdAndUp" :items="menuActions" button-class="ms-1"></p-action-menu>
+        <p-action-menu
+          v-if="$vuetify.display.mdAndUp"
+          :items="menuActions"
+          :tabindex="3"
+          button-class="ms-1"
+        ></p-action-menu>
       </v-toolbar>
 
       <div class="toolbar-expansion-panel">
@@ -74,6 +74,7 @@
                     :label="$gettext('Year')"
                     :disabled="context === 'state'"
                     :menu-props="{ maxHeight: 346 }"
+                    tabindex="4"
                     single-line
                     hide-details
                     variant="solo-filled"
@@ -94,6 +95,7 @@
                     :model-value="filter.category"
                     :label="$gettext('Category')"
                     :menu-props="{ maxHeight: 346 }"
+                    tabindex="5"
                     single-line
                     hide-details
                     variant="solo-filled"
@@ -114,6 +116,7 @@
                     :model-value="filter.order"
                     :label="$gettext('Sort Order')"
                     :menu-props="{ maxHeight: 400 }"
+                    tabindex="6"
                     single-line
                     hide-details
                     variant="solo-filled"
@@ -388,6 +391,7 @@ export default {
       default: "",
     },
   },
+  expose: ["onShortCut"],
   data() {
     const query = this.$route.query;
     const routeName = this.$route.name;
@@ -547,29 +551,28 @@ export default {
         },
       ];
     },
-    onKeyCtrl(ev) {
-      if (!ev || !(ev instanceof KeyboardEvent) || !(ev.ctrlKey || ev.metaKey) || !this.$view.isActive(this)) {
-        return;
-      }
-
+    onShortCut(ev) {
       switch (ev.code) {
+        case "Escape":
+          if (document.activeElement instanceof HTMLInputElement) {
+            document.activeElement.blur();
+          }
+          this.hideExpansionPanel();
+          return true;
         case "KeyR":
-          ev.preventDefault();
           this.refresh();
-          break;
+          return true;
         case "KeyF":
-          ev.preventDefault();
           if (ev.shiftKey) {
             this.showExpansionPanel();
           }
           this.$view.focus(this.$refs?.form, ".input-search input", true);
-          break;
+          return true;
         case "KeyU":
-          ev.preventDefault();
           if (this.$config.allow("files", "upload") && this.$config.feature("upload")) {
             this.$event.publish("dialog.upload");
           }
-          break;
+          return true;
       }
     },
     toggleExpansionPanel() {
@@ -919,6 +922,9 @@ export default {
 
       return params;
     },
+    reset() {
+      this.results = [];
+    },
     search() {
       /**
        * re-creating the last scroll-position should only ever happen when using
@@ -976,6 +982,9 @@ export default {
               }
             });
           }
+        })
+        .catch(() => {
+          this.reset();
         })
         .finally(() => {
           this.dirty = false;

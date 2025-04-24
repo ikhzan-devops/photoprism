@@ -30,7 +30,7 @@ ENV PHOTOPRISM_ARCH=$TARGETARCH \
     LD_LIBRARY_PATH="/usr/local/lib:/usr/lib" \
     DEBIAN_FRONTEND="noninteractive" \
     TMPDIR="/tmp" \
-    TF_CPP_MIN_LOG_LEVEL=0 \
+    TF_CPP_MIN_LOG_LEVEL=1 \
     TF_ENABLE_ONEDNN_OPTS=1 \
     MALLOC_ARENA_MAX=4 \
     GOPATH="/go" \
@@ -39,6 +39,7 @@ ENV PHOTOPRISM_ARCH=$TARGETARCH \
     CGO_CFLAGS="-g -O2 -Wno-return-local-addr" \
     PROG="photoprism" \
     S6_KEEP_ENV=1 \
+    S6_VERBOSITY=0 \
     S6_LOGGING=0
 
 # Copy scripts and package sources config.

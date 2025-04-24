@@ -1,5 +1,5 @@
 <template>
-  <div ref="page" tabindex="1" class="p-page p-page-files" @keydown.ctrl="onKeyCtrl" @keydown.meta="onKeyCtrl">
+  <div ref="page" tabindex="1" class="p-page p-page-files">
     <v-form
       ref="form"
       validate-on="invalid-input"
@@ -18,7 +18,8 @@
           </router-link>
         </v-toolbar-title>
 
-        <v-btn :title="$gettext('Refresh')" icon="mdi-refresh" class="action-reload" @click.stop="refresh"> </v-btn>
+        <v-btn :title="$gettext('Refresh')" icon="mdi-refresh" tabindex="1" class="action-reload" @click.stop="refresh">
+        </v-btn>
       </v-toolbar>
     </v-form>
 
@@ -127,6 +128,7 @@ export default {
       default: () => {},
     },
   },
+  expose: ["onShortCut"],
   data() {
     const query = this.$route.query;
     const routeName = this.$route.name;
@@ -204,22 +206,16 @@ export default {
     this.$view.leave(this);
   },
   methods: {
-    onKeyCtrl(ev) {
-      if (!ev || !(ev instanceof KeyboardEvent) || !(ev.ctrlKey || ev.metaKey) || !this.$view.isActive(this)) {
-        return;
-      }
-
+    onShortCut(ev) {
       switch (ev.code) {
         case "KeyR":
-          ev.preventDefault();
           this.refresh();
-          break;
+          return true;
         case "KeyU":
-          ev.preventDefault();
           if (this.$config.allow("files", "upload") && this.$config.feature("upload")) {
             this.$event.publish("dialog.upload");
           }
-          break;
+          return true;
       }
     },
     getBreadcrumbs() {
@@ -442,6 +438,9 @@ export default {
 
       return "";
     },
+    reset() {
+      this.results = [];
+    },
     search() {
       // Don't query the same data more than once
       if (!this.dirty && JSON.stringify(this.lastFilter) === JSON.stringify(this.filter)) {
@@ -483,6 +482,9 @@ export default {
               this.$gettextInterpolate(this.$gettext("Limit reached, showing first %{n} files"), { n: response.files })
             );
           }
+        })
+        .catch(() => {
+          this.reset();
         })
         .finally(() => {
           this.dirty = false;

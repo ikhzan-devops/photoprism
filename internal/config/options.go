@@ -30,9 +30,10 @@ type Options struct {
 	AdminUser              string        `yaml:"AdminUser" json:"-" flag:"admin-user"`
 	AdminPassword          string        `yaml:"AdminPassword" json:"-" flag:"admin-password"`
 	PasswordLength         int           `yaml:"PasswordLength" json:"-" flag:"password-length"`
-	PasswordResetUri       string        `yaml:"PasswordResetUri" json:"-" flag:"password-reset-uri"`
-	RegisterUri            string        `yaml:"-" json:"-" flag:"register-uri"`
+	PasswordResetUri       string        `yaml:"PasswordResetUri" json:"-" flag:"password-reset-uri" tags:"plus,pro"`
+	RegisterUri            string        `yaml:"RegisterUri" json:"-" flag:"register-uri" tags:"pro"`
 	LoginUri               string        `yaml:"-" json:"-" flag:"login-uri"`
+	LoginInfo              string        `yaml:"LoginInfo" json:"-" flag:"login-info" tags:"plus,pro"`
 	OIDCUri                string        `yaml:"OIDCUri" json:"-" flag:"oidc-uri"`
 	OIDCClient             string        `yaml:"OIDCClient" json:"-" flag:"oidc-client"`
 	OIDCSecret             string        `yaml:"OIDCSecret" json:"-" flag:"oidc-secret"`
@@ -42,8 +43,8 @@ type Options struct {
 	OIDCRedirect           bool          `yaml:"OIDCRedirect" json:"OIDCRedirect" flag:"oidc-redirect"`
 	OIDCRegister           bool          `yaml:"OIDCRegister" json:"OIDCRegister" flag:"oidc-register"`
 	OIDCUsername           string        `yaml:"OIDCUsername" json:"-" flag:"oidc-username"`
-	OIDCDomain             string        `yaml:"-" json:"-" flag:"oidc-domain"`
-	OIDCRole               string        `yaml:"-" json:"-" flag:"oidc-role"`
+	OIDCDomain             string        `yaml:"-" json:"-" flag:"oidc-domain" tags:"pro"`
+	OIDCRole               string        `yaml:"-" json:"-" flag:"oidc-role" tags:"pro"`
 	OIDCWebDAV             bool          `yaml:"OIDCWebDAV" json:"-" flag:"oidc-webdav"`
 	DisableOIDC            bool          `yaml:"DisableOIDC" json:"DisableOIDC" flag:"disable-oidc"`
 	SessionMaxAge          int64         `yaml:"SessionMaxAge" json:"-" flag:"session-maxage"`
@@ -58,6 +59,7 @@ type Options struct {
 	Demo                   bool          `yaml:"-" json:"-" flag:"demo"`
 	Sponsor                bool          `yaml:"-" json:"-" flag:"sponsor"`
 	ConfigPath             string        `yaml:"ConfigPath" json:"-" flag:"config-path"`
+	OptionsYaml            string        `json:"-" yaml:"-" flag:"-"`
 	DefaultsYaml           string        `json:"-" yaml:"-" flag:"defaults-yaml"`
 	OriginalsPath          string        `yaml:"OriginalsPath" json:"-" flag:"originals-path"`
 	OriginalsLimit         int           `yaml:"OriginalsLimit" json:"OriginalsLimit" flag:"originals-limit"`
@@ -68,16 +70,18 @@ type Options struct {
 	ImportDest             string        `yaml:"ImportDest" json:"-" flag:"import-dest"`
 	ImportAllow            string        `yaml:"ImportAllow" json:"ImportAllow" flag:"import-allow"`
 	UploadNSFW             bool          `yaml:"UploadNSFW" json:"-" flag:"upload-nsfw"`
-	UploadAllow            string        `yaml:"UploadAllow" json:"UploadAllow" flag:"upload-allow"`
+	UploadAllow            string        `yaml:"UploadAllow" json:"-" flag:"upload-allow"`
+	UploadArchives         bool          `yaml:"UploadArchives" json:"-" flag:"upload-archives"`
+	UploadLimit            int           `yaml:"UploadLimit" json:"-" flag:"upload-limit"`
 	CachePath              string        `yaml:"CachePath" json:"-" flag:"cache-path"`
 	TempPath               string        `yaml:"TempPath" json:"-" flag:"temp-path"`
 	AssetsPath             string        `yaml:"AssetsPath" json:"-" flag:"assets-path"`
-	CustomAssetsPath       string        `yaml:"-" json:"-" flag:"custom-assets-path"`
+	CustomAssetsPath       string        `yaml:"-" json:"-" flag:"custom-assets-path" tags:"plus,pro"`
 	SidecarPath            string        `yaml:"SidecarPath" json:"-" flag:"sidecar-path"`
 	SidecarYaml            bool          `yaml:"SidecarYaml" json:"SidecarYaml" flag:"sidecar-yaml" default:"true"`
 	UsageInfo              bool          `yaml:"UsageInfo" json:"UsageInfo" flag:"usage-info"`
 	FilesQuota             uint64        `yaml:"FilesQuota" json:"-" flag:"files-quota"`
-	UsersQuota             int           `yaml:"UsersQuota" json:"-" flag:"users-quota"`
+	UsersQuota             int           `yaml:"UsersQuota" json:"-" flag:"users-quota" tags:"pro"`
 	BackupPath             string        `yaml:"BackupPath" json:"-" flag:"backup-path"`
 	BackupSchedule         string        `yaml:"BackupSchedule" json:"BackupSchedule" flag:"backup-schedule"`
 	BackupRetain           int           `yaml:"BackupRetain" json:"BackupRetain" flag:"backup-retain"`
@@ -111,7 +115,6 @@ type Options struct {
 	DisableRaw             bool          `yaml:"DisableRaw" json:"DisableRaw" flag:"disable-raw"`
 	RawPresets             bool          `yaml:"RawPresets" json:"RawPresets" flag:"raw-presets"`
 	ExifBruteForce         bool          `yaml:"ExifBruteForce" json:"ExifBruteForce" flag:"exif-bruteforce"`
-	DetectNSFW             bool          `yaml:"DetectNSFW" json:"DetectNSFW" flag:"detect-nsfw"`
 	DefaultLocale          string        `yaml:"DefaultLocale" json:"DefaultLocale" flag:"default-locale"`
 	DefaultTimezone        string        `yaml:"DefaultTimezone" json:"DefaultTimezone" flag:"default-timezone"`
 	DefaultTheme           string        `yaml:"DefaultTheme" json:"DefaultTheme" flag:"default-theme"`
@@ -127,6 +130,7 @@ type Options struct {
 	SiteTitle              string        `yaml:"SiteTitle" json:"SiteTitle" flag:"site-title"`
 	SiteCaption            string        `yaml:"SiteCaption" json:"SiteCaption" flag:"site-caption"`
 	SiteDescription        string        `yaml:"SiteDescription" json:"SiteDescription" flag:"site-description"`
+	SiteFavicon            string        `yaml:"SiteFavicon" json:"SiteFavicon" flag:"site-favicon"`
 	SitePreview            string        `yaml:"SitePreview" json:"SitePreview" flag:"site-preview"`
 	CdnUrl                 string        `yaml:"CdnUrl" json:"CdnUrl" flag:"cdn-url"`
 	CdnVideo               bool          `yaml:"CdnVideo" json:"CdnVideo" flag:"cdn-video"`
@@ -191,6 +195,11 @@ type Options struct {
 	JpegQuality            int           `yaml:"JpegQuality" json:"JpegQuality" flag:"jpeg-quality"`
 	JpegSize               int           `yaml:"JpegSize" json:"JpegSize" flag:"jpeg-size"`
 	PngSize                int           `yaml:"PngSize" json:"PngSize" flag:"png-size"`
+	VisionYaml             string        `yaml:"VisionYaml" json:"-" flag:"vision-yaml"`
+	VisionApi              bool          `yaml:"VisionApi" json:"-" flag:"vision-api"`
+	VisionUri              string        `yaml:"VisionUri" json:"-" flag:"vision-uri"`
+	VisionKey              string        `yaml:"VisionKey" json:"-" flag:"vision-key"`
+	DetectNSFW             bool          `yaml:"DetectNSFW" json:"DetectNSFW" flag:"detect-nsfw"`
 	FaceSize               int           `yaml:"-" json:"-" flag:"face-size"`
 	FaceScore              float64       `yaml:"-" json:"-" flag:"face-score"`
 	FaceOverlap            int           `yaml:"-" json:"-" flag:"face-overlap"`

@@ -177,8 +177,8 @@ func TestUserSettings_ApplyTo(t *testing.T) {
 		UI: customize.UISettings{
 			Theme:     "onyx",
 			Language:  "nl",
-			TimeZone:  "Europe/Berlin",
-			StartPage: "",
+			TimeZone:  "Europe/Amsterdam",
+			StartPage: "default",
 		},
 		Download: customize.DownloadSettings{
 			Name:         "file",

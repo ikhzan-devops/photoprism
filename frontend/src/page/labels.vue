@@ -1,12 +1,5 @@
 <template>
-  <div
-    ref="page"
-    tabindex="1"
-    class="p-page p-page-labels not-selectable"
-    :class="$config.aclClasses('labels')"
-    @keydown.ctrl="onKeyCtrl"
-    @keydown.meta="onKeyCtrl"
-  >
+  <div ref="page" tabindex="1" class="p-page p-page-labels not-selectable" :class="$config.aclClasses('labels')">
     <v-form
       ref="form"
       validate-on="invalid-input"
@@ -26,6 +19,7 @@
           overflow
           single-line
           rounded
+          tabindex="1"
           variant="solo-filled"
           :density="density"
           validate-on="invalid-input"
@@ -52,6 +46,7 @@
         <v-btn
           v-if="!filter.all"
           icon="mdi-eye"
+          tabindex="2"
           :title="$gettext('Show more')"
           class="action-show-all ms-1"
           @click.stop="showAll"
@@ -60,12 +55,18 @@
         <v-btn
           v-else
           icon="mdi-eye-off"
+          tabindex="2"
           :title="$gettext('Show less')"
           class="action-show-important ms-1"
           @click.stop="showImportant"
         >
         </v-btn>
-        <p-action-menu v-if="$vuetify.display.mdAndUp" :items="menuActions" button-class="ms-1"></p-action-menu>
+        <p-action-menu
+          v-if="$vuetify.display.mdAndUp"
+          :items="menuActions"
+          :tabindex="3"
+          button-class="ms-1"
+        ></p-action-menu>
       </v-toolbar>
     </v-form>
 
@@ -199,6 +200,7 @@ export default {
       default: () => {},
     },
   },
+  expose: ["onShortCut"],
   data() {
     const query = this.$route.query;
     const routeName = this.$route.name;
@@ -315,26 +317,19 @@ export default {
         },
       ];
     },
-    onKeyCtrl(ev) {
-      if (!ev || !(ev instanceof KeyboardEvent) || !(ev.ctrlKey || ev.metaKey) || !this.$view.isActive(this)) {
-        return;
-      }
-
+    onShortCut(ev) {
       switch (ev.code) {
         case "KeyR":
-          ev.preventDefault();
           this.refresh();
-          break;
+          return true;
         case "KeyF":
-          ev.preventDefault();
           this.$view.focus(this.$refs?.form, ".input-search input", true);
-          break;
+          return true;
         case "KeyU":
-          ev.preventDefault();
           if (this.$config.allow("files", "upload") && this.$config.feature("upload")) {
             this.$event.publish("dialog.upload");
           }
-          break;
+          return true;
       }
     },
     edit(label) {
@@ -667,6 +662,9 @@ export default {
 
       this.loadMore();
     },
+    reset() {
+      this.results = [];
+    },
     search() {
       /**
        * re-creating the last scroll-position should only ever happen when using
@@ -719,6 +717,9 @@ export default {
               }
             });
           }
+        })
+        .catch(() => {
+          this.reset();
         })
         .finally(() => {
           this.dirty = false;
