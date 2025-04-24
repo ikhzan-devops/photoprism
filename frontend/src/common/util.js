@@ -440,7 +440,7 @@ export default class $util {
       case "ps":
         return "Adobe PostScript";
       case "eps":
-        return "Encapsulated PostScript";
+        return "EPS";
       default:
         return value.toUpperCase();
     }

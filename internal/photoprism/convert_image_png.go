@@ -17,18 +17,19 @@ func (w *Convert) PngConvertCmds(f *MediaFile, pngName string) (result ConvertCm
 		return result, useMutex, fmt.Errorf("no media file provided for processing - you may have found a bug")
 	}
 
-	// Find conversion command depending on the file type and runtime environment.
+	// Add suitable conversion commands depending on the file type, codec, runtime environment, and configuration.
 	fileExt := f.Extension()
 	maxSize := strconv.Itoa(w.conf.PngSize())
 
-	// Apple Scriptable image processing system: https://ss64.com/osx/sips.html
+	// On a Mac, use the Apple Scriptable image processing system to convert images to PNG,
+	// see https://ss64.com/osx/sips.html.
 	if (f.IsRaw() || f.IsHeif()) && w.conf.SipsEnabled() && w.sipsExclude.Allow(fileExt) {
 		result = append(result, NewConvertCmd(
 			exec.Command(w.conf.SipsBin(), "-Z", maxSize, "-s", "format", "png", "--out", pngName, f.FileName())),
 		)
 	}
 
-	// Extract a video still image that can be used as preview.
+	// Use FFmpeg to extract video stills from videos, e.g. to use them as cover images.
 	if f.IsAnimated() && !f.IsWebp() && w.conf.FFmpegEnabled() {
 		// Use "ffmpeg" to extract a PNG still image from the video.
 		result = append(result, NewConvertCmd(
@@ -36,7 +37,7 @@ func (w *Convert) PngConvertCmds(f *MediaFile, pngName string) (result ConvertCm
 		)
 	}
 
-	// Use heif-convert for HEIC/HEIF and AVIF image files.
+	// Use "heif-dec" or "heif-convert" to convert HEIC/HEIF and AVIF image files to PNG.
 	if (f.IsHeic() || f.IsAvif()) && w.conf.HeifConvertEnabled() {
 		result = append(result, NewConvertCmd(
 			exec.Command(w.conf.HeifConvertBin(), f.FileName(), pngName)).
@@ -44,30 +45,36 @@ func (w *Convert) PngConvertCmds(f *MediaFile, pngName string) (result ConvertCm
 		)
 	}
 
-	// Decode JPEG XL image if support is enabled.
+	// Use "djxl" to convert JPEG XL images if installed and enabled.
 	if f.IsJpegXL() && w.conf.JpegXLEnabled() {
 		result = append(result, NewConvertCmd(
 			exec.Command(w.conf.JpegXLDecoderBin(), f.FileName(), pngName)),
 		)
 	}
 
-	// SVG vector graphics can be converted with librsvg if installed,
-	// otherwise try to convert the media file with ImageMagick.
+	// Use librsvg to convert SVG vector graphics to PNG if installed and enabled.
 	if w.conf.RsvgConvertEnabled() && f.IsSVG() {
 		args := []string{"-a", "-f", "png", "-o", pngName, f.FileName()}
 		result = append(result, NewConvertCmd(
 			exec.Command(w.conf.RsvgConvertBin(), args...)),
 		)
-	} else if w.conf.ImageMagickEnabled() && w.imageMagickExclude.Allow(fileExt) {
-		if f.IsImage() && !f.IsJpegXL() && !f.IsRaw() && !f.IsHeif() || f.IsVector() && w.conf.VectorEnabled() {
-			resize := fmt.Sprintf("%dx%d>", w.conf.PngSize(), w.conf.PngSize())
+	}
+
+	// Use ImageMagick for other media file formats if the type and extension are allowed.
+	if w.conf.ImageMagickEnabled() && w.imageMagickExclude.Allow(fileExt) {
+		resize := fmt.Sprintf("%dx%d>", w.conf.PngSize(), w.conf.PngSize())
+		if f.IsImage() && !f.IsJpegXL() && !f.IsRaw() && !f.IsHeif() {
 			args := []string{f.FileName(), "-flatten", "-resize", resize, pngName}
 			result = append(result, NewConvertCmd(
 				exec.Command(w.conf.ImageMagickBin(), args...)),
 			)
+		} else if f.IsVector() && w.conf.VectorEnabled() {
+			args := []string{f.FileName() + "[0]", "-resize", resize, pngName}
+			result = append(result, NewConvertCmd(
+				exec.Command(w.conf.ImageMagickBin(), args...)),
+			)
 		} else if f.IsDocument() {
-			resize := fmt.Sprintf("%dx%d>", w.conf.PngSize(), w.conf.PngSize())
-			args := []string{f.FileName() + "[0]", "-background", "white", "-alpha", "remove", "-alpha", "off", "-resize", resize, pngName}
+			args := []string{"-colorspace", "sRGB", "-density", "300", f.FileName() + "[0]", "-background", "white", "-alpha", "remove", "-alpha", "off", "-resize", resize, pngName}
 			result = append(result, NewConvertCmd(
 				exec.Command(w.conf.ImageMagickBin(), args...)),
 			)
