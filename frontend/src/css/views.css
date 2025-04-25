@@ -832,7 +832,8 @@
 }
 
 .search-results.list-view .input-select,
-.search-results.list-view .input-open {
+.search-results.list-view .input-open,
+.edit-batch.list-view .input-open {
     margin-left: auto;
     margin-right: auto;
     left: 0;
