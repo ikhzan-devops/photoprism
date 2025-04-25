@@ -169,6 +169,7 @@ export default {
       model: new Thumb(), // Current slide.
       models: [], // Slide models.
       index: 0, // Current slide index in models.
+      isBatchDialog: false,
       subscriptions: [], // Event subscriptions.
       // Video properties for rendering the controls.
       video: {
@@ -442,6 +443,12 @@ export default {
       const album = view.model && view.model instanceof Album ? view.model : null;
       const context = view.getContext && typeof view.getContext === "function" ? view.getContext() : "";
       const selected = view.results[index];
+
+      const isBatchDialog = view.isBatchDialog;
+      if(isBatchDialog) {
+        this.isBatchDialog = isBatchDialog;
+        console.log('this.isBatchDialog', this.isBatchDialog);
+      }
 
       if (!view.lightbox.dirty && view.lightbox.results && view.lightbox.results.length > index) {
         // Reuse existing lightbox result if possible.
@@ -1242,7 +1249,7 @@ export default {
         });
 
         // Add edit button control if user has permission to use it.
-        if (this.canEdit) {
+        if (this.canEdit && !this.isBatchDialog) {
           lightbox.pswp.ui.registerElement({
             name: "edit-button",
             className: "pswp__button--edit-button pswp__button--mdi hidden-shared-only", // Sets the icon style/size in lightbox.css.

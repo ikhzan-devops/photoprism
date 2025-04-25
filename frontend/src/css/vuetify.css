@@ -130,7 +130,7 @@ body.dark-theme {
 }
 
 .v-overlay.v-dialog.v-dialog--sidepanel.v-dialog--sidepanel-wide:not(.v-dialog--fullscreen) .v-overlay__content {
-    min-width: 950px;
+    min-width: 1150px;
     width: 56vw;
 }
 

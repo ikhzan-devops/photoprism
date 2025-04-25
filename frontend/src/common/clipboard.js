@@ -118,6 +118,14 @@ export class Clipboard {
     return result;
   }
 
+  toggleAllIds(models) {
+    const result = models.forEach((model) => {
+      this.toggle(model);
+    });
+
+    return result;
+  }
+
   add(model) {
     if (!this.isModel(model)) {
       return;
@@ -187,6 +195,7 @@ export class Clipboard {
   }
 
   hasId(id) {
+    console.log( 'this.selectionMap["id:" + id] !== "undefined"', this.selectionMap["id:" + id]);
     return typeof this.selectionMap["id:" + id] !== "undefined";
   }
 
