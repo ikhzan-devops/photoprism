@@ -236,6 +236,10 @@ export default {
         this.showView(data.view, data.index);
       } else {
         this.showThumbs(data.models, data.index, data);
+
+        if (data.isBatchDialog) {
+          this.isBatchDialog = data.isBatchDialog;
+        }
       }
     },
     // Pauses the lightbox slideshow and any videos that are playing.
@@ -443,12 +447,6 @@ export default {
       const album = view.model && view.model instanceof Album ? view.model : null;
       const context = view.getContext && typeof view.getContext === "function" ? view.getContext() : "";
       const selected = view.results[index];
-
-      const isBatchDialog = view.isBatchDialog;
-      if(isBatchDialog) {
-        this.isBatchDialog = isBatchDialog;
-        console.log('this.isBatchDialog', this.isBatchDialog);
-      }
 
       if (!view.lightbox.dirty && view.lightbox.results && view.lightbox.results.length > index) {
         // Reuse existing lightbox result if possible.

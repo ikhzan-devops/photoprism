@@ -1601,15 +1601,6 @@ export default {
       this.$lightbox.openModels(Thumb.fromFiles([this.selectedPhotos[index]]), 0, null , this.isBatchDialog);
     },
     isSelected(m) {
-      console.log('PhotoClipboard', PhotoClipboard);
-      //
-      // if(!PhotoClipboard.has(m)) {
-      //   const index = this.toggledPhotos.findIndex(model => model == m);
-      //   this.toggledPhotos.splice(index, 1);
-      // } else {
-      //   this.toggledPhotos.push(m);
-      // }
-
       return PhotoClipboard.has(m);
     },
     onClick(ev) {
@@ -1623,6 +1614,9 @@ export default {
     onSelectAllToggle() {
       PhotoClipboard.toggleAllIds(this.selectedPhotos);
       this.isAllSelected = !this.isAllSelected;
+    },
+    onUpdate() {
+      console.log('Add event on update');
     },
     onSelectClick(ev, index, select) {
       const longClick = this.mouseDown.index === index && ev.timeStamp - this.mouseDown.timeStamp > 400;

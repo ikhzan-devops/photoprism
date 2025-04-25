@@ -195,7 +195,6 @@ export class Clipboard {
   }
 
   hasId(id) {
-    console.log( 'this.selectionMap["id:" + id] !== "undefined"', this.selectionMap["id:" + id]);
     return typeof this.selectionMap["id:" + id] !== "undefined";
   }
 
