@@ -1,7 +1,6 @@
 services:
   demo:
     restart: always
-    command: photoprism --public start
     image: photoprism/demo:latest
     container_name: demo
     depends_on:
@@ -14,6 +13,8 @@ services:
     volumes:
       - "./config:/photoprism/storage/config"
     environment:
+      PHOTOPRISM_DEMO: "true"
+      PHOTOPRISM_PUBLIC: "true"
       PHOTOPRISM_SITE_URL: "https://demo.yourdomain.com/"
       # PHOTOPRISM_CDN_URL: "https://demo-cdn.yourdomain.com/"
       PHOTOPRISM_SITE_TITLE: "PhotoPrism"
