@@ -124,7 +124,6 @@ services:
       - ".:/go/src/github.com/photoprism/photoprism"
       - "./storage:/photoprism"
       - "go-mod:/go/pkg/mod"
-
   mariadb:
     extends:
       file: ./compose.yaml
@@ -133,6 +132,10 @@ services:
     extends:
       file: ./compose.yaml
       service: qdrant
+  photoprism-vision:
+    extends:
+      file: ./compose.yaml
+      service: photoprism-vision
   traefik:
     extends:
       file: ./compose.yaml
@@ -164,9 +167,3 @@ volumes:
     driver: local
   mariadb:
     driver: local
-
-## Create shared "photoprism-develop" network for connecting with services in other compose.yaml files
-networks:
-  default:
-    name: photoprism
-    driver: bridge

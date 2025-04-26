@@ -404,21 +404,19 @@ docker-build:
 	$(DOCKER_COMPOSE) --profile=all pull --ignore-pull-failures
 	$(DOCKER_COMPOSE) build --pull
 docker-nvidia: docker-nvidia-up
-docker-nvidia-up:
-	docker compose --profile=qdrant -f compose.nvidia.yaml up
-docker-nvidia-down:
-	docker compose --profile=qdrant -f compose.nvidia.yaml down --remove-orphans
 docker-nvidia-build:
-	docker compose --profile=qdrant -f compose.nvidia.yaml build
+	$(DOCKER_COMPOSE) --profile=qdrant -f compose.nvidia.yaml build
+docker-nvidia-up:
+	$(DOCKER_COMPOSE) --profile=qdrant -f compose.nvidia.yaml up
+docker-nvidia-down:
+	$(DOCKER_COMPOSE) --profile=qdrant -f compose.nvidia.yaml down --remove-orphans
 docker-intel: docker-intel-up
-docker-intel-up:
-	docker compose -f compose.intel.yaml up
 docker-intel-build:
-	docker compose -f compose.intel.yaml build
-docker-local-up:
-	$(DOCKER_COMPOSE) -f compose.local.yaml up --force-recreate
-docker-local-down:
-	$(DOCKER_COMPOSE) -f compose.local.yaml down -V
+	$(DOCKER_COMPOSE) -f compose.intel.yaml build
+docker-intel-up:
+	$(DOCKER_COMPOSE) -f compose.intel.yaml up
+docker-intel-down:
+	$(DOCKER_COMPOSE) -f compose.intel.yaml down --remove-orphans
 develop: docker-develop
 docker-develop: docker-develop-latest
 docker-develop-all: docker-develop-latest docker-develop-other
@@ -714,6 +712,10 @@ terminal-preview:
 logs-preview:
 	$(DOCKER_COMPOSE) -f compose.preview.yaml logs -f photoprism-preview
 docker-local: docker-local-plucky
+docker-local-up:
+	$(DOCKER_COMPOSE) -f compose.local.yaml up --force-recreate
+docker-local-down:
+	$(DOCKER_COMPOSE) -f compose.local.yaml down --remove-orphans
 docker-local-all: docker-local-plucky docker-local-oracular docker-local-noble docker-local-mantic docker-local-lunar docker-local-jammy docker-local-bookworm docker-local-bullseye docker-local-buster
 docker-local-bookworm:
 	docker pull photoprism/develop:bookworm
