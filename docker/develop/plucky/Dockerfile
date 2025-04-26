@@ -99,6 +99,7 @@ RUN echo 'APT::Acquire::Retries "3";' > /etc/apt/apt.conf.d/80retries && \
         /photoprism/storage/config \
         /photoprism/storage/cache && \
     /scripts/install-s6.sh && \
+    apt modernize-sources && \
     /scripts/cleanup.sh
 
 # Download machine learning models and test data.
