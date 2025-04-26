@@ -14,7 +14,9 @@ GOIMPORTS=goimports
 
 # Build version string.
 SEMVER_MAJOR ?= 1
+export SEMVER_MAJOR
 SEMVER_MINOR ?= $(shell date -u +%y%m)
+export SEMVER_MINOR
 SEMVER_PATCH ?= $(shell date -u +%d)
 SEMVER_VERSION ?= $(SEMVER_MAJOR).$(SEMVER_MINOR).$(SEMVER_PATCH)
 export SEMVER_VERSION
