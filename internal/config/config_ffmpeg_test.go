@@ -32,13 +32,16 @@ func TestConfig_FFmpegEnabled(t *testing.T) {
 
 func TestConfig_FFmpegBitrate(t *testing.T) {
 	c := NewConfig(CliTestContext())
-	assert.Equal(t, 60, c.FFmpegBitrate())
+	assert.Equal(t, encode.DefaultBitrateLimit, c.FFmpegBitrate())
 
 	c.options.FFmpegBitrate = 1000
-	assert.Equal(t, 960, c.FFmpegBitrate())
+	assert.Equal(t, encode.MaxBitrateLimit, c.FFmpegBitrate())
 
 	c.options.FFmpegBitrate = -5
-	assert.Equal(t, 60, c.FFmpegBitrate())
+	assert.Equal(t, encode.DefaultBitrateLimit, c.FFmpegBitrate())
+
+	c.options.FFmpegBitrate = 1
+	assert.Equal(t, encode.MinBitrateLimit, c.FFmpegBitrate())
 
 	c.options.FFmpegBitrate = 800
 	assert.Equal(t, 800, c.FFmpegBitrate())
@@ -70,6 +73,11 @@ func TestConfig_FFmpegSize(t *testing.T) {
 	assert.Equal(t, thumb.Sizes[thumb.Fit7680].Width, c.FFmpegSize())
 }
 
+func TestConfig_FFmpegQuality(t *testing.T) {
+	c := NewConfig(CliTestContext())
+	assert.Equal(t, encode.DefaultQuality, c.FFmpegQuality())
+}
+
 func TestConfig_FFmpegBitrateExceeded(t *testing.T) {
 	c := NewConfig(CliTestContext())
 	c.options.FFmpegBitrate = 0
@@ -80,7 +88,7 @@ func TestConfig_FFmpegBitrateExceeded(t *testing.T) {
 	assert.False(t, c.FFmpegBitrateExceeded(0.95))
 	assert.False(t, c.FFmpegBitrateExceeded(1.0))
 	assert.True(t, c.FFmpegBitrateExceeded(1.05))
-	assert.True(t, c.FFmpegBitrateExceeded(2.05))
+	assert.True(t, c.FFmpegBitrateExceeded(6.05))
 	c.options.FFmpegBitrate = 50
 	assert.False(t, c.FFmpegBitrateExceeded(0.95))
 	assert.False(t, c.FFmpegBitrateExceeded(1.05))
@@ -91,14 +99,28 @@ func TestConfig_FFmpegBitrateExceeded(t *testing.T) {
 	assert.False(t, c.FFmpegBitrateExceeded(2.05))
 }
 
+func TestConfig_FFmpegPreset(t *testing.T) {
+	c := NewConfig(CliTestContext())
+	assert.Equal(t, encode.PresetFast, c.FFmpegPreset())
+}
+
+func TestConfig_FFmpegDevice(t *testing.T) {
+	c := NewConfig(CliTestContext())
+	assert.Equal(t, "", c.FFmpegDevice())
+	c.options.FFmpegDevice = "0"
+	assert.Equal(t, "0", c.FFmpegDevice())
+	c.options.FFmpegDevice = ""
+	assert.Equal(t, "", c.FFmpegDevice())
+}
+
 func TestConfig_FFmpegMapVideo(t *testing.T) {
 	c := NewConfig(CliTestContext())
-	assert.Equal(t, encode.MapVideo, c.FFmpegMapVideo())
+	assert.Equal(t, encode.DefaultMapVideo, c.FFmpegMapVideo())
 }
 
 func TestConfig_FFmpegMapAudio(t *testing.T) {
 	c := NewConfig(CliTestContext())
-	assert.Equal(t, encode.MapAudio, c.FFmpegMapAudio())
+	assert.Equal(t, encode.DefaultMapAudio, c.FFmpegMapAudio())
 }
 
 func TestConfig_FFmpegOptions(t *testing.T) {
@@ -108,9 +130,8 @@ func TestConfig_FFmpegOptions(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, c.FFmpegBin(), opt.Bin)
 	assert.Equal(t, encode.SoftwareAvc, opt.Encoder)
-	assert.Equal(t, bitrate, opt.BitrateLimit)
-	assert.Equal(t, encode.MapVideo, opt.MapVideo)
-	assert.Equal(t, encode.MapAudio, opt.MapAudio)
+	assert.Equal(t, encode.DefaultMapVideo, opt.MapVideo)
+	assert.Equal(t, encode.DefaultMapAudio, opt.MapAudio)
 	assert.Equal(t, c.FFmpegMapVideo(), opt.MapVideo)
 	assert.Equal(t, c.FFmpegMapAudio(), opt.MapAudio)
 }

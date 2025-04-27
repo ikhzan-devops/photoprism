@@ -62,7 +62,6 @@ for t in ${GPU_DETECTED[@]}; do
       echo "Installing AMD VA-API GPU Drivers..."
       apt-get -qq install mesa-va-drivers vainfo libva2
       ;;
-      
 
     "null")
       # ignore
