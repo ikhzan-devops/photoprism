@@ -54,7 +54,9 @@ func (c *Config) FFmpegQuality() int {
 // even if they could be played natively (optional).
 func (c *Config) FFmpegBitrate() int {
 	switch {
-	case c.options.FFmpegBitrate <= 0:
+	case c.options.FFmpegBitrate < 0:
+		return encode.NoBitrateLimit
+	case c.options.FFmpegBitrate == 0:
 		return encode.DefaultBitrateLimit
 	case c.options.FFmpegBitrate < encode.MinBitrateLimit:
 		return encode.MinBitrateLimit

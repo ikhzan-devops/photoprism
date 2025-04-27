@@ -38,7 +38,7 @@ func TestConfig_FFmpegBitrate(t *testing.T) {
 	assert.Equal(t, encode.MaxBitrateLimit, c.FFmpegBitrate())
 
 	c.options.FFmpegBitrate = -5
-	assert.Equal(t, encode.DefaultBitrateLimit, c.FFmpegBitrate())
+	assert.Equal(t, encode.NoBitrateLimit, c.FFmpegBitrate())
 
 	c.options.FFmpegBitrate = 1
 	assert.Equal(t, encode.MinBitrateLimit, c.FFmpegBitrate())
