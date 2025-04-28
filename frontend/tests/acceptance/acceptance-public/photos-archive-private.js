@@ -24,7 +24,7 @@ const subject = new Subject();
 test.meta("testID", "photos-archive-private-001").meta({ type: "short", mode: "public" })(
   "Common: Private/unprivate photo/video using clipboard",
   async (t) => {
-    await toolbar.setFilter("view", "Mosaic");
+    await toolbar.triggerToolbarAction("view-mosaic");
     const FirstPhotoUid = await photo.getNthPhotoUid("image", 0);
     //const SecondPhotoUid = await photo.getNthPhotoUid("image", 1);
     const ThirdPhotoUid = await photo.getNthPhotoUid("image", 2);
@@ -125,7 +125,7 @@ test.meta("testID", "photos-archive-private-001").meta({ type: "short", mode: "p
 test.meta("testID", "photos-archive-private-002").meta({ type: "short", mode: "public" })(
   "Common: Archive/restore video, photos, private photos and review photos using clipboard",
   async (t) => {
-    await toolbar.setFilter("view", "Mosaic");
+    await toolbar.triggerToolbarAction("view-mosaic");
     const FirstPhotoUid = await photo.getNthPhotoUid("image", 0);
     const SecondPhotoUid = await photo.getNthPhotoUid("image", 1);
     const FirstVideoUid = await photo.getNthPhotoUid("video", 0);
@@ -231,7 +231,7 @@ test.meta("testID", "photos-archive-private-003").meta({ mode: "public" })(
       console.log("Skipped on mobile");
     } else {
       await menu.openPage("archive");
-      await toolbar.setFilter("view", "Mosaic");
+      await toolbar.triggerToolbarAction("view-mosaic");
       const InitialPhotoCountInArchive = await photo.getPhotoCount("all");
       await menu.openPage("monochrome");
       const MonochromePhoto = await photo.getNthPhotoUid("all", 0);
@@ -367,7 +367,7 @@ test.meta("testID", "photos-archive-private-004").meta({ type: "short", mode: "p
       console.log("Skipped on mobile");
     } else {
       await menu.openPage("private");
-      await toolbar.setFilter("view", "Mosaic");
+      await toolbar.triggerToolbarAction("view-mosaic");
 
       const InitialPhotoCountInPrivate = await photo.getPhotoCount("all");
       await menu.openPage("monochrome");
@@ -493,7 +493,7 @@ test.meta("testID", "photos-archive-private-004").meta({ type: "short", mode: "p
       } else {
         await toolbar.triggerToolbarAction("refresh");
       }
-      await toolbar.setFilter("view", "Mosaic");
+      await toolbar.triggerToolbarAction("view-mosaic");
 
       const PhotoCountInPrivateAfterRestore = await photo.getPhotoCount("all");
 

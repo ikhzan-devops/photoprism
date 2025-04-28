@@ -126,26 +126,20 @@ test.meta("testID", "shortcuts-003").meta({ type: "short", mode: "public" })(
 
     await t.expect(photoviewer.viewer.visible).ok();
 
-    await t.getBrowserConsoleMessages();
+    await triggerKeyPress("a", "KeyA", 65, true, false);
+
+    await t.expect(Selector("div.p-notify--success").withText("Archived").visible).ok();
+
+    await t.wait(5000);
 
     await triggerKeyPress("a", "KeyA", 65, true, false);
 
-    await t.wait(500);
-    let consoleMessages = await t.getBrowserConsoleMessages();
-    await t
-      .expect(consoleMessages.log)
-      .contains("success: archived", 'Console should contain "success: archived" after Ctrl+A');
+    await t.expect(Selector("div.p-notify--success").withText("Restored").visible).ok();
 
-    await t.getBrowserConsoleMessages();
+    await t.wait(5000);
 
     await triggerKeyPress("d", "KeyD", 68, true, false);
-
-    await t.wait(500);
-    consoleMessages = await t.getBrowserConsoleMessages();
-    await t
-      .expect(consoleMessages.log)
-      .contains("success: downloading\u2026", 'Console should contain "success: downloading..." after Ctrl+D');
-
+    await t.expect(Selector("div.p-notify--success").withText("Downloading").visible).ok();
     await t.pressKey("esc");
   }
 );
