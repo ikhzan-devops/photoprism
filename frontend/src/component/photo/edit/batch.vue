@@ -25,7 +25,7 @@
           <div class="edit-batch photo-results list-view v-table">
             <table>
               <tbody>
-                <tr class="pa-3">
+                <tr>
                   <td class="col-select" :class="{ 'is-selected': isAllSelected }">
                     <button
                       class="input-select ma-auto"
@@ -175,7 +175,7 @@
           </div>
         </v-col>
 
-        <v-col cols="12" lg="8" class="scroll-col">
+        <v-col cols="12" lg="8">
           <v-form
             ref="form"
             validate-on="invalid-input"
@@ -265,7 +265,7 @@
                       >
                       </v-combobox>
                     </v-col>
-                    <v-col cols="6" md="3">
+                    <v-col cols="12" sm="6" md="3">
                       <v-combobox
                         :label="$gettext('Year')"
                         :placeholder="$gettext('Unknown')"
@@ -281,7 +281,7 @@
                       >
                       </v-combobox>
                     </v-col>
-                    <v-col cols="6" md="4">
+                    <v-col cols="12" sm="6" md="4">
                       <v-autocomplete
                         :label="$gettext('Time Zone')"
                         hide-no-data
