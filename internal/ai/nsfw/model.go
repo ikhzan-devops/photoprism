@@ -41,7 +41,7 @@ func NewModel(modelPath string, resolution int, tags []string, disabled bool) *M
 // File checks the specified JPEG file for inappropriate content.
 func (m *Model) File(fileName string) (result Result, err error) {
 	if fs.MimeType(fileName) != header.ContentTypeJpeg {
-		return result, fmt.Errorf("nsfw: %s is not a jpeg file", clean.Log(filepath.Base(fileName)))
+		return result, fmt.Errorf("%s is not a jpeg file", clean.Log(filepath.Base(fileName)))
 	}
 
 	var img []byte
@@ -78,7 +78,7 @@ func (m *Model) Run(img []byte) (result Result, err error) {
 	input, err := tensorflow.ImageTransform(img, fs.ImageJpeg, m.resolution)
 
 	if err != nil {
-		return result, fmt.Errorf("nsfw: %s", err)
+		return result, fmt.Errorf("%s", err)
 	}
 
 	// Run inference.
@@ -92,11 +92,11 @@ func (m *Model) Run(img []byte) (result Result, err error) {
 		nil)
 
 	if err != nil {
-		return result, fmt.Errorf("nsfw: %s (run inference)", err.Error())
+		return result, fmt.Errorf("%s (run inference)", err.Error())
 	}
 
 	if len(output) < 1 {
-		return result, fmt.Errorf("nsfw: inference failed, no output")
+		return result, fmt.Errorf("inference failed, no output")
 	}
 
 	// Return best labels.

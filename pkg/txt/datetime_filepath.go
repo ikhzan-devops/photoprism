@@ -34,7 +34,7 @@ func DateFromFilePath(s string) (result time.Time) {
 		month := Int(string(n[1]))
 		day := Int(string(n[2]))
 		hour := Int(string(n[3]))
-		min := Int(string(n[4]))
+		minute := Int(string(n[4]))
 		sec := Int(string(n[5]))
 
 		// Perform date plausibility check.
@@ -43,7 +43,7 @@ func DateFromFilePath(s string) (result time.Time) {
 		}
 
 		// Perform time plausibility check.
-		if hour < HourMin || hour > HourMax || min < MinMin || min > MinMax || sec < SecMin || sec > SecMax {
+		if hour < HourMin || hour > HourMax || minute < MinMin || minute > MinMax || sec < SecMin || sec > SecMax {
 			return result
 		}
 
@@ -52,7 +52,7 @@ func DateFromFilePath(s string) (result time.Time) {
 			time.Month(month),
 			day,
 			hour,
-			min,
+			minute,
 			sec,
 			0,
 			time.UTC)

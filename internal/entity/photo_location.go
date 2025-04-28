@@ -7,12 +7,11 @@ import (
 
 	"github.com/dustin/go-humanize/english"
 
-	"github.com/ugjka/go-tz/v2"
-
 	"github.com/photoprism/photoprism/internal/ai/classify"
 	"github.com/photoprism/photoprism/internal/service/maps"
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/geo"
+	"github.com/photoprism/photoprism/pkg/time/tz"
 	"github.com/photoprism/photoprism/pkg/txt"
 )
 
@@ -295,22 +294,10 @@ func (m *Photo) UnknownCountry() bool {
 	return m.CountryCode() == UnknownCountry.ID
 }
 
-// GetTimeZone uses PhotoLat and PhotoLng to guess the time zone of the photo.
-func (m *Photo) GetTimeZone() string {
-	result := "UTC"
-
-	if m.HasLatLng() {
-		zones, err := tz.GetZone(tz.Point{
-			Lat: float64(m.PhotoLat),
-			Lon: float64(m.PhotoLng),
-		})
-
-		if err == nil && len(zones) > 0 {
-			result = zones[0]
-		}
-	}
-
-	return result
+// LocationTimeZone uses the GPS location to determine the time zone of the photo,
+// and returns "Local" if no location is set or no time zone is found.
+func (m *Photo) LocationTimeZone() string {
+	return tz.Position(m.PhotoLat, m.PhotoLng)
 }
 
 // CountryName returns the photo country name.
@@ -333,7 +320,7 @@ func (m *Photo) CountryCode() string {
 
 // GetTakenAt returns UTC time for TakenAtLocal.
 func (m *Photo) GetTakenAt() time.Time {
-	location := txt.TimeZone(m.TimeZone)
+	location := tz.Find(m.TimeZone)
 
 	if location == nil {
 		return m.TakenAt
@@ -348,9 +335,9 @@ func (m *Photo) GetTakenAt() time.Time {
 
 // GetTakenAtLocal returns local time for TakenAt.
 func (m *Photo) GetTakenAtLocal() time.Time {
-	location := txt.TimeZone(m.TimeZone)
+	location := tz.Find(m.TimeZone)
 
-	if location == nil {
+	if location == tz.TimeLocal {
 		return m.TakenAtLocal
 	}
 
@@ -387,8 +374,9 @@ func (m *Photo) UpdateLocation() (keywords []string, labels classify.Labels) {
 			m.PlaceID = loc.PlaceID
 			m.PhotoCountry = loc.CountryCode()
 
-			if changed && m.TakenSrc != SrcManual {
-				m.UpdateTimeZone(m.GetTimeZone())
+			// Set time zone based on location.
+			if changed {
+				m.UpdateTimeZone(m.LocationTimeZone())
 			}
 
 			FirstOrCreateCountry(NewCountry(loc.CountryCode(), loc.CountryName()))

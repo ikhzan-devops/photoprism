@@ -31,14 +31,15 @@ ENV PHOTOPRISM_ARCH=$TARGETARCH \
     DEBIAN_FRONTEND="noninteractive" \
     TMPDIR="/tmp" \
     TF_VERSION=1.15.2 \
-    TF_CPP_MIN_LOG_LEVEL=0 \
-    MALLOC_ARENA_MAX=4 \
+    TF_CPP_MIN_LOG_LEVEL=1 \
+    MALLOC_ARENA_MAX=2 \
     GOPATH="/go" \
     GOBIN="/usr/local/bin" \
     GO111MODULE="on" \
     CGO_CFLAGS="-g -O2 -Wno-return-local-addr" \
     PROG="photoprism" \
     S6_KEEP_ENV=1 \
+    S6_VERBOSITY=0 \
     S6_LOGGING=0
 
 # Copy scripts and package sources config.

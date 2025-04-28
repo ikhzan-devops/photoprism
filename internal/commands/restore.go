@@ -14,8 +14,8 @@ import (
 )
 
 const restoreDescription = `A custom filename for the database backup (or - to read the backup from stdin) can optionally be passed as argument.
-   The --database flag can be omitted in this case. If nothing else is specified, the database and album backup paths
-   will be automatically determined based on the current configuration.`
+The --database flag can be omitted in this case. If nothing else is specified, the database and album backup paths
+will be automatically determined based on the current configuration.`
 
 // RestoreCommand configures the command name, flags, and action.
 var RestoreCommand = &cli.Command{

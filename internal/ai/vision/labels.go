@@ -8,7 +8,6 @@ import (
 	"github.com/photoprism/photoprism/internal/ai/classify"
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/media"
-	"github.com/photoprism/photoprism/pkg/media/http/scheme"
 )
 
 // Labels finds matching labels for the specified image.
@@ -24,20 +23,19 @@ func Labels(images Files, src media.Src) (result classify.Labels, err error) {
 	} else if model := Config.Model(ModelTypeLabels); model != nil {
 		// Use remote service API if a server endpoint has been configured.
 		if uri, method := model.Endpoint(); uri != "" && method != "" {
-			apiRequest, apiRequestErr := NewApiRequest(images, scheme.Data)
+			var apiRequest *ApiRequest
+			var apiResponse *ApiResponse
 
-			if apiRequestErr != nil {
-				return result, apiRequestErr
+			if apiRequest, err = NewApiRequest(model.EndpointRequestFormat(), images, model.EndpointFileScheme()); err != nil {
+				return result, err
 			}
 
 			if model.Name != "" {
 				apiRequest.Model = model.Name
 			}
 
-			apiResponse, apiErr := PerformApiRequest(apiRequest, uri, method, model.EndpointKey())
-
-			if apiErr != nil {
-				return result, apiErr
+			if apiResponse, err = PerformApiRequest(apiRequest, uri, method, model.EndpointKey()); err != nil {
+				return result, err
 			}
 
 			for _, label := range apiResponse.Result.Labels {

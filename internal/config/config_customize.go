@@ -9,6 +9,7 @@ import (
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/fs"
 	"github.com/photoprism/photoprism/pkg/i18n"
+	"github.com/photoprism/photoprism/pkg/time/tz"
 )
 
 // DefaultLocale returns the default user interface language locale name.
@@ -23,12 +24,12 @@ func (c *Config) DefaultLocale() string {
 // DefaultTimezone returns the default time zone, e.g. for scheduling backups
 func (c *Config) DefaultTimezone() *time.Location {
 	if c.options.DefaultTimezone == "" {
-		return time.UTC
+		return tz.TimeLocal
 	}
 
 	// Returns time zone if a valid identifier name was provided and UTC otherwise.
-	if timeZone, err := time.LoadLocation(c.options.DefaultTimezone); err != nil {
-		return time.UTC
+	if timeZone, err := time.LoadLocation(c.options.DefaultTimezone); err != nil || timeZone == nil {
+		return tz.TimeLocal
 	} else {
 		return timeZone
 	}

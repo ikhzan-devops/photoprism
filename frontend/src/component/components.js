@@ -7,6 +7,7 @@ import PLoading from "component/loading.vue";
 import PLoadingBar from "component/loading-bar.vue";
 import PLightboxMenu from "component/lightbox/menu.vue";
 import PSidebarInfo from "component/sidebar/info.vue";
+import PMap from "component/map.vue";
 import PLightbox from "component/lightbox.vue";
 
 // Icons.
@@ -82,6 +83,7 @@ export function install(app) {
   app.component("PLoadingBar", PLoadingBar);
   app.component("PLightboxMenu", PLightboxMenu);
   app.component("PSidebarInfo", PSidebarInfo);
+  app.component("PMap", PMap);
   app.component("PLightbox", PLightbox);
   app.component("PUpdate", PUpdate);
 

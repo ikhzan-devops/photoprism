@@ -21,7 +21,7 @@ func (c *Config) RsvgConvertEnabled() bool {
 
 // ImageMagickBin returns the ImageMagick "convert" executable file name.
 func (c *Config) ImageMagickBin() string {
-	return findBin(c.options.ImageMagickBin, "convert")
+	return findBin(c.options.ImageMagickBin, "convert", "magick")
 }
 
 // ImageMagickExclude returns the file extensions not to be used with ImageMagick.

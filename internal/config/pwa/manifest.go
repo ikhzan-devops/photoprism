@@ -58,6 +58,6 @@ func NewManifest(c Config) (m *Manifest) {
 		Permissions:         Permissions,
 		OptionalPermissions: OptionalPermissions,
 		HostPermissions:     HostPermissions(c.SiteUrl, c.CdnUrl),
-		Icons:               NewIcons(c.StaticUri, c.Icon),
+		Icons:               NewIcons(c),
 	}
 }

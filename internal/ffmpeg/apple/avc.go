@@ -11,7 +11,7 @@ func TranscodeToAvcCmd(srcName, destName string, opt encode.Options) *exec.Cmd {
 	// ffmpeg -hide_banner -h encoder=h264_videotoolbox
 	return exec.Command(
 		opt.Bin,
-		"-y",
+		"-hide_banner", "-y",
 		"-strict", "-2",
 		"-i", srcName,
 		"-c:v", opt.Encoder.String(),
@@ -22,7 +22,7 @@ func TranscodeToAvcCmd(srcName, destName string, opt encode.Options) *exec.Cmd {
 		"-profile", "high",
 		"-level", "51",
 		"-r", "30",
-		"-b:v", opt.BitrateLimit,
+		"-q:v", opt.QvQuality(),
 		"-f", "mp4",
 		"-movflags", opt.MovFlags,
 		destName,

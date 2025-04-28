@@ -43,15 +43,11 @@ func TestConfig_DefaultLocale(t *testing.T) {
 func TestConfig_DefaultTimezone(t *testing.T) {
 	c := NewConfig(CliTestContext())
 
-	assert.Equal(t, "UTC", c.DefaultTimezone().String())
-
+	assert.Equal(t, "Local", c.DefaultTimezone().String())
 	c.options.DefaultTimezone = "Europe/Berlin"
-
 	assert.Equal(t, "Europe/Berlin", c.DefaultTimezone().String())
-
 	c.options.DefaultTimezone = ""
-
-	assert.Equal(t, "UTC", c.DefaultTimezone().String())
+	assert.Equal(t, "Local", c.DefaultTimezone().String())
 }
 
 func TestConfig_WallpaperUri(t *testing.T) {

@@ -15,7 +15,7 @@ fi
 DESTDIR=$(realpath "${1:-/usr/local}")
 
 # In addition, you can specify a custom version to be installed as the second argument.
-LIBHEIF_VERSION=${2:-v1.19.5}
+LIBHEIF_VERSION=${2:-v1.19.7}
 
 # Determine target architecture.
 if [[ $PHOTOPRISM_ARCH ]]; then
@@ -73,14 +73,18 @@ echo "ARCHIVE: $ARCHIVE"
 echo "DESTDIR: $DESTDIR"
 echo "------------------------------------------------"
 
-echo "Extracting \"$URL\" to \"$DESTDIR\"."
-curl -fsSL "$URL" | tar --overwrite --mode=755 -xz -C "$DESTDIR"
+if curl -fsSL "$URL" | tar --overwrite --mode=755 -xz -C "$DESTDIR" 2> /dev/null; then
+  echo "✅ Extracted \"$URL\" to \"$DESTDIR\""
+else
+  echo "❌ libheif binaries are not yet available for this architecture or distribution"
+  exit 0
+fi
 
 if [[ $DESTDIR == "/usr" || $DESTDIR == "/usr/local" ]]; then
-  echo "Running \"ldconfig\"."
+  echo "Running \"ldconfig\"..."
   ldconfig
 else
-  echo "Running \"ldconfig -n $DESTDIR/lib\"."
+  echo "Running \"ldconfig -n $DESTDIR/lib\"..."
   ldconfig -n "$DESTDIR/lib"
 fi
 

@@ -34,13 +34,6 @@ func TestConfig_VisionKey(t *testing.T) {
 	assert.Equal(t, "", c.VisionKey())
 }
 
-func TestConfig_TensorFlowVersion(t *testing.T) {
-	c := NewConfig(CliTestContext())
-
-	version := c.TensorFlowVersion()
-	assert.IsType(t, "2.18.0", version)
-}
-
 func TestConfig_TensorFlowModelPath(t *testing.T) {
 	c := NewConfig(CliTestContext())
 

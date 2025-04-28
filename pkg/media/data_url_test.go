@@ -25,7 +25,7 @@ func TestReadUrl(t *testing.T) {
 		if data, err := ReadUrl(dataUrl, []string{"https", "data"}); err != nil {
 			t.Fatal(err)
 		} else {
-			expected, _ := DecodeBase64(gopher)
+			expected, _ := DecodeBase64String(gopher)
 			assert.Equal(t, expected, data)
 		}
 	})

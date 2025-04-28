@@ -114,10 +114,10 @@ else
 fi
 
 if [[ $DESTDIR == "/usr" || $DESTDIR == "/usr/local" ]]; then
-  echo "Running \"ldconfig\"."
+  echo "Running \"ldconfig\"..."
   ldconfig
 else
-  echo "Running \"ldconfig -n $DESTDIR/lib\"."
+  echo "Running \"ldconfig -n $DESTDIR/lib\"..."
   ldconfig -n "$DESTDIR/lib"
 fi
 

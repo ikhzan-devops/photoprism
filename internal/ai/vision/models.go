@@ -1,5 +1,9 @@
 package vision
 
+import (
+	"github.com/photoprism/photoprism/pkg/media/http/scheme"
+)
+
 // Default computer vision model configuration.
 var (
 	NasnetModel = &Model{
@@ -26,7 +30,12 @@ var (
 	CaptionModel = &Model{
 		Type:       ModelTypeCaption,
 		Resolution: 224,
-		Uri:        "http://photoprism-vision:5000/api/v1/vision/caption",
+		Service: Service{
+			Uri:            "http://photoprism-vision:5000/api/v1/vision/caption",
+			FileScheme:     scheme.Https,
+			RequestFormat:  ApiFormatUrl,
+			ResponseFormat: ApiFormatVision,
+		},
 	}
 	DefaultModels     = Models{NasnetModel, NsfwModel, FacenetModel, CaptionModel}
 	DefaultThresholds = Thresholds{Confidence: 10}

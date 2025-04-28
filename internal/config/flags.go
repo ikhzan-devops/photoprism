@@ -2,7 +2,6 @@ package config
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/klauspost/cpuid/v2"
 	"github.com/urfave/cli/v2"
@@ -17,6 +16,7 @@ import (
 	"github.com/photoprism/photoprism/pkg/media"
 	"github.com/photoprism/photoprism/pkg/media/http/header"
 	"github.com/photoprism/photoprism/pkg/media/http/scheme"
+	"github.com/photoprism/photoprism/pkg/time/tz"
 	"github.com/photoprism/photoprism/pkg/txt"
 )
 
@@ -49,6 +49,12 @@ var Flags = CliFlags{
 			Aliases: []string{"pw"},
 			Usage:   fmt.Sprintf("initial `PASSWORD` of the superadmin account (%d-%d characters)", entity.PasswordLength, txt.ClipPassword),
 			EnvVars: EnvVars("ADMIN_PASSWORD"),
+		}}, {
+		Flag: &cli.IntFlag{
+			Name:    "password-length",
+			Usage:   "minimum password `LENGTH` in characters",
+			Value:   8,
+			EnvVars: EnvVars("PASSWORD_LENGTH"),
 		}}, {
 		Flag: &cli.StringFlag{
 			Name:    "oidc-uri",
@@ -184,14 +190,14 @@ var Flags = CliFlags{
 		Flag: &cli.PathFlag{
 			Name:      "config-path",
 			Aliases:   []string{"c"},
-			Usage:     "config storage `PATH`, values in options.yml override CLI flags and environment variables if present",
+			Usage:     "config storage `PATH` or options.yml filename, values in this file override CLI flags and environment variables if present",
 			EnvVars:   EnvVars("CONFIG_PATH"),
 			TakesFile: true,
 		}}, {
 		Flag: &cli.StringFlag{
 			Name:      "defaults-yaml",
 			Aliases:   []string{"y"},
-			Usage:     "load config defaults from `FILE` if exists, does not override CLI flags and environment variables",
+			Usage:     "load default config values from `FILENAME` if it exists, does not override CLI flags or environment variables",
 			Value:     "/etc/photoprism/defaults.yml",
 			EnvVars:   EnvVars("DEFAULTS_YAML"),
 			TakesFile: true,
@@ -496,7 +502,7 @@ var Flags = CliFlags{
 			Name:    "default-timezone",
 			Aliases: []string{"tz"},
 			Usage:   "default time zone `NAME`, e.g. for scheduling backups",
-			Value:   time.UTC.String(),
+			Value:   tz.Local,
 			EnvVars: EnvVars("DEFAULT_TIMEZONE"),
 		}}, {
 		Flag: &cli.StringFlag{
@@ -589,6 +595,12 @@ var Flags = CliFlags{
 			EnvVars: EnvVars("SITE_DESCRIPTION"),
 		}}, {
 		Flag: &cli.StringFlag{
+			Name:      "site-favicon",
+			Usage:     "site favicon `FILENAME` *optional*",
+			EnvVars:   EnvVars("SITE_FAVICON"),
+			TakesFile: true,
+		}}, {
+		Flag: &cli.StringFlag{
 			Name:    "site-preview",
 			Usage:   "sharing preview image `URL`",
 			EnvVars: EnvVars("SITE_PREVIEW"),
@@ -667,12 +679,12 @@ var Flags = CliFlags{
 		}}, {
 		Flag: &cli.StringFlag{
 			Name:    "tls-cert",
-			Usage:   "public HTTPS certificate `FILE` (.crt), ignored for Unix domain sockets",
+			Usage:   "public HTTPS certificate `FILENAME` (.crt), ignored for Unix domain sockets",
 			EnvVars: EnvVars("TLS_CERT"),
 		}}, {
 		Flag: &cli.StringFlag{
 			Name:    "tls-key",
-			Usage:   "private HTTPS key `FILE` (.key), ignored for Unix domain sockets",
+			Usage:   "private HTTPS key `FILENAME` (.key), ignored for Unix domain sockets",
 			EnvVars: EnvVars("TLS_KEY"),
 		}}, {
 		Flag: &cli.StringFlag{
@@ -782,36 +794,51 @@ var Flags = CliFlags{
 		Flag: &cli.StringFlag{
 			Name:    "ffmpeg-encoder",
 			Aliases: []string{"vc"},
-			Usage:   "FFmpeg AVC encoder `NAME`",
+			Usage:   "FFmpeg AVC video encoder `NAME`",
 			Value:   "libx264",
 			EnvVars: EnvVars("FFMPEG_ENCODER"),
 		}}, {
 		Flag: &cli.IntFlag{
 			Name:    "ffmpeg-size",
-			Aliases: []string{"vs"},
-			Usage:   "maximum video size in `PIXELS` (720-7680)",
+			Usage:   "encoding resolution limit in `PIXELS` (720-7680)",
 			Value:   thumb.Sizes[thumb.Fit4096].Width,
 			EnvVars: EnvVars("FFMPEG_SIZE"),
 		}}, {
 		Flag: &cli.IntFlag{
+			Name:    "ffmpeg-quality",
+			Usage:   fmt.Sprintf("encoding `QUALITY` (%d-%d, where %d is almost lossless)", encode.WorstQuality, encode.BestQuality, encode.BestQuality),
+			Value:   encode.DefaultQuality,
+			EnvVars: EnvVars("FFMPEG_QUALITY"),
+		}}, {
+		Flag: &cli.IntFlag{
 			Name:    "ffmpeg-bitrate",
-			Aliases: []string{"vb"},
-			Usage:   "maximum video `BITRATE` in Mbit/s",
-			Value:   50,
+			Usage:   fmt.Sprintf("bitrate `LIMIT` in Mbps for forced transcoding of non-AVC videos (%d-%d; %d to disable)", encode.MinBitrateLimit, encode.MaxBitrateLimit, encode.NoBitrateLimit),
+			Value:   encode.DefaultBitrateLimit,
 			EnvVars: EnvVars("FFMPEG_BITRATE"),
 		}}, {
 		Flag: &cli.StringFlag{
+			Name:    "ffmpeg-preset",
+			Usage:   "FFmpeg compression `PRESET` when using an encoder that supports it, e.g. fast, medium, or slow",
+			Value:   encode.PresetFast,
+			EnvVars: EnvVars("FFMPEG_PRESET"),
+		}}, {
+		Flag: &cli.StringFlag{
+			Name:    "ffmpeg-device",
+			Usage:   "FFmpeg device `PATH` when using a hardware encoder that supports it as parameter",
+			EnvVars: EnvVars("FFMPEG_DEVICE"),
+		}}, {
+		Flag: &cli.StringFlag{
 			Name:    "ffmpeg-map-video",
-			Usage:   "video `STREAMS` that should be transcoded",
-			Value:   encode.MapVideo,
+			Usage:   "transcoding video stream `MAP`",
+			Value:   encode.DefaultMapVideo,
 			EnvVars: EnvVars("FFMPEG_MAP_VIDEO"),
-		}, DocDefault: fmt.Sprintf("`%s`", encode.MapVideo)}, {
+		}, DocDefault: fmt.Sprintf("`%s`", encode.DefaultMapVideo)}, {
 		Flag: &cli.StringFlag{
 			Name:    "ffmpeg-map-audio",
-			Usage:   "audio `STREAMS` that should be transcoded",
-			Value:   encode.MapAudio,
+			Usage:   "transcoding audio stream `MAP`",
+			Value:   encode.DefaultMapAudio,
 			EnvVars: EnvVars("FFMPEG_MAP_AUDIO"),
-		}, DocDefault: fmt.Sprintf("`%s`", encode.MapAudio)}, {
+		}, DocDefault: fmt.Sprintf("`%s`", encode.DefaultMapAudio)}, {
 		Flag: &cli.StringFlag{
 			Name:    "exiftool-bin",
 			Usage:   "ExifTool `COMMAND` for extracting metadata",
@@ -962,7 +989,7 @@ var Flags = CliFlags{
 		}}, {
 		Flag: &cli.StringFlag{
 			Name:      "vision-yaml",
-			Usage:     "computer vision model configuration `FILE` *optional*",
+			Usage:     "computer vision model configuration `FILENAME` *optional*",
 			Value:     "",
 			EnvVars:   EnvVars("VISION_YAML"),
 			TakesFile: true,
@@ -1039,13 +1066,13 @@ var Flags = CliFlags{
 		}}, {
 		Flag: &cli.StringFlag{
 			Name:      "pid-filename",
-			Usage:     "process id `FILE` *daemon-mode only*",
+			Usage:     "process id `FILENAME` *daemon-mode only*",
 			EnvVars:   EnvVars("PID_FILENAME"),
 			TakesFile: true,
 		}}, {
 		Flag: &cli.StringFlag{
 			Name:      "log-filename",
-			Usage:     "server log `FILE` *daemon-mode only*",
+			Usage:     "server log `FILENAME` *daemon-mode only*",
 			Value:     "",
 			EnvVars:   EnvVars("LOG_FILENAME"),
 			TakesFile: true,

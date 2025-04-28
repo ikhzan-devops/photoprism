@@ -30,15 +30,16 @@ ENV PHOTOPRISM_ARCH=$TARGETARCH \
     LD_LIBRARY_PATH="/usr/local/lib:/usr/lib" \
     DEBIAN_FRONTEND="noninteractive" \
     TMPDIR="/tmp" \
-    TF_CPP_MIN_LOG_LEVEL=0 \
+    TF_CPP_MIN_LOG_LEVEL=1 \
     TF_ENABLE_ONEDNN_OPTS=1 \
-    MALLOC_ARENA_MAX=4 \
+    MALLOC_ARENA_MAX=2 \
     GOPATH="/go" \
     GOBIN="/usr/local/bin" \
     GO111MODULE="on" \
     CGO_CFLAGS="-g -O2 -Wno-return-local-addr" \
     PROG="photoprism" \
     S6_KEEP_ENV=1 \
+    S6_VERBOSITY=0 \
     S6_LOGGING=0
 
 # Copy scripts and package sources config.
@@ -58,7 +59,7 @@ RUN echo 'APT::Acquire::Retries "3";' > /etc/apt/apt.conf.d/80retries && \
         xz-utils exiftool sqlite3 postgresql-client tzdata gpg make zip unzip wget curl rsync \
         imagemagick libvips-dev rawtherapee ffmpeg libavcodec-extra x264 x265 libde265-dev \
         libaom-dev libvpx-dev libwebm-dev libjpeg-dev libmatroska-dev libdvdread-dev libebml5 libgav1-bin libatomic1 \
-        iputils-ping dnsutils \
+        va-driver-all libva2 iputils-ping dnsutils \
     && \
     apt-get -qq install \
         apt-utils pkg-config software-properties-common \

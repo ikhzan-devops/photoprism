@@ -216,28 +216,28 @@ func TestParseTime(t *testing.T) {
 		result := ParseTime("2020-01-30_09-57-18", "")
 		assert.Equal(t, "2020-01-30 09:57:18 +0000 UTC", result.String())
 	})
-	t.Run("EuropeBerlin/2016:06:28 09:45:49+10:00ABC", func(t *testing.T) {
+	t.Run("BerlinOffset", func(t *testing.T) {
 		result := ParseTime("2016:06:28 09:45:49+10:00ABC", "Europe/Berlin")
 		assert.Equal(t, "2016-06-28 01:45:49 +0200 CEST", result.String())
 	})
-	t.Run("EuropeBerlin/  2016:06:28 09:45:49-01:30ABC", func(t *testing.T) {
+	t.Run("BerlinNegativeOffset", func(t *testing.T) {
 		result := ParseTime("  2016:06:28 09:45:49-01:30ABC", "Europe/Berlin")
 		assert.Equal(t, "2016-06-28 13:15:49 +0200 CEST", result.String())
 	})
-	t.Run("EuropeBerlin/2012:08:08 22:07:18", func(t *testing.T) {
+	t.Run("BerlinNoOffset", func(t *testing.T) {
 		result := ParseTime("2012:08:08 22:07:18", "Europe/Berlin")
 		assert.Equal(t, "2012-08-08 22:07:18 +0200 CEST", result.String())
 	})
-	t.Run("EuropeBerlin/2020-01-30_09-57-18", func(t *testing.T) {
+	t.Run("BerlinUnderscore", func(t *testing.T) {
 		result := ParseTime("2020-01-30_09-57-18", "Europe/Berlin")
 		assert.Equal(t, "2020-01-30 09:57:18 +0100 CET", result.String())
 	})
-	t.Run("EuropeBerlin/2020-10-17-48-24.950488", func(t *testing.T) {
+	t.Run("UtcSubSec", func(t *testing.T) {
 		result := ParseTime("2020:10:17 17:48:24.9508123", "UTC")
 		assert.Equal(t, "2020-10-17 17:48:24.9508123 +0000 UTC", result.UTC().String())
 		assert.Equal(t, "2020-10-17 17:48:24.9508123", result.Format("2006-01-02 15:04:05.999999999"))
 	})
-	t.Run("UTC/0000:00:00 00:00:00", func(t *testing.T) {
+	t.Run("UtcUnknown", func(t *testing.T) {
 		assert.True(t, ParseTime("0000:00:00 00:00:00", "UTC").IsZero())
 	})
 	t.Run("2022-09-03T17:48:26-07:00", func(t *testing.T) {

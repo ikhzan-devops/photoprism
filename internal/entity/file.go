@@ -733,7 +733,7 @@ func (m *File) SetDuration(d time.Duration) {
 	}
 }
 
-// Bitrate returns the average bitrate in MBit/s if the file has a duration.
+// Bitrate returns the average bitrate in Mbps if the file has a duration.
 func (m *File) Bitrate() float64 {
 	// Return 0 if file size or video duration are unknown.
 	if m.FileSize <= 0 || m.FileDuration <= 0 {

@@ -135,4 +135,10 @@ var DialectSQLite = Migrations{
 		Stage:      "pre",
 		Statements: []string{"ALTER TABLE auth_users_settings RENAME COLUMN default_page TO ui_start_page;"},
 	},
+	{
+		ID:         "20250416-000001",
+		Dialect:    "sqlite3",
+		Stage:      "main",
+		Statements: []string{"UPDATE photos SET time_zone = 'Local' WHERE time_zone = '' OR time_zone IS NULL;"},
+	},
 }

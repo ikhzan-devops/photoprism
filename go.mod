@@ -14,8 +14,8 @@ require (
 	github.com/esimov/pigo v1.4.6
 	github.com/gin-contrib/gzip v1.2.3
 	github.com/gin-gonic/gin v1.10.0
-	github.com/golang/geo v0.0.0-20250410091149-9ff723126794
-	github.com/google/open-location-code/go v0.0.0-20250404115940-e760de81d3c4
+	github.com/golang/geo v0.0.0-20250425181934-8bbaf6e6a91f
+	github.com/google/open-location-code/go v0.0.0-20250415120251-fa6d7f9d4765
 	github.com/gorilla/websocket v1.5.3
 	github.com/gosimple/slug v1.15.0
 	github.com/jinzhu/inflection v1.0.0
@@ -55,12 +55,14 @@ require github.com/google/uuid v1.6.0
 
 require github.com/chzyer/readline v1.5.1 // indirect
 
-require github.com/gabriel-vasile/mimetype v1.4.8
+require github.com/gabriel-vasile/mimetype v1.4.9
 
 require (
 	golang.org/x/sync v0.13.0
 	golang.org/x/time v0.11.0
 )
+
+require github.com/go-ldap/ldap/v3 v3.4.11
 
 require (
 	github.com/prometheus/client_golang v1.22.0
@@ -104,6 +106,7 @@ require (
 	github.com/dsoprea/go-logging v0.0.0-20200710184922-b02d349568dd // indirect
 	github.com/dsoprea/go-utility/v2 v2.0.0-20221003172846-a3e1774ef349 // indirect
 	github.com/gin-contrib/sse v1.1.0 // indirect
+	github.com/go-asn1-ber/asn1-ber v1.5.8-0.20250403174932-29230038a667 // indirect
 	github.com/go-jose/go-jose/v4 v4.0.5 // indirect
 	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect

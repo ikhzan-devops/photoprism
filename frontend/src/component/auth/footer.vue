@@ -5,7 +5,11 @@
         <v-col xs="12" class="pa-0 text-subtitle-2 text-selectable text-start hidden-xs">
           {{ about }}
         </v-col>
-        <v-col v-if="legalInfo" xs="12" class="pa-0 text-subtitle-2 text-center text-sm-end">
+        <v-col v-if="loginInfo" xs="12" class="pa-0 text-subtitle-2 text-center text-sm-end">
+          <a v-if="legalUrl" :href="legalUrl" target="_blank" class="text-link">{{ loginInfo }}</a>
+          <span v-else>{{ loginInfo }}</span>
+        </v-col>
+        <v-col v-else-if="legalInfo" xs="12" class="pa-0 text-subtitle-2 text-center text-sm-end">
           <a v-if="legalUrl" :href="legalUrl" target="_blank" class="text-link">{{ legalInfo }}</a>
           <span v-else>{{ legalInfo }}</span>
         </v-col>
@@ -32,6 +36,7 @@ export default {
       caption: config.values.siteCaption ? config.values.siteCaption : config.values.siteTitle,
       legalUrl: config.values.legalUrl,
       legalInfo: config.values.legalInfo,
+      loginInfo: config.values.loginInfo,
       config: config.values,
       rtl: this.$isRtl,
     };

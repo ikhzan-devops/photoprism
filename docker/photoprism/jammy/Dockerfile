@@ -42,9 +42,9 @@ ENV PHOTOPRISM_ARCH=$TARGETARCH \
     DOCKER_ENV="prod" \
     TMPDIR="/tmp" \
     DEBIAN_FRONTEND="noninteractive" \
-    TF_CPP_MIN_LOG_LEVEL=2 \
+    TF_CPP_MIN_LOG_LEVEL=4 \
     TF_ENABLE_ONEDNN_OPTS=1 \
-    MALLOC_ARENA_MAX=4 \
+    MALLOC_ARENA_MAX=2 \
     PROG="photoprism" \
     PHOTOPRISM_ASSETS_PATH="/opt/photoprism/assets" \
     PHOTOPRISM_IMPORT_PATH="/photoprism/import" \
@@ -101,6 +101,3 @@ EXPOSE 2342 2443
 
 # Copy app files.
 COPY --from=build --chown=root:root --chmod=755 /opt/photoprism/ /opt/photoprism
-
-# Start app.
-CMD ["/scripts/cmd.sh", "/opt/photoprism/bin/photoprism", "start"]

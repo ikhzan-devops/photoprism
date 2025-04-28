@@ -54,7 +54,7 @@ func (info Info) VideoSize() int64 {
 	return info.FileSize - info.VideoOffset
 }
 
-// VideoBitrate returns the bitrate of the embedded video in MBit/s.
+// VideoBitrate returns the bitrate of the embedded video in Mbps.
 func (info Info) VideoBitrate() float64 {
 	videoSize := info.VideoSize()
 

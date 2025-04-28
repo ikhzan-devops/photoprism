@@ -39,7 +39,6 @@ type ClientConfig struct {
 	ApiUri           string              `json:"apiUri"`
 	ContentUri       string              `json:"contentUri"`
 	VideoUri         string              `json:"videoUri"`
-	WallpaperUri     string              `json:"wallpaperUri"`
 	SiteUrl          string              `json:"siteUrl"`
 	SiteDomain       string              `json:"siteDomain"`
 	SiteAuthor       string              `json:"siteAuthor"`
@@ -53,6 +52,9 @@ type ClientConfig struct {
 	AppMode          string              `json:"appMode"`
 	AppIcon          string              `json:"appIcon"`
 	AppColor         string              `json:"appColor"`
+	DefaultLocale    string              `json:"defaultLocale"`
+	DefaultTimezone  string              `json:"defaultTimezone"`
+	WallpaperUri     string              `json:"wallpaperUri"`
 	Restart          bool                `json:"restart"`
 	Debug            bool                `json:"debug"`
 	Trace            bool                `json:"trace"`
@@ -66,6 +68,7 @@ type ClientConfig struct {
 	AuthMode         string              `json:"authMode"`
 	UsersPath        string              `json:"usersPath"`
 	LoginUri         string              `json:"loginUri"`
+	LoginInfo        string              `json:"loginInfo"`
 	RegisterUri      string              `json:"registerUri"`
 	PasswordLength   int                 `json:"passwordLength"`
 	PasswordResetUri string              `json:"passwordResetUri"`
@@ -294,6 +297,8 @@ func (c *Config) ClientPublic() *ClientConfig {
 		AppMode:          c.AppMode(),
 		AppIcon:          c.AppIcon(),
 		AppColor:         c.AppColor(),
+		DefaultLocale:    c.DefaultLocale(),
+		DefaultTimezone:  c.DefaultTimezone().String(),
 		WallpaperUri:     c.WallpaperUri(),
 		Version:          c.Version(),
 		Copyright:        c.Copyright(),
@@ -308,6 +313,7 @@ func (c *Config) ClientPublic() *ClientConfig {
 		AuthMode:         c.AuthMode(),
 		UsersPath:        c.UsersPath(),
 		LoginUri:         c.LoginUri(),
+		LoginInfo:        c.LoginInfo(),
 		RegisterUri:      c.RegisterUri(),
 		PasswordResetUri: c.PasswordResetUri(),
 		Develop:          c.Develop(),
@@ -386,6 +392,8 @@ func (c *Config) ClientShare() *ClientConfig {
 		AppMode:          c.AppMode(),
 		AppIcon:          c.AppIcon(),
 		AppColor:         c.AppColor(),
+		DefaultLocale:    c.DefaultLocale(),
+		DefaultTimezone:  c.DefaultTimezone().String(),
 		WallpaperUri:     c.WallpaperUri(),
 		Version:          c.Version(),
 		Copyright:        c.Copyright(),
@@ -402,6 +410,7 @@ func (c *Config) ClientShare() *ClientConfig {
 		AuthMode:         c.AuthMode(),
 		UsersPath:        "",
 		LoginUri:         c.LoginUri(),
+		LoginInfo:        c.LoginInfo(),
 		RegisterUri:      c.RegisterUri(),
 		PasswordResetUri: c.PasswordResetUri(),
 		Develop:          c.Develop(),
@@ -486,6 +495,8 @@ func (c *Config) ClientUser(withSettings bool) *ClientConfig {
 		AppMode:          c.AppMode(),
 		AppIcon:          c.AppIcon(),
 		AppColor:         c.AppColor(),
+		DefaultLocale:    c.DefaultLocale(),
+		DefaultTimezone:  c.DefaultTimezone().String(),
 		WallpaperUri:     c.WallpaperUri(),
 		Version:          c.Version(),
 		Copyright:        c.Copyright(),
@@ -502,6 +513,7 @@ func (c *Config) ClientUser(withSettings bool) *ClientConfig {
 		AuthMode:         c.AuthMode(),
 		UsersPath:        c.UsersPath(),
 		LoginUri:         c.LoginUri(),
+		LoginInfo:        c.LoginInfo(),
 		RegisterUri:      c.RegisterUri(),
 		PasswordLength:   c.PasswordLength(),
 		PasswordResetUri: c.PasswordResetUri(),
