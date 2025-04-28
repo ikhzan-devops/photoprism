@@ -19,8 +19,7 @@ var VisionRunCommand = &cli.Command{
 		&cli.StringFlag{
 			Name:    "models",
 			Aliases: []string{"m"},
-			// TODO: Add captions to the list once the service can be used from the CLI.
-			Usage: "model types (labels, nsfw)",
+			Usage:   "model types (labels, nsfw, caption)",
 		},
 		&cli.BoolFlag{
 			Name:    "force",
@@ -29,7 +28,6 @@ var VisionRunCommand = &cli.Command{
 		},
 	},
 	Action: visionRunAction,
-	Hidden: true,
 }
 
 // visionListAction displays existing user accounts.

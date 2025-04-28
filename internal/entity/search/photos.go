@@ -292,10 +292,11 @@ func searchPhotos(frm form.SearchPhotos, sess *entity.Session, resultCols string
 	}
 
 	// Filter by label, label category and keywords.
-	var categories []entity.Category
-	var labels []entity.Label
-	var labelIds []uint
 	if txt.NotEmpty(frm.Label) {
+		var categories []entity.Category
+		var labels []entity.Label
+		var labelIds []uint
+
 		if labelErr := Db().Where(AnySlug("label_slug", frm.Label, txt.Or)).Or(AnySlug("custom_slug", frm.Label, txt.Or)).Find(&labels).Error; len(labels) == 0 || labelErr != nil {
 			log.Debugf("search: label %s not found", txt.LogParamLower(frm.Label))
 			return PhotoResults{}, 0, nil
@@ -323,8 +324,8 @@ func searchPhotos(frm form.SearchPhotos, sess *entity.Session, resultCols string
 
 	// Set search filters based on search terms.
 	if terms := txt.SearchTerms(frm.Query); frm.Query != "" && len(terms) == 0 {
-		if frm.Title == "" {
-			frm.Title = fmt.Sprintf("%s*", strings.Trim(frm.Query, "%*"))
+		if frm.Title == "" && frm.Caption == "" && frm.Description == "" {
+			frm.Description = fmt.Sprintf("%s*", strings.Trim(frm.Query, "%*"))
 			frm.Query = ""
 		}
 	} else if len(terms) > 0 {
@@ -407,7 +408,11 @@ func searchPhotos(frm form.SearchPhotos, sess *entity.Session, resultCols string
 
 	// Filter by query string.
 	if frm.Query != "" {
-		if err := Db().Where(AnySlug("custom_slug", frm.Query, " ")).Find(&labels).Error; len(labels) == 0 || err != nil {
+		var categories []entity.Category
+		var labels []entity.Label
+		var labelIds []uint
+
+		if labelsErr := Db().Where(AnySlug("custom_slug", frm.Query, " ")).Find(&labels).Error; len(labels) == 0 || labelsErr != nil {
 			log.Tracef("search: label %s not found, using fuzzy search", txt.LogParamLower(frm.Query))
 
 			for _, where := range LikeAnyKeyword("k.keyword", frm.Query) {
@@ -730,18 +735,64 @@ func searchPhotos(frm form.SearchPhotos, sess *entity.Session, resultCols string
 
 	// Filter by title.
 	if txt.NotEmpty(frm.Title) {
-		likeString := ""
-		titleString := ""
-		switch entity.DbDialect() {
-		case entity.Postgres:
-			likeString = "lower(photos.photo_title)"
-			titleString = strings.ToLower(frm.Title)
-		default:
-			likeString = "photos.photo_title"
-			titleString = frm.Title
+		if frm.Title == txt.False {
+			s = s.Where("photos.photo_title = ''")
+		} else if frm.Title == txt.True {
+			s = s.Where("photos.photo_title <> ''")
+		} else {
+			likeString := ""
+			titleString := ""
+			switch entity.DbDialect() {
+			case entity.Postgres:
+				likeString = "lower(photos.photo_title)"
+				titleString = strings.ToLower(frm.Title)
+			default:
+				likeString = "photos.photo_title"
+				titleString = frm.Title
+			}
+			where, values := OrLike(likeString, titleString)
+			s = s.Where(where, values...)
 		}
-		where, values := OrLike(likeString, titleString)
-		s = s.Where(where, values...)
+	}
+
+	// Filter by caption.
+	if txt.NotEmpty(frm.Caption) {
+		if frm.Caption == txt.False {
+			s = s.Where("photos.photo_caption = ''")
+		} else if frm.Caption == txt.True {
+			s = s.Where("photos.photo_caption <> ''")
+		} else {
+			likeString := ""
+			titleString := ""
+			switch entity.DbDialect() {
+			case entity.Postgres:
+				likeString = "lower(photos.photo_caption)"
+				titleString = strings.ToLower(frm.Caption)
+			default:
+				likeString = "photos.photo_caption"
+				titleString = frm.Caption
+			}
+			where, values := OrLike(likeString, titleString)
+			s = s.Where(where, values...)
+		}
+	}
+
+	// Filter by description.
+	if txt.NotEmpty(frm.Description) {
+		if frm.Description == txt.False {
+			s = s.Where("photos.photo_title = '' AND photos.photo_caption = ''")
+		} else if frm.Description == txt.True {
+			s = s.Where("photos.photo_title <> '' OR photos.photo_caption <> ''")
+		} else {
+			switch entity.DbDialect() {
+			case entity.Postgres:
+				where, values := OrLikeCols([]string{"lower(photos.photo_title)", "lower(photos.photo_caption)"}, strings.ToLower(frm.Description))
+				s = s.Where(where, values...)
+			default:
+				where, values := OrLikeCols([]string{"photos.photo_title", "photos.photo_caption"}, frm.Description)
+				s = s.Where(where, values...)
+			}
+		}
 	}
 
 	// Filter by file hash.

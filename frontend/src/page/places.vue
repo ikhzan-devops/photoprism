@@ -31,6 +31,7 @@
           <v-text-field
             v-model.lazy.trim="filter.q"
             :placeholder="$gettext('Search')"
+            tabindex="1"
             density="compact"
             flat
             single-line
@@ -50,7 +51,7 @@
         </div>
       </div>
       <div ref="background" class="map-background"></div>
-      <div ref="map" class="map-container" :class="{ 'map-loaded': mapLoaded }"></div>
+      <div ref="map" class="map-container" :class="{ 'map-loaded': loaded }"></div>
       <div v-if="showCluster" class="cluster-control">
         <v-card class="cluster-control-container">
           <p-page-photos ref="cluster" :static-filter="cluster" :on-close="closeCluster" :embedded="true" />
@@ -64,6 +65,7 @@
 import $api from "common/api";
 import $fullscreen from "common/fullscreen";
 import * as sky from "common/sky";
+import * as map from "common/map";
 import * as options from "options/options";
 import Thumb from "model/thumb";
 import PPagePhotos from "page/photos.vue";
@@ -151,7 +153,7 @@ export default {
       config: this.$config.values,
       settings: settings.maps,
       animate: settings.maps.animate,
-      mapLoaded: false,
+      loaded: false,
       skyRendered: false,
     };
   },
@@ -180,28 +182,17 @@ export default {
   mounted() {
     this.$view.enter(this);
 
-    // Dynamically import MapLibre GL JS to reduce bundle size:
-    // https://maplibre.org/maplibre-gl-js/docs/
-    try {
-      import(
-        /* webpackChunkName: "maplibregl" */
-        /* webpackMode: "lazy" */
-        "../common/maplibregl.js"
-      ).then((module) => {
-        maplibregl = module.default;
-
-        this.initMap()
-          .then(() => {
-            this.renderMap();
-            this.openClusterFromUrl();
-          })
-          .catch((err) => {
-            this.mapError = err;
-          });
-      });
-    } catch (error) {
-      console.error(`failed to load maplibregl:`, error);
-    }
+    map.load().then((m) => {
+      maplibregl = m;
+      this.initMap()
+        .then(() => {
+          this.renderMap();
+          this.openClusterFromUrl();
+        })
+        .catch((err) => {
+          this.mapError = err;
+        });
+    });
   },
   beforeUnmount() {
     // Exit fullscreen mode if enabled, has no effect otherwise.
@@ -220,7 +211,12 @@ export default {
       }
     },
     onKeyDown(ev) {
-      if (!ev || !(ev instanceof KeyboardEvent) || !this.$view.isActive(this)) {
+      if (
+        !ev ||
+        !(ev instanceof KeyboardEvent) ||
+        !this.$view.isActive(this) ||
+        document.activeElement instanceof HTMLInputElement
+      ) {
         return;
       }
 
@@ -428,7 +424,6 @@ export default {
       }
 
       switch (style) {
-        case "basic":
         case "offline":
           this.style = this.featExperimental ? "low-resolution" : "default";
           break;
@@ -448,6 +443,9 @@ export default {
           this.style = "topo-v2";
           break;
         case "":
+        case "basic":
+        case "standard":
+        case "buildings":
           this.style = "default";
           break;
         default:
@@ -460,16 +458,20 @@ export default {
 
       let mapOptions = {
         container: this.$refs.map,
-        style: "https://api.maptiler.com/maps/" + this.style + "/style.json?key=" + mapKey,
-        glyphs: "https://api.maptiler.com/fonts/{fontstack}/{range}.pbf?key=" + mapKey,
+        style: `https://api.maptiler.com/maps/${this.style}/style.json?key=${mapKey}`,
+        glyphs: `https://api.maptiler.com/fonts/{fontstack}/{range}.pbf?key=${mapKey}`,
         attributionControl: { compact: true },
         zoom: 0,
       };
 
-      if (this.style === "" || this.style === "default") {
+      if (this.style === "default") {
         mapOptions = {
           container: this.$refs.map,
-          style: "https://cdn.photoprism.app/maps/default.json",
+          // Styles can be edited/created with https://maplibre.org/maputnik/.
+          // To test new styles, put the style file in /assets/static/maps
+          // and include it from there e.g. "/static/maps/default.json":
+          // style: `/static/maps/${this.style}.json`,
+          style: `https://cdn.photoprism.app/maps/${this.style}.json`,
           glyphs: `https://cdn.photoprism.app/maps/font/{fontstack}/{range}.pbf`,
           zoom: 0,
         };
@@ -750,6 +752,13 @@ export default {
 
       this.search(true);
     },
+    reset() {
+      Object.assign(this.result, { features: [] });
+      if (this.map) {
+        this.map.getSource("photos").setData(this.result);
+        this.updateMarkers();
+      }
+    },
     search(force) {
       if (this.loading) {
         return;
@@ -778,6 +787,7 @@ export default {
         .get("geo", options)
         .then((response) => {
           if (!response.data.features || response.data.features.length === 0) {
+            this.reset();
             this.initialized = true;
             this.loading = false;
 
@@ -806,6 +816,7 @@ export default {
           this.updateMarkers();
         })
         .catch(() => {
+          this.reset();
           this.initialized = true;
           this.loading = false;
         });
@@ -881,7 +892,7 @@ export default {
       }
 
       // Add map scale control.
-      this.map.addControl(new maplibregl.ScaleControl({}), "bottom-left");
+      this.map.addControl(new maplibregl.ScaleControl({ maxWidth: 120, unit: "metric" }), "bottom-left");
 
       this.map.on("load", () => this.onMapLoad());
     },
@@ -1091,7 +1102,7 @@ export default {
 
       // Load pictures.
       this.search().finally(() => {
-        this.mapLoaded = true;
+        this.loaded = true;
       });
     },
   },

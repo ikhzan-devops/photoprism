@@ -159,3 +159,10 @@ test.meta("testID", "calendar-005").meta({ type: "short", mode: "public" })(
     await album.checkSortOptions("calendar");
   }
 );
+
+test.meta("testID", "calendar-006").meta({ type: "short", mode: "public" })(
+  "Common: Set album cover from Calendar Page",
+  async (t) => {
+    await page.testSetAlbumCover("calendar");
+  }
+);

@@ -168,3 +168,10 @@ test.meta("testID", "folders-005").meta({ type: "short", mode: "public" })(
     await album.checkSortOptions("folder");
   }
 );
+
+test.meta("testID", "folders-006").meta({ type: "short", mode: "public" })(
+  "Common: Set album cover from Folders Page",
+  async (t) => {
+    await page.testSetAlbumCover("folders");
+  }
+);

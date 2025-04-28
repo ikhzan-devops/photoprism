@@ -32,13 +32,20 @@ func TestPhoto_NoCaption(t *testing.T) {
 func TestPhoto_GetCaption(t *testing.T) {
 	t.Run("Success", func(t *testing.T) {
 		m := PhotoFixtures.Get("Photo15")
+		assert.Equal(t, "Europe/Berlin", m.TimeZone)
 		assert.Equal(t, "photo caption non-photographic", m.PhotoCaption)
 		assert.Equal(t, "photo caption non-photographic", m.GetCaption())
 		assert.Equal(t, SrcMeta, m.CaptionSrc)
 		assert.Equal(t, SrcMeta, m.GetCaptionSrc())
 		assert.Equal(t, false, m.NoCaption())
 		assert.Equal(t, true, m.HasCaption())
+
+		m.TimeZone = ""
+		assert.Equal(t, true, m.NormalizeValues())
+		assert.Equal(t, "Local", m.TimeZone)
 		assert.Equal(t, false, m.NormalizeValues())
+		assert.Equal(t, "Local", m.TimeZone)
+
 		assert.Equal(t, "photo caption non-photographic", m.PhotoCaption)
 		assert.Equal(t, "photo caption non-photographic", m.GetCaption())
 		assert.Equal(t, SrcMeta, m.CaptionSrc)
@@ -56,12 +63,16 @@ func TestPhoto_GetCaption(t *testing.T) {
 		assert.Equal(t, "", m.GetCaptionSrc())
 		assert.Equal(t, true, m.NoCaption())
 		assert.Equal(t, false, m.HasCaption())
+
 		assert.Equal(t, true, m.NormalizeValues())
+
 		assert.Equal(t, "legacy description", m.GetCaption())
 		assert.Equal(t, "meta", m.GetCaptionSrc())
 		assert.Equal(t, false, m.NoCaption())
 		assert.Equal(t, true, m.HasCaption())
+
 		assert.Equal(t, false, m.NormalizeValues())
+
 		assert.Equal(t, "legacy description", m.GetCaption())
 		assert.Equal(t, "meta", m.GetCaptionSrc())
 		assert.Equal(t, false, m.NoCaption())

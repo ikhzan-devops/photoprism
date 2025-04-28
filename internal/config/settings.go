@@ -15,7 +15,7 @@ func (c *Config) initSettings() {
 	}
 
 	// Create settings struct.
-	c.settings = customize.NewSettings(c.DefaultTheme(), c.DefaultLocale())
+	c.settings = customize.NewSettings(c.DefaultTheme(), c.DefaultLocale(), c.DefaultTimezone().String())
 
 	// Get filenames to load the settings from.
 	configPath := c.ConfigPath()

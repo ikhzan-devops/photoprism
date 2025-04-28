@@ -18,25 +18,26 @@ func (w *Convert) JpegConvertCmds(f *MediaFile, jpegName string, xmpName string)
 		return result, useMutex, fmt.Errorf("no media file provided for processing - you may have found a bug")
 	}
 
-	// Find conversion command depending on the file type and runtime environment.
+	// Add suitable conversion commands depending on the file type, codec, runtime environment, and configuration.
 	fileExt := f.Extension()
 	maxSize := strconv.Itoa(w.conf.JpegSize())
 
-	// Apple Scriptable image processing system: https://ss64.com/osx/sips.html
+	// On a Mac, use the Apple Scriptable image processing system to convert images to JPEG,
+	// see https://ss64.com/osx/sips.html.
 	if (f.IsRaw() || f.IsHeif()) && w.conf.SipsEnabled() && w.sipsExclude.Allow(fileExt) {
 		result = append(result, NewConvertCmd(
 			exec.Command(w.conf.SipsBin(), "-Z", maxSize, "-s", "format", "jpeg", "--out", jpegName, f.FileName())),
 		)
 	}
 
-	// Extract a video still image for use as a thumbnail (poster image).
+	// Use FFmpeg to extract video stills from videos, e.g. to use them as cover images.
 	if f.IsAnimated() && !f.IsWebp() && w.conf.FFmpegEnabled() {
 		result = append(result, NewConvertCmd(
 			ffmpeg.ExtractJpegImageCmd(f.FileName(), jpegName, encode.NewPreviewImageOptions(w.conf.FFmpegBin(), f.Duration()))),
 		)
 	}
 
-	// Use heif-convert for HEIC/HEIF and AVIF image files.
+	// Use "heif-dec" or "heif-convert" to convert HEIC/HEIF and AVIF image files to JPEG.
 	if (f.IsHeic() || f.IsAvif()) && w.conf.HeifConvertEnabled() {
 		result = append(result, NewConvertCmd(
 			exec.Command(w.conf.HeifConvertBin(), "-q", w.conf.JpegQuality().String(), f.FileName(), jpegName)).
@@ -44,7 +45,7 @@ func (w *Convert) JpegConvertCmds(f *MediaFile, jpegName string, xmpName string)
 		)
 	}
 
-	// RAW files may be concerted with Darktable and RawTherapee.
+	// Convert RAW files to JPEG with Darktable and/or RawTherapee.
 	if f.IsRaw() && w.conf.RawEnabled() {
 		if w.conf.DarktableEnabled() && w.darktableExclude.Allow(fileExt) {
 			var args []string
@@ -93,7 +94,7 @@ func (w *Convert) JpegConvertCmds(f *MediaFile, jpegName string, xmpName string)
 		}
 	}
 
-	// Extract preview image from DNG files.
+	// Use ExifTool to extract JPEG thumbnails from Digital Negative (DNG) files.
 	if f.IsDng() && w.conf.ExifToolEnabled() {
 		// Example: exiftool -b -PreviewImage -w IMG_4691.DNG.jpg IMG_4691.DNG
 		result = append(result, NewConvertCmd(
@@ -101,26 +102,30 @@ func (w *Convert) JpegConvertCmds(f *MediaFile, jpegName string, xmpName string)
 		)
 	}
 
-	// Decode JPEG XL image if support is enabled.
+	// Use "djxl" to convert JPEG XL images if installed and enabled.
 	if f.IsJpegXL() && w.conf.JpegXLEnabled() {
 		result = append(result, NewConvertCmd(
 			exec.Command(w.conf.JpegXLDecoderBin(), f.FileName(), jpegName)),
 		)
 	}
 
-	// Try ImageMagick for other image file formats if allowed.
+	// Use ImageMagick for other media file formats if the type and extension are allowed.
 	if w.conf.ImageMagickEnabled() && w.imageMagickExclude.Allow(fileExt) {
-		if f.IsImage() && !f.IsJpegXL() && !f.IsRaw() && !f.IsHeif() || f.IsVector() && w.conf.VectorEnabled() {
-			quality := fmt.Sprintf("%d", w.conf.JpegQuality())
-			resize := fmt.Sprintf("%dx%d>", w.conf.JpegSize(), w.conf.JpegSize())
-			args := []string{f.FileName(), "-flatten", "-resize", resize, "-quality", quality, jpegName}
+		resize := fmt.Sprintf("%dx%d>", w.conf.JpegSize(), w.conf.JpegSize())
+		quality := fmt.Sprintf("%d", w.conf.JpegQuality())
+
+		if f.IsImage() && !f.IsJpegXL() && !f.IsRaw() && !f.IsHeif() {
+			args := []string{f.FileName() + "[0]", "-background", "white", "-alpha", "remove", "-alpha", "off", "-resize", resize, "-quality", quality, jpegName}
+			result = append(result, NewConvertCmd(
+				exec.Command(w.conf.ImageMagickBin(), args...)),
+			)
+		} else if f.IsVector() && w.conf.VectorEnabled() {
+			args := []string{f.FileName() + "[0]", "-background", "black", "-alpha", "remove", "-alpha", "off", "-resize", resize, "-quality", quality, jpegName}
 			result = append(result, NewConvertCmd(
 				exec.Command(w.conf.ImageMagickBin(), args...)),
 			)
 		} else if f.IsDocument() {
-			quality := fmt.Sprintf("%d", w.conf.JpegQuality())
-			resize := fmt.Sprintf("%dx%d>", w.conf.JpegSize(), w.conf.JpegSize())
-			args := []string{f.FileName() + "[0]", "-background", "white", "-alpha", "remove", "-alpha", "off", "-resize", resize, "-quality", quality, jpegName}
+			args := []string{"-colorspace", "sRGB", "-density", "300", f.FileName() + "[0]", "-background", "white", "-alpha", "remove", "-alpha", "off", "-resize", resize, "-quality", quality, jpegName}
 			result = append(result, NewConvertCmd(
 				exec.Command(w.conf.ImageMagickBin(), args...)),
 			)

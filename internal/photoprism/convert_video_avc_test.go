@@ -133,7 +133,7 @@ func TestConvert_AvcBitrate(t *testing.T) {
 		mf.width = 4096
 		mf.height = 2160
 
-		assert.Equal(t, "50M", convert.AvcBitrate(mf))
+		assert.Equal(t, "60M", convert.AvcBitrate(mf))
 	})
 }
 

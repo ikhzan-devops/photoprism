@@ -11,6 +11,7 @@ import (
 	"github.com/photoprism/photoprism/internal/ai/classify"
 	"github.com/photoprism/photoprism/internal/form"
 	"github.com/photoprism/photoprism/pkg/rnd"
+	"github.com/photoprism/photoprism/pkg/time/tz"
 )
 
 func TestSavePhotoForm(t *testing.T) {
@@ -1129,10 +1130,12 @@ func TestNewPhoto(t *testing.T) {
 	t.Run("Stackable", func(t *testing.T) {
 		m := NewPhoto(true)
 		assert.Equal(t, IsStackable, m.PhotoStack)
+		assert.Equal(t, tz.Local, m.TimeZone)
 	})
 	t.Run("NotStackable", func(t *testing.T) {
 		m := NewPhoto(false)
 		assert.Equal(t, IsUnstacked, m.PhotoStack)
+		assert.Equal(t, tz.Local, m.TimeZone)
 	})
 }
 

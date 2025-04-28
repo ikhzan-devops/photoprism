@@ -4,6 +4,11 @@ import (
 	"strings"
 )
 
+const (
+	True  = "true"
+	False = "false"
+)
+
 // Bool casts a string to bool.
 func Bool(s string) bool {
 	s = strings.TrimSpace(s)

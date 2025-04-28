@@ -25,7 +25,7 @@ import (
 //	@Router		/api/v1/vision/nsfw [post]
 func PostVisionNsfw(router *gin.RouterGroup) {
 	router.POST("/vision/nsfw", func(c *gin.Context) {
-		s := Auth(c, acl.ResourceVision, acl.Use)
+		s := Auth(c, acl.ResourceVision, acl.ActionUse)
 
 		// Abort if permission is not granted.
 		if s.Abort(c) {

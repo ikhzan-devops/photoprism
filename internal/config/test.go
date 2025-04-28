@@ -173,7 +173,7 @@ func NewTestConfig(pkg string) *Config {
 		token:   rnd.Base36(8),
 	}
 
-	s := customize.NewSettings(c.DefaultTheme(), c.DefaultLocale())
+	s := customize.NewSettings(c.DefaultTheme(), c.DefaultLocale(), c.DefaultTimezone().String())
 
 	if err := fs.MkdirAll(c.ConfigPath()); err != nil {
 		log.Fatalf("config: %s", err.Error())

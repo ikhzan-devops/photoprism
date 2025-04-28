@@ -7,7 +7,6 @@ import (
 	"github.com/photoprism/photoprism/internal/ai/nsfw"
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/media"
-	"github.com/photoprism/photoprism/pkg/media/http/scheme"
 )
 
 // Nsfw checks the specified images for inappropriate content.
@@ -25,20 +24,19 @@ func Nsfw(images Files, src media.Src) (result []nsfw.Result, err error) {
 	} else if model := Config.Model(ModelTypeNsfw); model != nil {
 		// Use remote service API if a server endpoint has been configured.
 		if uri, method := model.Endpoint(); uri != "" && method != "" {
-			apiRequest, apiRequestErr := NewApiRequest(images, scheme.Data)
+			var apiRequest *ApiRequest
+			var apiResponse *ApiResponse
 
-			if apiRequestErr != nil {
-				return result, apiRequestErr
+			if apiRequest, err = NewApiRequest(model.EndpointRequestFormat(), images, model.EndpointFileScheme()); err != nil {
+				return result, err
 			}
 
 			if model.Name != "" {
 				apiRequest.Model = model.Name
 			}
 
-			apiResponse, apiErr := PerformApiRequest(apiRequest, uri, method, model.EndpointKey())
-
-			if apiErr != nil {
-				return result, apiErr
+			if apiResponse, err = PerformApiRequest(apiRequest, uri, method, model.EndpointKey()); err != nil {
+				return result, err
 			}
 
 			result = apiResponse.Result.Nsfw

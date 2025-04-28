@@ -4,85 +4,88 @@ import (
 	"time"
 
 	"github.com/photoprism/photoprism/pkg/fs"
+	"github.com/photoprism/photoprism/pkg/txt"
 )
 
 // SearchPhotosGeo represents search form fields for "/api/v1/geo".
 type SearchPhotosGeo struct {
-	Query     string    `form:"q"`
-	Scope     string    `form:"s" serialize:"-" example:"s:ariqwb43p5dh9h13" notes:"Limits the results to one album or another scope, if specified"`
-	Filter    string    `form:"filter" serialize:"-" notes:"-"`
-	ID        string    `form:"id" example:"id:123e4567-e89b-..." notes:"Finds pictures by Exif UID, XMP Document ID or Instance ID"`
-	UID       string    `form:"uid" example:"uid:pqbcf5j446s0futy" notes:"Limits results to the specified internal unique IDs"`
-	Type      string    `form:"type" example:"type:raw" notes:"Media Type (image, video, raw, live, animated); separate with |"`
-	Path      string    `form:"path"`
-	Folder    string    `form:"folder"` // Alias for Path
-	Name      string    `form:"name"`
-	Title     string    `form:"title"`
-	Added     time.Time `form:"added" example:"added:\"2006-01-02T15:04:05Z\"" time_format:"2006-01-02T15:04:05Z07:00" notes:"Finds pictures added at or after this time"`
-	Updated   time.Time `form:"updated" example:"updated:\"2006-01-02T15:04:05Z\"" time_format:"2006-01-02T15:04:05Z07:00" notes:"Finds pictures updated at or after this time"`
-	Edited    time.Time `form:"edited" example:"edited:\"2006-01-02T15:04:05Z\"" time_format:"2006-01-02T15:04:05Z07:00" notes:"Finds pictures edited at or after this time"`
-	Taken     time.Time `form:"taken" time_format:"2006-01-02" notes:"Finds pictures taken on the specified date"`
-	Before    time.Time `form:"before" time_format:"2006-01-02" notes:"Finds pictures taken on or before this date"`
-	After     time.Time `form:"after" time_format:"2006-01-02" notes:"Finds pictures taken on or after this date"`
-	Favorite  string    `form:"favorite" example:"favorite:yes" notes:"Finds favorites only"`
-	Unsorted  bool      `form:"unsorted"`
-	Photo     bool      `form:"photo" notes:"Finds regular photos and images, as well as RAW and Live Photos"`
-	Image     bool      `form:"image" notes:"Finds regular photos and images only"`
-	Raw       bool      `form:"raw" notes:"Finds RAW photos only"`
-	Media     bool      `form:"media" notes:"Finds Live Photos, videos, audio and animated content"`
-	Animated  bool      `form:"animated" notes:"Finds animated content only"`
-	Audio     bool      `form:"audio" notes:"Finds audio content only"`
-	Video     bool      `form:"video" notes:"Finds videos not categorized as Live Photos"`
-	Live      bool      `form:"live" notes:"Finds Live Photos and short videos"`
-	Vector    bool      `form:"vector" notes:"Finds vector graphics only"`
-	Document  bool      `form:"document" notes:"Finds PDF documents only"`
-	Scan      string    `form:"scan" example:"scan:true scan:false" notes:"Finds scanned photos and documents"`
-	Mp        string    `form:"mp" example:"mp:3-6" notes:"Resolution in Megapixels (MP)"`
-	Panorama  bool      `form:"panorama"`
-	Portrait  bool      `form:"portrait"`
-	Landscape bool      `form:"landscape"`
-	Square    bool      `form:"square"`
-	Archived  bool      `form:"archived"`
-	Public    bool      `form:"public"`
-	Private   bool      `form:"private"`
-	Review    bool      `form:"review"`
-	Quality   int       `form:"quality" notes:"Minimum quality score (1-7)"`
-	Face      string    `form:"face" notes:"Face ID, yes, no, new, or kind"`
-	Faces     string    `form:"faces"` // Find or exclude faces if detected.
-	Subject   string    `form:"subject"`
-	Near      string    `form:"near" example:"near:pqbcf5j446s0futy" notes:"Finds nearby pictures (UID)"`
-	S2        string    `form:"s2" example:"s2:4799e370ca54c8b9"  notes:"S2 Position (Cell ID)"`
-	Olc       string    `form:"olc" example:"olc:8FWCHX7W+" notes:"OLC Position (Open Location Code)"`
-	Lat       float64   `form:"lat" example:"lat:41.894043" notes:"GPS Position (Latitude)"`
-	Lng       float64   `form:"lng" example:"lng:-87.62448" notes:"GPS Position (Longitude)"`
-	Alt       string    `form:"alt" example:"alt:300-500" notes:"GPS Altitude (m)"`
-	Dist      float64   `form:"dist" example:"dist:50" notes:"Distance to Position (km)"`
-	Latlng    string    `form:"latlng" notes:"GPS Bounding Box (Lat N, Lng E, Lat S, Lng W)"`
-	Camera    int       `form:"camera"`
-	Lens      int       `form:"lens"`
-	Iso       string    `form:"iso" example:"iso:200-400" notes:"ISO Number (light sensitivity)"`
-	Mm        string    `form:"mm" example:"mm:28-35" notes:"Focal Length (35mm equivalent)"`
-	F         string    `form:"f" example:"f:2.8-4.5" notes:"Aperture (f-number)"`
-	Color     string    `form:"color"`
-	Codec     string    `form:"codec" example:"codec:avc1" notes:"Media Codec (e.g. jpeg, avc1, hvc1); separate with |"`
-	Chroma    int16     `form:"chroma" example:"chroma:70" notes:"Chroma (0-100)"`
-	Mono      bool      `form:"mono" notes:"Finds pictures with few or no colors"`
-	Person    string    `form:"person"`   // Alias for Subject
-	Subjects  string    `form:"subjects"` // Text
-	People    string    `form:"people"`   // Alias for Subjects
-	Keywords  string    `form:"keywords" example:"keywords:\"sand&water\"" notes:"Keywords (combinable with & and |)"`
-	Label     string    `form:"label" example:"label:cat|dog" notes:"Label Names (separate with |)"`
-	Category  string    `form:"category" example:"category:airport" notes:"Location Category"`
-	Album     string    `form:"album" example:"album:berlin" notes:"Album UID or Name, supports * wildcards"`
-	Albums    string    `form:"albums" example:"albums:\"South Africa & Birds\"" notes:"Album Names (combinable with & and |)"`
-	Country   string    `form:"country"`
-	State     string    `form:"state"` // Moments
-	City      string    `form:"city"`
-	Year      string    `form:"year"`  // Moments
-	Month     string    `form:"month"` // Moments
-	Day       string    `form:"day"`   // Moments
-	Count     int       `form:"count" serialize:"-"`
-	Offset    int       `form:"offset" serialize:"-"`
+	Query       string    `form:"q"`
+	Scope       string    `form:"s" serialize:"-" example:"s:ariqwb43p5dh9h13" notes:"Limits the results to one album or another scope, if specified"`
+	Filter      string    `form:"filter" serialize:"-" notes:"-"`
+	ID          string    `form:"id" example:"id:123e4567-e89b-..." notes:"Exif UID, XMP Document ID or Instance ID"`
+	UID         string    `form:"uid" example:"uid:pqbcf5j446s0futy" notes:"Limits results to the specified internal unique IDs"`
+	Type        string    `form:"type" example:"type:raw" notes:"Media Type (image, video, raw, live, animated); separate with |"`
+	Path        string    `form:"path" example:"path:2020/Holiday" notes:"Path Name (separated by |), supports * wildcards"`
+	Folder      string    `form:"folder" example:"folder:\"*/2020\"" notes:"Path Name (separated by |), supports * wildcards"` // Alias for Path
+	Name        string    `form:"name" example:"name:\"IMG_9831-112*\"" notes:"File Name without path and extension (separated by |)"`
+	Title       string    `form:"title" example:"title:\"Lake*\"" notes:"Searches Titles (separate terms with | or use false to find pictures without a Title)"`
+	Caption     string    `form:"caption" example:"caption:\"Lake*\"" notes:"Searches Captions (separate terms with | or use false to find pictures without a Caption)"`
+	Description string    `form:"description" example:"description:\"Lake*\"" notes:"Searches Titles and Captions (separate terms with | or use false to find pictures without a Title or Caption)"`
+	Added       time.Time `form:"added" example:"added:\"2006-01-02T15:04:05Z\"" time_format:"2006-01-02T15:04:05Z07:00" notes:"Finds pictures added at or after this time"`
+	Updated     time.Time `form:"updated" example:"updated:\"2006-01-02T15:04:05Z\"" time_format:"2006-01-02T15:04:05Z07:00" notes:"Finds pictures updated at or after this time"`
+	Edited      time.Time `form:"edited" example:"edited:\"2006-01-02T15:04:05Z\"" time_format:"2006-01-02T15:04:05Z07:00" notes:"Finds pictures edited at or after this time"`
+	Taken       time.Time `form:"taken" time_format:"2006-01-02" notes:"Finds pictures taken on the specified date"`
+	Before      time.Time `form:"before" time_format:"2006-01-02" notes:"Finds pictures taken on or before this date"`
+	After       time.Time `form:"after" time_format:"2006-01-02" notes:"Finds pictures taken on or after this date"`
+	Favorite    string    `form:"favorite" example:"favorite:yes" notes:"Finds favorites only"`
+	Unsorted    bool      `form:"unsorted" notes:"Finds pictures not in an album"`
+	Photo       bool      `form:"photo" notes:"Finds regular photos and images, as well as RAW and Live Photos"`
+	Image       bool      `form:"image" notes:"Finds regular photos and images only"`
+	Raw         bool      `form:"raw" notes:"Finds RAW photos only"`
+	Media       bool      `form:"media" notes:"Finds Live Photos, videos, audio and animated content"`
+	Animated    bool      `form:"animated" notes:"Finds animated content only"`
+	Audio       bool      `form:"audio" notes:"Finds audio content only"`
+	Video       bool      `form:"video" notes:"Finds videos not categorized as Live Photos"`
+	Live        bool      `form:"live" notes:"Finds Live Photos and short videos"`
+	Vector      bool      `form:"vector" notes:"Finds vector graphics only"`
+	Document    bool      `form:"document" notes:"Finds PDF documents only"`
+	Scan        string    `form:"scan" example:"scan:true scan:false" notes:"Finds scanned photos and documents"`
+	Mp          string    `form:"mp" example:"mp:3-6" notes:"Resolution in Megapixels (MP)"`
+	Panorama    bool      `form:"panorama" notes:"Pictures with an aspect ratio > 1.9:1"`
+	Portrait    bool      `form:"portrait" notes:"Portrait format"`
+	Landscape   bool      `form:"landscape" notes:"Landscape format"`
+	Square      bool      `form:"square" notes:"Aspect ratio of 1:1"`
+	Archived    bool      `form:"archived" notes:"Archived pictures"`
+	Public      bool      `form:"public" notes:"Excludes private pictures"`
+	Private     bool      `form:"private" notes:"Private pictures"`
+	Review      bool      `form:"review" notes:"Pictures in review"`
+	Quality     int       `form:"quality" notes:"Minimum quality score (1-7)"`
+	Face        string    `form:"face" notes:"Face ID, yes, no, new, or kind"`
+	Faces       string    `form:"faces"` // Find or exclude faces if detected.
+	Subject     string    `form:"subject"`
+	Near        string    `form:"near" example:"near:pqbcf5j446s0futy" notes:"Finds nearby pictures (UID)"`
+	S2          string    `form:"s2" example:"s2:4799e370ca54c8b9"  notes:"Position (S2 Cell ID)"`
+	Olc         string    `form:"olc" example:"olc:8FWCHX7W+" notes:"Open Location Code (OLC)"`
+	Lat         float64   `form:"lat" example:"lat:41.894043" notes:"Position Latitude (-90.0 to 90.0 deg)"`
+	Lng         float64   `form:"lng" example:"lng:-87.62448" notes:"Position Longitude (-180.0 to 180.0 deg)"`
+	Alt         string    `form:"alt" example:"alt:300-500" notes:"Altitude (m)"`
+	Dist        float64   `form:"dist" example:"dist:50" notes:"Maximum Distance to Position in km"`
+	Latlng      string    `form:"latlng" example:"latlng:49.4,13.41,46.5,2.331" notes:"Position Bounding Box (Lat N, Lng E, Lat S, Lng W)"`
+	Camera      int       `form:"camera"`
+	Lens        int       `form:"lens"`
+	Iso         string    `form:"iso" example:"iso:200-400" notes:"ISO Number (light sensitivity)"`
+	Mm          string    `form:"mm" example:"mm:28-35" notes:"Focal Length (35mm equivalent)"`
+	F           string    `form:"f" example:"f:2.8-4.5" notes:"Aperture (f-number)"`
+	Color       string    `form:"color"`
+	Codec       string    `form:"codec" example:"codec:avc1" notes:"Media Codec (e.g. jpeg, avc1, hvc1); separate with |"`
+	Chroma      int16     `form:"chroma" example:"chroma:70" notes:"Chroma (0-100)"`
+	Mono        bool      `form:"mono" notes:"Finds pictures with few or no colors"`
+	Person      string    `form:"person"`   // Alias for Subject
+	Subjects    string    `form:"subjects"` // Text
+	People      string    `form:"people"`   // Alias for Subjects
+	Keywords    string    `form:"keywords" example:"keywords:\"sand&water\"" notes:"Keywords (combinable with & and |)"`
+	Label       string    `form:"label" example:"label:cat|dog" notes:"Label Names (separate with |)"`
+	Category    string    `form:"category" example:"category:airport" notes:"Location Category"`
+	Album       string    `form:"album" example:"album:berlin" notes:"Album UID or Name, supports * wildcards"`
+	Albums      string    `form:"albums" example:"albums:\"South Africa & Birds\"" notes:"Album Names (combinable with & and |)"`
+	Country     string    `form:"country"`
+	State       string    `form:"state"` // Moments
+	City        string    `form:"city"`
+	Year        string    `form:"year"`  // Moments
+	Month       string    `form:"month"` // Moments
+	Day         string    `form:"day"`   // Moments
+	Count       int       `form:"count" serialize:"-"`
+	Offset      int       `form:"offset" serialize:"-"`
 }
 
 // GetQuery returns the query parameter as string.
@@ -121,7 +124,7 @@ func (f *SearchPhotosGeo) ParseQueryString() error {
 	}
 
 	if f.Filter != "" {
-		if err := Unserialize(f, f.Filter); err != nil {
+		if err = Unserialize(f, f.Filter); err != nil {
 			return err
 		}
 	}
@@ -129,6 +132,20 @@ func (f *SearchPhotosGeo) ParseQueryString() error {
 	// Strip file extensions if any.
 	if f.Name != "" {
 		f.Name = fs.StripKnownExt(f.Name)
+	}
+
+	// Try to parse remaining query into latitude and longitude.
+	if q := f.GetQuery(); q == "" {
+		// No remaining query to parse.
+	} else if lat, lng, parseErr := txt.Position(q); parseErr == nil {
+		// Use coordinates only if no other coordinates are set.
+		if f.Lat == 0.0 && f.Lng == 0.0 && f.Latlng == "" {
+			f.Lat = lat
+			f.Lng = lng
+		}
+
+		// Remove from query.
+		f.SetQuery("")
 	}
 
 	return err

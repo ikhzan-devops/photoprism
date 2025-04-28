@@ -42,7 +42,7 @@ func DataUrl(r io.Reader) string {
 	}
 
 	// Generate data URL.
-	return fmt.Sprintf("data:%s;base64,%s", mimeType, EncodeBase64(data))
+	return fmt.Sprintf("data:%s;base64,%s", mimeType, EncodeBase64String(data))
 }
 
 // ReadUrl reads binary data from a regular file path,
@@ -85,7 +85,7 @@ func ReadUrl(fileUrl string, schemes []string) (data []byte, err error) {
 		if _, binaryData, found := strings.Cut(u.Opaque, ";base64,"); !found || len(binaryData) == 0 {
 			return data, fmt.Errorf("invalid %s url", u.Scheme)
 		} else {
-			return DecodeBase64(binaryData)
+			return DecodeBase64String(binaryData)
 		}
 	case scheme.File:
 		if data, err = os.ReadFile(fileUrl); err != nil {

@@ -11,6 +11,7 @@ Package                           License       Copyright
 @lcdp/offline-plugin              MIT           Le Comptoir Des Pharmacies <webmaster@lecomptoirdespharmacies.fr>
 @mdi/font                         Apache-2.0    Austin Andrews
 @vue/compiler-sfc                 MIT           Evan You
+@vue/language-server              MIT           n/a
 @vvo/tzdb                         MIT           Vincent Voyer <vincent@codeagain.com>
 axios                             MIT           Matt Zabriskie
 axios-mock-adapter                MIT           Colin Timmermans <colintimmermans@gmail.com>

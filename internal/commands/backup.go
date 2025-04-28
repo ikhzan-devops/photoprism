@@ -15,9 +15,9 @@ import (
 )
 
 const backupDescription = `A custom filename for the database backup (or - to send the backup to stdout) can optionally be passed as argument.
-   The --database flag can be omitted in this case. When using Docker, please run the docker command with the -T flag
-   to prevent log messages from being sent to stdout. If nothing else is specified, the database and album backup paths
-   will be automatically determined based on the current configuration.`
+The --database flag can be omitted in this case. When using Docker, please run the docker command with the -T flag
+to prevent log messages from being sent to stdout. If nothing else is specified, the database and album backup paths
+will be automatically determined based on the current configuration.`
 
 // BackupCommand configures the command name, flags, and action.
 var BackupCommand = &cli.Command{

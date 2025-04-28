@@ -47,8 +47,8 @@ ENV PHOTOPRISM_ARCH=$TARGETARCH \
     TMPDIR="/tmp" \
     DEBIAN_FRONTEND="noninteractive" \
     TF_VERSION=1.15.2 \
-    TF_CPP_MIN_LOG_LEVEL=2 \
-    MALLOC_ARENA_MAX=4 \
+    TF_CPP_MIN_LOG_LEVEL=4 \
+    MALLOC_ARENA_MAX=2 \
     PROG="photoprism" \
     PHOTOPRISM_ASSETS_PATH="/opt/photoprism/assets" \
     PHOTOPRISM_IMPORT_PATH="/photoprism/import" \
@@ -92,7 +92,8 @@ ENV PHOTOPRISM_ARCH=$TARGETARCH \
     PHOTOPRISM_AUTO_INDEX="300" \
     PHOTOPRISM_AUTO_IMPORT="-1" \
     PHOTOPRISM_INIT="https" \
-    S6_KEEP_ENV=1 \
+    S6_KEEP_ENV=0 \
+    S6_VERBOSITY=0 \
     S6_LOGGING=0
 
 # Copy dist files, scripts, and debian backports sources list.
@@ -132,6 +133,8 @@ RUN echo 'APT::Acquire::Retries "3";' > /etc/apt/apt.conf.d/80retries && \
         /photoprism/storage/config \
         /photoprism/storage/cache && \
     /scripts/install-s6.sh && \
+    ln -sf /scripts/services/photoprism /etc/s6-overlay/s6-rc.d/photoprism && \
+    touch /etc/s6-overlay/s6-rc.d/user/contents.d/photoprism && \
     /scripts/cleanup.sh
 
 # Set default working directory.
@@ -142,4 +145,3 @@ EXPOSE 2342 2443
 
 # Set default entrypoint and command.
 ENTRYPOINT ["/init"]
-CMD ["/scripts/cmd.sh", "/opt/photoprism/bin/photoprism", "start"]

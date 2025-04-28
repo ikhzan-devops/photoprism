@@ -1,7 +1,9 @@
 import { Selector, t } from "testcafe";
 
 export default class Page {
-  constructor() {}
+  constructor() {
+    this.search = Selector(".input-search input");
+  }
 
   async getNthLabeltUid(nth) {
     const NthLabel = await Selector("div.is-label").nth(nth).getAttribute("data-uid");

@@ -2,7 +2,6 @@ package server
 
 import (
 	"net/http"
-	"path/filepath"
 
 	"github.com/gin-gonic/gin"
 
@@ -42,7 +41,7 @@ func registerStaticRoutes(router *gin.Engine, conf *config.Config) {
 	router.NoRoute(api.AbortNotFound)
 
 	// Serves static favicon.
-	router.StaticFile(conf.BaseUri("/favicon.ico"), filepath.Join(conf.ImgPath(), "favicon.ico"))
+	router.StaticFile(conf.BaseUri("/favicon.ico"), conf.SiteFavicon())
 
 	// Serves static assets like js, css and font files.
 	if dir := conf.StaticPath(); dir != "" {

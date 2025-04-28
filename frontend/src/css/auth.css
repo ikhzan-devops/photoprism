@@ -77,6 +77,16 @@ main .auth-login .clickable {
     left: unset;
 }
 
+.auth-login .auth-language {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: auto;
+    height: auto;
+    margin: auto;
+    z-index: 2;
+}
+
 .auth-layout {
     justify-content: center;
     align-items: center;

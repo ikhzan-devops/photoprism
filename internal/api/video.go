@@ -133,8 +133,9 @@ func GetVideo(router *gin.RouterGroup) {
 		// Verify video format support and compatibility.
 		supported := video.Compatible(videoContentType, format.ContentType)
 
-		// Check video bitrate against the configured limit.
-		transcode := !supported || conf.FFmpegEnabled() && conf.FFmpegBitrateExceeded(videoBitrate)
+		// Check video bitrate against the configured limit
+		bitrateExceeded := conf.FFmpegEnabled() && conf.FFmpegBitrateExceeded(videoBitrate)
+		transcode := !supported || bitrateExceeded
 
 		if mediaFile, mediaErr := photoprism.NewMediaFile(videoFileName); mediaErr != nil {
 			// Set missing flag so that the file doesn't show up in search results anymore.
@@ -145,12 +146,21 @@ func GetVideo(router *gin.RouterGroup) {
 			AbortVideo(c)
 			return
 		} else if transcode {
-			log.Debugf(
-				"video: %s has content type %s and cannot be streamed directly, average bitrate %.1f MBit/s",
-				clean.Log(f.FileName),
-				clean.Log(videoContentType),
-				videoBitrate,
-			)
+			if supported && bitrateExceeded {
+				log.Debugf(
+					"video: %s has an average bitrate of %.1f Mbps, which exceeds the %d Mbps limit",
+					clean.Log(f.FileName),
+					videoBitrate,
+					conf.FFmpegBitrate(),
+				)
+			} else {
+				log.Debugf(
+					"video: %s has content type %s and cannot be streamed directly (average bitrate %.1f Mbps)",
+					clean.Log(f.FileName),
+					clean.Log(videoContentType),
+					videoBitrate,
+				)
+			}
 
 			conv := get.Convert()
 
@@ -173,7 +183,7 @@ func GetVideo(router *gin.RouterGroup) {
 			}
 
 			log.Debugf(
-				"video: %s has content type %s, average bitrate %.1f MBit/s",
+				"video: %s has content type %s (average bitrate %.1f Mbps)",
 				clean.Log(f.FileName),
 				clean.Log(contentType),
 				videoBitrate,

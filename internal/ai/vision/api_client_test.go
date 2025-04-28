@@ -15,14 +15,14 @@ func TestNewApiRequest(t *testing.T) {
 
 	t.Run("Data", func(t *testing.T) {
 		thumbnails := Files{examplesPath + "/chameleon_lime.jpg"}
-		result, err := NewApiRequest(thumbnails, scheme.Data)
+		result, err := NewApiRequestImages(thumbnails, scheme.Data)
 
 		assert.NoError(t, err)
 		assert.NotNil(t, result)
 		// t.Logf("request: %#v", result)
 
 		if result != nil {
-			json, jsonErr := result.MarshalJSON()
+			json, jsonErr := result.JSON()
 			assert.NoError(t, jsonErr)
 			assert.NotEmpty(t, json)
 			// t.Logf("json: %s", json)
@@ -30,13 +30,13 @@ func TestNewApiRequest(t *testing.T) {
 	})
 	t.Run("Https", func(t *testing.T) {
 		thumbnails := Files{examplesPath + "/chameleon_lime.jpg"}
-		result, err := NewApiRequest(thumbnails, scheme.Https)
+		result, err := NewApiRequestImages(thumbnails, scheme.Https)
 
 		assert.NoError(t, err)
 		assert.NotNil(t, result)
 		// t.Logf("request: %#v", result)
 		if result != nil {
-			json, jsonErr := result.MarshalJSON()
+			json, jsonErr := result.JSON()
 			assert.NoError(t, jsonErr)
 			assert.NotEmpty(t, json)
 			t.Logf("json: %s", json)

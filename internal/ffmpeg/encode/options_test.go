@@ -8,29 +8,34 @@ import (
 
 func TestNewOptions(t *testing.T) {
 	t.Run("Defaults", func(t *testing.T) {
-		opt := NewVideoOptions("", "", 0, "", "", "")
+		opt := NewVideoOptions("", "", 0, 50, "", "", "", "")
 		assert.Equal(t, "ffmpeg", opt.Bin)
 		assert.Equal(t, FFmpegBin, opt.Bin)
 		assert.Equal(t, DefaultAvcEncoder(), opt.Encoder)
 		assert.Equal(t, 1920, opt.SizeLimit)
-		assert.Equal(t, "50M", opt.BitrateLimit)
+		assert.Equal(t, DefaultQuality, opt.Quality)
+		assert.Equal(t, "50", opt.QvQuality())
+		assert.Equal(t, "25", opt.GlobalQuality())
+		assert.Equal(t, "25", opt.CrfQuality())
+		assert.Equal(t, "25", opt.QpQuality())
+		assert.Equal(t, "25", opt.CqQuality())
+		assert.Equal(t, PresetFast, opt.Preset)
+		assert.Equal(t, "", opt.Device)
 		assert.Equal(t, "0:v:0", opt.MapVideo)
 		assert.Equal(t, "0:a:0?", opt.MapAudio)
-		assert.Equal(t, MapVideo, opt.MapVideo)
-		assert.Equal(t, MapAudio, opt.MapAudio)
+		assert.Equal(t, DefaultMapVideo, opt.MapVideo)
+		assert.Equal(t, DefaultMapAudio, opt.MapAudio)
 	})
-
 }
 
 func TestOptions_VideoFilter(t *testing.T) {
 	opt := &Options{
-		Bin:          "",
-		Encoder:      "intel",
-		SizeLimit:    1500,
-		BitrateLimit: "50M",
-		MapVideo:     "",
-		MapAudio:     "",
-		MovFlags:     "",
+		Bin:       "",
+		Encoder:   "intel",
+		SizeLimit: 1500,
+		MapVideo:  "",
+		MapAudio:  "",
+		MovFlags:  "",
 	}
 
 	t.Run("Empty", func(t *testing.T) {

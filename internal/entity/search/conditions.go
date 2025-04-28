@@ -262,6 +262,43 @@ func OrLike(col, s string) (where string, values []interface{}) {
 	return where, values
 }
 
+// OrLikeCols returns a where condition and values for finding multiple terms combined with OR.
+func OrLikeCols(cols []string, s string) (where string, values []interface{}) {
+	if len(cols) == 0 || txt.Empty(s) {
+		return "", []interface{}{}
+	}
+
+	s = strings.ReplaceAll(s, "*", "%")
+	s = strings.ReplaceAll(s, "%%", "%")
+
+	terms := strings.Split(s, txt.Or)
+
+	if len(terms) == 0 {
+		return "", []interface{}{}
+	}
+
+	values = make([]interface{}, len(terms)*len(cols))
+
+	for j := range terms {
+		for i := range cols {
+			values[j+i] = strings.TrimSpace(terms[j])
+		}
+	}
+
+	wheres := make([]string, len(cols))
+
+	for i, col := range cols {
+		for j := range terms {
+			k := len(terms) * i
+			values[j+k] = terms[j]
+		}
+		like := fmt.Sprintf("%s LIKE ?", col)
+		wheres[i] = like + strings.Repeat(" OR "+like, len(terms)-1)
+	}
+
+	return strings.Join(wheres, " OR "), values
+}
+
 // Split splits a search string into separate values and trims whitespace.
 func Split(s string, sep string) (result []string) {
 	if s == "" {

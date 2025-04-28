@@ -38,7 +38,7 @@ func GPSBoundsWithPadding(bounds string, padding float64) (latN, lngE, latS, lng
 	}
 
 	// Convert coordinate strings to floating point values.
-	latNorth, lngEast, latSouth, lngWest := txt.Float(values[0]), txt.Float(values[1]), txt.Float(values[2]), txt.Float(values[3])
+	latNorth, lngEast, latSouth, lngWest := txt.Float64(values[0]), txt.Float64(values[1]), txt.Float64(values[2]), txt.Float64(values[3])
 
 	// Latitudes have a valid range of +90 to -90 degrees.
 	if latNorth > 90 {

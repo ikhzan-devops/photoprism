@@ -33,7 +33,7 @@ func TranscodeCmd(srcName, destName string, opt encode.Options) (cmd *exec.Cmd, 
 	if fs.TypeAnimated[fs.FileType(srcName)] != "" {
 		cmd = exec.Command(
 			opt.Bin,
-			"-y",
+			"-hide_banner", "-y",
 			"-strict", "-2",
 			"-i", srcName,
 			"-pix_fmt", encode.FormatYUV420P.String(),

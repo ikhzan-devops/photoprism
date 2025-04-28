@@ -390,6 +390,7 @@ import Thumb from "model/thumb";
 import { DateTime } from "luxon";
 import $notify from "common/notify";
 import * as options from "options/options";
+import * as formats from "options/formats";
 
 export default {
   name: "PTabPhotoFiles",
@@ -409,6 +410,7 @@ export default {
       },
       features: this.$config.getSettings().features,
       config: this.$config.values,
+      timeZone: this.$config.getTimeZone(),
       readonly: this.$config.get("readonly"),
       experimental: this.$config.get("experimental"),
       canAccessPrivate:
@@ -553,7 +555,7 @@ export default {
         });
     },
     formatTime(s) {
-      return DateTime.fromISO(s).toLocaleString(DateTime.DATETIME_MED);
+      return DateTime.fromISO(s, { zone: this.timeZone }).toLocaleString(formats.TIMESTAMP);
     },
     refresh() {},
   },

@@ -19,7 +19,6 @@ const (
 type Settings struct {
 	UI        UISettings       `json:"ui" yaml:"UI"`
 	Search    SearchSettings   `json:"search" yaml:"Search"`
-	Albums    AlbumsSettings   `json:"albums" yaml:"Albums"`
 	Maps      MapsSettings     `json:"maps" yaml:"Maps"`
 	Features  FeatureSettings  `json:"features" yaml:"Features"`
 	Import    ImportSettings   `json:"import" yaml:"Import"`
@@ -27,24 +26,37 @@ type Settings struct {
 	Stack     StackSettings    `json:"stack" yaml:"Stack"`
 	Share     ShareSettings    `json:"share" yaml:"Share"`
 	Download  DownloadSettings `json:"download" yaml:"Download"`
+	Albums    AlbumsSettings   `json:"albums" yaml:"Albums"`
 	Templates TemplateSettings `json:"templates" yaml:"Templates"`
 }
 
 // NewDefaultSettings creates a new default Settings instance.
 func NewDefaultSettings() *Settings {
-	return NewSettings(DefaultTheme, DefaultLocale)
+	return NewSettings(DefaultTheme, DefaultLanguage, DefaultTimeZone)
 }
 
 // NewSettings creates a new Settings instance.
-func NewSettings(theme, lang string) *Settings {
+func NewSettings(theme, language, timeZone string) *Settings {
+	if theme == "" {
+		theme = DefaultTheme
+	}
+
+	if language == "" {
+		language = DefaultLanguage
+	}
+
+	if timeZone == "" {
+		timeZone = DefaultTimeZone
+	}
+
 	return &Settings{
 		UI: UISettings{
 			Scrollbar: true,
 			Zoom:      false,
 			Theme:     theme,
-			Language:  lang,
-			TimeZone:  "",
-			StartPage: "default",
+			Language:  language,
+			TimeZone:  timeZone,
+			StartPage: DefaultStartPage,
 		},
 		Search: SearchSettings{
 			BatchSize:    -1,
@@ -54,7 +66,7 @@ func NewSettings(theme, lang string) *Settings {
 		},
 		Maps: MapsSettings{
 			Animate: 0,
-			Style:   "",
+			Style:   DefaultMapsStyle,
 		},
 		Features: FeatureSettings{
 			Favorites: true,
@@ -114,6 +126,22 @@ func NewSettings(theme, lang string) *Settings {
 
 // Propagate updates settings in other packages as needed.
 func (s *Settings) Propagate() {
+	if s.UI.Language == "" {
+		s.UI.Language = DefaultLanguage
+	}
+
+	if s.UI.TimeZone == "" {
+		s.UI.TimeZone = DefaultTimeZone
+	}
+
+	if s.UI.StartPage == "" {
+		s.UI.StartPage = DefaultStartPage
+	}
+
+	if s.Maps.Style == "" {
+		s.Maps.Style = DefaultMapsStyle
+	}
+
 	i18n.SetLocale(s.UI.Language)
 }
 
