@@ -15,4 +15,10 @@ var DialectPostgres = Migrations{
 		Stage:      "pre",
 		Statements: []string{"ALTER TABLE IF EXISTS photos RENAME COLUMN photo_description TO photo_caption;", "ALTER TABLE IF EXISTS photos RENAME COLUMN description_src TO caption_src;"},
 	},
+	{
+		ID:         "20250416-000001",
+		Dialect:    "postgres",
+		Stage:      "main",
+		Statements: []string{"UPDATE photos SET time_zone = 'Local' WHERE time_zone = '' OR time_zone IS NULL;"},
+	},
 }
