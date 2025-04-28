@@ -3,9 +3,6 @@
 
 services:
   ## PhotoPrism Development Environment (PostgreSQL)
-  # ATTENTION: PostgreSQL is NOT supported yet as Gorm (our ORM library) needs to be upgraded first.
-  # The current Gorm version does NOT support compatible general data types:
-  # https://github.com/photoprism/photoprism/issues/47
   photoprism:
     build: .
     image: photoprism/photoprism:develop
@@ -17,15 +14,19 @@ services:
     security_opt:
       - seccomp:unconfined
       - apparmor:unconfined
+    ## Expose HTTP and debug ports
     ports:
       - "2342:2342"   # Default HTTP port (host:container)
       - "2443:2443"   # Default TLS port (host:container)
       - "2343:2343"   # Acceptance Test HTTP port (host:container)
       - "40000:40000" # Go Debugger (host:container)
     shm_size: "2gb"
+    ## Set links and labels for use with Traefik reverse proxy
     links:
       - "traefik:localssl.dev"
       - "traefik:app.localssl.dev"
+      - "traefik:vision.localssl.dev"
+      - "traefik:qdrant.localssl.dev"
       - "traefik:keycloak.localssl.dev"
       - "traefik:dummy-oidc.localssl.dev"
       - "traefik:dummy-webdav.localssl.dev"
@@ -39,6 +40,11 @@ services:
       - "traefik.http.routers.photoprism.tls.domains[0].main=localssl.dev"
       - "traefik.http.routers.photoprism.tls.domains[0].sans=*.localssl.dev"
       - "traefik.http.routers.photoprism.tls=true"
+    ## Override variables with optional env file, see https://docs.docker.com/reference/compose-file/services/#required
+    env_file:
+      - path: ".env"
+        required: false
+    ## Configure development environment
     environment:
       ## Run as a non-root user after initialization (supported: 0, 33, 50-99, 500-600, and 900-1200):
       PHOTOPRISM_UID: ${UID:-1000}                         # user id, should match your host user id
@@ -49,6 +55,8 @@ services:
       PHOTOPRISM_AUTH_MODE: "password"                     # authentication mode (public, password)
       PHOTOPRISM_REGISTER_URI: "https://keycloak.localssl.dev/admin/"
       PHOTOPRISM_PASSWORD_RESET_URI: "https://keycloak.localssl.dev/realms/master/login-actions/reset-credentials"
+      PHOTOPRISM_USAGE_INFO: "true"
+      PHOTOPRISM_FILES_QUOTA: "100"
       ## OpenID Connect (pre-configured for local tests):
       ## see https://keycloak.localssl.dev/realms/master/.well-known/openid-configuration
       PHOTOPRISM_OIDC_URI: "https://keycloak.localssl.dev/realms/master"
@@ -117,9 +125,9 @@ services:
       TF_CPP_MIN_LOG_LEVEL: 1                        # show TensorFlow log messages for development
       ## Video Transcoding (https://docs.photoprism.app/getting-started/advanced/transcoding/):
       # PHOTOPRISM_FFMPEG_ENCODER: "software"        # H.264/AVC encoder (software, intel, nvidia, apple, raspberry, or vaapi)
-      # PHOTOPRISM_FFMPEG_SIZE: "1920"               # video size limit in pixels (720-7680) (default: 3840)
-      # PHOTOPRISM_FFMPEG_BITRATE: "32"              # video bitrate limit in Mbit/s (default: 50)
       # LIBVA_DRIVER_NAME: "i965"                    # For Intel architectures Haswell and older which do not support QSV yet but use VAAPI instead
+      PHOTOPRISM_FFMPEG_SIZE: "1920"                 # video size limit in pixels (720-7680) (default: 3840)
+      # PHOTOPRISM_FFMPEG_BITRATE: "60"              # video bitrate limit in Mbps (default: 60)
       ## Run/install on first startup (options: update https gpu ffmpeg tensorflow davfs clitools clean):
       PHOTOPRISM_INIT: "https tensorflow postgresql"
     ## Share hardware devices with FFmpeg and TensorFlow (optional):
@@ -157,8 +165,65 @@ services:
       POSTGRES_DB: photoprism
       POSTGRES_USER: photoprism
       POSTGRES_PASSWORD: photoprism
+  
+  ## Qdrant (Vector Database)
+  ## Docs: https://qdrant.tech/documentation/guides/installation/#docker-compose
+  ## Release Notes: https://github.com/qdrant/qdrant/releases
+  ## Web UI: https://qdrant.localssl.dev/dashboard
+  qdrant:
+    image: qdrant/qdrant:latest
+    profiles: ["all", "qdrant"]
+    links:
+      - "traefik:localssl.dev"
+      - "traefik:app.localssl.dev"
+      - "traefik:vision.localssl.dev"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.qdrant.loadbalancer.server.port=6333"
+      - "traefik.http.services.qdrant.loadbalancer.server.scheme=http"
+      - "traefik.http.routers.qdrant.entrypoints=websecure"
+      - "traefik.http.routers.qdrant.rule=Host(`qdrant.localssl.dev`)"
+      - "traefik.http.routers.qdrant.priority=3"
+      - "traefik.http.routers.qdrant.tls.domains[0].main=localssl.dev"
+      - "traefik.http.routers.qdrant.tls.domains[0].sans=*.localssl.dev"
+      - "traefik.http.routers.qdrant.tls=true"
+    expose:
+      - 6333
+      - 6334
+      - 6335
+    volumes:
+      - ./.qdrant.yaml:/qdrant/config/production.yaml
+      - ./storage/qdrant:/qdrant/storage
 
-## Traefik v3 (Reverse Proxy)
+  ## PhotoPrism® Computer Vision API
+  ## See: https://github.com/photoprism/photoprism-vision
+  photoprism-vision:
+    image: photoprism/vision:latest
+    entrypoint: [ "/app/venv/bin/flask" ]
+    command: [ "--app", "app", "run", "--debug", "--host", "0.0.0.0" ]
+    profiles: ["all", "vision"]
+    stop_grace_period: 5s
+    working_dir: "/app"
+    links:
+      - "traefik:localssl.dev"
+      - "traefik:app.localssl.dev"
+      - "traefik:qdrant.localssl.dev"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.qdrant.loadbalancer.server.port=5000"
+      - "traefik.http.services.qdrant.loadbalancer.server.scheme=http"
+      - "traefik.http.routers.qdrant.entrypoints=websecure"
+      - "traefik.http.routers.qdrant.rule=Host(`vision.localssl.dev`)"
+      - "traefik.http.routers.qdrant.priority=3"
+      - "traefik.http.routers.qdrant.tls.domains[0].main=localssl.dev"
+      - "traefik.http.routers.qdrant.tls.domains[0].sans=*.localssl.dev"
+      - "traefik.http.routers.qdrant.tls=true"
+    expose:
+      - 5000
+    environment:
+      TF_CPP_MIN_LOG_LEVEL: 2
+
+  ## Traefik v3 (Reverse Proxy)
   ## includes "*.localssl.dev" SSL certificate for test environments
   ## Docs: https://doc.traefik.io/traefik/
   traefik:

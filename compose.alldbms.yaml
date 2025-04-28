@@ -26,6 +26,8 @@ services:
     links:
       - "traefik:localssl.dev"
       - "traefik:app.localssl.dev"
+      - "traefik:vision.localssl.dev"
+      - "traefik:qdrant.localssl.dev"
       - "traefik:keycloak.localssl.dev"
       - "traefik:dummy-oidc.localssl.dev"
       - "traefik:dummy-webdav.localssl.dev"
@@ -121,14 +123,14 @@ services:
       PHOTOPRISM_THUMB_LIBRARY: "auto"               # image processing library to be used for generating thumbnails (auto, imaging, vips)
       PHOTOPRISM_THUMB_FILTER: "auto"                # downscaling filter (imaging best to worst: blackman, lanczos, cubic, linear, nearest)
       PHOTOPRISM_THUMB_UNCACHED: "true"              # enables on-demand thumbnail rendering (high memory and cpu usage)
-      TF_CPP_MIN_LOG_LEVEL: 0                        # show TensorFlow log messages for development
+      TF_CPP_MIN_LOG_LEVEL: 1                        # show TensorFlow log messages for development
       ## Video Transcoding (https://docs.photoprism.app/getting-started/advanced/transcoding/):
       # PHOTOPRISM_FFMPEG_ENCODER: "software"        # H.264/AVC encoder (software, intel, nvidia, apple, raspberry, or vaapi)
-      # PHOTOPRISM_FFMPEG_SIZE: "1920"               # video size limit in pixels (720-7680) (default: 3840)
-      # PHOTOPRISM_FFMPEG_BITRATE: "32"              # video bitrate limit in Mbit/s (default: 50)
       # LIBVA_DRIVER_NAME: "i965"                    # For Intel architectures Haswell and older which do not support QSV yet but use VAAPI instead
-      ## Run/install on first startup (options: update https gpu ffmpeg tensorflow davfs clitools clean):
-      PHOTOPRISM_INIT: "https postgresql" # tensorflow postgresql"
+      PHOTOPRISM_FFMPEG_SIZE: "1920"                 # video size limit in pixels (720-7680) (default: 3840)
+      # PHOTOPRISM_FFMPEG_BITRATE: "60"              # video bitrate limit in Mbps (default: 60)
+      ## Run/install on first startup (options: update tensorflow https intel gpu davfs):
+      PHOTOPRISM_INIT: "https postgresql"
     ## Share hardware devices with FFmpeg and TensorFlow (optional):
     # devices:
     #  - "/dev/dri:/dev/dri"                         # Intel QSV (Broadwell and later) or VAAPI (Haswell and earlier)
@@ -195,6 +197,11 @@ services:
   ## Web UI: https://qdrant.localssl.dev/dashboard
   qdrant:
     image: qdrant/qdrant:latest
+    profiles: ["all", "qdrant"]
+    links:
+      - "traefik:localssl.dev"
+      - "traefik:app.localssl.dev"
+      - "traefik:vision.localssl.dev"
     labels:
       - "traefik.enable=true"
       - "traefik.http.services.qdrant.loadbalancer.server.port=6333"
@@ -212,6 +219,34 @@ services:
     volumes:
       - ./.qdrant.yaml:/qdrant/config/production.yaml
       - ./storage/qdrant:/qdrant/storage
+
+  ## PhotoPrism® Computer Vision API
+  ## See: https://github.com/photoprism/photoprism-vision
+  photoprism-vision:
+    image: photoprism/vision:latest
+    entrypoint: [ "/app/venv/bin/flask" ]
+    command: [ "--app", "app", "run", "--debug", "--host", "0.0.0.0" ]
+    profiles: ["all", "vision"]
+    stop_grace_period: 5s
+    working_dir: "/app"
+    links:
+      - "traefik:localssl.dev"
+      - "traefik:app.localssl.dev"
+      - "traefik:qdrant.localssl.dev"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.qdrant.loadbalancer.server.port=5000"
+      - "traefik.http.services.qdrant.loadbalancer.server.scheme=http"
+      - "traefik.http.routers.qdrant.entrypoints=websecure"
+      - "traefik.http.routers.qdrant.rule=Host(`vision.localssl.dev`)"
+      - "traefik.http.routers.qdrant.priority=3"
+      - "traefik.http.routers.qdrant.tls.domains[0].main=localssl.dev"
+      - "traefik.http.routers.qdrant.tls.domains[0].sans=*.localssl.dev"
+      - "traefik.http.routers.qdrant.tls=true"
+    expose:
+      - 5000
+    environment:
+      TF_CPP_MIN_LOG_LEVEL: 2
 
   ## Traefik v3 (Reverse Proxy)
   ## includes "*.localssl.dev" SSL certificate for test environments
