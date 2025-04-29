@@ -83,8 +83,8 @@ export default class Page {
       .expect(ExpireAfterChange)
       .contains("After 1 day")
       .typeText(sharedialog.linkSecretInput, InitialSecret, { replace: true })
-      .wait(5000)
       .click(sharedialog.linkExpireInput)
+      .scroll(Selector("div.input-expires div.v-input__control"), "top")
       .click(Selector("div").withText("Never").parent('div[role="option"]'))
       .click(sharedialog.dialogSave)
       .click(sharedialog.expandLink);
@@ -144,7 +144,9 @@ export default class Page {
       }
 
       const initialCoverStyle = await album.getAlbumCoverStyle(AlbumUid);
-      await t.expect(initialCoverStyle !== undefined).ok(`Could not get initial cover style for album ${AlbumUid} on ${pageName} page.`);
+      await t
+        .expect(initialCoverStyle !== undefined)
+        .ok(`Could not get initial cover style for album ${AlbumUid} on ${pageName} page.`);
 
       await album.openAlbumWithUid(AlbumUid);
 
@@ -180,13 +182,20 @@ export default class Page {
         await t.wait(500);
 
         const newCoverStyle = await album.getAlbumCoverStyle(AlbumUid);
-        await t.expect(newCoverStyle !== undefined).ok(`Could not get new cover style for album ${AlbumUid} on ${pageName} page after setting cover.`);
+        await t
+          .expect(newCoverStyle !== undefined)
+          .ok(`Could not get new cover style for album ${AlbumUid} on ${pageName} page after setting cover.`);
 
         await t
           .expect(newCoverStyle)
-          .notEql(initialCoverStyle, `Album card cover background image should change (Album: ${AlbumUid}, Initial: ${initialCoverStyle}, New: ${newCoverStyle})`)
+          .notEql(
+            initialCoverStyle,
+            `Album card cover background image should change (Album: ${AlbumUid}, Initial: ${initialCoverStyle}, New: ${newCoverStyle})`
+          )
           .expect(newCoverStyle)
-          .eql(expectedCoverStyle, `Album card cover background image URL should match the thumbnail (Album: ${AlbumUid}, Expected: ${expectedCoverStyle}, Actual: ${newCoverStyle})`
+          .eql(
+            expectedCoverStyle,
+            `Album card cover background image URL should match the thumbnail (Album: ${AlbumUid}, Expected: ${expectedCoverStyle}, Actual: ${newCoverStyle})`
           );
         break;
       }
@@ -194,6 +203,8 @@ export default class Page {
 
     await t
       .expect(foundSuitableAlbum)
-      .ok(`Failed to find any album with more than 1 photo within the first ${maxAlbumsToCheck} albums on ${pageName} page.`);
+      .ok(
+        `Failed to find any album with more than 1 photo within the first ${maxAlbumsToCheck} albums on ${pageName} page.`
+      );
   }
 }
