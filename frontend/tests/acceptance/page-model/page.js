@@ -140,7 +140,7 @@ export default class Page {
 
       const AlbumUid = await albumCard.getAttribute("data-uid");
       if (!AlbumUid) {
-          continue; // Skip to next album if UID is missing
+        continue; // Skip to next album if UID is missing
       }
 
       const initialCoverStyle = await album.getAlbumCoverStyle(AlbumUid);
@@ -151,25 +151,34 @@ export default class Page {
       const photoCount = await photoHelper.getPhotoCount("all");
 
       if (photoCount > 1) {
+        let foundCoverCandidate = false;
+        let CoverPhotoUid = null;
+        let expectedCoverStyle = null;
+        for (let photoIdx = 0; photoIdx < photoCount; photoIdx++) {
+          const candidatePhotoUid = await photoHelper.getNthPhotoUid("all", photoIdx);
+          const candidateCoverStyle = await photoHelper.getPhotoPreviewStyle(candidatePhotoUid);
+          if (candidateCoverStyle !== initialCoverStyle) {
+            CoverPhotoUid = candidatePhotoUid;
+            expectedCoverStyle = candidateCoverStyle;
+            foundCoverCandidate = true;
+            break;
+          }
+        }
+        if (!foundCoverCandidate) {
+          await menu.openPage(pageName);
+          continue;
+        }
         foundSuitableAlbum = true;
-
-        // Since we ensured the album has > 1 photo, pick the second photo (index 1)
-        const CoverPhotoUid = await photoHelper.getNthPhotoUid("all", 1);
-        await t.expect(CoverPhotoUid).ok(`Could not get UID for the second photo in album ${AlbumUid}.`);
-        const expectedCoverStyle = await photoHelper.getPhotoPreviewStyle(CoverPhotoUid);
-        await t.expect(expectedCoverStyle).ok(`Could not get preview style for potential cover photo ${CoverPhotoUid}.`);
 
         await photoviewerHelper.openPhotoViewer("uid", CoverPhotoUid);
         await photoviewerHelper.checkPhotoViewerActionAvailability("cover", true);
         await photoviewerHelper.triggerPhotoViewerAction("cover");
-        await t.wait(500); // Wait for action potentially
+        await t.wait(500);
         await photoviewerHelper.triggerPhotoViewerAction("close-button");
 
-        // Navigate back to verify
         await menu.openPage(pageName);
-        await t.wait(500); // Wait for page potentially loading
+        await t.wait(500);
 
-        // Re-find the specific album to check its style
         const newCoverStyle = await album.getAlbumCoverStyle(AlbumUid);
         await t.expect(newCoverStyle !== undefined).ok(`Could not get new cover style for album ${AlbumUid} on ${pageName} page after setting cover.`);
 
@@ -177,18 +186,12 @@ export default class Page {
           .expect(newCoverStyle)
           .notEql(initialCoverStyle, `Album card cover background image should change (Album: ${AlbumUid}, Initial: ${initialCoverStyle}, New: ${newCoverStyle})`)
           .expect(newCoverStyle)
-          .eql(
-            expectedCoverStyle,
-            `Album card cover background image URL should match the thumbnail (Album: ${AlbumUid}, Expected: ${expectedCoverStyle}, Actual: ${newCoverStyle})`
+          .eql(expectedCoverStyle, `Album card cover background image URL should match the thumbnail (Album: ${AlbumUid}, Expected: ${expectedCoverStyle}, Actual: ${newCoverStyle})`
           );
-
-        break; // Exit loop, test successful
-      } else {
-        // Album has <= 1 photo, loop will continue after navigating back via menu.openPage
+        break;
       }
     }
 
-    // Fail the test if no suitable album was found after the loop
     await t
       .expect(foundSuitableAlbum)
       .ok(`Failed to find any album with more than 1 photo within the first ${maxAlbumsToCheck} albums on ${pageName} page.`);
