@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"github.com/tidwall/gjson"
 	"net/http"
 	"testing"
 
@@ -186,6 +187,81 @@ func TestChangePassword(t *testing.T) {
 			r := AuthenticatedRequestWithBody(app, "PUT", "/api/v1/users/uqxetse3cy5eo9z2/password",
 				string(pwStr), sessId)
 			assert.Equal(t, http.StatusForbidden, r.Code)
+		}
+	})
+
+	t.Run("AliceAppPassword", func(t *testing.T) {
+		app, router, conf := NewApiTest()
+		conf.SetAuthMode(config.AuthModePasswd)
+		defer conf.SetAuthMode(config.AuthModePublic)
+		UpdateUserPassword(router)
+
+		oldPassword := "PleaseChange$42"
+		newPassword := "SoftwareDevelopmentIsAYoungProfession1234567890!@#$%^&*()_+[]{}|:<>?/.,"
+
+		frm := form.ChangePassword{
+			OldPassword: oldPassword,
+			NewPassword: newPassword,
+		}
+
+		if jsonFrm, err := json.Marshal(frm); err != nil {
+			log.Fatal(err)
+		} else {
+			r := AuthenticatedRequestWithBody(app, "PUT", "/api/v1/users/urinotv3d6jedvlm/password",
+				string(jsonFrm), "X3B6IU-hfeLG5-HpVxkT-ctCY3M")
+			assert.Equal(t, http.StatusForbidden, r.Code)
+			val := gjson.Get(r.Body.String(), "error")
+			assert.Equal(t, "Permission denied", val.String())
+		}
+	})
+
+	t.Run("AliceAppPasswordWebdav", func(t *testing.T) {
+		app, router, conf := NewApiTest()
+		conf.SetAuthMode(config.AuthModePasswd)
+		defer conf.SetAuthMode(config.AuthModePublic)
+		UpdateUserPassword(router)
+
+		oldPassword := "PleaseChange$42"
+		newPassword := "SoftwareDevelopmentIsAYoungProfession1234567890!@#$%^&*()_+[]{}|:<>?/.,"
+
+		frm := form.ChangePassword{
+			OldPassword: oldPassword,
+			NewPassword: newPassword,
+		}
+
+		if jsonFrm, err := json.Marshal(frm); err != nil {
+			log.Fatal(err)
+		} else {
+			r := AuthenticatedRequestWithBody(app, "PUT", "/api/v1/users/urinotv3d6jedvlm/password",
+				string(jsonFrm), "v2wS72-OkqEzm-MQ63Z2-TEhU0w")
+			assert.Equal(t, http.StatusForbidden, r.Code)
+			val := gjson.Get(r.Body.String(), "error")
+			assert.Equal(t, "Permission denied", val.String())
+		}
+	})
+
+	t.Run("AccessToken", func(t *testing.T) {
+		app, router, conf := NewApiTest()
+		conf.SetAuthMode(config.AuthModePasswd)
+		defer conf.SetAuthMode(config.AuthModePublic)
+		UpdateUserPassword(router)
+
+		oldPassword := "PleaseChange$42"
+		newPassword := "SoftwareDevelopmentIsAYoungProfession1234567890!@#$%^&*()_+[]{}|:<>?/.,"
+
+		frm := form.ChangePassword{
+			OldPassword: oldPassword,
+			NewPassword: newPassword,
+		}
+
+		if jsonFrm, err := json.Marshal(frm); err != nil {
+			log.Fatal(err)
+		} else {
+			r := AuthenticatedRequestWithBody(app, "PUT", "/api/v1/users/urinotv3d6jedvlm/password",
+				string(jsonFrm), "8e154d323800393faf5177ce7392116feebbf674e6c2d39e")
+			assert.Equal(t, http.StatusForbidden, r.Code)
+			val := gjson.Get(r.Body.String(), "error")
+			assert.Equal(t, "Permission denied", val.String())
 		}
 	})
 
