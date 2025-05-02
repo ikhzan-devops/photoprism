@@ -2,13 +2,14 @@ package api
 
 import (
 	"encoding/json"
-	"github.com/photoprism/photoprism/internal/config"
-	"github.com/photoprism/photoprism/internal/entity"
 	"net/http"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/tidwall/gjson"
+
+	"github.com/photoprism/photoprism/internal/config"
+	"github.com/photoprism/photoprism/internal/entity"
 )
 
 func TestCreateAlbumLink(t *testing.T) {
