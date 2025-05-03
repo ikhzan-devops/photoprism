@@ -20,6 +20,50 @@ func TestGetPhoto(t *testing.T) {
 		val := gjson.Get(r.Body.String(), "Iso")
 		assert.Equal(t, "200", val.String())
 	})
+	t.Run("AliceAppPassword", func(t *testing.T) {
+		app, router, conf := NewApiTest()
+		conf.SetAuthMode(config.AuthModePasswd)
+		defer conf.SetAuthMode(config.AuthModePublic)
+
+		GetPhoto(router)
+		r := AuthenticatedRequest(app, "GET", "/api/v1/photos/ps6sg6be2lvl0yh7", "X3B6IU-hfeLG5-HpVxkT-ctCY3M")
+		assert.Equal(t, http.StatusOK, r.Code)
+		val := gjson.Get(r.Body.String(), "Iso")
+		assert.Equal(t, "200", val.String())
+	})
+	t.Run("AliceAppPasswordWebdav", func(t *testing.T) {
+		app, router, conf := NewApiTest()
+		conf.SetAuthMode(config.AuthModePasswd)
+		defer conf.SetAuthMode(config.AuthModePublic)
+
+		GetPhoto(router)
+		r := AuthenticatedRequest(app, "GET", "/api/v1/photos/ps6sg6be2lvl0yh7", "v2wS72-OkqEzm-MQ63Z2-TEhU0w")
+		assert.Equal(t, http.StatusForbidden, r.Code)
+		val := gjson.Get(r.Body.String(), "error")
+		assert.Equal(t, "Permission denied", val.String())
+	})
+	t.Run("AccessToken", func(t *testing.T) {
+		app, router, conf := NewApiTest()
+		conf.SetAuthMode(config.AuthModePasswd)
+		defer conf.SetAuthMode(config.AuthModePublic)
+
+		GetPhoto(router)
+		r := AuthenticatedRequest(app, "GET", "/api/v1/photos/ps6sg6be2lvl0yh7", "8e154d323800393faf5177ce7392116feebbf674e6c2d39e")
+		assert.Equal(t, http.StatusOK, r.Code)
+		val := gjson.Get(r.Body.String(), "Iso")
+		assert.Equal(t, "200", val.String())
+	})
+	t.Run("InvalidAppPassword", func(t *testing.T) {
+		app, router, conf := NewApiTest()
+		conf.SetAuthMode(config.AuthModePasswd)
+		defer conf.SetAuthMode(config.AuthModePublic)
+
+		GetPhoto(router)
+		r := AuthenticatedRequest(app, "GET", "/api/v1/photos/ps6sg6be2lvl0yh7", "69be27ac5ca305b394046a83f6fda18167ca3d3f2dbe7xxx")
+		assert.Equal(t, http.StatusUnauthorized, r.Code)
+		val := gjson.Get(r.Body.String(), "Iso")
+		assert.Equal(t, "", val.String())
+	})
 
 	t.Run("NotFound", func(t *testing.T) {
 		app, router, _ := NewApiTest()

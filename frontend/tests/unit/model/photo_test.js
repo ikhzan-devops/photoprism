@@ -1592,4 +1592,239 @@ describe("model/photo", () => {
     const result3 = photo2.getMarkers(false);
     assert.equal(result3.length, 2);
   });
+
+  it("should determine if photo is a stack", () => {
+    // Not a stack: Type is not image
+    const values1 = {
+      UID: "stack1",
+      Type: "video",
+      Files: [{ FileType: media.FormatJpeg }, { FileType: media.FormatJpeg }],
+    };
+    const photo1 = new Photo(values1);
+    assert.isFalse(photo1.isStack(), "Should not be stack if type is not image");
+
+    // Not a stack: No files
+    const values2 = { UID: "stack2", Type: media.Image, Files: [] };
+    const photo2 = new Photo(values2);
+    assert.isFalse(photo2.isStack(), "Should not be stack if no files");
+
+    // Not a stack: Only one file
+    const values3 = { UID: "stack3", Type: media.Image, Files: [{ FileType: media.FormatJpeg }] };
+    const photo3 = new Photo(values3);
+    assert.isFalse(photo3.isStack(), "Should not be stack if only one file");
+
+    // Not a stack: Less than two JPEGs
+    const values4 = { UID: "stack4", Type: media.Image, Files: [{ FileType: media.FormatJpeg }, { FileType: "raw" }] };
+    const photo4 = new Photo(values4);
+    assert.isFalse(photo4.isStack(), "Should not be stack if less than two JPEGs");
+
+    // Is a stack: Two JPEGs
+    const values5 = {
+      UID: "stack5",
+      Type: media.Image,
+      Files: [{ FileType: media.FormatJpeg }, { FileType: media.FormatJpeg }],
+    };
+    const photo5 = new Photo(values5);
+    assert.isTrue(photo5.isStack(), "Should be stack if two JPEGs");
+
+    // Is a stack: More than two JPEGs
+    const values6 = {
+      UID: "stack6",
+      Type: media.Image,
+      Files: [{ FileType: media.FormatJpeg }, { FileType: "raw" }, { FileType: media.FormatJpeg }],
+    };
+    const photo6 = new Photo(values6);
+    assert.isTrue(photo6.isStack(), "Should be stack if more than two JPEGs");
+  });
+
+  it("should return the original file based on type", () => {
+    // Test for Live type
+    const liveFiles = [
+      { UID: "live_jpg", Name: "live.jpg", FileType: media.FormatJpeg, Root: "/", Primary: true },
+      { UID: "live_mov", Name: "live.mov", FileType: "mov", MediaType: media.Video, Root: "/", Video: true },
+      { UID: "live_sidecar", Name: "live.xmp", FileType: "xmp", Root: "sidecar", Sidecar: true },
+    ];
+    const photoLive = new Photo({ UID: "livePhoto", Type: media.Live, Files: liveFiles });
+    assert.strictEqual(photoLive.originalFile().UID, "live_mov", "Original file for Live should be video");
+
+    // Test for Video type
+    const videoFiles = [
+      { UID: "video_jpg", Name: "video.jpg", FileType: media.FormatJpeg, Root: "/", Primary: true },
+      {
+        UID: "video_mp4",
+        Name: "video.mp4",
+        FileType: media.FormatMp4,
+        MediaType: media.Video,
+        Root: "/",
+        Video: true,
+      },
+    ];
+    const photoVideo = new Photo({ UID: "videoPhoto", Type: media.Video, Files: videoFiles });
+    assert.strictEqual(photoVideo.originalFile().UID, "video_mp4", "Original file for Video should be video");
+
+    // Test for Raw type
+    const rawFiles = [
+      { UID: "raw_jpg", Name: "raw.jpg", FileType: media.FormatJpeg, Root: "/", Primary: true },
+      { UID: "raw_cr2", Name: "raw.cr2", FileType: "cr2", MediaType: media.Raw, Root: "/" },
+    ];
+    const photoRaw = new Photo({ UID: "rawPhoto", Type: media.Raw, Files: rawFiles });
+    assert.strictEqual(photoRaw.originalFile().UID, "raw_cr2", "Original file for Raw should be raw");
+
+    // Test for Animated type
+    const animatedFiles = [
+      {
+        UID: "anim_gif",
+        Name: "anim.gif",
+        FileType: media.FormatGif,
+        MediaType: media.Image,
+        Root: "/",
+        Primary: true,
+      },
+      { UID: "anim_sidecar", Name: "anim.xmp", FileType: "xmp", Root: "sidecar", Sidecar: true },
+    ];
+    const photoAnimated = new Photo({ UID: "animatedPhoto", Type: media.Animated, Files: animatedFiles });
+    assert.strictEqual(photoAnimated.originalFile().UID, "anim_gif", "Original file for Animated should be image");
+
+    // Test for non-specific type
+    const otherFiles = [
+      { UID: "other_jpg", Name: "other.jpg", FileType: media.FormatJpeg, Root: "/", Primary: true },
+      { UID: "other_png", Name: "other.png", FileType: media.FormatPng, Root: "/" },
+    ];
+    const photoOther = new Photo({ UID: "otherPhoto", Type: media.Image, Files: otherFiles });
+    assert.strictEqual(
+      photoOther.originalFile().UID,
+      "other_png",
+      "Original file should be first non-JPEG original if no type match"
+    );
+
+    // Test for JPEG only
+    const jpegFiles = [
+      { UID: "jpeg_1", Name: "jpeg1.jpg", FileType: media.FormatJpeg, Root: "/" },
+      { UID: "jpeg_2", Name: "jpeg2.jpg", FileType: media.FormatJpeg, Root: "/", Primary: true },
+    ];
+    const photoJpeg = new Photo({ UID: "jpegPhoto", Type: media.Image, Files: jpegFiles });
+    assert.strictEqual(photoJpeg.originalFile().UID, "jpeg_2", "Original file should be primary JPEG if only JPEGs");
+
+    // Test for single file
+    const singleFile = [
+      { UID: "single_jpg", Name: "single.jpg", FileType: media.FormatJpeg, Root: "/", Primary: true },
+    ];
+    const photoSingle = new Photo({ UID: "singlePhoto", Type: media.Image, Files: singleFile });
+    assert.strictEqual(
+      photoSingle.originalFile().UID,
+      "single_jpg",
+      "Original file should be the only file if length < 2"
+    );
+
+    // Test for no Files array
+    const noFilesPhoto = new Photo({
+      UID: "noFiles",
+      Type: media.Image,
+      OriginalName: "no_files_original.jpg",
+      Name: "no_files_name.jpg",
+      FileName: "no_files_filename.jpg",
+    });
+    assert.strictEqual(
+      noFilesPhoto.originalFile(),
+      noFilesPhoto,
+      "Original file should be the photo instance if Files is empty"
+    );
+  });
+
+  it("should return the correct original name", () => {
+    // Test with original name in file
+    const files1 = [
+      { UID: "f1_orig", Name: "file1.raw", OriginalName: "original_raw_name.raw", Root: "/", MediaType: media.Raw },
+      {
+        UID: "f1_jpg",
+        Name: "file1.jpg",
+        OriginalName: "original_jpg_name.jpg",
+        Root: "/",
+        FileType: media.FormatJpeg,
+        Primary: true,
+      },
+    ];
+    const photo1 = new Photo({ UID: "origName1", Type: media.Raw, Files: files1 });
+    assert.strictEqual(photo1.getOriginalName(), "original_raw_name.raw", "Should use OriginalName from original file");
+
+    // Test with file name only
+    const files2 = [
+      { UID: "f2_orig", Name: "file2_actual.raw", Root: "/", MediaType: media.Raw },
+      { UID: "f2_jpg", Name: "file2_actual.jpg", Root: "/", FileType: media.FormatJpeg, Primary: true },
+    ];
+    const photo2 = new Photo({ UID: "origName2", Type: media.Raw, Files: files2 });
+    assert.strictEqual(
+      photo2.getOriginalName(),
+      "file2_actual.raw",
+      "Should use Name from original file if OriginalName is missing"
+    );
+
+    // Test with photo original name
+    const photo3 = new Photo({
+      UID: "origName3",
+      Type: media.Image,
+      OriginalName: "photo_original.jpg",
+      Name: "photo_name.jpg",
+      FileName: "photo_filename.jpg",
+    });
+    assert.strictEqual(photo3.getOriginalName(), "photo_original.jpg", "Should use photo.OriginalName if no files");
+
+    // Test with photo file name
+    const photo4 = new Photo({
+      UID: "origName4",
+      Type: media.Image,
+      Name: "photo_name.jpg",
+      FileName: "photo_filename.jpg",
+    });
+    assert.strictEqual(
+      photo4.getOriginalName(),
+      "photo_name.jpg",
+      "Should use photo.FileName if photo.OriginalName is missing"
+    );
+
+    // Test with photo name only
+    const photo5 = new Photo({ UID: "origName5", Type: media.Image, Name: "photo_name.jpg" });
+    assert.strictEqual(
+      photo5.getOriginalName(),
+      "photo_name.jpg",
+      "Should use photo.Name if FileName and OriginalName are missing"
+    );
+
+    // Test with no names
+    const photo6 = new Photo({ UID: "origName6", Type: media.Image });
+    assert.strictEqual(photo6.getOriginalName(), "Unknown", "Should return Unknown if no name is available");
+
+    // Test with missing names in original file
+    const files7 = [
+      { UID: "f7_orig", Root: "/", MediaType: media.Raw },
+      { UID: "f7_jpg", Name: "file7.jpg", Root: "/", FileType: media.FormatJpeg, Primary: true },
+    ];
+    const photo7 = new Photo({
+      UID: "origName7",
+      Type: media.Raw,
+      Files: files7,
+      OriginalName: "photo7_original.jpg",
+      FileName: "photo7_filename.jpg",
+      Name: "photo7_name.jpg",
+    });
+    assert.strictEqual(
+      photo7.getOriginalName(),
+      "photo7_original.jpg",
+      "Should fallback to photo.OriginalName if original file lacks names"
+    );
+
+    // Test with path in name
+    const files8 = [
+      {
+        UID: "f8_orig",
+        Name: "some/path/file8.raw",
+        OriginalName: "another/path/original_raw_name8.raw",
+        Root: "/",
+        MediaType: media.Raw,
+      },
+      { UID: "f8_jpg", Name: "file8.jpg", Root: "/", FileType: media.FormatJpeg, Primary: true },
+    ];
+    const photo8 = new Photo({ UID: "origName8", Type: media.Raw, Files: files8 });
+    assert.strictEqual(photo8.getOriginalName(), "original_raw_name8.raw", "Should return base name from OriginalName");
+  });
 });

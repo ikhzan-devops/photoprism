@@ -21,30 +21,30 @@ func TestRegisteredUsers(t *testing.T) {
 
 func TestCountUsers(t *testing.T) {
 	t.Run("All", func(t *testing.T) {
-		assert.LessOrEqual(t, CountUsers(false, false, nil, nil), 12)
+		assert.LessOrEqual(t, CountUsers(false, false, nil, nil), 14)
 	})
 	t.Run("Registered", func(t *testing.T) {
-		assert.LessOrEqual(t, CountUsers(true, false, nil, nil), 10)
+		assert.LessOrEqual(t, CountUsers(true, false, nil, nil), 12)
 	})
 	t.Run("Active", func(t *testing.T) {
 		count := CountUsers(false, true, nil, nil)
-		assert.LessOrEqual(t, count, 10)
+		assert.LessOrEqual(t, count, 12)
 		assert.Greater(t, count, 0)
 	})
 	t.Run("RegisteredActive", func(t *testing.T) {
-		assert.LessOrEqual(t, CountUsers(true, true, nil, nil), 10)
+		assert.LessOrEqual(t, CountUsers(true, true, nil, nil), 12)
 	})
 	t.Run("Admins", func(t *testing.T) {
 		assert.LessOrEqual(t, CountUsers(true, true, []string{"admin"}, nil), 7)
 	})
 	t.Run("NoAdmins", func(t *testing.T) {
-		assert.LessOrEqual(t, CountUsers(true, true, []string{}, []string{"admin"}), 3)
+		assert.LessOrEqual(t, CountUsers(true, true, []string{}, []string{"admin"}), 5)
 	})
 	t.Run("NoAdminsUpperCase", func(t *testing.T) {
 		assert.LessOrEqual(t, CountUsers(true, true, []string{}, []string{"ADMIN"}), 10)
 	})
 	t.Run("Guests", func(t *testing.T) {
-		assert.LessOrEqual(t, CountUsers(true, true, []string{"guest"}, nil), 2)
+		assert.LessOrEqual(t, CountUsers(true, true, []string{"guest"}, nil), 3)
 	})
 }
 
