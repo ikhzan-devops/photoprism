@@ -49,6 +49,7 @@ func TestMain(m *testing.M) {
 	defer testextras.UnlockDBMutex(dbc.Db())
 
 	// Init test config.
+	config.Develop = true
 	c := config.TestConfig()
 	get.SetConfig(c)
 	defer c.CloseDb()
