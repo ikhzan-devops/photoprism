@@ -17,7 +17,7 @@ func TestInit(t *testing.T) {
 
 		stmt.Model(m).Count(&count)
 
-		assert.Equal(t, int64(13), count)
+		assert.Equal(t, int64(14), count)
 	})
 
 	t.Run("PlaceCounts", func(t *testing.T) {
@@ -247,7 +247,7 @@ func TestInit(t *testing.T) {
 
 		stmt.Model(m).Count(&count)
 
-		assert.Equal(t, int64(16), count)
+		assert.Equal(t, int64(21), count)
 	})
 
 	t.Run("ClientCounts", func(t *testing.T) {
@@ -287,7 +287,7 @@ func TestInit(t *testing.T) {
 
 		stmt.Model(m).Count(&count)
 
-		assert.Equal(t, int64(10), count)
+		assert.Equal(t, int64(11), count)
 	})
 
 	t.Run("UserShareCounts", func(t *testing.T) {
