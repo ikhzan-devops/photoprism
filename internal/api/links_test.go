@@ -8,11 +8,12 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/tidwall/gjson"
 
+	"github.com/photoprism/photoprism/internal/config"
 	"github.com/photoprism/photoprism/internal/entity"
 )
 
 func TestCreateAlbumLink(t *testing.T) {
-	t.Run("create share link", func(t *testing.T) {
+	t.Run("Success", func(t *testing.T) {
 		app, router, _ := NewApiTest()
 
 		var link entity.Link
@@ -34,7 +35,155 @@ func TestCreateAlbumLink(t *testing.T) {
 		assert.NotEmpty(t, link.LinkToken)
 		assert.Equal(t, 0, link.LinkExpires)
 	})
-	t.Run("album does not exist", func(t *testing.T) {
+	t.Run("UserPasswordAdmin", func(t *testing.T) {
+		app, router, conf := NewApiTest()
+		conf.SetAuthMode(config.AuthModePasswd)
+		defer conf.SetAuthMode(config.AuthModePublic)
+		UpdateUser(router)
+		sessId := AuthenticateUser(app, router, "alice", "Alice123!")
+
+		var link entity.Link
+
+		CreateAlbumLink(router)
+
+		resp := AuthenticatedRequestWithBody(app, "POST", "/api/v1/albums/as6sg6bxpogaaba7/links", `{"Password": "foobar", "Expires": 0, "CanEdit": true}`, sessId)
+
+		if resp.Code != http.StatusOK {
+			t.Fatal(resp.Body.String())
+		}
+
+		if err := json.Unmarshal(resp.Body.Bytes(), &link); err != nil {
+			t.Fatal(err)
+		}
+
+		assert.NotEmpty(t, link.LinkUID)
+		assert.NotEmpty(t, link.ShareUID)
+		assert.NotEmpty(t, link.LinkToken)
+		assert.Equal(t, 0, link.LinkExpires)
+	})
+	t.Run("UserPasswordGuest", func(t *testing.T) {
+		app, router, conf := NewApiTest()
+		conf.SetAuthMode(config.AuthModePasswd)
+		defer conf.SetAuthMode(config.AuthModePublic)
+		UpdateUser(router)
+		sessId := AuthenticateUser(app, router, "gandalf", "Gandalf123!")
+
+		CreateAlbumLink(router)
+
+		resp := AuthenticatedRequestWithBody(app, "POST", "/api/v1/albums/as6sg6bxpogaaba7/links", `{"Password": "foobar", "Expires": 0, "CanEdit": true}`, sessId)
+
+		if resp.Code != http.StatusForbidden {
+			t.Fatal(resp.Body.String())
+		}
+
+		val := gjson.Get(resp.Body.String(), "error")
+		assert.Equal(t, "Permission denied", val.String())
+	})
+	t.Run("AliceAppPassword", func(t *testing.T) {
+		app, router, conf := NewApiTest()
+		conf.SetAuthMode(config.AuthModePasswd)
+		defer conf.SetAuthMode(config.AuthModePublic)
+
+		var link entity.Link
+
+		CreateAlbumLink(router)
+
+		resp := AuthenticatedRequestWithBody(app, "POST", "/api/v1/albums/as6sg6bxpogaaba7/links", `{"Password": "foobar", "Expires": 0, "CanEdit": true}`, "X3B6IU-hfeLG5-HpVxkT-ctCY3M")
+
+		if resp.Code != http.StatusOK {
+			t.Fatal(resp.Body.String())
+		}
+
+		if err := json.Unmarshal(resp.Body.Bytes(), &link); err != nil {
+			t.Fatal(err)
+		}
+
+		assert.NotEmpty(t, link.LinkUID)
+		assert.NotEmpty(t, link.ShareUID)
+		assert.NotEmpty(t, link.LinkToken)
+		assert.Equal(t, 0, link.LinkExpires)
+	})
+	t.Run("UlfAppPassword", func(t *testing.T) {
+		app, router, conf := NewApiTest()
+		conf.SetAuthMode(config.AuthModePasswd)
+		defer conf.SetAuthMode(config.AuthModePublic)
+
+		var link entity.Link
+
+		CreateAlbumLink(router)
+
+		resp := AuthenticatedRequestWithBody(app, "POST", "/api/v1/albums/as6sg6bxpogaaba7/links", `{"Password": "foobar", "Expires": 0, "CanEdit": true}`, "zlbkWC-vL4ORw-MvpDD7-mHrPW6")
+
+		if resp.Code != http.StatusOK {
+			t.Fatal(resp.Body.String())
+		}
+
+		if err := json.Unmarshal(resp.Body.Bytes(), &link); err != nil {
+			t.Fatal(err)
+		}
+
+		assert.NotEmpty(t, link.LinkUID)
+		assert.NotEmpty(t, link.ShareUID)
+		assert.NotEmpty(t, link.LinkToken)
+		assert.Equal(t, 0, link.LinkExpires)
+	})
+	t.Run("AliceAppPasswordWebdav", func(t *testing.T) {
+		app, router, conf := NewApiTest()
+		conf.SetAuthMode(config.AuthModePasswd)
+		defer conf.SetAuthMode(config.AuthModePublic)
+
+		CreateAlbumLink(router)
+
+		resp := AuthenticatedRequestWithBody(app, "POST", "/api/v1/albums/as6sg6bxpogaaba7/links", `{"Password": "foobar", "Expires": 0, "CanEdit": true}`, "v2wS72-OkqEzm-MQ63Z2-TEhU0w")
+
+		if resp.Code != http.StatusForbidden {
+			t.Fatal(resp.Body.String())
+		}
+
+		val := gjson.Get(resp.Body.String(), "error")
+		assert.Equal(t, "Permission denied", val.String())
+	})
+	t.Run("GandalfAppPasswordFullAccess", func(t *testing.T) {
+		app, router, conf := NewApiTest()
+		conf.SetAuthMode(config.AuthModePasswd)
+		defer conf.SetAuthMode(config.AuthModePublic)
+
+		CreateAlbumLink(router)
+
+		resp := AuthenticatedRequestWithBody(app, "POST", "/api/v1/albums/as6sg6bxpogaaba7/links", `{"Password": "foobar", "Expires": 0, "CanEdit": true}`, "5hKyGD-FZUP9p-z8dYit-SYhkGI")
+
+		if resp.Code != http.StatusForbidden {
+			t.Fatal(resp.Body.String())
+		}
+
+		val := gjson.Get(resp.Body.String(), "error")
+		assert.Equal(t, "Permission denied", val.String())
+	})
+	t.Run("AccessToken", func(t *testing.T) {
+		app, router, conf := NewApiTest()
+		conf.SetAuthMode(config.AuthModePasswd)
+		defer conf.SetAuthMode(config.AuthModePublic)
+
+		var link entity.Link
+
+		CreateAlbumLink(router)
+
+		resp := AuthenticatedRequestWithBody(app, "POST", "/api/v1/albums/as6sg6bxpogaaba7/links", `{"Password": "foobar", "Expires": 0, "CanEdit": true}`, "8e154d323800393faf5177ce7392116feebbf674e6c2d39e")
+
+		if resp.Code != http.StatusOK {
+			t.Fatal(resp.Body.String())
+		}
+
+		if err := json.Unmarshal(resp.Body.Bytes(), &link); err != nil {
+			t.Fatal(err)
+		}
+
+		assert.NotEmpty(t, link.LinkUID)
+		assert.NotEmpty(t, link.ShareUID)
+		assert.NotEmpty(t, link.LinkToken)
+		assert.Equal(t, 0, link.LinkExpires)
+	})
+	t.Run("AlbumDoesNotExist", func(t *testing.T) {
 		app, router, _ := NewApiTest()
 		CreateAlbumLink(router)
 		resp := PerformRequestWithBody(app, "POST", "/api/v1/albums/xxx/links", `{"Password": "foobar", "Expires": 0, "CanEdit": true}`)
