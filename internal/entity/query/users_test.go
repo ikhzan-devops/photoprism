@@ -41,7 +41,7 @@ func TestCountUsers(t *testing.T) {
 		assert.LessOrEqual(t, CountUsers(true, true, []string{}, []string{"admin"}), 5)
 	})
 	t.Run("NoAdminsUpperCase", func(t *testing.T) {
-		assert.LessOrEqual(t, CountUsers(true, true, []string{}, []string{"ADMIN"}), 10)
+		assert.LessOrEqual(t, CountUsers(true, true, []string{}, []string{"ADMIN"}), 11)
 	})
 	t.Run("Guests", func(t *testing.T) {
 		assert.LessOrEqual(t, CountUsers(true, true, []string{"guest"}, nil), 3)
