@@ -27,7 +27,7 @@ func TestPhotos_Photos(t *testing.T) {
 type By func(p1, p2 *Photo) bool
 
 // Sort is a method on the function type, By, that sorts the argument slice according to the function.
-func (by By) Sort(photos []Photo) {
+func (by By) Sort(photos []*Photo) {
 	ps := &photoSorter{
 		photos: photos,
 		by:     by, // The Sort method's receiver is the function (closure) that defines the sort order.
@@ -37,7 +37,7 @@ func (by By) Sort(photos []Photo) {
 
 // photoSorter joins a By function and a slice of Photos to be sorted.
 type photoSorter struct {
-	photos []Photo
+	photos []*Photo
 	by     func(p1, p2 *Photo) bool // Closure used in the Less method.
 }
 
@@ -53,7 +53,7 @@ func (s *photoSorter) Swap(i, j int) {
 
 // Less is part of sort.Interface. It is implemented by calling the "by" closure in the sorter.
 func (s *photoSorter) Less(i, j int) bool {
-	return s.by(&s.photos[i], &s.photos[j])
+	return s.by(s.photos[i], s.photos[j])
 }
 
 func TestPhotos_UnscopedSearch(t *testing.T) {
@@ -68,7 +68,7 @@ func TestPhotos_UnscopedSearch(t *testing.T) {
 		photo2 := PhotoFixtures.Get("Photo07")
 		photo3 := PhotoFixtures.Get("Photo18")
 
-		expectedPhotos := Photos{photo2, photo1, photo3}
+		expectedPhotos := Photos{&photo2, &photo1, &photo3}
 
 		r := photos.Photos()
 
@@ -140,7 +140,7 @@ func TestPhotos_ScopedSearch(t *testing.T) {
 		photo1 := PhotoFixtures.Get("Photo08")
 		photo2 := PhotoFixtures.Get("Photo07")
 
-		expectedPhotos := Photos{photo2, photo1}
+		expectedPhotos := Photos{&photo2, &photo1}
 
 		r := photos.Photos()
 
