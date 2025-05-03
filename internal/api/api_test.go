@@ -39,6 +39,7 @@ func TestMain(m *testing.M) {
 	event.AuditLog = log
 
 	// Init test config.
+	config.Develop = true
 	c := config.TestConfig()
 	get.SetConfig(c)
 	defer c.CloseDb()
