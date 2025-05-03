@@ -32,7 +32,7 @@ ENV PHOTOPRISM_ARCH=$TARGETARCH \
     TMPDIR="/tmp" \
     TF_VERSION=1.15.2 \
     TF_CPP_MIN_LOG_LEVEL=1 \
-    MALLOC_ARENA_MAX=4 \
+    MALLOC_ARENA_MAX=2 \
     GOPATH="/go" \
     GOBIN="/usr/local/bin" \
     GO111MODULE="on" \
@@ -64,6 +64,7 @@ RUN echo 'APT::Acquire::Retries "3";' > /etc/apt/apt.conf.d/80retries && \
         iputils-ping dnsutils \
     && \
     /scripts/install-nodejs.sh && \
+    /scripts/install-yt-dlp.sh && \
     /scripts/install-libheif.sh && \
     /scripts/install-tensorflow.sh && \
     echo "ALL ALL=(ALL) NOPASSWD:SETENV: ALL" >> /etc/sudoers.d/all && \

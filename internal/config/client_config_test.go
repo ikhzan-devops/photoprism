@@ -553,7 +553,7 @@ func TestConfig_ClientSessionConfig(t *testing.T) {
 		assert.True(t, f.Library)
 		assert.True(t, f.Logs)
 		assert.True(t, f.Review)
-		assert.False(t, f.Share)
+		assert.True(t, f.Share)
 	})
 	t.Run("Public", func(t *testing.T) {
 		c.SetAuthMode(AuthModePublic)

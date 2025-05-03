@@ -32,7 +32,7 @@ ENV PHOTOPRISM_ARCH=$TARGETARCH \
     TMPDIR="/tmp" \
     TF_CPP_MIN_LOG_LEVEL=1 \
     TF_ENABLE_ONEDNN_OPTS=1 \
-    MALLOC_ARENA_MAX=4 \
+    MALLOC_ARENA_MAX=2 \
     GOPATH="/go" \
     GOBIN="/usr/local/bin" \
     GO111MODULE="on" \
@@ -60,7 +60,7 @@ RUN echo 'APT::Acquire::Retries "3";' > /etc/apt/apt.conf.d/80retries && \
         ffmpeg imagemagick libvips-dev rawtherapee libjxl-dev libjxl-tools libffmpeg-nvenc-dev librav1e-dev \
         libswscale-dev libavfilter-extra libavformat-extra libavcodec-extra x264 x265 libde265-dev libaom-dev \
         libvpx-dev libwebm-dev libjpeg-dev libmatroska-dev libdvdread-dev libdav1d-dev libsharpyuv0 \
-        iputils-ping dnsutils \
+        va-driver-all libva2 iputils-ping dnsutils \
     && \
     apt-get -qq install \
         software-properties-common pkg-config apt-utils \
@@ -75,6 +75,7 @@ RUN echo 'APT::Acquire::Retries "3";' > /etc/apt/apt.conf.d/80retries && \
     /scripts/install-mariadb.sh mariadb-client && \
     /scripts/install-tensorflow.sh && \
     /scripts/install-darktable.sh && \
+    /scripts/install-yt-dlp.sh && \
     /scripts/install-libheif.sh && \
     /scripts/install-chrome.sh && \
     echo "ALL ALL=(ALL) NOPASSWD:SETENV: ALL" >> /etc/sudoers.d/all && \
@@ -99,6 +100,7 @@ RUN echo 'APT::Acquire::Retries "3";' > /etc/apt/apt.conf.d/80retries && \
         /photoprism/storage/config \
         /photoprism/storage/cache && \
     /scripts/install-s6.sh && \
+    apt modernize-sources && \
     /scripts/cleanup.sh
 
 # Download machine learning models and test data.

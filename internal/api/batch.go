@@ -22,9 +22,9 @@ import (
 	"github.com/photoprism/photoprism/pkg/i18n"
 )
 
-// BatchPhotosArchive moves multiple photos to the archive.
+// BatchPhotosArchive moves multiple pictures to the archive.
 //
-//	@Summary	moves multiple photos to the archive
+//	@Summary	moves multiple pictures to the archive
 //	@Id			BatchPhotosArchive
 //	@Tags		Photos
 //	@Accept		json
@@ -69,7 +69,7 @@ func BatchPhotosArchive(router *gin.RouterGroup) {
 				if archiveErr := p.Archive(); archiveErr != nil {
 					log.Errorf("archive: %s", archiveErr)
 				} else {
-					SaveSidecarYaml(&p)
+					SaveSidecarYaml(p)
 				}
 			}
 		} else if err := entity.Db().Where("photo_uid IN (?)", frm.Photos).Delete(&entity.Photo{}).Error; err != nil {
@@ -94,9 +94,9 @@ func BatchPhotosArchive(router *gin.RouterGroup) {
 	})
 }
 
-// BatchPhotosRestore restores multiple photos from the archive.
+// BatchPhotosRestore restores multiple pictures from the archive.
 //
-//	@Summary	restores multiple photos from the archive
+//	@Summary	restores multiple pictures from the archive
 //	@Id			BatchPhotosRestore
 //	@Tags		Photos
 //	@Accept		json
@@ -140,7 +140,7 @@ func BatchPhotosRestore(router *gin.RouterGroup) {
 				if err = p.Restore(); err != nil {
 					log.Errorf("restore: %s", err)
 				} else {
-					SaveSidecarYaml(&p)
+					SaveSidecarYaml(p)
 				}
 			}
 		} else if err := entity.Db().Unscoped().Model(&entity.Photo{}).Where("photo_uid IN (?)", frm.Photos).
@@ -164,9 +164,9 @@ func BatchPhotosRestore(router *gin.RouterGroup) {
 	})
 }
 
-// BatchPhotosApprove approves multiple photos that are currently under review.
+// BatchPhotosApprove approves multiple pictures that are currently under review.
 //
-//	@Summary	approves multiple photos that are currently under review
+//	@Summary	approves multiple pictures that are currently under review
 //	@Id			BatchPhotosApprove
 //	@Tags		Photos
 //	@Accept		json
@@ -212,7 +212,7 @@ func BatchPhotosApprove(router *gin.RouterGroup) {
 				log.Errorf("approve: %s", err)
 			} else {
 				approved = append(approved, p)
-				SaveSidecarYaml(&p)
+				SaveSidecarYaml(p)
 			}
 		}
 
@@ -298,9 +298,9 @@ func BatchAlbumsDelete(router *gin.RouterGroup) {
 	})
 }
 
-// BatchPhotosPrivate toggles private state of multiple photos.
+// BatchPhotosPrivate toggles private state of multiple pictures.
 //
-//	@Summary	toggles private state of multiple photos
+//	@Summary	toggles private state of multiple pictures
 //	@Id			BatchPhotosPrivate
 //	@Tags		Photos
 //	@Accept		json
@@ -344,7 +344,7 @@ func BatchPhotosPrivate(router *gin.RouterGroup) {
 		// Fetch selection from index.
 		if photos, err := query.SelectedPhotos(frm); err == nil {
 			for _, p := range photos {
-				SaveSidecarYaml(&p)
+				SaveSidecarYaml(p)
 			}
 
 			event.EntitiesUpdated("photos", photos)
@@ -411,7 +411,7 @@ func BatchLabelsDelete(router *gin.RouterGroup) {
 	})
 }
 
-// BatchPhotosDelete permanently removes multiple photos from the archive.
+// BatchPhotosDelete permanently removes multiple pictures from the archive.
 //
 //	@Summary	permanently removes multiple or all photos from the archive
 //	@Id			BatchPhotosDelete
@@ -487,7 +487,7 @@ func BatchPhotosDelete(router *gin.RouterGroup) {
 			event.AuditWarn([]string{ClientIP(c), s.UserName, "delete", path.Join(p.PhotoPath, p.PhotoName+"*")})
 
 			// Remove all related files from storage.
-			n, deleteErr := photoprism.DeletePhoto(&p, true, true)
+			n, deleteErr := photoprism.DeletePhoto(p, true, true)
 
 			numFiles += n
 

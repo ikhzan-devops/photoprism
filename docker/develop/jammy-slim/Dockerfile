@@ -29,9 +29,9 @@ ENV PHOTOPRISM_ARCH=$TARGETARCH \
     LD_LIBRARY_PATH="/usr/local/lib:/usr/lib" \
     TMPDIR="/tmp" \
     DEBIAN_FRONTEND="noninteractive" \
-    TF_CPP_MIN_LOG_LEVEL=2 \
+    TF_CPP_MIN_LOG_LEVEL=4 \
     TF_ENABLE_ONEDNN_OPTS=1 \
-    MALLOC_ARENA_MAX=4 \
+    MALLOC_ARENA_MAX=2 \
     PROG="photoprism" \
     S6_KEEP_ENV=0 \
     S6_VERBOSITY=0 \
@@ -53,10 +53,11 @@ RUN echo 'APT::Acquire::Retries "3";' > /etc/apt/apt.conf.d/80retries && \
         xz-utils exiftool sqlite3 postgresql-client tzdata gpg make zip unzip wget curl rsync \
         imagemagick libvips-dev rawtherapee ffmpeg libavcodec-extra x264 x265 libde265-dev \
         libaom-dev libvpx-dev libwebm-dev libjpeg-dev libmatroska-dev libdvdread-dev libebml5 libgav1-bin libatomic1 \
-        iputils-ping dnsutils \
+        va-driver-all libva2 iputils-ping dnsutils \
     && \
     /scripts/install-mariadb.sh mariadb-client && \
     /scripts/install-darktable.sh && \
+    /scripts/install-yt-dlp.sh && \
     /scripts/install-libheif.sh && \
     echo 'alias ll="ls -alh"' >> /etc/skel/.bashrc && \
     echo 'export PS1="\u@$DOCKER_TAG:\w\$ "' >> /etc/skel/.bashrc && \

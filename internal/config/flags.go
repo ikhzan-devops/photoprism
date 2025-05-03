@@ -794,36 +794,51 @@ var Flags = CliFlags{
 		Flag: &cli.StringFlag{
 			Name:    "ffmpeg-encoder",
 			Aliases: []string{"vc"},
-			Usage:   "FFmpeg AVC encoder `NAME`",
+			Usage:   "FFmpeg AVC video encoder `NAME`",
 			Value:   "libx264",
 			EnvVars: EnvVars("FFMPEG_ENCODER"),
 		}}, {
 		Flag: &cli.IntFlag{
 			Name:    "ffmpeg-size",
-			Aliases: []string{"vs"},
-			Usage:   "maximum video size in `PIXELS` (720-7680)",
+			Usage:   "encoding resolution limit in `PIXELS` (720-7680)",
 			Value:   thumb.Sizes[thumb.Fit4096].Width,
 			EnvVars: EnvVars("FFMPEG_SIZE"),
 		}}, {
 		Flag: &cli.IntFlag{
+			Name:    "ffmpeg-quality",
+			Usage:   fmt.Sprintf("encoding `QUALITY` (%d-%d, where %d is almost lossless)", encode.WorstQuality, encode.BestQuality, encode.BestQuality),
+			Value:   encode.DefaultQuality,
+			EnvVars: EnvVars("FFMPEG_QUALITY"),
+		}}, {
+		Flag: &cli.IntFlag{
 			Name:    "ffmpeg-bitrate",
-			Aliases: []string{"vb"},
-			Usage:   "maximum video `BITRATE` in Mbps",
-			Value:   60,
+			Usage:   fmt.Sprintf("bitrate `LIMIT` in Mbps for forced transcoding of non-AVC videos (%d-%d; %d to disable)", encode.MinBitrateLimit, encode.MaxBitrateLimit, encode.NoBitrateLimit),
+			Value:   encode.DefaultBitrateLimit,
 			EnvVars: EnvVars("FFMPEG_BITRATE"),
 		}}, {
 		Flag: &cli.StringFlag{
+			Name:    "ffmpeg-preset",
+			Usage:   "FFmpeg compression `PRESET` when using an encoder that supports it, e.g. fast, medium, or slow",
+			Value:   encode.PresetFast,
+			EnvVars: EnvVars("FFMPEG_PRESET"),
+		}}, {
+		Flag: &cli.StringFlag{
+			Name:    "ffmpeg-device",
+			Usage:   "FFmpeg device `PATH` when using a hardware encoder that supports it as parameter",
+			EnvVars: EnvVars("FFMPEG_DEVICE"),
+		}}, {
+		Flag: &cli.StringFlag{
 			Name:    "ffmpeg-map-video",
-			Usage:   "video `STREAMS` that should be transcoded",
-			Value:   encode.MapVideo,
+			Usage:   "transcoding video stream `MAP`",
+			Value:   encode.DefaultMapVideo,
 			EnvVars: EnvVars("FFMPEG_MAP_VIDEO"),
-		}, DocDefault: fmt.Sprintf("`%s`", encode.MapVideo)}, {
+		}, DocDefault: fmt.Sprintf("`%s`", encode.DefaultMapVideo)}, {
 		Flag: &cli.StringFlag{
 			Name:    "ffmpeg-map-audio",
-			Usage:   "audio `STREAMS` that should be transcoded",
-			Value:   encode.MapAudio,
+			Usage:   "transcoding audio stream `MAP`",
+			Value:   encode.DefaultMapAudio,
 			EnvVars: EnvVars("FFMPEG_MAP_AUDIO"),
-		}, DocDefault: fmt.Sprintf("`%s`", encode.MapAudio)}, {
+		}, DocDefault: fmt.Sprintf("`%s`", encode.DefaultMapAudio)}, {
 		Flag: &cli.StringFlag{
 			Name:    "exiftool-bin",
 			Usage:   "ExifTool `COMMAND` for extracting metadata",

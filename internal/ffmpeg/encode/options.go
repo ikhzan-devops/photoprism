@@ -7,19 +7,21 @@ import (
 
 // Options represents FFmpeg encoding options.
 type Options struct {
-	Bin          string        // FFmpeg binary filename, e.g. /usr/bin/ffmpeg.
-	Encoder      Encoder       // Supported FFmpeg output Encoder.
-	SizeLimit    int           // Maximum width and height of the output video file in pixels.
-	BitrateLimit string        // See https://trac.ffmpeg.org/wiki/Limiting%20the%20output%20bitrate.
-	MapVideo     string        // See https://trac.ffmpeg.org/wiki/Map#Videostreamsonly.
-	MapAudio     string        // See https://trac.ffmpeg.org/wiki/Map#Audiostreamsonly.
-	TimeOffset   string        // See https://trac.ffmpeg.org/wiki/Seeking and https://ffmpeg.org/ffmpeg-utils.html#time-duration-syntax.
-	Duration     time.Duration // See https://ffmpeg.org/ffmpeg.html#Main-options.
-	MovFlags     string
+	Bin        string        // FFmpeg binary filename, e.g. /usr/bin/ffmpeg
+	Encoder    Encoder       // Supported FFmpeg output Encoder
+	SizeLimit  int           // Maximum width and height of the output video file in pixels.
+	Quality    int           // See https://ffmpeg.org/ffmpeg-codecs.html
+	Preset     string        // See https://trac.ffmpeg.org/wiki/Encode/H.264#Preset
+	Device     string        // See https://trac.ffmpeg.org/wiki/Limiting%20the%20output%20bitrate
+	MapVideo   string        // See https://trac.ffmpeg.org/wiki/Map#Videostreamsonly
+	MapAudio   string        // See https://trac.ffmpeg.org/wiki/Map#Audiostreamsonly
+	TimeOffset string        // See https://trac.ffmpeg.org/wiki/Seeking and https://ffmpeg.org/ffmpeg-utils.html#time-duration-syntax
+	Duration   time.Duration // See https://ffmpeg.org/ffmpeg.html#Main-options
+	MovFlags   string
 }
 
 // NewVideoOptions creates and returns new FFmpeg video transcoding options.
-func NewVideoOptions(ffmpegBin string, encoder Encoder, sizeLimit int, bitrateLimit, mapVideo, mapAudio string) Options {
+func NewVideoOptions(ffmpegBin string, encoder Encoder, sizeLimit, quality int, preset, device, mapVideo, mapAudio string) Options {
 	if ffmpegBin == "" {
 		ffmpegBin = FFmpegBin
 	}
@@ -34,26 +36,36 @@ func NewVideoOptions(ffmpegBin string, encoder Encoder, sizeLimit int, bitrateLi
 		sizeLimit = 15360
 	}
 
-	if bitrateLimit == "" {
-		bitrateLimit = "60M"
+	if quality <= 0 {
+		quality = DefaultQuality
+	} else if quality < WorstQuality {
+		quality = WorstQuality
+	} else if quality >= BestQuality {
+		quality = BestQuality
+	}
+
+	if preset == "" {
+		preset = PresetFast
 	}
 
 	if mapVideo == "" {
-		mapVideo = MapVideo
+		mapVideo = DefaultMapVideo
 	}
 
 	if mapAudio == "" {
-		mapAudio = MapAudio
+		mapAudio = DefaultMapAudio
 	}
 
 	return Options{
-		Bin:          ffmpegBin,
-		Encoder:      encoder,
-		SizeLimit:    sizeLimit,
-		BitrateLimit: bitrateLimit,
-		MapVideo:     mapVideo,
-		MapAudio:     mapAudio,
-		MovFlags:     MovFlags,
+		Bin:       ffmpegBin,
+		Encoder:   encoder,
+		SizeLimit: sizeLimit,
+		Quality:   quality,
+		Preset:    preset,
+		Device:    device,
+		MapVideo:  mapVideo,
+		MapAudio:  mapAudio,
+		MovFlags:  MovFlags,
 	}
 }
 
@@ -75,4 +87,29 @@ func (o *Options) VideoFilter(format PixelFormat) string {
 	} else {
 		return fmt.Sprintf("scale='if(gte(iw,ih), min(%d, iw), -2):if(gte(iw,ih), -2, min(%d, ih))',format=%s", o.SizeLimit, o.SizeLimit, format)
 	}
+}
+
+// QvQuality  returns the video encoding quality as "-q:v" parameter string.
+func (o *Options) QvQuality() string {
+	return QvQuality(o.Quality)
+}
+
+// GlobalQuality returns the video encoding quality as "-global_quality" parameter string.
+func (o *Options) GlobalQuality() string {
+	return GlobalQuality(o.Quality)
+}
+
+// CrfQuality returns the video encoding quality as "-crf" parameter string.
+func (o *Options) CrfQuality() string {
+	return CrfQuality(o.Quality)
+}
+
+// QpQuality returns the video encoding quality as "-qp" parameter string.
+func (o *Options) QpQuality() string {
+	return QpQuality(o.Quality)
+}
+
+// CqQuality returns the video encoding quality as "-cq" parameter string.
+func (o *Options) CqQuality() string {
+	return CqQuality(o.Quality)
 }

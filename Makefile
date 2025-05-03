@@ -7,19 +7,19 @@ export GO111MODULE=on
 
 -include .semver
 -include .env
-export SEMVER_MAJOR
-export SEMVER_MINOR
-export SEMVER_PATCH
 
 # Binary file names.
 BINARY_NAME=photoprism
 GOIMPORTS=goimports
 
-# Build version.
-SEMVER_MAJOR ?= 0
+# Build version string.
+SEMVER_MAJOR ?= 1
+export SEMVER_MAJOR
 SEMVER_MINOR ?= $(shell date -u +%y%m)
+export SEMVER_MINOR
 SEMVER_PATCH ?= $(shell date -u +%d)
 SEMVER_VERSION ?= $(SEMVER_MAJOR).$(SEMVER_MINOR).$(SEMVER_PATCH)
+export SEMVER_VERSION
 
 # Build parameters.
 BUILD_PATH ?= $(shell realpath "./build")
@@ -27,8 +27,10 @@ BUILD_DATE ?= $(shell date -u +%y%m%d)
 REPORT_DATE ?= $(shell date -u +%Y-%m-%d)
 BUILD_VERSION ?= $(shell git describe --always)
 BUILD_TAG ?= $(BUILD_DATE)-$(BUILD_VERSION)
+export BUILD_TAG
 BUILD_OS ?= $(shell uname -s)
-BUILD_ARCH ?= $(shell scripts/dist/arch.sh)
+BUILD_ARCH ?= $(shell ./scripts/dist/arch.sh)
+export BUILD_ARCH
 JS_BUILD_PATH ?= $(shell realpath "./assets/static/build")
 TF_VERSION ?= 2.18.0
 
@@ -193,15 +195,15 @@ acceptance-sqlite-restart:
 	rm -rf storage/acceptance/originals/2011
 	rm -rf storage/acceptance/originals/2013
 	rm -rf storage/acceptance/originals/2017
-	./photoprism --auth-mode="public" -c "./storage/acceptance/config-sqlite" --test start -d
+	./photoprism --auth-mode="public" -c "./storage/acceptance/config-sqlite" start -d
 acceptance-sqlite-stop:
-	./photoprism --auth-mode="public" -c "./storage/acceptance/config-sqlite" --test stop
+	./photoprism --auth-mode="public" -c "./storage/acceptance/config-sqlite" stop
 acceptance-auth-sqlite-restart:
 	cp -f storage/acceptance/backup.db storage/acceptance/index.db
 	cp -f storage/acceptance/config-sqlite/settingsBackup.yml storage/acceptance/config-sqlite/settings.yml
-	./photoprism --auth-mode="password" -c "./storage/acceptance/config-sqlite" --test start -d
+	./photoprism --auth-mode="password" -c "./storage/acceptance/config-sqlite" start -d
 acceptance-auth-sqlite-stop:
-	./photoprism --auth-mode="password" -c "./storage/acceptance/config-sqlite" --test stop
+	./photoprism --auth-mode="password" -c "./storage/acceptance/config-sqlite" stop
 start:
 	./photoprism start -d
 stop:
@@ -404,21 +406,19 @@ docker-build:
 	$(DOCKER_COMPOSE) --profile=all pull --ignore-pull-failures
 	$(DOCKER_COMPOSE) build --pull
 docker-nvidia: docker-nvidia-up
-docker-nvidia-up:
-	docker compose --profile=qdrant -f compose.nvidia.yaml up
-docker-nvidia-down:
-	docker compose --profile=qdrant -f compose.nvidia.yaml down --remove-orphans
 docker-nvidia-build:
-	docker compose --profile=qdrant -f compose.nvidia.yaml build
+	$(DOCKER_COMPOSE) --profile=qdrant -f compose.nvidia.yaml build
+docker-nvidia-up:
+	$(DOCKER_COMPOSE) --profile=qdrant -f compose.nvidia.yaml up
+docker-nvidia-down:
+	$(DOCKER_COMPOSE) --profile=qdrant -f compose.nvidia.yaml down --remove-orphans
 docker-intel: docker-intel-up
-docker-intel-up:
-	docker compose -f compose.intel.yaml up
 docker-intel-build:
-	docker compose -f compose.intel.yaml build
-docker-local-up:
-	$(DOCKER_COMPOSE) -f compose.local.yaml up --force-recreate
-docker-local-down:
-	$(DOCKER_COMPOSE) -f compose.local.yaml down -V
+	$(DOCKER_COMPOSE) -f compose.intel.yaml build
+docker-intel-up:
+	$(DOCKER_COMPOSE) -f compose.intel.yaml up
+docker-intel-down:
+	$(DOCKER_COMPOSE) -f compose.intel.yaml down --remove-orphans
 develop: docker-develop
 docker-develop: docker-develop-latest
 docker-develop-all: docker-develop-latest docker-develop-other
@@ -714,6 +714,10 @@ terminal-preview:
 logs-preview:
 	$(DOCKER_COMPOSE) -f compose.preview.yaml logs -f photoprism-preview
 docker-local: docker-local-plucky
+docker-local-up:
+	$(DOCKER_COMPOSE) -f compose.local.yaml up --force-recreate
+docker-local-down:
+	$(DOCKER_COMPOSE) -f compose.local.yaml down --remove-orphans
 docker-local-all: docker-local-plucky docker-local-oracular docker-local-noble docker-local-mantic docker-local-lunar docker-local-jammy docker-local-bookworm docker-local-bullseye docker-local-buster
 docker-local-bookworm:
 	docker pull photoprism/develop:bookworm
