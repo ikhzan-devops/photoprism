@@ -5,6 +5,7 @@ import "strings"
 // Selection represents items selected in the user interface.
 type Selection struct {
 	All      bool     `json:"all"`
+	Filter   string   `json:"filter"`
 	Files    []string `json:"files"`
 	Photos   []string `json:"photos"`
 	Albums   []string `json:"albums"`

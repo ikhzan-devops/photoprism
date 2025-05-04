@@ -144,6 +144,12 @@ export class Photo extends RestModel {
       Hash: "",
       Width: "",
       Height: "",
+      // Details.
+      DetailsKeywords: "",
+      DetailsSubject: "",
+      DetailsArtist: "",
+      DetailsCopyright: "",
+      DetailsLicense: "",
       // Date fields.
       CreatedAt: "",
       UpdatedAt: "",
