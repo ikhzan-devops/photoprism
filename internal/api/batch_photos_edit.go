@@ -14,9 +14,9 @@ import (
 	"github.com/photoprism/photoprism/pkg/i18n"
 )
 
-// BatchPhotosEdit returns the metadata of multiple pictures so that it can be edited.
+// BatchPhotosEdit returns and updates the metadata of multiple photos.
 //
-//	@Summary	returns the metadata of multiple pictures so that it can be edited
+//	@Summary	returns and updates the metadata of multiple photos
 //	@Id			BatchPhotosEdit
 //	@Tags		Photos
 //	@Accept		json
