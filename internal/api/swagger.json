@@ -1168,76 +1168,6 @@
                 }
             }
         },
-        "/api/v1/batch/photos": {
-            "post": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Photos"
-                ],
-                "summary": "returns the metadata of multiple pictures so that it can be edited",
-                "operationId": "BatchPhotos",
-                "parameters": [
-                    {
-                        "description": "Photo Selection",
-                        "name": "photos",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/form.Selection"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/batch.PhotoForm"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/i18n.Response"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/i18n.Response"
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "schema": {
-                            "$ref": "#/definitions/i18n.Response"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/i18n.Response"
-                        }
-                    },
-                    "429": {
-                        "description": "Too Many Requests",
-                        "schema": {
-                            "$ref": "#/definitions/i18n.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/i18n.Response"
-                        }
-                    }
-                }
-            }
-        },
         "/api/v1/batch/photos/approve": {
             "post": {
                 "consumes": [
@@ -1249,7 +1179,7 @@
                 "tags": [
                     "Photos"
                 ],
-                "summary": "approves multiple pictures that are currently under review",
+                "summary": "approves multiple photos that are currently under review",
                 "operationId": "BatchPhotosApprove",
                 "parameters": [
                     {
@@ -1313,7 +1243,7 @@
                 "tags": [
                     "Photos"
                 ],
-                "summary": "moves multiple pictures to the archive",
+                "summary": "moves multiple photos to the archive",
                 "operationId": "BatchPhotosArchive",
                 "parameters": [
                     {
@@ -1430,6 +1360,76 @@
                 }
             }
         },
+        "/api/v1/batch/photos/edit": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Photos"
+                ],
+                "summary": "returns and updates the metadata of multiple photos",
+                "operationId": "BatchPhotosEdit",
+                "parameters": [
+                    {
+                        "description": "photos selection and values",
+                        "name": "photos",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/batch.PhotosRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/batch.PhotosForm"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "429": {
+                        "description": "Too Many Requests",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/batch/photos/private": {
             "post": {
                 "consumes": [
@@ -1441,7 +1441,7 @@
                 "tags": [
                     "Photos"
                 ],
-                "summary": "toggles private state of multiple pictures",
+                "summary": "toggles private state of multiple photos",
                 "operationId": "BatchPhotosPrivate",
                 "parameters": [
                     {
@@ -1511,7 +1511,7 @@
                 "tags": [
                     "Photos"
                 ],
-                "summary": "restores multiple pictures from the archive",
+                "summary": "restores multiple photos from the archive",
                 "operationId": "BatchPhotosRestore",
                 "parameters": [
                     {
@@ -5170,14 +5170,16 @@
         "batch.Action": {
             "type": "string",
             "enum": [
-                "remove",
-                "keep",
-                "change"
+                "none",
+                "update",
+                "add",
+                "remove"
             ],
             "x-enum-varnames": [
-                "ActionRemove",
-                "ActionKeep",
-                "ActionChange"
+                "ActionNone",
+                "ActionUpdate",
+                "ActionAdd",
+                "ActionRemove"
             ]
         },
         "batch.Bool": {
@@ -5186,7 +5188,7 @@
                 "action": {
                     "$ref": "#/definitions/batch.Action"
                 },
-                "matches": {
+                "mixed": {
                     "type": "boolean"
                 },
                 "value": {
@@ -5200,7 +5202,7 @@
                 "action": {
                     "$ref": "#/definitions/batch.Action"
                 },
-                "matches": {
+                "mixed": {
                     "type": "boolean"
                 },
                 "value": {
@@ -5214,7 +5216,7 @@
                 "action": {
                     "$ref": "#/definitions/batch.Action"
                 },
-                "matches": {
+                "mixed": {
                     "type": "boolean"
                 },
                 "value": {
@@ -5228,7 +5230,7 @@
                 "action": {
                     "$ref": "#/definitions/batch.Action"
                 },
-                "matches": {
+                "mixed": {
                     "type": "boolean"
                 },
                 "value": {
@@ -5236,14 +5238,11 @@
                 }
             }
         },
-        "batch.PhotoForm": {
+        "batch.PhotosForm": {
             "type": "object",
             "properties": {
                 "Altitude": {
                     "$ref": "#/definitions/batch.Int"
-                },
-                "Artist": {
-                    "$ref": "#/definitions/batch.String"
                 },
                 "CameraID": {
                     "$ref": "#/definitions/batch.UInt"
@@ -5251,14 +5250,26 @@
                 "Caption": {
                     "$ref": "#/definitions/batch.String"
                 },
-                "Copyright": {
-                    "$ref": "#/definitions/batch.String"
-                },
                 "Country": {
                     "$ref": "#/definitions/batch.String"
                 },
                 "Day": {
                     "$ref": "#/definitions/batch.Int"
+                },
+                "DetailsArtist": {
+                    "$ref": "#/definitions/batch.String"
+                },
+                "DetailsCopyright": {
+                    "$ref": "#/definitions/batch.String"
+                },
+                "DetailsKeywords": {
+                    "$ref": "#/definitions/batch.String"
+                },
+                "DetailsLicense": {
+                    "$ref": "#/definitions/batch.String"
+                },
+                "DetailsSubject": {
+                    "$ref": "#/definitions/batch.String"
                 },
                 "Exposure": {
                     "$ref": "#/definitions/batch.String"
@@ -5281,9 +5292,6 @@
                 "LensID": {
                     "$ref": "#/definitions/batch.UInt"
                 },
-                "License": {
-                    "$ref": "#/definitions/batch.String"
-                },
                 "Lng": {
                     "$ref": "#/definitions/batch.Float64"
                 },
@@ -5298,9 +5306,6 @@
                 },
                 "Scan": {
                     "$ref": "#/definitions/batch.Bool"
-                },
-                "Subject": {
-                    "$ref": "#/definitions/batch.String"
                 },
                 "TakenAt": {
                     "type": "string"
@@ -5322,13 +5327,30 @@
                 }
             }
         },
+        "batch.PhotosRequest": {
+            "type": "object",
+            "properties": {
+                "photos": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "return": {
+                    "type": "boolean"
+                },
+                "values": {
+                    "$ref": "#/definitions/batch.PhotosForm"
+                }
+            }
+        },
         "batch.String": {
             "type": "object",
             "properties": {
                 "action": {
                     "$ref": "#/definitions/batch.Action"
                 },
-                "matches": {
+                "mixed": {
                     "type": "boolean"
                 },
                 "value": {
@@ -5342,7 +5364,7 @@
                 "action": {
                     "$ref": "#/definitions/batch.Action"
                 },
-                "matches": {
+                "mixed": {
                     "type": "boolean"
                 },
                 "value": {
@@ -7699,6 +7721,22 @@
                 "DeletedAt": {
                     "type": "string"
                 },
+                "DetailsArtist": {
+                    "type": "string"
+                },
+                "DetailsCopyright": {
+                    "type": "string"
+                },
+                "DetailsKeywords": {
+                    "description": "Additional information from the details table.",
+                    "type": "string"
+                },
+                "DetailsLicense": {
+                    "type": "string"
+                },
+                "DetailsSubject": {
+                    "type": "string"
+                },
                 "DocumentID": {
                     "type": "string"
                 },
@@ -7730,6 +7768,7 @@
                     "type": "string"
                 },
                 "Files": {
+                    "description": "List of files if search results are merged.",
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/entity.File"
@@ -7930,9 +7969,25 @@
                 1000000,
                 1000000000,
                 60000000000,
+                3600000000000,
+                -9223372036854775808,
+                9223372036854775807,
+                1,
+                1000,
+                1000000,
+                1000000000,
+                60000000000,
                 3600000000000
             ],
             "x-enum-varnames": [
+                "minDuration",
+                "maxDuration",
+                "Nanosecond",
+                "Microsecond",
+                "Millisecond",
+                "Second",
+                "Minute",
+                "Hour",
                 "minDuration",
                 "maxDuration",
                 "Nanosecond",

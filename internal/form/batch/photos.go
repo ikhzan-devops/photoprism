@@ -1,11 +1,11 @@
 package batch
 
 import (
-	"github.com/photoprism/photoprism/internal/entity"
+	"github.com/photoprism/photoprism/internal/entity/search"
 )
 
-// PhotoForm represents photo batch edit form values.
-type PhotoForm struct {
+// PhotosForm represents photo batch edit form values.
+type PhotosForm struct {
 	PhotoType        String  `json:"Type"`
 	PhotoTitle       String  `json:"Title"`
 	PhotoCaption     String  `json:"Caption"`
@@ -30,207 +30,223 @@ type PhotoForm struct {
 	CameraID         UInt    `json:"CameraID"`
 	LensID           UInt    `json:"LensID"`
 
-	DetailsSubject   String `json:"Subject"`
-	DetailsArtist    String `json:"Artist"`
-	DetailsCopyright String `json:"Copyright"`
-	DetailsLicense   String `json:"License"`
+	DetailsKeywords  String `json:"DetailsKeywords"`
+	DetailsSubject   String `json:"DetailsSubject"`
+	DetailsArtist    String `json:"DetailsArtist"`
+	DetailsCopyright String `json:"DetailsCopyright"`
+	DetailsLicense   String `json:"DetailsLicense"`
 }
 
-func NewPhotoForm(photos entity.Photos) *PhotoForm {
-	frm := &PhotoForm{}
+func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
+	frm := &PhotosForm{}
 
-	for _, photo := range photos {
-		if photo.PhotoType != "" && frm.PhotoType.Value == "" {
+	for i, photo := range photos {
+		if i == 0 {
 			frm.PhotoType.Value = photo.PhotoType
-			frm.PhotoType.Matches = true
 		} else if photo.PhotoType != frm.PhotoType.Value {
-			frm.PhotoType.Matches = false
+			frm.PhotoType.Mixed = true
+			frm.PhotoType.Value = ""
 		}
 
-		if photo.PhotoTitle != "" && frm.PhotoTitle.Value == "" {
+		if i == 0 {
 			frm.PhotoTitle.Value = photo.PhotoTitle
-			frm.PhotoTitle.Matches = true
 		} else if photo.PhotoTitle != frm.PhotoTitle.Value {
-			frm.PhotoTitle.Matches = false
+			frm.PhotoTitle.Mixed = true
+			frm.PhotoTitle.Value = ""
 		}
 
-		if photo.PhotoCaption != "" && frm.PhotoCaption.Value == "" {
+		if i == 0 {
 			frm.PhotoCaption.Value = photo.PhotoCaption
-			frm.PhotoTitle.Matches = true
 		} else if photo.PhotoCaption != frm.PhotoCaption.Value {
-			frm.PhotoCaption.Matches = false
+			frm.PhotoCaption.Mixed = true
+			frm.PhotoCaption.Value = ""
 		}
 
-		if !photo.TakenAt.IsZero() && frm.TakenAt.Value.IsZero() {
+		if i == 0 {
 			frm.TakenAt.Value = photo.TakenAt
-			frm.TakenAt.Matches = true
 		} else if photo.TakenAt != frm.TakenAt.Value {
-			frm.TakenAt.Matches = false
+			frm.TakenAt.Mixed = true
 		}
 
-		if !photo.TakenAtLocal.IsZero() && frm.TakenAtLocal.Value.IsZero() {
+		if i == 0 {
 			frm.TakenAtLocal.Value = photo.TakenAtLocal
-			frm.TakenAtLocal.Matches = true
 		} else if photo.TakenAtLocal != frm.TakenAtLocal.Value {
-			frm.TakenAtLocal.Matches = false
+			frm.TakenAtLocal.Mixed = true
 		}
 
-		if photo.PhotoDay > 0 && frm.PhotoDay.Value == 0 {
+		if i == 0 {
 			frm.PhotoDay.Value = photo.PhotoDay
-			frm.PhotoDay.Matches = true
 		} else if photo.PhotoDay != frm.PhotoDay.Value {
-			frm.PhotoDay.Matches = false
+			frm.PhotoDay.Mixed = true
+			frm.PhotoDay.Value = 0
 		}
 
-		if photo.PhotoMonth > 0 && frm.PhotoMonth.Value == 0 {
+		if i == 0 {
 			frm.PhotoMonth.Value = photo.PhotoMonth
-			frm.PhotoMonth.Matches = true
 		} else if photo.PhotoMonth != frm.PhotoMonth.Value {
-			frm.PhotoMonth.Matches = false
+			frm.PhotoMonth.Mixed = true
+			frm.PhotoMonth.Value = 0
 		}
 
-		if photo.PhotoYear > 0 && frm.PhotoYear.Value == 0 {
+		if i == 0 {
 			frm.PhotoYear.Value = photo.PhotoYear
-			frm.PhotoYear.Matches = true
 		} else if photo.PhotoYear != frm.PhotoYear.Value {
-			frm.PhotoYear.Matches = false
+			frm.PhotoYear.Mixed = true
+			frm.PhotoYear.Value = 0
 		}
 
-		if photo.TimeZone != "" && frm.TimeZone.Value == "" {
+		if i == 0 {
 			frm.TimeZone.Value = photo.TimeZone
-			frm.TimeZone.Matches = true
 		} else if photo.TimeZone != frm.TimeZone.Value {
-			frm.TimeZone.Matches = false
+			frm.TimeZone.Mixed = true
+			frm.TimeZone.Value = "Local"
 		}
 
-		if photo.PhotoCountry != "" && frm.PhotoCountry.Value == "" {
+		if i == 0 {
 			frm.PhotoCountry.Value = photo.PhotoCountry
-			frm.PhotoCountry.Matches = true
 		} else if photo.PhotoCountry != frm.PhotoCountry.Value {
-			frm.PhotoCountry.Matches = false
+			frm.PhotoCountry.Mixed = true
+			frm.PhotoCountry.Value = "zz"
 		}
 
-		if photo.PhotoAltitude != 0 && frm.PhotoAltitude.Value == 0 {
+		if i == 0 {
 			frm.PhotoAltitude.Value = photo.PhotoAltitude
-			frm.PhotoAltitude.Matches = true
 		} else if photo.PhotoAltitude != frm.PhotoAltitude.Value {
-			frm.PhotoAltitude.Matches = false
+			frm.PhotoAltitude.Mixed = true
+			frm.PhotoAltitude.Value = 0
 		}
 
-		if photo.PhotoLat != 0.0 && frm.PhotoLat.Value == 0.0 {
+		if i == 0 {
 			frm.PhotoLat.Value = photo.PhotoLat
-			frm.PhotoLat.Matches = true
 		} else if photo.PhotoLat != frm.PhotoLat.Value {
-			frm.PhotoLat.Matches = false
+			frm.PhotoLat.Mixed = true
+			frm.PhotoLat.Value = 0.0
 		}
 
-		if photo.PhotoLng != 0.0 && frm.PhotoLng.Value == 0.0 {
+		if i == 0 {
 			frm.PhotoLng.Value = photo.PhotoLng
-			frm.PhotoLng.Matches = true
 		} else if photo.PhotoLng != frm.PhotoLng.Value {
-			frm.PhotoLng.Matches = false
+			frm.PhotoLng.Mixed = false
+			frm.PhotoLng.Value = 0.0
 		}
 
-		if photo.PhotoIso != 0 && frm.PhotoIso.Value == 0 {
+		if i == 0 {
 			frm.PhotoIso.Value = photo.PhotoIso
-			frm.PhotoIso.Matches = true
 		} else if photo.PhotoIso != frm.PhotoIso.Value {
-			frm.PhotoIso.Matches = false
+			frm.PhotoIso.Mixed = true
+			frm.PhotoIso.Value = 0
 		}
 
-		if photo.PhotoFocalLength != 0 && frm.PhotoFocalLength.Value == 0 {
+		if i == 0 {
 			frm.PhotoFocalLength.Value = photo.PhotoFocalLength
-			frm.PhotoFocalLength.Matches = true
 		} else if photo.PhotoFocalLength != frm.PhotoFocalLength.Value {
-			frm.PhotoFocalLength.Matches = false
+			frm.PhotoFocalLength.Mixed = true
+			frm.PhotoFocalLength.Value = 0
 		}
 
-		if photo.PhotoFNumber != 0.0 && frm.PhotoFNumber.Value == 0.0 {
+		if i == 0 {
 			frm.PhotoFNumber.Value = photo.PhotoFNumber
-			frm.PhotoFNumber.Matches = true
 		} else if photo.PhotoFNumber != frm.PhotoFNumber.Value {
-			frm.PhotoFNumber.Matches = false
+			frm.PhotoFNumber.Mixed = true
+			frm.PhotoFNumber.Value = 0
 		}
 
-		if photo.PhotoExposure != "" && frm.PhotoExposure.Value == "" {
+		if i == 0 {
 			frm.PhotoExposure.Value = photo.PhotoExposure
-			frm.PhotoExposure.Matches = true
 		} else if photo.PhotoExposure != frm.PhotoExposure.Value {
-			frm.PhotoExposure.Matches = false
+			frm.PhotoExposure.Mixed = true
+			frm.PhotoExposure.Value = ""
 		}
 
-		if photo.PhotoFavorite && !frm.PhotoFavorite.Value {
+		if i == 0 {
 			frm.PhotoFavorite.Value = photo.PhotoFavorite
-			frm.PhotoFavorite.Matches = true
 		} else if photo.PhotoFavorite != frm.PhotoFavorite.Value {
-			frm.PhotoFavorite.Matches = false
+			frm.PhotoFavorite.Mixed = true
+			frm.PhotoFavorite.Value = false
 		}
 
-		if photo.PhotoPrivate && !frm.PhotoPrivate.Value {
+		if i == 0 {
 			frm.PhotoPrivate.Value = photo.PhotoPrivate
-			frm.PhotoPrivate.Matches = true
 		} else if photo.PhotoPrivate != frm.PhotoPrivate.Value {
-			frm.PhotoPrivate.Matches = false
+			frm.PhotoPrivate.Mixed = true
+			frm.PhotoPrivate.Value = false
 		}
 
-		if photo.PhotoScan && !frm.PhotoScan.Value {
+		if i == 0 {
 			frm.PhotoScan.Value = photo.PhotoScan
-			frm.PhotoScan.Matches = true
 		} else if photo.PhotoScan != frm.PhotoScan.Value {
-			frm.PhotoScan.Matches = false
+			frm.PhotoScan.Mixed = true
+			frm.PhotoScan.Value = false
 		}
 
-		if photo.PhotoPanorama && !frm.PhotoPanorama.Value {
+		if i == 0 {
 			frm.PhotoPanorama.Value = photo.PhotoPanorama
-			frm.PhotoPanorama.Matches = true
 		} else if photo.PhotoPanorama != frm.PhotoPanorama.Value {
-			frm.PhotoPanorama.Matches = false
+			frm.PhotoPanorama.Mixed = true
+			frm.PhotoPanorama.Value = false
 		}
 
-		if photo.CameraID != 0 && frm.CameraID.Value == 0 {
+		if i == 0 {
 			frm.CameraID.Value = photo.CameraID
-			frm.CameraID.Matches = true
 		} else if photo.CameraID != frm.CameraID.Value {
-			frm.CameraID.Matches = false
+			frm.CameraID.Mixed = true
+			frm.CameraID.Value = 1
 		}
 
-		if photo.LensID != 0 && frm.LensID.Value == 0 {
+		if i == 0 {
 			frm.LensID.Value = photo.LensID
-			frm.LensID.Matches = true
 		} else if photo.LensID != frm.LensID.Value {
-			frm.LensID.Matches = false
+			frm.LensID.Mixed = true
+			frm.LensID.Value = 1
 		}
 
-		if photo.Details != nil {
-			if photo.Details.Subject != "" && frm.DetailsSubject.Value == "" {
-				frm.DetailsSubject.Value = photo.Details.Subject
-				frm.DetailsSubject.Matches = true
-			} else if photo.Details.Subject != frm.DetailsSubject.Value {
-				frm.DetailsSubject.Matches = false
-			}
-
-			if photo.Details.Artist != "" && frm.DetailsArtist.Value == "" {
-				frm.DetailsArtist.Value = photo.Details.Artist
-				frm.DetailsArtist.Matches = true
-			} else if photo.Details.Artist != frm.DetailsArtist.Value {
-				frm.DetailsArtist.Matches = false
-			}
-
-			if photo.Details.Copyright != "" && frm.DetailsCopyright.Value == "" {
-				frm.DetailsCopyright.Value = photo.Details.Copyright
-				frm.DetailsCopyright.Matches = true
-			} else if photo.Details.Copyright != frm.DetailsCopyright.Value {
-				frm.DetailsCopyright.Matches = false
-			}
-
-			if photo.Details.License != "" && frm.DetailsLicense.Value == "" {
-				frm.DetailsLicense.Value = photo.Details.License
-				frm.DetailsLicense.Matches = true
-			} else if photo.Details.License != frm.DetailsLicense.Value {
-				frm.DetailsLicense.Matches = false
-			}
+		if i == 0 {
+			frm.DetailsKeywords.Value = photo.DetailsKeywords
+		} else if photo.DetailsKeywords != frm.DetailsKeywords.Value {
+			frm.DetailsKeywords.Mixed = true
+			frm.DetailsKeywords.Value = ""
 		}
 
+		if i == 0 {
+			frm.DetailsSubject.Value = photo.DetailsSubject
+		} else if photo.DetailsSubject != frm.DetailsSubject.Value {
+			frm.DetailsSubject.Mixed = true
+			frm.DetailsSubject.Value = ""
+		}
+
+		if i == 0 {
+			frm.DetailsArtist.Value = photo.DetailsArtist
+		} else if photo.DetailsArtist != frm.DetailsArtist.Value {
+			frm.DetailsArtist.Mixed = true
+			frm.DetailsArtist.Value = ""
+		}
+
+		if i == 0 {
+			frm.DetailsCopyright.Value = photo.DetailsCopyright
+		} else if photo.DetailsCopyright != frm.DetailsCopyright.Value {
+			frm.DetailsCopyright.Mixed = true
+			frm.DetailsCopyright.Value = ""
+		}
+
+		if i == 0 {
+			frm.DetailsLicense.Value = photo.DetailsLicense
+		} else if photo.DetailsLicense != frm.DetailsLicense.Value {
+			frm.DetailsLicense.Mixed = true
+			frm.DetailsLicense.Value = ""
+		}
+	}
+
+	// Use defaults for the following values if they are empty:
+	if frm.PhotoCountry.Value == "" {
+		frm.PhotoCountry.Value = "zz"
+	}
+
+	if frm.CameraID.Value < 1 {
+		frm.CameraID.Value = 1
+	}
+
+	if frm.LensID.Value < 1 {
+		frm.LensID.Value = 1
 	}
 
 	return frm
