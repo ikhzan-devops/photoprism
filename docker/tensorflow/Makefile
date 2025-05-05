@@ -1,4 +1,4 @@
-all: libtensorflow libtensorflow-avx libtensorflow-avx2 libtensorflow-vnni libtensorflow-avx512
+all: libtensorflow libtensorflow-ssse3 libtensorflow-avx libtensorflow-avx2 libtensorflow-vnni libtensorflow-avx512
 # Downloads the TensorFlow source code from GitHub and extracts it to a subdirectory:
 download:
 	wget https://github.com/tensorflow/tensorflow/archive/v$(TF_VERSION).tar.gz
