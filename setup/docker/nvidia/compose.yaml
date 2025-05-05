@@ -116,8 +116,8 @@ services:
         reservations:
           devices:
             - driver: "nvidia"
-              count: 1
               capabilities: [gpu]
+              count: 1
 
   ## MariaDB Database Server (recommended)
   ## see https://docs.photoprism.app/getting-started/faq/#should-i-use-sqlite-mariadb-or-mysql
