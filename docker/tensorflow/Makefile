@@ -7,8 +7,11 @@ download:
 # Clang command line argument reference:
 # https://clang.llvm.org/docs/ClangCommandLineReference.html#x86
 libtensorflow:
-	bazel build -c opt //tensorflow:libtensorflow.so --copt=-O2 --copt=-mno-avx --copt=-mno-avx2 --copt=-mno-fma --copt=-march=core2
+	bazel build -c opt //tensorflow:libtensorflow.so --copt=-O2 --copt=-mno-avx --copt=-mno-avx2 --copt=-mno-fma --copt=-march=pentium4
 	./create_archive.sh amd64 $(TF_VERSION)
+libtensorflow-ssse3:
+	bazel build -c opt //tensorflow:libtensorflow.so --copt=-O2 --copt=-mno-avx --copt=-mno-avx2 --copt=-mno-fma --copt=-march=core2
+	./create_archive.sh amd64-ssse3 $(TF_VERSION)
 libtensorflow-avx:
 	bazel build -c opt //tensorflow:libtensorflow.so --copt=-O2 --copt=-mavx
 	./create_archive.sh amd64-avx $(TF_VERSION)
