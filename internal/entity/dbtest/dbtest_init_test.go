@@ -301,4 +301,13 @@ func TestInit(t *testing.T) {
 		assert.Equal(t, int64(1), count)
 	})
 
+	t.Run("DetailsCounts", func(t *testing.T) {
+		m := &entity.Details{}
+		stmt := entity.UnscopedDb()
+		count := int64(0)
+
+		stmt.Model(m).Count(&count)
+
+		assert.Equal(t, int64(57), count)
+	})
 }

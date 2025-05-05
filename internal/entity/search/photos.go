@@ -88,17 +88,20 @@ func searchPhotos(frm form.SearchPhotos, sess *entity.Session, resultCols string
 		// PostgreSQL doesn't support a GROUP BY that excludes non aggregated columns.
 		// This is the work around.
 		s = UnscopedDb().Table(entity.File{}.TableName()).Select("ROW_NUMBER() OVER (PARTITION BY photos.id, files.id ORDER BY files.media_id) as rec_num, " + resultCols).
-			Joins("JOIN photos ON files.photo_id = photos.id AND files.media_id IS NOT NULL").
-			Joins("LEFT JOIN cameras ON photos.camera_id = cameras.id").
-			Joins("LEFT JOIN lenses ON photos.lens_id = lenses.id").
-			Joins("LEFT JOIN places ON photos.place_id = places.id")
+			Joins("JOIN photos ON files.photo_id = photos.id AND files.media_id IS NOT NULL")
 	} else {
 		s = UnscopedDb().Table(entity.File{}.TableName()).Select(resultCols).
-			Joins("JOIN photos ON files.photo_id = photos.id AND files.media_id IS NOT NULL").
-			Joins("LEFT JOIN cameras ON photos.camera_id = cameras.id").
-			Joins("LEFT JOIN lenses ON photos.lens_id = lenses.id").
-			Joins("LEFT JOIN places ON photos.place_id = places.id")
+			Joins("JOIN photos ON files.photo_id = photos.id AND files.media_id IS NOT NULL")
 	}
+
+	// Include additional columns from details table?
+	if frm.Details {
+		s = s.Joins("JOIN details ON details.photo_id = files.photo_id")
+	}
+
+	s = s.Joins("LEFT JOIN cameras ON photos.camera_id = cameras.id").
+		Joins("LEFT JOIN lenses ON photos.lens_id = lenses.id").
+		Joins("LEFT JOIN places ON photos.place_id = places.id")
 
 	// Accept the album UID as scope for backward compatibility.
 	if rnd.IsUID(frm.Album, entity.AlbumUID) {

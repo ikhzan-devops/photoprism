@@ -35,10 +35,10 @@ describe("model/photo", () => {
   });
 
   it("should get photo thumbnail url", () => {
-    const values = { ID: 5, Title: "Crazy Cat", Hash: 345982 };
+    const values = { ID: 5, Title: "Crazy Cat", Hash: "97b8cf7b3710bec95f6609487bbdd62489b95fb2" };
     const photo = new Photo(values);
     const result = photo.thumbnailUrl("tile500");
-    assert.equal(result, "/api/v1/t/345982/public/tile500");
+    assert.equal(result, "/api/v1/t/97b8cf7b3710bec95f6609487bbdd62489b95fb2/public/tile500");
     const values2 = {
       ID: 10,
       UID: "ABC127",
@@ -50,13 +50,13 @@ describe("model/photo", () => {
           FileType: "mp4",
           Width: 500,
           Height: 600,
-          Hash: "1xxbgdt55",
+          Hash: "be651a4fffd699196cfd5dd14b6ec9cb10a8531a",
         },
       ],
     };
     const photo2 = new Photo(values2);
     const result2 = photo2.thumbnailUrl("tile500");
-    assert.equal(result2, "/api/v1/t/1xxbgdt55/public/tile500");
+    assert.equal(result2, "/api/v1/t/be651a4fffd699196cfd5dd14b6ec9cb10a8531a/public/tile500");
     const values3 = {
       ID: 10,
       UID: "ABC127",
@@ -119,10 +119,10 @@ describe("model/photo", () => {
   });
 
   it("should get photo download url", () => {
-    const values = { ID: 5, Title: "Crazy Cat", Hash: 345982 };
+    const values = { ID: 5, Title: "Crazy Cat", Hash: "97b8cf7b3710bec95f6609487bbdd62489b95fb2" };
     const photo = new Photo(values);
     const result = photo.getDownloadUrl();
-    assert.equal(result, "/api/v1/dl/345982?t=2lbh9x09");
+    assert.equal(result, "/api/v1/dl/97b8cf7b3710bec95f6609487bbdd62489b95fb2?t=2lbh9x09");
   });
 
   it("should calculate photo size", () => {
@@ -906,14 +906,20 @@ describe("model/photo", () => {
     assert.equal(file[0].Name, "1980/01/superCuteKitten.jpg");
   });
 
-  it("should return main hash", () => {
+  it("should return file hash", () => {
+    // If the picture has no Hash property, an empty string should be returned:
     const values = { ID: 9, UID: "ABC163" };
     const photo = new Photo(values);
-    assert.equal(photo.primaryFileHash(), "");
+    assert.equal(photo.fileHash(), "");
+    // If the picture has a Hash property but no Files, its value should be returned:
+    photo.Hash = "123693d2c2b9afdba19f97d1c92963953e1d2cfe";
+    assert.equal(photo.fileHash(), "123693d2c2b9afdba19f97d1c92963953e1d2cfe");
+    // If there is a non-primary JPEG or PNG image, its Hash should be returned:
     const values2 = {
       ID: 10,
       UID: "ABC127",
       Type: "video",
+      Hash: "123693d2c2b9afdba19f97d1c92963953e1d2cfe",
       Files: [
         {
           UID: "fsr3uh0u30trle4l",
@@ -940,10 +946,36 @@ describe("model/photo", () => {
       ],
     };
     const photo2 = new Photo(values2);
-    assert.equal(photo2.primaryFileHash(), "9249cee32bc8adc6ba996a6b78dd84c03b5a0153");
+    assert.equal(photo2.fileHash(), "9249cee32bc8adc6ba996a6b78dd84c03b5a0153");
+    // If the FileType of the image is "invalid", the video Hash should be returned:
+    photo2.Files = [
+      {
+        UID: "fsr3uh0u30trle4l",
+        Name: "1980/01/superCuteKitten.mp4",
+        Primary: false,
+        Root: "/",
+        MediaType: "video",
+        FileType: "mp4",
+        Width: 500,
+        Height: 600,
+        Hash: "617693d2c2b9afdba19f97d1c92963953e1d2cfe",
+      },
+      {
+        UID: "fsr3uh0g2us6cwg4",
+        Name: "1980/01/superCuteKitten.jpg",
+        Primary: false,
+        Root: "/",
+        MediaType: "image",
+        FileType: "invalid",
+        Width: 500,
+        Height: 600,
+        Hash: "9249cee32bc8adc6ba996a6b78dd84c03b5a0153",
+      },
+    ];
+    assert.equal(photo2.fileHash(), "617693d2c2b9afdba19f97d1c92963953e1d2cfe");
   });
 
-  it("should test filemodels", () => {
+  it("should return file models", () => {
     const values = { ID: 9, UID: "ABC163" };
     const photo = new Photo(values);
     assert.empty(photo.fileModels());
