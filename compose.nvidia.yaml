@@ -9,6 +9,7 @@ services:
       - dummy-webdav
       - dummy-oidc
     stop_grace_period: 10s
+    privileged: true
     security_opt:
       - seccomp:unconfined
       - apparmor:unconfined
@@ -143,6 +144,7 @@ services:
             - driver: "nvidia"
               capabilities: [gpu]
               count: 1
+
   mariadb:
     extends:
       file: ./compose.yaml
