@@ -4,9 +4,8 @@ import "strings"
 
 // PhotosRequest represents items selected in the user interface.
 type PhotosRequest struct {
-	Return bool        `json:"return,omitempty"`
-	Filter string      `json:"filter,omitempty"`
 	Photos []string    `json:"photos"`
+	Return bool        `json:"return,omitempty"`
 	Values *PhotosForm `json:"values,omitempty"`
 }
 

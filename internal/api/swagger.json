@@ -1179,7 +1179,7 @@
                 "tags": [
                     "Photos"
                 ],
-                "summary": "approves multiple pictures that are currently under review",
+                "summary": "approves multiple photos that are currently under review",
                 "operationId": "BatchPhotosApprove",
                 "parameters": [
                     {
@@ -1243,7 +1243,7 @@
                 "tags": [
                     "Photos"
                 ],
-                "summary": "moves multiple pictures to the archive",
+                "summary": "moves multiple photos to the archive",
                 "operationId": "BatchPhotosArchive",
                 "parameters": [
                     {
@@ -1371,7 +1371,7 @@
                 "tags": [
                     "Photos"
                 ],
-                "summary": "returns the metadata of multiple pictures so that it can be edited",
+                "summary": "returns and updates the metadata of multiple photos",
                 "operationId": "BatchPhotosEdit",
                 "parameters": [
                     {
@@ -1441,7 +1441,7 @@
                 "tags": [
                     "Photos"
                 ],
-                "summary": "toggles private state of multiple pictures",
+                "summary": "toggles private state of multiple photos",
                 "operationId": "BatchPhotosPrivate",
                 "parameters": [
                     {
@@ -1511,7 +1511,7 @@
                 "tags": [
                     "Photos"
                 ],
-                "summary": "restores multiple pictures from the archive",
+                "summary": "restores multiple photos from the archive",
                 "operationId": "BatchPhotosRestore",
                 "parameters": [
                     {
@@ -5330,9 +5330,6 @@
         "batch.PhotosRequest": {
             "type": "object",
             "properties": {
-                "filter": {
-                    "type": "string"
-                },
                 "photos": {
                     "type": "array",
                     "items": {
@@ -7240,9 +7237,6 @@
                         "type": "string"
                     }
                 },
-                "filter": {
-                    "type": "string"
-                },
                 "labels": {
                     "type": "array",
                     "items": {
@@ -7983,25 +7977,9 @@
                 1000000,
                 1000000000,
                 60000000000,
-                3600000000000,
-                -9223372036854775808,
-                9223372036854775807,
-                1,
-                1000,
-                1000000,
-                1000000000,
-                60000000000,
                 3600000000000
             ],
             "x-enum-varnames": [
-                "minDuration",
-                "maxDuration",
-                "Nanosecond",
-                "Microsecond",
-                "Millisecond",
-                "Second",
-                "Minute",
-                "Hour",
                 "minDuration",
                 "maxDuration",
                 "Nanosecond",

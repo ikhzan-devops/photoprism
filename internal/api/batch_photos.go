@@ -22,9 +22,9 @@ import (
 	"github.com/photoprism/photoprism/pkg/i18n"
 )
 
-// BatchPhotosArchive moves multiple pictures to the archive.
+// BatchPhotosArchive moves multiple photos to the archive.
 //
-//	@Summary	moves multiple pictures to the archive
+//	@Summary	moves multiple photos to the archive
 //	@Id			BatchPhotosArchive
 //	@Tags		Photos
 //	@Accept		json
@@ -94,9 +94,9 @@ func BatchPhotosArchive(router *gin.RouterGroup) {
 	})
 }
 
-// BatchPhotosRestore restores multiple pictures from the archive.
+// BatchPhotosRestore restores multiple photos from the archive.
 //
-//	@Summary	restores multiple pictures from the archive
+//	@Summary	restores multiple photos from the archive
 //	@Id			BatchPhotosRestore
 //	@Tags		Photos
 //	@Accept		json
@@ -164,9 +164,9 @@ func BatchPhotosRestore(router *gin.RouterGroup) {
 	})
 }
 
-// BatchPhotosApprove approves multiple pictures that are currently under review.
+// BatchPhotosApprove approves multiple photos that are currently under review.
 //
-//	@Summary	approves multiple pictures that are currently under review
+//	@Summary	approves multiple photos that are currently under review
 //	@Id			BatchPhotosApprove
 //	@Tags		Photos
 //	@Accept		json
@@ -224,9 +224,9 @@ func BatchPhotosApprove(router *gin.RouterGroup) {
 	})
 }
 
-// BatchPhotosPrivate toggles private state of multiple pictures.
+// BatchPhotosPrivate toggles private state of multiple photos.
 //
-//	@Summary	toggles private state of multiple pictures
+//	@Summary	toggles private state of multiple photos
 //	@Id			BatchPhotosPrivate
 //	@Tags		Photos
 //	@Accept		json
@@ -284,7 +284,7 @@ func BatchPhotosPrivate(router *gin.RouterGroup) {
 	})
 }
 
-// BatchPhotosDelete permanently removes multiple pictures from the archive.
+// BatchPhotosDelete permanently removes multiple photos from the archive.
 //
 //	@Summary	permanently removes multiple or all photos from the archive
 //	@Id			BatchPhotosDelete
