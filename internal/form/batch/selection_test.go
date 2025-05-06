@@ -1,8 +1,9 @@
 package batch
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestPhotosRequest_Empty(t *testing.T) {

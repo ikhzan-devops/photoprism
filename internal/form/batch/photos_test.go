@@ -2,10 +2,11 @@ package batch
 
 import (
 	"encoding/json"
-	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 
 	"github.com/photoprism/photoprism/internal/entity/search"
 	"github.com/photoprism/photoprism/pkg/fs"
