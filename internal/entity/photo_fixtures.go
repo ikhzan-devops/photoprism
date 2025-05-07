@@ -3057,7 +3057,7 @@ var PhotoFixtures = PhotoMap{
 		TypeSrc:          "",
 		PhotoTitle:       "sol\"ution",
 		TitleSrc:         SrcManual,
-		PhotoCaption:     "",
+		PhotoCaption:     "Lorem ipsum.",
 		CaptionSrc:       "",
 		PhotoPath:        "20\"00/0\"2",
 		PhotoName:        "photo\"47",

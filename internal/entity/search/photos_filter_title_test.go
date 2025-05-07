@@ -35,6 +35,40 @@ func TestPhotosFilterTitle(t *testing.T) {
 		}
 		assert.Equal(t, len(photos), 2)
 	})
+	t.Run("true", func(t *testing.T) {
+		var f form.SearchPhotos
+
+		f.Title = "true"
+		f.Merged = true
+
+		photos, _, err := Photos(f)
+
+		if err != nil {
+			t.Fatal(err)
+		}
+		assert.GreaterOrEqual(t, len(photos), 2)
+
+		for _, p := range photos {
+			assert.NotEmpty(t, p.PhotoTitle)
+		}
+	})
+	t.Run("false", func(t *testing.T) {
+		var f form.SearchPhotos
+
+		f.Title = "false"
+		f.Merged = true
+
+		photos, _, err := Photos(f)
+
+		if err != nil {
+			t.Fatal(err)
+		}
+		assert.GreaterOrEqual(t, len(photos), 2)
+
+		for _, p := range photos {
+			assert.Empty(t, p.PhotoTitle)
+		}
+	})
 	t.Run("Neckarbrücke", func(t *testing.T) {
 		var f form.SearchPhotos
 
