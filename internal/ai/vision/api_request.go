@@ -9,6 +9,8 @@ import (
 	"slices"
 	"strings"
 
+	"github.com/sirupsen/logrus"
+
 	"github.com/photoprism/photoprism/internal/api/download"
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/fs"
@@ -23,6 +25,7 @@ type Files = []string
 type ApiRequest struct {
 	Id             string    `form:"id" yaml:"Id,omitempty" json:"id,omitempty"`
 	Model          string    `form:"model" yaml:"Model,omitempty" json:"model,omitempty"`
+	Version        string    `form:"version" yaml:"Version,omitempty" json:"version,omitempty"`
 	Url            string    `form:"url" yaml:"Url,omitempty" json:"url,omitempty"`
 	Images         Files     `form:"images" yaml:"Images,omitempty" json:"images,omitempty"`
 	responseFormat ApiFormat `form:"-"`
@@ -142,4 +145,15 @@ func (r *ApiRequest) GetResponseFormat() ApiFormat {
 // JSON returns the request data as JSON-encoded bytes.
 func (r *ApiRequest) JSON() ([]byte, error) {
 	return json.Marshal(*r)
+}
+
+// WriteLog logs the request data when trace log mode is enabled.
+func (r *ApiRequest) WriteLog() {
+	if !log.IsLevelEnabled(logrus.TraceLevel) {
+		return
+	}
+
+	if data, _ := r.JSON(); len(data) > 0 {
+		log.Tracef("vision: %s", data)
+	}
 }

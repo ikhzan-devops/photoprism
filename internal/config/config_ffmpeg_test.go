@@ -14,6 +14,8 @@ func TestConfig_FFmpegEncoder(t *testing.T) {
 	assert.Equal(t, encode.DefaultAvcEncoder(), c.FFmpegEncoder())
 	c.options.FFmpegEncoder = "nvidia"
 	assert.Equal(t, encode.NvidiaAvc, c.FFmpegEncoder())
+	c.options.FFmpegEncoder = "libx264"
+	assert.Equal(t, encode.SoftwareAvc, c.FFmpegEncoder())
 	c.options.FFmpegEncoder = "intel"
 	assert.Equal(t, encode.IntelAvc, c.FFmpegEncoder())
 	c.options.FFmpegEncoder = "xxx"
@@ -76,6 +78,15 @@ func TestConfig_FFmpegSize(t *testing.T) {
 func TestConfig_FFmpegQuality(t *testing.T) {
 	c := NewConfig(CliTestContext())
 	assert.Equal(t, encode.DefaultQuality, c.FFmpegQuality())
+
+	c.options.FFmpegQuality = 103
+	assert.Equal(t, encode.BestQuality, c.FFmpegQuality())
+
+	c.options.FFmpegQuality = 1
+	assert.Equal(t, 1, c.FFmpegQuality())
+
+	c.options.FFmpegQuality = 0
+	assert.Equal(t, encode.DefaultQuality, c.FFmpegQuality())
 }
 
 func TestConfig_FFmpegBitrateExceeded(t *testing.T) {
@@ -84,6 +95,7 @@ func TestConfig_FFmpegBitrateExceeded(t *testing.T) {
 	assert.False(t, c.FFmpegBitrateExceeded(0.95))
 	assert.False(t, c.FFmpegBitrateExceeded(1.05))
 	assert.False(t, c.FFmpegBitrateExceeded(2.05))
+	assert.False(t, c.FFmpegBitrateExceeded(-1.02))
 	c.options.FFmpegBitrate = 1
 	assert.False(t, c.FFmpegBitrateExceeded(0.95))
 	assert.False(t, c.FFmpegBitrateExceeded(1.0))
@@ -102,6 +114,13 @@ func TestConfig_FFmpegBitrateExceeded(t *testing.T) {
 func TestConfig_FFmpegPreset(t *testing.T) {
 	c := NewConfig(CliTestContext())
 	assert.Equal(t, encode.PresetFast, c.FFmpegPreset())
+
+	c.options.FFmpegPreset = "medium"
+	assert.Equal(t, encode.PresetMedium, c.FFmpegPreset())
+
+	c.options.FFmpegPreset = "fast"
+	assert.Equal(t, encode.PresetFast, c.FFmpegPreset())
+
 }
 
 func TestConfig_FFmpegDevice(t *testing.T) {
