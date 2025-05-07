@@ -31,10 +31,10 @@
     ">0.25% and last 2 years"
   ],
   "dependencies": {
-    "@babel/cli": "^7.27.2",
+    "@babel/cli": "^7.27.1",
     "@babel/core": "^7.27.1",
     "@babel/plugin-transform-runtime": "^7.27.1",
-    "@babel/preset-env": "^7.27.2",
+    "@babel/preset-env": "^7.27.1",
     "@babel/register": "^7.27.1",
     "@babel/runtime": "^7.27.1",
     "@eslint/eslintrc": "^3.3.1",
