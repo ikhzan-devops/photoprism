@@ -19,7 +19,7 @@ These changes implement/fix/improve...
 - [ ] New features or enhancements are fully implemented and do not break existing functionality, so that they can be released at any time without requiring additional work
 - [ ] Automated unit and/or acceptance tests have been added to ensure that changes work as expected and to reduce repetitive manual work
 - [ ] Documentation has been / will be updated, especially as it relates to new configuration options or potentially disruptive changes
-- [ ] The user interface has been tested on a variety of devices and is fully responsive for use on phones, tablets and desktop computers
+- [ ] The user interface has been tested on Chrome, Safari, and Firefox and is fully responsive for use on phones, tablets, and desktop computers
 - [ ] Database-related changes have been successfully tested with SQLite 3 and MariaDB 10.5.12+
 
 <!--
