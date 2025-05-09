@@ -596,7 +596,7 @@ export default {
         });
     },
     openPhoto(index) {
-      this.$lightbox.openModels(Thumb.fromFiles([this.selectionsFullInfo[index]]), 0, null , this.isBatchDialog);
+      this.$lightbox.openModels(Thumb.fromPhotos([this.selectionsFullInfo[index]]), 0, null , this.isBatchDialog);
     },
     isSelected(m) {
       return PhotoClipboard.has(m);
