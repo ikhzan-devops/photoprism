@@ -22,7 +22,7 @@
       <v-row dense :class="!$vuetify.display.mdAndDown ? 'overflow-hidden' : ''">
         <!-- Desktop view -->
         <v-col v-if="!$vuetify.display.mdAndDown" cols="12" lg="4" class="scroll-col">
-          <div class="edit-batch photo-results list-view v-table">
+          <div v-if="selectionsFullInfo" class="edit-batch photo-results list-view v-table">
             <table>
               <tbody>
                 <tr>
@@ -86,10 +86,10 @@
                   </td>
                   <td
                     class="meta-data meta-title col-auto text-start clickable"
-                    :title="m.Title"
+                    :title="m.FileName"
                     @click.exact="openPhoto(index)"
                   >
-                    {{ m.Title }}
+                    {{ m.FileName }}
                   </td>
                 </tr>
               </tbody>
@@ -99,7 +99,7 @@
 
         <!-- Phone view -->
         <v-col v-else cols="12">
-          <div class="edit-batch photo-results list-view v-table">
+          <div v-if="selectionsFullInfo" class="edit-batch photo-results list-view v-table">
             <v-expansion-panels
               v-model="expanded"
               variant="accordion"
@@ -161,10 +161,10 @@
                         </td>
                         <td
                           class="meta-data meta-title col-auto text-start clickable"
-                          :title="m.Title"
+                          :title="m.FileName"
                           @click.exact="openPhoto(index)"
                         >
-                          {{ m.Title }}
+                          {{ m.FileName }}
                         </td>
                       </tr>
                     </tbody>
@@ -175,7 +175,7 @@
           </div>
         </v-col>
 
-        <v-col cols="12" lg="8">
+        <v-col cols="12" lg="8" class="scroll-col">
           <v-form
             ref="form"
             validate-on="invalid-input"
@@ -483,7 +483,7 @@
                   color="highlight"
                   variant="flat"
                   class="action-apply action-approve"
-                  :disabled="this.selection.length < 1"
+                  :disabled="this.selectionsFullInfo.length < 1"
                   @click.stop="save(false)"
                 >
                   <span>{{ $gettext(`Apply`) }}</span>
@@ -503,6 +503,7 @@ import IconLivePhoto from "../../icon/live-photo.vue";
 import { PhotoClipboard } from "common/clipboard";
 import { Photo } from "model/photo";
 import Thumb from "../../../model/thumb";
+import $api from "../../../common/api";
 
 export default {
   name: "PPhotoEditBatch",
@@ -538,6 +539,7 @@ export default {
       subscriptions: [],
 
       selectionsFullInfo: [],
+      selectedPhotosLength: 0,
       expanded: [0],
       isBatchDialog: true,
       isAllSelected: true,
@@ -555,21 +557,23 @@ export default {
   },
   computed: {
     title() {
-      if (this.selection.length > 0) {
-        return this.$gettext(`Batch Edit (${this.selection.length})`);
+      // TODO: fix title recalculating
+      if (this.selectionsFullInfo.length > 0) {
+        return this.$gettext(`Batch Edit (${this.selectionsFullInfo.length})`);
       }
 
-      return this.$gettext(`Batch Edit (${this.selection.length})`);
+      return this.$gettext(`Batch Edit (${this.selectionsFullInfo.length})`);
     },
   },
   watch: {
-    visible: function (show) {
+    visible: async function (show) {
       if (show) {
         this.expanded = [];
+
+        await this.getSelectionsData();
+      } else {
+        this.selectionsFullInfo = [];
       }
-    },
-    selection: function () {
-      this.getSelectionsFullInfo();
     },
   },
   created() {
@@ -581,24 +585,28 @@ export default {
     }
   },
   methods: {
-    getSelectionsFullInfo() {
-      const photosUids = this.selection.join('|');
-      const photosLength = photosUids.length;
+    async getSelectionsData () {
+      let selection = this.selection;
 
-      const params = {
-        count: photosLength,
-        uid: photosUids,
-      };
+      await $api.post("batch/photos/edit", { photos: selection, return: true }).then((response) => {
+        const photos = response.data.photos;
+        const photosLength = response.data.photos.length;
+        this.selectedPhotosLength = photosLength;
 
-      Photo.search(params)
-        .then((response) => {
-          this.selectionsFullInfo = response.models;
-        });
+        if (photosLength > 0) {
+          for (let i = 0; i < photosLength; i++) {
+            const modelInstance = new Photo();
+            this.selectionsFullInfo.push(modelInstance.setValues(photos[i]));
+          }
+        }
+      });
     },
     openPhoto(index) {
       this.$lightbox.openModels(Thumb.fromPhotos([this.selectionsFullInfo[index]]), 0, null , this.isBatchDialog);
     },
+    // TODO: change this function
     isSelected(m) {
+      console.log('PhotoClipboard', PhotoClipboard);
       return PhotoClipboard.has(m);
     },
     onClick(ev) {
