@@ -1,33 +1,32 @@
-<!--
-
-Thank you for your interest in contributing!
-
-Because we want to create the best possible product for our users, we have a set of criteria to ensure that all submissions are acceptable, see https://docs.photoprism.app/developer-guide/pull-requests/ for details.
-
-(1) Please provide a concise description of your pull request.
-
-- What does it implement / fix / improve? Why?
-- Are the changes related to an existing issue?
-
-(2) After you submit your first pull request, you will be asked to accept our CLA, see https://www.photoprism.app/cla.
-
-(3) Finally, please confirm that the following criteria are met by replacing "[ ]" with "[x]" (also possible at a later time).
-
--->
-
-Acceptance Criteria:
-
-- [ ] Features and enhancements must be fully implemented so that they can be released at any time without additional work
-- [ ] Automated unit and/or acceptance tests are mandatory to ensure the changes work as expected and to reduce repetitive manual work
-- [ ] Frontend components must be responsive to work and look properly on phones, tablets, and desktop computers; you must have tested them on all major browsers and different devices
-- [ ] Documentation and translation updates should be provided if needed
-- [ ] In case you submit database-related changes, they must be tested and compatible with SQLite 3 and MariaDB 10.5.12+
+### Description
 
 <!--
+We appreciate your interest in contributing! Please provide a brief description of your changes so that we know what is included in this pull request, and confirm that it meets the acceptance criteria:
 
-Since reviewing, testing and finally merging pull requests requires significant resources on our side, this can take several months if it's not just a small fix, especially if extensive testing is required to prevent bugs from getting into our stable version.
-
-We thank you for your patience! :)
-
+What does it aim to implement, fix or improve? Why?
 -->
 
+These changes implement/fix/improve...
+
+#### Related Issues
+
+- Links to issues that this PR fixes, implements, or is otherwise related to...
+
+### Acceptance Criteria
+
+<!-- You may add additional criteria and/or remove criteria that do not apply, e.g. because your PR does not include frontend changes: -->
+
+- [ ] New features or enhancements are fully implemented and do not break existing functionality, so that they can be released at any time without requiring additional work
+- [ ] Automated unit and/or acceptance tests have been added to ensure that changes work as expected and to reduce repetitive manual work
+- [ ] Documentation has been / will be updated, especially as it relates to new configuration options or potentially disruptive changes
+- [ ] The user interface has been tested on Chrome, Safari, and Firefox and is fully responsive for use on phones, tablets, and desktop computers
+- [ ] Database-related changes have been successfully tested with SQLite 3 and MariaDB 10.5.12+
+
+<!--
+Contribution Agreement:
+
+PhotoPrism UG ("PhotoPrism", "we" or "us") hereby confirms that, to the fullest extent permitted by applicable law, this Contribution is provided "AS IS" WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, ANY IMPLIED WARRANTIES OR CONDITIONS OF NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE. You have no obligation to provide support, maintenance, or other services for your Contribution.
+If you contribute code or other intellectual property, we kindly ask you to confirm the agreement after submitting your first PR, so that we can safely use it in our projects without risking unexpected legal disputes.
+
+Thank you very much! :)
+-->

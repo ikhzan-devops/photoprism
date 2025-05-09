@@ -26,9 +26,12 @@ func Caption(imgName string, src media.Src) (result CaptionResult, err error) {
 				apiRequest.Model = model.Name
 			}
 
-			/* if json, _ := apiRequest.JSON(); len(json) > 0 {
-				log.Debugf("request: %s", json)
-			} */
+			if model.Version != "" {
+				apiRequest.Version = model.Version
+			}
+
+			// Log JSON request data in trace mode.
+			apiRequest.WriteLog()
 
 			if apiResponse, err = PerformApiRequest(apiRequest, uri, method, model.EndpointKey()); err != nil {
 				return result, err

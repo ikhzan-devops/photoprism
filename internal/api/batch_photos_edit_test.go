@@ -76,4 +76,50 @@ func TestBatchPhotosEdit(t *testing.T) {
 		r := PerformRequestWithBody(app, "POST", "/api/v1/batch/photos/edit", `{"photos": 123, "return": true}`)
 		assert.Equal(t, http.StatusBadRequest, r.Code)
 	})
+	t.Run("ReturnValuesAsAdmin", func(t *testing.T) {
+		app, router, conf := NewApiTest()
+
+		conf.SetAuthMode(config.AuthModePasswd)
+		defer conf.SetAuthMode(config.AuthModePublic)
+
+		BatchPhotosEdit(router)
+
+		sessId := AuthenticateUser(app, router, "alice", "Alice123!")
+
+		response := AuthenticatedRequestWithBody(app,
+			"POST", "/api/v1/batch/photos/edit",
+			`{"photos": ["ps6sg6be2lvl0yh7", "ps6sg6be2lvl0yh8"]}`,
+			sessId,
+		)
+
+		body := response.Body.String()
+
+		assert.NotEmpty(t, body)
+		assert.True(t, strings.HasPrefix(body, `{"values":{"`), "unexpected response")
+
+		assert.Equal(t, http.StatusOK, response.Code)
+	})
+	t.Run("ReturnValuesAsGuest", func(t *testing.T) {
+		app, router, conf := NewApiTest()
+
+		conf.SetAuthMode(config.AuthModePasswd)
+		defer conf.SetAuthMode(config.AuthModePublic)
+
+		BatchPhotosEdit(router)
+
+		sessId := AuthenticateUser(app, router, "gandalf", "Gandalf123!")
+
+		response := AuthenticatedRequestWithBody(app,
+			"POST", "/api/v1/batch/photos/edit",
+			`{"photos": ["ps6sg6be2lvl0yh7", "ps6sg6be2lvl0yh8"]}`,
+			sessId,
+		)
+
+		if response.Code != http.StatusForbidden {
+			t.Fatal(response.Body.String())
+		}
+
+		val := gjson.Get(response.Body.String(), "error")
+		assert.Equal(t, "Permission denied", val.String())
+	})
 }
