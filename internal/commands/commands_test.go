@@ -1,6 +1,7 @@
 package commands
 
 import (
+	"bytes"
 	"flag"
 	"os"
 	"testing"
@@ -81,7 +82,7 @@ func NewTestContext(args []string) *cli.Context {
 	LogErr(flagSet.Parse(args))
 
 	// Create and return new test context.
-	return cli.NewContext(app, flagSet, nil)
+	return cli.NewContext(app, flagSet, cli.NewContext(app, flagSet, nil))
 }
 
 // RunWithTestContext executes a command with a test context and returns its output.
@@ -91,12 +92,17 @@ func RunWithTestContext(cmd *cli.Command, args []string) (output string, err err
 
 	// TODO: Help output can currently not be generated in test mode due to
 	//       a nil pointer panic in the "github.com/urfave/cli/v2" package.
-	cmd.HideHelp = true
+	cmd.HideHelp = false
 
 	// Run command with test context.
+	var catureOutput bytes.Buffer
+	oldWriter := ctx.App.Writer
+	ctx.App.Writer = &catureOutput
 	output = capture.Output(func() {
 		err = cmd.Run(ctx, args...)
 	})
+	ctx.App.Writer = oldWriter
+	output += catureOutput.String()
 
 	return output, err
 }
