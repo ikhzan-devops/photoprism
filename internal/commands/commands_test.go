@@ -90,14 +90,13 @@ func RunWithTestContext(cmd *cli.Command, args []string) (output string, err err
 	// Create test context with flags and arguments.
 	ctx := NewTestContext(args)
 
-	// TODO: Help output can currently not be generated in test mode due to
-	//       a nil pointer panic in the "github.com/urfave/cli/v2" package.
 	cmd.HideHelp = false
 
-	// Run command with test context.
+	// Redirect the output from cli to buffer for transfer to output for testing
 	var catureOutput bytes.Buffer
 	oldWriter := ctx.App.Writer
 	ctx.App.Writer = &catureOutput
+	// Run command with test context.
 	output = capture.Output(func() {
 		err = cmd.Run(ctx, args...)
 	})
