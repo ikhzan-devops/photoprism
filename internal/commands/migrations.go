@@ -264,9 +264,6 @@ func migrationsTransferAction(ctx *cli.Context) error {
 				errmsg := fmt.Sprintf("migrate: transfer target database is not empty, %d photos found", photoCount)
 				log.Error(errmsg)
 				return fmt.Errorf(errmsg)
-			} else {
-				entity.SetDbProvider(tfrConf)
-				entity.Entities.Truncate(tfrConf.Db())
 			}
 		} else {
 			runForced = false
@@ -280,6 +277,7 @@ func migrationsTransferAction(ctx *cli.Context) error {
 	entity.SetDbProvider(tfrConf)
 	tfrConf.MigrateDb(false, ids)
 	if runForced {
+		entity.Entities.Truncate(tfrConf.Db())
 		entity.CreateDefaultFixtures()
 	}
 	log.Infof("migrate: migrating against %s", conf.DatabaseDsn())
@@ -306,6 +304,14 @@ func migrationsTransferAction(ctx *cli.Context) error {
 		}
 		if err = tfrConf.Db().Unscoped().Delete(&entity.UserShare{UserUID: userRecord.UserUID}).Error; err != nil {
 			log.Errorf("migrate: error in admin user cleanup user share %s", err.Error())
+			return err
+		}
+		if err = tfrConf.Db().Unscoped().Delete(&entity.Password{UID: userRecord.UserUID}).Error; err != nil {
+			log.Errorf("migrate: error in admin user cleanup password %s", err.Error())
+			return err
+		}
+		if err = tfrConf.Db().Unscoped().Delete(&entity.Passcode{UID: userRecord.UserUID}).Error; err != nil {
+			log.Errorf("migrate: error in admin user cleanup passcode %s", err.Error())
 			return err
 		}
 		if err := conf.Db().Unscoped().
