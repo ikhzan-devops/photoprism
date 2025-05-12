@@ -18,7 +18,6 @@ export const Locale = () => {
 export let Options = [
   {
     text: "English", // English
-    translated: "English",
     value: "en",
   },
   {
@@ -174,7 +173,7 @@ export let Options = [
   },
   {
     text: "日本語", // Japanese
-    value: "ja_JP",
+    value: "ja",
   },
   {
     text: "한국어", // Korean

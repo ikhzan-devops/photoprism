@@ -51,7 +51,7 @@ func (w *Convert) ToAvc(f *MediaFile, encoder encode.Encoder, noMutex, force boo
 		// Do nothing.
 	} else if mediaFile.IsVideo() {
 		// Return MP4 AVC encoded video file
-		log.Debugf("convert: skipped transcoding, %s is MPEG-4 AVC encoded", logFileName)
+		log.Debugf("convert: %s has already been transcoded to MPEG-4 AVC", logFileName)
 		return mediaFile, nil
 	}
 

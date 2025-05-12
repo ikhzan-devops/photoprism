@@ -22,8 +22,8 @@ var (
 	tempPath = ""
 )
 
-// findBin resolves the absolute file path of external binaries.
-func findBin(configBin string, defaultBin ...string) (binPath string) {
+// FindBin resolves the absolute file path of external binaries.
+func FindBin(configBin string, defaultBin ...string) (binPath string) {
 	// Binary file paths to be checked.
 	var search []string
 
@@ -242,6 +242,12 @@ func (c *Config) ConfigPath() string {
 		}
 
 		return filepath.Join(c.StoragePath(), "config")
+	} else if fs.FileExists(c.options.ConfigPath) {
+		if c.options.OptionsYaml == "" {
+			c.options.OptionsYaml = c.options.ConfigPath
+		}
+
+		c.options.ConfigPath = filepath.Dir(c.options.ConfigPath)
 	}
 
 	return fs.Abs(c.options.ConfigPath)
@@ -249,7 +255,13 @@ func (c *Config) ConfigPath() string {
 
 // OptionsYaml returns the config options YAML filename.
 func (c *Config) OptionsYaml() string {
-	return filepath.Join(c.ConfigPath(), "options.yml")
+	configPath := c.ConfigPath()
+
+	if c.options.OptionsYaml == "" {
+		return filepath.Join(configPath, "options.yml")
+	}
+
+	return fs.Abs(c.options.OptionsYaml)
 }
 
 // DefaultsYaml returns the default options YAML filename.
@@ -643,17 +655,17 @@ func (c *Config) TestdataPath() string {
 
 // MariadbBin returns the mariadb executable file name.
 func (c *Config) MariadbBin() string {
-	return findBin("", "mariadb", "mysql")
+	return FindBin("", "mariadb", "mysql")
 }
 
 // MariadbDumpBin returns the mariadb-dump executable file name.
 func (c *Config) MariadbDumpBin() string {
-	return findBin("", "mariadb-dump", "mysqldump")
+	return FindBin("", "mariadb-dump", "mysqldump")
 }
 
 // SqliteBin returns the sqlite executable file name.
 func (c *Config) SqliteBin() string {
-	return findBin("", "sqlite3")
+	return FindBin("", "sqlite3")
 }
 
 // OriginalsAlbumsPath returns the optional album YAML file path inside originals.

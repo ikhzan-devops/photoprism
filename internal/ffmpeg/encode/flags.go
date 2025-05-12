@@ -7,9 +7,3 @@ package encode
 // - https://medium.com/@vlad.pbr/in-browser-live-video-using-fragmented-mp4-3aedb600a07e
 // - https://github.com/video-dev/hls.js?tab=readme-ov-file#features
 var MovFlags = "frag_keyframe+empty_moov+default_base_moof+faststart"
-
-const (
-	FFmpegBin = "ffmpeg"
-	MapVideo  = "0:v:0"
-	MapAudio  = "0:a:0?"
-)

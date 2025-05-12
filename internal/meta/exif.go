@@ -11,7 +11,6 @@ import (
 	"time"
 
 	"github.com/dsoprea/go-exif/v3"
-	"github.com/ugjka/go-tz/v2"
 
 	exifcommon "github.com/dsoprea/go-exif/v3/common"
 
@@ -19,6 +18,7 @@ import (
 	"github.com/photoprism/photoprism/pkg/fs"
 	"github.com/photoprism/photoprism/pkg/media/projection"
 	"github.com/photoprism/photoprism/pkg/rnd"
+	"github.com/photoprism/photoprism/pkg/time/tz"
 	"github.com/photoprism/photoprism/pkg/txt"
 )
 
@@ -260,15 +260,13 @@ func (data *Data) Exif(fileName string, fileFormat fs.Type, bruteForce bool) (er
 	}
 
 	if data.Lat != 0 && data.Lng != 0 {
-		zones, err := tz.GetZone(tz.Point{
-			Lat: data.Lat,
-			Lon: data.Lng,
-		})
-
-		if err == nil && len(zones) > 0 {
-			data.TimeZone = zones[0]
+		if zone := tz.Position(data.Lat, data.Lng); zone != "" {
+			data.TimeZone = zone
 		}
 	}
+
+	// Normalize time zone name.
+	data.TimeZone = tz.Name(data.TimeZone)
 
 	takenAt := time.Time{}
 

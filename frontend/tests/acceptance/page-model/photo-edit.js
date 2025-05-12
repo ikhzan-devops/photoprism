@@ -2,6 +2,7 @@ import { Selector, t } from "testcafe";
 
 export default class Page {
   constructor() {
+    this.dialog = Selector("div.v-dialog");
     this.dialogClose = Selector("div.v-dialog button.action-close", { timeout: 15000 });
     this.dialogNext = Selector("div.v-dialog button.action-next", { timeout: 15000 });
     this.dialogPrevious = Selector("div.v-dialog button.action-previous", { timeout: 15000 });
@@ -250,7 +251,7 @@ export default class Page {
 
       .click(Selector("button.action-approve"));
     await t.expect(this.latitude.visible, { timeout: 5000 }).ok();
-    await t.click(Selector("button.action-apply")).click(Selector("button.action-close"));
+    await t.click(this.detailsApply).click(Selector("button.action-close"));
   }
 
   async undoPhotoEdit(
@@ -406,6 +407,6 @@ export default class Page {
     } else {
       await t.typeText(Selector(".input-notes textarea"), notes, { replace: true });
     }
-    await t.click(Selector("button.action-apply")).click(Selector("button.action-close"));
+    await t.click(this.detailsApply).click(Selector("button.action-close"));
   }
 }

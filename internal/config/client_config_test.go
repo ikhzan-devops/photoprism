@@ -17,6 +17,7 @@ func TestConfig_ClientConfig(t *testing.T) {
 		assert.IsType(t, &ClientConfig{}, result)
 		assert.Equal(t, AuthModePublic, result.AuthMode)
 		assert.Equal(t, c.LibraryUri("/"), result.LoginUri)
+		assert.Equal(t, "", result.LoginInfo)
 		assert.Equal(t, "", result.RegisterUri)
 		assert.Equal(t, 0, result.PasswordLength)
 		assert.Equal(t, "", result.PasswordResetUri)
@@ -552,7 +553,7 @@ func TestConfig_ClientSessionConfig(t *testing.T) {
 		assert.True(t, f.Library)
 		assert.True(t, f.Logs)
 		assert.True(t, f.Review)
-		assert.False(t, f.Share)
+		assert.True(t, f.Share)
 	})
 	t.Run("Public", func(t *testing.T) {
 		c.SetAuthMode(AuthModePublic)

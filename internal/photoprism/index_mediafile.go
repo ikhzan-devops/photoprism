@@ -19,7 +19,9 @@ import (
 	"github.com/photoprism/photoprism/pkg/media"
 	"github.com/photoprism/photoprism/pkg/media/video"
 	"github.com/photoprism/photoprism/pkg/rnd"
+	"github.com/photoprism/photoprism/pkg/time/tz"
 	"github.com/photoprism/photoprism/pkg/txt"
+	"github.com/photoprism/photoprism/pkg/txt/clip"
 )
 
 // MediaFile indexes a single media file.
@@ -378,7 +380,7 @@ func (ind *Index) UserMediaFile(m *MediaFile, o IndexOptions, originalName, phot
 		// Update color information, if available.
 		if color, colorErr := m.Colors(Config().ThumbCachePath()); colorErr != nil {
 			log.Debugf("%s while detecting colors", colorErr.Error())
-			file.FileError = colorErr.Error()
+			file.FileError = clip.Chars(colorErr.Error(), txt.ClipError)
 			file.FilePrimary = false
 		} else {
 			file.FileMainColor = color.MainColor.Name()
@@ -424,6 +426,10 @@ func (ind *Index) UserMediaFile(m *MediaFile, o IndexOptions, originalName, phot
 				file.SetFPS(info.FPS)
 				file.SetFrames(info.Frames)
 
+				if file.FileDuration > photo.PhotoDuration {
+					photo.PhotoDuration = file.FileDuration
+				}
+
 				// Change file and photo type to "live" if the file has a video embedded.
 				file.FileVideo = true
 				file.MediaType = entity.MediaLive
@@ -446,6 +452,10 @@ func (ind *Index) UserMediaFile(m *MediaFile, o IndexOptions, originalName, phot
 				log.Infof("index: %s has instance_id %s", logName, clean.Log(data.InstanceID))
 
 				file.InstanceID = data.InstanceID
+			}
+
+			if m.IsAnimatedImage() && file.FileDuration > photo.PhotoDuration {
+				photo.PhotoDuration = file.FileDuration
 			}
 		}
 
@@ -476,7 +486,7 @@ func (ind *Index) UserMediaFile(m *MediaFile, o IndexOptions, originalName, phot
 			}
 		} else {
 			log.Warn(dataErr.Error())
-			file.FileError = dataErr.Error()
+			file.FileError = clip.Chars(dataErr.Error(), txt.ClipError)
 		}
 	case m.IsRaw(), m.IsImage():
 		if data := m.MetaData(); data.Error == nil {
@@ -536,6 +546,10 @@ func (ind *Index) UserMediaFile(m *MediaFile, o IndexOptions, originalName, phot
 				file.SetDuration(info.Duration)
 				file.SetFPS(info.FPS)
 				file.SetFrames(info.Frames)
+
+				if file.FileDuration > photo.PhotoDuration {
+					photo.PhotoDuration = file.FileDuration
+				}
 
 				// Change file and photo type to "live" if the file has a video embedded.
 				file.FileVideo = true
@@ -779,11 +793,11 @@ func (ind *Index) UserMediaFile(m *MediaFile, o IndexOptions, originalName, phot
 	if m.IsMedia() && entity.SrcPriority[photo.TakenSrc] <= entity.SrcPriority[entity.SrcName] {
 		// Try to extract time from original file name first.
 		if taken := txt.DateFromFilePath(photo.OriginalName); !taken.IsZero() {
-			photo.SetTakenAt(taken, taken, "", entity.SrcName)
-		} else if taken, takenSrc := m.TakenAt(); takenSrc == entity.SrcName {
-			photo.SetTakenAt(taken, taken, "", entity.SrcName)
-		} else if !taken.IsZero() {
-			photo.SetTakenAt(taken, taken, time.UTC.String(), takenSrc)
+			photo.SetTakenAt(taken, taken, tz.Local, entity.SrcName)
+		} else if takenAt, takenAtLocal, takenSrc := m.TakenAt(); takenSrc == entity.SrcName {
+			photo.SetTakenAt(takenAt, takenAtLocal, tz.Local, entity.SrcName)
+		} else if !takenAt.IsZero() && !takenAtLocal.IsZero() {
+			photo.SetTakenAt(takenAt, takenAtLocal, tz.Local, takenSrc)
 		}
 	}
 

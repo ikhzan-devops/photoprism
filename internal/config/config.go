@@ -50,7 +50,6 @@ import (
 	"github.com/photoprism/photoprism/internal/config/customize"
 	"github.com/photoprism/photoprism/internal/config/ttl"
 	"github.com/photoprism/photoprism/internal/entity"
-	"github.com/photoprism/photoprism/internal/event"
 	"github.com/photoprism/photoprism/internal/mutex"
 	"github.com/photoprism/photoprism/internal/service/hub"
 	"github.com/photoprism/photoprism/internal/service/hub/places"
@@ -62,8 +61,6 @@ import (
 	"github.com/photoprism/photoprism/pkg/rnd"
 )
 
-// log points to the global logger.
-var log = event.Log
 var initThumbsMutex sync.Mutex
 
 // Config holds database, cache and all parameters of photoprism
@@ -123,13 +120,13 @@ func initLogger() {
 		})
 
 		if Env(EnvProd) {
-			log.SetLevel(logrus.WarnLevel)
+			SetLogLevel(logrus.WarnLevel)
 		} else if Env(EnvTrace) {
-			log.SetLevel(logrus.TraceLevel)
+			SetLogLevel(logrus.TraceLevel)
 		} else if Env(EnvDebug) {
-			log.SetLevel(logrus.DebugLevel)
+			SetLogLevel(logrus.DebugLevel)
 		} else {
-			log.SetLevel(logrus.InfoLevel)
+			SetLogLevel(logrus.InfoLevel)
 		}
 	})
 }
@@ -330,7 +327,8 @@ func (c *Config) Propagate() {
 
 	// Set default theme and locale.
 	customize.DefaultTheme = c.DefaultTheme()
-	customize.DefaultLocale = c.DefaultLocale()
+	customize.DefaultLanguage = c.DefaultLocale()
+	customize.DefaultTimeZone = c.DefaultTimezone().String()
 
 	// Propagate settings.
 	c.Settings().Propagate()
@@ -583,9 +581,9 @@ func (c *Config) LogLevel() logrus.Level {
 	}
 }
 
-// SetLogLevel sets the Logrus log level.
+// SetLogLevel sets the application log level.
 func (c *Config) SetLogLevel(level logrus.Level) {
-	log.SetLevel(level)
+	SetLogLevel(level)
 }
 
 // Shutdown shuts down the active processes and closes the database connection.

@@ -7,17 +7,19 @@ export GO111MODULE=on
 
 -include .semver
 -include .env
-export
 
 # Binary file names.
 BINARY_NAME=photoprism
 GOIMPORTS=goimports
 
-# Build version.
-SEMVER_MAJOR ?= 0
+# Build version string.
+SEMVER_MAJOR ?= 1
+export SEMVER_MAJOR
 SEMVER_MINOR ?= $(shell date -u +%y%m)
+export SEMVER_MINOR
 SEMVER_PATCH ?= $(shell date -u +%d)
 SEMVER_VERSION ?= $(SEMVER_MAJOR).$(SEMVER_MINOR).$(SEMVER_PATCH)
+export SEMVER_VERSION
 
 # Build parameters.
 BUILD_PATH ?= $(shell realpath "./build")
@@ -25,8 +27,10 @@ BUILD_DATE ?= $(shell date -u +%y%m%d)
 REPORT_DATE ?= $(shell date -u +%Y-%m-%d)
 BUILD_VERSION ?= $(shell git describe --always)
 BUILD_TAG ?= $(BUILD_DATE)-$(BUILD_VERSION)
+export BUILD_TAG
 BUILD_OS ?= $(shell uname -s)
-BUILD_ARCH ?= $(shell scripts/dist/arch.sh)
+BUILD_ARCH ?= $(shell ./scripts/dist/arch.sh)
+export BUILD_ARCH
 JS_BUILD_PATH ?= $(shell realpath "./assets/static/build")
 TF_VERSION ?= 2.18.0
 
@@ -191,15 +195,15 @@ acceptance-sqlite-restart:
 	rm -rf storage/acceptance/originals/2011
 	rm -rf storage/acceptance/originals/2013
 	rm -rf storage/acceptance/originals/2017
-	./photoprism --auth-mode="public" -c "./storage/acceptance/config-sqlite" --test start -d
+	./photoprism --auth-mode="public" -c "./storage/acceptance/config-sqlite" start -d
 acceptance-sqlite-stop:
-	./photoprism --auth-mode="public" -c "./storage/acceptance/config-sqlite" --test stop
+	./photoprism --auth-mode="public" -c "./storage/acceptance/config-sqlite" stop
 acceptance-auth-sqlite-restart:
 	cp -f storage/acceptance/backup.db storage/acceptance/index.db
 	cp -f storage/acceptance/config-sqlite/settingsBackup.yml storage/acceptance/config-sqlite/settings.yml
-	./photoprism --auth-mode="password" -c "./storage/acceptance/config-sqlite" --test start -d
+	./photoprism --auth-mode="password" -c "./storage/acceptance/config-sqlite" start -d
 acceptance-auth-sqlite-stop:
-	./photoprism --auth-mode="password" -c "./storage/acceptance/config-sqlite" --test stop
+	./photoprism --auth-mode="password" -c "./storage/acceptance/config-sqlite" stop
 start:
 	./photoprism start -d
 stop:
@@ -274,24 +278,28 @@ build-static:
 	scripts/build.sh static $(BINARY_NAME)
 build-libheif: build-libheif-amd64 build-libheif-arm64 build-libheif-armv7
 build-libheif-amd64:
-	docker run --rm -u $(UID) --platform=amd64 --pull=always -v ".:/go/src/github.com/photoprism/photoprism" -e BUILD_ARCH=amd64 -e SYSTEM_ARCH=amd64 photoprism/develop:oracular ./scripts/dist/build-libheif.sh v1.19.5
-	docker run --rm -u $(UID) --platform=amd64 --pull=always -v ".:/go/src/github.com/photoprism/photoprism" -e BUILD_ARCH=amd64 -e SYSTEM_ARCH=amd64 photoprism/develop:noble ./scripts/dist/build-libheif.sh v1.19.5
-	docker run --rm -u $(UID) --platform=amd64 --pull=always -v ".:/go/src/github.com/photoprism/photoprism" -e BUILD_ARCH=amd64 -e SYSTEM_ARCH=amd64 photoprism/develop:jammy ./scripts/dist/build-libheif.sh v1.19.5
-	docker run --rm -u $(UID) --platform=amd64 --pull=always -v ".:/go/src/github.com/photoprism/photoprism" -e BUILD_ARCH=amd64 -e SYSTEM_ARCH=amd64 photoprism/develop:bookworm ./scripts/dist/build-libheif.sh v1.19.5
+	docker run --rm -u $(UID) --platform=amd64 --pull=always -v ".:/go/src/github.com/photoprism/photoprism" -e BUILD_ARCH=amd64 -e SYSTEM_ARCH=amd64 photoprism/develop:plucky ./scripts/dist/build-libheif.sh v1.19.7
+	docker run --rm -u $(UID) --platform=amd64 --pull=always -v ".:/go/src/github.com/photoprism/photoprism" -e BUILD_ARCH=amd64 -e SYSTEM_ARCH=amd64 photoprism/develop:oracular ./scripts/dist/build-libheif.sh v1.19.7
+	docker run --rm -u $(UID) --platform=amd64 --pull=always -v ".:/go/src/github.com/photoprism/photoprism" -e BUILD_ARCH=amd64 -e SYSTEM_ARCH=amd64 photoprism/develop:noble ./scripts/dist/build-libheif.sh v1.19.7
+	docker run --rm -u $(UID) --platform=amd64 --pull=always -v ".:/go/src/github.com/photoprism/photoprism" -e BUILD_ARCH=amd64 -e SYSTEM_ARCH=amd64 photoprism/develop:jammy ./scripts/dist/build-libheif.sh v1.19.7
+	docker run --rm -u $(UID) --platform=amd64 --pull=always -v ".:/go/src/github.com/photoprism/photoprism" -e BUILD_ARCH=amd64 -e SYSTEM_ARCH=amd64 photoprism/develop:bookworm ./scripts/dist/build-libheif.sh v1.19.7
 build-libheif-arm64:
-	docker run --rm -u $(UID) --platform=arm64 --pull=always -v ".:/go/src/github.com/photoprism/photoprism" -e BUILD_ARCH=arm64 -e SYSTEM_ARCH=arm64 photoprism/develop:oracular ./scripts/dist/build-libheif.sh v1.19.5
-	docker run --rm -u $(UID) --platform=arm64 --pull=always -v ".:/go/src/github.com/photoprism/photoprism" -e BUILD_ARCH=arm64 -e SYSTEM_ARCH=arm64 photoprism/develop:noble ./scripts/dist/build-libheif.sh v1.19.5
-	docker run --rm -u $(UID) --platform=arm64 --pull=always -v ".:/go/src/github.com/photoprism/photoprism" -e BUILD_ARCH=arm64 -e SYSTEM_ARCH=arm64 photoprism/develop:jammy ./scripts/dist/build-libheif.sh v1.19.5
-	docker run --rm -u $(UID) --platform=arm64 --pull=always -v ".:/go/src/github.com/photoprism/photoprism" -e BUILD_ARCH=arm64 -e SYSTEM_ARCH=arm64 photoprism/develop:bookworm ./scripts/dist/build-libheif.sh v1.19.5
+	docker run --rm -u $(UID) --platform=arm64 --pull=always -v ".:/go/src/github.com/photoprism/photoprism" -e BUILD_ARCH=arm64 -e SYSTEM_ARCH=arm64 photoprism/develop:plucky ./scripts/dist/build-libheif.sh v1.19.7
+	docker run --rm -u $(UID) --platform=arm64 --pull=always -v ".:/go/src/github.com/photoprism/photoprism" -e BUILD_ARCH=arm64 -e SYSTEM_ARCH=arm64 photoprism/develop:oracular ./scripts/dist/build-libheif.sh v1.19.7
+	docker run --rm -u $(UID) --platform=arm64 --pull=always -v ".:/go/src/github.com/photoprism/photoprism" -e BUILD_ARCH=arm64 -e SYSTEM_ARCH=arm64 photoprism/develop:noble ./scripts/dist/build-libheif.sh v1.19.7
+	docker run --rm -u $(UID) --platform=arm64 --pull=always -v ".:/go/src/github.com/photoprism/photoprism" -e BUILD_ARCH=arm64 -e SYSTEM_ARCH=arm64 photoprism/develop:jammy ./scripts/dist/build-libheif.sh v1.19.7
+	docker run --rm -u $(UID) --platform=arm64 --pull=always -v ".:/go/src/github.com/photoprism/photoprism" -e BUILD_ARCH=arm64 -e SYSTEM_ARCH=arm64 photoprism/develop:bookworm ./scripts/dist/build-libheif.sh v1.19.7
 build-libheif-armv7:
-	docker run --rm -u $(UID) --platform=arm --pull=always -v ".:/go/src/github.com/photoprism/photoprism" -e BUILD_ARCH=arm -e SYSTEM_ARCH=arm photoprism/develop:armv7 ./scripts/dist/build-libheif.sh v1.19.5
-	docker run --rm -u $(UID) --platform=arm --pull=always -v ".:/go/src/github.com/photoprism/photoprism" -e BUILD_ARCH=arm -e SYSTEM_ARCH=arm photoprism/develop:jammy ./scripts/dist/build-libheif.sh v1.19.5
+	docker run --rm -u $(UID) --platform=arm --pull=always -v ".:/go/src/github.com/photoprism/photoprism" -e BUILD_ARCH=arm -e SYSTEM_ARCH=arm photoprism/develop:armv7 ./scripts/dist/build-libheif.sh v1.19.7
+	docker run --rm -u $(UID) --platform=arm --pull=always -v ".:/go/src/github.com/photoprism/photoprism" -e BUILD_ARCH=arm -e SYSTEM_ARCH=arm photoprism/develop:jammy ./scripts/dist/build-libheif.sh v1.19.7
 build-libheif-latest: build-libheif-amd64-latest build-libheif-arm64-latest build-libheif-armv7-latest
 build-libheif-amd64-latest:
+	docker run --rm -u $(UID) --platform=amd64 --pull=always -v ".:/go/src/github.com/photoprism/photoprism" -e BUILD_ARCH=amd64 -e SYSTEM_ARCH=amd64 photoprism/develop:plucky ./scripts/dist/build-libheif.sh
 	docker run --rm -u $(UID) --platform=amd64 --pull=always -v ".:/go/src/github.com/photoprism/photoprism" -e BUILD_ARCH=amd64 -e SYSTEM_ARCH=amd64 photoprism/develop:oracular ./scripts/dist/build-libheif.sh
 	docker run --rm -u $(UID) --platform=amd64 --pull=always -v ".:/go/src/github.com/photoprism/photoprism" -e BUILD_ARCH=amd64 -e SYSTEM_ARCH=amd64 photoprism/develop:noble ./scripts/dist/build-libheif.sh
 	docker run --rm -u $(UID) --platform=amd64 --pull=always -v ".:/go/src/github.com/photoprism/photoprism" -e BUILD_ARCH=amd64 -e SYSTEM_ARCH=amd64 photoprism/develop:jammy ./scripts/dist/build-libheif.sh
 build-libheif-arm64-latest:
+	docker run --rm -u $(UID) --platform=arm64 --pull=always -v ".:/go/src/github.com/photoprism/photoprism" -e BUILD_ARCH=arm64 -e SYSTEM_ARCH=arm64 photoprism/develop:plucky ./scripts/dist/build-libheif.sh
 	docker run --rm -u $(UID) --platform=arm64 --pull=always -v ".:/go/src/github.com/photoprism/photoprism" -e BUILD_ARCH=arm64 -e SYSTEM_ARCH=arm64 photoprism/develop:oracular ./scripts/dist/build-libheif.sh
 	docker run --rm -u $(UID) --platform=arm64 --pull=always -v ".:/go/src/github.com/photoprism/photoprism" -e BUILD_ARCH=arm64 -e SYSTEM_ARCH=arm64 photoprism/develop:noble ./scripts/dist/build-libheif.sh
 	docker run --rm -u $(UID) --platform=arm64 --pull=always -v ".:/go/src/github.com/photoprism/photoprism" -e BUILD_ARCH=arm64 -e SYSTEM_ARCH=arm64 photoprism/develop:jammy ./scripts/dist/build-libheif.sh
@@ -396,29 +404,32 @@ docker-pull:
 	$(DOCKER_COMPOSE) -f compose.latest.yaml pull --ignore-pull-failures
 docker-build:
 	$(DOCKER_COMPOSE) --profile=all pull --ignore-pull-failures
+	$(DOCKER_COMPOSE) down --remove-orphans
 	$(DOCKER_COMPOSE) build --pull
-docker-nvidia: docker-nvidia-up
-docker-nvidia-up:
-	docker compose --profile=qdrant -f compose.nvidia.yaml up
-docker-nvidia-down:
-	docker compose --profile=qdrant -f compose.nvidia.yaml down --remove-orphans
-docker-nvidia-build:
-	docker compose --profile=qdrant -f compose.nvidia.yaml build
-docker-intel: docker-intel-up
-docker-intel-up:
-	docker compose -f compose.intel.yaml up
-docker-intel-build:
-	docker compose -f compose.intel.yaml build
-docker-local-up:
-	$(DOCKER_COMPOSE) -f compose.local.yaml up --force-recreate
-docker-local-down:
-	$(DOCKER_COMPOSE) -f compose.local.yaml down -V
+nvidia: nvidia-up
+nvidia-build:
+	$(DOCKER_COMPOSE) --profile=qdrant -f compose.nvidia.yaml pull --ignore-pull-failures
+	$(DOCKER_COMPOSE) --profile=qdrant -f compose.nvidia.yaml build
+nvidia-up:
+	$(DOCKER_COMPOSE) --profile=qdrant -f compose.nvidia.yaml pull --ignore-pull-failures
+	$(DOCKER_COMPOSE) --profile=qdrant -f compose.nvidia.yaml up --remove-orphans
+nvidia-down:
+	$(DOCKER_COMPOSE) --profile=qdrant -f compose.nvidia.yaml down --remove-orphans
+intel: intel-up
+intel-build:
+	$(DOCKER_COMPOSE) -f compose.intel.yaml pull --ignore-pull-failures
+	$(DOCKER_COMPOSE) -f compose.intel.yaml build
+intel-up:
+	$(DOCKER_COMPOSE) -f compose.intel.yaml pull --ignore-pull-failures
+	$(DOCKER_COMPOSE) -f compose.intel.yaml up --remove-orphans
+intel-down:
+	$(DOCKER_COMPOSE) -f compose.intel.yaml down --remove-orphans
 develop: docker-develop
 docker-develop: docker-develop-latest
 docker-develop-all: docker-develop-latest docker-develop-other
 docker-develop-latest: docker-develop-ubuntu
 docker-develop-debian: docker-develop-bookworm docker-develop-bookworm-slim
-docker-develop-ubuntu: docker-develop-oracular docker-develop-oracular-slim
+docker-develop-ubuntu: docker-develop-plucky docker-develop-plucky-slim
 docker-develop-other: docker-develop-debian docker-develop-bullseye docker-develop-bullseye-slim docker-develop-buster
 docker-develop-bookworm:
 	docker pull --platform=amd64 debian:bookworm-slim
@@ -485,11 +496,19 @@ docker-develop-noble-slim:
 docker-develop-oracular:
 	docker pull --platform=amd64 ubuntu:oracular
 	docker pull --platform=arm64 ubuntu:oracular
-	scripts/docker/buildx-multi.sh develop linux/amd64,linux/arm64 oracular /oracular "-t photoprism/develop:latest -t photoprism/develop:ubuntu"
+	scripts/docker/buildx-multi.sh develop linux/amd64,linux/arm64 oracular /oracular
 docker-develop-oracular-slim:
 	docker pull --platform=amd64 ubuntu:oracular
 	docker pull --platform=arm64 ubuntu:oracular
 	scripts/docker/buildx-multi.sh develop linux/amd64,linux/arm64 oracular-slim /oracular-slim
+docker-develop-plucky:
+	docker pull --platform=amd64 ubuntu:plucky
+	docker pull --platform=arm64 ubuntu:plucky
+	scripts/docker/buildx-multi.sh develop linux/amd64,linux/arm64 plucky /plucky "-t photoprism/develop:latest -t photoprism/develop:ubuntu"
+docker-develop-plucky-slim:
+	docker pull --platform=amd64 ubuntu:plucky
+	docker pull --platform=arm64 ubuntu:plucky
+	scripts/docker/buildx-multi.sh develop linux/amd64,linux/arm64 plucky-slim /plucky-slim
 unstable: docker-unstable
 docker-unstable: docker-unstable-mantic
 docker-unstable-jammy:
@@ -507,10 +526,10 @@ docker-unstable-mantic:
 preview: docker-preview-ce
 docker-preview: docker-preview-ce
 docker-preview-all: docker-preview-latest docker-preview-other
-docker-preview-ce: docker-preview-oracular
+docker-preview-ce: docker-preview-plucky
 docker-preview-latest: docker-preview-ubuntu
 docker-preview-debian: docker-preview-bookworm
-docker-preview-ubuntu: docker-preview-oracular
+docker-preview-ubuntu: docker-preview-plucky
 docker-preview-other: docker-preview-debian docker-preview-bullseye
 docker-preview-arm: docker-preview-arm64 docker-preview-armv7
 docker-preview-bookworm:
@@ -575,12 +594,18 @@ docker-preview-oracular:
 	docker pull --platform=arm64 photoprism/develop:oracular
 	docker pull --platform=arm64 photoprism/develop:oracular-slim
 	scripts/docker/buildx-multi.sh photoprism linux/amd64,linux/arm64 preview-ce /oracular
+docker-preview-plucky:
+	docker pull --platform=amd64 photoprism/develop:plucky
+	docker pull --platform=amd64 photoprism/develop:plucky-slim
+	docker pull --platform=arm64 photoprism/develop:plucky
+	docker pull --platform=arm64 photoprism/develop:plucky-slim
+	scripts/docker/buildx-multi.sh photoprism linux/amd64,linux/arm64 preview-ce /plucky
 release: docker-release
 docker-release: docker-release-latest
 docker-release-all: docker-release-latest docker-release-other
 docker-release-latest: docker-release-ubuntu
 docker-release-debian: docker-release-bookworm
-docker-release-ubuntu: docker-release-oracular
+docker-release-ubuntu: docker-release-plucky
 docker-release-other: docker-release-debian docker-release-bullseye
 docker-release-arm: docker-release-arm64 docker-release-armv7
 docker-release-bookworm:
@@ -645,6 +670,12 @@ docker-release-oracular:
 	docker pull --platform=arm64 photoprism/develop:oracular
 	docker pull --platform=arm64 photoprism/develop:oracular-slim
 	scripts/docker/buildx-multi.sh photoprism linux/amd64,linux/arm64 ce /oracular
+docker-release-plucky:
+	docker pull --platform=amd64 photoprism/develop:plucky
+	docker pull --platform=amd64 photoprism/develop:plucky-slim
+	docker pull --platform=arm64 photoprism/develop:plucky
+	docker pull --platform=arm64 photoprism/develop:plucky-slim
+	scripts/docker/buildx-multi.sh photoprism linux/amd64,linux/arm64 ce /plucky
 start-local:
 	$(DOCKER_COMPOSE) -f compose.local.yaml up -d --wait
 stop-local:
@@ -687,8 +718,12 @@ terminal-preview:
 	$(DOCKER_COMPOSE) -f compose.preview.yaml exec photoprism-preview bash
 logs-preview:
 	$(DOCKER_COMPOSE) -f compose.preview.yaml logs -f photoprism-preview
-docker-local: docker-local-oracular
-docker-local-all: docker-local-oracular docker-local-noble docker-local-mantic docker-local-lunar docker-local-jammy docker-local-bookworm docker-local-bullseye docker-local-buster
+docker-local: docker-local-plucky
+docker-local-up:
+	$(DOCKER_COMPOSE) -f compose.local.yaml up --force-recreate
+docker-local-down:
+	$(DOCKER_COMPOSE) -f compose.local.yaml down --remove-orphans
+docker-local-all: docker-local-plucky docker-local-oracular docker-local-noble docker-local-mantic docker-local-lunar docker-local-jammy docker-local-bookworm docker-local-bullseye docker-local-buster
 docker-local-bookworm:
 	docker pull photoprism/develop:bookworm
 	docker pull photoprism/develop:bookworm-slim
@@ -725,6 +760,10 @@ docker-local-oracular:
 	docker pull photoprism/develop:oracular
 	docker pull ubuntu:oracular
 	scripts/docker/build.sh photoprism ce-oracular /oracular "-t photoprism/photoprism:local"
+docker-local-plucky:
+	docker pull photoprism/develop:plucky
+	docker pull ubuntu:plucky
+	scripts/docker/build.sh photoprism ce-plucky /plucky "-t photoprism/photoprism:local"
 local-develop: docker-local-develop
 docker-local-develop: docker-local-develop-oracular
 docker-local-develop-all: docker-local-develop-oracular docker-local-develop-noble docker-local-develop-mantic docker-local-develop-lunar docker-local-develop-jammy docker-local-develop-bookworm docker-local-develop-bullseye docker-local-develop-buster docker-local-develop-impish
@@ -755,6 +794,9 @@ docker-local-develop-noble:
 docker-local-develop-oracular:
 	docker pull ubuntu:oracular
 	scripts/docker/build.sh develop oracular /oracular
+docker-local-develop-plucky:
+	docker pull ubuntu:plucky
+	scripts/docker/build.sh develop plucky /plucky
 docker-ddns:
 	docker pull golang:alpine
 	scripts/docker/buildx-multi.sh ddns linux/amd64,linux/arm64 $(BUILD_DATE)

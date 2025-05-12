@@ -934,6 +934,15 @@ export const Set = (name, theme) => {
   themes[name] = theme;
 };
 
+// Assign adds or replaces multiple themes at once.
+export const Assign = (t) => {
+  for (const theme of t) {
+    if (theme?.name && theme?.colors) {
+      Set(theme.name, theme);
+    }
+  }
+};
+
 // Remove deletes a theme by name.
 export const Remove = (name) => {
   delete themes[name];

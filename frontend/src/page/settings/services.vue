@@ -165,6 +165,7 @@ export default {
       isDemo: this.$config.get("demo"),
       isPublic: this.$config.get("public"),
       config: this.$config.values,
+      timeZone: this.$config.getTimeZone(),
       readonly: this.$config.get("readonly"),
       settings: new Settings(this.$config.values.settings),
       model: {},
@@ -222,7 +223,7 @@ export default {
 
       const time = d.Time ? d.Time : d;
 
-      return DateTime.fromISO(time).toLocaleString(DateTime.DATE_FULL);
+      return DateTime.fromISO(time, { zone: this.timeZone }).toLocaleString(DateTime.DATE_FULL);
     },
     load() {
       Service.search({ count: 2000 }).then((r) => (this.results = r.models));

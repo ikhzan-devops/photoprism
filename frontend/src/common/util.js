@@ -40,6 +40,11 @@ const Minute = 60 * Second;
 const Hour = 60 * Minute;
 let start = new Date();
 
+// List of characters used in the values returned by generateToken.
+const tokenAlphabet = "abcdefghijklmnopqrstuvwxyz0123456789";
+export const tokenRegexp = /^[a-z0-9]{7}$/;
+export const tokenLength = 7;
+
 // True if debug logs should be created.
 const debug = window.__CONFIG__?.debug || window.__CONFIG__?.trace;
 
@@ -90,18 +95,6 @@ export default class $util {
     let options;
 
     switch (format) {
-      case "date_full":
-      case "DATE_FULL":
-        options = formats.DATE_FULL;
-        break;
-      case "date_full_tz":
-      case "DATE_FULL_TZ":
-        options = formats.DATE_FULL_TZ;
-        break;
-      case "date_med_tz":
-      case "DATE_MED_TZ":
-        options = formats.DATE_MED_TZ;
-        break;
       case "date_med":
       case "DATE_MED":
         options = formats.DATE_MED;
@@ -110,8 +103,26 @@ export default class $util {
       case "DATETIME_MED":
         options = formats.DATETIME_MED;
         break;
+      case "date_med_tz":
+      case "DATE_MED_TZ":
+      case "datetime_med_tz":
+      case "DATETIME_MED_TZ":
+        options = formats.DATETIME_MED_TZ;
+        break;
+      case "date_full":
+      case "DATE_FULL":
+      case "datetime_full":
+      case "DATETIME_FULL":
+        options = formats.DATETIME_LONG;
+        break;
+      case "date_full_tz":
+      case "datetime_full_tz":
+      case "DATE_FULL_TZ":
+      case "DATETIME_FULL_TZ":
+        options = formats.DATETIME_LONG_TZ;
+        break;
       default:
-        options = formats.DATE_FULL;
+        options = formats.DATETIME_LONG;
         break;
     }
 
@@ -323,8 +334,16 @@ export default class $util {
     return s.charAt(0).toUpperCase() + s.slice(1);
   }
 
+  // Generates a random token that makes some effort to be relatively
+  // unique each time. This isn't suitable for use in
+  // security-critical locations where predictability or collisions
+  // would cause a serious problem.
   static generateToken() {
-    return (Math.random() + 1).toString(36).substring(6);
+    let result = "";
+    for (let i = 0; i < tokenLength; i++) {
+      result += tokenAlphabet.charAt(Math.floor(Math.random() * tokenAlphabet.length));
+    }
+    return result;
   }
 
   static hasTouch() {
@@ -434,7 +453,7 @@ export default class $util {
       case "ps":
         return "Adobe PostScript";
       case "eps":
-        return "Encapsulated PostScript";
+        return "EPS";
       default:
         return value.toUpperCase();
     }

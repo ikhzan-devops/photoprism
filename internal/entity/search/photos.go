@@ -81,8 +81,14 @@ func searchPhotos(frm form.SearchPhotos, sess *entity.Session, resultCols string
 
 	// Specify table names and joins.
 	s := UnscopedDb().Table(entity.File{}.TableName()).Select(resultCols).
-		Joins("JOIN photos ON files.photo_id = photos.id AND files.media_id IS NOT NULL").
-		Joins("LEFT JOIN cameras ON photos.camera_id = cameras.id").
+		Joins("JOIN photos ON files.photo_id = photos.id AND files.media_id IS NOT NULL")
+
+	// Include additional columns from details table?
+	if frm.Details {
+		s = s.Joins("JOIN details ON details.photo_id = files.photo_id")
+	}
+
+	s = s.Joins("LEFT JOIN cameras ON photos.camera_id = cameras.id").
 		Joins("LEFT JOIN lenses ON photos.lens_id = lenses.id").
 		Joins("LEFT JOIN places ON photos.place_id = places.id")
 
@@ -278,10 +284,11 @@ func searchPhotos(frm form.SearchPhotos, sess *entity.Session, resultCols string
 	}
 
 	// Filter by label, label category and keywords.
-	var categories []entity.Category
-	var labels []entity.Label
-	var labelIds []uint
 	if txt.NotEmpty(frm.Label) {
+		var categories []entity.Category
+		var labels []entity.Label
+		var labelIds []uint
+
 		if labelErr := Db().Where(AnySlug("label_slug", frm.Label, txt.Or)).Or(AnySlug("custom_slug", frm.Label, txt.Or)).Find(&labels).Error; len(labels) == 0 || labelErr != nil {
 			log.Debugf("search: label %s not found", txt.LogParamLower(frm.Label))
 			return PhotoResults{}, 0, nil
@@ -304,8 +311,8 @@ func searchPhotos(frm form.SearchPhotos, sess *entity.Session, resultCols string
 
 	// Set search filters based on search terms.
 	if terms := txt.SearchTerms(frm.Query); frm.Query != "" && len(terms) == 0 {
-		if frm.Title == "" {
-			frm.Title = fmt.Sprintf("%s*", strings.Trim(frm.Query, "%*"))
+		if frm.Title == "" && frm.Caption == "" && frm.Description == "" {
+			frm.Description = fmt.Sprintf("%s*", strings.Trim(frm.Query, "%*"))
 			frm.Query = ""
 		}
 	} else if len(terms) > 0 {
@@ -388,7 +395,11 @@ func searchPhotos(frm form.SearchPhotos, sess *entity.Session, resultCols string
 
 	// Filter by query string.
 	if frm.Query != "" {
-		if err := Db().Where(AnySlug("custom_slug", frm.Query, " ")).Find(&labels).Error; len(labels) == 0 || err != nil {
+		var categories []entity.Category
+		var labels []entity.Label
+		var labelIds []uint
+
+		if labelsErr := Db().Where(AnySlug("custom_slug", frm.Query, " ")).Find(&labels).Error; len(labels) == 0 || labelsErr != nil {
 			log.Tracef("search: label %s not found, using fuzzy search", txt.LogParamLower(frm.Query))
 
 			for _, where := range LikeAnyKeyword("k.keyword", frm.Query) {
@@ -699,8 +710,38 @@ func searchPhotos(frm form.SearchPhotos, sess *entity.Session, resultCols string
 
 	// Filter by title.
 	if txt.NotEmpty(frm.Title) {
-		where, values := OrLike("photos.photo_title", frm.Title)
-		s = s.Where(where, values...)
+		if frm.Title == txt.False {
+			s = s.Where("photos.photo_title = ''")
+		} else if frm.Title == txt.True {
+			s = s.Where("photos.photo_title <> ''")
+		} else {
+			where, values := OrLike("photos.photo_title", frm.Title)
+			s = s.Where(where, values...)
+		}
+	}
+
+	// Filter by caption.
+	if txt.NotEmpty(frm.Caption) {
+		if frm.Caption == txt.False {
+			s = s.Where("photos.photo_caption = ''")
+		} else if frm.Caption == txt.True {
+			s = s.Where("photos.photo_caption <> ''")
+		} else {
+			where, values := OrLike("photos.photo_caption", frm.Caption)
+			s = s.Where(where, values...)
+		}
+	}
+
+	// Filter by description.
+	if txt.NotEmpty(frm.Description) {
+		if frm.Description == txt.False {
+			s = s.Where("photos.photo_title = '' AND photos.photo_caption = ''")
+		} else if frm.Description == txt.True {
+			s = s.Where("photos.photo_title <> '' OR photos.photo_caption <> ''")
+		} else {
+			where, values := OrLikeCols([]string{"photos.photo_title", "photos.photo_caption"}, frm.Description)
+			s = s.Where(where, values...)
+		}
 	}
 
 	// Filter by file hash.

@@ -38,7 +38,7 @@
         <v-divider v-if="model.Title || model.Caption" class="my-4"></v-divider>
         <v-list-item
           v-tooltip="$gettext('Taken')"
-          :title="$util.formatDate(model.TakenAtLocal, 'date_med_tz', model.TimeZone)"
+          :title="formatTime(model)"
           prepend-icon="mdi-calendar"
           class="metadata__item"
         >
@@ -59,20 +59,32 @@
           <v-divider class="my-4"></v-divider>
           <v-list-item
             v-tooltip="$gettext('Location')"
-            :title="model.getLatLng()"
             prepend-icon="mdi-map-marker"
+            :title="model.getLatLng()"
             class="clickable metadata__item"
             @click.stop="model.copyLatLng()"
           >
+          </v-list-item>
+          <v-list-item v-if="featPlaces" class="mx-0 px-0">
+            <p-map :lat="model.Lat" :lng="model.Lng"></p-map>
           </v-list-item>
         </template>
       </v-list>
     </div>
   </div>
 </template>
+
 <script>
+import { DateTime } from "luxon";
+import * as formats from "options/formats";
+
+import PMap from "component/map.vue";
+
 export default {
   name: "PSidebarInfo",
+  components: {
+    PMap,
+  },
   props: {
     modelValue: {
       type: Object,
@@ -91,6 +103,7 @@ export default {
   data() {
     return {
       actions: [],
+      featPlaces: this.$config.feature("places"),
     };
   },
   computed: {
@@ -101,6 +114,17 @@ export default {
   methods: {
     close() {
       this.$emit("close");
+    },
+    formatTime(model) {
+      if (!model || !model.TakenAtLocal) {
+        return this.$gettext("Unknown");
+      }
+
+      if (model.TimeZone && model.TimeZone !== "Local") {
+        return DateTime.fromISO(model.TakenAtLocal, { zone: model.TimeZone }).toLocaleString(formats.DATETIME_MED_TZ);
+      } else {
+        return DateTime.fromISO(model.TakenAtLocal, { zone: "UTC" }).toLocaleString(formats.DATETIME_MED);
+      }
     },
   },
 };

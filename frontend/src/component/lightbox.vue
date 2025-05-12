@@ -677,12 +677,12 @@ export default {
         nativeSource.type = model.Mime;
         nativeSource.src = this.$util.videoFormatUrl(model.Hash, format);
         video.appendChild(nativeSource);
+      } else {
+        const avcSource = document.createElement("source");
+        avcSource.type = media.ContentTypeMp4AvcMain;
+        avcSource.src = this.$util.videoFormatUrl(model.Hash, media.FormatAvc);
+        video.appendChild(avcSource);
       }
-
-      const avcSource = document.createElement("source");
-      avcSource.type = media.ContentTypeMp4AvcMain;
-      avcSource.src = this.$util.videoFormatUrl(model.Hash, media.FormatAvc);
-      video.appendChild(avcSource);
 
       if (video.remote && video.remote instanceof RemotePlayback) {
         if (!this.video.castable) {
@@ -1138,7 +1138,7 @@ export default {
         });
 
         // Add information toggle button.
-        if (this.featExperimental && window.innerWidth > this.mobileBreakpoint) {
+        if (window.innerWidth > this.mobileBreakpoint) {
           lightbox.pswp.ui.registerElement({
             name: "sidebar-button",
             className: "pswp__button--info-button pswp__button--mdi", // Sets the icon style/size in lightbox.css.
@@ -2183,7 +2183,7 @@ export default {
     },
     // Shows the lightbox sidebar, if hidden.
     showInfo() {
-      if (!this.visible || this.info || !this.featExperimental) {
+      if (!this.visible || this.info) {
         return;
       }
 
@@ -2199,7 +2199,7 @@ export default {
     },
     // Hides the lightbox sidebar, if visible.
     hideInfo() {
-      if (!this.visible || !this.info || !this.featExperimental) {
+      if (!this.visible || !this.info) {
         return;
       }
 

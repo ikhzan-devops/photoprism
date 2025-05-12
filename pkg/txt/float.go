@@ -23,8 +23,8 @@ func IsFloat(s string) bool {
 	return true
 }
 
-// Float converts a string to a 64-bit floating point number or 0 if invalid.
-func Float(s string) float64 {
+// Float64 converts a string to a 64-bit floating point number or 0 if invalid.
+func Float64(s string) float64 {
 	if s == "" {
 		return 0
 	}
@@ -40,7 +40,7 @@ func Float(s string) float64 {
 
 // Float32 converts a string to a 32-bit floating point number or 0 if invalid.
 func Float32(s string) float32 {
-	return float32(Float(s))
+	return float32(Float64(s))
 }
 
 // FloatRange parses a string as floating point number range and returns an error if it's not a valid range.
@@ -73,11 +73,11 @@ func FloatRange(s string, min, max float64) (start float64, end float64, err err
 	}
 
 	if p == 0 {
-		start = Float(string(v[0]))
+		start = Float64(string(v[0]))
 		end = start
 	} else {
-		start = Float(string(v[0]))
-		end = Float(string(v[1]))
+		start = Float64(string(v[0]))
+		end = Float64(string(v[1]))
 	}
 
 	if start > max {

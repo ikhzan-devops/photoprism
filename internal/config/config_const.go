@@ -21,6 +21,9 @@ const StaticUri = "/static"
 // CustomStaticUri defines the standard path for serving custom static content.
 const CustomStaticUri = "/c/static"
 
+// ThemeUri defines the optional theme URI path for serving theme assets.
+const ThemeUri = "/_theme"
+
 // DefaultIndexSchedule defines the default indexing schedule in cron format.
 const DefaultIndexSchedule = "" // e.g. "0 */3 * * *" for every 3 hours
 
@@ -68,4 +71,5 @@ const (
 	Pro        = "pro"
 	Plus       = "plus"
 	Essentials = "essentials"
+	Community  = "ce"
 )

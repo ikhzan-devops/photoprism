@@ -153,6 +153,16 @@ describe("common/config", () => {
     assert.empty(cfg.values.people);
   });
 
+  it("should return language locale", () => {
+    const cfg = new Config(new StorageShim(), Object.assign({}, window.__CONFIG__));
+    assert.equal(cfg.getLanguageLocale(), "en");
+  });
+
+  it("should return user time zone", () => {
+    const cfg = new Config(new StorageShim(), Object.assign({}, window.__CONFIG__));
+    assert.equal(cfg.getTimeZone(), "Local");
+  });
+
   it("should return if language is rtl", () => {
     const cfg = new Config(new StorageShim(), Object.assign({}, window.__CONFIG__));
     const result = cfg.isRtl();

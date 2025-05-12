@@ -17,7 +17,8 @@ var Rules = ACL{
 		RoleClient:  GrantFullAccess,
 	},
 	ResourceShares: Roles{
-		RoleAdmin: GrantFullAccess,
+		RoleAdmin:  GrantFullAccess,
+		RoleClient: GrantFullAccess,
 	},
 	ResourcePhotos: GrantDefaults,
 	ResourceVideos: GrantDefaults,

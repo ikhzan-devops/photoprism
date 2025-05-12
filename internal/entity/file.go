@@ -92,6 +92,7 @@ type File struct {
 	DeletedAt          *time.Time    `sql:"index" json:"DeletedAt,omitempty" yaml:"-"`
 	Share              []FileShare   `json:"-" yaml:"-"`
 	Sync               []FileSync    `json:"-" yaml:"-"`
+	OmitMarkers        bool          `gorm:"-" sql:"-" json:"-" yaml:"-"`
 	markers            *Markers
 }
 
@@ -718,7 +719,7 @@ func (m *File) SetDuration(d time.Duration) {
 	}
 }
 
-// Bitrate returns the average bitrate in MBit/s if the file has a duration.
+// Bitrate returns the average bitrate in Mbps if the file has a duration.
 func (m *File) Bitrate() float64 {
 	// Return 0 if file size or video duration are unknown.
 	if m.FileSize <= 0 || m.FileDuration <= 0 {
@@ -844,7 +845,7 @@ func (m *File) SaveMarkers() (count int, err error) {
 func (m *File) Markers() *Markers {
 	if m.markers != nil {
 		return m.markers
-	} else if m.FileUID == "" {
+	} else if m.FileUID == "" || m.OmitMarkers {
 		m.markers = &Markers{}
 	} else if res, err := FindMarkers(m.FileUID); err != nil {
 		log.Warnf("file %s: %s while loading markers", clean.Log(m.FileUID), err)

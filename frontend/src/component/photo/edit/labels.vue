@@ -280,7 +280,7 @@ export default {
         return;
       }
 
-      this.$lightbox.openModels(Thumb.fromFiles([this.view.model]), 0);
+      this.$lightbox.openModels(Thumb.fromPhotos([this.view.model]), 0);
     },
   },
 };

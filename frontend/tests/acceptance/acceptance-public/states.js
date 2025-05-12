@@ -151,3 +151,10 @@ test.meta("testID", "states-003").meta({ mode: "public" })(
     await photo.checkPhotoVisibility(SecondPhotoUid, true);
   }
 );
+
+test.meta("testID", "states-004").meta({ type: "short", mode: "public" })(
+  "Common: Set album cover from States Page",
+  async (t) => {
+    await page.testSetAlbumCover("states");
+  }
+);

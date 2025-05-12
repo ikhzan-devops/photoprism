@@ -3,6 +3,8 @@ package config
 import (
 	"fmt"
 	"reflect"
+	"slices"
+	"strings"
 )
 
 // Report returns global config values as a table for reporting.
@@ -20,6 +22,14 @@ func (c Options) Report() (rows [][]string, cols []string) {
 		flagName := v.Type().Field(i).Tag.Get("flag")
 
 		if yamlName == "" || yamlName == "-" || flagName == "" {
+			continue
+		}
+
+		// Skip options by feature set if tags are set.
+		if tags := v.Type().Field(i).Tag.Get("tags"); tags == "" {
+			// Report.
+		} else if !slices.Contains(strings.Split(tags, ","), Features) {
+			// Skip.
 			continue
 		}
 

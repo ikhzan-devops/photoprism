@@ -25,9 +25,15 @@
     font-weight: bold;
 }
 
-.p-log-message span {
+.p-log-message span,
+.p-log-message .p-log-message__text {
     color: rgba(var(--v-theme-on-surface), .95);
     font-weight: normal;
+}
+
+.p-log-message .p-log-message__time {
+    font-weight: 600;
+    color: rgba(var(--v-theme-on-surface), .95);
 }
 
 .p-log-fatal,

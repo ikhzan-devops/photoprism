@@ -6,13 +6,15 @@ import (
 
 	"github.com/jinzhu/gorm"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/photoprism/photoprism/pkg/time/tz"
 )
 
 func TestUTC(t *testing.T) {
 	t.Run("Zone", func(t *testing.T) {
 		utc := UTC()
 
-		if zone, offset := utc.Zone(); zone != time.UTC.String() {
+		if zone, offset := utc.Zone(); zone != tz.UTC {
 			t.Error("should be UTC")
 		} else if offset != 0 {
 			t.Error("offset should be 0")
@@ -26,7 +28,7 @@ func TestUTC(t *testing.T) {
 
 		assert.True(t, utcGorm.After(utc))
 
-		if zone, offset := utcGorm.Zone(); zone != time.UTC.String() {
+		if zone, offset := utcGorm.Zone(); zone != tz.UTC {
 			t.Error("gorm time should be UTC")
 		} else if offset != 0 {
 			t.Error("gorm time offset should be 0")

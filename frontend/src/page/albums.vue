@@ -55,7 +55,12 @@
           @click.prevent="create()"
         ></v-btn>
 
-        <p-action-menu v-if="$vuetify.display.mdAndUp" :items="menuActions" :tabindex="3" button-class="ms-1"></p-action-menu>
+        <p-action-menu
+          v-if="$vuetify.display.mdAndUp"
+          :items="menuActions"
+          :tabindex="3"
+          button-class="ms-1"
+        ></p-action-menu>
       </v-toolbar>
 
       <div class="toolbar-expansion-panel">
@@ -917,6 +922,9 @@ export default {
 
       return params;
     },
+    reset() {
+      this.results = [];
+    },
     search() {
       /**
        * re-creating the last scroll-position should only ever happen when using
@@ -975,6 +983,9 @@ export default {
             });
           }
         })
+        .catch(() => {
+          this.reset();
+        })
         .finally(() => {
           this.dirty = false;
           this.loading = false;
@@ -984,19 +995,25 @@ export default {
     refresh(props) {
       this.updateSettings(props);
 
+      // Do not refresh results if the view is already loading
+      // or should not be listening for events.
       if (this.loading || !this.listen) {
         return;
       }
 
-      /*
-      TODO: Leaving "loading" untouched here avoids flickering when refreshing the results, which might lead to a
-       smoother experience. If it doesn't cause any problems or unwanted side effects, this line can be removed.
+      // Make sure enough results are loaded to maintain the scroll position.
+      if (this.page > 2) {
+        this.page = this.page - 1;
+      } else {
+        this.page = 1;
+      }
 
-      this.loading = true;
-      */
-      this.page = 0;
+      // Flag results as dirty to force a refresh.
       this.dirty = true;
+
+      // Enable infinite scrolling if it was disabled.
       this.scrollDisabled = false;
+
       this.loadMore();
     },
     create() {

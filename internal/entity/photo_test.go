@@ -9,6 +9,7 @@ import (
 
 	"github.com/photoprism/photoprism/internal/ai/classify"
 	"github.com/photoprism/photoprism/internal/form"
+	"github.com/photoprism/photoprism/pkg/time/tz"
 )
 
 func TestSavePhotoForm(t *testing.T) {
@@ -302,8 +303,8 @@ func TestPhoto_Delete(t *testing.T) {
 
 func TestPhotos_UIDs(t *testing.T) {
 	t.Run("Ok", func(t *testing.T) {
-		photo1 := Photo{PhotoUID: "abc123"}
-		photo2 := Photo{PhotoUID: "abc456"}
+		photo1 := &Photo{PhotoUID: "abc123"}
+		photo2 := &Photo{PhotoUID: "abc456"}
 		photos := Photos{photo1, photo2}
 		assert.Equal(t, []string{"abc123", "abc456"}, photos.UIDs())
 	})
@@ -849,10 +850,12 @@ func TestNewPhoto(t *testing.T) {
 	t.Run("Stackable", func(t *testing.T) {
 		m := NewPhoto(true)
 		assert.Equal(t, IsStackable, m.PhotoStack)
+		assert.Equal(t, tz.Local, m.TimeZone)
 	})
 	t.Run("NotStackable", func(t *testing.T) {
 		m := NewPhoto(false)
 		assert.Equal(t, IsUnstacked, m.PhotoStack)
+		assert.Equal(t, tz.Local, m.TimeZone)
 	})
 }
 

@@ -35,7 +35,7 @@ export const GmtOffsets = [
 
 export const TimeZones = (defaultName) =>
   [
-    { ID: "", Name: defaultName ? defaultName : $gettext("Local Time") },
+    { ID: "Local", Name: defaultName ? defaultName : $gettext("Local") },
     { ID: "UTC", Name: "UTC" },
   ]
     .concat(timeZonesNames)
@@ -114,8 +114,76 @@ export const MonthsShort = () => {
   return result;
 };
 
+// Specifies the default language locale.
+export let DefaultLocale = "en";
+
+// Change the default language locale.
+export const SetDefaultLocale = (locale) => {
+  if (!locale || locale === DefaultLocale) {
+    return;
+  }
+
+  DefaultLocale = FindLocale(locale);
+};
+
 // Available locales sorted by region and alphabet.
 export const Languages = () => (window.__LOCALES__ ? window.__LOCALES__ : locales.Options);
+
+// Returns the language name (text) and locale (value) to use when no other choice is available.
+export const FallbackLanguage = () => {
+  if (locales?.Options?.length > 0) {
+    return locales.Options[0];
+  }
+
+  return { text: "English", value: "en" };
+};
+
+// Finds the best matching language by locale.
+export const FindLanguage = (locale) => {
+  if (!locale || locale.length < 2) {
+    locale = DefaultLocale;
+  }
+
+  let found;
+  const code = locale.substring(0, 2).toLowerCase();
+  const languages = Languages();
+
+  if (locale.length > 4) {
+    const region = locale.substring(3, 5).toUpperCase();
+    const exact = `${code}_${region}`;
+    found = languages.findLast((l) => l.value === exact || l.value === code);
+  } else {
+    found = languages.findLast((l) => l.value === code);
+  }
+
+  if (found) {
+    return found;
+  } else if (languages.length > 0) {
+    return languages[0];
+  } else {
+    return locales.Options[0];
+  }
+};
+
+// Returns the fallback locale to use when no other choice is available.
+export const FallbackLocale = () => {
+  return FallbackLanguage().value;
+};
+
+// Finds the best matching language locale based on the specified locale;
+export const FindLocale = (locale) => {
+  if (!locale) {
+    return DefaultLocale;
+  }
+
+  const language = FindLanguage(locale);
+
+  if (language) {
+    return language.value;
+  }
+
+  return FallbackLocale();
+};
 
 export const ItemsPerPage = () => [
   { text: "10", title: "10", value: 10 },
@@ -162,7 +230,7 @@ export const MapsStyle = (experimental) => {
   const styles = [
     {
       title: $gettext("Default"),
-      value: "",
+      value: "default",
       style: "default",
     },
     {

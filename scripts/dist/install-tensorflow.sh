@@ -84,6 +84,9 @@ if [[ $TF_DRIVER == "auto" ]]; then
   elif [[ $(echo "${CPU_DETECTED}" | jq -r '.[0].capabilities.avx') == "true" ]]; then
     TF_DRIVER="avx"
     echo "✅ Your CPU supports AVX vector instructions"
+  elif [[ $(echo "${CPU_DETECTED}" | jq -r '.[0].capabilities.ssse3') == "true" ]]; then
+    TF_DRIVER="ssse3"
+    echo "✅ Your CPU supports SSSE3 instructions"
   else
     TF_DRIVER=""
     echo "❌ Your CPU does not support any AVX instructions"
@@ -114,10 +117,10 @@ else
 fi
 
 if [[ $DESTDIR == "/usr" || $DESTDIR == "/usr/local" ]]; then
-  echo "Running \"ldconfig\"."
+  echo "Running \"ldconfig\"..."
   ldconfig
 else
-  echo "Running \"ldconfig -n $DESTDIR/lib\"."
+  echo "Running \"ldconfig -n $DESTDIR/lib\"..."
   ldconfig -n "$DESTDIR/lib"
 fi
 

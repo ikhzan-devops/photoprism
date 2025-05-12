@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/url"
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
 
@@ -135,17 +136,36 @@ func (c *Config) SiteDescription() string {
 	return c.options.SiteDescription
 }
 
-// SitePreview returns the site preview image URL for sharing.
-func (c *Config) SitePreview() string {
-	if c.options.SitePreview == "" {
-		return fmt.Sprintf("https://i.photoprism.app/prism?cover=64&style=centered%%20dark&caption=none&title=%s", url.QueryEscape(c.AppName()))
+// SiteFavicon returns the site favicon image name.
+func (c *Config) SiteFavicon() string {
+	if c.options.SiteFavicon != "" {
+		if fs.FileExistsNotEmpty(c.options.SiteFavicon) {
+			return c.options.SiteFavicon
+		} else if fileName := filepath.Join(c.ThemePath(), strings.TrimPrefix(c.options.SiteFavicon, ThemeUri)); fs.FileExistsNotEmpty(fileName) {
+			return fileName
+		} else if fileName = filepath.Join(c.ImgPath(), c.options.SiteFavicon); fs.FileExistsNotEmpty(fileName) {
+			return fileName
+		}
 	}
 
-	if !strings.HasPrefix(c.options.SitePreview, "http") {
+	return filepath.Join(c.ImgPath(), "favicon.ico")
+}
+
+// SitePreview returns the site preview image URL for sharing.
+func (c *Config) SitePreview() string {
+	if c.options.SitePreview != "" {
+		if strings.HasPrefix(c.options.SitePreview, "http") {
+			return c.options.SitePreview
+
+		} else if fileName := filepath.Join(c.ThemePath(), c.options.SitePreview); fs.FileExistsNotEmpty(fileName) {
+			return strings.TrimRight(c.options.SiteUrl, "/") + path.Join(ThemeUri, c.options.SitePreview)
+		}
+
 		return c.SiteUrl() + strings.TrimPrefix(c.options.SitePreview, "/")
 	}
 
-	return c.options.SitePreview
+	return fmt.Sprintf("https://i.photoprism.app/prism?cover=64&style=centered%%20dark&caption=none&title=%s", url.QueryEscape(c.AppName()))
+
 }
 
 // LegalInfo returns the legal info text for the page footer.

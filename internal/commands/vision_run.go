@@ -28,7 +28,6 @@ var VisionRunCommand = &cli.Command{
 		},
 	},
 	Action: visionRunAction,
-	Hidden: true,
 }
 
 // visionListAction displays existing user accounts.

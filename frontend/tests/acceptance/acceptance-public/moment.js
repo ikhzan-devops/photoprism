@@ -10,7 +10,7 @@ import AlbumDialog from "../page-model/dialog-album";
 
 fixture`Test moments`.page`${testcafeconfig.url}`;
 
-const menu = new Menu();
+const menu = new Menu(); 
 const album = new Album();
 const toolbar = new Toolbar();
 const contextmenu = new ContextMenu();
@@ -158,5 +158,12 @@ test.meta("testID", "moments-004").meta({ type: "short", mode: "public" })(
   async (t) => {
     await menu.openPage("moments");
     await album.checkSortOptions("moment");
+  }
+);
+
+test.meta("testID", "moments-005").meta({ type: "short", mode: "public" })(
+  "Common: Set album cover from Moments Page",
+  async (t) => {
+    await page.testSetAlbumCover("moments");
   }
 );

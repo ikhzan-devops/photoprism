@@ -1,32 +1,35 @@
 <template>
   <teleport to="body">
-    <div v-if="visible" id="p-notify" tabindex="-1">
-      <div
-        :class="'p-notify--' + message.color"
-        class="v-snackbar v-snackbar--bottom v-snackbar--center p-notify"
-        role="alert"
-        @click.stop.prevent="showNext"
-      >
-        <div class="v-snackbar__wrapper rounded-pill v-snackbar--variant-flat">
-          <span class="v-snackbar__underlay"></span>
-          <div class="v-snackbar__content">
-            <i
-              v-if="message.icon"
-              :class="['text-' + message.color, 'mdi-' + message.icon]"
-              class="mdi v-icon notranslate p-notify__icon"
-              aria-hidden="true"
-            ></i>
-            <div class="p-notify__text">
-              {{ message.text }}
+    <div id="notify">
+      <transition name="fade-transition">
+        <div
+          v-if="visible"
+          :class="'p-notify--' + message.color"
+          class="p-notify v-snackbar"
+          role="alert"
+          @click.stop.prevent="showNext"
+        >
+          <div class="v-snackbar__wrapper">
+            <span class="v-snackbar__underlay"></span>
+            <div class="v-snackbar__content">
+              <i
+                v-if="message.icon"
+                :class="['text-' + message.color, 'mdi-' + message.icon]"
+                class="mdi v-icon notranslate p-notify__icon"
+                aria-hidden="true"
+              ></i>
+              <div class="p-notify__text">
+                {{ message.text }}
+              </div>
+              <i
+                :class="'text-on-' + message.color"
+                class="mdi-close mdi v-icon notranslate p-notify__close"
+                aria-hidden="true"
+              ></i>
             </div>
-            <i
-              :class="'text-on-' + message.color"
-              class="mdi-close mdi v-icon notranslate p-notify__close"
-              aria-hidden="true"
-            ></i>
           </div>
         </div>
-      </div>
+      </transition>
     </div>
   </teleport>
 </template>
@@ -50,7 +53,7 @@ export default {
       defaultColor: "info",
       defaultDelay: 2000,
       warningDelay: 3000,
-      errorDelay: 8000,
+      errorDelay: 6000,
     };
   },
   created() {
@@ -136,14 +139,6 @@ export default {
       this.messages.push(m);
 
       if (!this.visible) {
-        this.showNext();
-      }
-    },
-    onSnackbar(show) {
-      if (show) {
-        this.snackbar = true;
-      } else {
-        this.snackbar = false;
         this.showNext();
       }
     },

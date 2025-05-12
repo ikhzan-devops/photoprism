@@ -18,7 +18,8 @@
           </router-link>
         </v-toolbar-title>
 
-        <v-btn :title="$gettext('Refresh')" icon="mdi-refresh" tabindex="1" class="action-reload" @click.stop="refresh"> </v-btn>
+        <v-btn :title="$gettext('Refresh')" icon="mdi-refresh" tabindex="1" class="action-reload" @click.stop="refresh">
+        </v-btn>
       </v-toolbar>
     </v-form>
 
@@ -420,14 +421,16 @@ export default {
         return;
       }
 
-      /*
-      TODO: Leaving "loading" untouched here avoids flickering when refreshing the results, which might lead to a
-       smoother experience. If it doesn't cause any problems or unwanted side effects, this line can be removed.
+      // Make sure enough results are loaded to maintain the scroll position.
+      if (this.page > 2) {
+        this.page = this.page - 1;
+      } else {
+        this.page = 1;
+      }
 
-      this.loading = true;
-      */
-      this.page = 0;
+      // Flag results as dirty to force a refresh.
       this.dirty = true;
+
       this.search();
     },
     getPathAsString() {
@@ -436,6 +439,9 @@ export default {
       }
 
       return "";
+    },
+    reset() {
+      this.results = [];
     },
     search() {
       // Don't query the same data more than once
@@ -478,6 +484,9 @@ export default {
               this.$gettextInterpolate(this.$gettext("Limit reached, showing first %{n} files"), { n: response.files })
             );
           }
+        })
+        .catch(() => {
+          this.reset();
         })
         .finally(() => {
           this.dirty = false;
