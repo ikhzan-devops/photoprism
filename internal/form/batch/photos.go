@@ -27,8 +27,8 @@ type PhotosForm struct {
 	PhotoPrivate     Bool    `json:"Private"`
 	PhotoScan        Bool    `json:"Scan"`
 	PhotoPanorama    Bool    `json:"Panorama"`
-	CameraID         UInt    `json:"CameraID"`
-	LensID           UInt    `json:"LensID"`
+	CameraID         Int     `json:"CameraID"`
+	LensID           Int     `json:"LensID"`
 
 	DetailsKeywords  String `json:"DetailsKeywords"`
 	DetailsSubject   String `json:"DetailsSubject"`
@@ -187,17 +187,17 @@ func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
 		}
 
 		if i == 0 {
-			frm.CameraID.Value = photo.CameraID
-		} else if photo.CameraID != frm.CameraID.Value {
+			frm.CameraID.Value = int(photo.CameraID)
+		} else if photo.CameraID != uint(frm.CameraID.Value) {
 			frm.CameraID.Mixed = true
-			frm.CameraID.Value = 1
+			frm.CameraID.Value = -2
 		}
 
 		if i == 0 {
-			frm.LensID.Value = photo.LensID
-		} else if photo.LensID != frm.LensID.Value {
+			frm.LensID.Value = int(photo.LensID)
+		} else if photo.LensID != uint(frm.LensID.Value) {
 			frm.LensID.Mixed = true
-			frm.LensID.Value = 1
+			frm.LensID.Value = -2
 		}
 
 		if i == 0 {
@@ -234,19 +234,6 @@ func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
 			frm.DetailsLicense.Mixed = true
 			frm.DetailsLicense.Value = ""
 		}
-	}
-
-	// Use defaults for the following values if they are empty:
-	if frm.PhotoCountry.Value == "" {
-		frm.PhotoCountry.Value = "zz"
-	}
-
-	if frm.CameraID.Value < 1 {
-		frm.CameraID.Value = 1
-	}
-
-	if frm.LensID.Value < 1 {
-		frm.LensID.Value = 1
 	}
 
 	return frm

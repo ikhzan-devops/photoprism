@@ -42,10 +42,16 @@ func TestNewPhotosForm(t *testing.T) {
 		assert.Equal(t, true, frm.PhotoFavorite.Mixed)
 		assert.Equal(t, false, frm.PhotoPrivate.Value)
 		assert.Equal(t, false, frm.PhotoPrivate.Mixed)
-		assert.Equal(t, uint(1000003), frm.CameraID.Value)
+		assert.Equal(t, 1000003, frm.CameraID.Value)
 		assert.Equal(t, false, frm.CameraID.Mixed)
-		assert.Equal(t, uint(1000000), frm.LensID.Value)
+		assert.Equal(t, 1000000, frm.LensID.Value)
 		assert.Equal(t, false, frm.LensID.Mixed)
+		assert.Equal(t, 0, frm.PhotoIso.Value)
+		assert.Equal(t, true, frm.PhotoIso.Mixed)
+		assert.Equal(t, float32(0), frm.PhotoFNumber.Value)
+		assert.Equal(t, true, frm.PhotoFNumber.Mixed)
+		assert.Equal(t, 0, frm.PhotoFocalLength.Value)
+		assert.Equal(t, true, frm.PhotoFocalLength.Mixed)
 
 		// Additional details.
 		assert.Equal(t, "", frm.DetailsKeywords.Value)
@@ -72,6 +78,8 @@ func TestNewPhotosForm(t *testing.T) {
 			PhotoPanorama: true,
 			PhotoScan:     true,
 			PhotoFavorite: false,
+			CameraID:      1,
+			LensID:        2,
 		}
 
 		photo2 := search.Photo{
@@ -89,6 +97,8 @@ func TestNewPhotosForm(t *testing.T) {
 			PhotoPanorama: false,
 			PhotoScan:     false,
 			PhotoFavorite: true,
+			CameraID:      1,
+			LensID:        2,
 		}
 
 		photos := search.PhotoResults{photo1, photo2}
@@ -111,11 +121,18 @@ func TestNewPhotosForm(t *testing.T) {
 		assert.Equal(t, false, frm.PhotoPanorama.Value)
 		assert.Equal(t, true, frm.PhotoPanorama.Mixed)
 		assert.Equal(t, false, frm.CameraID.Mixed)
-		assert.Equal(t, uint(1), frm.CameraID.Value)
+		assert.Equal(t, 1, frm.CameraID.Value)
+		assert.Equal(t, false, frm.CameraID.Mixed)
+		assert.Equal(t, 2, frm.LensID.Value)
 		assert.Equal(t, false, frm.LensID.Mixed)
-		assert.Equal(t, uint(1), frm.LensID.Value)
-		assert.Equal(t, "zz", frm.PhotoCountry.Value)
+		assert.Equal(t, "", frm.PhotoCountry.Value)
 		assert.Equal(t, true, frm.PhotoCountry.Mixed)
+		assert.Equal(t, 0, frm.PhotoIso.Value)
+		assert.Equal(t, false, frm.PhotoIso.Mixed)
+		assert.Equal(t, float32(0), frm.PhotoFNumber.Value)
+		assert.Equal(t, false, frm.PhotoFNumber.Mixed)
+		assert.Equal(t, 0, frm.PhotoFocalLength.Value)
+		assert.Equal(t, false, frm.PhotoFocalLength.Mixed)
 	})
 	t.Run("Success", func(t *testing.T) {
 		photo1 := search.Photo{
@@ -125,7 +142,7 @@ func TestNewPhotosForm(t *testing.T) {
 			PhotoUID:     "ps6sg6be2lvl0x41",
 			PhotoType:    "image",
 			PhotoTitle:   "Same Title",
-			PhotoCountry: "",
+			PhotoCountry: "de",
 			CameraID:     1000001,
 			LensID:       1000001,
 		}
@@ -165,11 +182,18 @@ func TestNewPhotosForm(t *testing.T) {
 		assert.Equal(t, false, frm.PhotoPanorama.Value)
 		assert.Equal(t, false, frm.PhotoPanorama.Mixed)
 		assert.Equal(t, true, frm.CameraID.Mixed)
-		assert.Equal(t, uint(1), frm.CameraID.Value)
+		assert.Equal(t, -2, frm.CameraID.Value)
 		assert.Equal(t, true, frm.LensID.Mixed)
-		assert.Equal(t, uint(1), frm.LensID.Value)
-		assert.Equal(t, "zz", frm.PhotoCountry.Value)
-		assert.Equal(t, false, frm.PhotoCountry.Mixed)
+		assert.Equal(t, -2, frm.LensID.Value)
+		assert.Equal(t, true, frm.LensID.Mixed)
+		assert.Equal(t, "", frm.PhotoCountry.Value)
+		assert.Equal(t, true, frm.PhotoCountry.Mixed)
+		assert.Equal(t, 0, frm.PhotoIso.Value)
+		assert.Equal(t, false, frm.PhotoIso.Mixed)
+		assert.Equal(t, float32(0), frm.PhotoFNumber.Value)
+		assert.Equal(t, false, frm.PhotoFNumber.Mixed)
+		assert.Equal(t, 0, frm.PhotoFocalLength.Value)
+		assert.Equal(t, false, frm.PhotoFocalLength.Mixed)
 	})
 
 }
