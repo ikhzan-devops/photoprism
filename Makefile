@@ -84,6 +84,7 @@ acceptance-run-chromium: storage/acceptance acceptance-auth-sqlite-restart wait 
 acceptance-run-chromium-short: storage/acceptance acceptance-auth-sqlite-restart wait acceptance-auth-short acceptance-auth-sqlite-stop acceptance-sqlite-restart wait-2 acceptance-short acceptance-sqlite-stop
 acceptance-auth-run-chromium: storage/acceptance acceptance-auth-sqlite-restart wait acceptance-auth acceptance-auth-sqlite-stop
 acceptance-public-run-chromium: storage/acceptance acceptance-sqlite-restart wait acceptance acceptance-sqlite-stop
+acceptance-mariadb-run-chromium: storage/acceptance reset-mariadb-acceptance acceptance-auth-mariadb-restart wait acceptance-auth acceptance-auth-mariadb-stop reset-mariadb-acceptance acceptance-mariadb-restart wait-2 acceptance acceptance-mariadb-stop
 wait:
 	sleep 20
 wait-2:
@@ -205,6 +206,27 @@ acceptance-auth-sqlite-restart:
 	./photoprism --auth-mode="password" -c "./storage/acceptance/config-sqlite" start -d
 acceptance-auth-sqlite-stop:
 	./photoprism --auth-mode="password" -c "./storage/acceptance/config-sqlite" stop
+acceptance-mariadb-restart:
+	cp -f storage/acceptance/backup.db storage/acceptance/index.db
+	./photoprism --database-driver sqlite --database-dsn "storage/acceptance/index.db?_busy_timeout=5000&_foreign_keys=on" --transfer-driver mysql --transfer-dsn "acceptance:acceptance@tcp(mariadb:4001)/acceptance?charset=utf8mb4,utf8&collation=utf8mb4_unicode_ci&parseTime=true&timeout=15s" migrations transfer -force
+	cp -f storage/acceptance/config-mariadb/settingsBackup.yml storage/acceptance/config-mariadb/settings.yml
+	rm -rf storage/acceptance/sidecar/2020
+	rm -rf storage/acceptance/sidecar/2011
+	rm -rf storage/acceptance/originals/2010
+	rm -rf storage/acceptance/originals/2020
+	rm -rf storage/acceptance/originals/2011
+	rm -rf storage/acceptance/originals/2013
+	rm -rf storage/acceptance/originals/2017
+	./photoprism --auth-mode="public" -c "./storage/acceptance/config-mariadb" start -d
+acceptance-mariadb-stop:
+	./photoprism --auth-mode="public" -c "./storage/acceptance/config-mariadb" stop
+acceptance-auth-mariadb-restart:
+	cp -f storage/acceptance/backup.db storage/acceptance/index.db
+	./photoprism --database-driver sqlite --database-dsn "storage/acceptance/index.db?_busy_timeout=5000&_foreign_keys=on" --transfer-driver mysql --transfer-dsn "acceptance:acceptance@tcp(mariadb:4001)/acceptance?charset=utf8mb4,utf8&collation=utf8mb4_unicode_ci&parseTime=true&timeout=15s" migrations transfer -force
+	cp -f storage/acceptance/config-mariadb/settingsBackup.yml storage/acceptance/config-mariadb/settings.yml
+	./photoprism --auth-mode="password" -c "./storage/acceptance/config-mariadb" start -d
+acceptance-auth-mariadb-stop:
+	./photoprism --auth-mode="password" -c "./storage/acceptance/config-mariadb" stop
 start:
 	./photoprism start -d
 stop:
