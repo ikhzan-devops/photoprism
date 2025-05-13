@@ -28,7 +28,7 @@
                 :disabled="disabled"
                 :rules="[textRule]"
                 hide-details
-                :label="$pgettext('Photo', 'Title')"
+                :label="$gettext('Photo', 'Title')"
                 placeholder=""
                 autocomplete="off"
                 density="comfortable"
