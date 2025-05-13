@@ -22,14 +22,14 @@
       <v-row dense :class="!$vuetify.display.mdAndDown ? 'overflow-hidden' : ''">
         <!-- Desktop view -->
         <v-col v-if="!$vuetify.display.mdAndDown" cols="12" lg="4" class="scroll-col">
-          <div v-if="selectionsFullInfo" class="edit-batch photo-results list-view v-table">
+          <div v-if="model.models" class="edit-batch photo-results list-view v-table">
             <table>
               <tbody>
                 <tr>
                   <td class="col-select" :class="{ 'is-selected': isAllSelected }">
                     <button
                       class="input-select ma-auto"
-                      @click.stop.prevent="onSelectAllToggle"
+                      @click.stop.prevent="toggleAll"
                     >
                       <i class="mdi mdi-checkbox-marked select-on" />
                       <i class="mdi mdi-checkbox-blank-outline select-off" />
@@ -37,14 +37,13 @@
                   </td>
                   <td class="media result col-preview">Pictures</td>
                 </tr>
-                <tr v-for="(m, index) in selectionsFullInfo" :key="m.ID" ref="items" :data-index="index">
+                <tr v-for="(m, index) in model.models" :key="m.ID" ref="items" :data-index="index">
                   <td :data-id="m.ID" :data-uid="m.UID" class="col-select" :class="{ 'is-selected': isSelected(m) }">
                     <button
                       class="input-select ma-auto"
                       @touchstart.passive="onMouseDown($event, index)"
                       @touchend.stop="onSelectClick($event, index, true)"
                       @mousedown="onMouseDown($event, index)"
-                      @contextmenu.stop="onContextMenu($event, index)"
                       @click.stop.prevent="onSelectClick($event, index, true)"
                     >
                       <i class="mdi mdi-checkbox-marked select-on" />
@@ -60,7 +59,6 @@
 <!--                        @touchstart.passive="onMouseDown($event, index)"-->
 <!--                        @touchend.stop="onClick($event, index, false)"-->
 <!--                        @mousedown="onMouseDown($event, index)"-->
-<!--                        @contextmenu.stop="onContextMenu($event, index)"-->
 <!--                        @click.stop.prevent="onClick($event, index, false)"-->
 <!--                    >-->
                     <div
@@ -69,7 +67,6 @@
                       @touchstart.passive="onMouseDown($event, index)"
                       @touchend.stop="onSelectClick($event, index, false)"
                       @mousedown="onMouseDown($event, index)"
-                      @contextmenu.stop="onContextMenu($event, index)"
                       @click.stop.prevent="onSelectClick($event, index, false)"
                     >
                       <div class="preview__overlay"></div>
@@ -99,7 +96,7 @@
 
         <!-- Phone view -->
         <v-col v-else cols="12">
-          <div v-if="selectionsFullInfo" class="edit-batch photo-results list-view v-table">
+          <div v-if="model.models" class="edit-batch photo-results list-view v-table">
             <v-expansion-panels
               v-model="expanded"
               variant="accordion"
@@ -112,14 +109,13 @@
                 <v-expansion-panel-text>
                   <table class="w-100">
                     <tbody>
-                      <tr v-for="(m, index) in selectionsFullInfo" :key="m.ID" ref="items" :data-index="index">
+                      <tr v-for="(m, index) in model.models" :key="m.ID" ref="items" :data-index="index">
                         <td :data-id="m.ID" :data-uid="m.UID" class="col-select" :class="{ 'is-selected': isSelected(m) }">
                           <button
                             class="input-select ma-auto"
                             @touchstart.passive="onMouseDown($event, index)"
                             @touchend.stop="onSelectClick($event, index, true)"
                             @mousedown="onMouseDown($event, index)"
-                            @contextmenu.stop="onContextMenu($event, index)"
                             @click.stop.prevent="onSelectClick($event, index, true)"
                           >
                             <i class="mdi mdi-checkbox-marked select-on" />
@@ -135,7 +131,6 @@
                           <!--                        @touchstart.passive="onMouseDown($event, index)"-->
                           <!--                        @touchend.stop="onClick($event, index, false)"-->
                           <!--                        @mousedown="onMouseDown($event, index)"-->
-                          <!--                        @contextmenu.stop="onContextMenu($event, index)"-->
                           <!--                        @click.stop.prevent="onClick($event, index, false)"-->
                           <!--                    >-->
                           <div
@@ -144,7 +139,6 @@
                             @touchstart.passive="onMouseDown($event, index)"
                             @touchend.stop="onSelectClick($event, index, false)"
                             @mousedown="onMouseDown($event, index)"
-                            @contextmenu.stop="onContextMenu($event, index)"
                             @click.stop.prevent="onSelectClick($event, index, false)"
                           >
                             <div class="preview__overlay"></div>
@@ -175,7 +169,7 @@
           </div>
         </v-col>
 
-        <v-col cols="12" lg="8" class="scroll-col">
+        <v-col v-if="model.values" cols="12" lg="8" class="scroll-col">
           <v-form
             ref="form"
             validate-on="invalid-input"
@@ -192,10 +186,11 @@
                   </v-col>
                   <v-row dense>
                     <v-col cols="12" md="6">
+<!--                  TODO: uncomment to test value - add v-model="model.values.Title" if check how values look like-->
                       <v-text-field
                         hide-details
                         :label="$gettext('Title')"
-                        placeholder=""
+                        :placeholder="getPlaceholder('text-field', 'Title')"
                         autocomplete="off"
                         density="comfortable"
                         class="input-title"
@@ -207,7 +202,7 @@
                         autocomplete="off"
                         auto-grow
                         :label="$gettext('Subject')"
-                        placeholder=""
+                        :placeholder="getPlaceholder('text-field', 'Subject')"
                         :rows="1"
                         density="comfortable"
                         class="input-subject"
@@ -220,7 +215,7 @@
                       autocomplete="off"
                       auto-grow
                       :label="$gettext('Caption')"
-                      placeholder=""
+                      :placeholder="getPlaceholder('text-field', 'Caption')"
                       :rows="1"
                       density="comfortable"
                       class="input-caption"
@@ -322,7 +317,7 @@
                         autocorrect="off"
                         autocapitalize="none"
                         :label="$gettext('Latitude')"
-                        placeholder=""
+                        :placeholder="getPlaceholder('input-field', 'Latitude')"
                         density="comfortable"
                         validate-on="input"
                         class="input-latitude"
@@ -335,7 +330,7 @@
                         autocorrect="off"
                         autocapitalize="none"
                         :label="$gettext('Longitude')"
-                        placeholder=""
+                        :placeholder="getPlaceholder('input-field', 'Longitude')"
                         density="comfortable"
                         validate-on="input"
                         class="input-longitude"
@@ -349,7 +344,7 @@
                         autocorrect="off"
                         autocapitalize="none"
                         :label="$gettext('Altitude (m)')"
-                        placeholder=""
+                        :placeholder="getPlaceholder('input-field', 'Altitude')"
                         color="surface-variant"
                         density="comfortable"
                         validate-on="input"
@@ -369,7 +364,7 @@
                         hide-details
                         autocomplete="off"
                         :label="$gettext('Artist')"
-                        placeholder=""
+                        :placeholder="getPlaceholder('text-field', 'Artist')"
                         density="comfortable"
                         class="input-artist"
                       ></v-text-field>
@@ -379,7 +374,7 @@
                         hide-details
                         autocomplete="off"
                         :label="$gettext('Copyright')"
-                        placeholder=""
+                        :placeholder="getPlaceholder('text-field', 'Copyright')"
                         density="comfortable"
                         class="input-copyright"
                       ></v-text-field>
@@ -391,7 +386,7 @@
                       autocomplete="off"
                       auto-grow
                       :label="$gettext('License')"
-                      placeholder=""
+                      :placeholder="getPlaceholder('text-field', 'License')"
                       :rows="1"
                       density="comfortable"
                       class="input-license"
@@ -500,10 +495,8 @@
 import * as options from "options/options";
 import countries from "options/countries.json";
 import IconLivePhoto from "../../icon/live-photo.vue";
-import { PhotoClipboard } from "common/clipboard";
-import { Photo } from "model/photo";
+import { Batch } from "model/batch-edit";
 import Thumb from "../../../model/thumb";
-import $api from "../../../common/api";
 
 export default {
   name: "PPhotoEditBatch",
@@ -533,7 +526,7 @@ export default {
   emits: ["close"],
   data() {
     return {
-      model: new Photo(),
+      model: new Batch(),
       uid: "",
       loading: false,
       subscriptions: [],
@@ -543,6 +536,7 @@ export default {
       expanded: [0],
       isBatchDialog: true,
       isAllSelected: true,
+      allSelectedLength: 0,
       options,
       countries,
       albums: [],
@@ -557,12 +551,7 @@ export default {
   },
   computed: {
     title() {
-      // TODO: fix title recalculating
-      if (this.selectionsFullInfo.length > 0) {
-        return this.$gettext(`Batch Edit (${this.selectionsFullInfo.length})`);
-      }
-
-      return this.$gettext(`Batch Edit (${this.selectionsFullInfo.length})`);
+      return this.$gettext(`Batch Edit (${this.allSelectedLength})`);
     },
   },
   watch: {
@@ -570,9 +559,10 @@ export default {
       if (show) {
         this.expanded = [];
 
-        await this.getSelectionsData();
+        await this.model.getData(this.selection);
+        this.allSelectedLength = this.model.getLengthOfAllSelected();
       } else {
-        this.selectionsFullInfo = [];
+        this.model = new Batch();
       }
     },
   },
@@ -585,29 +575,11 @@ export default {
     }
   },
   methods: {
-    async getSelectionsData () {
-      let selection = this.selection;
-
-      await $api.post("batch/photos/edit", { photos: selection, return: true }).then((response) => {
-        const photos = response.data.photos;
-        const photosLength = response.data.photos.length;
-        this.selectedPhotosLength = photosLength;
-
-        if (photosLength > 0) {
-          for (let i = 0; i < photosLength; i++) {
-            const modelInstance = new Photo();
-            this.selectionsFullInfo.push(modelInstance.setValues(photos[i]));
-          }
-        }
-      });
-    },
     openPhoto(index) {
-      this.$lightbox.openModels(Thumb.fromPhotos([this.selectionsFullInfo[index]]), 0, null , this.isBatchDialog);
+      this.$lightbox.openModels(Thumb.fromPhotos([this.model.models[index]]), 0, null , this.isBatchDialog);
     },
-    // TODO: change this function
-    isSelected(m) {
-      console.log('PhotoClipboard', PhotoClipboard);
-      return PhotoClipboard.has(m);
+    isSelected(model) {
+      return this.model.isSelected(model.UID);
     },
     onClick(ev) {
       // Closes dialog when user clicks on background and model data is unchanged.
@@ -617,13 +589,9 @@ export default {
       ev.preventDefault();
       this.onClose();
     },
-    onSelectAllToggle() {
-      PhotoClipboard.toggleAllIds(this.selectionsFullInfo);
-      this.isAllSelected = !this.isAllSelected;
-    },
-    onUpdate() {
-      console.log('Add event on update');
-    },
+    // onUpdate() {
+    //   // console.log('Add event on update');
+    // },
     onSelectClick(ev, index, select) {
       const longClick = this.mouseDown.index === index && ev.timeStamp - this.mouseDown.timeStamp > 400;
       const scrolled = this.mouseDown.scrollY - window.scrollY !== 0;
@@ -636,40 +604,41 @@ export default {
       ev.stopPropagation();
 
       if (select !== false && (select || longClick || this.selectMode)) {
-        if (longClick || ev.shiftKey) {
-          this.selectRange(index);
-        } else {
-          this.toggle(this.selectionsFullInfo[index]);
-        }
-      } else if (this.selectionsFullInfo[index]) {
+        this.toggle(this.model.models[index]);
+      } else if (this.model.models[index]) {
         this.openPhoto(index);
       }
     },
+    getPlaceholder(fieldType, fieldName) {
+      // TODO: comment it to test value
+      return this.model.getPlaceholderForField(fieldType, fieldName);
+    },
     toggle(photo) {
-      this.$clipboard.toggle(photo);
+      this.model.toggle(photo.UID);
+      this.updateToggleAll();
+      this.allSelectedLength = this.model.getLengthOfAllSelected();
+    },
+    updateToggleAll() {
+      this.isAllSelected = this.model.selection.every(photo => photo.selected)
+    },
+    toggleAll() {
+      this.isAllSelected = !this.isAllSelected;
+      this.model.toggleAll(this.isAllSelected);
+      this.allSelectedLength = this.model.getLengthOfAllSelected();
     },
     onMouseDown(ev, index) {
       this.mouseDown.index = index;
       this.mouseDown.scrollY = window.scrollY;
       this.mouseDown.timeStamp = ev.timeStamp;
     },
-    onContextMenu(ev, index) {
-      if (this.$isMobile) {
-        ev.preventDefault();
-        ev.stopPropagation();
-        this.selectRange(index);
-      }
-    },
     onClose() {
       // Closes the dialog only if model data is unchanged.
-      if (this.model?.hasId() && this.model?.wasChanged()) {
-        this.$refs?.dialog?.animateClick();
-      } else {
-        this.close();
-      }
-    },
-    selectRange(index) {
-      this.$clipboard.addRange(index, this.selectionsFullInfo);
+      // TODO: change the functionality if something was changed
+      // if (this.model?.hasId() && this.model?.wasChanged()) {
+      //   this.$refs?.dialog?.animateClick();
+      // } else {
+      this.close();
+      // }
     },
     close() {
       // Close the dialog.
