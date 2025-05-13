@@ -30,6 +30,10 @@ func Caption(imgName string, src media.Src) (result CaptionResult, err error) {
 				apiRequest.Version = model.Version
 			}
 
+			if model.Prompt != "" {
+				apiRequest.Prompt = model.Prompt
+			}
+
 			// Log JSON request data in trace mode.
 			apiRequest.WriteLog()
 

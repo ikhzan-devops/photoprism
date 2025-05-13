@@ -10,7 +10,6 @@ func TestPhotosRequest_Empty(t *testing.T) {
 	t.Run("False", func(t *testing.T) {
 		req := PhotosRequest{
 			Photos: []string{"ps6sg6be2lvl0yh7", "ps6sg6be2lvl0yh0"},
-			Return: true,
 			Values: &PhotosForm{},
 		}
 
@@ -19,7 +18,6 @@ func TestPhotosRequest_Empty(t *testing.T) {
 	t.Run("True", func(t *testing.T) {
 		req := PhotosRequest{
 			Photos: []string{},
-			Return: true,
 			Values: &PhotosForm{},
 		}
 
@@ -30,7 +28,6 @@ func TestPhotosRequest_Empty(t *testing.T) {
 func TestPhotosRequest_Get(t *testing.T) {
 	req := PhotosRequest{
 		Photos: []string{"ps6sg6be2lvl0yh7", "ps6sg6be2lvl0yh0"},
-		Return: true,
 		Values: &PhotosForm{},
 	}
 
@@ -41,7 +38,6 @@ func TestPhotosRequest_Get(t *testing.T) {
 func TestPhotosRequest_String(t *testing.T) {
 	req := PhotosRequest{
 		Photos: []string{"ps6sg6be2lvl0yh7", "ps6sg6be2lvl0yh0"},
-		Return: true,
 		Values: &PhotosForm{},
 	}
 

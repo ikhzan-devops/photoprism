@@ -76,17 +76,10 @@ func BatchPhotosEdit(router *gin.RouterGroup) {
 		// Create batch edit form values form from photo metadata.
 		batchFrm := batch.NewPhotosForm(photos)
 
-		var data gin.H
-
-		if frm.Return {
-			data = gin.H{
-				"photos": photos,
-				"values": batchFrm,
-			}
-		} else {
-			data = gin.H{
-				"values": batchFrm,
-			}
+		// Return models and form values.
+		data := gin.H{
+			"models": photos,
+			"values": batchFrm,
 		}
 
 		c.JSON(http.StatusOK, data)
