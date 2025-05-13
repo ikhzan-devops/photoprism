@@ -78,35 +78,35 @@ func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
 			frm.PhotoDay.Value = photo.PhotoDay
 		} else if photo.PhotoDay != frm.PhotoDay.Value {
 			frm.PhotoDay.Mixed = true
-			frm.PhotoDay.Value = 0
+			frm.PhotoDay.Value = -2
 		}
 
 		if i == 0 {
 			frm.PhotoMonth.Value = photo.PhotoMonth
 		} else if photo.PhotoMonth != frm.PhotoMonth.Value {
 			frm.PhotoMonth.Mixed = true
-			frm.PhotoMonth.Value = 0
+			frm.PhotoMonth.Value = -2
 		}
 
 		if i == 0 {
 			frm.PhotoYear.Value = photo.PhotoYear
 		} else if photo.PhotoYear != frm.PhotoYear.Value {
 			frm.PhotoYear.Mixed = true
-			frm.PhotoYear.Value = 0
+			frm.PhotoYear.Value = -2
 		}
 
 		if i == 0 {
 			frm.TimeZone.Value = photo.TimeZone
 		} else if photo.TimeZone != frm.TimeZone.Value {
 			frm.TimeZone.Mixed = true
-			frm.TimeZone.Value = "Local"
+			frm.TimeZone.Value = ""
 		}
 
 		if i == 0 {
 			frm.PhotoCountry.Value = photo.PhotoCountry
 		} else if photo.PhotoCountry != frm.PhotoCountry.Value {
 			frm.PhotoCountry.Mixed = true
-			frm.PhotoCountry.Value = "zz"
+			frm.PhotoCountry.Value = ""
 		}
 
 		if i == 0 {
