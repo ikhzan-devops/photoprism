@@ -27,12 +27,12 @@ func TestBatchPhotosEdit(t *testing.T) {
 		body := response.Body.String()
 
 		assert.NotEmpty(t, body)
-		assert.True(t, strings.HasPrefix(body, `{"values":{"`), "unexpected response")
+		assert.True(t, strings.HasPrefix(body, `{"models":[{"ID"`), "unexpected response")
 
 		// fmt.Println(body)
-		/* photos := gjson.Get(body, "photos")
+		/* models := gjson.Get(body, "models")
 		values := gjson.Get(body, "values")
-		t.Logf("photos: %#v", photos)
+		t.Logf("models: %#v", models)
 		t.Logf("values: %#v", values) */
 
 		assert.Equal(t, http.StatusOK, response.Code)
@@ -52,12 +52,12 @@ func TestBatchPhotosEdit(t *testing.T) {
 		body := response.Body.String()
 
 		assert.NotEmpty(t, body)
-		assert.True(t, strings.HasPrefix(body, `{"photos":[{"ID"`), "unexpected response")
+		assert.True(t, strings.HasPrefix(body, `{"models":[{"ID"`), "unexpected response")
 
 		fmt.Println(body)
-		/* photos := gjson.Get(body, "photos")
+		/* models := gjson.Get(body, "models")
 		values := gjson.Get(body, "values")
-		t.Logf("photos: %#v", photos)
+		t.Logf("models: %#v", models)
 		t.Logf("values: %#v", values) */
 
 		assert.Equal(t, http.StatusOK, response.Code)
@@ -95,7 +95,7 @@ func TestBatchPhotosEdit(t *testing.T) {
 		body := response.Body.String()
 
 		assert.NotEmpty(t, body)
-		assert.True(t, strings.HasPrefix(body, `{"values":{"`), "unexpected response")
+		assert.True(t, strings.HasPrefix(body, `{"models":[{"ID"`), "unexpected response")
 
 		assert.Equal(t, http.StatusOK, response.Code)
 	})
