@@ -557,23 +557,47 @@ func migrationsTransferAction(ctx *cli.Context) error {
 	}
 
 	var albumUsers []entity.AlbumUser
-	result = conf.Db().Unscoped().
-		FindInBatches(&albumUsers, batchSize, func(tx *gorm.DB, batch int) error {
-			var newAlbumUsers []*entity.AlbumUser
-			for _, albumUser := range albumUsers {
-				newAlbumUsers = append(newAlbumUsers, &albumUser)
-			}
-			if result := tfrConf.Db().Create(newAlbumUsers); result.Error != nil {
-				log.Errorf("migrate: error in batch albumuser create %s", result.Error)
+	records := batchSize
+	currentOffset := 0
+	for records == batchSize {
+		if result = conf.Db().Unscoped().
+			Model(&entity.AlbumUser{}).
+			Limit(batchSize).Offset(currentOffset).
+			Order("uid, user_uid").
+			Find(&albumUsers); result.Error != nil {
+			log.Errorf("migrate: error in albumuser find %s", result.Error)
+			return result.Error
+		}
+		records = int(result.RowsAffected)
+		currentOffset += records
+		if records > 0 {
+			if result := tfrConf.Db().Create(&albumUsers); result.Error != nil {
+				log.Errorf("migrate: error in albumuser create %s", result.Error)
 				return result.Error
 			}
-			return nil
-		})
-	if result.Error != nil {
-		return result.Error
-	} else {
-		log.Infof("migrate: number of albumusers transfered %v", result.RowsAffected)
+		}
 	}
+	log.Infof("migrate: number of albumusers transfered %v", currentOffset)
+
+	// Gorm bug with composite foreign keys prevents the following from working.
+	// It can be used once pull https://github.com/go-gorm/gorm/pull/7453 (or equivalent) has been made to gorm
+	// result = conf.Db().Unscoped().
+	// 	FindInBatches(&albumUsers, batchSize, func(tx *gorm.DB, batch int) error {
+	// 		var newAlbumUsers []*entity.AlbumUser
+	// 		for _, albumUser := range albumUsers {
+	// 			newAlbumUsers = append(newAlbumUsers, &albumUser)
+	// 		}
+	// 		if result := tfrConf.Db().Create(newAlbumUsers); result.Error != nil {
+	// 			log.Errorf("migrate: error in batch albumuser create %s", result.Error)
+	// 			return result.Error
+	// 		}
+	// 		return nil
+	// 	})
+	// if result.Error != nil {
+	// 	return result.Error
+	// } else {
+	// 	log.Infof("migrate: number of albumusers transfered %v", result.RowsAffected)
+	// }
 
 	var clients entity.Clients
 	result = conf.Db().Unscoped().
@@ -615,6 +639,7 @@ func migrationsTransferAction(ctx *cli.Context) error {
 
 	var userdetails []entity.UserDetails
 	result = conf.Db().Unscoped().
+		Where("user_uid <> ''").
 		FindInBatches(&userdetails, batchSize, func(tx *gorm.DB, batch int) error {
 			var newUserDetails []*entity.UserDetails
 			for _, userdetail := range userdetails {
@@ -638,6 +663,7 @@ func migrationsTransferAction(ctx *cli.Context) error {
 
 	var usersettings []entity.UserSettings
 	result = conf.Db().Unscoped().
+		Where("user_uid <> ''").
 		FindInBatches(&usersettings, batchSize, func(tx *gorm.DB, batch int) error {
 			var newUserSettings []*entity.UserSettings
 			for _, usersetting := range usersettings {
@@ -660,62 +686,139 @@ func migrationsTransferAction(ctx *cli.Context) error {
 		log.Infof("migrate: number of usersettings transfered %v", result.RowsAffected)
 	}
 
-	var usershares entity.UserShares
-	result = conf.Db().Unscoped().
-		FindInBatches(&usershares, batchSize, func(tx *gorm.DB, batch int) error {
-			var newUserShares []*entity.UserShare
-			for _, usershare := range usershares {
-				newUserShares = append(newUserShares, &usershare)
-			}
-			if result := tfrConf.Db().Create(newUserShares); result.Error != nil {
-				log.Errorf("migrate: error in batch usershare create %s", result.Error)
+	var usershares []entity.UserShare
+	records = batchSize
+	currentOffset = 0
+	for records == batchSize {
+		if result = conf.Db().Unscoped().
+			Model(&entity.UserShare{}).
+			Limit(batchSize).Offset(currentOffset).
+			Order("user_uid, share_uid").
+			Find(&usershares); result.Error != nil {
+			log.Errorf("migrate: error in usershares find %s", result.Error)
+			return result.Error
+		}
+		records = int(result.RowsAffected)
+		currentOffset += records
+		if records > 0 {
+			if result := tfrConf.Db().Create(&usershares); result.Error != nil {
+				log.Errorf("migrate: error in usershares create %s", result.Error)
 				return result.Error
 			}
-			return nil
-		})
-	if result.Error != nil {
-		return result.Error
-	} else {
-		log.Infof("migrate: number of usershares transfered %v", result.RowsAffected)
+		}
 	}
+	log.Infof("migrate: number of usershares transfered %v", currentOffset)
 
-	var categorys []entity.Category
-	result = conf.Db().Unscoped().
-		FindInBatches(&categorys, batchSize, func(tx *gorm.DB, batch int) error {
-			var newCategorys []*entity.Category
-			for _, category := range categorys {
-				newCategorys = append(newCategorys, &category)
-			}
-			if result := tfrConf.Db().Create(newCategorys); result.Error != nil {
-				log.Errorf("migrate: error in batch category create %s", result.Error)
-				return result.Error
-			}
-			return nil
-		})
-	if result.Error != nil {
-		return result.Error
-	} else {
-		log.Infof("migrate: number of categories transfered %v", result.RowsAffected)
-	}
+	// Gorm bug with composite foreign keys prevents the following from working.
+	// It can be used once pull https://github.com/go-gorm/gorm/pull/7453 (or equivalent) has been made to gorm
+	// var usershares entity.UserShares
+	// result = conf.Db().Unscoped().
+	// 	Where("user_uid <> ''").
+	// 	FindInBatches(&usershares, batchSize, func(tx *gorm.DB, batch int) error {
+	// 		var newUserShares []*entity.UserShare
+	// 		for _, usershare := range usershares {
+	// 			newUserShares = append(newUserShares, &usershare)
+	// 		}
+	// 		if result := tfrConf.Db().Create(newUserShares); result.Error != nil {
+	// 			log.Errorf("migrate: error in batch usershare create %s", result.Error)
+	// 			return result.Error
+	// 		}
+	// 		return nil
+	// 	})
+	// if result.Error != nil {
+	// 	return result.Error
+	// } else {
+	// 	log.Infof("migrate: number of usershares transfered %v", result.RowsAffected)
+	// }
 
-	var duplicates entity.Duplicates
-	result = conf.Db().Unscoped().
-		FindInBatches(&duplicates, batchSize, func(tx *gorm.DB, batch int) error {
-			var newDuplicates []*entity.Duplicate
-			for _, duplicate := range duplicates {
-				newDuplicates = append(newDuplicates, &duplicate)
-			}
-			if result := tfrConf.Db().Create(newDuplicates); result.Error != nil {
-				log.Errorf("migrate: error in batch duplicate create %s", result.Error)
+	var categories []entity.Category
+	records = batchSize
+	currentOffset = 0
+	for records == batchSize {
+		if result = conf.Db().Unscoped().
+			Model(&entity.Category{}).
+			Limit(batchSize).Offset(currentOffset).
+			Order("label_id, category_id").
+			Find(&categories); result.Error != nil {
+			log.Errorf("migrate: error in categories find %s", result.Error)
+			return result.Error
+		}
+		records = int(result.RowsAffected)
+		currentOffset += records
+		if records > 0 {
+			if result := tfrConf.Db().Create(&categories); result.Error != nil {
+				log.Errorf("migrate: error in categories create %s", result.Error)
 				return result.Error
 			}
-			return nil
-		})
-	if result.Error != nil {
-		return result.Error
-	} else {
-		log.Infof("migrate: number of duplicates transfered %v", result.RowsAffected)
+		}
 	}
+	log.Infof("migrate: number of categories transfered %v", currentOffset)
+
+	// Gorm bug with composite foreign keys prevents the following from working.
+	// It can be used once pull https://github.com/go-gorm/gorm/pull/7453 (or equivalent) has been made to gorm
+	// var categorys []entity.Category
+	// result = conf.Db().Unscoped().Debug().
+	// 	FindInBatches(&categorys, batchSize, func(tx *gorm.DB, batch int) error {
+	// 		var newCategorys []*entity.Category
+	// 		for _, category := range categorys {
+	// 			newCategorys = append(newCategorys, &category)
+	// 		}
+	// 		if result := tfrConf.Db().Create(newCategorys); result.Error != nil {
+	// 			log.Errorf("migrate: error in batch category create %s", result.Error)
+	// 			return result.Error
+	// 		}
+	// 		return nil
+	// 	})
+	// if result.Error != nil {
+	// 	log.Errorf("migrate: error in batch category findinbatches %s", result.Error)
+	// 	return result.Error
+	// } else {
+	// 	log.Infof("migrate: number of categories transfered %v", result.RowsAffected)
+	// }
+
+	var duplicates []entity.Duplicate
+	records = batchSize
+	currentOffset = 0
+	for records == batchSize {
+		if result = conf.Db().Unscoped().
+			Model(&entity.Duplicate{}).
+			Limit(batchSize).Offset(currentOffset).
+			Order("file_name, file_root").
+			Find(&duplicates); result.Error != nil {
+			log.Errorf("migrate: error in duplicates find %s", result.Error)
+			return result.Error
+		}
+		records = int(result.RowsAffected)
+		currentOffset += records
+		if records > 0 {
+			if result := tfrConf.Db().Create(&duplicates); result.Error != nil {
+				log.Errorf("migrate: error in duplicates create %s", result.Error)
+				return result.Error
+			}
+		}
+	}
+	log.Infof("migrate: number of duplicates transfered %v", currentOffset)
+
+	// Gorm bug with composite foreign keys prevents the following from working.
+	// It can be used once pull https://github.com/go-gorm/gorm/pull/7453 (or equivalent) has been made to gorm
+	// var duplicates entity.Duplicates
+	// result = conf.Db().Unscoped().
+	// 	FindInBatches(&duplicates, batchSize, func(tx *gorm.DB, batch int) error {
+	// 		var newDuplicates []*entity.Duplicate
+	// 		for _, duplicate := range duplicates {
+	// 			newDuplicates = append(newDuplicates, &duplicate)
+	// 		}
+	// 		if result := tfrConf.Db().Create(newDuplicates); result.Error != nil {
+	// 			log.Errorf("migrate: error in batch duplicate create %s", result.Error)
+	// 			return result.Error
+	// 		}
+	// 		return nil
+	// 	})
+	// if result.Error != nil {
+	// 	return result.Error
+	// } else {
+	// 	log.Infof("migrate: number of duplicates transfered %v", result.RowsAffected)
+	// }
 
 	var errors entity.Errors
 	result = conf.Db().Unscoped().
@@ -780,42 +883,92 @@ func migrationsTransferAction(ctx *cli.Context) error {
 	}
 
 	var fileshares []entity.FileShare
-	result = conf.Db().Unscoped().
-		FindInBatches(&fileshares, batchSize, func(tx *gorm.DB, batch int) error {
-			var newFileShares []*entity.FileShare
-			for _, fileshare := range fileshares {
-				newFileShares = append(newFileShares, &fileshare)
-			}
-			if result := tfrConf.Db().Create(newFileShares); result.Error != nil {
-				log.Errorf("migrate: error in batch fileshare create %s", result.Error)
+	records = batchSize
+	currentOffset = 0
+	for records == batchSize {
+		if result = conf.Db().Unscoped().
+			Model(&entity.FileShare{}).
+			Limit(batchSize).Offset(currentOffset).
+			Order("file_id, service_id").
+			Find(&fileshares); result.Error != nil {
+			log.Errorf("migrate: error in fileshares find %s", result.Error)
+			return result.Error
+		}
+		records = int(result.RowsAffected)
+		currentOffset += records
+		if records > 0 {
+			if result := tfrConf.Db().Create(&fileshares); result.Error != nil {
+				log.Errorf("migrate: error in fileshares create %s", result.Error)
 				return result.Error
 			}
-			return nil
-		})
-	if result.Error != nil {
-		return result.Error
-	} else {
-		log.Infof("migrate: number of fileshares transfered %v", result.RowsAffected)
+		}
 	}
+	log.Infof("migrate: number of fileshares transfered %v", currentOffset)
+
+	// Gorm bug with composite foreign keys prevents the following from working.
+	// It can be used once pull https://github.com/go-gorm/gorm/pull/7453 (or equivalent) has been made to gorm
+	// var fileshares []entity.FileShare
+	// result = conf.Db().Unscoped().
+	// 	FindInBatches(&fileshares, batchSize, func(tx *gorm.DB, batch int) error {
+	// 		var newFileShares []*entity.FileShare
+	// 		for _, fileshare := range fileshares {
+	// 			newFileShares = append(newFileShares, &fileshare)
+	// 		}
+	// 		if result := tfrConf.Db().Create(newFileShares); result.Error != nil {
+	// 			log.Errorf("migrate: error in batch fileshare create %s", result.Error)
+	// 			return result.Error
+	// 		}
+	// 		return nil
+	// 	})
+	// if result.Error != nil {
+	// 	return result.Error
+	// } else {
+	// 	log.Infof("migrate: number of fileshares transfered %v", result.RowsAffected)
+	// }
 
 	var filesyncs []entity.FileSync
-	result = conf.Db().Unscoped().
-		FindInBatches(&filesyncs, batchSize, func(tx *gorm.DB, batch int) error {
-			var newFileSyncs []*entity.FileSync
-			for _, filesync := range filesyncs {
-				newFileSyncs = append(newFileSyncs, &filesync)
-			}
-			if result := tfrConf.Db().Create(newFileSyncs); result.Error != nil {
-				log.Errorf("migrate: error in batch filesync create %s", result.Error)
+	records = batchSize
+	currentOffset = 0
+	for records == batchSize {
+		if result = conf.Db().Unscoped().
+			Model(&entity.FileSync{}).
+			Limit(batchSize).Offset(currentOffset).
+			Order("remote_name, service_id").
+			Find(&filesyncs); result.Error != nil {
+			log.Errorf("migrate: error in filesyncs find %s", result.Error)
+			return result.Error
+		}
+		records = int(result.RowsAffected)
+		currentOffset += records
+		if records > 0 {
+			if result := tfrConf.Db().Create(&filesyncs); result.Error != nil {
+				log.Errorf("migrate: error in filesyncs create %s", result.Error)
 				return result.Error
 			}
-			return nil
-		})
-	if result.Error != nil {
-		return result.Error
-	} else {
-		log.Infof("migrate: number of filesyncs transfered %v", result.RowsAffected)
+		}
 	}
+	log.Infof("migrate: number of filesyncs transfered %v", currentOffset)
+
+	// Gorm bug with composite foreign keys prevents the following from working.
+	// It can be used once pull https://github.com/go-gorm/gorm/pull/7453 (or equivalent) has been made to gorm
+	// var filesyncs []entity.FileSync
+	// result = conf.Db().Unscoped().
+	// 	FindInBatches(&filesyncs, batchSize, func(tx *gorm.DB, batch int) error {
+	// 		var newFileSyncs []*entity.FileSync
+	// 		for _, filesync := range filesyncs {
+	// 			newFileSyncs = append(newFileSyncs, &filesync)
+	// 		}
+	// 		if result := tfrConf.Db().Create(newFileSyncs); result.Error != nil {
+	// 			log.Errorf("migrate: error in batch filesync create %s", result.Error)
+	// 			return result.Error
+	// 		}
+	// 		return nil
+	// 	})
+	// if result.Error != nil {
+	// 	return result.Error
+	// } else {
+	// 	log.Infof("migrate: number of filesyncs transfered %v", result.RowsAffected)
+	// }
 
 	var folders entity.Folders
 	result = conf.Db().Unscoped().
@@ -875,23 +1028,48 @@ func migrationsTransferAction(ctx *cli.Context) error {
 	}
 
 	var passcodes []entity.Passcode
-	result = conf.Db().Unscoped().
-		FindInBatches(&passcodes, batchSize, func(tx *gorm.DB, batch int) error {
-			var newPasscodes []*entity.Passcode
-			for _, passcode := range passcodes {
-				newPasscodes = append(newPasscodes, &passcode)
-			}
-			if result := tfrConf.Db().Create(newPasscodes); result.Error != nil {
-				log.Errorf("migrate: error in batch passcode create %s", result.Error)
+	records = batchSize
+	currentOffset = 0
+	for records == batchSize {
+		if result = conf.Db().Unscoped().
+			Model(&entity.Passcode{}).
+			Limit(batchSize).Offset(currentOffset).
+			Order("uid, key_type").
+			Find(&passcodes); result.Error != nil {
+			log.Errorf("migrate: error in passcodes find %s", result.Error)
+			return result.Error
+		}
+		records = int(result.RowsAffected)
+		currentOffset += records
+		if records > 0 {
+			if result := tfrConf.Db().Create(&passcodes); result.Error != nil {
+				log.Errorf("migrate: error in passcodes create %s", result.Error)
 				return result.Error
 			}
-			return nil
-		})
-	if result.Error != nil {
-		return result.Error
-	} else {
-		log.Infof("migrate: number of passcodes transfered %v", result.RowsAffected)
+		}
 	}
+	log.Infof("migrate: number of passcodes transfered %v", currentOffset)
+
+	// Gorm bug with composite foreign keys prevents the following from working.
+	// It can be used once pull https://github.com/go-gorm/gorm/pull/7453 (or equivalent) has been made to gorm
+	// var passcodes []entity.Passcode
+	// result = conf.Db().Unscoped().
+	// 	FindInBatches(&passcodes, batchSize, func(tx *gorm.DB, batch int) error {
+	// 		var newPasscodes []*entity.Passcode
+	// 		for _, passcode := range passcodes {
+	// 			newPasscodes = append(newPasscodes, &passcode)
+	// 		}
+	// 		if result := tfrConf.Db().Create(newPasscodes); result.Error != nil {
+	// 			log.Errorf("migrate: error in batch passcode create %s", result.Error)
+	// 			return result.Error
+	// 		}
+	// 		return nil
+	// 	})
+	// if result.Error != nil {
+	// 	return result.Error
+	// } else {
+	// 	log.Infof("migrate: number of passcodes transfered %v", result.RowsAffected)
+	// }
 
 	var passwords []entity.Password
 	result = conf.Db().Unscoped().
@@ -913,42 +1091,92 @@ func migrationsTransferAction(ctx *cli.Context) error {
 	}
 
 	var photousers []entity.PhotoUser
-	result = conf.Db().Unscoped().
-		FindInBatches(&photousers, batchSize, func(tx *gorm.DB, batch int) error {
-			var newPhotoUsers []*entity.PhotoUser
-			for _, photouser := range photousers {
-				newPhotoUsers = append(newPhotoUsers, &photouser)
-			}
-			if result := tfrConf.Db().Create(newPhotoUsers); result.Error != nil {
-				log.Errorf("migrate: error in batch photouser create %s", result.Error)
+	records = batchSize
+	currentOffset = 0
+	for records == batchSize {
+		if result = conf.Db().Unscoped().
+			Model(&entity.PhotoUser{}).
+			Limit(batchSize).Offset(currentOffset).
+			Order("uid, user_uid").
+			Find(&photousers); result.Error != nil {
+			log.Errorf("migrate: error in photousers find %s", result.Error)
+			return result.Error
+		}
+		records = int(result.RowsAffected)
+		currentOffset += records
+		if records > 0 {
+			if result := tfrConf.Db().Create(&photousers); result.Error != nil {
+				log.Errorf("migrate: error in photousers create %s", result.Error)
 				return result.Error
 			}
-			return nil
-		})
-	if result.Error != nil {
-		return result.Error
-	} else {
-		log.Infof("migrate: number of photousers transfered %v", result.RowsAffected)
+		}
 	}
+	log.Infof("migrate: number of photousers transfered %v", currentOffset)
+
+	// Gorm bug with composite foreign keys prevents the following from working.
+	// It can be used once pull https://github.com/go-gorm/gorm/pull/7453 (or equivalent) has been made to gorm
+	// var photousers []entity.PhotoUser
+	// result = conf.Db().Unscoped().
+	// 	FindInBatches(&photousers, batchSize, func(tx *gorm.DB, batch int) error {
+	// 		var newPhotoUsers []*entity.PhotoUser
+	// 		for _, photouser := range photousers {
+	// 			newPhotoUsers = append(newPhotoUsers, &photouser)
+	// 		}
+	// 		if result := tfrConf.Db().Create(newPhotoUsers); result.Error != nil {
+	// 			log.Errorf("migrate: error in batch photouser create %s", result.Error)
+	// 			return result.Error
+	// 		}
+	// 		return nil
+	// 	})
+	// if result.Error != nil {
+	// 	return result.Error
+	// } else {
+	// 	log.Infof("migrate: number of photousers transfered %v", result.RowsAffected)
+	// }
 
 	var reactions []entity.Reaction
-	result = conf.Db().Unscoped().
-		FindInBatches(&reactions, batchSize, func(tx *gorm.DB, batch int) error {
-			var newReactions []*entity.Reaction
-			for _, reaction := range reactions {
-				newReactions = append(newReactions, &reaction)
-			}
-			if result := tfrConf.Db().Create(newReactions); result.Error != nil {
-				log.Errorf("migrate: error in batch reaction create %s", result.Error)
+	records = batchSize
+	currentOffset = 0
+	for records == batchSize {
+		if result = conf.Db().Unscoped().
+			Model(&entity.Reaction{}).
+			Limit(batchSize).Offset(currentOffset).
+			Order("uid, user_uid, reaction").
+			Find(&reactions); result.Error != nil {
+			log.Errorf("migrate: error in reactions find %s", result.Error)
+			return result.Error
+		}
+		records = int(result.RowsAffected)
+		currentOffset += records
+		if records > 0 {
+			if result := tfrConf.Db().Create(&reactions); result.Error != nil {
+				log.Errorf("migrate: error in reactions create %s", result.Error)
 				return result.Error
 			}
-			return nil
-		})
-	if result.Error != nil {
-		return result.Error
-	} else {
-		log.Infof("migrate: number of reactions transfered %v", result.RowsAffected)
+		}
 	}
+	log.Infof("migrate: number of reactions transfered %v", currentOffset)
+
+	// Gorm bug with composite foreign keys prevents the following from working.
+	// It can be used once pull https://github.com/go-gorm/gorm/pull/7453 (or equivalent) has been made to gorm
+	// var reactions []entity.Reaction
+	// result = conf.Db().Unscoped().
+	// 	FindInBatches(&reactions, batchSize, func(tx *gorm.DB, batch int) error {
+	// 		var newReactions []*entity.Reaction
+	// 		for _, reaction := range reactions {
+	// 			newReactions = append(newReactions, &reaction)
+	// 		}
+	// 		if result := tfrConf.Db().Create(newReactions); result.Error != nil {
+	// 			log.Errorf("migrate: error in batch reaction create %s", result.Error)
+	// 			return result.Error
+	// 		}
+	// 		return nil
+	// 	})
+	// if result.Error != nil {
+	// 	return result.Error
+	// } else {
+	// 	log.Infof("migrate: number of reactions transfered %v", result.RowsAffected)
+	// }
 
 	var subjects entity.Subjects
 	result = conf.Db().Unscoped().
