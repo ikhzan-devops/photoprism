@@ -186,14 +186,16 @@
                   </v-col>
                   <v-row dense>
                     <v-col cols="12" md="6">
-<!--                  TODO: uncomment to test value - add v-model="model.values.Title" if check how values look like-->
                       <v-text-field
                         hide-details
                         :label="$gettext('Title')"
-                        :placeholder="getPlaceholder('text-field', 'Title')"
+                        :model-value="getFieldData('text-field', 'Title').value"
+                        :placeholder="getFieldData('text-field', 'Title').placeholder"
+                        :persistent-placeholder="getFieldData('text-field', 'Title').persistent"
                         autocomplete="off"
                         density="comfortable"
                         class="input-title"
+                        @update:modelValue="onInput($event, 'Title')"
                       ></v-text-field>
                     </v-col>
                     <v-col cols="12" md="6">
@@ -202,10 +204,13 @@
                         autocomplete="off"
                         auto-grow
                         :label="$gettext('Subject')"
-                        :placeholder="getPlaceholder('text-field', 'Subject')"
+                        :model-value="getFieldData('text-field', 'DetailsSubject').value"
+                        :placeholder="getFieldData('text-field', 'DetailsSubject').placeholder"
+                        :persistent-placeholder="getFieldData('text-field', 'DetailsSubject').persistent"
                         :rows="1"
                         density="comfortable"
                         class="input-subject"
+                        @update:modelValue="onInput($event, 'DetailsSubject')"
                       ></v-textarea>
                     </v-col>
                   </v-row>
@@ -215,10 +220,13 @@
                       autocomplete="off"
                       auto-grow
                       :label="$gettext('Caption')"
-                      :placeholder="getPlaceholder('text-field', 'Caption')"
+                      :model-value="getFieldData('text-field', 'Caption').value"
+                      :placeholder="getFieldData('text-field', 'Caption').placeholder"
+                      :persistent-placeholder="getFieldData('text-field', 'Caption').persistent"
                       :rows="1"
                       density="comfortable"
                       class="input-caption"
+                      @update:modelValue="onInput($event, 'Caption')"
                     ></v-textarea>
                   </v-col>
                 </div>
@@ -317,7 +325,6 @@
                         autocorrect="off"
                         autocapitalize="none"
                         :label="$gettext('Latitude')"
-                        :placeholder="getPlaceholder('input-field', 'Latitude')"
                         density="comfortable"
                         validate-on="input"
                         class="input-latitude"
@@ -330,7 +337,6 @@
                         autocorrect="off"
                         autocapitalize="none"
                         :label="$gettext('Longitude')"
-                        :placeholder="getPlaceholder('input-field', 'Longitude')"
                         density="comfortable"
                         validate-on="input"
                         class="input-longitude"
@@ -344,7 +350,6 @@
                         autocorrect="off"
                         autocapitalize="none"
                         :label="$gettext('Altitude (m)')"
-                        :placeholder="getPlaceholder('input-field', 'Altitude')"
                         color="surface-variant"
                         density="comfortable"
                         validate-on="input"
@@ -364,9 +369,12 @@
                         hide-details
                         autocomplete="off"
                         :label="$gettext('Artist')"
-                        :placeholder="getPlaceholder('text-field', 'Artist')"
+                        :model-value="getFieldData('text-field', 'DetailsArtist').value"
+                        :placeholder="getFieldData('text-field', 'DetailsArtist').placeholder"
+                        :persistent-placeholder="getFieldData('text-field', 'DetailsArtist').persistent"
                         density="comfortable"
                         class="input-artist"
+                        @update:modelValue="onInput($event, 'DetailsArtist')"
                       ></v-text-field>
                     </v-col>
                     <v-col cols="12" md="6">
@@ -374,9 +382,12 @@
                         hide-details
                         autocomplete="off"
                         :label="$gettext('Copyright')"
-                        :placeholder="getPlaceholder('text-field', 'Copyright')"
+                        :model-value="getFieldData('text-field', 'DetailsCopyright').value"
+                        :placeholder="getFieldData('text-field', 'DetailsCopyright').placeholder"
+                        :persistent-placeholder="getFieldData('text-field', 'DetailsCopyright').persistent"
                         density="comfortable"
                         class="input-copyright"
+                        @update:modelValue="onInput($event, 'DetailsCopyright')"
                       ></v-text-field>
                     </v-col>
                   </v-row>
@@ -386,10 +397,13 @@
                       autocomplete="off"
                       auto-grow
                       :label="$gettext('License')"
-                      :placeholder="getPlaceholder('text-field', 'License')"
+                      :model-value="getFieldData('text-field', 'DetailsLicense').value"
+                      :placeholder="getFieldData('text-field', 'DetailsLicense').placeholder"
+                      :persistent-placeholder="getFieldData('text-field', 'DetailsLicense').persistent"
                       :rows="1"
                       density="comfortable"
                       class="input-license"
+                      @update:modelValue="onInput($event, 'DetailsLicense')"
                     ></v-textarea>
                   </v-col>
                 </div>
@@ -547,6 +561,8 @@ export default {
         scrollY: window.scrollY,
         timeStamp: -1,
       },
+      values: {},
+      // deletedFields: {},
     };
   },
   computed: {
@@ -560,6 +576,7 @@ export default {
         this.expanded = [];
 
         await this.model.getData(this.selection);
+        this.values = this.model.values;
         this.allSelectedLength = this.model.getLengthOfAllSelected();
       } else {
         this.model = new Batch();
@@ -575,6 +592,55 @@ export default {
     }
   },
   methods: {
+    getFieldData(fieldType, fieldName) {
+      const fieldData = this.values[fieldName];
+
+      if (!fieldData) return { placeholder: '', persistent: false };
+
+      if (fieldType === 'text-field') {
+        if (fieldData.mixed) {
+          return { value: '', placeholder: '<mixed>', persistent: true };
+        } else if (fieldData.value !== null && fieldData.value !== '') {
+          return { value: fieldData.value, placeholder: '', persistent: false };
+        } else {
+          return { value: '', placeholder: '', persistent: false };
+        }
+      }
+    },
+
+    onInput(val, fieldName) {
+      if (this.values[fieldName]) {
+        // this.values[fieldName].value = val;
+        // this.values[fieldName].mixed = false;
+        console.log('OnChange');
+      }
+    },
+
+    // deleteValue(fieldName) {
+    //   const fieldData = this.values[fieldName];
+    //   if (fieldData.mixed || fieldData.value !== null) {
+    //     this.deletedFields[fieldName] = {
+    //       originalValue: fieldData.value,
+    //       mixed: fieldData.mixed,
+    //     };
+    //     this.values[fieldName].value = '<deleted>';
+    //   }
+    // },
+    //
+    // undoDeleteValue(fieldName) {
+    //   if (this.deletedFields[fieldName]) {
+    //     const { originalValue, mixed } = this.deletedFields[fieldName];
+    //     const fieldData = this.values[fieldName];
+    //
+    //     if (mixed) {
+    //       fieldData.value = '<mixed>';
+    //     } else {
+    //       fieldData.value = originalValue;
+    //     }
+    //
+    //     this.deletedFields[fieldName] = null;
+    //   }
+    // },
     openPhoto(index) {
       this.$lightbox.openModels(Thumb.fromPhotos([this.model.models[index]]), 0, null , this.isBatchDialog);
     },
@@ -608,10 +674,6 @@ export default {
       } else if (this.model.models[index]) {
         this.openPhoto(index);
       }
-    },
-    getPlaceholder(fieldType, fieldName) {
-      // TODO: comment it to test value
-      return this.model.getPlaceholderForField(fieldType, fieldName);
     },
     toggle(photo) {
       this.model.toggle(photo.UID);

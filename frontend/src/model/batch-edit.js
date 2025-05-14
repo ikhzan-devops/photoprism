@@ -35,27 +35,8 @@ export class Batch extends Model {
 
       this.values = response.data.values;
       this.setSelections(selection);
-      // TODO: uncomment to test value
-      // this.setFormValues();
     });
   }
-
-  // TODO: uncomment to test value
-  // setFormValues() {
-  //   console.log('this.values', this.values);
-  //
-  //   Object.entries(this.values).forEach(([key, val]) => {
-  //     if (val.mixed) {
-  //       this.values[key] = "<mixed>";
-  //     } else if (!val.mixed && !val.value) {
-  //       this.values[key] = val.value;
-  //     } else if (!val.mixed && val.value) {
-  //       this.values[key] = 'Label';
-  //     } else {
-  //       this.values[key] = "";
-  //     }
-  //   });
-  // }
 
   setSelections(selection) {
     this.selection = selection.map(id => {
@@ -64,31 +45,6 @@ export class Batch extends Model {
         selected: true,
       };
     });
-  }
-
-  getPlaceholderForField(fieldType, fieldName) {
-    const fieldData = this.values[fieldName];
-    console.log('fieldName', fieldName);
-
-    if(!fieldData) return;
-
-    if(fieldType === 'text-field') {
-      if (fieldData.mixed) {
-        console.log("mixed", this.values[fieldName]);
-        return "<mixed>";
-      } else if (!fieldData.mixed && !fieldData.value) {
-        console.log("!mixed && value", this.values[fieldName]);
-        return fieldData.value;
-      } else if (!fieldData.mixed && fieldData.value.isEmpty()) {
-        console.log("!mixed && !value", this.values[fieldName]);
-        return fieldName;
-      } else {
-        return "";
-      }
-    } else if(fieldType === 'input-field') {
-      // TODO: change the logic
-      return 'EMPTY';
-    }
   }
 
   isSelected(id) {
