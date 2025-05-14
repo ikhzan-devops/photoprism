@@ -27,8 +27,8 @@ type PhotosForm struct {
 	PhotoPrivate     Bool    `json:"Private"`
 	PhotoScan        Bool    `json:"Scan"`
 	PhotoPanorama    Bool    `json:"Panorama"`
-	CameraID         UInt    `json:"CameraID"`
-	LensID           UInt    `json:"LensID"`
+	CameraID         Int     `json:"CameraID"`
+	LensID           Int     `json:"LensID"`
 
 	DetailsKeywords  String `json:"DetailsKeywords"`
 	DetailsSubject   String `json:"DetailsSubject"`
@@ -78,35 +78,35 @@ func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
 			frm.PhotoDay.Value = photo.PhotoDay
 		} else if photo.PhotoDay != frm.PhotoDay.Value {
 			frm.PhotoDay.Mixed = true
-			frm.PhotoDay.Value = 0
+			frm.PhotoDay.Value = -2
 		}
 
 		if i == 0 {
 			frm.PhotoMonth.Value = photo.PhotoMonth
 		} else if photo.PhotoMonth != frm.PhotoMonth.Value {
 			frm.PhotoMonth.Mixed = true
-			frm.PhotoMonth.Value = 0
+			frm.PhotoMonth.Value = -2
 		}
 
 		if i == 0 {
 			frm.PhotoYear.Value = photo.PhotoYear
 		} else if photo.PhotoYear != frm.PhotoYear.Value {
 			frm.PhotoYear.Mixed = true
-			frm.PhotoYear.Value = 0
+			frm.PhotoYear.Value = -2
 		}
 
 		if i == 0 {
 			frm.TimeZone.Value = photo.TimeZone
 		} else if photo.TimeZone != frm.TimeZone.Value {
 			frm.TimeZone.Mixed = true
-			frm.TimeZone.Value = "Local"
+			frm.TimeZone.Value = ""
 		}
 
 		if i == 0 {
 			frm.PhotoCountry.Value = photo.PhotoCountry
 		} else if photo.PhotoCountry != frm.PhotoCountry.Value {
 			frm.PhotoCountry.Mixed = true
-			frm.PhotoCountry.Value = "zz"
+			frm.PhotoCountry.Value = ""
 		}
 
 		if i == 0 {
@@ -187,17 +187,17 @@ func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
 		}
 
 		if i == 0 {
-			frm.CameraID.Value = photo.CameraID
-		} else if photo.CameraID != frm.CameraID.Value {
+			frm.CameraID.Value = int(photo.CameraID)
+		} else if photo.CameraID != uint(frm.CameraID.Value) {
 			frm.CameraID.Mixed = true
-			frm.CameraID.Value = 1
+			frm.CameraID.Value = -2
 		}
 
 		if i == 0 {
-			frm.LensID.Value = photo.LensID
-		} else if photo.LensID != frm.LensID.Value {
+			frm.LensID.Value = int(photo.LensID)
+		} else if photo.LensID != uint(frm.LensID.Value) {
 			frm.LensID.Mixed = true
-			frm.LensID.Value = 1
+			frm.LensID.Value = -2
 		}
 
 		if i == 0 {
@@ -234,19 +234,6 @@ func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
 			frm.DetailsLicense.Mixed = true
 			frm.DetailsLicense.Value = ""
 		}
-	}
-
-	// Use defaults for the following values if they are empty:
-	if frm.PhotoCountry.Value == "" {
-		frm.PhotoCountry.Value = "zz"
-	}
-
-	if frm.CameraID.Value < 1 {
-		frm.CameraID.Value = 1
-	}
-
-	if frm.LensID.Value < 1 {
-		frm.LensID.Value = 1
 	}
 
 	return frm

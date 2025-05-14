@@ -5245,7 +5245,7 @@
                     "$ref": "#/definitions/batch.Int"
                 },
                 "CameraID": {
-                    "$ref": "#/definitions/batch.UInt"
+                    "$ref": "#/definitions/batch.Int"
                 },
                 "Caption": {
                     "$ref": "#/definitions/batch.String"
@@ -5290,7 +5290,7 @@
                     "$ref": "#/definitions/batch.Float64"
                 },
                 "LensID": {
-                    "$ref": "#/definitions/batch.UInt"
+                    "$ref": "#/definitions/batch.Int"
                 },
                 "Lng": {
                     "$ref": "#/definitions/batch.Float64"
@@ -5336,9 +5336,6 @@
                         "type": "string"
                     }
                 },
-                "return": {
-                    "type": "boolean"
-                },
                 "values": {
                     "$ref": "#/definitions/batch.PhotosForm"
                 }
@@ -5355,20 +5352,6 @@
                 },
                 "value": {
                     "type": "string"
-                }
-            }
-        },
-        "batch.UInt": {
-            "type": "object",
-            "properties": {
-                "action": {
-                    "$ref": "#/definitions/batch.Action"
-                },
-                "mixed": {
-                    "type": "boolean"
-                },
-                "value": {
-                    "type": "integer"
                 }
             }
         },
@@ -7962,6 +7945,22 @@
         "time.Duration": {
             "type": "integer",
             "enum": [
+                -9223372036854775808,
+                9223372036854775807,
+                1,
+                1000,
+                1000000,
+                1000000000,
+                60000000000,
+                3600000000000,
+                -9223372036854775808,
+                9223372036854775807,
+                1,
+                1000,
+                1000000,
+                1000000000,
+                60000000000,
+                3600000000000,
                 1,
                 1000,
                 1000000,
@@ -7970,6 +7969,22 @@
                 3600000000000
             ],
             "x-enum-varnames": [
+                "minDuration",
+                "maxDuration",
+                "Nanosecond",
+                "Microsecond",
+                "Millisecond",
+                "Second",
+                "Minute",
+                "Hour",
+                "minDuration",
+                "maxDuration",
+                "Nanosecond",
+                "Microsecond",
+                "Millisecond",
+                "Second",
+                "Minute",
+                "Hour",
                 "Nanosecond",
                 "Microsecond",
                 "Millisecond",
@@ -8006,7 +8021,13 @@
                 "model": {
                     "type": "string"
                 },
+                "prompt": {
+                    "type": "string"
+                },
                 "url": {
+                    "type": "string"
+                },
+                "version": {
                     "type": "string"
                 }
             }
@@ -8113,6 +8134,9 @@
                     "type": "boolean"
                 },
                 "name": {
+                    "type": "string"
+                },
+                "prompt": {
                     "type": "string"
                 },
                 "resolution": {
