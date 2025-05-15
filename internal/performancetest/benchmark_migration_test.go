@@ -5,9 +5,10 @@ import (
 	"testing"
 	"time"
 
+	"github.com/sirupsen/logrus"
+
 	"github.com/photoprism/photoprism/internal/event"
 	"github.com/photoprism/photoprism/pkg/fs"
-	"github.com/sirupsen/logrus"
 )
 
 func BenchmarkMigration_SQLite(b *testing.B) {

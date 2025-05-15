@@ -6,8 +6,9 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/photoprism/photoprism/internal/ai/classify"
 	"gorm.io/gorm"
+
+	"github.com/photoprism/photoprism/internal/ai/classify"
 )
 
 func TestNewLabel(t *testing.T) {

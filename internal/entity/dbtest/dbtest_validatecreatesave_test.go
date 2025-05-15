@@ -6,10 +6,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/photoprism/photoprism/internal/entity"
-	"github.com/photoprism/photoprism/pkg/rnd"
 	"github.com/stretchr/testify/assert"
 	"gorm.io/gorm"
+
+	"github.com/photoprism/photoprism/internal/entity"
+	"github.com/photoprism/photoprism/pkg/rnd"
 )
 
 var createsavetestMutex = sync.Mutex{}

@@ -4,8 +4,9 @@ import (
 	"fmt"
 
 	"github.com/dustin/go-humanize/english"
-	"github.com/photoprism/photoprism/pkg/list"
 	"gorm.io/gorm"
+
+	"github.com/photoprism/photoprism/pkg/list"
 )
 
 // Status returns the current status of schema migrations.

@@ -5,9 +5,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/photoprism/photoprism/internal/entity"
 	"github.com/stretchr/testify/assert"
 	"gorm.io/gorm"
+
+	"github.com/photoprism/photoprism/internal/entity"
 )
 
 // Test Table to be blocked

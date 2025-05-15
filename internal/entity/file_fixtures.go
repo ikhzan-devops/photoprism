@@ -3,9 +3,10 @@ package entity
 import (
 	"time"
 
+	"gorm.io/gorm"
+
 	"github.com/photoprism/photoprism/pkg/fs"
 	"github.com/photoprism/photoprism/pkg/media"
-	"gorm.io/gorm"
 )
 
 type FileMap map[string]File

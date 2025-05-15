@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/dustin/go-humanize/english"
+
 	"github.com/photoprism/photoprism/internal/entity"
 
 	"github.com/stretchr/testify/assert"

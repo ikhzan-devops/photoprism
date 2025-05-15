@@ -3,8 +3,9 @@ package entity
 import (
 	"fmt"
 
-	"github.com/photoprism/photoprism/pkg/clean"
 	"gorm.io/gorm/clause"
+
+	"github.com/photoprism/photoprism/pkg/clean"
 )
 
 type Duplicates []Duplicate

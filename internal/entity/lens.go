@@ -5,11 +5,12 @@ import (
 	"sync"
 	"time"
 
+	"github.com/ulule/deepcopier"
+	"gorm.io/gorm"
+
 	"github.com/photoprism/photoprism/internal/event"
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/txt"
-	"github.com/ulule/deepcopier"
-	"gorm.io/gorm"
 )
 
 var lensMutex = sync.Mutex{}

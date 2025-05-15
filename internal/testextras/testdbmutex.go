@@ -6,9 +6,10 @@ import (
 	"os"
 	"time"
 
+	"gorm.io/gorm"
+
 	"github.com/photoprism/photoprism/internal/event"
 	"github.com/photoprism/photoprism/pkg/clean"
-	"gorm.io/gorm"
 )
 
 // Test DB Mutex structure to store the currently active mutex

@@ -310,7 +310,7 @@ func generateDatabase(numberOfPhotos int, driver string, dsn string, dropdb bool
 		}
 	}
 
-	for word, _ := range txt.StopWords {
+	for word := range txt.StopWords {
 		placeUID := rnd.GenerateUID(PlaceUID)
 		country := countries[rand.IntN(len(countries))]
 		place := entity.Place{

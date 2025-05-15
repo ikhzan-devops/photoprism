@@ -5,11 +5,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/photoprism/photoprism/internal/entity"
 	"github.com/stretchr/testify/assert"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"gorm.io/gorm/schema"
+
+	"github.com/photoprism/photoprism/internal/entity"
 )
 
 var editTime = time.Date(2008, 1, 1, 0, 0, 0, 0, time.UTC)

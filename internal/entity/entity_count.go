@@ -3,9 +3,10 @@ package entity
 import (
 	"sync"
 
-	"github.com/photoprism/photoprism/internal/functions"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
+
+	"github.com/photoprism/photoprism/internal/functions"
 )
 
 // Count returns the number of records for a given a model and key values.

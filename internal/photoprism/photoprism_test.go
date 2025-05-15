@@ -5,9 +5,10 @@ import (
 	"testing"
 	"time"
 
+	"github.com/sirupsen/logrus"
+
 	"github.com/photoprism/photoprism/internal/config"
 	"github.com/photoprism/photoprism/internal/testextras"
-	"github.com/sirupsen/logrus"
 )
 
 func TestMain(m *testing.M) {
