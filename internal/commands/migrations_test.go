@@ -75,6 +75,105 @@ func TestMigrationCommand(t *testing.T) {
 		}
 	})
 
+	t.Run("MySQLtoPostgreSQL", func(t *testing.T) {
+		// Load migrate database as source
+		if dumpName, err := filepath.Abs("./testdata/transfer_mysql"); err != nil {
+			t.Fatal(err)
+		} else if err = exec.Command("mariadb", "-u", "migrate", "-pmigrate", "migrate",
+			"-e", "source "+dumpName).Run(); err != nil {
+			t.Fatal(err)
+		}
+
+		// Clear PostgreSQL target (migrate)
+		if dumpName, err := filepath.Abs("./testdata/reset-migrate.postgresql.sql"); err != nil {
+			t.Fatal(err)
+		} else {
+			if err = exec.Command("psql", "postgresql://photoprism:photoprism@postgres:5432/postgres", "--file="+dumpName).Run(); err != nil {
+				t.Fatal(err)
+			}
+		}
+
+		// Run command with test context.
+		log = event.Log
+
+		appArgs := []string{"photoprism",
+			"--database-driver", "mysql",
+			"--database-dsn", "migrate:migrate@tcp(mariadb:4001)/migrate?charset=utf8mb4,utf8&collation=utf8mb4_unicode_ci&parseTime=true&timeout=15s",
+			"--transfer-driver", "postgres",
+			"--transfer-dsn", "postgresql://migrate:migrate@postgres:5432/migrate?TimeZone=UTC&connect_timeout=15&lock_timeout=5000&sslmode=disable"}
+		cmdArgs := []string{"migrations", "transfer"}
+
+		ctx := NewTestContextWithParse(appArgs, cmdArgs)
+
+		s := event.Subscribe("log.info")
+		defer event.Unsubscribe(s)
+
+		var l string
+
+		assert.IsType(t, hub.Subscription{}, s)
+
+		go func() {
+			for msg := range s.Receiver {
+				l += msg.Fields["message"].(string) + "\n"
+			}
+		}()
+
+		output, err := RunWithProvidedTestContext(ctx, MigrationsCommands, cmdArgs)
+
+		// Check command output for plausibility.
+		//t.Logf(output)
+		if err != nil {
+			assert.NoError(t, err)
+			t.FailNow()
+		}
+		assert.NotContains(t, output, "Usage")
+
+		time.Sleep(time.Second)
+
+		// Check command output.
+		if l == "" {
+			t.Fatal("log output missing")
+		}
+		// t.Logf(l)
+
+		assert.Contains(t, l, "migrate: number of albums transfered 31")
+		assert.Contains(t, l, "migrate: number of albumusers transfered 0")
+		assert.Contains(t, l, "migrate: number of cameras transfered 6")
+		assert.Contains(t, l, "migrate: number of categories transfered 1")
+		assert.Contains(t, l, "migrate: number of cells transfered 9")
+		assert.Contains(t, l, "migrate: number of clients transfered 7")
+		assert.Contains(t, l, "migrate: number of countries transfered 1")
+		assert.Contains(t, l, "migrate: number of duplicates transfered 0")
+		assert.Contains(t, l, "migrate: number of errors transfered 0")
+		assert.Contains(t, l, "migrate: number of faces transfered 7")
+		assert.Contains(t, l, "migrate: number of files transfered 71")
+		assert.Contains(t, l, "migrate: number of fileshares transfered 2")
+		assert.Contains(t, l, "migrate: number of filesyncs transfered 3")
+		assert.Contains(t, l, "migrate: number of folders transfered 3")
+		assert.Contains(t, l, "migrate: number of keywords transfered 26")
+		assert.Contains(t, l, "migrate: number of labels transfered 32")
+		assert.Contains(t, l, "migrate: number of lenses transfered 2")
+		assert.Contains(t, l, "migrate: number of links transfered 5")
+		assert.Contains(t, l, "migrate: number of markers transfered 18")
+		assert.Contains(t, l, "migrate: number of passcodes transfered 3")
+		assert.Contains(t, l, "migrate: number of passwords transfered 11")
+		assert.Contains(t, l, "migrate: number of photos transfered 58")
+		assert.Contains(t, l, "migrate: number of photousers transfered 0")
+		assert.Contains(t, l, "migrate: number of places transfered 10")
+		assert.Contains(t, l, "migrate: number of reactions transfered 3")
+		assert.Contains(t, l, "migrate: number of sessions transfered 21")
+		assert.Contains(t, l, "migrate: number of services transfered 2")
+		assert.Contains(t, l, "migrate: number of subjects transfered 6")
+		assert.Contains(t, l, "migrate: number of users transfered 11")
+		assert.Contains(t, l, "migrate: number of userdetails transfered 9")
+		assert.Contains(t, l, "migrate: number of usersettings transfered 13")
+		assert.Contains(t, l, "migrate: number of usershares transfered 1")
+		// Remove target database file
+		if !t.Failed() {
+			os.Remove("/go/src/github.com/photoprism/photoprism/storage/mysqltosqlite.test.db")
+		}
+	})
+
 	t.Run("MySQLtoSQLite", func(t *testing.T) {
 		// Remove target database file
 		os.Remove("/go/src/github.com/photoprism/photoprism/storage/mysqltosqlite.test.db")
@@ -116,7 +215,10 @@ func TestMigrationCommand(t *testing.T) {
 
 		// Check command output for plausibility.
 		//t.Logf(output)
-		assert.NoError(t, err)
+		if err != nil {
+			assert.NoError(t, err)
+			t.FailNow()
+		}
 		assert.NotContains(t, output, "Usage")
 
 		time.Sleep(time.Second)
@@ -209,7 +311,10 @@ func TestMigrationCommand(t *testing.T) {
 
 		// Check command output for plausibility.
 		//t.Logf(output)
-		assert.NoError(t, err)
+		if err != nil {
+			assert.NoError(t, err)
+			t.FailNow()
+		}
 		assert.NotContains(t, output, "Usage")
 
 		time.Sleep(time.Second)
@@ -258,6 +363,208 @@ func TestMigrationCommand(t *testing.T) {
 		}
 	})
 
+	t.Run("PostgreSQLtoMySQL", func(t *testing.T) {
+		// Load migrate database as source
+		if dumpName, err := filepath.Abs("./testdata/transfer_postgresql"); err != nil {
+			t.Fatal(err)
+		} else {
+			if err = exec.Command("psql", "postgresql://photoprism:photoprism@postgres:5432/postgres", "--file="+dumpName).Run(); err != nil {
+				t.Fatal(err)
+			}
+		}
+
+		// Clear MySQL target (migrate)
+		if dumpName, err := filepath.Abs("./testdata/reset-migrate.mysql.sql"); err != nil {
+			t.Fatal(err)
+		} else {
+			resetFile, err := os.Open(dumpName)
+			if err != nil {
+				t.Log("unable to open reset file")
+				t.Fatal(err)
+			}
+			defer resetFile.Close()
+
+			cmd := exec.Command("mysql")
+			cmd.Stdin = resetFile
+
+			output, err := cmd.CombinedOutput()
+			if err != nil {
+				t.Fatal(err)
+			}
+			t.Log(output)
+		}
+
+		// Run command with test context.
+		log = event.Log
+
+		appArgs := []string{"photoprism",
+			"--database-driver", "postgres",
+			"--database-dsn", "postgresql://migrate:migrate@postgres:5432/migrate?TimeZone=UTC&connect_timeout=15&lock_timeout=5000&sslmode=disable",
+			"--transfer-driver", "mysql",
+			"--transfer-dsn", "migrate:migrate@tcp(mariadb:4001)/migrate?charset=utf8mb4,utf8&collation=utf8mb4_unicode_ci&parseTime=true&timeout=15s"}
+		cmdArgs := []string{"migrations", "transfer"}
+
+		ctx := NewTestContextWithParse(appArgs, cmdArgs)
+
+		s := event.Subscribe("log.info")
+		defer event.Unsubscribe(s)
+
+		var l string
+
+		assert.IsType(t, hub.Subscription{}, s)
+
+		go func() {
+			for msg := range s.Receiver {
+				l += msg.Fields["message"].(string) + "\n"
+			}
+		}()
+
+		output, err := RunWithProvidedTestContext(ctx, MigrationsCommands, cmdArgs)
+
+		// Check command output for plausibility.
+		//t.Logf(output)
+		if err != nil {
+			assert.NoError(t, err)
+			t.FailNow()
+		}
+		assert.NotContains(t, output, "Usage")
+
+		time.Sleep(time.Second)
+
+		// Check command output.
+		if l == "" {
+			t.Fatal("log output missing")
+		}
+		// t.Logf(l)
+
+		assert.Contains(t, l, "migrate: number of albums transfered 31")
+		assert.Contains(t, l, "migrate: number of albumusers transfered 0")
+		assert.Contains(t, l, "migrate: number of cameras transfered 6")
+		assert.Contains(t, l, "migrate: number of categories transfered 1")
+		assert.Contains(t, l, "migrate: number of cells transfered 9")
+		assert.Contains(t, l, "migrate: number of clients transfered 7")
+		assert.Contains(t, l, "migrate: number of countries transfered 1")
+		assert.Contains(t, l, "migrate: number of duplicates transfered 0")
+		assert.Contains(t, l, "migrate: number of errors transfered 0")
+		assert.Contains(t, l, "migrate: number of faces transfered 7")
+		assert.Contains(t, l, "migrate: number of files transfered 71")
+		assert.Contains(t, l, "migrate: number of fileshares transfered 2")
+		assert.Contains(t, l, "migrate: number of filesyncs transfered 3")
+		assert.Contains(t, l, "migrate: number of folders transfered 3")
+		assert.Contains(t, l, "migrate: number of keywords transfered 26")
+		assert.Contains(t, l, "migrate: number of labels transfered 32")
+		assert.Contains(t, l, "migrate: number of lenses transfered 2")
+		assert.Contains(t, l, "migrate: number of links transfered 5")
+		assert.Contains(t, l, "migrate: number of markers transfered 18")
+		assert.Contains(t, l, "migrate: number of passcodes transfered 3")
+		assert.Contains(t, l, "migrate: number of passwords transfered 11")
+		assert.Contains(t, l, "migrate: number of photos transfered 58")
+		assert.Contains(t, l, "migrate: number of photousers transfered 0")
+		assert.Contains(t, l, "migrate: number of places transfered 10")
+		assert.Contains(t, l, "migrate: number of reactions transfered 3")
+		assert.Contains(t, l, "migrate: number of sessions transfered 21")
+		assert.Contains(t, l, "migrate: number of services transfered 2")
+		assert.Contains(t, l, "migrate: number of subjects transfered 6")
+		assert.Contains(t, l, "migrate: number of users transfered 11")
+		assert.Contains(t, l, "migrate: number of userdetails transfered 9")
+		assert.Contains(t, l, "migrate: number of usersettings transfered 13")
+		assert.Contains(t, l, "migrate: number of usershares transfered 1")
+	})
+
+	t.Run("PostgreSQLtoSQLite", func(t *testing.T) {
+		// Remove target database file
+		os.Remove("/go/src/github.com/photoprism/photoprism/storage/postgresqltosqlite.test.db")
+
+		// Load migrate database as source
+		if dumpName, err := filepath.Abs("./testdata/transfer_postgresql"); err != nil {
+			t.Fatal(err)
+		} else {
+			if err = exec.Command("psql", "postgresql://photoprism:photoprism@postgres:5432/postgres", "--file="+dumpName).Run(); err != nil {
+				t.Fatal(err)
+			}
+		}
+
+		// Run command with test context.
+		log = event.Log
+
+		appArgs := []string{"photoprism",
+			"--database-driver", "postgres",
+			"--database-dsn", "postgresql://migrate:migrate@postgres:5432/migrate?TimeZone=UTC&connect_timeout=15&lock_timeout=5000&sslmode=disable",
+			"--transfer-driver", "sqlite",
+			"--transfer-dsn", "/go/src/github.com/photoprism/photoprism/storage/postgresqltosqlite.test.db?_busy_timeout=5000&_foreign_keys=on"}
+		cmdArgs := []string{"migrations", "transfer"}
+
+		ctx := NewTestContextWithParse(appArgs, cmdArgs)
+
+		s := event.Subscribe("log.info")
+		defer event.Unsubscribe(s)
+
+		var l string
+
+		assert.IsType(t, hub.Subscription{}, s)
+
+		go func() {
+			for msg := range s.Receiver {
+				l += msg.Fields["message"].(string) + "\n"
+			}
+		}()
+
+		output, err := RunWithProvidedTestContext(ctx, MigrationsCommands, cmdArgs)
+
+		// Check command output for plausibility.
+		//t.Logf(output)
+		if err != nil {
+			assert.NoError(t, err)
+			t.FailNow()
+		}
+		assert.NotContains(t, output, "Usage")
+
+		time.Sleep(time.Second)
+
+		// Check command output.
+		if l == "" {
+			t.Fatal("log output missing")
+		}
+		// t.Logf(l)
+
+		assert.Contains(t, l, "migrate: number of albums transfered 31")
+		assert.Contains(t, l, "migrate: number of albumusers transfered 0")
+		assert.Contains(t, l, "migrate: number of cameras transfered 6")
+		assert.Contains(t, l, "migrate: number of categories transfered 1")
+		assert.Contains(t, l, "migrate: number of cells transfered 9")
+		assert.Contains(t, l, "migrate: number of clients transfered 7")
+		assert.Contains(t, l, "migrate: number of countries transfered 1")
+		assert.Contains(t, l, "migrate: number of duplicates transfered 0")
+		assert.Contains(t, l, "migrate: number of errors transfered 0")
+		assert.Contains(t, l, "migrate: number of faces transfered 7")
+		assert.Contains(t, l, "migrate: number of files transfered 71")
+		assert.Contains(t, l, "migrate: number of fileshares transfered 2")
+		assert.Contains(t, l, "migrate: number of filesyncs transfered 3")
+		assert.Contains(t, l, "migrate: number of folders transfered 3")
+		assert.Contains(t, l, "migrate: number of keywords transfered 26")
+		assert.Contains(t, l, "migrate: number of labels transfered 32")
+		assert.Contains(t, l, "migrate: number of lenses transfered 2")
+		assert.Contains(t, l, "migrate: number of links transfered 5")
+		assert.Contains(t, l, "migrate: number of markers transfered 18")
+		assert.Contains(t, l, "migrate: number of passcodes transfered 3")
+		assert.Contains(t, l, "migrate: number of passwords transfered 11")
+		assert.Contains(t, l, "migrate: number of photos transfered 58")
+		assert.Contains(t, l, "migrate: number of photousers transfered 0")
+		assert.Contains(t, l, "migrate: number of places transfered 10")
+		assert.Contains(t, l, "migrate: number of reactions transfered 3")
+		assert.Contains(t, l, "migrate: number of sessions transfered 21")
+		assert.Contains(t, l, "migrate: number of services transfered 2")
+		assert.Contains(t, l, "migrate: number of subjects transfered 6")
+		assert.Contains(t, l, "migrate: number of users transfered 11")
+		assert.Contains(t, l, "migrate: number of userdetails transfered 9")
+		assert.Contains(t, l, "migrate: number of usersettings transfered 13")
+		assert.Contains(t, l, "migrate: number of usershares transfered 1")
+		// Remove target database file
+		if !t.Failed() {
+			os.Remove("/go/src/github.com/photoprism/photoprism/storage/postgresqltosqlite.test.db")
+		}
+	})
+
 	t.Run("SQLiteToMySQL", func(t *testing.T) {
 		// Remove target database file
 		os.Remove("/go/src/github.com/photoprism/photoprism/storage/sqlitetomysql.test.db")
@@ -268,7 +575,7 @@ func TestMigrationCommand(t *testing.T) {
 		}
 
 		// Clear MySQL target (migrate)
-		if dumpName, err := filepath.Abs("./testdata/reset-migrate.sql"); err != nil {
+		if dumpName, err := filepath.Abs("./testdata/reset-migrate.mysql.sql"); err != nil {
 			t.Fatal(err)
 		} else {
 			resetFile, err := os.Open(dumpName)
@@ -317,7 +624,10 @@ func TestMigrationCommand(t *testing.T) {
 
 		// Check command output for plausibility.
 		//t.Logf(output)
-		assert.NoError(t, err)
+		if err != nil {
+			assert.NoError(t, err)
+			t.FailNow()
+		}
 		assert.NotContains(t, output, "Usage")
 
 		time.Sleep(time.Second)
@@ -366,21 +676,22 @@ func TestMigrationCommand(t *testing.T) {
 		}
 	})
 
-	t.Run("SQLiteToMySQLPopulated", func(t *testing.T) {
+	t.Run("SQLiteToPostgreSQL", func(t *testing.T) {
 		// Remove target database file
-		os.Remove("/go/src/github.com/photoprism/photoprism/storage/sqlitetomysql.test.db")
+		os.Remove("/go/src/github.com/photoprism/photoprism/storage/sqlitetopostgresql.test.db")
 
 		// Load migrate database as source
-		if err := copyFile("/go/src/github.com/photoprism/photoprism/internal/commands/testdata/transfer_sqlite3", "/go/src/github.com/photoprism/photoprism/storage/sqlitetomysql.test.db"); err != nil {
+		if err := copyFile("/go/src/github.com/photoprism/photoprism/internal/commands/testdata/transfer_sqlite3", "/go/src/github.com/photoprism/photoprism/storage/sqlitetopostgresql.test.db"); err != nil {
 			t.Fatal(err.Error())
 		}
 
-		// Load migrate database as target
-		if dumpName, err := filepath.Abs("./testdata/transfer_mysql"); err != nil {
+		// Clear PostgreSQL target (migrate)
+		if dumpName, err := filepath.Abs("./testdata/reset-migrate.postgresql.sql"); err != nil {
 			t.Fatal(err)
-		} else if err = exec.Command("mariadb", "-u", "migrate", "-pmigrate", "migrate",
-			"-e", "source "+dumpName).Run(); err != nil {
-			t.Fatal(err)
+		} else {
+			if err = exec.Command("psql", "postgresql://photoprism:photoprism@postgres:5432/postgres", "--file="+dumpName).Run(); err != nil {
+				t.Fatal(err)
+			}
 		}
 
 		// Run command with test context.
@@ -388,10 +699,10 @@ func TestMigrationCommand(t *testing.T) {
 
 		appArgs := []string{"photoprism",
 			"--database-driver", "sqlite",
-			"--database-dsn", "/go/src/github.com/photoprism/photoprism/storage/sqlitetomysql.test.db?_busy_timeout=5000&_foreign_keys=on",
-			"--transfer-driver", "mysql",
-			"--transfer-dsn", "migrate:migrate@tcp(mariadb:4001)/migrate?charset=utf8mb4,utf8&collation=utf8mb4_unicode_ci&parseTime=true&timeout=15s"}
-		cmdArgs := []string{"migrations", "transfer", "-force"}
+			"--database-dsn", "/go/src/github.com/photoprism/photoprism/storage/sqlitetopostgresql.test.db?_busy_timeout=5000&_foreign_keys=on",
+			"--transfer-driver", "postgres",
+			"--transfer-dsn", "postgresql://migrate:migrate@postgres:5432/migrate?TimeZone=UTC&connect_timeout=15&lock_timeout=5000&sslmode=disable"}
+		cmdArgs := []string{"migrations", "transfer"}
 
 		ctx := NewTestContextWithParse(appArgs, cmdArgs)
 
@@ -412,7 +723,10 @@ func TestMigrationCommand(t *testing.T) {
 
 		// Check command output for plausibility.
 		//t.Logf(output)
-		assert.NoError(t, err)
+		if err != nil {
+			assert.NoError(t, err)
+			t.FailNow()
+		}
 		assert.NotContains(t, output, "Usage")
 
 		time.Sleep(time.Second)
@@ -460,6 +774,7 @@ func TestMigrationCommand(t *testing.T) {
 			os.Remove("/go/src/github.com/photoprism/photoprism/storage/sqlitetomysql.test.db")
 		}
 	})
+
 }
 
 func copyFile(source, target string) error {
