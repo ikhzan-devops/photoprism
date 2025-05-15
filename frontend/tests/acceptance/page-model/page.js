@@ -68,7 +68,7 @@ export default class Page {
       .expect(InitialExpire)
       .contains("Never")
       .typeText(sharedialog.linkSecretInput, "secretForTesting", { replace: true })
-      .click(sharedialog.linkExpireInput)
+      .click(sharedialog.linkExpireInput, { speed: 0.5 })
       .click(Selector("div").withText("After 1 day").parent('div[role="option"]'))
       .click(sharedialog.dialogSave)
       .click(sharedialog.dialogClose);
@@ -83,8 +83,7 @@ export default class Page {
       .expect(ExpireAfterChange)
       .contains("After 1 day")
       .typeText(sharedialog.linkSecretInput, InitialSecret, { replace: true })
-      .click(sharedialog.linkExpireInput)
-      .pressKey("down")
+      .click(sharedialog.linkExpireInput, { speed: 0.5 })
       .click(Selector("div").withText("Never").parent('div[role="option"]'))
       .click(sharedialog.dialogSave)
       .click(sharedialog.expandLink);
