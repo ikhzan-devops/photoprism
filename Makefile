@@ -80,13 +80,24 @@ test-photoprism: reset-sqlite run-test-photoprism
 test-short: reset-sqlite run-test-short
 test-mariadb: reset-acceptance run-test-mariadb
 test-sqlite: reset-sqlite-unit run-test-sqlite
-acceptance-run-chromium: storage/acceptance acceptance-auth-sqlite-restart wait acceptance-auth acceptance-auth-sqlite-stop acceptance-sqlite-restart wait-2 acceptance acceptance-sqlite-stop
-acceptance-run-chromium-short: storage/acceptance acceptance-auth-sqlite-restart wait acceptance-auth-short acceptance-auth-sqlite-stop acceptance-sqlite-restart wait-2 acceptance-short acceptance-sqlite-stop
-acceptance-auth-run-chromium: storage/acceptance acceptance-auth-sqlite-restart wait acceptance-auth acceptance-auth-sqlite-stop
-acceptance-public-run-chromium: storage/acceptance acceptance-sqlite-restart wait acceptance acceptance-sqlite-stop
-wait:
-	sleep 20
-wait-2:
+# SQLite acceptance tests - These setup, configure and then call the actual tests.
+acceptance-run-chromium: storage/acceptance storage/sqlite acceptance-exec-chromium
+acceptance-run-chromium-short: storage/acceptance storage/sqlite acceptance-exec-chromium-short
+acceptance-auth-run-chromium: storage/acceptance storage/sqlite acceptance-auth-exec-chromium
+acceptance-public-run-chromium: storage/acceptance storage/sqlite acceptance-public-exec-chromium
+# MariaDB acceptance tests - These setup, configure and then call the actual tests.
+acceptance-mariadb-run-chromium: storage/acceptance storage/mariadb acceptance-exec-chromium
+acceptance-mariadb-run-chromium-short: storage/acceptance storage/mariadb acceptance-exec-chromium-short
+acceptance-mariadb-auth-run-chromium: storage/acceptance storage/mariadb acceptance-auth-exec-chromium
+acceptance-mariadb-public-run-chromium: storage/acceptance storage/mariadb acceptance-public-exec-chromium
+
+# The actual tests that are called for acceptance tests.  Don't call these directly, use the ones with run in the name.
+acceptance-exec-chromium: acceptance-file-reset acceptance-database-reset-1 acceptance-auth-start wait-1 acceptance-auth acceptance-auth-stop acceptance-database-reset-2 acceptance-public-start wait-2 acceptance acceptance-public-stop
+acceptance-exec-chromium-short: acceptance-file-reset acceptance-database-reset-1 acceptance-auth-start wait-1 acceptance-auth-short acceptance-auth-stop acceptance-database-reset-2 acceptance-public-start wait-2 acceptance-short acceptance-public-stop
+acceptance-auth-exec-chromium: acceptance-file-reset acceptance-database-reset-1 acceptance-auth-start wait-1 acceptance-auth acceptance-auth-stop
+acceptance-public-exec-chromium: acceptance-file-reset acceptance-database-reset-1 acceptance-public-start wait-1 acceptance acceptance-public-stop
+
+wait-%:
 	sleep 20
 show-rev:
 	@git rev-parse HEAD
@@ -186,9 +197,7 @@ install-tensorflow:
 	sudo scripts/dist/install-tensorflow.sh
 install-darktable:
 	sudo scripts/dist/install-darktable.sh
-acceptance-sqlite-restart:
-	cp -f storage/acceptance/backup.db storage/acceptance/index.db
-	cp -f storage/acceptance/config-sqlite/settingsBackup.yml storage/acceptance/config-sqlite/settings.yml
+acceptance-file-reset:
 	rm -rf storage/acceptance/sidecar/2020
 	rm -rf storage/acceptance/sidecar/2011
 	rm -rf storage/acceptance/originals/2010
@@ -196,15 +205,27 @@ acceptance-sqlite-restart:
 	rm -rf storage/acceptance/originals/2011
 	rm -rf storage/acceptance/originals/2013
 	rm -rf storage/acceptance/originals/2017
-	./photoprism --auth-mode="public" -c "./storage/acceptance/config-sqlite" start -d
-acceptance-sqlite-stop:
-	./photoprism --auth-mode="public" -c "./storage/acceptance/config-sqlite" stop
-acceptance-auth-sqlite-restart:
-	cp -f storage/acceptance/backup.db storage/acceptance/index.db
-	cp -f storage/acceptance/config-sqlite/settingsBackup.yml storage/acceptance/config-sqlite/settings.yml
-	./photoprism --auth-mode="password" -c "./storage/acceptance/config-sqlite" start -d
-acceptance-auth-sqlite-stop:
-	./photoprism --auth-mode="password" -c "./storage/acceptance/config-sqlite" stop
+acceptance-database-reset-%:
+	@if [ -f storage/acceptance/config-active/dbms.sqlite ]; then \
+		echo "resetting sqlite"; \
+		cp -f storage/acceptance/backup.db storage/acceptance/index.db; \
+		cp -f storage/acceptance/config-active/settingsBackup.yml storage/acceptance/config-active/settings.yml; \
+	fi
+	@if [ -f storage/acceptance/config-active/dbms.mariadb ]; then \
+		echo "resetting mariadb"; \
+		cp -f storage/acceptance/backup.db storage/acceptance/index.db; \
+		mysql < scripts/sql/reset-acceptance.sql; \
+		./photoprism --database-driver sqlite --database-dsn "storage/acceptance/index.db?_busy_timeout=5000&_foreign_keys=on" --transfer-driver mysql --transfer-dsn "acceptance:acceptance@tcp(mariadb:4001)/acceptance?charset=utf8mb4,utf8&collation=utf8mb4_unicode_ci&parseTime=true&timeout=15s" migrations transfer -force; \
+		cp -f storage/acceptance/config-active/settingsBackup.yml storage/acceptance/config-active/settings.yml; \
+	fi
+acceptance-public-start:
+	./photoprism --auth-mode="public" -c "./storage/acceptance/config-active" start -d
+acceptance-public-stop:
+	./photoprism --auth-mode="public" -c "./storage/acceptance/config-active" stop
+acceptance-auth-start:
+	./photoprism --auth-mode="password" -c "./storage/acceptance/config-active" start -d
+acceptance-auth-stop:
+	./photoprism --auth-mode="password" -c "./storage/acceptance/config-active" stop
 start:
 	./photoprism start -d
 stop:
@@ -253,6 +274,15 @@ dep-tensorflow:
 dep-acceptance: storage/acceptance
 storage/acceptance:
 	[ -f "./storage/acceptance/index.db" ] || (cd storage && rm -rf acceptance && wget -c https://dl.photoprism.app/qa/acceptance.tar.gz -O - | tar -xz)
+storage/sqlite:
+	rm -rf storage/acceptance/config-active
+	cp storage/acceptance/config-sqlite/ storage/acceptance/config-active -r
+	echo sqlite > storage/acceptance/config-active/dbms.sqlite
+storage/mariadb:
+	rm -rf storage/acceptance/config-active
+	cp storage/acceptance/config-sqlite/ storage/acceptance/config-active -r
+	sed "s/DatabaseDriver: sqlite/DatabaseDriver: mysql/;s/DatabaseDsn[: a-z./]\+/DatabaseDsn: acceptance:acceptance@tcp(mariadb:4001)\/acceptance?charset=utf8mb4,utf8\&collation=utf8mb4_unicode_ci\&parseTime=true\&timeout=15s/" storage/acceptance/config-sqlite/options.yml > storage/acceptance/config-active/options.yml
+	echo mariadb > storage/acceptance/config-active/dbms.mariadb
 zip-facenet:
 	(cd assets && zip -r facenet.zip facenet -x "*/.*" -x "*/version.txt")
 zip-nasnet:

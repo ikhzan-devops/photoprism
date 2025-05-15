@@ -1,6 +1,7 @@
 package commands
 
 import (
+	"bytes"
 	"flag"
 	"os"
 	"testing"
@@ -81,7 +82,7 @@ func NewTestContext(args []string) *cli.Context {
 	LogErr(flagSet.Parse(args))
 
 	// Create and return new test context.
-	return cli.NewContext(app, flagSet, nil)
+	return cli.NewContext(app, flagSet, cli.NewContext(app, flagSet, nil))
 }
 
 // RunWithTestContext executes a command with a test context and returns its output.
@@ -89,14 +90,72 @@ func RunWithTestContext(cmd *cli.Command, args []string) (output string, err err
 	// Create test context with flags and arguments.
 	ctx := NewTestContext(args)
 
-	// TODO: Help output can currently not be generated in test mode due to
-	//       a nil pointer panic in the "github.com/urfave/cli/v2" package.
-	cmd.HideHelp = true
+	cmd.HideHelp = false
 
+	// Redirect the output from cli to buffer for transfer to output for testing
+	var catureOutput bytes.Buffer
+	oldWriter := ctx.App.Writer
+	ctx.App.Writer = &catureOutput
 	// Run command with test context.
 	output = capture.Output(func() {
 		err = cmd.Run(ctx, args...)
 	})
+	ctx.App.Writer = oldWriter
+	output += catureOutput.String()
+
+	return output, err
+}
+
+// NewTestContextWithParse creates a new CLI test context with the flags and arguments provided.
+func NewTestContextWithParse(appArgs []string, cmdArgs []string) *cli.Context {
+	// Create new command-line test app.
+	app := cli.NewApp()
+	app.Name = "photoprism"
+	app.Usage = "PhotoPrism®"
+	app.Description = ""
+	app.Version = "test"
+	app.Copyright = "(c) 2018-2025 PhotoPrism UG. All rights reserved."
+	app.Flags = config.Flags.Cli()
+	app.Commands = PhotoPrism
+	app.HelpName = app.Name
+	app.CustomAppHelpTemplate = ""
+	app.HideHelp = true
+	app.HideHelpCommand = true
+	app.Action = func(*cli.Context) error { return nil }
+	app.EnableBashCompletion = false
+	app.Metadata = map[string]interface{}{
+		"Name":    "PhotoPrism",
+		"About":   "PhotoPrism®",
+		"Edition": "ce",
+		"Version": "test",
+	}
+
+	// Parse photoprism command arguments.
+	photoprismFlagSet := flag.NewFlagSet("photoprism", flag.ContinueOnError)
+	for _, f := range app.Flags {
+		f.Apply(photoprismFlagSet)
+	}
+	LogErr(photoprismFlagSet.Parse(appArgs[1:]))
+
+	// Parse command test arguments.
+	flagSet := flag.NewFlagSet("test", flag.ContinueOnError)
+	LogErr(flagSet.Parse(cmdArgs))
+
+	// Create and return new test context.
+	return cli.NewContext(app, flagSet, cli.NewContext(app, photoprismFlagSet, nil))
+}
+
+func RunWithProvidedTestContext(ctx *cli.Context, cmd *cli.Command, args []string) (output string, err error) {
+	// Redirect the output from cli to buffer for transfer to output for testing
+	var catureOutput bytes.Buffer
+	oldWriter := ctx.App.Writer
+	ctx.App.Writer = &catureOutput
+	// Run command with test context.
+	output = capture.Output(func() {
+		err = cmd.Run(ctx, args...)
+	})
+	ctx.App.Writer = oldWriter
+	output += catureOutput.String()
 
 	return output, err
 }
