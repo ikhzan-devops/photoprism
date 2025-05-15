@@ -325,9 +325,13 @@
                         autocorrect="off"
                         autocapitalize="none"
                         :label="$gettext('Latitude')"
+                        :placeholder="getFieldData('input-field', 'Lat').placeholder"
+                        :persistent-placeholder="getFieldData('input-field', 'Lat').persistent"
+                        :model-value="getFieldData('input-field', 'Lat').value"
                         density="comfortable"
                         validate-on="input"
                         class="input-latitude"
+                        @update:modelValue="onInput($event, 'Lat')"
                       ></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="3">
@@ -337,9 +341,13 @@
                         autocorrect="off"
                         autocapitalize="none"
                         :label="$gettext('Longitude')"
+                        :placeholder="getFieldData('input-field', 'Lng').placeholder"
+                        :persistent-placeholder="getFieldData('input-field', 'Lng').persistent"
+                        :model-value="getFieldData('input-field', 'Lng').value"
                         density="comfortable"
                         validate-on="input"
                         class="input-longitude"
+                        @update:modelValue="onInput($event, 'Lng')"
                       ></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="3">
@@ -350,10 +358,14 @@
                         autocorrect="off"
                         autocapitalize="none"
                         :label="$gettext('Altitude (m)')"
+                        :placeholder="getFieldData('input-field', 'Altitude').placeholder"
+                        :persistent-placeholder="getFieldData('input-field', 'Altitude').persistent"
+                        :model-value="getFieldData('input-field', 'Altitude').value"
                         color="surface-variant"
                         density="comfortable"
                         validate-on="input"
                         class="input-altitude"
+                        @update:modelValue="onInput($event, 'Altitude')"
                       ></v-text-field>
                     </v-col>
                   </v-row>
@@ -584,7 +596,7 @@ export default {
     },
   },
   created() {
-    this.subscriptions.push(this.$event.subscribe("photos.updated", (ev, data) => this.onUpdate(ev, data)));
+    // this.subscriptions.push(this.$event.subscribe("photos.updated", (ev, data) => this.onUpdate(ev, data)));
   },
   beforeUnmount() {
     for (let i = 0; i < this.subscriptions.length; i++) {
@@ -601,6 +613,16 @@ export default {
         if (fieldData.mixed) {
           return { value: '', placeholder: '<mixed>', persistent: true };
         } else if (fieldData.value !== null && fieldData.value !== '') {
+          return { value: fieldData.value, placeholder: '', persistent: false };
+        } else {
+          return { value: '', placeholder: '', persistent: false };
+        }
+      }
+
+      if (fieldType === 'input-field') {
+        if (fieldData.mixed) {
+          return { value: '', placeholder: '<mixed>', persistent: true };
+        } else if (fieldData.value === 0 || (fieldData.value !== null && fieldData.value !== '')) {
           return { value: fieldData.value, placeholder: '', persistent: false };
         } else {
           return { value: '', placeholder: '', persistent: false };
