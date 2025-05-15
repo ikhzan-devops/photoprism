@@ -38,6 +38,10 @@ func Labels(images Files, src media.Src) (result classify.Labels, err error) {
 				apiRequest.Version = model.Version
 			}
 
+			if model.Prompt != "" {
+				apiRequest.Prompt = model.Prompt
+			}
+
 			// Log JSON request data in trace mode.
 			apiRequest.WriteLog()
 

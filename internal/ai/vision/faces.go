@@ -61,6 +61,10 @@ func Faces(fileName string, minSize int, cacheCrop bool, expected int) (result f
 				apiRequest.Version = model.Version
 			}
 
+			if model.Prompt != "" {
+				apiRequest.Prompt = model.Prompt
+			}
+
 			// Log JSON request data in trace mode.
 			apiRequest.WriteLog()
 
