@@ -3,8 +3,9 @@ package config
 import (
 	"testing"
 
-	"github.com/photoprism/photoprism/internal/functions"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/photoprism/photoprism/internal/functions"
 )
 
 func TestConfig_VisionYaml(t *testing.T) {

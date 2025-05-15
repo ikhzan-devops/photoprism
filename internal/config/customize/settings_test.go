@@ -4,8 +4,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/photoprism/photoprism/internal/functions"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/photoprism/photoprism/internal/functions"
 )
 
 func TestNewSettings(t *testing.T) {
