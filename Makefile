@@ -79,6 +79,7 @@ test-commands: reset-sqlite run-test-commands
 test-photoprism: reset-sqlite run-test-photoprism
 test-short: reset-sqlite run-test-short
 test-mariadb: reset-mariadb-acceptance run-test-mariadb
+test-postgresql: reset-postgresql-acceptance run-test-postgresql
 test-sqlite: reset-sqlite-unit run-test-sqlite
 # SQLite acceptance tests - These setup, configure and then call the actual tests.
 acceptance-run-chromium: storage/acceptance storage/sqlite acceptance-exec-chromium
@@ -90,6 +91,11 @@ acceptance-mariadb-run-chromium: storage/acceptance storage/mariadb acceptance-e
 acceptance-mariadb-run-chromium-short: storage/acceptance storage/mariadb acceptance-exec-chromium-short
 acceptance-mariadb-auth-run-chromium: storage/acceptance storage/mariadb acceptance-auth-exec-chromium
 acceptance-mariadb-public-run-chromium: storage/acceptance storage/mariadb acceptance-public-exec-chromium
+# PostgreSQL acceptance tests - These setup, configure and then call the actual tests.
+acceptance-postgresql-run-chromium: storage/acceptance storage/postgresql acceptance-exec-chromium
+acceptance-postgresql-run-chromium-short: storage/acceptance storage/postgresql acceptance-exec-chromium-short
+acceptance-postgresql-auth-run-chromium: storage/acceptance storage/postgresql acceptance-auth-exec-chromium
+acceptance-postgresql-public-run-chromium: storage/acceptance storage/postgresql acceptance-public-exec-chromium
 
 # The actual tests that are called for acceptance tests.  Don't call these directly, use the ones with run in the name.
 acceptance-exec-chromium: acceptance-file-reset acceptance-database-reset-1 acceptance-auth-start wait-1 acceptance-auth acceptance-auth-stop acceptance-database-reset-2 acceptance-public-start wait-2 acceptance acceptance-public-stop
@@ -215,7 +221,14 @@ acceptance-database-reset-%:
 		echo "resetting mariadb"; \
 		cp -f storage/acceptance/backup.db storage/acceptance/index.db; \
 		mysql < scripts/sql/reset-acceptance.sql; \
-		./photoprism --database-driver sqlite --database-dsn "storage/acceptance/index.db?_busy_timeout=5000&_foreign_keys=on" --transfer-driver mysql --transfer-dsn "acceptance:acceptance@tcp(mariadb:4001)/acceptance?charset=utf8mb4,utf8&collation=utf8mb4_unicode_ci&parseTime=true&timeout=15s" migrations transfer -force; \
+		./photoprism --database-driver sqlite --database-dsn "storage/acceptance/index.db?_busy_timeout=5000&_foreign_keys=on" --transfer-driver mysql --transfer-dsn "$(PHOTOPRISM_TEST_DSN_MARIADB)" migrations transfer -force; \
+		cp -f storage/acceptance/config-active/settingsBackup.yml storage/acceptance/config-active/settings.yml; \
+	fi
+	@if [ -f storage/acceptance/config-active/dbms.postgresql ]; then \
+		echo "resetting postgresql"; \
+		cp -f storage/acceptance/backup.db storage/acceptance/index.db; \
+		psql postgresql://photoprism:photoprism@postgres:5432/postgres  -f scripts/sql/postgresql/reset-acceptance.sql; \
+		./photoprism --database-driver sqlite --database-dsn "storage/acceptance/index.db?_busy_timeout=5000&_foreign_keys=on" --transfer-driver postgres --transfer-dsn "$(PHOTOPRISM_TEST_DSN_POSTGRES)" migrations transfer -force; \
 		cp -f storage/acceptance/config-active/settingsBackup.yml storage/acceptance/config-active/settings.yml; \
 	fi
 acceptance-public-start:
@@ -234,6 +247,8 @@ terminal:
 	$(DOCKER_COMPOSE) exec -u $(UID) photoprism bash
 mariadb:
 	$(DOCKER_COMPOSE) exec mariadb mariadb -uroot -pphotoprism photoprism
+postgresql:
+	$(DOCKER_COMPOSE) exec postgres psql -uphotoprism -pphotoprism photoprism
 root: root-terminal
 root-terminal:
 	$(DOCKER_COMPOSE) exec -u root photoprism bash
@@ -281,8 +296,13 @@ storage/sqlite:
 storage/mariadb:
 	rm -rf storage/acceptance/config-active
 	cp storage/acceptance/config-sqlite/ storage/acceptance/config-active -r
-	sed "s/DatabaseDriver: sqlite/DatabaseDriver: mysql/;s/DatabaseDsn[: a-z./]\+/DatabaseDsn: acceptance:acceptance@tcp(mariadb:4001)\/acceptance?charset=utf8mb4,utf8\&collation=utf8mb4_unicode_ci\&parseTime=true\&timeout=15s/" storage/acceptance/config-sqlite/options.yml > storage/acceptance/config-active/options.yml
+	sed "s/DatabaseDriver: sqlite/DatabaseDriver: mysql/;s/DatabaseDsn[: a-z./]\+/DatabaseDsn: $(subst &,\&,$(subst /,\/,$(PHOTOPRISM_TEST_DSN_MARIADB)))/" storage/acceptance/config-sqlite/options.yml > storage/acceptance/config-active/options.yml
 	echo mariadb > storage/acceptance/config-active/dbms.mariadb
+storage/postgresql:
+	rm -rf storage/acceptance/config-active
+	cp storage/acceptance/config-sqlite/ storage/acceptance/config-active -r
+	sed "s/DatabaseDriver: sqlite/DatabaseDriver: postgres/;s/DatabaseDsn[: a-z./]\+/DatabaseDsn: $(subst &,\&,$(subst /,\/,$(PHOTOPRISM_TEST_DSN_POSTGRES)))/" storage/acceptance/config-sqlite/options.yml > storage/acceptance/config-active/options.yml
+	echo postgresql > storage/acceptance/config-active/dbms.postgresql
 zip-facenet:
 	(cd assets && zip -r facenet.zip facenet -x "*/.*" -x "*/version.txt")
 zip-nasnet:
@@ -391,7 +411,20 @@ reset-sqlite-unit:
 	rm --force ./storage/testdata/unit.test.db
 	cp ./internal/entity/migrate/testdata/migrate_sqlite3 ./storage/testdata/unit.test.db
 reset-mariadb-all: reset-mariadb-testdb reset-mariadb-local reset-mariadb-acceptance reset-mariadb-photoprism
-reset-testdb: reset-sqlite reset-mariadb-testdb
+reset-postgresql:
+	$(info Resetting photoprism database...)
+	psql postgresql://photoprism:photoprism@postgres:5432/postgres -f scripts/sql/postgresql/reset-photoprism.sql
+reset-postgresql-testdb:
+	$(info Resetting testdb database...)
+	psql postgresql://photoprism:photoprism@postgres:5432/postgres  -f scripts/sql/postgresql/reset-testdb.sql
+reset-postgresql-local:
+	$(info Resetting local database...)
+	psql postgresql://photoprism:photoprism@postgres:5432/postgres  -f scripts/sql/postgresql/reset-local.sql
+reset-postgresql-acceptance:
+	$(info Resetting acceptance database...)
+	psql postgresql://photoprism:photoprism@postgres:5432/postgres  -f scripts/sql/postgresql/reset-acceptance.sql
+reset-postgresql-all: reset-postgresql-testdb reset-postgresql-local reset-postgresql-acceptance reset-postgresql-photoprism
+reset-testdb: reset-sqlite reset-mariadb-testdb reset-postgresql-testdb
 # reset-acceptance: reset-mariadb-acceptance
 reset-sqlite:
 	$(info Removing test database files...)
@@ -402,12 +435,15 @@ run-test-short:
 run-test-go:
 	$(info Running all Go tests...)
 	$(GOTEST) -parallel 1 -count 1 -cpu 1 -tags="slow,develop" -timeout 20m ./pkg/... ./internal/...
-run-test-sqlite:
-	$(info Running all Go tests on SQLite...)
-	PHOTOPRISM_TEST_DSN_NAME="sqlitefile" $(GOTEST) -parallel 1 -count 1 -cpu 1 -tags "slow,develop" -timeout 20m ./pkg/... ./internal/...
 run-test-mariadb:
 	$(info Running all Go tests on MariaDB...)
 	PHOTOPRISM_TEST_DSN_NAME="mariadb"  $(GOTEST) -parallel 1 -count 1 -cpu 1 -tags="slow,develop" -timeout 20m ./pkg/... ./internal/...
+run-test-postgresql:
+	$(info Running all Go tests on PostgreSQL...)
+	PHOTOPRISM_TEST_DSN_NAME="postgres" $(GOTEST) -parallel 1 -count 1 -cpu 1 -tags="slow,develop" -timeout 20m ./pkg/... ./internal/...
+run-test-sqlite:
+	$(info Running all Go tests on SQLite...)
+	PHOTOPRISM_TEST_DSN_NAME="sqlitefile" $(GOTEST) -parallel 1 -count 1 -cpu 1 -tags "slow,develop" -timeout 20m ./pkg/... ./internal/...
 run-test-pkg:
 	$(info Running all Go tests in "/pkg"...)
 	$(GOTEST) -parallel 2 -count 1 -cpu 2 -tags="slow,develop" -timeout 20m ./pkg/...
@@ -449,6 +485,12 @@ test-mariadb-benchmark10x:
 test-mariadb-benchmark10s:
 	$(info Running all Go tests with benchmarks...)
 	dirname $$(grep --files-with-matches --include "*_test.go" -oP "(?<=func )Benchmark[A-Za-z_]+(?=\(b \*testing\.B)" --recursive ./*) | sort -u | xargs -n1 bash -c 'cd "$$0" && pwd && PHOTOPRISM_TEST_DSN_NAME="mariadb" go test -skip Test -parallel 4 -count 1 -cpu 4 -failfast -tags slow -timeout 30m -benchtime 10s -bench=.'
+test-postgresql-benchmark10x:
+	$(info Running all Go tests with benchmarks...)
+	dirname $$(grep --files-with-matches --include "*_test.go" -oP "(?<=func )Benchmark[A-Za-z_]+(?=\(b \*testing\.B)" --recursive ./*) | sort -u | xargs -n1 bash -c 'cd "$$0" && pwd && PHOTOPRISM_TEST_DSN_NAME="postgres" go test -skip Test -parallel 4 -count 10 -cpu 4 -failfast -tags slow -timeout 30m -benchtime 1s -bench=.'
+test-postgresql-benchmark10s:
+	$(info Running all Go tests with benchmarks...)
+	dirname $$(grep --files-with-matches --include "*_test.go" -oP "(?<=func )Benchmark[A-Za-z_]+(?=\(b \*testing\.B)" --recursive ./*) | sort -u | xargs -n1 bash -c 'cd "$$0" && pwd && PHOTOPRISM_TEST_DSN_NAME="postgres" go test -skip Test -parallel 4 -count 1 -cpu 4 -failfast -tags slow -timeout 30m -benchtime 10s -bench=.'
 docker-pull:
 	$(DOCKER_COMPOSE) --profile=all pull --ignore-pull-failures
 	$(DOCKER_COMPOSE) -f compose.latest.yaml pull --ignore-pull-failures
@@ -914,31 +956,6 @@ docker-postgresql:
 docker-recreatepostgresql:
 	docker container rm photoprism-postgres-1
 	docker volume rm photoprism_postgresql
-test-postgresql: reset-postgresql-acceptance run-test-postgresql
-postgresql:
-	$(DOCKER_COMPOSE) exec postgres psql -uphotoprism -pphotoprism photoprism
-reset-postgresql:
-	$(info Resetting photoprism database...)
-	psql postgresql://photoprism:photoprism@postgres:5432/postgres -f scripts/sql/postgresql/reset-photoprism.sql
-reset-postgresql-testdb:
-	$(info Resetting testdb database...)
-	psql postgresql://photoprism:photoprism@postgres:5432/postgres  -f scripts/sql/postgresql/reset-testdb.sql
-reset-postgresql-local:
-	$(info Resetting local database...)
-	psql postgresql://photoprism:photoprism@postgres:5432/postgres  -f scripts/sql/postgresql/reset-local.sql
-reset-postgresql-acceptance:
-	$(info Resetting acceptance database...)
-	psql postgresql://photoprism:photoprism@postgres:5432/postgres  -f scripts/sql/postgresql/reset-acceptance.sql
-reset-postgresql-all: reset-postgresql-testdb reset-postgresql-local reset-postgresql-acceptance reset-postgresql-photoprism
-run-test-postgresql:
-	$(info Running all Go tests on PostgreSQL...)
-	PHOTOPRISM_TEST_DSN_NAME="postgres" $(GOTEST) -parallel 1 -count 1 -cpu 1 -tags="slow,develop" -timeout 20m ./pkg/... ./internal/...
-test-postgresql-benchmark10x:
-	$(info Running all Go tests with benchmarks...)
-	dirname $$(grep --files-with-matches --include "*_test.go" -oP "(?<=func )Benchmark[A-Za-z_]+(?=\(b \*testing\.B)" --recursive ./*) | sort -u | xargs -n1 bash -c 'cd "$$0" && pwd && PHOTOPRISM_TEST_DSN_NAME="postgres" go test -skip Test -parallel 4 -count 10 -cpu 4 -failfast -tags slow -timeout 30m -benchtime 1s -bench=.'
-test-postgresql-benchmark10s:
-	$(info Running all Go tests with benchmarks...)
-	dirname $$(grep --files-with-matches --include "*_test.go" -oP "(?<=func )Benchmark[A-Za-z_]+(?=\(b \*testing\.B)" --recursive ./*) | sort -u | xargs -n1 bash -c 'cd "$$0" && pwd && PHOTOPRISM_TEST_DSN_NAME="postgres" go test -skip Test -parallel 4 -count 1 -cpu 4 -failfast -tags slow -timeout 30m -benchtime 10s -bench=.'
 
 
 # Declare all targets as "PHONY", see https://www.gnu.org/software/make/manual/html_node/Phony-Targets.html.
