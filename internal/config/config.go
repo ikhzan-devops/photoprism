@@ -808,3 +808,43 @@ func (c *Config) Hub() *hub.Config {
 
 	return c.hub
 }
+
+// Swap the database and transfer settings in the config.
+func (c *Config) SwapDBAndTransfer() error {
+	if c.db != nil {
+		return fmt.Errorf("config: database must not be initialised")
+	}
+
+	if c.options.DBTransferDriver == "" &&
+		c.options.DBTransferDsn == "" &&
+		c.options.DBTransferName == "" &&
+		c.options.DBTransferServer == "" {
+		return fmt.Errorf("config: transfer config must be provided")
+	}
+
+	tempString := c.options.DBTransferDriver
+	c.options.DBTransferDriver = c.options.DatabaseDriver
+	c.options.DatabaseDriver = tempString
+
+	tempString = c.options.DBTransferDsn
+	c.options.DBTransferDsn = c.options.DatabaseDsn
+	c.options.DatabaseDsn = tempString
+
+	tempString = c.options.DBTransferName
+	c.options.DBTransferName = c.options.DatabaseName
+	c.options.DatabaseName = tempString
+
+	tempString = c.options.DBTransferPassword
+	c.options.DBTransferPassword = c.options.DatabasePassword
+	c.options.DatabasePassword = tempString
+
+	tempString = c.options.DBTransferServer
+	c.options.DBTransferServer = c.options.DatabaseServer
+	c.options.DatabaseServer = tempString
+
+	tempString = c.options.DBTransferUser
+	c.options.DBTransferUser = c.options.DatabaseUser
+	c.options.DatabaseUser = tempString
+
+	return nil
+}

@@ -1089,4 +1089,113 @@ func TestGeo(t *testing.T) {
 			assert.Equal(t, "raw", r.PhotoType)
 		}
 	})
+	t.Run("title:true", func(t *testing.T) {
+		var f form.SearchPhotosGeo
+
+		f.Query = "title:true"
+
+		photos, err := PhotosGeo(f)
+
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		assert.LessOrEqual(t, 1, len(photos))
+
+		for _, r := range photos {
+			assert.IsType(t, GeoResult{}, r)
+			assert.NotEmpty(t, r.PhotoTitle)
+		}
+	})
+	t.Run("title:false", func(t *testing.T) {
+		var f form.SearchPhotosGeo
+
+		f.Query = "title:false"
+
+		photos, err := PhotosGeo(f)
+
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		assert.LessOrEqual(t, 1, len(photos))
+
+		for _, r := range photos {
+			assert.IsType(t, GeoResult{}, r)
+			assert.Empty(t, r.PhotoTitle)
+		}
+	})
+	t.Run("caption:true", func(t *testing.T) {
+		var f form.SearchPhotosGeo
+
+		f.Query = "caption:true"
+
+		photos, err := PhotosGeo(f)
+
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		assert.LessOrEqual(t, 1, len(photos))
+
+		for _, r := range photos {
+			assert.IsType(t, GeoResult{}, r)
+			assert.NotEmpty(t, r.PhotoCaption)
+		}
+	})
+	t.Run("caption:lorem", func(t *testing.T) {
+		var f form.SearchPhotosGeo
+
+		f.Query = "caption:Lorem*"
+
+		photos, err := PhotosGeo(f)
+
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		assert.Equal(t, 1, len(photos))
+
+		for _, r := range photos {
+			assert.IsType(t, GeoResult{}, r)
+			assert.NotEmpty(t, r.PhotoCaption)
+		}
+	})
+	t.Run("caption:false", func(t *testing.T) {
+		var f form.SearchPhotosGeo
+
+		f.Query = "caption:false"
+
+		photos, err := PhotosGeo(f)
+
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		assert.LessOrEqual(t, 1, len(photos))
+
+		for _, r := range photos {
+			assert.IsType(t, GeoResult{}, r)
+			assert.Empty(t, r.PhotoCaption)
+		}
+	})
+	t.Run("description:false", func(t *testing.T) {
+		var f form.SearchPhotosGeo
+
+		f.Query = "description:false"
+
+		photos, err := PhotosGeo(f)
+
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		assert.LessOrEqual(t, 1, len(photos))
+
+		for _, r := range photos {
+			assert.IsType(t, GeoResult{}, r)
+			assert.Empty(t, r.PhotoCaption)
+			assert.Empty(t, r.PhotoTitle)
+		}
+	})
 }

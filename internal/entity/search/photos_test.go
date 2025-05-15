@@ -2294,4 +2294,73 @@ func TestPhotos(t *testing.T) {
 			}
 		}
 	})
+	t.Run("caption:true", func(t *testing.T) {
+		var f form.SearchPhotos
+
+		f.Caption = "true"
+		f.Merged = true
+
+		photos, _, err := Photos(f)
+
+		if err != nil {
+			t.Fatal(err)
+		}
+		assert.GreaterOrEqual(t, len(photos), 2)
+
+		for _, p := range photos {
+			assert.NotEmpty(t, p.PhotoCaption)
+		}
+	})
+	t.Run("caption:lorem", func(t *testing.T) {
+		var f form.SearchPhotos
+
+		f.Caption = "Lorem*"
+		f.Merged = true
+
+		photos, _, err := Photos(f)
+
+		if err != nil {
+			t.Fatal(err)
+		}
+		assert.Equal(t, len(photos), 1)
+
+		for _, p := range photos {
+			assert.NotEmpty(t, p.PhotoCaption)
+		}
+	})
+	t.Run("caption:false", func(t *testing.T) {
+		var f form.SearchPhotos
+
+		f.Caption = "false"
+		f.Merged = true
+
+		photos, _, err := Photos(f)
+
+		if err != nil {
+			t.Fatal(err)
+		}
+		assert.GreaterOrEqual(t, len(photos), 2)
+
+		for _, p := range photos {
+			assert.Empty(t, p.PhotoCaption)
+		}
+	})
+	t.Run("description:false", func(t *testing.T) {
+		var f form.SearchPhotos
+
+		f.Description = "false"
+		f.Merged = true
+
+		photos, _, err := Photos(f)
+
+		if err != nil {
+			t.Fatal(err)
+		}
+		assert.GreaterOrEqual(t, len(photos), 2)
+
+		for _, p := range photos {
+			assert.Empty(t, p.PhotoCaption)
+			assert.Empty(t, p.PhotoTitle)
+		}
+	})
 }

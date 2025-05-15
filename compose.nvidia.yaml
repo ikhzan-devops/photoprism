@@ -147,7 +147,7 @@ services:
           devices:
             - driver: "nvidia"
               capabilities: [gpu]
-              count: 1
+              count: "all"
 
   mariadb:
     extends:

@@ -9,7 +9,7 @@ The following 3rd-party software packages may be used by or distributed with
 PhotoPrism. Any information relevant to third-party vendors listed below are
 collected using common, reasonable means.
 
-Date generated: 2025-05-04
+Date generated: 2025-05-06
 
 ================================================================================
 
@@ -2316,8 +2316,8 @@ SOFTWARE.
 --------------------------------------------------------------------------------
 
 Package: github.com/golang/geo
-Version: v0.0.0-20250504065118-0e612851eaff
-License: Apache-2.0 (https://github.com/golang/geo/blob/0e612851eaff/LICENSE)
+Version: v0.0.0-20250505201543-5b58c72585db
+License: Apache-2.0 (https://github.com/golang/geo/blob/5b58c72585db/LICENSE)
 
 
                                  Apache License
@@ -7586,8 +7586,8 @@ License: Apache-2.0 (https://github.com/go4org/go4/blob/214862532bf5/LICENSE)
 --------------------------------------------------------------------------------
 
 Package: golang.org/x/crypto
-Version: v0.37.0
-License: BSD-3-Clause (https://cs.opensource.google/go/x/crypto/+/v0.37.0:LICENSE)
+Version: v0.38.0
+License: BSD-3-Clause (https://cs.opensource.google/go/x/crypto/+/v0.38.0:LICENSE)
 
 Copyright 2009 The Go Authors.
 
@@ -7620,8 +7620,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --------------------------------------------------------------------------------
 
 Package: golang.org/x/image
-Version: v0.26.0
-License: BSD-3-Clause (https://cs.opensource.google/go/x/image/+/v0.26.0:LICENSE)
+Version: v0.27.0
+License: BSD-3-Clause (https://cs.opensource.google/go/x/image/+/v0.27.0:LICENSE)
 
 Copyright 2009 The Go Authors.
 
@@ -7688,8 +7688,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --------------------------------------------------------------------------------
 
 Package: golang.org/x/net
-Version: v0.39.0
-License: BSD-3-Clause (https://cs.opensource.google/go/x/net/+/v0.39.0:LICENSE)
+Version: v0.40.0
+License: BSD-3-Clause (https://cs.opensource.google/go/x/net/+/v0.40.0:LICENSE)
 
 Copyright 2009 The Go Authors.
 
@@ -7756,8 +7756,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --------------------------------------------------------------------------------
 
 Package: golang.org/x/sync/errgroup
-Version: v0.13.0
-License: BSD-3-Clause (https://cs.opensource.google/go/x/sync/+/v0.13.0:LICENSE)
+Version: v0.14.0
+License: BSD-3-Clause (https://cs.opensource.google/go/x/sync/+/v0.14.0:LICENSE)
 
 Copyright 2009 The Go Authors.
 
@@ -7790,8 +7790,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --------------------------------------------------------------------------------
 
 Package: golang.org/x/sys
-Version: v0.32.0
-License: BSD-3-Clause (https://cs.opensource.google/go/x/sys/+/v0.32.0:LICENSE)
+Version: v0.33.0
+License: BSD-3-Clause (https://cs.opensource.google/go/x/sys/+/v0.33.0:LICENSE)
 
 Copyright 2009 The Go Authors.
 
@@ -7824,8 +7824,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --------------------------------------------------------------------------------
 
 Package: golang.org/x/text
-Version: v0.24.0
-License: BSD-3-Clause (https://cs.opensource.google/go/x/text/+/v0.24.0:LICENSE)
+Version: v0.25.0
+License: BSD-3-Clause (https://cs.opensource.google/go/x/text/+/v0.25.0:LICENSE)
 
 Copyright 2009 The Go Authors.
 
@@ -8238,6 +8238,11 @@ Package                           License       Copyright
 @eslint/js                        MIT           n/a
 @lcdp/offline-plugin              MIT           Le Comptoir Des Pharmacies <webmaster@lecomptoirdespharmacies.fr>
 @mdi/font                         Apache-2.0    Austin Andrews
+@testing-library/jest-dom         MIT           Ernesto Garcia <gnapse@gmail.com> (http://gnapse.github.io)
+@testing-library/react            MIT           Kent C. Dodds <me@kentcdodds.com> (https://kentcdodds.com)
+@vitejs/plugin-react              MIT           Evan You
+@vitest/coverage-v8               MIT           Anthony Fu <anthonyfu117@hotmail.com>
+@vitest/ui                        MIT           n/a
 @vue/compiler-sfc                 MIT           Evan You
 @vue/language-server              MIT           n/a
 @vvo/tzdb                         MIT           Vincent Voyer <vincent@codeagain.com>
@@ -8273,6 +8278,7 @@ floating-vue                      MIT           Guillaume Chau <guillaume.b.chau
 globals                           MIT           Sindre Sorhus sindresorhus@gmail.com https://sindresorhus.com
 hls.js                            Apache-2.0    n/a
 i                                 MIT           Pavan Kumar Sunkara <pavan.sss1991@gmail.com> (pksunkara.github.com)
+jsdom                             MIT           n/a
 karma                             MIT           Vojta Jína <vojta.jina@gmail.com>
 karma-chrome-launcher             MIT           Vojta Jina <vojta.jina@gmail.com>
 karma-coverage-istanbul-reporter  MIT           Matt Lewis
@@ -8309,6 +8315,8 @@ svg-url-loader                    MIT           Hovhannes Babayan
 tar                               ISC           Isaac Z. Schlueter
 url-loader                        MIT           Tobias Koppers @sokra
 util                              MIT           Joyent http://www.joyent.com
+vite-tsconfig-paths               MIT           aleclarson
+vitest                            MIT           Anthony Fu <anthonyfu117@hotmail.com>
 vue                               MIT           Evan You
 vue-3-sanitize                    MIT           Vannsl, Vanessa Otto <mail@vannsl.io>
 vue-loader                        MIT           Evan You

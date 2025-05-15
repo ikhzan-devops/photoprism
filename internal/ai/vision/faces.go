@@ -57,6 +57,17 @@ func Faces(fileName string, minSize int, cacheCrop bool, expected int) (result f
 				apiRequest.Model = model.Name
 			}
 
+			if model.Version != "" {
+				apiRequest.Version = model.Version
+			}
+
+			if model.Prompt != "" {
+				apiRequest.Prompt = model.Prompt
+			}
+
+			// Log JSON request data in trace mode.
+			apiRequest.WriteLog()
+
 			if apiResponse, err = PerformApiRequest(apiRequest, uri, method, model.EndpointKey()); err != nil {
 				return result, err
 			}

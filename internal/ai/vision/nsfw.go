@@ -35,6 +35,17 @@ func Nsfw(images Files, src media.Src) (result []nsfw.Result, err error) {
 				apiRequest.Model = model.Name
 			}
 
+			if model.Version != "" {
+				apiRequest.Version = model.Version
+			}
+
+			if model.Prompt != "" {
+				apiRequest.Prompt = model.Prompt
+			}
+
+			// Log JSON request data in trace mode.
+			apiRequest.WriteLog()
+
 			if apiResponse, err = PerformApiRequest(apiRequest, uri, method, model.EndpointKey()); err != nil {
 				return result, err
 			}

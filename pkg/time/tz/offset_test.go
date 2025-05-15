@@ -25,8 +25,92 @@ func TestOffset(t *testing.T) {
 		assert.Equal(t, 2*3600, sec)
 		assert.NoError(t, err)
 
+		sec, err = Offset("UTC+3")
+		assert.Equal(t, 3*3600, sec)
+		assert.NoError(t, err)
+
+		sec, err = Offset("UTC+4")
+		assert.Equal(t, 4*3600, sec)
+		assert.NoError(t, err)
+
+		sec, err = Offset("UTC+5")
+		assert.Equal(t, 5*3600, sec)
+		assert.NoError(t, err)
+
+		sec, err = Offset("UTC+6")
+		assert.Equal(t, 6*3600, sec)
+		assert.NoError(t, err)
+
+		sec, err = Offset("UTC+7")
+		assert.Equal(t, 7*3600, sec)
+		assert.NoError(t, err)
+
+		sec, err = Offset("UTC+8")
+		assert.Equal(t, 8*3600, sec)
+		assert.NoError(t, err)
+
+		sec, err = Offset("UTC+9")
+		assert.Equal(t, 9*3600, sec)
+		assert.NoError(t, err)
+
+		sec, err = Offset("UTC+10")
+		assert.Equal(t, 10*3600, sec)
+		assert.NoError(t, err)
+
+		sec, err = Offset("UTC+11")
+		assert.Equal(t, 11*3600, sec)
+		assert.NoError(t, err)
+
 		sec, err = Offset("UTC+12")
 		assert.Equal(t, 12*3600, sec)
+		assert.NoError(t, err)
+
+		sec, err = Offset("UTC-1")
+		assert.Equal(t, -3600, sec)
+		assert.NoError(t, err)
+
+		sec, err = Offset("UTC-2")
+		assert.Equal(t, -2*3600, sec)
+		assert.NoError(t, err)
+
+		sec, err = Offset("UTC-3")
+		assert.Equal(t, -3*3600, sec)
+		assert.NoError(t, err)
+
+		sec, err = Offset("UTC-4")
+		assert.Equal(t, -4*3600, sec)
+		assert.NoError(t, err)
+
+		sec, err = Offset("UTC-5")
+		assert.Equal(t, -5*3600, sec)
+		assert.NoError(t, err)
+
+		sec, err = Offset("UTC-6")
+		assert.Equal(t, -6*3600, sec)
+		assert.NoError(t, err)
+
+		sec, err = Offset("UTC-7")
+		assert.Equal(t, -7*3600, sec)
+		assert.NoError(t, err)
+
+		sec, err = Offset("UTC-8")
+		assert.Equal(t, -8*3600, sec)
+		assert.NoError(t, err)
+
+		sec, err = Offset("UTC-9")
+		assert.Equal(t, -9*3600, sec)
+		assert.NoError(t, err)
+
+		sec, err = Offset("UTC-10")
+		assert.Equal(t, -10*3600, sec)
+		assert.NoError(t, err)
+
+		sec, err = Offset("UTC-11")
+		assert.Equal(t, -11*3600, sec)
+		assert.NoError(t, err)
+
+		sec, err = Offset("UTC-12")
+		assert.Equal(t, -12*3600, sec)
 		assert.NoError(t, err)
 	})
 	t.Run("Invalid", func(t *testing.T) {
@@ -58,11 +142,21 @@ func TestOffset(t *testing.T) {
 
 func TestNormalizeUtcOffset(t *testing.T) {
 	t.Run("Valid", func(t *testing.T) {
+		assert.Equal(t, "UTC-12", NormalizeUtcOffset("UTC-12"))
+		assert.Equal(t, "UTC-11", NormalizeUtcOffset("-11"))
+		assert.Equal(t, "UTC-10", NormalizeUtcOffset("-10:00"))
+		assert.Equal(t, "UTC-9", NormalizeUtcOffset("UTC-09:00"))
+		assert.Equal(t, "UTC-8", NormalizeUtcOffset("GMT-8"))
+		assert.Equal(t, "UTC-7", NormalizeUtcOffset("-07"))
+		assert.Equal(t, "UTC-6", NormalizeUtcOffset("-06:00"))
+		assert.Equal(t, "UTC-5", NormalizeUtcOffset("UTC-05:00"))
+		assert.Equal(t, "UTC-4", NormalizeUtcOffset("UTC-4"))
 		assert.Equal(t, "UTC-2", NormalizeUtcOffset("UTC-2"))
 		assert.Equal(t, "UTC-2", NormalizeUtcOffset("UTC-02:00"))
 		assert.Equal(t, "UTC-2", NormalizeUtcOffset("-02:00"))
 		assert.Equal(t, "UTC-2", NormalizeUtcOffset("-02"))
 		assert.Equal(t, "UTC-2", NormalizeUtcOffset("-2"))
+		assert.Equal(t, "UTC-1", NormalizeUtcOffset("-1"))
 		assert.Equal(t, "UTC", NormalizeUtcOffset("UTC"))
 		assert.Equal(t, "UTC", NormalizeUtcOffset("UTC+0"))
 		assert.Equal(t, "UTC", NormalizeUtcOffset("UTC-00:00"))
@@ -70,6 +164,15 @@ func TestNormalizeUtcOffset(t *testing.T) {
 		assert.Equal(t, "UTC", NormalizeUtcOffset("Z"))
 		assert.Equal(t, "UTC+1", NormalizeUtcOffset("UTC+1"))
 		assert.Equal(t, "UTC+2", NormalizeUtcOffset("UTC+2"))
+		assert.Equal(t, "UTC+3", NormalizeUtcOffset("+3"))
+		assert.Equal(t, "UTC+4", NormalizeUtcOffset("+04"))
+		assert.Equal(t, "UTC+5", NormalizeUtcOffset("GMT+5"))
+		assert.Equal(t, "UTC+6", NormalizeUtcOffset("GMT+6"))
+		assert.Equal(t, "UTC+7", NormalizeUtcOffset("Etc/GMT+07"))
+		assert.Equal(t, "UTC+8", NormalizeUtcOffset("Etc/GMT+08:00"))
+		assert.Equal(t, "UTC+9", NormalizeUtcOffset("+09:00"))
+		assert.Equal(t, "UTC+10", NormalizeUtcOffset("UTC+10:00"))
+		assert.Equal(t, "UTC+11", NormalizeUtcOffset("GMT+11"))
 		assert.Equal(t, "UTC+12", NormalizeUtcOffset("UTC+12"))
 		assert.Equal(t, "UTC+12", NormalizeUtcOffset("+12"))
 		assert.Equal(t, "UTC+12", NormalizeUtcOffset("+12:00"))
