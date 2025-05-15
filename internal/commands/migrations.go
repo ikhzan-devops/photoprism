@@ -273,14 +273,28 @@ func migrationsTransferAction(ctx *cli.Context) error {
 	log.Infoln("migrate: migrating database schema...")
 
 	// Run migrations.
-	log.Infof("migrate: migrating against %s", tfrConf.DatabaseDsn())
+	//log.Infof("migrate: migrating against target %s", tfrConf.DatabaseDsn())
+	log.Infoln("migrate: migrating against target")
+	if !tfrConf.Db().Unscoped().Migrator().HasTable(&migrate.Version{}) {
+		err := tfrConf.Db().Unscoped().AutoMigrate(&migrate.Version{})
+		if err != nil {
+			return fmt.Errorf("migrate: %s (create versions table)", err)
+		}
+	}
+	if !tfrConf.Db().Unscoped().Migrator().HasTable(&migrate.Migration{}) {
+		err := tfrConf.Db().Unscoped().AutoMigrate(&migrate.Migration{})
+		if err != nil {
+			return fmt.Errorf("migrate: %s (create migrations table)", err)
+		}
+	}
 	entity.SetDbProvider(tfrConf)
 	tfrConf.MigrateDb(false, ids)
 	if runForced {
 		entity.Entities.Truncate(tfrConf.Db())
 		entity.CreateDefaultFixtures()
 	}
-	log.Infof("migrate: migrating against %s", conf.DatabaseDsn())
+	//log.Infof("migrate: migrating against source %s", conf.DatabaseDsn())
+	log.Infoln("migrate: migrating against source")
 	entity.SetDbProvider(conf)
 	conf.MigrateDb(false, ids)
 
