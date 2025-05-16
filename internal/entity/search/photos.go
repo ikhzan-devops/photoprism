@@ -80,7 +80,28 @@ func searchPhotos(frm form.SearchPhotos, sess *entity.Session, resultCols string
 	}
 
 	// Are we PostgreSQL and will a group by be added?
+	var album entity.Album
+	var albumErr error
+
 	postgreSQLRowNumber := txt.NotEmpty(frm.Label) && entity.DbDialect() == entity.Postgres
+	if !postgreSQLRowNumber && txt.NotEmpty(frm.Scope) && entity.DbDialect() == entity.Postgres {
+		// Need to pre-execute some of the logic to find out if the frm.Label is reset.
+		// We don't want to change the real form yet, so use a temp variable
+		var frm2 form.SearchPhotos
+		frm2.Scope = strings.ToLower(frm.Scope)
+
+		if idType, idPrefix := rnd.IdType(frm2.Scope); idType != rnd.TypeUID || idPrefix != entity.AlbumUID {
+			return PhotoResults{}, 0, ErrInvalidId
+		} else if album, albumErr = entity.CachedAlbumByUID(frm2.Scope); albumErr != nil || album.AlbumUID == "" {
+			return PhotoResults{}, 0, ErrInvalidId
+		} else if album.AlbumFilter == "" {
+		} else if formErr := form.Unserialize(&frm2, album.AlbumFilter); formErr != nil { // This changes the form.Label!
+			log.Debugf("search: %s (%s)", clean.Error(formErr), clean.Log(album.AlbumFilter))
+			return PhotoResults{}, 0, ErrBadFilter
+		}
+		// If the form's label has been updated, make sure that we enable the PostgreSQL work around to GROUP BY.
+		postgreSQLRowNumber = txt.NotEmpty(frm2.Label)
+	}
 
 	// Specify table names and joins.
 	var s *gorm.DB
@@ -112,18 +133,11 @@ func searchPhotos(frm form.SearchPhotos, sess *entity.Session, resultCols string
 		frm.Album = ""
 	}
 
-	var album entity.Album
-	var albumErr error
-
 	// Limit search results to a specific UID scope, e.g. when sharing.
 	if txt.NotEmpty(frm.Scope) {
 		frm.Scope = strings.ToLower(frm.Scope)
 
-		if idType, idPrefix := rnd.IdType(frm.Scope); idType != rnd.TypeUID || idPrefix != entity.AlbumUID {
-			return PhotoResults{}, 0, ErrInvalidId
-		} else if album, albumErr = entity.CachedAlbumByUID(frm.Scope); albumErr != nil || album.AlbumUID == "" {
-			return PhotoResults{}, 0, ErrInvalidId
-		} else if album.AlbumFilter == "" {
+		if album.AlbumFilter == "" {
 			s = s.Joins("JOIN photos_albums ON photos_albums.photo_uid = files.photo_uid").
 				Where("photos_albums.hidden = FALSE AND photos_albums.album_uid = ?", album.AlbumUID)
 		} else if formErr := form.Unserialize(&frm, album.AlbumFilter); formErr != nil {
