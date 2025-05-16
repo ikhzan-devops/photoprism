@@ -344,11 +344,11 @@ func UpdateSubjectCovers(public bool) (err error) {
 	case Postgres:
 		// Needs a convert_to and convert_from so can't use a single statment.
 		res = Db().Exec(`UPDATE subjects
-		SET thumb = (SELECT convert_to(marker_thumb, 'UTF8') AS marker_thumb FROM (SELECT m.subj_uid, m.q, MAX(convert_from(m.thumb,'UTF8')) AS marker_thumb FROM markers m
+		SET thumb = (SELECT convert_to(marker_thumb, 'UTF8') AS marker_thumb FROM (SELECT m.subj_uid, MAX(m.q), MAX(convert_from(m.thumb,'UTF8')) AS marker_thumb FROM markers m
 				INNER JOIN files f ON f.file_uid = m.file_uid AND f.deleted_at IS NULL
 				INNER JOIN photos p ON ?
 				WHERE m.subj_uid <> '' AND m.subj_uid IS NOT NULL AND m.marker_invalid = FALSE AND m.thumb IS NOT NULL AND m.thumb <> ''
-				GROUP BY m.subj_uid, m.q
+				GROUP BY m.subj_uid
 				) b
 			WHERE b.subj_uid = subjects.subj_uid
 			)
