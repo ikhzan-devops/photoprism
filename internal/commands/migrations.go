@@ -65,6 +65,12 @@ var MigrationsTransferCommand = &cli.Command{
 			Aliases: []string{"t"},
 			Usage:   "show trace logs for debugging",
 		},
+		&cli.UintFlag{
+			Name:    "batch",
+			Aliases: []string{"b"},
+			Usage:   "the number of records to transfer in each batch",
+			Value:   100,
+		},
 	},
 	Action: migrationsTransferAction,
 }
@@ -217,7 +223,8 @@ func migrationsTransferAction(ctx *cli.Context) error {
 		return fmt.Errorf("run '%s migrations ls' to display the status of schema migrations", filepath.Base(os.Args[0]))
 	}
 
-	batchSize := 5
+	batchSize := int(ctx.Uint("batch"))
+	log.Infof("migrate: transfer batch size set to %d", batchSize)
 
 	start := time.Now()
 
