@@ -12,7 +12,12 @@ import (
 
 	"github.com/leandro-lugaresi/hub"
 	"github.com/stretchr/testify/assert"
+	"gorm.io/driver/mysql"
+	"gorm.io/driver/postgres"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 
+	"github.com/photoprism/photoprism/internal/entity"
 	"github.com/photoprism/photoprism/internal/event"
 )
 
@@ -245,9 +250,17 @@ func TestMigrationCommand(t *testing.T) {
 		assert.Contains(t, l, "migrate: number of userdetails transfered 9")
 		assert.Contains(t, l, "migrate: number of usersettings transfered 13")
 		assert.Contains(t, l, "migrate: number of usershares transfered 1")
-		// Remove target database file
-		if !t.Failed() {
-			os.Remove("/go/src/github.com/photoprism/photoprism/storage/mysqltosqlite.test.db")
+
+		// Make sure that a sequence update has worked.
+		testdb, err := gorm.Open(postgres.Open("postgresql://migrate:migrate@postgres:5432/migrate?TimeZone=UTC&connect_timeout=15&lock_timeout=5000&sslmode=disable"), &gorm.Config{})
+		if err != nil {
+			assert.NoError(t, err)
+			t.FailNow()
+		}
+		lens := entity.Lens{LensSlug: "PhotoPrismTest Data Slug For Lens", LensName: "PhotoPrism Biocular", LensMake: "PhotoPrism", LensModel: "Short", LensType: "Mono", LensDescription: "Special Test Lens"}
+		if result := testdb.Create(&lens); result.Error != nil {
+			assert.NoError(t, result.Error)
+			t.FailNow()
 		}
 	})
 
@@ -339,6 +352,18 @@ func TestMigrationCommand(t *testing.T) {
 		assert.Contains(t, l, "migrate: number of userdetails transfered 9")
 		assert.Contains(t, l, "migrate: number of usersettings transfered 13")
 		assert.Contains(t, l, "migrate: number of usershares transfered 1")
+		// Make sure that a sequence update has worked.
+		testdb, err := gorm.Open(sqlite.Open("/go/src/github.com/photoprism/photoprism/storage/mysqltosqlite.test.db?_busy_timeout=5000&_foreign_keys=on"), &gorm.Config{})
+		if err != nil {
+			assert.NoError(t, err)
+			t.FailNow()
+		}
+		lens := entity.Lens{LensSlug: "PhotoPrismTest Data Slug For Lens", LensName: "PhotoPrism Biocular", LensMake: "PhotoPrism", LensModel: "Short", LensType: "Mono", LensDescription: "Special Test Lens"}
+		if result := testdb.Create(&lens); result.Error != nil {
+			assert.NoError(t, result.Error)
+			t.FailNow()
+		}
+
 		// Remove target database file
 		if !t.Failed() {
 			os.Remove("/go/src/github.com/photoprism/photoprism/storage/mysqltosqlite.test.db")
@@ -435,6 +460,19 @@ func TestMigrationCommand(t *testing.T) {
 		assert.Contains(t, l, "migrate: number of userdetails transfered 9")
 		assert.Contains(t, l, "migrate: number of usersettings transfered 13")
 		assert.Contains(t, l, "migrate: number of usershares transfered 1")
+
+		// Make sure that a sequence update has worked.
+		testdb, err := gorm.Open(sqlite.Open("/go/src/github.com/photoprism/photoprism/storage/mysqltosqlitepopulated.test.db?_busy_timeout=5000&_foreign_keys=on"), &gorm.Config{})
+		if err != nil {
+			assert.NoError(t, err)
+			t.FailNow()
+		}
+		lens := entity.Lens{LensSlug: "PhotoPrismTest Data Slug For Lens", LensName: "PhotoPrism Biocular", LensMake: "PhotoPrism", LensModel: "Short", LensType: "Mono", LensDescription: "Special Test Lens"}
+		if result := testdb.Create(&lens); result.Error != nil {
+			assert.NoError(t, result.Error)
+			t.FailNow()
+		}
+
 		// Remove target database file
 		if !t.Failed() {
 			os.Remove("/go/src/github.com/photoprism/photoprism/storage/mysqltosqlitepopulated.test.db")
@@ -547,6 +585,18 @@ func TestMigrationCommand(t *testing.T) {
 		assert.Contains(t, l, "migrate: number of userdetails transfered 9")
 		assert.Contains(t, l, "migrate: number of usersettings transfered 13")
 		assert.Contains(t, l, "migrate: number of usershares transfered 1")
+
+		// Make sure that a sequence update has worked.
+		testdb, err := gorm.Open(mysql.Open("migrate:migrate@tcp(mariadb:4001)/migrate?charset=utf8mb4,utf8&collation=utf8mb4_unicode_ci&parseTime=true&timeout=15s"), &gorm.Config{})
+		if err != nil {
+			assert.NoError(t, err)
+			t.FailNow()
+		}
+		lens := entity.Lens{LensSlug: "PhotoPrismTest Data Slug For Lens", LensName: "PhotoPrism Biocular", LensMake: "PhotoPrism", LensModel: "Short", LensType: "Mono", LensDescription: "Special Test Lens"}
+		if result := testdb.Create(&lens); result.Error != nil {
+			assert.NoError(t, result.Error)
+			t.FailNow()
+		}
 	})
 
 	t.Run("PostgreSQLtoSQLite", func(t *testing.T) {
@@ -637,6 +687,19 @@ func TestMigrationCommand(t *testing.T) {
 		assert.Contains(t, l, "migrate: number of userdetails transfered 9")
 		assert.Contains(t, l, "migrate: number of usersettings transfered 13")
 		assert.Contains(t, l, "migrate: number of usershares transfered 1")
+
+		// Make sure that a sequence update has worked.
+		testdb, err := gorm.Open(sqlite.Open("/go/src/github.com/photoprism/photoprism/storage/postgresqltosqlite.test.db?_busy_timeout=5000&_foreign_keys=on"), &gorm.Config{})
+		if err != nil {
+			assert.NoError(t, err)
+			t.FailNow()
+		}
+		lens := entity.Lens{LensSlug: "PhotoPrismTest Data Slug For Lens", LensName: "PhotoPrism Biocular", LensMake: "PhotoPrism", LensModel: "Short", LensType: "Mono", LensDescription: "Special Test Lens"}
+		if result := testdb.Create(&lens); result.Error != nil {
+			assert.NoError(t, result.Error)
+			t.FailNow()
+		}
+
 		// Remove target database file
 		if !t.Failed() {
 			os.Remove("/go/src/github.com/photoprism/photoprism/storage/postgresqltosqlite.test.db")
@@ -748,6 +811,19 @@ func TestMigrationCommand(t *testing.T) {
 		assert.Contains(t, l, "migrate: number of userdetails transfered 9")
 		assert.Contains(t, l, "migrate: number of usersettings transfered 13")
 		assert.Contains(t, l, "migrate: number of usershares transfered 1")
+
+		// Make sure that a sequence update has worked.
+		testdb, err := gorm.Open(mysql.Open("migrate:migrate@tcp(mariadb:4001)/migrate?charset=utf8mb4,utf8&collation=utf8mb4_unicode_ci&parseTime=true&timeout=15s"), &gorm.Config{})
+		if err != nil {
+			assert.NoError(t, err)
+			t.FailNow()
+		}
+		lens := entity.Lens{LensSlug: "PhotoPrismTest Data Slug For Lens", LensName: "PhotoPrism Biocular", LensMake: "PhotoPrism", LensModel: "Short", LensType: "Mono", LensDescription: "Special Test Lens"}
+		if result := testdb.Create(&lens); result.Error != nil {
+			assert.NoError(t, result.Error)
+			t.FailNow()
+		}
+
 		// Remove target database file
 		if !t.Failed() {
 			os.Remove("/go/src/github.com/photoprism/photoprism/storage/sqlitetomysql.test.db")
@@ -847,6 +923,19 @@ func TestMigrationCommand(t *testing.T) {
 		assert.Contains(t, l, "migrate: number of userdetails transfered 9")
 		assert.Contains(t, l, "migrate: number of usersettings transfered 13")
 		assert.Contains(t, l, "migrate: number of usershares transfered 1")
+
+		// Make sure that a sequence update has worked.
+		testdb, err := gorm.Open(postgres.Open("postgresql://migrate:migrate@postgres:5432/migrate?TimeZone=UTC&connect_timeout=15&lock_timeout=5000&sslmode=disable"), &gorm.Config{})
+		if err != nil {
+			assert.NoError(t, err)
+			t.FailNow()
+		}
+		lens := entity.Lens{LensSlug: "PhotoPrismTest Data Slug For Lens", LensName: "PhotoPrism Biocular", LensMake: "PhotoPrism", LensModel: "Short", LensType: "Mono", LensDescription: "Special Test Lens"}
+		if result := testdb.Create(&lens); result.Error != nil {
+			assert.NoError(t, result.Error)
+			t.FailNow()
+		}
+
 		// Remove target database file
 		if !t.Failed() {
 			os.Remove("/go/src/github.com/photoprism/photoprism/storage/sqlitetomysql.test.db")
