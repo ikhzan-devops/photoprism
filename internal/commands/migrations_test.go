@@ -62,6 +62,19 @@ func TestMigrationCommand(t *testing.T) {
 
 		ctx := NewTestContextWithParse(appArgs, cmdArgs)
 
+		s := event.Subscribe("log.info")
+		defer event.Unsubscribe(s)
+
+		var l string
+
+		assert.IsType(t, hub.Subscription{}, s)
+
+		go func() {
+			for msg := range s.Receiver {
+				l += msg.Fields["message"].(string) + "\n"
+			}
+		}()
+
 		output, err := RunWithProvidedTestContext(ctx, MigrationsCommands, cmdArgs)
 
 		// Check command output for plausibility.
@@ -69,6 +82,69 @@ func TestMigrationCommand(t *testing.T) {
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "migrate: transfer target database is not empty")
 		assert.NotContains(t, output, "Usage")
+
+		time.Sleep(time.Second)
+
+		// Check command output.
+		if l == "" {
+			t.Fatal("log output missing")
+		}
+
+		assert.Contains(t, l, "migrate: transfer batch size set to 100")
+
+		if !t.Failed() {
+			os.Remove("/go/src/github.com/photoprism/photoprism/storage/targetpopulated.test.db")
+		}
+	})
+
+	t.Run("TargetPopulatedBatch500", func(t *testing.T) {
+		// Setup target database
+		os.Remove("/go/src/github.com/photoprism/photoprism/storage/targetpopulated.test.db")
+		if err := copyFile("/go/src/github.com/photoprism/photoprism/internal/commands/testdata/transfer_sqlite3", "/go/src/github.com/photoprism/photoprism/storage/targetpopulated.test.db"); err != nil {
+			t.Fatal(err.Error())
+		}
+
+		// Run command with test context.
+		log = event.Log
+
+		appArgs := []string{"photoprism",
+			"--database-driver", "mysql",
+			"--database-dsn", "migrate:migrate@tcp(mariadb:4001)/migrate?charset=utf8mb4,utf8&collation=utf8mb4_unicode_ci&parseTime=true&timeout=15s",
+			"--transfer-driver", "sqlite",
+			"--transfer-dsn", "/go/src/github.com/photoprism/photoprism/storage/targetpopulated.test.db?_busy_timeout=5000&_foreign_keys=on"}
+		cmdArgs := []string{"migrations", "transfer", "-batch", "500"}
+
+		ctx := NewTestContextWithParse(appArgs, cmdArgs)
+
+		s := event.Subscribe("log.info")
+		defer event.Unsubscribe(s)
+
+		var l string
+
+		assert.IsType(t, hub.Subscription{}, s)
+
+		go func() {
+			for msg := range s.Receiver {
+				l += msg.Fields["message"].(string) + "\n"
+			}
+		}()
+
+		output, err := RunWithProvidedTestContext(ctx, MigrationsCommands, cmdArgs)
+
+		// Check command output for plausibility.
+		// t.Logf(output)
+		assert.Error(t, err)
+		assert.Contains(t, err.Error(), "migrate: transfer target database is not empty")
+		assert.NotContains(t, output, "Usage")
+
+		time.Sleep(time.Second)
+
+		// Check command output.
+		if l == "" {
+			t.Fatal("log output missing")
+		}
+
+		assert.Contains(t, l, "migrate: transfer batch size set to 500")
 
 		if !t.Failed() {
 			os.Remove("/go/src/github.com/photoprism/photoprism/storage/targetpopulated.test.db")
@@ -101,7 +177,7 @@ func TestMigrationCommand(t *testing.T) {
 			"--database-dsn", "migrate:migrate@tcp(mariadb:4001)/migrate?charset=utf8mb4,utf8&collation=utf8mb4_unicode_ci&parseTime=true&timeout=15s",
 			"--transfer-driver", "postgres",
 			"--transfer-dsn", "postgresql://migrate:migrate@postgres:5432/migrate?TimeZone=UTC&connect_timeout=15&lock_timeout=5000&sslmode=disable"}
-		cmdArgs := []string{"migrations", "transfer"}
+		cmdArgs := []string{"migrations", "transfer", "-batch", "10"}
 
 		ctx := NewTestContextWithParse(appArgs, cmdArgs)
 
@@ -136,6 +212,7 @@ func TestMigrationCommand(t *testing.T) {
 		}
 		// t.Logf(l)
 
+		assert.Contains(t, l, "migrate: transfer batch size set to 10")
 		assert.Contains(t, l, "migrate: number of albums transfered 31")
 		assert.Contains(t, l, "migrate: number of albumusers transfered 0")
 		assert.Contains(t, l, "migrate: number of cameras transfered 6")
@@ -194,7 +271,7 @@ func TestMigrationCommand(t *testing.T) {
 			"--database-dsn", "migrate:migrate@tcp(mariadb:4001)/migrate?charset=utf8mb4,utf8&collation=utf8mb4_unicode_ci&parseTime=true&timeout=15s",
 			"--transfer-driver", "sqlite",
 			"--transfer-dsn", "/go/src/github.com/photoprism/photoprism/storage/mysqltosqlite.test.db?_busy_timeout=5000&_foreign_keys=on"}
-		cmdArgs := []string{"migrations", "transfer"}
+		cmdArgs := []string{"migrations", "transfer", "-batch", "1000"}
 
 		ctx := NewTestContextWithParse(appArgs, cmdArgs)
 
@@ -229,6 +306,7 @@ func TestMigrationCommand(t *testing.T) {
 		}
 		// t.Logf(l)
 
+		assert.Contains(t, l, "migrate: transfer batch size set to 1000")
 		assert.Contains(t, l, "migrate: number of albums transfered 31")
 		assert.Contains(t, l, "migrate: number of albumusers transfered 0")
 		assert.Contains(t, l, "migrate: number of cameras transfered 6")
