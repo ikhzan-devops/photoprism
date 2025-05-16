@@ -306,6 +306,10 @@ func migrationsTransferAction(ctx *cli.Context) error {
 	conf.MigrateDb(false, ids)
 
 	// Copy tables
+	type MaxResult struct {
+		Id uint
+	}
+	var currentid MaxResult
 
 	// Replace the admin user with the source one.
 	var userRecord entity.User
@@ -368,6 +372,15 @@ func migrationsTransferAction(ctx *cli.Context) error {
 		return result.Error
 	} else {
 		log.Infof("migrate: number of users transfered %v", result.RowsAffected)
+		if result.RowsAffected > 0 {
+			if result = tfrConf.Db().Unscoped().
+				Model(&entity.User{}).Select("MAX(id) as id").Scan(&currentid); result.Error != nil {
+				log.Errorf("migrate: error in getting max id %v", result.Error)
+				return result.Error
+			} else {
+				resetIDToValue(tfrConf.Db(), entity.User{}.TableName(), int(currentid.Id))
+			}
+		}
 	}
 
 	var albums entity.Albums
@@ -387,6 +400,15 @@ func migrationsTransferAction(ctx *cli.Context) error {
 		return result.Error
 	} else {
 		log.Infof("migrate: number of albums transfered %v", result.RowsAffected)
+		if result.RowsAffected > 0 {
+			if result = tfrConf.Db().Unscoped().
+				Model(&entity.Album{}).Select("MAX(id) as id").Scan(&currentid); result.Error != nil {
+				log.Errorf("migrate: error in getting max id %v", result.Error)
+				return result.Error
+			} else {
+				resetIDToValue(tfrConf.Db(), entity.Album{}.TableName(), int(currentid.Id))
+			}
+		}
 	}
 
 	var cameras []entity.Camera
@@ -407,6 +429,15 @@ func migrationsTransferAction(ctx *cli.Context) error {
 		return result.Error
 	} else {
 		log.Infof("migrate: number of cameras transfered %v", result.RowsAffected)
+		if result.RowsAffected > 0 {
+			if result = tfrConf.Db().Unscoped().
+				Model(&entity.Camera{}).Select("MAX(id) as id").Scan(&currentid); result.Error != nil {
+				log.Errorf("migrate: error in getting max id %v", result.Error)
+				return result.Error
+			} else {
+				resetIDToValue(tfrConf.Db(), entity.Camera{}.TableName(), int(currentid.Id))
+			}
+		}
 	}
 
 	var lenses entity.Lenses
@@ -427,6 +458,15 @@ func migrationsTransferAction(ctx *cli.Context) error {
 		return result.Error
 	} else {
 		log.Infof("migrate: number of lenses transfered %v", result.RowsAffected)
+		if result.RowsAffected > 0 {
+			if result = tfrConf.Db().Unscoped().
+				Model(&entity.Lens{}).Select("MAX(id) as id").Scan(&currentid); result.Error != nil {
+				log.Errorf("migrate: error in getting max id %v", result.Error)
+				return result.Error
+			} else {
+				resetIDToValue(tfrConf.Db(), entity.Lens{}.TableName(), int(currentid.Id))
+			}
+		}
 	}
 
 	var places []entity.Place
@@ -506,6 +546,15 @@ func migrationsTransferAction(ctx *cli.Context) error {
 		return result.Error
 	} else {
 		log.Infof("migrate: number of keywords transfered %v", result.RowsAffected)
+		if result.RowsAffected > 0 {
+			if result = tfrConf.Db().Unscoped().
+				Model(&entity.Keyword{}).Select("MAX(id) as id").Scan(&currentid); result.Error != nil {
+				log.Errorf("migrate: error in getting max id %v", result.Error)
+				return result.Error
+			} else {
+				resetIDToValue(tfrConf.Db(), entity.Keyword{}.TableName(), int(currentid.Id))
+			}
+		}
 	}
 
 	var labels []entity.Label
@@ -525,6 +574,15 @@ func migrationsTransferAction(ctx *cli.Context) error {
 		return result.Error
 	} else {
 		log.Infof("migrate: number of labels transfered %v", result.RowsAffected)
+		if result.RowsAffected > 0 {
+			if result = tfrConf.Db().Unscoped().
+				Model(&entity.Label{}).Select("MAX(id) as id").Scan(&currentid); result.Error != nil {
+				log.Errorf("migrate: error in getting max id %v", result.Error)
+				return result.Error
+			} else {
+				resetIDToValue(tfrConf.Db(), entity.Label{}.TableName(), int(currentid.Id))
+			}
+		}
 	}
 
 	var photos []entity.Photo
@@ -557,6 +615,15 @@ func migrationsTransferAction(ctx *cli.Context) error {
 		return result.Error
 	} else {
 		log.Infof("migrate: number of photos transfered %v", result.RowsAffected)
+		if result.RowsAffected > 0 {
+			if result = tfrConf.Db().Unscoped().
+				Model(&entity.Photo{}).Select("MAX(id) as id").Scan(&currentid); result.Error != nil {
+				log.Errorf("migrate: error in getting max id %v", result.Error)
+				return result.Error
+			} else {
+				resetIDToValue(tfrConf.Db(), entity.Photo{}.TableName(), int(currentid.Id))
+			}
+		}
 	}
 
 	var files entity.Files
@@ -575,6 +642,15 @@ func migrationsTransferAction(ctx *cli.Context) error {
 		return result.Error
 	} else {
 		log.Infof("migrate: number of files transfered %v", result.RowsAffected)
+		if result.RowsAffected > 0 {
+			if result = tfrConf.Db().Unscoped().
+				Model(&entity.File{}).Select("MAX(id) as id").Scan(&currentid); result.Error != nil {
+				log.Errorf("migrate: error in getting max id %v", result.Error)
+				return result.Error
+			} else {
+				resetIDToValue(tfrConf.Db(), entity.File{}.TableName(), int(currentid.Id))
+			}
+		}
 	}
 
 	var albumUsers []entity.AlbumUser
@@ -778,7 +854,7 @@ func migrationsTransferAction(ctx *cli.Context) error {
 	// Gorm bug with composite foreign keys prevents the following from working.
 	// It can be used once pull https://github.com/go-gorm/gorm/pull/7453 (or equivalent) has been made to gorm
 	// var categorys []entity.Category
-	// result = conf.Db().Unscoped().Debug().
+	// result = conf.Db().Unscoped().
 	// 	FindInBatches(&categorys, batchSize, func(tx *gorm.DB, batch int) error {
 	// 		var newCategorys []*entity.Category
 	// 		for _, category := range categorys {
@@ -863,6 +939,15 @@ func migrationsTransferAction(ctx *cli.Context) error {
 		return result.Error
 	} else {
 		log.Infof("migrate: number of errors transfered %v", result.RowsAffected)
+		if result.RowsAffected > 0 {
+			if result = tfrConf.Db().Unscoped().
+				Model(&entity.Error{}).Select("MAX(id) as id").Scan(&currentid); result.Error != nil {
+				log.Errorf("migrate: error in getting max id %v", result.Error)
+				return result.Error
+			} else {
+				resetIDToValue(tfrConf.Db(), entity.Error{}.TableName(), int(currentid.Id))
+			}
+		}
 	}
 
 	var faces entity.Faces
@@ -901,6 +986,15 @@ func migrationsTransferAction(ctx *cli.Context) error {
 		return result.Error
 	} else {
 		log.Infof("migrate: number of services transfered %v", result.RowsAffected)
+		if result.RowsAffected > 0 {
+			if result = tfrConf.Db().Unscoped().
+				Model(&entity.Service{}).Select("MAX(id) as id").Scan(&currentid); result.Error != nil {
+				log.Errorf("migrate: error in getting max id %v", result.Error)
+				return result.Error
+			} else {
+				resetIDToValue(tfrConf.Db(), entity.Service{}.TableName(), int(currentid.Id))
+			}
+		}
 	}
 
 	var fileshares []entity.FileShare
@@ -1222,5 +1316,24 @@ func migrationsTransferAction(ctx *cli.Context) error {
 
 	log.Infof("completed in %s", elapsed)
 
+	return nil
+}
+
+// Reset the ID increment to passed in value
+func resetIDToValue(db *gorm.DB, tableName string, value int) error {
+	sqlCommand := ""
+	switch db.Dialector.Name() {
+	case entity.MySQL:
+		sqlCommand = fmt.Sprintf("ALTER TABLE `%v` AUTO_INCREMENT = %d", tableName, value+1)
+	case entity.Postgres:
+		sqlCommand = fmt.Sprintf("ALTER SEQUENCE %v_id_seq RESTART WITH %d", tableName, value+1)
+	case entity.SQLite3:
+		sqlCommand = fmt.Sprintf("UPDATE SQLITE_SEQUENCE SET SEQ=%d WHERE NAME='%v'", value, tableName)
+	default:
+		return fmt.Errorf("Unsupported Dialector %s", db.Dialector.Name())
+	}
+	if res := db.Exec(sqlCommand); res.Error != nil {
+		return fmt.Errorf("Reset Auto Increment failed with %v", res.Error)
+	}
 	return nil
 }
