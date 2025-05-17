@@ -78,8 +78,8 @@ test-entity: reset-sqlite run-test-entity
 test-commands: reset-sqlite run-test-commands
 test-photoprism: reset-sqlite run-test-photoprism
 test-short: reset-sqlite run-test-short
-test-mariadb: reset-mariadb-acceptance run-test-mariadb
-test-postgresql: reset-postgresql-acceptance run-test-postgresql
+test-mariadb: reset-mariadb-testdb run-test-mariadb
+test-postgresql: reset-postgresql-testdb run-test-postgresql
 test-sqlite: reset-sqlite-unit run-test-sqlite
 # SQLite acceptance tests - These setup, configure and then call the actual tests.
 acceptance-run-chromium: storage/acceptance storage/sqlite acceptance-exec-chromium
@@ -221,14 +221,14 @@ acceptance-database-reset-%:
 		echo "resetting mariadb"; \
 		cp -f storage/acceptance/backup.db storage/acceptance/index.db; \
 		mysql < scripts/sql/reset-acceptance.sql; \
-		./photoprism --database-driver sqlite --database-dsn "storage/acceptance/index.db?_busy_timeout=5000&_foreign_keys=on" --transfer-driver mysql --transfer-dsn "$(PHOTOPRISM_TEST_DSN_MARIADB)" migrations transfer -force; \
+		./photoprism --database-driver sqlite --database-dsn "storage/acceptance/index.db?_busy_timeout=5000&_foreign_keys=on" --transfer-driver mysql --transfer-dsn "$(subst testdb,acceptance,$(PHOTOPRISM_TEST_DSN_MARIADB))" migrations transfer -force; \
 		cp -f storage/acceptance/config-active/settingsBackup.yml storage/acceptance/config-active/settings.yml; \
 	fi
 	@if [ -f storage/acceptance/config-active/dbms.postgresql ]; then \
 		echo "resetting postgresql"; \
 		cp -f storage/acceptance/backup.db storage/acceptance/index.db; \
 		psql postgresql://photoprism:photoprism@postgres:5432/postgres  -f scripts/sql/postgresql/reset-acceptance.sql; \
-		./photoprism --database-driver sqlite --database-dsn "storage/acceptance/index.db?_busy_timeout=5000&_foreign_keys=on" --transfer-driver postgres --transfer-dsn "$(PHOTOPRISM_TEST_DSN_POSTGRES)" migrations transfer -force; \
+		./photoprism --database-driver sqlite --database-dsn "storage/acceptance/index.db?_busy_timeout=5000&_foreign_keys=on" --transfer-driver postgres --transfer-dsn "$(subst testdb,acceptance,$(PHOTOPRISM_TEST_DSN_POSTGRES))" migrations transfer -force; \
 		cp -f storage/acceptance/config-active/settingsBackup.yml storage/acceptance/config-active/settings.yml; \
 	fi
 acceptance-public-start:
@@ -296,12 +296,12 @@ storage/sqlite:
 storage/mariadb:
 	rm -rf storage/acceptance/config-active
 	cp storage/acceptance/config-sqlite/ storage/acceptance/config-active -r
-	sed "s/DatabaseDriver: sqlite/DatabaseDriver: mysql/;s/DatabaseDsn[: a-z./]\+/DatabaseDsn: $(subst &,\&,$(subst /,\/,$(PHOTOPRISM_TEST_DSN_MARIADB)))/" storage/acceptance/config-sqlite/options.yml > storage/acceptance/config-active/options.yml
+	sed "s/DatabaseDriver: sqlite/DatabaseDriver: mysql/;s/DatabaseDsn[: a-z./]\+/DatabaseDsn: $(subst &,\&,$(subst /,\/,$(PHOTOPRISM_TEST_DSN_MARIADB)))/" storage/acceptance/config-sqlite/options.yml | sed "s/testdb/acceptance/g" > storage/acceptance/config-active/options.yml
 	echo mariadb > storage/acceptance/config-active/dbms.mariadb
 storage/postgresql:
 	rm -rf storage/acceptance/config-active
 	cp storage/acceptance/config-sqlite/ storage/acceptance/config-active -r
-	sed "s/DatabaseDriver: sqlite/DatabaseDriver: postgres/;s/DatabaseDsn[: a-z./]\+/DatabaseDsn: $(subst &,\&,$(subst /,\/,$(PHOTOPRISM_TEST_DSN_POSTGRES)))/" storage/acceptance/config-sqlite/options.yml > storage/acceptance/config-active/options.yml
+	sed "s/DatabaseDriver: sqlite/DatabaseDriver: postgres/;s/DatabaseDsn[: a-z./]\+/DatabaseDsn: $(subst &,\&,$(subst /,\/,$(PHOTOPRISM_TEST_DSN_POSTGRES)))/" storage/acceptance/config-sqlite/options.yml | sed "s/testdb/acceptance/g" > storage/acceptance/config-active/options.yml
 	echo postgresql > storage/acceptance/config-active/dbms.postgresql
 zip-facenet:
 	(cd assets && zip -r facenet.zip facenet -x "*/.*" -x "*/version.txt")
