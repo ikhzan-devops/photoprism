@@ -2363,4 +2363,21 @@ func TestPhotos(t *testing.T) {
 			assert.Empty(t, p.PhotoTitle)
 		}
 	})
+	t.Run("form.album as6sg6bipotaajfa", func(t *testing.T) {
+		var f form.SearchPhotos
+
+		f.Album = "as6sg6bipotaajfa"
+
+		photos, _, err := Photos(f)
+
+		if err != nil {
+			t.Fatal(err)
+		}
+		assert.GreaterOrEqual(t, len(photos), 3)
+
+		for _, p := range photos {
+			assert.IsType(t, Photo{}, p)
+			assert.NotEmpty(t, p.ID)
+		}
+	})
 }

@@ -1198,4 +1198,19 @@ func TestGeo(t *testing.T) {
 			assert.Empty(t, r.PhotoTitle)
 		}
 	})
+
+	t.Run("label cow", func(t *testing.T) {
+		f := form.SearchPhotosGeo{
+			Label: "COW",
+		}
+
+		result, err := PhotosGeo(f)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		assert.IsType(t, GeoResults{}, result)
+		log.Infof("result = %v", result)
+		assert.GreaterOrEqual(t, len(result), 1)
+	})
 }
