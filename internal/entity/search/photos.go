@@ -84,10 +84,21 @@ func searchPhotos(frm form.SearchPhotos, sess *entity.Session, resultCols string
 	var albumErr error
 
 	postgreSQLRowNumber := txt.NotEmpty(frm.Label) && entity.DbDialect() == entity.Postgres
-	if !postgreSQLRowNumber && txt.NotEmpty(frm.Scope) && entity.DbDialect() == entity.Postgres {
-		// Need to pre-execute some of the logic to find out if the frm.Label is reset.
+	// log.Debugf("postgreSQLRowNumber = %v, frm.Label = %v, DbDialect = %v", postgreSQLRowNumber, frm.Label, entity.DbDialect())
+
+	// Need to pre-execute some of the logic to find out if the frm.Label is reset.
+	// Accept the album UID as scope for backward compatibility.
+	if rnd.IsUID(frm.Album, entity.AlbumUID) {
+		if txt.Empty(frm.Scope) {
+			frm.Scope = frm.Album
+		}
+
+		frm.Album = ""
+	}
+
+	var frm2 form.SearchPhotos
+	if txt.NotEmpty(frm.Scope) {
 		// We don't want to change the real form yet, so use a temp variable
-		var frm2 form.SearchPhotos
 		frm2.Scope = strings.ToLower(frm.Scope)
 
 		if idType, idPrefix := rnd.IdType(frm2.Scope); idType != rnd.TypeUID || idPrefix != entity.AlbumUID {
@@ -99,8 +110,11 @@ func searchPhotos(frm form.SearchPhotos, sess *entity.Session, resultCols string
 			log.Debugf("search: %s (%s)", clean.Error(formErr), clean.Log(album.AlbumFilter))
 			return PhotoResults{}, 0, ErrBadFilter
 		}
+	}
+	if !postgreSQLRowNumber && txt.NotEmpty(frm.Scope) && entity.DbDialect() == entity.Postgres {
 		// If the form's label has been updated, make sure that we enable the PostgreSQL work around to GROUP BY.
 		postgreSQLRowNumber = txt.NotEmpty(frm2.Label)
+		// log.Debugf("postgreSQLRowNumber = %v, frm2.Label = %v, DbDialect = %v", postgreSQLRowNumber, frm2.Label, entity.DbDialect())
 	}
 
 	// Specify table names and joins.
@@ -123,15 +137,6 @@ func searchPhotos(frm form.SearchPhotos, sess *entity.Session, resultCols string
 	s = s.Joins("LEFT JOIN cameras ON photos.camera_id = cameras.id").
 		Joins("LEFT JOIN lenses ON photos.lens_id = lenses.id").
 		Joins("LEFT JOIN places ON photos.place_id = places.id")
-
-	// Accept the album UID as scope for backward compatibility.
-	if rnd.IsUID(frm.Album, entity.AlbumUID) {
-		if txt.Empty(frm.Scope) {
-			frm.Scope = frm.Album
-		}
-
-		frm.Album = ""
-	}
 
 	// Limit search results to a specific UID scope, e.g. when sharing.
 	if txt.NotEmpty(frm.Scope) {
