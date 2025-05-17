@@ -78,13 +78,13 @@ func UserPhotosGeo(frm form.SearchPhotosGeo, sess *entity.Session) (results GeoR
 	if postgreSQLRowNumber {
 		// PostgreSQL doesn't support a GROUP BY that excludes non aggregated columns.
 		// This is the work around.
-		s = UnscopedDb().Debug().Table(entity.Photo{}.TableName()).Select("ROW_NUMBER() OVER (PARTITION BY photos.id, files.id ORDER BY files.media_id) as rec_num, " + GeoCols).
+		s = UnscopedDb().Table(entity.Photo{}.TableName()).Select("ROW_NUMBER() OVER (PARTITION BY photos.id, files.id ORDER BY files.media_id) as rec_num, " + GeoCols).
 			Joins(`JOIN files ON files.photo_id = photos.id AND files.file_primary = TRUE AND files.media_id IS NOT NULL`).
 			Joins("LEFT JOIN places ON photos.place_id = places.id").
 			Where("photos.deleted_at IS NULL").
 			Where("photos.photo_lat <> 0")
 	} else {
-		s = UnscopedDb().Debug().Table(entity.Photo{}.TableName()).Select(GeoCols).
+		s = UnscopedDb().Table(entity.Photo{}.TableName()).Select(GeoCols).
 			Joins(`JOIN files ON files.photo_id = photos.id AND files.file_primary = TRUE AND files.media_id IS NOT NULL`).
 			Joins("LEFT JOIN places ON photos.place_id = places.id").
 			Where("photos.deleted_at IS NULL").
@@ -799,7 +799,7 @@ func UserPhotosGeo(frm form.SearchPhotosGeo, sess *entity.Session) (results GeoR
 	// Fetch results.
 	if postgreSQLRowNumber {
 		// PostgreSQL doesn't support a GROUP BY that excludes non aggregated columns.
-		oq := UnscopedDb().Debug().Table("(?) as result", s).Select("*").Where("rec_num = ?", 1)
+		oq := UnscopedDb().Table("(?) as result", s).Select("*").Where("rec_num = ?", 1)
 		if result := oq.Scan(&results); result.Error != nil {
 			return results, result.Error
 		}
