@@ -19,7 +19,7 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
-DROP DATABASE migrate;
+DROP DATABASE IF EXISTS migrate WITH (FORCE);
 --
 -- TOC entry 3924 (class 1262 OID 25875)
 -- Name: migrate; Type: DATABASE; Schema: -; Owner: migrate
