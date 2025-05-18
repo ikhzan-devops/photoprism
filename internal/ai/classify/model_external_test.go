@@ -28,12 +28,12 @@ var baseUrl = "https://dl.photoprism.app/tensorflow/vision"
 //var baseUrl = "http://host.docker.internal:8000"
 
 var modelsInfo = map[string]*tensorflow.ModelInfo{
-	"efficientnet-v2-tensorflow2-imagenet1k-b0-classification-v2.tar.gz": &tensorflow.ModelInfo{
+	"efficientnet-v2-tensorflow2-imagenet1k-b0-classification-v2.tar.gz": {
 		Output: &tensorflow.ModelOutput{
 			OutputsLogits: true,
 		},
 	},
-	"efficientnet-v2-tensorflow2-imagenet1k-m-classification-v2.tar.gz": &tensorflow.ModelInfo{
+	"efficientnet-v2-tensorflow2-imagenet1k-m-classification-v2.tar.gz": {
 		Input: &tensorflow.PhotoInput{
 			Height: 480,
 			Width:  480,
@@ -42,12 +42,12 @@ var modelsInfo = map[string]*tensorflow.ModelInfo{
 			OutputsLogits: true,
 		},
 	},
-	"efficientnet-v2-tensorflow2-imagenet21k-b0-classification-v1.tar.gz": &tensorflow.ModelInfo{
+	"efficientnet-v2-tensorflow2-imagenet21k-b0-classification-v1.tar.gz": {
 		Output: &tensorflow.ModelOutput{
 			OutputsLogits: true,
 		},
 	},
-	"inception-v3-tensorflow2-classification-v2.tar.gz": &tensorflow.ModelInfo{
+	"inception-v3-tensorflow2-classification-v2.tar.gz": {
 		Input: &tensorflow.PhotoInput{
 			Height: 299,
 			Width:  299,
@@ -56,17 +56,17 @@ var modelsInfo = map[string]*tensorflow.ModelInfo{
 			OutputsLogits: true,
 		},
 	},
-	"resnet-v2-tensorflow2-101-classification-v2.tar.gz": &tensorflow.ModelInfo{
+	"resnet-v2-tensorflow2-101-classification-v2.tar.gz": {
 		Output: &tensorflow.ModelOutput{
 			OutputsLogits: true,
 		},
 	},
-	"resnet-v2-tensorflow2-152-classification-v2.tar.gz": &tensorflow.ModelInfo{
+	"resnet-v2-tensorflow2-152-classification-v2.tar.gz": {
 		Output: &tensorflow.ModelOutput{
 			OutputsLogits: true,
 		},
 	},
-	"vision-transformer-tensorflow2-vit-b16-classification-v1.tar.gz": &tensorflow.ModelInfo{
+	"vision-transformer-tensorflow2-vit-b16-classification-v1.tar.gz": {
 		Input: &tensorflow.PhotoInput{
 			Interval: &tensorflow.Interval{
 				Start: -1.0,
