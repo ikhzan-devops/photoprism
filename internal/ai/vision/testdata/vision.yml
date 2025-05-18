@@ -3,18 +3,45 @@ Models:
   Name: NASNet
   Version: Mobile
   Resolution: 224
-  Tags:
-  - photoprism
+  Meta:
+    Tags:
+    - photoprism
+    Input:
+      Name: input_1
+      Interval:
+        Start: -1
+        End: 1
+      Height: 224
+      Width: 224
+    Output:
+      Name: predictions/Softmax
+      Outputs: 1000
 - Type: nsfw
   Name: Nsfw
   Resolution: 224
-  Tags:
-  - serve
+  Meta:
+    Tags:
+    - serve
+    Input:
+      Name: input_tensor
+      Height: 224
+      Width: 224
+    Output:
+      Name: nsfw_cls_model/final_prediction
+      Outputs: 5
 - Type: face
   Name: FaceNet
   Resolution: 160
-  Tags:
-  - serve
+  Meta:
+    Tags:
+    - serve
+    Input:
+      Name: input
+      Height: 160
+      Width: 160
+    Output:
+      Name: embeddings
+      Outputs: 512
 - Type: caption
   Resolution: 224
   Service:
