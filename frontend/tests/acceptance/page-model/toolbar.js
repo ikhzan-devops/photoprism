@@ -139,7 +139,7 @@ export default class Page {
   }
 
   async search(term) {
-    await t.typeText(this.search1, term, { replace: true }).pressKey("enter");
+    await t.typeText(this.search1, term, { replace: true }).pressKey("enter").wait(6000);
   }
 
   async setFilter(filter, option) {

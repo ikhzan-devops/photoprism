@@ -126,7 +126,7 @@ func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
 		if i == 0 {
 			frm.PhotoLng.Value = photo.PhotoLng
 		} else if photo.PhotoLng != frm.PhotoLng.Value {
-			frm.PhotoLng.Mixed = false
+			frm.PhotoLng.Mixed = true
 			frm.PhotoLng.Value = 0.0
 		}
 
