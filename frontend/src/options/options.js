@@ -114,6 +114,35 @@ export const MonthsShort = () => {
   return result;
 };
 
+// Objects for the Batch Dialog to have one more value -2 => <mixed>
+export const TimeZonesBatchDialog = () => {
+  let result = TimeZones();
+  result.push({ ID: -2, Name: "<mixed>" });
+
+  return result;
+};
+
+export const DaysBatchDialog = () => {
+  let result = Days();
+  result.push({ value: -2, text: $gettext("<mixed>") });
+
+  return result;
+};
+
+export const YearsBatchDialog = (start) => {
+  let result = Years(start);
+  result.push({ value: -2, text: $gettext("<mixed>") });
+
+  return result;
+};
+
+export const MonthsShortBatchDialog = () => {
+  let result = MonthsShort();
+  result.push({ value: -2, text: $gettext("<mixed>") });
+
+  return result;
+};
+
 // Specifies the default language locale.
 export let DefaultLocale = "en";
 

@@ -239,48 +239,57 @@
                     <v-col cols="6" md="2">
                       <v-combobox
                         :label="$gettext('Day')"
-                        :placeholder="$gettext('Unknown')"
                         autocomplete="off"
                         hide-details
                         hide-no-data
-                        :items="options.Days()"
+                        :model-value="getFieldData('select-field', 'Day').value"
+                        :items="getFieldData('select-field', 'Day').items"
+                        :placeholder="getFieldData('select-field', 'Day').placeholder"
+                        :persistent-placeholder="getFieldData('select-field', 'Day').persistent"
                         item-title="text"
                         item-value="value"
                         density="comfortable"
                         validate-on="input"
                         class="input-day"
+                        @update:modelValue="onSelect($event, 'Day')"
                       >
                       </v-combobox>
                     </v-col>
                     <v-col cols="6" md="3">
                       <v-combobox
                         :label="$gettext('Month')"
-                        :placeholder="$gettext('Unknown')"
                         autocomplete="off"
                         hide-details
                         hide-no-data
-                        :items="options.MonthsShort()"
+                        :model-value="getFieldData('select-field', 'Month').value"
+                        :items="getFieldData('select-field', 'Month').items"
+                        :placeholder="getFieldData('select-field', 'Month').placeholder"
+                        :persistent-placeholder="getFieldData('select-field', 'Month').persistent"
                         item-title="text"
                         item-value="value"
                         density="comfortable"
                         validate-on="input"
                         class="input-month"
+                        @update:modelValue="onSelect($event, 'Month')"
                       >
                       </v-combobox>
                     </v-col>
                     <v-col cols="12" sm="6" md="3">
                       <v-combobox
                         :label="$gettext('Year')"
-                        :placeholder="$gettext('Unknown')"
                         autocomplete="off"
                         hide-details
                         hide-no-data
-                        :items="options.Years(1900)"
+                        :model-value="getFieldData('select-field', 'Year').value"
+                        :items="getFieldData('select-field', 'Year').items"
+                        :placeholder="getFieldData('select-field', 'Year').placeholder"
+                        :persistent-placeholder="getFieldData('select-field', 'Year').persistent"
                         item-title="text"
                         item-value="value"
                         density="comfortable"
                         validate-on="input"
                         class="input-year"
+                        @update:modelValue="onSelect($event, 'Month')"
                       >
                       </v-combobox>
                     </v-col>
@@ -288,11 +297,15 @@
                       <v-autocomplete
                         :label="$gettext('Time Zone')"
                         hide-no-data
-                        :items="options.TimeZones()"
+                        :model-value="getFieldData('select-field', 'TimeZone').value"
+                        :items="getFieldData('select-field', 'TimeZone').items"
+                        :placeholder="getFieldData('select-field', 'TimeZone').placeholder"
+                        :persistent-placeholder="getFieldData('select-field', 'TimeZone').persistent"
                         item-value="ID"
                         item-title="Name"
                         density="comfortable"
                         class="input-timezone"
+                        @update:modelValue="onSelect($event, 'TimeZone')"
                       ></v-autocomplete>
                     </v-col>
                   </v-row>
@@ -305,16 +318,20 @@
                   <v-row dense>
                     <v-col cols="12" sm="6" md="3">
                       <v-autocomplete
-                        :placeholder="$gettext('Country')"
+                        :label="$gettext('Country')"
                         hide-details
                         hide-no-data
                         autocomplete="off"
                         item-value="Code"
                         item-title="Name"
-                        :items="countries"
+                        :model-value="getFieldData('select-field', 'Country').value"
+                        :items="getFieldData('select-field', 'Country').items"
+                        :placeholder="getFieldData('select-field', 'Country').placeholder"
+                        :persistent-placeholder="getFieldData('select-field', 'Country').persistent"
                         density="comfortable"
                         validate-on="input"
                         class="input-country"
+                        @update:modelValue="onSelect($event, 'Country')"
                       >
                       </v-autocomplete>
                     </v-col>
@@ -607,34 +624,88 @@ export default {
     getFieldData(fieldType, fieldName) {
       const fieldData = this.values[fieldName];
 
-      if (!fieldData) return { placeholder: '', persistent: false };
+      if (!fieldData) return { placeholder: "", persistent: false };
 
-      if (fieldType === 'text-field') {
+      if (fieldType === "text-field") {
         if (fieldData.mixed) {
-          return { value: '', placeholder: '<mixed>', persistent: true };
-        } else if (fieldData.value !== null && fieldData.value !== '') {
-          return { value: fieldData.value, placeholder: '', persistent: false };
+          return { value: "", placeholder: "<mixed>", persistent: true };
+        } else if (fieldData.value !== null && fieldData.value !== "") {
+          return { value: fieldData.value, placeholder: "", persistent: false };
         } else {
-          return { value: '', placeholder: '', persistent: false };
+          return { value: "", placeholder: "", persistent: false };
         }
       }
 
-      if (fieldType === 'input-field') {
+      if (fieldType === "input-field") {
         if (fieldData.mixed) {
-          return { value: '', placeholder: '<mixed>', persistent: true };
-        } else if (fieldData.value === 0 || (fieldData.value !== null && fieldData.value !== '')) {
-          return { value: fieldData.value, placeholder: '', persistent: false };
+          return { value: "", placeholder: "<mixed>", persistent: true };
+        } else if (fieldData.value === 0 || (fieldData.value !== null && fieldData.value !== "")) {
+          return { value: fieldData.value, placeholder: "", persistent: false };
         } else {
-          return { value: '', placeholder: '', persistent: false };
+          return { value: "", placeholder: "", persistent: false };
+        }
+      }
+
+      if (fieldType === "select-field") {
+        if (fieldData.mixed) {
+          const items = this.getItemsArray(fieldName, true);
+          const value = this.getValue(fieldName, items);
+          return { value: value, placeholder: "<mixed>", persistent: true, items: items };
+        } else if (!fieldData.mixed) {
+          const items = this.getItemsArray(fieldName, false);
+          return { value: fieldData.value, placeholder: "", persistent: false, items: items };
         }
       }
     },
 
+    getValue(fieldName, items) {
+      if (fieldName === "Day" || fieldName === "Month" || fieldName === "Year") {
+        return items.find(item => item.value === -2).text;
+      }
+      if (fieldName === "Country") {
+        return items.find(item => item.Code === -2).Name;
+      }
+      if (fieldName === "TimeZone") {
+        return items.find(item => item.ID === -2).Name;
+      }
+    },
+
+    getItemsArray(fieldName, isMixed) {
+      if (fieldName === "Day") {
+        return isMixed ? options.DaysBatchDialog() : options.Days();
+      }
+      if (fieldName === "Month") {
+        return isMixed ? options.MonthsShortBatchDialog() : options.MonthsShort();
+      }
+      if (fieldName === "Year") {
+        return isMixed ? options.YearsBatchDialog(1900) : options.Years(1900);
+      }
+      if (fieldName === "Country") {
+        const newCountries = this.getCountriesArray(this.countries);
+        return isMixed ? newCountries : this.countries;
+      }
+      if (fieldName === "TimeZone") {
+        return isMixed ? options.TimeZonesBatchDialog() : options.TimeZones();
+      }
+    },
+
+    getCountriesArray(array) {
+      const hasMixed = array.some(item => item.Code === -2);
+      if (!hasMixed) {
+        array.push({ Code: -2, Name: "<mixed>" });
+      }
+      return array;
+    },
+
     onInput(val, fieldName) {
       if (this.values[fieldName]) {
-        // this.values[fieldName].value = val;
-        // this.values[fieldName].mixed = false;
-        console.log('OnChange');
+        console.log("onInput");
+      }
+    },
+
+    onSelect(val, fieldName) {
+      if (this.values[fieldName]) {
+        console.log("onSelect");
       }
     },
 
@@ -703,7 +774,7 @@ export default {
       this.allSelectedLength = this.model.getLengthOfAllSelected();
     },
     updateToggleAll() {
-      this.isAllSelected = this.model.selection.every(photo => photo.selected)
+      this.isAllSelected = this.model.selection.every(photo => photo.selected);
     },
     toggleAll() {
       this.isAllSelected = !this.isAllSelected;
