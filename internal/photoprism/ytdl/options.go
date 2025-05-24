@@ -41,14 +41,11 @@ type Options struct {
 }
 
 type DownloadOptions struct {
-	AudioFormats      string // --audio-formats Download audio using formats (best, aac, alac, flac, m4a, mp3, opus, vorbis, wav)
-	DownloadAudioOnly bool   // -x Download audio only from video
-	// Download format matched by filter (usually a format id or quality designator).
-	// If filter is empty, then youtube-dl will use its default format selector.
-	Filter string
-	// The index of the entry to download from the playlist that would be
-	// passed to youtube-dl via --playlist-items. The index value starts at 1
-	PlaylistIndex int
+	Filter            string // Download format matched by filter (usually a format id or quality designator).
+	AudioFormats      string // --audio-formats Download audio using formats (best, aac, alac, flac, m4a, mp3, opus, vorbis, wav).
+	DownloadAudioOnly bool   // -x Download audio only from video.
+	EmbedMetadata     bool   // --embed-metadata embeds metadata to the video file.
+	PlaylistIndex     int    // --playlist-items index of the file to download if there is more than one video
 }
 
 func (result Result) DownloadWithOptions(
@@ -144,6 +141,12 @@ func (result Result) DownloadWithOptions(
 
 	if options.DownloadAudioOnly {
 		cmd.Args = append(cmd.Args, "-x")
+	}
+
+	// If requested, embed metadata in the video file, including chapters and infoJSON,
+	// see https://github.com/yt-dlp/yt-dlp?tab=readme-ov-file#post-processing-options.
+	if options.EmbedMetadata {
+		cmd.Args = append(cmd.Args, "--embed-metadata")
 	}
 
 	if options.AudioFormats != "" {

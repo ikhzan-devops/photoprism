@@ -119,9 +119,18 @@ func downloadAction(ctx *cli.Context) error {
 			downloadFile = time.Now().Format("20060102_150405") + fs.ExtMp4
 		}
 
+		// Compose download file path.
 		downloadFilePath := filepath.Join(downloadPath, downloadFile)
-		downloadResult, err := result.Download(context.Background(), "best")
 
+		// Download the first video and embed its metadata.
+		downloadResult, err := result.DownloadWithOptions(context.Background(), ytdl.DownloadOptions{
+			Filter:            "best",
+			DownloadAudioOnly: false,
+			EmbedMetadata:     true,
+			PlaylistIndex:     1,
+		})
+
+		// Check if download was successful.
 		if err != nil {
 			return err
 		}
