@@ -344,6 +344,26 @@
                     <v-col cols="12" sm="6" md="3">
                       <v-text-field
                         hide-details
+                        flat
+                        autocomplete="off"
+                        autocorrect="off"
+                        autocapitalize="none"
+                        :label="$gettext('Altitude (m)')"
+                        :placeholder="getFieldData('input-field', 'Altitude').placeholder"
+                        :persistent-placeholder="getFieldData('input-field', 'Altitude').persistent"
+                        :model-value="getFieldData('input-field', 'Altitude').value"
+                        :append-inner-icon="getFieldData('text-field', 'Altitude').icon"
+                        color="surface-variant"
+                        density="comfortable"
+                        validate-on="input"
+                        class="input-altitude"
+                        @update:modelValue="onInput($event, 'Altitude')"
+                        @click:append-inner="toggleField('Altitude')"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="3">
+                      <v-text-field
+                        hide-details
                         autocomplete="off"
                         autocorrect="off"
                         autocapitalize="none"
@@ -351,10 +371,12 @@
                         :placeholder="getFieldData('input-field', 'Lat').placeholder"
                         :persistent-placeholder="getFieldData('input-field', 'Lat').persistent"
                         :model-value="getFieldData('input-field', 'Lat').value"
+                        :append-inner-icon="getFieldData('text-field', 'Lat').icon"
                         density="comfortable"
                         validate-on="input"
                         class="input-latitude"
                         @update:modelValue="onInput($event, 'Lat')"
+                        @click:append-inner="toggleField('Lat')"
                       ></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="3">
@@ -367,28 +389,12 @@
                         :placeholder="getFieldData('input-field', 'Lng').placeholder"
                         :persistent-placeholder="getFieldData('input-field', 'Lng').persistent"
                         :model-value="getFieldData('input-field', 'Lng').value"
+                        :append-inner-icon="getFieldData('text-field', 'Lng').icon"
                         density="comfortable"
                         validate-on="input"
                         class="input-longitude"
                         @update:modelValue="onInput($event, 'Lng')"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="3">
-                      <v-text-field
-                        hide-details
-                        flat
-                        autocomplete="off"
-                        autocorrect="off"
-                        autocapitalize="none"
-                        :label="$gettext('Altitude (m)')"
-                        :placeholder="getFieldData('input-field', 'Altitude').placeholder"
-                        :persistent-placeholder="getFieldData('input-field', 'Altitude').persistent"
-                        :model-value="getFieldData('input-field', 'Altitude').value"
-                        color="surface-variant"
-                        density="comfortable"
-                        validate-on="input"
-                        class="input-altitude"
-                        @update:modelValue="onInput($event, 'Altitude')"
+                        @click:append-inner="toggleField('Lng')"
                       ></v-text-field>
                     </v-col>
                   </v-row>
@@ -634,9 +640,11 @@ export default {
   },
   methods: {
     getFieldIcon(fieldName) {
+      const fieldData = this.values[fieldName];
+
       if (this.deletedFields[fieldName]) {
         return "mdi-undo";
-      } else if (this.values[fieldName]?.mixed) {
+      } else if (fieldData?.mixed) {
         return "mdi-delete";
       } else {
         return "";
@@ -651,6 +659,7 @@ export default {
     },
     getFieldData(fieldType, fieldName) {
       const fieldData = this.values[fieldName];
+      const isDeleted = this.deletedFields?.[fieldName];
 
       if (!fieldData) return { value: "", placeholder: "", persistent: false, icon: "" };
 
@@ -670,12 +679,14 @@ export default {
       }
 
       if (fieldType === "input-field") {
-        if (fieldData.mixed) {
-          return { value: "", placeholder: "<mixed>", persistent: true };
-        } else if (fieldData.value === 0 || (fieldData.value !== null && fieldData.value !== "")) {
-          return { value: fieldData.value, placeholder: "", persistent: false };
+        if (isDeleted) {
+          return { value: 0, placeholder: "", persistent: false, icon: "mdi-undo" };
+        } else if (fieldData.mixed) {
+          return { value: "", placeholder: "<mixed>", persistent: true, icon: "mdi-delete" };
+        } else if (fieldData.value !== 0 && fieldData.value !== null && fieldData.value !== "") {
+          return { value: fieldData.value, placeholder: "", persistent: false, icon: "" };
         } else {
-          return { value: "", placeholder: "", persistent: false };
+          return { value: fieldData.value || 0, placeholder: "", persistent: false, icon: "" };
         }
       }
 
