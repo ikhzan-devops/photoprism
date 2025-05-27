@@ -94,7 +94,7 @@
           </div>
         </v-col>
 
-        <!-- Phone view -->
+        <!-- Mobile view -->
         <v-col v-else cols="12">
           <div v-if="model.models" class="edit-batch photo-results list-view v-table">
             <v-expansion-panels
@@ -527,6 +527,38 @@
                     </v-combobox>
                   </v-col>
                 </div>
+
+                <v-row>
+                  <v-col
+                    v-for="fieldName in toggleFieldsArray"
+                    :key="fieldName"
+                    cols="12"
+                    sm="6"
+                    md="6"
+                  >
+                    <div class="d-flex flex-column">
+                      <v-col cols="12">
+                        <p>{{ fieldName }}</p>
+                      </v-col>
+                      <v-col cols="12" class="d-flex align-self-stretch flex-column">
+                        <v-btn-toggle
+                          mandatory
+                          color="primary"
+                          :model-value="getToggleValue(fieldName)"
+                        >
+                          <v-btn
+                            v-for="option in toggleOptions(fieldName)"
+                            :key="option.value"
+                            :value="option.value"
+                            @click="onToggle(fieldName, option.value)"
+                          >
+                            <span>{{ option.text }}</span>
+                          </v-btn>
+                        </v-btn-toggle>
+                      </v-col>
+                    </div>
+                  </v-col>
+                </v-row>
               </div>
             </div>
 
@@ -610,6 +642,7 @@ export default {
       },
       values: {},
       deletedFields: {},
+      toggleFieldsArray: ["Scan", "Favorite", "Private", "Panorama"],
     };
   },
   computed: {
@@ -639,15 +672,29 @@ export default {
     }
   },
   methods: {
-    getFieldIcon(fieldName) {
+    toggleOptions(fieldName) {
       const fieldData = this.values[fieldName];
+      if (!fieldData) return [];
 
-      if (this.deletedFields[fieldName]) {
-        return "mdi-undo";
-      } else if (fieldData?.mixed) {
-        return "mdi-delete";
+      const options = [
+        { text: "Yes", value: "yes" },
+        { text: "No", value: "no" },
+      ];
+
+      if (fieldData.mixed) {
+        options.push({ text: "<mixed>", value: "<mixed>" });
+      }
+
+      return options;
+    },
+    getToggleValue(fieldName) {
+      const fieldData = this.values[fieldName];
+      if (!fieldData) return null;
+
+      if (fieldData.mixed) {
+        return "<mixed>";
       } else {
-        return "";
+        return fieldData.value ? "yes" : "no";
       }
     },
     toggleField(fieldName) {
@@ -701,7 +748,6 @@ export default {
         }
       }
     },
-
     getValue(fieldName, items) {
       if (fieldName === "Day" || fieldName === "Month" || fieldName === "Year") {
         return items.find(item => item.value === -2).text;
@@ -713,7 +759,6 @@ export default {
         return items.find(item => item.ID === -2).Name;
       }
     },
-
     getItemsArray(fieldName, isMixed) {
       if (fieldName === "Day") {
         return isMixed ? options.DaysBatchDialog() : options.Days();
@@ -732,7 +777,6 @@ export default {
         return isMixed ? options.TimeZonesBatchDialog() : options.TimeZones();
       }
     },
-
     getCountriesArray(array) {
       const hasMixed = array.some(item => item.Code === -2);
       if (!hasMixed) {
@@ -740,44 +784,22 @@ export default {
       }
       return array;
     },
-
     onInput(val, fieldName) {
       if (this.values[fieldName]) {
         console.log("onInput");
       }
     },
-
+    onToggle() {
+      console.log("onToggle");
+    },
+    // onUpdate() {
+    //   // console.log('Add event on update');
+    // },
     onSelect(val, fieldName) {
       if (this.values[fieldName]) {
         console.log("onSelect");
       }
     },
-
-    // deleteValue(fieldName) {
-    //   const fieldData = this.values[fieldName];
-    //   if (fieldData.mixed || fieldData.value !== null) {
-    //     this.deletedFields[fieldName] = {
-    //       originalValue: fieldData.value,
-    //       mixed: fieldData.mixed,
-    //     };
-    //     this.values[fieldName].value = '<deleted>';
-    //   }
-    // },
-    //
-    // undoDeleteValue(fieldName) {
-    //   if (this.deletedFields[fieldName]) {
-    //     const { originalValue, mixed } = this.deletedFields[fieldName];
-    //     const fieldData = this.values[fieldName];
-    //
-    //     if (mixed) {
-    //       fieldData.value = '<mixed>';
-    //     } else {
-    //       fieldData.value = originalValue;
-    //     }
-    //
-    //     this.deletedFields[fieldName] = null;
-    //   }
-    // },
     openPhoto(index) {
       this.$lightbox.openModels(Thumb.fromPhotos([this.model.models[index]]), 0, null , this.isBatchDialog);
     },
@@ -792,9 +814,6 @@ export default {
       ev.preventDefault();
       this.onClose();
     },
-    // onUpdate() {
-    //   // console.log('Add event on update');
-    // },
     onSelectClick(ev, index, select) {
       const longClick = this.mouseDown.index === index && ev.timeStamp - this.mouseDown.timeStamp > 400;
       const scrolled = this.mouseDown.scrollY - window.scrollY !== 0;
