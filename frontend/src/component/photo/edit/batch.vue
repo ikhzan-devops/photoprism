@@ -192,10 +192,12 @@
                         :model-value="getFieldData('text-field', 'Title').value"
                         :placeholder="getFieldData('text-field', 'Title').placeholder"
                         :persistent-placeholder="getFieldData('text-field', 'Title').persistent"
+                        :append-inner-icon="getFieldData('text-field', 'Title').icon"
                         autocomplete="off"
                         density="comfortable"
                         class="input-title"
                         @update:modelValue="onInput($event, 'Title')"
+                        @click:append-inner="toggleField('Title')"
                       ></v-text-field>
                     </v-col>
                     <v-col cols="12" md="6">
@@ -207,10 +209,12 @@
                         :model-value="getFieldData('text-field', 'DetailsSubject').value"
                         :placeholder="getFieldData('text-field', 'DetailsSubject').placeholder"
                         :persistent-placeholder="getFieldData('text-field', 'DetailsSubject').persistent"
+                        :append-inner-icon="getFieldData('text-field', 'DetailsSubject').icon"
                         :rows="1"
                         density="comfortable"
                         class="input-subject"
                         @update:modelValue="onInput($event, 'DetailsSubject')"
+                        @click:append-inner="toggleField('DetailsSubject')"
                       ></v-textarea>
                     </v-col>
                   </v-row>
@@ -223,10 +227,12 @@
                       :model-value="getFieldData('text-field', 'Caption').value"
                       :placeholder="getFieldData('text-field', 'Caption').placeholder"
                       :persistent-placeholder="getFieldData('text-field', 'Caption').persistent"
+                      :append-inner-icon="getFieldData('text-field', 'Caption').icon"
                       :rows="1"
                       density="comfortable"
                       class="input-caption"
                       @update:modelValue="onInput($event, 'Caption')"
+                      @click:append-inner="toggleField('Caption')"
                     ></v-textarea>
                   </v-col>
                 </div>
@@ -401,9 +407,11 @@
                         :model-value="getFieldData('text-field', 'DetailsArtist').value"
                         :placeholder="getFieldData('text-field', 'DetailsArtist').placeholder"
                         :persistent-placeholder="getFieldData('text-field', 'DetailsArtist').persistent"
+                        :append-inner-icon="getFieldData('text-field', 'DetailsArtist').icon"
                         density="comfortable"
                         class="input-artist"
                         @update:modelValue="onInput($event, 'DetailsArtist')"
+                        @click:append-inner="toggleField('DetailsArtist')"
                       ></v-text-field>
                     </v-col>
                     <v-col cols="12" md="6">
@@ -414,9 +422,11 @@
                         :model-value="getFieldData('text-field', 'DetailsCopyright').value"
                         :placeholder="getFieldData('text-field', 'DetailsCopyright').placeholder"
                         :persistent-placeholder="getFieldData('text-field', 'DetailsCopyright').persistent"
+                        :append-inner-icon="getFieldData('text-field', 'DetailsCopyright').icon"
                         density="comfortable"
                         class="input-copyright"
                         @update:modelValue="onInput($event, 'DetailsCopyright')"
+                        @click:append-inner="toggleField('DetailsCopyright')"
                       ></v-text-field>
                     </v-col>
                   </v-row>
@@ -429,10 +439,12 @@
                       :model-value="getFieldData('text-field', 'DetailsLicense').value"
                       :placeholder="getFieldData('text-field', 'DetailsLicense').placeholder"
                       :persistent-placeholder="getFieldData('text-field', 'DetailsLicense').persistent"
+                      :append-inner-icon="getFieldData('text-field', 'DetailsLicense').icon"
                       :rows="1"
                       density="comfortable"
                       class="input-license"
                       @update:modelValue="onInput($event, 'DetailsLicense')"
+                      @click:append-inner="toggleField('DetailsLicense')"
                     ></v-textarea>
                   </v-col>
                 </div>
@@ -591,7 +603,7 @@ export default {
         timeStamp: -1,
       },
       values: {},
-      // deletedFields: {},
+      deletedFields: {},
     };
   },
   computed: {
@@ -621,18 +633,39 @@ export default {
     }
   },
   methods: {
+    getFieldIcon(fieldName) {
+      if (this.deletedFields[fieldName]) {
+        return "mdi-undo";
+      } else if (this.values[fieldName]?.mixed) {
+        return "mdi-delete";
+      } else {
+        return "";
+      }
+    },
+    toggleField(fieldName) {
+      if (this.deletedFields[fieldName]) {
+        this.deletedFields[fieldName] = false;
+      } else {
+        this.deletedFields[fieldName] = true;
+      }
+    },
     getFieldData(fieldType, fieldName) {
       const fieldData = this.values[fieldName];
 
-      if (!fieldData) return { placeholder: "", persistent: false };
+      if (!fieldData) return { value: "", placeholder: "", persistent: false, icon: "" };
+
+      // For deleted fields (applies only to text-fields)
+      if (fieldType === "text-field" && this.deletedFields?.[fieldName]) {
+        return { value: "", placeholder: "<deleted>", persistent: true, icon: "mdi-undo" };
+      }
 
       if (fieldType === "text-field") {
         if (fieldData.mixed) {
-          return { value: "", placeholder: "<mixed>", persistent: true };
+          return { value: "", placeholder: "<mixed>", persistent: true, icon: "mdi-delete" };
         } else if (fieldData.value !== null && fieldData.value !== "") {
-          return { value: fieldData.value, placeholder: "", persistent: false };
+          return { value: fieldData.value, placeholder: "", persistent: false, icon: "" };
         } else {
-          return { value: "", placeholder: "", persistent: false };
+          return { value: "", placeholder: "", persistent: false, icon: "" };
         }
       }
 
