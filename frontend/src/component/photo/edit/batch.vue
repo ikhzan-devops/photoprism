@@ -710,16 +710,13 @@ export default {
 
       if (!fieldData) return { value: "", placeholder: "", persistent: false, icon: "" };
 
-      // For deleted fields (applies only to text-fields)
-      if (fieldType === "text-field" && this.deletedFields?.[fieldName]) {
-        return { value: "", placeholder: "<deleted>", persistent: true, icon: "mdi-undo" };
-      }
-
       if (fieldType === "text-field") {
-        if (fieldData.mixed) {
+        if (isDeleted) {
+          return { value: "", placeholder: "<deleted>", persistent: true, icon: "mdi-undo" };
+        } else if (fieldData.mixed) {
           return { value: "", placeholder: "<mixed>", persistent: true, icon: "mdi-delete" };
         } else if (fieldData.value !== null && fieldData.value !== "") {
-          return { value: fieldData.value, placeholder: "", persistent: false, icon: "" };
+          return { value: fieldData.value, placeholder: "", persistent: false, icon: "mdi-delete" };
         } else {
           return { value: "", placeholder: "", persistent: false, icon: "" };
         }
