@@ -16,7 +16,7 @@ import (
 )
 
 const (
-	testVideoRawURL          = "https://vimeo.com/454525548"
+	testVideoRawURL          = "https://youtu.be/fD6VYfy3B2s"
 	playlistRawURL           = "https://soundcloud.com/mattheis/sets/kindred-phenomena"
 	channelRawURL            = "https://www.youtube.com/channel/UCHDm-DKoMyJxKVgwGmuTaQA"
 	subtitlesTestVideoRawURL = "https://www.youtube.com/watch?v=QRS8MkLhQmM"
@@ -31,9 +31,12 @@ func TestParseInfo(t *testing.T) {
 		url           string
 		expectedTitle string
 	}{
-		{"https://soundcloud.com/avalonemerson/avalon-emerson-live-at-printworks-london-march-2017", "Avalon Emerson Live at Printworks London 2017"},
-		{"https://www.infoq.com/presentations/Simple-Made-Easy", "Simple Made Easy - InfoQ"},
-		{"https://vimeo.com/454525548", "Sample Video - 3 minutemp4.mp4"},
+		{"https://soundcloud.com/avalonemerson/avalon-emerson-live-at-printworks-london-march-2017",
+			"Avalon Emerson Live at Printworks London 2017"},
+		{"https://www.infoq.com/presentations/Simple-Made-Easy",
+			"Simple Made Easy - InfoQ"},
+		{testVideoRawURL,
+			"Cinematic Epic Deep Trailer - Background Music for Trailers and Film"},
 	} {
 		t.Run(c.url, func(t *testing.T) {
 			ctx, cancelFn := context.WithCancel(context.Background())
@@ -227,7 +230,7 @@ func TestDownloadSections(t *testing.T) {
 
 	ydlResult, ydlResultErr := New(
 		context.Background(),
-		"https://vimeo.com/454525548",
+		testVideoRawURL,
 		Options{
 			DownloadSections: fmt.Sprintf("*0:0-0:%d", duration),
 		})

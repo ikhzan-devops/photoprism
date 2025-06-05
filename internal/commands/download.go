@@ -108,7 +108,13 @@ func downloadAction(ctx *cli.Context) error {
 		mediaType = media.Video
 		log.Infof("downloading %s from %s", mediaType, clean.Log(sourceUrl.String()))
 
-		result, err := ytdl.New(context.Background(), sourceUrl.String(), ytdl.Options{})
+		result, err := ytdl.New(context.Background(), sourceUrl.String(), ytdl.Options{
+			MergeOutputFormat: "mp4",
+			RemuxVideo:        "mp4",
+			SortingFormat:     "lang,quality,res,fps,hdr:10+,vcodec:h264>av01>h265>vp9.2>vp9>h263,acodec:m4a>mp4a>aac>mp3>mp3>ac3>dts,channels,size,br,asr,proto,ext,hasaud,source,id",
+			PlaylistStart:     1,
+		})
+
 		if err != nil {
 			return err
 		}
@@ -119,9 +125,22 @@ func downloadAction(ctx *cli.Context) error {
 			downloadFile = time.Now().Format("20060102_150405") + fs.ExtMp4
 		}
 
+		// Compose download file path.
 		downloadFilePath := filepath.Join(downloadPath, downloadFile)
-		downloadResult, err := result.Download(context.Background(), "best")
 
+		// Download the first video and embed its metadata,
+		// see https://github.com/yt-dlp/yt-dlp?tab=readme-ov-file#format-selection-examples.
+		downloadResult, err := result.DownloadWithOptions(context.Background(), ytdl.DownloadOptions{
+			// Filter:            "bv*+ba/b",
+			DownloadAudioOnly: false,
+			EmbedMetadata:     true,
+			EmbedSubs:         false,
+			ForceOverwrites:   true,
+			DisableCaching:    false,
+			PlaylistIndex:     1,
+		})
+
+		// Check if download was successful.
 		if err != nil {
 			return err
 		}
