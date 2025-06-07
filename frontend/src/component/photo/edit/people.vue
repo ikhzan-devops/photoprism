@@ -1,23 +1,16 @@
 <template>
   <div class="p-tab p-tab-photo-people">
     <div class="pa-2 p-faces">
-      <div v-if="!showManualEditing" class="text-center mb-4">
-        <v-btn color="primary" variant="outlined" prepend-icon="mdi-tag-faces" @click="showManualEditing = true">
-          {{ $gettext("Edit Face Markers") }}
-        </v-btn>
-        <div class="mt-2 text-body-2 text-medium-emphasis">
-          {{ $gettext("Add, edit, or remove face markers on the photo") }}
-        </div>
-      </div>
-
-      <PPhotoFaceEditor
-        v-if="showManualEditing"
-        :uid="uid"
-        :primary-file="primaryFile"
-        :initial-markers="markers"
-        @close="closeManualEditing"
-        @markers-updated="onMarkersUpdated"
-      />
+      <transition name="slide-y-transition" appear>
+        <PPhotoFaceEditor
+          v-if="showManualEditing"
+          :uid="uid"
+          :primary-file="primaryFile"
+          :initial-markers="markers"
+          @close="closeManualEditing"
+          @markers-updated="onMarkersUpdated"
+        />
+      </transition>
 
       <v-alert
         v-if="markers.length === 0"
@@ -108,6 +101,12 @@
             </v-card-actions>
           </v-card>
         </div>
+      </div>
+
+      <div v-if="!showManualEditing" class="d-flex justify-start mt-4">
+        <v-btn color="primary" variant="outlined" @click="showManualEditing = true">
+          {{ $gettext("Edit Face Markers") }}
+        </v-btn>
       </div>
     </div>
     <p-confirm-dialog

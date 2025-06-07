@@ -30,10 +30,11 @@
                 size="x-small"
                 variant="text"
                 icon
-                color="white"
+                color="error"
+                density="compact"
                 @click.stop="onReject(marker)"
               >
-                <v-icon size="small">mdi-close</v-icon>
+                <v-icon size="x-small">mdi-close</v-icon>
               </v-btn>
             </div>
           </div>
@@ -78,7 +79,7 @@
           </v-btn>
         </div>
         <div>
-          <v-btn variant="text" prepend-icon="mdi-check" @click="$emit('close')">
+          <v-btn color="success" variant="outlined" prepend-icon="mdi-check" @click="$emit('close')">
             {{ $gettext("Done") }}
           </v-btn>
         </div>
