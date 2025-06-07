@@ -221,6 +221,20 @@ func UpdateMarker(router *gin.RouterGroup) {
 			return
 		}
 
+		// Update marker position and thumb if needed.
+		if frm.W > 0 && frm.H > 0 && (marker.X != frm.X || marker.Y != frm.Y || marker.W != frm.W || marker.H != frm.H) {
+			marker.X = frm.X
+			marker.Y = frm.Y
+			marker.W = frm.W
+			marker.H = frm.H
+			marker.Thumb = crop.NewArea("face", marker.X, marker.Y, marker.W, marker.H).Thumb(file.FileHash)
+			if err := marker.Save(); err != nil {
+				log.Errorf("faces: %s (update marker position)", err)
+				AbortSaveFailed(c)
+				return
+			}
+		}
+
 		// Update marker from form values.
 		if changed, saveErr := marker.SaveForm(frm); saveErr != nil {
 			log.Errorf("faces: %s (update marker)", saveErr)

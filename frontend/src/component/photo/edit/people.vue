@@ -1,6 +1,24 @@
 <template>
   <div class="p-tab p-tab-photo-people">
     <div class="pa-2 p-faces">
+      <div v-if="!showManualEditing" class="text-center mb-4">
+        <v-btn color="primary" variant="outlined" prepend-icon="mdi-tag-faces" @click="showManualEditing = true">
+          {{ $gettext("Edit Face Markers") }}
+        </v-btn>
+        <div class="mt-2 text-body-2 text-medium-emphasis">
+          {{ $gettext("Add, edit, or remove face markers on the photo") }}
+        </div>
+      </div>
+
+      <PPhotoFaceEditor
+        v-if="showManualEditing"
+        :uid="uid"
+        :primary-file="primaryFile"
+        :initial-markers="markers"
+        @close="closeManualEditing"
+        @markers-updated="onMarkersUpdated"
+      />
+
       <v-alert
         v-if="markers.length === 0"
         color="surface-variant"
@@ -19,7 +37,7 @@
       <div v-else class="v-row search-results face-results cards-view d-flex">
         <div v-for="m in markers" :key="m.UID" class="v-col-12 v-col-sm-6 v-col-md-4 v-col-lg-3 d-flex">
           <v-card :data-id="m.UID" :class="m.classes()" class="result not-selectable flex-grow-1" tabindex="1">
-            <v-img :src="m.thumbnailUrl('tile_320')" aspect-ratio="1" class="card">
+            <v-img :src="getMarkerThumbnailUrl(m)" aspect-ratio="1" class="card">
               <v-btn
                 v-if="!m.SubjUID && !m.Invalid"
                 :ripple="false"
@@ -84,7 +102,7 @@
                 class="input-name pa-0 ma-0"
                 @blur="onSetName(m)"
                 @update:model-value="(person) => onSetPerson(m, person)"
-                @keyup.enter.native="onSetName(m)"
+                @keyup.enter="onSetName(m)"
               >
               </v-combobox>
             </v-card-actions>
@@ -106,10 +124,11 @@
 <script>
 import Marker from "model/marker";
 import PConfirmDialog from "component/confirm/dialog.vue";
+import PPhotoFaceEditor from "./face-editor.vue";
 
 export default {
   name: "PTabPhotoPeople",
-  components: { PConfirmDialog },
+  components: { PConfirmDialog, PPhotoFaceEditor },
   props: {
     uid: {
       type: String,
@@ -120,11 +139,12 @@ export default {
     const view = this.$view.getData();
     return {
       view,
-      markers: view.model.getMarkers(true),
+      markers: [],
       busy: false,
       disabled: !this.$config.feature("edit"),
       config: this.$config.values,
       readonly: this.$config.get("readonly"),
+      showManualEditing: false,
       confirm: {
         visible: false,
         model: new Marker(),
@@ -146,16 +166,35 @@ export default {
       },
     };
   },
+  computed: {
+    primaryFile() {
+      if (!this.view.model || !this.view.model.Files || this.view.model.Files.length === 0) {
+        return null;
+      }
+      return this.view.model.Files.find((f) => f.Primary);
+    },
+  },
   watch: {
     uid: function () {
       this.refresh();
     },
   },
+  mounted() {
+    this.markers = this.view.model.getMarkers(true).map((markerData) => new Marker(markerData));
+  },
   methods: {
-    refresh() {
-      if (this.view.model) {
-        this.markers = this.view.model.getMarkers(true);
+    getMarkerThumbnailUrl(marker) {
+      if (marker.thumbWithTimestamp) {
+        return marker.thumbWithTimestamp;
       }
+      return marker.thumbnailUrl("tile_320");
+    },
+    refresh() {
+      this.markers = this.view.model.getMarkers(true).map((markerData) => new Marker(markerData));
+    },
+
+    onMarkersUpdated(updatedMarkers) {
+      this.markers = updatedMarkers;
     },
     onReject(model) {
       if (this.busy || !model) return;
@@ -196,10 +235,7 @@ export default {
       return true;
     },
     onSetName(model) {
-      if (this.busy || !model) {
-        return;
-      }
-
+      if (this.busy || !model) return;
       const name = model?.Name;
 
       if (!name) {
@@ -226,29 +262,25 @@ export default {
       this.confirm.visible = true;
     },
     onConfirmSetName() {
-      if (!this.confirm?.model?.Name) {
-        return;
-      }
-
+      if (!this.confirm?.model?.Name) return;
       this.setName(this.confirm.model);
     },
     onCancelSetName() {
       this.confirm.visible = false;
     },
     setName(model) {
-      if (this.busy || !model) {
-        return;
-      }
-
+      if (this.busy || !model) return;
       this.busy = true;
       this.$notify.blockUI("busy");
-
       return model.setName().finally(() => {
         this.$notify.unblockUI();
         this.busy = false;
         this.confirm.model = null;
         this.confirm.visible = false;
       });
+    },
+    closeManualEditing() {
+      this.showManualEditing = false;
     },
   },
 };
