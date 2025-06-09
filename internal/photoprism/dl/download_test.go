@@ -1,4 +1,4 @@
-package ytdl
+package dl
 
 import (
 	"bytes"
@@ -15,7 +15,7 @@ func TestDownload(t *testing.T) {
 	}
 
 	stderrBuf := &bytes.Buffer{}
-	r, err := New(context.Background(), testVideoRawURL, Options{
+	r, err := NewMetadata(context.Background(), testVideoRawURL, Options{
 		StderrFn: func(cmd *exec.Cmd) io.Writer {
 			return stderrBuf
 		},

@@ -1,4 +1,4 @@
-package ytdl
+package dl
 
 import (
 	"bufio"
@@ -107,7 +107,7 @@ func infoFromURL(
 ) (info Info, rawJSON []byte, err error) {
 	cmd := exec.CommandContext(
 		ctx,
-		FindBin(),
+		FindYtDlpBin(),
 		// see comment below about ignoring errors for playlists
 		"--ignore-errors",
 		// TODO: deprecated in yt-dlp?

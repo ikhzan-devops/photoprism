@@ -1,4 +1,4 @@
-package ytdl
+package dl
 
 import (
 	"bufio"
@@ -15,7 +15,7 @@ import (
 	"strings"
 )
 
-// Options for New()
+// Options for NewMetadata()
 type Options struct {
 	Type               Type
 	PlaylistStart      uint   // --playlist-start
@@ -38,7 +38,7 @@ type Options struct {
 	Fixup              string                        // --fixup
 	SortingFormat      string                        // --format-sort
 
-	// Set to true if you don't want to use the result.Info structure after the goutubedl.New() call,
+	// Set to true if you don't want to use the result.Info structure after the goutubedl.NewMetadata() call,
 	// so the given URL will be downloaded in a single pass in the DownloadResult.Download() call.
 	noInfoDownload bool
 }
@@ -52,9 +52,10 @@ type DownloadOptions struct {
 	ForceOverwrites   bool   // --force-overwrites replaces existing files
 	DisableCaching    bool   // --no-cache-dir
 	PlaylistIndex     int    // --playlist-items index of the file to download if there is more than one video
+	Output            string
 }
 
-func (result Result) DownloadWithOptions(
+func (result Metadata) DownloadWithOptions(
 	ctx context.Context,
 	options DownloadOptions,
 ) (*DownloadResult, error) {
@@ -89,7 +90,7 @@ func (result Result) DownloadWithOptions(
 
 	cmd := exec.CommandContext(
 		ctx,
-		FindBin(),
+		FindYtDlpBin(),
 		// see comment below about ignoring errors for playlists
 		"--ignore-errors",
 		// TODO: deprecated in yt-dlp?
@@ -101,9 +102,13 @@ func (result Result) DownloadWithOptions(
 		"--restrict-filenames",
 		// use .netrc authentication data
 		"--netrc",
-		// write to stdout
-		"--output", "-",
 	)
+
+	if options.Output != "" {
+		cmd.Args = append(cmd.Args, "--output", options.Output)
+	} else {
+		cmd.Args = append(cmd.Args, "--output", "-")
+	}
 
 	if result.Options.noInfoDownload {
 		// provide URL via stdin for security, youtube-dl has some run command args
@@ -131,6 +136,7 @@ func (result Result) DownloadWithOptions(
 	} else {
 		cmd.Args = append(cmd.Args, "--load-info", jsonTempPath)
 	}
+
 	// force IPV4 Usage
 	if result.Options.UseIPV4 {
 		cmd.Args = append(cmd.Args, "-4")
