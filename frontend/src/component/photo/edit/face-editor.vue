@@ -217,6 +217,15 @@ export default {
     selectAndEditMarker(marker) {
       this.selectedMarker = marker;
       this.mode = "editing";
+      // Initialize interaction state for the selected marker
+      if (!this.interaction.initialMarkerRect) {
+        this.interaction.initialMarkerRect = {
+          X: marker.X,
+          Y: marker.Y,
+          W: marker.W,
+          H: marker.H,
+        };
+      }
     },
     addDocumentListeners() {
       document.addEventListener("mousemove", this.handleDocumentMouseMove);
@@ -375,7 +384,14 @@ export default {
           const newMarker = new Marker(response.data);
           this.markers.push(newMarker);
           this.$nextTick(() => {
-            this.selectAndEditMarker(newMarker);
+            // Wait for DOM to fully render the new marker
+            this.$nextTick(() => {
+              // Clear any active interaction before selecting new marker
+              this.interaction.active = false;
+              this.interaction.type = null;
+              this.interaction.drawingPreview = null;
+              this.selectAndEditMarker(newMarker);
+            });
           });
           this.$notify.success(this.$gettext("Face marker added"));
           this.$emit("markers-updated", this.markers);
@@ -383,11 +399,11 @@ export default {
         .catch((error) => {
           console.error("Error creating marker:", error);
           this.$notify.error(this.$gettext("Failed to add face marker"));
+          this.mode = null;
         })
         .finally(() => {
           this.busy = false;
           this.$notify.unblockUI();
-          this.mode = null;
         });
     },
     updateMarkerPosition(marker) {

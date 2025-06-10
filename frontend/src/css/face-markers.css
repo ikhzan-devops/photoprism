@@ -28,6 +28,7 @@
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
   transition: all 0.1s ease-in-out;
   cursor: move;
+  z-index: 10;
 }
 
 .face-marker:hover {
@@ -71,6 +72,7 @@
   border: 1px solid white;
   border-radius: 50%;
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+  z-index: 15;
 }
 
 .handle-nw {
