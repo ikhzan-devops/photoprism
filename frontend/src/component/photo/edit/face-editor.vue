@@ -183,7 +183,16 @@ export default {
   },
   methods: {
     updateWrapperRect() {
-      if (this.$refs.photoPreviewWrapper) {
+      if (this.$refs.photoPreviewWrapper && this.$refs.photoPreview) {
+        // Fotoğraf yüklenmiş ve boyutları mevcut ise wrapper boyutunu güncelle
+        if (this.photoLoaded) {
+          const img = this.$refs.photoPreview;
+          const imgRect = img.getBoundingClientRect();
+          const wrapper = this.$refs.photoPreviewWrapper;
+          wrapper.style.width = imgRect.width + "px";
+          wrapper.style.height = imgRect.height + "px";
+        }
+
         const rect = this.$refs.photoPreviewWrapper.getBoundingClientRect();
         if (this.interaction.active) {
           this.interaction.wrapperRect = rect;
@@ -194,7 +203,17 @@ export default {
       const img = event.target;
       this.photoAspectRatio = img.naturalWidth / img.naturalHeight;
       this.photoLoaded = true;
-      this.updateWrapperRect();
+
+      // Wrapper'ın boyutunu fotoğrafın gerçek boyutlarına göre ayarla
+      this.$nextTick(() => {
+        if (this.$refs.photoPreviewWrapper) {
+          const wrapper = this.$refs.photoPreviewWrapper;
+          const imgRect = img.getBoundingClientRect();
+          wrapper.style.width = imgRect.width + "px";
+          wrapper.style.height = imgRect.height + "px";
+        }
+        this.updateWrapperRect();
+      });
     },
     getMarkerStyle(marker) {
       return {
