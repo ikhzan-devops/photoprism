@@ -16,7 +16,7 @@ import (
 )
 
 const (
-	testVideoRawURL          = "https://youtu.be/fD6VYfy3B2s"
+	testVideoRawURL          = "https://www.youtube.com/watch?v=fD6VYfy3B2s"
 	playlistRawURL           = "https://soundcloud.com/mattheis/sets/kindred-phenomena"
 	channelRawURL            = "https://www.youtube.com/channel/UCHDm-DKoMyJxKVgwGmuTaQA"
 	subtitlesTestVideoRawURL = "https://www.youtube.com/watch?v=QRS8MkLhQmM"

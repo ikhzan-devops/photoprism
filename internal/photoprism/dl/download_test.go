@@ -38,6 +38,8 @@ func TestDownload(t *testing.T) {
 		t.Errorf("copy n not equal to download buffer: %d!=%d", n, downloadBuf.Len())
 	}
 
+	t.Logf("error: %s", stderrBuf.String())
+
 	if n < 10000 {
 		t.Errorf("should have copied at least 10000 bytes: %d", n)
 	}
