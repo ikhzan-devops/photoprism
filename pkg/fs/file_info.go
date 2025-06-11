@@ -52,7 +52,7 @@ var TypeInfo = TypeMap{
 	VideoMpeg:       "Moving Picture Experts Group (MPEG)",
 	VideoMjpeg:      "Motion JPEG",
 	VideoM2TS:       "MPEG-2 Transport Stream (M2TS)",
-	VideoAvcHD:      "Advanced Video Coding High Definition (AVCHD)",
+	VideoAVCHD:      "Advanced Video Coding High Definition (AVCHD)",
 	VideoTheora:     "Ogg Media (OGG)",
 	SidecarXMP:      "Adobe Extensible Metadata Platform",
 	SidecarAppleXml: "Apple Image Edits XML",

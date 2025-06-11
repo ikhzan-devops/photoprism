@@ -822,7 +822,7 @@ func (m *MediaFile) IsAvifS() bool {
 func (m *MediaFile) IsM2TS() bool {
 	if t := fs.FileType(m.fileName); t == fs.VideoM2TS {
 		return true
-	} else if t == fs.VideoMp4 || t == fs.VideoAvcHD {
+	} else if t == fs.VideoMp4 || t == fs.VideoAVCHD {
 		return m.HasMimeType(header.ContentTypeM2TS)
 	}
 

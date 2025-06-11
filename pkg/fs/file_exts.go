@@ -159,7 +159,7 @@ var Extensions = FileExtensions{
 	".m2t":      VideoM2TS,
 	".m2ts":     VideoM2TS,
 	".mp2t":     VideoM2TS,
-	".mts":      VideoAvcHD,
+	".mts":      VideoAVCHD,
 	".ogv":      VideoTheora,
 	".ogg":      VideoTheora,
 	".ogx":      VideoTheora,

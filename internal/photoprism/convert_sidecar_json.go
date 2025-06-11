@@ -10,7 +10,6 @@ import (
 
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/fs"
-	"github.com/photoprism/photoprism/pkg/media"
 )
 
 // ToJson uses exiftool to export metadata to a json file.
@@ -34,8 +33,9 @@ func (w *Convert) ToJson(f *MediaFile, force bool) (jsonName string, err error) 
 	// Command arguments.
 	var args []string
 
-	// Also extract embedded metadata from videos and live photos.
-	if f.IsVideo() || f.MetaData().MediaType == media.Live {
+	// Extract embedded metadata from MPEG-2 transport stream and AVCHD video files
+	// see https://exiftool.org/exiftool_pod.html#ee-NUM--extractEmbedded for details.
+	if f.IsM2TS() {
 		args = []string{"-n", "-ee", "-m", "-api", "LargeFileSupport", "-j", f.FileName()}
 	} else {
 		args = []string{"-n", "-m", "-api", "LargeFileSupport", "-j", f.FileName()}

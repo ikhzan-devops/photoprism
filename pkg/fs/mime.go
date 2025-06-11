@@ -30,7 +30,7 @@ func MimeType(filename string) (mimeType string) {
 	// formats, which otherwise cannot be reliably distinguished:
 	switch fileType {
 	// MPEG-2 Transport Stream
-	case VideoM2TS, VideoAvcHD:
+	case VideoM2TS, VideoAVCHD:
 		return header.ContentTypeM2TS
 	// Apple QuickTime Container
 	case VideoMov:
