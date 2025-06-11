@@ -35,7 +35,7 @@ func (w *Convert) ToJson(f *MediaFile, force bool) (jsonName string, err error) 
 
 	// Use the "-ee" flag to extract embedded metadata from MPEG-2 Transport Stream and AVCHD video files,
 	// see https://exiftool.org/exiftool_pod.html#ee-NUM--extractEmbedded for details.
-	if f.IsM2TS() {
+	if f.IsVideo() {
 		args = []string{"-n", "-ee", "-m", "-api", "LargeFileSupport", "-j", f.FileName()}
 	} else {
 		args = []string{"-n", "-m", "-api", "LargeFileSupport", "-j", f.FileName()}
