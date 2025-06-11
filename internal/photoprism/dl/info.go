@@ -100,6 +100,12 @@ type Info struct {
 	Format
 }
 
+// JSON returns the information as JSON string.
+func (i *Info) JSON() []byte {
+	b, _ := json.Marshal(i)
+	return b
+}
+
 func infoFromURL(
 	ctx context.Context,
 	rawURL string,
@@ -116,7 +122,7 @@ func infoFromURL(
 		// TODO: needed?
 		"--restrict-filenames",
 		// use .netrc authentication data
-		"--netrc",
+		// "--netrc",
 		// provide url via stdin for security, youtube-dl has some run command args
 		"--batch-file", "-",
 		// dump info json

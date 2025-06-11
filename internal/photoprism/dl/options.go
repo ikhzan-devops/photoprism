@@ -101,7 +101,7 @@ func (result Metadata) DownloadWithOptions(
 		// TODO: needed?
 		"--restrict-filenames",
 		// use .netrc authentication data
-		"--netrc",
+		// "--netrc",
 	)
 
 	if options.Output != "" {

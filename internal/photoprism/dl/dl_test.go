@@ -221,6 +221,10 @@ func TestDownloadSections(t *testing.T) {
 	fileName := fs.Abs("./testdata/duration_test_file")
 	duration := 5
 
+	defer func() {
+		_ = os.Remove(fileName)
+	}()
+
 	cmd := exec.Command(FindFFmpegBin(), "-version")
 	_, err := cmd.Output()
 
@@ -292,7 +296,6 @@ func TestDownloadSections(t *testing.T) {
 	}
 
 	_ = dr.Close()
-	_ = os.Remove(fileName)
 }
 
 func TestErrorNotAPlaylist(t *testing.T) {
