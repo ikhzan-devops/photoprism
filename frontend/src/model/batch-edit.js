@@ -15,6 +15,31 @@ export class Batch extends Model {
     };
   }
 
+  getDefaultFormData() {
+    return {
+      Title: "",
+      DetailsSubject: "",
+      Caption: "",
+      Day: 0,
+      Month: 0,
+      Year: 0,
+      TimeZone: "",
+      Country: "",
+      Altitude: "",
+      Lat: "",
+      Lng: "",
+      DetailsArtist: "",
+      DetailsCopyright: "",
+      DetailsLicense: "",
+      Albums: [],
+      Labels: [],
+      Scan: null,
+      Private: null,
+      Favorite: null,
+      Panorama: null,
+    };
+  }
+
   save() {
     return $api
       .post("batch/photos/edit", this.getValues(true))
@@ -39,7 +64,7 @@ export class Batch extends Model {
   }
 
   setSelections(selection) {
-    this.selection = selection.map(id => {
+    this.selection = selection.map((id) => {
       return {
         id: id,
         selected: true,
@@ -50,7 +75,7 @@ export class Batch extends Model {
   isSelected(id) {
     let isSelected = null;
 
-    this.selection.find(element => {
+    this.selection.find((element) => {
       if (element.id === id) {
         isSelected = element.selected;
       }
@@ -60,19 +85,19 @@ export class Batch extends Model {
   }
 
   getLengthOfAllSelected() {
-    return this.selection.filter(photo => photo.selected).length;
+    return this.selection.filter((photo) => photo.selected).length;
   }
 
   toggle(id) {
-    this.selection.find(element => {
+    this.selection.find((element) => {
       if (element.id === id) {
         element.selected = !element.selected;
       }
     });
   }
 
-  toggleAll(isToggledAll){
-    this.selection.find(element => {
+  toggleAll(isToggledAll) {
+    this.selection.find((element) => {
       element.selected = isToggledAll;
     });
   }

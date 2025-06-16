@@ -8,7 +8,7 @@
     class="p-dialog p-photo-edit-batch v-dialog--sidepanel v-dialog--sidepanel-wide"
     @click.stop="onClick"
   >
-    <v-card class="edit-batch__card" ref="content" :tile="$vuetify.display.mdAndDown" tabindex="1">
+    <v-card ref="content" class="edit-batch__card" :tile="$vuetify.display.mdAndDown" tabindex="1">
       <v-toolbar flat color="navigation" :density="$vuetify.display.mdAndDown ? 'compact' : 'comfortable'">
         <v-btn icon class="action-close" @click.stop="onClose">
           <v-icon>mdi-close</v-icon>
@@ -189,15 +189,15 @@
                       <v-text-field
                         hide-details
                         :label="$gettext('Title')"
-                        :model-value="getFieldData('text-field', 'Title').value"
+                        :model-value="formData.Title"
                         :placeholder="getFieldData('text-field', 'Title').placeholder"
                         :persistent-placeholder="getFieldData('text-field', 'Title').persistent"
-                        :append-inner-icon="getFieldData('text-field', 'Title').icon"
+                        :append-inner-icon="getIcon('text-field', 'Title')"
                         autocomplete="off"
                         density="comfortable"
                         class="input-title"
-                        @update:modelValue="onInput($event, 'Title')"
-                        @click:append-inner="toggleField('Title')"
+                        @click:append-inner="toggleField('Title', $event)"
+                        @update:model-value="(val) => changeValue(val, 'text-field', 'Title')"
                       ></v-text-field>
                     </v-col>
                     <v-col cols="12" md="6">
@@ -206,15 +206,15 @@
                         autocomplete="off"
                         auto-grow
                         :label="$gettext('Subject')"
-                        :model-value="getFieldData('text-field', 'DetailsSubject').value"
+                        :model-value="formData.DetailsSubject"
                         :placeholder="getFieldData('text-field', 'DetailsSubject').placeholder"
                         :persistent-placeholder="getFieldData('text-field', 'DetailsSubject').persistent"
-                        :append-inner-icon="getFieldData('text-field', 'DetailsSubject').icon"
+                        :append-inner-icon="getIcon('text-field', 'DetailsSubject')"
                         :rows="1"
                         density="comfortable"
                         class="input-subject"
-                        @update:modelValue="onInput($event, 'DetailsSubject')"
-                        @click:append-inner="toggleField('DetailsSubject')"
+                        @click:append-inner="toggleField('DetailsSubject', $event)"
+                        @update:model-value="(val) => changeValue(val, 'text-field', 'DetailsSubject')"
                       ></v-textarea>
                     </v-col>
                   </v-row>
@@ -224,15 +224,15 @@
                       autocomplete="off"
                       auto-grow
                       :label="$gettext('Caption')"
-                      :model-value="getFieldData('text-field', 'Caption').value"
+                      :model-value="formData.Caption"
                       :placeholder="getFieldData('text-field', 'Caption').placeholder"
                       :persistent-placeholder="getFieldData('text-field', 'Caption').persistent"
-                      :append-inner-icon="getFieldData('text-field', 'Caption').icon"
+                      :append-inner-icon="getIcon('text-field', 'Caption')"
                       :rows="1"
                       density="comfortable"
                       class="input-caption"
-                      @update:modelValue="onInput($event, 'Caption')"
-                      @click:append-inner="toggleField('Caption')"
+                      @click:append-inner="toggleField('Caption', $event)"
+                      @update:model-value="(val) => changeValue(val, 'text-field', 'Caption')"
                     ></v-textarea>
                   </v-col>
                 </div>
@@ -247,8 +247,8 @@
                         :label="$gettext('Day')"
                         autocomplete="off"
                         hide-details
+                        v-model="formData.Day"
                         hide-no-data
-                        :model-value="getFieldData('select-field', 'Day').value"
                         :items="getFieldData('select-field', 'Day').items"
                         :placeholder="getFieldData('select-field', 'Day').placeholder"
                         :persistent-placeholder="getFieldData('select-field', 'Day').persistent"
@@ -257,7 +257,6 @@
                         density="comfortable"
                         validate-on="input"
                         class="input-day"
-                        @update:modelValue="onSelect($event, 'Day')"
                       >
                       </v-combobox>
                     </v-col>
@@ -266,8 +265,8 @@
                         :label="$gettext('Month')"
                         autocomplete="off"
                         hide-details
+                        v-model="formData.Month"
                         hide-no-data
-                        :model-value="getFieldData('select-field', 'Month').value"
                         :items="getFieldData('select-field', 'Month').items"
                         :placeholder="getFieldData('select-field', 'Month').placeholder"
                         :persistent-placeholder="getFieldData('select-field', 'Month').persistent"
@@ -276,7 +275,6 @@
                         density="comfortable"
                         validate-on="input"
                         class="input-month"
-                        @update:modelValue="onSelect($event, 'Month')"
                       >
                       </v-combobox>
                     </v-col>
@@ -285,8 +283,8 @@
                         :label="$gettext('Year')"
                         autocomplete="off"
                         hide-details
+                        v-model="formData.Year"
                         hide-no-data
-                        :model-value="getFieldData('select-field', 'Year').value"
                         :items="getFieldData('select-field', 'Year').items"
                         :placeholder="getFieldData('select-field', 'Year').placeholder"
                         :persistent-placeholder="getFieldData('select-field', 'Year').persistent"
@@ -295,15 +293,14 @@
                         density="comfortable"
                         validate-on="input"
                         class="input-year"
-                        @update:modelValue="onSelect($event, 'Month')"
                       >
                       </v-combobox>
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
                       <v-autocomplete
                         :label="$gettext('Time Zone')"
+                        v-model="formData.TimeZone"
                         hide-no-data
-                        :model-value="getFieldData('select-field', 'TimeZone').value"
                         :items="getFieldData('select-field', 'TimeZone').items"
                         :placeholder="getFieldData('select-field', 'TimeZone').placeholder"
                         :persistent-placeholder="getFieldData('select-field', 'TimeZone').persistent"
@@ -311,7 +308,6 @@
                         item-title="Name"
                         density="comfortable"
                         class="input-timezone"
-                        @update:modelValue="onSelect($event, 'TimeZone')"
                       ></v-autocomplete>
                     </v-col>
                   </v-row>
@@ -329,15 +325,14 @@
                         hide-no-data
                         autocomplete="off"
                         item-value="Code"
+                        v-model="formData.Country"
                         item-title="Name"
-                        :model-value="getFieldData('select-field', 'Country').value"
                         :items="getFieldData('select-field', 'Country').items"
                         :placeholder="getFieldData('select-field', 'Country').placeholder"
                         :persistent-placeholder="getFieldData('select-field', 'Country').persistent"
                         density="comfortable"
                         validate-on="input"
                         class="input-country"
-                        @update:modelValue="onSelect($event, 'Country')"
                       >
                       </v-autocomplete>
                     </v-col>
@@ -349,16 +344,16 @@
                         autocorrect="off"
                         autocapitalize="none"
                         :label="$gettext('Altitude (m)')"
+                        :model-value="formData.Altitude"
                         :placeholder="getFieldData('input-field', 'Altitude').placeholder"
                         :persistent-placeholder="getFieldData('input-field', 'Altitude').persistent"
-                        :model-value="getFieldData('input-field', 'Altitude').value"
-                        :append-inner-icon="getFieldData('text-field', 'Altitude').icon"
+                        :append-inner-icon="getIcon('input-field', 'Altitude')"
                         color="surface-variant"
                         density="comfortable"
                         validate-on="input"
                         class="input-altitude"
-                        @update:modelValue="onInput($event, 'Altitude')"
-                        @click:append-inner="toggleField('Altitude')"
+                        @click:append-inner="toggleField('Altitude', $event)"
+                        @update:model-value="(val) => changeValue(val, 'input-field', 'Altitude')"
                       ></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="3">
@@ -367,16 +362,16 @@
                         autocomplete="off"
                         autocorrect="off"
                         autocapitalize="none"
-                        :label="$gettext('Latitude')"
+                        :label="$gettext('Lat')"
+                        :model-value="formData.Lat"
                         :placeholder="getFieldData('input-field', 'Lat').placeholder"
                         :persistent-placeholder="getFieldData('input-field', 'Lat').persistent"
-                        :model-value="getFieldData('input-field', 'Lat').value"
-                        :append-inner-icon="getFieldData('text-field', 'Lat').icon"
+                        :append-inner-icon="getIcon('input-field', 'Lat')"
                         density="comfortable"
                         validate-on="input"
                         class="input-latitude"
-                        @update:modelValue="onInput($event, 'Lat')"
-                        @click:append-inner="toggleField('Lat')"
+                        @click:append-inner="toggleField('Lat', $event)"
+                        @update:model-value="(val) => changeValue(val, 'input-field', 'Lat')"
                       ></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="3">
@@ -386,15 +381,15 @@
                         autocorrect="off"
                         autocapitalize="none"
                         :label="$gettext('Longitude')"
+                        :model-value="formData.Lng"
                         :placeholder="getFieldData('input-field', 'Lng').placeholder"
                         :persistent-placeholder="getFieldData('input-field', 'Lng').persistent"
-                        :model-value="getFieldData('input-field', 'Lng').value"
-                        :append-inner-icon="getFieldData('text-field', 'Lng').icon"
+                        :append-inner-icon="getIcon('input-field', 'Lng')"
                         density="comfortable"
                         validate-on="input"
                         class="input-longitude"
-                        @update:modelValue="onInput($event, 'Lng')"
-                        @click:append-inner="toggleField('Lng')"
+                        @click:append-inner="toggleField('Lng', $event)"
+                        @update:model-value="(val) => changeValue(val, 'input-field', 'Lng')"
                       ></v-text-field>
                     </v-col>
                   </v-row>
@@ -410,14 +405,14 @@
                         hide-details
                         autocomplete="off"
                         :label="$gettext('Artist')"
-                        :model-value="getFieldData('text-field', 'DetailsArtist').value"
+                        :model-value="formData.DetailsArtist"
                         :placeholder="getFieldData('text-field', 'DetailsArtist').placeholder"
                         :persistent-placeholder="getFieldData('text-field', 'DetailsArtist').persistent"
-                        :append-inner-icon="getFieldData('text-field', 'DetailsArtist').icon"
+                        :append-inner-icon="getIcon('text-field', 'DetailsArtist')"
                         density="comfortable"
                         class="input-artist"
-                        @update:modelValue="onInput($event, 'DetailsArtist')"
-                        @click:append-inner="toggleField('DetailsArtist')"
+                        @click:append-inner="toggleField('DetailsArtist', $event)"
+                        @update:model-value="(val) => changeValue(val, 'text-field', 'DetailsArtist')"
                       ></v-text-field>
                     </v-col>
                     <v-col cols="12" md="6">
@@ -425,14 +420,14 @@
                         hide-details
                         autocomplete="off"
                         :label="$gettext('Copyright')"
-                        :model-value="getFieldData('text-field', 'DetailsCopyright').value"
+                        :model-value="formData.DetailsCopyright"
                         :placeholder="getFieldData('text-field', 'DetailsCopyright').placeholder"
                         :persistent-placeholder="getFieldData('text-field', 'DetailsCopyright').persistent"
-                        :append-inner-icon="getFieldData('text-field', 'DetailsCopyright').icon"
+                        :append-inner-icon="getIcon('text-field', 'DetailsCopyright')"
                         density="comfortable"
                         class="input-copyright"
-                        @update:modelValue="onInput($event, 'DetailsCopyright')"
-                        @click:append-inner="toggleField('DetailsCopyright')"
+                        @click:append-inner="toggleField('DetailsCopyright', $event)"
+                        @update:model-value="(val) => changeValue(val, 'text-field', 'DetailsCopyright')"
                       ></v-text-field>
                     </v-col>
                   </v-row>
@@ -442,15 +437,15 @@
                       autocomplete="off"
                       auto-grow
                       :label="$gettext('License')"
-                      :model-value="getFieldData('text-field', 'DetailsLicense').value"
+                      :model-value="formData.DetailsLicense"
                       :placeholder="getFieldData('text-field', 'DetailsLicense').placeholder"
                       :persistent-placeholder="getFieldData('text-field', 'DetailsLicense').persistent"
-                      :append-inner-icon="getFieldData('text-field', 'DetailsLicense').icon"
+                      :append-inner-icon="getIcon('text-field', 'DetailsLicense')"
                       :rows="1"
                       density="comfortable"
                       class="input-license"
-                      @update:modelValue="onInput($event, 'DetailsLicense')"
-                      @click:append-inner="toggleField('DetailsLicense')"
+                      @click:append-inner="toggleField('DetailsLicense', $event)"
+                      @update:model-value="(val) => changeValue(val, 'text-field', 'DetailsLicense')"
                     ></v-textarea>
                   </v-col>
                 </div>
@@ -542,9 +537,9 @@
                       </v-col>
                       <v-col cols="12" class="d-flex align-self-stretch flex-column">
                         <v-btn-toggle
+                          v-model="formData[fieldName]"
                           mandatory
                           color="primary"
-                          :model-value="getToggleValue(fieldName)"
                         >
                           <v-btn
                             v-for="option in toggleOptions(fieldName)"
@@ -571,7 +566,7 @@
                   color="highlight"
                   variant="flat"
                   class="action-apply action-approve"
-                  :disabled="this.selectionsFullInfo.length < 1"
+                  :disabled="selectionsFullInfo.length < 1"
                   @click.stop="save(false)"
                 >
                   <span>{{ $gettext(`Apply`) }}</span>
@@ -593,7 +588,7 @@ import Thumb from "../../../model/thumb";
 
 export default {
   name: "PPhotoEditBatch",
-  components: {IconLivePhoto},
+  components: { IconLivePhoto },
   props: {
     visible: {
       type: Boolean,
@@ -641,6 +636,8 @@ export default {
         timeStamp: -1,
       },
       values: {},
+      formData: {},
+      previousFormData: {},
       deletedFields: {},
       toggleFieldsArray: ["Scan", "Favorite", "Private", "Panorama"],
     };
@@ -657,6 +654,7 @@ export default {
 
         await this.model.getData(this.selection);
         this.values = this.model.values;
+        this.setFormData();
         this.allSelectedLength = this.model.getLengthOfAllSelected();
       } else {
         this.model = new Batch();
@@ -672,6 +670,58 @@ export default {
     }
   },
   methods: {
+    changeValue(value, fieldType, fieldName) {
+      if (!fieldName) return;
+
+      if (this.formData[fieldName] !== value) {
+        this.formData[fieldName] = value;
+        this.getIcon(fieldType, fieldName);
+      }
+    },
+    setFormData() {
+      this.formData = this.model.getDefaultFormData();
+
+      const fieldConfigs = [
+        { type: "text-field", name: "Title" },
+        { type: "text-field", name: "DetailsSubject" },
+        { type: "text-field", name: "Caption" },
+        { type: "select-field", name: "Day" },
+        { type: "select-field", name: "Month" },
+        { type: "select-field", name: "Year" },
+        { type: "select-field", name: "TimeZone" },
+        { type: "select-field", name: "Country" },
+        { type: "input-field", name: "Altitude" },
+        { type: "input-field", name: "Lat" },
+        { type: "input-field", name: "Lng" },
+        { type: "text-field", name: "DetailsArtist" },
+        { type: "text-field", name: "DetailsCopyright" },
+        { type: "text-field", name: "DetailsLicense" },
+      ];
+
+      fieldConfigs.forEach(({ type, name, key }) => {
+        const formKey = key || name;
+        const fieldData = this.values[formKey];
+
+        const { value, placeholder } = this.getFieldData(type, name);
+        this.formData[formKey] = value;
+
+        if (type === "text-field" || type === "input-field") {
+          this.previousFormData[formKey] = { value, placeholder, action: fieldData.action, mixed: fieldData.mixed };
+        } else {
+          this.previousFormData[formKey] = { value };
+        }
+      });
+
+      this.toggleFieldsArray.forEach((fieldName) => {
+        const toggleValue = this.getToggleValue(fieldName);
+
+        // Set value in formData
+        this.formData[fieldName] = toggleValue;
+
+        // Set value in previousFormData (toggles don't have placeholders)
+        this.previousFormData[fieldName] = { value: toggleValue };
+      });
+    },
     toggleOptions(fieldName) {
       const fieldData = this.values[fieldName];
       if (!fieldData) return [];
@@ -697,40 +747,66 @@ export default {
         return fieldData.value ? "yes" : "no";
       }
     },
-    toggleField(fieldName) {
-      if (this.deletedFields[fieldName]) {
+    toggleField(fieldName, event) {
+      const classList = event.target.classList;
+
+      if (classList.contains("mdi-undo")) {
         this.deletedFields[fieldName] = false;
-      } else {
+        this.formData[fieldName] = this.previousFormData[fieldName]?.value || "";
+      } else if (classList.contains("mdi-delete")) {
         this.deletedFields[fieldName] = true;
+        this.formData[fieldName] = "";
+      }
+    },
+    getIcon(fieldType, fieldName) {
+      const fieldData = this.values[fieldName];
+      const isDeleted = this.deletedFields?.[fieldName];
+
+      if (!fieldData) return;
+      const previousField = this.previousFormData[fieldName];
+
+      if (this.formData[fieldName] !== previousField?.value || isDeleted) {
+        return "mdi-undo";
+      } else if (fieldData.mixed) {
+        return "mdi-delete";
+      } else if (fieldType === "text-field" && fieldData.value !== null && fieldData.value !== "") {
+        return "mdi-delete";
+      } else if (
+        fieldType === "input-field" &&
+        fieldData.value !== 0 &&
+        fieldData.value !== null &&
+        fieldData.value !== ""
+      ) {
+        return "";
       }
     },
     getFieldData(fieldType, fieldName) {
       const fieldData = this.values[fieldName];
       const isDeleted = this.deletedFields?.[fieldName];
 
-      if (!fieldData) return { value: "", placeholder: "", persistent: false, icon: "" };
+      if (!fieldData) return { value: "", placeholder: "", persistent: false };
 
       if (fieldType === "text-field") {
         if (isDeleted) {
-          return { value: "", placeholder: "<deleted>", persistent: true, icon: "mdi-undo" };
+          return { value: "", placeholder: "<deleted>", persistent: true };
         } else if (fieldData.mixed) {
-          return { value: "", placeholder: "<mixed>", persistent: true, icon: "mdi-delete" };
+          return { value: "", placeholder: "<mixed>", persistent: true };
         } else if (fieldData.value !== null && fieldData.value !== "") {
-          return { value: fieldData.value, placeholder: "", persistent: false, icon: "mdi-delete" };
+          return { value: fieldData.value, placeholder: "", persistent: false };
         } else {
-          return { value: "", placeholder: "", persistent: false, icon: "" };
+          return { value: "", placeholder: "", persistent: false };
         }
       }
 
       if (fieldType === "input-field") {
         if (isDeleted) {
-          return { value: 0, placeholder: "", persistent: false, icon: "mdi-undo" };
+          return { value: 0, placeholder: "", persistent: false };
         } else if (fieldData.mixed) {
-          return { value: "", placeholder: "<mixed>", persistent: true, icon: "mdi-delete" };
+          return { value: "", placeholder: "<mixed>", persistent: true };
         } else if (fieldData.value !== 0 && fieldData.value !== null && fieldData.value !== "") {
-          return { value: fieldData.value, placeholder: "", persistent: false, icon: "" };
+          return { value: fieldData.value, placeholder: "", persistent: false };
         } else {
-          return { value: fieldData.value || 0, placeholder: "", persistent: false, icon: "" };
+          return { value: fieldData.value || 0, placeholder: "", persistent: false };
         }
       }
 
@@ -747,13 +823,13 @@ export default {
     },
     getValue(fieldName, items) {
       if (fieldName === "Day" || fieldName === "Month" || fieldName === "Year") {
-        return items.find(item => item.value === -2).text;
+        return items.find((item) => item.value === -2).text;
       }
       if (fieldName === "Country") {
-        return items.find(item => item.Code === -2).Name;
+        return items.find((item) => item.Code === -2).Name;
       }
       if (fieldName === "TimeZone") {
-        return items.find(item => item.ID === -2).Name;
+        return items.find((item) => item.ID === -2).Name;
       }
     },
     getItemsArray(fieldName, isMixed) {
@@ -775,7 +851,7 @@ export default {
       }
     },
     getCountriesArray(array) {
-      const hasMixed = array.some(item => item.Code === -2);
+      const hasMixed = array.some((item) => item.Code === -2);
       if (!hasMixed) {
         array.push({ Code: -2, Name: "<mixed>" });
       }
@@ -834,7 +910,7 @@ export default {
       this.allSelectedLength = this.model.getLengthOfAllSelected();
     },
     updateToggleAll() {
-      this.isAllSelected = this.model.selection.every(photo => photo.selected);
+      this.isAllSelected = this.model.selection.every((photo) => photo.selected);
     },
     toggleAll() {
       this.isAllSelected = !this.isAllSelected;
