@@ -86,7 +86,7 @@
                     :title="m.FileName"
                     @click.exact="openPhoto(index)"
                   >
-                    {{ m.FileName }}
+                    {{ m.getOriginalName() }}
                   </td>
                 </tr>
               </tbody>
@@ -158,7 +158,7 @@
                           :title="m.FileName"
                           @click.exact="openPhoto(index)"
                         >
-                          {{ m.FileName }}
+                          {{ m.getOriginalName() }}
                         </td>
                       </tr>
                     </tbody>
