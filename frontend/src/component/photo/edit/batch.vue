@@ -154,7 +154,7 @@
                           </div>
                         </td>
                         <td
-                          class="meta-data meta-title col-auto text-start clickable"
+                          class="meta-data meta-title col-auto text-start clickable edit-batch__file-name"
                           :title="m.FileName"
                           @click.exact="openPhoto(index)"
                         >
