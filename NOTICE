@@ -9,7 +9,7 @@ The following 3rd-party software packages may be used by or distributed with
 PhotoPrism. Any information relevant to third-party vendors listed below are
 collected using common, reasonable means.
 
-Date generated: 2025-06-10
+Date generated: 2025-06-19
 
 ================================================================================
 
@@ -408,8 +408,8 @@ SOFTWARE.
 --------------------------------------------------------------------------------
 
 Package: github.com/cpuguy83/go-md2man/v2/md2man
-Version: v2.0.6
-License: MIT (https://github.com/cpuguy83/go-md2man/blob/v2.0.6/LICENSE.md)
+Version: v2.0.7
+License: MIT (https://github.com/cpuguy83/go-md2man/blob/v2.0.7/LICENSE.md)
 
 The MIT License (MIT)
 
@@ -2316,8 +2316,8 @@ SOFTWARE.
 --------------------------------------------------------------------------------
 
 Package: github.com/golang/geo
-Version: v0.0.0-20250606134707-e8fe6a72b492
-License: Apache-2.0 (https://github.com/golang/geo/blob/e8fe6a72b492/LICENSE)
+Version: v0.0.0-20250613135800-9e8e59d779cc
+License: Apache-2.0 (https://github.com/golang/geo/blob/9e8e59d779cc/LICENSE)
 
 
                                  Apache License
@@ -2525,8 +2525,8 @@ License: Apache-2.0 (https://github.com/golang/geo/blob/e8fe6a72b492/LICENSE)
 --------------------------------------------------------------------------------
 
 Package: github.com/google/open-location-code/go
-Version: v0.0.0-20250523152404-3cf9f806af4d
-License: Apache-2.0 (https://github.com/google/open-location-code/blob/3cf9f806af4d/go/LICENSE)
+Version: v0.0.0-20250613141612-3e39f06c927c
+License: Apache-2.0 (https://github.com/google/open-location-code/blob/3e39f06c927c/go/LICENSE)
 
 
                                  Apache License
@@ -5831,8 +5831,8 @@ SOFTWARE.
 --------------------------------------------------------------------------------
 
 Package: github.com/urfave/cli/v2
-Version: v2.27.6
-License: MIT (https://github.com/urfave/cli/blob/v2.27.6/LICENSE)
+Version: v2.27.7
+License: MIT (https://github.com/urfave/cli/blob/v2.27.7/LICENSE)
 
 MIT License
 
