@@ -394,3 +394,19 @@ test.meta("testID", "photos-008").meta({ mode: "public" })(
     await t.expect(SearchTerm).eql("taken:2021-05-27").expect(PhotoCount).eql(3);
   }
 );
+
+test.meta("testID", "photos-009").meta({ mode: "public" })(
+  "Common: Verify that correct time is shown in all views",
+  async (t) => {
+    await t.click(toolbar.cardsViewAction);
+    await toolbar.search("filename:garden/20210530_125021_1993AB92.jpg");
+
+    await t.expect(page.cardTaken.innerText).eql("Sun, May 30, 2021, 2:50 PM GMT+2");
+    await photoviewer.openPhotoViewer("nth", 0);
+    await photoviewer.triggerPhotoViewerAction("info-button");
+    await t.expect(Selector("div").withText("May 30, 2021, 2:50 PM GMT+2").visible).ok();
+    await photoviewer.triggerPhotoViewerAction("edit-button");
+    await t.expect(photoedit.localTime.value).eql("14:50:21");
+    await t.expect(photoedit.timezoneValue.innerText).eql("Europe/Berlin");
+  }
+);
