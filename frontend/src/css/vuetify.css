@@ -521,10 +521,6 @@ div.v-dialog.v-dialog--fullscreen > div.v-card {
     margin-bottom: 4px;
 }
 
-.v-table hr {
-    opacity: 0.05;
-}
-
 /* Flex Grids */
 
 .v-row {
@@ -559,6 +555,16 @@ form > .v-card > .v-card-text.dense {
 
 .v-toolbar.v-toolbar--density-default .v-toolbar__content > .v-toolbar-title {
     margin-inline-start: 12px;
+}
+
+/* Divider */
+
+hr.v-divider {
+    opacity: 0.1;
+}
+
+.v-table hr {
+    opacity: 0.05;
 }
 
 .v-divider.v-divider--vertical {

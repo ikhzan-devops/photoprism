@@ -18,26 +18,28 @@
       </template>
 
       <v-list slim nav density="compact" bg-color="navigation" class="action-menu__list">
-        <v-list-item
-          v-for="action in actions"
-          :key="action.name"
-          :value="action.name"
-          :prepend-icon="action.icon"
-          :title="action.text"
-          :class="action.class ? action.class : 'action-' + action.name"
-          :to="action.to ? action.to : undefined"
-          :href="action.href ? action.href : undefined"
-          :link="true"
-          :target="action.target ? '_blank' : '_self'"
-          :disabled="action.disabled"
-          :nav="true"
-          class="action-menu__item"
-          @click="action.click"
-        >
-          <template v-if="action.shortcut && !$isMobile" #append>
-            <div class="action-menu__shortcut">{{ action.shortcut }}</div>
-          </template>
-        </v-list-item>
+        <template v-for="action in actions" :key="action.name">
+          <v-divider v-if="action?.color === 'danger'"></v-divider>
+          <v-list-item
+            :value="action.name"
+            :prepend-icon="action.icon"
+            :title="action.text"
+            :base-color="action.color"
+            :class="action.class ? action.class : 'action-' + action.name"
+            :to="action.to ? action.to : undefined"
+            :href="action.href ? action.href : undefined"
+            :link="true"
+            :target="action.target ? '_blank' : '_self'"
+            :disabled="action.disabled"
+            :nav="true"
+            class="action-menu__item"
+            @click="action.click"
+          >
+            <template v-if="action.shortcut && !$isMobile" #append>
+              <div class="action-menu__shortcut">{{ action.shortcut }}</div>
+            </template>
+          </v-list-item>
+        </template>
       </v-list>
     </v-menu>
   </div>

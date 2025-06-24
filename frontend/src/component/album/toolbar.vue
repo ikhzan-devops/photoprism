@@ -208,11 +208,10 @@ export default {
         },
         {
           name: "delete",
+          color: "danger",
           icon: "mdi-delete-outline",
           text: this.$gettext("Delete Album"),
           visible: this.canDelete && ["album", "moment", "state"].includes(this.album.Type),
-          class: "text-error",
-          color: "error",
           click: () => {
             this.dialog.delete = true;
           },
@@ -258,11 +257,11 @@ export default {
       $api
         .delete(`albums/${this.album.UID}`)
         .then(() => {
-          $notify.success(this.$gettext("Album deleted"));
+          $notify.success(this.$gettext("Successfully deleted"));
           this.$router.push({ name: this.collectionRoute });
         })
         .catch(() => {
-          $notify.error(this.$gettext("Failed to delete album"));
+          $notify.error(this.$gettext("Unable to delete"));
         });
       this.dialog.delete = false;
     },
