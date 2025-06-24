@@ -16,7 +16,7 @@
         </v-btn>
 
         <v-toolbar-title>
-          {{ title }}
+          {{ formTitle }}
         </v-toolbar-title>
       </v-toolbar>
 
@@ -543,7 +543,7 @@
                       </v-col>
                       <v-col cols="12" class="d-flex align-self-stretch flex-column">
                         <v-btn-toggle
-                          v-model="formData[fieldName]"
+                          v-model="formData[fieldName].value"
                           mandatory
                           color="primary"
                         >
@@ -551,7 +551,7 @@
                             v-for="option in toggleOptions(fieldName)"
                             :key="option.value"
                             :value="option.value"
-                            @click="onToggle(fieldName, option.value)"
+                            @click="changeToggleValue(option.value, fieldName)"
                           >
                             <span>{{ option.text }}</span>
                           </v-btn>
@@ -650,7 +650,7 @@ export default {
     };
   },
   computed: {
-    title() {
+    formTitle() {
       return this.$gettext(`Batch Edit (${this.allSelectedLength})`);
     },
   },
@@ -711,6 +711,17 @@ export default {
         }
       }
     },
+    changeToggleValue(newValue, fieldName) {
+      if (!fieldName) return;
+
+      const previousValue = this.previousFormData[fieldName].value;
+      this.formData[fieldName].action = this.actions.update;
+      this.formData[fieldName].value = newValue;
+
+      if (newValue === String(previousValue) || newValue === previousValue) {
+        this.formData[fieldName].action = this.actions.none;
+      }
+    },
     setFormData() {
       this.formData = this.model.getDefaultFormData();
 
@@ -745,16 +756,17 @@ export default {
         if (type === "text-field" || type === "input-field") {
           this.previousFormData[formKey] = { value, placeholder, action: fieldData.action, mixed: fieldData.mixed };
         } else {
-          this.previousFormData[formKey] = { value };
+          this.previousFormData[formKey] = { value, action: fieldData.action, mixed: fieldData.mixed };
         }
       });
 
       // Set values for toggle fields
       this.toggleFieldsArray.forEach((fieldName) => {
+        const fieldData = this.values[fieldName];
         const toggleValue = this.getToggleValue(fieldName);
 
-        this.formData[fieldName] = toggleValue;
-        this.previousFormData[fieldName] = { value: toggleValue };
+        this.formData[fieldName] = { action: this.actions.none, mixed: fieldData.mixed, value: toggleValue };
+        this.previousFormData[fieldName] = { action: fieldData.action, mixed: fieldData.mixed, value: toggleValue };
       });
     },
     toggleOptions(fieldName) {
@@ -762,8 +774,8 @@ export default {
       if (!fieldData) return [];
 
       const options = [
-        { text: "Yes", value: "yes" },
-        { text: "No", value: "no" },
+        { text: "Yes", value: "true" },
+        { text: "No", value: "false" },
       ];
 
       if (fieldData.mixed) {
@@ -779,7 +791,7 @@ export default {
       if (fieldData.mixed) {
         return "<mixed>";
       } else {
-        return fieldData.value ? "yes" : "no";
+        return fieldData.value ? "true" : "false";
       }
     },
     toggleField(fieldName, event) {
@@ -898,9 +910,6 @@ export default {
         array.push({ Code: -2, Name: "<mixed>" });
       }
       return array;
-    },
-    onToggle() {
-      console.log("onToggle");
     },
     // onUpdate() {
     //   // console.log('Add event on update');

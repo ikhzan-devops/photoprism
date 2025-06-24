@@ -33,10 +33,10 @@ export class Batch extends Model {
       DetailsLicense: {},
       Albums: [],
       Labels: [],
-      Scan: null,
-      Private: null,
-      Favorite: null,
-      Panorama: null,
+      Scan: {},
+      Private: {},
+      Favorite: {},
+      Panorama: {},
     };
   }
 
