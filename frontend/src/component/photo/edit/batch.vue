@@ -697,15 +697,16 @@ export default {
       this.formData[fieldName].action = this.actions.update;
 
       if (fieldName === "Day" || fieldName === "Month" || fieldName === "Year") {
-        this.formData[fieldName].value = newValue.value;
+        this.formData[fieldName].value = newValue.text;
 
-        if (newValue.value === previousValue) {
+        if (newValue.text === previousValue) {
           this.formData[fieldName].action = this.actions.none;
         }
       } else {
         this.formData[fieldName].value = newValue;
 
-        if (newValue === previousValue) {
+        const newVal = newValue !== -2 ? newValue : "<mixed>";
+        if (newVal === previousValue) {
           this.formData[fieldName].action = this.actions.none;
         }
       }
