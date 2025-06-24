@@ -21,7 +21,7 @@ func TestClientsModCommand(t *testing.T) {
 		// Check command output for plausibility.
 		//t.Logf(output0)
 		assert.NoError(t, err)
-		assert.Contains(t, output0, "AuthEnabled  | true")
+		assert.Contains(t, output0, "AuthEnabled  │ true")
 		assert.Contains(t, output0, "oauth2")
 
 		// Run command with test context.
@@ -38,7 +38,7 @@ func TestClientsModCommand(t *testing.T) {
 		// Check command output for plausibility.
 		//t.Logf(output1)
 		assert.NoError(t, err)
-		assert.Contains(t, output1, "AuthEnabled  | false")
+		assert.Contains(t, output1, "AuthEnabled  │ false")
 
 		// Run command with test context.
 		output2, err := RunWithTestContext(ClientsModCommand, []string{"mod", "--enable", "cs7pvt5h8rw9aaqj"})
@@ -53,7 +53,7 @@ func TestClientsModCommand(t *testing.T) {
 		// Check command output for plausibility.
 		//t.Logf(output3)
 		assert.NoError(t, err)
-		assert.Contains(t, output3, "AuthEnabled  | true")
+		assert.Contains(t, output3, "│ AuthEnabled  │ true ")
 	})
 	t.Run("RegenerateSecret", func(t *testing.T) {
 		// Run command with test context.
