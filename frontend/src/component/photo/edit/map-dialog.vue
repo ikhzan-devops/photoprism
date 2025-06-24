@@ -449,7 +449,7 @@ export default {
     },
     fetchLocationInfo(lat, lng) {
       this.$api
-        .get(`maps/geocode/reverse?lat=${lat}&lng=${lng}`)
+        .get(`places/reverse?lat=${lat}&lng=${lng}`)
         .then((response) => {
           if (response.data && response.data.formatted) {
             this.locationInfo = response.data;
@@ -524,7 +524,7 @@ export default {
     async performPlaceSearch(query) {
       this.searchLoading = true;
       try {
-        const response = await this.$api.get("maps/places/search", {
+        const response = await this.$api.get("places/search", {
           params: {
             q: query,
             count: 10,

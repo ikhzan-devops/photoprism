@@ -39,24 +39,23 @@ type PhotoPrismPlacesSearchResponse []struct {
 	Lng     float64 `json:"lng"`
 }
 
-// GetPlaceSearch performs a place search using PhotoPrism Places API.
+// GetPlacesSearch performs a place search using PhotoPrism Places API.
 //
-// GET /api/v1/maps/places/search?q=query&locale=en&count=10
+// GET /api/v1/places/search?q=query&locale=en&count=10
 //
-//	@Summary		Search for places using text query
-//	@Id				GetPlaceSearch
-//	@Tags			Maps
-//	@Produce		json
-//	@Param			q		query		string	true	"Search query"
-//	@Param			locale	query		string	false	"Locale for results (default: en)"
-//	@Param			count	query		int		false	"Maximum number of results (default: 10, max: 50)"
-//	@Success		200		{object}	PlaceSearchResponse
-//	@Failure		400		{object}	gin.H	"Missing search query"
-//	@Failure		401		{object}	ErrorResponse	"Not authorized"
-//	@Failure		500		{object}	gin.H	"Search service error"
-//	@Router			/maps/places/search [get]
-
-func GetPlaceSearch(router *gin.RouterGroup) {
+//	@Summary	Search for places using text query
+//	@Id			GetPlacesSearch
+//	@Tags		Maps
+//	@Produce	json
+//	@Param		q		query		string	true	"Search query"
+//	@Param		locale	query		string	false	"Locale for results (default: en)"
+//	@Param		count	query		int		false	"Maximum number of results (default: 10, max: 50)"
+//	@Success	200		{object}	PlaceSearchResponse
+//	@Failure	400		{object}	gin.H	"Missing search query"
+//	@Failure	401		{object}	i18n.Response
+//	@Failure	500		{object}	gin.H	"Search service error"
+//	@Router		/api/v1/places/search [get]
+func GetPlacesSearch(router *gin.RouterGroup) {
 	handler := func(c *gin.Context) {
 		s := AuthAny(c, acl.ResourcePlaces, acl.Permissions{acl.ActionSearch, acl.ActionView})
 
@@ -133,7 +132,7 @@ func GetPlaceSearch(router *gin.RouterGroup) {
 
 		// Parse response
 		var placesResponse PhotoPrismPlacesSearchResponse
-		if err := json.NewDecoder(resp.Body).Decode(&placesResponse); err != nil {
+		if err = json.NewDecoder(resp.Body).Decode(&placesResponse); err != nil {
 			event.AuditWarn([]string{ClientIP(c), "session %s", "place search", "decode failed: %s"}, s.RefID, err)
 			searchResponse := PlaceSearchResponse{
 				Results: []PlaceSearchResult{},
@@ -169,5 +168,5 @@ func GetPlaceSearch(router *gin.RouterGroup) {
 		c.JSON(http.StatusOK, searchResponse)
 	}
 
-	router.GET("/maps/places/search", handler)
+	router.GET("/places/search", handler)
 }
