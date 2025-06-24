@@ -281,7 +281,7 @@ msgstr "Резервные копии альбомов"
 msgid "Album created"
 msgstr "Альбом создан"
 
-#: src/app/routes.js:188 src/component/album/toolbar.vue:51
+#: src/app/routes.js:184 src/component/album/toolbar.vue:55
 #: src/component/navigation.vue:607 src/component/navigation.vue:1922
 #: src/component/photo/edit/info.vue:220 src/options/options.js:198
 msgid "Albums"
@@ -364,7 +364,7 @@ msgstr "Высота (м)"
 msgid "AM"
 msgstr "AM"
 
-#: src/app/routes.js:269 src/component/navigation.vue:797
+#: src/app/routes.js:265 src/component/navigation.vue:797
 #: src/component/photo/edit/files.vue:364
 #: src/component/photo/view/cards.vue:327
 #: src/component/photo/view/cards.vue:511 src/component/photo/view/list.vue:184
@@ -402,7 +402,7 @@ msgstr "Подтвердить"
 msgid "Apps and Devices"
 msgstr "Приложения и устройства"
 
-#: src/app/routes.js:299 src/component/lightbox.vue:1207
+#: src/app/routes.js:295 src/component/lightbox.vue:1207
 #: src/component/navigation.vue:557 src/component/photo/clipboard.vue:142
 #: src/component/photo/view/cards.vue:398 src/page/settings/general.vue:432
 msgid "Archive"
@@ -428,6 +428,10 @@ msgstr "Вы действительно хотите удалить эти ме�
 msgid "Are you sure you want to delete this account?"
 msgstr "Вы действительно хотите удалить этот аккаунт?"
 
+#: src/component/album/toolbar.vue:136
+msgid "Are you sure you want to delete this album?"
+msgstr ""
+
 #: src/component/photo/clipboard.vue:199
 msgid "Are you sure you want to permanently delete these pictures?"
 msgstr "Вы уверены, что хотите навсегда удалить эти фотографии?"
@@ -449,7 +453,7 @@ msgstr "Автор"
 msgid "Aspect Ratio"
 msgstr "Соотношение сторон"
 
-#: src/app/routes.js:262 src/component/navigation.vue:776
+#: src/app/routes.js:258 src/component/navigation.vue:776
 #: src/options/options.js:297
 msgid "Audio"
 msgstr "Аудио"
@@ -552,7 +556,7 @@ msgstr "Занят, пожалуйста, подождите…"
 msgid "By using the software and services we provide, you agree to our terms of service, privacy policy, and code of conduct."
 msgstr "Используя программное обеспечение и услуги, которые мы предоставляем, вы соглашаетесь с нашими условиями обслуживания, политикой конфиденциальности и кодексом поведения."
 
-#: src/app/routes.js:201 src/component/navigation.vue:1097
+#: src/app/routes.js:197 src/component/navigation.vue:1097
 #: src/options/options.js:204 src/page/settings/general.vue:205
 msgid "Calendar"
 msgstr "Календарь"
@@ -849,7 +853,7 @@ msgstr "Кубический: умеренное качество, хороша�
 msgid "Current Password"
 msgstr "Текущий пароль"
 
-#: src/options/themes.js:919 src/options/themes.js:928
+#: src/options/themes.js:920 src/options/themes.js:929
 msgid "Custom"
 msgstr "Пользовательский"
 
@@ -883,7 +887,7 @@ msgstr "Отладочные Логи"
 #: src/model/user.js:246 src/options/auth.js:21 src/options/auth.js:22
 #: src/options/auth.js:40 src/options/auth.js:41 src/options/options.js:196
 #: src/options/options.js:232 src/options/options.js:316
-#: src/options/themes.js:773
+#: src/options/themes.js:774
 msgid "Default"
 msgstr "По умолчанию"
 
@@ -893,7 +897,7 @@ msgstr "Папка по умолчанию"
 
 #: src/component/session/remove/dialog.vue:56
 #: src/component/user/remove/dialog.vue:56 src/component/album/clipboard.vue:97
-#: src/component/album/delete/dialog.vue:54
+#: src/component/album/delete/dialog.vue:54 src/component/album/toolbar.vue:137
 #: src/component/file/delete/dialog.vue:59 src/component/label/clipboard.vue:58
 #: src/component/label/delete/dialog.vue:59
 #: src/component/photo/clipboard.vue:168 src/component/photo/edit/files.vue:238
@@ -901,6 +905,10 @@ msgstr "Папка по умолчанию"
 #: src/page/settings/general.vue:457
 msgid "Delete"
 msgstr "Удалить"
+
+#: src/component/album/toolbar.vue:133
+msgid "Delete Album"
+msgstr ""
 
 #: src/component/photo/toolbar.vue:119 src/page/library/errors.vue:95
 msgid "Delete All"
@@ -987,8 +995,8 @@ msgstr "Отключает поддержку векторной графики.
 msgid "Disables video transcoding and thumbnail extraction."
 msgstr "Отключает перекодирование видео и извлечение миниатюр."
 
-#: src/app/routes.js:570 src/app/routes.js:577 src/app/routes.js:584
-#: src/app/routes.js:591
+#: src/app/routes.js:566 src/app/routes.js:573 src/app/routes.js:580
+#: src/app/routes.js:587
 msgid "Discover"
 msgstr "Исследование"
 
@@ -1043,7 +1051,7 @@ msgstr "Готово"
 msgid "Done."
 msgstr "Готово."
 
-#: src/component/album/clipboard.vue:73 src/component/album/toolbar.vue:118
+#: src/component/album/clipboard.vue:73 src/component/album/toolbar.vue:123
 #: src/component/file/clipboard.vue:48 src/component/lightbox.vue:1235
 #: src/component/people/clipboard.vue:47 src/component/photo/clipboard.vue:116
 #: src/component/photo/edit/files.vue:168 src/page/settings/content.vue:331
@@ -1063,7 +1071,7 @@ msgstr "Скачать удалённые файлы"
 msgid "Download single files and zip archives."
 msgstr "Скачать отдельные файлы и zip-архивы."
 
-#: src/component/album/clipboard.vue:104 src/component/album/toolbar.vue:157
+#: src/component/album/clipboard.vue:104 src/component/album/toolbar.vue:172
 #: src/component/file/clipboard.vue:61 src/component/label/clipboard.vue:86
 #: src/component/lightbox.vue:2021 src/component/people/clipboard.vue:59
 #: src/component/photo/clipboard.vue:220 src/component/photo/edit/files.vue:119
@@ -1104,7 +1112,7 @@ msgstr "Недостигнутое ограничение размера: %{n}px
 msgid "E-Mail"
 msgstr "E-Mail"
 
-#: src/component/album/clipboard.vue:61 src/component/album/toolbar.vue:89
+#: src/component/album/clipboard.vue:61 src/component/album/toolbar.vue:94
 #: src/component/lightbox.vue:1136 src/component/lightbox.vue:1137
 #: src/component/photo/clipboard.vue:90 src/page/settings/general.vue:407
 msgid "Edit"
@@ -1174,7 +1182,7 @@ msgstr "Введите пароль, чтобы подтвердить дейс�
 msgid "Error"
 msgstr "Ошибка"
 
-#: src/app/routes.js:386 src/component/navigation.vue:1372
+#: src/app/routes.js:382 src/component/navigation.vue:1372
 msgid "Errors"
 msgstr "Ошибки"
 
@@ -1265,7 +1273,7 @@ msgstr "Быстро"
 msgid "Favorite"
 msgstr "В избранном"
 
-#: src/app/routes.js:234 src/component/navigation.vue:903
+#: src/app/routes.js:230 src/component/navigation.vue:903
 #: src/options/options.js:202 src/page/albums.vue:97
 msgid "Favorites"
 msgstr "Избранное"
@@ -1286,7 +1294,7 @@ msgstr "Женский"
 msgid "File"
 msgstr "Файлы"
 
-#: src/app/routes.js:355
+#: src/app/routes.js:351
 msgid "File Browser"
 msgstr "Файловый менеджер"
 
@@ -1341,7 +1349,7 @@ msgstr "Папка содержит %{n} файлов"
 msgid "Folder is empty"
 msgstr "Папка пуста"
 
-#: src/app/routes.js:214 src/component/navigation.vue:1247
+#: src/app/routes.js:210 src/component/navigation.vue:1247
 #: src/options/options.js:207
 msgid "Folders"
 msgstr "Папки"
@@ -1436,7 +1444,7 @@ msgstr "Помощь и поддержка"
 msgid "Hidden"
 msgstr "Скрытые"
 
-#: src/app/routes.js:370
+#: src/app/routes.js:366
 msgid "Hidden Files"
 msgstr "Скрытые файлы"
 
@@ -1636,7 +1644,7 @@ msgstr "Ключевые слова"
 msgid "Label"
 msgstr "Метка"
 
-#: src/app/routes.js:401 src/component/navigation.vue:1197
+#: src/app/routes.js:397 src/component/navigation.vue:1197
 #: src/component/photo/edit/dialog.vue:196
 #: src/component/photo/edit/dialog.vue:215 src/options/options.js:206
 #: src/page/settings/general.vue:255
@@ -1704,7 +1712,7 @@ msgstr "Юридическая информация"
 msgid "Lens"
 msgstr "Объектив"
 
-#: src/app/routes.js:455 src/app/routes.js:471 src/app/routes.js:487
+#: src/app/routes.js:451 src/app/routes.js:467 src/app/routes.js:483
 #: src/component/navigation.vue:1290 src/page/settings/general.vue:507
 msgid "Library"
 msgstr "Библиотека"
@@ -1749,7 +1757,7 @@ msgstr "Вид списка"
 msgid "Live"
 msgstr "Прямой эфир"
 
-#: src/app/routes.js:248 src/component/navigation.vue:755
+#: src/app/routes.js:244 src/component/navigation.vue:755
 msgid "Live Photos"
 msgstr "Живые фотографии"
 
@@ -1851,7 +1859,7 @@ msgstr "Маркер"
 msgid "Maximum number of accounts has been reached."
 msgstr "Максимальное количество аккаунтов достигнуто."
 
-#: src/app/routes.js:241 src/component/navigation.vue:693
+#: src/app/routes.js:237 src/component/navigation.vue:693
 #: src/options/options.js:199
 msgid "Media"
 msgstr "Медиа"
@@ -1896,7 +1904,7 @@ msgstr "Пропущено"
 msgid "Missing or invalid configuration"
 msgstr "Отсутствующая или недействительная конфигурация"
 
-#: src/app/routes.js:175 src/component/navigation.vue:1147
+#: src/app/routes.js:171 src/component/navigation.vue:1147
 #: src/options/options.js:205 src/page/settings/general.vue:230
 msgid "Moments"
 msgstr "Моменты"
@@ -1947,7 +1955,7 @@ msgstr "Отключи звук"
 msgid "Name"
 msgstr "Название"
 
-#: src/component/album/edit/dialog.vue:35 src/component/album/toolbar.vue:60
+#: src/component/album/edit/dialog.vue:35 src/component/album/toolbar.vue:65
 #: src/component/label/edit/dialog.vue:19
 #: src/component/people/edit/dialog.vue:19
 #: src/component/photo/edit/labels.vue:30
@@ -2254,7 +2262,7 @@ msgstr "Пароль"
 msgid "Password changed"
 msgstr "Пароль изменен"
 
-#: src/app/routes.js:416 src/app/routes.js:440 src/component/navigation.vue:853
+#: src/app/routes.js:412 src/app/routes.js:436 src/component/navigation.vue:853
 #: src/component/navigation.vue:1939 src/component/photo/edit/dialog.vue:238
 #: src/component/photo/edit/dialog.vue:257 src/options/options.js:201
 #: src/page/settings/general.vue:180
@@ -2293,7 +2301,7 @@ msgstr "PhotoPrism является на 100% самофинансируемой
 msgid "PhotoPrism+ Membership"
 msgstr "Членство в программе PhotoPrism+"
 
-#: src/app/routes.js:168
+#: src/app/routes.js:164
 msgid "Photos"
 msgstr "Фотографии"
 
@@ -2314,8 +2322,8 @@ msgstr "Место"
 msgid "Place & Time"
 msgstr "Место и время"
 
-#: src/app/routes.js:315 src/app/routes.js:321 src/app/routes.js:327
-#: src/app/routes.js:342 src/component/navigation.vue:999
+#: src/app/routes.js:311 src/app/routes.js:317 src/app/routes.js:323
+#: src/app/routes.js:338 src/component/navigation.vue:999
 #: src/component/navigation.vue:1956 src/options/options.js:203
 #: src/page/places.vue:51 src/page/settings/general.vue:609
 #: src/page/settings/general.vue:638
@@ -2407,7 +2415,7 @@ msgstr "Предыдущий визуальный"
 msgid "Primary"
 msgstr "Главная"
 
-#: src/app/routes.js:283 src/component/album/edit/dialog.vue:177
+#: src/app/routes.js:279 src/component/album/edit/dialog.vue:177
 #: src/component/navigation.vue:533 src/component/photo/edit/info.vue:303
 #: src/page/settings/general.vue:280
 msgid "Private"
@@ -2498,14 +2506,14 @@ msgid "Red"
 msgstr "Красный"
 
 #: src/page/admin/sessions.vue:101 src/page/admin/users.vue:128
-#: src/component/album/toolbar.vue:79 src/component/photo/toolbar.vue:169
+#: src/component/album/toolbar.vue:84 src/component/photo/toolbar.vue:169
 #: src/page/albums.vue:173 src/page/labels.vue:112
 #: src/page/library/browse.vue:90 src/page/library/errors.vue:81
 #: src/page/people/new.vue:54 src/page/people/recognized.vue:88
 msgid "Refresh"
 msgstr "Обновить"
 
-#: src/app/routes.js:349 src/component/navigation.vue:955
+#: src/app/routes.js:345 src/component/navigation.vue:955
 #: src/component/navigation.vue:1040
 msgid "Regions"
 msgstr "Регионы"
@@ -2581,7 +2589,7 @@ msgstr "Лимит повторных попыток"
 msgid "Retype Password"
 msgstr "Повторите пароль"
 
-#: src/app/routes.js:276 src/component/navigation.vue:507
+#: src/app/routes.js:272 src/component/navigation.vue:507
 msgid "Review"
 msgstr "Не одобрены"
 
@@ -2713,7 +2721,7 @@ msgstr "Сессия"
 msgid "Session ID"
 msgstr "Идентификатор сессии"
 
-#: src/page/admin.vue:45
+#: src/page/admin.vue:44
 msgid "Sessions"
 msgstr "Сессии"
 
@@ -2721,8 +2729,8 @@ msgstr "Сессии"
 msgid "Set as Album Cover"
 msgstr "Установи в качестве обложки альбома"
 
-#: src/app/routes.js:101 src/app/routes.js:504 src/app/routes.js:516
-#: src/app/routes.js:533 src/app/routes.js:546 src/app/routes.js:559
+#: src/app/routes.js:101 src/app/routes.js:500 src/app/routes.js:512
+#: src/app/routes.js:529 src/app/routes.js:542 src/app/routes.js:555
 #: src/component/navigation.vue:1419 src/component/navigation.vue:1841
 msgid "Settings"
 msgstr "Настройки"
@@ -2736,7 +2744,7 @@ msgstr "Настройки сохранены"
 msgid "Setup"
 msgstr "Настройка"
 
-#: src/component/album/clipboard.vue:49 src/component/album/toolbar.vue:98
+#: src/component/album/clipboard.vue:49 src/component/album/toolbar.vue:103
 #: src/component/photo/clipboard.vue:51 src/page/settings/general.vue:382
 msgid "Share"
 msgstr "Поделиться"
@@ -2907,7 +2915,7 @@ msgid "Successfully Connected"
 msgstr "Успешно подключено"
 
 #: src/component/session/remove/dialog.vue:32
-#: src/component/settings/apps.vue:218
+#: src/component/album/toolbar.vue:180 src/component/settings/apps.vue:218
 msgid "Successfully deleted"
 msgstr "Успешно удалено"
 
@@ -3053,7 +3061,7 @@ msgstr "Для обновления вы можете ввести код акт
 msgid "Today"
 msgstr "Сегодня"
 
-#: src/component/album/toolbar.vue:70 src/component/photo/toolbar.vue:78
+#: src/component/album/toolbar.vue:71 src/component/photo/toolbar.vue:78
 msgid "Toggle View"
 msgstr "Переключить вид"
 
@@ -3089,6 +3097,10 @@ msgstr "Для вашей учетной записи включена двух�
 msgid "Type"
 msgstr "Тип"
 
+#: src/component/album/toolbar.vue:184
+msgid "Unable to delete"
+msgstr ""
+
 #: src/options/auth.js:14
 msgid "Unauthorized"
 msgstr "Неавторизованный"
@@ -3123,7 +3135,7 @@ msgstr "Неизвестно"
 msgid "Unregistered"
 msgstr "Незарегистрированный"
 
-#: src/app/routes.js:227 src/component/navigation.vue:648
+#: src/app/routes.js:223 src/component/navigation.vue:648
 msgid "Unsorted"
 msgstr "Не отсортировано"
 
@@ -3171,7 +3183,7 @@ msgstr "Обновление"
 msgid "Upgrade Now"
 msgstr "Обновить сейчас"
 
-#: src/component/album/toolbar.vue:108 src/component/navigation.vue:1860
+#: src/component/album/toolbar.vue:113 src/component/navigation.vue:1860
 #: src/component/photo/toolbar.vue:179 src/component/service/upload.vue:145
 #: src/component/upload/dialog.vue:51 src/page/albums.vue:183
 #: src/page/labels.vue:122 src/page/library/import.vue:133
@@ -3284,7 +3296,7 @@ msgstr "Видео"
 msgid "Video Duration"
 msgstr "Продолжительность видео"
 
-#: src/app/routes.js:255 src/component/navigation.vue:734
+#: src/app/routes.js:251 src/component/navigation.vue:734
 #: src/options/options.js:200
 msgid "Videos"
 msgstr "Видео"
