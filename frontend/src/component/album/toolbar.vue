@@ -254,15 +254,9 @@ export default {
       download(path, "album.zip");
     },
     onDeleteConfirm() {
-      $api
-        .delete(`albums/${this.album.UID}`)
-        .then(() => {
-          $notify.success(this.$gettext("Successfully deleted"));
-          this.$router.push({ name: this.collectionRoute });
-        })
-        .catch(() => {
-          $notify.error(this.$gettext("Unable to delete"));
-        });
+      $api.delete(`albums/${this.album.UID}`).catch(() => {
+        $notify.error(this.$gettext("Unable to delete"));
+      });
       this.dialog.delete = false;
     },
   },
