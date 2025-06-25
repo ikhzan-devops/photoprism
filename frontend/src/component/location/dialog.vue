@@ -4,7 +4,7 @@
     :max-width="900"
     :fullscreen="$vuetify.display.mdAndDown"
     :persistent="false"
-    class="p-photo-map-dialog"
+    class="p-location-dialog"
     @keydown.esc="close"
     @after-leave="onDialogClosed"
   >
@@ -37,7 +37,7 @@
             }"
           >
             <v-card border class="pa-3 mb-3">
-              <div class="text-subtitle-2 mb-2">{{ $gettext("Search Places") }}</div>
+              <!-- div class="text-subtitle-2 mb-2">{{ $gettext("Search Places") }}</div -->
               <v-menu
                 v-model="showSearchMenu"
                 :close-on-content-click="false"
@@ -48,9 +48,9 @@
                 <template #activator="{ props }">
                   <v-text-field
                     v-model="searchQuery"
-                    :label="$gettext('Search for a place')"
+                    :label="$gettext('Search')"
                     prepend-inner-icon="mdi-magnify"
-                    :append-inner-icon="searchLoading ? 'mdi-loading mdi-spin' : searchQuery ? 'mdi-delete' : ''"
+                    :append-inner-icon="searchLoading ? 'mdi-loading mdi-spin' : searchQuery ? 'mdi-close-circle' : ''"
                     density="compact"
                     variant="outlined"
                     placeholder="e.g., Berlin, New York, Tokyo"
@@ -81,15 +81,20 @@
               </v-menu>
             </v-card>
 
+            <v-card v-if="locationInfo" border class="pa-3 mb-3">
+              <div class="text-subtitle-2 mb-2">{{ $gettext("Location Details") }}</div>
+              <div class="text-body-2">
+                {{ simplifiedLocationDisplay }}
+              </div>
+            </v-card>
+
             <v-card border class="pa-3 mb-3">
-              <div class="text-subtitle-2 mb-2">{{ $gettext("Coordinates") }}</div>
+              <!-- div class="text-subtitle-2 mb-2">{{ $gettext("Position") }}</div -->
               <v-text-field
                 v-model="coordinateInput"
-                :label="$gettext('Latitude, Longitude')"
-                prepend-inner-icon="mdi-map-marker"
-                :append-inner-icon="locationWasCleared ? 'mdi-undo' : coordinateInput ? 'mdi-delete' : ''"
-                density="compact"
-                variant="outlined"
+                prepend-inner-icon="mdi-crosshairs-gps"
+                :append-inner-icon="locationWasCleared ? 'mdi-undo' : coordinateInput ? 'mdi-close-circle' : ''"
+                density="comfortable"
                 placeholder="e.g., 52.5208, 13.4049"
                 persistent-hint
                 @keydown.enter="applyCoordinates"
@@ -98,16 +103,9 @@
               ></v-text-field>
             </v-card>
 
-            <v-card v-if="locationInfo" border class="pa-3 mb-3">
-              <div class="text-subtitle-2 mb-2">{{ $gettext("Location Details") }}</div>
-              <div class="text-body-2">
-                {{ simplifiedLocationDisplay }}
-              </div>
-            </v-card>
-
             <v-card border class="pa-3">
-              <div class="text-subtitle-2 mb-2">{{ $gettext("Instructions") }}</div>
-              <div class="text-body-2">
+              <!-- div class="text-subtitle-2 mb-2">{{ $gettext("Instructions") }}</div -->
+              <div class="text-body-2 pb-2">
                 {{ $gettext("Click on the map to set a location. Drag the marker for precise positioning.") }}
               </div>
               <div class="mt-3">
@@ -144,7 +142,7 @@
 import maplibregl from "common/maplibregl";
 
 export default {
-  name: "PPhotoEditMapDialog",
+  name: "PLocationDialog",
   props: {
     value: {
       type: Boolean,

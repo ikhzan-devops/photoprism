@@ -146,7 +146,7 @@
                 @update:model-value="syncTime"
               ></v-autocomplete>
             </v-col>
-            <v-col cols="12" sm="12" md="4">
+            <v-col cols="12" sm="8" md="4">
               <v-autocomplete
                 v-model="view.model.Country"
                 :append-inner-icon="view.model.PlaceSrc === 'manual' ? 'mdi-check' : ''"
@@ -167,71 +167,75 @@
               >
               </v-autocomplete>
             </v-col>
-            <v-col cols="12" sm="12" md="8">
-              <div class="d-flex align-center ga-2">
-                <v-text-field
-                  v-model="view.model.Altitude"
-                  :disabled="disabled"
-                  hide-details
-                  flat
-                  autocomplete="off"
-                  autocorrect="off"
-                  autocapitalize="none"
-                  :label="$gettext('Altitude (m)')"
-                  placeholder=""
-                  color="surface-variant"
-                  density="comfortable"
-                  validate-on="input"
-                  :rules="rules.number(false, -10000, 1000000)"
-                  class="input-altitude"
-                  style="flex: 0 0 120px"
-                ></v-text-field>
-                <v-text-field
-                  v-model="view.model.Lat"
-                  :append-inner-icon="view.model.PlaceSrc === 'manual' ? 'mdi-check' : ''"
-                  :disabled="disabled"
-                  hide-details
-                  autocomplete="off"
-                  autocorrect="off"
-                  autocapitalize="none"
-                  :label="$gettext('Latitude')"
-                  placeholder=""
-                  density="comfortable"
-                  validate-on="input"
-                  :rules="rules.lat(false)"
-                  class="input-latitude"
-                  style="flex: 1"
-                  @paste="pastePosition"
-                ></v-text-field>
-                <v-text-field
-                  v-model="view.model.Lng"
-                  :append-inner-icon="view.model.PlaceSrc === 'manual' ? 'mdi-check' : ''"
-                  :disabled="disabled"
-                  hide-details
-                  autocomplete="off"
-                  autocorrect="off"
-                  autocapitalize="none"
-                  :label="$gettext('Longitude')"
-                  placeholder=""
-                  density="comfortable"
-                  validate-on="input"
-                  :rules="rules.lng(false)"
-                  class="input-longitude"
-                  style="flex: 1"
-                  @paste="pastePosition"
-                ></v-text-field>
-                <v-btn
-                  v-show="!placesDisabled"
-                  v-tooltip="$gettext('Set location on map')"
-                  icon
-                  size="small"
-                  class="action-map"
-                  :disabled="placesDisabled"
-                  @click.stop="openMapDialog"
-                >
-                  <v-icon>mdi-map-marker</v-icon>
-                </v-btn>
-              </div>
+            <v-col cols="4" md="2" class="hidden-xs">
+              <v-text-field
+                v-model="view.model.Altitude"
+                :disabled="disabled"
+                hide-details
+                flat
+                autocomplete="off"
+                autocorrect="off"
+                autocapitalize="none"
+                :label="$gettext('Altitude (m)')"
+                placeholder=""
+                color="surface-variant"
+                density="comfortable"
+                validate-on="input"
+                :rules="rules.number(false, -10000, 1000000)"
+                class="input-altitude"
+                style="flex: 0 0 120px"
+              ></v-text-field>
+            </v-col>
+            <v-col cols="7" md="3">
+              <v-text-field
+                v-model="view.model.Lat"
+                :disabled="disabled"
+                hide-details
+                autocomplete="off"
+                autocorrect="off"
+                autocapitalize="none"
+                :label="$gettext('Latitude')"
+                placeholder=""
+                density="comfortable"
+                validate-on="input"
+                :rules="rules.lat(false)"
+                class="input-latitude"
+                style="flex: 1"
+                @paste="pastePosition"
+              >
+                <template #prepend-inner>
+                  <v-icon
+                    v-if="!placesDisabled"
+                    variant="plain"
+                    icon="mdi-crosshairs-gps"
+                    :title="$gettext('Choose Location')"
+                    :disabled="placesDisabled"
+                    class="action-map"
+                    @click.stop="openMapDialog"
+                  >
+                  </v-icon>
+                  <!-- v-icon v-if="view.model.PlaceSrc === 'manual'" variant="plain" icon="mdi-check"> </v-icon -->
+                </template>
+              </v-text-field>
+            </v-col>
+            <v-col cols="5" md="3">
+              <v-text-field
+                v-model="view.model.Lng"
+                :disabled="disabled"
+                hide-details
+                autocomplete="off"
+                autocorrect="off"
+                autocapitalize="none"
+                :label="$gettext('Longitude')"
+                placeholder=""
+                density="comfortable"
+                validate-on="input"
+                :rules="rules.lng(false)"
+                class="input-longitude"
+                style="flex: 1"
+                @paste="pastePosition"
+              >
+              </v-text-field>
             </v-col>
             <v-col cols="12" md="6" class="p-camera-select">
               <v-select
@@ -444,13 +448,13 @@
         </div>
       </div>
     </v-form>
-    <p-photo-edit-map-dialog
+    <p-location-dialog
       :value="mapDialogVisible"
       :latitude="view.model.Lat ? Number(view.model.Lat) : 0"
       :longitude="view.model.Lng ? Number(view.model.Lng) : 0"
       @update:value="mapDialogVisible = $event"
       @confirm="updateLocation"
-    ></p-photo-edit-map-dialog>
+    ></p-location-dialog>
   </div>
 </template>
 
@@ -459,13 +463,12 @@ import countries from "options/countries.json";
 import Thumb from "model/thumb";
 import * as options from "options/options";
 import { rules } from "common/form";
-import PPhotoEditMapDialog from "component/photo/edit/map-dialog.vue";
-import { $gettext } from "../../../common/gettext";
+import PLocationDialog from "component/location/dialog.vue";
 
 export default {
   name: "PTabPhotoDetails",
   components: {
-    PPhotoEditMapDialog,
+    PLocationDialog,
   },
   props: {
     uid: {
@@ -517,7 +520,6 @@ export default {
     this.syncTime();
   },
   methods: {
-    $gettext,
     setDay(v) {
       if (Number.isInteger(v?.value)) {
         this.view.model.Day = v?.value;
