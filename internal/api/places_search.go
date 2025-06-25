@@ -12,6 +12,8 @@ import (
 
 	"github.com/photoprism/photoprism/internal/auth/acl"
 	"github.com/photoprism/photoprism/internal/event"
+	"github.com/photoprism/photoprism/internal/photoprism/get"
+	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/txt"
 )
 
@@ -65,9 +67,10 @@ func GetPlacesSearch(router *gin.RouterGroup) {
 		}
 
 		// Parse query parameters
-		query := txt.Clip(c.Query("q"), 200)
-		locale := txt.Clip(c.Query("locale"), 10)
-		countStr := c.Query("count")
+		conf := get.Config()
+		query := clean.SearchString(c.Query("q"))
+		locale := clean.WebLocale(c.Query("locale"), conf.DefaultLocale())
+		count := txt.IntVal(c.Query("count"), 1, 50, 10)
 
 		if query == "" {
 			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Missing search query"})
@@ -79,17 +82,9 @@ func GetPlacesSearch(router *gin.RouterGroup) {
 			locale = "en"
 		}
 
-		// Parse count parameter
-		count := 10 // default
-		if countStr != "" {
-			if parsedCount, err := strconv.Atoi(countStr); err == nil && parsedCount > 0 && parsedCount <= 50 {
-				count = parsedCount
-			}
-		}
-
 		event.AuditInfo([]string{ClientIP(c), "session %s", "place search", "query %s, locale %s, count %d"}, s.RefID, query, locale, count)
 
-		client := &http.Client{Timeout: 10 * time.Second}
+		client := &http.Client{Timeout: 30 * time.Second}
 
 		baseURL := "https://places.photoprism.app/v1/search"
 		params := url.Values{}

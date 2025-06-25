@@ -76,7 +76,7 @@ func GetPlacesReverse(router *gin.RouterGroup) {
 		event.AuditInfo([]string{ClientIP(c), "session %s", "reverse geocoding", "lat %s, lng %s"}, s.RefID, lat, lng)
 
 		// Create HTTP client with timeout
-		client := &http.Client{Timeout: 10 * time.Second}
+		client := &http.Client{Timeout: 30 * time.Second}
 
 		// Create PhotoPrism Places API request
 		url := fmt.Sprintf("https://places.photoprism.app/v1/reverse?lat=%s&lng=%s", lat, lng)
