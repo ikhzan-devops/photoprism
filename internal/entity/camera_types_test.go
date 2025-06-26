@@ -307,4 +307,20 @@ func TestCamera_CameraType(t *testing.T) {
 		assert.True(t, camera.Scanner())
 		assert.False(t, camera.Mobile())
 	})
+	t.Run("Epson Perfection", func(t *testing.T) {
+		camera := NewCamera("EPSON", "Perfection V800/V850")
+		assert.Equal(t, CameraTypeScanner, camera.CameraType)
+		assert.Equal(t, "EPSON", camera.CameraMake)
+		assert.Equal(t, "Perfection V800/V850", camera.CameraModel)
+		assert.True(t, camera.Scanner())
+		assert.False(t, camera.Mobile())
+	})
+	t.Run("Epson FastFoto", func(t *testing.T) {
+		camera := NewCamera("EPSON", "FastFoto FF-680W")
+		assert.Equal(t, CameraTypeScanner, camera.CameraType)
+		assert.Equal(t, "EPSON", camera.CameraMake)
+		assert.Equal(t, "FastFoto FF-680W", camera.CameraModel)
+		assert.True(t, camera.Scanner())
+		assert.False(t, camera.Mobile())
+	})
 }
