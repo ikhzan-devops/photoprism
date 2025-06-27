@@ -50,7 +50,7 @@
 
 <script>
 export default {
-  name: "PCoordinateInput",
+  name: "PPositionInput",
   props: {
     latitude: {
       type: Number,
@@ -74,7 +74,7 @@ export default {
     },
     placeholder: {
       type: String,
-      default: "e.g., 52.5208, 13.4049",
+      default: "37.75267, -122.543",
     },
     density: {
       type: String,
