@@ -197,6 +197,7 @@ export default {
     this.findAlbum().then(() => this.search());
 
     this.subscriptions.push(this.$event.subscribe("albums.updated", (ev, data) => this.onAlbumsUpdated(ev, data)));
+    this.subscriptions.push(this.$event.subscribe("albums.deleted", (ev, data) => this.onAlbumsDeleted(ev, data)));
     this.subscriptions.push(this.$event.subscribe("photos", (ev, data) => this.onUpdate(ev, data)));
 
     this.subscriptions.push(
@@ -634,6 +635,25 @@ export default {
 
           return;
         }
+      }
+    },
+    onAlbumsDeleted(ev, data) {
+      if (!this.listen) {
+        return;
+      }
+
+      if (!data || !data.entities || !Array.isArray(data.entities)) {
+        return;
+      }
+
+      const type = ev.split(".")[1];
+      switch (type) {
+        case "deleted":
+          if (data.entities.includes(this.uid)) {
+            this.$notify.success(this.$gettext("Album deleted"));
+            this.$router.push({ name: this.collectionRoute });
+          }
+          return;
       }
     },
     updateResults(entity) {

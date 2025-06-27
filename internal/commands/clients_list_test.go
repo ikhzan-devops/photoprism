@@ -26,7 +26,7 @@ func TestClientsListCommand(t *testing.T) {
 		// Check command output for plausibility.
 		// t.Logf(output)
 		assert.NoError(t, err)
-		assert.Contains(t, output, "|  Scope  |")
+		assert.Contains(t, output, "│  Role  │  Scope  │")
 		assert.Contains(t, output, "Monitoring")
 		assert.NotContains(t, output, "alice")
 		assert.NotContains(t, output, "bob")

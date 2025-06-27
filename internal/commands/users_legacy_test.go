@@ -15,6 +15,6 @@ func TestUsersLegacyCommand(t *testing.T) {
 		// Check command output for plausibility.
 		//t.Logf(output)
 		assert.NoError(t, err)
-		assert.Contains(t, strings.Replace(output, " ", "", -1), strings.Replace("| ID | UID | Name | User | Email | Admin | Created At |", " ", "", -1))
+		assert.Contains(t, strings.Replace(output, " ", "", -1), strings.Replace("│ ID │ UID │ Name │ User │ Email │ Admin │ Created At │", " ", "", -1))
 	})
 }
