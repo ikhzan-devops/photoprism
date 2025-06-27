@@ -5,6 +5,8 @@ import (
 	"strings"
 
 	"github.com/olekukonko/tablewriter"
+	"github.com/olekukonko/tablewriter/renderer"
+	"github.com/olekukonko/tablewriter/tw"
 )
 
 // MarkdownTable returns a text-formatted table with caption, optionally as valid Markdown,
@@ -24,31 +26,43 @@ func MarkdownTable(rows [][]string, cols []string, opt Options) string {
 		}
 	}
 
-	buf := &bytes.Buffer{}
+	result := &bytes.Buffer{}
 
-	// Set Borders.
-	borders := tablewriter.Border{
-		Left:   true,
-		Right:  true,
-		Top:    !opt.Valid,
-		Bottom: !opt.Valid,
+	var tableRenderer tw.Renderer
+	var tableConfig tablewriter.Config
+
+	if opt.Valid {
+		tableRenderer = renderer.NewMarkdown()
+		tableConfig = tablewriter.Config{
+			Header: tw.CellConfig{Alignment: tw.CellAlignment{Global: tw.AlignLeft}, Formatting: tw.CellFormatting{AutoFormat: -1}},
+			Row: tw.CellConfig{
+				Alignment: tw.CellAlignment{Global: tw.AlignLeft},
+			},
+		}
+	} else {
+		tableRenderer = renderer.NewBlueprint()
+		tableConfig = tablewriter.Config{
+			Header: tw.CellConfig{Alignment: tw.CellAlignment{Global: tw.AlignCenter}, Formatting: tw.CellFormatting{AutoFormat: -1}},
+			Row: tw.CellConfig{
+				Alignment: tw.CellAlignment{Global: tw.AlignLeft},
+			},
+		}
 	}
 
 	// RenderFormat.
-	table := tablewriter.NewWriter(buf)
+	table := tablewriter.NewTable(result,
+		tablewriter.WithRenderer(tableRenderer),
+		tablewriter.WithConfig(tableConfig),
+	)
 
 	// Set Caption.
 	if opt.Caption != "" {
-		table.SetCaption(true, opt.Caption)
+		table.Caption(tw.Caption{Text: opt.Caption})
 	}
 
-	table.SetAutoWrapText(!opt.Valid && !opt.NoWrap)
-	table.SetAutoFormatHeaders(false)
-	table.SetHeader(cols)
-	table.SetBorders(borders)
-	table.SetCenterSeparator("|")
-	table.AppendBulk(rows)
-	table.Render()
+	table.Header(cols)
+	_ = table.Bulk(rows)
+	_ = table.Render()
 
-	return buf.String()
+	return result.String()
 }

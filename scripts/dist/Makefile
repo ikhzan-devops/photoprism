@@ -65,6 +65,9 @@ darktable:
 	sudo apt-get update
 	sudo apt-get install darktable
 	sudo apt-get autoremove
+yt-dlp: update-yt-dlp
+update-yt-dlp:
+	sudo yt-dlp -U
 
 # Declare all targets as "PHONY", see https://www.gnu.org/software/make/manual/html_node/Phony-Targets.html.
 MAKEFLAGS += --always-make

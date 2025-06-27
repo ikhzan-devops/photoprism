@@ -452,6 +452,7 @@ let themes = {
       "accent": "#F2F5FA",
       "error": "#d5303f",
       "on-error": "#cd1b2b",
+      "danger": "#9f2727",
       "info": "#4aa2bc",
       "on-info": "#323742",
       "success": "#1ac5c1",

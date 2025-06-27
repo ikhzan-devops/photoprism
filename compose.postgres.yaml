@@ -129,7 +129,7 @@ services:
       PHOTOPRISM_FFMPEG_SIZE: "1920"                 # video size limit in pixels (720-7680) (default: 3840)
       # PHOTOPRISM_FFMPEG_BITRATE: "60"              # video bitrate limit in Mbps (default: 60)
       ## Run/install on first startup (options: update https gpu ffmpeg tensorflow davfs clitools clean):
-      PHOTOPRISM_INIT: "https tensorflow postgresql"
+      PHOTOPRISM_INIT: "https yt-dlp postgresql"
     ## Share hardware devices with FFmpeg and TensorFlow (optional):
     # devices:
     #  - "/dev/dri:/dev/dri"                         # Intel QSV (Broadwell and later) or VAAPI (Haswell and earlier)
@@ -145,7 +145,7 @@ services:
       - ".:/go/src/github.com/photoprism/photoprism"
       - "./storage:/photoprism"
       - "go-mod:/go/pkg/mod"
-
+      
   ## PostgreSQL Database Server
   ## Docs: https://www.postgresql.org/docs/
   postgres:

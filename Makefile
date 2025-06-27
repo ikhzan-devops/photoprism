@@ -74,6 +74,7 @@ test: test-js test-go
 test-go: reset-sqlite run-test-go
 test-pkg: reset-sqlite run-test-pkg
 test-api: reset-sqlite run-test-api
+test-video: reset-sqlite run-test-video
 test-entity: reset-sqlite run-test-entity
 test-commands: reset-sqlite run-test-commands
 test-photoprism: reset-sqlite run-test-photoprism
@@ -276,6 +277,8 @@ dep-npm:
 	sudo npm install -g npm
 dep-js:
 	(cd frontend && npm ci --no-update-notifier --no-audit)
+	# TODO: If in the future we want to test in a real browser environment, add this (Playwright)
+	# (cd frontend && npx playwright install chromium)
 dep-go:
 	go build -v ./...
 dep-upgrade:
@@ -394,6 +397,21 @@ acceptance-auth-short:
 acceptance-auth-firefox:
 	$(info Running JS acceptance-auth tests in Firefox...)
 	(cd frontend && npm run testcafe -- firefox:headless --test-grep "^(Common|Core)\:*" --test-meta mode=auth --config-file ./testcaferc.json --disable-native-automation "tests/acceptance")
+vitest:
+	$(info Running Vitest unit tests...)
+	(cd frontend && npm run vitest)
+vitest-watch:
+	$(info Running Vitest unit tests in watch mode...)
+	(cd frontend && npm run vitest-watch)
+vitest-coverage:
+	$(info Running Vitest unit tests with coverage...)
+	(cd frontend && npm run vitest-coverage)
+vitest-component:
+	$(info Running Vitest component tests...)
+	(cd frontend && npm run vitest-component)
+vitest-ui:
+	$(info Opening Vitest UI...)
+	(cd frontend && npm run vitest-ui)
 reset-mariadb:
 	$(info Resetting photoprism database...)
 	mysql < scripts/sql/reset-photoprism.sql
@@ -450,6 +468,9 @@ run-test-pkg:
 run-test-api:
 	$(info Running all API tests...)
 	$(GOTEST) -parallel 2 -count 1 -cpu 2 -tags="slow,develop" -timeout 20m ./internal/api/...
+run-test-video:
+	$(info Running all video tests...)
+	$(GOTEST) -parallel 2 -count 1 -cpu 2 -tags="slow,develop" -timeout 20m ./internal/ffmpeg/... ./internal/photoprism/dl/... ./pkg/media/...
 run-test-entity:
 	$(info Running all Entity tests...)
 	$(GOTEST) -parallel 2 -count 1 -cpu 2 -tags="slow,develop" -timeout 20m ./internal/entity/...

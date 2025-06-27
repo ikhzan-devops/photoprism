@@ -167,7 +167,7 @@
               >
               </v-autocomplete>
             </v-col>
-            <v-col cols="4" md="2">
+            <v-col cols="4" md="2" class="hidden-xs">
               <v-text-field
                 v-model="view.model.Altitude"
                 :disabled="disabled"
@@ -183,12 +183,12 @@
                 validate-on="input"
                 :rules="rules.number(false, -10000, 1000000)"
                 class="input-altitude"
+                style="flex: 0 0 120px"
               ></v-text-field>
             </v-col>
-            <v-col cols="4" sm="6" md="3">
+            <v-col cols="7" md="3">
               <v-text-field
                 v-model="view.model.Lat"
-                :append-inner-icon="view.model.PlaceSrc === 'manual' ? 'mdi-check' : ''"
                 :disabled="disabled"
                 hide-details
                 autocomplete="off"
@@ -200,13 +200,27 @@
                 validate-on="input"
                 :rules="rules.lat(false)"
                 class="input-latitude"
+                style="flex: 1"
                 @paste="pastePosition"
-              ></v-text-field>
+              >
+                <template #prepend-inner>
+                  <v-icon
+                    v-if="!placesDisabled"
+                    variant="plain"
+                    icon="mdi-crosshairs-gps"
+                    :title="$gettext('Choose Location')"
+                    :disabled="placesDisabled"
+                    class="action-map"
+                    @click.stop="openMapDialog"
+                  >
+                  </v-icon>
+                  <!-- v-icon v-if="view.model.PlaceSrc === 'manual'" variant="plain" icon="mdi-check"> </v-icon -->
+                </template>
+              </v-text-field>
             </v-col>
-            <v-col cols="4" sm="6" md="3">
+            <v-col cols="5" md="3">
               <v-text-field
                 v-model="view.model.Lng"
-                :append-inner-icon="view.model.PlaceSrc === 'manual' ? 'mdi-check' : ''"
                 :disabled="disabled"
                 hide-details
                 autocomplete="off"
@@ -218,8 +232,10 @@
                 validate-on="input"
                 :rules="rules.lng(false)"
                 class="input-longitude"
+                style="flex: 1"
                 @paste="pastePosition"
-              ></v-text-field>
+              >
+              </v-text-field>
             </v-col>
             <v-col cols="12" md="6" class="p-camera-select">
               <v-select
@@ -432,6 +448,13 @@
         </div>
       </div>
     </v-form>
+    <p-location-dialog
+      :value="mapDialogVisible"
+      :latitude="view.model.Lat ? Number(view.model.Lat) : 0"
+      :longitude="view.model.Lng ? Number(view.model.Lng) : 0"
+      @update:value="mapDialogVisible = $event"
+      @confirm="updateLocation"
+    ></p-location-dialog>
   </div>
 </template>
 
@@ -440,9 +463,13 @@ import countries from "options/countries.json";
 import Thumb from "model/thumb";
 import * as options from "options/options";
 import { rules } from "common/form";
+import PLocationDialog from "component/location/dialog.vue";
 
 export default {
   name: "PTabPhotoDetails",
+  components: {
+    PLocationDialog,
+  },
   props: {
     uid: {
       type: String,
@@ -469,6 +496,8 @@ export default {
       time: "",
       textRule: (v) => v.length <= this.$config.get("clip") || this.$gettext("Text too long"),
       rtl: this.$isRtl,
+      mapDialogVisible: false,
+      placesDisabled: !this.$config.feature("places"),
     };
   },
   computed: {
@@ -625,6 +654,22 @@ export default {
     },
     close() {
       this.$emit("close");
+    },
+    openMapDialog() {
+      this.mapDialogVisible = true;
+    },
+    updateLocation(data) {
+      if (data && data.latitude !== undefined && data.longitude !== undefined) {
+        this.view.model.Lat = data.latitude;
+        this.view.model.Lng = data.longitude;
+        this.view.model.PlaceSrc = "manual";
+
+        // Clear country and altitude when coordinates are cleared (0,0)
+        if (data.latitude === 0 && data.longitude === 0) {
+          this.view.model.Country = "zz"; // "Unknown" country code
+          this.view.model.Altitude = "0";
+        }
+      }
     },
   },
 };

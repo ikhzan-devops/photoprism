@@ -557,6 +557,16 @@ form > .v-card > .v-card-text.dense {
     margin-inline-start: 12px;
 }
 
+/* Divider */
+
+hr.v-divider {
+    opacity: 0.1;
+}
+
+.v-table hr {
+    opacity: 0.05;
+}
+
 .v-divider.v-divider--vertical {
     margin-left: 4px;
     margin-right: 4px;

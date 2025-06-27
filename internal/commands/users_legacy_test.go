@@ -24,6 +24,6 @@ func TestUsersLegacyCommand(t *testing.T) {
 				result.WriteRune(char)
 			}
 		}
-		assert.Contains(t, result.String(), "|ID|UID|Name|User|Email|Admin|CreatedAt|")
+		assert.Contains(t, result.String(), "│ID│UID│Name│User│Email│Admin│CreatedAt│")
 	})
 }
