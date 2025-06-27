@@ -186,56 +186,25 @@
                 style="flex: 0 0 120px"
               ></v-text-field>
             </v-col>
-            <v-col cols="7" md="3">
-              <v-text-field
-                v-model="view.model.Lat"
+            <v-col cols="12" md="6">
+              <p-coordinate-input
+                :latitude="view.model.Lat"
+                :longitude="view.model.Lng"
                 :disabled="disabled"
                 hide-details
-                autocomplete="off"
-                autocorrect="off"
-                autocapitalize="none"
-                :label="$gettext('Latitude')"
-                placeholder=""
+                :label="$gettext('Coordinates')"
+                placeholder="e.g., 52.5208, 13.4049"
                 density="comfortable"
                 validate-on="input"
-                :rules="rules.lat(false)"
-                class="input-latitude"
-                style="flex: 1"
-                @paste="pastePosition"
-              >
-                <template #prepend-inner>
-                  <v-icon
-                    v-if="!placesDisabled"
-                    variant="plain"
-                    icon="mdi-crosshairs-gps"
-                    :title="$gettext('Choose Location')"
-                    :disabled="placesDisabled"
-                    class="action-map"
-                    @click.stop="openMapDialog"
-                  >
-                  </v-icon>
-                  <!-- v-icon v-if="view.model.PlaceSrc === 'manual'" variant="plain" icon="mdi-check"> </v-icon -->
-                </template>
-              </v-text-field>
-            </v-col>
-            <v-col cols="5" md="3">
-              <v-text-field
-                v-model="view.model.Lng"
-                :disabled="disabled"
-                hide-details
-                autocomplete="off"
-                autocorrect="off"
-                autocapitalize="none"
-                :label="$gettext('Longitude')"
-                placeholder=""
-                density="comfortable"
-                validate-on="input"
-                :rules="rules.lng(false)"
-                class="input-longitude"
-                style="flex: 1"
-                @paste="pastePosition"
-              >
-              </v-text-field>
+                :show-map-button="!placesDisabled"
+                :map-button-title="$gettext('Choose Location')"
+                :map-button-disabled="placesDisabled"
+                class="input-coordinates"
+                @update:latitude="updateLatitude"
+                @update:longitude="updateLongitude"
+                @coordinates-changed="onCoordinatesChanged"
+                @open-map="openMapDialog"
+              ></p-coordinate-input>
             </v-col>
             <v-col cols="12" md="6" class="p-camera-select">
               <v-select
@@ -464,11 +433,13 @@ import Thumb from "model/thumb";
 import * as options from "options/options";
 import { rules } from "common/form";
 import PLocationDialog from "component/location/dialog.vue";
+import PCoordinateInput from "component/location/coordinate-input.vue";
 
 export default {
   name: "PTabPhotoDetails",
   components: {
     PLocationDialog,
+    PCoordinateInput,
   },
   props: {
     uid: {
@@ -566,36 +537,7 @@ export default {
       const taken = this.view.model.getDateTime();
       this.time = taken.toFormat("HH:mm:ss");
     },
-    pastePosition(event) {
-      // Autofill the lat and lng fields if the text in the clipboard contains two float values.
-      const clipboard = event.clipboardData ? event.clipboardData : window.clipboardData;
 
-      if (!clipboard) {
-        return;
-      }
-
-      // Get values from browser clipboard.
-      const text = clipboard.getData("text");
-
-      // Trim spaces before splitting by whitespace and/or commas.
-      const val = text.trim().split(/[ ,]+/);
-
-      // Two values found?
-      if (val.length >= 2) {
-        // Parse values.
-        const lat = parseFloat(val[0]);
-        const lng = parseFloat(val[1]);
-
-        // Lat and long must be valid floating point numbers.
-        if (!isNaN(lat) && lat >= -90 && lat <= 90 && !isNaN(lng) && lng >= -180 && lng <= 180) {
-          // Update view.model values.
-          this.view.model.Lat = lat;
-          this.view.model.Lng = lng;
-          // Prevent default action.
-          event.preventDefault();
-        }
-      }
-    },
     updateModel() {
       if (!this.view?.model.hasId()) {
         return;
@@ -660,15 +602,24 @@ export default {
     },
     updateLocation(data) {
       if (data && data.latitude !== undefined && data.longitude !== undefined) {
-        this.view.model.Lat = data.latitude;
-        this.view.model.Lng = data.longitude;
-        this.view.model.PlaceSrc = "manual";
-
-        // Clear country and altitude when coordinates are cleared (0,0)
-        if (data.latitude === 0 && data.longitude === 0) {
-          this.view.model.Country = "zz"; // "Unknown" country code
-          this.view.model.Altitude = "0";
-        }
+        this.updateLatitude(data.latitude);
+        this.updateLongitude(data.longitude);
+        this.onCoordinatesChanged(data);
+      }
+    },
+    updateLatitude(lat) {
+      this.view.model.Lat = lat;
+      this.view.model.PlaceSrc = "manual";
+    },
+    updateLongitude(lng) {
+      this.view.model.Lng = lng;
+      this.view.model.PlaceSrc = "manual";
+    },
+    onCoordinatesChanged(data) {
+      // Clear country and altitude when coordinates are cleared (0,0)
+      if (data.latitude === 0 && data.longitude === 0) {
+        this.view.model.Country = "zz"; // "Unknown" country code
+        this.view.model.Altitude = "0";
       }
     },
   },
