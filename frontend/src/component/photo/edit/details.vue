@@ -136,6 +136,7 @@
               <v-autocomplete
                 v-model="view.model.TimeZone"
                 :disabled="disabled"
+                :prepend-inner-icon="$vuetify.display.xs ? undefined : 'mdi-earth'"
                 :label="$gettext('Time Zone')"
                 hide-no-data
                 item-value="ID"
@@ -146,13 +147,13 @@
                 @update:model-value="syncTime"
               ></v-autocomplete>
             </v-col>
-            <v-col cols="12" sm="8" md="4">
+            <v-col cols="12" md="4">
               <v-autocomplete
                 v-model="view.model.Country"
                 :append-inner-icon="view.model.PlaceSrc === 'manual' ? 'mdi-check' : ''"
                 :disabled="disabled"
                 :readonly="!!(view.model.Lat || view.model.Lng)"
-                :placeholder="$gettext('Country')"
+                :label="$gettext('Country')"
                 hide-details
                 hide-no-data
                 autocomplete="off"
@@ -167,7 +168,26 @@
               >
               </v-autocomplete>
             </v-col>
-            <v-col cols="4" md="2" class="hidden-xs">
+            <v-col cols="12" md="5">
+              <p-position-input
+                :latitude="view.model.Lat"
+                :longitude="view.model.Lng"
+                :disabled="disabled"
+                hide-details
+                :label="$gettext('Position')"
+                density="comfortable"
+                validate-on="input"
+                :show-map-button="!placesDisabled"
+                :map-button-title="$gettext('Set Position')"
+                :map-button-disabled="placesDisabled"
+                class="input-coordinates"
+                @update:latitude="updateLatitude"
+                @update:longitude="updateLongitude"
+                @coordinates-changed="onCoordinatesChanged"
+                @open-map="openMapDialog"
+              ></p-position-input>
+            </v-col>
+            <v-col cols="4" md="3" class="hidden-sm-and-down">
               <v-text-field
                 v-model="view.model.Altitude"
                 :disabled="disabled"
@@ -185,26 +205,6 @@
                 class="input-altitude"
                 style="flex: 0 0 120px"
               ></v-text-field>
-            </v-col>
-            <v-col cols="12" md="6">
-              <p-coordinate-input
-                :latitude="view.model.Lat"
-                :longitude="view.model.Lng"
-                :disabled="disabled"
-                hide-details
-                :label="$gettext('Coordinates')"
-                placeholder="e.g., 52.5208, 13.4049"
-                density="comfortable"
-                validate-on="input"
-                :show-map-button="!placesDisabled"
-                :map-button-title="$gettext('Choose Location')"
-                :map-button-disabled="placesDisabled"
-                class="input-coordinates"
-                @update:latitude="updateLatitude"
-                @update:longitude="updateLongitude"
-                @coordinates-changed="onCoordinatesChanged"
-                @open-map="openMapDialog"
-              ></p-coordinate-input>
             </v-col>
             <v-col cols="12" md="6" class="p-camera-select">
               <v-select
@@ -417,13 +417,13 @@
         </div>
       </div>
     </v-form>
-    <p-location-dialog
+    <p-position-dialog
       :value="mapDialogVisible"
       :latitude="view.model.Lat ? Number(view.model.Lat) : 0"
       :longitude="view.model.Lng ? Number(view.model.Lng) : 0"
       @update:value="mapDialogVisible = $event"
       @confirm="updateLocation"
-    ></p-location-dialog>
+    ></p-position-dialog>
   </div>
 </template>
 
@@ -432,14 +432,14 @@ import countries from "options/countries.json";
 import Thumb from "model/thumb";
 import * as options from "options/options";
 import { rules } from "common/form";
-import PLocationDialog from "component/location/dialog.vue";
-import PCoordinateInput from "component/location/coordinate-input.vue";
+import PPositionDialog from "component/position/dialog.vue";
+import PPositionInput from "component/position/input.vue";
 
 export default {
   name: "PTabPhotoDetails",
   components: {
-    PLocationDialog,
-    PCoordinateInput,
+    PPositionDialog,
+    PPositionInput,
   },
   props: {
     uid: {
