@@ -2,133 +2,126 @@
   <v-dialog
     v-model="show"
     :max-width="900"
-    :fullscreen="$vuetify.display.mdAndDown"
+    :fullscreen="$vuetify.display.xs"
     :persistent="false"
-    class="p-location-dialog"
+    class="p-position-dialog"
     @keydown.esc="close"
     @after-leave="onDialogClosed"
   >
-    <v-card :tile="$vuetify.display.mdAndDown">
+    <v-card :tile="$vuetify.display.xs">
       <v-toolbar
-        v-if="$vuetify.display.mdAndDown"
+        v-if="$vuetify.display.xs"
         flat
         color="navigation"
-        class="mb-4"
         :density="$vuetify.display.smAndDown ? 'compact' : 'default'"
       >
         <v-btn icon @click.stop="close">
           <v-icon>mdi-close</v-icon>
         </v-btn>
         <v-toolbar-title>
-          {{ $gettext("Set Location") }}
+          {{ $gettext("Set Position") }}
         </v-toolbar-title>
       </v-toolbar>
       <v-card-title v-else class="d-flex justify-start align-center ga-3">
         <v-icon size="28" color="primary">mdi-map-marker</v-icon>
-        <h6 class="text-h6">{{ $gettext("Set Location") }}</h6>
+        <h6 class="text-h6">{{ $gettext("Set Position") }}</h6>
       </v-card-title>
-      <v-card-text class="pt-4">
-        <div class="d-flex flex-column flex-md-row">
+      <v-card-text class="pb-3">
+        <div class="d-flex flex-column flex-md-row ga-5">
           <div class="flex-grow-1 position-relative mb-4 mb-md-0">
             <div ref="map" class="p-map" style="height: 50vh; min-height: 300px; width: 100%; border-radius: 4px"></div>
           </div>
 
           <div
-            class="map-sidebar d-flex flex-column ml-0 ml-md-4"
+            class="map-sidebar d-flex flex-column"
+            :class="$vuetify.display.xs ? `ga-3` : 'ga-5'"
             :style="{
               width: $vuetify.display.smAndDown ? '100%' : '300px',
               maxWidth: $vuetify.display.smAndDown ? '100%' : '300px',
               minWidth: 0,
             }"
           >
-            <div class="d-flex flex-column flex-grow-1 ga-3">
-              <div>
-                <v-menu
-                  v-model="showSearchMenu"
-                  :close-on-content-click="false"
-                  location="bottom"
-                  origin="top"
-                  max-height="300"
-                >
-                  <template #activator="{ props }">
-                    <v-text-field
-                      v-model="searchQuery"
-                      :label="$gettext('Search')"
-                      prepend-inner-icon="mdi-magnify"
-                      :append-inner-icon="
-                        searchLoading ? 'mdi-loading mdi-spin' : searchQuery ? 'mdi-close-circle' : ''
-                      "
-                      density="compact"
-                      variant="outlined"
-                      placeholder="e.g., Berlin, New York, Tokyo"
-                      v-bind="props"
-                      @update:model-value="onSearchQueryChange"
-                      @click:append-inner="clearSearch"
-                      @focus="onSearchFocus"
-                      @blur="onSearchBlur"
-                    ></v-text-field>
-                  </template>
-                  <v-list v-if="searchResults.length > 0" density="compact">
-                    <v-list-item
-                      v-for="place in searchResults"
-                      :key="place.id"
-                      :title="place.formatted"
-                      @click="onPlaceSelected(place)"
-                    >
-                      <template #prepend>
-                        <v-icon>mdi-map-marker</v-icon>
-                      </template>
-                    </v-list-item>
-                  </v-list>
-                  <v-list v-else-if="searchQuery && searchQuery.length >= 2 && !searchLoading">
-                    <v-list-item>
-                      <v-list-item-title>{{ $gettext("No results found") }}</v-list-item-title>
-                    </v-list-item>
-                  </v-list>
-                </v-menu>
-              </div>
-
-              <div v-if="locationInfo">
-                <div class="text-subtitle-2 mb-2">{{ $gettext("Location Details") }}</div>
-                <div class="text-body-2">
-                  {{ simplifiedLocationDisplay }}
-                </div>
-              </div>
-
-              <div>
-                <p-coordinate-input
-                  :latitude="currentLat"
-                  :longitude="currentLng"
-                  density="comfortable"
-                  placeholder="e.g., 52.5208, 13.4049"
-                  :enable-undo="true"
-                  :auto-apply="true"
-                  :label="$gettext('Coordinates')"
-                  @update:latitude="updateLatitude"
-                  @update:longitude="updateLongitude"
-                  @coordinates-changed="onCoordinatesChanged"
-                  @coordinates-cleared="onCoordinatesCleared"
-                ></p-coordinate-input>
-              </div>
-
-              <div class="d-flex flex-column ga-3 pa-4 border rounded">
-                <div class="text-body-2">
-                  {{ $gettext("Click on the map to set a location. Drag the marker for precise positioning.") }}
-                </div>
-                <div class="d-flex ga-2">
-                  <v-btn variant="flat" color="button" class="action-cancel" min-width="120" @click.stop="close">
-                    {{ $gettext("Cancel") }}
-                  </v-btn>
-                  <v-btn
-                    color="primary"
-                    min-width="120"
-                    :disabled="!(currentLat !== null && currentLng !== null)"
-                    @click="confirm"
+            <div>
+              <v-menu
+                v-model="showSearchMenu"
+                :close-on-content-click="false"
+                location="bottom"
+                origin="top"
+                max-height="300"
+              >
+                <template #activator="{ props }">
+                  <v-text-field
+                    v-model="searchQuery"
+                    prepend-inner-icon="mdi-magnify"
+                    :append-inner-icon="searchLoading ? 'mdi-loading mdi-spin' : searchQuery ? 'mdi-close-circle' : ''"
+                    density="compact"
+                    variant="outlined"
+                    :placeholder="$gettext(`Search`)"
+                    v-bind="props"
+                    @update:model-value="onSearchQueryChange"
+                    @click:append-inner="clearSearch"
+                    @focus="onSearchFocus"
+                    @blur="onSearchBlur"
+                  ></v-text-field>
+                </template>
+                <v-list v-if="searchResults.length > 0" density="compact">
+                  <v-list-item
+                    v-for="place in searchResults"
+                    :key="place.id"
+                    :title="place.formatted"
+                    @click="onPlaceSelected(place)"
                   >
-                    {{ $gettext("Apply") }}
-                  </v-btn>
-                </div>
+                    <template #prepend>
+                      <v-icon>mdi-map-marker</v-icon>
+                    </template>
+                  </v-list-item>
+                </v-list>
+                <v-list v-else-if="searchQuery && searchQuery.length >= 2 && !searchLoading">
+                  <v-list-item>
+                    <v-list-item-title>{{ $gettext("No results found") }}</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+            </div>
+            <!-- div v-if="locationInfo">
+              <div class="text-subtitle-2 mb-2">{{ $gettext("Location Details") }}</div>
+              <div class="text-body-2">
+                {{ simplifiedLocationDisplay }}
               </div>
+            </div -->
+
+            <div class="text-body-2 mt-3">
+              {{ $gettext("You can search for a location or move the marker on the map to change the position:") }}
+            </div>
+
+            <div class="flex-grow-1">
+              <p-position-input
+                :latitude="currentLat"
+                :longitude="currentLng"
+                density="comfortable"
+                :placeholder="$gettext(`Position`)"
+                :enable-undo="true"
+                :auto-apply="true"
+                :label="simplifiedLocationDisplay"
+                @update:latitude="updateLatitude"
+                @update:longitude="updateLongitude"
+                @coordinates-changed="onCoordinatesChanged"
+                @coordinates-cleared="onCoordinatesCleared"
+              ></p-position-input>
+            </div>
+
+            <div class="action-buttons">
+              <v-btn variant="flat" color="button" class="action-cancel" min-width="120" @click.stop="close">
+                {{ $gettext("Cancel") }}
+              </v-btn>
+              <v-btn
+                color="highlight"
+                min-width="120"
+                :disabled="!(currentLat !== null && currentLng !== null)"
+                @click="confirm"
+              >
+                {{ $gettext("Apply") }}
+              </v-btn>
             </div>
           </div>
         </div>
@@ -139,12 +132,12 @@
 
 <script>
 import maplibregl from "common/maplibregl";
-import PCoordinateInput from "component/location/coordinate-input.vue";
+import PPositionInput from "component/position/input.vue";
 
 export default {
-  name: "PLocationDialog",
+  name: "PPositionDialog",
   components: {
-    PCoordinateInput,
+    PPositionInput,
   },
   props: {
     value: {
