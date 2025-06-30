@@ -260,20 +260,39 @@ func migrationsTransferAction(ctx *cli.Context) error {
 
 	runForced := ctx.Bool("force")
 	log.Infoln("migrate: ensure target is empty...")
-	if tfrConf.Db().Unscoped().Migrator().HasTable(&entity.Photo{}) {
-		var photoCount int64
-		if err := tfrConf.Db().Unscoped().Model(&entity.Photo{}).Count(&photoCount).Error; err != nil {
-			log.Errorf("migrate: count of photos has failed with %s", err.Error())
-			return err
-		}
-		if photoCount > 0 {
-			if !runForced {
-				errmsg := fmt.Sprintf("migrate: transfer target database is not empty, %d photos found", photoCount)
-				log.Error(errmsg)
-				return fmt.Errorf(errmsg)
+	var entitiesToCheck []interface{}
+	entitiesToCheck = append(entitiesToCheck, &entity.Photo{})
+	entitiesToCheck = append(entitiesToCheck, &entity.Album{})
+	entitiesToCheck = append(entitiesToCheck, &entity.File{})
+	entitiesToCheck = append(entitiesToCheck, &entity.Face{})
+	entitiesToCheck = append(entitiesToCheck, &entity.Folder{})
+
+	recordsFound := false
+	totalRecords := int64(0)
+	for _, toCheck := range entitiesToCheck {
+		if tfrConf.Db().Unscoped().Migrator().HasTable(toCheck) {
+			var toCheckCount int64
+			if err := tfrConf.Db().Unscoped().Model(toCheck).Count(&toCheckCount).Error; err != nil {
+				log.Errorf("migrate: count of model has failed with %s", err.Error())
+				return err
 			}
+			if toCheckCount > 0 {
+				recordsFound = true
+				totalRecords += toCheckCount
+			}
+		}
+	}
+
+	if !recordsFound {
+		runForced = false
+	} else {
+		if !runForced {
+			errmsg := fmt.Sprintf("migrate: transfer target database is not empty, %d records found across %d tables", totalRecords, len(entitiesToCheck))
+			log.Error(errmsg)
+			return fmt.Errorf(errmsg)
 		} else {
-			runForced = false
+			errmsg := fmt.Sprintf("migrate: transfer target database is not empty, %d records found across %d tables but force enabled", totalRecords, len(entitiesToCheck))
+			log.Warning(errmsg)
 		}
 	}
 
