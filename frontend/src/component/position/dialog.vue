@@ -56,7 +56,6 @@
                 item-value="id"
                 return-object
                 auto-select-first
-                clear-on-select
                 clearable
                 autocomplete="off"
                 no-filter
@@ -267,16 +266,7 @@ export default {
       this.cleanupMap();
       this.locationInfo = null;
       this.locationInfoLoading = false;
-
-      // Clear search state
-      this.searchQuery = "";
-      this.searchResults = [];
-      this.searchLoading = false;
-      this.selectedPlace = null;
-      if (this.searchTimeout) {
-        clearTimeout(this.searchTimeout);
-        this.searchTimeout = null;
-      }
+      this.resetSearchState();
     },
     initMap() {
       if (this.map || !this.$refs.map) {
@@ -334,10 +324,7 @@ export default {
         });
 
         this.map.on("click", (e) => {
-          this.currentLat = e.lngLat.lat;
-          this.currentLng = e.lngLat.lng;
-          this.updatePosition(e.lngLat.lat, e.lngLat.lng);
-          this.fetchLocationInfo(e.lngLat.lat, e.lngLat.lng);
+          this.setPositionAndFetchInfo(e.lngLat.lat, e.lngLat.lng);
         });
       } catch (error) {
         console.error("map: initialization failed", error);
@@ -381,9 +368,7 @@ export default {
           // Update coordinates when marker is dragged
           this.marker.on("dragend", () => {
             const lngLat = this.marker.getLngLat();
-            this.currentLat = lngLat.lat;
-            this.currentLng = lngLat.lng;
-            this.fetchLocationInfo(lngLat.lat, lngLat.lng);
+            this.setPositionAndFetchInfo(lngLat.lat, lngLat.lng);
           });
         }
       }
@@ -417,6 +402,28 @@ export default {
       }
     },
 
+    clearSearchTimeout() {
+      if (this.searchTimeout) {
+        clearTimeout(this.searchTimeout);
+        this.searchTimeout = null;
+      }
+    },
+
+    resetSearchState() {
+      this.searchQuery = "";
+      this.searchResults = [];
+      this.selectedPlace = null;
+      this.searchLoading = false;
+      this.clearSearchTimeout();
+    },
+
+    setPositionAndFetchInfo(lat, lng) {
+      this.currentLat = lat;
+      this.currentLng = lng;
+      this.updatePosition(lat, lng);
+      this.fetchLocationInfo(lat, lng);
+    },
+
     fetchLocationInfo(lat, lng) {
       this.locationInfoLoading = true;
       this.$api
@@ -439,11 +446,7 @@ export default {
 
     onSearchQueryChange(query) {
       this.searchQuery = query;
-
-      if (this.searchTimeout) {
-        clearTimeout(this.searchTimeout);
-        this.searchTimeout = null;
-      }
+      this.clearSearchTimeout();
 
       if (!query || query.length < 2) {
         this.searchResults = [];
@@ -491,22 +494,15 @@ export default {
     },
     onPlaceSelected(place) {
       if (place && place.lat && place.lng) {
-        this.currentLat = place.lat;
-        this.currentLng = place.lng;
-        this.updatePosition(place.lat, place.lng);
-        this.fetchLocationInfo(place.lat, place.lng);
-        this.clearSearch();
-        this.searchLoading = false;
-        if (this.searchTimeout) {
-          clearTimeout(this.searchTimeout);
-          this.searchTimeout = null;
-        }
+        this.setPositionAndFetchInfo(place.lat, place.lng);
+
+        this.$nextTick(() => {
+          this.resetSearchState();
+        });
       }
     },
     clearSearch() {
-      this.searchQuery = "";
-      this.searchResults = [];
-      this.selectedPlace = null;
+      this.resetSearchState();
     },
   },
 };
