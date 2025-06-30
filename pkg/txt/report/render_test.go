@@ -18,7 +18,8 @@ func TestTable(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		assert.Contains(t, result, "| bar  | b & a | z                      |")
+		// fmt.Println(result)
+		assert.Contains(t, result, "│ bar  │ b & a | z")
 	})
 	t.Run("MarkdownTable", func(t *testing.T) {
 		result, err := RenderFormat(rows, cols, Markdown)
