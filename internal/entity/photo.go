@@ -804,7 +804,7 @@ func (m *Photo) AddLabels(labels classify.Labels) {
 		}
 	}
 
-	Db().Preload("Labels").Select("id").Find(&m)
+	Db().Preload("Labels").Preload("Labels.Label").Find(&m)
 }
 
 // SetCamera updates the camera.
