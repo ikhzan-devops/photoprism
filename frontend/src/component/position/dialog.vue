@@ -43,6 +43,7 @@
           >
             <div>
               <v-autocomplete
+                ref="search"
                 v-model="selectedPlace"
                 :items="searchResults"
                 :loading="searchLoading"
@@ -54,9 +55,12 @@
                 item-title="formatted"
                 item-value="id"
                 return-object
+                auto-select-first
+                clear-on-select
                 clearable
                 autocomplete="off"
                 no-filter
+                menu-icon=""
                 :menu-props="{ maxHeight: 300 }"
                 @update:search="onSearchQueryChange"
                 @update:model-value="onPlaceSelected"
@@ -491,9 +495,7 @@ export default {
         this.currentLng = place.lng;
         this.updatePosition(place.lat, place.lng);
         this.fetchLocationInfo(place.lat, place.lng);
-
-        this.searchQuery = "";
-        this.searchResults = [];
+        this.clearSearch();
         this.searchLoading = false;
         if (this.searchTimeout) {
           clearTimeout(this.searchTimeout);
