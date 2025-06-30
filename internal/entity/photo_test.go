@@ -421,6 +421,9 @@ func TestPhoto_AddLabels(t *testing.T) {
 		len1 := len(m.Labels)
 		m.AddLabels(classifyLabels)
 		assert.Greater(t, len(m.Labels), len1)
+		for _, l := range m.Labels {
+			assert.NotNil(t, l.Label)
+		}
 	})
 	t.Run("Update", func(t *testing.T) {
 		m := PhotoFixtures.Get("Photo15")
@@ -432,6 +435,9 @@ func TestPhoto_AddLabels(t *testing.T) {
 		assert.Equal(t, len1, len(m.Labels))
 		assert.Equal(t, 10, m.Labels[0].Uncertainty)
 		assert.Equal(t, SrcManual, m.Labels[0].LabelSrc)
+		for _, l := range m.Labels {
+			assert.NotNil(t, l.Label)
+		}
 	})
 }
 
