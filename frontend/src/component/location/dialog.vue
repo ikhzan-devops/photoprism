@@ -1,35 +1,33 @@
 <template>
   <v-dialog
-    v-model="show"
+    :model-value="visible"
     :max-width="900"
     :fullscreen="$vuetify.display.xs"
-    :persistent="false"
-    class="p-position-dialog"
+    persistent
+    scrim
+    scrollable
+    class="p-location-dialog"
     @keydown.esc="close"
-    @after-leave="onDialogClosed"
+    @after-enter="afterEnter"
+    @after-leave="afterLeave"
   >
     <v-card :tile="$vuetify.display.xs">
-      <v-toolbar
-        v-if="$vuetify.display.xs"
-        flat
-        color="navigation"
-        :density="$vuetify.display.smAndDown ? 'compact' : 'default'"
-      >
+      <v-toolbar v-if="$vuetify.display.xs" flat color="navigation" class="mb-4" density="compact">
         <v-btn icon @click.stop="close">
           <v-icon>mdi-close</v-icon>
         </v-btn>
         <v-toolbar-title>
-          {{ $gettext("Set Position") }}
+          {{ $gettext("Adjust Location") }}
         </v-toolbar-title>
       </v-toolbar>
       <v-card-title v-else class="d-flex justify-start align-center ga-3">
         <v-icon size="28" color="primary">mdi-map-marker</v-icon>
-        <h6 class="text-h6">{{ $gettext("Set Position") }}</h6>
+        <h6 class="text-h6">{{ $gettext("Adjust Location") }}</h6>
       </v-card-title>
       <v-card-text class="pb-3">
         <div class="d-flex flex-column flex-md-row ga-5">
           <div class="flex-grow-1 position-relative mb-4 mb-md-0">
-            <div ref="map" class="p-map" style="height: 50vh; min-height: 300px; width: 100%; border-radius: 4px"></div>
+            <div ref="map" class="p-map" style="height: 45vh; min-height: 250px; width: 100%; border-radius: 4px"></div>
           </div>
 
           <div
@@ -52,7 +50,7 @@
                 density="compact"
                 variant="outlined"
                 :placeholder="$gettext(`Search`)"
-                item-title="formatted"
+                item-title="name"
                 item-value="id"
                 return-object
                 auto-select-first
@@ -93,19 +91,18 @@
             </div>
 
             <div class="flex-grow-1">
-              <p-position-input
-                :latitude="currentLat"
-                :longitude="currentLng"
+              <p-location-input
+                :lat="currentLat"
+                :lng="currentLng"
                 density="comfortable"
-                :placeholder="$gettext(`Position`)"
                 :enable-undo="true"
                 :auto-apply="true"
-                :label="simplifiedLocationDisplay"
-                @update:latitude="updateLatitude"
-                @update:longitude="updateLongitude"
-                @coordinates-changed="onCoordinatesChanged"
-                @coordinates-cleared="onCoordinatesCleared"
-              ></p-position-input>
+                :label="locationLabel"
+                @update:lat="setLat"
+                @update:lng="setLng"
+                @changed="onLocationChanged"
+                @cleared="onLocationCleared"
+              ></p-location-input>
             </div>
 
             <div class="action-buttons">
@@ -115,11 +112,11 @@
               <v-btn
                 color="highlight"
                 min-width="120"
-                :disabled="!(currentLat !== null && currentLng !== null) || locationInfoLoading"
-                :loading="locationInfoLoading"
+                :disabled="!(currentLat !== null && currentLng !== null) || locationLoading"
+                :loading="locationLoading"
                 @click="confirm"
               >
-                {{ $gettext("Apply") }}
+                {{ $gettext("Confirm") }}
               </v-btn>
             </div>
           </div>
@@ -130,48 +127,49 @@
 </template>
 
 <script>
-import maplibregl from "common/maplibregl";
-import PPositionInput from "component/position/input.vue";
+import PLocationInput from "component/location/input.vue";
+import * as map from "common/map";
+
+let maplibregl = null;
 
 export default {
-  name: "PPositionDialog",
+  name: "PLocationDialog",
   components: {
-    PPositionInput,
+    PLocationInput,
   },
   props: {
-    value: {
+    visible: {
       type: Boolean,
       default: false,
     },
-    latitude: {
-      type: Number,
-      default: 0,
+    latlng: {
+      type: Array,
+      default: () => [0, 0],
     },
-    longitude: {
-      type: Number,
-      default: 0,
+    style: {
+      type: String,
+      default: "embedded",
     },
   },
-  emits: ["update:value", "update:latitude", "update:longitude", "confirm", "close"],
+  emits: ["update:lat", "update:lng", "close", "confirm"],
   data() {
     return {
-      show: this.value,
       map: null,
       marker: null,
       position: [0.0, 0.0],
       options: {
         container: null,
-        style: `https://cdn.photoprism.app/maps/embedded.json`,
+        style: `https://cdn.photoprism.app/maps/${this.style}.json`,
         glyphs: `https://cdn.photoprism.app/maps/font/{fontstack}/{range}.pbf`,
         zoom: 12,
         interactive: true,
-        attributionControl: { compact: true },
+        attributionControl: false,
       },
       loaded: false,
-      currentLat: this.latitude,
-      currentLng: this.longitude,
-      locationInfo: null,
-      locationInfoLoading: false,
+      currentLat: this.lat,
+      currentLng: this.lng,
+      location: null,
+      locationLoading: false,
       searchQuery: "",
       searchResults: [],
       searchLoading: false,
@@ -180,81 +178,47 @@ export default {
     };
   },
   computed: {
-    simplifiedLocationDisplay() {
-      if (!this.locationInfo) return "";
-
-      if (this.locationInfo.street && this.locationInfo.formatted) {
-        return `${this.locationInfo.street}, ${this.locationInfo.formatted}`;
-      } else if (this.locationInfo.street) {
-        return this.locationInfo.street;
-      } else if (this.locationInfo.formatted) {
-        return this.locationInfo.formatted;
+    locationLabel() {
+      if (!this.location || !this.location?.place?.label) {
+        return "";
       }
 
-      return "";
+      return this.location.place.label;
     },
   },
   watch: {
-    value(val) {
-      this.show = val;
-      if (val) {
-        this.currentLat = this.latitude;
-        this.currentLng = this.longitude;
-        this.$nextTick(() => {
-          setTimeout(() => {
-            this.initMap();
-          }, 100);
-        });
-      } else {
-        // Cleanup map when dialog closes
-        this.cleanupMap();
+    visible(show) {
+      if (show) {
+        this.currentLat = this.latlng[0];
+        this.currentLng = this.latlng[1];
+        this.setPosition(this.currentLat, this.currentLng);
       }
     },
-    show(val) {
-      this.$emit("update:value", val);
+    latlng(val) {
+      this.currentLat = val[0];
+      this.currentLng = val[1];
+      this.setPosition(this.currentLat, this.currentLng);
     },
-    latitude(val) {
-      this.currentLat = val;
-      if (this.map && this.loaded) {
-        this.updatePosition(val, this.currentLng);
-      }
-    },
-    longitude(val) {
-      this.currentLng = val;
-      if (this.map && this.loaded) {
-        this.updatePosition(this.currentLat, val);
-      }
-    },
-  },
-  mounted() {
-    if (this.show) {
-      this.$nextTick(() => {
-        setTimeout(() => {
-          this.initMap();
-        }, 100);
-      });
-    }
   },
   beforeUnmount() {
-    this.cleanupMap();
+    this.afterLeave();
   },
   methods: {
     close() {
-      this.show = false;
       this.$emit("close");
     },
     confirm() {
       if (this.currentLat !== null && this.currentLng !== null) {
-        this.$emit("update:latitude", this.currentLat);
-        this.$emit("update:longitude", this.currentLng);
+        this.$emit("update:lat", this.currentLat);
+        this.$emit("update:lng", this.currentLng);
         this.$emit("confirm", {
-          latitude: this.currentLat,
-          longitude: this.currentLng,
+          lat: this.currentLat,
+          lng: this.currentLng,
+          location: this.location,
         });
       }
-      this.close();
     },
-    cleanupMap() {
+    removeMap() {
       if (this.map) {
         this.map.remove();
         this.map = null;
@@ -262,18 +226,26 @@ export default {
         this.loaded = false;
       }
     },
-    onDialogClosed() {
-      this.cleanupMap();
-      this.locationInfo = null;
-      this.locationInfoLoading = false;
+    afterEnter() {
+      map.load().then((m) => {
+        maplibregl = m;
+        this.initMap();
+      });
+    },
+    afterLeave() {
+      this.removeMap();
+      this.location = null;
+      this.locationLoading = false;
       this.resetSearchState();
     },
     initMap() {
       if (this.map || !this.$refs.map) {
         return;
       }
+
       try {
         this.options.container = this.$refs.map;
+
         if (!this.currentLat || !this.currentLng || (this.currentLat === 0 && this.currentLng === 0)) {
           this.options.zoom = 2;
           this.options.center = [0, 20];
@@ -317,7 +289,7 @@ export default {
         this.map.on("load", () => {
           this.loaded = true;
           if (this.currentLat && this.currentLng && !(this.currentLat === 0 && this.currentLng === 0)) {
-            this.updatePosition(this.currentLat, this.currentLng);
+            this.setPosition(this.currentLat, this.currentLng);
             this.fetchLocationInfo(this.currentLat, this.currentLng);
           }
           this.map.resize();
@@ -331,68 +303,70 @@ export default {
         this.loaded = false;
       }
     },
-    updatePosition(lat, lng) {
-      if (this.map && this.loaded) {
-        if (this.position[0] === lng && this.position[1] === lat && this.marker) {
-          return;
-        }
+    setPosition(lat, lng) {
+      if (!this.map || !this.loaded) {
+        return;
+      }
 
-        // Skip invalid or empty coordinates (0,0)
-        if ((lat === 0 && lng === 0) || !lat || !lng) {
-          if (this.marker) {
-            this.marker.remove();
-            this.marker = null;
-          }
-          return;
-        }
-        this.position = [lng, lat];
+      if (this.position[0] === lng && this.position[1] === lat && this.marker) {
+        return;
+      }
 
-        // Always center map when position changes
-        this.map.flyTo({
-          center: this.position,
-          zoom: 12,
-          essential: true,
-          duration: 900,
-        });
-
+      // Skip invalid or empty coordinates (0,0)
+      if ((lat === 0 && lng === 0) || !lat || !lng) {
         if (this.marker) {
-          this.marker.setLngLat(this.position);
-        } else {
-          this.marker = new maplibregl.Marker({
-            color: "#3fb4df",
-            draggable: true,
-          })
-            .setLngLat(this.position)
-            .addTo(this.map);
-
-          // Update coordinates when marker is dragged
-          this.marker.on("dragend", () => {
-            const lngLat = this.marker.getLngLat();
-            this.setPositionAndFetchInfo(lngLat.lat, lngLat.lng);
-          });
+          this.marker.remove();
+          this.marker = null;
         }
+        return;
+      }
+      this.position = [lng, lat];
+
+      // Always center map when position changes
+      this.map.setCenter(this.position, {
+        zoom: 12,
+        animate: false,
+      });
+
+      if (this.marker) {
+        this.marker.setLngLat(this.position);
+      } else {
+        this.marker = new maplibregl.Marker({
+          color: "#3fb4df",
+          draggable: true,
+        })
+          .setLngLat(this.position)
+          .addTo(this.map);
+
+        // Update coordinates when marker is dragged
+        this.marker.on("dragend", () => {
+          const lngLat = this.marker.getLngLat();
+          this.setPositionAndFetchInfo(lngLat.lat, lngLat.lng);
+        });
       }
     },
-    updateLatitude(lat) {
+    setLat(lat) {
       this.currentLat = lat;
-      this.updatePosition(lat, this.currentLng);
+      this.setPosition(lat, this.currentLng);
     },
-    updateLongitude(lng) {
+    setLng(lng) {
       this.currentLng = lng;
-      this.updatePosition(this.currentLat, lng);
+      this.setPosition(this.currentLat, lng);
     },
-    onCoordinatesChanged(data) {
-      if (data.latitude !== 0 || data.longitude !== 0) {
-        this.fetchLocationInfo(data.latitude, data.longitude);
+    onLocationChanged(data) {
+      if (data.lat !== 0 || data.lng !== 0) {
+        this.fetchLocationInfo(data.lat, data.lng);
       }
     },
-    onCoordinatesCleared() {
-      this.locationInfo = null;
-      this.locationInfoLoading = false;
+    onLocationCleared() {
+      this.location = null;
+      this.locationLoading = false;
+
       if (this.marker) {
         this.marker.remove();
         this.marker = null;
       }
+
       if (this.map) {
         this.map.flyTo({
           center: [0, 20],
@@ -401,14 +375,12 @@ export default {
         });
       }
     },
-
     clearSearchTimeout() {
       if (this.searchTimeout) {
         clearTimeout(this.searchTimeout);
         this.searchTimeout = null;
       }
     },
-
     resetSearchState() {
       this.searchQuery = "";
       this.searchResults = [];
@@ -416,34 +388,31 @@ export default {
       this.searchLoading = false;
       this.clearSearchTimeout();
     },
-
     setPositionAndFetchInfo(lat, lng) {
       this.currentLat = lat;
       this.currentLng = lng;
-      this.updatePosition(lat, lng);
+      this.setPosition(lat, lng);
       this.fetchLocationInfo(lat, lng);
     },
-
     fetchLocationInfo(lat, lng) {
-      this.locationInfoLoading = true;
+      this.locationLoading = true;
       this.$api
         .get(`places/reverse?lat=${lat}&lng=${lng}`)
         .then((response) => {
-          if (response.data && response.data.formatted) {
-            this.locationInfo = response.data;
+          if (response.data && response.data?.place?.label) {
+            this.location = response.data;
           } else {
-            this.locationInfo = null;
+            this.location = null;
           }
         })
         .catch((error) => {
           console.error("Reverse geocoding error:", error);
-          this.locationInfo = null;
+          this.location = null;
         })
         .finally(() => {
-          this.locationInfoLoading = false;
+          this.locationLoading = false;
         });
     },
-
     onSearchQueryChange(query) {
       this.searchQuery = query;
       this.clearSearchTimeout();
@@ -475,8 +444,8 @@ export default {
         });
 
         if (this.searchQuery === query) {
-          if (response.data && response.data.results) {
-            this.searchResults = response.data.results;
+          if (response.data && Array.isArray(response.data)) {
+            this.searchResults = response.data;
           } else {
             this.searchResults = [];
           }

@@ -3879,7 +3879,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/api.ReverseGeocodeResponse"
+                            "$ref": "#/definitions/places.Location"
                         }
                     },
                     "400": {
@@ -3938,7 +3938,10 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/api.PlaceSearchResponse"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/places.SearchResult"
+                            }
                         }
                     },
                     "400": {
@@ -5280,57 +5283,6 @@
         }
     },
     "definitions": {
-        "api.PlaceSearchResponse": {
-            "type": "object",
-            "properties": {
-                "count": {
-                    "type": "integer"
-                },
-                "results": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/api.PlaceSearchResult"
-                    }
-                }
-            }
-        },
-        "api.PlaceSearchResult": {
-            "type": "object",
-            "properties": {
-                "city": {
-                    "type": "string"
-                },
-                "country": {
-                    "type": "string"
-                },
-                "formatted": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "lat": {
-                    "type": "number"
-                },
-                "lng": {
-                    "type": "number"
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "api.ReverseGeocodeResponse": {
-            "type": "object",
-            "properties": {
-                "formatted": {
-                    "type": "string"
-                },
-                "street": {
-                    "type": "string"
-                }
-            }
-        },
         "batch.Action": {
             "type": "string",
             "enum": [
@@ -7561,6 +7513,105 @@
                 }
             }
         },
+        "places.Location": {
+            "type": "object",
+            "properties": {
+                "category": {
+                    "type": "string"
+                },
+                "country": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "lat": {
+                    "type": "number"
+                },
+                "licence": {
+                    "type": "string"
+                },
+                "lng": {
+                    "type": "number"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "place": {
+                    "$ref": "#/definitions/places.Place"
+                },
+                "postcode": {
+                    "type": "string"
+                },
+                "street": {
+                    "type": "string"
+                },
+                "timezone": {
+                    "type": "string"
+                }
+            }
+        },
+        "places.Place": {
+            "type": "object",
+            "properties": {
+                "city": {
+                    "type": "string"
+                },
+                "country": {
+                    "type": "string"
+                },
+                "district": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "keywords": {
+                    "type": "string"
+                },
+                "label": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "string"
+                }
+            }
+        },
+        "places.SearchResult": {
+            "type": "object",
+            "properties": {
+                "boundingbox": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "city": {
+                    "type": "string"
+                },
+                "country": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "importance": {
+                    "type": "number"
+                },
+                "lat": {
+                    "type": "number"
+                },
+                "licence": {
+                    "type": "string"
+                },
+                "lng": {
+                    "type": "number"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "search.Album": {
             "type": "object",
             "properties": {
@@ -8125,16 +8176,6 @@
                 1000000000,
                 60000000000,
                 3600000000000,
-                -9223372036854775808,
-                9223372036854775807,
-                1,
-                1000,
-                1000000,
-                1000000000,
-                60000000000,
-                3600000000000,
-                -9223372036854775808,
-                9223372036854775807,
                 1,
                 1000,
                 1000000,
@@ -8159,16 +8200,6 @@
                 "Second",
                 "Minute",
                 "Hour",
-                "minDuration",
-                "maxDuration",
-                "Nanosecond",
-                "Microsecond",
-                "Millisecond",
-                "Second",
-                "Minute",
-                "Hour",
-                "minDuration",
-                "maxDuration",
                 "Nanosecond",
                 "Microsecond",
                 "Millisecond",
