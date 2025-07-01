@@ -42,46 +42,44 @@
             }"
           >
             <div>
-              <v-menu
-                v-model="showSearchMenu"
-                :close-on-content-click="false"
-                location="bottom"
-                origin="top"
-                max-height="300"
+              <v-autocomplete
+                ref="search"
+                v-model="selectedPlace"
+                :items="searchResults"
+                :loading="searchLoading"
+                :search="searchQuery"
+                prepend-inner-icon="mdi-magnify"
+                density="compact"
+                variant="outlined"
+                :placeholder="$gettext(`Search`)"
+                item-title="formatted"
+                item-value="id"
+                return-object
+                auto-select-first
+                clearable
+                autocomplete="off"
+                no-filter
+                menu-icon=""
+                :menu-props="{ maxHeight: 300 }"
+                @update:search="onSearchQueryChange"
+                @update:model-value="onPlaceSelected"
+                @click:clear="clearSearch"
               >
-                <template #activator="{ props }">
-                  <v-text-field
-                    v-model="searchQuery"
-                    prepend-inner-icon="mdi-magnify"
-                    :append-inner-icon="searchLoading ? 'mdi-loading mdi-spin' : searchQuery ? 'mdi-close-circle' : ''"
-                    density="compact"
-                    variant="outlined"
-                    :placeholder="$gettext(`Search`)"
-                    v-bind="props"
-                    @update:model-value="onSearchQueryChange"
-                    @click:append-inner="clearSearch"
-                    @focus="onSearchFocus"
-                    @blur="onSearchBlur"
-                  ></v-text-field>
-                </template>
-                <v-list v-if="searchResults.length > 0" density="compact">
-                  <v-list-item
-                    v-for="place in searchResults"
-                    :key="place.id"
-                    :title="place.formatted"
-                    @click="onPlaceSelected(place)"
-                  >
+                <template #item="{ props }">
+                  <v-list-item v-bind="props" density="compact">
                     <template #prepend>
                       <v-icon>mdi-map-marker</v-icon>
                     </template>
                   </v-list-item>
-                </v-list>
-                <v-list v-else-if="searchQuery && searchQuery.length >= 2 && !searchLoading">
-                  <v-list-item>
+                </template>
+                <template #no-data>
+                  <v-list-item
+                    v-if="searchQuery && searchQuery.length >= 2 && !searchLoading && searchResults.length === 0"
+                  >
                     <v-list-item-title>{{ $gettext("No results found") }}</v-list-item-title>
                   </v-list-item>
-                </v-list>
-              </v-menu>
+                </template>
+              </v-autocomplete>
             </div>
             <!-- div v-if="locationInfo">
               <div class="text-subtitle-2 mb-2">{{ $gettext("Location Details") }}</div>
@@ -117,7 +115,8 @@
               <v-btn
                 color="highlight"
                 min-width="120"
-                :disabled="!(currentLat !== null && currentLng !== null)"
+                :disabled="!(currentLat !== null && currentLng !== null) || locationInfoLoading"
+                :loading="locationInfoLoading"
                 @click="confirm"
               >
                 {{ $gettext("Apply") }}
@@ -172,11 +171,12 @@ export default {
       currentLat: this.latitude,
       currentLng: this.longitude,
       locationInfo: null,
+      locationInfoLoading: false,
       searchQuery: "",
       searchResults: [],
       searchLoading: false,
       searchTimeout: null,
-      showSearchMenu: false,
+      selectedPlace: null,
     };
   },
   computed: {
@@ -265,15 +265,8 @@ export default {
     onDialogClosed() {
       this.cleanupMap();
       this.locationInfo = null;
-
-      // Clear search state
-      this.searchQuery = "";
-      this.searchResults = [];
-      this.searchLoading = false;
-      if (this.searchTimeout) {
-        clearTimeout(this.searchTimeout);
-        this.searchTimeout = null;
-      }
+      this.locationInfoLoading = false;
+      this.resetSearchState();
     },
     initMap() {
       if (this.map || !this.$refs.map) {
@@ -331,10 +324,7 @@ export default {
         });
 
         this.map.on("click", (e) => {
-          this.currentLat = e.lngLat.lat;
-          this.currentLng = e.lngLat.lng;
-          this.updatePosition(e.lngLat.lat, e.lngLat.lng);
-          this.fetchLocationInfo(e.lngLat.lat, e.lngLat.lng);
+          this.setPositionAndFetchInfo(e.lngLat.lat, e.lngLat.lng);
         });
       } catch (error) {
         console.error("map: initialization failed", error);
@@ -362,6 +352,7 @@ export default {
           center: this.position,
           zoom: 12,
           essential: true,
+          duration: 900,
         });
 
         if (this.marker) {
@@ -377,9 +368,7 @@ export default {
           // Update coordinates when marker is dragged
           this.marker.on("dragend", () => {
             const lngLat = this.marker.getLngLat();
-            this.currentLat = lngLat.lat;
-            this.currentLng = lngLat.lng;
-            this.fetchLocationInfo(lngLat.lat, lngLat.lng);
+            this.setPositionAndFetchInfo(lngLat.lat, lngLat.lng);
           });
         }
       }
@@ -399,6 +388,7 @@ export default {
     },
     onCoordinatesCleared() {
       this.locationInfo = null;
+      this.locationInfoLoading = false;
       if (this.marker) {
         this.marker.remove();
         this.marker = null;
@@ -412,7 +402,30 @@ export default {
       }
     },
 
+    clearSearchTimeout() {
+      if (this.searchTimeout) {
+        clearTimeout(this.searchTimeout);
+        this.searchTimeout = null;
+      }
+    },
+
+    resetSearchState() {
+      this.searchQuery = "";
+      this.searchResults = [];
+      this.selectedPlace = null;
+      this.searchLoading = false;
+      this.clearSearchTimeout();
+    },
+
+    setPositionAndFetchInfo(lat, lng) {
+      this.currentLat = lat;
+      this.currentLng = lng;
+      this.updatePosition(lat, lng);
+      this.fetchLocationInfo(lat, lng);
+    },
+
     fetchLocationInfo(lat, lng) {
+      this.locationInfoLoading = true;
       this.$api
         .get(`places/reverse?lat=${lat}&lng=${lng}`)
         .then((response) => {
@@ -425,26 +438,33 @@ export default {
         .catch((error) => {
           console.error("Reverse geocoding error:", error);
           this.locationInfo = null;
+        })
+        .finally(() => {
+          this.locationInfoLoading = false;
         });
     },
 
     onSearchQueryChange(query) {
-      if (this.searchTimeout) {
-        clearTimeout(this.searchTimeout);
-      }
+      this.searchQuery = query;
+      this.clearSearchTimeout();
 
       if (!query || query.length < 2) {
         this.searchResults = [];
-        this.showSearchMenu = false;
+        this.searchLoading = false;
         return;
       }
 
+      this.searchLoading = true;
       this.searchTimeout = setTimeout(() => {
         this.performPlaceSearch(query);
       }, 300); // 300ms delay after user stops typing
     },
     async performPlaceSearch(query) {
-      this.searchLoading = true;
+      if (!query || query.length < 2) {
+        this.searchLoading = false;
+        return;
+      }
+
       try {
         const response = await this.$api.get("places/search", {
           params: {
@@ -454,47 +474,35 @@ export default {
           },
         });
 
-        if (response.data && response.data.results) {
-          this.searchResults = response.data.results;
-          this.showSearchMenu = this.searchResults.length > 0;
-        } else {
-          this.searchResults = [];
-          this.showSearchMenu = false;
+        if (this.searchQuery === query) {
+          if (response.data && response.data.results) {
+            this.searchResults = response.data.results;
+          } else {
+            this.searchResults = [];
+          }
         }
       } catch (error) {
         console.error("Place search error:", error);
-        this.searchResults = [];
+        if (this.searchQuery === query) {
+          this.searchResults = [];
+        }
       } finally {
-        this.searchLoading = false;
+        if (this.searchQuery === query) {
+          this.searchLoading = false;
+        }
       }
     },
     onPlaceSelected(place) {
       if (place && place.lat && place.lng) {
-        this.currentLat = place.lat;
-        this.currentLng = place.lng;
-        this.updatePosition(place.lat, place.lng);
-        this.fetchLocationInfo(place.lat, place.lng);
+        this.setPositionAndFetchInfo(place.lat, place.lng);
 
-        // Clear search after selection
-        this.showSearchMenu = false;
-        this.searchQuery = "";
+        this.$nextTick(() => {
+          this.resetSearchState();
+        });
       }
     },
     clearSearch() {
-      this.searchQuery = "";
-      this.searchResults = [];
-      this.showSearchMenu = false;
-    },
-    onSearchFocus() {
-      if (this.searchResults.length > 0) {
-        this.showSearchMenu = true;
-      }
-    },
-    onSearchBlur() {
-      // Delay hiding menu to allow for selection
-      setTimeout(() => {
-        this.showSearchMenu = false;
-      }, 200);
+      this.resetSearchState();
     },
   },
 };

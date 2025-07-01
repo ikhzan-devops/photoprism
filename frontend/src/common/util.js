@@ -202,7 +202,7 @@ export default class $util {
   }
 
   static formatNs(d) {
-    if (!d || typeof d !== "number") {
+    if (!d || Number.isNaN(d)) {
       return "";
     }
 

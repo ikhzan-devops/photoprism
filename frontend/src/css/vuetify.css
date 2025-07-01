@@ -233,11 +233,19 @@ div.v-dialog.v-dialog--fullscreen > div.v-card {
     justify-content: flex-end;
 }
 
-/* Lists */
+/* Lists and Menus */
 
 .v-menu > .v-overlay__content > .v-list:not(.v-list--nav) {
     padding: 0;
     opacity: 0.97;
+}
+
+.v-menu > .v-overlay__content > .v-list > .v-list-item.v-list-item--density-compact.v-list-item--one-line {
+    line-height: 36px;
+    min-height: 36px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    padding-inline: 10px;
 }
 
 /* Progress */
@@ -417,12 +425,8 @@ div.v-dialog.v-dialog--fullscreen > div.v-card {
     font-size: 0.75rem;
 }
 
-.v-menu > .v-overlay__content > .v-list > .v-list-item.v-list-item--density-compact.v-list-item--one-line {
-    line-height: 36px;
-    min-height: 36px;
-    padding-top: 6px;
-    padding-bottom: 6px;
-    padding-inline: 10px;
+.v-input--readonly .v-autocomplete__menu-icon {
+    display: none;
 }
 
 .p-clipboard > .v-speed-dial__content > .v-btn.v-btn--icon {

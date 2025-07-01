@@ -88,6 +88,8 @@ func TestParseInfo(t *testing.T) {
 }
 
 func TestPlaylist(t *testing.T) {
+	t.Skip("skipping test because playlist URL is unreliable.")
+
 	ydlResult, ydlResultErr := NewMetadata(context.Background(), playlistRawURL, Options{
 		Type:              TypePlaylist,
 		DownloadThumbnail: false,

@@ -1878,7 +1878,7 @@ export default {
     },
     // Jumps to the specified time index when a video is loaded and seekable.
     seekVideo(seekTo) {
-      if (typeof seekTo !== "number") {
+      if (Number.isNaN(seekTo)) {
         return false;
       }
 
@@ -1891,19 +1891,39 @@ export default {
         return;
       }
 
-      if (seekTo > video.duration) {
-        video.currentTime = video.duration;
-      } else if (seekTo <= 0) {
-        video.currentTime = 0;
+      // If possible, use the fastSeek() method to quickly jump to the new time index:
+      // https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/fastSeek
+      if (typeof video.fastSeek === "function") {
+        if (seekTo >= video.duration - 0.01) {
+          video.loop = false;
+          video.fastSeek(video.duration);
+          this.pauseVideo(video);
+        } else if (seekTo <= 0) {
+          video.loop = false;
+          video.fastSeek(0);
+          this.pauseVideo(video);
+        } else {
+          video.fastSeek(seekTo);
+        }
       } else {
-        video.currentTime = seekTo;
+        if (seekTo >= video.duration - 0.01) {
+          video.loop = false;
+          video.currentTime = video.duration;
+          this.pauseVideo(video);
+        } else if (seekTo <= 0) {
+          video.loop = false;
+          video.currentTime = 0;
+          this.pauseVideo(video);
+        } else {
+          video.currentTime = seekTo;
+        }
       }
 
       return true;
     },
     // Skips the specified number of seconds when a video is loaded and seekable.
     seekVideoSeconds(seconds) {
-      if (!seconds || typeof seconds !== "number") {
+      if (!seconds || Number.isNaN(seconds)) {
         return false;
       } else if (!this.video.playing) {
         return false;

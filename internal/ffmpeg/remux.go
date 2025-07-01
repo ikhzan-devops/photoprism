@@ -146,16 +146,18 @@ func RemuxCmd(srcName, destName string, opt encode.Options) (cmd *exec.Cmd, err 
 		opt.Bin = encode.FFmpegBin
 	}
 
-	// Compose "ffmpeg" command flags:
+	// Compose "ffmpeg" command flags, see https://ffmpeg.org/ffmpeg-formats.html#Format-Options:
 	flags := []string{
 		"-hide_banner",
 		"-y",
 		"-strict", "-2",
-		"-avoid_negative_ts", "make_non_negative",
+		// The "-avoid_negative_ts" flag is commonly used for remuxing, but may cause desync (please report any issues):
+		"-avoid_negative_ts", "make_zero",
 		"-i", srcName,
 		"-map", opt.MapVideo,
 		"-map", opt.MapAudio,
-		"-dn", // Exclude data streams such as subtitles, timecode tracks, or camera motion data from the output file.
+		// The "-dn" flag removes data streams, such as subtitles, timecode tracks, and camera motion data:
+		"-dn",
 		"-ignore_unknown",
 		"-codec", "copy",
 		"-f", opt.Container.String(),

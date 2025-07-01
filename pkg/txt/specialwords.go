@@ -267,6 +267,9 @@ var SpecialWords = map[string]string{
 	"usaid":              "USAID",
 	"thaad":              "THAAD",
 	"unrwa":              "UNRWA",
+	"unhcr":              "UNHCR",
+	"ghf":                "GHF",
+	"iaea":               "IAEA",
 	"unifil":             "UNIFIL",
 	"irgc":               "IRGC",
 	"cnn":                "CNN",
@@ -288,4 +291,5 @@ var SpecialWords = map[string]string{
 	"dw":                 "DW",
 	"rt":                 "RT",
 	"gb":                 "GB",
+	"vs":                 "vs",
 }
