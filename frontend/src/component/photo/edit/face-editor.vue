@@ -184,7 +184,6 @@ export default {
   methods: {
     updateWrapperRect() {
       if (this.$refs.photoPreviewWrapper && this.$refs.photoPreview) {
-        // Fotoğraf yüklenmiş ve boyutları mevcut ise wrapper boyutunu güncelle
         if (this.photoLoaded) {
           const img = this.$refs.photoPreview;
           const imgRect = img.getBoundingClientRect();
@@ -204,7 +203,6 @@ export default {
       this.photoAspectRatio = img.naturalWidth / img.naturalHeight;
       this.photoLoaded = true;
 
-      // Wrapper'ın boyutunu fotoğrafın gerçek boyutlarına göre ayarla
       this.$nextTick(() => {
         if (this.$refs.photoPreviewWrapper) {
           const wrapper = this.$refs.photoPreviewWrapper;
