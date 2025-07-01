@@ -529,6 +529,31 @@
                   </v-col>
                 </div>
 
+                <div>
+                  <v-col cols="12" md="6">
+                    <p>File Type</p>
+                  </v-col>
+                  <v-col cols="12" class="d-flex align-self-stretch flex-column">
+                    <v-combobox
+                      v-model="formData.Type.value"
+                      :label="$gettext('Type')"
+                      autocomplete="off"
+                      hide-details
+                      hide-no-data
+                      :items="getFieldData('select-field', 'Type').items"
+                      :placeholder="getFieldData('select-field', 'Type').placeholder"
+                      :persistent-placeholder="getFieldData('select-field', 'Type').persistent"
+                      item-title="text"
+                      item-value="value"
+                      density="comfortable"
+                      validate-on="input"
+                      class="input-type"
+                      @update:model-value="(val) => changeSelectValue(val, 'select-field', 'Type')"
+                    >
+                    </v-combobox>
+                  </v-col>
+                </div>
+
                 <v-row>
                   <v-col
                     v-for="fieldName in toggleFieldsArray"
@@ -696,7 +721,7 @@ export default {
       const previousValue = this.previousFormData[fieldName].value;
       this.formData[fieldName].action = this.actions.update;
 
-      if (fieldName === "Day" || fieldName === "Month" || fieldName === "Year") {
+      if (fieldName === "Day" || fieldName === "Month" || fieldName === "Year" || fieldName === "Type") {
         this.formData[fieldName].value = newValue.text;
 
         if (newValue.text === previousValue) {
@@ -740,6 +765,7 @@ export default {
         { type: "text-field", name: "DetailsArtist" },
         { type: "text-field", name: "DetailsCopyright" },
         { type: "text-field", name: "DetailsLicense" },
+        { type: "select-field", name: "Type" },
       ];
 
       fieldConfigs.forEach(({ type, name, key }) => {
@@ -885,6 +911,9 @@ export default {
       if (fieldName === "TimeZone") {
         return items.find((item) => item.ID === -2).Name;
       }
+      if (fieldName === "Type") {
+        return items.find((item) => item.value === "mixed").text;
+      }
     },
     getItemsArray(fieldName, isMixed) {
       if (fieldName === "Day") {
@@ -902,6 +931,9 @@ export default {
       }
       if (fieldName === "TimeZone") {
         return isMixed ? options.TimeZonesBatchDialog() : options.TimeZones();
+      }
+      if (fieldName === "Type") {
+        return isMixed ? options.PhotoTypesBatchDialog() : options.PhotoTypes();
       }
     },
     getCountriesArray(array) {

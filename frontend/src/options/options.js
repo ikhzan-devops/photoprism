@@ -340,6 +340,13 @@ export const PhotoTypes = () => [
   },
 ];
 
+export const PhotoTypesBatchDialog = () => {
+  let result = PhotoTypes();
+  result.push({ text: $gettext("<mixed>"), value: "mixed" });
+
+  return result;
+};
+
 export const Timeouts = () => [
   {
     text: $gettext("Default"),
