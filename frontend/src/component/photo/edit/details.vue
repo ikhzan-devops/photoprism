@@ -146,20 +146,38 @@
                 @update:model-value="syncTime"
               ></v-autocomplete>
             </v-col>
-            <v-col cols="12" sm="8" md="4">
+            <v-col cols="12" sm="6" md="6">
+              <p-location-input
+                :lat="view.model.Lat"
+                :lng="view.model.Lng"
+                :disabled="disabled"
+                hide-details
+                :label="locationLabel"
+                density="comfortable"
+                validate-on="input"
+                :show-map-button="!placesDisabled"
+                :map-button-title="$gettext('Adjust Location')"
+                :map-button-disabled="placesDisabled"
+                class="input-coordinates"
+                @update:lat="updateLat"
+                @update:lng="updateLng"
+                @changed="onLocationChanged"
+                @open-map="adjustLocation"
+              ></p-location-input>
+            </v-col>
+            <v-col cols="12" sm="6" md="4">
               <v-autocomplete
                 v-model="view.model.Country"
                 :append-inner-icon="view.model.PlaceSrc === 'manual' ? 'mdi-check' : ''"
                 :disabled="disabled"
                 :readonly="!!(view.model.Lat || view.model.Lng)"
-                :placeholder="$gettext('Country')"
+                :label="$gettext('Country')"
                 hide-details
                 hide-no-data
                 autocomplete="off"
                 item-value="Code"
                 item-title="Name"
                 :items="countries"
-                prepend-inner-icon="mdi-map-marker"
                 density="comfortable"
                 validate-on="input"
                 :rules="rules.country(true)"
@@ -167,7 +185,7 @@
               >
               </v-autocomplete>
             </v-col>
-            <v-col cols="4" md="2">
+            <v-col cols="2" class="hidden-sm-and-down">
               <v-text-field
                 v-model="view.model.Altitude"
                 :disabled="disabled"
@@ -183,42 +201,7 @@
                 validate-on="input"
                 :rules="rules.number(false, -10000, 1000000)"
                 class="input-altitude"
-              ></v-text-field>
-            </v-col>
-            <v-col cols="4" sm="6" md="3">
-              <v-text-field
-                v-model="view.model.Lat"
-                :append-inner-icon="view.model.PlaceSrc === 'manual' ? 'mdi-check' : ''"
-                :disabled="disabled"
-                hide-details
-                autocomplete="off"
-                autocorrect="off"
-                autocapitalize="none"
-                :label="$gettext('Latitude')"
-                placeholder=""
-                density="comfortable"
-                validate-on="input"
-                :rules="rules.lat(false)"
-                class="input-latitude"
-                @paste="pastePosition"
-              ></v-text-field>
-            </v-col>
-            <v-col cols="4" sm="6" md="3">
-              <v-text-field
-                v-model="view.model.Lng"
-                :append-inner-icon="view.model.PlaceSrc === 'manual' ? 'mdi-check' : ''"
-                :disabled="disabled"
-                hide-details
-                autocomplete="off"
-                autocorrect="off"
-                autocapitalize="none"
-                :label="$gettext('Longitude')"
-                placeholder=""
-                density="comfortable"
-                validate-on="input"
-                :rules="rules.lng(false)"
-                class="input-longitude"
-                @paste="pastePosition"
+                style="flex: 0 0 120px"
               ></v-text-field>
             </v-col>
             <v-col cols="12" md="6" class="p-camera-select">
@@ -432,6 +415,12 @@
         </div>
       </div>
     </v-form>
+    <p-location-dialog
+      :visible="locationDialog"
+      :latlng="[view.model.Lat ? Number(view.model.Lat) : 0, view.model.Lng ? Number(view.model.Lng) : 0]"
+      @close="locationDialog = false"
+      @confirm="confirmLocation"
+    ></p-location-dialog>
   </div>
 </template>
 
@@ -440,9 +429,15 @@ import countries from "options/countries.json";
 import Thumb from "model/thumb";
 import * as options from "options/options";
 import { rules } from "common/form";
+import PLocationDialog from "component/location/dialog.vue";
+import PLocationInput from "component/location/input.vue";
 
 export default {
   name: "PTabPhotoDetails",
+  components: {
+    PLocationDialog,
+    PLocationInput,
+  },
   props: {
     uid: {
       type: String,
@@ -467,8 +462,11 @@ export default {
       showTimePicker: false,
       invalidDate: false,
       time: "",
+      locationLabel: this.$gettext("Location"),
+      locationDialog: false,
       textRule: (v) => v.length <= this.$config.get("clip") || this.$gettext("Text too long"),
       rtl: this.$isRtl,
+      placesDisabled: !this.$config.feature("places"),
     };
   },
   computed: {
@@ -484,11 +482,11 @@ export default {
   },
   watch: {
     uid() {
-      this.syncTime();
+      this.syncData();
     },
   },
   created() {
-    this.syncTime();
+    this.syncData();
   },
   methods: {
     setDay(v) {
@@ -529,6 +527,22 @@ export default {
         this.updateModel();
       }
     },
+    syncData() {
+      this.syncLocation();
+      this.syncTime();
+    },
+    syncLocation() {
+      if (
+        this.view?.model?.hasId() &&
+        this.view?.model?.Place?.PlaceID &&
+        this.view?.model?.Place?.PlaceID !== "zz" &&
+        this.view?.model?.Place?.Label
+      ) {
+        this.locationLabel = this.view.model.Place.Label;
+      } else {
+        this.locationLabel = this.$gettext("Location");
+      }
+    },
     syncTime() {
       if (!this.view?.model.hasId()) {
         return;
@@ -536,36 +550,6 @@ export default {
 
       const taken = this.view.model.getDateTime();
       this.time = taken.toFormat("HH:mm:ss");
-    },
-    pastePosition(event) {
-      // Autofill the lat and lng fields if the text in the clipboard contains two float values.
-      const clipboard = event.clipboardData ? event.clipboardData : window.clipboardData;
-
-      if (!clipboard) {
-        return;
-      }
-
-      // Get values from browser clipboard.
-      const text = clipboard.getData("text");
-
-      // Trim spaces before splitting by whitespace and/or commas.
-      const val = text.trim().split(/[ ,]+/);
-
-      // Two values found?
-      if (val.length >= 2) {
-        // Parse values.
-        const lat = parseFloat(val[0]);
-        const lng = parseFloat(val[1]);
-
-        // Lat and long must be valid floating point numbers.
-        if (!isNaN(lat) && lat >= -90 && lat <= 90 && !isNaN(lng) && lng >= -180 && lng <= 180) {
-          // Update view.model values.
-          this.view.model.Lat = lat;
-          this.view.model.Lng = lng;
-          // Prevent default action.
-          event.preventDefault();
-        }
-      }
     },
     updateModel() {
       if (!this.view?.model.hasId()) {
@@ -620,11 +604,42 @@ export default {
           this.$emit("close");
         }
 
-        this.syncTime();
+        this.syncData();
       });
     },
     close() {
       this.$emit("close");
+    },
+    adjustLocation() {
+      this.locationDialog = true;
+    },
+    confirmLocation(data) {
+      if (data && data.lat !== undefined && data.lng !== undefined) {
+        this.updateLat(data.lat);
+        this.updateLng(data.lng);
+        this.onLocationChanged(data);
+      }
+
+      this.locationDialog = false;
+    },
+    updateLat(lat) {
+      this.view.model.Lat = lat;
+      this.view.model.PlaceSrc = "manual";
+    },
+    updateLng(lng) {
+      this.view.model.Lng = lng;
+      this.view.model.PlaceSrc = "manual";
+    },
+    onLocationChanged(data) {
+      if (data?.location?.country) {
+        this.view.model.Country = data.location.country;
+      }
+
+      if (data?.location?.place?.label) {
+        this.locationLabel = data.location.place.label;
+      } else {
+        this.locationLabel = this.$gettext("Location");
+      }
     },
   },
 };

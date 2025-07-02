@@ -177,8 +177,8 @@ func TestLevel(t *testing.T) {
 func TestLatLng(t *testing.T) {
 	t.Run("Valid", func(t *testing.T) {
 		lat, lng := LatLng("4799e370ca54c8b9")
-		assert.Equal(t, 48.56344835921243, lat)
-		assert.Equal(t, 8.996878323369781, lng)
+		assert.Equal(t, 48.5634484, lat)
+		assert.Equal(t, 8.9968783, lng)
 	})
 
 	t.Run("Invalid", func(t *testing.T) {

@@ -1,0 +1,76 @@
+package api
+
+import (
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+
+	"github.com/photoprism/photoprism/internal/auth/acl"
+	"github.com/photoprism/photoprism/internal/photoprism/get"
+	"github.com/photoprism/photoprism/internal/service/hub/places"
+	"github.com/photoprism/photoprism/pkg/txt"
+)
+
+// GetPlacesReverse performs a reverse geocoding lookup using PhotoPrism Places API.
+//
+// GET /api/v1/places/reverse?lat=12.444526469291622&lng=-69.94435584903263
+//
+//	@Summary	Reverse geocodes coordinates to a place name
+//	@Id			GetPlacesReverse
+//	@Tags		Maps
+//	@Produce	json
+//	@Param		lat	query		string	true	"Latitude"
+//	@Param		lng	query		string	true	"Longitude"
+//	@Success	200	{object}	places.Location
+//	@Failure	400	{object}	gin.H	"Missing latitude or longitude"
+//	@Failure	401	{object}	i18n.Response
+//	@Failure	500	{object}	gin.H	"Geocoding service error"
+//	@Router		/api/v1/places/reverse [get]
+func GetPlacesReverse(router *gin.RouterGroup) {
+	handler := func(c *gin.Context) {
+		// Allow request if user is allowed to search places.
+		s := AuthAny(c, acl.ResourcePlaces, acl.Permissions{acl.ActionSearch, acl.ActionView, acl.ActionUse})
+
+		// Abort if permission is not granted.
+		if s.Abort(c) {
+			return
+		}
+
+		// Abort if geocoding is disabled.
+		conf := get.Config()
+
+		if conf.DisablePlaces() {
+			AbortFeatureDisabled(c)
+			return
+		}
+
+		// Get latitude and longitude from query parameters.
+		var lat, lng string
+
+		if lat = txt.Numeric(c.Query("lat")); lat == "" {
+			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "missing latitude"})
+			return
+		}
+
+		if lng = txt.Numeric(c.Query("lng")); lng == "" {
+			lng = txt.Numeric(c.Query("lon"))
+		}
+
+		if lng == "" {
+			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "missing longitude"})
+			return
+		}
+
+		result, err := places.LatLng(txt.Float64(lat), txt.Float64(lng))
+
+		if err != nil {
+			log.Errorf("places: failed to resolve location at lat %s, lng %s", lat, lng)
+			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err})
+			return
+		}
+
+		c.JSON(http.StatusOK, result)
+	}
+
+	router.GET("/places/reverse", handler)
+}

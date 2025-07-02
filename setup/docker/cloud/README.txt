@@ -1,17 +1,16 @@
 ========================================================================
 PhotoPrism for Cloud Servers
-Based on Ubuntu 22.04 LTS (Jammy Jellyfish)
 ========================================================================
 
 SOFTWARE INCLUDED
 ------------------------------------------------------------------------
 
 PhotoPrism latest, AGPL 3
-Docker CE 23.0, Apache 2
-Traefik 2.9, MIT
-MariaDB 10.10, GPL 2
-Ofelia 0.3, MIT
-Watchtower 1.5, Apache 2
+Docker CE latest, Apache 2
+Traefik 3.4, MIT
+MariaDB 11, GPL 2
+Ofelia latest, MIT
+Watchtower latest, Apache 2
 
 GETTING STARTED
 ------------------------------------------------------------------------
