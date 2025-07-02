@@ -30,15 +30,23 @@ import (
 //	@Router		/api/v1/places/search [get]
 func GetPlacesSearch(router *gin.RouterGroup) {
 	handler := func(c *gin.Context) {
-		s := AuthAny(c, acl.ResourcePlaces, acl.Permissions{acl.ActionSearch, acl.ActionView})
+		// Allow request if user is allowed to search places.
+		s := AuthAny(c, acl.ResourcePlaces, acl.Permissions{acl.ActionSearch, acl.ActionView, acl.ActionUse})
 
 		// Abort if permission is not granted.
 		if s.Abort(c) {
 			return
 		}
 
-		// Parse query parameters
+		// Abort if geocoding is disabled.
 		conf := get.Config()
+
+		if conf.DisablePlaces() {
+			AbortFeatureDisabled(c)
+			return
+		}
+
+		// Get the search string, locale, and result count limit from the query parameters.
 		query := clean.SearchString(c.Query("q"))
 		locale := clean.WebLocale(c.Query("locale"), conf.DefaultLocale())
 		count := txt.IntVal(c.Query("count"), 1, 50, 10)

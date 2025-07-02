@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/photoprism/photoprism/internal/auth/acl"
+	"github.com/photoprism/photoprism/internal/photoprism/get"
 	"github.com/photoprism/photoprism/internal/service/hub/places"
 	"github.com/photoprism/photoprism/pkg/txt"
 )
@@ -27,14 +28,23 @@ import (
 //	@Router		/api/v1/places/reverse [get]
 func GetPlacesReverse(router *gin.RouterGroup) {
 	handler := func(c *gin.Context) {
-		s := AuthAny(c, acl.ResourcePlaces, acl.Permissions{acl.ActionSearch, acl.ActionView})
+		// Allow request if user is allowed to search places.
+		s := AuthAny(c, acl.ResourcePlaces, acl.Permissions{acl.ActionSearch, acl.ActionView, acl.ActionUse})
 
 		// Abort if permission is not granted.
 		if s.Abort(c) {
 			return
 		}
 
-		// Parse latitude and longitude
+		// Abort if geocoding is disabled.
+		conf := get.Config()
+
+		if conf.DisablePlaces() {
+			AbortFeatureDisabled(c)
+			return
+		}
+
+		// Get latitude and longitude from query parameters.
 		var lat, lng string
 
 		if lat = txt.Numeric(c.Query("lat")); lat == "" {
