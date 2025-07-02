@@ -29,6 +29,7 @@ export default class Page {
     this.title = Selector(".input-title input", { timeout: 15000 });
     this.latitude = Selector(".input-latitude input", { timeout: 15000 });
     this.longitude = Selector(".input-longitude input", { timeout: 15000 });
+    this.coordinates = Selector(".input-coordinates input", { timeout: 15000 });
     this.localTime = Selector(".input-local-time input", { timeout: 15000 });
     this.day = Selector("div.input-day input", { timeout: 15000 });
     this.month = Selector(".input-month input", { timeout: 15000 });
@@ -98,8 +99,7 @@ export default class Page {
   async checkAllDetailsFieldsDisabled(disabled) {
     const fields = [
       this.title,
-      this.latitude,
-      this.longitude,
+      this.coordinates,
       this.keywords,
       this.localTime,
       this.day,
@@ -206,6 +206,8 @@ export default class Page {
       } else {
         await t.typeText(this[field], val, { replace: true });
       }
+    } else if (field === "coordinates") {
+      await t.click(Selector("div.input-coordinates i.mdi-close"));
     } else {
       await t.click(this[field]).pressKey("ctrl+a delete");
     }
@@ -229,7 +231,7 @@ export default class Page {
     });
 
     await t.click(Selector("button.action-approve"));
-    await t.expect(this.latitude.visible, { timeout: 5000 }).ok();
+    await t.expect(this.coordinates.visible, { timeout: 5000 }).ok();
     await t.click(this.detailsApply).click(Selector("button.action-close"));
   }
 }
