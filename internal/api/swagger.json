@@ -3855,9 +3855,9 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Maps"
+                    "Places"
                 ],
-                "summary": "Reverse geocodes coordinates to a place name",
+                "summary": "returns location details for the specified coordinates",
                 "operationId": "GetPlacesReverse",
                 "parameters": [
                     {
@@ -3909,9 +3909,9 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Maps"
+                    "Places"
                 ],
-                "summary": "Search for places using text query",
+                "summary": "returns locations that match the specified search query",
                 "operationId": "GetPlacesSearch",
                 "parameters": [
                     {
@@ -8175,9 +8175,25 @@
                 1000000,
                 1000000000,
                 60000000000,
+                3600000000000,
+                -9223372036854775808,
+                9223372036854775807,
+                1,
+                1000,
+                1000000,
+                1000000000,
+                60000000000,
                 3600000000000
             ],
             "x-enum-varnames": [
+                "minDuration",
+                "maxDuration",
+                "Nanosecond",
+                "Microsecond",
+                "Millisecond",
+                "Second",
+                "Minute",
+                "Hour",
                 "minDuration",
                 "maxDuration",
                 "Nanosecond",

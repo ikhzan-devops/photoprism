@@ -12,13 +12,13 @@ import (
 	"github.com/photoprism/photoprism/pkg/txt"
 )
 
-// GetPlacesSearch performs a place search using PhotoPrism Places API.
+// GetPlacesSearch returns locations that match the specified search query.
 //
 // GET /api/v1/places/search?q=query&locale=en&count=10
 //
-//	@Summary	Search for places using text query
+//	@Summary	returns locations that match the specified search query
 //	@Id			GetPlacesSearch
-//	@Tags		Maps
+//	@Tags		Places
 //	@Produce	json
 //	@Param		q		query		string	true	"Search query"
 //	@Param		locale	query		string	false	"Locale for results (default: en)"

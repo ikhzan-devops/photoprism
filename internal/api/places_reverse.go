@@ -11,13 +11,13 @@ import (
 	"github.com/photoprism/photoprism/pkg/txt"
 )
 
-// GetPlacesReverse performs a reverse geocoding lookup using PhotoPrism Places API.
+// GetPlacesReverse returns location details for the specified coordinates.
 //
 // GET /api/v1/places/reverse?lat=12.444526469291622&lng=-69.94435584903263
 //
-//	@Summary	Reverse geocodes coordinates to a place name
+//	@Summary	returns location details for the specified coordinates
 //	@Id			GetPlacesReverse
-//	@Tags		Maps
+//	@Tags		Places
 //	@Produce	json
 //	@Param		lat	query		string	true	"Latitude"
 //	@Param		lng	query		string	true	"Longitude"
