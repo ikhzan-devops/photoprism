@@ -27,7 +27,7 @@
       <v-card-text class="pb-3">
         <div class="d-flex flex-column flex-md-row ga-5">
           <div class="flex-grow-1 position-relative mb-4 mb-md-0">
-            <div ref="map" class="p-map" style="height: 45vh; min-height: 250px; width: 100%; border-radius: 4px"></div>
+            <div ref="map" class="p-map"></div>
           </div>
 
           <div
