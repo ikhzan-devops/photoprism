@@ -127,7 +127,12 @@ describe("PLocationInput", () => {
     it("should clear coordinates when clear button is clicked", async () => {
       wrapper = createWrapper({ lat: 37.7749, lng: -122.4194 });
 
+      // Wait for component to initialize and coordinateInput to be set
+      await nextTick();
+
       const clearButton = wrapper.find(".action-clear");
+      expect(clearButton.exists()).toBe(true);
+
       await clearButton.trigger("click");
 
       expect(wrapper.emitted("update:lat")).toEqual([[0]]);
@@ -139,8 +144,12 @@ describe("PLocationInput", () => {
     it("should show and work with undo button when enabled", async () => {
       wrapper = createWrapper({ enableUndo: true, lat: 37.7749, lng: -122.4194 });
 
+      // Wait for component to initialize and coordinateInput to be set
+      await nextTick();
+
       // Clear coordinates first
       const clearButton = wrapper.find(".action-clear");
+      expect(clearButton.exists()).toBe(true);
       await clearButton.trigger("click");
       await nextTick();
 
