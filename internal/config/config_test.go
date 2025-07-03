@@ -316,14 +316,6 @@ func TestConfig_AutoImport(t *testing.T) {
 	assert.Equal(t, 2*time.Hour, c.AutoImport())
 }
 
-func TestConfig_GeoApi(t *testing.T) {
-	c := NewConfig(CliTestContext())
-
-	assert.Equal(t, "places", c.GeoApi())
-	c.options.DisablePlaces = true
-	assert.Equal(t, "", c.GeoApi())
-}
-
 func TestConfig_OriginalsLimit(t *testing.T) {
 	c := NewConfig(CliTestContext())
 

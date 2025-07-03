@@ -82,12 +82,12 @@ func (c *Config) SendFeedback(frm form.Feedback) (err error) {
 
 	// Set user agent.
 	if c.UserAgent != "" {
-		req.Header.Set("User-Agent", c.UserAgent)
+		req.Header.Set(header.UserAgent, c.UserAgent)
 	} else {
-		req.Header.Set("User-Agent", "PhotoPrism/Test")
+		req.Header.Set(header.UserAgent, "PhotoPrism/Test")
 	}
 
-	req.Header.Add("Accept-Language", frm.UserLocales)
+	req.Header.Add(header.AcceptLanguage, frm.UserLocales)
 	req.Header.Add(header.ContentType, header.ContentTypeJson)
 
 	var r *http.Response

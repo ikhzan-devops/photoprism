@@ -14,7 +14,7 @@ func TestCell(t *testing.T) {
 		lng := 13.40806264572578
 		id := s2.Token(lat, lng)
 
-		l, err := Cell(id)
+		l, err := Cell(id, DefaultLocale)
 
 		if err != nil {
 			t.Fatal(err)
@@ -25,17 +25,17 @@ func TestCell(t *testing.T) {
 		assert.Equal(t, "de", l.CountryCode())
 	})
 	t.Run("MissingId", func(t *testing.T) {
-		l, err := Cell("")
+		l, err := Cell("", DefaultLocale)
 		assert.Error(t, err, "places: invalid location id ")
 		t.Log(l)
 	})
 	t.Run("WrongId", func(t *testing.T) {
-		l, err := Cell("2")
+		l, err := Cell("2", DefaultLocale)
 		assert.Error(t, err, "places: skipping lat 0.000000, lng 0.000000")
 		t.Log(l)
 	})
 	t.Run("ShortId", func(t *testing.T) {
-		l, err := Cell("ab")
+		l, err := Cell("ab", DefaultLocale)
 		assert.Error(t, err, "places: skipping lat 0.000000, lng 0.000000")
 		t.Log(l)
 	})
@@ -52,12 +52,12 @@ func TestCell(t *testing.T) {
 			Cached:      true,
 		}
 
-		l, err := Cell(location.ID)
+		l, err := Cell(location.ID, DefaultLocale)
 		if err != nil {
 			t.Fatal(err)
 		}
 		assert.Equal(t, false, l.Cached)
-		l2, err2 := Cell("1e95998417cc")
+		l2, err2 := Cell("1e95998417cc", DefaultLocale)
 
 		if err2 != nil {
 			t.Fatal(err2)

@@ -7,7 +7,7 @@ type SearchResult struct {
 	Country     string    `json:"country"`
 	Lat         float64   `json:"lat"`
 	Lng         float64   `json:"lng"`
-	Boundingbox []float64 `json:"boundingbox,omitempty"`
+	BoundingBox []float64 `json:"bbox,omitempty"`
 	Importance  float64   `json:"importance,omitempty"`
 	Licence     string    `json:"licence,omitempty"`
 }
