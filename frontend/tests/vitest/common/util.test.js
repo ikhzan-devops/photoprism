@@ -191,7 +191,7 @@ describe("common/util", () => {
     expect(result).toBe("teststring");
   });
   it("should truncate xxx", () => {
-    const result = $util.truncate("teststring for mocha", 5, "ng");
+    const result = $util.truncate("teststring for vitest", 5, "ng");
     expect(result).toBe("tesng");
   });
   it.skip("should encode html", () => {
