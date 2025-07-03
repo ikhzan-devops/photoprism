@@ -5,10 +5,12 @@ import (
 	"fmt"
 	"net/http"
 	"time"
+
+	"github.com/photoprism/photoprism/pkg/media/http/header"
 )
 
 // GetRequest fetches the cell ID data from the service URL.
-func GetRequest(reqUrl string) (r *http.Response, err error) {
+func GetRequest(reqUrl string, locale string) (r *http.Response, err error) {
 	var req *http.Request
 
 	// Log request URL.
@@ -25,9 +27,14 @@ func GetRequest(reqUrl string) (r *http.Response, err error) {
 
 	// Set user agent.
 	if UserAgent != "" {
-		req.Header.Set("User-Agent", UserAgent)
+		req.Header.Set(header.UserAgent, UserAgent)
 	} else {
-		req.Header.Set("User-Agent", "PhotoPrism/Test")
+		req.Header.Set(header.UserAgent, "PhotoPrism/Test")
+	}
+
+	// Set requested result locale.
+	if locale != "" {
+		req.Header.Set(header.AcceptLanguage, locale)
 	}
 
 	// Add API key?

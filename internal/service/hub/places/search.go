@@ -31,15 +31,13 @@ func Search(q, locale string, count int) (results SearchResults, err error) {
 
 	// Generate query parameter string.
 	values := url.Values{"q": {q}, "count": {strconv.Itoa(count)}}
-
-	if locale != "" {
-		values.Add("locale", locale)
-	}
-
 	params := values.Encode()
 
+	// Get request locale.
+	locale = Locale(locale)
+
 	// Create cache key based on query parameters.
-	cacheKey := fmt.Sprintf("search:%s", params)
+	cacheKey := fmt.Sprintf("search:%s:%s", params, locale)
 
 	// Are location results cached?
 	if hit, ok := clientCache.Get(cacheKey); ok {
@@ -53,7 +51,7 @@ func Search(q, locale string, count int) (results SearchResults, err error) {
 	// Query the specified places service URLs.
 	for _, serviceUrl := range SearchServiceUrls {
 		reqUrl := fmt.Sprintf("%s?%s", serviceUrl, params)
-		if r, err = GetRequest(reqUrl); err == nil {
+		if r, err = GetRequest(reqUrl, locale); err == nil {
 			break
 		}
 	}

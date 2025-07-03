@@ -3873,6 +3873,12 @@
                         "name": "lng",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Locale",
+                        "name": "locale",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -5664,6 +5670,9 @@
                 },
                 "OriginalsLimit": {
                     "type": "integer"
+                },
+                "PlacesLocale": {
+                    "type": "string"
                 },
                 "PngSize": {
                     "type": "integer"
@@ -7534,6 +7543,9 @@
                 "lng": {
                     "type": "number"
                 },
+                "locale": {
+                    "type": "string"
+                },
                 "name": {
                     "type": "string"
                 },
@@ -7580,7 +7592,7 @@
         "places.SearchResult": {
             "type": "object",
             "properties": {
-                "boundingbox": {
+                "bbox": {
                     "type": "array",
                     "items": {
                         "type": "number"
