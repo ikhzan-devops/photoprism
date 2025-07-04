@@ -354,7 +354,7 @@ var Flags = CliFlags{
 			Usage:   "maximum `NUMBER` of indexing workers, default depends on the number of physical cores",
 			Value:   cpuid.CPU.PhysicalCores / 2,
 			EnvVars: EnvVars("INDEX_WORKERS", "WORKERS"),
-		}}, {
+		}, DocDefault: " "}, {
 		Flag: &cli.StringFlag{
 			Name:    "index-schedule",
 			Usage:   "indexing `SCHEDULE` in cron format (e.g. \"@every 3h\" for every 3 hours; \"\" to disable)",
