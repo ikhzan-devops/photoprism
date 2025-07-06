@@ -378,6 +378,8 @@ export default {
           return "XMP";
         case "estimate":
           return this.$gettext("Estimate");
+        case "file":
+          return this.$gettext("File");
         case "name":
           return this.$gettext("Name");
         case "title":

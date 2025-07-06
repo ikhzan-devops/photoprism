@@ -994,7 +994,7 @@ func (m *MediaFile) IsVideo() bool {
 
 // IsSidecar checks if the file is a metadata sidecar file, independent of the storage location.
 func (m *MediaFile) IsSidecar() bool {
-	return !m.Media().Main()
+	return !m.Media().IsMain()
 }
 
 // IsArchive returns true if this is an archive file.
@@ -1064,12 +1064,19 @@ func (m *MediaFile) IsImageNative() bool {
 
 // IsLive checks if the file is a live photo.
 func (m *MediaFile) IsLive() bool {
-	if m.IsHeic() {
-		return fs.VideoMov.FindFirst(m.FileName(), []string{}, Config().OriginalsPath(), false) != ""
+	if !m.InOriginals() {
+		return false
 	}
 
 	if m.IsVideo() {
-		return fs.ImageHeic.FindFirst(m.FileName(), []string{}, Config().OriginalsPath(), false) != ""
+		if fs.ImageHeic.FindFirst(m.FileName(), []string{}, Config().OriginalsPath(), false) != "" ||
+			fs.ImageJpeg.FindFirst(m.FileName(), []string{}, Config().OriginalsPath(), false) != "" {
+			return true
+		}
+	} else if m.IsHeic() || m.IsJpeg() {
+		if fs.VideoMov.FindFirst(m.FileName(), []string{}, Config().OriginalsPath(), false) != "" {
+			return true
+		}
 	}
 
 	return m.MetaData().MediaType == media.Live && m.VideoInfo().Compatible

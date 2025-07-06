@@ -9,6 +9,7 @@ const (
 	SrcAuto     = ""                   // Prio 1
 	SrcDefault  = "default"            // Prio 1
 	SrcEstimate = "estimate"           // Prio 2
+	SrcFile     = "file"               // Prio 2
 	SrcName     = "name"               // Prio 4
 	SrcYaml     = "yaml"               // Prio 8
 	SrcOIDC     = "oidc"               // Prio 8
@@ -40,6 +41,7 @@ var SrcPriority = Priorities{
 	SrcAuto:     1,
 	SrcDefault:  1,
 	SrcEstimate: 2,
+	SrcFile:     2,
 	SrcName:     4,
 	SrcYaml:     8,
 	SrcOIDC:     8,
