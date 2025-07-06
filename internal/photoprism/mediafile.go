@@ -390,16 +390,16 @@ func (m *MediaFile) RelPath(directory string) string {
 	pathname := m.fileName
 
 	if i := strings.Index(pathname, directory); i == 0 {
-		if i := strings.LastIndex(directory, string(os.PathSeparator)); i == len(directory)-1 {
+		if i = strings.LastIndex(directory, string(os.PathSeparator)); i == len(directory)-1 {
 			pathname = pathname[len(directory):]
-		} else if i := strings.LastIndex(directory, string(os.PathSeparator)); i != len(directory) {
+		} else if i = strings.LastIndex(directory, string(os.PathSeparator)); i != len(directory) {
 			pathname = pathname[len(directory)+1:]
 		}
 	}
 
 	if end := strings.LastIndex(pathname, string(os.PathSeparator)); end != -1 {
 		pathname = pathname[:end]
-	} else if end := strings.LastIndex(pathname, string(os.PathSeparator)); end == -1 {
+	} else if end = strings.LastIndex(pathname, string(os.PathSeparator)); end == -1 {
 		pathname = ""
 	}
 
@@ -1068,7 +1068,7 @@ func (m *MediaFile) IsLive() bool {
 		return false
 	}
 
-	if m.IsVideo() {
+	if m.HasFileType(fs.VideoMov) {
 		if fs.ImageHeic.FindFirst(m.FileName(), []string{}, Config().OriginalsPath(), false) != "" ||
 			fs.ImageJpeg.FindFirst(m.FileName(), []string{}, Config().OriginalsPath(), false) != "" {
 			return true
