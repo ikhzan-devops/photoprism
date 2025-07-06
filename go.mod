@@ -14,7 +14,7 @@ require (
 	github.com/esimov/pigo v1.4.6
 	github.com/gin-contrib/gzip v1.2.3
 	github.com/gin-gonic/gin v1.10.1
-	github.com/golang/geo v0.0.0-20250702194635-55051eb0594d
+	github.com/golang/geo v0.0.0-20250704082316-8c117c302233
 	github.com/google/open-location-code/go v0.0.0-20250620134813-83986da0156b
 	github.com/gorilla/websocket v1.5.3
 	github.com/gosimple/slug v1.15.0
@@ -51,7 +51,7 @@ require (
 	golang.org/x/image v0.28.0
 )
 
-require github.com/olekukonko/tablewriter v1.0.7
+require github.com/olekukonko/tablewriter v1.0.8
 
 require github.com/google/uuid v1.6.0
 
