@@ -57,6 +57,9 @@ services:
       PHOTOPRISM_PASSWORD_RESET_URI: "https://keycloak.localssl.dev/realms/master/login-actions/reset-credentials"
       PHOTOPRISM_USAGE_INFO: "true"
       PHOTOPRISM_FILES_QUOTA: "100"
+      ## Customization:
+      PHOTOPRISM_DEFAULT_LOCALE: "en"                      # default user interface language, e.g. "en" or "de"
+      PHOTOPRISM_PLACES_LOCALE: "local"                    # location details language, e.g. "local", "en", or "de"
       ## OpenID Connect (pre-configured for local tests):
       ## see https://keycloak.localssl.dev/realms/master/.well-known/openid-configuration
       PHOTOPRISM_OIDC_URI: "https://keycloak.localssl.dev/realms/master"
