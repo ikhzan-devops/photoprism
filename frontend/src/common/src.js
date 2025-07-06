@@ -2,6 +2,7 @@ export const Auto = "";
 export const Default = "default";
 export const Manual = "manual";
 export const Estimate = "estimate";
+export const File = "file";
 export const Name = "name";
 export const Meta = "meta";
 export const Xmp = "xmp";

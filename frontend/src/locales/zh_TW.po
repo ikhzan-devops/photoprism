@@ -225,7 +225,7 @@ msgstr "新增到相簿"
 msgid "Added"
 msgstr "已新增"
 
-#: src/component/location/dialog.vue:72 src/component/location/dialog.vue:94
+#: src/component/location/dialog.vue:71 src/component/location/dialog.vue:93
 #: src/component/photo/edit/details.vue:247
 msgid "Adjust Location"
 msgstr "調整位置"
@@ -373,8 +373,7 @@ msgstr "高度（公尺）"
 msgid "AM"
 msgstr "是"
 
-#: src/app/routes.js:265 src/component/navigation.vue:797
-#: src/component/photo/edit/files.vue:364
+#: src/app/routes.js:265 src/component/photo/edit/files.vue:364
 #: src/component/photo/view/cards.vue:327
 #: src/component/photo/view/cards.vue:511 src/component/photo/view/list.vue:184
 #: src/component/photo/view/mosaic.vue:171 src/options/options.js:301
@@ -384,6 +383,10 @@ msgstr "動態圖片"
 #: src/page/settings/general.vue:687
 msgid "Animation"
 msgstr "動畫"
+
+#: src/component/navigation.vue:797
+msgid "Animations"
+msgstr ""
 
 #: src/component/share/dialog.vue:207
 msgid "Any private photos and videos remain private and won't be shared."
@@ -604,7 +607,7 @@ msgstr "無法選取更多項目"
 #: src/component/file/delete/dialog.vue:48
 #: src/component/label/delete/dialog.vue:48
 #: src/component/label/edit/dialog.vue:108
-#: src/component/location/dialog.vue:195
+#: src/component/location/dialog.vue:194
 #: src/component/people/edit/dialog.vue:121
 #: src/component/photo/album/dialog.vue:78 src/component/service/add.vue:19
 #: src/component/service/edit.vue:456 src/component/service/remove.vue:50
@@ -617,7 +620,7 @@ msgstr "無法選取更多項目"
 msgid "Cancel"
 msgstr "取消"
 
-#: src/component/photo/edit/details.vue:89 src/component/photo/edit/info.vue:61
+#: src/component/photo/edit/details.vue:89 src/component/photo/edit/info.vue:63
 #: src/component/photo/edit/labels.vue:42
 #: src/component/photo/view/cards.vue:445 src/component/sidebar/info.vue:72
 msgid "Caption"
@@ -749,7 +752,7 @@ msgstr "重新完整掃描"
 msgid "Confidence"
 msgstr "可信度"
 
-#: src/component/location/dialog.vue:207
+#: src/component/location/dialog.vue:206
 #: src/component/photo/album/dialog.vue:90
 #: src/component/settings/passcode.vue:264
 msgid "Confirm"
@@ -1301,7 +1304,8 @@ msgstr "回饋"
 msgid "Female"
 msgstr "女性"
 
-#: src/component/photo/edit/info.vue:214 src/model/file.js:290
+#: src/component/photo/edit/info.vue:57 src/component/photo/edit/info.vue:214
+#: src/model/file.js:290
 msgid "File"
 msgstr "檔案"
 
@@ -1487,7 +1491,7 @@ msgstr "雜種"
 msgid "If you lose access to your authenticator app or device, you can use your recovery code to regain access to your account."
 msgstr "如果您失去了對身份驗證器應用程式或裝置的存取權限，您可以使用復原代碼來重新獲得對帳戶的存取權限。"
 
-#: src/component/photo/edit/info.vue:63 src/component/photo/edit/labels.vue:46
+#: src/component/photo/edit/info.vue:65 src/component/photo/edit/labels.vue:46
 #: src/component/photo/view/cards.vue:532 src/model/file.js:218
 #: src/options/options.js:281
 msgid "Image"
@@ -1797,7 +1801,7 @@ msgstr "本地時間"
 #: src/component/photo/edit/details.vue:38
 #: src/component/photo/edit/details.vue:116
 #: src/component/photo/edit/details.vue:214
-#: src/component/photo/edit/info.vue:65 src/component/photo/edit/labels.vue:48
+#: src/component/photo/edit/info.vue:67 src/component/photo/edit/labels.vue:48
 #: src/component/photo/view/cards.vue:555 src/component/photo/view/list.vue:117
 #: src/component/sidebar/info.vue:107 src/page/albums.vue:99
 #: src/page/settings/account.vue:563 src/page/settings/account.vue:565
@@ -1958,7 +1962,7 @@ msgstr "沉默的"
 #: src/component/album/edit/dialog.vue:78
 #: src/component/label/edit/dialog.vue:72
 #: src/component/people/edit/dialog.vue:72
-#: src/component/photo/edit/files.vue:41 src/component/photo/edit/info.vue:57
+#: src/component/photo/edit/files.vue:41 src/component/photo/edit/info.vue:59
 #: src/component/photo/edit/info.vue:125 src/component/photo/edit/people.vue:36
 #: src/component/photo/view/list.vue:117 src/component/service/edit.vue:311
 #: src/component/settings/apps.vue:53 src/component/settings/apps.vue:289
@@ -2054,7 +2058,7 @@ msgstr "找不到圖片"
 msgid "No recently edited pictures"
 msgstr "沒有最近編輯的圖片"
 
-#: src/component/location/dialog.vue:159
+#: src/component/location/dialog.vue:158
 msgid "No results"
 msgstr "找不到結果"
 
@@ -2250,7 +2254,7 @@ msgstr "外出"
 msgid "Page {0}, Current page"
 msgstr "第 {0} 頁，目前頁"
 
-#: src/component/photo/edit/files.vue:352 src/model/photo.js:894
+#: src/component/photo/edit/files.vue:352 src/model/photo.js:896
 msgid "Pages"
 msgstr "頁面"
 
@@ -2305,7 +2309,7 @@ msgstr "人"
 msgid "Personal"
 msgstr "个人"
 
-#: src/model/photo.js:1308
+#: src/model/photo.js:1310
 msgid "Photo"
 msgstr "相片"
 
@@ -2649,7 +2653,7 @@ msgid "Scope"
 msgstr "範圍"
 
 #: src/page/admin/sessions.vue:70 src/page/admin/users.vue:69
-#: src/component/location/dialog.vue:126 src/component/navigation.vue:343
+#: src/component/location/dialog.vue:125 src/component/navigation.vue:343
 #: src/component/navigation.vue:1905 src/component/photo/toolbar.vue:57
 #: src/options/options.js:197 src/page/albums.vue:100 src/page/labels.vue:77
 #: src/page/library/errors.vue:76 src/page/people/recognized.vue:66
@@ -3040,7 +3044,7 @@ msgctxt "Photo"
 msgid "Title"
 msgstr "標題"
 
-#: src/component/photo/edit/info.vue:59 src/component/photo/edit/info.vue:155
+#: src/component/photo/edit/info.vue:61 src/component/photo/edit/info.vue:155
 #: src/component/photo/edit/labels.vue:40 src/component/photo/view/list.vue:114
 #: src/component/sidebar/info.vue:57
 msgid "Title"
@@ -3136,10 +3140,10 @@ msgstr "唯一身份"
 #: src/component/photo/edit/details.vue:113
 #: src/component/photo/edit/details.vue:140
 #: src/component/photo/edit/details.vue:166 src/component/sidebar/info.vue:43
-#: src/model/album.js:193 src/model/photo.js:329 src/model/photo.js:819
-#: src/model/photo.js:844 src/model/photo.js:867 src/model/photo.js:885
-#: src/model/photo.js:932 src/model/photo.js:940 src/model/photo.js:1029
-#: src/model/photo.js:1051 src/model/photo.js:1096 src/model/photo.js:1109
+#: src/model/album.js:193 src/model/photo.js:331 src/model/photo.js:821
+#: src/model/photo.js:846 src/model/photo.js:869 src/model/photo.js:887
+#: src/model/photo.js:934 src/model/photo.js:942 src/model/photo.js:1031
+#: src/model/photo.js:1053 src/model/photo.js:1098 src/model/photo.js:1111
 #: src/model/user.js:157 src/options/options.js:51 src/options/options.js:69
 #: src/options/options.js:86 src/options/options.js:100
 #: src/options/options.js:112 src/page/library/errors.vue:251
@@ -3304,7 +3308,7 @@ msgstr "驗證碼"
 #: src/component/photo/view/cards.vue:363
 #: src/component/photo/view/cards.vue:491 src/component/photo/view/list.vue:190
 #: src/component/photo/view/mosaic.vue:207 src/model/file.js:221
-#: src/model/photo.js:956 src/model/photo.js:974 src/options/options.js:293
+#: src/model/photo.js:958 src/model/photo.js:976 src/options/options.js:293
 msgid "Video"
 msgstr "影片"
 
@@ -3426,7 +3430,7 @@ msgstr "你只能下載一個相簿"
 msgid "You can only download one label"
 msgstr "你只能下載一個標籤"
 
-#: src/component/location/dialog.vue:171
+#: src/component/location/dialog.vue:170
 msgid "You can search for a location or move the marker on the map to change the position:"
 msgstr "您可以搜尋某個位置或移動地圖上的標記來更改位置："
 

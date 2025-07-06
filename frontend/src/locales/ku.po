@@ -225,7 +225,7 @@ msgstr "زیادکردن بۆ ئەلبوم"
 msgid "Added"
 msgstr "زیادکرا"
 
-#: src/component/location/dialog.vue:72 src/component/location/dialog.vue:94
+#: src/component/location/dialog.vue:71 src/component/location/dialog.vue:93
 #: src/component/photo/edit/details.vue:247
 msgid "Adjust Location"
 msgstr "Cihê Biguherîne"
@@ -373,8 +373,7 @@ msgstr "بەرزی (m)"
 msgid "AM"
 msgstr "IM"
 
-#: src/app/routes.js:265 src/component/navigation.vue:797
-#: src/component/photo/edit/files.vue:364
+#: src/app/routes.js:265 src/component/photo/edit/files.vue:364
 #: src/component/photo/view/cards.vue:327
 #: src/component/photo/view/cards.vue:511 src/component/photo/view/list.vue:184
 #: src/component/photo/view/mosaic.vue:171 src/options/options.js:301
@@ -384,6 +383,10 @@ msgstr "ئەنیمەیشن"
 #: src/page/settings/general.vue:687
 msgid "Animation"
 msgstr "ئەنیمەیشن"
+
+#: src/component/navigation.vue:797
+msgid "Animations"
+msgstr ""
 
 #: src/component/share/dialog.vue:207
 msgid "Any private photos and videos remain private and won't be shared."
@@ -604,7 +607,7 @@ msgstr "ناتوانێت ئایتمی زیاتر دیاری بکات"
 #: src/component/file/delete/dialog.vue:48
 #: src/component/label/delete/dialog.vue:48
 #: src/component/label/edit/dialog.vue:108
-#: src/component/location/dialog.vue:195
+#: src/component/location/dialog.vue:194
 #: src/component/people/edit/dialog.vue:121
 #: src/component/photo/album/dialog.vue:78 src/component/service/add.vue:19
 #: src/component/service/edit.vue:456 src/component/service/remove.vue:50
@@ -617,7 +620,7 @@ msgstr "ناتوانێت ئایتمی زیاتر دیاری بکات"
 msgid "Cancel"
 msgstr "هه‌ڵوه‌شاندنه‌وه"
 
-#: src/component/photo/edit/details.vue:89 src/component/photo/edit/info.vue:61
+#: src/component/photo/edit/details.vue:89 src/component/photo/edit/info.vue:63
 #: src/component/photo/edit/labels.vue:42
 #: src/component/photo/view/cards.vue:445 src/component/sidebar/info.vue:72
 msgid "Caption"
@@ -749,7 +752,7 @@ msgstr "پشکنینەوەی تەواو"
 msgid "Confidence"
 msgstr "دڵنیایی"
 
-#: src/component/location/dialog.vue:207
+#: src/component/location/dialog.vue:206
 #: src/component/photo/album/dialog.vue:90
 #: src/component/settings/passcode.vue:264
 msgid "Confirm"
@@ -1301,7 +1304,8 @@ msgstr "ڕەخنە و پێشنیار"
 msgid "Female"
 msgstr "Mê"
 
-#: src/component/photo/edit/info.vue:214 src/model/file.js:290
+#: src/component/photo/edit/info.vue:57 src/component/photo/edit/info.vue:214
+#: src/model/file.js:290
 msgid "File"
 msgstr "پەڕگە"
 
@@ -1487,7 +1491,7 @@ msgstr "دووڕەگ"
 msgid "If you lose access to your authenticator app or device, you can use your recovery code to regain access to your account."
 msgstr "Heke hûn gihîştina serîlêdana an cîhaza xweya rastgir winda bikin, hûn dikarin koda xweya vegerê bikar bînin da ku ji nû ve gihîştina hesabê xwe bistînin."
 
-#: src/component/photo/edit/info.vue:63 src/component/photo/edit/labels.vue:46
+#: src/component/photo/edit/info.vue:65 src/component/photo/edit/labels.vue:46
 #: src/component/photo/view/cards.vue:532 src/model/file.js:218
 #: src/options/options.js:281
 msgid "Image"
@@ -1797,7 +1801,7 @@ msgstr "کاتی ناوخۆیی"
 #: src/component/photo/edit/details.vue:38
 #: src/component/photo/edit/details.vue:116
 #: src/component/photo/edit/details.vue:214
-#: src/component/photo/edit/info.vue:65 src/component/photo/edit/labels.vue:48
+#: src/component/photo/edit/info.vue:67 src/component/photo/edit/labels.vue:48
 #: src/component/photo/view/cards.vue:555 src/component/photo/view/list.vue:117
 #: src/component/sidebar/info.vue:107 src/page/albums.vue:99
 #: src/page/settings/account.vue:563 src/page/settings/account.vue:565
@@ -1958,7 +1962,7 @@ msgstr "Bêdeng"
 #: src/component/album/edit/dialog.vue:78
 #: src/component/label/edit/dialog.vue:72
 #: src/component/people/edit/dialog.vue:72
-#: src/component/photo/edit/files.vue:41 src/component/photo/edit/info.vue:57
+#: src/component/photo/edit/files.vue:41 src/component/photo/edit/info.vue:59
 #: src/component/photo/edit/info.vue:125 src/component/photo/edit/people.vue:36
 #: src/component/photo/view/list.vue:117 src/component/service/edit.vue:311
 #: src/component/settings/apps.vue:53 src/component/settings/apps.vue:289
@@ -2054,7 +2058,7 @@ msgstr "Wêne nehatin dîtin"
 msgid "No recently edited pictures"
 msgstr "Wêneyên ku nû hatine guheztin tune"
 
-#: src/component/location/dialog.vue:159
+#: src/component/location/dialog.vue:158
 msgid "No results"
 msgstr "هیچ ئەنجامێک"
 
@@ -2250,7 +2254,7 @@ msgstr "دەرەوە"
 msgid "Page {0}, Current page"
 msgstr "Rûpel {0}, Rûpelê niha"
 
-#: src/component/photo/edit/files.vue:352 src/model/photo.js:894
+#: src/component/photo/edit/files.vue:352 src/model/photo.js:896
 msgid "Pages"
 msgstr "Pages"
 
@@ -2305,7 +2309,7 @@ msgstr "Şexs"
 msgid "Personal"
 msgstr "Şexsî"
 
-#: src/model/photo.js:1308
+#: src/model/photo.js:1310
 msgid "Photo"
 msgstr "وێنە"
 
@@ -2648,7 +2652,7 @@ msgid "Scope"
 msgstr "Scope"
 
 #: src/page/admin/sessions.vue:70 src/page/admin/users.vue:69
-#: src/component/location/dialog.vue:126 src/component/navigation.vue:343
+#: src/component/location/dialog.vue:125 src/component/navigation.vue:343
 #: src/component/navigation.vue:1905 src/component/photo/toolbar.vue:57
 #: src/options/options.js:197 src/page/albums.vue:100 src/page/labels.vue:77
 #: src/page/library/errors.vue:76 src/page/people/recognized.vue:66
@@ -3039,7 +3043,7 @@ msgctxt "Photo"
 msgid "Title"
 msgstr "ناونیشان"
 
-#: src/component/photo/edit/info.vue:59 src/component/photo/edit/info.vue:155
+#: src/component/photo/edit/info.vue:61 src/component/photo/edit/info.vue:155
 #: src/component/photo/edit/labels.vue:40 src/component/photo/view/list.vue:114
 #: src/component/sidebar/info.vue:57
 msgid "Title"
@@ -3135,10 +3139,10 @@ msgstr "IDـی بێ هاوتا"
 #: src/component/photo/edit/details.vue:113
 #: src/component/photo/edit/details.vue:140
 #: src/component/photo/edit/details.vue:166 src/component/sidebar/info.vue:43
-#: src/model/album.js:193 src/model/photo.js:329 src/model/photo.js:819
-#: src/model/photo.js:844 src/model/photo.js:867 src/model/photo.js:885
-#: src/model/photo.js:932 src/model/photo.js:940 src/model/photo.js:1029
-#: src/model/photo.js:1051 src/model/photo.js:1096 src/model/photo.js:1109
+#: src/model/album.js:193 src/model/photo.js:331 src/model/photo.js:821
+#: src/model/photo.js:846 src/model/photo.js:869 src/model/photo.js:887
+#: src/model/photo.js:934 src/model/photo.js:942 src/model/photo.js:1031
+#: src/model/photo.js:1053 src/model/photo.js:1098 src/model/photo.js:1111
 #: src/model/user.js:157 src/options/options.js:51 src/options/options.js:69
 #: src/options/options.js:86 src/options/options.js:100
 #: src/options/options.js:112 src/page/library/errors.vue:251
@@ -3303,7 +3307,7 @@ msgstr "Koda verastkirinê"
 #: src/component/photo/view/cards.vue:363
 #: src/component/photo/view/cards.vue:491 src/component/photo/view/list.vue:190
 #: src/component/photo/view/mosaic.vue:207 src/model/file.js:221
-#: src/model/photo.js:956 src/model/photo.js:974 src/options/options.js:293
+#: src/model/photo.js:958 src/model/photo.js:976 src/options/options.js:293
 msgid "Video"
 msgstr "ڤیدیۆ"
 
@@ -3425,7 +3429,7 @@ msgstr "تۆ تەنها دەتوانی یەك ئەلبوم داگریت"
 msgid "You can only download one label"
 msgstr "تۆ تەنها دەتوانی یەك پێناس داگریت"
 
-#: src/component/location/dialog.vue:171
+#: src/component/location/dialog.vue:170
 msgid "You can search for a location or move the marker on the map to change the position:"
 msgstr "Hûn dikarin li cîhek bigerin an jî nîşankerê li ser nexşeyê biguhezînin da ku pozîsyonê biguherînin:"
 

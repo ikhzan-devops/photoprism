@@ -222,7 +222,7 @@ msgstr "Cuir leis an albam"
 msgid "Added"
 msgstr "Curtha leis"
 
-#: src/component/location/dialog.vue:72 src/component/location/dialog.vue:94
+#: src/component/location/dialog.vue:71 src/component/location/dialog.vue:93
 #: src/component/photo/edit/details.vue:247
 msgid "Adjust Location"
 msgstr "Coigeartaigh an Suíomh"
@@ -370,8 +370,7 @@ msgstr "airde (m)"
 msgid "AM"
 msgstr "AM"
 
-#: src/app/routes.js:265 src/component/navigation.vue:797
-#: src/component/photo/edit/files.vue:364
+#: src/app/routes.js:265 src/component/photo/edit/files.vue:364
 #: src/component/photo/view/cards.vue:327
 #: src/component/photo/view/cards.vue:511 src/component/photo/view/list.vue:184
 #: src/component/photo/view/mosaic.vue:171 src/options/options.js:301
@@ -381,6 +380,10 @@ msgstr "Beoite"
 #: src/page/settings/general.vue:687
 msgid "Animation"
 msgstr "Beochan"
+
+#: src/component/navigation.vue:797
+msgid "Animations"
+msgstr ""
 
 #: src/component/share/dialog.vue:207
 msgid "Any private photos and videos remain private and won't be shared."
@@ -601,7 +604,7 @@ msgstr "Ní féidir níos mó míreanna a roghnú"
 #: src/component/file/delete/dialog.vue:48
 #: src/component/label/delete/dialog.vue:48
 #: src/component/label/edit/dialog.vue:108
-#: src/component/location/dialog.vue:195
+#: src/component/location/dialog.vue:194
 #: src/component/people/edit/dialog.vue:121
 #: src/component/photo/album/dialog.vue:78 src/component/service/add.vue:19
 #: src/component/service/edit.vue:456 src/component/service/remove.vue:50
@@ -614,7 +617,7 @@ msgstr "Ní féidir níos mó míreanna a roghnú"
 msgid "Cancel"
 msgstr "Cealaigh"
 
-#: src/component/photo/edit/details.vue:89 src/component/photo/edit/info.vue:61
+#: src/component/photo/edit/details.vue:89 src/component/photo/edit/info.vue:63
 #: src/component/photo/edit/labels.vue:42
 #: src/component/photo/view/cards.vue:445 src/component/sidebar/info.vue:72
 msgid "Caption"
@@ -746,7 +749,7 @@ msgstr "Críochnaigh Athscanadh"
 msgid "Confidence"
 msgstr "Muinín"
 
-#: src/component/location/dialog.vue:207
+#: src/component/location/dialog.vue:206
 #: src/component/photo/album/dialog.vue:90
 #: src/component/settings/passcode.vue:264
 msgid "Confirm"
@@ -1298,7 +1301,8 @@ msgstr "Aiseolas"
 msgid "Female"
 msgstr "Mná"
 
-#: src/component/photo/edit/info.vue:214 src/model/file.js:290
+#: src/component/photo/edit/info.vue:57 src/component/photo/edit/info.vue:214
+#: src/model/file.js:290
 msgid "File"
 msgstr "Comhad"
 
@@ -1484,7 +1488,7 @@ msgstr "hibrideach"
 msgid "If you lose access to your authenticator app or device, you can use your recovery code to regain access to your account."
 msgstr "Má chailleann tú rochtain ar d'aip nó gléas fíordheimhnitheora, is féidir leat do chód athshlánaithe a úsáid chun rochtain a fháil ar do chuntas arís."
 
-#: src/component/photo/edit/info.vue:63 src/component/photo/edit/labels.vue:46
+#: src/component/photo/edit/info.vue:65 src/component/photo/edit/labels.vue:46
 #: src/component/photo/view/cards.vue:532 src/model/file.js:218
 #: src/options/options.js:281
 msgid "Image"
@@ -1794,7 +1798,7 @@ msgstr "Am Áitiúil"
 #: src/component/photo/edit/details.vue:38
 #: src/component/photo/edit/details.vue:116
 #: src/component/photo/edit/details.vue:214
-#: src/component/photo/edit/info.vue:65 src/component/photo/edit/labels.vue:48
+#: src/component/photo/edit/info.vue:67 src/component/photo/edit/labels.vue:48
 #: src/component/photo/view/cards.vue:555 src/component/photo/view/list.vue:117
 #: src/component/sidebar/info.vue:107 src/page/albums.vue:99
 #: src/page/settings/account.vue:563 src/page/settings/account.vue:565
@@ -1955,7 +1959,7 @@ msgstr "Balbhaigh"
 #: src/component/album/edit/dialog.vue:78
 #: src/component/label/edit/dialog.vue:72
 #: src/component/people/edit/dialog.vue:72
-#: src/component/photo/edit/files.vue:41 src/component/photo/edit/info.vue:57
+#: src/component/photo/edit/files.vue:41 src/component/photo/edit/info.vue:59
 #: src/component/photo/edit/info.vue:125 src/component/photo/edit/people.vue:36
 #: src/component/photo/view/list.vue:117 src/component/service/edit.vue:311
 #: src/component/settings/apps.vue:53 src/component/settings/apps.vue:289
@@ -2051,7 +2055,7 @@ msgstr "Níor aimsíodh aon phictiúir"
 msgid "No recently edited pictures"
 msgstr "Níl aon phictiúir curtha in eagar le déanaí"
 
-#: src/component/location/dialog.vue:159
+#: src/component/location/dialog.vue:158
 msgid "No results"
 msgstr "Gan aon torthaí"
 
@@ -2247,7 +2251,7 @@ msgstr "Amuigh faoin aer"
 msgid "Page {0}, Current page"
 msgstr "Leathanach {0}, leathanach reatha"
 
-#: src/component/photo/edit/files.vue:352 src/model/photo.js:894
+#: src/component/photo/edit/files.vue:352 src/model/photo.js:896
 msgid "Pages"
 msgstr "Leathanaigh"
 
@@ -2302,7 +2306,7 @@ msgstr "Duine"
 msgid "Personal"
 msgstr "Pearsanta"
 
-#: src/model/photo.js:1308
+#: src/model/photo.js:1310
 msgid "Photo"
 msgstr "Grianghraf"
 
@@ -2645,7 +2649,7 @@ msgid "Scope"
 msgstr "Raon feidhme"
 
 #: src/page/admin/sessions.vue:70 src/page/admin/users.vue:69
-#: src/component/location/dialog.vue:126 src/component/navigation.vue:343
+#: src/component/location/dialog.vue:125 src/component/navigation.vue:343
 #: src/component/navigation.vue:1905 src/component/photo/toolbar.vue:57
 #: src/options/options.js:197 src/page/albums.vue:100 src/page/labels.vue:77
 #: src/page/library/errors.vue:76 src/page/people/recognized.vue:66
@@ -3036,7 +3040,7 @@ msgctxt "Photo"
 msgid "Title"
 msgstr "Teideal"
 
-#: src/component/photo/edit/info.vue:59 src/component/photo/edit/info.vue:155
+#: src/component/photo/edit/info.vue:61 src/component/photo/edit/info.vue:155
 #: src/component/photo/edit/labels.vue:40 src/component/photo/view/list.vue:114
 #: src/component/sidebar/info.vue:57
 msgid "Title"
@@ -3132,10 +3136,10 @@ msgstr "Aitheantas uathúil"
 #: src/component/photo/edit/details.vue:113
 #: src/component/photo/edit/details.vue:140
 #: src/component/photo/edit/details.vue:166 src/component/sidebar/info.vue:43
-#: src/model/album.js:193 src/model/photo.js:329 src/model/photo.js:819
-#: src/model/photo.js:844 src/model/photo.js:867 src/model/photo.js:885
-#: src/model/photo.js:932 src/model/photo.js:940 src/model/photo.js:1029
-#: src/model/photo.js:1051 src/model/photo.js:1096 src/model/photo.js:1109
+#: src/model/album.js:193 src/model/photo.js:331 src/model/photo.js:821
+#: src/model/photo.js:846 src/model/photo.js:869 src/model/photo.js:887
+#: src/model/photo.js:934 src/model/photo.js:942 src/model/photo.js:1031
+#: src/model/photo.js:1053 src/model/photo.js:1098 src/model/photo.js:1111
 #: src/model/user.js:157 src/options/options.js:51 src/options/options.js:69
 #: src/options/options.js:86 src/options/options.js:100
 #: src/options/options.js:112 src/page/library/errors.vue:251
@@ -3300,7 +3304,7 @@ msgstr "Cód Fíoraithe"
 #: src/component/photo/view/cards.vue:363
 #: src/component/photo/view/cards.vue:491 src/component/photo/view/list.vue:190
 #: src/component/photo/view/mosaic.vue:207 src/model/file.js:221
-#: src/model/photo.js:956 src/model/photo.js:974 src/options/options.js:293
+#: src/model/photo.js:958 src/model/photo.js:976 src/options/options.js:293
 msgid "Video"
 msgstr "Físeán"
 
@@ -3422,7 +3426,7 @@ msgstr "Is féidir leat a íoslódáil albam amháin"
 msgid "You can only download one label"
 msgstr "Ní féidir leat ach lipéad amháin a íoslódáil"
 
-#: src/component/location/dialog.vue:171
+#: src/component/location/dialog.vue:170
 msgid "You can search for a location or move the marker on the map to change the position:"
 msgstr "Is féidir leat suíomh a chuardach nó an marcóir a bhogadh ar an léarscáil chun an suíomh a athrú:"
 

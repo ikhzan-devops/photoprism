@@ -244,8 +244,8 @@ msgstr ""
 msgid "Added"
 msgstr ""
 
-#: src/component/location/dialog.vue:72
-#: src/component/location/dialog.vue:94
+#: src/component/location/dialog.vue:71
+#: src/component/location/dialog.vue:93
 #: src/component/photo/edit/details.vue:247
 msgid "Adjust Location"
 msgstr ""
@@ -403,7 +403,6 @@ msgid "AM"
 msgstr ""
 
 #: src/app/routes.js:265
-#: src/component/navigation.vue:797
 #: src/component/photo/edit/files.vue:364
 #: src/component/photo/view/cards.vue:327
 #: src/component/photo/view/cards.vue:511
@@ -415,6 +414,10 @@ msgstr ""
 
 #: src/page/settings/general.vue:687
 msgid "Animation"
+msgstr ""
+
+#: src/component/navigation.vue:797
+msgid "Animations"
 msgstr ""
 
 #: src/component/share/dialog.vue:207
@@ -671,7 +674,7 @@ msgstr ""
 #: src/component/file/delete/dialog.vue:48
 #: src/component/label/delete/dialog.vue:48
 #: src/component/label/edit/dialog.vue:108
-#: src/component/location/dialog.vue:195
+#: src/component/location/dialog.vue:194
 #: src/component/people/edit/dialog.vue:121
 #: src/component/photo/album/dialog.vue:78
 #: src/component/service/add.vue:19
@@ -692,7 +695,7 @@ msgid "Cancel"
 msgstr ""
 
 #: src/component/photo/edit/details.vue:89
-#: src/component/photo/edit/info.vue:61
+#: src/component/photo/edit/info.vue:63
 #: src/component/photo/edit/labels.vue:42
 #: src/component/photo/view/cards.vue:445
 #: src/component/sidebar/info.vue:72
@@ -856,7 +859,7 @@ msgstr ""
 msgid "Confidence"
 msgstr ""
 
-#: src/component/location/dialog.vue:207
+#: src/component/location/dialog.vue:206
 #: src/component/photo/album/dialog.vue:90
 #: src/component/settings/passcode.vue:264
 msgid "Confirm"
@@ -1485,6 +1488,7 @@ msgstr ""
 msgid "Female"
 msgstr ""
 
+#: src/component/photo/edit/info.vue:57
 #: src/component/photo/edit/info.vue:214
 #: src/model/file.js:290
 msgid "File"
@@ -1693,7 +1697,7 @@ msgstr ""
 msgid "If you lose access to your authenticator app or device, you can use your recovery code to regain access to your account."
 msgstr ""
 
-#: src/component/photo/edit/info.vue:63
+#: src/component/photo/edit/info.vue:65
 #: src/component/photo/edit/labels.vue:46
 #: src/component/photo/view/cards.vue:532
 #: src/model/file.js:218
@@ -2055,7 +2059,7 @@ msgstr ""
 #: src/component/photo/edit/details.vue:38
 #: src/component/photo/edit/details.vue:116
 #: src/component/photo/edit/details.vue:214
-#: src/component/photo/edit/info.vue:65
+#: src/component/photo/edit/info.vue:67
 #: src/component/photo/edit/labels.vue:48
 #: src/component/photo/view/cards.vue:555
 #: src/component/photo/view/list.vue:117
@@ -2240,7 +2244,7 @@ msgstr ""
 #: src/component/label/edit/dialog.vue:72
 #: src/component/people/edit/dialog.vue:72
 #: src/component/photo/edit/files.vue:41
-#: src/component/photo/edit/info.vue:57
+#: src/component/photo/edit/info.vue:59
 #: src/component/photo/edit/info.vue:125
 #: src/component/photo/edit/people.vue:36
 #: src/component/photo/view/list.vue:117
@@ -2365,7 +2369,7 @@ msgstr ""
 msgid "No recently edited pictures"
 msgstr ""
 
-#: src/component/location/dialog.vue:159
+#: src/component/location/dialog.vue:158
 msgid "No results"
 msgstr ""
 
@@ -2583,7 +2587,7 @@ msgid "Page {0}, Current page"
 msgstr ""
 
 #: src/component/photo/edit/files.vue:352
-#: src/model/photo.js:894
+#: src/model/photo.js:896
 msgid "Pages"
 msgstr ""
 
@@ -2648,7 +2652,7 @@ msgstr ""
 msgid "Personal"
 msgstr ""
 
-#: src/model/photo.js:1308
+#: src/model/photo.js:1310
 msgid "Photo"
 msgstr ""
 
@@ -3031,7 +3035,7 @@ msgstr ""
 
 #: src/page/admin/sessions.vue:70
 #: src/page/admin/users.vue:69
-#: src/component/location/dialog.vue:126
+#: src/component/location/dialog.vue:125
 #: src/component/navigation.vue:343
 #: src/component/navigation.vue:1905
 #: src/component/photo/toolbar.vue:57
@@ -3476,7 +3480,7 @@ msgctxt "Photo"
 msgid "Title"
 msgstr ""
 
-#: src/component/photo/edit/info.vue:59
+#: src/component/photo/edit/info.vue:61
 #: src/component/photo/edit/info.vue:155
 #: src/component/photo/edit/labels.vue:40
 #: src/component/photo/view/list.vue:114
@@ -3587,17 +3591,17 @@ msgstr ""
 #: src/component/photo/edit/details.vue:166
 #: src/component/sidebar/info.vue:43
 #: src/model/album.js:193
-#: src/model/photo.js:329
-#: src/model/photo.js:819
-#: src/model/photo.js:844
-#: src/model/photo.js:867
-#: src/model/photo.js:885
-#: src/model/photo.js:932
-#: src/model/photo.js:940
-#: src/model/photo.js:1029
-#: src/model/photo.js:1051
-#: src/model/photo.js:1096
-#: src/model/photo.js:1109
+#: src/model/photo.js:331
+#: src/model/photo.js:821
+#: src/model/photo.js:846
+#: src/model/photo.js:869
+#: src/model/photo.js:887
+#: src/model/photo.js:934
+#: src/model/photo.js:942
+#: src/model/photo.js:1031
+#: src/model/photo.js:1053
+#: src/model/photo.js:1098
+#: src/model/photo.js:1111
 #: src/model/user.js:157
 #: src/options/options.js:51
 #: src/options/options.js:69
@@ -3796,8 +3800,8 @@ msgstr ""
 #: src/component/photo/view/list.vue:190
 #: src/component/photo/view/mosaic.vue:207
 #: src/model/file.js:221
-#: src/model/photo.js:956
-#: src/model/photo.js:974
+#: src/model/photo.js:958
+#: src/model/photo.js:976
 #: src/options/options.js:293
 msgid "Video"
 msgstr ""
@@ -3944,7 +3948,7 @@ msgstr ""
 msgid "You can only download one label"
 msgstr ""
 
-#: src/component/location/dialog.vue:171
+#: src/component/location/dialog.vue:170
 msgid "You can search for a location or move the marker on the map to change the position:"
 msgstr ""
 
