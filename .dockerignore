@@ -7,6 +7,10 @@
 /assets/facenet
 /assets/nasnet
 /assets/nsfw
+/assets/efficientnet
+/assets/imagenet
+/assets/resnet
+/assets/vision
 /storage
 /build
 /photoprism
