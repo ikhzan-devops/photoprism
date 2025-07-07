@@ -13,6 +13,7 @@ import (
 	"github.com/photoprism/photoprism/internal/config"
 	"github.com/photoprism/photoprism/internal/entity"
 	"github.com/photoprism/photoprism/pkg/fs"
+	"github.com/photoprism/photoprism/pkg/media"
 	"github.com/photoprism/photoprism/pkg/media/http/header"
 )
 
@@ -689,73 +690,79 @@ func TestMediaFile_MimeType(t *testing.T) {
 	c := config.TestConfig()
 
 	t.Run("elephants.jpg", func(t *testing.T) {
-		mediaFile, err := NewMediaFile(c.ExamplesPath() + "/elephants.jpg")
+		f, err := NewMediaFile(c.ExamplesPath() + "/elephants.jpg")
 		if err != nil {
 			t.Fatal(err)
 		}
-		assert.Equal(t, "image/jpeg", mediaFile.MimeType())
+		assert.Equal(t, "image/jpeg", f.MimeType())
 	})
 	t.Run("canon_eos_6d.dng", func(t *testing.T) {
-		mediaFile, err := NewMediaFile(c.ExamplesPath() + "/canon_eos_6d.dng")
+		f, err := NewMediaFile(c.ExamplesPath() + "/canon_eos_6d.dng")
 		if err != nil {
 			t.Fatal(err)
 		}
 
-		assert.Equal(t, "image/dng", mediaFile.MimeType())
-		assert.True(t, mediaFile.IsDng())
-		assert.True(t, mediaFile.IsRaw())
+		assert.Equal(t, "image/dng", f.MimeType())
+		assert.True(t, f.IsDng())
+		assert.True(t, f.IsRaw())
 	})
 	t.Run("iphone_7.xmp", func(t *testing.T) {
-		mediaFile, err := NewMediaFile(c.ExamplesPath() + "/iphone_7.xmp")
+		f, err := NewMediaFile(c.ExamplesPath() + "/iphone_7.xmp")
 
 		if err != nil {
 			t.Fatal(err)
 		}
 
-		assert.True(t, fs.SameType(header.ContentTypeText, mediaFile.BaseType()))
-		assert.Equal(t, "text/plain", mediaFile.BaseType())
-		assert.Equal(t, "text/plain; charset=utf-8", mediaFile.MimeType())
-		assert.True(t, mediaFile.HasMimeType("text/plain"))
+		assert.True(t, fs.SameType(header.ContentTypeText, f.BaseType()))
+		assert.Equal(t, "text/plain", f.BaseType())
+		assert.Equal(t, "text/plain; charset=utf-8", f.MimeType())
+		assert.True(t, f.HasMimeType("text/plain"))
 	})
 	t.Run("iphone_7.json", func(t *testing.T) {
-		mediaFile, err := NewMediaFile(c.ExamplesPath() + "/iphone_7.json")
+		f, err := NewMediaFile(c.ExamplesPath() + "/iphone_7.json")
 		if err != nil {
 			t.Fatal(err)
 		}
-		assert.True(t, fs.SameType(header.ContentTypeJson, mediaFile.MimeType()))
+		assert.True(t, fs.SameType(header.ContentTypeJson, f.MimeType()))
 	})
 	t.Run("fox.profile0.8bpc.yuv420.avif", func(t *testing.T) {
-		mediaFile, err := NewMediaFile(c.ExamplesPath() + "/fox.profile0.8bpc.yuv420.avif")
+		f, err := NewMediaFile(c.ExamplesPath() + "/fox.profile0.8bpc.yuv420.avif")
 		if err != nil {
 			t.Fatal(err)
 		}
-		assert.True(t, fs.SameType(header.ContentTypeAvif, mediaFile.MimeType()))
-		assert.True(t, mediaFile.IsAvif())
+		assert.True(t, fs.SameType(header.ContentTypeAvif, f.MimeType()))
+		assert.True(t, f.IsAvif())
 	})
 	t.Run("iphone_7.heic", func(t *testing.T) {
-		mediaFile, err := NewMediaFile(c.ExamplesPath() + "/iphone_7.heic")
+		f, err := NewMediaFile(c.ExamplesPath() + "/iphone_7.heic")
 		if err != nil {
 			t.Fatal(err)
 		}
-		assert.True(t, fs.SameType(header.ContentTypeHeic, mediaFile.MimeType()))
-		assert.True(t, mediaFile.IsHeic())
+		assert.True(t, fs.SameType(header.ContentTypeHeic, f.MimeType()))
+		assert.True(t, f.IsHeic())
+		assert.False(t, f.IsMov())
+		assert.False(t, f.IsVideo())
 	})
 	t.Run("IMG_4120.AAE", func(t *testing.T) {
-		mediaFile, err := NewMediaFile(c.ExamplesPath() + "/IMG_4120.AAE")
+		f, err := NewMediaFile(c.ExamplesPath() + "/IMG_4120.AAE")
 		if err != nil {
 			t.Fatal(err)
 		}
 
-		assert.True(t, fs.SameType(header.ContentTypeXml, mediaFile.BaseType()))
-		assert.Equal(t, "text/xml", mediaFile.BaseType())
-		assert.Equal(t, "text/xml; charset=utf-8", mediaFile.MimeType())
-		assert.True(t, mediaFile.HasMimeType("text/xml"))
+		assert.True(t, fs.SameType(header.ContentTypeXml, f.BaseType()))
+		assert.Equal(t, "text/xml", f.BaseType())
+		assert.Equal(t, "text/xml; charset=utf-8", f.MimeType())
+		assert.True(t, f.HasMimeType("text/xml"))
+		assert.False(t, f.IsMov())
 	})
 	t.Run("earth.mov", func(t *testing.T) {
 		if f, err := NewMediaFile(filepath.Join(c.ExamplesPath(), "earth.mov")); err != nil {
 			t.Fatal(err)
 		} else {
 			assert.Equal(t, "video/quicktime", f.MimeType())
+			assert.False(t, f.IsHeic())
+			assert.True(t, f.IsMov())
+			assert.True(t, f.IsVideo())
 		}
 	})
 	t.Run("blue-go-video.mp4", func(t *testing.T) {
@@ -763,6 +770,9 @@ func TestMediaFile_MimeType(t *testing.T) {
 			t.Fatal(err)
 		} else {
 			assert.Equal(t, "video/mp4", f.MimeType())
+			assert.False(t, f.IsHeic())
+			assert.False(t, f.IsMov())
+			assert.True(t, f.IsVideo())
 		}
 	})
 	t.Run("bear.m2ts", func(t *testing.T) {
@@ -1528,7 +1538,7 @@ func TestMediaFile_IsLive(t *testing.T) {
 		if f, err := NewMediaFile(fileName); err != nil {
 			t.Fatal(err)
 		} else {
-			assert.False(t, f.IsLive()) // Image is not in originals path.
+			assert.False(t, f.IsLive(media.LiveMaxDuration)) // Image is not in originals path.
 			assert.False(t, f.IsRaw())
 			assert.True(t, f.IsImage())
 			assert.False(t, f.IsVideo())
@@ -1540,7 +1550,7 @@ func TestMediaFile_IsLive(t *testing.T) {
 		if f, err := NewMediaFile(filepath.Join(c.ExamplesPath(), "christmas.mp4")); err != nil {
 			t.Fatal(err)
 		} else {
-			assert.False(t, f.IsLive())
+			assert.False(t, f.IsLive(time.Second*3))
 			assert.False(t, f.IsRaw())
 			assert.False(t, f.IsImage())
 			assert.True(t, f.IsVideo())
@@ -1552,7 +1562,7 @@ func TestMediaFile_IsLive(t *testing.T) {
 		if f, err := NewMediaFile(filepath.Join(c.ExamplesPath(), "canon_eos_6d.dng")); err != nil {
 			t.Fatal(err)
 		} else {
-			assert.False(t, f.IsLive())
+			assert.False(t, f.IsLive(time.Second*3))
 			assert.True(t, f.IsRaw())
 			assert.False(t, f.IsImage())
 			assert.False(t, f.IsVideo())
@@ -1564,7 +1574,7 @@ func TestMediaFile_IsLive(t *testing.T) {
 		if f, err := NewMediaFile(filepath.Join(c.ExamplesPath(), "iphone_7.json")); err != nil {
 			t.Fatal(err)
 		} else {
-			assert.False(t, f.IsLive())
+			assert.False(t, f.IsLive(time.Second*3))
 			assert.False(t, f.IsRaw())
 			assert.False(t, f.IsImage())
 			assert.False(t, f.IsVideo())

@@ -367,11 +367,16 @@ func (ind *Index) UserMediaFile(m *MediaFile, o IndexOptions, originalName, phot
 		}
 	}
 
+	// Reset the video duration if this is a forced rescan.
+	if o.Rescan && photoUID == "" {
+		photo.PhotoDuration = 0
+	}
+
 	// Reset file perceptive diff and chroma percent.
 	file.FileDiff = -1
 	file.FileChroma = -1
 	file.FileVideo = m.IsVideo()
-	file.MediaType = m.Media().String()
+	file.MediaType = m.MediaType().String()
 
 	// Handle file types.
 	switch {
@@ -455,14 +460,10 @@ func (ind *Index) UserMediaFile(m *MediaFile, o IndexOptions, originalName, phot
 			}
 		}
 
-		// If the photo contains an animation or has a video,
-		// change the photo type from image to animated or live.
-		if photo.HasMediaType(media.Image) {
-			if m.IsAnimatedImage() {
-				photo.SetMediaType(media.Animated, entity.SrcAuto)
-			} else if m.IsLive() {
-				photo.SetMediaType(media.Live, entity.SrcAuto)
-			}
+		// If the file contains multiple images for an animation,
+		// change the media type to "animated".
+		if photo.HasMediaType(media.Image) && m.IsAnimatedImage() {
+			photo.SetMediaType(media.Animated, entity.SrcAuto)
 		}
 	case m.IsXMP():
 		if data, dataErr := meta.XMP(m.FileName()); dataErr == nil {
@@ -573,13 +574,14 @@ func (ind *Index) UserMediaFile(m *MediaFile, o IndexOptions, originalName, phot
 			photo.SetExposure(m.FocalLength(), m.FNumber(), m.Iso(), m.Exposure(), entity.SrcMeta)
 		}
 
-		// Update photo type if an image and not manually modified.
+		// If the media type is still set to "image" and has not been
+		// manually modified, then check and update it as needed.
 		if photo.HasMediaType(media.Image) {
 			if m.IsAnimatedImage() {
 				photo.SetMediaType(media.Animated, entity.SrcAuto)
 			} else if m.IsRaw() {
 				photo.SetMediaType(media.Raw, entity.SrcAuto)
-			} else if m.IsLive() {
+			} else if m.IsLive(photo.PhotoDuration) {
 				photo.SetMediaType(media.Live, entity.SrcAuto)
 			} else if m.IsVector() {
 				photo.SetMediaType(media.Vector, entity.SrcAuto)
@@ -756,8 +758,9 @@ func (ind *Index) UserMediaFile(m *MediaFile, o IndexOptions, originalName, phot
 			photo.SetExposure(m.FocalLength(), m.FNumber(), m.Iso(), m.Exposure(), entity.SrcMeta)
 		}
 
-		// Set photo media type to "live" or "video".
-		if m.IsLive() {
+		// Set the media type to "live" instead of "video" if the video duration
+		// is less than 3.1 seconds and a JPEG or HEIC image exists.
+		if photo.PhotoDuration > 0 && m.IsLive(photo.PhotoDuration) {
 			photo.SetMediaType(media.Live, entity.SrcAuto)
 		} else {
 			photo.SetMediaType(media.Video, entity.SrcAuto)
