@@ -250,6 +250,21 @@ func (m *Photo) MediaType() media.Type {
 	return media.Type(m.PhotoType)
 }
 
+// ResetMediaType resets the media type and source to the defaults.
+func (m *Photo) ResetMediaType(resetSrc string) {
+	if m.PhotoType != "" && SrcPriority[m.TypeSrc] > SrcPriority[resetSrc] {
+		return
+	}
+
+	m.PhotoType = MediaImage
+	m.TypeSrc = SrcAuto
+}
+
+// ResetDuration sets the video duration to 0.
+func (m *Photo) ResetDuration() {
+	m.PhotoDuration = 0
+}
+
 // HasMediaType checks if the photo has any of the specified media types.
 func (m *Photo) HasMediaType(types ...media.Type) bool {
 	mediaType := m.MediaType()

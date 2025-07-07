@@ -2,6 +2,8 @@ package entity
 
 import (
 	"time"
+
+	"github.com/photoprism/photoprism/pkg/media"
 )
 
 var editTime = time.Date(2008, 1, 1, 0, 0, 0, 0, time.UTC)
@@ -1676,6 +1678,7 @@ var PhotoFixtures = PhotoMap{
 		PhotoPrivate:     false,
 		PhotoScan:        false,
 		PhotoPanorama:    false,
+		PhotoDuration:    media.LiveMaxDuration,
 		TimeZone:         "America/Mexico",
 		Place:            PlaceFixtures.Pointer("mexico"),
 		PlaceID:          PlaceFixtures.Pointer("mexico").ID,

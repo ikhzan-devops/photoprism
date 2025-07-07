@@ -101,6 +101,14 @@ func TestPhoto_MediaType(t *testing.T) {
 	t.Run("Live", func(t *testing.T) {
 		m := PhotoFixtures.Get("Photo27")
 		assert.Equal(t, media.Live, m.MediaType())
+		assert.Equal(t, SrcFile, m.TypeSrc)
+		assert.Equal(t, media.LiveMaxDuration, m.PhotoDuration)
+		m.ResetMediaType(SrcFile)
+		assert.Equal(t, media.Image, m.MediaType())
+		assert.Equal(t, SrcAuto, m.TypeSrc)
+		assert.Equal(t, media.LiveMaxDuration, m.PhotoDuration)
+		m.ResetDuration()
+		assert.Equal(t, time.Duration(0), m.PhotoDuration)
 	})
 }
 
