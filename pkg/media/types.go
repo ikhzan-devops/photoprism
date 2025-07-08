@@ -1,15 +1,16 @@
 package media
 
 const (
-	Unknown  Type = ""
-	Archive  Type = "archive"
-	Animated Type = "animated"
-	Audio    Type = "audio"
-	Document Type = "document"
-	Image    Type = "image"
-	Raw      Type = "raw"
-	Sidecar  Type = "sidecar"
-	Live     Type = "live"
-	Vector   Type = "vector"
-	Video    Type = "video"
+	Unknown   Type = ""
+	Archive   Type = "archive"
+	Animated  Type = "animated"
+	Audio     Type = "audio"
+	Document  Type = "document"
+	Image     Type = "image"
+	Raw       Type = "raw"
+	Sidecar   Type = "sidecar"
+	Live      Type = "live"
+	Vector    Type = "vector"
+	Video     Type = "video"
+	Restoring Type = "restorng"
 )

@@ -271,6 +271,17 @@ func (ind *Index) UserMediaFile(m *MediaFile, o IndexOptions, originalName, phot
 			} else if photo.HasUID() {
 				photoExists = true
 				log.Infof("index: metadata of photo uid %s restored from %s", photo.PhotoUID, clean.Log(filepath.Base(yamlName)))
+				if oldPhoto := entity.FindPhoto(entity.Photo{PhotoUID: photo.PhotoUID}); oldPhoto != nil {
+					// If the photo in the database exists and has a PhotoType of restorng then it's a special case
+					// as the record has been created by the Album Restore process.
+					if oldPhoto.ID > 0 && oldPhoto.PhotoType == entity.MediaRestoring {
+						photo.ID = oldPhoto.ID
+						if oldPhoto.DeletedAt.Valid && !photo.DeletedAt.Valid {
+							// Remove Archival status of database copy of photo as you can't update value to null with entity.Update
+							oldPhoto.Restore()
+						}
+					}
+				}
 			}
 		}
 	}

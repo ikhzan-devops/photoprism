@@ -17,16 +17,17 @@ const (
 
 // Media types.
 const (
-	MediaUnknown  = ""
-	MediaAnimated = string(media.Animated)
-	MediaAudio    = string(media.Audio)
-	MediaDocument = string(media.Document)
-	MediaImage    = string(media.Image)
-	MediaLive     = string(media.Live)
-	MediaRaw      = string(media.Raw)
-	MediaSidecar  = string(media.Sidecar)
-	MediaVector   = string(media.Vector)
-	MediaVideo    = string(media.Video)
+	MediaUnknown   = ""
+	MediaAnimated  = string(media.Animated)
+	MediaAudio     = string(media.Audio)
+	MediaDocument  = string(media.Document)
+	MediaImage     = string(media.Image)
+	MediaLive      = string(media.Live)
+	MediaRaw       = string(media.Raw)
+	MediaSidecar   = string(media.Sidecar)
+	MediaVector    = string(media.Vector)
+	MediaVideo     = string(media.Video)
+	MediaRestoring = string(media.Restoring)
 )
 
 // Base folders.
