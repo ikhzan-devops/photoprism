@@ -26,7 +26,7 @@ import (
 //	@Param		photos					body		batch.PhotosRequest	true	"photos selection and values"
 //	@Router		/api/v1/batch/photos/edit [post]
 func BatchPhotosEdit(router *gin.RouterGroup) {
-	router.POST("/batch/photos/edit", func(c *gin.Context) {
+	router.Match(MethodsPutPost, "/batch/photos/edit", func(c *gin.Context) {
 		s := Auth(c, acl.ResourcePhotos, acl.ActionUpdate)
 
 		if s.Abort(c) {
