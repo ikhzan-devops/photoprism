@@ -367,9 +367,13 @@ func (ind *Index) UserMediaFile(m *MediaFile, o IndexOptions, originalName, phot
 		}
 	}
 
-	// Reset the video duration if this is a forced rescan.
+	// Reset photo metadata if this is a forced rescan.
 	if o.Rescan && photoUID == "" {
-		photo.PhotoDuration = 0
+		// Reset video duration.
+		photo.ResetDuration()
+
+		// Reset media type.
+		photo.ResetMediaType(entity.SrcFile)
 	}
 
 	// Reset file perceptive diff and chroma percent.
@@ -464,6 +468,8 @@ func (ind *Index) UserMediaFile(m *MediaFile, o IndexOptions, originalName, phot
 		// change the media type to "animated".
 		if photo.HasMediaType(media.Image) && m.IsAnimatedImage() {
 			photo.SetMediaType(media.Animated, entity.SrcAuto)
+		} else if photo.PhotoType == "" {
+			photo.SetMediaType(media.Image, entity.SrcAuto)
 		}
 	case m.IsXMP():
 		if data, dataErr := meta.XMP(m.FileName()); dataErr == nil {
