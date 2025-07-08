@@ -31,8 +31,8 @@ export class Batch extends Model {
       DetailsArtist: {},
       DetailsCopyright: {},
       DetailsLicense: {},
-      Albums: [],
-      Labels: [],
+      Albums: {},
+      Labels: {},
       Type: {},
       Scan: {},
       Private: {},
@@ -41,9 +41,10 @@ export class Batch extends Model {
     };
   }
 
-  save() {
+  save(selection, values) {
+    // TODO: check this request
     return $api
-      .post("batch/photos/edit", this.getValues(true))
+      .post("batch/photos/edit", { photos: selection, values: values })
       .then((response) => Promise.resolve(this.setValues(response.data)));
   }
 

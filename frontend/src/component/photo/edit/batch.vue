@@ -597,7 +597,6 @@
                   color="highlight"
                   variant="flat"
                   class="action-apply action-approve"
-                  :disabled="selectionsFullInfo.length < 1"
                   @click.stop="save(false)"
                 >
                   <span>{{ $gettext(`Apply`) }}</span>
@@ -1022,6 +1021,8 @@ export default {
       // this.updateModel();
       //
       // this.view.model.update().then(() => {
+      this.model.save(this.selection, this.formData);
+
       if (close) {
         this.$emit("close");
       }
