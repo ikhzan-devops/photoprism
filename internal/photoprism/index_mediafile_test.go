@@ -2,11 +2,14 @@ package photoprism
 
 import (
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
+	"gorm.io/gorm"
 
 	"github.com/photoprism/photoprism/internal/config"
 	"github.com/photoprism/photoprism/internal/entity"
+	"github.com/photoprism/photoprism/pkg/fs"
 )
 
 func TestIndex_MediaFile(t *testing.T) {
@@ -138,6 +141,63 @@ func TestIndex_MediaFile(t *testing.T) {
 		assert.Equal(t, placeid, photo.PlaceID)
 
 		assert.Equal(t, IndexStatus("added"), result.Status)
+	})
+
+	t.Run("MediaRestoring and YAML", func(t *testing.T) {
+		cfg := config.TestConfig()
+
+		cfg.InitializeTestData()
+
+		if fileNameResolved, err := fs.Resolve("testdata/sidecar/photoprism.yml"); err != nil {
+			t.Fatal(err)
+		} else {
+			target := cfg.SidecarPath() + "/mediarestoring.yml"
+			fs.Copy(fileNameResolved, target)
+		}
+
+		if fileNameResolved, err := fs.Resolve("testdata/photoprism.png"); err != nil {
+			t.Fatal(err)
+		} else {
+			target := cfg.OriginalsPath() + "/mediarestoring.png"
+			fs.Copy(fileNameResolved, target)
+		}
+
+		convert := NewConvert(cfg)
+
+		photoUID := "psz10aeojfji0b86"
+		photo := entity.NewPhoto(true)
+		photo.PhotoUID = photoUID
+		// Set the photo as MediaRestoring as it's not real.
+		photo.PhotoType = entity.MediaRestoring
+		// Set it as Purged
+		photo.DeletedAt = gorm.DeletedAt{Valid: true, Time: time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC)}
+		photo.PhotoQuality = -1
+		if err := photo.Save(); err != nil {
+			t.Fatal(err)
+		}
+
+		ind := NewIndex(cfg, convert, NewFiles(), NewPhotos())
+		indexOpt := IndexOptionsAll()
+		mediaFile, err := NewMediaFile(cfg.OriginalsPath() + "/mediarestoring.png")
+
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		assert.Equal(t, "", mediaFile.metaData.Keywords.String())
+
+		result := ind.MediaFile(mediaFile, indexOpt, "mediarestoring.png", "")
+
+		assert.Equal(t, IndexStatus("added"), result.Status)
+
+		if found := entity.FindPhoto(entity.Photo{PhotoUID: photoUID}); found == nil {
+			t.Fatal("Unable to find photo by UID")
+		} else {
+			assert.Equal(t, gorm.DeletedAt{}, found.DeletedAt)
+			assert.NotEqual(t, -1, found.PhotoQuality)
+			assert.Equal(t, "Elephant / South Africa / 2014", found.PhotoTitle)
+			assert.NotEqual(t, entity.MediaRestoring, found.PhotoType)
+		}
 	})
 
 	t.Run("Error", func(t *testing.T) {
