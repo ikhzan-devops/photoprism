@@ -139,6 +139,7 @@ func (c *Config) Report() (rows [][]string, cols []string) {
 		{"default-locale", c.DefaultLocale()},
 		{"default-timezone", c.DefaultTimezone().String()},
 		{"default-theme", c.DefaultTheme()},
+		{"places-locale", c.PlacesLocale()},
 		{"app-name", c.AppName()},
 		{"app-mode", c.AppMode()},
 		{"app-icon", c.AppIcon()},

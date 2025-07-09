@@ -390,16 +390,16 @@ func (m *MediaFile) RelPath(directory string) string {
 	pathname := m.fileName
 
 	if i := strings.Index(pathname, directory); i == 0 {
-		if i := strings.LastIndex(directory, string(os.PathSeparator)); i == len(directory)-1 {
+		if i = strings.LastIndex(directory, string(os.PathSeparator)); i == len(directory)-1 {
 			pathname = pathname[len(directory):]
-		} else if i := strings.LastIndex(directory, string(os.PathSeparator)); i != len(directory) {
+		} else if i = strings.LastIndex(directory, string(os.PathSeparator)); i != len(directory) {
 			pathname = pathname[len(directory)+1:]
 		}
 	}
 
 	if end := strings.LastIndex(pathname, string(os.PathSeparator)); end != -1 {
 		pathname = pathname[:end]
-	} else if end := strings.LastIndex(pathname, string(os.PathSeparator)); end == -1 {
+	} else if end = strings.LastIndex(pathname, string(os.PathSeparator)); end == -1 {
 		pathname = ""
 	}
 
@@ -938,14 +938,22 @@ func (m *MediaFile) CheckType() error {
 	return fmt.Errorf("has an invalid extension for media type %s", clean.LogQuote(mimeType))
 }
 
-// Media returns the media content type (video, image, raw, sidecar,...).
-func (m *MediaFile) Media() media.Type {
+// MediaType returns the media content type, e.g. video, image, raw, or sidecar.
+func (m *MediaFile) MediaType() media.Type {
 	return media.FromName(m.fileName)
 }
 
-// HasMediaType checks if the file has is the given media type.
-func (m *MediaFile) HasMediaType(mediaType media.Type) bool {
-	return m.Media() == mediaType
+// HasMediaType checks if the file has any of the given media types.
+func (m *MediaFile) HasMediaType(mediaTypes ...media.Type) bool {
+	mediaType := m.MediaType()
+
+	for _, t := range mediaTypes {
+		if mediaType == t {
+			return true
+		}
+	}
+
+	return false
 }
 
 // HasFileType checks if the file has the given file type.
@@ -992,9 +1000,14 @@ func (m *MediaFile) IsVideo() bool {
 	return m.HasMediaType(media.Video)
 }
 
+// IsMov returns true if this is a MOV (QuickTime) video file.
+func (m *MediaFile) IsMov() bool {
+	return fs.FileType(m.fileName) == fs.VideoMov
+}
+
 // IsSidecar checks if the file is a metadata sidecar file, independent of the storage location.
 func (m *MediaFile) IsSidecar() bool {
-	return !m.Media().Main()
+	return !m.MediaType().IsMain()
 }
 
 // IsArchive returns true if this is an archive file.
@@ -1063,15 +1076,38 @@ func (m *MediaFile) IsImageNative() bool {
 }
 
 // IsLive checks if the file is a live photo.
-func (m *MediaFile) IsLive() bool {
-	if m.IsHeic() {
-		return fs.VideoMov.FindFirst(m.FileName(), []string{}, Config().OriginalsPath(), false) != ""
+func (m *MediaFile) IsLive(videoDuration time.Duration) bool {
+	if !m.InOriginals() {
+		// Live Photos must be located in the Originals folder.
+		return false
+	} else if !m.HasMediaType(media.Video, media.Image, media.Live) {
+		// Live Photos may only consist of video, image, or live files.
+		return false
+	} else if videoDuration > media.LiveMaxDuration {
+		// Live Photos can include a maximum of 3.1 seconds of video.
+		return false
 	}
 
-	if m.IsVideo() {
-		return fs.ImageHeic.FindFirst(m.FileName(), []string{}, Config().OriginalsPath(), false) != ""
+	// Check for related image or video files in the expected formats.
+	switch m.MediaType() {
+	case media.Video:
+		// Live Photos may only have MOV video sidecar files.
+		if m.IsMov() {
+			if fs.ImageHeic.FindFirst(m.FileName(), []string{}, Config().OriginalsPath(), false) != "" ||
+				fs.ImageJpeg.FindFirst(m.FileName(), []string{}, Config().OriginalsPath(), false) != "" {
+				return true
+			}
+		}
+	case media.Image:
+		// Live Photos must be either HEIC or JPEG image files.
+		if m.IsHeic() || m.IsJpeg() {
+			if fs.VideoMov.FindFirst(m.FileName(), []string{}, Config().OriginalsPath(), false) != "" {
+				return true
+			}
+		}
 	}
 
+	// If none of the above applies, check the metadata for embedded videos.
 	return m.MetaData().MediaType == media.Live && m.VideoInfo().Compatible
 }
 

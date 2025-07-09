@@ -13,5 +13,5 @@ func ClientIP(c *gin.Context) (ip string) {
 
 // UserAgent returns the user agent from the request context or an empty string if it is unknown.
 func UserAgent(c *gin.Context) string {
-	return header.UserAgent(c)
+	return header.ClientUserAgent(c)
 }

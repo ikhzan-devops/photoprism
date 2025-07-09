@@ -37,6 +37,7 @@ type PhotosForm struct {
 	DetailsLicense   String `json:"DetailsLicense"`
 }
 
+// NewPhotosForm creates and returns a new PhotosForm instance.
 func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
 	frm := &PhotosForm{}
 

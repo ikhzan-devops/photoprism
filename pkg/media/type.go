@@ -22,14 +22,9 @@ func (t Type) NotEqual(s string) bool {
 	return !t.Equal(s)
 }
 
-// Main checks if this is a known main media content format.
-func (t Type) Main() bool {
-	switch t {
-	case Animated, Audio, Document, Image, Live, Raw, Vector, Video:
-		return true
-	default:
-		return false
-	}
+// IsMain checks whether this is a primary media type, such as an image or video.
+func (t Type) IsMain() bool {
+	return Priority[t] >= PriorityMain
 }
 
 // Unknown checks if the type is unknown.

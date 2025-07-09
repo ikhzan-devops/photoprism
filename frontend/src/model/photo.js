@@ -188,8 +188,10 @@ export class Photo extends RestModel {
       return new Date().getDate().toString().padStart(2, "0");
     }
 
-    if (!this.Day || this.Day <= 0) {
+    if (!this.Day) {
       return this.TakenAtLocal.substring(8, 10);
+    } else if (this.Day <= 0) {
+      return "01";
     }
 
     return this.Day.toString().padStart(2, "0");

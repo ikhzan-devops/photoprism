@@ -126,16 +126,6 @@
     hyphens: auto;
 }
 
-.p-lightbox__container > .p-lightbox__sidebar .p-map {
-    display: block;
-    min-height: 259px;
-    aspect-ratio: 1;
-    width: auto;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-}
-
 /* Media Content */
 
 .pswp__content {

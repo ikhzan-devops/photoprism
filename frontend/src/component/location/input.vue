@@ -16,18 +16,18 @@
     @update:model-value="onCoordinateInputChange"
     @paste="pastePosition"
   >
-    <template #prepend-inner>
+    <template v-if="icon" #prepend-inner>
       <v-icon
         v-if="showMapButton"
         variant="plain"
-        icon="mdi-crosshairs-gps"
+        :icon="icon"
         :title="mapButtonTitle"
         :disabled="mapButtonDisabled"
         class="action-map"
         @click.stop="$emit('open-map')"
       >
       </v-icon>
-      <v-icon v-else variant="plain" icon="mdi-crosshairs-gps" class="text-disabled"> </v-icon>
+      <v-icon v-else variant="plain" :icon="icon" class="text-disabled"> </v-icon>
     </template>
     <template #append-inner>
       <v-icon
@@ -50,13 +50,13 @@
 
 <script>
 export default {
-  name: "PPositionInput",
+  name: "PLocationInput",
   props: {
-    latitude: {
+    lat: {
       type: Number,
       default: null,
     },
-    longitude: {
+    lng: {
       type: Number,
       default: null,
     },
@@ -88,6 +88,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    icon: {
+      type: String,
+      default: "mdi-map-marker",
+    },
     mapButtonTitle: {
       type: String,
       default: "",
@@ -109,7 +113,7 @@ export default {
       default: 1000,
     },
   },
-  emits: ["update:latitude", "update:longitude", "coordinates-changed", "coordinates-cleared", "open-map"],
+  emits: ["update:lat", "update:lng", "changed", "cleared", "open-map"],
   data() {
     return {
       coordinateInput: "",
@@ -136,10 +140,10 @@ export default {
     },
   },
   watch: {
-    latitude() {
+    lat() {
       this.updateCoordinateInput();
     },
-    longitude() {
+    lng() {
       this.updateCoordinateInput();
     },
   },
@@ -153,8 +157,8 @@ export default {
   },
   methods: {
     updateCoordinateInput() {
-      const lat = this.latitude;
-      const lng = this.longitude;
+      const lat = this.lat;
+      const lng = this.lng;
 
       if (lat !== null && lng !== null && !(lat === 0 && lng === 0) && !isNaN(lat) && !isNaN(lng)) {
         this.coordinateInput = `${parseFloat(lat)}, ${parseFloat(lng)}`;
@@ -187,36 +191,36 @@ export default {
       const lat = parseFloat(parts[0]);
       const lng = parseFloat(parts[1]);
 
-      this.$emit("update:latitude", lat);
-      this.$emit("update:longitude", lng);
-      this.$emit("coordinates-changed", { latitude: lat, longitude: lng });
+      this.$emit("update:lat", lat);
+      this.$emit("update:lng", lng);
+      this.$emit("changed", { lat: lat, lng: lng });
     },
     clearCoordinates() {
       if (this.enableUndo) {
-        this.lastValidLat = this.latitude;
-        this.lastValidLng = this.longitude;
+        this.lastValidLat = this.lat;
+        this.lastValidLng = this.lng;
       }
 
       this.coordinateInput = "";
       this.wasCleared = true;
 
-      this.$emit("update:latitude", 0);
-      this.$emit("update:longitude", 0);
-      this.$emit("coordinates-changed", { latitude: 0, longitude: 0 });
-      this.$emit("coordinates-cleared", {
-        latitude: 0,
-        longitude: 0,
+      this.$emit("update:lat", 0);
+      this.$emit("update:lng", 0);
+      this.$emit("changed", { lat: 0, lng: 0 });
+      this.$emit("cleared", {
+        lat: 0,
+        lng: 0,
         previousLatitude: this.lastValidLat,
         previousLongitude: this.lastValidLng,
       });
     },
     undoClear() {
       if (this.lastValidLat !== null && this.lastValidLng !== null) {
-        this.$emit("update:latitude", this.lastValidLat);
-        this.$emit("update:longitude", this.lastValidLng);
-        this.$emit("coordinates-changed", {
-          latitude: this.lastValidLat,
-          longitude: this.lastValidLng,
+        this.$emit("update:lat", this.lastValidLat);
+        this.$emit("update:lng", this.lastValidLng);
+        this.$emit("changed", {
+          lat: this.lastValidLat,
+          lng: this.lastValidLng,
         });
 
         this.wasCleared = false;
@@ -244,9 +248,9 @@ export default {
 
         if (!isNaN(lat) && lat >= -90 && lat <= 90 && !isNaN(lng) && lng >= -180 && lng <= 180) {
           // Update coordinates
-          this.$emit("update:latitude", lat);
-          this.$emit("update:longitude", lng);
-          this.$emit("coordinates-changed", { latitude: lat, longitude: lng });
+          this.$emit("update:lat", lat);
+          this.$emit("update:lng", lng);
+          this.$emit("changed", { lat: lat, lng: lng });
 
           // Prevent default action.
           event.preventDefault();

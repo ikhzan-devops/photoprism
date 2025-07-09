@@ -14,28 +14,51 @@ import (
 )
 
 func TestBatchPhotosEdit(t *testing.T) {
-	t.Run("ReturnValues", func(t *testing.T) {
+	t.Run("Success", func(t *testing.T) {
+		// Create new API test instance.
 		app, router, _ := NewApiTest()
 
+		// Attach POST /api/v1/batch/photos/edit request handler.
 		BatchPhotosEdit(router)
 
-		response := PerformRequestWithBody(app,
+		// Specify the unique IDs of the photos used for testing.
+		photoUIDs := `["ps6sg6be2lvl0yh7", "ps6sg6be2lvl0yh8"]`
+
+		// Get the photo models and current values for the batch edit form.
+		editResponse := PerformRequestWithBody(app,
 			"POST", "/api/v1/batch/photos/edit",
-			`{"photos": ["ps6sg6be2lvl0yh7", "ps6sg6be2lvl0yh8"]}`,
+			fmt.Sprintf(`{"photos": %s}`, photoUIDs),
 		)
 
-		body := response.Body.String()
+		// Check the edit response status code.
+		assert.Equal(t, http.StatusOK, editResponse.Code)
 
-		assert.NotEmpty(t, body)
-		assert.True(t, strings.HasPrefix(body, `{"models":[{"ID"`), "unexpected response")
+		// Check the edit response body.
+		editBody := editResponse.Body.String()
+		assert.NotEmpty(t, editBody)
+		assert.True(t, strings.HasPrefix(editBody, `{"models":[{"ID"`), "unexpected response")
 
-		// fmt.Println(body)
-		/* models := gjson.Get(body, "models")
-		values := gjson.Get(body, "values")
-		t.Logf("models: %#v", models)
-		t.Logf("values: %#v", values) */
+		// Check the edit response values.
+		editValues := gjson.Get(editBody, "values").Raw
+		t.Logf("edit values: %#v", editValues)
 
-		assert.Equal(t, http.StatusOK, response.Code)
+		// Send the edit form values back to the same API endpoint and check for errors.
+		saveResponse := PerformRequestWithBody(app,
+			"POST", "/api/v1/batch/photos/edit",
+			fmt.Sprintf(`{"photos": %s, "values": %s}`, photoUIDs, editValues),
+		)
+
+		// Check the save response status code.
+		assert.Equal(t, http.StatusOK, saveResponse.Code)
+
+		// Check the save response body.
+		saveBody := saveResponse.Body.String()
+		assert.NotEmpty(t, saveBody)
+
+		// Check the save response values.
+		saveValues := gjson.Get(saveBody, "values").Raw
+		t.Logf("save values: %#v", saveValues)
+		assert.Equal(t, editValues, saveValues)
 	})
 	t.Run("ReturnPhotosAndValues", func(t *testing.T) {
 		app, router, conf := NewApiTest()
@@ -43,6 +66,7 @@ func TestBatchPhotosEdit(t *testing.T) {
 		defer conf.SetAuthMode(config.AuthModePublic)
 		authToken := AuthenticateUser(app, router, "alice", "Alice123!")
 
+		// Attach POST /api/v1/batch/photos/edit request handler.
 		BatchPhotosEdit(router)
 
 		response := AuthenticatedRequestWithBody(app, http.MethodPost, "/api/v1/batch/photos/edit",
@@ -64,7 +88,10 @@ func TestBatchPhotosEdit(t *testing.T) {
 	})
 	t.Run("MissingSelection", func(t *testing.T) {
 		app, router, _ := NewApiTest()
+
+		// Attach POST /api/v1/batch/photos/edit request handler.
 		BatchPhotosEdit(router)
+
 		r := PerformRequestWithBody(app, "POST", "/api/v1/batch/photos/edit", `{"photos": [], "return": true}`)
 		val := gjson.Get(r.Body.String(), "error")
 		assert.Equal(t, i18n.Msg(i18n.ErrNoItemsSelected), val.String())
@@ -72,7 +99,10 @@ func TestBatchPhotosEdit(t *testing.T) {
 	})
 	t.Run("InvalidRequest", func(t *testing.T) {
 		app, router, _ := NewApiTest()
+
+		// Attach POST /api/v1/batch/photos/edit request handler.
 		BatchPhotosEdit(router)
+
 		r := PerformRequestWithBody(app, "POST", "/api/v1/batch/photos/edit", `{"photos": 123, "return": true}`)
 		assert.Equal(t, http.StatusBadRequest, r.Code)
 	})
@@ -82,6 +112,7 @@ func TestBatchPhotosEdit(t *testing.T) {
 		conf.SetAuthMode(config.AuthModePasswd)
 		defer conf.SetAuthMode(config.AuthModePublic)
 
+		// Attach POST /api/v1/batch/photos/edit request handler.
 		BatchPhotosEdit(router)
 
 		sessId := AuthenticateUser(app, router, "alice", "Alice123!")
@@ -105,6 +136,7 @@ func TestBatchPhotosEdit(t *testing.T) {
 		conf.SetAuthMode(config.AuthModePasswd)
 		defer conf.SetAuthMode(config.AuthModePublic)
 
+		// Attach POST /api/v1/batch/photos/edit request handler.
 		BatchPhotosEdit(router)
 
 		sessId := AuthenticateUser(app, router, "gandalf", "Gandalf123!")

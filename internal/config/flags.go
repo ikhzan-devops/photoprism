@@ -10,6 +10,7 @@ import (
 	"github.com/photoprism/photoprism/internal/config/ttl"
 	"github.com/photoprism/photoprism/internal/entity"
 	"github.com/photoprism/photoprism/internal/ffmpeg/encode"
+	"github.com/photoprism/photoprism/internal/service/hub/places"
 	"github.com/photoprism/photoprism/internal/thumb"
 	"github.com/photoprism/photoprism/pkg/authn"
 	"github.com/photoprism/photoprism/pkg/i18n"
@@ -353,7 +354,7 @@ var Flags = CliFlags{
 			Usage:   "maximum `NUMBER` of indexing workers, default depends on the number of physical cores",
 			Value:   cpuid.CPU.PhysicalCores / 2,
 			EnvVars: EnvVars("INDEX_WORKERS", "WORKERS"),
-		}}, {
+		}, DocDefault: " "}, {
 		Flag: &cli.StringFlag{
 			Name:    "index-schedule",
 			Usage:   "indexing `SCHEDULE` in cron format (e.g. \"@every 3h\" for every 3 hours; \"\" to disable)",
@@ -509,6 +510,12 @@ var Flags = CliFlags{
 			Name:    "default-theme",
 			Usage:   "default user interface theme `NAME`",
 			EnvVars: EnvVars("DEFAULT_THEME"),
+		}}, {
+		Flag: &cli.StringFlag{
+			Name:    "places-locale",
+			Usage:   "location details language `CODE`, e.g. en, de, or local",
+			Value:   places.LocalLocale,
+			EnvVars: EnvVars("PLACES_LOCALE"),
 		}}, {
 		Flag: &cli.StringFlag{
 			Name:    "app-name",

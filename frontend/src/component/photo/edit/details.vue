@@ -136,7 +136,6 @@
               <v-autocomplete
                 v-model="view.model.TimeZone"
                 :disabled="disabled"
-                :prepend-inner-icon="$vuetify.display.xs ? undefined : 'mdi-earth'"
                 :label="$gettext('Time Zone')"
                 hide-no-data
                 item-value="ID"
@@ -147,7 +146,26 @@
                 @update:model-value="syncTime"
               ></v-autocomplete>
             </v-col>
-            <v-col cols="12" md="4">
+            <v-col cols="12" sm="6" md="6">
+              <p-location-input
+                :lat="view.model.Lat"
+                :lng="view.model.Lng"
+                :disabled="disabled"
+                hide-details
+                :label="locationLabel"
+                density="comfortable"
+                validate-on="input"
+                :show-map-button="!placesDisabled"
+                :map-button-title="$gettext('Adjust Location')"
+                :map-button-disabled="placesDisabled"
+                class="input-coordinates"
+                @update:lat="updateLat"
+                @update:lng="updateLng"
+                @changed="onLocationChanged"
+                @open-map="adjustLocation"
+              ></p-location-input>
+            </v-col>
+            <v-col cols="12" sm="6" md="4">
               <v-autocomplete
                 v-model="view.model.Country"
                 :append-inner-icon="view.model.PlaceSrc === 'manual' ? 'mdi-check' : ''"
@@ -160,7 +178,6 @@
                 item-value="Code"
                 item-title="Name"
                 :items="countries"
-                prepend-inner-icon="mdi-map-marker"
                 density="comfortable"
                 validate-on="input"
                 :rules="rules.country(true)"
@@ -168,26 +185,7 @@
               >
               </v-autocomplete>
             </v-col>
-            <v-col cols="12" md="5">
-              <p-position-input
-                :latitude="view.model.Lat"
-                :longitude="view.model.Lng"
-                :disabled="disabled"
-                hide-details
-                :label="$gettext('Position')"
-                density="comfortable"
-                validate-on="input"
-                :show-map-button="!placesDisabled"
-                :map-button-title="$gettext('Set Position')"
-                :map-button-disabled="placesDisabled"
-                class="input-coordinates"
-                @update:latitude="updateLatitude"
-                @update:longitude="updateLongitude"
-                @coordinates-changed="onCoordinatesChanged"
-                @open-map="openMapDialog"
-              ></p-position-input>
-            </v-col>
-            <v-col cols="4" md="3" class="hidden-sm-and-down">
+            <v-col cols="2" class="hidden-sm-and-down">
               <v-text-field
                 v-model="view.model.Altitude"
                 :disabled="disabled"
@@ -417,13 +415,12 @@
         </div>
       </div>
     </v-form>
-    <p-position-dialog
-      :value="mapDialogVisible"
-      :latitude="view.model.Lat ? Number(view.model.Lat) : 0"
-      :longitude="view.model.Lng ? Number(view.model.Lng) : 0"
-      @update:value="mapDialogVisible = $event"
-      @confirm="updateLocation"
-    ></p-position-dialog>
+    <p-location-dialog
+      :visible="locationDialog"
+      :latlng="[view.model.Lat ? Number(view.model.Lat) : 0, view.model.Lng ? Number(view.model.Lng) : 0]"
+      @close="locationDialog = false"
+      @confirm="confirmLocation"
+    ></p-location-dialog>
   </div>
 </template>
 
@@ -432,14 +429,14 @@ import countries from "options/countries.json";
 import Thumb from "model/thumb";
 import * as options from "options/options";
 import { rules } from "common/form";
-import PPositionDialog from "component/position/dialog.vue";
-import PPositionInput from "component/position/input.vue";
+import PLocationDialog from "component/location/dialog.vue";
+import PLocationInput from "component/location/input.vue";
 
 export default {
   name: "PTabPhotoDetails",
   components: {
-    PPositionDialog,
-    PPositionInput,
+    PLocationDialog,
+    PLocationInput,
   },
   props: {
     uid: {
@@ -465,9 +462,10 @@ export default {
       showTimePicker: false,
       invalidDate: false,
       time: "",
+      locationLabel: this.$gettext("Location"),
+      locationDialog: false,
       textRule: (v) => v.length <= this.$config.get("clip") || this.$gettext("Text too long"),
       rtl: this.$isRtl,
-      mapDialogVisible: false,
       placesDisabled: !this.$config.feature("places"),
     };
   },
@@ -484,11 +482,11 @@ export default {
   },
   watch: {
     uid() {
-      this.syncTime();
+      this.syncData();
     },
   },
   created() {
-    this.syncTime();
+    this.syncData();
   },
   methods: {
     setDay(v) {
@@ -529,6 +527,22 @@ export default {
         this.updateModel();
       }
     },
+    syncData() {
+      this.syncLocation();
+      this.syncTime();
+    },
+    syncLocation() {
+      if (
+        this.view?.model?.hasId() &&
+        this.view?.model?.Place?.PlaceID &&
+        this.view?.model?.Place?.PlaceID !== "zz" &&
+        this.view?.model?.Place?.Label
+      ) {
+        this.locationLabel = this.view.model.Place.Label;
+      } else {
+        this.locationLabel = this.$gettext("Location");
+      }
+    },
     syncTime() {
       if (!this.view?.model.hasId()) {
         return;
@@ -537,7 +551,6 @@ export default {
       const taken = this.view.model.getDateTime();
       this.time = taken.toFormat("HH:mm:ss");
     },
-
     updateModel() {
       if (!this.view?.model.hasId()) {
         return;
@@ -591,35 +604,41 @@ export default {
           this.$emit("close");
         }
 
-        this.syncTime();
+        this.syncData();
       });
     },
     close() {
       this.$emit("close");
     },
-    openMapDialog() {
-      this.mapDialogVisible = true;
+    adjustLocation() {
+      this.locationDialog = true;
     },
-    updateLocation(data) {
-      if (data && data.latitude !== undefined && data.longitude !== undefined) {
-        this.updateLatitude(data.latitude);
-        this.updateLongitude(data.longitude);
-        this.onCoordinatesChanged(data);
+    confirmLocation(data) {
+      if (data && data.lat !== undefined && data.lng !== undefined) {
+        this.updateLat(data.lat);
+        this.updateLng(data.lng);
+        this.onLocationChanged(data);
       }
+
+      this.locationDialog = false;
     },
-    updateLatitude(lat) {
+    updateLat(lat) {
       this.view.model.Lat = lat;
       this.view.model.PlaceSrc = "manual";
     },
-    updateLongitude(lng) {
+    updateLng(lng) {
       this.view.model.Lng = lng;
       this.view.model.PlaceSrc = "manual";
     },
-    onCoordinatesChanged(data) {
-      // Clear country and altitude when coordinates are cleared (0,0)
-      if (data.latitude === 0 && data.longitude === 0) {
-        this.view.model.Country = "zz"; // "Unknown" country code
-        this.view.model.Altitude = "0";
+    onLocationChanged(data) {
+      if (data?.location?.country) {
+        this.view.model.Country = data.location.country;
+      }
+
+      if (data?.location?.place?.label) {
+        this.locationLabel = data.location.place.label;
+      } else {
+        this.locationLabel = this.$gettext("Location");
       }
     },
   },

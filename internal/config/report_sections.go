@@ -15,7 +15,7 @@ We recommend that only advanced users change these parameters:`
 
 // OptionsReportSections is used to generate config options reports in ../commands/show_config_options.go.
 var OptionsReportSections = []ReportSection{
-	{Start: "PHOTOPRISM_ADMIN_PASSWORD", Title: "Authentication"},
+	{Start: "PHOTOPRISM_AUTH_MODE", Title: "Authentication"},
 	{Start: "PHOTOPRISM_LOG_LEVEL", Title: "Logging"},
 	{Start: "PHOTOPRISM_CONFIG_PATH", Title: "Storage"},
 	{Start: "PHOTOPRISM_SIDECAR_PATH", Title: "Sidecar Files"},
@@ -25,7 +25,7 @@ var OptionsReportSections = []ReportSection{
 	{Start: "PHOTOPRISM_READONLY", Title: "Feature Flags"},
 	{Start: "PHOTOPRISM_DEFAULT_LOCALE", Title: "Customization"},
 	{Start: "PHOTOPRISM_SITE_URL", Title: "Site Information"},
-	{Start: "PHOTOPRISM_HTTPS_PROXY", Title: "Proxy Servers"},
+	{Start: "PHOTOPRISM_HTTPS_PROXY", Title: "Proxy Server"},
 	{Start: "PHOTOPRISM_DISABLE_TLS", Title: "Web Server"},
 	{Start: "PHOTOPRISM_DATABASE_DRIVER", Title: "Database Connection"},
 	{Start: "PHOTOPRISM_FFMPEG_BIN", Title: "File Conversion"},
@@ -49,9 +49,10 @@ var YamlReportSections = []ReportSection{
 	{Start: "BackupPath", Title: "Backup"},
 	{Start: "IndexWorkers", Title: "Indexing"},
 	{Start: "ReadOnly", Title: "Feature Flags"},
-	{Start: "DefaultTheme", Title: "Customization"},
+	{Start: "DefaultLocale", Title: "Customization"},
 	{Start: "SiteUrl", Title: "Site Information"},
-	{Start: "HttpsProxy", Title: "Web Server"},
+	{Start: "HttpsProxy", Title: "Proxy Server"},
+	{Start: "DisableTLS", Title: "Web Server"},
 	{Start: "DatabaseDriver", Title: "Database Connection"},
 	{Start: "FFmpegBin", Title: "File Conversion"},
 	{Start: "DownloadToken", Title: "Security Tokens"},

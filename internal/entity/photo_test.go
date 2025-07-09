@@ -10,6 +10,7 @@ import (
 
 	"github.com/photoprism/photoprism/internal/ai/classify"
 	"github.com/photoprism/photoprism/internal/form"
+	"github.com/photoprism/photoprism/pkg/media"
 	"github.com/photoprism/photoprism/pkg/rnd"
 	"github.com/photoprism/photoprism/pkg/time/tz"
 )
@@ -203,6 +204,105 @@ func TestSavePhotoForm(t *testing.T) {
 	})
 }
 
+func TestPhoto_HasUID(t *testing.T) {
+	t.Run("True", func(t *testing.T) {
+		m := PhotoFixtures.Get("Photo01")
+		assert.True(t, m.HasID())
+		assert.True(t, m.HasUID())
+	})
+	t.Run("False", func(t *testing.T) {
+		m := Photo{}
+		assert.False(t, m.HasID())
+		assert.False(t, m.HasUID())
+	})
+}
+
+func TestPhoto_GetID(t *testing.T) {
+	t.Run("Success", func(t *testing.T) {
+		m := PhotoFixtures.Get("Photo01")
+		assert.Equal(t, uint(1000001), m.GetID())
+	})
+}
+
+func TestPhoto_MediaType(t *testing.T) {
+	t.Run("Image", func(t *testing.T) {
+		m := PhotoFixtures.Get("19800101_000002_D640C559")
+		assert.Equal(t, media.Image, m.MediaType())
+	})
+	t.Run("Raw", func(t *testing.T) {
+		m := Photo{PhotoType: "raw", TypeSrc: SrcManual}
+		assert.Equal(t, media.Raw, m.MediaType())
+		m.ResetMediaType(SrcFile)
+		assert.Equal(t, media.Raw, m.MediaType())
+		assert.Equal(t, SrcManual, m.TypeSrc)
+	})
+	t.Run("Live", func(t *testing.T) {
+		m := PhotoFixtures.Get("Photo27")
+		assert.Equal(t, media.Live, m.MediaType())
+		assert.Equal(t, SrcFile, m.TypeSrc)
+		assert.Equal(t, media.LiveMaxDuration, m.PhotoDuration)
+		m.ResetMediaType(SrcFile)
+		assert.Equal(t, media.Image, m.MediaType())
+		assert.Equal(t, SrcAuto, m.TypeSrc)
+		assert.Equal(t, media.LiveMaxDuration, m.PhotoDuration)
+		m.ResetDuration()
+		assert.Equal(t, time.Duration(0), m.PhotoDuration)
+	})
+}
+
+func TestPhoto_HasMediaType(t *testing.T) {
+	t.Run("Image", func(t *testing.T) {
+		m := PhotoFixtures.Get("19800101_000002_D640C559")
+		assert.True(t, m.HasMediaType(media.Image))
+		assert.True(t, m.HasMediaType(media.Image, media.Video, media.Live))
+		assert.False(t, m.HasMediaType(media.Video, media.Live))
+		assert.False(t, m.HasMediaType())
+	})
+	t.Run("Live", func(t *testing.T) {
+		m := PhotoFixtures.Get("Photo27")
+		assert.True(t, m.HasMediaType(media.Live))
+		assert.True(t, m.HasMediaType(media.Image, media.Video, media.Live))
+		assert.False(t, m.HasMediaType(media.Image, media.Animated))
+		assert.False(t, m.HasMediaType())
+	})
+}
+
+func TestPhoto_SetMediaType(t *testing.T) {
+	t.Run("Image", func(t *testing.T) {
+		m := PhotoFixtures.Get("19800101_000002_D640C559")
+		assert.Equal(t, media.Image, m.MediaType())
+		assert.Equal(t, SrcAuto, m.TypeSrc)
+		m.SetMediaType(media.Video, SrcAuto)
+		assert.Equal(t, media.Video, m.MediaType())
+		assert.Equal(t, SrcAuto, m.TypeSrc)
+		m.SetMediaType(media.Live, SrcAuto)
+		assert.Equal(t, media.Live, m.MediaType())
+		assert.Equal(t, SrcAuto, m.TypeSrc)
+		m.SetMediaType(media.Video, SrcAuto)
+		assert.Equal(t, media.Live, m.MediaType())
+		assert.Equal(t, SrcAuto, m.TypeSrc)
+		m.SetMediaType(media.Image, SrcAuto)
+		assert.Equal(t, media.Live, m.MediaType())
+		assert.Equal(t, SrcAuto, m.TypeSrc)
+		m.SetMediaType("", SrcAuto)
+		assert.Equal(t, media.Live, m.MediaType())
+		assert.Equal(t, SrcAuto, m.TypeSrc)
+		m.SetMediaType(media.Video, SrcManual)
+		assert.Equal(t, media.Video, m.MediaType())
+		assert.Equal(t, SrcManual, m.TypeSrc)
+	})
+	t.Run("Live", func(t *testing.T) {
+		m := PhotoFixtures.Get("Photo27")
+		assert.Equal(t, media.Live, m.MediaType())
+		m.SetMediaType(media.Image, SrcAuto)
+		assert.Equal(t, media.Live, m.MediaType())
+		assert.Equal(t, SrcFile, m.TypeSrc)
+		m.SetMediaType(media.Image, SrcManual)
+		assert.Equal(t, media.Image, m.MediaType())
+		assert.Equal(t, SrcManual, m.TypeSrc)
+	})
+}
+
 func TestPhoto_SaveLabels(t *testing.T) {
 	t.Run("NewPhoto", func(t *testing.T) {
 		photo := Photo{
@@ -253,26 +353,6 @@ func TestPhoto_SaveLabels(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-	})
-}
-
-func TestPhoto_HasUID(t *testing.T) {
-	t.Run("True", func(t *testing.T) {
-		m := PhotoFixtures.Get("Photo01")
-		assert.True(t, m.HasID())
-		assert.True(t, m.HasUID())
-	})
-	t.Run("False", func(t *testing.T) {
-		m := Photo{}
-		assert.False(t, m.HasID())
-		assert.False(t, m.HasUID())
-	})
-}
-
-func TestPhoto_GetID(t *testing.T) {
-	t.Run("Success", func(t *testing.T) {
-		m := PhotoFixtures.Get("Photo01")
-		assert.Equal(t, uint(1000001), m.GetID())
 	})
 }
 

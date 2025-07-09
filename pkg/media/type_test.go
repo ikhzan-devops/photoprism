@@ -6,18 +6,35 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestType_Main(t *testing.T) {
+func TestType_IsMain(t *testing.T) {
 	t.Run("Unknown", func(t *testing.T) {
-		assert.False(t, Unknown.Main())
+		assert.False(t, Unknown.IsMain())
 	})
 	t.Run("Image", func(t *testing.T) {
-		assert.True(t, Image.Main())
+		assert.True(t, Image.IsMain())
 	})
 	t.Run("Video", func(t *testing.T) {
-		assert.True(t, Video.Main())
+		assert.True(t, Video.IsMain())
 	})
 	t.Run("Sidecar", func(t *testing.T) {
-		assert.False(t, Sidecar.Main())
+		assert.False(t, Sidecar.IsMain())
+	})
+}
+
+func TestType_Priority(t *testing.T) {
+	t.Run("Equal", func(t *testing.T) {
+		assert.Equal(t, Priority[Unknown], Priority["foo"])
+		assert.Equal(t, Priority[Image], Priority[Image])
+		assert.Equal(t, Priority[Live], Priority[Live])
+		assert.Equal(t, Priority[Animated], Priority[Animated])
+		assert.Equal(t, Priority[Animated], Priority[Audio])
+		assert.Equal(t, Priority[Animated], Priority[Document])
+	})
+	t.Run("Less", func(t *testing.T) {
+		assert.Less(t, Priority[Unknown], Priority[Image])
+		assert.Less(t, Priority[Unknown], Priority[Live])
+		assert.Less(t, Priority[Image], Priority[Live])
+		assert.Less(t, Priority[Video], Priority[Live])
 	})
 }
 

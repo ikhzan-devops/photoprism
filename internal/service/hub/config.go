@@ -245,9 +245,9 @@ func (c *Config) ReSync(token string) (err error) {
 
 	// Set user agent.
 	if c.UserAgent != "" {
-		req.Header.Set("User-Agent", c.UserAgent)
+		req.Header.Set(header.UserAgent, c.UserAgent)
 	} else {
-		req.Header.Set("User-Agent", "PhotoPrism/Test")
+		req.Header.Set(header.UserAgent, "PhotoPrism/Test")
 	}
 
 	// Add Content-Type header.

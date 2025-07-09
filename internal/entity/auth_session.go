@@ -663,7 +663,7 @@ func (m *Session) SetContext(c *gin.Context) *Session {
 	}
 
 	// Set client user agent from request context.
-	if ua := header.UserAgent(c); ua != "" {
+	if ua := header.ClientUserAgent(c); ua != "" {
 		m.SetUserAgent(ua)
 	}
 
@@ -689,7 +689,7 @@ func (m *Session) UpdateContext(c *gin.Context) *Session {
 	}
 
 	// Set client user agent from request context.
-	if ua := header.UserAgent(c); ua != "" && ua != m.UserAgent {
+	if ua := header.ClientUserAgent(c); ua != "" && ua != m.UserAgent {
 		m.SetUserAgent(ua)
 		changed = true
 	}

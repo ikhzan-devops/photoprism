@@ -306,6 +306,7 @@ func (c *Config) Propagate() {
 
 	// Set geocoding parameters.
 	places.UserAgent = c.UserAgent()
+	places.DefaultLocale = c.PlacesLocale()
 	entity.GeoApi = c.GeoApi()
 
 	// Set session cache duration.
@@ -696,15 +697,6 @@ func (c *Config) AutoImport() time.Duration {
 	}
 
 	return time.Duration(c.options.AutoImport) * time.Second
-}
-
-// GeoApi returns the preferred geocoding api (places, or none).
-func (c *Config) GeoApi() string {
-	if c.options.DisablePlaces {
-		return ""
-	}
-
-	return "places"
 }
 
 // OriginalsLimit returns the maximum size of originals in MB.
