@@ -98,6 +98,13 @@ func TestPhoto_MediaType(t *testing.T) {
 		m := PhotoFixtures.Get("19800101_000002_D640C559")
 		assert.Equal(t, media.Image, m.MediaType())
 	})
+	t.Run("Raw", func(t *testing.T) {
+		m := Photo{PhotoType: "raw", TypeSrc: SrcManual}
+		assert.Equal(t, media.Raw, m.MediaType())
+		m.ResetMediaType(SrcFile)
+		assert.Equal(t, media.Raw, m.MediaType())
+		assert.Equal(t, SrcManual, m.TypeSrc)
+	})
 	t.Run("Live", func(t *testing.T) {
 		m := PhotoFixtures.Get("Photo27")
 		assert.Equal(t, media.Live, m.MediaType())
