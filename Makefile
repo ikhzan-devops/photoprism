@@ -978,6 +978,9 @@ docker-recreatepostgresql:
 	docker container rm photoprism-postgres-1
 	docker volume rm photoprism_postgresql
 
+docker-alldbms:
+	$(DOCKER_COMPOSE) -f compose.alldbms.yaml up
+
 
 # Declare all targets as "PHONY", see https://www.gnu.org/software/make/manual/html_node/Phony-Targets.html.
 MAKEFLAGS += --always-make
