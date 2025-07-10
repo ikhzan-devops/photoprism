@@ -1388,7 +1388,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/batch.PhotosForm"
+                            "$ref": "#/definitions/batch.PhotosResponse"
                         }
                     },
                     "400": {
@@ -5503,6 +5503,20 @@
                 }
             }
         },
+        "batch.PhotosResponse": {
+            "type": "object",
+            "properties": {
+                "models": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/search.Photo"
+                    }
+                },
+                "values": {
+                    "$ref": "#/definitions/batch.PhotosForm"
+                }
+            }
+        },
         "batch.String": {
             "type": "object",
             "properties": {
@@ -8220,17 +8234,14 @@
                 1000000000,
                 60000000000,
                 3600000000000,
+                -9223372036854775808,
+                9223372036854775807,
                 1,
                 1000,
                 1000000,
                 1000000000,
                 60000000000,
-                3600000000000,
-                1,
-                1000,
-                1000000,
-                1000000000,
-                60000000000
+                3600000000000
             ],
             "x-enum-varnames": [
                 "minDuration",
@@ -8241,17 +8252,14 @@
                 "Second",
                 "Minute",
                 "Hour",
+                "minDuration",
+                "maxDuration",
                 "Nanosecond",
                 "Microsecond",
                 "Millisecond",
                 "Second",
                 "Minute",
-                "Hour",
-                "Nanosecond",
-                "Microsecond",
-                "Millisecond",
-                "Second",
-                "Minute"
+                "Hour"
             ]
         },
         "vision.ApiFormat": {

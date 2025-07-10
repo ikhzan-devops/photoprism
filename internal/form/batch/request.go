@@ -2,7 +2,8 @@ package batch
 
 import "strings"
 
-// PhotosRequest represents items selected in the user interface.
+// PhotosRequest represents the items selected in the user interface,
+// including form values in case changes should be made.
 type PhotosRequest struct {
 	Photos []string    `json:"photos"`
 	Values *PhotosForm `json:"values,omitempty"`
