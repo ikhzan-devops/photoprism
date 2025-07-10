@@ -4,6 +4,21 @@ import (
 	"time"
 )
 
+// Items represents batch edit value items.
+type Items struct {
+	Value  []Item `json:"value"`
+	Mixed  bool   `json:"mixed"`
+	Action Action `json:"action"`
+}
+
+// Item represents batch edit value item.
+type Item struct {
+	Value  string `json:"value"`
+	Title  string `json:"title"`
+	Mixed  bool   `json:"mixed"`
+	Action Action `json:"action"`
+}
+
 // String represents batch edit form value.
 type String struct {
 	Value  string `json:"value"`
