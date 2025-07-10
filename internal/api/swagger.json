@@ -5360,9 +5360,46 @@
                 }
             }
         },
+        "batch.Item": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "$ref": "#/definitions/batch.Action"
+                },
+                "mixed": {
+                    "type": "boolean"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
+        "batch.Items": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "$ref": "#/definitions/batch.Action"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/batch.Item"
+                    }
+                },
+                "mixed": {
+                    "type": "boolean"
+                }
+            }
+        },
         "batch.PhotosForm": {
             "type": "object",
             "properties": {
+                "Albums": {
+                    "$ref": "#/definitions/batch.Items"
+                },
                 "Altitude": {
                     "$ref": "#/definitions/batch.Int"
                 },
@@ -5407,6 +5444,9 @@
                 },
                 "Iso": {
                     "$ref": "#/definitions/batch.Int"
+                },
+                "Labels": {
+                    "$ref": "#/definitions/batch.Items"
                 },
                 "Lat": {
                     "$ref": "#/definitions/batch.Float64"
@@ -8184,12 +8224,13 @@
                 1000,
                 1000000,
                 1000000000,
+                60000000000,
+                3600000000000,
                 1,
                 1000,
                 1000000,
                 1000000000,
-                60000000000,
-                3600000000000
+                60000000000
             ],
             "x-enum-varnames": [
                 "minDuration",
@@ -8204,12 +8245,13 @@
                 "Microsecond",
                 "Millisecond",
                 "Second",
+                "Minute",
+                "Hour",
                 "Nanosecond",
                 "Microsecond",
                 "Millisecond",
                 "Second",
-                "Minute",
-                "Hour"
+                "Minute"
             ]
         },
         "vision.ApiFormat": {
