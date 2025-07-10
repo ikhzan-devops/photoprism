@@ -9,7 +9,6 @@ PhotoPrism latest, AGPL 3
 Docker CE latest, Apache 2
 Traefik 3.4, MIT
 MariaDB 11, GPL 2
-Ofelia latest, MIT
 Watchtower latest, Apache 2
 
 GETTING STARTED

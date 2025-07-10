@@ -17,7 +17,6 @@ SOFTWARE INCLUDED
 - [Docker CE latest](https://docs.docker.com/engine/release-notes/), Apache 2
 - [Traefik 3.4](https://github.com/traefik/traefik/releases), MIT
 - [MariaDB 11](https://mariadb.com/kb/en/release-notes/), GPL 2
-- [Ofelia latest](https://github.com/mcuadros/ofelia/releases), MIT
 - [Watchtower latest](https://github.com/containrrr/watchtower/releases), Apache 2
 
 GETTING STARTED
