@@ -56,11 +56,11 @@ mkdir -p "$DESTDIR"
 
 ARCHIVE="${CURRENT_DIR}/build/$BUILD.tar.gz"
 
-echo "------------------------------------------------"
+echo "--------------------------------------------------------------------------------"
 echo "VERSION: $LIBHEIF_VERSION"
 echo "LATEST : $LATEST"
 echo "ARCHIVE: $ARCHIVE"
-echo "------------------------------------------------"
+echo "--------------------------------------------------------------------------------"
 
 echo "Installing build dependencies..."
 

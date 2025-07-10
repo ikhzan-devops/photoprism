@@ -18,6 +18,10 @@
 *.dll
 *.so
 *.dylib
+*.tmp
+*.img
+*.img.xz
+*.img.gz
 /*.zip
 /coverage.*
 __pycache__
