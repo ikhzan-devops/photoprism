@@ -29,6 +29,8 @@ type PhotosForm struct {
 	PhotoPanorama    Bool    `json:"Panorama"`
 	CameraID         Int     `json:"CameraID"`
 	LensID           Int     `json:"LensID"`
+	Albums           Items   `json:"Albums"`
+	Labels           Items   `json:"Labels"`
 
 	DetailsKeywords  String `json:"DetailsKeywords"`
 	DetailsSubject   String `json:"DetailsSubject"`
@@ -39,7 +41,18 @@ type PhotosForm struct {
 
 // NewPhotosForm creates and returns a new PhotosForm instance.
 func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
-	frm := &PhotosForm{}
+	frm := &PhotosForm{
+		Albums: Items{
+			Value:  []Item{},
+			Mixed:  false,
+			Action: ActionNone,
+		},
+		Labels: Items{
+			Value:  []Item{},
+			Mixed:  false,
+			Action: ActionNone,
+		},
+	}
 
 	for i, photo := range photos {
 		if i == 0 {
