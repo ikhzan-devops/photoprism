@@ -28,10 +28,7 @@
               <tbody>
                 <tr>
                   <td class="col-select" :class="{ 'is-selected': isAllSelected }">
-                    <button
-                      class="input-select ma-auto"
-                      @click.stop.prevent="toggleAll"
-                    >
+                    <button class="input-select ma-auto" @click.stop.prevent="toggleAll">
                       <i class="mdi mdi-checkbox-marked select-on" />
                       <i class="mdi mdi-checkbox-blank-outline select-off" />
                     </button>
@@ -52,16 +49,16 @@
                     </button>
                   </td>
                   <td :data-id="m.ID" :data-uid="m.UID" class="media result col-preview">
-<!--                    <div v-if="index < firstVisibleElementIndex || index > lastVisibleElementIndex" class="preview"></div>-->
-<!--                    <div-->
-<!--                        v-else-->
-<!--                        :style="`background-image: url(${m.thumbnailUrl('tile_224')})`"-->
-<!--                        class="preview"-->
-<!--                        @touchstart.passive="onMouseDown($event, index)"-->
-<!--                        @touchend.stop="onClick($event, index, false)"-->
-<!--                        @mousedown="onMouseDown($event, index)"-->
-<!--                        @click.stop.prevent="onClick($event, index, false)"-->
-<!--                    >-->
+                    <!--                    <div v-if="index < firstVisibleElementIndex || index > lastVisibleElementIndex" class="preview"></div>-->
+                    <!--                    <div-->
+                    <!--                        v-else-->
+                    <!--                        :style="`background-image: url(${m.thumbnailUrl('tile_224')})`"-->
+                    <!--                        class="preview"-->
+                    <!--                        @touchstart.passive="onMouseDown($event, index)"-->
+                    <!--                        @touchend.stop="onClick($event, index, false)"-->
+                    <!--                        @mousedown="onMouseDown($event, index)"-->
+                    <!--                        @click.stop.prevent="onClick($event, index, false)"-->
+                    <!--                    >-->
                     <div
                       :style="`background-image: url(${m.thumbnailUrl('tile_224')})`"
                       class="preview"
@@ -76,8 +73,14 @@
                         class="input-open"
                         @click.stop.prevent="openPhoto(index)"
                       >
-                        <i v-if="m.Type === 'live'" class="action-live" :title="$gettext('Live')"><icon-live-photo /></i>
-                        <i v-else-if="m.Type === 'animated'" class="mdi mdi-file-gif-box" :title="$gettext('Animated')" />
+                        <i v-if="m.Type === 'live'" class="action-live" :title="$gettext('Live')"
+                          ><icon-live-photo
+                        /></i>
+                        <i
+                          v-else-if="m.Type === 'animated'"
+                          class="mdi mdi-file-gif-box"
+                          :title="$gettext('Animated')"
+                        />
                         <i v-else-if="m.Type === 'video'" class="mdi mdi-play" :title="$gettext('Video')" />
                       </button>
                     </div>
@@ -111,7 +114,12 @@
                   <table class="w-100">
                     <tbody>
                       <tr v-for="(m, index) in model.models" :key="m.ID" ref="items" :data-index="index">
-                        <td :data-id="m.ID" :data-uid="m.UID" class="col-select" :class="{ 'is-selected': isSelected(m) }">
+                        <td
+                          :data-id="m.ID"
+                          :data-uid="m.UID"
+                          class="col-select"
+                          :class="{ 'is-selected': isSelected(m) }"
+                        >
                           <button
                             class="input-select ma-auto"
                             @touchstart.passive="onMouseDown($event, index)"
@@ -148,8 +156,14 @@
                               class="input-open"
                               @click.stop.prevent="openPhoto(index)"
                             >
-                              <i v-if="m.Type === 'live'" class="action-live" :title="$gettext('Live')"><icon-live-photo /></i>
-                              <i v-else-if="m.Type === 'animated'" class="mdi mdi-file-gif-box" :title="$gettext('Animated')" />
+                              <i v-if="m.Type === 'live'" class="action-live" :title="$gettext('Live')"
+                                ><icon-live-photo
+                              /></i>
+                              <i
+                                v-else-if="m.Type === 'animated'"
+                                class="mdi mdi-file-gif-box"
+                                :title="$gettext('Animated')"
+                              />
                               <i v-else-if="m.Type === 'video'" class="mdi mdi-play" :title="$gettext('Video')" />
                             </button>
                           </div>
@@ -362,41 +376,22 @@
                         @update:model-value="(val) => changeValue(val, 'input-field', 'Altitude')"
                       ></v-text-field>
                     </v-col>
-                    <v-col cols="12" sm="6" md="3">
-                      <v-text-field
+                    <v-col cols="12" md="6">
+                      <p-location-input
+                        :latlng="currentCoordinates"
+                        :placeholder="isLocationMixed ? '' : locationPlaceholder"
                         hide-details
-                        autocomplete="off"
-                        autocorrect="off"
-                        autocapitalize="none"
-                        :label="$gettext('Lat')"
-                        :model-value="formData.Lat.value"
-                        :placeholder="getFieldData('input-field', 'Lat').placeholder"
-                        :persistent-placeholder="getFieldData('input-field', 'Lat').persistent"
-                        :append-inner-icon="getIcon('input-field', 'Lat')"
+                        :label="isLocationMixed ? '<mixed>' : locationLabel"
                         density="comfortable"
                         validate-on="input"
-                        class="input-latitude"
-                        @click:append-inner="toggleField('Lat', $event)"
-                        @update:model-value="(val) => changeValue(val, 'input-field', 'Lat')"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="3">
-                      <v-text-field
-                        hide-details
-                        autocomplete="off"
-                        autocorrect="off"
-                        autocapitalize="none"
-                        :label="$gettext('Longitude')"
-                        :model-value="formData.Lng.value"
-                        :placeholder="getFieldData('input-field', 'Lng').placeholder"
-                        :persistent-placeholder="getFieldData('input-field', 'Lng').persistent"
-                        :append-inner-icon="getIcon('input-field', 'Lng')"
-                        density="comfortable"
-                        validate-on="input"
-                        class="input-longitude"
-                        @click:append-inner="toggleField('Lng', $event)"
-                        @update:model-value="(val) => changeValue(val, 'input-field', 'Lng')"
-                      ></v-text-field>
+                        :show-map-button="!placesDisabled"
+                        :map-button-title="$gettext('Adjust Location')"
+                        :map-button-disabled="placesDisabled"
+                        class="input-coordinates"
+                        @update:latlng="updateLatLng"
+                        @changed="onLocationChanged"
+                        @open-map="adjustLocation"
+                      ></p-location-input>
                     </v-col>
                   </v-row>
                 </div>
@@ -480,14 +475,14 @@
                           </v-list-item-title>
                         </v-list-item>
                       </template>
-<!--                      <template #chip="chip">-->
-<!--                        <v-chip-->
-<!--                          prepend-icon="mdi-bookmark"-->
-<!--                          class="text-truncate"-->
-<!--                        >-->
-<!--                          {{ chip.item.title ? chip.item.title : chip.item }}-->
-<!--                        </v-chip>-->
-<!--                      </template>-->
+                      <!--                      <template #chip="chip">-->
+                      <!--                        <v-chip-->
+                      <!--                          prepend-icon="mdi-bookmark"-->
+                      <!--                          class="text-truncate"-->
+                      <!--                        >-->
+                      <!--                          {{ chip.item.title ? chip.item.title : chip.item }}-->
+                      <!--                        </v-chip>-->
+                      <!--                      </template>-->
                     </v-combobox>
                   </v-col>
                 </div>
@@ -517,14 +512,14 @@
                           </v-list-item-title>
                         </v-list-item>
                       </template>
-<!--                      <template #chip="chip">-->
-<!--                        <v-chip-->
-<!--                          prepend-icon="mdi-bookmark"-->
-<!--                          class="text-truncate"-->
-<!--                        >-->
-<!--                          {{ chip.item.title ? chip.item.title : chip.item }}-->
-<!--                        </v-chip>-->
-<!--                      </template>-->
+                      <!--                      <template #chip="chip">-->
+                      <!--                        <v-chip-->
+                      <!--                          prepend-icon="mdi-bookmark"-->
+                      <!--                          class="text-truncate"-->
+                      <!--                        >-->
+                      <!--                          {{ chip.item.title ? chip.item.title : chip.item }}-->
+                      <!--                        </v-chip>-->
+                      <!--                      </template>-->
                     </v-combobox>
                   </v-col>
                 </div>
@@ -555,23 +550,13 @@
                 </div>
 
                 <v-row>
-                  <v-col
-                    v-for="fieldName in toggleFieldsArray"
-                    :key="fieldName"
-                    cols="12"
-                    sm="6"
-                    md="6"
-                  >
+                  <v-col v-for="fieldName in toggleFieldsArray" :key="fieldName" cols="12" sm="6" md="6">
                     <div class="d-flex flex-column">
                       <v-col cols="12">
                         <p>{{ fieldName }}</p>
                       </v-col>
                       <v-col cols="12" class="d-flex align-self-stretch flex-column">
-                        <v-btn-toggle
-                          v-model="formData[fieldName].value"
-                          mandatory
-                          color="primary"
-                        >
+                        <v-btn-toggle v-model="formData[fieldName].value" mandatory color="primary">
                           <v-btn
                             v-for="option in toggleOptions(fieldName)"
                             :key="option.value"
@@ -593,12 +578,7 @@
                 <v-btn color="button" variant="flat" class="action-close" @click.stop="close">
                   {{ $gettext(`Close`) }}
                 </v-btn>
-                <v-btn
-                  color="highlight"
-                  variant="flat"
-                  class="action-apply action-approve"
-                  @click.stop="save(false)"
-                >
+                <v-btn color="highlight" variant="flat" class="action-apply action-approve" @click.stop="save(false)">
                   <span>{{ $gettext(`Apply`) }}</span>
                 </v-btn>
               </div>
@@ -607,6 +587,12 @@
         </v-col>
       </v-row>
     </v-card>
+    <p-location-dialog
+      :visible="locationDialog"
+      :latlng="currentCoordinates"
+      @close="locationDialog = false"
+      @confirm="confirmLocation"
+    ></p-location-dialog>
   </v-dialog>
 </template>
 <script>
@@ -615,10 +601,16 @@ import countries from "options/countries.json";
 import IconLivePhoto from "../../icon/live-photo.vue";
 import { Batch } from "model/batch-edit";
 import Thumb from "../../../model/thumb";
+import PLocationDialog from "component/location/dialog.vue";
+import PLocationInput from "component/location/input.vue";
 
 export default {
   name: "PPhotoEditBatch",
-  components: { IconLivePhoto },
+  components: {
+    IconLivePhoto,
+    PLocationDialog,
+    PLocationInput,
+  },
   props: {
     visible: {
       type: Boolean,
@@ -671,11 +663,77 @@ export default {
       deletedFields: {},
       toggleFieldsArray: ["Scan", "Favorite", "Private", "Panorama"],
       actions: { none: "none", update: "update", add: "add", remove: "remove" },
+      locationDialog: false,
+      placesDisabled: !this.$config.feature("places"),
+      locationLabel: this.$gettext("Location"),
     };
   },
   computed: {
     formTitle() {
       return this.$gettext(`Batch Edit (${this.allSelectedLength})`);
+    },
+    currentCoordinates() {
+      const latData = this.values?.Lat;
+      const lngData = this.values?.Lng;
+
+      // If no form data yet, return default
+      if (!this.formData || !latData || !lngData) {
+        return [0, 0];
+      }
+
+      const lat = this.formData.Lat.value;
+      const lng = this.formData.Lng.value;
+
+      // If form data has been updated, use the form data values
+      if (this.formData.Lat.action === this.actions.update || this.formData.Lng.action === this.actions.update) {
+        return [parseFloat(lat) || 0, parseFloat(lng) || 0];
+      }
+
+      // Handle mixed values or empty values
+      if (
+        latData.mixed ||
+        lngData.mixed ||
+        lat === "<mixed>" ||
+        lng === "<mixed>" ||
+        lat === "" ||
+        lng === "" ||
+        lat === null ||
+        lng === null
+      ) {
+        return [0, 0];
+      }
+
+      return [parseFloat(lat) || 0, parseFloat(lng) || 0];
+    },
+    locationPlaceholder() {
+      const latData = this.values?.Lat;
+      const lngData = this.values?.Lng;
+
+      // If either coordinate has mixed values
+      if (latData?.mixed || lngData?.mixed) {
+        return "<mixed>";
+      }
+
+      // If both coordinates are empty/null (no location info)
+      const lat = this.formData?.Lat?.value;
+      const lng = this.formData?.Lng?.value;
+
+      if ((!lat || lat === 0) && (!lng || lng === 0)) {
+        return ""; // Empty state
+      }
+
+      return ""; // Default placeholder
+    },
+    isLocationMixed() {
+      const latData = this.values?.Lat;
+      const lngData = this.values?.Lng;
+
+      // If form data has been updated, not mixed anymore
+      if (this.formData?.Lat?.action === this.actions.update || this.formData?.Lng?.action === this.actions.update) {
+        return false;
+      }
+
+      return latData?.mixed || lngData?.mixed;
     },
   },
   watch: {
@@ -951,7 +1009,7 @@ export default {
       }
     },
     openPhoto(index) {
-      this.$lightbox.openModels(Thumb.fromPhotos([this.model.models[index]]), 0, null , this.isBatchDialog);
+      this.$lightbox.openModels(Thumb.fromPhotos([this.model.models[index]]), 0, null, this.isBatchDialog);
     },
     isSelected(model) {
       return this.model.isSelected(model.UID);
@@ -1011,6 +1069,33 @@ export default {
     close() {
       // Close the dialog.
       this.$emit("close");
+    },
+    updateLatLng(latlng) {
+      this.formData.Lat.value = latlng[0];
+      this.formData.Lng.value = latlng[1];
+      this.formData.Lat.action = this.actions.update;
+      this.formData.Lng.action = this.actions.update;
+    },
+    onLocationChanged(data) {
+      if (data && data.lat !== undefined && data.lng !== undefined) {
+        this.formData.Lat.value = data.lat;
+        this.formData.Lng.value = data.lng;
+        this.formData.Lat.action = this.actions.update;
+        this.formData.Lng.action = this.actions.update;
+      }
+    },
+    adjustLocation() {
+      this.locationDialog = true;
+    },
+    confirmLocation(data) {
+      if (data && data.lat !== undefined && data.lng !== undefined) {
+        this.formData.Lat.value = data.lat;
+        this.formData.Lng.value = data.lng;
+        this.formData.Lat.action = this.actions.update;
+        this.formData.Lng.action = this.actions.update;
+      }
+
+      this.locationDialog = false;
     },
     save(close) {
       // if (this.invalidDate) {
