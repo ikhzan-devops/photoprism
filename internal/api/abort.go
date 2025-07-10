@@ -102,7 +102,11 @@ func AbortUnexpectedError(c *gin.Context) {
 	Abort(c, http.StatusInternalServerError, i18n.ErrUnexpected)
 }
 
-func AbortBadRequest(c *gin.Context) {
+func AbortBadRequest(c *gin.Context, errs ...error) {
+	for _, err := range errs {
+		_ = c.Error(err)
+	}
+
 	Abort(c, http.StatusBadRequest, i18n.ErrBadRequest)
 }
 
