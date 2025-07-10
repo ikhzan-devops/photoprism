@@ -43,12 +43,12 @@ type PhotosForm struct {
 func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
 	frm := &PhotosForm{
 		Albums: Items{
-			Value:  []Item{},
+			Items:  []Item{},
 			Mixed:  false,
 			Action: ActionNone,
 		},
 		Labels: Items{
-			Value:  []Item{},
+			Items:  []Item{},
 			Mixed:  false,
 			Action: ActionNone,
 		},

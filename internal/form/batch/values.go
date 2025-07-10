@@ -6,7 +6,7 @@ import (
 
 // Items represents batch edit value items.
 type Items struct {
-	Value  []Item `json:"value"`
+	Items  []Item `json:"items"`
 	Mixed  bool   `json:"mixed"`
 	Action Action `json:"action"`
 }
