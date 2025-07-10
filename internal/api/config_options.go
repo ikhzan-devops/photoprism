@@ -90,8 +90,7 @@ func SaveConfigOptions(router *gin.RouterGroup) {
 		}
 
 		if err := c.BindJSON(&v); err != nil {
-			log.Errorf("config: %s (bind json)", err)
-			AbortBadRequest(c)
+			AbortBadRequest(c, err)
 			return
 		}
 

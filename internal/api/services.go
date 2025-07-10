@@ -149,7 +149,7 @@ func AddService(router *gin.RouterGroup) {
 
 		// Assign and validate request form values.
 		if err := c.BindJSON(&frm); err != nil {
-			AbortBadRequest(c)
+			AbortBadRequest(c, err)
 			return
 		}
 
@@ -162,8 +162,7 @@ func AddService(router *gin.RouterGroup) {
 		m, err := entity.AddService(frm)
 
 		if err != nil {
-			log.Error(err)
-			AbortBadRequest(c)
+			AbortBadRequest(c, err)
 			return
 		}
 
@@ -218,8 +217,7 @@ func UpdateService(router *gin.RouterGroup) {
 
 		// 2) Update form with values from request
 		if err = c.BindJSON(&frm); err != nil {
-			log.Error(err)
-			AbortBadRequest(c)
+			AbortBadRequest(c, err)
 			return
 		}
 
