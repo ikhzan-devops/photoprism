@@ -18,7 +18,7 @@ GETTING STARTED
 Run this script as root to install PhotoPrism on a cloud server e.g.
 at DigitalOcean:
 
-  bash <(curl -s https://dl.photoprism.app/docker/cloud/setup.sh)
+  bash <(curl -s https://dl.photoprism.app/cloud/digitalocean/setup.sh)
 
 This may take a while to complete, depending on the performance of
 your server and its internet connection.
