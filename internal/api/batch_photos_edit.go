@@ -23,7 +23,7 @@ import (
 //	@Produce	json
 //	@Success	200						{object}	batch.PhotosResponse
 //	@Failure	400,401,403,404,429,500	{object}	i18n.Response
-//	@Param		photos					body		batch.PhotosRequest	true	"photos selection and values"
+//	@Param		Request					body		batch.PhotosRequest	true	"photos selection and values"
 //	@Router		/api/v1/batch/photos/edit [post]
 func BatchPhotosEdit(router *gin.RouterGroup) {
 	router.Match(MethodsPutPost, "/batch/photos/edit", func(c *gin.Context) {
