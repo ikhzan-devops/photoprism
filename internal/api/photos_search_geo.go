@@ -49,7 +49,7 @@ func SearchGeo(router *gin.RouterGroup) {
 		// Abort if request params are invalid.
 		if err = c.MustBindWith(&frm, binding.Form); err != nil {
 			event.AuditWarn([]string{ClientIP(c), "session %s", string(acl.ResourcePlaces), "form invalid", "%s"}, s.RefID, err)
-			AbortBadRequest(c)
+			AbortBadRequest(c, err)
 			return
 		}
 
@@ -74,7 +74,7 @@ func SearchGeo(router *gin.RouterGroup) {
 		// Ok?
 		if err != nil {
 			event.AuditWarn([]string{ClientIP(c), "session %s", string(acl.ResourcePlaces), "search", "%s"}, s.RefID, err)
-			AbortBadRequest(c)
+			AbortBadRequest(c, err)
 			return
 		}
 

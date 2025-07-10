@@ -29,8 +29,7 @@ func UpdateLink(c *gin.Context) {
 
 	// Assign and validate request form values.
 	if err := c.BindJSON(&frm); err != nil {
-		log.Debugf("share: %s", err)
-		AbortBadRequest(c)
+		AbortBadRequest(c, err)
 		return
 	}
 
@@ -109,8 +108,7 @@ func CreateLink(c *gin.Context) {
 	var frm form.Link
 
 	if err := c.BindJSON(&frm); err != nil {
-		log.Debugf("share: %s", err)
-		AbortBadRequest(c)
+		AbortBadRequest(c, err)
 		return
 	}
 

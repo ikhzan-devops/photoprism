@@ -103,10 +103,18 @@ func AbortUnexpectedError(c *gin.Context) {
 }
 
 func AbortBadRequest(c *gin.Context, errs ...error) {
+	// Log and attach validation errors to the context.
 	for _, err := range errs {
-		_ = c.Error(err)
+		if err != nil {
+			// Add error message to the debug logs.
+			log.Debugf("api-v1: %s", err)
+
+			// Attach error to the current context
+			_ = c.Error(err)
+		}
 	}
 
+	// Abort request with error 400.
 	Abort(c, http.StatusBadRequest, i18n.ErrBadRequest)
 }
 

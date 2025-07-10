@@ -58,8 +58,7 @@ func UpdateUser(router *gin.RouterGroup) {
 
 		// Assign and validate request form values.
 		if err = c.BindJSON(&f); err != nil {
-			log.Error(err)
-			AbortBadRequest(c)
+			AbortBadRequest(c, err)
 			return
 		}
 
