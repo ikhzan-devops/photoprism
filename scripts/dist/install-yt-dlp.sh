@@ -64,13 +64,13 @@ fi
 GITHUB_URL="https://github.com/yt-dlp/yt-dlp/releases/download/${VERSION}/${BINARY}"
 DESTBIN="${DESTDIR}/bin/yt-dlp"
 
-echo "------------------------------------------------"
+echo "--------------------------------------------------------------------------------"
 echo "VERSION : ${VERSION}"
 echo "LATEST  : ${GITHUB_LATEST}"
 echo "DOWNLOAD: ${GITHUB_URL}"
 echo "DESTDIR : ${DESTDIR}"
 echo "DESTBIN : ${DESTBIN}"
-echo "------------------------------------------------"
+echo "--------------------------------------------------------------------------------"
 
 echo "Downloading the yt-dlp binary to \"${DESTBIN}\"..."
 mkdir -p "${DESTDIR}"

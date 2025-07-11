@@ -9,7 +9,6 @@ PhotoPrism latest, AGPL 3
 Docker CE latest, Apache 2
 Traefik 3.4, MIT
 MariaDB 11, GPL 2
-Ofelia latest, MIT
 Watchtower latest, Apache 2
 
 GETTING STARTED
@@ -18,7 +17,7 @@ GETTING STARTED
 Run this script as root to install PhotoPrism on a cloud server e.g.
 at DigitalOcean:
 
-  bash <(curl -s https://dl.photoprism.app/docker/cloud/setup.sh)
+  bash <(curl -s https://dl.photoprism.app/cloud/digitalocean/setup.sh)
 
 This may take a while to complete, depending on the performance of
 your server and its internet connection.

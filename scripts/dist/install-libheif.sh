@@ -67,11 +67,11 @@ echo "Installing libheif..."
 ARCHIVE="libheif-${VERSION_CODENAME}-${DESTARCH}-${LIBHEIF_VERSION}.tar.gz"
 URL="https://dl.photoprism.app/dist/libheif/${ARCHIVE}"
 
-echo "------------------------------------------------"
+echo "--------------------------------------------------------------------------------"
 echo "VERSION: $LIBHEIF_VERSION"
 echo "ARCHIVE: $ARCHIVE"
 echo "DESTDIR: $DESTDIR"
-echo "------------------------------------------------"
+echo "--------------------------------------------------------------------------------"
 
 if curl -fsSL "$URL" | tar --overwrite --mode=755 -xz -C "$DESTDIR" 2> /dev/null; then
   echo "✅ Extracted \"$URL\" to \"$DESTDIR\""

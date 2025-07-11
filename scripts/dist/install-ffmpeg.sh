@@ -64,11 +64,11 @@ else
   DESTDIR="${DESTDIR}/bin"
 fi
 
-echo "------------------------------------------------"
+echo "--------------------------------------------------------------------------------"
 echo "VERSION: $FFMPEG_VERSION"
 echo "ARCHIVE: $ARCHIVE"
 echo "DESTDIR: $DESTDIR"
-echo "------------------------------------------------"
+echo "--------------------------------------------------------------------------------"
 
 echo "Extracting \"$URL\" to \"$DESTDIR\"."
 sudo mkdir -p "${DESTDIR}"
