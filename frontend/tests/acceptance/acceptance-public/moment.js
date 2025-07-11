@@ -10,7 +10,7 @@ import AlbumDialog from "../page-model/dialog-album";
 
 fixture`Test moments`.page`${testcafeconfig.url}`;
 
-const menu = new Menu(); 
+const menu = new Menu();
 const album = new Album();
 const toolbar = new Toolbar();
 const contextmenu = new ContextMenu();
