@@ -45,10 +45,7 @@ test.meta("testID", "stacks-002").meta({ type: "short", mode: "public" })("Commo
   const FirstFileName = await Selector("td").withText("Filename").nextSibling(0).innerText;
   await t.expect(FirstFileName).contains("photos8_1_ski.jpg");
 
-  await t
-    .click(photoedit.toggleExpandFile.nth(1))
-    .click(photoedit.makeFilePrimary)
-    .click(photoedit.dialogClose);
+  await t.click(photoedit.toggleExpandFile.nth(1)).click(photoedit.makeFilePrimary).click(photoedit.dialogClose);
   await page.clickCardTitleOfUID(SequentialPhotoUid);
   const FirstFileNameAfterChange = await Selector("td").withText("Filename").nextSibling(0).innerText;
 

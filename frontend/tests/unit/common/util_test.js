@@ -219,5 +219,5 @@ describe("common/util", () => {
     }
     // Check they are all unique
     assert.lengthOf(tokens, numTokens);
-  })
+  });
 });
