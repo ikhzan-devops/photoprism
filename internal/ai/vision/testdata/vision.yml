@@ -16,11 +16,14 @@ Models:
   Tags:
   - serve
 - Type: caption
+  Name: qwen2.5vl
+  Version: latest
   Resolution: 224
   Service:
     Uri: http://photoprism-vision:5000/api/v1/vision/caption
-    FileScheme: https
-    RequestFormat: url
+    Method: POST
+    FileScheme: data
+    RequestFormat: vision
     ResponseFormat: vision
 Thresholds:
   Confidence: 10
