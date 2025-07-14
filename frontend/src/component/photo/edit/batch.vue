@@ -570,7 +570,7 @@
                     </v-col>
                   </v-row>
                   <v-row dense>
-                    <v-col v-for="fieldName in toggleFieldsArray" :key="fieldName" cols="12" sm="6" md="3">
+                    <v-col v-for="fieldName in toggleFieldsArray" :key="fieldName" cols="6" sm="6" md="3">
                       <div class="d-flex flex-column">
                         <label class="form-label mb-2">{{ getFieldDisplayName(fieldName) }}</label>
                         <v-btn-toggle
