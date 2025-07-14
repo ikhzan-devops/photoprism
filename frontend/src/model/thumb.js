@@ -86,10 +86,12 @@ export class Thumb extends Model {
   }
 
   copyLatLng() {
+    // Abort if latitude or longitude are not set.
     if (!this.Lat || !this.Lng) {
       return;
     }
 
+    // Use the browser API to copy the coordinates to the clipboard.
     $util.copyText(`${this.Lat.toString()},${this.Lng.toString()}`);
   }
 
