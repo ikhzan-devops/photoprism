@@ -42,7 +42,7 @@ msgstr "{0}已选定"
 msgid "{0}-{1} of {2}"
 msgstr "{2}的{0}-{1}部分"
 
-#: src/page/albums.vue:612
+#: src/page/albums.vue:617
 msgid "%{n} albums found"
 msgstr "已找到 %{n} 个相册"
 
@@ -67,8 +67,8 @@ msgstr "已找到 %{n} 个标签"
 msgid "%{n} people found"
 msgstr "已找到 %{n} 个人物"
 
-#: src/page/album/photos.vue:309 src/page/album/photos.vue:499
-#: src/page/photos.vue:441 src/page/photos.vue:636
+#: src/page/album/photos.vue:313 src/page/album/photos.vue:504
+#: src/page/photos.vue:446 src/page/photos.vue:641
 msgid "%{n} pictures found"
 msgstr "已找到 %{n} 张图片"
 
@@ -282,11 +282,11 @@ msgstr "相册"
 msgid "Album Backups"
 msgstr "相册备份"
 
-#: src/page/albums.vue:680
+#: src/page/albums.vue:685
 msgid "Album created"
 msgstr "相册已创建"
 
-#: src/page/album/photos.vue:584
+#: src/page/album/photos.vue:589
 msgid "Album deleted"
 msgstr "相册已删除"
 
@@ -304,7 +304,7 @@ msgstr "相册已删除"
 msgid "All"
 msgstr "全部"
 
-#: src/page/albums.vue:465
+#: src/page/albums.vue:470
 msgid "All %{n} albums loaded"
 msgstr "%{n} 本相册已加载"
 
@@ -320,8 +320,8 @@ msgstr "%{n} 个人物已加载"
 msgid "All Cameras"
 msgstr "全部相机"
 
-#: src/component/photo/toolbar.vue:74 src/page/albums.vue:44
-#: src/page/albums.vue:240 src/page/albums.vue:752
+#: src/component/photo/toolbar.vue:74 src/page/albums.vue:45
+#: src/page/albums.vue:242 src/page/albums.vue:757
 msgid "All Categories"
 msgstr "全部分类"
 
@@ -353,7 +353,7 @@ msgstr "全部月份"
 msgid "All originals"
 msgstr "全部源图"
 
-#: src/component/photo/toolbar.vue:76 src/page/albums.vue:93
+#: src/component/photo/toolbar.vue:76 src/page/albums.vue:94
 msgid "All Years"
 msgstr "全部年份"
 
@@ -586,12 +586,12 @@ msgstr "相机序列号"
 msgid "Can't access your authenticator app or device?"
 msgstr "无法访问您的身份验证应用程序或设备？"
 
-#: src/page/album/photos.vue:318 src/page/photos.vue:450
+#: src/page/album/photos.vue:322 src/page/photos.vue:455
 msgid "Can't load more, limit reached"
 msgstr "无法加载更多内容，已达上限"
 
 #: src/common/clipboard.js:102 src/common/clipboard.js:139
-#: src/page/albums.vue:690 src/page/albums.vue:706 src/page/labels.vue:293
+#: src/page/albums.vue:695 src/page/albums.vue:711 src/page/labels.vue:293
 #: src/page/labels.vue:313 src/page/library/browse.vue:233
 #: src/page/library/browse.vue:249 src/page/people/new.vue:278
 #: src/page/people/new.vue:294 src/page/people/recognized.vue:305
@@ -675,7 +675,7 @@ msgstr "无法保存变更"
 #: src/component/label/edit/dialog.vue:46 src/component/lightbox.vue:1961
 #: src/component/photo/edit/files.vue:162 src/component/service/edit.vue:90
 #: src/component/share/dialog.vue:92 src/component/share/dialog.vue:111
-#: src/page/albums.vue:683 src/page/people/recognized.vue:119
+#: src/page/albums.vue:688 src/page/people/recognized.vue:119
 #: src/page/settings/advanced.vue:62 src/page/settings/content.vue:62
 #: src/page/settings/general.vue:108
 msgid "Changes successfully saved"
@@ -1039,7 +1039,7 @@ msgstr "在搜索结果中显示图片标题。"
 
 #: src/component/photo/view/cards.vue:339
 #: src/component/photo/view/cards.vue:521
-#: src/component/photo/view/mosaic.vue:183 src/model/thumb.js:174
+#: src/component/photo/view/mosaic.vue:183 src/model/thumb.js:176
 #: src/options/options.js:309
 msgid "Document"
 msgstr "文件"
@@ -1292,7 +1292,7 @@ msgid "Favorite"
 msgstr "收藏"
 
 #: src/app/routes.js:230 src/component/navigation.vue:903
-#: src/options/options.js:202 src/page/albums.vue:97
+#: src/options/options.js:202 src/page/albums.vue:98
 msgid "Favorites"
 msgstr "收藏"
 
@@ -1617,7 +1617,7 @@ msgstr "无效日期"
 msgid "Invalid parameters"
 msgstr "参数无效"
 
-#: src/component/photo/edit/dialog.vue:194 src/model/thumb.js:197
+#: src/component/photo/edit/dialog.vue:194 src/model/thumb.js:199
 msgid "Invalid photo selected"
 msgstr "选择了无效的照片"
 
@@ -1807,7 +1807,7 @@ msgstr "本地时间"
 #: src/component/photo/edit/details.vue:210
 #: src/component/photo/edit/info.vue:67 src/component/photo/edit/labels.vue:48
 #: src/component/photo/view/cards.vue:555 src/component/photo/view/list.vue:117
-#: src/component/sidebar/info.vue:107 src/page/albums.vue:99
+#: src/component/sidebar/info.vue:107 src/page/albums.vue:100
 #: src/page/settings/account.vue:563 src/page/settings/account.vue:565
 msgid "Location"
 msgstr "位置"
@@ -1970,7 +1970,7 @@ msgstr "静音"
 #: src/component/photo/edit/info.vue:125 src/component/photo/edit/people.vue:36
 #: src/component/photo/view/list.vue:117 src/component/service/edit.vue:311
 #: src/component/settings/apps.vue:53 src/component/settings/apps.vue:289
-#: src/page/albums.vue:98 src/page/auth/login.vue:168
+#: src/page/albums.vue:99 src/page/auth/login.vue:168
 #: src/page/people/new.vue:68 src/page/settings/services.vue:37
 msgid "Name"
 msgstr "名称"
@@ -2000,7 +2000,7 @@ msgstr "新密码"
 
 #: src/component/album/edit/dialog.vue:24 src/component/photo/toolbar.vue:114
 #: src/component/photo/toolbar.vue:126 src/component/photo/toolbar.vue:136
-#: src/page/albums.vue:100
+#: src/page/albums.vue:101
 msgid "Newest First"
 msgstr "最新优先"
 
@@ -2024,7 +2024,7 @@ msgstr "下一个视觉"
 msgid "No"
 msgstr "否"
 
-#: src/page/albums.vue:607 src/page/albums.vue:282
+#: src/page/albums.vue:612 src/page/albums.vue:282
 msgid "No albums found"
 msgstr "找不到相册"
 
@@ -2052,8 +2052,8 @@ msgstr "找不到人物"
 
 #: src/component/lightbox.vue:365 src/component/photo/view/cards.vue:144
 #: src/component/photo/view/list.vue:82 src/component/photo/view/mosaic.vue:68
-#: src/page/album/photos.vue:494 src/page/library/browse.vue:123
-#: src/page/photos.vue:631 src/page/places.vue:624 src/page/places.vue:730
+#: src/page/album/photos.vue:499 src/page/library/browse.vue:123
+#: src/page/photos.vue:636 src/page/places.vue:624 src/page/places.vue:730
 msgid "No pictures found"
 msgstr "找不到图片"
 
@@ -2153,7 +2153,7 @@ msgstr "好的"
 
 #: src/component/album/edit/dialog.vue:25 src/component/photo/toolbar.vue:115
 #: src/component/photo/toolbar.vue:127 src/component/photo/toolbar.vue:137
-#: src/page/albums.vue:101
+#: src/page/albums.vue:102
 msgid "Oldest First"
 msgstr "最旧优先"
 
@@ -2169,7 +2169,7 @@ msgstr "按需生成缩略图可能会导致较高的 CPU 和内存使用率。�
 msgid "Once a week"
 msgstr "每周一次"
 
-#: src/page/albums.vue:609
+#: src/page/albums.vue:614
 msgid "One album found"
 msgstr "已找到一本相册"
 
@@ -2194,7 +2194,7 @@ msgstr "已找到一个标签"
 msgid "One person found"
 msgstr "已找到一个人物"
 
-#: src/page/album/photos.vue:496 src/page/photos.vue:633
+#: src/page/album/photos.vue:501 src/page/photos.vue:638
 msgid "One picture found"
 msgstr "已发现一张图片"
 
@@ -2497,7 +2497,7 @@ msgstr "只读模式"
 
 #: src/component/album/edit/dialog.vue:26 src/component/photo/toolbar.vue:116
 #: src/component/photo/toolbar.vue:128 src/component/photo/toolbar.vue:138
-#: src/page/albums.vue:102
+#: src/page/albums.vue:103
 msgid "Recently Added"
 msgstr "最近添加"
 
@@ -2505,7 +2505,7 @@ msgstr "最近添加"
 msgid "Recently Archived"
 msgstr "最近存档"
 
-#: src/component/photo/toolbar.vue:139 src/page/albums.vue:103
+#: src/component/photo/toolbar.vue:139 src/page/albums.vue:104
 msgid "Recently Edited"
 msgstr "最近编辑"
 
@@ -2532,7 +2532,7 @@ msgstr "红"
 
 #: src/page/admin/sessions.vue:101 src/page/admin/users.vue:128
 #: src/component/album/toolbar.vue:84 src/component/photo/toolbar.vue:169
-#: src/page/albums.vue:173 src/page/labels.vue:112
+#: src/page/albums.vue:175 src/page/labels.vue:112
 #: src/page/library/browse.vue:90 src/page/library/errors.vue:81
 #: src/page/people/new.vue:54 src/page/people/recognized.vue:88
 msgid "Refresh"
@@ -2940,7 +2940,7 @@ msgid "Successfully Connected"
 msgstr "账户成功连接"
 
 #: src/component/session/remove/dialog.vue:32
-#: src/component/settings/apps.vue:218
+#: src/component/settings/apps.vue:222
 msgid "Successfully deleted"
 msgstr "已成功删除"
 
@@ -3058,7 +3058,7 @@ msgstr "标题"
 msgid "Title / Position"
 msgstr "职称/职位"
 
-#: src/page/albums.vue:83
+#: src/page/albums.vue:84
 msgid "Title too long"
 msgstr "标题太长了"
 
@@ -3210,7 +3210,7 @@ msgstr "立即升级"
 
 #: src/component/album/toolbar.vue:113 src/component/navigation.vue:1860
 #: src/component/photo/toolbar.vue:179 src/component/service/upload.vue:145
-#: src/component/upload/dialog.vue:51 src/page/albums.vue:183
+#: src/component/upload/dialog.vue:51 src/page/albums.vue:185
 #: src/page/labels.vue:122 src/page/library/import.vue:133
 #: src/page/settings/general.vue:307 src/page/settings/services.vue:38
 msgid "Upload"
