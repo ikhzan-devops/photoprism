@@ -1,6 +1,8 @@
 package vision
 
 import (
+	"net/http"
+
 	"github.com/photoprism/photoprism/pkg/media/http/scheme"
 )
 
@@ -30,10 +32,13 @@ var (
 	CaptionModel = &Model{
 		Type:       ModelTypeCaption,
 		Resolution: 224,
+		Name:       "qwen2.5vl",
+		Version:    "latest",
 		Service: Service{
 			Uri:            "http://photoprism-vision:5000/api/v1/vision/caption",
-			FileScheme:     scheme.Https,
-			RequestFormat:  ApiFormatUrl,
+			Method:         http.MethodPost,
+			FileScheme:     scheme.Data,
+			RequestFormat:  ApiFormatVision,
 			ResponseFormat: ApiFormatVision,
 		},
 	}

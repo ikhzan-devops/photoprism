@@ -16,7 +16,7 @@ var Config = NewOptions()
 // Options represents a computer vision configuration for the supported Model types.
 type Options struct {
 	Models     Models     `yaml:"Models,omitempty" json:"models,omitempty"`
-	Thresholds Thresholds `yaml:"Thresholds" json:"thresholds"`
+	Thresholds Thresholds `yaml:"Thresholds,omitempty" json:"thresholds"`
 }
 
 // NewOptions returns a new computer vision config with defaults.
