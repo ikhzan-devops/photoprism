@@ -33,7 +33,7 @@ msgstr ""
 msgid "{0}-{1} of {2}"
 msgstr ""
 
-#: src/page/albums.vue:612
+#: src/page/albums.vue:617
 msgid "%{n} albums found"
 msgstr ""
 
@@ -59,10 +59,10 @@ msgstr ""
 msgid "%{n} people found"
 msgstr ""
 
-#: src/page/album/photos.vue:309
-#: src/page/album/photos.vue:499
-#: src/page/photos.vue:441
-#: src/page/photos.vue:636
+#: src/page/album/photos.vue:313
+#: src/page/album/photos.vue:504
+#: src/page/photos.vue:446
+#: src/page/photos.vue:641
 msgid "%{n} pictures found"
 msgstr ""
 
@@ -303,11 +303,11 @@ msgstr ""
 msgid "Album Backups"
 msgstr ""
 
-#: src/page/albums.vue:680
+#: src/page/albums.vue:685
 msgid "Album created"
 msgstr ""
 
-#: src/page/album/photos.vue:584
+#: src/page/album/photos.vue:589
 msgid "Album deleted"
 msgstr ""
 
@@ -329,7 +329,7 @@ msgstr ""
 msgid "All"
 msgstr ""
 
-#: src/page/albums.vue:465
+#: src/page/albums.vue:470
 msgid "All %{n} albums loaded"
 msgstr ""
 
@@ -346,9 +346,9 @@ msgid "All Cameras"
 msgstr ""
 
 #: src/component/photo/toolbar.vue:74
-#: src/page/albums.vue:44
-#: src/page/albums.vue:240
-#: src/page/albums.vue:752
+#: src/page/albums.vue:45
+#: src/page/albums.vue:242
+#: src/page/albums.vue:757
 msgid "All Categories"
 msgstr ""
 
@@ -382,7 +382,7 @@ msgid "All originals"
 msgstr ""
 
 #: src/component/photo/toolbar.vue:76
-#: src/page/albums.vue:93
+#: src/page/albums.vue:94
 msgid "All Years"
 msgstr ""
 
@@ -643,15 +643,15 @@ msgstr ""
 msgid "Can't access your authenticator app or device?"
 msgstr ""
 
-#: src/page/album/photos.vue:318
-#: src/page/photos.vue:450
+#: src/page/album/photos.vue:322
+#: src/page/photos.vue:455
 msgid "Can't load more, limit reached"
 msgstr ""
 
 #: src/common/clipboard.js:102
 #: src/common/clipboard.js:139
-#: src/page/albums.vue:690
-#: src/page/albums.vue:706
+#: src/page/albums.vue:695
+#: src/page/albums.vue:711
 #: src/page/labels.vue:293
 #: src/page/labels.vue:313
 #: src/page/library/browse.vue:233
@@ -770,7 +770,7 @@ msgstr ""
 #: src/component/service/edit.vue:90
 #: src/component/share/dialog.vue:92
 #: src/component/share/dialog.vue:111
-#: src/page/albums.vue:683
+#: src/page/albums.vue:688
 #: src/page/people/recognized.vue:119
 #: src/page/settings/advanced.vue:62
 #: src/page/settings/content.vue:62
@@ -1188,7 +1188,7 @@ msgstr ""
 #: src/component/photo/view/cards.vue:339
 #: src/component/photo/view/cards.vue:521
 #: src/component/photo/view/mosaic.vue:183
-#: src/model/thumb.js:174
+#: src/model/thumb.js:176
 #: src/options/options.js:309
 msgid "Document"
 msgstr ""
@@ -1476,7 +1476,7 @@ msgstr ""
 #: src/app/routes.js:230
 #: src/component/navigation.vue:903
 #: src/options/options.js:202
-#: src/page/albums.vue:97
+#: src/page/albums.vue:98
 msgid "Favorites"
 msgstr ""
 
@@ -1849,7 +1849,7 @@ msgid "Invalid parameters"
 msgstr ""
 
 #: src/component/photo/edit/dialog.vue:194
-#: src/model/thumb.js:197
+#: src/model/thumb.js:199
 msgid "Invalid photo selected"
 msgstr ""
 
@@ -2069,7 +2069,7 @@ msgstr ""
 #: src/component/photo/view/cards.vue:555
 #: src/component/photo/view/list.vue:117
 #: src/component/sidebar/info.vue:107
-#: src/page/albums.vue:99
+#: src/page/albums.vue:100
 #: src/page/settings/account.vue:563
 #: src/page/settings/account.vue:565
 msgid "Location"
@@ -2258,7 +2258,7 @@ msgstr ""
 #: src/component/settings/apps.vue:289
 #: src/page/about/feedback.vue:122
 #: src/page/about/feedback.vue:123
-#: src/page/albums.vue:98
+#: src/page/albums.vue:99
 #: src/page/auth/login.vue:168
 #: src/page/people/new.vue:68
 #: src/page/settings/services.vue:37
@@ -2297,7 +2297,7 @@ msgstr ""
 #: src/component/photo/toolbar.vue:114
 #: src/component/photo/toolbar.vue:126
 #: src/component/photo/toolbar.vue:136
-#: src/page/albums.vue:100
+#: src/page/albums.vue:101
 msgid "Newest First"
 msgstr ""
 
@@ -2325,7 +2325,7 @@ msgstr ""
 msgid "No"
 msgstr ""
 
-#: src/page/albums.vue:607
+#: src/page/albums.vue:612
 #: src/page/albums.vue:282
 msgid "No albums found"
 msgstr ""
@@ -2360,9 +2360,9 @@ msgstr ""
 #: src/component/photo/view/cards.vue:144
 #: src/component/photo/view/list.vue:82
 #: src/component/photo/view/mosaic.vue:68
-#: src/page/album/photos.vue:494
+#: src/page/album/photos.vue:499
 #: src/page/library/browse.vue:123
-#: src/page/photos.vue:631
+#: src/page/photos.vue:636
 #: src/page/places.vue:624
 #: src/page/places.vue:730
 msgid "No pictures found"
@@ -2475,7 +2475,7 @@ msgstr ""
 #: src/component/photo/toolbar.vue:115
 #: src/component/photo/toolbar.vue:127
 #: src/component/photo/toolbar.vue:137
-#: src/page/albums.vue:101
+#: src/page/albums.vue:102
 msgid "Oldest First"
 msgstr ""
 
@@ -2491,7 +2491,7 @@ msgstr ""
 msgid "Once a week"
 msgstr ""
 
-#: src/page/albums.vue:609
+#: src/page/albums.vue:614
 msgid "One album found"
 msgstr ""
 
@@ -2517,8 +2517,8 @@ msgstr ""
 msgid "One person found"
 msgstr ""
 
-#: src/page/album/photos.vue:496
-#: src/page/photos.vue:633
+#: src/page/album/photos.vue:501
+#: src/page/photos.vue:638
 msgid "One picture found"
 msgstr ""
 
@@ -2855,7 +2855,7 @@ msgstr ""
 #: src/component/photo/toolbar.vue:116
 #: src/component/photo/toolbar.vue:128
 #: src/component/photo/toolbar.vue:138
-#: src/page/albums.vue:102
+#: src/page/albums.vue:103
 msgid "Recently Added"
 msgstr ""
 
@@ -2864,7 +2864,7 @@ msgid "Recently Archived"
 msgstr ""
 
 #: src/component/photo/toolbar.vue:139
-#: src/page/albums.vue:103
+#: src/page/albums.vue:104
 msgid "Recently Edited"
 msgstr ""
 
@@ -2894,7 +2894,7 @@ msgstr ""
 #: src/page/admin/users.vue:128
 #: src/component/album/toolbar.vue:84
 #: src/component/photo/toolbar.vue:169
-#: src/page/albums.vue:173
+#: src/page/albums.vue:175
 #: src/page/labels.vue:112
 #: src/page/library/browse.vue:90
 #: src/page/library/errors.vue:81
@@ -3356,7 +3356,7 @@ msgid "Successfully Connected"
 msgstr ""
 
 #: src/component/session/remove/dialog.vue:32
-#: src/component/settings/apps.vue:218
+#: src/component/settings/apps.vue:222
 msgid "Successfully deleted"
 msgstr ""
 
@@ -3496,7 +3496,7 @@ msgstr ""
 msgid "Title / Position"
 msgstr ""
 
-#: src/page/albums.vue:83
+#: src/page/albums.vue:84
 msgid "Title too long"
 msgstr ""
 
@@ -3686,7 +3686,7 @@ msgstr ""
 #: src/component/photo/toolbar.vue:179
 #: src/component/service/upload.vue:145
 #: src/component/upload/dialog.vue:51
-#: src/page/albums.vue:183
+#: src/page/albums.vue:185
 #: src/page/labels.vue:122
 #: src/page/library/import.vue:133
 #: src/page/settings/general.vue:307
