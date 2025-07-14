@@ -393,8 +393,13 @@ var Flags = CliFlags{
 			EnvVars: EnvVars("EXPERIMENTAL"),
 		}}, {
 		Flag: &cli.BoolFlag{
+			Name:    "disable-frontend",
+			Usage:   "disable the web user interface so that only the service API endpoints are accessible",
+			EnvVars: EnvVars("DISABLE_FRONTEND"),
+		}}, {
+		Flag: &cli.BoolFlag{
 			Name:    "disable-settings",
-			Usage:   "disable the settings user interface and server API, e.g. in combination with public mode",
+			Usage:   "disable the settings frontend and related API endpoints, e.g. in combination with public mode",
 			EnvVars: EnvVars("DISABLE_SETTINGS"),
 		}}, {
 		Flag: &cli.BoolFlag{
