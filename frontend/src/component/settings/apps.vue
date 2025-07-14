@@ -357,7 +357,11 @@ export default {
       this.$view.leave(this);
     },
     onCopyAppPassword() {
+      // Use the browser API to copy the app password to the clipboard.
       this.$util.copyText(this.appPassword);
+
+      // Flag the password as copied to the clipboard even
+      // if the copyText() function returns an error.
       this.appPasswordCopied = true;
     },
     formatDate(d) {
