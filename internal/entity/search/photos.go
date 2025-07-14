@@ -180,36 +180,36 @@ func searchPhotos(frm form.SearchPhotos, sess *entity.Session, resultCols string
 	// Set sort order.
 	switch frm.Order {
 	case sortby.Edited:
-		s = s.Where("photos.edited_at IS NOT NULL").Order("photos.edited_at DESC, files.media_id")
+		s = s.Where("photos.edited_at IS NOT NULL").Order(OrderExpr("photos.edited_at DESC, files.media_id", frm.Reverse))
 	case sortby.Updated, sortby.UpdatedAt:
-		s = s.Where("photos.updated_at > photos.created_at").Order("photos.updated_at DESC, files.media_id")
+		s = s.Where("photos.updated_at > photos.created_at").Order(OrderExpr("photos.updated_at DESC, files.media_id", frm.Reverse))
 	case sortby.Archived:
-		s = s.Order("photos.deleted_at DESC, files.media_id")
+		s = s.Order(OrderExpr("photos.deleted_at DESC, files.media_id", frm.Reverse))
 	case sortby.Relevance:
 		if frm.Label != "" {
-			s = s.Order("photos.photo_quality DESC, photos_labels.uncertainty ASC, files.time_index")
+			s = s.Order(OrderExpr("photos.photo_quality DESC, photos_labels.uncertainty ASC, files.time_index", frm.Reverse))
 		} else {
-			s = s.Order("photos.photo_quality DESC, files.time_index")
+			s = s.Order(OrderExpr("photos.photo_quality DESC, files.time_index", frm.Reverse))
 		}
 	case sortby.Duration:
-		s = s.Order("photos.photo_duration DESC, files.time_index")
+		s = s.Order(OrderExpr("photos.photo_duration DESC, files.time_index", frm.Reverse))
 	case sortby.Size:
-		s = s.Order("files.file_size DESC, files.time_index")
+		s = s.Order(OrderExpr("files.file_size DESC, files.time_index", frm.Reverse))
 	case sortby.Newest:
-		s = s.Order("files.time_index")
+		s = s.Order(OrderExpr("files.time_index", frm.Reverse))
 	case sortby.Oldest:
-		s = s.Order("files.photo_taken_at, files.media_id")
+		s = s.Order(OrderExpr("files.photo_taken_at ASC, files.media_id", frm.Reverse))
 	case sortby.Similar:
 		s = s.Where("files.file_diff > 0")
-		s = s.Order("photos.photo_color, photos.cell_id, files.file_diff, files.photo_id, files.time_index")
+		s = s.Order(OrderExpr("photos.photo_color ASC, photos.cell_id ASC, files.file_diff, files.photo_id, files.time_index", frm.Reverse))
 	case sortby.Name:
-		s = s.Order("photos.photo_path, photos.photo_name, files.time_index")
+		s = s.Order(OrderExpr("photos.photo_path ASC, photos.photo_name ASC, files.time_index", frm.Reverse))
 	case sortby.Title:
-		s = s.Order("photos.photo_title, photos.photo_name, files.time_index")
+		s = s.Order(OrderExpr("photos.photo_title ASC, photos.photo_name ASC, files.time_index", frm.Reverse))
 	case sortby.Random:
 		s = s.Order(sortby.RandomExpr(s.Dialect()))
 	case sortby.Default, sortby.Imported, sortby.Added:
-		s = s.Order("files.media_id")
+		s = s.Order(OrderExpr("files.media_id", frm.Reverse))
 	default:
 		return PhotoResults{}, 0, ErrBadSortOrder
 	}
