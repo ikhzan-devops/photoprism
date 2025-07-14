@@ -63,7 +63,11 @@ func PostVisionLabels(router *gin.RouterGroup) {
 		}
 
 		// Generate Vision API service response.
-		response := vision.NewLabelsResponse(request.GetId(), vision.NasnetModel, labels)
+		response := vision.NewLabelsResponse(
+			request.GetId(),
+			&vision.Model{Type: vision.ModelTypeLabels},
+			labels,
+		)
 
 		c.JSON(http.StatusOK, response)
 	})

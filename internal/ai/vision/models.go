@@ -32,8 +32,9 @@ var (
 	CaptionModel = &Model{
 		Type:       ModelTypeCaption,
 		Resolution: 224,
-		Name:       "qwen2.5vl",
-		Version:    "latest",
+		Name:       CaptionModelDefault,
+		Version:    ModelVersionDefault,
+		Prompt:     CaptionPromptDefault,
 		Service: Service{
 			Uri:            "http://photoprism-vision:5000/api/v1/vision/caption",
 			Method:         http.MethodPost,
