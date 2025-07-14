@@ -23,84 +23,83 @@
       <v-row dense :class="!$vuetify.display.mdAndDown ? 'overflow-hidden' : ''">
         <!-- Desktop view -->
         <v-col v-if="!$vuetify.display.mdAndDown" cols="12" lg="4" class="scroll-col">
-          <div v-if="model.models" class="edit-batch photo-results list-view v-table">
-            <table>
-              <tbody>
-                <tr>
-                  <td class="col-select" :class="{ 'is-selected': isAllSelected }">
-                    <button class="input-select ma-auto" @click.stop.prevent="toggleAll">
-                      <i class="mdi mdi-checkbox-marked select-on" />
-                      <i class="mdi mdi-checkbox-blank-outline select-off" />
-                    </button>
-                  </td>
-                  <td class="media result col-preview">Pictures</td>
-                </tr>
-                <tr v-for="(m, index) in model.models" :key="m.ID" ref="items" :data-index="index">
-                  <td :data-id="m.ID" :data-uid="m.UID" class="col-select" :class="{ 'is-selected': isSelected(m) }">
-                    <button
-                      class="input-select ma-auto"
-                      @touchstart.passive="onMouseDown($event, index)"
-                      @touchend.stop="onSelectClick($event, index, true)"
-                      @mousedown="onMouseDown($event, index)"
-                      @click.stop.prevent="onSelectClick($event, index, true)"
-                    >
-                      <i class="mdi mdi-checkbox-marked select-on" />
-                      <i class="mdi mdi-checkbox-blank-outline select-off" />
-                    </button>
-                  </td>
-                  <td :data-id="m.ID" :data-uid="m.UID" class="media result col-preview">
-                    <!--                    <div v-if="index < firstVisibleElementIndex || index > lastVisibleElementIndex" class="preview"></div>-->
-                    <!--                    <div-->
-                    <!--                        v-else-->
-                    <!--                        :style="`background-image: url(${m.thumbnailUrl('tile_224')})`"-->
-                    <!--                        class="preview"-->
-                    <!--                        @touchstart.passive="onMouseDown($event, index)"-->
-                    <!--                        @touchend.stop="onClick($event, index, false)"-->
-                    <!--                        @mousedown="onMouseDown($event, index)"-->
-                    <!--                        @click.stop.prevent="onClick($event, index, false)"-->
-                    <!--                    >-->
-                    <div
-                      :style="`background-image: url(${m.thumbnailUrl('tile_224')})`"
-                      class="preview"
-                      @touchstart.passive="onMouseDown($event, index)"
-                      @touchend.stop="onSelectClick($event, index, false)"
-                      @mousedown="onMouseDown($event, index)"
-                      @click.stop.prevent="onSelectClick($event, index, false)"
-                    >
-                      <div class="preview__overlay"></div>
-                      <button
-                        v-if="m.Type === 'video' || m.Type === 'live' || m.Type === 'animated'"
-                        class="input-open"
-                        @click.stop.prevent="openPhoto(index)"
-                      >
-                        <i v-if="m.Type === 'live'" class="action-live" :title="$gettext('Live')"
-                          ><icon-live-photo
-                        /></i>
-                        <i
-                          v-else-if="m.Type === 'animated'"
-                          class="mdi mdi-file-gif-box"
-                          :title="$gettext('Animated')"
-                        />
-                        <i v-else-if="m.Type === 'video'" class="mdi mdi-play" :title="$gettext('Video')" />
-                      </button>
-                    </div>
-                  </td>
-                  <td
-                    class="meta-data meta-title col-auto text-start clickable"
-                    :title="m.FileName"
-                    @click.exact="openPhoto(index)"
+          <div v-if="model.models" class="edit-batch photo-results list-view">
+            <v-data-table
+              :headers="tableHeaders"
+              :items="model.models"
+              :show-select="false"
+              hide-default-footer
+              item-key="ID"
+              density="comfortable"
+              class="elevation-0"
+            >
+              <template #header.select>
+                <v-checkbox
+                  :model-value="isAllSelected"
+                  hide-details
+                  density="compact"
+                  @update:model-value="toggleAll"
+                />
+              </template>
+
+              <template #item.select="{ item, index }">
+                <v-checkbox
+                  :model-value="isSelected(item)"
+                  hide-details
+                  density="compact"
+                  @touchstart.passive="onMouseDown($event, index)"
+                  @touchend.stop="onSelectClick($event, index, true)"
+                  @mousedown="onMouseDown($event, index)"
+                  @update:model-value="onSelectClick($event, index, true)"
+                />
+              </template>
+
+              <template #item.preview="{ item, index }">
+                <div class="media result col-preview">
+                  <div
+                    :style="`background-image: url(${item.thumbnailUrl('tile_224')})`"
+                    class="preview"
+                    @touchstart.passive="onMouseDown($event, index)"
+                    @touchend.stop="onSelectClick($event, index, false)"
+                    @mousedown="onMouseDown($event, index)"
+                    @click.stop.prevent="onSelectClick($event, index, false)"
                   >
-                    {{ m.getOriginalName() }}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                    <div class="preview__overlay"></div>
+                    <button
+                      v-if="item.Type === 'video' || item.Type === 'live' || item.Type === 'animated'"
+                      class="input-open"
+                      @click.stop.prevent="openPhoto(index)"
+                    >
+                      <i v-if="item.Type === 'live'" class="action-live" :title="$gettext('Live')"
+                        ><icon-live-photo
+                      /></i>
+                      <i
+                        v-else-if="item.Type === 'animated'"
+                        class="mdi mdi-file-gif-box"
+                        :title="$gettext('Animated')"
+                      />
+                      <i v-else-if="item.Type === 'video'" class="mdi mdi-play" :title="$gettext('Video')" />
+                    </button>
+                  </div>
+                </div>
+              </template>
+
+              <template #item.name="{ item, index }">
+                <span
+                  class="meta-data meta-title col-auto text-start clickable"
+                  :title="item.FileName"
+                  @click.exact="openPhoto(index)"
+                >
+                  {{ item.getOriginalName() }}
+                </span>
+              </template>
+            </v-data-table>
           </div>
         </v-col>
 
         <!-- Mobile view -->
         <v-col v-else cols="12">
-          <div v-if="model.models" class="edit-batch photo-results list-view v-table">
+          <div v-if="model.models" class="edit-batch photo-results list-view">
             <v-expansion-panels
               v-model="expanded"
               variant="accordion"
@@ -111,73 +110,76 @@
             >
               <v-expansion-panel title="Pictures" color="secondary" class="pa-0 elevation-0">
                 <v-expansion-panel-text>
-                  <table class="w-100">
-                    <tbody>
-                      <tr v-for="(m, index) in model.models" :key="m.ID" ref="items" :data-index="index">
-                        <td
-                          :data-id="m.ID"
-                          :data-uid="m.UID"
-                          class="col-select"
-                          :class="{ 'is-selected': isSelected(m) }"
+                  <v-data-table
+                    :headers="mobileTableHeaders"
+                    :items="model.models"
+                    :show-select="false"
+                    hide-default-footer
+                    item-key="ID"
+                    density="compact"
+                    class="elevation-0"
+                  >
+                    <template #header.select>
+                      <v-checkbox
+                        :model-value="isAllSelected"
+                        hide-details
+                        density="compact"
+                        @update:model-value="toggleAll"
+                      />
+                    </template>
+
+                    <template #item.select="{ item, index }">
+                      <v-checkbox
+                        :model-value="isSelected(item)"
+                        hide-details
+                        density="compact"
+                        @touchstart.passive="onMouseDown($event, index)"
+                        @touchend.stop="onSelectClick($event, index, true)"
+                        @mousedown="onMouseDown($event, index)"
+                        @update:model-value="onSelectClick($event, index, true)"
+                      />
+                    </template>
+
+                    <template #item.preview="{ item, index }">
+                      <div class="media result col-preview">
+                        <div
+                          :style="`background-image: url(${item.thumbnailUrl('tile_224')})`"
+                          class="preview"
+                          @touchstart.passive="onMouseDown($event, index)"
+                          @touchend.stop="onSelectClick($event, index, false)"
+                          @mousedown="onMouseDown($event, index)"
+                          @click.stop.prevent="onSelectClick($event, index, false)"
                         >
+                          <div class="preview__overlay"></div>
                           <button
-                            class="input-select ma-auto"
-                            @touchstart.passive="onMouseDown($event, index)"
-                            @touchend.stop="onSelectClick($event, index, true)"
-                            @mousedown="onMouseDown($event, index)"
-                            @click.stop.prevent="onSelectClick($event, index, true)"
+                            v-if="item.Type === 'video' || item.Type === 'live' || item.Type === 'animated'"
+                            class="input-open"
+                            @click.stop.prevent="openPhoto(index)"
                           >
-                            <i class="mdi mdi-checkbox-marked select-on" />
-                            <i class="mdi mdi-checkbox-blank-outline select-off" />
+                            <i v-if="item.Type === 'live'" class="action-live" :title="$gettext('Live')"
+                              ><icon-live-photo
+                            /></i>
+                            <i
+                              v-else-if="item.Type === 'animated'"
+                              class="mdi mdi-file-gif-box"
+                              :title="$gettext('Animated')"
+                            />
+                            <i v-else-if="item.Type === 'video'" class="mdi mdi-play" :title="$gettext('Video')" />
                           </button>
-                        </td>
-                        <td :data-id="m.ID" :data-uid="m.UID" class="media result col-preview">
-                          <!--                    <div v-if="index < firstVisibleElementIndex || index > lastVisibleElementIndex" class="preview"></div>-->
-                          <!--                    <div-->
-                          <!--                        v-else-->
-                          <!--                        :style="`background-image: url(${m.thumbnailUrl('tile_224')})`"-->
-                          <!--                        class="preview"-->
-                          <!--                        @touchstart.passive="onMouseDown($event, index)"-->
-                          <!--                        @touchend.stop="onClick($event, index, false)"-->
-                          <!--                        @mousedown="onMouseDown($event, index)"-->
-                          <!--                        @click.stop.prevent="onClick($event, index, false)"-->
-                          <!--                    >-->
-                          <div
-                            :style="`background-image: url(${m.thumbnailUrl('tile_224')})`"
-                            class="preview"
-                            @touchstart.passive="onMouseDown($event, index)"
-                            @touchend.stop="onSelectClick($event, index, false)"
-                            @mousedown="onMouseDown($event, index)"
-                            @click.stop.prevent="onSelectClick($event, index, false)"
-                          >
-                            <div class="preview__overlay"></div>
-                            <button
-                              v-if="m.Type === 'video' || m.Type === 'live' || m.Type === 'animated'"
-                              class="input-open"
-                              @click.stop.prevent="openPhoto(index)"
-                            >
-                              <i v-if="m.Type === 'live'" class="action-live" :title="$gettext('Live')"
-                                ><icon-live-photo
-                              /></i>
-                              <i
-                                v-else-if="m.Type === 'animated'"
-                                class="mdi mdi-file-gif-box"
-                                :title="$gettext('Animated')"
-                              />
-                              <i v-else-if="m.Type === 'video'" class="mdi mdi-play" :title="$gettext('Video')" />
-                            </button>
-                          </div>
-                        </td>
-                        <td
-                          class="meta-data meta-title col-auto text-start clickable edit-batch__file-name"
-                          :title="m.FileName"
-                          @click.exact="openPhoto(index)"
-                        >
-                          {{ m.getOriginalName() }}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+                        </div>
+                      </div>
+                    </template>
+
+                    <template #item.name="{ item, index }">
+                      <span
+                        class="meta-data meta-title col-auto text-start clickable edit-batch__file-name"
+                        :title="item.FileName"
+                        @click.exact="openPhoto(index)"
+                      >
+                        {{ item.getOriginalName() }}
+                      </span>
+                    </template>
+                  </v-data-table>
                 </v-expansion-panel-text>
               </v-expansion-panel>
             </v-expansion-panels>
@@ -682,6 +684,16 @@ export default {
       locationDialog: false,
       placesDisabled: !this.$config.feature("places"),
       locationLabel: this.$gettext("Location"),
+      tableHeaders: [
+        { key: "select", title: "", sortable: false, width: "50px" },
+        { key: "preview", title: "Pictures", sortable: false },
+        { key: "name", title: "Name", sortable: false },
+      ],
+      mobileTableHeaders: [
+        { key: "select", title: "", sortable: false, width: "50px", align: "center" },
+        { key: "preview", title: "Pictures", sortable: false, width: "80px" },
+        { key: "name", title: "Name", sortable: false, align: "start" },
+      ],
     };
   },
   computed: {
@@ -1173,20 +1185,9 @@ export default {
       this.onClose();
     },
     onSelectClick(ev, index, select) {
-      const longClick = this.mouseDown.index === index && ev.timeStamp - this.mouseDown.timeStamp > 400;
-      const scrolled = this.mouseDown.scrollY - window.scrollY !== 0;
-
-      if (!select && scrolled) {
-        return;
-      }
-
-      ev.preventDefault();
-      ev.stopPropagation();
-
-      if (select !== false && (select || longClick || this.selectMode)) {
+      // Handle v-checkbox update:model-value event (ev will be boolean)
+      if (select !== false) {
         this.toggle(this.model.models[index]);
-      } else if (this.model.models[index]) {
-        this.openPhoto(index);
       }
     },
     toggle(photo) {
@@ -1197,8 +1198,9 @@ export default {
     updateToggleAll() {
       this.isAllSelected = this.model.selection.every((photo) => photo.selected);
     },
-    toggleAll() {
-      this.isAllSelected = !this.isAllSelected;
+    toggleAll(value) {
+      // Handle v-checkbox update:model-value event (value will be boolean)
+      this.isAllSelected = value;
       this.model.toggleAll(this.isAllSelected);
       this.allSelectedLength = this.model.getLengthOfAllSelected();
     },
