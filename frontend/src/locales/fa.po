@@ -225,8 +225,8 @@ msgstr "افزودن به آلبوم"
 msgid "Added"
 msgstr "اضافه شده"
 
-#: src/component/location/dialog.vue:71 src/component/location/dialog.vue:93
-#: src/component/photo/edit/details.vue:247
+#: src/component/location/dialog.vue:68 src/component/location/dialog.vue:90
+#: src/component/photo/edit/details.vue:246
 msgid "Adjust Location"
 msgstr "تنظیم مکان"
 
@@ -365,7 +365,7 @@ msgstr "از طرف دیگر، می‌توانید فایل‌ها را مستق
 msgid "Altitude"
 msgstr "ارتفاع"
 
-#: src/component/photo/edit/details.vue:299
+#: src/component/photo/edit/details.vue:297
 msgid "Altitude (m)"
 msgstr "ارتفاع (M)"
 
@@ -400,12 +400,12 @@ msgstr "کلید API"
 msgid "Application"
 msgstr "کاربرد"
 
-#: src/component/photo/edit/details.vue:617
+#: src/component/photo/edit/details.vue:615
 msgid "Apply"
 msgstr "درخواست"
 
 #: src/component/photo/clipboard.vue:64
-#: src/component/photo/edit/details.vue:616
+#: src/component/photo/edit/details.vue:614
 #: src/component/photo/view/cards.vue:416
 msgid "Approve"
 msgstr "تأیید"
@@ -457,7 +457,7 @@ msgstr "آیا مطمئن هستید که می خواهید این پرونده 
 msgid "Are you sure?"
 msgstr "مطمئن هستی؟"
 
-#: src/component/photo/edit/details.vue:513
+#: src/component/photo/edit/details.vue:511
 msgid "Artist"
 msgstr "هنرمند"
 
@@ -573,7 +573,7 @@ msgstr "با استفاده از نرم‌افزار و خدماتی که ما �
 msgid "Calendar"
 msgstr "تقویم"
 
-#: src/component/photo/edit/details.vue:322 src/component/photo/toolbar.vue:234
+#: src/component/photo/edit/details.vue:320 src/component/photo/toolbar.vue:234
 #: src/component/photo/view/cards.vue:467 src/component/photo/view/list.vue:116
 msgid "Camera"
 msgstr "دوربین"
@@ -607,7 +607,7 @@ msgstr "موارد بیشتری را انتخاب نمی کند"
 #: src/component/file/delete/dialog.vue:48
 #: src/component/label/delete/dialog.vue:48
 #: src/component/label/edit/dialog.vue:108
-#: src/component/location/dialog.vue:194
+#: src/component/location/dialog.vue:200
 #: src/component/people/edit/dialog.vue:121
 #: src/component/photo/album/dialog.vue:78 src/component/service/add.vue:19
 #: src/component/service/edit.vue:456 src/component/service/remove.vue:50
@@ -619,6 +619,10 @@ msgstr "موارد بیشتری را انتخاب نمی کند"
 #: src/page/library/import.vue:119 src/page/library/index.vue:128
 msgid "Cancel"
 msgstr "لغو"
+
+#: src/common/util.js:863 src/common/util.js:870
+msgid "Cannot copy to clipboard"
+msgstr "نمی توان در کلیپ بورد کپی کرد"
 
 #: src/component/photo/edit/details.vue:89 src/component/photo/edit/info.vue:63
 #: src/component/photo/edit/labels.vue:42
@@ -711,7 +715,7 @@ msgstr "اعتبار مشتری"
 
 #: src/component/user/edit/dialog.vue:474 src/page/admin/sessions.vue:536
 #: src/component/lightbox.vue:284 src/component/lightbox.vue:1009
-#: src/component/lightbox.vue:1010 src/component/photo/edit/details.vue:603
+#: src/component/lightbox.vue:1010 src/component/photo/edit/details.vue:601
 #: src/component/photo/toolbar.vue:161 src/component/settings/apps.vue:227
 #: src/component/settings/apps.vue:440 src/component/settings/passcode.vue:151
 #: src/component/settings/passcode.vue:459
@@ -752,7 +756,7 @@ msgstr "اسکن کامل"
 msgid "Confidence"
 msgstr "اعتماد"
 
-#: src/component/location/dialog.vue:206
+#: src/component/location/dialog.vue:212
 #: src/component/photo/album/dialog.vue:90
 #: src/component/settings/passcode.vue:264
 msgid "Confirm"
@@ -810,7 +814,7 @@ msgstr "مشارکت کننده"
 msgid "Converting"
 msgstr "تبدیل"
 
-#: src/common/util.js:852
+#: src/common/util.js:856
 msgid "Copied to clipboard"
 msgstr "کپی شده در کلیپ بورد"
 
@@ -818,7 +822,7 @@ msgstr "کپی شده در کلیپ بورد"
 msgid "Copy"
 msgstr "کپی 🀄"
 
-#: src/component/photo/edit/details.vue:492
+#: src/component/photo/edit/details.vue:490
 msgid "Copyright"
 msgstr "حق چاپ"
 
@@ -826,7 +830,7 @@ msgstr "حق چاپ"
 msgid "Couldn't find anything."
 msgstr "نتوانست چیزی پیدا کند."
 
-#: src/page/settings/account.vue:691 src/component/photo/edit/details.vue:270
+#: src/page/settings/account.vue:691 src/component/photo/edit/details.vue:268
 #: src/component/photo/toolbar.vue:205 src/page/settings/account.vue:583
 msgid "Country"
 msgstr "کشور"
@@ -1238,7 +1242,7 @@ msgstr "ویژگی های تجربی"
 msgid "Expires"
 msgstr "منقضی می شود"
 
-#: src/component/photo/edit/details.vue:372
+#: src/component/photo/edit/details.vue:370
 msgid "Exposure"
 msgstr "قرارگیری در معرض"
 
@@ -1246,7 +1250,7 @@ msgstr "قرارگیری در معرض"
 msgid "Extract still images and generate thumbnails while indexing."
 msgstr "در حین نمایه سازی، تصاویر ثابت را استخراج کنید و تصاویر کوچک تولید کنید."
 
-#: src/component/photo/edit/details.vue:420
+#: src/component/photo/edit/details.vue:418
 msgid "F Number"
 msgstr "شماره F"
 
@@ -1345,7 +1349,7 @@ msgstr "فایل‌هایی با نام‌های متوالی مانند «IMG_1
 msgid "First page"
 msgstr "صفحه اول"
 
-#: src/component/photo/edit/details.vue:441
+#: src/component/photo/edit/details.vue:439
 msgid "Focal Length"
 msgstr "فاصله کانونی"
 
@@ -1650,7 +1654,7 @@ msgstr "محدودیت اندازه JPEG: %{n}px"
 msgid "JPEGs and thumbnails are automatically rendered as needed."
 msgstr "JPEG ها و  تامبنیل ها به صورت خودکار در صورت نیاز ارائه می شوند."
 
-#: src/component/photo/edit/details.vue:557
+#: src/component/photo/edit/details.vue:555
 msgid "Keywords"
 msgstr "کلید واژه ها"
 
@@ -1721,7 +1725,7 @@ msgstr "بیشتر بدانید"
 msgid "Legal Information"
 msgstr "اطلاعات حقوقی"
 
-#: src/component/photo/edit/details.vue:393
+#: src/component/photo/edit/details.vue:391
 #: src/component/photo/view/cards.vue:480
 msgid "Lens"
 msgstr "لنز"
@@ -1732,7 +1736,7 @@ msgid "Library"
 msgstr "کتابخانه"
 
 #: src/page/connect.vue:45 src/app/routes.js:69
-#: src/component/navigation.vue:1504 src/component/photo/edit/details.vue:535
+#: src/component/navigation.vue:1504 src/component/photo/edit/details.vue:533
 #: src/page/about/license.vue:28
 msgid "License"
 msgstr "مجوز"
@@ -1800,7 +1804,7 @@ msgstr "زمان محلی"
 #: src/component/album/edit/dialog.vue:93
 #: src/component/photo/edit/details.vue:38
 #: src/component/photo/edit/details.vue:116
-#: src/component/photo/edit/details.vue:214
+#: src/component/photo/edit/details.vue:210
 #: src/component/photo/edit/info.vue:67 src/component/photo/edit/labels.vue:48
 #: src/component/photo/view/cards.vue:555 src/component/photo/view/list.vue:117
 #: src/component/sidebar/info.vue:107 src/page/albums.vue:99
@@ -2058,7 +2062,7 @@ msgstr "هیچ تصویری پیدا نشد"
 msgid "No recently edited pictures"
 msgstr "هیچ عکسی اخیراً ویرایش نشده"
 
-#: src/component/location/dialog.vue:158
+#: src/component/location/dialog.vue:166
 msgid "No results"
 msgstr "هیچ نتیجه‌ای حاصل نشد"
 
@@ -2093,8 +2097,8 @@ msgstr "تصاویر غیرعکاسی و با کیفیت پایین قبل از 
 msgid "None"
 msgstr "هیچ یک"
 
-#: src/common/util.js:859 src/component/lightbox.vue:633
-#: src/component/service/upload.vue:75 src/component/service/upload.vue:87
+#: src/component/lightbox.vue:633 src/component/service/upload.vue:75
+#: src/component/service/upload.vue:87
 msgid "Not allowed"
 msgstr "مجاز نیست"
 
@@ -2106,8 +2110,7 @@ msgstr "پیدا نشد"
 msgid "Not sorted."
 msgstr "مرتب نشده است."
 
-#: src/common/util.js:864 src/component/lightbox.vue:627
-#: src/component/lightbox.vue:744
+#: src/component/lightbox.vue:627 src/component/lightbox.vue:744
 msgid "Not supported"
 msgstr "پشتیبانی نمی شود"
 
@@ -2123,7 +2126,7 @@ msgstr "یادداشت:"
 msgid "Note: Only WebDAV servers, like Nextcloud or PhotoPrism, can be configured as remote service for backup and file upload."
 msgstr "توجه: فقط سرورهای WebDAV، مانند Nextcloud یا PhotoPrism، می توانند به عنوان سرویس راه دور برای پشتیبان گیری و آپلود فایل پیکربندی شوند."
 
-#: src/component/photo/edit/details.vue:579
+#: src/component/photo/edit/details.vue:577
 msgid "Notes"
 msgstr "یادداشت"
 
@@ -2652,7 +2655,7 @@ msgid "Scope"
 msgstr "محدوده"
 
 #: src/page/admin/sessions.vue:70 src/page/admin/users.vue:69
-#: src/component/location/dialog.vue:125 src/component/navigation.vue:343
+#: src/component/location/dialog.vue:133 src/component/navigation.vue:343
 #: src/component/navigation.vue:1905 src/component/photo/toolbar.vue:57
 #: src/options/options.js:197 src/page/albums.vue:100 src/page/labels.vue:77
 #: src/page/library/errors.vue:76 src/page/people/recognized.vue:66
@@ -2756,7 +2759,7 @@ msgid "Settings"
 msgstr "تنظیمات"
 
 #: src/page/settings/account.vue:115 src/page/settings/account.vue:144
-#: src/component/settings/passcode.vue:147
+#: src/component/settings/passcode.vue:151
 msgid "Settings saved"
 msgstr "تنظیمات ذخیره شد"
 
@@ -2917,7 +2920,7 @@ msgstr "ذخیره سازی"
 msgid "Streets"
 msgstr "خیابان ها"
 
-#: src/component/photo/edit/details.vue:470
+#: src/component/photo/edit/details.vue:468
 #: src/component/photo/edit/labels.vue:44
 msgid "Subject"
 msgstr "موضوع"
@@ -2926,7 +2929,7 @@ msgstr "موضوع"
 msgid "Submit"
 msgstr "ارسال کنید"
 
-#: src/component/settings/passcode.vue:132
+#: src/component/settings/passcode.vue:136
 msgid "Successfully activated"
 msgstr "با موفقیت فعال شد"
 
@@ -2939,7 +2942,7 @@ msgstr "با موفقیت وصل شد"
 msgid "Successfully deleted"
 msgstr "با موفقیت حذف شد"
 
-#: src/component/settings/passcode.vue:107
+#: src/component/settings/passcode.vue:108
 msgid "Successfully verified"
 msgstr "با موفقیت تأیید شد"
 
@@ -3431,7 +3434,7 @@ msgstr "شما فقط می توانید یک آلبوم را دانلود کنی
 msgid "You can only download one label"
 msgstr "شما فقط می توانید یک برچسب را دانلود کنید"
 
-#: src/component/location/dialog.vue:170
+#: src/component/location/dialog.vue:178
 msgid "You can search for a location or move the marker on the map to change the position:"
 msgstr "می‌توانید مکانی را جستجو کنید یا نشانگر را روی نقشه جابجا کنید تا موقعیت تغییر کند:"
 
@@ -3537,9 +3540,6 @@ msgstr "بزرگنمایی/کوچک کردن"
 
 #~ msgid "Open Folder"
 #~ msgstr "پوشه را باز کنید"
-
-#~ msgid "Cannot copy to clipboard"
-#~ msgstr "نمی توان در کلیپ بورد کپی کرد"
 
 #~ msgid "Sound"
 #~ msgstr "صدا"

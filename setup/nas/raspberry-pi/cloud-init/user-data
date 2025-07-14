@@ -223,7 +223,7 @@ write_files:
 
       services:
         photoprism:
-          image: photoprism/photoprism:arm64
+          image: photoprism/photoprism:latest
           depends_on:
             - mariadb
           restart: always
@@ -290,7 +290,7 @@ write_files:
 
         mariadb:
           restart: always
-          image: arm64v8/mariadb:11
+          image: mariadb:11
           security_opt:
             - seccomp=unconfined
             - apparmor=unconfined

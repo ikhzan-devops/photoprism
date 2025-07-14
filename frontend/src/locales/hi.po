@@ -225,8 +225,8 @@ msgstr "एल्बम में जोड़ें"
 msgid "Added"
 msgstr "जोड़ा गया"
 
-#: src/component/location/dialog.vue:71 src/component/location/dialog.vue:93
-#: src/component/photo/edit/details.vue:247
+#: src/component/location/dialog.vue:68 src/component/location/dialog.vue:90
+#: src/component/photo/edit/details.vue:246
 msgid "Adjust Location"
 msgstr "स्थान समायोजित करें"
 
@@ -365,7 +365,7 @@ msgstr "वैकल्पिक रूप से, आप Nextcloud की त�
 msgid "Altitude"
 msgstr "ऊंचाई"
 
-#: src/component/photo/edit/details.vue:299
+#: src/component/photo/edit/details.vue:297
 msgid "Altitude (m)"
 msgstr "ऊंचाई (एम)"
 
@@ -400,12 +400,12 @@ msgstr "एपीआई कुंजी"
 msgid "Application"
 msgstr "आवेदन"
 
-#: src/component/photo/edit/details.vue:617
+#: src/component/photo/edit/details.vue:615
 msgid "Apply"
 msgstr "लागू"
 
 #: src/component/photo/clipboard.vue:64
-#: src/component/photo/edit/details.vue:616
+#: src/component/photo/edit/details.vue:614
 #: src/component/photo/view/cards.vue:416
 msgid "Approve"
 msgstr "मंजूर"
@@ -457,7 +457,7 @@ msgstr "क्या आप वाकई इस फ़ाइल को स्थ
 msgid "Are you sure?"
 msgstr "क्या आपको यकीन है?"
 
-#: src/component/photo/edit/details.vue:513
+#: src/component/photo/edit/details.vue:511
 msgid "Artist"
 msgstr "कलाकार"
 
@@ -573,7 +573,7 @@ msgstr "हमारे द्वारा प्रदान किए जा�
 msgid "Calendar"
 msgstr "पंचांग"
 
-#: src/component/photo/edit/details.vue:322 src/component/photo/toolbar.vue:234
+#: src/component/photo/edit/details.vue:320 src/component/photo/toolbar.vue:234
 #: src/component/photo/view/cards.vue:467 src/component/photo/view/list.vue:116
 msgid "Camera"
 msgstr "कैमरा"
@@ -607,7 +607,7 @@ msgstr "अधिक आइटम का चयन नहीं किया ज
 #: src/component/file/delete/dialog.vue:48
 #: src/component/label/delete/dialog.vue:48
 #: src/component/label/edit/dialog.vue:108
-#: src/component/location/dialog.vue:194
+#: src/component/location/dialog.vue:200
 #: src/component/people/edit/dialog.vue:121
 #: src/component/photo/album/dialog.vue:78 src/component/service/add.vue:19
 #: src/component/service/edit.vue:456 src/component/service/remove.vue:50
@@ -619,6 +619,10 @@ msgstr "अधिक आइटम का चयन नहीं किया ज
 #: src/page/library/import.vue:119 src/page/library/index.vue:128
 msgid "Cancel"
 msgstr "रद्द करना"
+
+#: src/common/util.js:863 src/common/util.js:870
+msgid "Cannot copy to clipboard"
+msgstr "क्लिपबोर्ड पर कॉपी नहीं किया जा सकता"
 
 #: src/component/photo/edit/details.vue:89 src/component/photo/edit/info.vue:63
 #: src/component/photo/edit/labels.vue:42
@@ -711,7 +715,7 @@ msgstr "ग्राहक क्रेडेंशियल"
 
 #: src/component/user/edit/dialog.vue:474 src/page/admin/sessions.vue:536
 #: src/component/lightbox.vue:284 src/component/lightbox.vue:1009
-#: src/component/lightbox.vue:1010 src/component/photo/edit/details.vue:603
+#: src/component/lightbox.vue:1010 src/component/photo/edit/details.vue:601
 #: src/component/photo/toolbar.vue:161 src/component/settings/apps.vue:227
 #: src/component/settings/apps.vue:440 src/component/settings/passcode.vue:151
 #: src/component/settings/passcode.vue:459
@@ -752,7 +756,7 @@ msgstr "पूरा रेसकान"
 msgid "Confidence"
 msgstr "आत्मविश्वास"
 
-#: src/component/location/dialog.vue:206
+#: src/component/location/dialog.vue:212
 #: src/component/photo/album/dialog.vue:90
 #: src/component/settings/passcode.vue:264
 msgid "Confirm"
@@ -810,7 +814,7 @@ msgstr "योगदान देने वाला"
 msgid "Converting"
 msgstr "परिवर्तित"
 
-#: src/common/util.js:852
+#: src/common/util.js:856
 msgid "Copied to clipboard"
 msgstr "क्लिपबोर्ड पर नकल"
 
@@ -818,7 +822,7 @@ msgstr "क्लिपबोर्ड पर नकल"
 msgid "Copy"
 msgstr "प्रतिलिपि"
 
-#: src/component/photo/edit/details.vue:492
+#: src/component/photo/edit/details.vue:490
 msgid "Copyright"
 msgstr "कॉपीराइट"
 
@@ -826,7 +830,7 @@ msgstr "कॉपीराइट"
 msgid "Couldn't find anything."
 msgstr "कुछ नहीं मिला।"
 
-#: src/page/settings/account.vue:691 src/component/photo/edit/details.vue:270
+#: src/page/settings/account.vue:691 src/component/photo/edit/details.vue:268
 #: src/component/photo/toolbar.vue:205 src/page/settings/account.vue:583
 msgid "Country"
 msgstr "देश"
@@ -1238,7 +1242,7 @@ msgstr "प्रायोगिक विशेषताएं"
 msgid "Expires"
 msgstr "समय-सीमा समाप्त"
 
-#: src/component/photo/edit/details.vue:372
+#: src/component/photo/edit/details.vue:370
 msgid "Exposure"
 msgstr "संसर्ग"
 
@@ -1246,7 +1250,7 @@ msgstr "संसर्ग"
 msgid "Extract still images and generate thumbnails while indexing."
 msgstr "अनुक्रमण करते समय स्थिर चित्र निकालें और थम्बनेल उत्पन्न करें।"
 
-#: src/component/photo/edit/details.vue:420
+#: src/component/photo/edit/details.vue:418
 msgid "F Number"
 msgstr "एफ नंबर"
 
@@ -1345,7 +1349,7 @@ msgstr "क्रमिक नाम वाली फाइलें जैस�
 msgid "First page"
 msgstr "पहला पृष्ठ"
 
-#: src/component/photo/edit/details.vue:441
+#: src/component/photo/edit/details.vue:439
 msgid "Focal Length"
 msgstr "फोकल लम्बाई"
 
@@ -1650,7 +1654,7 @@ msgstr "JPEG आकार सीमा: %{n} px"
 msgid "JPEGs and thumbnails are automatically rendered as needed."
 msgstr "JPEG और थंबनेल स्वचालित रूप से आवश्यकतानुसार प्रस्तुत किए जाते हैं।"
 
-#: src/component/photo/edit/details.vue:557
+#: src/component/photo/edit/details.vue:555
 msgid "Keywords"
 msgstr "कीवर्ड"
 
@@ -1721,7 +1725,7 @@ msgstr "और अधिक जानें"
 msgid "Legal Information"
 msgstr "कानूनी जानकारी"
 
-#: src/component/photo/edit/details.vue:393
+#: src/component/photo/edit/details.vue:391
 #: src/component/photo/view/cards.vue:480
 msgid "Lens"
 msgstr "लेंस"
@@ -1732,7 +1736,7 @@ msgid "Library"
 msgstr "पुस्तकालय"
 
 #: src/page/connect.vue:45 src/app/routes.js:69
-#: src/component/navigation.vue:1504 src/component/photo/edit/details.vue:535
+#: src/component/navigation.vue:1504 src/component/photo/edit/details.vue:533
 #: src/page/about/license.vue:28
 msgid "License"
 msgstr "लाइसेंस"
@@ -1800,7 +1804,7 @@ msgstr "स्थानीय समय"
 #: src/component/album/edit/dialog.vue:93
 #: src/component/photo/edit/details.vue:38
 #: src/component/photo/edit/details.vue:116
-#: src/component/photo/edit/details.vue:214
+#: src/component/photo/edit/details.vue:210
 #: src/component/photo/edit/info.vue:67 src/component/photo/edit/labels.vue:48
 #: src/component/photo/view/cards.vue:555 src/component/photo/view/list.vue:117
 #: src/component/sidebar/info.vue:107 src/page/albums.vue:99
@@ -2058,7 +2062,7 @@ msgstr "कोई चित्र नहीं मिला"
 msgid "No recently edited pictures"
 msgstr "हाल ही में संपादित कोई चित्र नहीं"
 
-#: src/component/location/dialog.vue:158
+#: src/component/location/dialog.vue:166
 msgid "No results"
 msgstr "कोई परिणाम नहीं"
 
@@ -2093,8 +2097,8 @@ msgstr "गैर-फोटोग्राफिक और निम्न-ग�
 msgid "None"
 msgstr "कोई नहीं"
 
-#: src/common/util.js:859 src/component/lightbox.vue:633
-#: src/component/service/upload.vue:75 src/component/service/upload.vue:87
+#: src/component/lightbox.vue:633 src/component/service/upload.vue:75
+#: src/component/service/upload.vue:87
 msgid "Not allowed"
 msgstr "अनुमति नहीं"
 
@@ -2106,8 +2110,7 @@ msgstr "नहीं मिला"
 msgid "Not sorted."
 msgstr "क्रमबद्ध नहीं।"
 
-#: src/common/util.js:864 src/component/lightbox.vue:627
-#: src/component/lightbox.vue:744
+#: src/component/lightbox.vue:627 src/component/lightbox.vue:744
 msgid "Not supported"
 msgstr "समर्थित नहीं"
 
@@ -2123,7 +2126,7 @@ msgstr "ध्यान दें:"
 msgid "Note: Only WebDAV servers, like Nextcloud or PhotoPrism, can be configured as remote service for backup and file upload."
 msgstr "नोट: केवल WebDAV सर्वर, जैसे Nextcloud या PhotoPrism, को बैकअप और फ़ाइल अपलोड के लिए दूरस्थ सेवा के रूप में कॉन्फ़िगर किया जा सकता है।"
 
-#: src/component/photo/edit/details.vue:579
+#: src/component/photo/edit/details.vue:577
 msgid "Notes"
 msgstr "नोट्स"
 
@@ -2653,7 +2656,7 @@ msgid "Scope"
 msgstr "दायरा"
 
 #: src/page/admin/sessions.vue:70 src/page/admin/users.vue:69
-#: src/component/location/dialog.vue:125 src/component/navigation.vue:343
+#: src/component/location/dialog.vue:133 src/component/navigation.vue:343
 #: src/component/navigation.vue:1905 src/component/photo/toolbar.vue:57
 #: src/options/options.js:197 src/page/albums.vue:100 src/page/labels.vue:77
 #: src/page/library/errors.vue:76 src/page/people/recognized.vue:66
@@ -2757,7 +2760,7 @@ msgid "Settings"
 msgstr "समायोजन"
 
 #: src/page/settings/account.vue:115 src/page/settings/account.vue:144
-#: src/component/settings/passcode.vue:147
+#: src/component/settings/passcode.vue:151
 msgid "Settings saved"
 msgstr "सेटिंग्स को सहेजा गया"
 
@@ -2918,7 +2921,7 @@ msgstr "भंडारण"
 msgid "Streets"
 msgstr "सड़कें"
 
-#: src/component/photo/edit/details.vue:470
+#: src/component/photo/edit/details.vue:468
 #: src/component/photo/edit/labels.vue:44
 msgid "Subject"
 msgstr "विषय"
@@ -2927,7 +2930,7 @@ msgstr "विषय"
 msgid "Submit"
 msgstr "जमा करना"
 
-#: src/component/settings/passcode.vue:132
+#: src/component/settings/passcode.vue:136
 msgid "Successfully activated"
 msgstr "सफलतापूर्वक सक्रिय किया गया"
 
@@ -2940,7 +2943,7 @@ msgstr "सफलतापूर्वक कनेक्ट किया गय
 msgid "Successfully deleted"
 msgstr "सफलतापूर्वक हटा दिया गया"
 
-#: src/component/settings/passcode.vue:107
+#: src/component/settings/passcode.vue:108
 msgid "Successfully verified"
 msgstr "सफलतापूर्वक सत्यापित"
 
@@ -3430,7 +3433,7 @@ msgstr "आप केवल एक एल्बम डाउनलोड कर 
 msgid "You can only download one label"
 msgstr "आप केवल एक लेबल डाउनलोड कर सकते हैं"
 
-#: src/component/location/dialog.vue:170
+#: src/component/location/dialog.vue:178
 msgid "You can search for a location or move the marker on the map to change the position:"
 msgstr "आप किसी स्थान को खोज सकते हैं या स्थिति बदलने के लिए मानचित्र पर मार्कर को स्थानांतरित कर सकते हैं:"
 
@@ -3536,9 +3539,6 @@ msgstr "ज़ूम इन / आउट करें"
 
 #~ msgid "Open Folder"
 #~ msgstr "फोल्डर खोलें"
-
-#~ msgid "Cannot copy to clipboard"
-#~ msgstr "क्लिपबोर्ड पर कॉपी नहीं किया जा सकता"
 
 #~ msgid "Sound"
 #~ msgstr "आवाज़"

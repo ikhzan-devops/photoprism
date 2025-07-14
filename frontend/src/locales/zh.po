@@ -225,8 +225,8 @@ msgstr "添加到相册"
 msgid "Added"
 msgstr "已添加"
 
-#: src/component/location/dialog.vue:71 src/component/location/dialog.vue:93
-#: src/component/photo/edit/details.vue:247
+#: src/component/location/dialog.vue:68 src/component/location/dialog.vue:90
+#: src/component/photo/edit/details.vue:246
 msgid "Adjust Location"
 msgstr "调整位置"
 
@@ -365,7 +365,7 @@ msgstr "或者，你也可以上传文件到类似 NextCloud 的 WebDAV 服务�
 msgid "Altitude"
 msgstr "海拔"
 
-#: src/component/photo/edit/details.vue:299
+#: src/component/photo/edit/details.vue:297
 msgid "Altitude (m)"
 msgstr "海拔（米）"
 
@@ -400,12 +400,12 @@ msgstr "API 密钥"
 msgid "Application"
 msgstr "应用"
 
-#: src/component/photo/edit/details.vue:617
+#: src/component/photo/edit/details.vue:615
 msgid "Apply"
 msgstr "应用"
 
 #: src/component/photo/clipboard.vue:64
-#: src/component/photo/edit/details.vue:616
+#: src/component/photo/edit/details.vue:614
 #: src/component/photo/view/cards.vue:416
 msgid "Approve"
 msgstr "批准"
@@ -457,7 +457,7 @@ msgstr "你确定要永久的删除这个文件吗？"
 msgid "Are you sure?"
 msgstr "你确定？"
 
-#: src/component/photo/edit/details.vue:513
+#: src/component/photo/edit/details.vue:511
 msgid "Artist"
 msgstr "艺术家"
 
@@ -573,7 +573,7 @@ msgstr "通过使用我们提供的软件和服务，您同意我们的服务条
 msgid "Calendar"
 msgstr "日历"
 
-#: src/component/photo/edit/details.vue:322 src/component/photo/toolbar.vue:234
+#: src/component/photo/edit/details.vue:320 src/component/photo/toolbar.vue:234
 #: src/component/photo/view/cards.vue:467 src/component/photo/view/list.vue:116
 msgid "Camera"
 msgstr "相机"
@@ -607,7 +607,7 @@ msgstr "无法选择更多项目"
 #: src/component/file/delete/dialog.vue:48
 #: src/component/label/delete/dialog.vue:48
 #: src/component/label/edit/dialog.vue:108
-#: src/component/location/dialog.vue:194
+#: src/component/location/dialog.vue:200
 #: src/component/people/edit/dialog.vue:121
 #: src/component/photo/album/dialog.vue:78 src/component/service/add.vue:19
 #: src/component/service/edit.vue:456 src/component/service/remove.vue:50
@@ -619,6 +619,10 @@ msgstr "无法选择更多项目"
 #: src/page/library/import.vue:119 src/page/library/index.vue:128
 msgid "Cancel"
 msgstr "取消"
+
+#: src/common/util.js:863 src/common/util.js:870
+msgid "Cannot copy to clipboard"
+msgstr "无法复制到剪贴板"
 
 #: src/component/photo/edit/details.vue:89 src/component/photo/edit/info.vue:63
 #: src/component/photo/edit/labels.vue:42
@@ -711,7 +715,7 @@ msgstr "客户证书"
 
 #: src/component/user/edit/dialog.vue:474 src/page/admin/sessions.vue:536
 #: src/component/lightbox.vue:284 src/component/lightbox.vue:1009
-#: src/component/lightbox.vue:1010 src/component/photo/edit/details.vue:603
+#: src/component/lightbox.vue:1010 src/component/photo/edit/details.vue:601
 #: src/component/photo/toolbar.vue:161 src/component/settings/apps.vue:227
 #: src/component/settings/apps.vue:440 src/component/settings/passcode.vue:151
 #: src/component/settings/passcode.vue:459
@@ -752,7 +756,7 @@ msgstr "完全重新扫描"
 msgid "Confidence"
 msgstr "置信度"
 
-#: src/component/location/dialog.vue:206
+#: src/component/location/dialog.vue:212
 #: src/component/photo/album/dialog.vue:90
 #: src/component/settings/passcode.vue:264
 msgid "Confirm"
@@ -810,7 +814,7 @@ msgstr "撰稿人"
 msgid "Converting"
 msgstr "转换中"
 
-#: src/common/util.js:852
+#: src/common/util.js:856
 msgid "Copied to clipboard"
 msgstr "已复制到剪贴板"
 
@@ -818,7 +822,7 @@ msgstr "已复制到剪贴板"
 msgid "Copy"
 msgstr "复制"
 
-#: src/component/photo/edit/details.vue:492
+#: src/component/photo/edit/details.vue:490
 msgid "Copyright"
 msgstr "版权"
 
@@ -826,7 +830,7 @@ msgstr "版权"
 msgid "Couldn't find anything."
 msgstr "找不到任何东西。"
 
-#: src/page/settings/account.vue:691 src/component/photo/edit/details.vue:270
+#: src/page/settings/account.vue:691 src/component/photo/edit/details.vue:268
 #: src/component/photo/toolbar.vue:205 src/page/settings/account.vue:583
 msgid "Country"
 msgstr "国家"
@@ -1238,7 +1242,7 @@ msgstr "实验特性"
 msgid "Expires"
 msgstr "时限"
 
-#: src/component/photo/edit/details.vue:372
+#: src/component/photo/edit/details.vue:370
 msgid "Exposure"
 msgstr "曝光度"
 
@@ -1246,7 +1250,7 @@ msgstr "曝光度"
 msgid "Extract still images and generate thumbnails while indexing."
 msgstr "提取静态图像并在编制索引时生成缩略图。"
 
-#: src/component/photo/edit/details.vue:420
+#: src/component/photo/edit/details.vue:418
 msgid "F Number"
 msgstr "光圈数"
 
@@ -1345,7 +1349,7 @@ msgstr "顺序名称的文件如“IMG_1234 (2)”和“IMG_1234 (3)”的文件
 msgid "First page"
 msgstr "第一页"
 
-#: src/component/photo/edit/details.vue:441
+#: src/component/photo/edit/details.vue:439
 msgid "Focal Length"
 msgstr "焦距"
 
@@ -1650,7 +1654,7 @@ msgstr "JPEG 尺寸限制：%{n}px"
 msgid "JPEGs and thumbnails are automatically rendered as needed."
 msgstr "系统会根据需要自动生成缩略图及JPEG格式的预览图。"
 
-#: src/component/photo/edit/details.vue:557
+#: src/component/photo/edit/details.vue:555
 msgid "Keywords"
 msgstr "关键字"
 
@@ -1721,7 +1725,7 @@ msgstr "了解更多"
 msgid "Legal Information"
 msgstr "法律信息"
 
-#: src/component/photo/edit/details.vue:393
+#: src/component/photo/edit/details.vue:391
 #: src/component/photo/view/cards.vue:480
 msgid "Lens"
 msgstr "镜头"
@@ -1732,7 +1736,7 @@ msgid "Library"
 msgstr "资料库"
 
 #: src/page/connect.vue:45 src/app/routes.js:69
-#: src/component/navigation.vue:1504 src/component/photo/edit/details.vue:535
+#: src/component/navigation.vue:1504 src/component/photo/edit/details.vue:533
 #: src/page/about/license.vue:28
 msgid "License"
 msgstr "许可证"
@@ -1800,7 +1804,7 @@ msgstr "本地时间"
 #: src/component/album/edit/dialog.vue:93
 #: src/component/photo/edit/details.vue:38
 #: src/component/photo/edit/details.vue:116
-#: src/component/photo/edit/details.vue:214
+#: src/component/photo/edit/details.vue:210
 #: src/component/photo/edit/info.vue:67 src/component/photo/edit/labels.vue:48
 #: src/component/photo/view/cards.vue:555 src/component/photo/view/list.vue:117
 #: src/component/sidebar/info.vue:107 src/page/albums.vue:99
@@ -2058,7 +2062,7 @@ msgstr "找不到图片"
 msgid "No recently edited pictures"
 msgstr "没有最近编辑过的图片"
 
-#: src/component/location/dialog.vue:158
+#: src/component/location/dialog.vue:166
 msgid "No results"
 msgstr "找不到结果"
 
@@ -2093,8 +2097,8 @@ msgstr "非照片和低质量图像出现在搜索结果中前需要进行审查
 msgid "None"
 msgstr "无"
 
-#: src/common/util.js:859 src/component/lightbox.vue:633
-#: src/component/service/upload.vue:75 src/component/service/upload.vue:87
+#: src/component/lightbox.vue:633 src/component/service/upload.vue:75
+#: src/component/service/upload.vue:87
 msgid "Not allowed"
 msgstr "不允许"
 
@@ -2106,8 +2110,7 @@ msgstr "未找到"
 msgid "Not sorted."
 msgstr "未分类。"
 
-#: src/common/util.js:864 src/component/lightbox.vue:627
-#: src/component/lightbox.vue:744
+#: src/component/lightbox.vue:627 src/component/lightbox.vue:744
 msgid "Not supported"
 msgstr "不支持"
 
@@ -2123,7 +2126,7 @@ msgstr "注意："
 msgid "Note: Only WebDAV servers, like Nextcloud or PhotoPrism, can be configured as remote service for backup and file upload."
 msgstr "注意：只能将 WebDAV 服务器（如 Nextcloud 或 PhotoPrism）配置为远程服务，以进行备份和文件上传。"
 
-#: src/component/photo/edit/details.vue:579
+#: src/component/photo/edit/details.vue:577
 msgid "Notes"
 msgstr "备注"
 
@@ -2654,7 +2657,7 @@ msgid "Scope"
 msgstr "范围"
 
 #: src/page/admin/sessions.vue:70 src/page/admin/users.vue:69
-#: src/component/location/dialog.vue:125 src/component/navigation.vue:343
+#: src/component/location/dialog.vue:133 src/component/navigation.vue:343
 #: src/component/navigation.vue:1905 src/component/photo/toolbar.vue:57
 #: src/options/options.js:197 src/page/albums.vue:100 src/page/labels.vue:77
 #: src/page/library/errors.vue:76 src/page/people/recognized.vue:66
@@ -2758,7 +2761,7 @@ msgid "Settings"
 msgstr "设置"
 
 #: src/page/settings/account.vue:115 src/page/settings/account.vue:144
-#: src/component/settings/passcode.vue:147
+#: src/component/settings/passcode.vue:151
 msgid "Settings saved"
 msgstr "设置已保存"
 
@@ -2919,7 +2922,7 @@ msgstr "存储"
 msgid "Streets"
 msgstr "街道图"
 
-#: src/component/photo/edit/details.vue:470
+#: src/component/photo/edit/details.vue:468
 #: src/component/photo/edit/labels.vue:44
 msgid "Subject"
 msgstr "主题"
@@ -2928,7 +2931,7 @@ msgstr "主题"
 msgid "Submit"
 msgstr "提交"
 
-#: src/component/settings/passcode.vue:132
+#: src/component/settings/passcode.vue:136
 msgid "Successfully activated"
 msgstr "已成功激活"
 
@@ -2941,7 +2944,7 @@ msgstr "账户成功连接"
 msgid "Successfully deleted"
 msgstr "已成功删除"
 
-#: src/component/settings/passcode.vue:107
+#: src/component/settings/passcode.vue:108
 msgid "Successfully verified"
 msgstr "验证成功"
 
@@ -3431,7 +3434,7 @@ msgstr "你只能下载一个相册"
 msgid "You can only download one label"
 msgstr "你只能下载一个标签"
 
-#: src/component/location/dialog.vue:170
+#: src/component/location/dialog.vue:178
 msgid "You can search for a location or move the marker on the map to change the position:"
 msgstr "您可以搜索位置或移动地图上的标记来更改位置："
 
@@ -3537,9 +3540,6 @@ msgstr "缩放"
 
 #~ msgid "Open Folder"
 #~ msgstr "打开文件夹"
-
-#~ msgid "Cannot copy to clipboard"
-#~ msgstr "无法复制到剪贴板"
 
 #~ msgid "Sound"
 #~ msgstr "声音"
