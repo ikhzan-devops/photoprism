@@ -555,27 +555,34 @@
                   </v-col>
                 </div>
 
-                <v-row>
-                  <v-col v-for="fieldName in toggleFieldsArray" :key="fieldName" cols="12" sm="6" md="6">
-                    <div class="d-flex flex-column">
-                      <v-col cols="12">
-                        <p>{{ fieldName }}</p>
-                      </v-col>
-                      <v-col cols="12" class="d-flex align-self-stretch flex-column">
-                        <v-btn-toggle v-model="formData[fieldName].value" mandatory color="primary">
+                <div>
+                  <v-col cols="12" md="6">
+                    <p>{{ $gettext("Options") }}</p>
+                  </v-col>
+                  <v-row dense>
+                    <v-col v-for="fieldName in toggleFieldsArray" :key="fieldName" cols="12" sm="6" md="3">
+                      <div class="d-flex flex-column">
+                        <label class="form-label mb-2">{{ getFieldDisplayName(fieldName) }}</label>
+                        <v-btn-toggle
+                          v-model="formData[fieldName].value"
+                          mandatory
+                          color="primary"
+                          density="comfortable"
+                        >
                           <v-btn
                             v-for="option in toggleOptions(fieldName)"
                             :key="option.value"
                             :value="option.value"
+                            size="small"
                             @click="changeToggleValue(option.value, fieldName)"
                           >
-                            <span>{{ option.text }}</span>
+                            {{ option.text }}
                           </v-btn>
                         </v-btn-toggle>
-                      </v-col>
-                    </div>
-                  </v-col>
-                </v-row>
+                      </div>
+                    </v-col>
+                  </v-row>
+                </div>
               </div>
             </div>
 
@@ -1312,6 +1319,15 @@ export default {
       this.formData.Labels.items = items;
       this.formData.Labels.action = this.actions.update;
       this.formData.Labels.mixed = false;
+    },
+    getFieldDisplayName(fieldName) {
+      const displayNames = {
+        Scan: this.$gettext("Scan"),
+        Favorite: this.$gettext("Favorite"),
+        Private: this.$gettext("Private"),
+        Panorama: this.$gettext("Panorama"),
+      };
+      return displayNames[fieldName] || fieldName;
     },
   },
 };
