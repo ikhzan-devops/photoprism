@@ -198,9 +198,11 @@
             <div class="form-body">
               <div class="form-controls">
                 <div>
-                  <v-col cols="12" md="6">
-                    <p>Description</p>
-                  </v-col>
+                  <v-row dense>
+                    <v-col cols="12" md="6">
+                      <p>Description</p>
+                    </v-col>
+                  </v-row>
                   <v-row dense>
                     <v-col cols="12" md="6">
                       <v-text-field
@@ -235,29 +237,33 @@
                       ></v-textarea>
                     </v-col>
                   </v-row>
-                  <v-col cols="12" class="d-flex align-self-stretch flex-column">
-                    <v-textarea
-                      hide-details
-                      autocomplete="off"
-                      auto-grow
-                      :label="$gettext('Caption')"
-                      :model-value="formData.Caption.value"
-                      :placeholder="getFieldData('text-field', 'Caption').placeholder"
-                      :persistent-placeholder="getFieldData('text-field', 'Caption').persistent"
-                      :append-inner-icon="getIcon('text-field', 'Caption')"
-                      :rows="1"
-                      density="comfortable"
-                      class="input-caption"
-                      @click:append-inner="toggleField('Caption', $event)"
-                      @update:model-value="(val) => changeValue(val, 'text-field', 'Caption')"
-                    ></v-textarea>
-                  </v-col>
+                  <v-row dense>
+                    <v-col cols="12">
+                      <v-textarea
+                        hide-details
+                        autocomplete="off"
+                        auto-grow
+                        :label="$gettext('Caption')"
+                        :model-value="formData.Caption.value"
+                        :placeholder="getFieldData('text-field', 'Caption').placeholder"
+                        :persistent-placeholder="getFieldData('text-field', 'Caption').persistent"
+                        :append-inner-icon="getIcon('text-field', 'Caption')"
+                        :rows="1"
+                        density="comfortable"
+                        class="input-caption"
+                        @click:append-inner="toggleField('Caption', $event)"
+                        @update:model-value="(val) => changeValue(val, 'text-field', 'Caption')"
+                      ></v-textarea>
+                    </v-col>
+                  </v-row>
                 </div>
 
                 <div>
-                  <v-col cols="12" md="6">
-                    <p>Date</p>
-                  </v-col>
+                  <v-row dense>
+                    <v-col cols="12" md="6">
+                      <p>Date</p>
+                    </v-col>
+                  </v-row>
                   <v-row dense>
                     <v-col cols="6" md="2">
                       <v-combobox
@@ -335,9 +341,11 @@
                 </div>
 
                 <div>
-                  <v-col cols="12" md="6">
-                    <p>Location</p>
-                  </v-col>
+                  <v-row dense>
+                    <v-col cols="12" md="6">
+                      <p>Location</p>
+                    </v-col>
+                  </v-row>
                   <v-row dense>
                     <v-col cols="12" sm="6" md="3">
                       <v-autocomplete
@@ -399,9 +407,11 @@
                 </div>
 
                 <div>
-                  <v-col cols="12" md="6">
-                    <p>Copyright</p>
-                  </v-col>
+                  <v-row dense>
+                    <v-col cols="12" md="6">
+                      <p>Copyright</p>
+                    </v-col>
+                  </v-row>
                   <v-row dense>
                     <v-col cols="12" md="6">
                       <v-text-field
@@ -434,131 +444,131 @@
                       ></v-text-field>
                     </v-col>
                   </v-row>
-                  <v-col cols="12" class="d-flex align-self-stretch flex-column">
-                    <v-textarea
-                      hide-details
-                      autocomplete="off"
-                      auto-grow
-                      :label="$gettext('License')"
-                      :model-value="formData.DetailsLicense.value"
-                      :placeholder="getFieldData('text-field', 'DetailsLicense').placeholder"
-                      :persistent-placeholder="getFieldData('text-field', 'DetailsLicense').persistent"
-                      :append-inner-icon="getIcon('text-field', 'DetailsLicense')"
-                      :rows="1"
-                      density="comfortable"
-                      class="input-license"
-                      @click:append-inner="toggleField('DetailsLicense', $event)"
-                      @update:model-value="(val) => changeValue(val, 'text-field', 'DetailsLicense')"
-                    ></v-textarea>
-                  </v-col>
+                  <v-row dense>
+                    <v-col cols="12">
+                      <v-textarea
+                        hide-details
+                        autocomplete="off"
+                        auto-grow
+                        :label="$gettext('License')"
+                        :model-value="formData.DetailsLicense.value"
+                        :placeholder="getFieldData('text-field', 'DetailsLicense').placeholder"
+                        :persistent-placeholder="getFieldData('text-field', 'DetailsLicense').persistent"
+                        :append-inner-icon="getIcon('text-field', 'DetailsLicense')"
+                        :rows="1"
+                        density="comfortable"
+                        class="input-license"
+                        @click:append-inner="toggleField('DetailsLicense', $event)"
+                        @update:model-value="(val) => changeValue(val, 'text-field', 'DetailsLicense')"
+                      ></v-textarea>
+                    </v-col>
+                  </v-row>
                 </div>
 
                 <div>
-                  <v-col cols="12" md="6">
-                    <p>Albums</p>
-                  </v-col>
-                  <v-col cols="12" class="d-flex align-self-stretch flex-column">
-                    <v-combobox
-                      v-model="selectedAlbums"
-                      hide-details
-                      chips
-                      closable-chips
-                      multiple
-                      class="input-albums"
-                      :items="albums"
-                      item-title="Title"
-                      item-value="UID"
-                      :placeholder="$gettext('Select or create an album')"
-                      return-object
-                      @update:model-value="onAlbumsChange"
-                    >
-                      <template #no-data>
-                        <v-list-item>
-                          <v-list-item-title>
-                            {{ $gettext(`Press enter to create a new album.`) }}
-                          </v-list-item-title>
-                        </v-list-item>
-                      </template>
-                      <!--                      <template #chip="chip">-->
-                      <!--                        <v-chip-->
-                      <!--                          prepend-icon="mdi-bookmark"-->
-                      <!--                          class="text-truncate"-->
-                      <!--                        >-->
-                      <!--                          {{ chip.item.title ? chip.item.title : chip.item }}-->
-                      <!--                        </v-chip>-->
-                      <!--                      </template>-->
-                    </v-combobox>
-                  </v-col>
+                  <v-row dense>
+                    <v-col cols="12" md="6">
+                      <p>Albums</p>
+                    </v-col>
+                  </v-row>
+                  <v-row dense>
+                    <v-col cols="12">
+                      <v-combobox
+                        v-model="selectedAlbums"
+                        hide-details
+                        chips
+                        closable-chips
+                        multiple
+                        class="input-albums"
+                        :items="albums"
+                        item-title="Title"
+                        item-value="UID"
+                        :placeholder="$gettext('Select or create an album')"
+                        return-object
+                        @update:model-value="onAlbumsChange"
+                      >
+                        <template #no-data>
+                          <v-list-item>
+                            <v-list-item-title>
+                              {{ $gettext(`Press enter to create a new album.`) }}
+                            </v-list-item-title>
+                          </v-list-item>
+                        </template>
+                      </v-combobox>
+                    </v-col>
+                  </v-row>
                 </div>
 
                 <div>
-                  <v-col cols="12" md="6">
-                    <p>Labels</p>
-                  </v-col>
-                  <v-col cols="12" class="d-flex align-self-stretch flex-column">
-                    <v-combobox
-                      v-model="selectedLabels"
-                      rows="2"
-                      hide-details
-                      chips
-                      closable-chips
-                      multiple
-                      class="input-labels"
-                      :items="labels"
-                      item-title="Title"
-                      item-value="UID"
-                      :placeholder="$gettext('Select or create a label')"
-                      return-object
-                      @update:model-value="onLabelsChange"
-                    >
-                      <template #no-data>
-                        <v-list-item>
-                          <v-list-item-title>
-                            {{ $gettext(`Press enter to create a new label.`) }}
-                          </v-list-item-title>
-                        </v-list-item>
-                      </template>
-                      <!--                      <template #chip="chip">-->
-                      <!--                        <v-chip-->
-                      <!--                          prepend-icon="mdi-bookmark"-->
-                      <!--                          class="text-truncate"-->
-                      <!--                        >-->
-                      <!--                          {{ chip.item.title ? chip.item.title : chip.item }}-->
-                      <!--                        </v-chip>-->
-                      <!--                      </template>-->
-                    </v-combobox>
-                  </v-col>
+                  <v-row dense>
+                    <v-col cols="12" md="6">
+                      <p>Labels</p>
+                    </v-col>
+                  </v-row>
+                  <v-row dense>
+                    <v-col cols="12">
+                      <v-combobox
+                        v-model="selectedLabels"
+                        rows="2"
+                        hide-details
+                        chips
+                        closable-chips
+                        multiple
+                        class="input-labels"
+                        :items="labels"
+                        item-title="Title"
+                        item-value="UID"
+                        :placeholder="$gettext('Select or create a label')"
+                        return-object
+                        @update:model-value="onLabelsChange"
+                      >
+                        <template #no-data>
+                          <v-list-item>
+                            <v-list-item-title>
+                              {{ $gettext(`Press enter to create a new label.`) }}
+                            </v-list-item-title>
+                          </v-list-item>
+                        </template>
+                      </v-combobox>
+                    </v-col>
+                  </v-row>
                 </div>
 
                 <div>
-                  <v-col cols="12" md="6">
-                    <p>File Type</p>
-                  </v-col>
-                  <v-col cols="12" class="d-flex align-self-stretch flex-column">
-                    <v-combobox
-                      v-model="formData.Type.value"
-                      :label="$gettext('Type')"
-                      autocomplete="off"
-                      hide-details
-                      hide-no-data
-                      :items="getFieldData('select-field', 'Type').items"
-                      :placeholder="getFieldData('select-field', 'Type').placeholder"
-                      :persistent-placeholder="getFieldData('select-field', 'Type').persistent"
-                      item-title="text"
-                      item-value="value"
-                      density="comfortable"
-                      validate-on="input"
-                      class="input-type"
-                      @update:model-value="(val) => changeSelectValue(val, 'select-field', 'Type')"
-                    >
-                    </v-combobox>
-                  </v-col>
+                  <v-row dense>
+                    <v-col cols="12" md="6">
+                      <p>File Type</p>
+                    </v-col>
+                  </v-row>
+                  <v-row dense>
+                    <v-col cols="12">
+                      <v-combobox
+                        v-model="formData.Type.value"
+                        :label="$gettext('Type')"
+                        autocomplete="off"
+                        hide-details
+                        hide-no-data
+                        :items="getFieldData('select-field', 'Type').items"
+                        :placeholder="getFieldData('select-field', 'Type').placeholder"
+                        :persistent-placeholder="getFieldData('select-field', 'Type').persistent"
+                        item-title="text"
+                        item-value="value"
+                        density="comfortable"
+                        validate-on="input"
+                        class="input-type"
+                        @update:model-value="(val) => changeSelectValue(val, 'select-field', 'Type')"
+                      >
+                      </v-combobox>
+                    </v-col>
+                  </v-row>
                 </div>
 
                 <div>
-                  <v-col cols="12" md="6">
-                    <p>{{ $gettext("Options") }}</p>
-                  </v-col>
+                  <v-row dense>
+                    <v-col cols="12" md="6">
+                      <p>{{ $gettext("Options") }}</p>
+                    </v-col>
+                  </v-row>
                   <v-row dense>
                     <v-col v-for="fieldName in toggleFieldsArray" :key="fieldName" cols="12" sm="6" md="3">
                       <div class="d-flex flex-column">
