@@ -31,21 +31,43 @@ export class Batch extends Model {
       DetailsArtist: {},
       DetailsCopyright: {},
       DetailsLicense: {},
-      Albums: {},
-      Labels: {},
+      DetailsKeywords: {},
       Type: {},
       Scan: {},
       Private: {},
       Favorite: {},
       Panorama: {},
+      Iso: {},
+      FocalLength: {},
+      FNumber: {},
+      Exposure: {},
+      CameraID: {},
+      LensID: {},
+      Albums: {
+        action: "none",
+        mixed: false,
+        items: [],
+      },
+      Labels: {
+        action: "none",
+        mixed: false,
+        items: [],
+      },
     };
   }
 
   save(selection, values) {
-    // TODO: check this request
     return $api
       .post("batch/photos/edit", { photos: selection, values: values })
-      .then((response) => Promise.resolve(this.setValues(response.data)));
+      .then((response) => {
+        if (response.data.values) {
+          this.values = response.data.values;
+        }
+        return Promise.resolve(this);
+      })
+      .catch((error) => {
+        throw error;
+      });
   }
 
   async getData(selection) {

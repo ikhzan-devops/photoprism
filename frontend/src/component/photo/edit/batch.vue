@@ -457,6 +457,7 @@
                   </v-col>
                   <v-col cols="12" class="d-flex align-self-stretch flex-column">
                     <v-combobox
+                      v-model="selectedAlbums"
                       hide-details
                       chips
                       closable-chips
@@ -467,6 +468,7 @@
                       item-value="UID"
                       :placeholder="$gettext('Select or create an album')"
                       return-object
+                      @update:model-value="onAlbumsChange"
                     >
                       <template #no-data>
                         <v-list-item>
@@ -493,17 +495,19 @@
                   </v-col>
                   <v-col cols="12" class="d-flex align-self-stretch flex-column">
                     <v-combobox
+                      v-model="selectedLabels"
                       rows="2"
                       hide-details
                       chips
                       closable-chips
                       multiple
-                      class="input-albums"
-                      :items="albums"
+                      class="input-labels"
+                      :items="labels"
                       item-title="Title"
                       item-value="UID"
                       :placeholder="$gettext('Select or create a label')"
                       return-object
+                      @update:model-value="onLabelsChange"
                     >
                       <template #no-data>
                         <v-list-item>
@@ -649,7 +653,19 @@ export default {
       allSelectedLength: 0,
       options,
       countries,
-      albums: [],
+      albums: [
+        { UID: "album1", Title: "Vacation 2023" },
+        { UID: "album2", Title: "Family Photos" },
+        { UID: "album3", Title: "Work Events" },
+        { UID: "album4", Title: "Nature Photography" },
+      ],
+      labels: [
+        { UID: "label1", Title: "People" },
+        { UID: "label2", Title: "Animals" },
+        { UID: "label3", Title: "Landscape" },
+        { UID: "label4", Title: "Architecture" },
+        { UID: "label5", Title: "Food" },
+      ],
       firstVisibleElementIndex: 0,
       lastVisibleElementIndex: 0,
       mouseDown: {
@@ -671,6 +687,30 @@ export default {
   computed: {
     formTitle() {
       return this.$gettext(`Batch Edit (${this.allSelectedLength})`);
+    },
+    selectedAlbums: {
+      get() {
+        if (!this.formData?.Albums?.items) return [];
+        return this.formData.Albums.items.map((item) => ({
+          UID: item.value,
+          Title: item.title,
+        }));
+      },
+      set(value) {
+        this.onAlbumsChange(value);
+      },
+    },
+    selectedLabels: {
+      get() {
+        if (!this.formData?.Labels?.items) return [];
+        return this.formData.Labels.items.map((item) => ({
+          UID: item.value,
+          Title: item.title,
+        }));
+      },
+      set(value) {
+        this.onLabelsChange(value);
+      },
     },
     currentCoordinates() {
       const latData = this.values?.Lat;
@@ -764,9 +804,24 @@ export default {
 
       const previousValue = this.previousFormData[fieldName].value;
       this.formData[fieldName].action = this.actions.update;
-      this.formData[fieldName].value = newValue;
 
-      if (newValue === previousValue) {
+      // Convert numeric fields to proper types
+      let processedValue = newValue;
+      if (fieldType === "input-field") {
+        if (fieldName === "Lat" || fieldName === "Lng") {
+          processedValue = parseFloat(newValue) || 0;
+        } else if (
+          ["Altitude", "Day", "Month", "Year", "Iso", "FocalLength", "CameraID", "LensID"].includes(fieldName)
+        ) {
+          processedValue = parseInt(newValue) || 0;
+        } else if (fieldName === "FNumber") {
+          processedValue = parseFloat(newValue) || 0;
+        }
+      }
+
+      this.formData[fieldName].value = processedValue;
+
+      if (processedValue === previousValue) {
         this.formData[fieldName].action = this.actions.none;
       }
 
@@ -779,9 +834,21 @@ export default {
       this.formData[fieldName].action = this.actions.update;
 
       if (fieldName === "Day" || fieldName === "Month" || fieldName === "Year" || fieldName === "Type") {
-        this.formData[fieldName].value = newValue.text;
+        // For select fields that use text values in options
+        let processedValue = newValue.text || newValue;
 
-        if (newValue.text === previousValue) {
+        // Convert Day, Month, Year to integers
+        if (fieldName === "Day" || fieldName === "Month" || fieldName === "Year") {
+          processedValue = parseInt(processedValue) || 0;
+          // Handle mixed state
+          if (newValue.value === -2) {
+            processedValue = -2;
+          }
+        }
+
+        this.formData[fieldName].value = processedValue;
+
+        if (processedValue === previousValue) {
           this.formData[fieldName].action = this.actions.none;
         }
       } else {
@@ -800,7 +867,7 @@ export default {
       this.formData[fieldName].action = this.actions.update;
       this.formData[fieldName].value = newValue;
 
-      if (newValue === String(previousValue) || newValue === previousValue) {
+      if (newValue === previousValue) {
         this.formData[fieldName].action = this.actions.none;
       }
     },
@@ -822,43 +889,96 @@ export default {
         { type: "text-field", name: "DetailsArtist" },
         { type: "text-field", name: "DetailsCopyright" },
         { type: "text-field", name: "DetailsLicense" },
+        { type: "text-field", name: "DetailsKeywords" },
         { type: "select-field", name: "Type" },
+        { type: "input-field", name: "Iso" },
+        { type: "input-field", name: "FocalLength" },
+        { type: "input-field", name: "FNumber" },
+        { type: "text-field", name: "Exposure" },
+        { type: "input-field", name: "CameraID" },
+        { type: "input-field", name: "LensID" },
       ];
 
       fieldConfigs.forEach(({ type, name, key }) => {
         const formKey = key || name;
         const fieldData = this.values[formKey];
 
+        if (!fieldData) return;
+
         const { value, placeholder } = this.getFieldData(type, name);
         this.formData[formKey] = {
           action: this.actions.none,
-          mixed: fieldData.mixed,
-          value: value ? value : "",
+          mixed: fieldData.mixed || false,
+          value: value !== undefined ? value : "",
         };
 
         if (type === "text-field" || type === "input-field") {
-          this.previousFormData[formKey] = { value, placeholder, action: fieldData.action, mixed: fieldData.mixed };
+          this.previousFormData[formKey] = {
+            value,
+            placeholder,
+            action: fieldData.action || this.actions.none,
+            mixed: fieldData.mixed || false,
+          };
         } else {
-          this.previousFormData[formKey] = { value, action: fieldData.action, mixed: fieldData.mixed };
+          this.previousFormData[formKey] = {
+            value,
+            action: fieldData.action || this.actions.none,
+            mixed: fieldData.mixed || false,
+          };
         }
       });
 
-      // Set values for toggle fields
+      // Set values for toggle fields (boolean fields)
       this.toggleFieldsArray.forEach((fieldName) => {
         const fieldData = this.values[fieldName];
+        if (!fieldData) return;
+
         const toggleValue = this.getToggleValue(fieldName);
 
-        this.formData[fieldName] = { action: this.actions.none, mixed: fieldData.mixed, value: toggleValue };
-        this.previousFormData[fieldName] = { action: fieldData.action, mixed: fieldData.mixed, value: toggleValue };
+        this.formData[fieldName] = {
+          action: this.actions.none,
+          mixed: fieldData.mixed || false,
+          value: toggleValue,
+        };
+        this.previousFormData[fieldName] = {
+          action: fieldData.action || this.actions.none,
+          mixed: fieldData.mixed || false,
+          value: toggleValue,
+        };
       });
+
+      // Initialize Albums and Labels as empty Items structures
+      this.formData.Albums = {
+        action: this.actions.none,
+        mixed: false,
+        items: [],
+      };
+
+      this.formData.Labels = {
+        action: this.actions.none,
+        mixed: false,
+        items: [],
+      };
+
+      this.previousFormData.Albums = {
+        action: this.actions.none,
+        mixed: false,
+        items: [],
+      };
+
+      this.previousFormData.Labels = {
+        action: this.actions.none,
+        mixed: false,
+        items: [],
+      };
     },
     toggleOptions(fieldName) {
       const fieldData = this.values[fieldName];
       if (!fieldData) return [];
 
       const options = [
-        { text: "Yes", value: "true" },
-        { text: "No", value: "false" },
+        { text: "Yes", value: true },
+        { text: "No", value: false },
       ];
 
       if (fieldData.mixed) {
@@ -869,12 +989,12 @@ export default {
     },
     getToggleValue(fieldName) {
       const fieldData = this.values[fieldName];
-      if (!fieldData) return null;
+      if (!fieldData) return false;
 
       if (fieldData.mixed) {
         return "<mixed>";
       } else {
-        return fieldData.value ? "true" : "false";
+        return fieldData.value;
       }
     },
     toggleField(fieldName, event) {
@@ -923,39 +1043,69 @@ export default {
 
       if (!fieldData) return { value: "", placeholder: "", persistent: false };
 
-      if (fieldType === "text-field") {
-        if (isDeleted) {
-          return { value: "", placeholder: "<deleted>", persistent: true };
-        } else if (fieldData.mixed) {
-          return { value: "", placeholder: "<mixed>", persistent: true };
-        } else if (fieldData.value !== null && fieldData.value !== "") {
-          return { value: fieldData.value, placeholder: "", persistent: false };
-        } else {
-          return { value: "", placeholder: "", persistent: false };
+      // Helper function to format numeric values
+      const formatNumericValue = (value) => {
+        if (["Lat", "Lng", "FNumber"].includes(fieldName)) {
+          return parseFloat(value) || 0;
+        } else if (
+          ["Altitude", "Day", "Month", "Year", "Iso", "FocalLength", "CameraID", "LensID"].includes(fieldName)
+        ) {
+          return parseInt(value) || 0;
         }
+        return value;
+      };
+
+      // Handle common states
+      if (isDeleted) {
+        return {
+          value: fieldType === "input-field" ? 0 : "",
+          placeholder: fieldType === "text-field" ? "<deleted>" : "",
+          persistent: fieldType === "text-field",
+        };
+      }
+
+      if (fieldData.mixed) {
+        if (fieldType === "select-field") {
+          const items = this.getItemsArray(fieldName, true);
+          return {
+            value: this.getValue(fieldName, items),
+            placeholder: "<mixed>",
+            persistent: true,
+            items,
+          };
+        }
+        return {
+          value: fieldType === "input-field" ? "" : "",
+          placeholder: "<mixed>",
+          persistent: true,
+        };
+      }
+
+      // Handle non-mixed values
+      if (fieldType === "text-field") {
+        return {
+          value: fieldData.value || "",
+          placeholder: "",
+          persistent: false,
+        };
       }
 
       if (fieldType === "input-field") {
-        if (isDeleted) {
-          return { value: 0, placeholder: "", persistent: false };
-        } else if (fieldData.mixed) {
-          return { value: "", placeholder: "<mixed>", persistent: true };
-        } else if (fieldData.value !== 0 && fieldData.value !== null && fieldData.value !== "") {
-          return { value: fieldData.value, placeholder: "", persistent: false };
-        } else {
-          return { value: fieldData.value || 0, placeholder: "", persistent: false };
-        }
+        return {
+          value: formatNumericValue(fieldData.value) || 0,
+          placeholder: "",
+          persistent: false,
+        };
       }
 
       if (fieldType === "select-field") {
-        if (fieldData.mixed) {
-          const items = this.getItemsArray(fieldName, true);
-          const value = this.getValue(fieldName, items);
-          return { value: value, placeholder: "<mixed>", persistent: true, items: items };
-        } else if (!fieldData.mixed) {
-          const items = this.getItemsArray(fieldName, false);
-          return { value: fieldData.value, placeholder: "", persistent: false, items: items };
-        }
+        const items = this.getItemsArray(fieldName, false);
+        return {
+          value: formatNumericValue(fieldData.value),
+          placeholder: "",
+          persistent: false,
+          items,
+        };
       }
     },
     getValue(fieldName, items) {
@@ -1071,17 +1221,14 @@ export default {
       this.$emit("close");
     },
     updateLatLng(latlng) {
-      this.formData.Lat.value = latlng[0];
-      this.formData.Lng.value = latlng[1];
+      this.formData.Lat.value = parseFloat(latlng[0]) || 0;
+      this.formData.Lng.value = parseFloat(latlng[1]) || 0;
       this.formData.Lat.action = this.actions.update;
       this.formData.Lng.action = this.actions.update;
     },
     onLocationChanged(data) {
       if (data && data.lat !== undefined && data.lng !== undefined) {
-        this.formData.Lat.value = data.lat;
-        this.formData.Lng.value = data.lng;
-        this.formData.Lat.action = this.actions.update;
-        this.formData.Lng.action = this.actions.update;
+        this.updateLatLng([data.lat, data.lng]);
       }
     },
     adjustLocation() {
@@ -1089,31 +1236,80 @@ export default {
     },
     confirmLocation(data) {
       if (data && data.lat !== undefined && data.lng !== undefined) {
-        this.formData.Lat.value = data.lat;
-        this.formData.Lng.value = data.lng;
-        this.formData.Lat.action = this.actions.update;
-        this.formData.Lng.action = this.actions.update;
+        this.updateLatLng([data.lat, data.lng]);
+        this.onLocationChanged(data);
       }
 
       this.locationDialog = false;
     },
     save(close) {
-      // if (this.invalidDate) {
-      //   this.$notify.error(this.$gettext("Invalid date"));
-      //   return;
-      // }
-      //
-      // this.updateModel();
-      //
-      // this.view.model.update().then(() => {
-      this.model.save(this.selection, this.formData);
+      // Filter form data to only include fields with changes
+      const filteredFormData = this.getFilteredFormData();
 
-      if (close) {
-        this.$emit("close");
+      this.model
+        .save(this.selection, filteredFormData)
+        .then(() => {
+          // Update form data with new values from backend
+          this.setFormData();
+
+          if (close) {
+            this.$emit("close");
+          }
+        })
+        .catch((error) => {
+          this.$notify.error(this.$gettext("Failed to save changes"));
+        });
+    },
+    getFilteredFormData() {
+      const filtered = {};
+
+      for (const [key, field] of Object.entries(this.formData)) {
+        if (field && field.action && field.action !== this.actions.none) {
+          // Convert Vue reactive proxy to plain object
+          filtered[key] = {
+            action: field.action,
+            mixed: field.mixed || false,
+            value: field.value,
+            // For Items type (Albums, Labels), also include items array
+            ...(field.items && {
+              items: field.items.map((item) => ({
+                action: item.action,
+                mixed: item.mixed || false,
+                value: item.value,
+                title: item.title,
+              })),
+            }),
+          };
+        }
       }
-      //
-      //   this.syncTime();
-      // });
+
+      return filtered;
+    },
+    onAlbumsChange(value) {
+      // Convert selected albums to Items format
+      const items = (value || []).map((album) => ({
+        value: album.UID || album, // Handle both object and string values
+        title: album.Title || album,
+        mixed: false,
+        action: this.actions.add,
+      }));
+
+      this.formData.Albums.items = items;
+      this.formData.Albums.action = this.actions.update;
+      this.formData.Albums.mixed = false;
+    },
+    onLabelsChange(value) {
+      // Convert selected labels to Items format
+      const items = (value || []).map((label) => ({
+        value: label.UID || label,
+        title: label.Title || label,
+        mixed: false,
+        action: this.actions.add,
+      }));
+
+      this.formData.Labels.items = items;
+      this.formData.Labels.action = this.actions.update;
+      this.formData.Labels.mixed = false;
     },
   },
 };
