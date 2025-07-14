@@ -17,10 +17,15 @@ install-testcafe:
 	npm install -g testcafe@latest
 install-eslint:
 	npm install -g eslint globals @eslint/eslintrc @eslint/js eslint-config-prettier eslint-formatter-pretty eslint-plugin-html eslint-plugin-import eslint-plugin-node eslint-plugin-prettier eslint-plugin-promise eslint-plugin-vue eslint-webpack-plugin vue-eslint-parser prettier
-install:
+npm-install:
+	$(info Installing dependencies...)
 	npm install --no-update-notifier --no-audit
-update:
-	npm update
+install: npm-install
+npm-update:
+	$(info Updating dependencies...)
+	npm update --save --package-lock
+update: npm-update npm-install
+upgrade: update
 watch:
 	npm run watch
 build:
@@ -31,8 +36,6 @@ fmt:
 	npm run fmt
 test:
 	npm run test
-upgrade:
-	npm run upgrade
 testcafe:
 	npm run testcafe
 acceptance-local:

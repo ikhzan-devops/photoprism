@@ -273,6 +273,7 @@ export default {
       default: () => this.$session.getUser(),
     },
   },
+  emits: ["updateUser", "close"],
   data() {
     return {
       busy: false,
@@ -378,9 +379,12 @@ export default {
         });
     },
     onCopyRecoveryCode() {
-      if (this.$util.copyText(this.key.RecoveryCode)) {
-        this.recoveryCodeCopied = true;
-      }
+      // Use the browser API to copy the recovery code to the clipboard.
+      this.$util.copyText(this.key.RecoveryCode);
+
+      // Flag the code as copied to the clipboard even
+      // if the copyText() function returns an error.
+      this.recoveryCodeCopied = true;
     },
     onActivate() {
       if (this.busy) {

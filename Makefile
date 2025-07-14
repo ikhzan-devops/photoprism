@@ -246,8 +246,9 @@ dep-go:
 	go build -v ./...
 dep-upgrade:
 	go get -u -t ./...
-dep-upgrade-js:
-	(cd frontend &&	npm update --legacy-peer-deps)
+frontend-update:
+	make -C frontend update
+dep-upgrade-js: frontend-update
 dep-tensorflow:
 	scripts/download-facenet.sh
 	scripts/download-nasnet.sh
