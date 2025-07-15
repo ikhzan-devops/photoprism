@@ -7,24 +7,31 @@ import (
 
 	"github.com/photoprism/photoprism/internal/ai/vision"
 	"github.com/photoprism/photoprism/internal/config"
+	"github.com/photoprism/photoprism/internal/entity"
 	"github.com/photoprism/photoprism/internal/workers"
 )
 
 // VisionRunCommand configures the command name, flags, and action.
 var VisionRunCommand = &cli.Command{
 	Name:      "run",
-	Usage:     "Runs a computer vision model",
+	Usage:     "Runs one or more computer vision models on a set of pictures, as specified by the search filter",
 	ArgsUsage: "[filter]",
 	Flags: []cli.Flag{
 		&cli.StringFlag{
 			Name:    "models",
 			Aliases: []string{"m"},
-			Usage:   "model types (labels, nsfw, caption)",
+			Usage:   "computer vision `MODELS` to run, e.g. caption, labels, or nsfw",
+		},
+		&cli.StringFlag{
+			Name:    "source",
+			Aliases: []string{"s"},
+			Value:   entity.SrcImage,
+			Usage:   "custom data source `TYPE`, e.g. estimate, image, meta, or manual",
 		},
 		&cli.BoolFlag{
 			Name:    "force",
 			Aliases: []string{"f"},
-			Usage:   "force existing metadata to be updated",
+			Usage:   "force existing data to be updated if the source priority is equal to or higher than the current one",
 		},
 	},
 	Action: visionRunAction,
@@ -34,6 +41,11 @@ var VisionRunCommand = &cli.Command{
 func visionRunAction(ctx *cli.Context) error {
 	return CallWithDependencies(ctx, func(conf *config.Config) error {
 		worker := workers.NewVision(conf)
-		return worker.Start(strings.TrimSpace(ctx.Args().First()), vision.ParseTypes(ctx.String("models")), ctx.Bool("force"))
+		return worker.Start(
+			strings.TrimSpace(ctx.Args().First()),
+			vision.ParseTypes(ctx.String("models")),
+			ctx.String("source"),
+			ctx.Bool("force"),
+		)
 	})
 }
