@@ -62,7 +62,7 @@
                     @touchstart.passive="onMouseDown($event, index)"
                     @touchend.stop="onSelectClick($event, index, false)"
                     @mousedown="onMouseDown($event, index)"
-                    @click.stop.prevent="onSelectClick($event, index, false)"
+                    @click.stop.prevent="openPhoto(index)"
                   >
                     <div class="preview__overlay"></div>
                     <button
@@ -148,7 +148,7 @@
                           @touchstart.passive="onMouseDown($event, index)"
                           @touchend.stop="onSelectClick($event, index, false)"
                           @mousedown="onMouseDown($event, index)"
-                          @click.stop.prevent="onSelectClick($event, index, false)"
+                          @click.stop.prevent="openPhoto(index)"
                         >
                           <div class="preview__overlay"></div>
                           <button

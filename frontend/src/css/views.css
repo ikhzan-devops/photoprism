@@ -22,6 +22,11 @@
     user-select: none !important;
 }
 
+/* Make thumbnails in batch edit dialog show pointer cursor */
+.edit-batch .preview {
+    cursor: pointer !important;
+}
+
 .search-results.list-view .p-photo-select,
 .search-results.list-view .p-photo-play {
     margin-left: auto;
