@@ -47,7 +47,7 @@ func FindUserSessions(router *gin.RouterGroup) {
 
 		// Abort if invalid.
 		if err != nil {
-			AbortBadRequest(c)
+			AbortBadRequest(c, err)
 			return
 		}
 
@@ -61,7 +61,7 @@ func FindUserSessions(router *gin.RouterGroup) {
 		result, err := search.Sessions(frm)
 
 		if err != nil {
-			AbortBadRequest(c)
+			AbortBadRequest(c, err)
 			return
 		}
 

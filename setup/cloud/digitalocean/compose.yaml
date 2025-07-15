@@ -4,7 +4,7 @@
 #
 #  Run this script as root to install PhotoPrism on a cloud server e.g. at DigitalOcean:
 #
-#    bash <(curl -s https://dl.photoprism.app/docker/cloud/setup.sh)
+#    bash <(curl -s https://dl.photoprism.app/cloud/digitalocean/setup.sh)
 #
 #  This may take a while to complete, depending on the performance of your
 #  server and its internet connection.
@@ -37,12 +37,6 @@
 #
 #  Configuring multiple apps on the same server is beyond the scope of this base
 #  config and for advanced users only.
-#
-#  This config includes Ofelia, a docker job scheduler:
-#
-#    https://github.com/mcuadros/ofelia
-#
-#  See jobs.ini for details.
 #
 #  SYSTEM REQUIREMENTS
 #  ------------------------------------------------------------------------
@@ -213,16 +207,6 @@ services:
       MARIADB_USER: "photoprism"
       MARIADB_PASSWORD: "_admin_password_"
       MARIADB_ROOT_PASSWORD: "_admin_password_"
-
-  ## Ofelia Job Runner (recommended)
-  ## see https://github.com/mcuadros/ofelia
-  ofelia:
-    restart: always
-    image: mcuadros/ofelia:latest
-    container_name: ofelia
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-      - "./jobs.ini:/etc/ofelia/config.ini"
 
   ## Watchtower upgrades services automatically (optional)
   ## see https://docs.photoprism.app/getting-started/updates/#watchtower

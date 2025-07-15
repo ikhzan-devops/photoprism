@@ -97,8 +97,7 @@ func CreateMarker(router *gin.RouterGroup) {
 
 		// Initialize form.
 		if err := c.BindJSON(&frm); err != nil {
-			log.Errorf("faces: %s (bind marker form)", err)
-			AbortBadRequest(c)
+			AbortBadRequest(c, err)
 			return
 		}
 
@@ -113,8 +112,7 @@ func CreateMarker(router *gin.RouterGroup) {
 
 		// Validate form values.
 		if err = frm.Validate(); err != nil {
-			log.Errorf("faces: %s (validate new marker)", err)
-			AbortBadRequest(c)
+			AbortBadRequest(c, err)
 			return
 		} else if frm.W <= 0 || frm.H <= 0 {
 			log.Errorf("faces: width and height must be greater than zero")
@@ -130,8 +128,7 @@ func CreateMarker(router *gin.RouterGroup) {
 
 		// Update marker from form values.
 		if err = marker.Create(); err != nil {
-			log.Errorf("faces: %s (create marker)", err)
-			AbortBadRequest(c)
+			AbortBadRequest(c, err)
 			return
 		}
 
@@ -210,14 +207,14 @@ func UpdateMarker(router *gin.RouterGroup) {
 			return
 		} else if err = c.BindJSON(&frm); err != nil {
 			log.Errorf("faces: %s (bind marker form)", err)
-			AbortBadRequest(c)
+			AbortBadRequest(c, err)
 			return
 		}
 
 		// Validate form values.
 		if err = frm.Validate(); err != nil {
 			log.Errorf("faces: %s (validate updated marker)", err)
-			AbortBadRequest(c)
+			AbortBadRequest(c, err)
 			return
 		}
 

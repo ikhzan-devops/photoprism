@@ -94,6 +94,7 @@ type Options struct {
 	AutoImport             int           `yaml:"AutoImport" json:"AutoImport" flag:"auto-import"`
 	ReadOnly               bool          `yaml:"ReadOnly" json:"ReadOnly" flag:"read-only"`
 	Experimental           bool          `yaml:"Experimental" json:"Experimental" flag:"experimental"`
+	DisableFrontend        bool          `yaml:"DisableFrontend" json:"-" flag:"disable-frontend"`
 	DisableSettings        bool          `yaml:"DisableSettings" json:"-" flag:"disable-settings"`
 	DisableBackups         bool          `yaml:"DisableBackups" json:"DisableBackups" flag:"disable-backups"`
 	DisableRestart         bool          `yaml:"DisableRestart" json:"-" flag:"disable-restart"`

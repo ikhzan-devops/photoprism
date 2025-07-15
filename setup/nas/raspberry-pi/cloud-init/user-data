@@ -71,7 +71,10 @@ runcmd:
   
   # Create mount points for external drives
   - printf "\e[0;35m[SETUP] Creating mount points for external drives...\e[0m\n"
-  - mkdir -p /mnt/{a,b,c,d}
+  - mkdir -p /mnt/a
+  - mkdir -p /mnt/b
+  - mkdir -p /mnt/c
+  - mkdir -p /mnt/d
   - chown -R 1000:1000 /mnt
   - printf "\e[0;35m[SETUP] ✓ External drive mount points created\e[0m\n"
   
@@ -168,7 +171,9 @@ runcmd:
                                                                    
       Welcome to PhotoPrism Pi!                                    
                                                                    
-      You can access the web interface using the following URLs:   
+      You should soon be able to access the web interface
+      by navigating to one of the following URLs:
+
       http://$IP:2342/                                             
       https://photoprism-pi.local/                                 
                                                                    
@@ -196,9 +201,10 @@ write_files:
       
       Welcome to PhotoPrism Pi!                                   
       
-      You can access the web interface using one of the            
-      following URLs:                                             
-      http://<your IP address>:2342/                                       
+      You should soon be able to access the web interface
+      by navigating to one of the following URLs:
+                                             
+      http://<IP address>:2342/                                       
       https://photoprism-pi.local/                                 
       
       Your initial password for the "admin" account is             
@@ -217,7 +223,7 @@ write_files:
 
       services:
         photoprism:
-          image: photoprism/photoprism:arm64
+          image: photoprism/photoprism:latest
           depends_on:
             - mariadb
           restart: always
@@ -240,9 +246,11 @@ write_files:
             PHOTOPRISM_SITE_URL: "https://photoprism-pi.local/"
             PHOTOPRISM_SITE_CAPTION: "AI-Powered Photos App"
             PHOTOPRISM_ORIGINALS_LIMIT: 5000
-            PHOTOPRISM_HTTP_COMPRESSION: "none"
-            PHOTOPRISM_WORKERS: 2
+            PHOTOPRISM_RESOLUTION_LIMIT: 300
+            PHOTOPRISM_HTTP_COMPRESSION: "gzip"
+            PHOTOPRISM_WORKERS: 3
             PHOTOPRISM_LOG_LEVEL: "info"
+            PHOTOPRISM_TRACE: "false"
             PHOTOPRISM_READONLY: "false"
             PHOTOPRISM_EXPERIMENTAL: "false"
             PHOTOPRISM_DISABLE_CHOWN: "false"
@@ -253,19 +261,26 @@ write_files:
             PHOTOPRISM_DISABLE_CLASSIFICATION: "false"
             PHOTOPRISM_DISABLE_RAW: "false"
             PHOTOPRISM_RAW_PRESETS: "false"
-            PHOTOPRISM_JPEG_QUALITY: 85
-            PHOTOPRISM_DETECT_NSFW: "false"
-            PHOTOPRISM_UPLOAD_NSFW: "true"
+            PHOTOPRISM_JPEG_QUALITY: 82
+            PHOTOPRISM_FFMPEG_SIZE: 1920
+            PHOTOPRISM_AUTO_INDEX: 300                     # delay before automatically indexing files in SECONDS when uploading via WebDAV (-1 to disable)
+            PHOTOPRISM_AUTO_IMPORT: -1                     # delay before automatically importing files in SECONDS when uploading via WebDAV (-1 to disable)
+            PHOTOPRISM_DETECT_NSFW: "false"                # automatically flags photos as private that MAY be offensive (requires TensorFlow)
+            PHOTOPRISM_UPLOAD_NSFW: "true"                 # allow uploads that MAY be offensive
+            PHOTOPRISM_UPLOAD_ALLOW: ""                    # restricts uploads to these file types (comma-separated list of EXTENSIONS; leave blank to allow all)
+            PHOTOPRISM_UPLOAD_ARCHIVES: "true"             # allows upload of zip archives (will be extracted before import)
+            PHOTOPRISM_UPLOAD_LIMIT: 10000                 # maximum total size of uploaded files in MB (1-100000; -1 to disable)
+            PHOTOPRISM_SIDECAR_YAML: "false"               # creates YAML sidecar files to back up picture metadata
+            PHOTOPRISM_INDEX_SCHEDULE: ""                  # indexing SCHEDULE in cron format (e.g. "@every 3h" for every 3 hours; "" to disable)
+            PHOTOPRISM_BACKUP_ALBUMS: "true"               # creates YAML files to back up album metadata
+            PHOTOPRISM_BACKUP_DATABASE: "true"             # creates regular backups based on the configured schedule
+            PHOTOPRISM_BACKUP_SCHEDULE: "daily"            # backup SCHEDULE in cron format (e.g. "0 12 * * *" for daily at noon) or at a random time (daily, weekly)
             PHOTOPRISM_DATABASE_DRIVER: "mysql"
             PHOTOPRISM_DATABASE_SERVER: "mariadb:3306"
             PHOTOPRISM_DATABASE_NAME: "photoprism"
             PHOTOPRISM_DATABASE_USER: "photoprism"
             PHOTOPRISM_DATABASE_PASSWORD: "insecure"
-            PHOTOPRISM_INIT: "gpu"
-            PHOTOPRISM_FFMPEG_ENCODER: "software"
-            PHOTOPRISM_FFMPEG_BITRATE: "32"
-            PHOTOPRISM_UID: 1000
-            PHOTOPRISM_GID: 1000
+            PHOTOPRISM_INIT: "yt-dlp"
           working_dir: "/photoprism"
           volumes:
             - "/opt/photoprism/storage:/photoprism/storage"
@@ -275,11 +290,11 @@ write_files:
 
         mariadb:
           restart: always
-          image: arm64v8/mariadb:10.10
+          image: mariadb:11
           security_opt:
             - seccomp=unconfined
             - apparmor=unconfined
-          command: mysqld --innodb-buffer-pool-size=256M --transaction-isolation=READ-COMMITTED --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --max-connections=512 --innodb-rollback-on-timeout=OFF --innodb-lock-wait-timeout=120
+          command: --innodb-buffer-pool-size=256M --transaction-isolation=READ-COMMITTED --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --max-connections=512 --innodb-rollback-on-timeout=OFF --innodb-lock-wait-timeout=120
           volumes:
             - "/opt/photoprism/database:/var/lib/mysql"
           environment:

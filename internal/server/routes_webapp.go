@@ -13,6 +13,11 @@ import (
 
 // registerWebAppRoutes adds routes for the web user interface.
 func registerWebAppRoutes(router *gin.Engine, conf *config.Config) {
+	// Return if the web user interface is disabled.
+	if conf.DisableFrontend() {
+		return
+	}
+
 	// Serve user interface bootstrap template on all routes starting with "/library".
 	ui := func(c *gin.Context) {
 		// Prevent CDNs from caching this endpoint.

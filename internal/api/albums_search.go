@@ -42,7 +42,7 @@ func SearchAlbums(router *gin.RouterGroup) {
 		// Abort if request params are invalid.
 		if err = c.MustBindWith(&frm, binding.Form); err != nil {
 			event.AuditWarn([]string{ClientIP(c), "session %s", "albums", "search", "form invalid", "%s"}, s.RefID, err)
-			AbortBadRequest(c)
+			AbortBadRequest(c, err)
 			return
 		}
 

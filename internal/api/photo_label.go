@@ -47,7 +47,7 @@ func AddPhotoLabel(router *gin.RouterGroup) {
 
 		// Assign and validate request form values.
 		if err = c.BindJSON(frm); err != nil {
-			AbortBadRequest(c)
+			AbortBadRequest(c, err)
 			return
 		} else if err = frm.Validate(); err != nil {
 			AbortInvalidName(c)
@@ -221,7 +221,7 @@ func UpdatePhotoLabel(router *gin.RouterGroup) {
 		}
 
 		if err = c.BindJSON(label); err != nil {
-			AbortBadRequest(c)
+			AbortBadRequest(c, err)
 			return
 		}
 

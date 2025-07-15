@@ -117,7 +117,7 @@ export default {
     const label = query["label"] ? query["label"] : "";
     const latlng = query["latlng"] ? query["latlng"] : "";
     const view = this.getViewType();
-    const order = this.getSortOrder();
+    const order = this.sortOrder();
     const filter = {
       country: country,
       camera: camera,
@@ -128,6 +128,7 @@ export default {
       month: month,
       color: color,
       order: order,
+      reverse: this.sortReverse(),
       q: q,
     };
 
@@ -217,7 +218,8 @@ export default {
       this.filter.color = query["color"] ? query["color"] : "";
       this.filter.label = query["label"] ? query["label"] : "";
       this.filter.latlng = query["latlng"] ? query["latlng"] : "";
-      this.filter.order = this.getSortOrder();
+      this.filter.order = this.sortOrder();
+      this.filter.reverse = this.sortReverse();
 
       this.settings.view = this.getViewType();
 
@@ -354,7 +356,7 @@ export default {
 
       return "";
     },
-    getSortOrder() {
+    sortOrder() {
       if (this.embedded) {
         return "newest";
       }
@@ -395,6 +397,9 @@ export default {
       }
 
       return defaultOrder;
+    },
+    sortReverse() {
+      return !!this.$route?.query["reverse"] && this.$route.query["reverse"] === "true";
     },
     openDate(index) {
       const photo = this.results[index];

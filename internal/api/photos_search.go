@@ -49,7 +49,7 @@ func SearchPhotos(router *gin.RouterGroup) {
 		// Abort if request params are invalid.
 		if err = c.MustBindWith(&frm, binding.Form); err != nil {
 			event.AuditWarn([]string{ClientIP(c), "session %s", string(acl.ResourcePhotos), "form invalid", "%s"}, s.RefID, err)
-			AbortBadRequest(c)
+			AbortBadRequest(c, err)
 			return frm, s, err
 		}
 
@@ -85,7 +85,7 @@ func SearchPhotos(router *gin.RouterGroup) {
 		// Ok?
 		if err != nil {
 			event.AuditWarn([]string{ClientIP(c), "session %s", string(acl.ResourcePhotos), "search", "%s"}, s.RefID, err)
-			AbortBadRequest(c)
+			AbortBadRequest(c, err)
 			return
 		}
 
@@ -114,7 +114,7 @@ func SearchPhotos(router *gin.RouterGroup) {
 
 		if err != nil {
 			event.AuditWarn([]string{ClientIP(c), "session %s", string(acl.ResourcePhotos), "view", "%s"}, s.RefID, err)
-			AbortBadRequest(c)
+			AbortBadRequest(c, err)
 			return
 		}
 

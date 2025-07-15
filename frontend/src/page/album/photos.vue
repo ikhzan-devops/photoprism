@@ -262,9 +262,12 @@ export default {
 
       return "cards";
     },
-    getSortOrder() {
+    sortOrder() {
       const query = this.$route.query;
       return query["order"] ? query["order"] : this.model?.Order;
+    },
+    sortReverse() {
+      return !!this.$route?.query["reverse"] && this.$route.query["reverse"] === "true";
     },
     openDate(index) {
       if (!this.canEdit) {
@@ -325,7 +328,7 @@ export default {
 
       if (showMerged) {
         this.$lightbox.openModels(Thumb.fromFiles([selected]), 0, this.model);
-      } else if (this.getSortOrder() === "random") {
+      } else if (this.sortOrder() === "random") {
         this.$lightbox.openModels(Thumb.fromPhotos(this.results), index, this.model);
       } else {
         this.$lightbox.openView(this, index);
@@ -353,7 +356,8 @@ export default {
         offset: offset,
         s: this.uid,
         merged: true,
-        order: this.getSortOrder(),
+        order: this.sortOrder(),
+        reverse: this.sortReverse(),
       };
 
       Object.assign(params, this.lastFilter);
@@ -474,7 +478,8 @@ export default {
         offset: this.offset,
         s: this.uid,
         merged: true,
-        order: this.getSortOrder(),
+        order: this.sortOrder(),
+        reverse: this.sortReverse(),
       };
 
       Object.assign(params, this.filter);

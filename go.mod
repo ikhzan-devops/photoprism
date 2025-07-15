@@ -21,7 +21,7 @@ require (
 	github.com/jinzhu/inflection v1.0.0
 	github.com/kardianos/osext v0.0.0-20190222173326-2bc1f35cddc0 // indirect
 	github.com/karrick/godirwalk v1.17.0
-	github.com/klauspost/cpuid/v2 v2.2.11
+	github.com/klauspost/cpuid/v2 v2.3.0
 	github.com/leandro-lugaresi/hub v1.1.1
 	github.com/leonelquinteros/gotext v1.7.2
 	github.com/lucasb-eyer/go-colorful v1.2.0
@@ -38,15 +38,15 @@ require (
 	github.com/tidwall/gjson v1.18.0
 	github.com/ulule/deepcopier v0.0.0-20200430083143-45decc6639b6
 	go4.org v0.0.0-20230225012048-214862532bf5 // indirect
-	golang.org/x/crypto v0.39.0
-	golang.org/x/net v0.41.0
+	golang.org/x/crypto v0.40.0
+	golang.org/x/net v0.42.0
 	gonum.org/v1/gonum v0.16.0
 	gopkg.in/yaml.v2 v2.4.0
 )
 
 require (
 	github.com/go-xmlfmt/xmlfmt v1.1.3 // indirect
-	golang.org/x/image v0.28.0
+	golang.org/x/image v0.29.0
 )
 
 require github.com/olekukonko/tablewriter v1.0.8
@@ -58,7 +58,7 @@ require github.com/chzyer/readline v1.5.1 // indirect
 require github.com/gabriel-vasile/mimetype v1.4.9
 
 require (
-	golang.org/x/sync v0.15.0
+	golang.org/x/sync v0.16.0
 	golang.org/x/time v0.12.0
 )
 
@@ -71,7 +71,7 @@ require (
 
 require github.com/dustinkirkland/golang-petname v0.0.0-20240428194347-eebcea082ee0
 
-require golang.org/x/text v0.26.0
+require golang.org/x/text v0.27.0
 
 require (
 	github.com/IGLOU-EU/go-wildcard v1.0.3
@@ -85,8 +85,8 @@ require (
 	github.com/urfave/cli/v2 v2.27.7
 	github.com/wamuir/graft v0.10.0
 	github.com/zitadel/oidc/v3 v3.39.1
-	golang.org/x/mod v0.25.0
-	golang.org/x/sys v0.33.0
+	golang.org/x/mod v0.26.0
+	golang.org/x/sys v0.34.0
 	gorm.io/driver/mysql v1.5.7
 	gorm.io/driver/postgres v1.5.9
 	gorm.io/driver/sqlite v1.5.6
@@ -163,7 +163,7 @@ require (
 	go.opentelemetry.io/otel/metric v1.35.0 // indirect
 	go.opentelemetry.io/otel/trace v1.35.0 // indirect
 	golang.org/x/oauth2 v0.30.0 // indirect
-	golang.org/x/tools v0.33.0 // indirect
+	golang.org/x/tools v0.34.0 // indirect
 	google.golang.org/protobuf v1.36.6 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

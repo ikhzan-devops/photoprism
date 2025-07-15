@@ -34,10 +34,10 @@ case $DESTARCH in
       URL="https://github.com/libjxl/libjxl/releases/download/${LIB_VERSION}/${ARCHIVE}"
       TMPDIR="/tmp/jpegxl"
 
-      echo "------------------------------------------------"
+      echo "--------------------------------------------------------------------------------"
       echo "VERSION: $LIB_VERSION"
       echo "ARCHIVE: $ARCHIVE"
-      echo "------------------------------------------------"
+      echo "--------------------------------------------------------------------------------"
 
       echo "Installing JPEG XL for ${DESTARCH^^}..."
 

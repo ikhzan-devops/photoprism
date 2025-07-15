@@ -35,6 +35,10 @@ compose.*.yaml
 *.override.yaml
 *.tmp.yml
 *.tmp.yaml
+*.tmp
+*.img
+*.img.xz
+*.img.gz
 
 # Automatically generated files, e.g. by editors and operating systems
 .DS_Store

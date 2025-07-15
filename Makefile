@@ -283,8 +283,9 @@ dep-go:
 	go build -v ./...
 dep-upgrade:
 	go get -u -t ./...
-dep-upgrade-js:
-	(cd frontend &&	npm update --legacy-peer-deps)
+frontend-update:
+	make -C frontend update
+dep-upgrade-js: frontend-update
 dep-tensorflow:
 	scripts/download-facenet.sh
 	scripts/download-nasnet.sh
@@ -374,6 +375,9 @@ docker-tensorflow-arm64:
 terminal-tensorflow-arm64:
 	mkdir -p ./build
 	docker run --rm --pull missing -ti --platform=arm64 -v "./build:/build" -e BUILD_ARCH=arm64 -e SYSTEM_ARCH=arm64 photoprism/tensorflow:arm64 bash
+build-setup: build-setup-nas-raspberry-pi
+build-setup-nas-raspberry-pi:
+	./scripts/setup/nas/raspberry-pi/build.sh
 watch-js:
 	(cd frontend &&	env BUILD_ENV=development NODE_ENV=production npm run watch)
 test-js:

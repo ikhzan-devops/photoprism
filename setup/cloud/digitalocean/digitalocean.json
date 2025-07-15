@@ -63,9 +63,9 @@
         "LC_CTYPE=en_US.UTF-8"
       ],
       "scripts": [
-        "digitalocean/firewall.sh",
-        "digitalocean/cleanup.sh",
-        "digitalocean/check.sh"
+        "init/firewall.sh",
+        "init/cleanup.sh",
+        "init/check.sh"
       ]
     }
   ]

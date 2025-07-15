@@ -16,11 +16,20 @@ Models:
   Tags:
   - serve
 - Type: caption
+  Name: qwen2.5vl
+  Version: latest
+  Prompt: Create a caption that sounds natural and briefly describes the main content
+    of the image in up to three sentences for use in a photo management application.
+    Begin with the type or number of subjects and action. Omit text formatting and
+    avoid meta-language such as "this picture", "the picture", "the photo", "there
+    are", "here is", or "a picture of". Use explicit language to describe the scene
+    if it helps to properly understand the picture.
   Resolution: 224
   Service:
     Uri: http://photoprism-vision:5000/api/v1/vision/caption
-    FileScheme: https
-    RequestFormat: url
+    Method: POST
+    FileScheme: data
+    RequestFormat: vision
     ResponseFormat: vision
 Thresholds:
   Confidence: 10

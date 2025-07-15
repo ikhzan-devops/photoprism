@@ -110,6 +110,7 @@ func (c *Config) Report() (rows [][]string, cols []string) {
 		{"read-only", fmt.Sprintf("%t", c.ReadOnly())},
 		{"develop", fmt.Sprintf("%t", c.Develop())},
 		{"experimental", fmt.Sprintf("%t", c.Experimental())},
+		{"disable-frontend", fmt.Sprintf("%t", c.DisableFrontend())},
 		{"disable-settings", fmt.Sprintf("%t", c.DisableSettings())},
 		{"disable-backups", fmt.Sprintf("%t", c.DisableBackups())},
 		{"disable-restart", fmt.Sprintf("%t", c.DisableRestart())},

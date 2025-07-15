@@ -831,6 +831,10 @@ export default class $util {
 
   static copyText(text) {
     if (!text) {
+      if (debug) {
+        console.warn("clipboard: missing text");
+      }
+
       return false;
     }
 
@@ -853,15 +857,18 @@ export default class $util {
         })
         .catch((err) => {
           if (debug && err) {
-            console.log("copy:", err);
+            console.error("clipboard:", err);
           }
 
-          $notify.error($gettext("Not allowed"));
+          $notify.error($gettext("Cannot copy to clipboard"));
         });
       return true;
+    } else if (debug) {
+      console.warn("clipboard: window.navigator.clipboard is not an instance of EventTarget");
     }
 
-    $notify.warn($gettext("Not supported"));
+    $notify.warn($gettext("Cannot copy to clipboard"));
+
     return false;
   }
 }

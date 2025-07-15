@@ -1376,7 +1376,7 @@
                 "parameters": [
                     {
                         "description": "photos selection and values",
-                        "name": "photos",
+                        "name": "Request",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -1388,7 +1388,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/batch.PhotosForm"
+                            "$ref": "#/definitions/batch.PhotosResponse"
                         }
                     },
                     "400": {
@@ -5360,9 +5360,46 @@
                 }
             }
         },
+        "batch.Item": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "$ref": "#/definitions/batch.Action"
+                },
+                "mixed": {
+                    "type": "boolean"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
+        "batch.Items": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "$ref": "#/definitions/batch.Action"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/batch.Item"
+                    }
+                },
+                "mixed": {
+                    "type": "boolean"
+                }
+            }
+        },
         "batch.PhotosForm": {
             "type": "object",
             "properties": {
+                "Albums": {
+                    "$ref": "#/definitions/batch.Items"
+                },
                 "Altitude": {
                     "$ref": "#/definitions/batch.Int"
                 },
@@ -5407,6 +5444,9 @@
                 },
                 "Iso": {
                     "$ref": "#/definitions/batch.Int"
+                },
+                "Labels": {
+                    "$ref": "#/definitions/batch.Items"
                 },
                 "Lat": {
                     "$ref": "#/definitions/batch.Float64"
@@ -5456,6 +5496,20 @@
                     "type": "array",
                     "items": {
                         "type": "string"
+                    }
+                },
+                "values": {
+                    "$ref": "#/definitions/batch.PhotosForm"
+                }
+            }
+        },
+        "batch.PhotosResponse": {
+            "type": "object",
+            "properties": {
+                "models": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/search.Photo"
                     }
                 },
                 "values": {
@@ -8180,16 +8234,6 @@
                 1000000000,
                 60000000000,
                 3600000000000,
-                -9223372036854775808,
-                9223372036854775807,
-                1,
-                1000,
-                1000000,
-                1000000000,
-                60000000000,
-                3600000000000,
-                -9223372036854775808,
-                9223372036854775807,
                 1,
                 1000,
                 1000000,
@@ -8206,16 +8250,6 @@
                 "Second",
                 "Minute",
                 "Hour",
-                "minDuration",
-                "maxDuration",
-                "Nanosecond",
-                "Microsecond",
-                "Millisecond",
-                "Second",
-                "Minute",
-                "Hour",
-                "minDuration",
-                "maxDuration",
                 "Nanosecond",
                 "Microsecond",
                 "Millisecond",

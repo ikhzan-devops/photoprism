@@ -9,6 +9,11 @@ import (
 var Sponsor = Env(EnvDemo, EnvSponsor, EnvTest)
 var Features = Community
 
+// DisableFrontend checks if the web user interface routes should be disabled.
+func (c *Config) DisableFrontend() bool {
+	return c.options.DisableFrontend
+}
+
 // DisableSettings checks if users should not be allowed to change settings.
 func (c *Config) DisableSettings() bool {
 	return c.options.DisableSettings

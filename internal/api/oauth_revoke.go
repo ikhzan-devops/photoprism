@@ -75,7 +75,7 @@ func OAuthRevoke(router *gin.RouterGroup) {
 		// Get the auth token to be revoked from the submitted form values or the request header.
 		if err = c.ShouldBind(&frm); err != nil && authToken == "" {
 			event.AuditWarn([]string{clientIp, "oauth2", actor, action, "%s"}, err)
-			AbortBadRequest(c)
+			AbortBadRequest(c, err)
 			return
 		} else if frm.Empty() {
 			frm.Token = authToken

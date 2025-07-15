@@ -45,7 +45,7 @@ func BatchPhotosArchive(router *gin.RouterGroup) {
 
 		// Assign and validate request form values.
 		if err := c.BindJSON(&frm); err != nil {
-			AbortBadRequest(c)
+			AbortBadRequest(c, err)
 			return
 		}
 
@@ -116,7 +116,7 @@ func BatchPhotosRestore(router *gin.RouterGroup) {
 		var frm form.Selection
 
 		if err := c.BindJSON(&frm); err != nil {
-			AbortBadRequest(c)
+			AbortBadRequest(c, err)
 			return
 		}
 
@@ -186,7 +186,7 @@ func BatchPhotosApprove(router *gin.RouterGroup) {
 		var frm form.Selection
 
 		if err := c.BindJSON(&frm); err != nil {
-			AbortBadRequest(c)
+			AbortBadRequest(c, err)
 			return
 		}
 
@@ -246,7 +246,7 @@ func BatchPhotosPrivate(router *gin.RouterGroup) {
 		var frm form.Selection
 
 		if err := c.BindJSON(&frm); err != nil {
-			AbortBadRequest(c)
+			AbortBadRequest(c, err)
 			return
 		}
 
@@ -313,7 +313,7 @@ func BatchPhotosDelete(router *gin.RouterGroup) {
 		var frm form.Selection
 
 		if err := c.BindJSON(&frm); err != nil {
-			AbortBadRequest(c)
+			AbortBadRequest(c, err)
 			return
 		}
 

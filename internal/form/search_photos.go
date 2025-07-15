@@ -98,6 +98,7 @@ type SearchPhotos struct {
 	Count       int       `form:"count" binding:"required" serialize:"-"`                                                                                                    // Result FILE limit
 	Offset      int       `form:"offset" serialize:"-"`                                                                                                                      // Result FILE offset
 	Order       string    `form:"order" serialize:"-"`                                                                                                                       // Sort order
+	Reverse     bool      `form:"reverse" serialize:"-"`                                                                                                                     // Merge FILES in response
 	Merged      bool      `form:"merged" serialize:"-"`                                                                                                                      // Merge FILES in response
 	Details     bool      `form:"-" serialize:"-"`                                                                                                                           // Include additional information from details table
 }
