@@ -8,11 +8,10 @@ import (
 )
 
 // CaptionPromptDefault is the default prompt used to generate captions.
-var CaptionPromptDefault = `Create a caption that sounds natural and briefly describes the main content of the image in up to` +
-	` three sentences for use in a photo management application. Begin with the type or number of subjects and` +
-	` action. Omit text formatting and avoid meta-language such as "this picture", "the picture", "the photo",` +
-	` "there are", "here is", or "a picture of". Use explicit language to describe the scene if it helps to` +
-	` properly understand the picture.`
+var CaptionPromptDefault = `Create a caption without text formatting that sounds natural and briefly describes the main content of the picture in up to three sentences.` +
+	` Avoid meta-language and do not start the caption with phrases like "This image", "The image", "This picture", "The picture", "A picture of", "Here are", or "There is".` +
+	` Instead begin the description by identifying the type and number of subjects as well as any actions they perform.` +
+	` Use explicit language to describe the scene if necessary for a proper understanding.`
 
 // CaptionModelDefault is the default model used to generate captions.
 var CaptionModelDefault = "qwen2.5vl"
