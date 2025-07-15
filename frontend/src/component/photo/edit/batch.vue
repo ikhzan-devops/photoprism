@@ -389,18 +389,23 @@
                     <v-col cols="12" md="6">
                       <p-location-input
                         :latlng="currentCoordinates"
-                        :placeholder="isLocationMixed ? '' : locationPlaceholder"
+                        :placeholder="locationPlaceholder"
+                        :persistent-placeholder="true"
                         hide-details
-                        :label="isLocationMixed ? '<mixed>' : locationLabel"
+                        :label="locationLabel"
                         density="comfortable"
                         validate-on="input"
                         :show-map-button="!placesDisabled"
                         :map-button-title="$gettext('Adjust Location')"
                         :map-button-disabled="placesDisabled"
+                        :is-mixed="isLocationMixed"
+                        :is-deleted="isLocationDeleted"
                         class="input-coordinates"
                         @update:latlng="updateLatLng"
                         @changed="onLocationChanged"
                         @open-map="adjustLocation"
+                        @delete="onLocationDelete"
+                        @undo="onLocationUndo"
                       ></p-location-input>
                     </v-col>
                   </v-row>
@@ -750,6 +755,9 @@ export default {
       },
     },
     currentCoordinates() {
+      if (this.isLocationMixed || this.isLocationDeleted) {
+        return [0, 0];
+      }
       const latData = this.values?.Lat;
       const lngData = this.values?.Lng;
 
@@ -783,25 +791,28 @@ export default {
       return [parseFloat(lat) || 0, parseFloat(lng) || 0];
     },
     locationPlaceholder() {
-      const latData = this.values?.Lat;
-      const lngData = this.values?.Lng;
-
-      // If either coordinate has mixed values
-      if (latData?.mixed || lngData?.mixed) {
+      if (this.isLocationDeleted) {
+        return "<deleted>";
+      } else if (this.isLocationMixed) {
         return "<mixed>";
       }
 
-      // If both coordinates are empty/null (no location info)
       const lat = this.formData?.Lat?.value;
       const lng = this.formData?.Lng?.value;
 
-      if ((!lat || lat === 0) && (!lng || lng === 0)) {
-        return ""; // Empty state
+      if ((lat === null || lat === 0) && (lng === null || lng === 0)) {
+        return "37.75267, -122.543"; // Default from p-location-input
       }
 
-      return ""; // Default placeholder
+      return ""; // Has value, no placeholder
+    },
+    isLocationDeleted() {
+      return this.deletedFields.Lat || this.deletedFields.Lng;
     },
     isLocationMixed() {
+      if (this.isLocationDeleted) {
+        return false;
+      }
       const latData = this.values?.Lat;
       const lngData = this.values?.Lng;
 
@@ -1263,11 +1274,31 @@ export default {
       this.formData.Lng.value = parseFloat(latlng[1]) || 0;
       this.formData.Lat.action = this.actions.update;
       this.formData.Lng.action = this.actions.update;
+      this.deletedFields.Lat = false;
+      this.deletedFields.Lng = false;
     },
     onLocationChanged(data) {
       if (data && data.lat !== undefined && data.lng !== undefined) {
         this.updateLatLng([data.lat, data.lng]);
       }
+      this.deletedFields.Lat = false;
+      this.deletedFields.Lng = false;
+    },
+    onLocationDelete() {
+      this.deletedFields.Lat = true;
+      this.deletedFields.Lng = true;
+      this.formData.Lat.action = this.actions.remove;
+      this.formData.Lng.action = this.actions.remove;
+      this.formData.Lat.value = 0;
+      this.formData.Lng.value = 0;
+    },
+    onLocationUndo() {
+      this.deletedFields.Lat = false;
+      this.deletedFields.Lng = false;
+      this.formData.Lat.action = this.actions.none;
+      this.formData.Lng.action = this.actions.none;
+      this.formData.Lat.value = this.previousFormData.Lat?.value || 0;
+      this.formData.Lng.value = this.previousFormData.Lng?.value || 0;
     },
     adjustLocation() {
       this.locationDialog = true;

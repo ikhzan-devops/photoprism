@@ -5,6 +5,7 @@
     :hide-details="hideDetails"
     :label="label"
     :placeholder="placeholder"
+    :persistent-placeholder="persistentPlaceholder"
     :density="density"
     :validate-on="validateOn"
     :rules="[() => !coordinateInput || isValidCoordinateInput]"
@@ -30,8 +31,16 @@
       <v-icon v-else variant="plain" :icon="icon" class="text-disabled"> </v-icon>
     </template>
     <template #append-inner>
+      <v-icon v-if="isDeleted" variant="plain" icon="mdi-undo" class="action-undo" @click.stop="$emit('undo')"></v-icon>
       <v-icon
-        v-if="showUndoButton"
+        v-else-if="isMixed"
+        variant="plain"
+        icon="mdi-delete"
+        class="action-delete"
+        @click.stop="$emit('delete')"
+      ></v-icon>
+      <v-icon
+        v-else-if="showUndoButton"
         variant="plain"
         icon="mdi-undo"
         class="action-undo"
@@ -40,8 +49,8 @@
       <v-icon
         v-else-if="coordinateInput"
         variant="plain"
-        icon="mdi-close-circle"
-        class="action-clear"
+        icon="mdi-delete"
+        class="action-delete"
         @click.stop="clearCoordinates"
       ></v-icon>
     </template>
@@ -52,6 +61,14 @@
 export default {
   name: "PLocationInput",
   props: {
+    isMixed: {
+      type: Boolean,
+      default: false,
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
     latlng: {
       type: Array,
       default: () => [null, null],
@@ -72,6 +89,10 @@ export default {
     placeholder: {
       type: String,
       default: "37.75267, -122.543",
+    },
+    persistentPlaceholder: {
+      type: Boolean,
+      default: false,
     },
     density: {
       type: String,
@@ -99,7 +120,7 @@ export default {
     },
     enableUndo: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     autoApply: {
       type: Boolean,
@@ -110,7 +131,7 @@ export default {
       default: 1000,
     },
   },
-  emits: ["update:latlng", "changed", "cleared", "open-map"],
+  emits: ["update:latlng", "changed", "cleared", "open-map", "delete", "undo"],
   data() {
     return {
       coordinateInput: "",
