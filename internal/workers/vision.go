@@ -151,7 +151,7 @@ func (w *Vision) Start(q string, models []string, force bool) (err error) {
 						caption.Source = entity.SrcImage
 					}
 
-					if (entity.SrcPriority[caption.Source] > entity.SrcPriority[m.CaptionSrc]) || !m.HasCaption() {
+					if (entity.SrcPriority[caption.Source] >= entity.SrcPriority[m.CaptionSrc]) || !m.HasCaption() {
 						m.SetCaption(caption.Text, caption.Source)
 						changed = true
 						log.Infof("vision: changed caption of %s to %s", photoName, clean.Log(m.PhotoCaption))

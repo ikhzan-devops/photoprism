@@ -14,8 +14,12 @@ import (
 
 var modelMutex = sync.Mutex{}
 
-// ModelVersionDefault is the default model version.
-var ModelVersionDefault = "latest"
+// Default model version strings.
+var (
+	ModelVersionNone   = ""
+	ModelVersionLatest = "latest"
+	ModelVersionMobile = "Mobile"
+)
 
 // Model represents a computer vision model configuration.
 type Model struct {
