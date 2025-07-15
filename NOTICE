@@ -9,7 +9,7 @@ The following 3rd-party software packages may be used by or distributed with
 PhotoPrism. Any information relevant to third-party vendors listed below are
 collected using common, reasonable means.
 
-Date generated: 2025-07-11
+Date generated: 2025-07-15
 
 ================================================================================
 
@@ -3744,8 +3744,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --------------------------------------------------------------------------------
 
 Package: github.com/klauspost/cpuid/v2
-Version: v2.2.11
-License: MIT (https://github.com/klauspost/cpuid/blob/v2.2.11/LICENSE)
+Version: v2.3.0
+License: MIT (https://github.com/klauspost/cpuid/blob/v2.3.0/LICENSE)
 
 The MIT License (MIT)
 
