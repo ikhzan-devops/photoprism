@@ -8,8 +8,8 @@ Models:
     - photoprism
     Input:
       Name: input_1
-      Interval:
-        Start: -1
+      Intervals:
+      - Start: -1
         End: 1
       Height: 224
       Width: 224

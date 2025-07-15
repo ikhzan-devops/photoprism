@@ -19,9 +19,11 @@ var (
 				Name:   "input_1",
 				Height: 224,
 				Width:  224,
-				Interval: &tensorflow.Interval{
-					Start: -1.0,
-					End:   1.0,
+				Intervals: []tensorflow.Interval{
+					{
+						Start: -1.0,
+						End:   1.0,
+					},
 				},
 				OutputIndex: 0,
 			},

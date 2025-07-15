@@ -140,9 +140,10 @@ func TestModel_Run(t *testing.T) {
 			assert.IsType(t, Labels{}, result)
 			assert.Equal(t, 1, len(result))
 
-			assert.Equal(t, "chameleon", result[0].Name)
-
-			assert.Equal(t, 100-93, result[0].Uncertainty)
+			if len(result) > 0 {
+				assert.Equal(t, "chameleon", result[0].Name)
+				assert.Equal(t, 100-93, result[0].Uncertainty)
+			}
 		}
 	})
 	t.Run("dog_orange.jpg", func(t *testing.T) {
@@ -164,9 +165,10 @@ func TestModel_Run(t *testing.T) {
 			assert.IsType(t, Labels{}, result)
 			assert.Equal(t, 1, len(result))
 
-			assert.Equal(t, "dog", result[0].Name)
-
-			assert.Equal(t, 34, result[0].Uncertainty)
+			if len(result) > 0 {
+				assert.Equal(t, "dog", result[0].Name)
+				assert.Equal(t, 34, result[0].Uncertainty)
+			}
 		}
 	})
 	t.Run("Random.docx", func(t *testing.T) {

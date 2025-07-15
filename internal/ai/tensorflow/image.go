@@ -61,6 +61,7 @@ func Image(img image.Image, input *PhotoInput) (tfTensor *tf.Tensor, err error) 
 	}
 
 	var tfImage [1][][][3]float32
+	rIndex, gIndex, bIndex := input.InputOrder.Indices()
 
 	for j := 0; j < input.Resolution(); j++ {
 		tfImage[0] = append(tfImage[0], make([][3]float32, input.Resolution()))
@@ -69,9 +70,11 @@ func Image(img image.Image, input *PhotoInput) (tfTensor *tf.Tensor, err error) 
 	for i := 0; i < input.Resolution(); i++ {
 		for j := 0; j < input.Resolution(); j++ {
 			r, g, b, _ := img.At(i, j).RGBA()
-			tfImage[0][j][i][0] = convertValue(r, input.GetInterval())
-			tfImage[0][j][i][1] = convertValue(g, input.GetInterval())
-			tfImage[0][j][i][2] = convertValue(b, input.GetInterval())
+			//Although RGB can be disordered, we assume the input intervals are
+			//given in RGB order.
+			tfImage[0][j][i][rIndex] = convertValue(r, input.GetInterval(0))
+			tfImage[0][j][i][gIndex] = convertValue(g, input.GetInterval(1))
+			tfImage[0][j][i][bIndex] = convertValue(b, input.GetInterval(2))
 		}
 	}
 
@@ -137,8 +140,14 @@ func transformImageGraph(imageFormat fs.Type, resolution int) (graph *tf.Graph, 
 }
 
 func convertValue(value uint32, interval *Interval) float32 {
-	scale := interval.Size() / 255.0
-	offset := interval.Start
+	var scale float32
+
+	if interval.Mean != nil {
+		scale = *interval.Mean
+	} else {
+		scale = interval.Size() / 255.0
+	}
+	offset := interval.Offset()
 
 	return (float32(value>>8))*scale + offset
 }

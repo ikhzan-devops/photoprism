@@ -20,6 +20,14 @@ func TestConvertValue(t *testing.T) {
 	assert.Equal(t, float32(3024.8982), result)
 }
 
+func TestConvertStdMean(t *testing.T) {
+	mean := float32(1.0 / 127.5)
+	stdDev := float32(-1.0)
+
+	result := convertValue(uint32(98765432), &Interval{Mean: &mean, StdDev: &stdDev})
+	assert.Equal(t, float32(3024.8982), result)
+}
+
 func TestImageFromBytes(t *testing.T) {
 	var assetsPath = fs.Abs("../../../assets")
 	var examplesPath = assetsPath + "/examples"

@@ -68,9 +68,11 @@ var modelsInfo = map[string]*tensorflow.ModelInfo{
 	},
 	"vision-transformer-tensorflow2-vit-b16-classification-v1.tar.gz": {
 		Input: &tensorflow.PhotoInput{
-			Interval: &tensorflow.Interval{
-				Start: -1.0,
-				End:   1.0,
+			Intervals: []tensorflow.Interval{
+				{
+					Start: -1.0,
+					End:   1.0,
+				},
 			},
 		},
 		Output: &tensorflow.ModelOutput{

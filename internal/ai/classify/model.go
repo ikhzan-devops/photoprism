@@ -3,6 +3,7 @@ package classify
 import (
 	"bytes"
 	"fmt"
+	"image/color"
 	"math"
 	"os"
 	"path"
@@ -53,12 +54,16 @@ func NewNasnet(assetsPath string, disabled bool) *Model {
 		TFVersion: "1.12.0",
 		Tags:      []string{"photoprism"},
 		Input: &tensorflow.PhotoInput{
-			Name:   "input_1",
-			Height: 224,
-			Width:  224,
-			Interval: &tensorflow.Interval{
-				Start: -1,
-				End:   1,
+			Name:            "input_1",
+			Height:          224,
+			Width:           224,
+			ResizeOperation: tensorflow.CenterCrop,
+			InputOrder:      tensorflow.RGB,
+			Intervals: []tensorflow.Interval{
+				{
+					Start: -1,
+					End:   1,
+				},
 			},
 			OutputIndex: 0,
 		},
@@ -290,7 +295,18 @@ func (m *Model) createTensor(image []byte) (*tf.Tensor, error) {
 
 	// Resize the image only if its resolution does not match the model.
 	if img.Bounds().Dx() != m.meta.Input.Resolution() || img.Bounds().Dy() != m.meta.Input.Resolution() {
-		img = imaging.Fill(img, m.meta.Input.Resolution(), m.meta.Input.Resolution(), imaging.Center, imaging.Lanczos)
+		switch m.meta.Input.ResizeOperation {
+		case tensorflow.ResizeBreakAspectRatio:
+			imaging.Resize(img, m.meta.Input.Resolution(), m.meta.Input.Resolution(), imaging.Lanczos)
+		case tensorflow.CenterCrop:
+			img = imaging.Fill(img, m.meta.Input.Resolution(), m.meta.Input.Resolution(), imaging.Center, imaging.Lanczos)
+		case tensorflow.Padding:
+			resized := imaging.Fit(img, m.meta.Input.Resolution(), m.meta.Input.Resolution(), imaging.Lanczos)
+			dst := imaging.New(m.meta.Input.Resolution(), m.meta.Input.Resolution(), color.NRGBA{0, 0, 0, 255})
+			img = imaging.PasteCenter(dst, resized)
+		default:
+			img = imaging.Fill(img, m.meta.Input.Resolution(), m.meta.Input.Resolution(), imaging.Center, imaging.Lanczos)
+		}
 	}
 
 	return tensorflow.Image(img, m.meta.Input)
