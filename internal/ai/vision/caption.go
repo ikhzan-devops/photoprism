@@ -8,9 +8,10 @@ import (
 )
 
 // CaptionPromptDefault is the default prompt used to generate captions.
-var CaptionPromptDefault = `Create a caption without text formatting that sounds natural and briefly describes the main content of the picture in up to three sentences.` +
-	` Avoid meta-language and do not start the caption with phrases like "This image", "The image", "This picture", "The picture", "A picture of", "Here are", or "There is".` +
-	` Instead begin the description by identifying the type and number of subjects as well as any actions they perform.` +
+var CaptionPromptDefault = `Create an interesting caption that sounds natural and briefly describes the visual content in up to 3 sentences.` +
+	` Avoid text formatting, meta-language, and filler words.` +
+	` Do not start captions with phrases such as "This image", "The image", "This picture", "The picture", "A picture of", "Here are", or "There is".` +
+	` Instead, start describing the content by identifying the subjects, location, and any actions that might be performed.` +
 	` Use explicit language to describe the scene if necessary for a proper understanding.`
 
 // CaptionModelDefault is the default model used to generate captions.
