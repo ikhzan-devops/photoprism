@@ -1128,7 +1128,18 @@ export default {
       }
 
       if (fieldType === "select-field") {
-        const items = this.getItemsArray(fieldName, false);
+        const items = this.getItemsArray(fieldName, fieldData.mixed);
+
+        if (fieldName === "Type" && fieldData.value) {
+          const matchingOption = items.find((item) => item.value === fieldData.value);
+          return {
+            value: matchingOption ? matchingOption.text : fieldData.value,
+            placeholder: "",
+            persistent: false,
+            items,
+          };
+        }
+
         return {
           value: formatNumericValue(fieldData.value),
           placeholder: "",
