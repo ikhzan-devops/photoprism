@@ -33,8 +33,8 @@ github.com/alexbrainman/sspi v0.0.0-20231016080023-1a75b4708caa/go.mod h1:cEWa1L
 github.com/andybalholm/cascadia v1.1.0/go.mod h1:GsXiBklL0woXo1j/WYWtSYYC4ouU9PqHO0sqidkEA4Y=
 github.com/beorn7/perks v1.0.1 h1:VlbKKnNfV8bJzeqoa4cOKqO6bYr3WgKZxO8Z16+hsOM=
 github.com/beorn7/perks v1.0.1/go.mod h1:G2ZrVWU2WbWT9wwq4/hrbKbnv/1ERSJQ0ibhJ6rlkpw=
-github.com/bmatcuk/doublestar/v4 v4.8.1 h1:54Bopc5c2cAvhLRAzqOGCYHYyhcDHsFF4wWIR5wKP38=
-github.com/bmatcuk/doublestar/v4 v4.8.1/go.mod h1:xBQ8jztBU6kakFMg+8WGxn0c6z1fTSPVIjEY1Wr7jzc=
+github.com/bmatcuk/doublestar/v4 v4.9.0 h1:DBvuZxjdKkRP/dr4GVV4w2fnmrk5Hxc90T51LZjv0JA=
+github.com/bmatcuk/doublestar/v4 v4.9.0/go.mod h1:xBQ8jztBU6kakFMg+8WGxn0c6z1fTSPVIjEY1Wr7jzc=
 github.com/boombuler/barcode v1.0.1-0.20190219062509-6c824513bacc/go.mod h1:paBWMcWSl3LHKBqUq+rly7CNSldXjb2rDl3JlRe0mD8=
 github.com/boombuler/barcode v1.0.2 h1:79yrbttoZrLGkL/oOI8hBrUKucwOL0oOjUgEguGMcJ4=
 github.com/boombuler/barcode v1.0.2/go.mod h1:paBWMcWSl3LHKBqUq+rly7CNSldXjb2rDl3JlRe0mD8=
@@ -419,8 +419,8 @@ github.com/xrash/smetrics v0.0.0-20240521201337-686a1a2994c1/go.mod h1:Ohn+xnUBi
 github.com/yuin/goldmark v1.4.13/go.mod h1:6yULJ656Px+3vBD8DxQVa3kxgyrAnzto9xy5taEt/CY=
 github.com/zitadel/logging v0.6.2 h1:MW2kDDR0ieQynPZ0KIZPrh9ote2WkxfBif5QoARDQcU=
 github.com/zitadel/logging v0.6.2/go.mod h1:z6VWLWUkJpnNVDSLzrPSQSQyttysKZ6bCRongw0ROK4=
-github.com/zitadel/oidc/v3 v3.39.1 h1:6QwGwI3yxh4somT7fwRCeT1KOn/HOGv0PA0dFciwJjE=
-github.com/zitadel/oidc/v3 v3.39.1/go.mod h1:aH8brOrzoliAybVdfq2xIdGvbtl0j/VsKRNa7WE72gI=
+github.com/zitadel/oidc/v3 v3.41.0 h1:mzxk23KNLKoQ4pm8lTpfVywX043IPtsHsY7D+DEFBDc=
+github.com/zitadel/oidc/v3 v3.41.0/go.mod h1:vKJZJJou2Je8/6d3M+gEFVYC9NKExRuHedjwWWElVKo=
 github.com/zitadel/schema v1.3.1 h1:QT3kwiRIRXXLVAs6gCK/u044WmUVh6IlbLXUsn6yRQU=
 github.com/zitadel/schema v1.3.1/go.mod h1:071u7D2LQacy1HAN+YnMd/mx1qVE2isb0Mjeqg46xnU=
 go.opencensus.io v0.21.0/go.mod h1:mSImk1erAIZhrmZN+AvHh14ztQfjbGwt4TtuofqLduU=
