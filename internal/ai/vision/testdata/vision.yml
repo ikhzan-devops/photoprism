@@ -25,6 +25,7 @@ Models:
     Instead, start describing the content by identifying the subjects, location, and
     any actions that might be performed. Use explicit language to describe the scene
     if necessary for a proper understanding.
+  Resolution: 720
   Service:
     FileScheme: data
     RequestFormat: vision

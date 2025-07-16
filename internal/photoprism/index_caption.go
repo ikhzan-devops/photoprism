@@ -23,6 +23,7 @@ func (ind *Index) Caption(file *MediaFile) (caption *vision.CaptionResult, err e
 
 	// Get matching labels from computer vision model.
 	if caption, _, err = vision.Caption(vision.Files{fileName}, media.SrcLocal); err != nil {
+		// Failed.
 	} else if caption.Text != "" {
 		log.Infof("vision: generated caption for %s [%s]", clean.Log(file.BaseName()), time.Since(start))
 	}

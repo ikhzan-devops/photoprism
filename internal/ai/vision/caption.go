@@ -14,7 +14,8 @@ var CaptionPromptDefault = `Create an interesting caption that sounds natural an
 	` Instead, start describing the content by identifying the subjects, location, and any actions that might be performed.` +
 	` Use explicit language to describe the scene if necessary for a proper understanding.`
 
-// CaptionModelDefault is the default model used to generate captions.
+// CaptionModelDefault specifies the default model used to generate captions,
+// see https://qwenlm.github.io/blog/qwen2.5-vl/ to learn more.
 var CaptionModelDefault = "qwen2.5vl"
 
 // Caption returns generated captions for the specified images.

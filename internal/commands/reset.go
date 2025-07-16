@@ -218,6 +218,8 @@ func resetCache(c *config.Config) {
 	} else {
 		log.Infof("found no cache files")
 	}
+
+	entity.FlushCaches()
 }
 
 // resetSidecarJson removes generated *.json sidecar files.
