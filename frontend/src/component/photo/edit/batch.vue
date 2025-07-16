@@ -875,25 +875,36 @@ export default {
       const previousValue = this.previousFormData[fieldName].value;
       this.formData[fieldName].action = this.actions.update;
 
-      if (fieldName === "Day" || fieldName === "Month" || fieldName === "Year" || fieldName === "Type") {
-        // For select fields that use text values in options
-        let processedValue = newValue.text || newValue;
-
-        // Convert Day, Month, Year to integers
-        if (fieldName === "Day" || fieldName === "Month" || fieldName === "Year") {
-          processedValue = parseInt(processedValue) || 0;
-          // Handle mixed state
-          if (newValue.value === -2) {
-            processedValue = -2;
-          }
+      if (fieldName === "Day" || fieldName === "Month" || fieldName === "Year") {
+        // If the incoming value is an object (i.e., a selection was made from the list), use the .value property.
+        // If the user manually entered a number, it will be a string or number, so parseInt it.
+        let processedValue;
+        if (
+          typeof newValue === "object" &&
+          newValue !== null &&
+          Object.prototype.hasOwnProperty.call(newValue, "value")
+        ) {
+          processedValue = newValue.value;
+        } else {
+          processedValue = parseInt(newValue, 10) || 0;
         }
 
+        // Assign the value to formData
         this.formData[fieldName].value = processedValue;
 
+        // Check if it is the same as the previous value
+        if (processedValue === previousValue) {
+          this.formData[fieldName].action = this.actions.none;
+        }
+      } else if (fieldName === "Type") {
+        // Special logic for the Type field
+        const processedValue = newValue.value !== undefined ? newValue.value : newValue;
+        this.formData[fieldName].value = processedValue;
         if (processedValue === previousValue) {
           this.formData[fieldName].action = this.actions.none;
         }
       } else {
+        // General logic for all other select fields (Country, TimeZone, etc.)
         this.formData[fieldName].value = newValue;
 
         const newVal = newValue !== -2 ? newValue : "<mixed>";
@@ -1053,8 +1064,14 @@ export default {
         // }
       } else if (classList.contains("mdi-delete")) {
         this.deletedFields[fieldName] = true;
-        this.formData[fieldName].action = this.actions.remove;
-        this.formData[fieldName].value = "";
+
+        if (fieldName === "Altitude") {
+          this.formData[fieldName].action = this.actions.update;
+          this.formData[fieldName].value = 0;
+        } else {
+          this.formData[fieldName].action = this.actions.remove;
+          this.formData[fieldName].value = "";
+        }
       }
     },
     getIcon(fieldType, fieldName) {
@@ -1281,8 +1298,8 @@ export default {
     onLocationDelete() {
       this.deletedFields.Lat = true;
       this.deletedFields.Lng = true;
-      this.formData.Lat.action = this.actions.remove;
-      this.formData.Lng.action = this.actions.remove;
+      this.formData.Lat.action = this.actions.update;
+      this.formData.Lng.action = this.actions.update;
       this.formData.Lat.value = 0;
       this.formData.Lng.value = 0;
     },
@@ -1328,10 +1345,12 @@ export default {
 
       for (const [key, field] of Object.entries(this.formData)) {
         if (field && field.action && field.action !== this.actions.none) {
+          const isMixed = field.action !== this.actions.none ? false : field.mixed || false;
+
           // Convert Vue reactive proxy to plain object
           filtered[key] = {
             action: field.action,
-            mixed: field.mixed || false,
+            mixed: isMixed,
             value: field.value,
             // For Items type (Albums, Labels), also include items array
             ...(field.items && {
