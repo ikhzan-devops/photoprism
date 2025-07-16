@@ -42,15 +42,12 @@
                 />
               </template>
 
-              <template #item.select="{ item, index }">
+              <template #item.select="{ item }">
                 <v-checkbox
                   :model-value="isSelected(item)"
                   hide-details
                   density="compact"
-                  @touchstart.passive="onMouseDown($event, index)"
-                  @touchend.stop="onSelectClick($event, index, true)"
-                  @mousedown="onMouseDown($event, index)"
-                  @update:model-value="onSelectClick($event, index, true)"
+                  @update:model-value="toggle(item)"
                 />
               </template>
 
@@ -128,15 +125,12 @@
                       />
                     </template>
 
-                    <template #item.select="{ item, index }">
+                    <template #item.select="{ item }">
                       <v-checkbox
                         :model-value="isSelected(item)"
                         hide-details
                         density="compact"
-                        @touchstart.passive="onMouseDown($event, index)"
-                        @touchend.stop="onSelectClick($event, index, true)"
-                        @mousedown="onMouseDown($event, index)"
-                        @update:model-value="onSelectClick($event, index, true)"
+                        @update:model-value="toggle(item)"
                       />
                     </template>
 
@@ -1325,7 +1319,7 @@ export default {
             this.$emit("close");
           }
         })
-        .catch((error) => {
+        .catch(() => {
           this.$notify.error(this.$gettext("Failed to save changes"));
         });
     },
