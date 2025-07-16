@@ -778,7 +778,7 @@ func (m *Photo) AddLabels(labels classify.Labels) {
 			continue
 		}
 
-		if photoLabel.Uncertainty > classifyLabel.Uncertainty && photoLabel.Uncertainty < 100 {
+		if photoLabel.HasID() && photoLabel.Uncertainty > classifyLabel.Uncertainty && photoLabel.Uncertainty < 100 {
 			if err := photoLabel.Updates(map[string]interface{}{
 				"Uncertainty": classifyLabel.Uncertainty,
 				"LabelSrc":    classifyLabel.Source,

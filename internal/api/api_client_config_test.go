@@ -1,11 +1,13 @@
 package api
 
 import (
-	"github.com/photoprism/photoprism/internal/config"
-	"github.com/stretchr/testify/assert"
-	"github.com/tidwall/gjson"
 	"net/http"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/tidwall/gjson"
+
+	"github.com/photoprism/photoprism/internal/config"
 )
 
 func TestGetClientConfig(t *testing.T) {

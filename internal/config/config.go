@@ -60,6 +60,7 @@ import (
 	"github.com/photoprism/photoprism/pkg/fs"
 	"github.com/photoprism/photoprism/pkg/i18n"
 	"github.com/photoprism/photoprism/pkg/rnd"
+	"github.com/photoprism/photoprism/pkg/txt"
 )
 
 var initThumbsMutex sync.Mutex
@@ -86,6 +87,11 @@ func init() {
 	if Env(EnvUnsafe) {
 		// Disable features with high memory requirements?
 		LowMem = TotalMem < MinMem
+	}
+
+	// Disable entity cache if requested.
+	if txt.Bool(os.Getenv(EnvVar("disable-photolabelcache"))) {
+		entity.CachePhotoLabels = false
 	}
 
 	initThumbs()
