@@ -12,9 +12,9 @@ type SearchPhotosGeo struct {
 	Query       string    `form:"q"`
 	Scope       string    `form:"s" serialize:"-" example:"s:ariqwb43p5dh9h13" notes:"Restricts results to the specified album UID or other supported scopes"`
 	Filter      string    `form:"filter" serialize:"-" notes:"-"`
-	ID          string    `form:"id" example:"id:123e4567-e89b-..." notes:"Finds content with the specified Exif, Document or Instance IDs, separated by |"`
+	ID          string    `form:"id" example:"id:123e4567-e89b-..." notes:"Finds content with the specified Image, Document or Instance IDs, separated by |"`
 	UID         string    `form:"uid" example:"uid:pqbcf5j446s0futy" notes:"Finds content with the specified internal UIDs, separated by |"`
-	Type        string    `form:"type" example:"type:raw" notes:"Finds content with the specified media types separated by | e.g. image, raw, live, video, animated, audio, vector, or document"`
+	Type        string    `form:"type" example:"type:image|raw|live" notes:"Finds specific media types, such as image, raw, live, video, animated, audio, vector, or document, separated by |"`
 	Path        string    `form:"path" example:"path:2020/Holiday" notes:"Path names separated by |, supports * wildcards"`
 	Folder      string    `form:"folder" example:"folder:\"*/2020\"" notes:"Alias for the path filter"` // Alias for Path
 	Name        string    `form:"name" example:"name:\"IMG_9831-112*\"" notes:"File names without path and extension, separated by |"`
