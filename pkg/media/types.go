@@ -1,33 +1,39 @@
 package media
 
-// Constants representing standard media types.
+// Content is categorized and compared based on the following media types:
 const (
 	Unknown  Type = ""
-	Archive  Type = "archive"
-	Sidecar  Type = "sidecar"
 	Image    Type = "image"
+	Raw      Type = "raw"
+	Live     Type = "live"
 	Video    Type = "video"
 	Animated Type = "animated"
 	Audio    Type = "audio"
-	Document Type = "document"
-	Raw      Type = "raw"
 	Vector   Type = "vector"
-	Live     Type = "live"
+	Document Type = "document"
+	Sidecar  Type = "sidecar"
+	Archive  Type = "archive"
 )
 
-// PriorityMain specifies the minimum priority for main media types,
-// like Animated, Audio, Document, Image, Live, Raw, Vector, and Video.
-const PriorityMain = 4
+// PriorityImage specifies the minimum priority for main media types, which can be indexed and displayed on their own,
+// unlike archives or sidecar files that cannot be indexed or searched without a related main media file.
+const (
+	PriorityUnknown   = 0
+	PrioritySidecar   = 1
+	PriorityArchive   = 2
+	PriorityImage     = 4
+	PriorityMainMedia = PriorityImage
+)
 
 // Priorities maps media types to integer values that represent their relative importance.
 type Priorities map[Type]int
 
 // Priority assigns a relative priority value to the media type constants defined above.
 var Priority = Priorities{
-	Unknown:  0,
-	Sidecar:  1,
-	Archive:  2,
-	Image:    PriorityMain,
+	Unknown:  PriorityUnknown, // 0
+	Sidecar:  PrioritySidecar, // 1
+	Archive:  PriorityArchive, // 2
+	Image:    PriorityImage,   // 4
 	Video:    8,
 	Animated: 16,
 	Audio:    16,
