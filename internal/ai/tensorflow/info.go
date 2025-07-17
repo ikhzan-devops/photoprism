@@ -129,19 +129,19 @@ func (o *ResizeOperation) UnmarshalYAML(unmarshal func(interface{}) error) error
 // How should we order the input vectors
 // JSON and YAML functions are given to make it
 // user friendly from the configuration files
-type InputOrder int
+type ColorChannelOrder int
 
 const (
-	UndefinedOrder InputOrder = 0
-	RGB                       = 123
-	RBG                       = 132
-	GRB                       = 213
-	GBR                       = 231
-	BRG                       = 312
-	BGR                       = 321
+	UndefinedOrder ColorChannelOrder = 0
+	RGB                              = 123
+	RBG                              = 132
+	GRB                              = 213
+	GBR                              = 231
+	BRG                              = 312
+	BGR                              = 321
 )
 
-func (o InputOrder) Indices() (r, g, b int) {
+func (o ColorChannelOrder) Indices() (r, g, b int) {
 	i := int(o)
 
 	if i == 0 {
@@ -165,7 +165,7 @@ func (o InputOrder) Indices() (r, g, b int) {
 	return
 }
 
-func (o InputOrder) String() string {
+func (o ColorChannelOrder) String() string {
 	value := int(o)
 
 	if value == 0 {
@@ -196,7 +196,7 @@ func (o InputOrder) String() string {
 	return result
 }
 
-func NewInputOrder(val string) (InputOrder, error) {
+func NewColorChannelOrder(val string) (ColorChannelOrder, error) {
 	if len(val) != 3 {
 		return UndefinedOrder, fmt.Errorf("Invalid length, expected 3")
 	}
@@ -222,20 +222,20 @@ func NewInputOrder(val string) (InputOrder, error) {
 		}
 		result = result*10 + index
 	}
-	return InputOrder(result), nil
+	return ColorChannelOrder(result), nil
 }
 
-func (o InputOrder) MarshalJSON() ([]byte, error) {
+func (o ColorChannelOrder) MarshalJSON() ([]byte, error) {
 	return json.Marshal(o.String())
 }
 
-func (o *InputOrder) UnmarshalJSON(data []byte) error {
+func (o *ColorChannelOrder) UnmarshalJSON(data []byte) error {
 	var s string
 	if err := json.Unmarshal(data, &s); err != nil {
 		return err
 	}
 
-	val, err := NewInputOrder(s)
+	val, err := NewColorChannelOrder(s)
 	if err != nil {
 		return err
 	}
@@ -244,17 +244,17 @@ func (o *InputOrder) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (o InputOrder) MarshalYAML() (any, error) {
+func (o ColorChannelOrder) MarshalYAML() (any, error) {
 	return o.String(), nil
 }
 
-func (o *InputOrder) UnmarshalYAML(unmarshal func(interface{}) error) error {
+func (o *ColorChannelOrder) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	var s string
 	if err := unmarshal(&s); err != nil {
 		return err
 	}
 
-	val, err := NewInputOrder(s)
+	val, err := NewColorChannelOrder(s)
 	if err != nil {
 		return err
 	}
@@ -264,13 +264,13 @@ func (o *InputOrder) UnmarshalYAML(unmarshal func(interface{}) error) error {
 
 // Input description for a photo input for a model
 type PhotoInput struct {
-	Name            string          `yaml:"Name,omitempty" json:"name,omitempty"`
-	Intervals       []Interval      `yaml:"Intervals,omitempty" json:"intervals,omitempty"`
-	ResizeOperation ResizeOperation `yaml:"ResizeOperation,omitempty" json:"resizeOperation,omitemty"`
-	InputOrder      InputOrder      `yaml:"InputOrder,omitempty" json:"inputOrder,omitempty"`
-	OutputIndex     int             `yaml:"Index,omitempty" json:"index,omitempty"`
-	Height          int64           `yaml:"Height,omitempty" json:"height,omitempty"`
-	Width           int64           `yaml:"Width,omitempty" json:"width,omitempty"`
+	Name              string            `yaml:"Name,omitempty" json:"name,omitempty"`
+	Intervals         []Interval        `yaml:"Intervals,omitempty" json:"intervals,omitempty"`
+	ResizeOperation   ResizeOperation   `yaml:"ResizeOperation,omitempty" json:"resizeOperation,omitemty"`
+	ColorChannelOrder ColorChannelOrder `yaml:"ColorChannelOrder,omitempty" json:"inputOrder,omitempty"`
+	OutputIndex       int               `yaml:"Index,omitempty" json:"index,omitempty"`
+	Height            int64             `yaml:"Height,omitempty" json:"height,omitempty"`
+	Width             int64             `yaml:"Width,omitempty" json:"width,omitempty"`
 }
 
 // When dimensions are not defined, it means the model accepts any size of
@@ -331,8 +331,8 @@ func (p *PhotoInput) Merge(other *PhotoInput) {
 		p.ResizeOperation = other.ResizeOperation
 	}
 
-	if p.InputOrder == UndefinedOrder {
-		p.InputOrder = other.InputOrder
+	if p.ColorChannelOrder == UndefinedOrder {
+		p.ColorChannelOrder = other.ColorChannelOrder
 	}
 }
 

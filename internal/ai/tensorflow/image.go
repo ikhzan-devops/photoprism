@@ -61,7 +61,7 @@ func Image(img image.Image, input *PhotoInput) (tfTensor *tf.Tensor, err error) 
 	}
 
 	var tfImage [1][][][3]float32
-	rIndex, gIndex, bIndex := input.InputOrder.Indices()
+	rIndex, gIndex, bIndex := input.ColorChannelOrder.Indices()
 
 	for j := 0; j < input.Resolution(); j++ {
 		tfImage[0] = append(tfImage[0], make([][3]float32, input.Resolution()))

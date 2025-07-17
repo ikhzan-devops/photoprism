@@ -88,7 +88,7 @@ func TestResizeOperationYAML(t *testing.T) {
 }
 
 // Resize Operation Tests
-var allInputOrders = []InputOrder{
+var allColorChannelOrders = []ColorChannelOrder{
 	RGB,
 	RBG,
 	GRB,
@@ -97,23 +97,23 @@ var allInputOrders = []InputOrder{
 	BGR,
 }
 
-func TestInputOrders(t *testing.T) {
-	for i := range allInputOrders {
-		text := allInputOrders[i].String()
+func TestColorChannelOrders(t *testing.T) {
+	for i := range allColorChannelOrders {
+		text := allColorChannelOrders[i].String()
 
-		order, err := NewInputOrder(text)
+		order, err := NewColorChannelOrder(text)
 		if err != nil {
 			t.Fatalf("Invalid order %s: %v", text, err)
 		}
 
-		assert.Equal(t, order, allInputOrders[i])
+		assert.Equal(t, order, allColorChannelOrders[i])
 	}
 }
 
 const exampleOrderJSON = `"RGB"`
 
-func TestInputOrderJSON(t *testing.T) {
-	var order InputOrder
+func TestColorChannelOrderJSON(t *testing.T) {
+	var order ColorChannelOrder
 
 	err := json.Unmarshal(
 		[]byte(exampleOrderJSON), &order)
@@ -122,11 +122,11 @@ func TestInputOrderJSON(t *testing.T) {
 		t.Fatal("Could not unmarshal the example operation")
 	}
 
-	for i := range allInputOrders {
-		serialized, err := json.Marshal(allInputOrders[i])
+	for i := range allColorChannelOrders {
+		serialized, err := json.Marshal(allColorChannelOrders[i])
 		if err != nil {
 			t.Fatalf("Could not marshal %v: %v",
-				allInputOrders[i], err)
+				allColorChannelOrders[i], err)
 		}
 
 		err = json.Unmarshal(serialized, &order)
@@ -135,14 +135,14 @@ func TestInputOrderJSON(t *testing.T) {
 				string(serialized), err)
 		}
 
-		assert.Equal(t, order, allInputOrders[i])
+		assert.Equal(t, order, allColorChannelOrders[i])
 	}
 }
 
 const exampleOrderYAML = "RGB"
 
-func TestInputOrderYAML(t *testing.T) {
-	var order InputOrder
+func TestColorChannelOrderYAML(t *testing.T) {
+	var order ColorChannelOrder
 
 	err := yaml.Unmarshal(
 		[]byte(exampleOrderYAML), &order)
@@ -151,11 +151,11 @@ func TestInputOrderYAML(t *testing.T) {
 		t.Fatal("Could not unmarshal the example operation")
 	}
 
-	for i := range allInputOrders {
-		serialized, err := yaml.Marshal(allInputOrders[i])
+	for i := range allColorChannelOrders {
+		serialized, err := yaml.Marshal(allColorChannelOrders[i])
 		if err != nil {
 			t.Fatalf("Could not marshal %v: %v",
-				allInputOrders[i], err)
+				allColorChannelOrders[i], err)
 		}
 
 		err = yaml.Unmarshal(serialized, &order)
@@ -164,7 +164,7 @@ func TestInputOrderYAML(t *testing.T) {
 				string(serialized), err)
 		}
 
-		assert.Equal(t, order, allInputOrders[i])
+		assert.Equal(t, order, allColorChannelOrders[i])
 	}
 }
 
@@ -188,8 +188,8 @@ func TestOrderIndices(t *testing.T) {
 		}
 	}
 
-	for i := range allInputOrders {
-		r, g, b = allInputOrders[i].Indices()
-		assert.Equal(t, powerFx(r)+2*powerFx(g)+3*powerFx(b), int(allInputOrders[i]))
+	for i := range allColorChannelOrders {
+		r, g, b = allColorChannelOrders[i].Indices()
+		assert.Equal(t, powerFx(r)+2*powerFx(g)+3*powerFx(b), int(allColorChannelOrders[i]))
 	}
 }

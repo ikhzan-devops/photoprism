@@ -54,11 +54,11 @@ func NewNasnet(assetsPath string, disabled bool) *Model {
 		TFVersion: "1.12.0",
 		Tags:      []string{"photoprism"},
 		Input: &tensorflow.PhotoInput{
-			Name:            "input_1",
-			Height:          224,
-			Width:           224,
-			ResizeOperation: tensorflow.CenterCrop,
-			InputOrder:      tensorflow.RGB,
+			Name:              "input_1",
+			Height:            224,
+			Width:             224,
+			ResizeOperation:   tensorflow.CenterCrop,
+			ColorChannelOrder: tensorflow.RGB,
 			Intervals: []tensorflow.Interval{
 				{
 					Start: -1,
