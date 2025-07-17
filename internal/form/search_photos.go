@@ -60,8 +60,8 @@ type SearchPhotos struct {
 	Alt         string    `form:"alt" example:"alt:300-500" notes:"Altitude (m)"`
 	Dist        float64   `form:"dist" example:"dist:50" notes:"Maximum distance to position in km"`
 	Latlng      string    `form:"latlng" example:"latlng:49.4,13.41,46.5,2.331" notes:"Position bounding box (Lat N, Lng E, Lat S, Lng W)"`
-	Camera      string    `form:"camera" example:"camera:canon" notes:"Camera make or model name"`
-	Lens        string    `form:"lens" example:"lens:ef24" notes:"Lens make or model name"`
+	Camera      string    `form:"camera" example:"camera:canon" notes:"Camera make or model"`
+	Lens        string    `form:"lens" example:"lens:ef24" notes:"Lens make or model"`
 	Iso         string    `form:"iso" example:"iso:200-400" notes:"ISO number (light sensitivity)"`
 	Mm          string    `form:"mm" example:"mm:28-35" notes:"Focal length (35mm equivalent)"`
 	F           string    `form:"f" example:"f:2.8-4.5" notes:"Aperture (F-Number)"`
