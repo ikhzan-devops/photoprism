@@ -53,13 +53,13 @@ type SearchPhotosGeo struct {
 	Face        string    `form:"face" notes:"Find pictures with a specific face ID, you can also specify yes, no, new, or a face type"`
 	Faces       string    `form:"faces" example:"faces:yes faces:3" notes:"Minimum number of detected faces (yes means 1)"` // Find or exclude faces if detected.
 	Near        string    `form:"near" example:"near:pqbcf5j446s0futy" notes:"Finds nearby pictures (UID)"`
-	S2          string    `form:"s2" example:"s2:4799e370ca54c8b9"  notes:"Position (S2 Cell ID)"`
+	S2          string    `form:"s2" example:"s2:4799e370ca54c8b9"  notes:"Position, specified as S2 Cell ID"`
 	Olc         string    `form:"olc" example:"olc:8FWCHX7W+" notes:"Open Location Code (OLC)"`
-	Lat         float64   `form:"lat" example:"lat:41.894043" notes:"Position Latitude (-90.0 to 90.0 deg)"`
-	Lng         float64   `form:"lng" example:"lng:-87.62448" notes:"Position Longitude (-180.0 to 180.0 deg)"`
+	Lat         float64   `form:"lat" example:"lat:41.894043" notes:"Position latitude (-90.0 to 90.0 deg)"`
+	Lng         float64   `form:"lng" example:"lng:-87.62448" notes:"Position longitude (-180.0 to 180.0 deg)"`
 	Alt         string    `form:"alt" example:"alt:300-500" notes:"Altitude (m)"`
-	Dist        float64   `form:"dist" example:"dist:50" notes:"Maximum Distance to Position in km"`
-	Latlng      string    `form:"latlng" example:"latlng:49.4,13.41,46.5,2.331" notes:"Position Bounding Box (Lat N, Lng E, Lat S, Lng W)"`
+	Dist        float64   `form:"dist" example:"dist:50" notes:"Maximum distance to position in km"`
+	Latlng      string    `form:"latlng" example:"latlng:49.4,13.41,46.5,2.331" notes:"Position bounding box (Lat N, Lng E, Lat S, Lng W)"`
 	Camera      int       `form:"camera" example:"camera:2" notes:"Camera ID"`
 	Lens        int       `form:"lens" example:"lens:3" notes:"Lens ID"`
 	Iso         string    `form:"iso" example:"iso:200-400" notes:"ISO number (light sensitivity)"`
