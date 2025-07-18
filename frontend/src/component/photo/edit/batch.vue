@@ -731,10 +731,10 @@ export default {
       const lng = this.formData?.Lng?.value;
 
       if ((lat === null || lat === 0) && (lng === null || lng === 0)) {
-        return "37.75267, -122.543"; // Default from p-location-input
+        return "37.75267, -122.543";
       }
 
-      return ""; // Has value, no placeholder
+      return "";
     },
     isLocationDeleted() {
       return this.deletedFields.Lat || this.deletedFields.Lng;
@@ -826,10 +826,8 @@ export default {
           processedValue = parseInt(newValue, 10) || 0;
         }
 
-        // Assign the value to formData
         this.formData[fieldName].value = processedValue;
 
-        // Check if it is the same as the previous value
         if (processedValue === previousValue) {
           this.formData[fieldName].action = this.actions.none;
         }
@@ -1291,7 +1289,6 @@ export default {
         if (field && field.action && field.action !== this.actions.none) {
           // For Albums and Labels (Items type)
           if (key === "Albums" || key === "Labels") {
-            // No need to map items - they already contain the correct action property from BatchChipSelector
             filtered[key] = field;
           } else {
             // For regular fields
