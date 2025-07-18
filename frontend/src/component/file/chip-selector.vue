@@ -115,7 +115,7 @@ export default {
       });
     },
     computedInputLabel() {
-      return this.inputLabel || this.$gettext("Item name");
+      return this.inputLabel || "";
     },
     computedInputPlaceholder() {
       return this.inputPlaceholder || this.$gettext("Enter item name...");
