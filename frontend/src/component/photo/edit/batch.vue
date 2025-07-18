@@ -466,69 +466,36 @@
 
                 <div>
                   <v-row dense>
-                    <v-col cols="12" md="6">
-                      <p>Albums</p>
-                    </v-col>
-                  </v-row>
-                  <v-row dense>
                     <v-col cols="12">
-                      <v-combobox
-                        v-model="selectedAlbums"
-                        hide-details
-                        chips
-                        closable-chips
-                        multiple
-                        class="input-albums"
-                        :items="albums"
-                        item-title="Title"
-                        item-value="UID"
-                        :placeholder="$gettext('Select or create an album')"
-                        return-object
-                        @update:model-value="onAlbumsChange"
-                      >
-                        <template #no-data>
-                          <v-list-item>
-                            <v-list-item-title>
-                              {{ $gettext(`Press enter to create a new album.`) }}
-                            </v-list-item-title>
-                          </v-list-item>
-                        </template>
-                      </v-combobox>
+                      <BatchChipSelector
+                        v-model:items="albumItems"
+                        :title="$gettext('Albums')"
+                        :available-items="availableAlbumOptions"
+                        :input-label="$gettext('Album name')"
+                        :input-placeholder="$gettext('Enter album name...')"
+                        :empty-text="$gettext('No albums assigned')"
+                        :loading="loading"
+                        :disabled="false"
+                        @update:items="onAlbumsUpdate"
+                      />
                     </v-col>
                   </v-row>
                 </div>
 
                 <div>
                   <v-row dense>
-                    <v-col cols="12" md="6">
-                      <p>Labels</p>
-                    </v-col>
-                  </v-row>
-                  <v-row dense>
                     <v-col cols="12">
-                      <v-combobox
-                        v-model="selectedLabels"
-                        rows="2"
-                        hide-details
-                        chips
-                        closable-chips
-                        multiple
-                        class="input-labels"
-                        :items="labels"
-                        item-title="Title"
-                        item-value="UID"
-                        :placeholder="$gettext('Select or create a label')"
-                        return-object
-                        @update:model-value="onLabelsChange"
-                      >
-                        <template #no-data>
-                          <v-list-item>
-                            <v-list-item-title>
-                              {{ $gettext(`Press enter to create a new label.`) }}
-                            </v-list-item-title>
-                          </v-list-item>
-                        </template>
-                      </v-combobox>
+                      <BatchChipSelector
+                        v-model:items="labelItems"
+                        :title="$gettext('Labels')"
+                        :available-items="availableLabelOptions"
+                        :input-label="$gettext('Label name')"
+                        :input-placeholder="$gettext('Enter label name...')"
+                        :empty-text="$gettext('No labels assigned')"
+                        :loading="loading"
+                        :disabled="false"
+                        @update:items="onLabelsUpdate"
+                      />
                     </v-col>
                   </v-row>
                 </div>
@@ -633,6 +600,7 @@ import { Batch } from "model/batch-edit";
 import Thumb from "../../../model/thumb";
 import PLocationDialog from "component/location/dialog.vue";
 import PLocationInput from "component/location/input.vue";
+import BatchChipSelector from "component/file/chip-selector.vue";
 
 export default {
   name: "PPhotoEditBatch",
@@ -640,6 +608,7 @@ export default {
     IconLivePhoto,
     PLocationDialog,
     PLocationInput,
+    BatchChipSelector,
   },
   props: {
     visible: {
@@ -679,19 +648,6 @@ export default {
       allSelectedLength: 0,
       options,
       countries,
-      albums: [
-        { UID: "album1", Title: "Vacation 2023" },
-        { UID: "album2", Title: "Family Photos" },
-        { UID: "album3", Title: "Work Events" },
-        { UID: "album4", Title: "Nature Photography" },
-      ],
-      labels: [
-        { UID: "label1", Title: "People" },
-        { UID: "label2", Title: "Animals" },
-        { UID: "label3", Title: "Landscape" },
-        { UID: "label4", Title: "Architecture" },
-        { UID: "label5", Title: "Food" },
-      ],
       firstVisibleElementIndex: 0,
       lastVisibleElementIndex: 0,
       mouseDown: {
@@ -708,6 +664,10 @@ export default {
       locationDialog: false,
       placesDisabled: !this.$config.feature("places"),
       locationLabel: this.$gettext("Location"),
+      availableAlbumOptions: [],
+      availableLabelOptions: [],
+      albumItems: [],
+      labelItems: [],
       tableHeaders: [
         { key: "select", title: "", sortable: false, width: "50px" },
         { key: "preview", title: "Pictures", sortable: false },
@@ -723,30 +683,6 @@ export default {
   computed: {
     formTitle() {
       return this.$gettext(`Batch Edit (${this.allSelectedLength})`);
-    },
-    selectedAlbums: {
-      get() {
-        if (!this.formData?.Albums?.items) return [];
-        return this.formData.Albums.items.map((item) => ({
-          UID: item.value,
-          Title: item.title,
-        }));
-      },
-      set(value) {
-        this.onAlbumsChange(value);
-      },
-    },
-    selectedLabels: {
-      get() {
-        if (!this.formData?.Labels?.items) return [];
-        return this.formData.Labels.items.map((item) => ({
-          UID: item.value,
-          Title: item.title,
-        }));
-      },
-      set(value) {
-        this.onLabelsChange(value);
-      },
     },
     currentCoordinates() {
       if (this.isLocationMixed || this.isLocationDeleted) {
@@ -834,6 +770,7 @@ export default {
   },
   created() {
     // this.subscriptions.push(this.$event.subscribe("photos.updated", (ev, data) => this.onUpdate(ev, data)));
+    this.fetchAvailableOptions();
   },
   beforeUnmount() {
     for (let i = 0; i < this.subscriptions.length; i++) {
@@ -1000,30 +937,37 @@ export default {
         };
       });
 
-      // Initialize Albums and Labels as empty Items structures
+      // Initialize Albums and Labels from backend data
+      const albumsData = this.values.Albums || { items: [], mixed: false, action: this.actions.none };
+      const labelsData = this.values.Labels || { items: [], mixed: false, action: this.actions.none };
+
       this.formData.Albums = {
-        action: this.actions.none,
-        mixed: false,
-        items: [],
+        action: albumsData.action || this.actions.none,
+        mixed: albumsData.mixed || false,
+        items: albumsData.items || [],
       };
 
       this.formData.Labels = {
-        action: this.actions.none,
-        mixed: false,
-        items: [],
+        action: labelsData.action || this.actions.none,
+        mixed: labelsData.mixed || false,
+        items: labelsData.items || [],
       };
 
       this.previousFormData.Albums = {
-        action: this.actions.none,
-        mixed: false,
-        items: [],
+        action: albumsData.action || this.actions.none,
+        mixed: albumsData.mixed || false,
+        items: [...(albumsData.items || [])],
       };
 
       this.previousFormData.Labels = {
-        action: this.actions.none,
-        mixed: false,
-        items: [],
+        action: labelsData.action || this.actions.none,
+        mixed: labelsData.mixed || false,
+        items: [...(labelsData.items || [])],
       };
+
+      // Update data properties for v-model
+      this.albumItems = [...(albumsData.items || [])];
+      this.labelItems = [...(labelsData.items || [])];
     },
     toggleOptions(fieldName) {
       const fieldData = this.values[fieldName];
@@ -1345,53 +1289,23 @@ export default {
 
       for (const [key, field] of Object.entries(this.formData)) {
         if (field && field.action && field.action !== this.actions.none) {
-          const isMixed = field.action !== this.actions.none ? false : field.mixed || false;
-
-          // Convert Vue reactive proxy to plain object
-          filtered[key] = {
-            action: field.action,
-            mixed: isMixed,
-            value: field.value,
-            // For Items type (Albums, Labels), also include items array
-            ...(field.items && {
-              items: field.items.map((item) => ({
-                action: item.action,
-                mixed: item.mixed || false,
-                value: item.value,
-                title: item.title,
-              })),
-            }),
-          };
+          // For Albums and Labels (Items type)
+          if (key === "Albums" || key === "Labels") {
+            // No need to map items - they already contain the correct action property from BatchChipSelector
+            filtered[key] = field;
+          } else {
+            // For regular fields
+            const isMixed = field.action !== this.actions.none ? false : field.mixed || false;
+            filtered[key] = {
+              action: field.action,
+              mixed: isMixed,
+              value: field.value,
+            };
+          }
         }
       }
 
       return filtered;
-    },
-    onAlbumsChange(value) {
-      // Convert selected albums to Items format
-      const items = (value || []).map((album) => ({
-        value: album.UID || album, // Handle both object and string values
-        title: album.Title || album,
-        mixed: false,
-        action: this.actions.add,
-      }));
-
-      this.formData.Albums.items = items;
-      this.formData.Albums.action = this.actions.update;
-      this.formData.Albums.mixed = false;
-    },
-    onLabelsChange(value) {
-      // Convert selected labels to Items format
-      const items = (value || []).map((label) => ({
-        value: label.UID || label,
-        title: label.Title || label,
-        mixed: false,
-        action: this.actions.add,
-      }));
-
-      this.formData.Labels.items = items;
-      this.formData.Labels.action = this.actions.update;
-      this.formData.Labels.mixed = false;
     },
     getFieldDisplayName(fieldName) {
       const displayNames = {
@@ -1401,6 +1315,53 @@ export default {
         Panorama: this.$gettext("Panorama"),
       };
       return displayNames[fieldName] || fieldName;
+    },
+    // BatchChipSelector methods
+    onAlbumsUpdate(updatedItems) {
+      this.albumItems = updatedItems;
+      this.formData.Albums.items = updatedItems;
+      this.formData.Albums.action = this.actions.update;
+    },
+    onLabelsUpdate(updatedItems) {
+      this.labelItems = updatedItems;
+      this.formData.Labels.items = updatedItems;
+      this.formData.Labels.action = this.actions.update;
+    },
+
+    // Fetch available options for dropdowns
+    async fetchAvailableOptions() {
+      try {
+        // Mock data for now - replace with actual API calls when services are available
+        this.availableAlbumOptions = [
+          { value: "album1", title: "Vacation 2023" },
+          { value: "album2", title: "Family Photos" },
+          { value: "album3", title: "Work Events" },
+          { value: "album4", title: "Nature Photography" },
+        ];
+
+        this.availableLabelOptions = [
+          { value: "label1", title: "People" },
+          { value: "label2", title: "Animals" },
+          { value: "label3", title: "Landscape" },
+          { value: "label4", title: "Architecture" },
+          { value: "label5", title: "Food" },
+        ];
+
+        // TODO: Replace with actual API calls when services are properly injected
+        // const albumsResponse = await this.$albums.search({ count: 100 });
+        // this.availableAlbumOptions = albumsResponse.models.map((album) => ({
+        //   value: album.UID,
+        //   title: album.Title,
+        // }));
+
+        // const labelsResponse = await this.$labels.search({ count: 100 });
+        // this.availableLabelOptions = labelsResponse.models.map((label) => ({
+        //   value: label.ID,
+        //   title: label.Name,
+        // }));
+      } catch (error) {
+        console.error("Error fetching available options:", error);
+      }
     },
   },
 };
