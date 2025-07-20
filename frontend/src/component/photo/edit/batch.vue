@@ -1284,12 +1284,26 @@ export default {
       const filtered = {};
 
       for (const [key, field] of Object.entries(this.formData)) {
-        if (field && field.action && field.action !== this.actions.none) {
+        if (field) {
           // For Albums and Labels (Items type)
           if (key === "Albums" || key === "Labels") {
-            filtered[key] = field;
-          } else {
-            // For regular fields
+            // Ensure action is always "none" instead of null when there are no changes
+            const action = field.action || this.actions.none;
+
+            // Only include in filtered data if there's an actual change
+            if (action !== this.actions.none) {
+              filtered[key] = {
+                ...field,
+                action,
+                items: field.items.map((item) => ({
+                  ...item,
+                  // Remove isNew as it's not needed by the backend
+                  isNew: undefined,
+                })),
+              };
+            }
+          } else if (field.action && field.action !== this.actions.none) {
+            // For regular fields with changes
             const isMixed = field.action !== this.actions.none ? false : field.mixed || false;
             filtered[key] = {
               action: field.action,
@@ -1314,13 +1328,21 @@ export default {
     // BatchChipSelector methods
     onAlbumsUpdate(updatedItems) {
       this.albumItems = updatedItems;
+
+      // Only update action if there are actual changes
+      const hasChanges = updatedItems.some((item) => item.action === "add" || item.action === "remove");
+
       this.formData.Albums.items = updatedItems;
-      this.formData.Albums.action = this.actions.update;
+      this.formData.Albums.action = hasChanges ? this.actions.update : this.actions.none;
     },
     onLabelsUpdate(updatedItems) {
       this.labelItems = updatedItems;
+
+      // Only update action if there are actual changes
+      const hasChanges = updatedItems.some((item) => item.action === "add" || item.action === "remove");
+
       this.formData.Labels.items = updatedItems;
-      this.formData.Labels.action = this.actions.update;
+      this.formData.Labels.action = hasChanges ? this.actions.update : this.actions.none;
     },
 
     // Fetch available options for dropdowns

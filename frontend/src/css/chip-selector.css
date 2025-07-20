@@ -65,23 +65,23 @@
 }
 
 .chip--green {
-  background-color: #4caf50;
-  color: white;
+    background-color: rgb(var(--v-theme-download));
+  color: rgb(var(--v-theme-on-download));
 }
 
 .chip--green-light {
-  background-color: rgba(76, 175, 80, 0.3);
-  color: #2e7d32;
+  background-color: rgba(var(--v-theme-download), 0.3);
+  color: rgb(var(--v-theme-download));
 }
 
 .chip--red {
-  background-color: #f44336;
-  color: white;
+  background-color: rgb(var(--v-theme-error));
+  color: rgb(var(--v-theme-on-error));
 }
 
 .chip--red-light {
-  background-color: rgba(244, 67, 54, 0.3);
-  color: #c62828;
+  background-color: rgba(var(--v-theme-error), 0.3);
+  color: rgb(var(--v-theme-error));
 }
 
 /* Empty state */
