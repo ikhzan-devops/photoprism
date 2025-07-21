@@ -8233,23 +8233,11 @@
                 1000000,
                 1000000000,
                 60000000000,
-                3600000000000,
-                1,
-                1000,
-                1000000,
-                1000000000,
-                60000000000,
                 3600000000000
             ],
             "x-enum-varnames": [
                 "minDuration",
                 "maxDuration",
-                "Nanosecond",
-                "Microsecond",
-                "Millisecond",
-                "Second",
-                "Minute",
-                "Hour",
                 "Nanosecond",
                 "Microsecond",
                 "Millisecond",
@@ -8263,17 +8251,28 @@
             "enum": [
                 "url",
                 "images",
-                "vision"
+                "vision",
+                "ollama"
             ],
             "x-enum-varnames": [
                 "ApiFormatUrl",
                 "ApiFormatImages",
-                "ApiFormatVision"
+                "ApiFormatVision",
+                "ApiFormatOllama"
             ]
         },
         "vision.ApiRequest": {
             "type": "object",
             "properties": {
+                "context": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "format": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "string"
                 },
@@ -8286,7 +8285,19 @@
                 "model": {
                     "type": "string"
                 },
+                "options": {
+                    "$ref": "#/definitions/vision.ApiRequestOptions"
+                },
                 "prompt": {
+                    "type": "string"
+                },
+                "stream": {
+                    "type": "boolean"
+                },
+                "suffix": {
+                    "type": "string"
+                },
+                "system": {
                     "type": "string"
                 },
                 "url": {
@@ -8294,6 +8305,98 @@
                 },
                 "version": {
                     "type": "string"
+                }
+            }
+        },
+        "vision.ApiRequestOptions": {
+            "type": "object",
+            "properties": {
+                "frequency_penalty": {
+                    "type": "number"
+                },
+                "low_vram": {
+                    "type": "boolean"
+                },
+                "main_gpu": {
+                    "type": "integer"
+                },
+                "min_p": {
+                    "type": "number"
+                },
+                "mirostat": {
+                    "type": "integer"
+                },
+                "mirostat_eta": {
+                    "type": "number"
+                },
+                "mirostat_tau": {
+                    "type": "number"
+                },
+                "num_batch": {
+                    "type": "integer"
+                },
+                "num_ctx": {
+                    "type": "integer"
+                },
+                "num_gpu": {
+                    "type": "integer"
+                },
+                "num_keep": {
+                    "type": "integer"
+                },
+                "num_predict": {
+                    "type": "integer"
+                },
+                "num_thread": {
+                    "type": "integer"
+                },
+                "numa": {
+                    "type": "boolean"
+                },
+                "penalize_newline": {
+                    "type": "boolean"
+                },
+                "presence_penalty": {
+                    "type": "number"
+                },
+                "repeat_last_n": {
+                    "type": "integer"
+                },
+                "repeat_penalty": {
+                    "type": "number"
+                },
+                "seed": {
+                    "type": "integer"
+                },
+                "stop": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "temperature": {
+                    "type": "number"
+                },
+                "tfs_z": {
+                    "type": "number"
+                },
+                "top_k": {
+                    "type": "integer"
+                },
+                "top_p": {
+                    "type": "number"
+                },
+                "typical_p": {
+                    "type": "number"
+                },
+                "use_mlock": {
+                    "type": "boolean"
+                },
+                "use_mmap": {
+                    "type": "boolean"
+                },
+                "vocab_only": {
+                    "type": "boolean"
                 }
             }
         },
@@ -8406,6 +8509,9 @@
                 },
                 "resolution": {
                     "type": "integer"
+                },
+                "system": {
+                    "type": "string"
                 },
                 "type": {
                     "$ref": "#/definitions/vision.ModelType"
