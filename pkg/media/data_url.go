@@ -45,6 +45,18 @@ func DataUrl(r io.Reader) string {
 	return fmt.Sprintf("data:%s;base64,%s", mimeType, EncodeBase64String(data))
 }
 
+// DataBase64 generates a base64 encoded string of the binary data from the specified io.Reader.
+func DataBase64(r io.Reader) string {
+	// Read binary data.
+	data, err := io.ReadAll(r)
+
+	if err != nil || len(data) == 0 {
+		return ""
+	}
+
+	return EncodeBase64String(data)
+}
+
 // ReadUrl reads binary data from a regular file path,
 // fetches its data from a remote http or https URL,
 // or decodes a base64 data URL as created by DataUrl.
