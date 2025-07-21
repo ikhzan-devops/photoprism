@@ -1,17 +1,19 @@
 Models:
 - Type: labels
-  Name: NASNet
-  Version: Mobile
+  Name: nasnet
+  Version: mobile
   Resolution: 224
   Tags:
   - photoprism
 - Type: nsfw
-  Name: Nsfw
+  Name: nsfw
+  Version: latest
   Resolution: 224
   Tags:
   - serve
 - Type: face
-  Name: FaceNet
+  Name: facenet
+  Version: latest
   Resolution: 160
   Tags:
   - serve

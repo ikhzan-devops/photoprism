@@ -13,6 +13,15 @@ export default class Page {
     this.labelsTab = Selector("#tab-labels", { timeout: 15000 });
     this.peopleTab = Selector("#tab-people", { timeout: 15000 });
 
+    this.locationAction = Selector(".input-coordinates i.action-map", { timeout: 15000 });
+    this.locationSearch = Selector("div.p-location-dialog .v-autocomplete", { timeout: 15000 });
+    this.locationClear = Selector(".input-coordinates i.action-clear", { timeout: 15000 });
+    this.locationUndo = Selector("div.p-location-dialog .input-coordinates i.action-undo", { timeout: 15000 });
+    this.locationInput = Selector("div.p-location-dialog .input-coordinates input", { timeout: 15000 });
+    this.locationConfirm = Selector("div.p-location-dialog button.action-confirm", { timeout: 15000 });
+    this.locationCancel = Selector("div.p-location-dialog button.action-cancel", { timeout: 15000 });
+    this.locationMarker = Selector("div.maplibregl-marker", { timeout: 15000 });
+
     this.detailsDone = Selector(".p-form-photo-details-meta button.action-done", {
       timeout: 15000,
     });
@@ -29,7 +38,7 @@ export default class Page {
     this.title = Selector(".input-title input", { timeout: 15000 });
     this.latitude = Selector(".input-latitude input", { timeout: 15000 });
     this.longitude = Selector(".input-longitude input", { timeout: 15000 });
-    this.coordinates = Selector(".input-coordinates input", { timeout: 15000 });
+    this.coordinates = Selector("div.p-tab-photo-details .input-coordinates input", { timeout: 15000 });
     this.localTime = Selector(".input-local-time input", { timeout: 15000 });
     this.day = Selector("div.input-day input", { timeout: 15000 });
     this.month = Selector(".input-month input", { timeout: 15000 });
@@ -178,11 +187,11 @@ export default class Page {
   async checkEditFormSelectValue(field, val) {
     if (val !== "") {
       if (val === "Unknown" && field === "day") {
-        await t.expect(this[field + "Value"].innerText).eql("");
+        await t.expect(this[field].innerText).eql("");
       } else if (val === "Unknown" && field === "month") {
-        await t.expect(this[field + "Value"].innerText).eql("");
+        await t.expect(this[field].innerText).eql("");
       } else if (val === "Unknown" && field === "year") {
-        await t.expect(this[field + "Value"].innerText).eql("");
+        await t.expect(this[field].innerText).eql("");
       } else {
         await t.expect(this[field + "Value"].innerText).eql(val);
       }
@@ -206,18 +215,24 @@ export default class Page {
       } else {
         await t.typeText(this[field], val, { replace: true });
       }
-    } else if (field === "coordinates") {
-      await t.click(Selector("div.input-coordinates i.mdi-close"));
-    } else {
-      await t.click(this[field]).pressKey("ctrl+a delete");
+    } else if (val === "") {
+      if (field === "coordinates") {
+        await t.click(this.locationClear);
+      } else {
+        await t.click(this[field]).pressKey("ctrl+a delete");
+      }
     }
   }
 
   async editFormSelectValue(field, val) {
     if (val !== "") {
-      await t
-        .typeText(this[field], val, { replace: true })
-        .click(Selector("div").withText(val).parent('div[role="option"]'));
+      if (field === "camera" || field === "lens") {
+        await t.click(this[field]).click(Selector("div").withText(val).parent('div[role="option"]'));
+      } else {
+        await t
+          .typeText(this[field], val, { replace: true })
+          .click(Selector("div").withText(val).parent('div[role="option"]'));
+      }
     }
   }
 

@@ -8,29 +8,29 @@ import (
 var (
 	NasnetModel = &Model{
 		Type:       ModelTypeLabels,
-		Name:       "NASNet",
-		Version:    ModelVersionMobile,
+		Name:       "nasnet",
+		Version:    VersionMobile,
 		Resolution: 224, // Cropped image tile with 224x224 pixels.
 		Tags:       []string{"photoprism"},
 	}
 	NsfwModel = &Model{
 		Type:       ModelTypeNsfw,
-		Name:       "Nsfw",
-		Version:    ModelVersionNone,
+		Name:       "nsfw",
+		Version:    VersionLatest,
 		Resolution: 224, // Cropped image tile with 224x224 pixels.
 		Tags:       []string{"serve"},
 	}
 	FacenetModel = &Model{
 		Type:       ModelTypeFace,
-		Name:       "FaceNet",
-		Version:    ModelVersionNone,
+		Name:       "facenet",
+		Version:    VersionLatest,
 		Resolution: 160, // Cropped image tile with 160x160 pixels.
 		Tags:       []string{"serve"},
 	}
 	CaptionModel = &Model{
 		Type:       ModelTypeCaption,
 		Name:       CaptionModelDefault,
-		Version:    ModelVersionLatest,
+		Version:    VersionLatest,
 		Resolution: 720, // Original aspect ratio, with a max size of 720 x 720 pixels.
 		Prompt:     CaptionPromptDefault,
 		Service: Service{

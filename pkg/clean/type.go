@@ -33,6 +33,15 @@ func TypeLowerUnderscore(s string) string {
 	return strings.ReplaceAll(TypeLower(s), " ", "_")
 }
 
+// TypeLowerDash converts a string to a lowercase type string and replaces spaces with dashes.
+func TypeLowerDash(s string) string {
+	if s == "" {
+		return s
+	}
+
+	return strings.ReplaceAll(TypeLower(s), " ", "-")
+}
+
 // ShortType omits invalid runes, ensures a maximum length of 8 characters, and returns the result.
 func ShortType(s string) string {
 	if s == "" {
