@@ -30,5 +30,8 @@ GOBIN="/usr/local/bin" go install github.com/dustinkirkland/golang-petname/cmd/p
 echo "Installing doctl for using the DigitalOcean API...."
 GOBIN="/usr/local/bin" go install github.com/digitalocean/doctl/cmd/doctl@latest
 
+echo "Installing Kustomize for Kubernetes configuration management...."
+GOBIN="/usr/local/bin" go install sigs.k8s.io/kustomize/kustomize/v5@latest
+
 # Create a symbolic link for "duf" so that it is used instead of the original "df".
 ln -sf /usr/local/bin/duf /usr/local/bin/df
