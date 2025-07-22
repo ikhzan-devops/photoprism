@@ -123,12 +123,12 @@ msgstr "نشانه دسترسی"
 
 #: src/component/navigation.vue:87 src/component/navigation.vue:1822
 #: src/component/service/upload.vue:72 src/model/service.js:96
-#: src/model/user.js:171 src/page/settings.vue:85
+#: src/model/user.js:174 src/page/settings.vue:85
 #: src/page/settings/general.vue:582
 msgid "Account"
 msgstr "حساب کاربری"
 
-#: src/component/user/add/dialog.vue:101 src/component/service/add.vue:53
+#: src/component/user/add/dialog.vue:105 src/component/service/add.vue:53
 msgid "Account created"
 msgstr "حساب کاربری ایجاد شد"
 
@@ -178,7 +178,7 @@ msgstr "برای مرتب سازی نزولی فعال کنید."
 msgid "Activation Code"
 msgstr "کد فعال سازی"
 
-#: src/component/user/add/dialog.vue:28 src/page/admin/users.vue:92
+#: src/component/user/add/dialog.vue:29 src/page/admin/users.vue:92
 #: src/component/settings/apps.vue:451
 msgid "Add"
 msgstr "اضافه کردن"
@@ -414,7 +414,11 @@ msgstr "تأیید"
 msgid "Apps and Devices"
 msgstr "برنامه ها و دستگاه ها"
 
-#: src/app/routes.js:295 src/component/lightbox.vue:1207
+#: src/component/lightbox.vue:1207
+msgctxt "Verb"
+msgid "Archive"
+msgstr ""
+
 #: src/component/navigation.vue:557 src/component/photo/clipboard.vue:142
 #: src/component/photo/view/cards.vue:398 src/page/settings/general.vue:432
 msgid "Archive"
@@ -600,7 +604,7 @@ msgid "Can't select more items"
 msgstr "موارد بیشتری را انتخاب نمی کند"
 
 #: src/component/session/remove/dialog.vue:45
-#: src/component/user/add/dialog.vue:27 src/component/user/edit/dialog.vue:474
+#: src/component/user/add/dialog.vue:28 src/component/user/edit/dialog.vue:474
 #: src/component/user/remove/dialog.vue:45 src/page/connect.vue:120
 #: src/component/album/delete/dialog.vue:43
 #: src/component/album/edit/dialog.vue:200 src/component/confirm/dialog.vue:43
@@ -664,13 +668,13 @@ msgstr "تغییر عناوین عکس ، مکان ها و سایر ابرداد
 msgid "Change private flag"
 msgstr "تغییر پرچم خصوصی"
 
-#: src/component/user/add/dialog.vue:108 src/component/user/add/dialog.vue:113
-#: src/component/user/edit/dialog.vue:91 src/component/user/edit/dialog.vue:96
+#: src/component/user/add/dialog.vue:112 src/component/user/add/dialog.vue:117
+#: src/component/user/edit/dialog.vue:92 src/component/user/edit/dialog.vue:97
 #: src/page/settings/account.vue:121 src/page/settings/account.vue:126
 msgid "Changes could not be saved"
 msgstr "تغییرات را نمی توان ذخیره کرد"
 
-#: src/component/user/edit/dialog.vue:84 src/component/user/edit/dialog.vue:160
+#: src/component/user/edit/dialog.vue:85 src/component/user/edit/dialog.vue:161
 #: src/component/album/edit/dialog.vue:73
 #: src/component/label/edit/dialog.vue:46 src/component/lightbox.vue:1961
 #: src/component/photo/edit/files.vue:162 src/component/service/edit.vue:90
@@ -756,7 +760,7 @@ msgstr "اسکن کامل"
 msgid "Confidence"
 msgstr "اعتماد"
 
-#: src/component/location/dialog.vue:212
+#: src/component/location/dialog.vue:213
 #: src/component/photo/album/dialog.vue:90
 #: src/component/settings/passcode.vue:264
 msgid "Confirm"
@@ -902,7 +906,7 @@ msgstr "گزارش‌های اشکال زدایی"
 #: src/options/admin.js:35 src/page/admin/sessions.vue:136
 #: src/page/admin/users.vue:178 src/component/photo/edit/info.vue:47
 #: src/component/photo/edit/info.vue:110 src/model/session.js:66
-#: src/model/user.js:246 src/options/auth.js:21 src/options/auth.js:22
+#: src/model/user.js:261 src/options/auth.js:21 src/options/auth.js:22
 #: src/options/auth.js:40 src/options/auth.js:41 src/options/options.js:196
 #: src/options/options.js:232 src/options/options.js:316
 #: src/options/themes.js:774
@@ -3146,7 +3150,7 @@ msgstr "شناسه منحصربفرد"
 #: src/model/photo.js:846 src/model/photo.js:869 src/model/photo.js:887
 #: src/model/photo.js:934 src/model/photo.js:942 src/model/photo.js:1031
 #: src/model/photo.js:1053 src/model/photo.js:1098 src/model/photo.js:1111
-#: src/model/user.js:157 src/options/options.js:51 src/options/options.js:69
+#: src/model/user.js:160 src/options/options.js:51 src/options/options.js:69
 #: src/options/options.js:86 src/options/options.js:100
 #: src/options/options.js:112 src/page/library/errors.vue:251
 #: src/page/library/errors.vue:258
@@ -3182,7 +3186,7 @@ msgstr "به روزرسانی نمایه ها"
 msgid "Updating moments"
 msgstr "به روزرسانی لحظه ها"
 
-#: src/component/user/edit/dialog.vue:155
+#: src/component/user/edit/dialog.vue:156
 msgid "Updating picture…"
 msgstr "به روزرسانی پیش نمایش ها"
 
@@ -3270,7 +3274,7 @@ msgid "Use your recovery code or contact an administrator for help."
 msgstr "از کد بازیابی خود استفاده کنید یا برای راهنمایی با یک سرپرست تماس بگیرید."
 
 #: src/options/admin.js:14 src/page/admin/sessions.vue:59
-#: src/page/admin/sessions.vue:243 src/model/user.js:361 src/options/auth.js:8
+#: src/page/admin/sessions.vue:243 src/model/user.js:376 src/options/auth.js:8
 msgid "User"
 msgstr "کاربر"
 
