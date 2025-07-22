@@ -449,15 +449,17 @@ msgstr ""
 msgid "Apps and Devices"
 msgstr ""
 
-#: src/component/lightbox.vue:1207
-msgctxt "Verb"
+#: src/app/routes.js:296
+#: src/component/navigation.vue:557
+#: src/page/settings/general.vue:432
+msgctxt "Noun"
 msgid "Archive"
 msgstr ""
 
-#: src/component/navigation.vue:557
+#: src/component/lightbox.vue:1207
 #: src/component/photo/clipboard.vue:142
 #: src/component/photo/view/cards.vue:398
-#: src/page/settings/general.vue:432
+msgctxt "Verb"
 msgid "Archive"
 msgstr ""
 
@@ -1157,10 +1159,10 @@ msgstr ""
 msgid "Disables video transcoding and thumbnail extraction."
 msgstr ""
 
-#: src/app/routes.js:566
-#: src/app/routes.js:573
-#: src/app/routes.js:580
-#: src/app/routes.js:587
+#: src/app/routes.js:569
+#: src/app/routes.js:576
+#: src/app/routes.js:583
+#: src/app/routes.js:590
 msgid "Discover"
 msgstr ""
 
@@ -1376,7 +1378,7 @@ msgstr ""
 msgid "Error"
 msgstr ""
 
-#: src/app/routes.js:382
+#: src/app/routes.js:385
 #: src/component/navigation.vue:1372
 msgid "Errors"
 msgstr ""
@@ -1502,7 +1504,7 @@ msgstr ""
 msgid "File"
 msgstr ""
 
-#: src/app/routes.js:351
+#: src/app/routes.js:354
 msgid "File Browser"
 msgstr ""
 
@@ -1671,7 +1673,7 @@ msgstr ""
 msgid "Hidden"
 msgstr ""
 
-#: src/app/routes.js:366
+#: src/app/routes.js:369
 msgid "Hidden Files"
 msgstr ""
 
@@ -1901,7 +1903,7 @@ msgstr ""
 msgid "Label"
 msgstr ""
 
-#: src/app/routes.js:397
+#: src/app/routes.js:400
 #: src/component/navigation.vue:1197
 #: src/component/photo/edit/dialog.vue:196
 #: src/component/photo/edit/dialog.vue:215
@@ -1977,9 +1979,9 @@ msgstr ""
 msgid "Lens"
 msgstr ""
 
-#: src/app/routes.js:451
-#: src/app/routes.js:467
-#: src/app/routes.js:483
+#: src/app/routes.js:454
+#: src/app/routes.js:470
+#: src/app/routes.js:486
 #: src/component/navigation.vue:1290
 #: src/page/settings/general.vue:507
 msgid "Library"
@@ -2626,8 +2628,8 @@ msgstr ""
 msgid "Password changed"
 msgstr ""
 
-#: src/app/routes.js:412
-#: src/app/routes.js:436
+#: src/app/routes.js:415
+#: src/app/routes.js:439
 #: src/component/navigation.vue:853
 #: src/component/navigation.vue:1939
 #: src/component/photo/edit/dialog.vue:238
@@ -2693,10 +2695,10 @@ msgstr ""
 msgid "Place & Time"
 msgstr ""
 
-#: src/app/routes.js:311
-#: src/app/routes.js:317
-#: src/app/routes.js:323
-#: src/app/routes.js:338
+#: src/app/routes.js:314
+#: src/app/routes.js:320
+#: src/app/routes.js:326
+#: src/app/routes.js:341
 #: src/component/navigation.vue:999
 #: src/component/navigation.vue:1956
 #: src/options/options.js:203
@@ -2906,7 +2908,7 @@ msgstr ""
 msgid "Refresh"
 msgstr ""
 
-#: src/app/routes.js:345
+#: src/app/routes.js:348
 #: src/component/navigation.vue:955
 #: src/component/navigation.vue:1040
 msgid "Regions"
@@ -3152,11 +3154,11 @@ msgid "Set as Album Cover"
 msgstr ""
 
 #: src/app/routes.js:101
-#: src/app/routes.js:500
-#: src/app/routes.js:512
-#: src/app/routes.js:529
-#: src/app/routes.js:542
-#: src/app/routes.js:555
+#: src/app/routes.js:503
+#: src/app/routes.js:515
+#: src/app/routes.js:532
+#: src/app/routes.js:545
+#: src/app/routes.js:558
 #: src/component/navigation.vue:1419
 #: src/component/navigation.vue:1841
 msgid "Settings"

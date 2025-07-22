@@ -414,15 +414,17 @@ msgstr "승인"
 msgid "Apps and Devices"
 msgstr "앱 및 디바이스"
 
-#: src/component/lightbox.vue:1207
-msgctxt "Verb"
+#: src/app/routes.js:296 src/component/navigation.vue:557
+#: src/page/settings/general.vue:432
+msgctxt "Noun"
 msgid "Archive"
 msgstr ""
 
-#: src/component/navigation.vue:557 src/component/photo/clipboard.vue:142
-#: src/component/photo/view/cards.vue:398 src/page/settings/general.vue:432
+#: src/component/lightbox.vue:1207 src/component/photo/clipboard.vue:142
+#: src/component/photo/view/cards.vue:398
+msgctxt "Verb"
 msgid "Archive"
-msgstr "보관"
+msgstr ""
 
 #: src/component/lightbox.vue:2002 src/component/photo/edit/info.vue:433
 msgid "Archived"
@@ -1017,8 +1019,8 @@ msgstr "벡터 그래픽 지원을 비활성화합니다."
 msgid "Disables video transcoding and thumbnail extraction."
 msgstr "동영상 트랜스코딩 및 썸네일 추출을 비활성화합니다."
 
-#: src/app/routes.js:566 src/app/routes.js:573 src/app/routes.js:580
-#: src/app/routes.js:587
+#: src/app/routes.js:569 src/app/routes.js:576 src/app/routes.js:583
+#: src/app/routes.js:590
 msgid "Discover"
 msgstr "디스커버"
 
@@ -1204,7 +1206,7 @@ msgstr "작업을 확인하고 계속하려면 비밀번호를 입력하세요."
 msgid "Error"
 msgstr "오류"
 
-#: src/app/routes.js:382 src/component/navigation.vue:1372
+#: src/app/routes.js:385 src/component/navigation.vue:1372
 msgid "Errors"
 msgstr "오류"
 
@@ -1317,7 +1319,7 @@ msgstr "여성"
 msgid "File"
 msgstr "파일"
 
-#: src/app/routes.js:351
+#: src/app/routes.js:354
 msgid "File Browser"
 msgstr "파일 탐색기"
 
@@ -1467,7 +1469,7 @@ msgstr "도움말/지원"
 msgid "Hidden"
 msgstr "숨김"
 
-#: src/app/routes.js:366
+#: src/app/routes.js:369
 msgid "Hidden Files"
 msgstr "숨김 파일"
 
@@ -1667,7 +1669,7 @@ msgstr "키워드"
 msgid "Label"
 msgstr "라벨"
 
-#: src/app/routes.js:397 src/component/navigation.vue:1197
+#: src/app/routes.js:400 src/component/navigation.vue:1197
 #: src/component/photo/edit/dialog.vue:196
 #: src/component/photo/edit/dialog.vue:215 src/options/options.js:206
 #: src/page/settings/general.vue:255
@@ -1734,7 +1736,7 @@ msgstr "법률 정보"
 msgid "Lens"
 msgstr "렌즈"
 
-#: src/app/routes.js:451 src/app/routes.js:467 src/app/routes.js:483
+#: src/app/routes.js:454 src/app/routes.js:470 src/app/routes.js:486
 #: src/component/navigation.vue:1290 src/page/settings/general.vue:507
 msgid "Library"
 msgstr "라이브러리"
@@ -2289,7 +2291,7 @@ msgstr "비밀번호"
 msgid "Password changed"
 msgstr "비밀번호 변경됨"
 
-#: src/app/routes.js:412 src/app/routes.js:436 src/component/navigation.vue:853
+#: src/app/routes.js:415 src/app/routes.js:439 src/component/navigation.vue:853
 #: src/component/navigation.vue:1939 src/component/photo/edit/dialog.vue:238
 #: src/component/photo/edit/dialog.vue:257 src/options/options.js:201
 #: src/page/settings/general.vue:180
@@ -2349,8 +2351,8 @@ msgstr "장소"
 msgid "Place & Time"
 msgstr "장소 & 시간"
 
-#: src/app/routes.js:311 src/app/routes.js:317 src/app/routes.js:323
-#: src/app/routes.js:338 src/component/navigation.vue:999
+#: src/app/routes.js:314 src/app/routes.js:320 src/app/routes.js:326
+#: src/app/routes.js:341 src/component/navigation.vue:999
 #: src/component/navigation.vue:1956 src/options/options.js:203
 #: src/page/places.vue:51 src/page/settings/general.vue:609
 #: src/page/settings/general.vue:638
@@ -2540,7 +2542,7 @@ msgstr "빨간색"
 msgid "Refresh"
 msgstr "새로 고침"
 
-#: src/app/routes.js:345 src/component/navigation.vue:955
+#: src/app/routes.js:348 src/component/navigation.vue:955
 #: src/component/navigation.vue:1040
 msgid "Regions"
 msgstr "지역"
@@ -2757,8 +2759,8 @@ msgstr "세션"
 msgid "Set as Album Cover"
 msgstr "앨범 표지로 설정"
 
-#: src/app/routes.js:101 src/app/routes.js:500 src/app/routes.js:512
-#: src/app/routes.js:529 src/app/routes.js:542 src/app/routes.js:555
+#: src/app/routes.js:101 src/app/routes.js:503 src/app/routes.js:515
+#: src/app/routes.js:532 src/app/routes.js:545 src/app/routes.js:558
 #: src/component/navigation.vue:1419 src/component/navigation.vue:1841
 msgid "Settings"
 msgstr "설정"
@@ -3474,6 +3476,9 @@ msgstr "라이브러리는 지속적으로 분석되어 특별한 순간, 여행
 #: src/component/lightbox.vue:285
 msgid "Zoom in/out"
 msgstr "확대/축소"
+
+#~ msgid "Archive"
+#~ msgstr "보관"
 
 #~ msgid "Start/Stop Slideshow"
 #~ msgstr "슬라이드쇼 시작/중지"

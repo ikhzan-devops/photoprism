@@ -41,7 +41,7 @@ import Feedback from "page/about/feedback.vue";
 import License from "page/about/license.vue";
 import Help from "page/help.vue";
 import Connect from "page/connect.vue";
-import { $gettext } from "common/gettext";
+import { $gettext, $pgettext } from "common/gettext";
 import { $config, $session } from "./session";
 
 const c = window.__CONFIG__;
@@ -292,7 +292,10 @@ export default [
     name: "archive",
     path: "/archive",
     component: Photos,
-    meta: { title: "$pgettext('Noun','Archive')", requiresAuth: true },
+    meta: {
+      title: $pgettext("Noun", "Archive"),
+      requiresAuth: true,
+    },
     props: { staticFilter: { archived: "true" } },
     beforeEnter: (to, from, next) => {
       if ($session.loginRequired()) {

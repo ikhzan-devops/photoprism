@@ -1317,7 +1317,7 @@ export default {
         {
           name: "archive",
           icon: "mdi-archive",
-          text: this.$pgettext("Verb","Archive"),
+          text: this.$pgettext("Verb", "Archive"),
           shortcut: "Ctrl-A",
           disabled: !this.model,
           visible:
