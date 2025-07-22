@@ -292,7 +292,7 @@ export default [
     name: "archive",
     path: "/archive",
     component: Photos,
-    meta: { title: $gettext("Archive"), requiresAuth: true },
+    meta: { title: "$pgettext('Noun','Archive')", requiresAuth: true },
     props: { staticFilter: { archived: "true" } },
     beforeEnter: (to, from, next) => {
       if ($session.loginRequired()) {
