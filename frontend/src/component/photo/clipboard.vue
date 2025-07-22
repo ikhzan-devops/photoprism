@@ -113,7 +113,7 @@
         <v-btn
           v-if="canArchive && context !== 'archive' && context !== 'hidden'"
           key="action-archive"
-          :title="$gettext('Archive')"
+          :title="$pgettext('Verb', 'Archive')"
           icon="mdi-archive"
           color="remove"
           variant="elevated"

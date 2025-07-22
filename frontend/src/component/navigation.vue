@@ -244,7 +244,7 @@
                   @click.stop=""
                 >
                   <v-list-item-title :class="`nav-menu-item menu-item`">
-                    {{ $gettext(`Archive`) }}
+                    {{ $pgettext("Noun", "Archive") }}
                   </v-list-item-title>
                   <span v-show="config.count.archived > 0" class="nav-count-item">{{ config.count.archived }}</span>
                 </v-list-item>

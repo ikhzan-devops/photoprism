@@ -91,7 +91,7 @@ func init() {
 
 	// Disable entity cache if requested.
 	if txt.Bool(os.Getenv(EnvVar("disable-photolabelcache"))) {
-		entity.CachePhotoLabels = false
+		entity.UsePhotoLabelsCache = false
 	}
 
 	initThumbs()

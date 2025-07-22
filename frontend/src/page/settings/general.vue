@@ -250,7 +250,7 @@
                 class="ma-0 pa-0 input-archive"
                 density="compact"
                 tabindex="2"
-                :label="$gettext('Archive')"
+                :label="$pgettext('Noun', 'Archive')"
                 :hint="$gettext('Hide photos that have been moved to archive.')"
                 prepend-icon="mdi-package-down"
                 persistent-hint

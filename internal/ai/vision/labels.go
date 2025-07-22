@@ -11,7 +11,7 @@ import (
 )
 
 // Labels finds matching labels for the specified image.
-func Labels(images Files, src media.Src) (result classify.Labels, err error) {
+func Labels(images Files, mediaSrc media.Src, labelSrc string) (result classify.Labels, err error) {
 	// Return if no thumbnail filenames were given.
 	if len(images) == 0 {
 		return result, errors.New("at least one image required")
@@ -53,20 +53,20 @@ func Labels(images Files, src media.Src) (result classify.Labels, err error) {
 			}
 
 			for _, label := range apiResponse.Result.Labels {
-				result = append(result, label.ToClassify())
+				result = append(result, label.ToClassify(labelSrc))
 			}
 		} else if tf := model.ClassifyModel(); tf != nil {
 			// Predict labels with local TensorFlow model.
 			for i := range images {
 				var labels classify.Labels
 
-				switch src {
+				switch mediaSrc {
 				case media.SrcLocal:
 					labels, err = tf.File(images[i], Config.Thresholds.Confidence)
 				case media.SrcRemote:
 					labels, err = tf.Url(images[i], Config.Thresholds.Confidence)
 				default:
-					return result, fmt.Errorf("invalid image source %s", clean.Log(src))
+					return result, fmt.Errorf("invalid media source %s", clean.Log(mediaSrc))
 				}
 
 				if err != nil {

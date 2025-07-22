@@ -7,6 +7,7 @@ import (
 
 	"github.com/photoprism/photoprism/internal/ai/vision"
 	"github.com/photoprism/photoprism/internal/auth/acl"
+	"github.com/photoprism/photoprism/internal/entity"
 	"github.com/photoprism/photoprism/internal/photoprism/get"
 	"github.com/photoprism/photoprism/pkg/media"
 	"github.com/photoprism/photoprism/pkg/media/http/header"
@@ -54,7 +55,7 @@ func PostVisionLabels(router *gin.RouterGroup) {
 		}
 
 		// Run inference to find matching labels.
-		labels, err := vision.Labels(request.Images, media.SrcRemote)
+		labels, err := vision.Labels(request.Images, media.SrcRemote, entity.SrcAuto)
 
 		if err != nil {
 			log.Errorf("vision: %s (run labels)", err)

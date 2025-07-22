@@ -41,7 +41,7 @@ func TestFindLabel(t *testing.T) {
 
 func TestFindPhotoLabel(t *testing.T) {
 	t.Run("Success", func(t *testing.T) {
-		if err := WarmPhotoLabelCache(); err != nil {
+		if err := CachePhotoLabels(); err != nil {
 			t.Fatal(err)
 		}
 

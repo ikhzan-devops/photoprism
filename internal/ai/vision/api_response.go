@@ -86,7 +86,7 @@ type LabelResult struct {
 }
 
 // ToClassify returns the label results as classify.Label.
-func (r LabelResult) ToClassify() classify.Label {
+func (r LabelResult) ToClassify(labelSrc string) classify.Label {
 	// Calculate uncertainty from confidence or assume a default of 20%.
 	var uncertainty int
 
@@ -97,18 +97,18 @@ func (r LabelResult) ToClassify() classify.Label {
 	}
 
 	// Default to "image" of no source name is provided.
-	var source string
-
-	if r.Source != "" {
-		source = r.Source
+	if labelSrc != entity.SrcAuto {
+		labelSrc = clean.ShortTypeLower(labelSrc)
+	} else if r.Source != "" {
+		labelSrc = clean.ShortTypeLower(r.Source)
 	} else {
-		source = entity.SrcImage
+		labelSrc = entity.SrcImage
 	}
 
 	// Return label.
 	return classify.Label{
 		Name:        r.Name,
-		Source:      source,
+		Source:      labelSrc,
 		Priority:    r.Priority,
 		Uncertainty: uncertainty,
 		Categories:  r.Categories}
