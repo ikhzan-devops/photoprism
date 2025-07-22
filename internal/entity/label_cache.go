@@ -6,6 +6,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/dustin/go-humanize/english"
 	gc "github.com/patrickmn/go-cache"
 
 	"github.com/photoprism/photoprism/pkg/clean"
@@ -17,12 +18,12 @@ const (
 	labelCacheDefaultExpiration = 15 * time.Minute
 	labelCacheErrorExpiration   = 5 * time.Minute
 	labelCacheCleanupInterval   = 10 * time.Minute
-	photoLabelCacheExpiration   = time.Hour
+	photoLabelCacheExpiration   = 24 * time.Hour
 )
 
 // Cache Label and PhotoLabel entities for faster indexing.
 var (
-	CachePhotoLabels     = true
+	UsePhotoLabelsCache  = true
 	labelCache           = gc.New(labelCacheDefaultExpiration, labelCacheCleanupInterval)
 	photoLabelCache      = gc.New(photoLabelCacheExpiration, labelCacheCleanupInterval)
 	photoLabelCacheMutex = sync.Mutex{}
@@ -40,33 +41,39 @@ func FlushLabelCache() {
 
 // FlushPhotoLabelCache removes all cached PhotoLabel entities from the cache.
 func FlushPhotoLabelCache() {
-	if !CachePhotoLabels {
+	if !UsePhotoLabelsCache {
 		return
 	}
 
 	photoLabelCacheMutex.Lock()
 	defer photoLabelCacheMutex.Unlock()
 
+	start := time.Now()
+
 	photoLabelCache.Flush()
+
+	log.Debugf("index: flushed photo labels cache [%s]", time.Since(start))
 }
 
 // FlushCachedPhotoLabel deletes a cached PhotoLabel entity from the cache.
 func FlushCachedPhotoLabel(m *PhotoLabel) {
-	if m == nil || !CachePhotoLabels {
+	if m == nil || !UsePhotoLabelsCache {
 		return
 	} else if m.HasID() {
 		photoLabelCache.Delete(photoLabelCacheKey(m.PhotoID, m.LabelID))
 	}
 }
 
-// WarmPhotoLabelCache warms up the PhotoLabel cache.
-func WarmPhotoLabelCache() (err error) {
-	if !CachePhotoLabels {
+// CachePhotoLabels warms up the PhotoLabel cache.
+func CachePhotoLabels() (err error) {
+	if !UsePhotoLabelsCache {
 		return nil
 	}
 
 	photoLabelCacheMutex.Lock()
 	defer photoLabelCacheMutex.Unlock()
+
+	start := time.Now()
 
 	var photoLabels []PhotoLabel
 
@@ -81,6 +88,8 @@ func WarmPhotoLabelCache() (err error) {
 	for _, m := range photoLabels {
 		photoLabelCache.SetDefault(m.CacheKey(), m)
 	}
+
+	log.Debugf("index: cached %s [%s]", english.Plural(len(photoLabels), "photo label", "photo labels"), time.Since(start))
 
 	return nil
 }
@@ -145,7 +154,7 @@ func FindPhotoLabel(photoId, labelId uint, cached bool) (*PhotoLabel, error) {
 	}
 
 	// Return cached label, if found.
-	if cached && CachePhotoLabels {
+	if cached && UsePhotoLabelsCache {
 		if cacheData, ok := photoLabelCache.Get(cacheKey); ok {
 			log.Tracef("photo-label: cache hit for %s", cacheKey)
 
@@ -164,16 +173,16 @@ func FindPhotoLabel(photoId, labelId uint, cached bool) (*PhotoLabel, error) {
 	result := &PhotoLabel{}
 
 	if find := Db().First(result, "photo_id = ? AND label_id = ?", photoId, labelId); find.RecordNotFound() {
-		if CachePhotoLabels {
+		if UsePhotoLabelsCache {
 			photoLabelCache.Set(cacheKey, *result, labelCacheErrorExpiration)
 		}
 		return result, fmt.Errorf("photo-label not found")
 	} else if find.Error != nil {
-		if CachePhotoLabels {
+		if UsePhotoLabelsCache {
 			photoLabelCache.Set(cacheKey, *result, labelCacheErrorExpiration)
 		}
 		return result, find.Error
-	} else if CachePhotoLabels {
+	} else if UsePhotoLabelsCache {
 		photoLabelCache.SetDefault(cacheKey, *result)
 	}
 

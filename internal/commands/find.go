@@ -41,8 +41,10 @@ func findAction(ctx *cli.Context) error {
 
 	defer conf.Shutdown()
 
+	filter := strings.TrimSpace(strings.Join(ctx.Args().Slice(), " "))
+
 	frm := form.SearchPhotos{
-		Query:   strings.TrimSpace(ctx.Args().First()),
+		Query:   filter,
 		Primary: false,
 		Merged:  false,
 		Count:   ctx.Int("count"),

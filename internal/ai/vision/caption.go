@@ -19,7 +19,7 @@ var CaptionPromptDefault = `Create an interesting caption that sounds natural an
 var CaptionModelDefault = "qwen2.5vl"
 
 // Caption returns generated captions for the specified images.
-func Caption(images Files, src media.Src) (result *CaptionResult, model *Model, err error) {
+func Caption(images Files, mediaSrc media.Src) (result *CaptionResult, model *Model, err error) {
 	// Return if there is no configuration or no image classification models are configured.
 	if Config == nil {
 		return result, model, errors.New("vision service is not configured")

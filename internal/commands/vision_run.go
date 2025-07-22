@@ -41,8 +41,9 @@ var VisionRunCommand = &cli.Command{
 func visionRunAction(ctx *cli.Context) error {
 	return CallWithDependencies(ctx, func(conf *config.Config) error {
 		worker := workers.NewVision(conf)
+		filter := strings.TrimSpace(strings.Join(ctx.Args().Slice(), " "))
 		return worker.Start(
-			strings.TrimSpace(ctx.Args().First()),
+			filter,
 			vision.ParseTypes(ctx.String("models")),
 			ctx.String("source"),
 			ctx.Bool("force"),

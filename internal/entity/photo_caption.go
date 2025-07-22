@@ -1,6 +1,11 @@
 package entity
 
 import (
+	"strings"
+	"time"
+
+	"github.com/dustin/go-humanize/english"
+
 	"github.com/photoprism/photoprism/pkg/txt"
 )
 
@@ -11,7 +16,7 @@ func (m *Photo) HasCaption() bool {
 
 // NoCaption returns true if the photo has no caption.
 func (m *Photo) NoCaption() bool {
-	return m.GetCaption() == ""
+	return strings.TrimSpace(m.GetCaption()) == ""
 }
 
 // GetCaption returns the photo caption, if any.
@@ -68,6 +73,8 @@ func (m *Photo) UpdateCaptionLabels() error {
 		return nil
 	}
 
+	start := time.Now()
+
 	var uncertainty int
 
 	if captionSrcPriority < SrcPriority[SrcMeta] {
@@ -91,5 +98,11 @@ func (m *Photo) UpdateCaptionLabels() error {
 		}
 	}
 
-	return Db().Where("label_src = ? AND photo_id = ? AND label_id NOT IN (?)", SrcCaption, m.ID, labelIds).Delete(&PhotoLabel{}).Error
+	if err := Db().Where("label_src = ? AND photo_id = ? AND label_id NOT IN (?)", SrcCaption, m.ID, labelIds).Delete(&PhotoLabel{}).Error; err != nil {
+		return err
+	}
+
+	log.Debugf("index: updated %s [%s]", english.Plural(len(labelIds), "caption label", "caption labels"), time.Since(start))
+
+	return nil
 }
