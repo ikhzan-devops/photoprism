@@ -3,24 +3,27 @@
     <span class="chip-selector__title">{{ title }}</span>
 
     <div class="chip-selector__chips">
-      <div
-        v-for="item in processedItems"
-        :key="item.value"
-        :class="getChipClasses(item)"
-        :aria-pressed="item.selected"
-        :tabindex="0"
-        role="button"
-        @click="handleChipClick(item)"
-        @keydown.enter="handleChipClick(item)"
-        @keydown.space.prevent="handleChipClick(item)"
-      >
-        <div class="chip__content">
-          <v-icon v-if="getChipIcon(item)" class="chip__icon">
-            {{ getChipIcon(item) }}
-          </v-icon>
-          <span class="chip__text">{{ item.title }}</span>
-        </div>
-      </div>
+      <v-tooltip v-for="item in processedItems" :key="item.value" :text="getChipTooltip(item)" location="top">
+        <template #activator="{ props }">
+          <div
+            v-bind="props"
+            :class="getChipClasses(item)"
+            :aria-pressed="item.selected"
+            :tabindex="0"
+            role="button"
+            @click="handleChipClick(item)"
+            @keydown.enter="handleChipClick(item)"
+            @keydown.space.prevent="handleChipClick(item)"
+          >
+            <div class="chip__content">
+              <v-icon v-if="getChipIcon(item)" class="chip__icon">
+                {{ getChipIcon(item) }}
+              </v-icon>
+              <span class="chip__text">{{ item.title }}</span>
+            </div>
+          </div>
+        </template>
+      </v-tooltip>
 
       <div v-if="processedItems.length === 0 && !showInput" class="chip-selector__empty">
         {{ emptyText }}
@@ -172,6 +175,17 @@ export default {
       return null;
     },
 
+    getChipTooltip(item) {
+      if (item.action === "add") {
+        return item.mixed ? this.$gettext("Add to all selected photos") : this.$gettext("Add to all");
+      } else if (item.action === "remove") {
+        return item.mixed ? this.$gettext("Remove from all selected photos") : this.$gettext("Remove from all");
+      } else if (item.mixed) {
+        return this.$gettext("Part of some selected photos");
+      }
+      return this.$gettext("Part of all selected photos");
+    },
+
     handleChipClick(item) {
       if (this.loading || this.disabled) return;
 
@@ -202,10 +216,19 @@ export default {
     },
 
     updateItemAction(itemToUpdate, action) {
-      const updatedItems = this.items.map((item) =>
-        (item.value || item.title) === (itemToUpdate.value || itemToUpdate.title) ? { ...item, action } : item
-      );
-      this.$emit("update:items", updatedItems);
+      if (itemToUpdate.isNew && action === "remove") {
+        // Remove the item completely if it's a new item being removed
+        const updatedItems = this.items.filter(
+          (item) => (item.value || item.title) !== (itemToUpdate.value || itemToUpdate.title)
+        );
+        this.$emit("update:items", updatedItems);
+      } else {
+        // Otherwise just update the action
+        const updatedItems = this.items.map((item) =>
+          (item.value || item.title) === (itemToUpdate.value || itemToUpdate.title) ? { ...item, action } : item
+        );
+        this.$emit("update:items", updatedItems);
+      }
     },
 
     onComboboxChange(value) {
