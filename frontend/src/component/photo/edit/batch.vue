@@ -1328,21 +1328,21 @@ export default {
     // BatchChipSelector methods
     onAlbumsUpdate(updatedItems) {
       this.albumItems = updatedItems;
-
-      // Only update action if there are actual changes
-      const hasChanges = updatedItems.some((item) => item.action === "add" || item.action === "remove");
-
-      this.formData.Albums.items = updatedItems;
-      this.formData.Albums.action = hasChanges ? this.actions.update : this.actions.none;
+      this.updateCollectionItems("Albums", updatedItems);
     },
+
     onLabelsUpdate(updatedItems) {
       this.labelItems = updatedItems;
+      this.updateCollectionItems("Labels", updatedItems);
+    },
 
-      // Only update action if there are actual changes
-      const hasChanges = updatedItems.some((item) => item.action === "add" || item.action === "remove");
+    updateCollectionItems(collectionType, items) {
+      // Check if there are any actual changes (add or remove actions)
+      const hasChanges = items.some((item) => item.action === "add" || item.action === "remove");
 
-      this.formData.Labels.items = updatedItems;
-      this.formData.Labels.action = hasChanges ? this.actions.update : this.actions.none;
+      // Update the form data
+      this.formData[collectionType].items = items;
+      this.formData[collectionType].action = hasChanges ? this.actions.update : this.actions.none;
     },
 
     // Fetch available options for dropdowns

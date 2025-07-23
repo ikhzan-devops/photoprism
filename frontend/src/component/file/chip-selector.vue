@@ -34,7 +34,6 @@
       <v-combobox
         ref="inputField"
         v-model="newItemTitle"
-        :label="''"
         :placeholder="computedInputPlaceholder"
         :persistent-placeholder="true"
         :items="availableItems"
@@ -85,10 +84,6 @@ export default {
       type: String,
       default: "",
     },
-    inputLabel: {
-      type: String,
-      default: "",
-    },
     inputPlaceholder: {
       type: String,
       default: "",
@@ -111,18 +106,16 @@ export default {
   },
   computed: {
     processedItems() {
-      return this.items.map((item) => {
-        return {
-          ...item,
-          selected: item.action === "add" || item.action === "remove",
-        };
-      });
-    },
-    computedInputLabel() {
-      return this.inputLabel || "";
+      return this.items.map((item) => ({
+        ...item,
+        selected: item.action === "add" || item.action === "remove",
+      }));
     },
     computedInputPlaceholder() {
       return this.inputPlaceholder || this.$gettext("Enter item name...");
+    },
+    showInput() {
+      return this.allowCreate;
     },
   },
   watch: {
@@ -165,13 +158,9 @@ export default {
     },
 
     getChipIcon(item) {
-      if (item.action === "add") {
-        return "mdi-plus";
-      } else if (item.action === "remove") {
-        return "mdi-minus";
-      } else if (item.mixed) {
-        return "mdi-circle-half-full";
-      }
+      if (item.action === "add") return "mdi-plus";
+      if (item.action === "remove") return "mdi-minus";
+      if (item.mixed) return "mdi-circle-half-full";
       return null;
     },
 
@@ -189,9 +178,10 @@ export default {
     handleChipClick(item) {
       if (this.loading || this.disabled) return;
 
-      let newAction = item.action;
+      let newAction;
 
       if (item.mixed) {
+        // Handle mixed state cycling
         switch (item.action) {
           case null:
           case "none":
@@ -205,6 +195,7 @@ export default {
             break;
         }
       } else {
+        // Handle normal state cycling
         if (item.isNew) {
           newAction = item.action === "add" ? "remove" : "add";
         } else {
@@ -216,30 +207,34 @@ export default {
     },
 
     updateItemAction(itemToUpdate, action) {
+      // Special case: remove new items completely
       if (itemToUpdate.isNew && action === "remove") {
-        // Remove the item completely if it's a new item being removed
         const updatedItems = this.items.filter(
           (item) => (item.value || item.title) !== (itemToUpdate.value || itemToUpdate.title)
         );
         this.$emit("update:items", updatedItems);
-      } else {
-        // Otherwise just update the action
-        const updatedItems = this.items.map((item) =>
-          (item.value || item.title) === (itemToUpdate.value || itemToUpdate.title) ? { ...item, action } : item
-        );
-        this.$emit("update:items", updatedItems);
+        return;
       }
+
+      // Update action for existing item
+      const updatedItems = this.items.map((item) =>
+        (item.value || item.title) === (itemToUpdate.value || itemToUpdate.title) ? { ...item, action } : item
+      );
+
+      this.$emit("update:items", updatedItems);
     },
 
     onComboboxChange(value) {
       this.newItemTitle = value;
 
+      // Auto-add when selecting from dropdown
       if (value && typeof value === "object" && value.title) {
         this.addNewItem();
       }
     },
 
     addNewItem() {
+      // Extract title and value from input
       let title, value;
 
       if (typeof this.newItemTitle === "string") {
@@ -265,26 +260,21 @@ export default {
 
       const newItem = {
         value: value || "",
-        title: title,
+        title,
         mixed: false,
         action: "add",
         isNew: true,
       };
 
-      const updatedItems = [...this.items, newItem];
-      this.$emit("update:items", updatedItems);
+      this.$emit("update:items", [...this.items, newItem]);
       this.newItemTitle = null;
 
-      // Force refresh the combobox
+      // Refocus input field
       this.$nextTick(() => {
         if (this.$refs.inputField) {
           this.$refs.inputField.focus();
         }
       });
-    },
-
-    isMobile() {
-      return this.$vuetify.display.mobile || "ontouchstart" in window || navigator.maxTouchPoints > 0;
     },
   },
 };
