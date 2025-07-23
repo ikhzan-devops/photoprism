@@ -31,8 +31,9 @@
       <v-combobox
         ref="inputField"
         v-model="newItemTitle"
-        :label="computedInputLabel"
+        :label="''"
         :placeholder="computedInputPlaceholder"
+        :persistent-placeholder="true"
         :items="availableItems"
         item-title="title"
         item-value="value"
@@ -101,7 +102,7 @@ export default {
   emits: ["update:items"],
   data() {
     return {
-      newItemTitle: "",
+      newItemTitle: null,
       originalStates: new Map(),
     };
   },
@@ -249,7 +250,14 @@ export default {
 
       const updatedItems = [...this.items, newItem];
       this.$emit("update:items", updatedItems);
-      this.newItemTitle = "";
+      this.newItemTitle = null;
+
+      // Force refresh the combobox
+      this.$nextTick(() => {
+        if (this.$refs.inputField) {
+          this.$refs.inputField.focus();
+        }
+      });
     },
 
     isMobile() {
