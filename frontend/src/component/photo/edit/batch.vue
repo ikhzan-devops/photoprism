@@ -529,11 +529,6 @@
 
                 <div>
                   <v-row dense>
-                    <v-col cols="12" md="6">
-                      <p>{{ $gettext("Options") }}</p>
-                    </v-col>
-                  </v-row>
-                  <v-row dense>
                     <v-col
                       v-for="fieldName in toggleFieldsArray"
                       :key="fieldName"
