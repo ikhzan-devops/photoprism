@@ -118,7 +118,7 @@ services:
       PHOTOPRISM_THUMB_UNCACHED: "true"              # enables on-demand thumbnail rendering (high memory and cpu usage)
       TF_CPP_MIN_LOG_LEVEL: 1                        # show TensorFlow log messages for development
       ## Run/install on first startup (options: update tensorflow https intel gpu davfs yt-dlp):
-      PHOTOPRISM_INIT: "https tensorflow-gpu yt-dlp"
+      PHOTOPRISM_INIT: "https tensorflow-gpu"
       ## Computer Vision API (https://docs.photoprism.app/getting-started/config-options/#computer-vision):
       PHOTOPRISM_VISION_API: "true"                  # server: enables service API endpoints under /api/v1/vision (requires access token)
       PHOTOPRISM_VISION_URI: ""                      # client: service URI, e.g. http://hostname/api/v1/vision (leave blank to disable)
