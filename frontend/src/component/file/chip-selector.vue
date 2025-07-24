@@ -108,6 +108,8 @@ export default {
     processedItems() {
       return this.items.map((item) => ({
         ...item,
+        // Ensure action is always a string, never null/undefined
+        action: item.action || "none",
         selected: item.action === "add" || item.action === "remove",
       }));
     },
@@ -183,7 +185,6 @@ export default {
       if (item.mixed) {
         // Handle mixed state cycling
         switch (item.action) {
-          case null:
           case "none":
             newAction = "add";
             break;
@@ -191,7 +192,7 @@ export default {
             newAction = "remove";
             break;
           case "remove":
-            newAction = null;
+            newAction = "none";
             break;
         }
       } else {
@@ -199,7 +200,7 @@ export default {
         if (item.isNew) {
           newAction = item.action === "add" ? "remove" : "add";
         } else {
-          newAction = item.action === "remove" ? null : "remove";
+          newAction = item.action === "remove" ? "none" : "remove";
         }
       }
 

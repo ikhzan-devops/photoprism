@@ -678,7 +678,7 @@ export default {
       return this.$gettext(`Batch Edit (${this.allSelectedLength})`);
     },
     currentCoordinates() {
-      if (this.isLocationMixed || this.isLocationDeleted) {
+      if (this.isLocationMixed || this.deletedFields.Lat || this.deletedFields.Lng) {
         return [0, 0];
       }
       const latData = this.values?.Lat;
@@ -714,7 +714,7 @@ export default {
       return [parseFloat(lat) || 0, parseFloat(lng) || 0];
     },
     locationPlaceholder() {
-      if (this.isLocationDeleted) {
+      if (this.deletedFields.Lat || this.deletedFields.Lng) {
         return "<deleted>";
       } else if (this.isLocationMixed) {
         return "<mixed>";
@@ -730,7 +730,24 @@ export default {
       return "";
     },
     isLocationDeleted() {
-      return this.deletedFields.Lat || this.deletedFields.Lng;
+      // Check if explicitly deleted
+      if (this.deletedFields.Lat || this.deletedFields.Lng) {
+        return true;
+      }
+
+      // Check if coordinates have been changed (should show undo)
+      if (this.formData && this.previousFormData) {
+        const currentLat = this.formData.Lat?.value || 0;
+        const currentLng = this.formData.Lng?.value || 0;
+        const previousLat = this.previousFormData.Lat?.value || 0;
+        const previousLng = this.previousFormData.Lng?.value || 0;
+
+        if (currentLat !== previousLat || currentLng !== previousLng) {
+          return true; // This will show the undo button
+        }
+      }
+
+      return false;
     },
     isLocationMixed() {
       if (this.isLocationDeleted) {
@@ -758,6 +775,8 @@ export default {
         this.allSelectedLength = this.model.getLengthOfAllSelected();
       } else {
         this.model = new Batch();
+        // Reset deleted fields when dialog is closed
+        this.deletedFields = {};
       }
     },
   },
@@ -853,6 +872,8 @@ export default {
       }
     },
     setFormData() {
+      this.deletedFields = {};
+
       this.formData = this.model.getDefaultFormData();
 
       const fieldConfigs = [
@@ -1028,7 +1049,7 @@ export default {
         fieldData.value !== null &&
         fieldData.value !== ""
       ) {
-        return "";
+        return "mdi-delete";
       }
     },
     getFieldData(fieldType, fieldName) {
@@ -1216,10 +1237,19 @@ export default {
       this.$emit("close");
     },
     updateLatLng(latlng) {
-      this.formData.Lat.value = parseFloat(latlng[0]) || 0;
-      this.formData.Lng.value = parseFloat(latlng[1]) || 0;
-      this.formData.Lat.action = this.actions.update;
-      this.formData.Lng.action = this.actions.update;
+      const newLat = parseFloat(latlng[0]) || 0;
+      const newLng = parseFloat(latlng[1]) || 0;
+
+      const previousLat = this.previousFormData.Lat?.value || 0;
+      const previousLng = this.previousFormData.Lng?.value || 0;
+
+      this.formData.Lat.value = newLat;
+      this.formData.Lng.value = newLng;
+
+      // Only set action to update if values actually changed
+      this.formData.Lat.action = newLat !== previousLat ? this.actions.update : this.actions.none;
+      this.formData.Lng.action = newLng !== previousLng ? this.actions.update : this.actions.none;
+
       this.deletedFields.Lat = false;
       this.deletedFields.Lng = false;
     },
@@ -1239,8 +1269,11 @@ export default {
       this.formData.Lng.value = 0;
     },
     onLocationUndo() {
+      // Reset deleted state
       this.deletedFields.Lat = false;
       this.deletedFields.Lng = false;
+
+      // Reset form actions and values to original
       this.formData.Lat.action = this.actions.none;
       this.formData.Lng.action = this.actions.none;
       this.formData.Lat.value = this.previousFormData.Lat?.value || 0;
@@ -1287,14 +1320,15 @@ export default {
 
             // Only include in filtered data if there's an actual change
             if (action !== this.actions.none) {
+              const processedItems = field.items.map((item) => {
+                const { isNew, ...itemWithoutIsNew } = item;
+                return itemWithoutIsNew;
+              });
+
               filtered[key] = {
                 ...field,
                 action,
-                items: field.items.map((item) => ({
-                  ...item,
-                  // Remove isNew as it's not needed by the backend
-                  isNew: undefined,
-                })),
+                items: processedItems,
               };
             }
           } else if (field.action && field.action !== this.actions.none) {
