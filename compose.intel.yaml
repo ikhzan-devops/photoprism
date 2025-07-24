@@ -119,7 +119,7 @@ services:
       PHOTOPRISM_FFMPEG_SIZE: "1920"                 # video size limit in pixels (720-7680) (default: 3840)
       # PHOTOPRISM_FFMPEG_BITRATE: "64"              # video bitrate limit in Mbps (default: 60)
       ## Run/install on first startup (options: update tensorflow https intel gpu davfs yt-dlp):
-      PHOTOPRISM_INIT: "https intel tensorflow yt-dlp"
+      PHOTOPRISM_INIT: "https intel tensorflow"
     ## Share hardware devices with FFmpeg for hardware video transcoding:
     devices:
       - "/dev/dri:/dev/dri"
