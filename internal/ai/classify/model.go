@@ -297,7 +297,7 @@ func (m *Model) createTensor(image []byte) (*tf.Tensor, error) {
 	if img.Bounds().Dx() != m.meta.Input.Resolution() || img.Bounds().Dy() != m.meta.Input.Resolution() {
 		switch m.meta.Input.ResizeOperation {
 		case tensorflow.ResizeBreakAspectRatio:
-			imaging.Resize(img, m.meta.Input.Resolution(), m.meta.Input.Resolution(), imaging.Lanczos)
+			img = imaging.Resize(img, m.meta.Input.Resolution(), m.meta.Input.Resolution(), imaging.Lanczos)
 		case tensorflow.CenterCrop:
 			img = imaging.Fill(img, m.meta.Input.Resolution(), m.meta.Input.Resolution(), imaging.Center, imaging.Lanczos)
 		case tensorflow.Padding:

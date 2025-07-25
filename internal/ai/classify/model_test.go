@@ -7,6 +7,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
+	"github.com/photoprism/photoprism/internal/ai/tensorflow"
 	"github.com/photoprism/photoprism/pkg/fs"
 )
 
@@ -25,6 +26,60 @@ func NewModelTest(t *testing.T) *Model {
 	})
 
 	return testInstance
+}
+
+func TestModel_CenterCrop(t *testing.T) {
+	model := NewNasnet(assetsPath, false)
+	if err := model.loadModel(); err != nil {
+		t.Fatal(err)
+	}
+
+	model.meta.Input.ResizeOperation = tensorflow.CenterCrop
+
+	t.Run("nasnet padding", func(t *testing.T) {
+		testModel_BasicLabels(t, model, 6)
+	})
+}
+
+func TestModel_Padding(t *testing.T) {
+	model := NewNasnet(assetsPath, false)
+	if err := model.loadModel(); err != nil {
+		t.Fatal(err)
+	}
+
+	model.meta.Input.ResizeOperation = tensorflow.Padding
+
+	t.Run("nasnet padding", func(t *testing.T) {
+		testModel_BasicLabels(t, model, 6)
+	})
+}
+
+func TestModel_ResizeBreakAspectRatio(t *testing.T) {
+	model := NewNasnet(assetsPath, false)
+	if err := model.loadModel(); err != nil {
+		t.Fatal(err)
+	}
+
+	model.meta.Input.ResizeOperation = tensorflow.ResizeBreakAspectRatio
+
+	t.Run("nasnet break aspect ratio", func(t *testing.T) {
+		testModel_BasicLabels(t, model, 4)
+	})
+}
+
+func testModel_BasicLabels(t *testing.T, model *Model, expectedUncertainty int) {
+	result, err := model.File(examplesPath+"/zebra_green_brown.jpg", 10)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, result)
+	assert.IsType(t, Labels{}, result)
+	assert.Equal(t, 1, len(result))
+
+	if len(result) > 0 {
+		assert.Equal(t, "zebra", result[0].Name)
+
+		assert.Equal(t, expectedUncertainty, result[0].Uncertainty)
+	}
 }
 
 func TestModel_LabelsFromFile(t *testing.T) {
