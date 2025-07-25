@@ -1294,8 +1294,11 @@ export default {
       // Filter form data to only include fields with changes
       const filteredFormData = this.getFilteredFormData();
 
+      // Get currently selected photo UIDs from the model
+      const currentlySelectedUIDs = this.model.selection.filter((photo) => photo.selected).map((photo) => photo.UID);
+
       this.model
-        .save(this.selection, filteredFormData)
+        .save(currentlySelectedUIDs, filteredFormData)
         .then(() => {
           // Update form data with new values from backend
           this.setFormData();
