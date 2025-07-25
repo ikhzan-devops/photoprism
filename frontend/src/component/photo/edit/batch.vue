@@ -1324,7 +1324,6 @@ export default {
             // Only include in filtered data if there's an actual change
             if (action !== this.actions.none) {
               const processedItems = field.items.map((item) => {
-                // eslint-disable-next-line no-unused-vars
                 const { isNew, ...itemWithoutIsNew } = item;
                 return itemWithoutIsNew;
               });
