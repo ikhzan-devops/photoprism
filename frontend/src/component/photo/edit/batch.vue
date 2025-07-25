@@ -1295,7 +1295,7 @@ export default {
       const filteredFormData = this.getFilteredFormData();
 
       // Get currently selected photo UIDs from the model
-      const currentlySelectedUIDs = this.model.selection.filter((photo) => photo.selected).map((photo) => photo.UID);
+      const currentlySelectedUIDs = this.model.selection.filter((photo) => photo.selected).map((photo) => photo.id);
 
       this.model
         .save(currentlySelectedUIDs, filteredFormData)
