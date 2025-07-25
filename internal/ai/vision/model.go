@@ -15,6 +15,13 @@ import (
 
 var modelMutex = sync.Mutex{}
 
+// Default model version strings.
+var (
+	ModelVersionNone   = ""
+	ModelVersionLatest = "latest"
+	ModelVersionMobile = "Mobile"
+)
+
 // Model represents a computer vision model configuration.
 type Model struct {
 	Type          ModelType             `yaml:"Type,omitempty" json:"type,omitempty"`

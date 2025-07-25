@@ -1376,7 +1376,7 @@
                 "parameters": [
                     {
                         "description": "photos selection and values",
-                        "name": "photos",
+                        "name": "Request",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -1388,7 +1388,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/batch.PhotosForm"
+                            "$ref": "#/definitions/batch.PhotosResponse"
                         }
                     },
                     "400": {
@@ -3849,6 +3849,128 @@
                 }
             }
         },
+        "/api/v1/places/reverse": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Places"
+                ],
+                "summary": "returns location details for the specified coordinates",
+                "operationId": "GetPlacesReverse",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Latitude",
+                        "name": "lat",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Longitude",
+                        "name": "lng",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Locale",
+                        "name": "locale",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/places.Location"
+                        }
+                    },
+                    "400": {
+                        "description": "Missing latitude or longitude",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Geocoding service error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/places/search": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Places"
+                ],
+                "summary": "returns locations that match the specified search query",
+                "operationId": "GetPlacesSearch",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Search query",
+                        "name": "q",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Locale for results (default: en)",
+                        "name": "locale",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Maximum number of results (default: 10, max: 50)",
+                        "name": "count",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/places.SearchResult"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Missing search query",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Search service error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/services": {
             "get": {
                 "produces": [
@@ -5238,9 +5360,46 @@
                 }
             }
         },
+        "batch.Item": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "$ref": "#/definitions/batch.Action"
+                },
+                "mixed": {
+                    "type": "boolean"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
+        "batch.Items": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "$ref": "#/definitions/batch.Action"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/batch.Item"
+                    }
+                },
+                "mixed": {
+                    "type": "boolean"
+                }
+            }
+        },
         "batch.PhotosForm": {
             "type": "object",
             "properties": {
+                "Albums": {
+                    "$ref": "#/definitions/batch.Items"
+                },
                 "Altitude": {
                     "$ref": "#/definitions/batch.Int"
                 },
@@ -5285,6 +5444,9 @@
                 },
                 "Iso": {
                     "$ref": "#/definitions/batch.Int"
+                },
+                "Labels": {
+                    "$ref": "#/definitions/batch.Items"
                 },
                 "Lat": {
                     "$ref": "#/definitions/batch.Float64"
@@ -5334,6 +5496,20 @@
                     "type": "array",
                     "items": {
                         "type": "string"
+                    }
+                },
+                "values": {
+                    "$ref": "#/definitions/batch.PhotosForm"
+                }
+            }
+        },
+        "batch.PhotosResponse": {
+            "type": "object",
+            "properties": {
+                "models": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/search.Photo"
                     }
                 },
                 "values": {
@@ -5548,6 +5724,9 @@
                 },
                 "OriginalsLimit": {
                     "type": "integer"
+                },
+                "PlacesLocale": {
+                    "type": "string"
                 },
                 "PngSize": {
                     "type": "integer"
@@ -7397,6 +7576,108 @@
                 }
             }
         },
+        "places.Location": {
+            "type": "object",
+            "properties": {
+                "category": {
+                    "type": "string"
+                },
+                "country": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "lat": {
+                    "type": "number"
+                },
+                "licence": {
+                    "type": "string"
+                },
+                "lng": {
+                    "type": "number"
+                },
+                "locale": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "place": {
+                    "$ref": "#/definitions/places.Place"
+                },
+                "postcode": {
+                    "type": "string"
+                },
+                "street": {
+                    "type": "string"
+                },
+                "timezone": {
+                    "type": "string"
+                }
+            }
+        },
+        "places.Place": {
+            "type": "object",
+            "properties": {
+                "city": {
+                    "type": "string"
+                },
+                "country": {
+                    "type": "string"
+                },
+                "district": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "keywords": {
+                    "type": "string"
+                },
+                "label": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "string"
+                }
+            }
+        },
+        "places.SearchResult": {
+            "type": "object",
+            "properties": {
+                "bbox": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "city": {
+                    "type": "string"
+                },
+                "country": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "importance": {
+                    "type": "number"
+                },
+                "lat": {
+                    "type": "number"
+                },
+                "licence": {
+                    "type": "string"
+                },
+                "lng": {
+                    "type": "number"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "search.Album": {
             "type": "object",
             "properties": {
@@ -7953,14 +8234,6 @@
                 1000000000,
                 60000000000,
                 3600000000000,
-                -9223372036854775808,
-                9223372036854775807,
-                1,
-                1000,
-                1000000,
-                1000000000,
-                60000000000,
-                3600000000000,
                 1,
                 1000,
                 1000000,
@@ -7969,14 +8242,6 @@
                 3600000000000
             ],
             "x-enum-varnames": [
-                "minDuration",
-                "maxDuration",
-                "Nanosecond",
-                "Microsecond",
-                "Millisecond",
-                "Second",
-                "Minute",
-                "Hour",
                 "minDuration",
                 "maxDuration",
                 "Nanosecond",

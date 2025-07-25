@@ -94,6 +94,7 @@ type Options struct {
 	AutoImport             int           `yaml:"AutoImport" json:"AutoImport" flag:"auto-import"`
 	ReadOnly               bool          `yaml:"ReadOnly" json:"ReadOnly" flag:"read-only"`
 	Experimental           bool          `yaml:"Experimental" json:"Experimental" flag:"experimental"`
+	DisableFrontend        bool          `yaml:"DisableFrontend" json:"-" flag:"disable-frontend"`
 	DisableSettings        bool          `yaml:"DisableSettings" json:"-" flag:"disable-settings"`
 	DisableBackups         bool          `yaml:"DisableBackups" json:"DisableBackups" flag:"disable-backups"`
 	DisableRestart         bool          `yaml:"DisableRestart" json:"-" flag:"disable-restart"`
@@ -118,6 +119,7 @@ type Options struct {
 	DefaultLocale          string        `yaml:"DefaultLocale" json:"DefaultLocale" flag:"default-locale"`
 	DefaultTimezone        string        `yaml:"DefaultTimezone" json:"DefaultTimezone" flag:"default-timezone"`
 	DefaultTheme           string        `yaml:"DefaultTheme" json:"DefaultTheme" flag:"default-theme"`
+	PlacesLocale           string        `yaml:"PlacesLocale" json:"PlacesLocale" flag:"places-locale"`
 	AppName                string        `yaml:"AppName" json:"AppName" flag:"app-name"`
 	AppMode                string        `yaml:"AppMode" json:"AppMode" flag:"app-mode"`
 	AppIcon                string        `yaml:"AppIcon" json:"AppIcon" flag:"app-icon"`

@@ -134,12 +134,15 @@ export default class Page {
       } else {
         await t.hover(Selector("button.action-menu__btn"));
         await t.click(Selector("div.action-" + action));
+        if (action === "delete") {
+          await t.click(Selector("button.action-confirm"));
+        }
       }
     }
   }
 
   async search(term) {
-    await t.typeText(this.search1, term, { replace: true }).pressKey("enter");
+    await t.click(this.search1).typeText(this.search1, term, { replace: true }).pressKey("enter").wait(7000);
   }
 
   async setFilter(filter, option) {

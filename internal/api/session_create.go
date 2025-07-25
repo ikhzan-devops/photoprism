@@ -36,7 +36,7 @@ func CreateSession(router *gin.RouterGroup) {
 		// Assign and validate request form values.
 		if err := c.BindJSON(&frm); err != nil {
 			event.AuditWarn([]string{clientIp, "create session", "invalid request", "%s"}, err)
-			AbortBadRequest(c)
+			AbortBadRequest(c, err)
 			return
 		}
 

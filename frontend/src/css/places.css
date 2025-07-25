@@ -224,6 +224,28 @@
     }
 }
 
+/* Embedded Map and Control Styles */
+
+.p-map {
+    display: block;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+.p-location-dialog .p-map {
+    height: 45vh;
+    min-height: 250px;
+    width: 100%;
+    border-radius: 4px;
+}
+
+.p-lightbox__container > .p-lightbox__sidebar .p-map {
+    min-height: 259px;
+    aspect-ratio: 1;
+    width: auto;
+}
+
 /* Right-to-Left Language Support */
 
 .is-rtl .map-control {
@@ -262,3 +284,4 @@
     float: left;
     margin: 0 0 10px 10px;
 }
+

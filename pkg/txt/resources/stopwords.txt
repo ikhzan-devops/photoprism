@@ -919,7 +919,6 @@ ua
 ug
 uk
 um
-un
 undoing
 unfortunately
 unless
@@ -928,7 +927,6 @@ unto
 up
 upon
 ups
-us
 usefully
 usefulness
 using

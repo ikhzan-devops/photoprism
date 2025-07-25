@@ -29,7 +29,7 @@ func TestAuthListCommand(t *testing.T) {
 		assert.Contains(t, output, "alice ")
 		assert.NotContains(t, output, "bob ")
 		assert.NotContains(t, output, "visitor ")
-		assert.NotContains(t, output, "| Preview Token |")
+		assert.NotContains(t, output, "│ Preview Token │")
 	})
 	t.Run("CSV", func(t *testing.T) {
 		// Run command with test context.
@@ -50,8 +50,8 @@ func TestAuthListCommand(t *testing.T) {
 		// Check command output for plausibility.
 		// t.Logf(output)
 		assert.NoError(t, err)
-		assert.Contains(t, output, "|  Session ID  |")
-		assert.Contains(t, output, "| Preview Token |")
+		assert.Contains(t, output, "│  Session ID  │")
+		assert.Contains(t, output, "│ Preview Token │")
 		assert.Contains(t, output, "alice ")
 		assert.NotContains(t, output, "bob ")
 		assert.NotContains(t, output, "visitor")

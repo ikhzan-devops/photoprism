@@ -21,7 +21,11 @@ var brokenVideo []byte
 func Abort(c *gin.Context, code int, id i18n.Message, params ...interface{}) {
 	resp := i18n.NewResponse(code, id, params...)
 
-	log.Debugf("api-v1: abort %s with code %d (%s)", clean.Log(c.FullPath()), code, strings.ToLower(resp.String()))
+	if code >= 400 {
+		log.Debugf("api: aborting request with error code %d (%s)", code, strings.ToLower(resp.String()))
+	} else {
+		log.Debugf("api: aborting request with response code %d (%s)", code, strings.ToLower(resp.String()))
+	}
 
 	c.AbortWithStatusJSON(code, resp)
 }
@@ -31,7 +35,12 @@ func Error(c *gin.Context, code int, err error, id i18n.Message, params ...inter
 
 	if err != nil {
 		resp.Details = err.Error()
-		log.Errorf("api-v1: error %s with code %d in %s (%s)", clean.Error(err), code, clean.Log(c.FullPath()), strings.ToLower(resp.String()))
+
+		if reqPath := c.FullPath(); reqPath == "" {
+			log.Errorf("api: error %d %s (%s)", code, clean.Error(err), strings.ToLower(resp.String()))
+		} else {
+			log.Errorf("api: error %d %s in %s (%s)", code, clean.Error(err), clean.Log(reqPath), strings.ToLower(resp.String()))
+		}
 	}
 
 	c.AbortWithStatusJSON(code, resp)
@@ -102,7 +111,19 @@ func AbortUnexpectedError(c *gin.Context) {
 	Abort(c, http.StatusInternalServerError, i18n.ErrUnexpected)
 }
 
-func AbortBadRequest(c *gin.Context) {
+func AbortBadRequest(c *gin.Context, errs ...error) {
+	// Log and attach validation errors to the context.
+	for _, err := range errs {
+		if err != nil {
+			// Add error message to the debug logs.
+			log.Debugf("api: %s", err)
+
+			// Attach error to the current context
+			_ = c.Error(err)
+		}
+	}
+
+	// Abort request with error 400.
 	Abort(c, http.StatusBadRequest, i18n.ErrBadRequest)
 }
 

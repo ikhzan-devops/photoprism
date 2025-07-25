@@ -6,6 +6,7 @@ const (
 	MakeApple          = "Apple"
 	MakeAsus           = "ASUS"
 	MakeCanon          = "Canon"
+	MakeEpson          = "EPSON"
 	MakeNikon          = "NIKON"
 	MakeGoogle         = "Google"
 	MakeMotorola       = "Motorola"
@@ -107,4 +108,5 @@ var CameraMakes = map[string]string{
 	"Research In Motion":          MakeBlackBerry,
 	"Sony":                        MakeSony,
 	"VenTrade GmbH, Germany":      MakeVenTrade,
+	"Epson":                       MakeEpson,
 }

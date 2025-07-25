@@ -91,7 +91,7 @@ func GetServiceFolders(router *gin.RouterGroup) {
 		if cacheData, ok := cache.Get(cacheKey); ok {
 			cached := cacheData.(fs.FileInfos)
 
-			log.Tracef("api-v1: cache hit for %s [%s]", cacheKey, time.Since(start))
+			log.Tracef("api: cache hit for %s [%s]", cacheKey, time.Since(start))
 
 			c.JSON(http.StatusOK, cached)
 			return
@@ -149,7 +149,7 @@ func AddService(router *gin.RouterGroup) {
 
 		// Assign and validate request form values.
 		if err := c.BindJSON(&frm); err != nil {
-			AbortBadRequest(c)
+			AbortBadRequest(c, err)
 			return
 		}
 
@@ -162,8 +162,7 @@ func AddService(router *gin.RouterGroup) {
 		m, err := entity.AddService(frm)
 
 		if err != nil {
-			log.Error(err)
-			AbortBadRequest(c)
+			AbortBadRequest(c, err)
 			return
 		}
 
@@ -218,8 +217,7 @@ func UpdateService(router *gin.RouterGroup) {
 
 		// 2) Update form with values from request
 		if err = c.BindJSON(&frm); err != nil {
-			log.Error(err)
-			AbortBadRequest(c)
+			AbortBadRequest(c, err)
 			return
 		}
 
@@ -280,7 +278,7 @@ func DeleteService(router *gin.RouterGroup) {
 			return
 		}
 
-		if err := m.Delete(); err != nil {
+		if err = m.Delete(); err != nil {
 			Error(c, http.StatusInternalServerError, err, i18n.ErrDeleteFailed)
 			return
 		}

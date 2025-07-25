@@ -68,12 +68,12 @@ test.meta("testID", "albums-002").meta({ type: "short", mode: "public" })(
     await page.clickCardTitleOfUID(FirstPhotoUid);
 
     await t
-    .click(photoedit.infoTab)
-    .expect(Selector("td").withText("Albums").visible)
-    .ok()
-    .expect(Selector("td").withText("NotYetExistingAlbum").visible)
-    .ok()
-    .click(photoedit.dialogClose);
+      .click(photoedit.infoTab)
+      .expect(Selector("td").withText("Albums").visible)
+      .ok()
+      .expect(Selector("td").withText("NotYetExistingAlbum").visible)
+      .ok()
+      .click(photoedit.dialogClose);
 
     await menu.openPage("albums");
     const AlbumCountAfterCreation = await album.getAlbumCount("all");
@@ -82,9 +82,8 @@ test.meta("testID", "albums-002").meta({ type: "short", mode: "public" })(
 
     await toolbar.search("NotYetExistingAlbum");
     const AlbumUid = await album.getNthAlbumUid("all", 0);
-    await album.selectAlbumFromUID(AlbumUid);
-    await contextmenu.triggerContextMenuAction("delete", "");
-    await menu.openPage("albums");
+    await album.openAlbumWithUid(AlbumUid);
+    await toolbar.triggerToolbarAction("delete");
     const AlbumCountAfterDelete = await album.getAlbumCount("all");
 
     await t.expect(AlbumCountAfterDelete).eql(AlbumCount);
@@ -93,60 +92,57 @@ test.meta("testID", "albums-002").meta({ type: "short", mode: "public" })(
     await toolbar.search("photo:true");
     await page.clickCardTitleOfUID(FirstPhotoUid);
 
+    await t
+      .click(photoedit.infoTab)
+      .expect(Selector("td").withText("Albums").visible)
+      .notOk()
+      .expect(Selector("td").withText("NotYetExistingAlbum").visible)
+      .notOk()
+      .click(photoedit.dialogClose);
+  }
+);
+
+test.meta("testID", "albums-003").meta({ type: "short", mode: "public" })("Common: Update album details", async (t) => {
+  await menu.openPage("albums");
+  await toolbar.search("Holiday");
+  const AlbumUid = await album.getNthAlbumUid("all", 0);
+
+  await t.expect(page.cardTitle.nth(0).innerText).contains("Holiday");
+
+  await t.click(page.cardTitle.nth(0)).typeText(albumdialog.title, "Animals", { replace: true });
+
+  await t.expect(albumdialog.description.value).eql("").expect(albumdialog.category.value).eql("");
+
   await t
-  .click(photoedit.infoTab)
-  .expect(Selector("td").withText("Albums").visible)
-  .notOk()
-  .expect(Selector("td").withText("NotYetExistingAlbum").visible)
-  .notOk()
-  .click(photoedit.dialogClose);
-  }
-);
+    .typeText(albumdialog.description, "All my animals")
+    .typeText(albumdialog.category, "Pets")
+    .pressKey("enter")
+    .click(albumdialog.dialogSave);
 
-test.meta("testID", "albums-003").meta({ type: "short", mode: "public" })(
-  "Common: Update album details",
-  async (t) => {
-    await menu.openPage("albums");
-    await toolbar.search("Holiday");
-    const AlbumUid = await album.getNthAlbumUid("all", 0);
+  await t.expect(page.cardTitle.nth(0).innerText).contains("Animals");
 
-    await t.expect(page.cardTitle.nth(0).innerText).contains("Holiday");
+  await album.openAlbumWithUid(AlbumUid);
+  await toolbar.triggerToolbarAction("edit");
+  await t.typeText(albumdialog.title, "Holiday", { replace: true });
 
-    await t.click(page.cardTitle.nth(0)).typeText(albumdialog.title, "Animals", { replace: true });
+  await t.expect(albumdialog.description.value).eql("All my animals").expect(albumdialog.category.value).eql("Pets");
 
-    await t.expect(albumdialog.description.value).eql("").expect(albumdialog.category.value).eql("");
+  await t
+    .click(albumdialog.description)
+    .pressKey("ctrl+a delete")
+    .pressKey("enter")
+    .click(albumdialog.category)
+    .pressKey("ctrl+a delete")
+    .pressKey("enter")
+    .click(albumdialog.dialogSave);
+  await menu.openPage("albums");
 
-    await t
-      .typeText(albumdialog.description, "All my animals")
-      .typeText(albumdialog.category, "Pets")
-      .pressKey("enter")
-      .click(albumdialog.dialogSave);
-
-    await t.expect(page.cardTitle.nth(0).innerText).contains("Animals");
-
-    await album.openAlbumWithUid(AlbumUid);
-    await toolbar.triggerToolbarAction("edit");
-    await t.typeText(albumdialog.title, "Holiday", { replace: true });
-
-    await t.expect(albumdialog.description.value).eql("All my animals").expect(albumdialog.category.value).eql("Pets");
-
-    await t
-      .click(albumdialog.description)
-      .pressKey("ctrl+a delete")
-      .pressKey("enter")
-      .click(albumdialog.category)
-      .pressKey("ctrl+a delete")
-      .pressKey("enter")
-      .click(albumdialog.dialogSave);
-    await menu.openPage("albums");
-
-    await t
-      .expect(Selector("div").withText("Holiday").visible)
-      .ok()
-      .expect(Selector("div").withText("Animals").exists)
-      .notOk();
-  }
-);
+  await t
+    .expect(Selector("div").withText("Holiday").visible)
+    .ok()
+    .expect(Selector("div").withText("Animals").exists)
+    .notOk();
+});
 
 test.meta("testID", "albums-004").meta({ type: "short", mode: "public" })(
   "Common: Add/Remove Photos to/from album",
@@ -210,59 +206,53 @@ test.meta("testID", "albums-004").meta({ type: "short", mode: "public" })(
   }
 );
 
-test.meta("testID", "albums-005").meta({ mode: "public" })(
-  "Common: Use album search and filters",
-  async (t) => {
-    await menu.openPage("albums");
-    if (t.browser.platform === "mobile") {
-      await toolbar.search("category:Family");
-    } else {
-      await toolbar.setFilter("category", "Family");
-    }
-
-    await t.expect(page.cardTitle.nth(0).innerText).contains("Christmas");
-    const AlbumCount = await album.getAlbumCount("all");
-    await t.expect(AlbumCount).eql(1);
-
-    if (t.browser.platform === "mobile") {
-    } else {
-      await toolbar.setFilter("category", "All Categories");
-    }
-
-    await toolbar.search("Holiday");
-
-    await t.expect(page.cardTitle.nth(0).innerText).contains("Holiday");
-    const AlbumCount2 = await album.getAlbumCount("all");
-    await t.expect(AlbumCount2).eql(1);
+test.meta("testID", "albums-005").meta({ mode: "public" })("Common: Use album search and filters", async (t) => {
+  await menu.openPage("albums");
+  if (t.browser.platform === "mobile") {
+    await toolbar.search("category:Family");
+  } else {
+    await toolbar.setFilter("category", "Family");
   }
-);
 
-test.meta("testID", "albums-006").meta({ mode: "public" })(
-  "Common: Test album autocomplete",
-  async (t) => {
-    await toolbar.search("photo:true");
-    const FirstPhotoUid = await photo.getNthPhotoUid("image", 0);
-    await photo.selectPhotoFromUID(FirstPhotoUid);
-    await contextmenu.openContextMenu();
-    await t.click(Selector("button.action-album")).click(Selector(".input-album input"));
+  await t.expect(page.cardTitle.nth(0).innerText).contains("Christmas");
+  const AlbumCount = await album.getAlbumCount("all");
+  await t.expect(AlbumCount).eql(1);
 
-    await t
-      .expect(page.selectOption.withText("Holiday").visible)
-      .ok()
-      .expect(page.selectOption.withText("Christmas").visible)
-      .ok();
-
-    await t.typeText(Selector(".input-album input"), "C", { replace: true });
-
-    await t
-      .expect(page.selectOption.withText("Holiday").visible)
-      .notOk()
-      .expect(page.selectOption.withText("Christmas").visible)
-      .ok()
-      .expect(page.selectOption.withText("C").visible)
-      .ok();
+  if (t.browser.platform === "mobile") {
+  } else {
+    await toolbar.setFilter("category", "All Categories");
   }
-);
+
+  await toolbar.search("Holiday");
+
+  await t.expect(page.cardTitle.nth(0).innerText).contains("Holiday");
+  const AlbumCount2 = await album.getAlbumCount("all");
+  await t.expect(AlbumCount2).eql(1);
+});
+
+test.meta("testID", "albums-006").meta({ mode: "public" })("Common: Test album autocomplete", async (t) => {
+  await toolbar.search("photo:true");
+  const FirstPhotoUid = await photo.getNthPhotoUid("image", 0);
+  await photo.selectPhotoFromUID(FirstPhotoUid);
+  await contextmenu.openContextMenu();
+  await t.click(Selector("button.action-album")).click(Selector(".input-album input"));
+
+  await t
+    .expect(page.selectOption.withText("Holiday").visible)
+    .ok()
+    .expect(page.selectOption.withText("Christmas").visible)
+    .ok();
+
+  await t.typeText(Selector(".input-album input"), "C", { replace: true });
+
+  await t
+    .expect(page.selectOption.withText("Holiday").visible)
+    .notOk()
+    .expect(page.selectOption.withText("Christmas").visible)
+    .ok()
+    .expect(page.selectOption.withText("C").visible)
+    .ok();
+});
 
 test.meta("testID", "albums-007").meta({ type: "short", mode: "public" })(
   "Common: Create, Edit, delete sharing link",
@@ -285,4 +275,3 @@ test.meta("testID", "albums-009").meta({ type: "short", mode: "public" })(
     await page.testSetAlbumCover("albums");
   }
 );
-

@@ -92,9 +92,7 @@ test.meta("testID", "photos-003").meta({ type: "short", mode: "public" })(
     }
     await photo.triggerHoverAction("uid", SecondPhotoUid, "select");
     await contextmenu.triggerContextMenuAction("edit", "");
-    await t
-      .typeText(photoedit.latitude, "9.999", { replace: true })
-      .typeText(photoedit.longitude, "9.999", { replace: true });
+    await t.typeText(photoedit.coordinates, "9.999,9.999", { replace: true });
     await t.click(photoedit.detailsApply).click(photoedit.detailsClose);
     await t.click(toolbar.cardsViewAction);
     const ApproveButtonThirdPhoto = 'div.is-photo[data-uid="' + ThirdPhotoUid + '"] button.action-approve';
@@ -169,11 +167,13 @@ test.meta("testID", "photos-004").meta({ type: "short", mode: "public" })(
 );
 
 test.meta("testID", "photos-005").meta({ type: "short", mode: "public" })("Common: Edit photo/video", async (t) => {
+  await menu.openPage("browse");
   await t.click(toolbar.cardsViewAction);
+  await toolbar.search("geo:true");
   const FirstPhotoUid = await photo.getNthPhotoUid("image", 0);
   await page.clickCardTitleOfUID(FirstPhotoUid);
 
-  await t.expect(photoedit.latitude.visible).ok();
+  await t.expect(photoedit.coordinates.visible).ok();
 
   await t.click(photoedit.dialogNext);
 
@@ -197,8 +197,7 @@ test.meta("testID", "photos-005").meta({ type: "short", mode: "public" })("Commo
     FirstPhotoYear = "Unknown";
   }
   const FirstPhotoTimezone = await photoedit.timezoneValue.innerText;
-  const FirstPhotoLatitude = await photoedit.latitude.value;
-  const FirstPhotoLongitude = await photoedit.longitude.value;
+  const FirstPhotoCoordinates = await photoedit.coordinates.value;
   const FirstPhotoAltitude = await photoedit.altitude.value;
   const FirstPhotoCountry = await photoedit.countryValue.innerText;
   const FirstPhotoCamera = await photoedit.cameraValue.innerText;
@@ -215,55 +214,11 @@ test.meta("testID", "photos-005").meta({ type: "short", mode: "public" })("Commo
   const FirstPhotoKeywords = await photoedit.keywords.value;
   const FirstPhotoNotes = await photoedit.notes.value;
 
-  await t.typeText(photoedit.title, "Not saved photo title", { replace: true }).click(photoedit.detailsClose);
-  await page.clickCardTitleOfUID(FirstPhotoUid);
-
-  await t.expect(photoedit.title.value).eql(FirstPhotoTitle);
-
-  await photoedit.editPhoto(
-    "New Photo Title",
-    "Europe/Moscow",
-    "15",
-    "07",
-    "2019",
-    "04:30:30",
-    "-1",
-    "41.15333",
-    "20.168331",
-    "32",
-    "1/32",
-    "29",
-    "33",
-    "Super nice edited photo",
-    "Happy",
-    "Happy2020",
-    "Super nice cat license",
-    "Description of a nice image :)",
-    ", cat, love",
-    "Some notes",
-    "Canon EOS M10",
-    "EF-M15-45mm f/3.5-6.3 IS STM"
-  );
-  if (t.browser.platform === "mobile") {
-    await t.eval(() => location.reload());
-  } else {
-    await toolbar.triggerToolbarAction("refresh");
-  }
-  await toolbar.search("uid:" + FirstPhotoUid);
-
-  await t
-    .expect(Selector('div[data-uid="' + FirstPhotoUid + '"] button.action-title-edit').innerText)
-    .eql("New Photo Title");
-
-  await photo.triggerHoverAction("uid", FirstPhotoUid, "select");
-  await contextmenu.triggerContextMenuAction("edit", "");
-
   const expectedInputValues = [
     ["title", "New Photo Title"],
     ["localTime", "04:30:30"],
     ["altitude", "-1"],
-    ["latitude", "41.15333"],
-    ["longitude", "20.168331"],
+    ["coordinates", "41.15333, 20.168331"],
     ["iso", "32"],
     ["exposure", "1/32"],
     ["fnumber", "29"],
@@ -284,34 +239,62 @@ test.meta("testID", "photos-005").meta({ type: "short", mode: "public" })("Commo
     ["camera", "Canon EOS M10"],
     ["lens", "EF-M15-45mm f/3.5-6.3 IS STM"],
   ];
+  const expectedSelectValuesNoCountry = [
+    ["day", "15"],
+    ["month", "07"],
+    ["year", "2019"],
+    ["timezone", "Europe/Moscow"],
+    ["camera", "Canon EOS M10"],
+    ["lens", "EF-M15-45mm f/3.5-6.3 IS STM"],
+  ];
+  const initialInputValues = [
+    ["title", FirstPhotoTitle],
+    ["localTime", FirstPhotoLocalTime],
+    ["altitude", FirstPhotoAltitude],
+    ["coordinates", FirstPhotoCoordinates],
+    ["iso", FirstPhotoIso],
+    ["exposure", FirstPhotoExposure],
+    ["fnumber", FirstPhotoFnumber],
+    ["focallength", FirstPhotoFocalLength],
+    ["subject", FirstPhotoSubject],
+    ["artist", FirstPhotoArtist],
+    ["copyright", FirstPhotoCopyright],
+    ["license", FirstPhotoLicense],
+    ["description", FirstPhotoDescription],
+    ["notes", FirstPhotoNotes],
+    ["keywords", FirstPhotoKeywords],
+  ];
+  const initialSelectValuesNoCountry = [
+    ["day", FirstPhotoDay],
+    ["month", FirstPhotoMonth],
+    ["year", FirstPhotoYear],
+    ["timezone", FirstPhotoTimezone],
+    ["camera", FirstPhotoCamera],
+    ["lens", FirstPhotoLens],
+  ];
+  await t.typeText(photoedit.title, "Not saved photo title", { replace: true }).click(photoedit.detailsClose);
+  await page.clickCardTitleOfUID(FirstPhotoUid);
 
+  await t.expect(photoedit.title.value).eql(FirstPhotoTitle);
+
+  await photoedit.editFormValues(expectedInputValues, expectedSelectValuesNoCountry);
+  if (t.browser.platform === "mobile") {
+    await t.eval(() => location.reload());
+  } else {
+    await toolbar.triggerToolbarAction("refresh");
+  }
+  await toolbar.search("uid:" + FirstPhotoUid);
+
+  await t
+    .expect(Selector('div[data-uid="' + FirstPhotoUid + '"] button.action-title-edit').innerText)
+    .eql("New Photo Title");
+
+  await photo.triggerHoverAction("uid", FirstPhotoUid, "select");
+  await contextmenu.triggerContextMenuAction("edit", "");
   await photoedit.checkEditFormValues(expectedInputValues, expectedSelectValues);
+  await photoedit.editFormValues(initialInputValues, initialSelectValuesNoCountry);
+  await contextmenu.triggerContextMenuAction("edit", "");
 
-  await photoedit.undoPhotoEdit(
-    FirstPhotoTitle,
-    FirstPhotoTimezone,
-    FirstPhotoDay,
-    FirstPhotoMonth,
-    FirstPhotoYear,
-    FirstPhotoLocalTime,
-    FirstPhotoAltitude,
-    FirstPhotoLatitude,
-    FirstPhotoLongitude,
-    FirstPhotoCountry,
-    FirstPhotoIso,
-    FirstPhotoExposure,
-    FirstPhotoFnumber,
-    FirstPhotoFocalLength,
-    FirstPhotoSubject,
-    FirstPhotoArtist,
-    FirstPhotoCopyright,
-    FirstPhotoLicense,
-    FirstPhotoDescription,
-    FirstPhotoKeywords,
-    FirstPhotoNotes,
-    FirstPhotoCamera,
-    FirstPhotoLens
-  );
   await contextmenu.checkContextMenuCount("1");
   await contextmenu.clearSelection();
 });
@@ -404,5 +387,21 @@ test.meta("testID", "photos-008").meta({ mode: "public" })(
     const PhotoCount = await photo.getPhotoCount("all");
 
     await t.expect(SearchTerm).eql("taken:2021-05-27").expect(PhotoCount).eql(3);
+  }
+);
+
+test.meta("testID", "photos-009").meta({ mode: "public" })(
+  "Common: Verify that correct time is shown in all views",
+  async (t) => {
+    await t.click(toolbar.cardsViewAction);
+    await toolbar.search("filename:garden/20210530_125021_1993AB92.jpg");
+
+    await t.expect(page.cardTaken.innerText).eql("Sun, May 30, 2021, 2:50 PM GMT+2");
+    await photoviewer.openPhotoViewer("nth", 0);
+    await photoviewer.triggerPhotoViewerAction("info-button");
+    await t.expect(Selector("div").withText("May 30, 2021, 2:50 PM GMT+2").visible).ok();
+    await photoviewer.triggerPhotoViewerAction("edit-button");
+    await t.expect(photoedit.localTime.value).eql("14:50:21");
+    await t.expect(photoedit.timezoneValue.innerText).eql("Europe/Berlin");
   }
 );

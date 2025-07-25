@@ -191,7 +191,7 @@
           v-if="canManage && staticFilter.type === 'album' && config.count.albums === 0"
           class="d-flex justify-center mt-8 mb-4"
         >
-          <v-btn color="secondary" rounded variant="flat" class="action-add" @click.prevent="create">
+          <v-btn color="button" rounded variant="flat" class="action-add" @click.prevent="create">
             {{ $gettext(`Add Album`) }}
           </v-btn>
         </div>
@@ -396,10 +396,11 @@ export default {
     const query = this.$route.query;
     const routeName = this.$route.name;
     const order = this.sortOrder();
+    const reverse = this.sortReverse();
     const q = query["q"] ? query["q"] : "";
     const category = query["category"] ? query["category"] : "";
     const year = query["year"] ? parseInt(query["year"]) : "";
-    const filter = { q, category, order, year };
+    const filter = { q, category, order, reverse, year };
     const settings = {};
     const features = this.$config.getSettings().features;
 
@@ -503,6 +504,7 @@ export default {
       this.filter.category = query["category"] ? query["category"] : "";
       this.filter.year = query["year"] ? parseInt(query["year"]) : "";
       this.filter.order = this.sortOrder();
+      this.filter.reverse = this.sortReverse();
 
       this.search();
     },
@@ -626,6 +628,9 @@ export default {
       }
 
       return this.defaultOrder;
+    },
+    sortReverse() {
+      return !!this.$route?.query["reverse"] && this.$route.query["reverse"] === "true";
     },
     searchCount() {
       const offset = parseInt(window.localStorage.getItem("albums.offset"));

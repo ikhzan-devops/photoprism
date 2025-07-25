@@ -57,6 +57,9 @@ services:
       PHOTOPRISM_PASSWORD_RESET_URI: "https://keycloak.localssl.dev/realms/master/login-actions/reset-credentials"
       PHOTOPRISM_USAGE_INFO: "true"
       PHOTOPRISM_FILES_QUOTA: "100"
+      ## Customization:
+      PHOTOPRISM_DEFAULT_LOCALE: "en"                      # default user interface language, e.g. "en" or "de"
+      PHOTOPRISM_PLACES_LOCALE: "local"                    # location details language, e.g. "local", "en", or "de"
       ## OpenID Connect (pre-configured for local tests):
       ## see https://keycloak.localssl.dev/realms/master/.well-known/openid-configuration
       PHOTOPRISM_OIDC_URI: "https://keycloak.localssl.dev/realms/master"
@@ -124,8 +127,8 @@ services:
       # LIBVA_DRIVER_NAME: "i965"                    # For Intel architectures Haswell and older which do not support QSV yet but use VAAPI instead
       PHOTOPRISM_FFMPEG_SIZE: "1920"                 # video size limit in pixels (720-7680) (default: 3840)
       # PHOTOPRISM_FFMPEG_BITRATE: "60"              # video bitrate limit in Mbps (default: 60)
-      ## Run/install on first startup (options: update tensorflow https intel gpu davfs):
-      PHOTOPRISM_INIT: "https"
+      ## Run/install on first startup (options: update tensorflow https intel gpu davfs yt-dlp):
+      PHOTOPRISM_INIT: "https yt-dlp"
     ## Share hardware devices with FFmpeg and TensorFlow (optional):
     # devices:
     #  - "/dev/dri:/dev/dri"                         # Intel QSV (Broadwell and later) or VAAPI (Haswell and earlier)

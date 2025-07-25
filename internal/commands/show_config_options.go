@@ -2,6 +2,7 @@ package commands
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
@@ -34,13 +35,19 @@ func showConfigOptionsAction(ctx *cli.Context) error {
 		return err
 	}
 
+	markDown := ctx.Bool("md")
 	sections := config.OptionsReportSections
 
 	j := 0
 
 	for i, section := range sections {
-		fmt.Printf("### %s ###\n\n", section.Title)
-		if section.Info != "" && ctx.Bool("md") {
+		if markDown {
+			fmt.Printf("### %s\n\n", section.Title)
+		} else {
+			fmt.Printf("%s\n\n", strings.ToUpper(section.Title))
+		}
+
+		if section.Info != "" && markDown {
 			fmt.Printf("%s\n\n", section.Info)
 		}
 

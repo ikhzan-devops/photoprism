@@ -197,6 +197,7 @@ export default {
     this.findAlbum().then(() => this.search());
 
     this.subscriptions.push(this.$event.subscribe("albums.updated", (ev, data) => this.onAlbumsUpdated(ev, data)));
+    this.subscriptions.push(this.$event.subscribe("albums.deleted", (ev, data) => this.onAlbumsDeleted(ev, data)));
     this.subscriptions.push(this.$event.subscribe("photos", (ev, data) => this.onUpdate(ev, data)));
 
     this.subscriptions.push(
@@ -261,9 +262,12 @@ export default {
 
       return "cards";
     },
-    getSortOrder() {
+    sortOrder() {
       const query = this.$route.query;
       return query["order"] ? query["order"] : this.model?.Order;
+    },
+    sortReverse() {
+      return !!this.$route?.query["reverse"] && this.$route.query["reverse"] === "true";
     },
     openDate(index) {
       if (!this.canEdit) {
@@ -324,7 +328,7 @@ export default {
 
       if (showMerged) {
         this.$lightbox.openModels(Thumb.fromFiles([selected]), 0, this.model);
-      } else if (this.getSortOrder() === "random") {
+      } else if (this.sortOrder() === "random") {
         this.$lightbox.openModels(Thumb.fromPhotos(this.results), index, this.model);
       } else {
         this.$lightbox.openView(this, index);
@@ -352,7 +356,8 @@ export default {
         offset: offset,
         s: this.uid,
         merged: true,
-        order: this.getSortOrder(),
+        order: this.sortOrder(),
+        reverse: this.sortReverse(),
       };
 
       Object.assign(params, this.lastFilter);
@@ -473,7 +478,8 @@ export default {
         offset: this.offset,
         s: this.uid,
         merged: true,
-        order: this.getSortOrder(),
+        order: this.sortOrder(),
+        reverse: this.sortReverse(),
       };
 
       Object.assign(params, this.filter);
@@ -634,6 +640,25 @@ export default {
 
           return;
         }
+      }
+    },
+    onAlbumsDeleted(ev, data) {
+      if (!this.listen) {
+        return;
+      }
+
+      if (!data || !data.entities || !Array.isArray(data.entities)) {
+        return;
+      }
+
+      const type = ev.split(".")[1];
+      switch (type) {
+        case "deleted":
+          if (data.entities.includes(this.uid)) {
+            this.$notify.success(this.$gettext("Album deleted"));
+            this.$router.push({ name: this.collectionRoute });
+          }
+          return;
       }
     },
     updateResults(entity) {

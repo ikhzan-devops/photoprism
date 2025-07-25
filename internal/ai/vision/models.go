@@ -10,7 +10,7 @@ var (
 	NasnetModel = &Model{
 		Type:       ModelTypeLabels,
 		Name:       "NASNet",
-		Version:    "Mobile",
+		Version:    ModelVersionMobile,
 		Resolution: 224,
 		Meta: &tensorflow.ModelInfo{
 			TFVersion: "1.12.0",
@@ -38,7 +38,7 @@ var (
 	NsfwModel = &Model{
 		Type:       ModelTypeNsfw,
 		Name:       "Nsfw",
-		Version:    "",
+		Version:    ModelVersionNone,
 		Resolution: 224,
 		Meta: &tensorflow.ModelInfo{
 			TFVersion: "1.12.0",
@@ -60,7 +60,7 @@ var (
 	FacenetModel = &Model{
 		Type:       ModelTypeFace,
 		Name:       "FaceNet",
-		Version:    "",
+		Version:    ModelVersionNone,
 		Resolution: 160,
 		Meta: &tensorflow.ModelInfo{
 			TFVersion: "1.7.1",
@@ -81,11 +81,14 @@ var (
 	}
 	CaptionModel = &Model{
 		Type:       ModelTypeCaption,
-		Resolution: 224,
+		Name:       CaptionModelDefault,
+		Version:    ModelVersionLatest,
+		Resolution: 720, // Original aspect ratio, with a max size of 720 x 720 pixels.
+		Prompt:     CaptionPromptDefault,
 		Service: Service{
-			Uri:            "http://photoprism-vision:5000/api/v1/vision/caption",
-			FileScheme:     scheme.Https,
-			RequestFormat:  ApiFormatUrl,
+			// Uri:            "http://photoprism-vision:5000/api/v1/vision/caption",
+			FileScheme:     scheme.Data,
+			RequestFormat:  ApiFormatVision,
 			ResponseFormat: ApiFormatVision,
 		},
 	}

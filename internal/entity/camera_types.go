@@ -31,6 +31,7 @@ var CameraTypes = map[string]CameraType{
 	ModelPhotoScan:     CameraTypeScanner,
 	"170 7472F20EEC14": CameraTypeScanner,
 	ModelCanoScan:      CameraTypeScanner,
+	ModelPerfection:    CameraTypeScanner,
 	ModelScanSnap:      CameraTypeScanner,
 	ModelOpticFilm:     CameraTypeScanner,
 	ModelSlideNScan:    CameraTypeFilm,
@@ -91,6 +92,10 @@ func GetCameraType(makeName string, modelName string) CameraType {
 			return CameraTypeBody
 		} else if strings.HasPrefix(modelName, "Power") {
 			return CameraTypeCompact
+		}
+	case MakeEpson:
+		if strings.HasPrefix(modelName, ModelPerfection) || strings.HasPrefix(modelName, ModelFastFoto) {
+			return CameraTypeScanner
 		}
 	case MakeSony:
 		if strings.HasPrefix(modelName, "Alpha") {

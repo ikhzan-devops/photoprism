@@ -105,6 +105,8 @@ func backupAction(ctx *cli.Context) error {
 
 			backupFile := time.Now().UTC().Format("2006-01-02") + ".sql"
 			fileName = filepath.Join(databasePath, backupFile)
+		} else {
+			retain = 0
 		}
 
 		if err = backup.Database(databasePath, fileName, fileName == "-", force, retain); err != nil {

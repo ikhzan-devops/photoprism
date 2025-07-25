@@ -51,6 +51,7 @@ import (
 	"github.com/photoprism/photoprism/internal/config/ttl"
 	"github.com/photoprism/photoprism/internal/entity"
 	"github.com/photoprism/photoprism/internal/mutex"
+	"github.com/photoprism/photoprism/internal/photoprism/dl"
 	"github.com/photoprism/photoprism/internal/service/hub"
 	"github.com/photoprism/photoprism/internal/service/hub/places"
 	"github.com/photoprism/photoprism/internal/thumb"
@@ -59,6 +60,7 @@ import (
 	"github.com/photoprism/photoprism/pkg/fs"
 	"github.com/photoprism/photoprism/pkg/i18n"
 	"github.com/photoprism/photoprism/pkg/rnd"
+	"github.com/photoprism/photoprism/pkg/txt"
 )
 
 var initThumbsMutex sync.Mutex
@@ -85,6 +87,11 @@ func init() {
 	if Env(EnvUnsafe) {
 		// Disable features with high memory requirements?
 		LowMem = TotalMem < MinMem
+	}
+
+	// Disable entity cache if requested.
+	if txt.Bool(os.Getenv(EnvVar("disable-photolabelcache"))) {
+		entity.CachePhotoLabels = false
 	}
 
 	initThumbs()
@@ -278,6 +285,11 @@ func (c *Config) Propagate() {
 	thumb.CachePublic = c.HttpCachePublic()
 	initThumbs()
 
+	// Configure video download package.
+	dl.YtDlpBin = c.YtDlpBin()
+	dl.FFmpegBin = c.FFmpegBin()
+	dl.FFprobeBin = c.FFprobeBin()
+
 	// Configure computer vision package.
 	vision.AssetsPath = c.AssetsPath()
 	vision.FaceNetModelPath = c.FaceNetModelPath()
@@ -300,6 +312,7 @@ func (c *Config) Propagate() {
 
 	// Set geocoding parameters.
 	places.UserAgent = c.UserAgent()
+	places.DefaultLocale = c.PlacesLocale()
 	entity.GeoApi = c.GeoApi()
 
 	// Set session cache duration.
@@ -690,15 +703,6 @@ func (c *Config) AutoImport() time.Duration {
 	}
 
 	return time.Duration(c.options.AutoImport) * time.Second
-}
-
-// GeoApi returns the preferred geocoding api (places, or none).
-func (c *Config) GeoApi() string {
-	if c.options.DisablePlaces {
-		return ""
-	}
-
-	return "places"
 }
 
 // OriginalsLimit returns the maximum size of originals in MB.

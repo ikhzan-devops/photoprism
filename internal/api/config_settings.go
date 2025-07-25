@@ -79,7 +79,7 @@ func SaveSettings(router *gin.RouterGroup) {
 
 			// Set values from request.
 			if err := c.BindJSON(settings); err != nil {
-				AbortBadRequest(c)
+				AbortBadRequest(c, err)
 				return
 			}
 
@@ -114,7 +114,7 @@ func SaveSettings(router *gin.RouterGroup) {
 
 			// Set values from request.
 			if err := c.BindJSON(settings); err != nil {
-				AbortBadRequest(c)
+				AbortBadRequest(c, err)
 				return
 			}
 

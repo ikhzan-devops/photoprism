@@ -43,11 +43,19 @@ Models:
       Name: embeddings
       Outputs: 512
 - Type: caption
-  Resolution: 224
+  Name: qwen2.5vl
+  Version: latest
+  Prompt: Create an interesting caption that sounds natural and briefly describes
+    the visual content in up to 3 sentences. Avoid text formatting, meta-language,
+    and filler words. Do not start captions with phrases such as "This image", "The
+    image", "This picture", "The picture", "A picture of", "Here are", or "There is".
+    Instead, start describing the content by identifying the subjects, location, and
+    any actions that might be performed. Use explicit language to describe the scene
+    if necessary for a proper understanding.
+  Resolution: 720
   Service:
-    Uri: http://photoprism-vision:5000/api/v1/vision/caption
-    FileScheme: https
-    RequestFormat: url
+    FileScheme: data
+    RequestFormat: vision
     ResponseFormat: vision
 Thresholds:
   Confidence: 10

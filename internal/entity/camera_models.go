@@ -7,6 +7,8 @@ const (
 	ModelDigitDia7000 = "DigitDia 7000"
 	ModelPhotoScan    = "PhotoScan"
 	ModelCanoScan     = "CanoScan"
+	ModelPerfection   = "Perfection"
+	ModelFastFoto     = "FastFoto"
 	ModelOpticFilm    = "OpticFilm"
 	ModelScanSnap     = "ScanSnap"
 	ModelMSScanner    = "MS Scanner"

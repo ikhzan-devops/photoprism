@@ -40,6 +40,7 @@ func NewIndex(conf *config.Config, convert *Convert, files *Files, photos *Photo
 		return nil
 	}
 
+	// Create new indexer instance.
 	i := &Index{
 		conf:       conf,
 		convert:    convert,
@@ -47,6 +48,11 @@ func NewIndex(conf *config.Config, convert *Convert, files *Files, photos *Photo
 		photos:     photos,
 		findFaces:  !conf.DisableFaces(),
 		findLabels: !conf.DisableClassification(),
+	}
+
+	// Warm up the cache.
+	if err := entity.WarmPhotoLabelCache(); err != nil {
+		log.Warnf("index: %s (cache warm-up)", err)
 	}
 
 	return i

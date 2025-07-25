@@ -129,3 +129,13 @@ func NewLabelsResponse(id string, model *Model, results classify.Labels) ApiResp
 		Result: ApiResult{Labels: labels},
 	}
 }
+
+// NewCaptionResponse generates a new Vision API image caption service response.
+func NewCaptionResponse(id string, model *Model, result *CaptionResult) ApiResponse {
+	return ApiResponse{
+		Id:     clean.Type(id),
+		Code:   http.StatusOK,
+		Model:  &Model{Type: ModelTypeLabels, Name: model.Name, Version: model.Version, Resolution: model.Resolution},
+		Result: ApiResult{Caption: result},
+	}
+}

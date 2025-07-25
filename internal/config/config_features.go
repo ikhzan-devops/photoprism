@@ -1,9 +1,18 @@
 package config
 
-import "math/bits"
+import (
+	"math/bits"
+
+	"github.com/photoprism/photoprism/internal/service/hub/places"
+)
 
 var Sponsor = Env(EnvDemo, EnvSponsor, EnvTest)
 var Features = Community
+
+// DisableFrontend checks if the web user interface routes should be disabled.
+func (c *Config) DisableFrontend() bool {
+	return c.options.DisableFrontend
+}
 
 // DisableSettings checks if users should not be allowed to change settings.
 func (c *Config) DisableSettings() bool {
@@ -26,7 +35,7 @@ func (c *Config) DisableWebDAV() bool {
 
 // DisablePlaces checks if geocoding and maps should be disabled.
 func (c *Config) DisablePlaces() bool {
-	return c.options.DisablePlaces
+	return c.options.DisablePlaces || len(places.LocationServiceUrls) == 0
 }
 
 // DisableExifTool checks if ExifTool JSON files should not be created for improved metadata extraction.

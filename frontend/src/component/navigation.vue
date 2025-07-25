@@ -351,11 +351,11 @@
                   v-show="config.count.animated > 0"
                   :to="{ name: 'animated' }"
                   variant="text"
-                  class="nav-animated"
+                  class="nav-animated nav-animations"
                   @click.stop=""
                 >
                   <v-list-item-title :class="`nav-menu-item menu-item`">
-                    {{ $gettext(`Animated`) }}
+                    {{ $gettext(`Animations`) }}
                   </v-list-item-title>
                   <span v-show="config.count.animated > 0" class="nav-count-item">{{ config.count.animated }}</span>
                 </v-list-item>
@@ -1007,7 +1007,7 @@ export default {
       canAccessPrivate: !isRestricted && this.$config.allow("photos", "access_private"),
       canManagePhotos: canManagePhotos,
       canManagePeople: this.$config.allow("people", "manage"),
-      canManageUsers: (!isPublic || isDemo) && this.$config.allow("users", "manage"),
+      canManageUsers: (!isPublic || isDemo) && this.$config.allow("users", "access_all"),
       appNameSuffix: appNameSuffix,
       appName: this.$config.getName(),
       appAbout: this.$config.getAbout(),

@@ -40,7 +40,7 @@ func (w *Vision) originalsPath() string {
 }
 
 // Start runs the specified model types for the photos that match the search query.
-func (w *Vision) Start(q string, models []string, force bool) (err error) {
+func (w *Vision) Start(q string, models []string, customSrc string, force bool) (err error) {
 	defer func() {
 		if r := recover(); r != nil {
 			err = fmt.Errorf("vision: %s (worker panic)\nstack: %s", r, debug.Stack())
@@ -66,6 +66,15 @@ func (w *Vision) Start(q string, models []string, force bool) (err error) {
 		log.Infof("vision: running %s model", models[0])
 	} else {
 		log.Infof("vision: running %s models", strings.Join(models, " and "))
+	}
+
+	// Source type for AI generated data.
+	var dataSrc string
+
+	if customSrc = clean.ShortTypeLower(customSrc); customSrc != "" {
+		dataSrc = customSrc
+	} else {
+		dataSrc = entity.SrcImage
 	}
 
 	// Check time when worker was last executed.
@@ -128,6 +137,7 @@ func (w *Vision) Start(q string, models []string, force bool) (err error) {
 
 			changed := false
 
+			// Generate labels.
 			if updateLabels && (len(m.Labels) == 0 || force) {
 				if labels := ind.Labels(file); len(labels) > 0 {
 					m.AddLabels(labels)
@@ -135,6 +145,7 @@ func (w *Vision) Start(q string, models []string, force bool) (err error) {
 				}
 			}
 
+			// Detect NSFW content.
 			if updateNsfw && (!photo.PhotoPrivate || force) {
 				if isNsfw := ind.IsNsfw(file); photo.PhotoPrivate != isNsfw {
 					photo.PhotoPrivate = isNsfw
@@ -143,19 +154,15 @@ func (w *Vision) Start(q string, models []string, force bool) (err error) {
 				}
 			}
 
-			if updateCaptions && (m.PhotoCaption == "" || force) {
+			// Generate a caption if none exists or the force flag is used,
+			// and only if no caption was set or removed by a higher-priority source.
+			if updateCaptions && entity.SrcPriority[dataSrc] >= entity.SrcPriority[m.CaptionSrc] && (m.NoCaption() || force) {
 				if caption, captionErr := ind.Caption(file); captionErr != nil {
 					log.Warnf("vision: %s in %s (generate caption)", clean.Error(captionErr), photoName)
-				} else if caption.Text != "" {
-					if caption.Source == "" {
-						caption.Source = entity.SrcImage
-					}
-
-					if (entity.SrcPriority[caption.Source] > entity.SrcPriority[m.CaptionSrc]) || !m.HasCaption() {
-						m.SetCaption(caption.Text, caption.Source)
-						changed = true
-						log.Infof("vision: changed caption of %s to %s", photoName, clean.Log(m.PhotoCaption))
-					}
+				} else if caption.Text = strings.TrimSpace(caption.Text); caption.Text != "" {
+					m.SetCaption(caption.Text, dataSrc)
+					changed = true
+					log.Infof("vision: changed caption of %s to %s", photoName, clean.Log(m.PhotoCaption))
 				}
 			}
 
