@@ -11,6 +11,8 @@ Models:
       Intervals:
       - Start: -1
         End: 1
+      ResizeOperation: CenterCrop
+      ColorChannelOrder: RGB
       Height: 224
       Width: 224
     Output:
