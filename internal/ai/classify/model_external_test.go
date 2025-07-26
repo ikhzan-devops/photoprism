@@ -27,56 +27,77 @@ var baseUrl = "https://dl.photoprism.app/tensorflow/vision"
 //To avoid downloading everything again and again...
 //var baseUrl = "http://host.docker.internal:8000"
 
-var modelsInfo = map[string]*tensorflow.ModelInfo{
+type ModelTestCase struct {
+	Info   *tensorflow.ModelInfo
+	Labels string
+}
+
+var modelsInfo = map[string]*ModelTestCase{
 	"efficientnet-v2-tensorflow2-imagenet1k-b0-classification-v2.tar.gz": {
-		Output: &tensorflow.ModelOutput{
-			OutputsLogits: true,
+		Info: &tensorflow.ModelInfo{
+			Output: &tensorflow.ModelOutput{
+				OutputsLogits: true,
+			},
 		},
 	},
 	"efficientnet-v2-tensorflow2-imagenet1k-m-classification-v2.tar.gz": {
-		Input: &tensorflow.PhotoInput{
-			Height: 480,
-			Width:  480,
-		},
-		Output: &tensorflow.ModelOutput{
-			OutputsLogits: true,
+		Info: &tensorflow.ModelInfo{
+
+			Input: &tensorflow.PhotoInput{
+				Height: 480,
+				Width:  480,
+			},
+			Output: &tensorflow.ModelOutput{
+				OutputsLogits: true,
+			},
 		},
 	},
 	"efficientnet-v2-tensorflow2-imagenet21k-b0-classification-v1.tar.gz": {
-		Output: &tensorflow.ModelOutput{
-			OutputsLogits: true,
+		Info: &tensorflow.ModelInfo{
+			Output: &tensorflow.ModelOutput{
+				OutputsLogits: true,
+			},
 		},
+		Labels: "labels-imagenet21k.txt",
 	},
 	"inception-v3-tensorflow2-classification-v2.tar.gz": {
-		Input: &tensorflow.PhotoInput{
-			Height: 299,
-			Width:  299,
-		},
-		Output: &tensorflow.ModelOutput{
-			OutputsLogits: true,
+		Info: &tensorflow.ModelInfo{
+			Input: &tensorflow.PhotoInput{
+				Height: 299,
+				Width:  299,
+			},
+			Output: &tensorflow.ModelOutput{
+				OutputsLogits: true,
+			},
 		},
 	},
 	"resnet-v2-tensorflow2-101-classification-v2.tar.gz": {
-		Output: &tensorflow.ModelOutput{
-			OutputsLogits: true,
+		Info: &tensorflow.ModelInfo{
+			Output: &tensorflow.ModelOutput{
+				OutputsLogits: true,
+			},
 		},
 	},
 	"resnet-v2-tensorflow2-152-classification-v2.tar.gz": {
-		Output: &tensorflow.ModelOutput{
-			OutputsLogits: true,
+		Info: &tensorflow.ModelInfo{
+			Output: &tensorflow.ModelOutput{
+				OutputsLogits: true,
+			},
 		},
 	},
 	"vision-transformer-tensorflow2-vit-b16-classification-v1.tar.gz": {
-		Input: &tensorflow.PhotoInput{
-			Intervals: []tensorflow.Interval{
-				{
-					Start: -1.0,
-					End:   1.0,
+		Info: &tensorflow.ModelInfo{
+			Input: &tensorflow.PhotoInput{
+				Intervals: []tensorflow.Interval{
+					{
+						Start: -1.0,
+						End:   1.0,
+					},
 				},
 			},
-		},
-		Output: &tensorflow.ModelOutput{
-			OutputsLogits: true,
+			Output: &tensorflow.ModelOutput{
+				OutputsLogits: true,
+			},
 		},
 	},
 }
@@ -113,7 +134,14 @@ func TestExternalModel_AllModels(t *testing.T) {
 			downloadedModel := downloadRemoteModel(t, fmt.Sprintf("%s/%s", baseUrl, k), tmpPath)
 			log.Infof("Model downloaded to %s", downloadedModel)
 
-			model := NewModel(tmpPath, downloadedModel, modelPath, v, false)
+			if v.Labels != "" {
+				modelPath := filepath.Join(tmpPath, downloadedModel)
+
+				t.Logf("Model path: %s", modelPath)
+				downloadLabels(t, fmt.Sprintf("%s/%s", baseUrl, v.Labels), modelPath)
+			}
+
+			model := NewModel(tmpPath, downloadedModel, modelPath, v.Info, false)
 			if err := model.loadModel(); err != nil {
 				t.Fatal(err)
 			}
@@ -125,6 +153,25 @@ func TestExternalModel_AllModels(t *testing.T) {
 			testModel_LabelsFromFile(t, model)
 			testModel_Run(t, model)
 		})
+	}
+}
+
+func downloadLabels(t *testing.T, url, dst string) {
+	resp, err := http.Get(url)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer resp.Body.Close()
+
+	output, err := os.Create(filepath.Join(dst, "labels.txt"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer output.Close()
+
+	_, err = io.Copy(output, resp.Body)
+	if err != nil {
+		t.Fatal(err)
 	}
 }
 
@@ -248,7 +295,6 @@ func testModel_LabelsFromFile(t *testing.T, tensorFlow *Model) {
 
 		if len(result) > 0 {
 			assertContainsAny(t, result[0].Name, []string{"cat", "kitty"})
-			//assert.Equal(t, 59, result[0].Uncertainty)
 		}
 	})
 	t.Run(testName("cat_720.jpeg"), func(t *testing.T) {
@@ -268,7 +314,6 @@ func testModel_LabelsFromFile(t *testing.T, tensorFlow *Model) {
 
 		if len(result) > 0 {
 			assertContainsAny(t, result[0].Name, []string{"cat", "kitty"})
-			//assert.Equal(t, 60, result[0].Uncertainty)
 		}
 	})
 	t.Run(testName("green.jpg"), func(t *testing.T) {
@@ -287,8 +332,6 @@ func testModel_LabelsFromFile(t *testing.T, tensorFlow *Model) {
 
 		if len(result) > 0 {
 			assert.Equal(t, "outdoor", result[0].Name)
-
-			//assert.Equal(t, 70, result[0].Uncertainty)
 		}
 	})
 	t.Run(testName("not existing file"), func(t *testing.T) {
@@ -348,7 +391,6 @@ func testModel_Run(t *testing.T, tensorFlow *Model) {
 
 			if len(result) > 0 {
 				assert.Contains(t, result[0].Name, "chameleon")
-				//assert.Equal(t, 100-93, result[0].Uncertainty)
 			}
 		}
 	})
@@ -376,7 +418,6 @@ func testModel_Run(t *testing.T, tensorFlow *Model) {
 
 			if len(result) > 0 {
 				assertContainsAny(t, result[0].Name, []string{"dog", "corgi"})
-				//assert.Equal(t, 34, result[0].Uncertainty)
 			}
 		}
 	})
