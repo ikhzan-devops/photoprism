@@ -19,7 +19,7 @@ var CaptionPromptDefault = `Create an interesting caption that sounds natural an
 var CaptionModelDefault = "qwen2.5vl"
 
 // Caption returns generated captions for the specified images.
-func Caption(images Files, src media.Src) (result *CaptionResult, model *Model, err error) {
+func Caption(images Files, mediaSrc media.Src) (result *CaptionResult, model *Model, err error) {
 	// Return if there is no configuration or no image classification models are configured.
 	if Config == nil {
 		return result, model, errors.New("vision service is not configured")
@@ -33,14 +33,15 @@ func Caption(images Files, src media.Src) (result *CaptionResult, model *Model, 
 				return result, model, err
 			}
 
-			if model.Name != "" {
-				apiRequest.Model = model.Name
+			switch model.Service.RequestFormat {
+			case ApiFormatOllama:
+				apiRequest.Model, _, _ = model.Model()
+			default:
+				_, apiRequest.Model, apiRequest.Version = model.Model()
 			}
 
-			if model.Version != "" {
-				apiRequest.Version = model.Version
-			} else {
-				apiRequest.Version = "latest"
+			if model.System != "" {
+				apiRequest.System = model.System
 			}
 
 			if model.Prompt != "" {
@@ -52,6 +53,8 @@ func Caption(images Files, src media.Src) (result *CaptionResult, model *Model, 
 			// Log JSON request data in trace mode.
 			apiRequest.WriteLog()
 
+			// Todo: Refactor response handling to support different API response formats,
+			//       including those used by Ollama and OpenAI.
 			if apiResponse, err = PerformApiRequest(apiRequest, uri, method, model.EndpointKey()); err != nil {
 				return result, model, err
 			} else if apiResponse.Result.Caption == nil {

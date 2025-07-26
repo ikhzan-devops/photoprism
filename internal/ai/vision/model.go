@@ -3,6 +3,7 @@ package vision
 import (
 	"fmt"
 	"path/filepath"
+	"strings"
 	"sync"
 
 	"github.com/photoprism/photoprism/internal/ai/classify"
@@ -17,9 +18,8 @@ var modelMutex = sync.Mutex{}
 
 // Default model version strings.
 var (
-	ModelVersionNone   = ""
-	ModelVersionLatest = "latest"
-	ModelVersionMobile = "Mobile"
+	VersionLatest = "latest"
+	VersionMobile = "mobile"
 )
 
 // Model represents a computer vision model configuration.
@@ -27,6 +27,7 @@ type Model struct {
 	Type          ModelType             `yaml:"Type,omitempty" json:"type,omitempty"`
 	Name          string                `yaml:"Name,omitempty" json:"name,omitempty"`
 	Version       string                `yaml:"Version,omitempty" json:"version,omitempty"`
+	System        string                `yaml:"System,omitempty" json:"system,omitempty"`
 	Prompt        string                `yaml:"Prompt,omitempty" json:"prompt,omitempty"`
 	Resolution    int                   `yaml:"Resolution,omitempty" json:"resolution,omitempty"`
 	Meta          *tensorflow.ModelInfo `yaml:"Meta,omitempty" json:"meta,omitempty"`
@@ -40,6 +41,39 @@ type Model struct {
 
 // Models represents a set of computer vision models.
 type Models []*Model
+
+// Model returns the parsed and normalized model identifier, name, and version strings.
+func (m *Model) Model() (model, name, version string) {
+	// Return empty identifier string if no name was set.
+	if m.Name == "" {
+		return "", "", clean.TypeLowerDash(m.Version)
+	}
+
+	// Normalize model name.
+	name = clean.TypeLowerDash(m.Name)
+
+	// Split name to check if it contains the version.
+	s := strings.SplitN(name, ":", 2)
+
+	// Return if name contains both model name and version.
+	if len(s) == 2 && s[0] != "" && s[1] != "" {
+		return name, s[0], s[1]
+	}
+
+	// Normalize model version.
+	version = clean.TypeLowerDash(m.Version)
+
+	// Default to "latest" if no specific version was set.
+	if version == "" {
+		version = VersionLatest
+	}
+
+	// Create model identifier from model name and version.
+	model = strings.Join([]string{s[0], version}, ":")
+
+	// Return normalized model identifier, name, and version.
+	return model, name, version
+}
 
 // Endpoint returns the remote service request method and endpoint URL, if any.
 func (m *Model) Endpoint() (uri, method string) {
@@ -193,11 +227,6 @@ func (m *Model) FaceModel() *face.Model {
 			m.Meta = &tensorflow.ModelInfo{}
 		}
 
-		// Set default tag if no tags are configured.
-		if len(m.Meta.Tags) == 0 {
-			m.Meta.Tags = []string{"serve"}
-		}
-
 		// Try to load custom model based on the configuration values.
 		if model := face.NewModel(filepath.Join(AssetsPath, m.Path), CachePath, m.Resolution, m.Meta, m.Disabled); model == nil {
 			return nil
@@ -257,11 +286,6 @@ func (m *Model) NsfwModel() *nsfw.Model {
 
 		if m.Meta == nil {
 			m.Meta = &tensorflow.ModelInfo{}
-		}
-
-		// Set default tag if no tags are configured.
-		if len(m.Meta.Tags) == 0 {
-			m.Meta.Tags = []string{"serve"}
 		}
 
 		// Try to load custom model based on the configuration values.

@@ -10,7 +10,7 @@ var (
 	NasnetModel = &Model{
 		Type:       ModelTypeLabels,
 		Name:       "NASNet",
-		Version:    ModelVersionMobile,
+		Version:    VersionMobile,
 		Resolution: 224,
 		Meta: &tensorflow.ModelInfo{
 			TFVersion: "1.12.0",
@@ -38,7 +38,7 @@ var (
 	NsfwModel = &Model{
 		Type:       ModelTypeNsfw,
 		Name:       "Nsfw",
-		Version:    ModelVersionNone,
+		Version:    VersionLatest,
 		Resolution: 224,
 		Meta: &tensorflow.ModelInfo{
 			TFVersion: "1.12.0",
@@ -60,7 +60,7 @@ var (
 	FacenetModel = &Model{
 		Type:       ModelTypeFace,
 		Name:       "FaceNet",
-		Version:    ModelVersionNone,
+		Version:    VersionLatest,
 		Resolution: 160,
 		Meta: &tensorflow.ModelInfo{
 			TFVersion: "1.7.1",
@@ -82,7 +82,7 @@ var (
 	CaptionModel = &Model{
 		Type:       ModelTypeCaption,
 		Name:       CaptionModelDefault,
-		Version:    ModelVersionLatest,
+		Version:    VersionLatest,
 		Resolution: 720, // Original aspect ratio, with a max size of 720 x 720 pixels.
 		Prompt:     CaptionPromptDefault,
 		Service: Service{

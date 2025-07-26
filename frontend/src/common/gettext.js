@@ -6,7 +6,9 @@ export let gettext = {
     return n > 1 ? plural : msgid;
   },
   $pgettext: (context, msgid) => msgid,
-  $npgettext: (context, msgid) => msgid,
+  $npgettext: (domain, context, msgid, plural, n) => {
+    return n > 1 ? plural : msgid;
+  },
 };
 
 export function T(msgid, params) {
@@ -19,6 +21,14 @@ export function $gettext(msgid, params) {
 
 export function $ngettext(msgid, plural, n) {
   return gettext.$ngettext(msgid, plural, n);
+}
+
+export function $pgettext(context, msgid, params) {
+  return gettext.$pgettext(context, msgid, params);
+}
+
+export function $npgettext(domain, context, msgid, plural, n) {
+  return gettext.$npgettext(domain, context, msgid, plural, n);
 }
 
 export function createGettext(config) {

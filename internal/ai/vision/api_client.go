@@ -8,6 +8,7 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/photoprism/photoprism/internal/entity"
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/media/http/header"
 )
@@ -47,16 +48,38 @@ func PerformApiRequest(apiRequest *ApiRequest, uri, method, key string) (apiResp
 		return apiResponse, clientErr
 	}
 
+	apiResponse = &ApiResponse{}
+
 	// Parse and return response, or an error if the request failed.
 	switch apiRequest.GetResponseFormat() {
 	case ApiFormatVision:
-		apiResponse = &ApiResponse{}
 		if apiJson, apiErr := io.ReadAll(clientResp.Body); apiErr != nil {
 			return apiResponse, apiErr
 		} else if apiErr = json.Unmarshal(apiJson, apiResponse); apiErr != nil {
 			return apiResponse, apiErr
 		} else if clientResp.StatusCode >= 300 {
 			log.Debugf("vision: %s (status code %d)", apiJson, clientResp.StatusCode)
+		}
+	case ApiFormatOllama:
+		ollamaResponse := &ApiResponseOllama{}
+
+		if apiJson, apiErr := io.ReadAll(clientResp.Body); apiErr != nil {
+			return apiResponse, apiErr
+		} else if apiErr = json.Unmarshal(apiJson, ollamaResponse); apiErr != nil {
+			return apiResponse, apiErr
+		} else if clientResp.StatusCode >= 300 {
+			log.Debugf("vision: %s (status code %d)", apiJson, clientResp.StatusCode)
+		}
+
+		apiResponse.Id = apiRequest.Id
+		apiResponse.Code = clientResp.StatusCode
+		apiResponse.Model = &Model{
+			Name: ollamaResponse.Model,
+		}
+
+		apiResponse.Result.Caption = &CaptionResult{
+			Text:   ollamaResponse.Response,
+			Source: entity.SrcImage,
 		}
 	default:
 		return apiResponse, fmt.Errorf("unsupported response format %s", clean.Log(apiRequest.responseFormat))

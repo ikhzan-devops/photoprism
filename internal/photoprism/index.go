@@ -50,11 +50,6 @@ func NewIndex(conf *config.Config, convert *Convert, files *Files, photos *Photo
 		findLabels: !conf.DisableClassification(),
 	}
 
-	// Warm up the cache.
-	if err := entity.WarmPhotoLabelCache(); err != nil {
-		log.Warnf("index: %s (cache warm-up)", err)
-	}
-
 	return i
 }
 
@@ -122,6 +117,13 @@ func (ind *Index) Start(o IndexOptions) (found fs.Done, updated int) {
 	}
 
 	defer ind.files.Done()
+
+	// Cache photo labels to reduce number of database queries.
+	if o.FacesOnly {
+		// Skip labels cache warmup if only faces are indexed.
+	} else if err := entity.CachePhotoLabels(); err != nil {
+		log.Warnf("index: %s (cache photo labels)", err)
+	}
 
 	skipRaw := ind.conf.DisableRaw()
 	ignore := fs.NewIgnoreList(fs.PPIgnoreFilename, true, false)
@@ -320,6 +322,7 @@ func (ind *Index) Start(o IndexOptions) (found fs.Done, updated int) {
 	}
 
 	config.FlushUsageCache()
+	entity.FlushPhotoLabelCache()
 	runtime.GC()
 
 	ind.lastRun = entity.Now()

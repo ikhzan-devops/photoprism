@@ -22,6 +22,7 @@ import (
 	"github.com/photoprism/photoprism/internal/photoprism"
 	"github.com/photoprism/photoprism/internal/photoprism/get"
 	"github.com/photoprism/photoprism/pkg/clean"
+	"github.com/photoprism/photoprism/pkg/txt"
 )
 
 // Vision represents a computer vision worker.
@@ -39,8 +40,8 @@ func (w *Vision) originalsPath() string {
 	return w.conf.OriginalsPath()
 }
 
-// Start runs the specified model types for the photos that match the search query.
-func (w *Vision) Start(q string, models []string, customSrc string, force bool) (err error) {
+// Start runs the specified model types for photos matching the search query filter string.
+func (w *Vision) Start(filter string, models []string, customSrc string, force bool) (err error) {
 	defer func() {
 		if r := recover(); r != nil {
 			err = fmt.Errorf("vision: %s (worker panic)\nstack: %s", r, debug.Stack())
@@ -90,12 +91,18 @@ func (w *Vision) Start(q string, models []string, customSrc string, force bool) 
 
 	for {
 		frm := form.SearchPhotos{
-			Query:   strings.TrimSpace(q),
+			Query:   filter,
 			Primary: true,
 			Merged:  false,
 			Count:   limit,
 			Offset:  offset,
-			Order:   sortby.Oldest,
+			Order:   sortby.Added,
+		}
+
+		// Find photos without captions when only
+		// captions are updated without force flag.
+		if !updateLabels && !updateNsfw && !force {
+			frm.Caption = txt.False
 		}
 
 		photos, _, queryErr := search.Photos(frm)
@@ -139,7 +146,7 @@ func (w *Vision) Start(q string, models []string, customSrc string, force bool) 
 
 			// Generate labels.
 			if updateLabels && (len(m.Labels) == 0 || force) {
-				if labels := ind.Labels(file); len(labels) > 0 {
+				if labels := ind.Labels(file, dataSrc); len(labels) > 0 {
 					m.AddLabels(labels)
 					changed = true
 				}
@@ -161,6 +168,9 @@ func (w *Vision) Start(q string, models []string, customSrc string, force bool) 
 					log.Warnf("vision: %s in %s (generate caption)", clean.Error(captionErr), photoName)
 				} else if caption.Text = strings.TrimSpace(caption.Text); caption.Text != "" {
 					m.SetCaption(caption.Text, dataSrc)
+					if updateErr := m.UpdateCaptionLabels(); updateErr != nil {
+						log.Warnf("vision: %s in %s (update caption labels)", clean.Error(updateErr), photoName)
+					}
 					changed = true
 					log.Infof("vision: changed caption of %s to %s", photoName, clean.Log(m.PhotoCaption))
 				}

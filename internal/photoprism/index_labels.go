@@ -13,7 +13,7 @@ import (
 )
 
 // Labels classifies a JPEG image and returns matching labels.
-func (ind *Index) Labels(file *MediaFile) (labels classify.Labels) {
+func (ind *Index) Labels(file *MediaFile, labelSrc string) (labels classify.Labels) {
 	start := time.Now()
 
 	var err error
@@ -42,7 +42,7 @@ func (ind *Index) Labels(file *MediaFile) (labels classify.Labels) {
 	}
 
 	// Get matching labels from computer vision model.
-	if labels, err = vision.Labels(thumbnails, media.SrcLocal); err != nil {
+	if labels, err = vision.Labels(thumbnails, media.SrcLocal, labelSrc); err != nil {
 		log.Debugf("labels: %s in %s", err, clean.Log(file.BaseName()))
 		return labels
 	}
