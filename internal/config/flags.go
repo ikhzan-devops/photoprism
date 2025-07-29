@@ -662,6 +662,12 @@ var Flags = CliFlags{
 			EnvVars: EnvVars("TRUSTED_PROXY"),
 		}}, {
 		Flag: &cli.StringSliceFlag{
+			Name:    "proxy-ip-header",
+			Usage:   "proxy client IP header `NAME`",
+			Value:   cli.NewStringSlice(header.ForwardedFor),
+			EnvVars: EnvVars("PROXY_IP_HEADER"),
+		}}, {
+		Flag: &cli.StringSliceFlag{
 			Name:    "proxy-proto-header",
 			Usage:   "proxy protocol header `NAME`",
 			Value:   cli.NewStringSlice(header.ForwardedProto),

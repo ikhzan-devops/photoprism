@@ -33,6 +33,11 @@ func (c *Config) TrustedProxies() []string {
 	return c.options.TrustedProxies
 }
 
+// ProxyIPHeaders returns the trusted forwarded IP address header names, if any.
+func (c *Config) ProxyIPHeaders() []string {
+	return c.options.ProxyIPHeaders
+}
+
 // ProxyProtoHeader returns the proxy protocol header names.
 func (c *Config) ProxyProtoHeader() []string {
 	return c.options.ProxyProtoHeaders

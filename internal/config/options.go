@@ -142,6 +142,7 @@ type Options struct {
 	HttpsProxy             string        `yaml:"HttpsProxy" json:"HttpsProxy" flag:"https-proxy"`
 	HttpsProxyInsecure     bool          `yaml:"HttpsProxyInsecure" json:"HttpsProxyInsecure" flag:"https-proxy-insecure"`
 	TrustedProxies         []string      `yaml:"TrustedProxies" json:"-" flag:"trusted-proxy"`
+	ProxyIPHeaders         []string      `yaml:"ProxyIPHeaders" json:"-" flag:"proxy-ip-header"`
 	ProxyProtoHeaders      []string      `yaml:"ProxyProtoHeaders" json:"-" flag:"proxy-proto-header"`
 	ProxyProtoHttps        []string      `yaml:"ProxyProtoHttps" json:"-" flag:"proxy-proto-https"`
 	DisableTLS             bool          `yaml:"DisableTLS" json:"DisableTLS" flag:"disable-tls"`

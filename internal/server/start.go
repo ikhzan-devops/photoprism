@@ -47,10 +47,13 @@ func Start(ctx context.Context, conf *config.Config) {
 	// Create new router engine without standard middleware.
 	router := gin.New()
 
-	// Set proxy addresses from which headers related to the client and protocol can be trusted
+	// Set proxy addresses from which headers related to the client and protocol can be trusted.
 	if err := router.SetTrustedProxies(conf.TrustedProxies()); err != nil {
 		log.Warnf("server: %s", err)
 	}
+
+	// Set proxy addresses from which headers related to the client and protocol can be trusted.
+	router.RemoteIPHeaders = conf.ProxyIPHeaders()
 
 	// Register panic recovery middleware.
 	router.Use(Recovery())

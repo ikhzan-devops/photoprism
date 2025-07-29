@@ -9,6 +9,7 @@ const (
 	ContentTypeOptions      = "X-Content-Type-Options"     // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Content-Type-Options
 	XSSProtection           = "X-XSS-Protection"           // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-XSS-Protection
 	FrameOptions            = "X-Frame-Options"            // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options
+	ForwardedFor            = "X-Forwarded-For"            // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-For
 	ForwardedProto          = "X-Forwarded-Proto"          // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-Proto
 )
 
