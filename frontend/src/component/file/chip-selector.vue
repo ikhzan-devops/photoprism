@@ -1,7 +1,5 @@
 <template>
   <div class="chip-selector">
-    <span class="chip-selector__title">{{ title }}</span>
-
     <div class="chip-selector__chips">
       <v-tooltip v-for="item in processedItems" :key="item.value" :text="getChipTooltip(item)" location="top">
         <template #activator="{ props }">

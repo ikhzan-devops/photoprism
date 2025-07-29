@@ -466,10 +466,14 @@
 
                 <div>
                   <v-row dense>
+                    <v-col cols="12" md="6">
+                      <p>Albums</p>
+                    </v-col>
+                  </v-row>
+                  <v-row dense>
                     <v-col cols="12">
                       <BatchChipSelector
                         v-model:items="albumItems"
-                        :title="$gettext('Albums')"
                         :available-items="availableAlbumOptions"
                         :input-placeholder="$gettext('Enter album name...')"
                         :empty-text="$gettext('No albums assigned')"
@@ -483,10 +487,14 @@
 
                 <div>
                   <v-row dense>
+                    <v-col cols="12" md="6">
+                      <p>Labels</p>
+                    </v-col>
+                  </v-row>
+                  <v-row dense>
                     <v-col cols="12">
                       <BatchChipSelector
                         v-model:items="labelItems"
-                        :title="$gettext('Labels')"
                         :available-items="availableLabelOptions"
                         :input-placeholder="$gettext('Enter label name...')"
                         :empty-text="$gettext('No labels assigned')"
