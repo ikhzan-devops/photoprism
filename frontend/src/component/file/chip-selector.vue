@@ -224,11 +224,22 @@ export default {
     },
 
     onComboboxChange(value) {
-      this.newItemTitle = value;
-
-      // Auto-add when selecting from dropdown
       if (value && typeof value === "object" && value.title) {
+        this.newItemTitle = value;
         this.addNewItem();
+        // Immediately clear the input, remove focus and restore placeholder
+        this.$nextTick(() => {
+          this.newItemTitle = "";
+          if (this.$refs.inputField) {
+            this.$refs.inputField.blur();
+            // Force the combobox to reset completely
+            setTimeout(() => {
+              this.newItemTitle = null;
+            }, 10);
+          }
+        });
+      } else {
+        this.newItemTitle = value;
       }
     },
 
