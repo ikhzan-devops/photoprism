@@ -38,7 +38,6 @@
         item-title="title"
         item-value="value"
         density="comfortable"
-        variant="outlined"
         hide-details
         hide-no-data
         return-object
@@ -62,10 +61,6 @@
 export default {
   name: "ChipSelector",
   props: {
-    title: {
-      type: String,
-      required: true,
-    },
     items: {
       type: Array,
       default: () => [],
