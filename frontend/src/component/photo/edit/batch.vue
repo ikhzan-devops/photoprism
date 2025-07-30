@@ -341,6 +341,28 @@
                     </v-col>
                   </v-row>
                   <v-row dense>
+                    <v-col cols="12" md="6">
+                      <p-location-input
+                        :latlng="currentCoordinates"
+                        :placeholder="locationPlaceholder"
+                        :persistent-placeholder="true"
+                        hide-details
+                        :label="locationLabel"
+                        density="comfortable"
+                        validate-on="input"
+                        :show-map-button="!placesDisabled"
+                        :map-button-title="$gettext('Adjust Location')"
+                        :map-button-disabled="placesDisabled"
+                        :is-mixed="isLocationMixed"
+                        :is-deleted="isLocationDeleted"
+                        class="input-coordinates"
+                        @update:latlng="updateLatLng"
+                        @changed="onLocationChanged"
+                        @open-map="adjustLocation"
+                        @delete="onLocationDelete"
+                        @undo="onLocationUndo"
+                      ></p-location-input>
+                    </v-col>
                     <v-col cols="12" sm="6" md="3">
                       <v-autocomplete
                         v-model="formData.Country.value"
@@ -380,28 +402,6 @@
                         @click:append-inner="toggleField('Altitude', $event)"
                         @update:model-value="(val) => changeValue(val, 'input-field', 'Altitude')"
                       ></v-text-field>
-                    </v-col>
-                    <v-col cols="12" md="6">
-                      <p-location-input
-                        :latlng="currentCoordinates"
-                        :placeholder="locationPlaceholder"
-                        :persistent-placeholder="true"
-                        hide-details
-                        :label="locationLabel"
-                        density="comfortable"
-                        validate-on="input"
-                        :show-map-button="!placesDisabled"
-                        :map-button-title="$gettext('Adjust Location')"
-                        :map-button-disabled="placesDisabled"
-                        :is-mixed="isLocationMixed"
-                        :is-deleted="isLocationDeleted"
-                        class="input-coordinates"
-                        @update:latlng="updateLatLng"
-                        @changed="onLocationChanged"
-                        @open-map="adjustLocation"
-                        @delete="onLocationDelete"
-                        @undo="onLocationUndo"
-                      ></p-location-input>
                     </v-col>
                   </v-row>
                 </div>
