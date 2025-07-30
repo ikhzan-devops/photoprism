@@ -709,8 +709,8 @@ export default {
       if (
         latData.mixed ||
         lngData.mixed ||
-        lat === "<mixed>" ||
-        lng === "<mixed>" ||
+        lat === "mixed" ||
+        lng === "mixed" ||
         lat === "" ||
         lng === "" ||
         lat === null ||
@@ -725,7 +725,7 @@ export default {
       if (this.deletedFields.Lat || this.deletedFields.Lng) {
         return "<deleted>";
       } else if (this.isLocationMixed) {
-        return "<mixed>";
+        return "mixed";
       }
 
       const lat = this.formData?.Lat?.value;
@@ -862,7 +862,7 @@ export default {
         // General logic for all other select fields (Country, TimeZone, etc.)
         this.formData[fieldName].value = newValue;
 
-        const newVal = newValue !== -2 ? newValue : "<mixed>";
+        const newVal = newValue !== -2 ? newValue : "mixed";
         if (newVal === previousValue) {
           this.formData[fieldName].action = this.actions.none;
         }
@@ -999,7 +999,7 @@ export default {
       ];
 
       if (fieldData.mixed) {
-        options.push({ text: "<mixed>", value: "<mixed>" });
+        options.push({ text: "mixed", value: "mixed" });
       }
 
       return options;
@@ -1009,7 +1009,7 @@ export default {
       if (!fieldData) return false;
 
       if (fieldData.mixed) {
-        return "<mixed>";
+        return "mixed";
       } else {
         return fieldData.value;
       }
@@ -1092,14 +1092,14 @@ export default {
           const items = this.getItemsArray(fieldName, true);
           return {
             value: this.getValue(fieldName, items),
-            placeholder: "<mixed>",
+            placeholder: "mixed",
             persistent: true,
             items,
           };
         }
         return {
           value: fieldType === "input-field" ? "" : "",
-          placeholder: "<mixed>",
+          placeholder: "mixed",
           persistent: true,
         };
       }
@@ -1180,7 +1180,7 @@ export default {
     getCountriesArray(array) {
       const hasMixed = array.some((item) => item.Code === -2);
       if (!hasMixed) {
-        array.push({ Code: -2, Name: "<mixed>" });
+        array.push({ Code: -2, Name: "mixed" });
       }
       return array;
     },

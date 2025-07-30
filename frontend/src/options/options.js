@@ -114,31 +114,31 @@ export const MonthsShort = () => {
   return result;
 };
 
-// Objects for the Batch Dialog to have one more value -2 => <mixed>
+// Objects for the Batch Dialog to have one more value -2 => mixed
 export const TimeZonesBatchDialog = () => {
   let result = TimeZones();
-  result.push({ ID: -2, Name: "<mixed>" });
+  result.push({ ID: -2, Name: "mixed" });
 
   return result;
 };
 
 export const DaysBatchDialog = () => {
   let result = Days();
-  result.push({ value: -2, text: $gettext("<mixed>") });
+  result.push({ value: -2, text: $gettext("mixed") });
 
   return result;
 };
 
 export const YearsBatchDialog = (start) => {
   let result = Years(start);
-  result.push({ value: -2, text: $gettext("<mixed>") });
+  result.push({ value: -2, text: $gettext("mixed") });
 
   return result;
 };
 
 export const MonthsShortBatchDialog = () => {
   let result = MonthsShort();
-  result.push({ value: -2, text: $gettext("<mixed>") });
+  result.push({ value: -2, text: $gettext("mixed") });
 
   return result;
 };
@@ -342,7 +342,7 @@ export const PhotoTypes = () => [
 
 export const PhotoTypesBatchDialog = () => {
   let result = PhotoTypes();
-  result.push({ text: $gettext("<mixed>"), value: "mixed" });
+  result.push({ text: $gettext("mixed"), value: "mixed" });
 
   return result;
 };
