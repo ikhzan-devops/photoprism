@@ -353,6 +353,7 @@
                         :items="getFieldData('select-field', 'Country').items"
                         :placeholder="getFieldData('select-field', 'Country').placeholder"
                         :persistent-placeholder="getFieldData('select-field', 'Country').persistent"
+                        :readonly="isCountryReadOnly"
                         density="comfortable"
                         validate-on="input"
                         class="input-country"
@@ -770,6 +771,12 @@ export default {
       }
 
       return latData?.mixed || lngData?.mixed;
+    },
+    isCountryReadOnly() {
+      if (!this.formData || !this.formData.Lat || !this.formData.Lng) {
+        return false;
+      }
+      return !!(this.formData.Lat.value || this.formData.Lng.value);
     },
   },
   watch: {
@@ -1264,6 +1271,11 @@ export default {
     onLocationChanged(data) {
       if (data && data.lat !== undefined && data.lng !== undefined) {
         this.updateLatLng([data.lat, data.lng]);
+      }
+      // Update country when location is changed and country data is available
+      if (data?.location?.country) {
+        this.formData.Country.value = data.location.country;
+        this.formData.Country.action = this.actions.update;
       }
       this.deletedFields.Lat = false;
       this.deletedFields.Lng = false;
