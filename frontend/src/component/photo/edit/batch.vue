@@ -994,12 +994,12 @@ export default {
       if (!fieldData) return [];
 
       const options = [
-        { text: "Yes", value: true },
-        { text: "No", value: false },
+        { text: this.$gettext("Yes"), value: true },
+        { text: this.$gettext("No"), value: false },
       ];
 
       if (fieldData.mixed) {
-        options.push({ text: "mixed", value: "mixed" });
+        options.splice(1, 0, { text: this.$gettext("Mixed"), value: "mixed" });
       }
 
       return options;
