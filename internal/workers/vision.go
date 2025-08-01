@@ -41,7 +41,7 @@ func (w *Vision) originalsPath() string {
 }
 
 // Start runs the specified model types for photos matching the search query filter string.
-func (w *Vision) Start(filter string, models []string, customSrc string, force bool) (err error) {
+func (w *Vision) Start(filter string, count int, models []string, customSrc string, force bool) (err error) {
 	defer func() {
 		if r := recover(); r != nil {
 			err = fmt.Errorf("vision: %s (worker panic)\nstack: %s", r, debug.Stack())
@@ -83,9 +83,13 @@ func (w *Vision) Start(filter string, models []string, customSrc string, force b
 
 	start := time.Now()
 	done := make(map[string]bool)
-	limit := 1000
 	offset := 0
 	updated := 0
+
+	// Make sure count is within
+	if count < 1 || count > search.MaxResults {
+		count = search.MaxResults
+	}
 
 	ind := get.Index()
 
@@ -94,7 +98,7 @@ func (w *Vision) Start(filter string, models []string, customSrc string, force b
 			Query:   filter,
 			Primary: true,
 			Merged:  false,
-			Count:   limit,
+			Count:   count,
 			Offset:  offset,
 			Order:   sortby.Added,
 		}
@@ -189,8 +193,6 @@ func (w *Vision) Start(filter string, models []string, customSrc string, force b
 		if mutex.VisionWorker.Canceled() {
 			return errors.New("vision: worker canceled")
 		}
-
-		offset += limit
 	}
 
 	if updated > 0 {
