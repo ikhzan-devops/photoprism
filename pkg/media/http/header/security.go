@@ -8,9 +8,15 @@ const (
 	ReferrerPolicy          = "Referrer-Policy"            // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy
 	ContentTypeOptions      = "X-Content-Type-Options"     // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Content-Type-Options
 	XSSProtection           = "X-XSS-Protection"           // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-XSS-Protection
-	FrameOptions            = "X-Frame-Options"            // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options
-	ForwardedFor            = "X-Forwarded-For"            // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-For
-	ForwardedProto          = "X-Forwarded-Proto"          // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-Proto
+	XFrameOptions           = "X-Frame-Options"            // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options
+	XForwardedProto         = "X-Forwarded-Proto"          // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-Proto
+	XForwardedFor           = "X-Forwarded-For"            // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-For
+	Forwarded               = "Forwarded"                  // https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Forwarded
+	XClientIP               = "X-Client-IP"
+	XRealIP                 = "X-Real-IP"
+	XAppengineRemoteAddr    = "X-Appengine-Remote-Addr"
+	CFConnectingIP          = "CF-Connecting-IP"
+	FlyClientIP             = "Fly-Client-IP"
 )
 
 // Standard security policies.

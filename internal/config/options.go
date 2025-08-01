@@ -141,8 +141,9 @@ type Options struct {
 	CORSMethods            string        `yaml:"CORSMethods" json:"-" flag:"cors-methods"`
 	HttpsProxy             string        `yaml:"HttpsProxy" json:"HttpsProxy" flag:"https-proxy"`
 	HttpsProxyInsecure     bool          `yaml:"HttpsProxyInsecure" json:"HttpsProxyInsecure" flag:"https-proxy-insecure"`
+	TrustedPlatform        string        `yaml:"TrustedPlatform" json:"-" flag:"trusted-platform"`
 	TrustedProxies         []string      `yaml:"TrustedProxies" json:"-" flag:"trusted-proxy"`
-	ProxyIPHeaders         []string      `yaml:"ProxyIPHeaders" json:"-" flag:"proxy-ip-header"`
+	ProxyClientHeaders     []string      `yaml:"ProxyClientHeaders" json:"-" flag:"proxy-client-header"`
 	ProxyProtoHeaders      []string      `yaml:"ProxyProtoHeaders" json:"-" flag:"proxy-proto-header"`
 	ProxyProtoHttps        []string      `yaml:"ProxyProtoHttps" json:"-" flag:"proxy-proto-https"`
 	DisableTLS             bool          `yaml:"DisableTLS" json:"DisableTLS" flag:"disable-tls"`

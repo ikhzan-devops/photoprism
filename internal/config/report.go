@@ -177,8 +177,9 @@ func (c *Config) Report() (rows [][]string, cols []string) {
 		// Proxy Servers.
 		{"https-proxy", c.HttpsProxy()},
 		{"https-proxy-insecure", fmt.Sprintf("%t", c.HttpsProxyInsecure())},
+		{"trusted-platform", c.TrustedPlatform()},
 		{"trusted-proxy", c.TrustedProxy()},
-		{"proxy-ip-header", strings.Join(c.ProxyIPHeaders(), ", ")},
+		{"proxy-client-header", c.ProxyClientHeader()},
 		{"proxy-proto-header", strings.Join(c.ProxyProtoHeader(), ", ")},
 		{"proxy-proto-https", strings.Join(c.ProxyProtoHttps(), ", ")},
 
