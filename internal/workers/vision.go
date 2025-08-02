@@ -114,11 +114,11 @@ func (w *Vision) Start(filter string, count int, models []string, customSrc stri
 		return queryErr
 	}
 
-	if len(photos) == 0 {
+	if n := len(photos); n == 0 {
 		log.Info("vision: no pictures to process")
 		return nil
 	} else {
-		log.Infof("vision: processing %s", english.Plural(updated, "picture", "pictures"))
+		log.Infof("vision: processing %s", english.Plural(n, "picture", "pictures"))
 	}
 
 	for _, photo := range photos {
