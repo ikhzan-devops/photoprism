@@ -830,12 +830,12 @@ func searchPhotos(frm form.SearchPhotos, sess *entity.Session, resultCols string
 		}
 	}
 
-	// Limit offset and count.
-	if frm.Count > 0 && frm.Count <= MaxResults {
-		s = s.Limit(frm.Count).Offset(frm.Offset)
-	} else {
-		s = s.Limit(MaxResults).Offset(frm.Offset)
+	// Search result count and offset.
+	if frm.Count <= 0 || frm.Count > MaxResults {
+		frm.Count = MaxResults
 	}
+
+	s = s.Limit(frm.Count).Offset(frm.Offset)
 
 	// Query database.
 	if err = s.Scan(&results).Error; err != nil {

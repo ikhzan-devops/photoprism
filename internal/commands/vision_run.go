@@ -8,6 +8,7 @@ import (
 	"github.com/photoprism/photoprism/internal/ai/vision"
 	"github.com/photoprism/photoprism/internal/config"
 	"github.com/photoprism/photoprism/internal/entity"
+	"github.com/photoprism/photoprism/internal/entity/search"
 	"github.com/photoprism/photoprism/internal/workers"
 )
 
@@ -21,6 +22,13 @@ var VisionRunCommand = &cli.Command{
 			Name:    "models",
 			Aliases: []string{"m"},
 			Usage:   "computer vision `MODELS` to run, e.g. caption, labels, or nsfw",
+			Value:   "caption",
+		},
+		&cli.IntFlag{
+			Name:    "count",
+			Aliases: []string{"c"},
+			Usage:   "maximum number of pictures to be processed",
+			Value:   search.MaxResults,
 		},
 		&cli.StringFlag{
 			Name:    "source",
@@ -44,6 +52,7 @@ func visionRunAction(ctx *cli.Context) error {
 		filter := strings.TrimSpace(strings.Join(ctx.Args().Slice(), " "))
 		return worker.Start(
 			filter,
+			ctx.Int("count"),
 			vision.ParseTypes(ctx.String("models")),
 			ctx.String("source"),
 			ctx.Bool("force"),

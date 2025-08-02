@@ -655,16 +655,28 @@ var Flags = CliFlags{
 			Usage:   "ignore invalid HTTPS certificates when using a proxy",
 			EnvVars: EnvVars("HTTPS_PROXY_INSECURE"),
 		}}, {
+		Flag: &cli.StringFlag{
+			Name:    "trusted-platform",
+			Usage:   "trusted client IP header `NAME`, e.g. when running behind a cloud provider load balancer",
+			Value:   "",
+			EnvVars: EnvVars("TRUSTED_PLATFORM"),
+		}}, {
 		Flag: &cli.StringSliceFlag{
 			Name:    "trusted-proxy",
 			Usage:   "`CIDR` ranges or IPv4/v6 addresses from which reverse proxy headers can be trusted, separated by commas",
-			Value:   cli.NewStringSlice(header.CidrPodInternal, header.CidrDockerInternal, header.CidrCalicoInternal),
+			Value:   cli.NewStringSlice(header.CidrDockerInternal),
 			EnvVars: EnvVars("TRUSTED_PROXY"),
+		}}, {
+		Flag: &cli.StringSliceFlag{
+			Name:    "proxy-client-header",
+			Usage:   "proxy client IP header `NAME`, e.g. X-Forwarded-For, X-Client-IP, X-Real-IP, or CF-Connecting-IP",
+			Value:   cli.NewStringSlice(header.XForwardedFor),
+			EnvVars: EnvVars("PROXY_CLIENT_HEADER"),
 		}}, {
 		Flag: &cli.StringSliceFlag{
 			Name:    "proxy-proto-header",
 			Usage:   "proxy protocol header `NAME`",
-			Value:   cli.NewStringSlice(header.ForwardedProto),
+			Value:   cli.NewStringSlice(header.XForwardedProto),
 			EnvVars: EnvVars("PROXY_PROTO_HEADER"),
 		}}, {
 		Flag: &cli.StringSliceFlag{

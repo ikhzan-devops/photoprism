@@ -31,6 +31,6 @@ var Security = func(conf *config.Config) gin.HandlerFunc {
 
 		// Set "X-Frame-Options" header:
 		// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options
-		c.Header(header.FrameOptions, header.DefaultFrameOptions)
+		c.Header(header.XFrameOptions, header.DefaultFrameOptions)
 	}
 }
