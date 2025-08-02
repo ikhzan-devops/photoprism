@@ -93,100 +93,101 @@ func (w *Vision) Start(filter string, count int, models []string, customSrc stri
 
 	ind := get.Index()
 
-	for {
-		frm := form.SearchPhotos{
-			Query:   filter,
-			Primary: true,
-			Merged:  false,
-			Count:   count,
-			Offset:  offset,
-			Order:   sortby.Added,
+	frm := form.SearchPhotos{
+		Query:   filter,
+		Primary: true,
+		Merged:  false,
+		Count:   count,
+		Offset:  offset,
+		Order:   sortby.Added,
+	}
+
+	// Find photos without captions when only
+	// captions are updated without force flag.
+	if !updateLabels && !updateNsfw && !force {
+		frm.Caption = txt.False
+	}
+
+	photos, _, queryErr := search.Photos(frm)
+
+	if queryErr != nil {
+		return queryErr
+	}
+
+	if len(photos) == 0 {
+		log.Info("vision: no pictures to process")
+		return nil
+	} else {
+		log.Infof("vision: processing %s", english.Plural(updated, "picture", "pictures"))
+	}
+
+	for _, photo := range photos {
+		if mutex.VisionWorker.Canceled() {
+			return errors.New("vision: worker canceled")
 		}
 
-		// Find photos without captions when only
-		// captions are updated without force flag.
-		if !updateLabels && !updateNsfw && !force {
-			frm.Caption = txt.False
+		if done[photo.PhotoUID] {
+			continue
 		}
 
-		photos, _, queryErr := search.Photos(frm)
+		done[photo.PhotoUID] = true
 
-		if queryErr != nil {
-			return queryErr
+		photoName := path.Join(photo.PhotoPath, photo.PhotoName)
+		fileName := photoprism.FileName(photo.FileRoot, photo.FileName)
+		file, fileErr := photoprism.NewMediaFile(fileName)
+
+		if fileErr != nil {
+			log.Errorf("vision: failed to open %s (%s)", photoName, fileErr)
+			continue
 		}
 
-		if len(photos) == 0 {
-			break
+		m, loadErr := query.PhotoByUID(photo.PhotoUID)
+
+		if loadErr != nil {
+			log.Errorf("vision: failed to load %s (%s)", photoName, loadErr)
+			continue
 		}
 
-		for _, photo := range photos {
-			if mutex.VisionWorker.Canceled() {
-				return errors.New("vision: worker canceled")
+		changed := false
+
+		// Generate labels.
+		if updateLabels && (len(m.Labels) == 0 || force) {
+			if labels := ind.Labels(file, dataSrc); len(labels) > 0 {
+				m.AddLabels(labels)
+				changed = true
 			}
+		}
 
-			if done[photo.PhotoUID] {
-				continue
+		// Detect NSFW content.
+		if updateNsfw && (!photo.PhotoPrivate || force) {
+			if isNsfw := ind.IsNsfw(file); photo.PhotoPrivate != isNsfw {
+				photo.PhotoPrivate = isNsfw
+				changed = true
+				log.Infof("vision: changed private flag of %s to %t", photoName, photo.PhotoPrivate)
 			}
+		}
 
-			done[photo.PhotoUID] = true
-
-			photoName := path.Join(photo.PhotoPath, photo.PhotoName)
-			fileName := photoprism.FileName(photo.FileRoot, photo.FileName)
-			file, fileErr := photoprism.NewMediaFile(fileName)
-
-			if fileErr != nil {
-				log.Errorf("vision: failed to open %s (%s)", photoName, fileErr)
-				continue
-			}
-
-			m, loadErr := query.PhotoByUID(photo.PhotoUID)
-
-			if loadErr != nil {
-				log.Errorf("vision: failed to load %s (%s)", photoName, loadErr)
-				continue
-			}
-
-			changed := false
-
-			// Generate labels.
-			if updateLabels && (len(m.Labels) == 0 || force) {
-				if labels := ind.Labels(file, dataSrc); len(labels) > 0 {
-					m.AddLabels(labels)
-					changed = true
+		// Generate a caption if none exists or the force flag is used,
+		// and only if no caption was set or removed by a higher-priority source.
+		if updateCaptions && entity.SrcPriority[dataSrc] >= entity.SrcPriority[m.CaptionSrc] && (m.NoCaption() || force) {
+			if caption, captionErr := ind.Caption(file); captionErr != nil {
+				log.Warnf("vision: %s in %s (generate caption)", clean.Error(captionErr), photoName)
+			} else if caption.Text = strings.TrimSpace(caption.Text); caption.Text != "" {
+				m.SetCaption(caption.Text, dataSrc)
+				if updateErr := m.UpdateCaptionLabels(); updateErr != nil {
+					log.Warnf("vision: %s in %s (update caption labels)", clean.Error(updateErr), photoName)
 				}
+				changed = true
+				log.Infof("vision: changed caption of %s to %s", photoName, clean.Log(m.PhotoCaption))
 			}
+		}
 
-			// Detect NSFW content.
-			if updateNsfw && (!photo.PhotoPrivate || force) {
-				if isNsfw := ind.IsNsfw(file); photo.PhotoPrivate != isNsfw {
-					photo.PhotoPrivate = isNsfw
-					changed = true
-					log.Infof("vision: changed private flag of %s to %t", photoName, photo.PhotoPrivate)
-				}
-			}
-
-			// Generate a caption if none exists or the force flag is used,
-			// and only if no caption was set or removed by a higher-priority source.
-			if updateCaptions && entity.SrcPriority[dataSrc] >= entity.SrcPriority[m.CaptionSrc] && (m.NoCaption() || force) {
-				if caption, captionErr := ind.Caption(file); captionErr != nil {
-					log.Warnf("vision: %s in %s (generate caption)", clean.Error(captionErr), photoName)
-				} else if caption.Text = strings.TrimSpace(caption.Text); caption.Text != "" {
-					m.SetCaption(caption.Text, dataSrc)
-					if updateErr := m.UpdateCaptionLabels(); updateErr != nil {
-						log.Warnf("vision: %s in %s (update caption labels)", clean.Error(updateErr), photoName)
-					}
-					changed = true
-					log.Infof("vision: changed caption of %s to %s", photoName, clean.Log(m.PhotoCaption))
-				}
-			}
-
-			if changed {
-				if saveErr := m.GenerateAndSaveTitle(); saveErr != nil {
-					log.Infof("vision: failed to updated %s (%s)", photoName, clean.Error(saveErr))
-				} else {
-					updated++
-					log.Debugf("vision: updated %s", photoName)
-				}
+		if changed {
+			if saveErr := m.GenerateAndSaveTitle(); saveErr != nil {
+				log.Infof("vision: failed to updated %s (%s)", photoName, clean.Error(saveErr))
+			} else {
+				updated++
+				log.Debugf("vision: updated %s", photoName)
 			}
 		}
 
@@ -196,7 +197,7 @@ func (w *Vision) Start(filter string, count int, models []string, customSrc stri
 	}
 
 	if updated > 0 {
-		log.Infof("vision: updated %s [%s]", english.Plural(updated, "photo", "photos"), time.Since(start))
+		log.Infof("vision: updated %s [%s]", english.Plural(updated, "picture", "pictures"), time.Since(start))
 		updateIndex = true
 	}
 
