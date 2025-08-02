@@ -196,8 +196,9 @@ func (w *Vision) Start(filter string, count int, models []string, customSrc stri
 		}
 	}
 
+	log.Infof("vision: updated %s [%s]", english.Plural(updated, "picture", "pictures"), time.Since(start))
+
 	if updated > 0 {
-		log.Infof("vision: updated %s [%s]", english.Plural(updated, "picture", "pictures"), time.Since(start))
 		updateIndex = true
 	}
 
