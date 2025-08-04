@@ -1,13 +1,18 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/dustin/go-humanize/english"
 	"github.com/gin-gonic/gin"
+	"github.com/ulule/deepcopier"
 
 	"github.com/photoprism/photoprism/internal/auth/acl"
+	"github.com/photoprism/photoprism/internal/entity"
+	"github.com/photoprism/photoprism/internal/entity/query"
 	"github.com/photoprism/photoprism/internal/entity/search"
+	"github.com/photoprism/photoprism/internal/form"
 	"github.com/photoprism/photoprism/internal/form/batch"
 	"github.com/photoprism/photoprism/internal/photoprism/get"
 	"github.com/photoprism/photoprism/pkg/clean"
@@ -65,12 +70,59 @@ func BatchPhotosEdit(router *gin.RouterGroup) {
 			return
 		}
 
-		// TODO: Implement photo metadata update based on submitted form values.
+		// Update photo metadata based on submitted form values.
 		if frm.Values != nil {
-			log.Debugf("batch: updating photo metadata %#v (not yet implemented)", frm.Values)
-			for _, photo := range photos {
-				log.Debugf("batch: updating metadata of photo %s (not yet implemented)", photo.PhotoUID)
+			log.Debugf("batch: updating photo metadata for %d photos", len(photos))
+			updatedCount := 0
+
+			for i, photo := range photos {
+				photoID := photo.PhotoUID
+
+				// Get the full photo entity with preloaded data
+				fullPhoto, err := query.PhotoPreloadByUID(photoID)
+				if err != nil {
+					log.Errorf("batch: failed to load photo %s: %s", photoID, err)
+					continue
+				}
+
+				// Convert batch form to regular photo form
+				photoForm, err := convertBatchToPhotoForm(&fullPhoto, frm.Values)
+				if err != nil {
+					log.Errorf("batch: failed to convert form for photo %s: %s", photoID, err)
+					continue
+				}
+
+				// Use the same save mechanism as normal edit
+				if err := entity.SavePhotoForm(&fullPhoto, *photoForm); err != nil {
+					log.Errorf("batch: failed to save photo %s: %s", photoID, err)
+					continue
+				}
+
+				// Convert the updated entity.Photo back to search.Photo and update the results array
+				updatedSearchPhoto, convertErr := convertEntityToSearchPhoto(&fullPhoto)
+				if convertErr != nil {
+					log.Errorf("batch: failed to convert photo %s to search result: %s", photoID, convertErr)
+				} else {
+					photos[i] = *updatedSearchPhoto
+				}
+				updatedCount++
+
+				// Save sidecar YAML if enabled
+				SaveSidecarYaml(&fullPhoto)
+
+				log.Debugf("batch: successfully updated photo %s", photoID)
 			}
+
+			log.Infof("batch: successfully updated %d out of %d photos", updatedCount, len(photos))
+
+			// Publish photo update events
+			for _, photo := range photos {
+				PublishPhotoEvent(StatusUpdated, photo.PhotoUID, c)
+			}
+
+			// Update client config and flush cache
+			UpdateClientConfig()
+			FlushCoverCache()
 		}
 
 		// Create batch edit form values form from photo metadata.
@@ -84,4 +136,171 @@ func BatchPhotosEdit(router *gin.RouterGroup) {
 
 		c.JSON(http.StatusOK, data)
 	})
+}
+
+// convertBatchToPhotoForm converts batch form values to a regular photo form,
+// applying only the fields that have action=update. This allows us to use
+// the same SavePhotoForm logic as the normal edit dialog.
+func convertBatchToPhotoForm(photo *entity.Photo, batchValues *batch.PhotosForm) (*form.Photo, error) {
+	if photo == nil || batchValues == nil {
+		return nil, fmt.Errorf("photo or batch values is nil")
+	}
+
+	// Start with a form created from the current photo
+	photoForm, err := form.NewPhoto(photo)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create form from photo: %w", err)
+	}
+
+	// Apply batch changes only for fields with action=update
+	if batchValues.PhotoTitle.Action == batch.ActionUpdate {
+		photoForm.PhotoTitle = batchValues.PhotoTitle.Value
+		photoForm.TitleSrc = entity.SrcManual
+	}
+
+	if batchValues.PhotoCaption.Action == batch.ActionUpdate {
+		photoForm.PhotoCaption = batchValues.PhotoCaption.Value
+		photoForm.CaptionSrc = entity.SrcManual
+	}
+
+	if batchValues.PhotoType.Action == batch.ActionUpdate {
+		photoForm.PhotoType = batchValues.PhotoType.Value
+		photoForm.TypeSrc = entity.SrcManual
+	}
+
+	// Date/time fields
+	timeChanged := false
+	if batchValues.PhotoDay.Action == batch.ActionUpdate {
+		photoForm.PhotoDay = batchValues.PhotoDay.Value
+		timeChanged = true
+	}
+
+	if batchValues.PhotoMonth.Action == batch.ActionUpdate {
+		photoForm.PhotoMonth = batchValues.PhotoMonth.Value
+		timeChanged = true
+	}
+
+	if batchValues.PhotoYear.Action == batch.ActionUpdate {
+		photoForm.PhotoYear = batchValues.PhotoYear.Value
+		timeChanged = true
+	}
+
+	if batchValues.TimeZone.Action == batch.ActionUpdate {
+		photoForm.TimeZone = batchValues.TimeZone.Value
+		timeChanged = true
+	}
+
+	if timeChanged {
+		photoForm.TakenSrc = entity.SrcManual
+	}
+
+	// Location fields
+	locationChanged := false
+	if batchValues.PhotoLat.Action == batch.ActionUpdate {
+		photoForm.PhotoLat = batchValues.PhotoLat.Value
+		locationChanged = true
+	}
+
+	if batchValues.PhotoLng.Action == batch.ActionUpdate {
+		photoForm.PhotoLng = batchValues.PhotoLng.Value
+		locationChanged = true
+	}
+
+	if batchValues.PhotoCountry.Action == batch.ActionUpdate {
+		photoForm.PhotoCountry = batchValues.PhotoCountry.Value
+		locationChanged = true
+	}
+
+	if batchValues.PhotoAltitude.Action == batch.ActionUpdate {
+		photoForm.PhotoAltitude = batchValues.PhotoAltitude.Value
+		locationChanged = true
+	}
+
+	if locationChanged {
+		photoForm.PlaceSrc = entity.SrcManual
+	}
+
+	// Boolean flags
+	if batchValues.PhotoFavorite.Action == batch.ActionUpdate {
+		photoForm.PhotoFavorite = batchValues.PhotoFavorite.Value
+	}
+
+	if batchValues.PhotoPrivate.Action == batch.ActionUpdate {
+		photoForm.PhotoPrivate = batchValues.PhotoPrivate.Value
+	}
+
+	if batchValues.PhotoScan.Action == batch.ActionUpdate {
+		photoForm.PhotoScan = batchValues.PhotoScan.Value
+	}
+
+	if batchValues.PhotoPanorama.Action == batch.ActionUpdate {
+		photoForm.PhotoPanorama = batchValues.PhotoPanorama.Value
+	}
+
+	// Details fields - preserve existing values, only update changed ones
+	currentDetails := photo.GetDetails()
+	if currentDetails != nil {
+		// Start with current values to preserve unchanged fields
+		photoForm.Details.Subject = currentDetails.Subject
+		photoForm.Details.SubjectSrc = currentDetails.SubjectSrc
+		photoForm.Details.Artist = currentDetails.Artist
+		photoForm.Details.ArtistSrc = currentDetails.ArtistSrc
+		photoForm.Details.Copyright = currentDetails.Copyright
+		photoForm.Details.CopyrightSrc = currentDetails.CopyrightSrc
+		photoForm.Details.License = currentDetails.License
+		photoForm.Details.LicenseSrc = currentDetails.LicenseSrc
+		photoForm.Details.Keywords = currentDetails.Keywords
+		photoForm.Details.KeywordsSrc = currentDetails.KeywordsSrc
+		photoForm.Details.Notes = currentDetails.Notes
+		photoForm.Details.NotesSrc = currentDetails.NotesSrc
+	}
+
+	// Now apply only the fields that have action=update
+	if batchValues.DetailsSubject.Action == batch.ActionUpdate {
+		photoForm.Details.Subject = batchValues.DetailsSubject.Value
+		photoForm.Details.SubjectSrc = entity.SrcManual
+	}
+
+	if batchValues.DetailsArtist.Action == batch.ActionUpdate {
+		photoForm.Details.Artist = batchValues.DetailsArtist.Value
+		photoForm.Details.ArtistSrc = entity.SrcManual
+	}
+
+	if batchValues.DetailsCopyright.Action == batch.ActionUpdate {
+		photoForm.Details.Copyright = batchValues.DetailsCopyright.Value
+		photoForm.Details.CopyrightSrc = entity.SrcManual
+	}
+
+	if batchValues.DetailsLicense.Action == batch.ActionUpdate {
+		photoForm.Details.License = batchValues.DetailsLicense.Value
+		photoForm.Details.LicenseSrc = entity.SrcManual
+	}
+
+	// Set the PhotoID for details
+	photoForm.Details.PhotoID = photo.ID
+
+	// TODO: Handle Albums and Labels updates
+
+	return &photoForm, nil
+}
+
+// convertEntityToSearchPhoto converts an entity.Photo to search.Photo for API responses.
+func convertEntityToSearchPhoto(photo *entity.Photo) (*search.Photo, error) {
+	searchPhoto := &search.Photo{}
+
+	// Copy common fields automatically
+	deepcopier.Copy(searchPhoto).From(photo)
+
+	// Set required fields manually
+	searchPhoto.CompositeID = fmt.Sprintf("%d", photo.ID)
+
+	// Copy details if they exist
+	if details := photo.GetDetails(); details != nil {
+		searchPhoto.DetailsSubject = details.Subject
+		searchPhoto.DetailsArtist = details.Artist
+		searchPhoto.DetailsCopyright = details.Copyright
+		searchPhoto.DetailsLicense = details.License
+	}
+
+	return searchPhoto, nil
 }
