@@ -39,13 +39,19 @@ func visionListAction(ctx *cli.Context) error {
 		// Display report.
 		for i, model := range vision.Config.Models {
 			modelUri, _ := model.Endpoint()
+			tags := ""
+
+			if model.Meta != nil && model.Meta.Tags != nil {
+				tags = strings.Join(model.Meta.Tags, ", ")
+			}
+
 			rows[i] = []string{
 				model.Type,
 				model.Name,
 				model.Version,
 				fmt.Sprintf("%d", model.Resolution),
 				modelUri,
-				strings.Join(model.Tags, ", "),
+				tags,
 				report.Bool(model.Disabled, report.Yes, report.No),
 			}
 		}

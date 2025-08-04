@@ -9,6 +9,7 @@ import (
 	"github.com/photoprism/photoprism/internal/ai/classify"
 	"github.com/photoprism/photoprism/internal/ai/face"
 	"github.com/photoprism/photoprism/internal/ai/nsfw"
+	"github.com/photoprism/photoprism/internal/ai/tensorflow"
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/media/http/scheme"
 )
@@ -23,16 +24,17 @@ var (
 
 // Model represents a computer vision model configuration.
 type Model struct {
-	Type          ModelType `yaml:"Type,omitempty" json:"type,omitempty"`
-	Name          string    `yaml:"Name,omitempty" json:"name,omitempty"`
-	Version       string    `yaml:"Version,omitempty" json:"version,omitempty"`
-	System        string    `yaml:"System,omitempty" json:"system,omitempty"`
-	Prompt        string    `yaml:"Prompt,omitempty" json:"prompt,omitempty"`
-	Resolution    int       `yaml:"Resolution,omitempty" json:"resolution,omitempty"`
-	Service       Service   `yaml:"Service,omitempty" json:"Service,omitempty"`
-	Path          string    `yaml:"Path,omitempty" json:"-"`
-	Tags          []string  `yaml:"Tags,omitempty" json:"-"`
-	Disabled      bool      `yaml:"Disabled,omitempty" json:"disabled,omitempty"`
+	Type          ModelType             `yaml:"Type,omitempty" json:"type,omitempty"`
+	Default       bool                  `yaml:"Default,omitempty" json:"default,omitempty"`
+	Name          string                `yaml:"Name,omitempty" json:"name,omitempty"`
+	Version       string                `yaml:"Version,omitempty" json:"version,omitempty"`
+	System        string                `yaml:"System,omitempty" json:"system,omitempty"`
+	Prompt        string                `yaml:"Prompt,omitempty" json:"prompt,omitempty"`
+	Resolution    int                   `yaml:"Resolution,omitempty" json:"resolution,omitempty"`
+	Meta          *tensorflow.ModelInfo `yaml:"Meta,omitempty" json:"meta,omitempty"`
+	Service       Service               `yaml:"Service,omitempty" json:"Service,omitempty"`
+	Path          string                `yaml:"Path,omitempty" json:"-"`
+	Disabled      bool                  `yaml:"Disabled,omitempty" json:"disabled,omitempty"`
 	classifyModel *classify.Model
 	faceModel     *face.Model
 	nsfwModel     *nsfw.Model
@@ -155,18 +157,24 @@ func (m *Model) ClassifyModel() *classify.Model {
 			m.Path = clean.TypeLowerUnderscore(m.Name)
 		}
 
+		if m.Meta == nil {
+			m.Meta = &tensorflow.ModelInfo{}
+		}
+
 		// Set default thumbnail resolution if no tags are configured.
 		if m.Resolution <= 0 {
 			m.Resolution = DefaultResolution
 		}
 
-		// Set default tag if no tags are configured.
-		if len(m.Tags) == 0 {
-			m.Tags = []string{"serve"}
+		if m.Meta.Input == nil {
+			m.Meta.Input = new(tensorflow.PhotoInput)
 		}
 
+		m.Meta.Input.SetResolution(m.Resolution)
+
 		// Try to load custom model based on the configuration values.
-		if model := classify.NewModel(AssetsPath, m.Path, m.Resolution, m.Tags, m.Disabled); model == nil {
+		defaultPath := filepath.Join(AssetsPath, "nasnet")
+		if model := classify.NewModel(AssetsPath, m.Path, defaultPath, m.Meta, m.Disabled); model == nil {
 			return nil
 		} else if err := model.Init(); err != nil {
 			log.Errorf("vision: %s (init %s)", err, m.Path)
@@ -197,7 +205,7 @@ func (m *Model) FaceModel() *face.Model {
 		return nil
 	case FacenetModel.Name, "facenet":
 		// Load and initialize the Nasnet image classification model.
-		if model := face.NewModel(FaceNetModelPath, CachePath, m.Resolution, m.Tags, m.Disabled); model == nil {
+		if model := face.NewModel(FaceNetModelPath, CachePath, m.Resolution, m.Meta, m.Disabled); model == nil {
 			return nil
 		} else if err := model.Init(); err != nil {
 			log.Errorf("vision: %s (init %s)", err, m.Path)
@@ -216,13 +224,12 @@ func (m *Model) FaceModel() *face.Model {
 			m.Resolution = DefaultResolution
 		}
 
-		// Set default tag if no tags are configured.
-		if len(m.Tags) == 0 {
-			m.Tags = []string{"serve"}
+		if m.Meta == nil {
+			m.Meta = &tensorflow.ModelInfo{}
 		}
 
 		// Try to load custom model based on the configuration values.
-		if model := face.NewModel(filepath.Join(AssetsPath, m.Path), CachePath, m.Resolution, m.Tags, m.Disabled); model == nil {
+		if model := face.NewModel(filepath.Join(AssetsPath, m.Path), CachePath, m.Resolution, m.Meta, m.Disabled); model == nil {
 			return nil
 		} else if err := model.Init(); err != nil {
 			log.Errorf("vision: %s (init %s)", err, m.Path)
@@ -253,7 +260,7 @@ func (m *Model) NsfwModel() *nsfw.Model {
 		return nil
 	case NsfwModel.Name, "nsfw":
 		// Load and initialize the Nasnet image classification model.
-		if model := nsfw.NewModel(NsfwModelPath, m.Resolution, m.Tags, m.Disabled); model == nil {
+		if model := nsfw.NewModel(NsfwModelPath, NsfwModel.Meta, m.Disabled); model == nil {
 			return nil
 		} else if err := model.Init(); err != nil {
 			log.Errorf("vision: %s (init %s)", err, m.Path)
@@ -272,13 +279,18 @@ func (m *Model) NsfwModel() *nsfw.Model {
 			m.Resolution = DefaultResolution
 		}
 
-		// Set default tag if no tags are configured.
-		if len(m.Tags) == 0 {
-			m.Tags = []string{"serve"}
+		if m.Meta.Input == nil {
+			m.Meta.Input = new(tensorflow.PhotoInput)
+		}
+
+		m.Meta.Input.SetResolution(m.Resolution)
+
+		if m.Meta == nil {
+			m.Meta = &tensorflow.ModelInfo{}
 		}
 
 		// Try to load custom model based on the configuration values.
-		if model := nsfw.NewModel(filepath.Join(AssetsPath, m.Path), m.Resolution, m.Tags, m.Disabled); model == nil {
+		if model := nsfw.NewModel(filepath.Join(AssetsPath, m.Path), m.Meta, m.Disabled); model == nil {
 			return nil
 		} else if err := model.Init(); err != nil {
 			log.Errorf("vision: %s (init %s)", err, m.Path)
