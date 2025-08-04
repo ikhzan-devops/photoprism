@@ -38,19 +38,19 @@ func TestResizeOperationJSON(t *testing.T) {
 		[]byte(exampleOperationJSON), &op)
 
 	if err != nil {
-		t.Fatal("Could not unmarshal the example operation")
+		t.Fatal("could not unmarshal the example operation")
 	}
 
 	for i := range allOperations {
 		serialized, err := json.Marshal(allOperations[i])
 		if err != nil {
-			t.Fatalf("Could not marshal %v: %v",
+			t.Fatalf("could not marshal %v: %v",
 				allOperations[i], err)
 		}
 
 		err = json.Unmarshal(serialized, &op)
 		if err != nil {
-			t.Fatalf("Could not unmarshal %s: %v",
+			t.Fatalf("could not unmarshal %s: %v",
 				string(serialized), err)
 		}
 
@@ -67,19 +67,19 @@ func TestResizeOperationYAML(t *testing.T) {
 		[]byte(exampleOperationYAML), &op)
 
 	if err != nil {
-		t.Fatal("Could not unmarshal the example operation")
+		t.Fatal("could not unmarshal the example operation")
 	}
 
 	for i := range allOperations {
 		serialized, err := yaml.Marshal(allOperations[i])
 		if err != nil {
-			t.Fatalf("Could not marshal %v: %v",
+			t.Fatalf("could not marshal %v: %v",
 				allOperations[i], err)
 		}
 
 		err = yaml.Unmarshal(serialized, &op)
 		if err != nil {
-			t.Fatalf("Could not unmarshal %s: %v",
+			t.Fatalf("could not unmarshal %s: %v",
 				string(serialized), err)
 		}
 
@@ -119,19 +119,19 @@ func TestColorChannelOrderJSON(t *testing.T) {
 		[]byte(exampleOrderJSON), &order)
 
 	if err != nil {
-		t.Fatal("Could not unmarshal the example operation")
+		t.Fatal("could not unmarshal the example operation")
 	}
 
 	for i := range allColorChannelOrders {
 		serialized, err := json.Marshal(allColorChannelOrders[i])
 		if err != nil {
-			t.Fatalf("Could not marshal %v: %v",
+			t.Fatalf("could not marshal %v: %v",
 				allColorChannelOrders[i], err)
 		}
 
 		err = json.Unmarshal(serialized, &order)
 		if err != nil {
-			t.Fatalf("Could not unmarshal %s: %v",
+			t.Fatalf("could not unmarshal %s: %v",
 				string(serialized), err)
 		}
 
@@ -148,19 +148,19 @@ func TestColorChannelOrderYAML(t *testing.T) {
 		[]byte(exampleOrderYAML), &order)
 
 	if err != nil {
-		t.Fatal("Could not unmarshal the example operation")
+		t.Fatal("could not unmarshal the example operation")
 	}
 
 	for i := range allColorChannelOrders {
 		serialized, err := yaml.Marshal(allColorChannelOrders[i])
 		if err != nil {
-			t.Fatalf("Could not marshal %v: %v",
+			t.Fatalf("could not marshal %v: %v",
 				allColorChannelOrders[i], err)
 		}
 
 		err = yaml.Unmarshal(serialized, &order)
 		if err != nil {
-			t.Fatalf("Could not unmarshal %s: %v",
+			t.Fatalf("could not unmarshal %s: %v",
 				string(serialized), err)
 		}
 

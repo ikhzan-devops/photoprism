@@ -205,7 +205,7 @@ func downloadRemoteModel(t *testing.T, url, tmpPath string) (model string) {
 		}
 
 		if err != nil {
-			t.Fatalf("Could not extract the file: %v", err)
+			t.Fatalf("could not extract the file: %v", err)
 		}
 
 		target := filepath.Join(tmpPath, header.Name)
@@ -216,15 +216,15 @@ func downloadRemoteModel(t *testing.T, url, tmpPath string) (model string) {
 		switch header.Typeflag {
 		case tar.TypeDir:
 			if err := os.Mkdir(target, 0755); err != nil {
-				t.Fatalf("Could not make the dir %s: %v", header.Name, err)
+				t.Fatalf("could not make the dir %s: %v", header.Name, err)
 			}
 		case tar.TypeReg:
 			outFile, err := os.Create(target)
 			if err != nil {
-				t.Fatalf("Could not create file %s: %v", header.Name, err)
+				t.Fatalf("could not create file %s: %v", header.Name, err)
 			}
 			if _, err := io.Copy(outFile, tarReader); err != nil {
-				t.Fatalf("Could not copy file %s: %v", header.Name, err)
+				t.Fatalf("could not copy file %s: %v", header.Name, err)
 			}
 
 			rootPath, fileName := filepath.Split(header.Name)
@@ -233,7 +233,7 @@ func downloadRemoteModel(t *testing.T, url, tmpPath string) (model string) {
 			}
 			outFile.Close()
 		default:
-			t.Fatalf("Could not extract file. Unknown type %v in %s",
+			t.Fatalf("could not extract file. Unknown type %v in %s",
 				header.Typeflag,
 				header.Name)
 		}

@@ -51,7 +51,7 @@ func GuessInputAndOutput(model *tf.SavedModel) (input *PhotoInput, output *Model
 		}
 	}
 
-	return nil, nil, fmt.Errorf("Could not guess the inputs and outputs")
+	return nil, nil, fmt.Errorf("could not guess the inputs and outputs")
 }
 
 func GetInputAndOutputFromSavedModel(model *tf.SavedModel) (*PhotoInput, *ModelOutput, error) {
@@ -83,7 +83,7 @@ func GetInputAndOutputFromSavedModel(model *tf.SavedModel) (*PhotoInput, *ModelO
 					if found {
 						inputIdx, err = strconv.Atoi(inputIndex)
 						if err != nil {
-							return nil, nil, fmt.Errorf("Could not parse index %s: %w", inputIndex, err)
+							return nil, nil, fmt.Errorf("could not parse index %s: %w", inputIndex, err)
 						}
 					}
 
@@ -91,7 +91,7 @@ func GetInputAndOutputFromSavedModel(model *tf.SavedModel) (*PhotoInput, *ModelO
 					if found {
 						outputIdx, err = strconv.Atoi(outputIndex)
 						if err != nil {
-							return nil, nil, fmt.Errorf("Could not parse index: %s: %w", outputIndex, err)
+							return nil, nil, fmt.Errorf("could not parse index: %s: %w", outputIndex, err)
 						}
 					}
 

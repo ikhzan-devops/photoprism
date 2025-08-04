@@ -440,7 +440,7 @@ func GetInputAndOutputFromMetaSignature(meta *pb.MetaGraphDef) (*PhotoInput, *Mo
 
 						inputIdx, err = strconv.Atoi(inputIndex)
 						if err != nil {
-							return nil, nil, fmt.Errorf("Could not parse index %s: %w", inputIndex, err)
+							return nil, nil, fmt.Errorf("could not parse index %s: %w", inputIndex, err)
 						}
 					}
 
@@ -449,7 +449,7 @@ func GetInputAndOutputFromMetaSignature(meta *pb.MetaGraphDef) (*PhotoInput, *Mo
 
 						outputIdx, err = strconv.Atoi(outputIndex)
 						if err != nil {
-							return nil, nil, fmt.Errorf("Could not parse index: %s: %w", outputIndex, err)
+							return nil, nil, fmt.Errorf("could not parse index: %s: %w", outputIndex, err)
 						}
 					}
 
@@ -481,14 +481,14 @@ func GetModelInfo(path string) ([]ModelInfo, error) {
 
 	data, err := os.ReadFile(path)
 	if err != nil {
-		return nil, fmt.Errorf("Could not read the file %s: %w", path, err)
+		return nil, fmt.Errorf("could not read the file %s: %w", path, err)
 	}
 
 	model := new(pb.SavedModel)
 
 	err = proto.Unmarshal(data, model)
 	if err != nil {
-		return nil, fmt.Errorf("Could not unmarshal the file %s: %w", path, err)
+		return nil, fmt.Errorf("could not unmarshal the file %s: %w", path, err)
 	}
 
 	models := make([]ModelInfo, 0)
@@ -504,7 +504,7 @@ func GetModelInfo(path string) ([]ModelInfo, error) {
 		}
 
 		if err != nil {
-			log.Errorf("Could not get the inputs and outputs from signatures. (TF Version %s): %w", newModel.TFVersion, err)
+			log.Errorf("could not get the inputs and outputs from signatures. (TF Version %s): %w", newModel.TFVersion, err)
 		}
 
 		models = append(models, newModel)

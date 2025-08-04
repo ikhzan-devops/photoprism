@@ -281,7 +281,7 @@ func TestModel_LoadModel(t *testing.T) {
 		err := tensorFlow.loadModel()
 
 		if err != nil {
-			assert.Contains(t, err.Error(), "Could not find SavedModel")
+			assert.Contains(t, err.Error(), "could not find SavedModel")
 		}
 
 		assert.Error(t, err)
