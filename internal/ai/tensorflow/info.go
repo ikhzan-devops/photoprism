@@ -10,6 +10,8 @@ import (
 
 	pb "github.com/wamuir/graft/tensorflow/core/protobuf/for_core_protos_go_proto"
 	"google.golang.org/protobuf/proto"
+
+	"github.com/photoprism/photoprism/pkg/clean"
 )
 
 // ExpectedChannels defines the expected number of channels.
@@ -440,7 +442,7 @@ func GetInputAndOutputFromMetaSignature(meta *pb.MetaGraphDef) (*PhotoInput, *Mo
 
 						inputIdx, err = strconv.Atoi(inputIndex)
 						if err != nil {
-							return nil, nil, fmt.Errorf("could not parse index %s: %w", inputIndex, err)
+							return nil, nil, fmt.Errorf("could not parse index %s (%s)", inputIndex, clean.Error(err))
 						}
 					}
 
@@ -449,7 +451,7 @@ func GetInputAndOutputFromMetaSignature(meta *pb.MetaGraphDef) (*PhotoInput, *Mo
 
 						outputIdx, err = strconv.Atoi(outputIndex)
 						if err != nil {
-							return nil, nil, fmt.Errorf("could not parse index: %s: %w", outputIndex, err)
+							return nil, nil, fmt.Errorf("could not parse index: %s (%s)", outputIndex, clean.Error(err))
 						}
 					}
 
@@ -475,27 +477,30 @@ func GetInputAndOutputFromMetaSignature(meta *pb.MetaGraphDef) (*PhotoInput, *Mo
 	return nil, nil, fmt.Errorf("GetInputAndOutputFromMetaSignature: Could not find a valid signature")
 }
 
-func GetModelInfo(path string) ([]ModelInfo, error) {
+func GetModelInfo(savedModelPath string) ([]ModelInfo, error) {
+	savedModel := filepath.Join(savedModelPath, "saved_model.pb")
 
-	path = filepath.Join(path, "saved_model.pb")
+	data, err := os.ReadFile(savedModel)
 
-	data, err := os.ReadFile(path)
 	if err != nil {
-		return nil, fmt.Errorf("could not read the file %s: %w", path, err)
+		return nil, fmt.Errorf("vision: failed to read %s (%s)", clean.Path(savedModel), clean.Error(err))
 	}
 
 	model := new(pb.SavedModel)
 
 	err = proto.Unmarshal(data, model)
+
 	if err != nil {
-		return nil, fmt.Errorf("could not unmarshal the file %s: %w", path, err)
+		return nil, fmt.Errorf("vision: failed to unmarshal %s (%s)", clean.Path(savedModel), clean.Error(err))
 	}
 
 	models := make([]ModelInfo, 0)
 	metas := model.GetMetaGraphs()
+
 	for i := range metas {
 		def := metas[i].GetMetaInfoDef()
-		input, output, err := GetInputAndOutputFromMetaSignature(metas[i])
+		input, output, modelErr := GetInputAndOutputFromMetaSignature(metas[i])
+
 		newModel := ModelInfo{
 			TFVersion: def.GetTensorflowVersion(),
 			Tags:      def.GetTags(),
@@ -503,8 +508,8 @@ func GetModelInfo(path string) ([]ModelInfo, error) {
 			Output:    output,
 		}
 
-		if err != nil {
-			log.Errorf("could not get the inputs and outputs from signatures. (TF Version %s): %w", newModel.TFVersion, err)
+		if modelErr != nil {
+			log.Errorf("vision: could not determine model inputs and outputs from TensorFlow %s signatures (%s)", newModel.TFVersion, clean.Error(modelErr))
 		}
 
 		models = append(models, newModel)

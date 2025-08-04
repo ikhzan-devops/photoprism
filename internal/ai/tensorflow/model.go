@@ -83,7 +83,7 @@ func GetInputAndOutputFromSavedModel(model *tf.SavedModel) (*PhotoInput, *ModelO
 					if found {
 						inputIdx, err = strconv.Atoi(inputIndex)
 						if err != nil {
-							return nil, nil, fmt.Errorf("could not parse index %s: %w", inputIndex, err)
+							return nil, nil, fmt.Errorf("could not parse index %s (%s)", inputIndex, clean.Error(err))
 						}
 					}
 
@@ -91,7 +91,7 @@ func GetInputAndOutputFromSavedModel(model *tf.SavedModel) (*PhotoInput, *ModelO
 					if found {
 						outputIdx, err = strconv.Atoi(outputIndex)
 						if err != nil {
-							return nil, nil, fmt.Errorf("could not parse index: %s: %w", outputIndex, err)
+							return nil, nil, fmt.Errorf("could not parse index %s (%s)", outputIndex, clean.Error(err))
 						}
 					}
 

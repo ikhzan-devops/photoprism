@@ -220,7 +220,7 @@ func (m *Model) loadModel() (err error) {
 			log.Errorf("classify: could not get info from signatures (%s)", clean.Error(modelErr))
 			input, output, modelErr = tensorflow.GuessInputAndOutput(m.model)
 			if modelErr != nil {
-				return fmt.Errorf("classify: %w", modelErr)
+				return fmt.Errorf("classify: %s", clean.Error(modelErr))
 			}
 		}
 
