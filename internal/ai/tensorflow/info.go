@@ -12,9 +12,9 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-// The number of channels expected. This is a fixed value because there
-// seems to be an standard for input images defined as "What decodeImage
-// returns"
+// ExpectedChannels defines the expected number of channels.
+// This is a fixed value because a standard seems to have been
+// defined for input images as "what decodeImage returns".
 const ExpectedChannels = 3
 
 // Interval of allowed values
@@ -25,12 +25,12 @@ type Interval struct {
 	StdDev *float32 `yaml:"StdDev,omitempty" json:"stdDev,omitempty"`
 }
 
-// The size/mean of the interval
+// Size returns the size/mean of the interval.
 func (i Interval) Size() float32 {
 	return i.End - i.Start
 }
 
-// The offset of the interval
+// Offset returns the offset of the interval.
 func (i Interval) Offset() float32 {
 	if i.StdDev == nil {
 		return i.Start
@@ -39,7 +39,8 @@ func (i Interval) Offset() float32 {
 	}
 }
 
-// The standard interval returned by decodeImage is [0, 1]
+// StandardInterval returns the standard interval, i.e.
+// the range of values returned by decodeImage in [0, 1].
 func StandardInterval() *Interval {
 	return &Interval{
 		Start: 0.0,
@@ -47,9 +48,8 @@ func StandardInterval() *Interval {
 	}
 }
 
-// How should we resize the images
-// JSON and YAML functions are given to make it
-// user friendly from the configuration files
+// ResizeOperation represents resizing operations for images.
+// JSON and YAML functions are provided to make configuration files user-friendly.
 type ResizeOperation int
 
 const (
@@ -126,9 +126,8 @@ func (o *ResizeOperation) UnmarshalYAML(unmarshal func(interface{}) error) error
 	return nil
 }
 
-// How should we order the input vectors
-// JSON and YAML functions are given to make it
-// user friendly from the configuration files
+// ColorChannelOrder represents the order of the model's input vectors.
+// JSON and YAML functions are provided to make the configuration files user-friendly.
 type ColorChannelOrder int
 
 const (
@@ -262,7 +261,7 @@ func (o *ColorChannelOrder) UnmarshalYAML(unmarshal func(interface{}) error) err
 	return nil
 }
 
-// Input description for a photo input for a model
+// PhotoInput represents an input description for a photo input for a model.
 type PhotoInput struct {
 	Name              string            `yaml:"Name,omitempty" json:"name,omitempty"`
 	Intervals         []Interval        `yaml:"Intervals,omitempty" json:"intervals,omitempty"`
@@ -273,24 +272,27 @@ type PhotoInput struct {
 	Width             int64             `yaml:"Width,omitempty" json:"width,omitempty"`
 }
 
-// When dimensions are not defined, it means the model accepts any size of
-// photo
+// IsDynamic checks if image dimensions are not defined, so the model accepts any size.
 func (p PhotoInput) IsDynamic() bool {
 	return p.Height == -1 && p.Width == -1
 }
 
-// Get the resolution
+// Resolution returns the input image resolution based on the image width or height if the width is undefined.
 func (p PhotoInput) Resolution() int {
+	if p.Width > 0 {
+		return int(p.Width)
+	}
+
 	return int(p.Height)
 }
 
-// Set the resolution: same height and width
+// SetResolution sets the input image width and height based on the resolution in pixels (max width and height).
 func (p *PhotoInput) SetResolution(resolution int) {
 	p.Height = int64(resolution)
 	p.Width = int64(resolution)
 }
 
-// Get the interval or the default one.
+// GetInterval returns the interval or the default one.
 // If just one interval has been fixed, then we assume
 // it is the same for every channel. If no intervals
 // have been defined, the default [0, 1] is returned
@@ -336,7 +338,7 @@ func (p *PhotoInput) Merge(other *PhotoInput) {
 	}
 }
 
-// The output expected for a model
+// ModelOutput represents the expected model output.
 type ModelOutput struct {
 	Name          string `yaml:"Name,omitempty" json:"name,omitempty"`
 	OutputIndex   int    `yaml:"Index,omitempty" json:"index,omitempty"`
@@ -344,7 +346,7 @@ type ModelOutput struct {
 	OutputsLogits bool   `yaml:"Logits,omitempty" json:"logits,omitempty"`
 }
 
-// Merge other output with this
+// Merge merges other outputs with this output.
 func (m *ModelOutput) Merge(other *ModelOutput) {
 	if m.Name == "" {
 		m.Name = other.Name
@@ -363,7 +365,7 @@ func (m *ModelOutput) Merge(other *ModelOutput) {
 	}
 }
 
-// The meta information for the model
+// ModelInfo represents meta information for the model.
 type ModelInfo struct {
 	TFVersion string       `yaml:"-" json:"-"`
 	Tags      []string     `yaml:"Tags" json:"tags"`
@@ -395,14 +397,14 @@ func (m *ModelInfo) Merge(other *ModelInfo) {
 	}
 }
 
-// We consider a model complete if we know its inputs and outputs
+// IsComplete checks if the model input and output are defined.
 func (m ModelInfo) IsComplete() bool {
 	return m.Input != nil && m.Output != nil
 }
 
-// GetInputAndOutputFromSignature gets the signatures from a MetaGraphDef and
-// uses them to build PhotoInput and ModelOutput structs, that will complete
-// ModelInfo struct
+// GetInputAndOutputFromMetaSignature returns the signatures from a MetaGraphDef
+// and uses them to build PhotoInput and ModelOutput structs, that will complete
+// ModelInfo struct.
 func GetInputAndOutputFromMetaSignature(meta *pb.MetaGraphDef) (*PhotoInput, *ModelOutput, error) {
 	if meta == nil {
 		return nil, nil, fmt.Errorf("GetInputAndOutputFromSignature: nil input")
