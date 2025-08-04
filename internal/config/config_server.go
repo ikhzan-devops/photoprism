@@ -23,6 +23,11 @@ func (c *Config) DetachServer() bool {
 	return c.options.DetachServer
 }
 
+// TrustedPlatform returns the trusted platform client IP address header name.
+func (c *Config) TrustedPlatform() string {
+	return c.options.TrustedPlatform
+}
+
 // TrustedProxy returns the ranges from which reverse proxy headers can be trusted as comma-separated list.
 func (c *Config) TrustedProxy() string {
 	return strings.Join(c.options.TrustedProxies, ", ")
@@ -31,6 +36,16 @@ func (c *Config) TrustedProxy() string {
 // TrustedProxies returns proxy server ranges from which reverse proxy headers can be trusted.
 func (c *Config) TrustedProxies() []string {
 	return c.options.TrustedProxies
+}
+
+// ProxyClientHeader returns the proxy client IP address header names as comma-separated list.
+func (c *Config) ProxyClientHeader() string {
+	return strings.Join(c.options.ProxyClientHeaders, ", ")
+}
+
+// ProxyClientHeaders returns the proxy client IP address header names, if any.
+func (c *Config) ProxyClientHeaders() []string {
+	return c.options.ProxyClientHeaders
 }
 
 // ProxyProtoHeader returns the proxy protocol header names.
@@ -49,7 +64,7 @@ func (c *Config) ProxyProtoHeaders() map[string]string {
 	h := make(map[string]string, p+1)
 
 	if p == 0 {
-		h[header.ForwardedProto] = scheme.Https
+		h[header.XForwardedProto] = scheme.Https
 		return h
 	}
 
