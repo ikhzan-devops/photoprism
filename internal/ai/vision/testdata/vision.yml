@@ -1,6 +1,6 @@
 Models:
 - Type: labels
-  Name: NASNet
+  Name: nasnet
   Version: mobile
   Resolution: 224
   Meta:
@@ -19,7 +19,7 @@ Models:
       Name: predictions/Softmax
       Outputs: 1000
 - Type: nsfw
-  Name: Nsfw
+  Name: nsfw
   Version: latest
   Resolution: 224
   Meta:
@@ -33,7 +33,7 @@ Models:
       Name: nsfw_cls_model/final_prediction
       Outputs: 5
 - Type: face
-  Name: FaceNet
+  Name: facenet
   Version: latest
   Resolution: 160
   Meta:

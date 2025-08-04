@@ -9,7 +9,7 @@ import (
 var (
 	NasnetModel = &Model{
 		Type:       ModelTypeLabels,
-		Name:       "NASNet",
+		Name:       "nasnet",
 		Version:    VersionMobile,
 		Resolution: 224,
 		Meta: &tensorflow.ModelInfo{
@@ -39,7 +39,7 @@ var (
 	}
 	NsfwModel = &Model{
 		Type:       ModelTypeNsfw,
-		Name:       "Nsfw",
+		Name:       "nsfw",
 		Version:    VersionLatest,
 		Resolution: 224,
 		Meta: &tensorflow.ModelInfo{
@@ -61,7 +61,7 @@ var (
 	}
 	FacenetModel = &Model{
 		Type:       ModelTypeFace,
-		Name:       "FaceNet",
+		Name:       "facenet",
 		Version:    VersionLatest,
 		Resolution: 160,
 		Meta: &tensorflow.ModelInfo{
