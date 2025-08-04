@@ -9,6 +9,7 @@ import (
 var (
 	NasnetModel = &Model{
 		Type:       ModelTypeLabels,
+		Default:    true,
 		Name:       "nasnet",
 		Version:    VersionMobile,
 		Resolution: 224,
@@ -39,6 +40,7 @@ var (
 	}
 	NsfwModel = &Model{
 		Type:       ModelTypeNsfw,
+		Default:    true,
 		Name:       "nsfw",
 		Version:    VersionLatest,
 		Resolution: 224,
@@ -61,6 +63,7 @@ var (
 	}
 	FacenetModel = &Model{
 		Type:       ModelTypeFace,
+		Default:    true,
 		Name:       "facenet",
 		Version:    VersionLatest,
 		Resolution: 160,

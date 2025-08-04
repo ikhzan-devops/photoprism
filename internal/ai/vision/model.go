@@ -25,6 +25,7 @@ var (
 // Model represents a computer vision model configuration.
 type Model struct {
 	Type          ModelType             `yaml:"Type,omitempty" json:"type,omitempty"`
+	Default       bool                  `yaml:"Default,omitempty" json:"default,omitempty"`
 	Name          string                `yaml:"Name,omitempty" json:"name,omitempty"`
 	Version       string                `yaml:"Version,omitempty" json:"version,omitempty"`
 	System        string                `yaml:"System,omitempty" json:"system,omitempty"`
