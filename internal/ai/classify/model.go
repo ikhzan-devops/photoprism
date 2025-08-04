@@ -149,7 +149,7 @@ func (m *Model) Run(img []byte, confidenceThreshold int) (result Labels, err err
 		nil)
 
 	if err != nil {
-		return result, fmt.Errorf("classify: %s (run inference)", err.Error())
+		return result, fmt.Errorf("classify: %s (run inference)", clean.Error(err))
 	}
 
 	if len(output) < 1 {
@@ -173,7 +173,7 @@ func (m *Model) loadLabels(modelPath string) (err error) {
 
 	m.labels, err = tensorflow.LoadLabels(modelPath, numLabels)
 	if os.IsNotExist(err) {
-		log.Infof("Model does not seem to have tags at %s, trying %s", modelPath, m.defaultLabelsPath)
+		log.Infof("vision: model does not seem to have tags at %s, trying %s", clean.Log(modelPath), clean.Log(m.defaultLabelsPath))
 		m.labels, err = tensorflow.LoadLabels(m.defaultLabelsPath, numLabels)
 	}
 	return err
@@ -197,29 +197,30 @@ func (m *Model) loadModel() (err error) {
 	modelPath := path.Join(m.assetsPath, m.modelPath)
 
 	if len(m.meta.Tags) == 0 {
-		infos, err := tensorflow.GetModelInfo(modelPath)
-		if err != nil {
-			log.Errorf("classify: could not get the model info at %s: %v", clean.Log(modelPath), err)
+		infos, modelErr := tensorflow.GetModelInfo(modelPath)
+		if modelErr != nil {
+			log.Errorf("classify: could not get info from model in %s (%s)", clean.Log(modelPath), clean.Error(modelErr))
 		} else if len(infos) == 1 {
 			log.Debugf("classify: model info: %+v", infos[0])
 			m.meta.Merge(&infos[0])
 		} else {
-			log.Warnf("classify: found %d metagraphs... that's too many", len(infos))
+			log.Warnf("classify: found %d metagraphs, which is too many", len(infos))
 		}
 	}
 
 	m.model, err = tensorflow.SavedModel(modelPath, m.meta.Tags)
+
 	if err != nil {
 		return err
 	}
 
 	if !m.meta.IsComplete() {
-		input, output, err := tensorflow.GetInputAndOutputFromSavedModel(m.model)
-		if err != nil {
-			log.Errorf("classify: could not get info from signatures: %v", err)
-			input, output, err = tensorflow.GuessInputAndOutput(m.model)
-			if err != nil {
-				return fmt.Errorf("classify: %w", err)
+		input, output, modelErr := tensorflow.GetInputAndOutputFromSavedModel(m.model)
+		if modelErr != nil {
+			log.Errorf("classify: could not get info from signatures (%s)", clean.Error(modelErr))
+			input, output, modelErr = tensorflow.GuessInputAndOutput(m.model)
+			if modelErr != nil {
+				return fmt.Errorf("classify: %w", modelErr)
 			}
 		}
 
@@ -232,7 +233,7 @@ func (m *Model) loadModel() (err error) {
 	if m.meta.Output.OutputsLogits {
 		_, err = tensorflow.AddSoftmax(m.model.Graph, m.meta)
 		if err != nil {
-			return fmt.Errorf("classify: could not add softmax: %w", nil)
+			return fmt.Errorf("classify: could not add softmax (%s)", clean.Error(err))
 		}
 	}
 

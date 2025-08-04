@@ -129,15 +129,15 @@ func TestExternalModel_AllModels(t *testing.T) {
 
 	for k, v := range modelsInfo {
 		t.Run(k, func(*testing.T) {
-			log.Infof("Testing model %s", k)
+			log.Infof("vision: testing model %s", k)
 
 			downloadedModel := downloadRemoteModel(t, fmt.Sprintf("%s/%s", baseUrl, k), tmpPath)
-			log.Infof("Model downloaded to %s", downloadedModel)
+			log.Infof("vision: model downloaded to %s", downloadedModel)
 
 			if v.Labels != "" {
 				modelPath := filepath.Join(tmpPath, downloadedModel)
 
-				t.Logf("Model path: %s", modelPath)
+				t.Logf("vision: model path is %s", modelPath)
 				downloadLabels(t, fmt.Sprintf("%s/%s", baseUrl, v.Labels), modelPath)
 			}
 

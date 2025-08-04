@@ -37,7 +37,7 @@ func TestModel_CenterCrop(t *testing.T) {
 	model.meta.Input.ResizeOperation = tensorflow.CenterCrop
 
 	t.Run("nasnet padding", func(t *testing.T) {
-		testModel_BasicLabels(t, model, 6)
+		runBasicLabelsTest(t, model, 6)
 	})
 }
 
@@ -50,7 +50,7 @@ func TestModel_Padding(t *testing.T) {
 	model.meta.Input.ResizeOperation = tensorflow.Padding
 
 	t.Run("nasnet padding", func(t *testing.T) {
-		testModel_BasicLabels(t, model, 6)
+		runBasicLabelsTest(t, model, 6)
 	})
 }
 
@@ -63,11 +63,11 @@ func TestModel_ResizeBreakAspectRatio(t *testing.T) {
 	model.meta.Input.ResizeOperation = tensorflow.ResizeBreakAspectRatio
 
 	t.Run("nasnet break aspect ratio", func(t *testing.T) {
-		testModel_BasicLabels(t, model, 4)
+		runBasicLabelsTest(t, model, 4)
 	})
 }
 
-func testModel_BasicLabels(t *testing.T, model *Model, expectedUncertainty int) {
+func runBasicLabelsTest(t *testing.T, model *Model, expectedUncertainty int) {
 	result, err := model.File(examplesPath+"/zebra_green_brown.jpg", 10)
 
 	assert.NoError(t, err)
@@ -146,14 +146,14 @@ func TestModel_LabelsFromFile(t *testing.T) {
 			assert.Equal(t, 70, result[0].Uncertainty)
 		}
 	})
-	t.Run("not existing file", func(t *testing.T) {
+	t.Run("NotExistingFile", func(t *testing.T) {
 		tensorFlow := NewModelTest(t)
 
 		result, err := tensorFlow.File(examplesPath+"/notexisting.jpg", 10)
 		assert.Contains(t, err.Error(), "no such file or directory")
 		assert.Empty(t, result)
 	})
-	t.Run("disabled true", func(t *testing.T) {
+	t.Run("Disabled", func(t *testing.T) {
 		tensorFlow := NewNasnet(assetsPath, true)
 
 		result, err := tensorFlow.File(examplesPath+"/chameleon_lime.jpg", 10)
@@ -252,7 +252,7 @@ func TestModel_Run(t *testing.T) {
 			assert.Empty(t, result)
 		}
 	})
-	t.Run("disabled true", func(t *testing.T) {
+	t.Run("Disabled", func(t *testing.T) {
 		tensorFlow := NewNasnet(assetsPath, true)
 
 		if imageBuffer, err := os.ReadFile(examplesPath + "/dog_orange.jpg"); err != nil {
@@ -272,16 +272,16 @@ func TestModel_Run(t *testing.T) {
 }
 
 func TestModel_LoadModel(t *testing.T) {
-	t.Run("model loaded", func(t *testing.T) {
+	t.Run("Success", func(t *testing.T) {
 		tf := NewModelTest(t)
 		assert.True(t, tf.ModelLoaded())
 	})
-	t.Run("model path does not exist", func(t *testing.T) {
+	t.Run("NotFound", func(t *testing.T) {
 		tensorFlow := NewNasnet(assetsPath+"foo", false)
 		err := tensorFlow.loadModel()
 
 		if err != nil {
-			assert.Contains(t, err.Error(), "could not find SavedModel")
+			assert.Contains(t, err.Error(), "not find SavedModel")
 		}
 
 		assert.Error(t, err)
@@ -289,17 +289,7 @@ func TestModel_LoadModel(t *testing.T) {
 }
 
 func TestModel_BestLabels(t *testing.T) {
-	t.Run("labels not loaded", func(t *testing.T) {
-		tensorFlow := NewNasnet(assetsPath, false)
-
-		p := make([]float32, 1000)
-
-		p[666] = 0.5
-
-		result := tensorFlow.bestLabels(p, 10)
-		assert.Empty(t, result)
-	})
-	t.Run("labels loaded", func(t *testing.T) {
+	t.Run("Success", func(t *testing.T) {
 		tensorFlow := NewNasnet(assetsPath, false)
 
 		if err := tensorFlow.loadLabels(modelPath); err != nil {
@@ -316,5 +306,15 @@ func TestModel_BestLabels(t *testing.T) {
 		assert.Equal(t, "bird", result[0].Categories[0])
 		assert.Equal(t, "image", result[0].Source)
 		t.Log(result)
+	})
+	t.Run("NotLoaded", func(t *testing.T) {
+		tensorFlow := NewNasnet(assetsPath, false)
+
+		p := make([]float32, 1000)
+
+		p[666] = 0.5
+
+		result := tensorFlow.bestLabels(p, 10)
+		assert.Empty(t, result)
 	})
 }
