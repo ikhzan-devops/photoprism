@@ -176,3 +176,9 @@ volumes:
     driver: local
   mariadb:
     driver: local
+
+## Create shared "photoprism" network for connecting with services in other compose.yaml files
+networks:
+  default:
+    name: photoprism
+    driver: bridge
