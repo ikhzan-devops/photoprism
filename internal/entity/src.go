@@ -23,6 +23,7 @@ const (
 	SrcKeyword  = classify.SrcKeyword  // Prio 16
 	SrcMeta     = "meta"               // Prio 16
 	SrcXmp      = "xmp"                // Prio 32
+	SrcBatch    = "batch"              // Prio 48
 	SrcManual   = "manual"             // Prio 64
 	SrcAdmin    = "admin"              // Prio 128
 )
@@ -55,6 +56,7 @@ var SrcPriority = Priorities{
 	SrcKeyword:  16,
 	SrcMeta:     16,
 	SrcXmp:      32,
+	SrcBatch:    48,
 	SrcManual:   64,
 	SrcAdmin:    128,
 }
