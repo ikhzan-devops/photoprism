@@ -24,7 +24,7 @@ func TestPhotosQueryPrivate(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	assert.Equal(t, len(photos0), 1)
+	assert.Equal(t, len(photos0), 2)
 
 	t.Run("false > yes", func(t *testing.T) {
 		var f form.SearchPhotos

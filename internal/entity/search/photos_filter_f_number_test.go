@@ -44,7 +44,7 @@ func TestPhotosFilterFNumber(t *testing.T) {
 			assert.LessOrEqual(t, float32(3.5), r.PhotoFNumber)
 		}
 
-		assert.Equal(t, len(photos), 3)
+		assert.Equal(t, len(photos), 6)
 	})
 	t.Run("3-10", func(t *testing.T) {
 		var f form.SearchPhotos
@@ -63,7 +63,7 @@ func TestPhotosFilterFNumber(t *testing.T) {
 			assert.LessOrEqual(t, float32(3), r.PhotoFNumber)
 		}
 
-		assert.Equal(t, len(photos), 5)
+		assert.Equal(t, len(photos), 8)
 	})
 	t.Run("8", func(t *testing.T) {
 		var f form.SearchPhotos
@@ -144,7 +144,7 @@ func TestPhotosQueryFNumber(t *testing.T) {
 			assert.GreaterOrEqual(t, float32(5), r.PhotoFNumber)
 			assert.LessOrEqual(t, float32(3.5), r.PhotoFNumber)
 		}
-		assert.Equal(t, len(photos), 3)
+		assert.Equal(t, len(photos), 6)
 	})
 	t.Run("3-10", func(t *testing.T) {
 		var f form.SearchPhotos
@@ -163,7 +163,7 @@ func TestPhotosQueryFNumber(t *testing.T) {
 			assert.LessOrEqual(t, float32(3), r.PhotoFNumber)
 		}
 
-		assert.Equal(t, len(photos), 5)
+		assert.Equal(t, len(photos), 8)
 	})
 	t.Run("8", func(t *testing.T) {
 		var f form.SearchPhotos

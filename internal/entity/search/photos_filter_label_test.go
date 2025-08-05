@@ -20,7 +20,7 @@ func TestPhotosFilterLabel(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		assert.Equal(t, len(photos), 1)
+		assert.Equal(t, len(photos), 3)
 	})
 	t.Run("cake", func(t *testing.T) {
 		var f form.SearchPhotos
@@ -33,7 +33,7 @@ func TestPhotosFilterLabel(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		assert.Equal(t, len(photos), 2)
+		assert.Equal(t, len(photos), 5)
 	})
 	t.Run("cake pipe flower", func(t *testing.T) {
 		var f form.SearchPhotos
@@ -46,7 +46,7 @@ func TestPhotosFilterLabel(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		assert.Equal(t, len(photos), 2)
+		assert.Equal(t, len(photos), 5)
 	})
 	t.Run("cake whitespace pipe whitespace flower", func(t *testing.T) {
 		var f form.SearchPhotos
@@ -59,7 +59,7 @@ func TestPhotosFilterLabel(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		assert.Equal(t, len(photos), 2)
+		assert.Equal(t, len(photos), 5)
 	})
 	t.Run("StartsWithPercent", func(t *testing.T) {
 		var f form.SearchPhotos
@@ -379,7 +379,7 @@ func TestPhotosQueryLabel(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		assert.Equal(t, len(photos), 1)
+		assert.Equal(t, len(photos), 3)
 	})
 	t.Run("cake", func(t *testing.T) {
 		var f form.SearchPhotos
@@ -392,7 +392,7 @@ func TestPhotosQueryLabel(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		assert.Equal(t, len(photos), 2)
+		assert.Equal(t, len(photos), 5)
 	})
 	t.Run("cake pipe flower", func(t *testing.T) {
 		var f form.SearchPhotos
@@ -405,7 +405,7 @@ func TestPhotosQueryLabel(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		assert.Equal(t, len(photos), 2)
+		assert.Equal(t, len(photos), 5)
 	})
 	t.Run("cake whitespace pipe whitespace flower", func(t *testing.T) {
 		var f form.SearchPhotos
@@ -418,7 +418,7 @@ func TestPhotosQueryLabel(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		assert.Equal(t, len(photos), 2)
+		assert.Equal(t, len(photos), 5)
 	})
 	t.Run("StartsWithPercent", func(t *testing.T) {
 		var f form.SearchPhotos

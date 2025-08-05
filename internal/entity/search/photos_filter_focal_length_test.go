@@ -44,7 +44,7 @@ func TestPhotosFilterFocalLength(t *testing.T) {
 			assert.LessOrEqual(t, 28, r.PhotoFocalLength)
 		}
 
-		assert.Equal(t, len(photos), 3)
+		assert.Equal(t, len(photos), 5)
 	})
 	t.Run("1-400", func(t *testing.T) {
 		var f form.SearchPhotos
@@ -63,7 +63,7 @@ func TestPhotosFilterFocalLength(t *testing.T) {
 			assert.LessOrEqual(t, 1, r.PhotoFocalLength)
 		}
 
-		assert.Equal(t, len(photos), 5)
+		assert.Equal(t, len(photos), 8)
 	})
 	t.Run("22", func(t *testing.T) {
 		var f form.SearchPhotos
@@ -164,7 +164,7 @@ func TestPhotosQueryFocalLength(t *testing.T) {
 			assert.LessOrEqual(t, 1, r.PhotoFocalLength)
 		}
 
-		assert.Equal(t, len(photos), 5)
+		assert.Equal(t, len(photos), 8)
 	})
 	t.Run("18", func(t *testing.T) {
 		var f form.SearchPhotos

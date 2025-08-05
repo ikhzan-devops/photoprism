@@ -20,7 +20,7 @@ func TestPhotosFilterDay(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		assert.Equal(t, len(photos), 4)
+		assert.Equal(t, len(photos), 5)
 	})
 	t.Run("17", func(t *testing.T) {
 		var f form.SearchPhotos
@@ -46,7 +46,7 @@ func TestPhotosFilterDay(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		assert.Equal(t, len(photos), 5)
+		assert.Equal(t, len(photos), 6)
 	})
 	t.Run("1 whitespace pipe whitespace 17", func(t *testing.T) {
 		var f form.SearchPhotos
@@ -59,7 +59,7 @@ func TestPhotosFilterDay(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		assert.Equal(t, len(photos), 5)
+		assert.Equal(t, len(photos), 6)
 	})
 	var f0 form.SearchPhotos
 
@@ -317,7 +317,7 @@ func TestPhotosQueryDay(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		assert.Equal(t, len(photos), 4)
+		assert.Equal(t, len(photos), 5)
 	})
 	t.Run("17", func(t *testing.T) {
 		var f form.SearchPhotos
@@ -343,7 +343,7 @@ func TestPhotosQueryDay(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		assert.Equal(t, len(photos), 5)
+		assert.Equal(t, len(photos), 6)
 	})
 	t.Run("1 whitespace pipe whitespace 17", func(t *testing.T) {
 		var f form.SearchPhotos
@@ -356,7 +356,7 @@ func TestPhotosQueryDay(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		assert.Equal(t, len(photos), 5)
+		assert.Equal(t, len(photos), 6)
 	})
 
 	var f0 form.SearchPhotos
