@@ -155,17 +155,17 @@ func convertBatchToPhotoForm(photo *entity.Photo, batchValues *batch.PhotosForm)
 	// Apply batch changes only for fields with action=update
 	if batchValues.PhotoTitle.Action == batch.ActionUpdate {
 		photoForm.PhotoTitle = batchValues.PhotoTitle.Value
-		photoForm.TitleSrc = entity.SrcManual
+		photoForm.TitleSrc = entity.SrcBatch
 	}
 
 	if batchValues.PhotoCaption.Action == batch.ActionUpdate {
 		photoForm.PhotoCaption = batchValues.PhotoCaption.Value
-		photoForm.CaptionSrc = entity.SrcManual
+		photoForm.CaptionSrc = entity.SrcBatch
 	}
 
 	if batchValues.PhotoType.Action == batch.ActionUpdate {
 		photoForm.PhotoType = batchValues.PhotoType.Value
-		photoForm.TypeSrc = entity.SrcManual
+		photoForm.TypeSrc = entity.SrcBatch
 	}
 
 	// Date/time fields
@@ -191,7 +191,7 @@ func convertBatchToPhotoForm(photo *entity.Photo, batchValues *batch.PhotosForm)
 	}
 
 	if timeChanged {
-		photoForm.TakenSrc = entity.SrcManual
+		photoForm.TakenSrc = entity.SrcBatch
 	}
 
 	// Location fields
@@ -217,7 +217,7 @@ func convertBatchToPhotoForm(photo *entity.Photo, batchValues *batch.PhotosForm)
 	}
 
 	if locationChanged {
-		photoForm.PlaceSrc = entity.SrcManual
+		photoForm.PlaceSrc = entity.SrcBatch
 	}
 
 	// Boolean flags
@@ -258,22 +258,22 @@ func convertBatchToPhotoForm(photo *entity.Photo, batchValues *batch.PhotosForm)
 	// Now apply only the fields that have action=update
 	if batchValues.DetailsSubject.Action == batch.ActionUpdate {
 		photoForm.Details.Subject = batchValues.DetailsSubject.Value
-		photoForm.Details.SubjectSrc = entity.SrcManual
+		photoForm.Details.SubjectSrc = entity.SrcBatch
 	}
 
 	if batchValues.DetailsArtist.Action == batch.ActionUpdate {
 		photoForm.Details.Artist = batchValues.DetailsArtist.Value
-		photoForm.Details.ArtistSrc = entity.SrcManual
+		photoForm.Details.ArtistSrc = entity.SrcBatch
 	}
 
 	if batchValues.DetailsCopyright.Action == batch.ActionUpdate {
 		photoForm.Details.Copyright = batchValues.DetailsCopyright.Value
-		photoForm.Details.CopyrightSrc = entity.SrcManual
+		photoForm.Details.CopyrightSrc = entity.SrcBatch
 	}
 
 	if batchValues.DetailsLicense.Action == batch.ActionUpdate {
 		photoForm.Details.License = batchValues.DetailsLicense.Value
-		photoForm.Details.LicenseSrc = entity.SrcManual
+		photoForm.Details.LicenseSrc = entity.SrcBatch
 	}
 
 	// Set the PhotoID for details
