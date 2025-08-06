@@ -26,7 +26,7 @@ func TestImage(t *testing.T) {
 		err = imaging.Save(out, saveName)
 
 		assert.NoError(t, err)
-		mimeType := fs.MimeType(saveName)
+		mimeType, _ := fs.DetectMimeType(saveName)
 		assert.Equal(t, header.ContentTypePng, mimeType)
 
 		_ = os.Remove(saveName)
@@ -46,7 +46,7 @@ func TestImage(t *testing.T) {
 		err = imaging.Save(out, saveName)
 
 		assert.NoError(t, err)
-		mimeType := fs.MimeType(saveName)
+		mimeType, _ := fs.DetectMimeType(saveName)
 		assert.Equal(t, header.ContentTypePng, mimeType)
 
 		_ = os.Remove(saveName)
