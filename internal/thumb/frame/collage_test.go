@@ -32,7 +32,7 @@ func TestCollage(t *testing.T) {
 		err = imaging.Save(preview, saveName)
 
 		assert.NoError(t, err)
-		mimeType := fs.MimeType(saveName)
+		mimeType, _ := fs.DetectMimeType(saveName)
 		assert.Equal(t, header.ContentTypeJpeg, mimeType)
 
 		_ = os.Remove(saveName)
@@ -56,7 +56,7 @@ func TestCollage(t *testing.T) {
 		err = imaging.Save(preview, saveName)
 
 		assert.NoError(t, err)
-		mimeType := fs.MimeType(saveName)
+		mimeType, _ := fs.DetectMimeType(saveName)
 		assert.Equal(t, header.ContentTypeJpeg, mimeType)
 
 		_ = os.Remove(saveName)
@@ -73,7 +73,7 @@ func TestCollage(t *testing.T) {
 		err = imaging.Save(preview, saveName)
 
 		assert.NoError(t, err)
-		mimeType := fs.MimeType(saveName)
+		mimeType, _ := fs.DetectMimeType(saveName)
 		assert.Equal(t, header.ContentTypeJpeg, mimeType)
 
 		_ = os.Remove(saveName)
@@ -100,7 +100,7 @@ func TestCollage(t *testing.T) {
 
 		assert.NoError(t, err)
 
-		mimeType := fs.MimeType(saveName)
+		mimeType, _ := fs.DetectMimeType(saveName)
 		assert.Equal(t, header.ContentTypeJpeg, mimeType)
 
 		_ = os.Remove(saveName)
