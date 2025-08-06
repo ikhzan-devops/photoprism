@@ -157,10 +157,9 @@ services:
       # MARIADB_REPLICATION_USER: ""
       # MARIADB_REPLICATION_PASSWORD: ""
 
-  ## Ollama Large Language Models
-  ## see https://ollama.com/search?c=vision
-  ## Before use, you must run the "ollama pull [name:version]"
-  ## command to download and install a model, for example:
+  ## Ollama AI Model Runner (optional)
+  ## Run "ollama pull [name]:[version]" to download a vision model
+  ## listed at <https://ollama.com/search?c=vision>, for example:
   ## docker compose exec ollama ollama pull qwen2.5vl:3b
   ollama:
     image: ollama/ollama:latest
@@ -174,7 +173,7 @@ services:
     # ports:
     #  - "11434:11434"
     environment:
-      ## Ollama server configuration
+      ## Ollama Configuration Options:
       OLLAMA_HOST: "0.0.0.0:11434"
       OLLAMA_MODELS: "/root/.ollama" # model storage path (see volumes section below)
       OLLAMA_MAX_QUEUE: "100"        # maximum number of queued requests
