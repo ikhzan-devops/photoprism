@@ -2,6 +2,7 @@ package tensorflow
 
 import (
 	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -14,6 +15,9 @@ var defaultImageInput = &PhotoInput{
 	Height: 224,
 	Width:  224,
 }
+
+var assetsPath = fs.Abs("../../../assets")
+var examplesPath = filepath.Join(assetsPath, "examples")
 
 func TestConvertValue(t *testing.T) {
 	result := convertValue(uint32(98765432), &Interval{Start: -1, End: 1})
@@ -29,9 +33,6 @@ func TestConvertStdMean(t *testing.T) {
 }
 
 func TestImageFromBytes(t *testing.T) {
-	var assetsPath = fs.Abs("../../../assets")
-	var examplesPath = assetsPath + "/examples"
-
 	t.Run("CatJpeg", func(t *testing.T) {
 		imageBuffer, err := os.ReadFile(examplesPath + "/cat_brown.jpg")
 

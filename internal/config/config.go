@@ -291,10 +291,8 @@ func (c *Config) Propagate() {
 	dl.FFprobeBin = c.FFprobeBin()
 
 	// Configure computer vision package.
-	vision.AssetsPath = c.AssetsPath()
-	vision.FaceNetModelPath = c.FaceNetModelPath()
-	vision.NsfwModelPath = c.NSFWModelPath()
-	vision.CachePath = c.CachePath()
+	vision.SetCachePath(c.CachePath())
+	vision.SetModelsPath(c.ModelsPath())
 	vision.ServiceUri = c.VisionUri()
 	vision.ServiceKey = c.VisionKey()
 	vision.DownloadUrl = c.DownloadUrl()
