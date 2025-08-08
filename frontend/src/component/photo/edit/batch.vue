@@ -599,6 +599,8 @@ import * as options from "options/options";
 import countries from "options/countries.json";
 import IconLivePhoto from "../../icon/live-photo.vue";
 import { Batch } from "model/batch-edit";
+import Album from "model/album";
+import Label from "model/label";
 import Thumb from "../../../model/thumb";
 import PLocationDialog from "component/location/dialog.vue";
 import PLocationInput from "component/location/input.vue";
@@ -1400,36 +1402,27 @@ export default {
     // Fetch available options for dropdowns
     async fetchAvailableOptions() {
       try {
-        // Mock data for now - replace with actual API calls when services are available
-        this.availableAlbumOptions = [
-          { value: "album1", title: "Vacation 2023" },
-          { value: "album2", title: "Family Photos" },
-          { value: "album3", title: "Work Events" },
-          { value: "album4", title: "Nature Photography" },
-        ];
+        this.loading = true;
 
-        this.availableLabelOptions = [
-          { value: "label1", title: "People" },
-          { value: "label2", title: "Animals" },
-          { value: "label3", title: "Landscape" },
-          { value: "label4", title: "Architecture" },
-          { value: "label5", title: "Food" },
-        ];
+        // Fetch albums and labels using existing model search
+        const [albumsResponse, labelsResponse] = await Promise.all([
+          Album.search({ count: 100, type: "album", order: "name" }),
+          Label.search({ count: 100, order: "name" }),
+        ]);
 
-        // TODO: Replace with actual API calls when services are properly injected
-        // const albumsResponse = await this.$albums.search({ count: 100 });
-        // this.availableAlbumOptions = albumsResponse.models.map((album) => ({
-        //   value: album.UID,
-        //   title: album.Title,
-        // }));
+        this.availableAlbumOptions = (albumsResponse.models || []).map((album) => ({
+          value: album.UID,
+          title: album.Title,
+        }));
 
-        // const labelsResponse = await this.$labels.search({ count: 100 });
-        // this.availableLabelOptions = labelsResponse.models.map((label) => ({
-        //   value: label.ID,
-        //   title: label.Name,
-        // }));
+        this.availableLabelOptions = (labelsResponse.models || []).map((label) => ({
+          value: label.UID || label.ID,
+          title: label.Name,
+        }));
       } catch (error) {
         console.error("Error fetching available options:", error);
+      } finally {
+        this.loading = false;
       }
     },
   },

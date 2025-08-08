@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/ulule/deepcopier"
 
+	"github.com/photoprism/photoprism/internal/ai/classify"
 	"github.com/photoprism/photoprism/internal/auth/acl"
 	"github.com/photoprism/photoprism/internal/entity"
 	"github.com/photoprism/photoprism/internal/entity/query"
@@ -17,6 +18,7 @@ import (
 	"github.com/photoprism/photoprism/internal/photoprism/get"
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/i18n"
+	"github.com/photoprism/photoprism/pkg/rnd"
 )
 
 // BatchPhotosEdit returns and updates the metadata of multiple photos.
@@ -98,6 +100,20 @@ func BatchPhotosEdit(router *gin.RouterGroup) {
 					continue
 				}
 
+				// Apply Albums updates if requested
+				if frm.Values.Albums.Action == batch.ActionUpdate {
+					if err := applyBatchAlbums(photoID, frm.Values.Albums); err != nil {
+						log.Errorf("batch: failed to update albums for photo %s: %s", photoID, err)
+					}
+				}
+
+				// Apply Labels updates if requested
+				if frm.Values.Labels.Action == batch.ActionUpdate {
+					if err := applyBatchLabels(&fullPhoto, frm.Values.Labels); err != nil {
+						log.Errorf("batch: failed to update labels for photo %s: %s", photoID, err)
+					}
+				}
+
 				// Convert the updated entity.Photo back to search.Photo and update the results array
 				updatedSearchPhoto, convertErr := convertEntityToSearchPhoto(&fullPhoto)
 				if convertErr != nil {
@@ -152,14 +168,21 @@ func convertBatchToPhotoForm(photo *entity.Photo, batchValues *batch.PhotosForm)
 		return nil, fmt.Errorf("failed to create form from photo: %w", err)
 	}
 
-	// Apply batch changes only for fields with action=update
-	if batchValues.PhotoTitle.Action == batch.ActionUpdate {
+	switch batchValues.PhotoTitle.Action {
+	case batch.ActionUpdate:
 		photoForm.PhotoTitle = batchValues.PhotoTitle.Value
+		photoForm.TitleSrc = entity.SrcBatch
+	case batch.ActionRemove:
+		photoForm.PhotoTitle = ""
 		photoForm.TitleSrc = entity.SrcBatch
 	}
 
-	if batchValues.PhotoCaption.Action == batch.ActionUpdate {
+	switch batchValues.PhotoCaption.Action {
+	case batch.ActionUpdate:
 		photoForm.PhotoCaption = batchValues.PhotoCaption.Value
+		photoForm.CaptionSrc = entity.SrcBatch
+	case batch.ActionRemove:
+		photoForm.PhotoCaption = ""
 		photoForm.CaptionSrc = entity.SrcBatch
 	}
 
@@ -256,30 +279,44 @@ func convertBatchToPhotoForm(photo *entity.Photo, batchValues *batch.PhotosForm)
 	}
 
 	// Now apply only the fields that have action=update
-	if batchValues.DetailsSubject.Action == batch.ActionUpdate {
+	switch batchValues.DetailsSubject.Action {
+	case batch.ActionUpdate:
 		photoForm.Details.Subject = batchValues.DetailsSubject.Value
+		photoForm.Details.SubjectSrc = entity.SrcBatch
+	case batch.ActionRemove:
+		photoForm.Details.Subject = ""
 		photoForm.Details.SubjectSrc = entity.SrcBatch
 	}
 
-	if batchValues.DetailsArtist.Action == batch.ActionUpdate {
+	switch batchValues.DetailsArtist.Action {
+	case batch.ActionUpdate:
 		photoForm.Details.Artist = batchValues.DetailsArtist.Value
+		photoForm.Details.ArtistSrc = entity.SrcBatch
+	case batch.ActionRemove:
+		photoForm.Details.Artist = ""
 		photoForm.Details.ArtistSrc = entity.SrcBatch
 	}
 
-	if batchValues.DetailsCopyright.Action == batch.ActionUpdate {
+	switch batchValues.DetailsCopyright.Action {
+	case batch.ActionUpdate:
 		photoForm.Details.Copyright = batchValues.DetailsCopyright.Value
+		photoForm.Details.CopyrightSrc = entity.SrcBatch
+	case batch.ActionRemove:
+		photoForm.Details.Copyright = ""
 		photoForm.Details.CopyrightSrc = entity.SrcBatch
 	}
 
-	if batchValues.DetailsLicense.Action == batch.ActionUpdate {
+	switch batchValues.DetailsLicense.Action {
+	case batch.ActionUpdate:
 		photoForm.Details.License = batchValues.DetailsLicense.Value
+		photoForm.Details.LicenseSrc = entity.SrcBatch
+	case batch.ActionRemove:
+		photoForm.Details.License = ""
 		photoForm.Details.LicenseSrc = entity.SrcBatch
 	}
 
 	// Set the PhotoID for details
 	photoForm.Details.PhotoID = photo.ID
-
-	// TODO: Handle Albums and Labels updates
 
 	return &photoForm, nil
 }
@@ -303,4 +340,123 @@ func convertEntityToSearchPhoto(photo *entity.Photo) (*search.Photo, error) {
 	}
 
 	return searchPhoto, nil
+}
+
+// applyBatchAlbums adds/removes the given photo to/from albums according to items action.
+func applyBatchAlbums(photoUID string, albums batch.Items) error {
+	var addTargets []string
+
+	for _, it := range albums.Items {
+		switch it.Action {
+		case batch.ActionAdd:
+			// Add by UID if provided, otherwise use title to create/find
+			if it.Value != "" {
+				addTargets = append(addTargets, it.Value)
+			} else if it.Title != "" {
+				addTargets = append(addTargets, it.Title)
+			}
+		case batch.ActionRemove:
+			// Remove only if we have a valid album UID
+			if rnd.IsUID(it.Value, entity.AlbumUID) {
+				if a, err := query.AlbumByUID(it.Value); err != nil {
+					log.Debugf("batch: album %s not found for removal: %s", it.Value, err)
+				} else if a.HasID() {
+					a.RemovePhotos([]string{photoUID})
+				}
+			}
+		}
+	}
+
+	if len(addTargets) > 0 {
+		if err := entity.AddPhotoToAlbums(photoUID, addTargets); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// applyBatchLabels adds/removes labels on the given photo according to items action.
+func applyBatchLabels(photo *entity.Photo, labels batch.Items) error {
+	if photo == nil || !photo.HasID() {
+		return fmt.Errorf("invalid photo")
+	}
+
+	// Track if we changed anything to call SaveLabels once
+	changed := false
+
+	for _, it := range labels.Items {
+		switch it.Action {
+		case batch.ActionAdd:
+			// Try by UID first
+			var labelEntity *entity.Label
+			var err error
+			if it.Value != "" {
+				labelEntity, err = query.LabelByUID(it.Value)
+				if err != nil {
+					labelEntity = nil
+				}
+			}
+			if labelEntity == nil && it.Title != "" {
+				// Create or find by title
+				labelEntity = entity.FirstOrCreateLabel(entity.NewLabel(it.Title, 0))
+			}
+
+			if labelEntity == nil {
+				log.Debugf("batch: could not resolve label to add: value=%s title=%s", it.Value, clean.Log(it.Title))
+				continue
+			}
+
+			if err := labelEntity.Restore(); err != nil {
+				log.Debugf("batch: could not restore label %s: %s", labelEntity.LabelName, err)
+			}
+
+			if pl := entity.FirstOrCreatePhotoLabel(entity.NewPhotoLabel(photo.ID, labelEntity.ID, 1, "manual")); pl == nil {
+				log.Errorf("batch: failed creating photo-label for photo %d and label %d", photo.ID, labelEntity.ID)
+			} else {
+				changed = true
+			}
+
+		case batch.ActionRemove:
+			// Resolve by UID only; if not available, try slug from title
+			var labelEntity *entity.Label
+			var err error
+			if it.Value != "" {
+				labelEntity, err = query.LabelByUID(it.Value)
+			} else if it.Title != "" {
+				labelEntity, err = query.LabelBySlug(it.Title)
+			}
+			if err != nil || labelEntity == nil || !labelEntity.HasID() {
+				log.Debugf("batch: label not found for removal: value=%s title=%s", it.Value, clean.Log(it.Title))
+				continue
+			}
+
+			if pl, err := query.PhotoLabel(photo.ID, labelEntity.ID); err != nil {
+				log.Debugf("batch: photo-label not found for removal: photo=%d label=%d", photo.ID, labelEntity.ID)
+			} else if pl != nil {
+				if pl.LabelSrc == classify.SrcManual || pl.LabelSrc == classify.SrcTitle || pl.LabelSrc == classify.SrcCaption || pl.LabelSrc == classify.SrcSubject || pl.LabelSrc == classify.SrcKeyword {
+					if err := entity.Db().Delete(&pl).Error; err != nil {
+						log.Errorf("batch: remove label failed: %s", err)
+					} else {
+						changed = true
+					}
+				} else {
+					pl.Uncertainty = 100
+					if err := entity.Db().Save(&pl).Error; err != nil {
+						log.Errorf("batch: hide label failed: %s", err)
+					} else {
+						changed = true
+					}
+				}
+			}
+		}
+	}
+
+	if changed {
+		if err := photo.SaveLabels(); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
