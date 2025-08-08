@@ -1,8 +1,5 @@
 examples
-models/_*
-models/dev*
-models/local*
-models/test*
 README.md
 docs
 .*
+_*
