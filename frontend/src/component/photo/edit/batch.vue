@@ -1323,6 +1323,7 @@ export default {
         .save(currentlySelectedUIDs, filteredFormData)
         .then(() => {
           // Update form data with new values from backend
+          this.values = this.model.values;
           this.setFormData();
 
           if (close) {
@@ -1346,8 +1347,9 @@ export default {
             // Only include in filtered data if there's an actual change
             if (action !== this.actions.none) {
               const processedItems = field.items.map((item) => {
-                const { isNew, ...itemWithoutIsNew } = item;
-                return itemWithoutIsNew;
+                const itemCopy = { ...item };
+                delete itemCopy.isNew;
+                return itemCopy;
               });
 
               filtered[key] = {
