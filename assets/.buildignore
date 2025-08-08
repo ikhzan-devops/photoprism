@@ -1,8 +1,8 @@
 examples
-efficientnet
-imagenet
-resnet
-vision
+models/_*
+models/dev*
+models/local*
+models/test*
 README.md
 docs
 .*
