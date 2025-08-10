@@ -38,15 +38,15 @@ install-testcafe:
 install-eslint:
 	npm install -g eslint globals @eslint/eslintrc @eslint/js eslint-config-prettier eslint-formatter-pretty eslint-plugin-html eslint-plugin-import eslint-plugin-node eslint-plugin-prettier eslint-plugin-promise eslint-plugin-vue eslint-webpack-plugin vue-eslint-parser prettier
 upgrade:
-	$(info Securely upgrading frontend dependencies...)
+	$(info Securely upgrading NPM dependencies...)
 	$(DOCKER_NPM) 'npx -y npm@latest update --save --ignore-scripts --no-update-notifier && npx -y npm@latest install --ignore-scripts --no-audit --no-fund --no-update-notifier'
 npm-install:
-	$(info Installing dependencies...)
-	npm install --no-update-notifier --no-audit
+	$(info Installing NPM dependencies...)
+	npm install --ignore-scripts --no-update-notifier --no-audit --no-audit --no-fund
 install: npm-install
 npm-update:
-	$(info Updating dependencies...)
-	npm update --save --package-lock
+	$(info Updating NPM dependencies in package.lock and package-lock.json...)
+	npm update --save --package-lock --ignore-scripts --no-update-notifier --no-audit --no-fund
 update: npm-update npm-install
 watch:
 	npm run watch
