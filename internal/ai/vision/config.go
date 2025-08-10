@@ -16,7 +16,7 @@ var (
 	DownloadUrl           = ""
 	ServiceUri            = ""
 	ServiceKey            = ""
-	ServiceTimeout        = time.Minute
+	ServiceTimeout        = 10 * time.Minute
 	ServiceMethod         = http.MethodPost
 	ServiceFileScheme     = scheme.Data
 	ServiceRequestFormat  = ApiFormatVision
