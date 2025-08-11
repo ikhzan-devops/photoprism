@@ -180,7 +180,7 @@ func SavePhotoForm(m *Photo, form form.Photo) error {
 		details.Keywords = strings.Join(txt.UniqueWords(txt.Words(details.Keywords)), ", ")
 	}
 
-	if locChanged && m.PlaceSrc == SrcManual {
+	if locChanged && (m.PlaceSrc == SrcManual || m.PlaceSrc == SrcBatch) {
 		locKeywords, labels := m.UpdateLocation()
 
 		m.AddLabels(labels)
