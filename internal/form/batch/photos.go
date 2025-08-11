@@ -1,6 +1,7 @@
 package batch
 
 import (
+	"github.com/photoprism/photoprism/internal/entity/query"
 	"github.com/photoprism/photoprism/internal/entity/search"
 )
 
@@ -45,46 +46,83 @@ func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
 	// Create a new batch edit form and initialize it
 	// with the values from the selected photos.
 	frm := &PhotosForm{
-		Albums: Items{
-			// TODO: Replace mock album items with the actual Albums
-			//       that are assigned to the selected Photos.
-			Items: []Item{
-				{
-					Value:  "asz12ji57yzo5avk",
-					Title:  "Berlin",
-					Mixed:  false,
-					Action: ActionNone,
-				},
-				{
-					Value:  "asz12jiin5658ul8",
-					Title:  "California",
-					Mixed:  true,
-					Action: ActionNone,
-				},
-			},
-			Mixed:  false,
-			Action: ActionNone,
-		},
-		Labels: Items{
-			// TODO: Replace mock label items with the actual Labels
-			//       that are assigned to the selected Photos.
-			Items: []Item{
-				{
-					Value:  "lsz12jxkqhmu3n0g",
-					Title:  "Cat",
-					Mixed:  false,
-					Action: ActionNone,
-				},
-				{
-					Value:  "lsz12k29x01is71x",
-					Title:  "Building",
-					Mixed:  true,
-					Action: ActionNone,
-				},
-			},
-			Mixed:  false,
-			Action: ActionNone,
-		},
+		Albums: Items{Items: []Item{}, Mixed: false, Action: ActionNone},
+		Labels: Items{Items: []Item{}, Mixed: false, Action: ActionNone},
+	}
+
+	// Populate Albums and Labels from selected photos (no raw SQL; use preload helpers)
+	total := len(photos)
+	if total > 0 {
+		type albumAgg struct {
+			title string
+			cnt   int
+		}
+		type labelAgg struct {
+			name string
+			cnt  int
+		}
+		albumCount := map[string]albumAgg{}
+		labelCount := map[string]labelAgg{}
+
+		for _, sp := range photos {
+			if sp.PhotoUID == "" {
+				continue
+			}
+			p, err := query.PhotoPreloadByUID(sp.PhotoUID)
+			if err != nil || !p.HasID() {
+				continue
+			}
+			// Albums on this photo
+			for _, a := range p.Albums {
+				if a.AlbumUID == "" || a.Deleted() {
+					continue
+				}
+				v := albumCount[a.AlbumUID]
+				v.title = a.AlbumTitle
+				v.cnt++
+				albumCount[a.AlbumUID] = v
+			}
+			// Labels on this photo (only visible ones: uncertainty < 100)
+			for _, pl := range p.Labels {
+				if pl.Uncertainty >= 100 || pl.Label == nil || !pl.Label.HasID() {
+					continue
+				}
+				uid := pl.Label.LabelUID
+				if uid == "" {
+					continue
+				}
+				v := labelCount[uid]
+				v.name = pl.Label.LabelName
+				v.cnt++
+				labelCount[uid] = v
+			}
+		}
+
+		// Build Albums items
+		frm.Albums.Items = make([]Item, 0, len(albumCount))
+		anyAlbumMixed := false
+		for uid, agg := range albumCount {
+			mixed := agg.cnt > 0 && agg.cnt < total
+			if mixed {
+				anyAlbumMixed = true
+			}
+			frm.Albums.Items = append(frm.Albums.Items, Item{Value: uid, Title: agg.title, Mixed: mixed, Action: ActionNone})
+		}
+		frm.Albums.Mixed = anyAlbumMixed
+		frm.Albums.Action = ActionNone
+
+		// Build Labels items
+		frm.Labels.Items = make([]Item, 0, len(labelCount))
+		anyLabelMixed := false
+		for uid, agg := range labelCount {
+			mixed := agg.cnt > 0 && agg.cnt < total
+			if mixed {
+				anyLabelMixed = true
+			}
+			frm.Labels.Items = append(frm.Labels.Items, Item{Value: uid, Title: agg.name, Mixed: mixed, Action: ActionNone})
+		}
+		frm.Labels.Mixed = anyLabelMixed
+		frm.Labels.Action = ActionNone
 	}
 
 	// TODO: Verify that all required PhotosForm values are present and

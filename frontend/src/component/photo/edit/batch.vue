@@ -1321,9 +1321,15 @@ export default {
 
       this.model
         .save(currentlySelectedUIDs, filteredFormData)
-        .then(() => {
-          // Update form data with new values from backend
-          this.values = this.model.values;
+        .then(async () => {
+          // Update form data with new values from backend (force-refresh to avoid stale UI)
+          try {
+            await this.model.getData(currentlySelectedUIDs);
+            this.values = this.model.values;
+          } catch {
+            // Fallback to response values if re-fetch fails
+            this.values = this.model.values;
+          }
           this.setFormData();
 
           if (close) {
@@ -1418,7 +1424,7 @@ export default {
         }));
 
         this.availableLabelOptions = (labelsResponse.models || []).map((label) => ({
-          value: label.UID || label.ID,
+          value: label.UID,
           title: label.Name,
         }));
       } catch (error) {

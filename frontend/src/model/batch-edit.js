@@ -121,7 +121,7 @@ export class Batch extends Model {
   }
 
   toggleAll(isToggledAll) {
-    this.selection.find((element) => {
+    this.selection.forEach((element) => {
       element.selected = isToggledAll;
     });
   }

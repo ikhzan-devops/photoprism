@@ -1,7 +1,12 @@
 <template>
   <div class="chip-selector">
-    <div class="chip-selector__chips">
-      <v-tooltip v-for="item in processedItems" :key="item.value" :text="getChipTooltip(item)" location="top">
+    <div v-if="shouldRenderChips" class="chip-selector__chips">
+      <v-tooltip
+        v-for="item in processedItems"
+        :key="item.value || item.title"
+        :text="getChipTooltip(item)"
+        location="top"
+      >
         <template #activator="{ props }">
           <div
             v-bind="props"
@@ -111,6 +116,10 @@ export default {
     },
     showInput() {
       return this.allowCreate;
+    },
+    shouldRenderChips() {
+      // Render chips container only when there are chips
+      return this.processedItems.length > 0 || !this.showInput;
     },
   },
   watch: {

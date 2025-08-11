@@ -19,6 +19,7 @@ import (
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/i18n"
 	"github.com/photoprism/photoprism/pkg/rnd"
+	"github.com/photoprism/photoprism/pkg/txt"
 )
 
 // BatchPhotosEdit returns and updates the metadata of multiple photos.
@@ -418,43 +419,69 @@ func applyBatchLabels(photo *entity.Photo, labels batch.Items) error {
 			}
 
 		case batch.ActionRemove:
-			// Resolve by UID only; if not available, try slug from title
+			// Resolve by UID first; if not available, try slug from title, then plain name
 			var labelEntity *entity.Label
 			var err error
 			if it.Value != "" {
 				labelEntity, err = query.LabelByUID(it.Value)
+				if err != nil {
+					log.Debugf("batch: label lookup by uid failed: photo=%s value=%s err=%v", photo.PhotoUID, it.Value, err)
+				}
 			} else if it.Title != "" {
-				labelEntity, err = query.LabelBySlug(it.Title)
+				// Try slugified title first to match how labels are identified
+				if slug := txt.Slug(it.Title); slug != "" {
+					labelEntity, err = query.LabelBySlug(slug)
+				} else {
+					labelEntity, err = query.LabelBySlug(it.Title)
+				}
+				if err != nil {
+					log.Debugf("batch: label lookup by slug failed: photo=%s title=%s err=%v", photo.PhotoUID, clean.Log(it.Title), err)
+				}
 			}
 			if err != nil || labelEntity == nil || !labelEntity.HasID() {
-				log.Debugf("batch: label not found for removal: value=%s title=%s", it.Value, clean.Log(it.Title))
+				// Skip silently when the label cannot be resolved on this photo
+				log.Debugf("batch: label not found for removal: photo=%s value=%s title=%s", photo.PhotoUID, it.Value, clean.Log(it.Title))
 				continue
 			}
 
 			if pl, err := query.PhotoLabel(photo.ID, labelEntity.ID); err != nil {
-				log.Debugf("batch: photo-label not found for removal: photo=%d label=%d", photo.ID, labelEntity.ID)
+				// Skip silently at trace level when the label is not on this photo
+				log.Debugf("batch: photo-label not found for removal: photo=%s label_id=%d", photo.PhotoUID, labelEntity.ID)
 			} else if pl != nil {
-				if pl.LabelSrc == classify.SrcManual || pl.LabelSrc == classify.SrcTitle || pl.LabelSrc == classify.SrcCaption || pl.LabelSrc == classify.SrcSubject || pl.LabelSrc == classify.SrcKeyword {
-					if err := entity.Db().Delete(&pl).Error; err != nil {
+				// Always hide non-manual labels by setting uncertainty to 100 so they are not re-added
+				// by automatic classifiers (title, caption, subject, keyword). Hard-delete only manual labels.
+				if pl.LabelSrc == classify.SrcManual {
+					if err := entity.Db().Delete(pl).Error; err != nil {
 						log.Errorf("batch: remove label failed: %s", err)
 					} else {
+						log.Debugf("batch: removed manual label: photo=%s label_id=%d", photo.PhotoUID, labelEntity.ID)
 						changed = true
 					}
 				} else {
 					pl.Uncertainty = 100
-					if err := entity.Db().Save(&pl).Error; err != nil {
+					if err := entity.Db().Save(pl).Error; err != nil {
 						log.Errorf("batch: hide label failed: %s", err)
 					} else {
+						log.Debugf("batch: hid non-manual label: photo=%s label_id=%d", photo.PhotoUID, labelEntity.ID)
 						changed = true
 					}
 				}
+				// Prevent immediate re-add via keyword-based auto-labels
+				_ = photo.RemoveKeyword(labelEntity.LabelName)
 			}
 		}
 	}
 
 	if changed {
-		if err := photo.SaveLabels(); err != nil {
-			return err
+		// Reload photo to ensure in-memory labels reflect DB changes before saving derived fields
+		if reloaded, err := query.PhotoPreloadByUID(photo.PhotoUID); err == nil && reloaded.HasID() {
+			if err := (&reloaded).SaveLabels(); err != nil {
+				return err
+			}
+		} else {
+			if err := photo.SaveLabels(); err != nil {
+				return err
+			}
 		}
 	}
 
