@@ -72,15 +72,12 @@ export class Batch extends Model {
 
   async getData(selection) {
     return await $api.post("batch/photos/edit", { photos: selection }).then((response) => {
-      const models = response.data.models;
-      const modelsLength = response.data.models.length;
+      const models = response.data.models || [];
 
-      if (modelsLength > 0) {
-        for (let i = 0; i < modelsLength; i++) {
-          const modelInstance = new Photo();
-          this.models.push(modelInstance.setValues(models[i]));
-        }
-      }
+      this.models = models.map((m) => {
+        const modelInstance = new Photo();
+        return modelInstance.setValues(m);
+      });
 
       this.values = response.data.values;
       this.setSelections(selection);
