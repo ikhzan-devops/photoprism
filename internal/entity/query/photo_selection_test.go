@@ -49,7 +49,7 @@ func TestPhotoSelection(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		assert.Equal(t, 6, len(r))
+		assert.Equal(t, 9, len(r))
 		assert.IsType(t, entity.Photos{}, r)
 	})
 	t.Run("FindMonths", func(t *testing.T) {

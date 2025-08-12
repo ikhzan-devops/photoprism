@@ -206,7 +206,7 @@ func TestAlbums(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		assert.Equal(t, 2, len(result))
+		assert.Equal(t, 3, len(result))
 	})
 	t.Run("Folders", func(t *testing.T) {
 		query := form.NewAlbumSearch("19")

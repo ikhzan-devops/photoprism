@@ -73,7 +73,7 @@ func TestFileSelection(t *testing.T) {
 		if results, err := SelectedFiles(albums, sel); err != nil {
 			t.Fatal(err)
 		} else {
-			assert.Len(t, results, 8)
+			assert.Len(t, results, 10)
 		}
 	})
 	t.Run("ShareMonths", func(t *testing.T) {

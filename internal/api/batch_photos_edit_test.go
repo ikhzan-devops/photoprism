@@ -185,8 +185,7 @@ func TestBatchPhotosEdit(t *testing.T) {
 		PanoramaAfter := gjson.Get(saveValues, "Panorama")
 		assert.Equal(t, "{\"value\":true,\"mixed\":false,\"action\":\"none\"}", PanoramaAfter.String())
 	})
-	// TODO Requires updating albums/labels functionality
-	/*t.Run("SuccessChangeAlbumAndLabels", func(t *testing.T) {
+	t.Run("SuccessChangeAlbumAndLabels", func(t *testing.T) {
 		// Create new API test instance.
 		app, router, _ := NewApiTest()
 
@@ -215,10 +214,13 @@ func TestBatchPhotosEdit(t *testing.T) {
 		editValues := gjson.Get(editBody, "values").Raw
 		t.Logf(editValues)
 		albumsBefore := gjson.Get(editValues, "Albums")
-		assert.Equal(t, "{\"items\":[{\"value\":\"as6sg6bipotaab19\",\"title\":\"&IlikeFood\",\"mixed\":false,\"action\":\"none\"},{\"value\":\"as6sg6bxpogaaba8\",\"title\":\"Holiday 2030\",\"mixed\":true,\"action\":\"none\"},{\"value\":\"as6sg6bxpogaaba7\",\"title\":\"Christmas 2030\",\"mixed\":true,\"action\":\"none\"}],\"mixed\":true,\"action\":\"none\"}", albumsBefore.String())
+		assert.Contains(t, albumsBefore.String(), "{\"value\":\"as6sg6bipotaab19\",\"title\":\"\\u0026IlikeFood\",\"mixed\":false,\"action\":\"none\"}")
+		assert.Contains(t, albumsBefore.String(), "{\"value\":\"as6sg6bxpogaaba7\",\"title\":\"Christmas 2030\",\"mixed\":true,\"action\":\"none\"}")
+		assert.Contains(t, albumsBefore.String(), "{\"value\":\"as6sg6bxpogaaba8\",\"title\":\"Holiday 2030\",\"mixed\":true,\"action\":\"none\"}")
 		labelsBefore := gjson.Get(editValues, "Labels")
-		assert.Equal(t, "{\"items\":[{\"value\":\"ls6sg6b1wowuy3c4\",\"title\":\"Cake\",\"mixed\":false,\"action\":\"none\"},{\"value\":\"ls6sg6b1wowuy3c3\",\"title\":\"Flower\",\"mixed\":true,\"action\":\"none\"},{\"value\":\"ls6sg6b1wowuy316\",\"title\":\"&friendship\",\"mixed\":true,\"action\":\"none\"}],\"mixed\":true,\"action\":\"none\"}", labelsBefore.String())
-
+		assert.Contains(t, labelsBefore.String(), "{\"value\":\"ls6sg6b1wowuy316\",\"title\":\"\\u0026friendship\",\"mixed\":true,\"action\":\"none\"}")
+		assert.Contains(t, labelsBefore.String(), "{\"value\":\"ls6sg6b1wowuy3c4\",\"title\":\"Cake\",\"mixed\":false,\"action\":\"none\"}")
+		assert.Contains(t, labelsBefore.String(), "{\"value\":\"ls6sg6b1wowuy3c3\",\"title\":\"Flower\",\"mixed\":true,\"action\":\"none\"}")
 		// Send the edit form values back to the same API endpoint and check for errors.
 		saveResponse := PerformRequestWithBody(app,
 			"POST", "/api/v1/batch/photos/edit",
@@ -239,10 +241,16 @@ func TestBatchPhotosEdit(t *testing.T) {
 		// Check the save response values.
 		saveValues := gjson.Get(saveBody, "values").Raw
 		albumsAfter := gjson.Get(saveValues, "Albums")
-		assert.Equal(t, "{\"items\":[{\"value\":\"as6sg6bxpogaaba8\",\"title\":\"Holiday 2030\",\"mixed\":true,\"action\":\"none\"},{\"value\":\"as6sg6bxpogaaba7\",\"title\":\"Christmas 2030\",\"mixed\":false,\"action\":\"none\"},{\"value\":\"\",\"title\":\"BatchAlbum\",\"mixed\":false,\"action\":\"none\"}],\"mixed\":true,\"action\":\"none\"}", albumsAfter.String())
+		assert.Contains(t, albumsAfter.String(), "{\"value\":\"as6sg6bxpogaaba8\",\"title\":\"Holiday 2030\",\"mixed\":true,\"action\":\"none\"}")
+		assert.Contains(t, albumsAfter.String(), "{\"value\":\"as6sg6bxpogaaba7\",\"title\":\"Christmas 2030\",\"mixed\":false,\"action\":\"none\"}")
+		assert.Contains(t, albumsAfter.String(), "\"title\":\"BatchAlbum\",\"mixed\":false,\"action\":\"none\"}")
+		assert.NotContains(t, albumsAfter.String(), "{\"value\":\"as6sg6bipotaab19\",\"title\":\"\\u0026IlikeFood\"")
 		labelsAfter := gjson.Get(saveValues, "Labels")
-		assert.Equal(t, "{\"items\":[{\"value\":\"ls6sg6b1wowuy3c3\",\"title\":\"Flower\",\"mixed\":false,\"action\":\"none\"},{\"value\":\"\",\"title\":\"BatchLabel\",\"mixed\":true,\"action\":\"none\"}],\"mixed\":false,\"action\":\"none\"}", labelsAfter.String())
-	})*/
+		assert.Contains(t, labelsAfter.String(), "{\"value\":\"ls6sg6b1wowuy3c3\",\"title\":\"Flower\",\"mixed\":false,\"action\":\"none\"}")
+		assert.NotContains(t, labelsAfter.String(), "{\"value\":\"ls6sg6b1wowuy3c4\",\"title\":\"Cake\"")
+		assert.Contains(t, labelsAfter.String(), "\"title\":\"BatchLabel\",\"mixed\":false,\"action\":\"none\"}")
+		assert.NotContains(t, labelsAfter.String(), "{\"value\":\"ls6sg6b1wowuy316\",\"title\":\"\\u0026friendship\"")
+	})
 	t.Run("SuccessChangeCountry", func(t *testing.T) {
 		// Create new API test instance.
 		app, router, _ := NewApiTest()
@@ -320,7 +328,7 @@ func TestBatchPhotosEdit(t *testing.T) {
 		BatchPhotosEdit(router)
 
 		// Specify the unique IDs of the photos used for testing.
-		photoUIDs := `["pqkm36fjqvset9uy", "pqkm36fjqvset9uz"]`
+		photoUIDs := `["pqkm36fjqvset8uy", "pqkm36fjqvset9uz"]`
 
 		// Get the photo models and current values for the batch edit form.
 		editResponse := PerformRequestWithBody(app,
@@ -340,9 +348,9 @@ func TestBatchPhotosEdit(t *testing.T) {
 		assert.Equal(t, len(editPhotos), 2)
 		editValues := gjson.Get(editBody, "values").Raw
 		timezoneBefore := gjson.Get(editValues, "TimeZone")
-		assert.Equal(t, "{\"value\":\"Europe/Vienna\",\"mixed\":false,\"action\":\"none\"}", timezoneBefore.String())
+		assert.Equal(t, "{\"value\":\"\",\"mixed\":true,\"action\":\"none\"}", timezoneBefore.String())
 		altitudeBefore := gjson.Get(editValues, "Altitude")
-		assert.Equal(t, "{\"value\":145,\"mixed\":false,\"action\":\"none\"}", altitudeBefore.String())
+		assert.Equal(t, "{\"value\":0,\"mixed\":true,\"action\":\"none\"}", altitudeBefore.String())
 		countryBefore := gjson.Get(editValues, "Country")
 		assert.Equal(t, "{\"value\":\"\",\"mixed\":true,\"action\":\"none\"}", countryBefore.String())
 		latBefore := gjson.Get(editValues, "Lat")
@@ -371,7 +379,7 @@ func TestBatchPhotosEdit(t *testing.T) {
 		timezoneAfter := gjson.Get(saveValues, "TimeZone")
 		assert.Equal(t, "{\"value\":\"Asia/Dhaka\",\"mixed\":false,\"action\":\"none\"}", timezoneAfter.String())
 		altitudeAfter := gjson.Get(saveValues, "Altitude")
-		assert.Equal(t, "{\"value\":145,\"mixed\":false,\"action\":\"none\"}", altitudeAfter.String())
+		assert.Equal(t, "{\"value\":0,\"mixed\":true,\"action\":\"none\"}", altitudeAfter.String())
 		countryAfter := gjson.Get(saveValues, "Country")
 		assert.Equal(t, "{\"value\":\"bd\",\"mixed\":false,\"action\":\"none\"}", countryAfter.String())
 		latAfter := gjson.Get(saveValues, "Lat")
@@ -379,8 +387,7 @@ func TestBatchPhotosEdit(t *testing.T) {
 		lngAfter := gjson.Get(saveValues, "Lng")
 		assert.Equal(t, "{\"value\":90.18015,\"mixed\":false,\"action\":\"none\"}", lngAfter.String())
 	})*/
-	//TODO Requires remove functionality
-	/*t.Run("SuccessRemoveValues", func(t *testing.T) {
+	t.Run("SuccessRemoveValues", func(t *testing.T) {
 		// Create new API test instance.
 		app, router, _ := NewApiTest()
 
@@ -453,7 +460,7 @@ func TestBatchPhotosEdit(t *testing.T) {
 		assert.Equal(t, "{\"value\":\"\",\"mixed\":false,\"action\":\"none\"}", copyrightAfter.String())
 		licenseAfter := gjson.Get(saveValues, "DetailsLicense")
 		assert.Equal(t, "{\"value\":\"\",\"mixed\":false,\"action\":\"none\"}", licenseAfter.String())
-	})*/
+	})
 	t.Run("ReturnPhotosAndValues", func(t *testing.T) {
 		app, router, conf := NewApiTest()
 		conf.SetAuthMode(config.AuthModePasswd)
