@@ -15,7 +15,7 @@ export default class Page {
 
     this.locationAction = Selector(".input-coordinates i.action-map", { timeout: 15000 });
     this.locationSearch = Selector("div.p-location-dialog .v-autocomplete", { timeout: 15000 });
-    this.locationClear = Selector(".input-coordinates i.action-clear", { timeout: 15000 });
+    this.locationClear = Selector(".input-coordinates i.action-delete", { timeout: 15000 });
     this.locationUndo = Selector("div.p-location-dialog .input-coordinates i.action-undo", { timeout: 15000 });
     this.locationInput = Selector("div.p-location-dialog .input-coordinates input", { timeout: 15000 });
     this.locationConfirm = Selector("div.p-location-dialog button.action-confirm", { timeout: 15000 });
@@ -81,7 +81,7 @@ export default class Page {
 
     this.downloadFile = Selector("button.action-download", { timeout: 15000 });
     this.unstackFile = Selector(".action-unstack", { timeout: 15000 });
-    this.deleteFile = Selector(".action-delete", { timeout: 15000 });
+    this.deleteFile = Selector("div.p-tab-photo-files .action-delete", { timeout: 15000 });
     this.makeFilePrimary = Selector(".action-primary", { timeout: 15000 });
     this.toggleExpandFile = Selector("button.v-expansion-panel-title", { timeout: 15000 });
 
