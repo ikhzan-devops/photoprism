@@ -7,16 +7,14 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/wamuir/graft/tensorflow"
-
-	"github.com/photoprism/photoprism/pkg/fs"
 )
 
 var defaultImageInput = &PhotoInput{
 	Height: 224,
 	Width:  224,
+	Shape:  DefaultPhotoInputShape(),
 }
 
-var assetsPath = fs.Abs("../../../assets")
 var examplesPath = filepath.Join(assetsPath, "examples")
 
 func TestConvertValue(t *testing.T) {
@@ -40,7 +38,11 @@ func TestImageFromBytes(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		result, err := ImageFromBytes(imageBuffer, defaultImageInput)
+		result, err := ImageFromBytes(imageBuffer, defaultImageInput, nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+
 		assert.Equal(t, tensorflow.DataType(0x1), result.DataType())
 		assert.Equal(t, int64(1), result.Shape()[0])
 		assert.Equal(t, int64(224), result.Shape()[2])
@@ -48,7 +50,7 @@ func TestImageFromBytes(t *testing.T) {
 	t.Run("Document", func(t *testing.T) {
 		imageBuffer, err := os.ReadFile(examplesPath + "/Random.docx")
 		assert.Nil(t, err)
-		result, err := ImageFromBytes(imageBuffer, defaultImageInput)
+		result, err := ImageFromBytes(imageBuffer, defaultImageInput, nil)
 
 		assert.Empty(t, result)
 		assert.EqualError(t, err, "image: unknown format")
