@@ -2,6 +2,7 @@ package tensorflow
 
 import (
 	"encoding/json"
+	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -14,6 +15,22 @@ var allOperations = []ResizeOperation{
 	ResizeBreakAspectRatio,
 	CenterCrop,
 	Padding,
+}
+
+func TestGetModelTagsInfo(t *testing.T) {
+	info, err := GetModelTagsInfo(
+		filepath.Join(assetsPath, "models", "nasnet"))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if len(info) != 1 {
+		t.Fatalf("Expected 1 info but got %d", len(info))
+	} else if len(info[0].Tags) != 1 {
+		t.Fatalf("Expected 1 tag, but got %d", len(info[0].Tags))
+	} else if info[0].Tags[0] != "photoprism" {
+		t.Fatalf("Expected tag photoprism, but have %s", info[0].Tags[0])
+	}
 }
 
 func TestResizeOperations(t *testing.T) {
@@ -119,7 +136,7 @@ func TestColorChannelOrderJSON(t *testing.T) {
 		[]byte(exampleOrderJSON), &order)
 
 	if err != nil {
-		t.Fatal("could not unmarshal the example operation")
+		t.Fatal("could not unmarshal the example color order")
 	}
 
 	for i := range allColorChannelOrders {
@@ -148,7 +165,7 @@ func TestColorChannelOrderYAML(t *testing.T) {
 		[]byte(exampleOrderYAML), &order)
 
 	if err != nil {
-		t.Fatal("could not unmarshal the example operation")
+		t.Fatal("could not unmarshal the example color order")
 	}
 
 	for i := range allColorChannelOrders {
@@ -191,5 +208,70 @@ func TestOrderIndices(t *testing.T) {
 	for i := range allColorChannelOrders {
 		r, g, b = allColorChannelOrders[i].Indices()
 		assert.Equal(t, powerFx(r)+2*powerFx(g)+3*powerFx(b), int(allColorChannelOrders[i]))
+	}
+}
+
+var allShapeComponents = []ShapeComponent{
+	ShapeBatch,
+	ShapeWidth,
+	ShapeHeight,
+	ShapeColor,
+}
+
+const exampleShapeComponentJSON = `"Batch"`
+
+func TestShapeComponentJSON(t *testing.T) {
+	var comp ShapeComponent
+
+	err := json.Unmarshal(
+		[]byte(exampleShapeComponentJSON), &comp)
+
+	if err != nil {
+		t.Fatal("could not unmarshal the example shape component")
+	}
+
+	for i := range allShapeComponents {
+		serialized, err := json.Marshal(allShapeComponents[i])
+		if err != nil {
+			t.Fatalf("could not marshal %v: %v",
+				allShapeComponents[i], err)
+		}
+
+		err = json.Unmarshal(serialized, &comp)
+		if err != nil {
+			t.Fatalf("could not unmarshal %s: %v",
+				string(serialized), err)
+		}
+
+		assert.Equal(t, comp, allShapeComponents[i])
+	}
+}
+
+const exampleShapeComponentYAML = "Batch"
+
+func TestShapeComponentYAML(t *testing.T) {
+	var comp ShapeComponent
+
+	err := yaml.Unmarshal(
+		[]byte(exampleShapeComponentYAML), &comp)
+
+	if err != nil {
+		t.Fatal("could not unmarshal the example operation")
+	}
+
+	for i := range allShapeComponents {
+		serialized, err := yaml.Marshal(allShapeComponents[i])
+		if err != nil {
+			t.Fatalf("could not marshal %v: %v",
+				allShapeComponents[i], err)
+		}
+
+		err = yaml.Unmarshal(serialized, &comp)
+		if err != nil {
+			t.Fatalf("could not unmarshal %s: %v",
+				string(serialized), err)
+		}
+
+		assert.Equal(t, comp, allShapeComponents[i])
 	}
 }

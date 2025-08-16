@@ -30,6 +30,7 @@ type Model struct {
 	labels            []string
 	disabled          bool
 	meta              *tensorflow.ModelInfo
+	builder           *tensorflow.ImageTensorBuilder
 	mutex             sync.Mutex
 }
 
@@ -59,6 +60,7 @@ func NewNasnet(modelsPath string, disabled bool) *Model {
 			Width:             224,
 			ResizeOperation:   tensorflow.CenterCrop,
 			ColorChannelOrder: tensorflow.RGB,
+			Shape:             tensorflow.DefaultPhotoInputShape(),
 			Intervals: []tensorflow.Interval{
 				{
 					Start: -1,
@@ -176,7 +178,10 @@ func (m *Model) loadLabels(modelPath string) (err error) {
 		log.Infof("vision: model does not seem to have tags at %s, trying %s", clean.Log(modelPath), clean.Log(m.defaultLabelsPath))
 		m.labels, err = tensorflow.LoadLabels(m.defaultLabelsPath, numLabels)
 	}
-	return err
+	if err != nil {
+		return fmt.Errorf("classify: could not load tags: %v", err)
+	}
+	return nil
 }
 
 // ModelLoaded tests if the TensorFlow model is loaded.
@@ -197,7 +202,7 @@ func (m *Model) loadModel() (err error) {
 	modelPath := path.Join(m.modelsPath, m.name)
 
 	if len(m.meta.Tags) == 0 {
-		infos, modelErr := tensorflow.GetModelInfo(modelPath)
+		infos, modelErr := tensorflow.GetModelTagsInfo(modelPath)
 		if modelErr != nil {
 			log.Errorf("classify: could not get info from model in %s (%s)", clean.Log(modelPath), clean.Error(modelErr))
 		} else if len(infos) == 1 {
@@ -209,9 +214,8 @@ func (m *Model) loadModel() (err error) {
 	}
 
 	m.model, err = tensorflow.SavedModel(modelPath, m.meta.Tags)
-
 	if err != nil {
-		return err
+		return fmt.Errorf("classify: %s. Path: %s", clean.Error(err), modelPath)
 	}
 
 	if !m.meta.IsComplete() {
@@ -235,6 +239,11 @@ func (m *Model) loadModel() (err error) {
 		if err != nil {
 			return fmt.Errorf("classify: could not add softmax (%s)", clean.Error(err))
 		}
+	}
+
+	m.builder, err = tensorflow.NewImageTensorBuilder(m.meta.Input)
+	if err != nil {
+		return fmt.Errorf("classify: could not create the tensor builder (%s)", clean.Error(err))
 	}
 
 	return m.loadLabels(modelPath)
@@ -310,5 +319,5 @@ func (m *Model) createTensor(image []byte) (*tf.Tensor, error) {
 		}
 	}
 
-	return tensorflow.Image(img, m.meta.Input)
+	return tensorflow.Image(img, m.meta.Input, m.builder)
 }
