@@ -95,7 +95,7 @@ func (m *Reaction) Save() (err error) {
 
 	values := map[string]interface{}{"reaction": m.Reaction, "reacted": gorm.Expr("reacted + 1"), "reacted_at": reactedAt}
 
-	if err = Db().Model(Reaction{}).
+	if err = Db().Model(&Reaction{}).
 		Where("uid = ? AND user_uid = ?", m.UID, m.UserUID).
 		UpdateColumns(values).Error; err == nil {
 		m.Reacted += 1

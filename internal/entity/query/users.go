@@ -25,7 +25,7 @@ func CountUsers(registered, active bool, roles, excludeRoles []string) (count in
 	}
 
 	countData := int64(0)
-	stmt := Db().Model(entity.Users{})
+	stmt := Db().Model(&entity.Users{})
 
 	if registered {
 		stmt = stmt.Where("id > 0")

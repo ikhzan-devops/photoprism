@@ -116,7 +116,7 @@ func TestRestoreAlbums(t *testing.T) {
 		}
 
 		bigcount := int64(0)
-		if err = entity.UnscopedDb().Model(entity.Photo{}).Where("photo_type = ?", entity.MediaRestoring).Count(&bigcount).Error; err != nil {
+		if err = entity.UnscopedDb().Model(&entity.Photo{}).Where("photo_type = ?", entity.MediaRestoring).Count(&bigcount).Error; err != nil {
 			t.Fatal(err)
 		}
 

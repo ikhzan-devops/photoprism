@@ -65,12 +65,12 @@ func createDeletePhoto(b *testing.B) {
 	entity.Db().FirstOrCreate(cell)
 
 	folder := entity.Folder{}
-	if res := entity.Db().Model(entity.Folder{}).Where("path = ?", fmt.Sprintf("%04d", year)).First(&folder); res.RowsAffected == 0 {
+	if res := entity.Db().Model(&entity.Folder{}).Where("path = ?", fmt.Sprintf("%04d", year)).First(&folder); res.RowsAffected == 0 {
 		folder = entity.NewFolder("/", fmt.Sprintf("%04d", year), time.Now().UTC())
 		folder.Create()
 	}
 	folder = entity.Folder{}
-	if res := entity.Db().Model(entity.Folder{}).Where("path = ?", fmt.Sprintf("%04d/%02d", year, month)).First(&folder); res.RowsAffected == 0 {
+	if res := entity.Db().Model(&entity.Folder{}).Where("path = ?", fmt.Sprintf("%04d/%02d", year, month)).First(&folder); res.RowsAffected == 0 {
 		folder = entity.NewFolder("/", fmt.Sprintf("%04d/%02d", year, month), time.Now().UTC())
 		folder.Create()
 	}
@@ -319,7 +319,7 @@ func createDeletePhoto(b *testing.B) {
 	// Add to Album
 	albumSlug := fmt.Sprintf("my-photos-from-%04d", year)
 	album := entity.Album{}
-	if res := entity.Db().Model(entity.Album{}).Where("album_slug = ?", albumSlug).First(&album); res.RowsAffected == 0 {
+	if res := entity.Db().Model(&entity.Album{}).Where("album_slug = ?", albumSlug).First(&album); res.RowsAffected == 0 {
 		album = entity.Album{
 			AlbumUID:         rnd.GenerateUID(entity.AlbumUID),
 			AlbumSlug:        albumSlug,

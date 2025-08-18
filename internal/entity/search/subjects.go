@@ -157,7 +157,7 @@ func SubjectUIDs(s string) (result []string, names []string, remaining string) {
 	for _, where := range wheres {
 		var subj []string
 
-		stmt := Db().Model(entity.Subject{})
+		stmt := Db().Model(&entity.Subject{})
 		stmt = stmt.Where("?", gorm.Expr(where))
 
 		if err := stmt.Scan(&matches).Error; err != nil {

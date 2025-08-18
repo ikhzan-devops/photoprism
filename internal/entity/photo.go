@@ -1191,7 +1191,7 @@ func (m *Photo) SetPrimary(fileUid string) (err error) {
 
 	if fileUid != "" {
 		// Do nothing.
-	} else if err = Db().Model(File{}).
+	} else if err = Db().Model(&File{}).
 		Where("photo_uid = ? AND file_type IN (?) AND file_missing = FALSE AND file_error = ''", m.PhotoUID, media.PreviewExpr).
 		Order("file_width DESC, file_hdr DESC").Limit(1).
 		Pluck("file_uid", &files).Error; err != nil {
@@ -1206,11 +1206,11 @@ func (m *Photo) SetPrimary(fileUid string) (err error) {
 		return fmt.Errorf("file uid is empty")
 	}
 
-	if err = Db().Model(File{}).
+	if err = Db().Model(&File{}).
 		Where("photo_uid = ? AND file_uid <> ?", m.PhotoUID, fileUid).
 		UpdateColumn("file_primary", false).Error; err != nil {
 		return err
-	} else if err = Db().Model(File{}).Where("photo_uid = ? AND file_uid = ?", m.PhotoUID, fileUid).
+	} else if err = Db().Model(&File{}).Where("photo_uid = ? AND file_uid = ?", m.PhotoUID, fileUid).
 		UpdateColumn("file_primary", true).Error; err != nil {
 		return err
 	} else if m.PhotoQuality < 0 {

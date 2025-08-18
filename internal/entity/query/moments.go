@@ -318,7 +318,7 @@ func RemoveDuplicateMoments() (removed int, err error) {
 	}
 
 	// Remove the child records to prevent foreign key violations
-	if res := UnscopedDb().Model(entity.PhotoAlbum{}).
+	if res := UnscopedDb().Model(&entity.PhotoAlbum{}).
 		Where("album_uid IN (?)", UnscopedDb().Table("albums AS a").Select("a.album_uid").
 			Joins("JOIN albums as b ON a.album_type = b.album_type AND a.id > b.id").
 			Where("a.album_type <> ?", entity.AlbumManual).

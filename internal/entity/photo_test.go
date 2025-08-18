@@ -624,7 +624,7 @@ func TestPhoto_Save(t *testing.T) {
 		// Will this break when running all tests?
 		assert.Equal(t, len(beforeErrors)+1, len(afterErrors))
 
-		Db().Where("error_message like ?", errorMessage).Delete(Errors{})
+		Db().Where("error_message like ?", errorMessage).Delete(&Errors{})
 		photo.DeletePermanently()
 	})
 
@@ -652,7 +652,7 @@ func TestPhoto_Save(t *testing.T) {
 		// Will this break when running all tests?
 		assert.Equal(t, len(beforeErrors)+1, len(afterErrors))
 
-		Db().Where("error_message like ?", errorMessage).Delete(Errors{})
+		Db().Where("error_message like ?", errorMessage).Delete(&Errors{})
 		photo.DeletePermanently()
 	})
 
@@ -680,7 +680,7 @@ func TestPhoto_Save(t *testing.T) {
 		// Will this break when running all tests?
 		assert.Equal(t, len(beforeErrors)+1, len(afterErrors))
 
-		Db().Where("error_message like ?", errorMessage).Delete(Errors{})
+		Db().Where("error_message like ?", errorMessage).Delete(&Errors{})
 		photo.DeletePermanently()
 	})
 
@@ -708,7 +708,7 @@ func TestPhoto_Save(t *testing.T) {
 		// Will this break when running all tests?
 		assert.Equal(t, len(beforeErrors)+1, len(afterErrors))
 
-		Db().Where("error_message like ?", errorMessage).Delete(Errors{})
+		Db().Where("error_message like ?", errorMessage).Delete(&Errors{})
 		photo.DeletePermanently()
 	})
 }

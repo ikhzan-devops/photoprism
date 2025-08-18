@@ -9,7 +9,7 @@ import (
 // CountPhotos returns the total number of Photo records in the database, delete or otherwise.
 func CountPhotos() (numberOfPhotos int, err error) {
 	count := int64(0)
-	err = UnscopedDb().Model(entity.Photo{}).Count(&count).Error
+	err = UnscopedDb().Model(&entity.Photo{}).Count(&count).Error
 	return int(count), err
 }
 

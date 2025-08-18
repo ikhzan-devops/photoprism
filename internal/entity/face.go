@@ -439,7 +439,7 @@ func ValidFaceCount(fileUid string) (c int) {
 		return
 	}
 
-	if err := Db().Model(Marker{}).
+	if err := Db().Model(&Marker{}).
 		Where("file_uid = ? AND marker_type = ?", fileUid, MarkerFace).
 		Where("marker_invalid = FALSE").
 		Count(&cValue).Error; err != nil {

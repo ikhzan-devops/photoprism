@@ -96,7 +96,7 @@ func (Album) TableName() string {
 func UpdateAlbum(albumUID string, values interface{}) (err error) {
 	if rnd.InvalidUID(albumUID, AlbumUID) {
 		return fmt.Errorf("album: invalid uid %s", clean.Log(albumUID))
-	} else if err = Db().Model(Album{}).Where("album_uid = ?", albumUID).UpdateColumns(values).Error; err != nil {
+	} else if err = Db().Model(&Album{}).Where("album_uid = ?", albumUID).UpdateColumns(values).Error; err != nil {
 		return err
 	}
 

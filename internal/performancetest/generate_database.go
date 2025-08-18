@@ -102,7 +102,7 @@ func generateDatabase(numberOfPhotos int, driver string, dsn string, dropdb bool
 	// Run migration if the photos table doesn't exist.
 	// Otherwise assume that we have a valid structured database.
 	photoCounter := int64(0)
-	if err := Db().Model(entity.Photo{}).Count(&photoCounter).Error; err != nil {
+	if err := Db().Model(&entity.Photo{}).Count(&photoCounter).Error; err != nil {
 		// Handle SQLite differently as it does table recreates on initial migrate, so we need to be able to simulate that.
 		if driver == SQLite3 && databasescript {
 			filename := dsn
@@ -302,7 +302,7 @@ func generateDatabase(numberOfPhotos int, driver string, dsn string, dropdb bool
 
 		country := entity.NewCountry(strings.ToLower(parts[0]), strings.ToLower(parts[1]))
 		counter := int64(0)
-		Db().Model(entity.Country{}).Where("id = ?", country.ID).Count(&counter)
+		Db().Model(&entity.Country{}).Where("id = ?", country.ID).Count(&counter)
 		if counter == 0 {
 			Db().Create(country)
 			countries[countryPos] = strings.ToLower(parts[0])
@@ -377,12 +377,12 @@ func generateDatabase(numberOfPhotos int, driver string, dsn string, dropdb bool
 		Db().FirstOrCreate(cell)
 
 		folder := entity.Folder{}
-		if res := Db().Model(entity.Folder{}).Where("path = ?", fmt.Sprintf("%04d", year)).First(&folder); res.RowsAffected == 0 {
+		if res := Db().Model(&entity.Folder{}).Where("path = ?", fmt.Sprintf("%04d", year)).First(&folder); res.RowsAffected == 0 {
 			folder = entity.NewFolder("/", fmt.Sprintf("%04d", year), time.Now().UTC())
 			folder.Create()
 		}
 		folder = entity.Folder{}
-		if res := Db().Model(entity.Folder{}).Where("path = ?", fmt.Sprintf("%04d/%02d", year, month)).First(&folder); res.RowsAffected == 0 {
+		if res := Db().Model(&entity.Folder{}).Where("path = ?", fmt.Sprintf("%04d/%02d", year, month)).First(&folder); res.RowsAffected == 0 {
 			folder = entity.NewFolder("/", fmt.Sprintf("%04d/%02d", year, month), time.Now().UTC())
 			folder.Create()
 		}
@@ -466,7 +466,7 @@ func generateDatabase(numberOfPhotos int, driver string, dsn string, dropdb bool
 		for i := 0; i < keywordCount; i++ {
 			photoKeyword := entity.PhotoKeyword{PhotoID: photo.ID, KeywordID: keywordRandoms[rand.IntN(len(keywordRandoms))]}
 			keyword := entity.Keyword{}
-			Db().Model(entity.Keyword{}).Where("id = ?", photoKeyword.KeywordID).First(&keyword)
+			Db().Model(&entity.Keyword{}).Where("id = ?", photoKeyword.KeywordID).First(&keyword)
 			Db().FirstOrCreate(&photoKeyword)
 			if len(keywordStr) > 0 {
 				keywordStr = fmt.Sprintf("%s,%s", keywordStr, keyword.Keyword)
@@ -576,7 +576,7 @@ func generateDatabase(numberOfPhotos int, driver string, dsn string, dropdb bool
 		// Add to Album
 		albumSlug := fmt.Sprintf("my-photos-from-%04d", year)
 		album := entity.Album{}
-		if res := Db().Model(entity.Album{}).Where("album_slug = ?", albumSlug).First(&album); res.RowsAffected == 0 {
+		if res := Db().Model(&entity.Album{}).Where("album_slug = ?", albumSlug).First(&album); res.RowsAffected == 0 {
 			album = entity.Album{
 				AlbumUID:         rnd.GenerateUID(entity.AlbumUID),
 				AlbumSlug:        albumSlug,

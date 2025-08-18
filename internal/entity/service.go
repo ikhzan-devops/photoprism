@@ -126,13 +126,13 @@ func (m *Service) ResetErrors(share, sync bool) error {
 	}
 
 	if share {
-		if err := Db().Model(FileShare{}).Where("service_id = ?", m.ID).Updates(map[string]interface{}{"error": "", "errors": 0}).Error; err != nil {
+		if err := Db().Model(&FileShare{}).Where("service_id = ?", m.ID).Updates(map[string]interface{}{"error": "", "errors": 0}).Error; err != nil {
 			return err
 		}
 	}
 
 	if sync {
-		if err := Db().Model(FileSync{}).Where("service_id = ?", m.ID).Updates(map[string]interface{}{"error": "", "errors": 0}).Error; err != nil {
+		if err := Db().Model(&FileSync{}).Where("service_id = ?", m.ID).Updates(map[string]interface{}{"error": "", "errors": 0}).Error; err != nil {
 			return err
 		}
 	}

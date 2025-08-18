@@ -338,7 +338,7 @@ func RemovePeopleAndFaces() (err error) {
 	}
 
 	// Reset face counters.
-	if err = UnscopedDb().Model(entity.Photo{}).
+	if err = UnscopedDb().Model(&entity.Photo{}).
 		UpdateColumn("photo_faces", 0).Error; err != nil {
 		return err
 	}

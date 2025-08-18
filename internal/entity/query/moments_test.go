@@ -326,7 +326,7 @@ func TestMoment_Title(t *testing.T) {
 func TestRemoveDuplicateMoments(t *testing.T) {
 	t.Run("Ok", func(t *testing.T) {
 		// Make sure that data is ok before test
-		results := Db().Model(entity.PhotoAlbums{}).Where("album_uid NOT IN (?)", Db().Select("album_uid").Model(entity.Album{}).Where("album_uid IS NOT NULL")).Find(&entity.PhotoAlbums{})
+		results := Db().Model(&entity.PhotoAlbums{}).Where("album_uid NOT IN (?)", Db().Select("album_uid").Model(&entity.Album{}).Where("album_uid IS NOT NULL")).Find(&entity.PhotoAlbums{})
 		assert.Equal(t, int64(0), results.RowsAffected, "before test orphaned records")
 
 		if removed, err := RemoveDuplicateMoments(); err != nil {
@@ -339,7 +339,7 @@ func TestRemoveDuplicateMoments(t *testing.T) {
 			// Delete 2 in Albums and 0 in PhotoAlbums.
 			assert.GreaterOrEqual(t, removed, 2)
 
-			results := Db().Model(entity.PhotoAlbums{}).Where("album_uid NOT IN (?)", Db().Select("album_uid").Model(entity.Album{}).Where("album_uid IS NOT NULL")).Find(&entity.PhotoAlbums{})
+			results := Db().Model(&entity.PhotoAlbums{}).Where("album_uid NOT IN (?)", Db().Select("album_uid").Model(&entity.Album{}).Where("album_uid IS NOT NULL")).Find(&entity.PhotoAlbums{})
 			assert.Equal(t, int64(0), results.RowsAffected, "after test orphaned records")
 		}
 	})
