@@ -796,7 +796,7 @@ var AlbumFixtures = AlbumMap{
 		DeletedAt:        gorm.DeletedAt{},
 	},
 	"cows": {
-		ID:               1000031,
+		ID:               1000035,
 		AlbumUID:         "as6sg6bipotaajfa",
 		AlbumSlug:        "cows",
 		AlbumPath:        "",
