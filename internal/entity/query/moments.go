@@ -325,7 +325,7 @@ func RemoveDuplicateMoments() (removed int, err error) {
 			Where("a.album_slug = b.album_slug OR a.album_filter = b.album_filter").
 			Order("a.id").
 			Find(&entity.Albums{})).
-		Delete(entity.PhotoAlbum{}); res.Error != nil {
+		Delete(&entity.PhotoAlbum{}); res.Error != nil {
 		return removed, res.Error
 	} else {
 		removed += int(res.RowsAffected)

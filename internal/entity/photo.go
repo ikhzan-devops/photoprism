@@ -1039,19 +1039,19 @@ func (m *Photo) DeletePermanently() (files Files, err error) {
 		}
 	}
 
-	if logErr := UnscopedDb().Delete(Details{}, "photo_id = ?", m.ID).Error; logErr != nil {
+	if logErr := UnscopedDb().Delete(&Details{}, "photo_id = ?", m.ID).Error; logErr != nil {
 		log.Errorf("index: %s (remove details)", logErr)
 	}
 
-	if logErr := UnscopedDb().Delete(PhotoKeyword{}, "photo_id = ?", m.ID).Error; logErr != nil {
+	if logErr := UnscopedDb().Delete(&PhotoKeyword{}, "photo_id = ?", m.ID).Error; logErr != nil {
 		log.Errorf("index: %s (remove keywords)", logErr)
 	}
 
-	if logErr := UnscopedDb().Delete(PhotoLabel{}, "photo_id = ?", m.ID).Error; logErr != nil {
+	if logErr := UnscopedDb().Delete(&PhotoLabel{}, "photo_id = ?", m.ID).Error; logErr != nil {
 		log.Errorf("index: %s (remove labels)", logErr)
 	}
 
-	if logErr := UnscopedDb().Delete(PhotoAlbum{}, "photo_uid = ?", m.PhotoUID).Error; logErr != nil {
+	if logErr := UnscopedDb().Delete(&PhotoAlbum{}, "photo_uid = ?", m.PhotoUID).Error; logErr != nil {
 		log.Errorf("index: %s (remove albums)", logErr)
 	}
 

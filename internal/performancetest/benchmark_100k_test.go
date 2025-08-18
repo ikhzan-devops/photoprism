@@ -259,7 +259,7 @@ func createDeleteCamera(b *testing.B) {
 	if err := camera.Create(); err != nil {
 		b.Fatal(err)
 	}
-	if err := entity.UnscopedDb().Delete(camera).Error; err != nil {
+	if err := entity.UnscopedDb().Delete(&camera).Error; err != nil {
 		b.Fatal(err)
 	}
 	entity.FlushCameraCache()

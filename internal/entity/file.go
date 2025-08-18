@@ -353,15 +353,15 @@ func (m *File) DeletePermanently() error {
 		return fmt.Errorf("invalid file id %d / uid %s", m.ID, clean.Log(m.FileUID))
 	}
 
-	if err := UnscopedDb().Delete(Marker{}, "file_uid = ?", m.FileUID).Error; err != nil {
+	if err := UnscopedDb().Delete(&Marker{}, "file_uid = ?", m.FileUID).Error; err != nil {
 		log.Errorf("file %s: %s while removing markers", clean.Log(m.FileUID), err)
 	}
 
-	if err := UnscopedDb().Delete(FileShare{}, "file_id = ?", m.ID).Error; err != nil {
+	if err := UnscopedDb().Delete(&FileShare{}, "file_id = ?", m.ID).Error; err != nil {
 		log.Errorf("file %s: %s while removing share info", clean.Log(m.FileUID), err)
 	}
 
-	if err := UnscopedDb().Delete(FileSync{}, "file_id = ?", m.ID).Error; err != nil {
+	if err := UnscopedDb().Delete(&FileSync{}, "file_id = ?", m.ID).Error; err != nil {
 		log.Errorf("file %s: %s while removing remote sync info", clean.Log(m.FileUID), err)
 	}
 

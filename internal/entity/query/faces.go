@@ -110,7 +110,7 @@ func MatchFaceMarkers() (affected int64, err error) {
 // RemoveAnonymousFaceClusters removes anonymous faces from the index.
 func RemoveAnonymousFaceClusters() (removed int, err error) {
 	res := UnscopedDb().
-		Delete(entity.Face{}, "subj_uid = '' AND face_src = ?", entity.SrcAuto)
+		Delete(&entity.Face{}, "subj_uid = '' AND face_src = ?", entity.SrcAuto)
 
 	return int(res.RowsAffected), res.Error
 }
@@ -118,7 +118,7 @@ func RemoveAnonymousFaceClusters() (removed int, err error) {
 // RemoveAutoFaceClusters removes automatically added face clusters from the index.
 func RemoveAutoFaceClusters() (removed int, err error) {
 	res := UnscopedDb().
-		Delete(entity.Face{}, "face_src = ?", entity.SrcAuto)
+		Delete(&entity.Face{}, "face_src = ?", entity.SrcAuto)
 
 	return int(res.RowsAffected), res.Error
 }
@@ -323,17 +323,17 @@ func RemovePeopleAndFaces() (err error) {
 	defer mutex.Index.Unlock()
 
 	// Delete people.
-	if err = UnscopedDb().Delete(entity.Subject{}, "subj_type = ?", entity.SubjPerson).Error; err != nil {
+	if err = UnscopedDb().Delete(&entity.Subject{}, "subj_type = ?", entity.SubjPerson).Error; err != nil {
 		return err
 	}
 
 	// Delete all faces.
-	if err = UnscopedDb().Delete(entity.Face{}).Error; err != nil {
+	if err = UnscopedDb().Delete(&entity.Face{}).Error; err != nil {
 		return err
 	}
 
 	// Delete face markers.
-	if err = UnscopedDb().Delete(entity.Marker{}, "marker_type = ?", entity.MarkerFace).Error; err != nil {
+	if err = UnscopedDb().Delete(&entity.Marker{}, "marker_type = ?", entity.MarkerFace).Error; err != nil {
 		return err
 	}
 
@@ -347,7 +347,7 @@ func RemovePeopleAndFaces() (err error) {
 	if label, labelErr := LabelBySlug("people"); labelErr != nil {
 		return labelErr
 	} else if labelErr = UnscopedDb().
-		Delete(entity.PhotoLabel{}, "label_id = ?", label.ID).Error; labelErr != nil {
+		Delete(&entity.PhotoLabel{}, "label_id = ?", label.ID).Error; labelErr != nil {
 		return labelErr
 	} else if labelErr = label.Update("PhotoCount", 0); labelErr != nil {
 		return labelErr
@@ -357,7 +357,7 @@ func RemovePeopleAndFaces() (err error) {
 	if label, labelErr := LabelBySlug("portrait"); labelErr != nil {
 		return labelErr
 	} else if labelErr = UnscopedDb().
-		Delete(entity.PhotoLabel{}, "label_id = ?", label.ID).Error; labelErr != nil {
+		Delete(&entity.PhotoLabel{}, "label_id = ?", label.ID).Error; labelErr != nil {
 		return labelErr
 	} else if labelErr = label.Update("PhotoCount", 0); labelErr != nil {
 		return labelErr

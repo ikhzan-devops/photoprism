@@ -173,7 +173,7 @@ func (m *Link) Delete() error {
 	}
 
 	// Remove related user shares.
-	if err := UnscopedDb().Delete(UserShare{}, "link_uid = ?", m.LinkUID).Error; err != nil {
+	if err := UnscopedDb().Delete(&UserShare{}, "link_uid = ?", m.LinkUID).Error; err != nil {
 		event.AuditErr([]string{"link %s", "failed to remove related user shares", "%s"}, clean.Log(m.RefID), err)
 	}
 
@@ -187,7 +187,7 @@ func DeleteShareLinks(shareUid string) error {
 	}
 
 	// Remove related user shares.
-	if err := UnscopedDb().Delete(UserShare{}, "share_uid = ?", shareUid).Error; err != nil {
+	if err := UnscopedDb().Delete(&UserShare{}, "share_uid = ?", shareUid).Error; err != nil {
 		event.AuditErr([]string{"share %s", "failed to remove related user shares", "%s"}, clean.Log(shareUid), err)
 	}
 

@@ -63,7 +63,7 @@ func PurgeDuplicate(fileName, fileRoot string) error {
 		return fmt.Errorf("duplicate root must not be empty")
 	}
 
-	if err := UnscopedDb().Delete(Duplicate{}, "file_name = ? AND file_root = ?", fileName, fileRoot).Error; err != nil {
+	if err := UnscopedDb().Delete(&Duplicate{}, "file_name = ? AND file_root = ?", fileName, fileRoot).Error; err != nil {
 		log.Errorf("duplicate: %s in %s (purge)", err, clean.Log(fileName))
 		return err
 	}

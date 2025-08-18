@@ -165,7 +165,7 @@ func TestDetails_Create(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		} else {
-			UnscopedDb().Delete(details)
+			UnscopedDb().Delete(&details)
 		}
 		UnscopedDb().Delete(newPhoto)
 
@@ -188,7 +188,7 @@ func TestDetails_Save(t *testing.T) {
 		afterDate := details.UpdatedAt
 
 		assert.True(t, afterDate.After(initialDate))
-		UnscopedDb().Delete(details)
+		UnscopedDb().Delete(&details)
 		UnscopedDb().Delete(newPhoto)
 	})
 

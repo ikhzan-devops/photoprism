@@ -80,7 +80,7 @@ func TestPhotoAlbum_Save(t *testing.T) {
 			t.Fatal(err)
 		}
 		// Cleanup
-		result := UnscopedDb().Model(PhotoAlbum{}).Delete(p)
+		result := UnscopedDb().Model(PhotoAlbum{}).Delete(&p)
 		assert.Equal(t, int64(1), result.RowsAffected)
 		UnscopedDb().Delete(newAlbum)
 		UnscopedDb().Delete(newPhoto)

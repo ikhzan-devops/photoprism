@@ -387,10 +387,10 @@ func createDeletePhoto(b *testing.B) {
 	}
 
 	for i := 0; i < labelCount; i++ {
-		entity.UnscopedDb().Where("label_id = ?", labels[i]).Delete(entity.Label{})
+		entity.UnscopedDb().Where("label_id = ?", labels[i]).Delete(&entity.Label{})
 	}
 
 	for i := 0; i < keywordCount; i++ {
-		entity.UnscopedDb().Where("keyword_id = ?", keywords[i]).Delete(entity.Keyword{})
+		entity.UnscopedDb().Where("keyword_id = ?", keywords[i]).Delete(&entity.Keyword{})
 	}
 }
