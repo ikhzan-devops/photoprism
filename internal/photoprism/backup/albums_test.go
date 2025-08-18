@@ -86,7 +86,7 @@ func TestRestoreAlbums(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		assert.Equal(t, 35, count)
+		assert.Equal(t, 36, count)
 
 		// Wipe the database
 		entity.Entities.Truncate(entity.Db())
@@ -106,7 +106,7 @@ func TestRestoreAlbums(t *testing.T) {
 		}
 
 		// 1 album is deleted
-		assert.Equal(t, 34, count)
+		assert.Equal(t, 35, count)
 
 		photocount := 0
 		if photocount, err = query.CountPhotos(); err != nil {

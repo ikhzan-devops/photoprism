@@ -108,7 +108,7 @@ func TestInit(t *testing.T) {
 
 		stmt.Model(m).Count(&count)
 
-		assert.Equal(t, int64(35), count)
+		assert.Equal(t, int64(36), count)
 	})
 
 	t.Run("ServiceCounts", func(t *testing.T) {
