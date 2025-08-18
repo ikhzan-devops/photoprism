@@ -413,7 +413,9 @@ func TestAlbums(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		assert.GreaterOrEqual(t, result[0].AlbumYear, result[1].AlbumYear)
+		lastRecord := len(result) - 1
+		assert.GreaterOrEqual(t, result[lastRecord-1].AlbumYear, result[lastRecord].AlbumYear)
+		assert.Greater(t, result[lastRecord].AlbumYear, 0)
 	})
 	t.Run("MomentSortByNewestReverse", func(t *testing.T) {
 		f := form.SearchAlbums{
@@ -529,7 +531,9 @@ func TestAlbums(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		assert.GreaterOrEqual(t, result[0].AlbumYear, result[1].AlbumYear)
+		lastRecord := len(result) - 1
+		assert.GreaterOrEqual(t, result[lastRecord-1].AlbumYear, result[lastRecord].AlbumYear)
+		assert.Greater(t, result[lastRecord].AlbumYear, 0)
 	})
 	t.Run("FolderSortByOldest", func(t *testing.T) {
 		f := form.SearchAlbums{
