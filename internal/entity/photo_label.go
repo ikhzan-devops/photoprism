@@ -1,9 +1,9 @@
 package entity
 
 import (
-	"gorm.io/gorm"
-
 	"errors"
+
+	"gorm.io/gorm"
 
 	"github.com/photoprism/photoprism/internal/ai/classify"
 )
@@ -14,7 +14,7 @@ type PhotoLabels []PhotoLabel
 // Labels are weighted by uncertainty (100 - confidence)
 type PhotoLabel struct {
 	PhotoID     uint   `gorm:"primaryKey;autoIncrement:false"`
-	LabelID     uint   `gorm:"primaryKey;autoIncrement:false"`
+	LabelID     uint   `gorm:"primaryKey;autoIncrement:false;index"`
 	LabelSrc    string `gorm:"type:bytes;size:8;"`
 	Uncertainty int    `gorm:"type:int;size:16;"`
 	Photo       *Photo `gorm:"foreignKey:PhotoID;references:ID;" yaml:"-"`
@@ -59,7 +59,7 @@ func (m *PhotoLabel) Update(attr string, value interface{}) error {
 // AfterUpdate flushes the label cache when a label is updated.
 func (m *PhotoLabel) AfterUpdate(tx *gorm.DB) (err error) {
 	FlushCachedPhotoLabel(m)
-	return
+	return nil
 }
 
 // Save updates the record in the database or inserts a new record if it does not already exist.
@@ -93,7 +93,7 @@ func (m *PhotoLabel) Create() error {
 }
 
 // AfterCreate sets the New column used for database callback
-func (m *PhotoLabel) AfterCreate(tx *gorm.DB) error {
+func (m *PhotoLabel) AfterCreate(tx *gorm.DB) (err error) {
 	FlushCachedPhotoLabel(m)
 	return nil
 }
@@ -107,7 +107,7 @@ func (m *PhotoLabel) Delete() error {
 // AfterDelete flushes the label cache when a label is deleted.
 func (m *PhotoLabel) AfterDelete(tx *gorm.DB) (err error) {
 	FlushCachedPhotoLabel(m)
-	return
+	return nil
 }
 
 // HasID tests if both a photo and label ID are set.
