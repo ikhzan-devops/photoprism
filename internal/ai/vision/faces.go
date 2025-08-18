@@ -53,12 +53,10 @@ func Faces(fileName string, minSize int, cacheCrop bool, expected int) (result f
 				return result, err
 			}
 
-			if model.Name != "" {
-				apiRequest.Model = model.Name
-			}
+			_, apiRequest.Model, apiRequest.Version = model.Model()
 
-			if model.Version != "" {
-				apiRequest.Version = model.Version
+			if model.System != "" {
+				apiRequest.System = model.System
 			}
 
 			if model.Prompt != "" {

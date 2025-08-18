@@ -1,12 +1,3 @@
-/*M!999999\- enable the sandbox mode */ 
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*M!100616 SET @OLD_NOTE_VERBOSITY=@@NOTE_VERBOSITY, NOTE_VERBOSITY=0 */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `albums` (
   `id` int(10) unsigned NOT NULL,
   `album_uid` varbinary(42) DEFAULT NULL,
@@ -39,22 +30,19 @@ CREATE TABLE `albums` (
   `deleted_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uix_albums_album_uid` (`album_uid`),
-  KEY `idx_albums_ymd` (`album_day`),
-  KEY `idx_albums_thumb` (`thumb`),
-  KEY `idx_albums_published_at` (`published_at`),
-  KEY `idx_albums_album_slug` (`album_slug`),
   KEY `idx_albums_album_path` (`album_path`(768)),
   KEY `idx_albums_album_title` (`album_title`),
-  KEY `idx_albums_country_year_month` (`album_country`,`album_year`,`album_month`),
-  KEY `idx_albums_created_by` (`created_by`),
-  KEY `idx_albums_deleted_at` (`deleted_at`),
   KEY `idx_albums_album_category` (`album_category`),
   KEY `idx_albums_album_state` (`album_state`),
+  KEY `idx_albums_country_year_month` (`album_country`,`album_year`,`album_month`),
+  KEY `idx_albums_thumb` (`thumb`),
+  KEY `idx_albums_created_by` (`created_by`),
+  KEY `idx_albums_deleted_at` (`deleted_at`),
+  KEY `idx_albums_album_slug` (`album_slug`),
+  KEY `idx_albums_ymd` (`album_day`),
+  KEY `idx_albums_published_at` (`published_at`),
   KEY `idx_albums_album_filter` (`album_filter`(512))
 );
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `albums_users` (
   `uid` varbinary(42) NOT NULL,
   `user_uid` varbinary(42) NOT NULL,
@@ -64,9 +52,6 @@ CREATE TABLE `albums_users` (
   KEY `idx_albums_users_user_uid` (`user_uid`),
   KEY `idx_albums_users_team_uid` (`team_uid`)
 );
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `audit_logins` (
   `client_ip` varchar(64) NOT NULL,
   `login_name` varchar(64) NOT NULL,
@@ -81,14 +66,22 @@ CREATE TABLE `audit_logins` (
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`client_ip`,`login_name`,`login_realm`),
-  KEY `idx_audit_logins_updated_at` (`updated_at`),
   KEY `idx_audit_logins_login_name` (`login_name`),
   KEY `idx_audit_logins_failed_at` (`failed_at`),
-  KEY `idx_audit_logins_banned_at` (`banned_at`)
+  KEY `idx_audit_logins_banned_at` (`banned_at`),
+  KEY `idx_audit_logins_updated_at` (`updated_at`)
 );
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `audit_logs` (
+  `id` int(10) unsigned NOT NULL,
+  `log_time` datetime DEFAULT NULL,
+  `severity` tinyint(3) unsigned DEFAULT NULL,
+  `client_ip` varchar(64) DEFAULT NULL,
+  `log_message` varbinary(2048) DEFAULT NULL,
+  `log_repeated` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_audit_logs_log_time` (`log_time`),
+  KEY `idx_audit_logs_client_ip` (`client_ip`)
+);
 CREATE TABLE `auth_clients` (
   `client_uid` varbinary(42) NOT NULL,
   `user_uid` varbinary(42) DEFAULT '',
@@ -111,9 +104,6 @@ CREATE TABLE `auth_clients` (
   KEY `idx_auth_clients_user_uid` (`user_uid`),
   KEY `idx_auth_clients_user_name` (`user_name`)
 );
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `auth_sessions` (
   `id` varbinary(2048) NOT NULL,
   `user_uid` varbinary(42) DEFAULT '',
@@ -143,16 +133,13 @@ CREATE TABLE `auth_sessions` (
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
+  KEY `idx_auth_sessions_client_ip` (`client_ip`),
   KEY `idx_auth_sessions_auth_id` (`auth_id`),
   KEY `idx_auth_sessions_sess_expires` (`sess_expires`),
   KEY `idx_auth_sessions_user_uid` (`user_uid`),
   KEY `idx_auth_sessions_user_name` (`user_name`),
-  KEY `idx_auth_sessions_client_uid` (`client_uid`),
-  KEY `idx_auth_sessions_client_ip` (`client_ip`)
+  KEY `idx_auth_sessions_client_uid` (`client_uid`)
 );
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `auth_users` (
   `id` int(11) NOT NULL,
   `user_uuid` varbinary(64) DEFAULT NULL,
@@ -192,19 +179,16 @@ CREATE TABLE `auth_users` (
   `deleted_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uix_auth_users_user_uid` (`user_uid`),
-  KEY `idx_auth_users_auth_id` (`auth_id`),
   KEY `idx_auth_users_user_name` (`user_name`),
   KEY `idx_auth_users_born_at` (`born_at`),
+  KEY `idx_auth_users_thumb` (`thumb`),
   KEY `idx_auth_users_deleted_at` (`deleted_at`),
   KEY `idx_auth_users_user_uuid` (`user_uuid`),
+  KEY `idx_auth_users_auth_id` (`auth_id`),
   KEY `idx_auth_users_user_email` (`user_email`),
   KEY `idx_auth_users_expires_at` (`expires_at`),
-  KEY `idx_auth_users_invite_token` (`invite_token`),
-  KEY `idx_auth_users_thumb` (`thumb`)
+  KEY `idx_auth_users_invite_token` (`invite_token`)
 );
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `auth_users_details` (
   `user_uid` varbinary(42) NOT NULL,
   `subj_uid` varbinary(42) DEFAULT NULL,
@@ -241,14 +225,11 @@ CREATE TABLE `auth_users_details` (
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`user_uid`),
-  KEY `idx_auth_users_details_cell_id` (`cell_id`),
-  KEY `idx_auth_users_details_org_email` (`org_email`),
   KEY `idx_auth_users_details_subj_uid` (`subj_uid`),
-  KEY `idx_auth_users_details_place_id` (`place_id`)
+  KEY `idx_auth_users_details_place_id` (`place_id`),
+  KEY `idx_auth_users_details_cell_id` (`cell_id`),
+  KEY `idx_auth_users_details_org_email` (`org_email`)
 );
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `auth_users_settings` (
   `user_uid` varbinary(42) NOT NULL,
   `ui_theme` varbinary(32) DEFAULT NULL,
@@ -272,9 +253,6 @@ CREATE TABLE `auth_users_settings` (
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`user_uid`)
 );
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `auth_users_shares` (
   `user_uid` varbinary(42) NOT NULL,
   `share_uid` varbinary(42) NOT NULL,
@@ -289,9 +267,6 @@ CREATE TABLE `auth_users_shares` (
   KEY `idx_auth_users_shares_share_uid` (`share_uid`),
   KEY `idx_auth_users_shares_expires_at` (`expires_at`)
 );
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `cameras` (
   `id` int(10) unsigned NOT NULL,
   `camera_slug` varbinary(160) DEFAULT NULL,
@@ -308,17 +283,11 @@ CREATE TABLE `cameras` (
   UNIQUE KEY `uix_cameras_camera_slug` (`camera_slug`),
   KEY `idx_cameras_deleted_at` (`deleted_at`)
 );
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `categories` (
   `label_id` int(10) unsigned NOT NULL,
   `category_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`label_id`,`category_id`)
 );
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `cells` (
   `id` varbinary(42) NOT NULL,
   `cell_name` varchar(200) DEFAULT NULL,
@@ -330,9 +299,6 @@ CREATE TABLE `cells` (
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
 );
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `countries` (
   `id` varbinary(2) NOT NULL,
   `country_slug` varbinary(160) DEFAULT NULL,
@@ -343,9 +309,6 @@ CREATE TABLE `countries` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `uix_countries_country_slug` (`country_slug`)
 );
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `details` (
   `photo_id` int(10) unsigned NOT NULL,
   `keywords` varchar(2048) DEFAULT NULL,
@@ -366,9 +329,6 @@ CREATE TABLE `details` (
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`photo_id`)
 );
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `duplicates` (
   `file_name` varbinary(755) NOT NULL,
   `file_root` varbinary(16) NOT NULL DEFAULT x'2f',
@@ -378,9 +338,6 @@ CREATE TABLE `duplicates` (
   PRIMARY KEY (`file_name`,`file_root`),
   KEY `idx_duplicates_file_hash` (`file_hash`)
 );
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `errors` (
   `id` int(10) unsigned NOT NULL,
   `error_time` datetime DEFAULT NULL,
@@ -389,9 +346,6 @@ CREATE TABLE `errors` (
   PRIMARY KEY (`id`),
   KEY `idx_errors_error_time` (`error_time`)
 );
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `faces` (
   `id` varbinary(64) NOT NULL,
   `face_src` varbinary(8) DEFAULT NULL,
@@ -409,9 +363,6 @@ CREATE TABLE `faces` (
   PRIMARY KEY (`id`),
   KEY `idx_faces_subj_uid` (`subj_uid`)
 );
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `files` (
   `id` int(10) unsigned NOT NULL,
   `photo_id` int(10) unsigned DEFAULT NULL,
@@ -469,19 +420,16 @@ CREATE TABLE `files` (
   UNIQUE KEY `idx_files_search_media` (`media_id`),
   UNIQUE KEY `idx_files_search_timeline` (`time_index`),
   KEY `idx_files_photo_uid` (`photo_uid`),
+  KEY `idx_files_photo_taken_at` (`photo_taken_at`),
   KEY `idx_files_instance_id` (`instance_id`),
   KEY `idx_files_file_hash` (`file_hash`),
-  KEY `idx_files_published_at` (`published_at`),
-  KEY `idx_files_photo_id` (`photo_id`,`file_primary`),
-  KEY `idx_files_photo_taken_at` (`photo_taken_at`),
-  KEY `idx_files_media_utc` (`media_utc`),
   KEY `idx_files_file_error` (`file_error`),
   KEY `idx_files_deleted_at` (`deleted_at`),
+  KEY `idx_files_photo_id` (`photo_id`,`file_primary`),
+  KEY `idx_files_media_utc` (`media_utc`),
+  KEY `idx_files_published_at` (`published_at`),
   KEY `idx_files_missing_root` (`file_missing`,`file_root`)
 );
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `files_share` (
   `file_id` int(10) unsigned NOT NULL,
   `service_id` int(10) unsigned NOT NULL,
@@ -493,9 +441,6 @@ CREATE TABLE `files_share` (
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`file_id`,`service_id`,`remote_name`)
 );
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `files_sync` (
   `remote_name` varbinary(255) NOT NULL,
   `service_id` int(10) unsigned NOT NULL,
@@ -510,9 +455,6 @@ CREATE TABLE `files_sync` (
   PRIMARY KEY (`remote_name`,`service_id`),
   KEY `idx_files_sync_file_id` (`file_id`)
 );
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `folders` (
   `path` varbinary(1024) DEFAULT NULL,
   `root` varbinary(16) DEFAULT '',
@@ -542,9 +484,6 @@ CREATE TABLE `folders` (
   KEY `idx_folders_published_at` (`published_at`),
   KEY `idx_folders_deleted_at` (`deleted_at`)
 );
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `keywords` (
   `id` int(10) unsigned NOT NULL,
   `keyword` varchar(64) DEFAULT NULL,
@@ -552,9 +491,6 @@ CREATE TABLE `keywords` (
   PRIMARY KEY (`id`),
   KEY `idx_keywords_keyword` (`keyword`)
 );
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `labels` (
   `id` int(10) unsigned NOT NULL,
   `label_uid` varbinary(42) DEFAULT NULL,
@@ -573,16 +509,13 @@ CREATE TABLE `labels` (
   `published_at` datetime DEFAULT NULL,
   `deleted_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uix_labels_label_uid` (`label_uid`),
   UNIQUE KEY `uix_labels_label_slug` (`label_slug`),
-  KEY `idx_labels_custom_slug` (`custom_slug`),
+  UNIQUE KEY `uix_labels_label_uid` (`label_uid`),
   KEY `idx_labels_thumb` (`thumb`),
   KEY `idx_labels_published_at` (`published_at`),
-  KEY `idx_labels_deleted_at` (`deleted_at`)
+  KEY `idx_labels_deleted_at` (`deleted_at`),
+  KEY `idx_labels_custom_slug` (`custom_slug`)
 );
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `lenses` (
   `id` int(10) unsigned NOT NULL,
   `lens_slug` varbinary(160) DEFAULT NULL,
@@ -599,9 +532,6 @@ CREATE TABLE `lenses` (
   UNIQUE KEY `uix_lenses_lens_slug` (`lens_slug`),
   KEY `idx_lenses_deleted_at` (`deleted_at`)
 );
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `links` (
   `link_uid` varbinary(42) NOT NULL,
   `share_uid` varbinary(42) DEFAULT NULL,
@@ -622,9 +552,6 @@ CREATE TABLE `links` (
   KEY `idx_links_share_slug` (`share_slug`),
   KEY `idx_links_created_by` (`created_by`)
 );
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `markers` (
   `marker_uid` varbinary(42) NOT NULL,
   `file_uid` varbinary(42) DEFAULT '',
@@ -651,15 +578,12 @@ CREATE TABLE `markers` (
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`marker_uid`),
-  KEY `idx_markers_thumb` (`thumb`),
-  KEY `idx_markers_matched_at` (`matched_at`),
   KEY `idx_markers_file_uid` (`file_uid`),
   KEY `idx_markers_subj_uid_src` (`subj_uid`,`subj_src`),
-  KEY `idx_markers_face_id` (`face_id`)
+  KEY `idx_markers_face_id` (`face_id`),
+  KEY `idx_markers_thumb` (`thumb`),
+  KEY `idx_markers_matched_at` (`matched_at`)
 );
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `migrations` (
   `id` varchar(16) NOT NULL,
   `dialect` varchar(16) DEFAULT NULL,
@@ -670,9 +594,6 @@ CREATE TABLE `migrations` (
   `finished_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
 );
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `passcodes` (
   `uid` varbinary(255) NOT NULL,
   `key_type` varchar(64) NOT NULL DEFAULT '',
@@ -684,9 +605,6 @@ CREATE TABLE `passcodes` (
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`uid`,`key_type`)
 );
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `passwords` (
   `uid` varbinary(255) NOT NULL,
   `hash` varbinary(255) DEFAULT NULL,
@@ -694,9 +612,6 @@ CREATE TABLE `passwords` (
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`uid`)
 );
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `photos` (
   `id` int(10) unsigned NOT NULL,
   `uuid` varbinary(64) DEFAULT NULL,
@@ -718,7 +633,7 @@ CREATE TABLE `photos` (
   `photo_private` tinyint(1) DEFAULT NULL,
   `photo_scan` tinyint(1) DEFAULT NULL,
   `photo_panorama` tinyint(1) DEFAULT NULL,
-  `time_zone` varbinary(64) DEFAULT NULL,
+  `time_zone` varbinary(64) DEFAULT x'4c6f63616c',
   `place_id` varbinary(42) DEFAULT x'7a7a',
   `place_src` varbinary(8) DEFAULT NULL,
   `cell_id` varbinary(42) DEFAULT x'7a7a',
@@ -753,24 +668,21 @@ CREATE TABLE `photos` (
   `deleted_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uix_photos_photo_uid` (`photo_uid`),
-  KEY `idx_photos_place_id` (`place_id`),
-  KEY `idx_photos_photo_lat` (`photo_lat`),
-  KEY `idx_photos_country_year_month` (`photo_country`,`photo_year`,`photo_month`),
-  KEY `idx_photos_created_by` (`created_by`),
-  KEY `idx_photos_published_at` (`published_at`),
-  KEY `idx_photos_checked_at` (`checked_at`),
-  KEY `idx_photos_taken_uid` (`taken_at`,`photo_uid`),
-  KEY `idx_photos_path_name` (`photo_path`,`photo_name`),
-  KEY `idx_photos_cell_id` (`cell_id`),
-  KEY `idx_photos_photo_lng` (`photo_lng`),
   KEY `idx_photos_ymd` (`photo_day`),
   KEY `idx_photos_camera_lens` (`camera_id`,`lens_id`),
+  KEY `idx_photos_created_by` (`created_by`),
+  KEY `idx_photos_taken_uid` (`taken_at`,`photo_uid`),
+  KEY `idx_photos_place_id` (`place_id`),
+  KEY `idx_photos_cell_id` (`cell_id`),
+  KEY `idx_photos_published_at` (`published_at`),
+  KEY `idx_photos_checked_at` (`checked_at`),
   KEY `idx_photos_deleted_at` (`deleted_at`),
-  KEY `idx_photos_uuid` (`uuid`)
+  KEY `idx_photos_uuid` (`uuid`),
+  KEY `idx_photos_path_name` (`photo_path`,`photo_name`),
+  KEY `idx_photos_photo_lat` (`photo_lat`),
+  KEY `idx_photos_photo_lng` (`photo_lng`),
+  KEY `idx_photos_country_year_month` (`photo_country`,`photo_year`,`photo_month`)
 );
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `photos_albums` (
   `photo_uid` varbinary(42) NOT NULL,
   `album_uid` varbinary(42) NOT NULL,
@@ -782,18 +694,12 @@ CREATE TABLE `photos_albums` (
   PRIMARY KEY (`photo_uid`,`album_uid`),
   KEY `idx_photos_albums_album_uid` (`album_uid`)
 );
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `photos_keywords` (
   `photo_id` int(10) unsigned NOT NULL,
   `keyword_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`photo_id`,`keyword_id`),
   KEY `idx_photos_keywords_keyword_id` (`keyword_id`)
 );
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `photos_labels` (
   `photo_id` int(10) unsigned NOT NULL,
   `label_id` int(10) unsigned NOT NULL,
@@ -802,21 +708,15 @@ CREATE TABLE `photos_labels` (
   PRIMARY KEY (`photo_id`,`label_id`),
   KEY `idx_photos_labels_label_id` (`label_id`)
 );
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `photos_users` (
   `uid` varbinary(42) NOT NULL,
   `user_uid` varbinary(42) NOT NULL,
   `team_uid` varbinary(42) DEFAULT NULL,
   `perm` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`uid`,`user_uid`),
-  KEY `idx_photos_users_user_uid` (`user_uid`),
-  KEY `idx_photos_users_team_uid` (`team_uid`)
+  KEY `idx_photos_users_team_uid` (`team_uid`),
+  KEY `idx_photos_users_user_uid` (`user_uid`)
 );
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `places` (
   `id` varbinary(42) NOT NULL,
   `place_label` varchar(400) DEFAULT NULL,
@@ -834,9 +734,6 @@ CREATE TABLE `places` (
   KEY `idx_places_place_city` (`place_city`),
   KEY `idx_places_place_state` (`place_state`)
 );
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `reactions` (
   `uid` varbinary(42) NOT NULL,
   `user_uid` varbinary(42) NOT NULL,
@@ -846,9 +743,6 @@ CREATE TABLE `reactions` (
   PRIMARY KEY (`uid`,`user_uid`,`reaction`),
   KEY `idx_reactions_reacted_at` (`reacted_at`)
 );
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `services` (
   `id` int(10) unsigned NOT NULL,
   `acc_name` varchar(160) DEFAULT NULL,
@@ -881,9 +775,6 @@ CREATE TABLE `services` (
   PRIMARY KEY (`id`),
   KEY `idx_services_deleted_at` (`deleted_at`)
 );
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `subjects` (
   `subj_uid` varbinary(42) NOT NULL,
   `subj_type` varbinary(8) DEFAULT '',
@@ -911,9 +802,6 @@ CREATE TABLE `subjects` (
   KEY `idx_subjects_thumb` (`thumb`),
   KEY `idx_subjects_deleted_at` (`deleted_at`)
 );
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `versions` (
   `id` int(10) unsigned NOT NULL,
   `version` varchar(255) DEFAULT NULL,
@@ -925,11 +813,3 @@ CREATE TABLE `versions` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_version_edition` (`version`,`edition`)
 );
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
-
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
-

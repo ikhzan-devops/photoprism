@@ -1714,6 +1714,17 @@
                 }
             }
         },
+        "/api/v1/echo": {
+            "get": {
+                "summary": "returns the request and response headers as JSON if debug mode is enabled",
+                "operationId": "Echo",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/api/v1/errors": {
             "get": {
                 "produces": [
@@ -5270,6 +5281,17 @@
                 "responses": {}
             }
         },
+        "/api/v1/{any}": {
+            "options": {
+                "summary": "returns CORS headers with an empty response body",
+                "operationId": "Options",
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            }
+        },
         "/api/v1/{entity}/{uid}/links": {
             "post": {
                 "tags": [
@@ -7560,19 +7582,24 @@
             "type": "object",
             "properties": {
                 "drawing": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "float32"
                 },
                 "hentai": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "float32"
                 },
                 "neutral": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "float32"
                 },
                 "porn": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "float32"
                 },
                 "sexy": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "float32"
                 }
             }
         },
@@ -8223,11 +8250,122 @@
                 }
             }
         },
+        "tensorflow.ColorChannelOrder": {
+            "type": "integer",
+            "enum": [
+                0
+            ],
+            "x-enum-varnames": [
+                "UndefinedOrder"
+            ]
+        },
+        "tensorflow.Interval": {
+            "type": "object",
+            "properties": {
+                "end": {
+                    "type": "number"
+                },
+                "mean": {
+                    "type": "number"
+                },
+                "start": {
+                    "type": "number"
+                },
+                "stdDev": {
+                    "type": "number"
+                }
+            }
+        },
+        "tensorflow.ModelInfo": {
+            "type": "object",
+            "properties": {
+                "input": {
+                    "$ref": "#/definitions/tensorflow.PhotoInput"
+                },
+                "output": {
+                    "$ref": "#/definitions/tensorflow.ModelOutput"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "tensorflow.ModelOutput": {
+            "type": "object",
+            "properties": {
+                "index": {
+                    "type": "integer"
+                },
+                "logits": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "outputs": {
+                    "type": "integer"
+                }
+            }
+        },
+        "tensorflow.PhotoInput": {
+            "type": "object",
+            "properties": {
+                "height": {
+                    "type": "integer"
+                },
+                "index": {
+                    "type": "integer"
+                },
+                "inputOrder": {
+                    "$ref": "#/definitions/tensorflow.ColorChannelOrder"
+                },
+                "intervals": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/tensorflow.Interval"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
+                "resizeOperation": {
+                    "$ref": "#/definitions/tensorflow.ResizeOperation"
+                },
+                "width": {
+                    "type": "integer"
+                }
+            }
+        },
+        "tensorflow.ResizeOperation": {
+            "type": "integer",
+            "enum": [
+                0,
+                1,
+                2,
+                3
+            ],
+            "x-enum-varnames": [
+                "UndefinedResizeOperation",
+                "ResizeBreakAspectRatio",
+                "CenterCrop",
+                "Padding"
+            ]
+        },
         "time.Duration": {
             "type": "integer",
+            "format": "int64",
             "enum": [
                 -9223372036854775808,
                 9223372036854775807,
+                1,
+                1000,
+                1000000,
+                1000000000,
+                60000000000,
+                3600000000000,
                 1,
                 1000,
                 1000000,
@@ -8255,6 +8393,12 @@
                 "Millisecond",
                 "Second",
                 "Minute",
+                "Hour",
+                "Nanosecond",
+                "Microsecond",
+                "Millisecond",
+                "Second",
+                "Minute",
                 "Hour"
             ]
         },
@@ -8263,17 +8407,28 @@
             "enum": [
                 "url",
                 "images",
-                "vision"
+                "vision",
+                "ollama"
             ],
             "x-enum-varnames": [
                 "ApiFormatUrl",
                 "ApiFormatImages",
-                "ApiFormatVision"
+                "ApiFormatVision",
+                "ApiFormatOllama"
             ]
         },
         "vision.ApiRequest": {
             "type": "object",
             "properties": {
+                "context": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "format": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "string"
                 },
@@ -8286,7 +8441,19 @@
                 "model": {
                     "type": "string"
                 },
+                "options": {
+                    "$ref": "#/definitions/vision.ApiRequestOptions"
+                },
                 "prompt": {
+                    "type": "string"
+                },
+                "stream": {
+                    "type": "boolean"
+                },
+                "suffix": {
+                    "type": "string"
+                },
+                "system": {
                     "type": "string"
                 },
                 "url": {
@@ -8294,6 +8461,98 @@
                 },
                 "version": {
                     "type": "string"
+                }
+            }
+        },
+        "vision.ApiRequestOptions": {
+            "type": "object",
+            "properties": {
+                "frequency_penalty": {
+                    "type": "number"
+                },
+                "low_vram": {
+                    "type": "boolean"
+                },
+                "main_gpu": {
+                    "type": "integer"
+                },
+                "min_p": {
+                    "type": "number"
+                },
+                "mirostat": {
+                    "type": "integer"
+                },
+                "mirostat_eta": {
+                    "type": "number"
+                },
+                "mirostat_tau": {
+                    "type": "number"
+                },
+                "num_batch": {
+                    "type": "integer"
+                },
+                "num_ctx": {
+                    "type": "integer"
+                },
+                "num_gpu": {
+                    "type": "integer"
+                },
+                "num_keep": {
+                    "type": "integer"
+                },
+                "num_predict": {
+                    "type": "integer"
+                },
+                "num_thread": {
+                    "type": "integer"
+                },
+                "numa": {
+                    "type": "boolean"
+                },
+                "penalize_newline": {
+                    "type": "boolean"
+                },
+                "presence_penalty": {
+                    "type": "number"
+                },
+                "repeat_last_n": {
+                    "type": "integer"
+                },
+                "repeat_penalty": {
+                    "type": "number"
+                },
+                "seed": {
+                    "type": "integer"
+                },
+                "stop": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "temperature": {
+                    "type": "number"
+                },
+                "tfs_z": {
+                    "type": "number"
+                },
+                "top_k": {
+                    "type": "integer"
+                },
+                "top_p": {
+                    "type": "number"
+                },
+                "typical_p": {
+                    "type": "number"
+                },
+                "use_mlock": {
+                    "type": "boolean"
+                },
+                "use_mmap": {
+                    "type": "boolean"
+                },
+                "vocab_only": {
+                    "type": "boolean"
                 }
             }
         },
@@ -8330,7 +8589,8 @@
                         "items": {
                             "type": "array",
                             "items": {
-                                "type": "number"
+                                "type": "number",
+                                "format": "float64"
                             }
                         }
                     }
@@ -8395,8 +8655,14 @@
                 "Service": {
                     "$ref": "#/definitions/vision.Service"
                 },
+                "default": {
+                    "type": "boolean"
+                },
                 "disabled": {
                     "type": "boolean"
+                },
+                "meta": {
+                    "$ref": "#/definitions/tensorflow.ModelInfo"
                 },
                 "name": {
                     "type": "string"
@@ -8406,6 +8672,9 @@
                 },
                 "resolution": {
                     "type": "integer"
+                },
+                "system": {
+                    "type": "string"
                 },
                 "type": {
                     "$ref": "#/definitions/vision.ModelType"

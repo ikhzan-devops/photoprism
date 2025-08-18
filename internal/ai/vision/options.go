@@ -45,6 +45,33 @@ func (c *Options) Load(fileName string) error {
 		return err
 	}
 
+	// 1. Ensure that there is at least one configuration for each model type,
+	//    so that adding a copy of the default configuration to the vision.yml file
+	//    is not required. We could alternatively require a model to included in
+	//    the "vision.yml" file, but set the defaults if the "Default" flag is set.
+	// 2. Use the default "Thresholds" if no custom thresholds are configured.
+
+	for i, model := range c.Models {
+		if !model.Default {
+			continue
+		}
+
+		switch model.Type {
+		case ModelTypeLabels:
+			c.Models[i] = NasnetModel
+		case ModelTypeNsfw:
+			c.Models[i] = NsfwModel
+		case ModelTypeFace:
+			c.Models[i] = FacenetModel
+		case ModelTypeCaption:
+			c.Models[i] = CaptionModel
+		}
+	}
+
+	if c.Thresholds.Confidence <= 0 || c.Thresholds.Confidence > 100 {
+		c.Thresholds.Confidence = DefaultThresholds.Confidence
+	}
+
 	return nil
 }
 

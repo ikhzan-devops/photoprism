@@ -857,10 +857,16 @@ func (m *Photo) AddLabels(labels classify.Labels) {
 			continue
 		}
 
-		if photoLabel.Uncertainty > classifyLabel.Uncertainty && photoLabel.Uncertainty < 100 {
+		if photoLabel.HasID() && photoLabel.Uncertainty > classifyLabel.Uncertainty && photoLabel.Uncertainty < 100 {
+			var labelSrc string
+			if classifyLabel.Source == "" {
+				labelSrc = SrcImage
+			} else {
+				labelSrc = clean.ShortTypeLower(classifyLabel.Source)
+			}
 			if err := photoLabel.Updates(map[string]interface{}{
 				"Uncertainty": classifyLabel.Uncertainty,
-				"LabelSrc":    classifyLabel.Source,
+				"LabelSrc":    labelSrc,
 			}); err != nil {
 				log.Errorf("index: %s", err)
 			}

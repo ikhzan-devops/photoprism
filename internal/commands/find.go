@@ -22,7 +22,7 @@ var FindCommand = &cli.Command{
 	Flags: append(report.CliFlags, &cli.UintFlag{
 		Name:    "count",
 		Aliases: []string{"n"},
-		Usage:   "maximum number of search `RESULTS`",
+		Usage:   "maximum `NUMBER` of results",
 		Value:   10000,
 	}),
 	Action: findAction,
@@ -41,8 +41,10 @@ func findAction(ctx *cli.Context) error {
 
 	defer conf.Shutdown()
 
+	filter := strings.TrimSpace(strings.Join(ctx.Args().Slice(), " "))
+
 	frm := form.SearchPhotos{
-		Query:   strings.TrimSpace(ctx.Args().First()),
+		Query:   filter,
 		Primary: false,
 		Merged:  false,
 		Count:   ctx.Int("count"),

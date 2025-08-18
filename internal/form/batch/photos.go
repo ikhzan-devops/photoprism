@@ -39,24 +39,60 @@ type PhotosForm struct {
 	DetailsLicense   String `json:"DetailsLicense,omitempty"`
 }
 
-// NewPhotosForm creates and returns a new PhotosForm instance.
+// NewPhotosForm returns a new batch edit form instance
+// initialized with values from the selected photos.
 func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
+	// Create a new batch edit form and initialize it
+	// with the values from the selected photos.
 	frm := &PhotosForm{
 		Albums: Items{
-			Items:  []Item{},
+			// TODO: Replace mock album items with the actual Albums
+			//       that are assigned to the selected Photos.
+			Items: []Item{
+				{
+					Value:  "asz12ji57yzo5avk",
+					Title:  "Berlin",
+					Mixed:  false,
+					Action: ActionNone,
+				},
+				{
+					Value:  "asz12jiin5658ul8",
+					Title:  "California",
+					Mixed:  true,
+					Action: ActionNone,
+				},
+			},
 			Mixed:  false,
 			Action: ActionNone,
 		},
 		Labels: Items{
-			Items:  []Item{},
+			// TODO: Replace mock label items with the actual Labels
+			//       that are assigned to the selected Photos.
+			Items: []Item{
+				{
+					Value:  "lsz12jxkqhmu3n0g",
+					Title:  "Cat",
+					Mixed:  false,
+					Action: ActionNone,
+				},
+				{
+					Value:  "lsz12k29x01is71x",
+					Title:  "Building",
+					Mixed:  true,
+					Action: ActionNone,
+				},
+			},
 			Mixed:  false,
 			Action: ActionNone,
 		},
 	}
 
+	// TODO: Verify that all required PhotosForm values are present and
+	//       properly initialized or use in the frontend form component.
 	for i, photo := range photos {
 		if i == 0 {
 			frm.PhotoType.Value = photo.PhotoType
+			frm.PhotoType.Action = ActionNone
 		} else if photo.PhotoType != frm.PhotoType.Value {
 			frm.PhotoType.Mixed = true
 			frm.PhotoType.Value = ""
@@ -64,6 +100,7 @@ func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
 
 		if i == 0 {
 			frm.PhotoTitle.Value = photo.PhotoTitle
+			frm.PhotoTitle.Action = ActionNone
 		} else if photo.PhotoTitle != frm.PhotoTitle.Value {
 			frm.PhotoTitle.Mixed = true
 			frm.PhotoTitle.Value = ""
@@ -71,6 +108,7 @@ func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
 
 		if i == 0 {
 			frm.PhotoCaption.Value = photo.PhotoCaption
+			frm.PhotoCaption.Action = ActionNone
 		} else if photo.PhotoCaption != frm.PhotoCaption.Value {
 			frm.PhotoCaption.Mixed = true
 			frm.PhotoCaption.Value = ""
@@ -78,18 +116,21 @@ func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
 
 		if i == 0 {
 			frm.TakenAt.Value = photo.TakenAt
+			frm.TakenAt.Action = ActionNone
 		} else if photo.TakenAt != frm.TakenAt.Value {
 			frm.TakenAt.Mixed = true
 		}
 
 		if i == 0 {
 			frm.TakenAtLocal.Value = photo.TakenAtLocal
+			frm.TakenAtLocal.Action = ActionNone
 		} else if photo.TakenAtLocal != frm.TakenAtLocal.Value {
 			frm.TakenAtLocal.Mixed = true
 		}
 
 		if i == 0 {
 			frm.PhotoDay.Value = photo.PhotoDay
+			frm.PhotoDay.Action = ActionNone
 		} else if photo.PhotoDay != frm.PhotoDay.Value {
 			frm.PhotoDay.Mixed = true
 			frm.PhotoDay.Value = -2
@@ -97,6 +138,7 @@ func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
 
 		if i == 0 {
 			frm.PhotoMonth.Value = photo.PhotoMonth
+			frm.PhotoMonth.Action = ActionNone
 		} else if photo.PhotoMonth != frm.PhotoMonth.Value {
 			frm.PhotoMonth.Mixed = true
 			frm.PhotoMonth.Value = -2
@@ -104,6 +146,7 @@ func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
 
 		if i == 0 {
 			frm.PhotoYear.Value = photo.PhotoYear
+			frm.PhotoYear.Action = ActionNone
 		} else if photo.PhotoYear != frm.PhotoYear.Value {
 			frm.PhotoYear.Mixed = true
 			frm.PhotoYear.Value = -2
@@ -111,6 +154,7 @@ func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
 
 		if i == 0 {
 			frm.TimeZone.Value = photo.TimeZone
+			frm.TimeZone.Action = ActionNone
 		} else if photo.TimeZone != frm.TimeZone.Value {
 			frm.TimeZone.Mixed = true
 			frm.TimeZone.Value = ""
@@ -118,6 +162,7 @@ func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
 
 		if i == 0 {
 			frm.PhotoCountry.Value = photo.PhotoCountry
+			frm.PhotoCountry.Action = ActionNone
 		} else if photo.PhotoCountry != frm.PhotoCountry.Value {
 			frm.PhotoCountry.Mixed = true
 			frm.PhotoCountry.Value = ""
@@ -125,6 +170,7 @@ func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
 
 		if i == 0 {
 			frm.PhotoAltitude.Value = photo.PhotoAltitude
+			frm.PhotoAltitude.Action = ActionNone
 		} else if photo.PhotoAltitude != frm.PhotoAltitude.Value {
 			frm.PhotoAltitude.Mixed = true
 			frm.PhotoAltitude.Value = 0
@@ -132,6 +178,7 @@ func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
 
 		if i == 0 {
 			frm.PhotoLat.Value = photo.PhotoLat
+			frm.PhotoLat.Action = ActionNone
 		} else if photo.PhotoLat != frm.PhotoLat.Value {
 			frm.PhotoLat.Mixed = true
 			frm.PhotoLat.Value = 0.0
@@ -139,6 +186,7 @@ func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
 
 		if i == 0 {
 			frm.PhotoLng.Value = photo.PhotoLng
+			frm.PhotoLng.Action = ActionNone
 		} else if photo.PhotoLng != frm.PhotoLng.Value {
 			frm.PhotoLng.Mixed = true
 			frm.PhotoLng.Value = 0.0
@@ -146,6 +194,7 @@ func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
 
 		if i == 0 {
 			frm.PhotoIso.Value = photo.PhotoIso
+			frm.PhotoIso.Action = ActionNone
 		} else if photo.PhotoIso != frm.PhotoIso.Value {
 			frm.PhotoIso.Mixed = true
 			frm.PhotoIso.Value = 0
@@ -153,6 +202,7 @@ func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
 
 		if i == 0 {
 			frm.PhotoFocalLength.Value = photo.PhotoFocalLength
+			frm.PhotoFocalLength.Action = ActionNone
 		} else if photo.PhotoFocalLength != frm.PhotoFocalLength.Value {
 			frm.PhotoFocalLength.Mixed = true
 			frm.PhotoFocalLength.Value = 0
@@ -160,6 +210,7 @@ func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
 
 		if i == 0 {
 			frm.PhotoFNumber.Value = photo.PhotoFNumber
+			frm.PhotoFNumber.Action = ActionNone
 		} else if photo.PhotoFNumber != frm.PhotoFNumber.Value {
 			frm.PhotoFNumber.Mixed = true
 			frm.PhotoFNumber.Value = 0
@@ -167,6 +218,7 @@ func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
 
 		if i == 0 {
 			frm.PhotoExposure.Value = photo.PhotoExposure
+			frm.PhotoExposure.Action = ActionNone
 		} else if photo.PhotoExposure != frm.PhotoExposure.Value {
 			frm.PhotoExposure.Mixed = true
 			frm.PhotoExposure.Value = ""
@@ -174,6 +226,7 @@ func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
 
 		if i == 0 {
 			frm.PhotoFavorite.Value = photo.PhotoFavorite
+			frm.PhotoFavorite.Action = ActionNone
 		} else if photo.PhotoFavorite != frm.PhotoFavorite.Value {
 			frm.PhotoFavorite.Mixed = true
 			frm.PhotoFavorite.Value = false
@@ -181,6 +234,7 @@ func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
 
 		if i == 0 {
 			frm.PhotoPrivate.Value = photo.PhotoPrivate
+			frm.PhotoPrivate.Action = ActionNone
 		} else if photo.PhotoPrivate != frm.PhotoPrivate.Value {
 			frm.PhotoPrivate.Mixed = true
 			frm.PhotoPrivate.Value = false
@@ -188,6 +242,7 @@ func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
 
 		if i == 0 {
 			frm.PhotoScan.Value = photo.PhotoScan
+			frm.PhotoScan.Action = ActionNone
 		} else if photo.PhotoScan != frm.PhotoScan.Value {
 			frm.PhotoScan.Mixed = true
 			frm.PhotoScan.Value = false
@@ -195,6 +250,7 @@ func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
 
 		if i == 0 {
 			frm.PhotoPanorama.Value = photo.PhotoPanorama
+			frm.PhotoPanorama.Action = ActionNone
 		} else if photo.PhotoPanorama != frm.PhotoPanorama.Value {
 			frm.PhotoPanorama.Mixed = true
 			frm.PhotoPanorama.Value = false
@@ -202,6 +258,7 @@ func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
 
 		if i == 0 {
 			frm.CameraID.Value = int(photo.CameraID)
+			frm.CameraID.Action = ActionNone
 		} else if photo.CameraID != uint(frm.CameraID.Value) {
 			frm.CameraID.Mixed = true
 			frm.CameraID.Value = -2
@@ -209,6 +266,7 @@ func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
 
 		if i == 0 {
 			frm.LensID.Value = int(photo.LensID)
+			frm.LensID.Action = ActionNone
 		} else if photo.LensID != uint(frm.LensID.Value) {
 			frm.LensID.Mixed = true
 			frm.LensID.Value = -2
@@ -216,6 +274,7 @@ func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
 
 		if i == 0 {
 			frm.DetailsKeywords.Value = photo.DetailsKeywords
+			frm.DetailsKeywords.Action = ActionNone
 		} else if photo.DetailsKeywords != frm.DetailsKeywords.Value {
 			frm.DetailsKeywords.Mixed = true
 			frm.DetailsKeywords.Value = ""
@@ -223,6 +282,7 @@ func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
 
 		if i == 0 {
 			frm.DetailsSubject.Value = photo.DetailsSubject
+			frm.DetailsSubject.Action = ActionNone
 		} else if photo.DetailsSubject != frm.DetailsSubject.Value {
 			frm.DetailsSubject.Mixed = true
 			frm.DetailsSubject.Value = ""
@@ -230,6 +290,7 @@ func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
 
 		if i == 0 {
 			frm.DetailsArtist.Value = photo.DetailsArtist
+			frm.DetailsArtist.Action = ActionNone
 		} else if photo.DetailsArtist != frm.DetailsArtist.Value {
 			frm.DetailsArtist.Mixed = true
 			frm.DetailsArtist.Value = ""
@@ -237,6 +298,7 @@ func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
 
 		if i == 0 {
 			frm.DetailsCopyright.Value = photo.DetailsCopyright
+			frm.DetailsCopyright.Action = ActionNone
 		} else if photo.DetailsCopyright != frm.DetailsCopyright.Value {
 			frm.DetailsCopyright.Mixed = true
 			frm.DetailsCopyright.Value = ""
@@ -244,11 +306,13 @@ func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
 
 		if i == 0 {
 			frm.DetailsLicense.Value = photo.DetailsLicense
+			frm.DetailsLicense.Action = ActionNone
 		} else if photo.DetailsLicense != frm.DetailsLicense.Value {
 			frm.DetailsLicense.Mixed = true
 			frm.DetailsLicense.Value = ""
 		}
 	}
 
+	// Return initialized PhotosForm.
 	return frm
 }

@@ -82,6 +82,24 @@ func TestTypeLowerUnderscore(t *testing.T) {
 	})
 }
 
+func TestTypeLowerDash(t *testing.T) {
+	t.Run("Undefined", func(t *testing.T) {
+		assert.Equal(t, "", TypeLowerDash("    \t "))
+	})
+	t.Run("ClientCredentials", func(t *testing.T) {
+		assert.Equal(t, "client-credentials", TypeLowerDash(" Client Credentials幸"))
+	})
+	t.Run("OllamaModel", func(t *testing.T) {
+		assert.Equal(
+			t,
+			"ollama-model:7b",
+			TypeLowerDash("Ollama Model:7b"))
+	})
+	t.Run("Empty", func(t *testing.T) {
+		assert.Equal(t, "", TypeLowerDash(""))
+	})
+}
+
 func TestShortType(t *testing.T) {
 	t.Run("Clip", func(t *testing.T) {
 		result := ShortType(" 幸福 Hanzi are logograms developed for the writing of Chinese! Expressions in an index may not ...!")

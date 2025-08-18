@@ -43,6 +43,7 @@ type MediaFile struct {
 	fileNameResolved string
 	fileRoot         string
 	statErr          error
+	mimeErr          error
 	modTime          time.Time
 	fileSize         int64
 	fileType         fs.Type
@@ -518,24 +519,36 @@ func (m *MediaFile) Root() string {
 // since media types have become used in contexts unrelated to email, such as HTTP:
 // https://en.wikipedia.org/wiki/Media_type#Structure
 func (m *MediaFile) MimeType() string {
-	if m.mimeType != "" {
+	// Do not detect the MIME type again if it is already known,
+	// or if the detection failed.
+	if m.mimeType != "" || m.mimeErr != nil {
 		return m.mimeType
 	}
 
 	var err error
-	fileName := m.FileName()
 
-	// Resolve symlinks.
+	// Get the filename and resolve symbolic links, if necessary.
+	fileName := m.FileName()
 	if fileName, err = fs.Resolve(fileName); err != nil {
 		return m.mimeType
 	}
 
-	m.mimeType = fs.MimeType(fileName)
+	// Detect the file's MIME type based on its content and file extension.
+	m.mimeType, err = fs.DetectMimeType(fileName)
 
+	// Log and remember the error if the MIME type detection has failed.
+	if err != nil {
+		log.Errorf("media: failed to detect mime type of %s (%s)", clean.Log(m.RootRelName()), clean.Error(err))
+		m.mimeErr = err
+		return m.mimeType
+	}
+
+	// Adjust the MIME type for MP4 files containing MPEG-2 transport streams.
 	if m.mimeType == header.ContentTypeMp4 && m.MetaData().Codec == video.CodecM2TS {
 		m.mimeType = header.ContentTypeM2TS
 	}
 
+	// Return MIME type.
 	return m.mimeType
 }
 
@@ -930,9 +943,9 @@ func (m *MediaFile) CheckType() error {
 		return nil
 	}
 
-	// Exclude mime type from the error message if it could not be detected.
+	// If the MIME type is empty, it is usually because the file could not be read.
 	if mimeType == fs.MimeTypeUnknown {
-		return fmt.Errorf("has an invalid extension (unknown media type)")
+		return fmt.Errorf("could not be identified")
 	}
 
 	return fmt.Errorf("has an invalid extension for media type %s", clean.LogQuote(mimeType))

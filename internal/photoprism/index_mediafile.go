@@ -830,7 +830,7 @@ func (ind *Index) UserMediaFile(m *MediaFile, o IndexOptions, originalName, phot
 
 		// Classify images with TensorFlow?
 		if ind.findLabels {
-			labels = ind.Labels(m)
+			labels = ind.Labels(m, entity.SrcImage)
 
 			// Append labels from other sources such as face detection.
 			if len(extraLabels) > 0 {

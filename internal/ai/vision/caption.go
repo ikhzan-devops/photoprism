@@ -8,17 +8,18 @@ import (
 )
 
 // CaptionPromptDefault is the default prompt used to generate captions.
-var CaptionPromptDefault = `Create a caption that sounds natural and briefly describes the main content of the image in up to` +
-	` three sentences for use in a photo management application. Begin with the type or number of subjects and` +
-	` action. Omit text formatting and avoid meta-language such as "this picture", "the picture", "the photo",` +
-	` "there are", "here is", or "a picture of". Use explicit language to describe the scene if it helps to` +
-	` properly understand the picture.`
+var CaptionPromptDefault = `Create an interesting caption that sounds natural and briefly describes the visual content in up to 3 sentences.` +
+	` Avoid text formatting, meta-language, and filler words.` +
+	` Do not start captions with phrases such as "This image", "The image", "This picture", "The picture", "A picture of", "Here are", or "There is".` +
+	` Instead, start describing the content by identifying the subjects, location, and any actions that might be performed.` +
+	` Use explicit language to describe the scene if necessary for a proper understanding.`
 
-// CaptionModelDefault is the default model used to generate captions.
+// CaptionModelDefault specifies the default model used to generate captions,
+// see https://qwenlm.github.io/blog/qwen2.5-vl/ to learn more.
 var CaptionModelDefault = "qwen2.5vl"
 
 // Caption returns generated captions for the specified images.
-func Caption(images Files, src media.Src) (result *CaptionResult, model *Model, err error) {
+func Caption(images Files, mediaSrc media.Src) (result *CaptionResult, model *Model, err error) {
 	// Return if there is no configuration or no image classification models are configured.
 	if Config == nil {
 		return result, model, errors.New("vision service is not configured")
@@ -32,14 +33,15 @@ func Caption(images Files, src media.Src) (result *CaptionResult, model *Model, 
 				return result, model, err
 			}
 
-			if model.Name != "" {
-				apiRequest.Model = model.Name
+			switch model.Service.RequestFormat {
+			case ApiFormatOllama:
+				apiRequest.Model, _, _ = model.Model()
+			default:
+				_, apiRequest.Model, apiRequest.Version = model.Model()
 			}
 
-			if model.Version != "" {
-				apiRequest.Version = model.Version
-			} else {
-				apiRequest.Version = "latest"
+			if model.System != "" {
+				apiRequest.System = model.System
 			}
 
 			if model.Prompt != "" {
@@ -51,6 +53,8 @@ func Caption(images Files, src media.Src) (result *CaptionResult, model *Model, 
 			// Log JSON request data in trace mode.
 			apiRequest.WriteLog()
 
+			// Todo: Refactor response handling to support different API response formats,
+			//       including those used by Ollama and OpenAI.
 			if apiResponse, err = PerformApiRequest(apiRequest, uri, method, model.EndpointKey()); err != nil {
 				return result, model, err
 			} else if apiResponse.Result.Caption == nil {

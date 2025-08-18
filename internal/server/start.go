@@ -47,9 +47,21 @@ func Start(ctx context.Context, conf *config.Config) {
 	// Create new router engine without standard middleware.
 	router := gin.New()
 
-	// Set proxy addresses from which headers related to the client and protocol can be trusted
-	if err := router.SetTrustedProxies(conf.TrustedProxies()); err != nil {
-		log.Warnf("server: %s", err)
+	// Set proxy from which headers related to the client and protocol can be trusted?
+	if trustedProxies := conf.TrustedProxies(); len(trustedProxies) > 0 {
+		if err := router.SetTrustedProxies(trustedProxies); err != nil {
+			log.Warnf("server: %s", err)
+		}
+
+		router.RemoteIPHeaders = conf.ProxyClientHeaders()
+	}
+
+	// Set trusted platform client IP address header name?
+	if trustedPlatform := conf.TrustedPlatform(); trustedPlatform != "" {
+		router.TrustedPlatform = trustedPlatform
+
+		// Enable support for HTTP/2 without TLS.
+		router.UseH2C = true
 	}
 
 	// Register panic recovery middleware.
@@ -99,12 +111,27 @@ func Start(ctx context.Context, conf *config.Config) {
 	// Register application routes.
 	registerRoutes(router, conf)
 
-	// Register "GET /health" route so clients can perform health checks.
-	router.GET(conf.BaseUri("/health"), func(c *gin.Context) {
+	// Register standard health check endpoints to determine whether the server is running.
+	isLive := func(c *gin.Context) {
 		c.Header(header.CacheControl, header.CacheControlNoStore)
 		c.Header(header.AccessControlAllowOrigin, header.Any)
 		c.String(http.StatusOK, "OK")
-	})
+	}
+	router.Any(conf.BaseUri("/livez"), isLive)
+	router.Any(conf.BaseUri("/health"), isLive)
+	router.Any(conf.BaseUri("/healthz"), isLive)
+
+	// Register "/readyz" endpoint to check if the server has been successfully initialized.
+	isReady := func(c *gin.Context) {
+		c.Header(header.CacheControl, header.CacheControlNoStore)
+		c.Header(header.AccessControlAllowOrigin, header.Any)
+		if conf.IsReady() {
+			c.String(http.StatusOK, "OK")
+		} else {
+			c.String(http.StatusServiceUnavailable, "Service Unavailable")
+		}
+	}
+	router.Any(conf.BaseUri("/readyz"), isReady)
 
 	// Create a new HTTP server instance with no read or write timeout, except for reading the headers:
 	// https://pkg.go.dev/net/http#Server

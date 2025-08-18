@@ -29,7 +29,7 @@ func TestAlbums(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	assert.Equal(t, 32, count)
+	assert.Equal(t, 36, count)
 
 	count, err = Albums(backupPath, false)
 

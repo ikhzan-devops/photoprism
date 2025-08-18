@@ -188,7 +188,7 @@ func IndexedFiles() (result FileMap, err error) {
 	// Query known duplicates.
 	var duplicates []File
 
-	if err := UnscopedDb().Raw("SELECT file_root, file_name, mod_time FROM duplicates").Scan(&duplicates).Error; err != nil {
+	if err = UnscopedDb().Raw("SELECT file_root, file_name, mod_time FROM duplicates").Scan(&duplicates).Error; err != nil {
 		return result, err
 	}
 
@@ -199,7 +199,7 @@ func IndexedFiles() (result FileMap, err error) {
 	// Query indexed files.
 	var files []File
 
-	if err := UnscopedDb().Raw("SELECT file_root, file_name, mod_time FROM files WHERE file_missing = FALSE AND deleted_at IS NULL").Scan(&files).Error; err != nil {
+	if err = UnscopedDb().Raw("SELECT file_root, file_name, mod_time FROM files WHERE file_missing = FALSE AND deleted_at IS NULL").Scan(&files).Error; err != nil {
 		return result, err
 	}
 

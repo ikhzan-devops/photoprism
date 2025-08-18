@@ -10,7 +10,7 @@ import (
 )
 
 // Nsfw checks the specified images for inappropriate content.
-func Nsfw(images Files, src media.Src) (result []nsfw.Result, err error) {
+func Nsfw(images Files, mediaSrc media.Src) (result []nsfw.Result, err error) {
 	// Return if no thumbnail filenames were given.
 	if len(images) == 0 {
 		return result, errors.New("at least one image required")
@@ -31,12 +31,15 @@ func Nsfw(images Files, src media.Src) (result []nsfw.Result, err error) {
 				return result, err
 			}
 
-			if model.Name != "" {
-				apiRequest.Model = model.Name
+			switch model.Service.RequestFormat {
+			case ApiFormatOllama:
+				apiRequest.Model, _, _ = model.Model()
+			default:
+				_, apiRequest.Model, apiRequest.Version = model.Model()
 			}
 
-			if model.Version != "" {
-				apiRequest.Version = model.Version
+			if model.System != "" {
+				apiRequest.System = model.System
 			}
 
 			if model.Prompt != "" {
@@ -56,13 +59,13 @@ func Nsfw(images Files, src media.Src) (result []nsfw.Result, err error) {
 			for i := range images {
 				var labels nsfw.Result
 
-				switch src {
+				switch mediaSrc {
 				case media.SrcLocal:
 					labels, err = tf.File(images[i])
 				case media.SrcRemote:
 					labels, err = tf.Url(images[i])
 				default:
-					return result, fmt.Errorf("invalid image source %s", clean.Log(src))
+					return result, fmt.Errorf("invalid media source %s", clean.Log(mediaSrc))
 				}
 
 				if err != nil {

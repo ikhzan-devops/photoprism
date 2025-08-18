@@ -73,7 +73,7 @@ func AddPhotoLabel(router *gin.RouterGroup) {
 			return
 		}
 
-		if photoLabel.Uncertainty > frm.Uncertainty {
+		if photoLabel.HasID() && photoLabel.Uncertainty > frm.Uncertainty {
 			if updateErr := photoLabel.Updates(map[string]interface{}{
 				"Uncertainty": frm.Uncertainty,
 				"LabelSrc":    entity.SrcManual,

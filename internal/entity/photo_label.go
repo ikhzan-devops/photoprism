@@ -1,6 +1,8 @@
 package entity
 
 import (
+	"gorm.io/gorm"
+
 	"errors"
 
 	"github.com/photoprism/photoprism/internal/ai/classify"
@@ -38,12 +40,26 @@ func NewPhotoLabel(photoID, labelID uint, uncertainty int, source string) *Photo
 
 // Updates multiple columns in the database.
 func (m *PhotoLabel) Updates(values interface{}) error {
-	return UnscopedDb().Model(m).UpdateColumns(values).Error
+	if err := UnscopedDb().Model(m).UpdateColumns(values).Error; err != nil {
+		return err
+	}
+	FlushCachedPhotoLabel(m)
+	return nil
 }
 
 // Update a column in the database.
 func (m *PhotoLabel) Update(attr string, value interface{}) error {
-	return UnscopedDb().Model(m).UpdateColumn(attr, value).Error
+	if err := UnscopedDb().Model(m).UpdateColumn(attr, value).Error; err != nil {
+		return err
+	}
+	FlushCachedPhotoLabel(m)
+	return nil
+}
+
+// AfterUpdate flushes the label cache when a label is updated.
+func (m *PhotoLabel) AfterUpdate(tx *gorm.DB) (err error) {
+	FlushCachedPhotoLabel(m)
+	return
 }
 
 // Save updates the record in the database or inserts a new record if it does not already exist.
@@ -76,26 +92,52 @@ func (m *PhotoLabel) Create() error {
 	return Db().Create(m).Error
 }
 
+// AfterCreate sets the New column used for database callback
+func (m *PhotoLabel) AfterCreate(tx *gorm.DB) error {
+	FlushCachedPhotoLabel(m)
+	return nil
+}
+
 // Delete deletes the label reference.
 func (m *PhotoLabel) Delete() error {
+	FlushCachedPhotoLabel(m)
 	return Db().Delete(m).Error
+}
+
+// AfterDelete flushes the label cache when a label is deleted.
+func (m *PhotoLabel) AfterDelete(tx *gorm.DB) (err error) {
+	FlushCachedPhotoLabel(m)
+	return
+}
+
+// HasID tests if both a photo and label ID are set.
+func (m *PhotoLabel) HasID() bool {
+	if m == nil {
+		return false
+	}
+
+	return m.PhotoID > 0 && m.LabelID > 0
+}
+
+// CacheKey returns a string key for caching the entity.
+func (m *PhotoLabel) CacheKey() string {
+	return photoLabelCacheKey(m.PhotoID, m.LabelID)
 }
 
 // FirstOrCreatePhotoLabel returns the existing row, inserts a new row or nil in case of errors.
 func FirstOrCreatePhotoLabel(m *PhotoLabel) *PhotoLabel {
 	if m == nil {
 		return nil
-	} else if m.PhotoID < 1 || m.LabelID < 1 {
+	} else if !m.HasID() {
 		return nil
 	}
 
-	result := &PhotoLabel{}
-
-	if err := Db().Preload("Label").Where("photo_id = ? AND label_id = ?", m.PhotoID, m.LabelID).First(result).Error; err == nil {
+	// Try to find and return an existing label. Otherwise, create a new one and return it.
+	if result, err := FindPhotoLabel(m.PhotoID, m.LabelID, true); err == nil {
 		return result
 	} else if createErr := m.Create(); createErr == nil {
 		return m
-	} else if err = Db().Preload("Label").Where("photo_id = ? AND label_id = ?", m.PhotoID, m.LabelID).First(result).Error; err == nil {
+	} else if result, err = FindPhotoLabel(m.PhotoID, m.LabelID, false); err == nil {
 		return result
 	} else {
 		log.Errorf("photo-label: %s (find or create)", createErr)

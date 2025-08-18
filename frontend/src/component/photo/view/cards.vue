@@ -201,7 +201,7 @@
             <button
               type="button"
               class="v-btn v-btn--flat bg-button v-btn--variant-tonal action-archive text-center"
-              :title="$gettext('Archive')"
+              :title="$pgettext('Verb', 'Archive')"
               @click.stop="m.archive()"
             >
               <span class="v-btn__overlay"></span>
