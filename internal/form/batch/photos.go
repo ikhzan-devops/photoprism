@@ -1,6 +1,8 @@
 package batch
 
 import (
+	"sort"
+
 	"github.com/photoprism/photoprism/internal/entity/query"
 	"github.com/photoprism/photoprism/internal/entity/search"
 )
@@ -108,6 +110,13 @@ func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
 			}
 			frm.Albums.Items = append(frm.Albums.Items, Item{Value: uid, Title: agg.title, Mixed: mixed, Action: ActionNone})
 		}
+		// Sort shared-first (Mixed=false), then by Title alphabetically
+		sort.Slice(frm.Albums.Items, func(i, j int) bool {
+			if frm.Albums.Items[i].Mixed != frm.Albums.Items[j].Mixed {
+				return !frm.Albums.Items[i].Mixed && frm.Albums.Items[j].Mixed
+			}
+			return frm.Albums.Items[i].Title < frm.Albums.Items[j].Title
+		})
 		frm.Albums.Mixed = anyAlbumMixed
 		frm.Albums.Action = ActionNone
 
@@ -121,6 +130,13 @@ func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
 			}
 			frm.Labels.Items = append(frm.Labels.Items, Item{Value: uid, Title: agg.name, Mixed: mixed, Action: ActionNone})
 		}
+		// Sort shared-first (Mixed=false), then by Title alphabetically
+		sort.Slice(frm.Labels.Items, func(i, j int) bool {
+			if frm.Labels.Items[i].Mixed != frm.Labels.Items[j].Mixed {
+				return !frm.Labels.Items[i].Mixed && frm.Labels.Items[j].Mixed
+			}
+			return frm.Labels.Items[i].Title < frm.Labels.Items[j].Title
+		})
 		frm.Labels.Mixed = anyLabelMixed
 		frm.Labels.Action = ActionNone
 	}
