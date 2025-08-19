@@ -12,7 +12,6 @@ import (
 	"github.com/photoprism/photoprism/internal/entity"
 	"github.com/photoprism/photoprism/internal/entity/query"
 	"github.com/photoprism/photoprism/internal/entity/search"
-	"github.com/photoprism/photoprism/internal/form"
 	"github.com/photoprism/photoprism/internal/form/batch"
 	"github.com/photoprism/photoprism/internal/photoprism/get"
 	"github.com/photoprism/photoprism/pkg/clean"
@@ -87,7 +86,7 @@ func BatchPhotosEdit(router *gin.RouterGroup) {
 				}
 
 				// Convert batch form to regular photo form
-				photoForm, err := convertBatchToPhotoForm(&fullPhoto, frm.Values)
+				photoForm, err := entity.ConvertBatchToPhotoForm(&fullPhoto, toEntityBatchValues(frm.Values))
 				if err != nil {
 					log.Errorf("batch: failed to convert form for photo %s: %s", photoID, err)
 					continue
@@ -141,7 +140,7 @@ func BatchPhotosEdit(router *gin.RouterGroup) {
 		}
 
 		// Create batch edit form values form from photo metadata.
-		batchFrm := batch.NewPhotosForm(photos)
+		batchFrm := NewPhotosForm(photos)
 
 		// Return models and form values.
 		data := batch.PhotosResponse{
@@ -151,173 +150,6 @@ func BatchPhotosEdit(router *gin.RouterGroup) {
 
 		c.JSON(http.StatusOK, data)
 	})
-}
-
-// convertBatchToPhotoForm converts batch form values to a regular photo form,
-// applying only the fields that have action=update. This allows us to use
-// the same SavePhotoForm logic as the normal edit dialog.
-func convertBatchToPhotoForm(photo *entity.Photo, batchValues *batch.PhotosForm) (*form.Photo, error) {
-	if photo == nil || batchValues == nil {
-		return nil, fmt.Errorf("photo or batch values is nil")
-	}
-
-	// Start with a form created from the current photo
-	photoForm, err := form.NewPhoto(photo)
-	if err != nil {
-		return nil, fmt.Errorf("failed to create form from photo: %w", err)
-	}
-
-	switch batchValues.PhotoTitle.Action {
-	case batch.ActionUpdate:
-		photoForm.PhotoTitle = batchValues.PhotoTitle.Value
-		photoForm.TitleSrc = entity.SrcBatch
-	case batch.ActionRemove:
-		photoForm.PhotoTitle = ""
-		photoForm.TitleSrc = entity.SrcBatch
-	}
-
-	switch batchValues.PhotoCaption.Action {
-	case batch.ActionUpdate:
-		photoForm.PhotoCaption = batchValues.PhotoCaption.Value
-		photoForm.CaptionSrc = entity.SrcBatch
-	case batch.ActionRemove:
-		photoForm.PhotoCaption = ""
-		photoForm.CaptionSrc = entity.SrcBatch
-	}
-
-	if batchValues.PhotoType.Action == batch.ActionUpdate {
-		photoForm.PhotoType = batchValues.PhotoType.Value
-		photoForm.TypeSrc = entity.SrcBatch
-	}
-
-	// Date/time fields
-	timeChanged := false
-	if batchValues.PhotoDay.Action == batch.ActionUpdate {
-		photoForm.PhotoDay = batchValues.PhotoDay.Value
-		timeChanged = true
-	}
-
-	if batchValues.PhotoMonth.Action == batch.ActionUpdate {
-		photoForm.PhotoMonth = batchValues.PhotoMonth.Value
-		timeChanged = true
-	}
-
-	if batchValues.PhotoYear.Action == batch.ActionUpdate {
-		photoForm.PhotoYear = batchValues.PhotoYear.Value
-		timeChanged = true
-	}
-
-	if batchValues.TimeZone.Action == batch.ActionUpdate {
-		photoForm.TimeZone = batchValues.TimeZone.Value
-		timeChanged = true
-	}
-
-	if timeChanged {
-		photoForm.TakenSrc = entity.SrcBatch
-	}
-
-	// Location fields
-	locationChanged := false
-	if batchValues.PhotoLat.Action == batch.ActionUpdate {
-		photoForm.PhotoLat = batchValues.PhotoLat.Value
-		locationChanged = true
-	}
-
-	if batchValues.PhotoLng.Action == batch.ActionUpdate {
-		photoForm.PhotoLng = batchValues.PhotoLng.Value
-		locationChanged = true
-	}
-
-	if batchValues.PhotoCountry.Action == batch.ActionUpdate {
-		photoForm.PhotoCountry = batchValues.PhotoCountry.Value
-		locationChanged = true
-	}
-
-	if batchValues.PhotoAltitude.Action == batch.ActionUpdate {
-		photoForm.PhotoAltitude = batchValues.PhotoAltitude.Value
-		locationChanged = true
-	}
-
-	if locationChanged {
-		photoForm.PlaceSrc = entity.SrcBatch
-	}
-
-	// Boolean flags
-	if batchValues.PhotoFavorite.Action == batch.ActionUpdate {
-		photoForm.PhotoFavorite = batchValues.PhotoFavorite.Value
-	}
-
-	if batchValues.PhotoPrivate.Action == batch.ActionUpdate {
-		photoForm.PhotoPrivate = batchValues.PhotoPrivate.Value
-	}
-
-	if batchValues.PhotoScan.Action == batch.ActionUpdate {
-		photoForm.PhotoScan = batchValues.PhotoScan.Value
-	}
-
-	if batchValues.PhotoPanorama.Action == batch.ActionUpdate {
-		photoForm.PhotoPanorama = batchValues.PhotoPanorama.Value
-	}
-
-	// Details fields - preserve existing values, only update changed ones
-	currentDetails := photo.GetDetails()
-	if currentDetails != nil {
-		// Start with current values to preserve unchanged fields
-		photoForm.Details.Subject = currentDetails.Subject
-		photoForm.Details.SubjectSrc = currentDetails.SubjectSrc
-		photoForm.Details.Artist = currentDetails.Artist
-		photoForm.Details.ArtistSrc = currentDetails.ArtistSrc
-		photoForm.Details.Copyright = currentDetails.Copyright
-		photoForm.Details.CopyrightSrc = currentDetails.CopyrightSrc
-		photoForm.Details.License = currentDetails.License
-		photoForm.Details.LicenseSrc = currentDetails.LicenseSrc
-		photoForm.Details.Keywords = currentDetails.Keywords
-		photoForm.Details.KeywordsSrc = currentDetails.KeywordsSrc
-		photoForm.Details.Notes = currentDetails.Notes
-		photoForm.Details.NotesSrc = currentDetails.NotesSrc
-	}
-
-	// Now apply only the fields that have action=update
-	switch batchValues.DetailsSubject.Action {
-	case batch.ActionUpdate:
-		photoForm.Details.Subject = batchValues.DetailsSubject.Value
-		photoForm.Details.SubjectSrc = entity.SrcBatch
-	case batch.ActionRemove:
-		photoForm.Details.Subject = ""
-		photoForm.Details.SubjectSrc = entity.SrcBatch
-	}
-
-	switch batchValues.DetailsArtist.Action {
-	case batch.ActionUpdate:
-		photoForm.Details.Artist = batchValues.DetailsArtist.Value
-		photoForm.Details.ArtistSrc = entity.SrcBatch
-	case batch.ActionRemove:
-		photoForm.Details.Artist = ""
-		photoForm.Details.ArtistSrc = entity.SrcBatch
-	}
-
-	switch batchValues.DetailsCopyright.Action {
-	case batch.ActionUpdate:
-		photoForm.Details.Copyright = batchValues.DetailsCopyright.Value
-		photoForm.Details.CopyrightSrc = entity.SrcBatch
-	case batch.ActionRemove:
-		photoForm.Details.Copyright = ""
-		photoForm.Details.CopyrightSrc = entity.SrcBatch
-	}
-
-	switch batchValues.DetailsLicense.Action {
-	case batch.ActionUpdate:
-		photoForm.Details.License = batchValues.DetailsLicense.Value
-		photoForm.Details.LicenseSrc = entity.SrcBatch
-	case batch.ActionRemove:
-		photoForm.Details.License = ""
-		photoForm.Details.LicenseSrc = entity.SrcBatch
-	}
-
-	// Set the PhotoID for details
-	photoForm.Details.PhotoID = photo.ID
-
-	return &photoForm, nil
 }
 
 // convertEntityToSearchPhoto converts an entity.Photo to search.Photo for API responses.
@@ -339,6 +171,50 @@ func convertEntityToSearchPhoto(photo *entity.Photo) (*search.Photo, error) {
 	}
 
 	return searchPhoto, nil
+}
+
+// toEntityBatchValues maps batch.PhotosForm to entity.BatchPhotoValues without creating package cycles.
+func toEntityBatchValues(b *batch.PhotosForm) *entity.BatchPhotoValues {
+	if b == nil {
+		return nil
+	}
+	mapAction := func(a batch.Action) entity.BatchAction {
+		switch a {
+		case batch.ActionUpdate:
+			return entity.BatchActionUpdate
+		case batch.ActionRemove:
+			return entity.BatchActionRemove
+		default:
+			return entity.BatchActionNone
+		}
+	}
+	return &entity.BatchPhotoValues{
+		PhotoType:    entity.BatchString{Value: b.PhotoType.Value, Mixed: b.PhotoType.Mixed, Action: mapAction(b.PhotoType.Action)},
+		PhotoTitle:   entity.BatchString{Value: b.PhotoTitle.Value, Mixed: b.PhotoTitle.Mixed, Action: mapAction(b.PhotoTitle.Action)},
+		PhotoCaption: entity.BatchString{Value: b.PhotoCaption.Value, Mixed: b.PhotoCaption.Mixed, Action: mapAction(b.PhotoCaption.Action)},
+
+		TakenAt:      entity.BatchTime{Value: b.TakenAt.Value, Mixed: b.TakenAt.Mixed, Action: mapAction(b.TakenAt.Action)},
+		TakenAtLocal: entity.BatchTime{Value: b.TakenAtLocal.Value, Mixed: b.TakenAtLocal.Mixed, Action: mapAction(b.TakenAtLocal.Action)},
+		TimeZone:     entity.BatchString{Value: b.TimeZone.Value, Mixed: b.TimeZone.Mixed, Action: mapAction(b.TimeZone.Action)},
+		PhotoYear:    entity.BatchInt{Value: b.PhotoYear.Value, Mixed: b.PhotoYear.Mixed, Action: mapAction(b.PhotoYear.Action)},
+		PhotoMonth:   entity.BatchInt{Value: b.PhotoMonth.Value, Mixed: b.PhotoMonth.Mixed, Action: mapAction(b.PhotoMonth.Action)},
+		PhotoDay:     entity.BatchInt{Value: b.PhotoDay.Value, Mixed: b.PhotoDay.Mixed, Action: mapAction(b.PhotoDay.Action)},
+
+		PhotoLat:      entity.BatchFloat64{Value: b.PhotoLat.Value, Mixed: b.PhotoLat.Mixed, Action: mapAction(b.PhotoLat.Action)},
+		PhotoLng:      entity.BatchFloat64{Value: b.PhotoLng.Value, Mixed: b.PhotoLng.Mixed, Action: mapAction(b.PhotoLng.Action)},
+		PhotoCountry:  entity.BatchString{Value: b.PhotoCountry.Value, Mixed: b.PhotoCountry.Mixed, Action: mapAction(b.PhotoCountry.Action)},
+		PhotoAltitude: entity.BatchInt{Value: b.PhotoAltitude.Value, Mixed: b.PhotoAltitude.Mixed, Action: mapAction(b.PhotoAltitude.Action)},
+
+		PhotoFavorite: entity.BatchBool{Value: b.PhotoFavorite.Value, Mixed: b.PhotoFavorite.Mixed, Action: mapAction(b.PhotoFavorite.Action)},
+		PhotoPrivate:  entity.BatchBool{Value: b.PhotoPrivate.Value, Mixed: b.PhotoPrivate.Mixed, Action: mapAction(b.PhotoPrivate.Action)},
+		PhotoScan:     entity.BatchBool{Value: b.PhotoScan.Value, Mixed: b.PhotoScan.Mixed, Action: mapAction(b.PhotoScan.Action)},
+		PhotoPanorama: entity.BatchBool{Value: b.PhotoPanorama.Value, Mixed: b.PhotoPanorama.Mixed, Action: mapAction(b.PhotoPanorama.Action)},
+
+		DetailsSubject:   entity.BatchString{Value: b.DetailsSubject.Value, Mixed: b.DetailsSubject.Mixed, Action: mapAction(b.DetailsSubject.Action)},
+		DetailsArtist:    entity.BatchString{Value: b.DetailsArtist.Value, Mixed: b.DetailsArtist.Mixed, Action: mapAction(b.DetailsArtist.Action)},
+		DetailsCopyright: entity.BatchString{Value: b.DetailsCopyright.Value, Mixed: b.DetailsCopyright.Mixed, Action: mapAction(b.DetailsCopyright.Action)},
+		DetailsLicense:   entity.BatchString{Value: b.DetailsLicense.Value, Mixed: b.DetailsLicense.Mixed, Action: mapAction(b.DetailsLicense.Action)},
+	}
 }
 
 // applyBatchAlbums adds/removes the given photo to/from albums according to items action.
