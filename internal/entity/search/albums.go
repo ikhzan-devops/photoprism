@@ -78,7 +78,11 @@ func UserAlbums(frm form.SearchAlbums, sess *entity.Session) (results AlbumResul
 	// Set sort order.
 	switch frm.Order {
 	case sortby.Count:
-		s = s.Order(OrderExpr("photo_count DESC, albums.album_title, albums.album_uid DESC", frm.Reverse))
+		if entity.DbDialect() == entity.Postgres {
+			s = s.Order(OrderExpr("photo_count DESC NULLS LAST, albums.album_title, albums.album_uid DESC", frm.Reverse))
+		} else {
+			s = s.Order(OrderExpr("photo_count DESC, albums.album_title, albums.album_uid DESC", frm.Reverse))
+		}
 	case sortby.Moment, sortby.Newest:
 		if frm.Type == entity.AlbumManual || frm.Type == entity.AlbumState {
 			s = s.Order(OrderExpr("albums.album_uid DESC", frm.Reverse))

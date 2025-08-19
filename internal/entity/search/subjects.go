@@ -40,7 +40,11 @@ func Subjects(frm form.SearchSubjects) (results SubjectResults, err error) {
 	case "added":
 		s = s.Order(OrderExpr(fmt.Sprintf("%s.created_at DESC", subjTable), frm.Reverse))
 	case "relevance":
-		s = s.Order(OrderExpr("subj_favorite DESC, photo_count DESC", frm.Reverse))
+		if entity.DbDialect() == entity.Postgres {
+			s = s.Order(OrderExpr("subj_favorite DESC, photo_count DESC NULLS LAST", frm.Reverse))
+		} else {
+			s = s.Order(OrderExpr("subj_favorite DESC, photo_count DESC", frm.Reverse))
+		}
 	default:
 		s = s.Order(OrderExpr("subj_favorite DESC, subj_name ASC", frm.Reverse))
 	}

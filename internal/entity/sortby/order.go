@@ -6,14 +6,17 @@ import (
 
 // Sort direction strings.
 const (
-	DirAsc  = "ASC"
-	DirDesc = "DESC"
+	DirAsc    = "ASC"
+	DirDesc   = "DESC"
+	NullFirst = "FIRST"
+	NullLast  = "LAST"
 )
 
-// OrderReplacer replaces "ASC" with "DESC" and "DESC" with "ASC"
-var OrderReplacer = strings.NewReplacer(DirAsc, DirDesc, DirDesc, DirAsc)
+// OrderReplacer replaces "ASC" with "DESC" and "DESC" with "ASC", "FIRST" with "LAST" and "LAST" with "FIRST"
+var OrderReplacer = strings.NewReplacer(DirAsc, DirDesc, DirDesc, DirAsc, NullFirst, NullLast, NullLast, NullFirst)
 
-// OrderExpr replaces "ASC" with "DESC" and "DESC" with "ASC" in the specified query order string if reverse is true.
+// OrderExpr replaces "ASC" with "DESC" and "DESC" with "ASC", "FIRST" with "LAST" and "LAST" with "FIRST" in the specified query order string if reverse is true.
+// First and Last are for PostgreSQL NULL ordering
 func OrderExpr(s string, reverse bool) string {
 	if s == "" {
 		return ""

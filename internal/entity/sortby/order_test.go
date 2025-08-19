@@ -13,6 +13,7 @@ func TestOrderExpr(t *testing.T) {
 		assert.Equal(t, "photos.edited_at ASC", OrderExpr("photos.edited_at ASC", false))
 		assert.Equal(t, "photos.edited_at DESC, files.media_id", OrderExpr("photos.edited_at DESC, files.media_id", false))
 		assert.Equal(t, "photos.edited_at DESC, files.media_id ASC", OrderExpr("photos.edited_at DESC, files.media_id ASC", false))
+		assert.Equal(t, "photo_count DESC NULLS LAST, albums.album_title, albums.album_uid DESC", OrderExpr("photo_count DESC NULLS LAST, albums.album_title, albums.album_uid DESC", false))
 	})
 	t.Run("Reverse", func(t *testing.T) {
 		assert.Equal(t, "", OrderExpr("", true))
@@ -20,6 +21,7 @@ func TestOrderExpr(t *testing.T) {
 		assert.Equal(t, "photos.edited_at DESC", OrderExpr("photos.edited_at ASC", true))
 		assert.Equal(t, "photos.edited_at ASC, files.media_id", OrderExpr("photos.edited_at DESC, files.media_id", true))
 		assert.Equal(t, "photos.edited_at ASC, files.media_id DESC", OrderExpr("photos.edited_at DESC, files.media_id ASC", true))
+		assert.Equal(t, "photo_count ASC NULLS FIRST, albums.album_title, albums.album_uid ASC", OrderExpr("photo_count DESC NULLS LAST, albums.album_title, albums.album_uid DESC", true))
 	})
 }
 
