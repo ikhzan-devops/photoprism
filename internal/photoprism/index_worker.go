@@ -9,8 +9,6 @@ type IndexJob struct {
 
 func IndexWorker(jobs <-chan IndexJob) {
 	for job := range jobs {
-		if result := IndexRelated(job.Related, job.Ind, job.IndexOpt); result.Err != nil {
-			log.Error(result.Err)
-		}
+		IndexRelated(job.Related, job.Ind, job.IndexOpt)
 	}
 }

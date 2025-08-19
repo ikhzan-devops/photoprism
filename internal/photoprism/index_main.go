@@ -44,6 +44,7 @@ func IndexMain(related *RelatedFiles, ind *Index, o IndexOptions) (result IndexR
 	if o.Convert && f.IsMedia() && !f.HasPreviewImage() {
 		if img, imgErr := ind.convert.ToImage(f, false); imgErr != nil {
 			result.Err = fmt.Errorf("index: failed to convert %s", clean.Log(f.RootRelName()))
+			log.Error(result.Err)
 			result.Status = IndexFailed
 			return result
 		} else if img == nil {
