@@ -166,7 +166,7 @@ func (w *Convert) ToImage(f *MediaFile, force bool) (result *MediaFile, err erro
 				err = errors.New(errStr)
 			}
 
-			log.Tracef("convert: %s (%s)", strings.TrimSpace(err.Error()), filepath.Base(cmd.Path))
+			log.Debugf("convert: %s (%s)", clean.Error(err), filepath.Base(cmd.Path))
 			continue
 		} else if fs.FileExistsNotEmpty(imageName) {
 			log.Infof("convert: %s created in %s (%s)", clean.Log(filepath.Base(imageName)), time.Since(start), filepath.Base(cmd.Path))
