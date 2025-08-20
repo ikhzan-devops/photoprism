@@ -73,7 +73,8 @@ func IndexRelated(related RelatedFiles, ind *Index, o IndexOptions) (result Inde
 		if o.Convert && f.IsMedia() && !f.HasPreviewImage() {
 			// Skip with warning if preview image could not be created.
 			if img, imgErr := ind.convert.ToImage(f, false); imgErr != nil {
-				result.Err = fmt.Errorf("index: failed to create preview image for %s (%s)", clean.Log(f.RootRelName()), clean.Error(imgErr))
+				result.Err = fmt.Errorf("index: failed to convert %s", clean.Log(f.RootRelName()))
+				log.Error(result.Err)
 				result.Status = IndexFailed
 				continue
 			} else if img == nil {
@@ -81,7 +82,7 @@ func IndexRelated(related RelatedFiles, ind *Index, o IndexOptions) (result Inde
 			} else {
 				log.Debugf("index: created %s", clean.Log(img.BaseName()))
 
-				// Skip with warning if thumbs could not be creared.
+				// Skip with warning if thumbs could not be created.
 				if thumbsErr := img.GenerateThumbnails(ind.thumbPath(), false); thumbsErr != nil {
 					result.Err = fmt.Errorf("index: failed to generate thumbnails for %s (%s)", clean.Log(f.RootRelName()), thumbsErr.Error())
 					result.Status = IndexFailed

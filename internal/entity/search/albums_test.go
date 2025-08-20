@@ -316,8 +316,8 @@ func TestAlbums(t *testing.T) {
 
 		if strings.Contains(entity.DbDialect(), "sqlite") {
 			// SQLite is Case Sensitive
-			assert.Equal(t, "|Banana", result[0].AlbumTitle)
-			assert.Equal(t, "sale%", result[1].AlbumTitle)
+			assert.Equal(t, "sale%", result[0].AlbumTitle)
+			assert.Equal(t, "Yoga***", result[1].AlbumTitle)
 		} else {
 			// MariaDB is Case Insensitive and PostgreSQL has a Collation
 			assert.Equal(t, "Yoga***", result[0].AlbumTitle)
@@ -341,7 +341,7 @@ func TestAlbums(t *testing.T) {
 		if strings.Contains(entity.DbDialect(), "sqlite") {
 			// SQLite is Case Sensitive
 			assert.Equal(t, "%gold", result[0].AlbumTitle)
-			assert.Equal(t, "&IlikeFood", result[1].AlbumTitle)
+			assert.Equal(t, "'Family", result[1].AlbumTitle)
 		} else {
 			// MariaDB is Case Insensitive and PostgreSQL has a Collation
 			assert.Equal(t, "'Family", result[0].AlbumTitle)

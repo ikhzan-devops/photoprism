@@ -298,10 +298,10 @@ var AlbumFixtures = AlbumMap{
 	"&ilikefood": {
 		ID:               1000011,
 		AlbumUID:         "as6sg6bipotaab19",
-		AlbumSlug:        "&ilikefood",
+		AlbumSlug:        "ilikefood",
 		AlbumPath:        "",
 		AlbumType:        AlbumManual,
-		AlbumTitle:       "&IlikeFood",
+		AlbumTitle:       "IlikeFood",
 		AlbumLocation:    "",
 		AlbumCategory:    "",
 		AlbumCaption:     "",
@@ -323,7 +323,7 @@ var AlbumFixtures = AlbumMap{
 	"i-love-%-dog": {
 		ID:               1000012,
 		AlbumUID:         "as6sg6bipotaab20",
-		AlbumSlug:        "i-love-%-dog",
+		AlbumSlug:        "i-love-dog",
 		AlbumPath:        "",
 		AlbumType:        AlbumManual,
 		AlbumTitle:       "I love % dog",
@@ -348,7 +348,7 @@ var AlbumFixtures = AlbumMap{
 	"%gold": {
 		ID:               1000013,
 		AlbumUID:         "as6sg6bipotaab21",
-		AlbumSlug:        "%gold",
+		AlbumSlug:        "gold",
 		AlbumPath:        "",
 		AlbumType:        AlbumManual,
 		AlbumTitle:       "%gold",
@@ -373,7 +373,7 @@ var AlbumFixtures = AlbumMap{
 	"sale%": {
 		ID:               1000014,
 		AlbumUID:         "as6sg6bipotaab22",
-		AlbumSlug:        "sale%",
+		AlbumSlug:        "sale",
 		AlbumPath:        "",
 		AlbumType:        AlbumManual,
 		AlbumTitle:       "sale%",
@@ -398,7 +398,7 @@ var AlbumFixtures = AlbumMap{
 	"pets&dogs": {
 		ID:               1000015,
 		AlbumUID:         "as6sg6bipotaab23",
-		AlbumSlug:        "pest&dogs",
+		AlbumSlug:        "pets-and-dogs",
 		AlbumPath:        "",
 		AlbumType:        AlbumManual,
 		AlbumTitle:       "Pets & Dogs",
@@ -423,10 +423,10 @@ var AlbumFixtures = AlbumMap{
 	"light&": {
 		ID:               1000016,
 		AlbumUID:         "as6sg6bipotaab24",
-		AlbumSlug:        "light&",
+		AlbumSlug:        "light",
 		AlbumPath:        "",
 		AlbumType:        AlbumManual,
-		AlbumTitle:       "Light&",
+		AlbumTitle:       "Light",
 		AlbumLocation:    "",
 		AlbumCategory:    "",
 		AlbumCaption:     "",
@@ -448,7 +448,7 @@ var AlbumFixtures = AlbumMap{
 	"'family": {
 		ID:               1000017,
 		AlbumUID:         "as6sg6bipotaab25",
-		AlbumSlug:        "'family",
+		AlbumSlug:        "family",
 		AlbumPath:        "",
 		AlbumType:        AlbumManual,
 		AlbumTitle:       "'Family",
@@ -473,7 +473,7 @@ var AlbumFixtures = AlbumMap{
 	"father's-day": {
 		ID:               1000018,
 		AlbumUID:         "as6sg6bipotaab26",
-		AlbumSlug:        "father's-day",
+		AlbumSlug:        "fathers-day",
 		AlbumPath:        "",
 		AlbumType:        AlbumManual,
 		AlbumTitle:       "Father's Day",
@@ -498,7 +498,7 @@ var AlbumFixtures = AlbumMap{
 	"ice-cream'": {
 		ID:               1000019,
 		AlbumUID:         "as6sg6bipotaab27",
-		AlbumSlug:        "ice-cream'",
+		AlbumSlug:        "ice-cream",
 		AlbumPath:        "",
 		AlbumType:        AlbumManual,
 		AlbumTitle:       "Ice Cream'",
@@ -523,7 +523,7 @@ var AlbumFixtures = AlbumMap{
 	"*forrest": {
 		ID:               1000020,
 		AlbumUID:         "as6sg6bipotaab28",
-		AlbumSlug:        "*forrest",
+		AlbumSlug:        "forrest",
 		AlbumPath:        "",
 		AlbumType:        AlbumManual,
 		AlbumTitle:       "*Forrest",
@@ -548,7 +548,7 @@ var AlbumFixtures = AlbumMap{
 	"my*kids": {
 		ID:               1000021,
 		AlbumUID:         "as6sg6bipotaab29",
-		AlbumSlug:        "my*kids",
+		AlbumSlug:        "my-kids",
 		AlbumPath:        "",
 		AlbumType:        AlbumManual,
 		AlbumTitle:       "My*Kids",
@@ -573,7 +573,7 @@ var AlbumFixtures = AlbumMap{
 	"yoga***": {
 		ID:               1000022,
 		AlbumUID:         "as6sg6bipotaab30",
-		AlbumSlug:        "yoga***",
+		AlbumSlug:        "yoga",
 		AlbumPath:        "",
 		AlbumType:        AlbumManual,
 		AlbumTitle:       "Yoga***",
@@ -598,10 +598,10 @@ var AlbumFixtures = AlbumMap{
 	"|banana": {
 		ID:               1000023,
 		AlbumUID:         "as6sg6bipotaab31",
-		AlbumSlug:        "|banana",
+		AlbumSlug:        "banana",
 		AlbumPath:        "",
 		AlbumType:        AlbumManual,
-		AlbumTitle:       "|Banana",
+		AlbumTitle:       "Banana",
 		AlbumLocation:    "",
 		AlbumCategory:    "",
 		AlbumCaption:     "",
@@ -623,10 +623,10 @@ var AlbumFixtures = AlbumMap{
 	"blue|": {
 		ID:               1000024,
 		AlbumUID:         "as6sg6bipotaab33",
-		AlbumSlug:        "blue|",
+		AlbumSlug:        "blue",
 		AlbumPath:        "",
 		AlbumType:        AlbumManual,
-		AlbumTitle:       "Blue|",
+		AlbumTitle:       "Blue",
 		AlbumLocation:    "",
 		AlbumCategory:    "",
 		AlbumCaption:     "",
@@ -673,7 +673,7 @@ var AlbumFixtures = AlbumMap{
 	"color-555-blue": {
 		ID:               1000026,
 		AlbumUID:         "as6sg6bipotaab35",
-		AlbumSlug:        "color-555-blue",
+		AlbumSlug:        "color555-blue",
 		AlbumPath:        "",
 		AlbumType:        AlbumManual,
 		AlbumTitle:       "Color555 Blue",
@@ -723,7 +723,7 @@ var AlbumFixtures = AlbumMap{
 	"red|green": {
 		ID:               1000028,
 		AlbumUID:         "as6sg6bipotaab32",
-		AlbumSlug:        "red|green",
+		AlbumSlug:        "red-green",
 		AlbumPath:        "",
 		AlbumType:        AlbumManual,
 		AlbumTitle:       "Red|Green",
