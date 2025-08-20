@@ -21,4 +21,10 @@ var DialectPostgres = Migrations{
 		Stage:      "main",
 		Statements: []string{"UPDATE photos SET time_zone = 'Local' WHERE time_zone = '' OR time_zone IS NULL;"},
 	},
+	{
+		ID:         "20250819-000001",
+		Dialect:    "postgres",
+		Stage:      "post",
+		Statements: []string{"CREATE COLLATION caseinsensitive (provider = icu, locale = 'und', deterministic = false);"},
+	},
 }

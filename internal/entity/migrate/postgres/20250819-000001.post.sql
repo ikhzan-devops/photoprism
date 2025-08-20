@@ -1,0 +1,1 @@
+CREATE COLLATION caseinsensitive (provider = icu, locale = 'und', deterministic = false);

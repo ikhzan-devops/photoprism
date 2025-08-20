@@ -1,6 +1,7 @@
 package search
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -313,8 +314,15 @@ func TestAlbums(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		assert.Equal(t, "|Banana", result[0].AlbumTitle)
-		assert.Equal(t, "sale%", result[1].AlbumTitle)
+		if strings.Contains(entity.DbDialect(), "sqlite") {
+			// SQLite is Case Sensitive
+			assert.Equal(t, "|Banana", result[0].AlbumTitle)
+			assert.Equal(t, "sale%", result[1].AlbumTitle)
+		} else {
+			// MariaDB is Case Insensitive and PostgreSQL has a Collation
+			assert.Equal(t, "Yoga***", result[0].AlbumTitle)
+			assert.Equal(t, "sale%", result[1].AlbumTitle)
+		}
 	})
 	t.Run("AlbumSortName", func(t *testing.T) {
 		f := form.SearchAlbums{
@@ -330,8 +338,15 @@ func TestAlbums(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		assert.Equal(t, "%gold", result[0].AlbumTitle)
-		assert.Equal(t, "&IlikeFood", result[1].AlbumTitle)
+		if strings.Contains(entity.DbDialect(), "sqlite") {
+			// SQLite is Case Sensitive
+			assert.Equal(t, "%gold", result[0].AlbumTitle)
+			assert.Equal(t, "&IlikeFood", result[1].AlbumTitle)
+		} else {
+			// MariaDB is Case Insensitive and PostgreSQL has a Collation
+			assert.Equal(t, "'Family", result[0].AlbumTitle)
+			assert.Equal(t, "*Forrest", result[1].AlbumTitle)
+		}
 	})
 	t.Run("SortByCount", func(t *testing.T) {
 		f := form.SearchAlbums{
