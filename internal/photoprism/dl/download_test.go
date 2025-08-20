@@ -72,9 +72,7 @@ func TestDownload(t *testing.T) {
 }
 
 func TestDownloadWithoutInfo(t *testing.T) {
-	if testing.Short() {
-		t.Skip("skipping test in short mode.")
-	}
+	t.Skip("requires an updated yt-dlp version")
 
 	stderrBuf := &bytes.Buffer{}
 	dr, err := Download(context.Background(), testVideoRawURL, Options{
