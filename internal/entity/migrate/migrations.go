@@ -108,7 +108,7 @@ func (m *Migrations) Start(db *gorm.DB, opt Options) {
 			continue
 		}
 
-		if opt.NewDatabase {
+		if opt.NewDatabase && opt.StageName() != StagePost {
 			if err := migration.Finish(db); err != nil {
 				log.Warnf("migrate: updating %s failed with %s [%s]", migration.ID, err, time.Since(start))
 			} else {

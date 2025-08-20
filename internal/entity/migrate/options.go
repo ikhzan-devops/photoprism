@@ -52,3 +52,8 @@ func (opt Options) StageName() string {
 		return opt.RunStage
 	}
 }
+
+// Post returns options for the post-migration stage.
+func (opt Options) Post() Options {
+	return opt.Stage(StagePost)
+}

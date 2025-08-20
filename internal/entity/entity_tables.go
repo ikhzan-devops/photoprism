@@ -446,6 +446,12 @@ func (list Tables) Migrate(db *gorm.DB, opt migrate.Options) {
 	if err := migrate.Run(db, opt); err != nil {
 		log.Error(err)
 	}
+
+	// Run post-migrations, if any.
+	if err := migrate.Run(db, opt.Post()); err != nil {
+		log.Error(err)
+	}
+
 }
 
 // Drop drops all database tables of registered entities.

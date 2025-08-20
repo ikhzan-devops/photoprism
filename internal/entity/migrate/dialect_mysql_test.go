@@ -72,6 +72,11 @@ func TestDialectMysql(t *testing.T) {
 		t.Error(err)
 	}
 
+	// Run post-migrations.
+	if err = Run(db, opt.Post()); err != nil {
+		t.Error(err)
+	}
+
 	stmt := db.Table("photos").Where("photo_caption = '' OR photo_caption IS NULL")
 
 	count := int64(0)
