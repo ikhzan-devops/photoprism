@@ -468,7 +468,7 @@ func UserPhotosGeo(frm form.SearchPhotosGeo, sess *entity.Session) (results GeoR
 			w := strings.ToLower(v)
 			switch entity.DbDialect() {
 			case entity.Postgres:
-				s = s.Where("photos.photo_uid IN (SELECT pa.photo_uid FROM photos_albums pa JOIN albums a ON a.album_uid = pa.album_uid AND pa.hidden = FALSE WHERE (lower(a.album_title) LIKE ? OR a.album_slug LIKE ?))", w, v)
+				s = s.Where("photos.photo_uid IN (SELECT pa.photo_uid FROM photos_albums pa JOIN albums a ON a.album_uid = pa.album_uid AND pa.hidden = FALSE WHERE (a.album_title ILIKE ? OR a.album_slug LIKE ?))", w, v)
 			default:
 				s = s.Where("photos.photo_uid IN (SELECT pa.photo_uid FROM photos_albums pa JOIN albums a ON a.album_uid = pa.album_uid AND pa.hidden = FALSE WHERE (a.album_title LIKE ? OR a.album_slug LIKE ?))", v, v)
 			}
