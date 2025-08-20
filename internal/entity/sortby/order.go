@@ -17,14 +17,14 @@ var OrderReplacer = strings.NewReplacer(DirAsc, DirDesc, DirDesc, DirAsc, NullFi
 
 // OrderExpr replaces "ASC" with "DESC" and "DESC" with "ASC", "FIRST" with "LAST" and "LAST" with "FIRST" in the specified query order string if reverse is true.
 // First and Last are for PostgreSQL NULL ordering
-func OrderExpr(s string, reverse bool) string {
+func OrderExpr(s string, reverse bool, dialect string) string {
 	if s == "" {
 		return ""
 	} else if reverse {
-		return OrderReplacer.Replace(s)
+		return DialectOrderByFix(OrderReplacer.Replace(s), dialect)
 	}
 
-	return s
+	return DialectOrderByFix(s, dialect)
 }
 
 // OrderAsc returns the expression used for sorting in ascending order.
