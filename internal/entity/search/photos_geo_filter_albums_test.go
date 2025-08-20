@@ -373,7 +373,7 @@ func TestPhotosGeoFilterAlbums(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		assert.Equal(t, len(photos), 0)
+		assert.Equal(t, 0, len(photos))
 
 		var geo form.SearchPhotosGeo
 
@@ -404,7 +404,7 @@ func TestPhotosGeoFilterAlbums(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		assert.Equal(t, len(photos), 0)
+		assert.Equal(t, 0, len(photos))
 
 		var geo form.SearchPhotosGeo
 
@@ -470,7 +470,7 @@ func TestPhotosGeoFilterAlbums(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		assert.Equal(t, len(photos), 1)
+		assert.Equal(t, 1, len(photos))
 
 		var geo form.SearchPhotosGeo
 
@@ -501,7 +501,7 @@ func TestPhotosGeoFilterAlbums(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		assert.Equal(t, len(photos), 0)
+		assert.Equal(t, 0, len(photos))
 
 		var geo form.SearchPhotosGeo
 
@@ -567,7 +567,7 @@ func TestPhotosGeoFilterAlbums(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		assert.Equal(t, len(photos), 0)
+		assert.Equal(t, 0, len(photos))
 
 		var geo form.SearchPhotosGeo
 
@@ -668,7 +668,7 @@ func TestPhotosGeoFilterAlbums(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		assert.Equal(t, len(photos), 0)
+		assert.Equal(t, 0, len(photos))
 
 		var geo form.SearchPhotosGeo
 
@@ -769,7 +769,7 @@ func TestPhotosGeoFilterAlbums(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		assert.Equal(t, len(photos), 1)
+		assert.Equal(t, 1, len(photos))
 
 		var geo form.SearchPhotosGeo
 
