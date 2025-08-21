@@ -786,6 +786,9 @@ export default {
       if (show) {
         this.expanded = [];
 
+        // Refresh available options each time the dialog opens to avoid stale caches
+        await this.fetchAvailableOptions();
+
         await this.model.getData(this.selection);
         this.values = this.model.values;
         this.setFormData();
@@ -1414,8 +1417,8 @@ export default {
 
         // Fetch albums and labels using existing model search
         const [albumsResponse, labelsResponse] = await Promise.all([
-          Album.search({ count: 100, type: "album", order: "name" }),
-          Label.search({ count: 100, order: "name" }),
+          Album.search({ count: 1000, type: "album", order: "name" }),
+          Label.search({ count: 1000, order: "name" }),
         ]);
 
         this.availableAlbumOptions = (albumsResponse.models || []).map((album) => ({
