@@ -42,13 +42,13 @@ func TestCachedAlbumByUID(t *testing.T) {
 			t.Fatal(err)
 		} else {
 			assert.Equal(t, "as6sg6bipotaab23", result.AlbumUID)
-			assert.Equal(t, "pest&dogs", result.AlbumSlug)
+			assert.Equal(t, "pets-and-dogs", result.AlbumSlug)
 		}
 		if cached, err := CachedAlbumByUID("as6sg6bipotaab23"); err != nil {
 			t.Fatal(err)
 		} else {
 			assert.Equal(t, "as6sg6bipotaab23", cached.AlbumUID)
-			assert.Equal(t, "pest&dogs", cached.AlbumSlug)
+			assert.Equal(t, "pets-and-dogs", cached.AlbumSlug)
 		}
 	})
 }

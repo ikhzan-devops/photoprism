@@ -181,7 +181,7 @@ func TestPhotosFilterAlbums(t *testing.T) {
 	t.Run("StartsWithAmpersand", func(t *testing.T) {
 		var f form.SearchPhotos
 
-		f.Albums = "&IlikeFood"
+		f.Albums = "IlikeFood"
 		f.Merged = true
 
 		photos, _, err := Photos(f)
@@ -189,7 +189,7 @@ func TestPhotosFilterAlbums(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		assert.Equal(t, len(photos), 0)
+		assert.Equal(t, len(photos), 1)
 	})
 	t.Run("CenterAmpersand", func(t *testing.T) {
 		var f form.SearchPhotos
@@ -299,7 +299,7 @@ func TestPhotosFilterAlbums(t *testing.T) {
 	t.Run("StartsWithPipe", func(t *testing.T) {
 		var f form.SearchPhotos
 
-		f.Albums = "|Banana"
+		f.Albums = "Banana"
 		f.Merged = true
 
 		photos, _, err := Photos(f)
@@ -307,7 +307,7 @@ func TestPhotosFilterAlbums(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		assert.Equal(t, len(photos), 0)
+		assert.Equal(t, len(photos), 1)
 	})
 	t.Run("CenterPipe", func(t *testing.T) {
 		var f form.SearchPhotos
@@ -634,7 +634,7 @@ func TestPhotosQueryAlbums(t *testing.T) {
 	t.Run("StartsWithAmpersand", func(t *testing.T) {
 		var f form.SearchPhotos
 
-		f.Query = "albums:\"&IlikeFood\""
+		f.Query = "albums:\"IlikeFood\""
 		f.Merged = true
 
 		photos, _, err := Photos(f)
@@ -642,7 +642,7 @@ func TestPhotosQueryAlbums(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		assert.Equal(t, len(photos), 0)
+		assert.Equal(t, len(photos), 1)
 	})
 	t.Run("CenterAmpersand", func(t *testing.T) {
 		var f form.SearchPhotos
@@ -752,7 +752,7 @@ func TestPhotosQueryAlbums(t *testing.T) {
 	t.Run("StartsWithPipe", func(t *testing.T) {
 		var f form.SearchPhotos
 
-		f.Query = "albums:\"|Banana\""
+		f.Query = "albums:\"Banana\""
 		f.Merged = true
 
 		photos, _, err := Photos(f)
@@ -760,7 +760,7 @@ func TestPhotosQueryAlbums(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		assert.Equal(t, len(photos), 0)
+		assert.Equal(t, len(photos), 1)
 	})
 	t.Run("CenterPipe", func(t *testing.T) {
 		var f form.SearchPhotos

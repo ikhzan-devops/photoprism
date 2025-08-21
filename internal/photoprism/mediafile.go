@@ -998,9 +998,9 @@ func (m *MediaFile) NotAnimated() bool {
 	return !m.IsAnimated()
 }
 
-// IsDocument returns true if this is a document file.
+// IsDocument returns true if this is a PDF document file.
 func (m *MediaFile) IsDocument() bool {
-	return m.HasMediaType(media.Document)
+	return m.HasMediaType(media.Document) && m.HasMimeType(header.ContentTypePDF)
 }
 
 // IsVector returns true if this is a vector graphics.
