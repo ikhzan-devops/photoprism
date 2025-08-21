@@ -59,9 +59,6 @@ func DetectMimeType(filename string) (mimeType string, err error) {
 	// Adobe Embedded PostScript
 	case VectorEPS:
 		return header.ContentTypeEPS, nil
-	// Adobe PDF
-	case DocumentPDF:
-		return header.ContentTypePDF, nil
 	// Scalable Vector Graphics
 	case VectorSVG:
 		return header.ContentTypeSVG, nil
