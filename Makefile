@@ -977,16 +977,10 @@ dummy-ldap:
 	$(DOCKER_COMPOSE) stop dummy-ldap
 	$(DOCKER_COMPOSE) up -d -V --force-recreate dummy-ldap
 
-start-postgresql:
-	$(info Running PhotoPrism on PostgresQL...)
-	PHOTOPRISM_DRIVER="postgres" PHOTOPRISM_DSN="postgresql://photoprism:photoprism@postgres:5432/photoprism?TimeZone=UTC&connect_timeout=15&lock_timeout=50000&sslmode=disable" ./photoprism start -d
-docker-postgresql:
+start-psql:
 	$(DOCKER_COMPOSE) -f compose.postgres.yaml up
-docker-recreatepostgresql:
-	docker container rm photoprism-postgres-1
-	docker volume rm photoprism_postgresql
 
-docker-alldbms:
+start-alldbms:
 	$(DOCKER_COMPOSE) -f compose.alldbms.yaml up
 
 
