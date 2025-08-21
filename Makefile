@@ -977,12 +977,15 @@ dummy-ldap:
 	$(DOCKER_COMPOSE) stop dummy-ldap
 	$(DOCKER_COMPOSE) up -d -V --force-recreate dummy-ldap
 
-start-postgres:
-	$(DOCKER_COMPOSE) -f compose.postgres.yaml up
-
+# PostgreSQL-specific targets:
 start-alldbms:
 	$(DOCKER_COMPOSE) -f compose.alldbms.yaml up
-
+start-postgres:
+	$(DOCKER_COMPOSE) -f compose.postgres.yaml up
+docker-postgres:
+	docker pull --platform=amd64 photoprism/develop:plucky
+	docker pull --platform=amd64 photoprism/develop:plucky-slim
+	scripts/docker/buildx-multi.sh photoprism linux/amd64 postgres /plucky
 
 # Declare all targets as "PHONY", see https://www.gnu.org/software/make/manual/html_node/Phony-Targets.html.
 MAKEFLAGS += --always-make
