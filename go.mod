@@ -14,7 +14,7 @@ require (
 	github.com/esimov/pigo v1.4.6
 	github.com/gin-contrib/gzip v1.2.3
 	github.com/gin-gonic/gin v1.10.1
-	github.com/golang/geo v0.0.0-20250813021530-247f39904721
+	github.com/golang/geo v0.0.0-20250821133510-ecfc33a939ac
 	github.com/google/open-location-code/go v0.0.0-20250620134813-83986da0156b
 	github.com/gorilla/websocket v1.5.3
 	github.com/gosimple/slug v1.15.0
@@ -89,7 +89,7 @@ require (
 	github.com/zitadel/oidc/v3 v3.44.0
 	golang.org/x/mod v0.27.0
 	golang.org/x/sys v0.35.0
-	google.golang.org/protobuf v1.36.7
+	google.golang.org/protobuf v1.36.8
 )
 
 require (
