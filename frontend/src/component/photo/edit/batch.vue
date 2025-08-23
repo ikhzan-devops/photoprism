@@ -8,6 +8,7 @@
     scrollable
     class="p-dialog p-photo-edit-batch v-dialog--sidepanel v-dialog--sidepanel-wide"
     @click.stop="onClick"
+    @keydown.esc.exact="onClose"
   >
     <v-card ref="content" class="edit-batch__card" :tile="$vuetify.display.mdAndDown" tabindex="1">
       <v-toolbar flat color="navigation" :density="$vuetify.display.mdAndDown ? 'compact' : 'comfortable'">
@@ -19,6 +20,8 @@
           {{ formTitle }}
         </v-toolbar-title>
       </v-toolbar>
+
+      <v-progress-linear v-if="saving" :indeterminate="true" color="surface-variant"></v-progress-linear>
 
       <v-row dense :class="!$vuetify.display.mdAndDown ? 'overflow-hidden' : ''">
         <!-- Desktop view -->
@@ -642,6 +645,7 @@ export default {
       model: new Batch(),
       uid: "",
       loading: false,
+      saving: false,
       subscriptions: [],
 
       selectionsFullInfo: [],
@@ -1244,13 +1248,12 @@ export default {
       this.mouseDown.timeStamp = ev.timeStamp;
     },
     onClose() {
-      // Closes the dialog only if model data is unchanged.
-      // TODO: change the functionality if something was changed
-      // if (this.model?.hasId() && this.model?.wasChanged()) {
-      //   this.$refs?.dialog?.animateClick();
-      // } else {
-      this.close();
-      // }
+      // Closes the dialog only if there are no unsaved changes.
+      if (this.hasUnsavedChanges()) {
+        this.$refs?.dialog?.animateClick();
+      } else {
+        this.close();
+      }
     },
     close() {
       // Close the dialog.
@@ -1315,33 +1318,38 @@ export default {
 
       this.locationDialog = false;
     },
-    save(close) {
+    async save(close) {
       // Filter form data to only include fields with changes
       const filteredFormData = this.getFilteredFormData();
 
       // Get currently selected photo UIDs from the model
       const currentlySelectedUIDs = this.model.selection.filter((photo) => photo.selected).map((photo) => photo.id);
 
-      this.model
-        .save(currentlySelectedUIDs, filteredFormData)
-        .then(async () => {
-          // Update form data with new values from backend (force-refresh to avoid stale UI)
-          try {
-            await this.model.getData(currentlySelectedUIDs);
-            this.values = this.model.values;
-          } catch {
-            // Fallback to response values if re-fetch fails
-            this.values = this.model.values;
-          }
-          this.setFormData();
+      this.saving = true;
 
-          if (close) {
-            this.$emit("close");
-          }
-        })
-        .catch(() => {
-          this.$notify.error(this.$gettext("Failed to save changes"));
-        });
+      try {
+        await this.model.save(currentlySelectedUIDs, filteredFormData);
+
+        // Update form data with new values from backend (force-refresh to avoid stale UI)
+        try {
+          await this.model.getData(currentlySelectedUIDs);
+          this.values = this.model.values;
+        } catch {
+          // Fallback to response values if re-fetch fails
+          this.values = this.model.values;
+        }
+        this.setFormData();
+
+        this.$notify.success(this.$gettext("Changes successfully saved"));
+
+        if (close) {
+          this.$emit("close");
+        }
+      } catch {
+        this.$notify.error(this.$gettext("Failed to save changes"));
+      } finally {
+        this.saving = false;
+      }
     },
     getFilteredFormData() {
       const filtered = {};
@@ -1380,6 +1388,14 @@ export default {
       }
 
       return filtered;
+    },
+    hasUnsavedChanges() {
+      // Returns true if there are unsaved changes in the form.
+      if (!this.formData) {
+        return false;
+      }
+      const filtered = this.getFilteredFormData();
+      return Object.keys(filtered).length > 0;
     },
     getFieldDisplayName(fieldName) {
       const displayNames = {
