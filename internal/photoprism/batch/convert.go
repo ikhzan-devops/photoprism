@@ -1,83 +1,15 @@
-package entity
+package batch
 
 import (
 	"fmt"
-	"time"
 
+	"github.com/photoprism/photoprism/internal/entity"
 	"github.com/photoprism/photoprism/internal/form"
 )
 
-type BatchAction string
-
-const (
-	BatchActionNone   BatchAction = "none"
-	BatchActionUpdate BatchAction = "update"
-	BatchActionRemove BatchAction = "remove"
-)
-
-// BatchValue wrappers replicate the shape of batch form values without creating a package cycle.
-type BatchString struct {
-	Value  string
-	Mixed  bool
-	Action BatchAction
-}
-
-type BatchBool struct {
-	Value  bool
-	Mixed  bool
-	Action BatchAction
-}
-
-type BatchInt struct {
-	Value  int
-	Mixed  bool
-	Action BatchAction
-}
-
-type BatchFloat64 struct {
-	Value  float64
-	Mixed  bool
-	Action BatchAction
-}
-
-type BatchTime struct {
-	Value  time.Time
-	Mixed  bool
-	Action BatchAction
-}
-
-// BatchPhotoValues contains the subset of batch values relevant for converting to a normal photo form.
-type BatchPhotoValues struct {
-	PhotoType    BatchString
-	PhotoTitle   BatchString
-	PhotoCaption BatchString
-
-	TakenAt      BatchTime
-	TakenAtLocal BatchTime
-	TimeZone     BatchString
-	PhotoYear    BatchInt
-	PhotoMonth   BatchInt
-	PhotoDay     BatchInt
-
-	PhotoLat      BatchFloat64
-	PhotoLng      BatchFloat64
-	PhotoCountry  BatchString
-	PhotoAltitude BatchInt
-
-	PhotoFavorite BatchBool
-	PhotoPrivate  BatchBool
-	PhotoScan     BatchBool
-	PhotoPanorama BatchBool
-
-	DetailsSubject   BatchString
-	DetailsArtist    BatchString
-	DetailsCopyright BatchString
-	DetailsLicense   BatchString
-}
-
-// ConvertBatchToPhotoForm converts entity.BatchPhotoValues into a regular form.Photo while
+// ConvertToPhotoForm converts PhotosForm into a regular form.Photo while
 // preserving unchanged fields and marking source fields with SrcBatch where applicable.
-func ConvertBatchToPhotoForm(photo *Photo, v *BatchPhotoValues) (*form.Photo, error) {
+func ConvertToPhotoForm(photo *entity.Photo, v *PhotosForm) (*form.Photo, error) {
 	if photo == nil || v == nil {
 		return nil, fmt.Errorf("photo or batch values is nil")
 	}
@@ -89,83 +21,83 @@ func ConvertBatchToPhotoForm(photo *Photo, v *BatchPhotoValues) (*form.Photo, er
 	}
 
 	switch v.PhotoTitle.Action {
-	case BatchActionUpdate:
+	case ActionUpdate:
 		photoForm.PhotoTitle = v.PhotoTitle.Value
-		photoForm.TitleSrc = SrcBatch
-	case BatchActionRemove:
+		photoForm.TitleSrc = entity.SrcBatch
+	case ActionRemove:
 		photoForm.PhotoTitle = ""
-		photoForm.TitleSrc = SrcBatch
+		photoForm.TitleSrc = entity.SrcBatch
 	}
 
 	switch v.PhotoCaption.Action {
-	case BatchActionUpdate:
+	case ActionUpdate:
 		photoForm.PhotoCaption = v.PhotoCaption.Value
-		photoForm.CaptionSrc = SrcBatch
-	case BatchActionRemove:
+		photoForm.CaptionSrc = entity.SrcBatch
+	case ActionRemove:
 		photoForm.PhotoCaption = ""
-		photoForm.CaptionSrc = SrcBatch
+		photoForm.CaptionSrc = entity.SrcBatch
 	}
 
-	if v.PhotoType.Action == BatchActionUpdate {
+	if v.PhotoType.Action == ActionUpdate {
 		photoForm.PhotoType = v.PhotoType.Value
-		photoForm.TypeSrc = SrcBatch
+		photoForm.TypeSrc = entity.SrcBatch
 	}
 
 	// Date/time fields
 	timeChanged := false
-	if v.PhotoDay.Action == BatchActionUpdate {
+	if v.PhotoDay.Action == ActionUpdate {
 		photoForm.PhotoDay = v.PhotoDay.Value
 		timeChanged = true
 	}
-	if v.PhotoMonth.Action == BatchActionUpdate {
+	if v.PhotoMonth.Action == ActionUpdate {
 		photoForm.PhotoMonth = v.PhotoMonth.Value
 		timeChanged = true
 	}
-	if v.PhotoYear.Action == BatchActionUpdate {
+	if v.PhotoYear.Action == ActionUpdate {
 		photoForm.PhotoYear = v.PhotoYear.Value
 		timeChanged = true
 	}
-	if v.TimeZone.Action == BatchActionUpdate {
+	if v.TimeZone.Action == ActionUpdate {
 		photoForm.TimeZone = v.TimeZone.Value
 		timeChanged = true
 	}
 	if timeChanged {
-		photoForm.TakenSrc = SrcBatch
+		photoForm.TakenSrc = entity.SrcBatch
 	}
 
 	// Location fields
 	locationChanged := false
-	if v.PhotoLat.Action == BatchActionUpdate {
+	if v.PhotoLat.Action == ActionUpdate {
 		photoForm.PhotoLat = v.PhotoLat.Value
 		locationChanged = true
 	}
-	if v.PhotoLng.Action == BatchActionUpdate {
+	if v.PhotoLng.Action == ActionUpdate {
 		photoForm.PhotoLng = v.PhotoLng.Value
 		locationChanged = true
 	}
-	if v.PhotoCountry.Action == BatchActionUpdate {
+	if v.PhotoCountry.Action == ActionUpdate {
 		photoForm.PhotoCountry = v.PhotoCountry.Value
 		locationChanged = true
 	}
-	if v.PhotoAltitude.Action == BatchActionUpdate {
+	if v.PhotoAltitude.Action == ActionUpdate {
 		photoForm.PhotoAltitude = v.PhotoAltitude.Value
 		locationChanged = true
 	}
 	if locationChanged {
-		photoForm.PlaceSrc = SrcBatch
+		photoForm.PlaceSrc = entity.SrcBatch
 	}
 
 	// Boolean flags
-	if v.PhotoFavorite.Action == BatchActionUpdate {
+	if v.PhotoFavorite.Action == ActionUpdate {
 		photoForm.PhotoFavorite = v.PhotoFavorite.Value
 	}
-	if v.PhotoPrivate.Action == BatchActionUpdate {
+	if v.PhotoPrivate.Action == ActionUpdate {
 		photoForm.PhotoPrivate = v.PhotoPrivate.Value
 	}
-	if v.PhotoScan.Action == BatchActionUpdate {
+	if v.PhotoScan.Action == ActionUpdate {
 		photoForm.PhotoScan = v.PhotoScan.Value
 	}
-	if v.PhotoPanorama.Action == BatchActionUpdate {
+	if v.PhotoPanorama.Action == ActionUpdate {
 		photoForm.PhotoPanorama = v.PhotoPanorama.Value
 	}
 
@@ -188,39 +120,39 @@ func ConvertBatchToPhotoForm(photo *Photo, v *BatchPhotoValues) (*form.Photo, er
 	}
 
 	switch v.DetailsSubject.Action {
-	case BatchActionUpdate:
+	case ActionUpdate:
 		photoForm.Details.Subject = v.DetailsSubject.Value
-		photoForm.Details.SubjectSrc = SrcBatch
-	case BatchActionRemove:
+		photoForm.Details.SubjectSrc = entity.SrcBatch
+	case ActionRemove:
 		photoForm.Details.Subject = ""
-		photoForm.Details.SubjectSrc = SrcBatch
+		photoForm.Details.SubjectSrc = entity.SrcBatch
 	}
 
 	switch v.DetailsArtist.Action {
-	case BatchActionUpdate:
+	case ActionUpdate:
 		photoForm.Details.Artist = v.DetailsArtist.Value
-		photoForm.Details.ArtistSrc = SrcBatch
-	case BatchActionRemove:
+		photoForm.Details.ArtistSrc = entity.SrcBatch
+	case ActionRemove:
 		photoForm.Details.Artist = ""
-		photoForm.Details.ArtistSrc = SrcBatch
+		photoForm.Details.ArtistSrc = entity.SrcBatch
 	}
 
 	switch v.DetailsCopyright.Action {
-	case BatchActionUpdate:
+	case ActionUpdate:
 		photoForm.Details.Copyright = v.DetailsCopyright.Value
-		photoForm.Details.CopyrightSrc = SrcBatch
-	case BatchActionRemove:
+		photoForm.Details.CopyrightSrc = entity.SrcBatch
+	case ActionRemove:
 		photoForm.Details.Copyright = ""
-		photoForm.Details.CopyrightSrc = SrcBatch
+		photoForm.Details.CopyrightSrc = entity.SrcBatch
 	}
 
 	switch v.DetailsLicense.Action {
-	case BatchActionUpdate:
+	case ActionUpdate:
 		photoForm.Details.License = v.DetailsLicense.Value
-		photoForm.Details.LicenseSrc = SrcBatch
-	case BatchActionRemove:
+		photoForm.Details.LicenseSrc = entity.SrcBatch
+	case ActionRemove:
 		photoForm.Details.License = ""
-		photoForm.Details.LicenseSrc = SrcBatch
+		photoForm.Details.LicenseSrc = entity.SrcBatch
 	}
 
 	// Set the PhotoID for details
