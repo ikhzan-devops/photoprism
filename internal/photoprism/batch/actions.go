@@ -120,14 +120,26 @@ func ApplyLabels(photo *entity.Photo, labels Items) error {
 			if pl, err := query.PhotoLabel(photo.ID, labelEntity.ID); err != nil {
 				log.Debugf("batch: photo-label not found for removal: photo=%s label_id=%d", photo.PhotoUID, labelEntity.ID)
 			} else if pl != nil {
-				// Block label from being auto re-added by setting uncertainty to 100 and marking source as 'batch'.
-				pl.Uncertainty = 100
-				pl.LabelSrc = entity.SrcBatch
-				if err := entity.Db().Save(pl).Error; err != nil {
-					log.Errorf("batch: block label failed: %s", err)
+				if (pl.LabelSrc == entity.SrcManual || pl.LabelSrc == entity.SrcBatch) && pl.Uncertainty < 100 {
+					if err := entity.Db().Delete(&pl).Error; err != nil {
+						log.Errorf("batch: delete label failed: %s", err)
+					} else {
+						log.Debugf("batch: deleted label: photo=%s label_id=%d", photo.PhotoUID, labelEntity.ID)
+						changed = true
+					}
+				} else if pl.LabelSrc != entity.SrcManual && pl.LabelSrc != entity.SrcBatch {
+					pl.Uncertainty = 100
+					pl.LabelSrc = entity.SrcBatch
+					if err := entity.Db().Save(pl).Error; err != nil {
+						log.Errorf("batch: block label failed: %s", err)
+					} else {
+						log.Debugf("batch: blocked label: photo=%s label_id=%d", photo.PhotoUID, labelEntity.ID)
+						changed = true
+					}
 				} else {
-					log.Debugf("batch: blocked label: photo=%s label_id=%d", photo.PhotoUID, labelEntity.ID)
-					changed = true
+					if err := entity.Db().Save(pl).Error; err != nil {
+						log.Errorf("batch: save label failed: %s", err)
+					}
 				}
 				_ = photo.RemoveKeyword(labelEntity.LabelName)
 			}
