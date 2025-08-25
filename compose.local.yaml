@@ -70,7 +70,7 @@ services:
     volumes:
       - "./storage:/photoprism/storage"
 
-## Join shared "photoprism-develop" network
+## Join shared "photoprism" network
 networks:
   default:
     name: photoprism

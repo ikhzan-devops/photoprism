@@ -63,7 +63,7 @@ services:
       - "./storage:/photoprism/storage"
       - "./storage/originals:/photoprism/originals"
 
-## Join shared "photoprism-develop" network
+## Join shared "photoprism" network
 networks:
   default:
     name: photoprism
