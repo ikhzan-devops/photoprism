@@ -580,7 +580,14 @@
                 <v-btn color="button" variant="flat" class="action-close" @click.stop="close">
                   {{ $gettext(`Close`) }}
                 </v-btn>
-                <v-btn color="highlight" variant="flat" class="action-apply action-approve" @click.stop="save(false)">
+                <v-btn
+                  color="highlight"
+                  variant="flat"
+                  class="action-apply action-approve"
+                  :loading="saving"
+                  :disabled="saving"
+                  @click.stop="save(false)"
+                >
                   <span>{{ $gettext(`Apply`) }}</span>
                 </v-btn>
               </div>
@@ -1319,13 +1326,13 @@ export default {
       this.locationDialog = false;
     },
     async save(close) {
+      this.saving = true;
+
       // Filter form data to only include fields with changes
       const filteredFormData = this.getFilteredFormData();
 
       // Get currently selected photo UIDs from the model
       const currentlySelectedUIDs = this.model.selection.filter((photo) => photo.selected).map((photo) => photo.id);
-
-      this.saving = true;
 
       try {
         await this.model.save(currentlySelectedUIDs, filteredFormData);
