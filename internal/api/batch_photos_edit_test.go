@@ -411,13 +411,16 @@ func TestBatchPhotosEdit(t *testing.T) {
 		labelsBefore := gjson.Get(editValues, "Labels")
 		assert.Contains(t, labelsBefore.String(), "{\"value\":\"ls6sg6b1wowuy316\",\"title\":\"\\u0026friendship\",\"mixed\":true,\"action\":\"none\"}")
 		assert.Contains(t, labelsBefore.String(), "{\"value\":\"ls6sg6b1wowuy3c4\",\"title\":\"Cake\",\"mixed\":false,\"action\":\"none\"}")
+		assert.Contains(t, labelsBefore.String(), "{\"value\":\"ls6sg6b1wowuy3c5\",\"title\":\"COW\",\"mixed\":false,\"action\":\"none\"}")
+		assert.Contains(t, labelsBefore.String(), "{\"value\":\"ls6sg6b1wowuy3c2\",\"title\":\"Landscape\",\"mixed\":false,\"action\":\"none\"}")
 		assert.Contains(t, labelsBefore.String(), "{\"value\":\"ls6sg6b1wowuy3c3\",\"title\":\"Flower\",\"mixed\":true,\"action\":\"none\"}")
+		assert.Contains(t, labelsBefore.String(), "{\"value\":\"ls6sg6b1wowuy317\",\"title\":\"construction\\u0026failure\",\"mixed\":true,\"action\":\"none\"}")
 		// Send the edit form values back to the same API endpoint and check for errors.
 		saveResponse := PerformRequestWithBody(app,
 			"POST", "/api/v1/batch/photos/edit",
 			fmt.Sprintf(`{"photos": %s, "values": %s}`, photoUIDs,
 				"{"+
-					"\"Labels\":{\"items\":[{\"value\":\"ls6sg6b1wowuy3c4\",\"title\":\"Cake\",\"mixed\":false,\"action\":\"remove\"},{\"value\":\"ls6sg6b1wowuy3c3\",\"title\":\"Flower\",\"mixed\":false,\"action\":\"add\"},{\"value\":\"ls6sg6b1wowuy316\",\"title\":\"&friendship\",\"mixed\":false,\"action\":\"remove\"},{\"value\":\"\",\"title\":\"BatchLabel\",\"mixed\":false,\"action\":\"add\"}],\"mixed\":false,\"action\":\"update\"},"+
+					"\"Labels\":{\"items\":[{\"value\":\"ls6sg6b1wowuy317\",\"title\":\"construction\\u0026failure\",\"mixed\":false,\"action\":\"remove\"},{\"value\":\"ls6sg6b1wowuy3c2\",\"title\":\"Landscape\",\"mixed\":false,\"action\":\"remove\"},{\"value\":\"ls6sg6b1wowuy3c5\",\"title\":\"COW\",\"mixed\":false,\"action\":\"remove\"},{\"value\":\"ls6sg6b1wowuy3c4\",\"title\":\"Cake\",\"mixed\":false,\"action\":\"remove\"},{\"value\":\"ls6sg6b1wowuy3c3\",\"title\":\"Flower\",\"mixed\":false,\"action\":\"add\"},{\"value\":\"ls6sg6b1wowuy316\",\"title\":\"&friendship\",\"mixed\":false,\"action\":\"remove\"},{\"value\":\"\",\"title\":\"BatchLabel\",\"mixed\":false,\"action\":\"add\"}],\"mixed\":false,\"action\":\"update\"},"+
 					"\"Albums\":{\"items\":[{\"value\":\"as6sg6bipotaab19\",\"title\":\"IlikeFood\",\"mixed\":false,\"action\":\"remove\"},{\"value\":\"as6sg6bxpogaaba8\",\"title\":\"Holiday 2030\",\"mixed\":true,\"action\":\"none\"},{\"value\":\"as6sg6bxpogaaba7\",\"title\":\"Christmas 2030\",\"mixed\":false,\"action\":\"add\"}, {\"value\":\"\",\"title\":\"BatchAlbum\",\"mixed\":false,\"action\":\"add\"}],\"mixed\":true,\"action\":\"update\"}"+
 					"}"),
 		)
@@ -441,6 +444,48 @@ func TestBatchPhotosEdit(t *testing.T) {
 		assert.NotContains(t, labelsAfter.String(), "{\"value\":\"ls6sg6b1wowuy3c4\",\"title\":\"Cake\"")
 		assert.Contains(t, labelsAfter.String(), "\"title\":\"BatchLabel\",\"mixed\":false,\"action\":\"none\"}")
 		assert.NotContains(t, labelsAfter.String(), "{\"value\":\"ls6sg6b1wowuy316\",\"title\":\"\\u0026friendship\"")
+		assert.NotContains(t, labelsAfter.String(), "{\"value\":\"ls6sg6b1wowuy3c5\",\"title\":\"COW\",\"mixed\":false,\"action\":\"none\"}")
+		assert.NotContains(t, labelsAfter.String(), "{\"value\":\"ls6sg6b1wowuy3c2\",\"title\":\"Landscape\",\"mixed\":false,\"action\":\"none\"}")
+		assert.NotContains(t, labelsAfter.String(), "{\"value\":\"ls6sg6b1wowuy317\",\"title\":\"construction\\u0026failure\",\"mixed\":true,\"action\":\"none\"}")
+
+		GetPhoto(router)
+		r1 := PerformRequest(app, "GET", "/api/v1/photos/pqkm36fjqvset9uz")
+		assert.Equal(t, http.StatusOK, r1.Code)
+		assert.Equal(t, "BatchLabel", gjson.Get(r1.Body.String(), "Labels.0.Label.Name").String())
+		assert.Equal(t, "batch", gjson.Get(r1.Body.String(), "Labels.0.LabelSrc").String())
+		assert.Equal(t, "0", gjson.Get(r1.Body.String(), "Labels.0.Uncertainty").String())
+		assert.Equal(t, "Flower", gjson.Get(r1.Body.String(), "Labels.1.Label.Name").String())
+		assert.Equal(t, "batch", gjson.Get(r1.Body.String(), "Labels.1.LabelSrc").String())
+		assert.Equal(t, "0", gjson.Get(r1.Body.String(), "Labels.1.Uncertainty").String())
+		assert.Equal(t, "&friendship", gjson.Get(r1.Body.String(), "Labels.2.Label.Name").String())
+		assert.Equal(t, "batch", gjson.Get(r1.Body.String(), "Labels.2.LabelSrc").String())
+		assert.Equal(t, "100", gjson.Get(r1.Body.String(), "Labels.2.Uncertainty").String())
+		assert.Equal(t, "COW", gjson.Get(r1.Body.String(), "Labels.3.Label.Name").String())
+		assert.Equal(t, "batch", gjson.Get(r1.Body.String(), "Labels.3.LabelSrc").String())
+		assert.Equal(t, "100", gjson.Get(r1.Body.String(), "Labels.3.Uncertainty").String())
+		assert.Equal(t, "Cake", gjson.Get(r1.Body.String(), "Labels.4.Label.Name").String())
+		assert.Equal(t, "batch", gjson.Get(r1.Body.String(), "Labels.4.LabelSrc").String())
+		assert.Equal(t, "100", gjson.Get(r1.Body.String(), "Labels.4.Uncertainty").String())
+		assert.Equal(t, "Landscape", gjson.Get(r1.Body.String(), "Labels.5.Label.Name").String())
+		assert.Equal(t, "batch", gjson.Get(r1.Body.String(), "Labels.5.LabelSrc").String())
+		assert.Equal(t, "100", gjson.Get(r1.Body.String(), "Labels.5.Uncertainty").String())
+		assert.Equal(t, "", gjson.Get(r1.Body.String(), "Labels.6.Label.Name").String())
+
+		r2 := PerformRequest(app, "GET", "/api/v1/photos/pqkm36fjqvset9uy")
+		assert.Equal(t, http.StatusOK, r2.Code)
+		assert.Equal(t, "BatchLabel", gjson.Get(r2.Body.String(), "Labels.0.Label.Name").String())
+		assert.Equal(t, "batch", gjson.Get(r2.Body.String(), "Labels.0.LabelSrc").String())
+		assert.Equal(t, "0", gjson.Get(r2.Body.String(), "Labels.0.Uncertainty").String())
+		assert.Equal(t, "Flower", gjson.Get(r2.Body.String(), "Labels.1.Label.Name").String())
+		assert.Equal(t, "batch", gjson.Get(r2.Body.String(), "Labels.1.LabelSrc").String())
+		assert.Equal(t, "0", gjson.Get(r2.Body.String(), "Labels.1.Uncertainty").String())
+		assert.Equal(t, "COW", gjson.Get(r2.Body.String(), "Labels.2.Label.Name").String())
+		assert.Equal(t, "batch", gjson.Get(r2.Body.String(), "Labels.2.LabelSrc").String())
+		assert.Equal(t, "100", gjson.Get(r2.Body.String(), "Labels.2.Uncertainty").String())
+		assert.Equal(t, "Landscape", gjson.Get(r2.Body.String(), "Labels.3.Label.Name").String())
+		assert.Equal(t, "batch", gjson.Get(r2.Body.String(), "Labels.3.LabelSrc").String())
+		assert.Equal(t, "100", gjson.Get(r2.Body.String(), "Labels.3.Uncertainty").String())
+		assert.Equal(t, "", gjson.Get(r2.Body.String(), "Labels.4.Label.Name").String())
 	})
 	t.Run("SuccessChangeCountry", func(t *testing.T) {
 		// Create new API test instance.
