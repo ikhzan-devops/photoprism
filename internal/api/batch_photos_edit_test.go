@@ -250,6 +250,12 @@ func TestBatchPhotosEdit(t *testing.T) {
 		assert.Equal(t, "{\"value\":21.850195,\"mixed\":false,\"action\":\"none\"}", latAfter.String())
 		lngAfter := gjson.Get(saveValues, "Lng")
 		assert.Equal(t, "{\"value\":90.18015,\"mixed\":false,\"action\":\"none\"}", lngAfter.String())
+
+		GetPhoto(router)
+		r1 := PerformRequest(app, "GET", "/api/v1/photos/pqkm36fjqvset9uz")
+		assert.Equal(t, http.StatusOK, r1.Code)
+		assert.Equal(t, "batch", gjson.Get(r1.Body.String(), "PlaceSrc").String())
+		assert.Equal(t, "meta", gjson.Get(r1.Body.String(), "TakenSrc").String())
 	})
 	t.Run("SuccessChangeValues", func(t *testing.T) {
 		// Create new API test instance.
@@ -375,6 +381,25 @@ func TestBatchPhotosEdit(t *testing.T) {
 		assert.Equal(t, "{\"value\":true,\"mixed\":false,\"action\":\"none\"}", privateAfter.String())
 		panoramaAfter := gjson.Get(saveValues, "Panorama")
 		assert.Equal(t, "{\"value\":true,\"mixed\":false,\"action\":\"none\"}", panoramaAfter.String())
+		//TODO Implement this logic
+		//takenAfter := gjson.Get(saveValues, "TakenAt")
+		//assert.Contains(t, takenAfter.String(), "{\"value\":\"2000-11")
+		//takenLocalAfter := gjson.Get(saveValues, "TakenAtLocal")
+		//assert.Contains(t, takenLocalAfter.String(), "{\"value\":\"2000-11")
+
+		GetPhoto(router)
+		r1 := PerformRequest(app, "GET", "/api/v1/photos/pqkm36fjqvset9uz")
+		assert.Equal(t, http.StatusOK, r1.Code)
+		assert.Equal(t, "batch", gjson.Get(r1.Body.String(), "PlaceSrc").String())
+		assert.Equal(t, "batch", gjson.Get(r1.Body.String(), "TakenSrc").String())
+		assert.Equal(t, "batch", gjson.Get(r1.Body.String(), "TypeSrc").String())
+		assert.Equal(t, "batch", gjson.Get(r1.Body.String(), "TitleSrc").String())
+		assert.Equal(t, "batch", gjson.Get(r1.Body.String(), "CaptionSrc").String())
+		assert.Equal(t, "meta", gjson.Get(r1.Body.String(), "Details.KeywordsSrc").String())
+		assert.Equal(t, "batch", gjson.Get(r1.Body.String(), "Details.SubjectSrc").String())
+		assert.Equal(t, "batch", gjson.Get(r1.Body.String(), "Details.ArtistSrc").String())
+		assert.Equal(t, "batch", gjson.Get(r1.Body.String(), "Details.CopyrightSrc").String())
+		assert.Equal(t, "batch", gjson.Get(r1.Body.String(), "Details.LicenseSrc").String())
 	})
 	t.Run("SuccessChangeAlbumAndLabels", func(t *testing.T) {
 		// Create new API test instance.
@@ -628,6 +653,20 @@ func TestBatchPhotosEdit(t *testing.T) {
 		assert.Equal(t, "{\"value\":\"\",\"mixed\":false,\"action\":\"none\"}", copyrightAfter.String())
 		licenseAfter := gjson.Get(saveValues, "DetailsLicense")
 		assert.Equal(t, "{\"value\":\"\",\"mixed\":false,\"action\":\"none\"}", licenseAfter.String())
+
+		GetPhoto(router)
+		r1 := PerformRequest(app, "GET", "/api/v1/photos/pqkm36fjqvset9uz")
+		assert.Equal(t, http.StatusOK, r1.Code)
+		assert.Equal(t, "batch", gjson.Get(r1.Body.String(), "PlaceSrc").String())
+		assert.Equal(t, "batch", gjson.Get(r1.Body.String(), "TakenSrc").String())
+		assert.Equal(t, "batch", gjson.Get(r1.Body.String(), "TypeSrc").String())
+		assert.Equal(t, "batch", gjson.Get(r1.Body.String(), "TitleSrc").String())
+		assert.Equal(t, "batch", gjson.Get(r1.Body.String(), "CaptionSrc").String())
+		assert.Equal(t, "meta", gjson.Get(r1.Body.String(), "Details.KeywordsSrc").String())
+		assert.Equal(t, "batch", gjson.Get(r1.Body.String(), "Details.SubjectSrc").String())
+		assert.Equal(t, "batch", gjson.Get(r1.Body.String(), "Details.ArtistSrc").String())
+		assert.Equal(t, "batch", gjson.Get(r1.Body.String(), "Details.CopyrightSrc").String())
+		assert.Equal(t, "batch", gjson.Get(r1.Body.String(), "Details.LicenseSrc").String())
 	})
 	t.Run("ReturnPhotosAndValues", func(t *testing.T) {
 		app, router, conf := NewApiTest()

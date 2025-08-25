@@ -3679,7 +3679,7 @@ var PhotoFixtures = PhotoMap{
 		PhotoType:        "image",
 		TypeSrc:          SrcAuto,
 		PhotoTitle:       "Dog at the beach",
-		TitleSrc:         SrcMeta,
+		TitleSrc:         SrcManual,
 		PhotoCaption:     "A cute little dog at the beach",
 		CaptionSrc:       SrcManual,
 		PhotoPath:        "2023/11",
