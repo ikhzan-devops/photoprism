@@ -101,6 +101,8 @@ devtools: install-go dep-npm
 .SILENT: help;
 logs:
 	$(DOCKER_COMPOSE) logs -f
+down:
+	$(DOCKER_COMPOSE) --profile=all down --remove-orphans
 help:
 	@echo "For build instructions, visit <https://docs.photoprism.app/developer-guide/>."
 docs: swag
