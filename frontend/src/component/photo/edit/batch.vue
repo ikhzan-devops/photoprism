@@ -810,6 +810,26 @@ export default {
         this.deletedFields = {};
       }
     },
+    selection: {
+      deep: true,
+      handler(newSelection) {
+        if (!this.visible || !Array.isArray(newSelection) || !this.model || !Array.isArray(this.model.selection)) {
+          return;
+        }
+
+        const selectedIds = new Set(newSelection);
+
+        this.model.selection.forEach((entry) => {
+          const shouldBeSelected = selectedIds.has(entry.id);
+          if (entry.selected !== shouldBeSelected) {
+            entry.selected = shouldBeSelected;
+          }
+        });
+
+        this.updateToggleAll();
+        this.allSelectedLength = this.model.getLengthOfAllSelected();
+      },
+    },
   },
   created() {
     // this.subscriptions.push(this.$event.subscribe("photos.updated", (ev, data) => this.onUpdate(ev, data)));
