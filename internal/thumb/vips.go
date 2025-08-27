@@ -9,6 +9,7 @@ import (
 
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/fs"
+	"github.com/photoprism/photoprism/pkg/media/colors"
 )
 
 // Vips generates a new thumbnail with the requested size and returns the file name and a buffer with the image bytes,
@@ -74,6 +75,33 @@ func Vips(imageName string, imageBuffer []byte, hash, thumbPath string, width, h
 	} else if method == ResampleFillCenter || method == ResampleResize {
 		crop = vips.InterestingCentre
 		size = vips.SizeBoth
+	}
+
+	iiFull := img.GetString("exif-ifd4-InteroperabilityIndex")
+	if iiFull != "" {
+		ii := iiFull[:3]
+		log.Tracef("read exif and got interopindex %s, %s", ii, iiFull)
+		fallbackProfile := ""
+		switch ii {
+		case "P98":
+			// srgb
+			// we could logically embed an srgb profile in the image here, but
+			// there's no value in doing so; everything assumes srgb anyway.
+		case "R03":
+			// adobe rgb
+			fallbackProfile, err = colors.GetAdobeRGB1998Path()
+			if err != nil {
+				log.Errorf("%s in %s (get fallback profile adobergb)", err, clean.Log(filepath.Base(imageName)))
+			}
+		default:
+			log.Warnf("exif in %s has unknown interop index %s", clean.Log(filepath.Base(imageName)), ii)
+		}
+		if fallbackProfile != "" {
+			err = img.TransformICCProfileWithFallback(fallbackProfile, fallbackProfile)
+			if err != nil {
+				log.Errorf("%s in %s (set icc profile)", err, clean.Log(filepath.Base(imageName)))
+			}
+		}
 	}
 
 	// Create thumbnail image.
