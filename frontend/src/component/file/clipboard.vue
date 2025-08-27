@@ -113,10 +113,13 @@ export default {
       this.clearSelection();
       this.expanded = false;
     },
-    addToAlbum(ppid) {
+    addToAlbum(ppidOrList) {
       this.dialog.album = false;
 
-      $api.post(`albums/${ppid}/photos`, { files: this.selection }).then(() => this.onAdded());
+      const albumUids = Array.isArray(ppidOrList) ? ppidOrList : [ppidOrList];
+      const body = { files: this.selection };
+
+      Promise.all(albumUids.map((uid) => $api.post(`albums/${uid}/photos`, body))).then(() => this.onAdded());
     },
     onAdded() {
       this.clearClipboard();

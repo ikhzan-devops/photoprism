@@ -184,10 +184,14 @@ export default {
       this.clearSelection();
       this.expanded = false;
     },
-    cloneAlbums(ppid) {
+    cloneAlbums(ppidOrList) {
       this.dialog.album = false;
 
-      $api.post(`albums/${ppid}/clone`, { albums: this.selection }).then(() => this.onCloned());
+      const targets = Array.isArray(ppidOrList) ? ppidOrList : [ppidOrList];
+
+      Promise.all(targets.map((uid) => $api.post(`albums/${uid}/clone`, { albums: this.selection }))).then(() =>
+        this.onCloned()
+      );
     },
     onCloned() {
       this.clearClipboard();

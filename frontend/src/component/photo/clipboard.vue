@@ -326,8 +326,8 @@ export default {
       $notify.success(this.$gettext("Selection restored"));
       this.clearClipboard();
     },
-    addToAlbum(ppid) {
-      if (!ppid || !this.canManage) {
+    addToAlbum(ppidOrList) {
+      if (!ppidOrList || !this.canManage) {
         return;
       }
 
@@ -338,8 +338,10 @@ export default {
       this.busy = true;
       this.dialog.album = false;
 
-      $api
-        .post(`albums/${ppid}/photos`, { photos: this.selection })
+      const albumUids = Array.isArray(ppidOrList) ? ppidOrList : [ppidOrList];
+      const body = { photos: this.selection };
+
+      Promise.all(albumUids.map((uid) => $api.post(`albums/${uid}/photos`, body)))
         .then(() => this.onAdded())
         .finally(() => {
           this.busy = false;

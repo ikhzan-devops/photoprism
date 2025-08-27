@@ -115,14 +115,17 @@ export default {
       this.clearSelection();
       this.expanded = false;
     },
-    addToAlbum(ppid) {
-      if (!this.canAddAlbums) {
+    addToAlbum(ppidOrList) {
+      if (!this.canAddAlbums || !ppidOrList) {
         return;
       }
 
       this.dialog.album = false;
 
-      $api.post(`albums/${ppid}/photos`, { labels: this.selection }).then(() => this.onAdded());
+      const albumUids = Array.isArray(ppidOrList) ? ppidOrList : [ppidOrList];
+      const body = { labels: this.selection };
+
+      Promise.all(albumUids.map((uid) => $api.post(`albums/${uid}/photos`, body))).then(() => this.onAdded());
     },
     onAdded() {
       this.clearClipboard();

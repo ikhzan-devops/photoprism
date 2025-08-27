@@ -17,20 +17,38 @@
         <v-card-text>
           <v-combobox
             ref="input"
-            v-model="album"
-            autocomplete="off"
-            :placeholder="$gettext('Select or create an album')"
-            :items="items"
+            v-model="selectedAlbums"
             :disabled="loading"
             :loading="loading"
-            hide-no-data
             hide-details
-            return-object
+            chips
+            closable-chips
+            multiple
+            class="input-albums"
+            :items="items"
             item-title="Title"
             item-value="UID"
-            class="input-album"
-            @keyup.enter.native="confirm"
+            :placeholder="$gettext('Select or create an album')"
+            return-object
           >
+            <template #no-data>
+              <v-list-item>
+                <v-list-item-title>
+                  {{ $gettext(`Press enter to create a new album.`) }}
+                </v-list-item-title>
+              </v-list-item>
+            </template>
+            <template #chip="chip">
+              <v-chip
+                :model-value="chip.selected"
+                :disabled="chip.disabled"
+                prepend-icon="mdi-bookmark"
+                class="text-truncate"
+                @click:close="removeSelection(chip.index)"
+              >
+                {{ chip.item.title ? chip.item.title : chip.item }}
+              </v-chip>
+            </template>
           </v-combobox>
         </v-card-text>
         <v-card-actions class="action-buttons">
@@ -38,7 +56,7 @@
             {{ $gettext(`Cancel`) }}
           </v-btn>
           <v-btn
-            :disabled="!album"
+            :disabled="selectedAlbums.length === 0"
             variant="flat"
             color="highlight"
             class="action-confirm text-white"
@@ -68,8 +86,7 @@ export default {
   data() {
     return {
       loading: false,
-      newAlbum: null,
-      album: null,
+      selectedAlbums: [],
       albums: [],
       items: [],
       labels: {
@@ -101,23 +118,41 @@ export default {
         return;
       }
 
-      if (typeof this.album === "object" && this.album?.UID) {
-        this.loading = true;
-        this.$emit("confirm", this.album?.UID);
-      } else if (typeof this.album === "string" && this.album.length > 0) {
-        this.loading = true;
-        let newAlbum = new Album({ Title: this.album, UID: "", Favorite: false });
+      const existingUids = [];
+      const namesToCreate = [];
 
-        newAlbum
-          .save()
-          .then((a) => {
-            this.album = a;
-            this.$emit("confirm", a.UID);
-          })
-          .catch(() => {
-            this.loading = false;
-          });
+      (this.selectedAlbums || []).forEach((a) => {
+        if (typeof a === "object" && a?.UID) {
+          existingUids.push(a.UID);
+        } else if (typeof a === "string" && a.length > 0) {
+          namesToCreate.push(a);
+        }
+      });
+
+      this.loading = true;
+
+      if (namesToCreate.length === 0) {
+        this.$emit("confirm", existingUids);
+        this.loading = false;
+        return;
       }
+
+      Promise.all(
+        namesToCreate.map((title) => {
+          const newAlbum = new Album({ Title: title, UID: "", Favorite: false });
+          return newAlbum
+            .save()
+            .then((a) => a?.UID)
+            .catch(() => null);
+        })
+      )
+        .then((created) => {
+          const createdUids = created.filter((u) => typeof u === "string" && u.length > 0);
+          this.$emit("confirm", [...existingUids, ...createdUids]);
+        })
+        .finally(() => {
+          this.loading = false;
+        });
     },
     onLoad() {
       this.loading = true;
@@ -137,9 +172,12 @@ export default {
     },
     reset() {
       this.loading = false;
-      this.newAlbum = null;
+      this.selectedAlbums = [];
       this.albums = [];
       this.items = [];
+    },
+    removeSelection(index) {
+      this.selectedAlbums.splice(index, 1);
     },
     load(q) {
       if (this.loading) {
