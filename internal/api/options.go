@@ -10,7 +10,7 @@ import (
 //
 //	@Summary	returns CORS headers with an empty response body
 //	@Id			Options
-//	@Tags		Dev
+//	@Tags		API
 //	@Success	204
 //	@Router		/api/v1/{any} [options]
 func Options(router *gin.RouterGroup) {
