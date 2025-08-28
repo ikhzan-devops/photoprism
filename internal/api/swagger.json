@@ -4629,9 +4629,9 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Server"
+                    "Debug"
                 ],
-                "summary": "reports if the server is operational",
+                "summary": "responds with status code 200 if the server is operational",
                 "operationId": "GetStatus",
                 "responses": {
                     "200": {
@@ -8897,6 +8897,12 @@
                 1000000,
                 1000000000,
                 60000000000,
+                3600000000000,
+                1,
+                1000,
+                1000000,
+                1000000000,
+                60000000000,
                 3600000000000
             ],
             "x-enum-varnames": [
@@ -8918,6 +8924,12 @@
                 "Hour",
                 "minDuration",
                 "maxDuration",
+                "Nanosecond",
+                "Microsecond",
+                "Millisecond",
+                "Second",
+                "Minute",
+                "Hour",
                 "Nanosecond",
                 "Microsecond",
                 "Millisecond",
