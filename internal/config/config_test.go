@@ -187,18 +187,6 @@ func TestConfig_ThumbCachePath(t *testing.T) {
 	assert.True(t, strings.HasSuffix(c.ThumbCachePath(), "storage/testdata/cache/thumbnails"))
 }
 
-func TestConfig_AssetsPath(t *testing.T) {
-	c := NewConfig(CliTestContext())
-
-	assert.True(t, strings.HasSuffix(c.AssetsPath(), "/assets"))
-}
-
-func TestConfig_CustomAssetsPath(t *testing.T) {
-	c := NewConfig(CliTestContext())
-
-	assert.Equal(t, "", c.CustomAssetsPath())
-}
-
 func TestConfig_AdminUser(t *testing.T) {
 	c := NewConfig(CliTestContext())
 
