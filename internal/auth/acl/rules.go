@@ -108,6 +108,10 @@ var Rules = ACL{
 		RoleAdmin:  GrantFullAccess,
 		RoleClient: GrantUseOwn,
 	},
+	ResourcePortal: Roles{
+		RoleAdmin:  GrantFullAccess,
+		RoleClient: GrantSearchDownloadUpdateOwn,
+	},
 	ResourceFeedback: Roles{
 		RoleAdmin: GrantFullAccess,
 	},

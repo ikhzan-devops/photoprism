@@ -14,6 +14,7 @@ services:
       - "2345:2342" # HTTP port (host:container)
     labels:
       - "traefik.enable=true"
+      - "traefik.docker.network=photoprism"
       - "traefik.http.services.latest.loadbalancer.server.port=2342"
       - "traefik.http.routers.latest.entrypoints=websecure"
       - "traefik.http.routers.latest.rule=Host(`local.localssl.dev`)"

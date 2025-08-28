@@ -38,7 +38,7 @@ var indexFlags = []cli.Flag{
 	&cli.BoolFlag{
 		Name:    "cleanup",
 		Aliases: []string{"c"},
-		Usage:   "remove orphan index entries and thumbnails",
+		Usage:   "removes orphan index entries and thumbnails",
 	},
 }
 

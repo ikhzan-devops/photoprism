@@ -32,6 +32,7 @@ services:
       - "traefik:dummy-webdav.localssl.dev"
     labels:
       - "traefik.enable=true"
+      - "traefik.docker.network=photoprism"
       - "traefik.http.services.photoprism.loadbalancer.server.port=2342"
       - "traefik.http.services.photoprism.loadbalancer.server.scheme=http"
       - "traefik.http.routers.photoprism.entrypoints=websecure"

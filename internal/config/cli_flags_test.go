@@ -30,14 +30,14 @@ func TestCliFlags_Replace(t *testing.T) {
 		Name:    "public",
 		Aliases: []string{"p"},
 		Hidden:  true,
-		Usage:   "disable authentication, advanced settings, and WebDAV remote access",
+		Usage:   "disables authentication, advanced settings, and WebDAV remote access",
 		EnvVars: EnvVars("PUBLIC"),
 	}}
 
 	newPublicFlag := CliFlag{Flag: &cli.BoolFlag{
 		Name:    "public",
 		Hidden:  false,
-		Usage:   "disable authentication, advanced settings, and WebDAV remote access",
+		Usage:   "disables authentication, advanced settings, and WebDAV remote access",
 		EnvVars: EnvVars("PUBLIC"),
 	}}
 
@@ -114,7 +114,7 @@ func TestCliFlags_Insert(t *testing.T) {
 		Name:    "public",
 		Aliases: []string{"p"},
 		Hidden:  true,
-		Usage:   "disable authentication, advanced settings, and WebDAV remote access",
+		Usage:   "disables authentication, advanced settings, and WebDAV remote access",
 		EnvVars: EnvVars("PUBLIC"),
 	}}
 
@@ -163,7 +163,7 @@ func TestCliFlags_InsertBefore(t *testing.T) {
 		Name:    "public",
 		Aliases: []string{"p"},
 		Hidden:  true,
-		Usage:   "disable authentication, advanced settings, and WebDAV remote access",
+		Usage:   "disables authentication, advanced settings, and WebDAV remote access",
 		EnvVars: EnvVars("PUBLIC"),
 	}}
 
@@ -214,7 +214,7 @@ func TestCliFlags_Prepend(t *testing.T) {
 		Name:    "public",
 		Aliases: []string{"p"},
 		Hidden:  true,
-		Usage:   "disable authentication, advanced settings, and WebDAV remote access",
+		Usage:   "disables authentication, advanced settings, and WebDAV remote access",
 		EnvVars: EnvVars("PUBLIC"),
 	}}
 

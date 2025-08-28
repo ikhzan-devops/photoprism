@@ -291,3 +291,8 @@ func (c *Config) ImgPath() string {
 func (c *Config) ThemePath() string {
 	return filepath.Join(c.ConfigPath(), "theme")
 }
+
+// PortalPath returns the path to portal config files.
+func (c *Config) PortalPath() string {
+	return filepath.Join(c.ConfigPath(), "portal")
+}

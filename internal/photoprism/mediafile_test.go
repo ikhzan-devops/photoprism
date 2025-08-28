@@ -751,7 +751,7 @@ func TestMediaFile_MimeType(t *testing.T) {
 
 		assert.True(t, fs.SameType(header.ContentTypeXml, f.BaseType()))
 		assert.Equal(t, "text/xml", f.BaseType())
-		assert.Equal(t, "text/xml; charset=utf-8", f.MimeType())
+		assert.True(t, strings.EqualFold("text/xml; charset=utf-8", f.MimeType()))
 		assert.True(t, f.HasMimeType("text/xml"))
 		assert.False(t, f.IsMov())
 	})

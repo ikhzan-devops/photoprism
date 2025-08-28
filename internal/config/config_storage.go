@@ -600,6 +600,16 @@ func (c *Config) CustomAssetsPath() string {
 	return ""
 }
 
+// ProfilesPath returns the path where processing profile files are stored.
+func (c *Config) ProfilesPath() string {
+	return filepath.Join(c.AssetsPath(), "profiles")
+}
+
+// IccProfilesPath returns the path where ICC color profile files are stored.
+func (c *Config) IccProfilesPath() string {
+	return filepath.Join(c.AssetsPath(), "profiles/icc")
+}
+
 // CustomStaticPath returns the custom static assets' path.
 func (c *Config) CustomStaticPath() string {
 	if dir := c.CustomAssetsPath(); dir == "" {
