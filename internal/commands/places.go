@@ -30,7 +30,7 @@ var PlacesCommands = &cli.Command{
 				&cli.BoolFlag{
 					Name:    "yes",
 					Aliases: []string{"y"},
-					Usage:   "assume \"yes\" and run non-interactively",
+					Usage:   "runs the command non-interactively",
 				},
 			},
 			Action: placesUpdateAction,

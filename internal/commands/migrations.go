@@ -39,7 +39,7 @@ var MigrationsRunCommand = &cli.Command{
 		&cli.BoolFlag{
 			Name:    "trace",
 			Aliases: []string{"t"},
-			Usage:   "show trace logs for debugging",
+			Usage:   "shows trace logs for debugging",
 		},
 	},
 	Action: migrationsRunAction,
