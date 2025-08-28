@@ -18,11 +18,11 @@ import (
 	"github.com/photoprism/photoprism/pkg/media/http/header"
 )
 
-// GetMetrics provides a prometheus-compatible metrics for monitoring.
+// GetMetrics provides a Prometheus-compatible metrics stream for monitoring.
 //
-//	@Summary	provides a prometheus-compatible metrics for monitoring
+//	@Summary	a prometheus-compatible metrics endpoint for monitoring this instance
 //	@Id			GetMetrics
-//	@Tags		Admin
+//	@Tags		Metrics
 //	@Produce	event-stream
 //	@Success	200		{object}	[]dto.MetricFamily
 //	@Failure	401,403	{object}	i18n.Response

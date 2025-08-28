@@ -2777,9 +2777,9 @@
                     "text/event-stream"
                 ],
                 "tags": [
-                    "Admin"
+                    "Metrics"
                 ],
-                "summary": "provides a prometheus-compatible metrics for monitoring",
+                "summary": "a prometheus-compatible metrics endpoint for monitoring this instance",
                 "operationId": "GetMetrics",
                 "responses": {
                     "200": {
@@ -8897,12 +8897,6 @@
                 1000000,
                 1000000000,
                 60000000000,
-                3600000000000,
-                1,
-                1000,
-                1000000,
-                1000000000,
-                60000000000,
                 3600000000000
             ],
             "x-enum-varnames": [
@@ -8924,12 +8918,6 @@
                 "Hour",
                 "minDuration",
                 "maxDuration",
-                "Nanosecond",
-                "Microsecond",
-                "Millisecond",
-                "Second",
-                "Minute",
-                "Hour",
                 "Nanosecond",
                 "Microsecond",
                 "Millisecond",
