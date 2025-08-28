@@ -25,8 +25,12 @@ import (
 
 // ZipCreate creates a zip file archive for download.
 //
+//	@Summary	creates a zip file archive for download
+//	@Id			ZipCreate
 //	@Tags		Download
-//	@Success	200	{file}	application/zip
+//	@Produce	json
+//	@Failure	400,403,404	{object}	i18n.Response
+//	@Success	200			{file}		application/zip
 //	@Router		/api/v1/zip [post]
 func ZipCreate(router *gin.RouterGroup) {
 	router.POST("/zip", func(c *gin.Context) {
@@ -149,9 +153,16 @@ func ZipCreate(router *gin.RouterGroup) {
 	})
 }
 
-// ZipDownload downloads a zip file archive.
+// ZipDownload returns a zip file archive after it has been created.
 //
-// GET /api/v1/zip/:filename
+//	@Summary	returns a zip file archive after it has been created
+//	@Id			ZipDownload
+//	@Tags		Download
+//	@Produce	application/zip
+//	@Failure	403,404,500	{object}	i18n.Response
+//	@Success	200			{file}		application/zip
+//	@Param		filename	path		string	true	"zip archive filename returned by the POST /api/v1/zip endpoint"
+//	@Router		/api/v1/zip/{filename} [get]
 func ZipDownload(router *gin.RouterGroup) {
 	router.GET("/zip/:filename", func(c *gin.Context) {
 		if InvalidDownloadToken(c) {

@@ -402,8 +402,8 @@
                     "application/zip"
                 ],
                 "tags": [
-                    "Images",
-                    "Albums"
+                    "Albums",
+                    "Download"
                 ],
                 "summary": "streams the album contents as zip archive",
                 "operationId": "DownloadAlbum",
@@ -5383,14 +5383,84 @@
         },
         "/api/v1/zip": {
             "post": {
+                "produces": [
+                    "application/json"
+                ],
                 "tags": [
                     "Download"
+                ],
+                "summary": "creates a zip file archive for download",
+                "operationId": "ZipCreate",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "file"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/zip/{filename}": {
+            "get": {
+                "produces": [
+                    "application/zip"
+                ],
+                "tags": [
+                    "Download"
+                ],
+                "summary": "returns a zip file archive after it has been created",
+                "operationId": "ZipDownload",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "zip archive filename returned by the POST /api/v1/zip endpoint",
+                        "name": "filename",
+                        "in": "path",
+                        "required": true
+                    }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
                             "type": "file"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
                         }
                     }
                 }
@@ -8812,12 +8882,16 @@
                 1000000000,
                 60000000000,
                 3600000000000,
+                -9223372036854775808,
+                9223372036854775807,
                 1,
                 1000,
                 1000000,
                 1000000000,
                 60000000000,
                 3600000000000,
+                -9223372036854775808,
+                9223372036854775807,
                 1,
                 1000,
                 1000000,
@@ -8834,12 +8908,16 @@
                 "Second",
                 "Minute",
                 "Hour",
+                "minDuration",
+                "maxDuration",
                 "Nanosecond",
                 "Microsecond",
                 "Millisecond",
                 "Second",
                 "Minute",
                 "Hour",
+                "minDuration",
+                "maxDuration",
                 "Nanosecond",
                 "Microsecond",
                 "Millisecond",
