@@ -346,7 +346,7 @@ var Flags = CliFlags{
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "backup-database",
-			Usage:   "creates regular backups based on the configured schedule",
+			Usage:   "performs regular backups based on the configured schedule",
 			EnvVars: EnvVars("BACKUP_DATABASE"),
 		}, DocDefault: "true"}, {
 		Flag: &cli.BoolFlag{
