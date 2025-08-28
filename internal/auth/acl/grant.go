@@ -125,6 +125,14 @@ var (
 		ActionView:      true,
 		ActionUpdateOwn: true,
 	}
+	GrantSearchDownloadUpdateOwn = Grant{
+		AccessShared:    true,
+		AccessOwn:       true,
+		ActionSearch:    true,
+		ActionView:      true,
+		ActionDownload:  true,
+		ActionUpdateOwn: true,
+	}
 	GrantSubscribeOwn = Grant{
 		AccessOwn:       true,
 		ActionSubscribe: true,

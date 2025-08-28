@@ -272,6 +272,13 @@ func TestConfig_ThemePath(t *testing.T) {
 	assert.Equal(t, "/go/src/github.com/photoprism/photoprism/storage/testdata/config/theme", path)
 }
 
+func TestConfig_PortalPath(t *testing.T) {
+	c := NewConfig(CliTestContext())
+
+	path := c.PortalPath()
+	assert.Equal(t, "/go/src/github.com/photoprism/photoprism/storage/testdata/config/portal", path)
+}
+
 func TestConfig_IndexWorkers(t *testing.T) {
 	c := NewConfig(CliTestContext())
 
