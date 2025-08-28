@@ -5400,10 +5400,10 @@
             "options": {
                 "description": "A preflight request is automatically issued by a browser and in normal cases, front-end developers don't need to craft such requests themselves. It appears when request is qualified as \"to be preflighted\" and omitted for simple requests.",
                 "tags": [
-                    "API"
+                    "CORS"
                 ],
                 "summary": "returns CORS headers with an empty response body",
-                "operationId": "CORS",
+                "operationId": "Options",
                 "responses": {
                     "204": {
                         "description": "No Content"
@@ -8812,16 +8812,12 @@
                 1000000000,
                 60000000000,
                 3600000000000,
-                -9223372036854775808,
-                9223372036854775807,
                 1,
                 1000,
                 1000000,
                 1000000000,
                 60000000000,
                 3600000000000,
-                -9223372036854775808,
-                9223372036854775807,
                 1,
                 1000,
                 1000000,
@@ -8838,16 +8834,12 @@
                 "Second",
                 "Minute",
                 "Hour",
-                "minDuration",
-                "maxDuration",
                 "Nanosecond",
                 "Microsecond",
                 "Millisecond",
                 "Second",
                 "Minute",
                 "Hour",
-                "minDuration",
-                "maxDuration",
                 "Nanosecond",
                 "Microsecond",
                 "Millisecond",
