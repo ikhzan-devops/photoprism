@@ -12,6 +12,7 @@ services:
       - "2344:2342" # HTTP port (host:container)
     labels:
       - "traefik.enable=true"
+      - "traefik.docker.network=photoprism"
       - "traefik.http.services.preview.loadbalancer.server.port=2342"
       - "traefik.http.routers.preview.entrypoints=websecure"
       - "traefik.http.routers.preview.rule=Host(`preview.localssl.dev`)"
