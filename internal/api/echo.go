@@ -12,7 +12,7 @@ import (
 //
 //	@Summary	returns the request and response headers as JSON if debug mode is enabled
 //	@Id			Echo
-//	@Tags		API
+//	@Tags		Debug
 //	@Success	200
 //	@Router		/api/v1/echo [get]
 func Echo(router *gin.RouterGroup) {

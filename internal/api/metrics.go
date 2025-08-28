@@ -9,6 +9,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/collectors"
 	"github.com/prometheus/client_golang/prometheus/promauto"
+	dto "github.com/prometheus/client_model/go"
 	"github.com/prometheus/common/expfmt"
 
 	"github.com/photoprism/photoprism/internal/auth/acl"
@@ -17,9 +18,15 @@ import (
 	"github.com/photoprism/photoprism/pkg/media/http/header"
 )
 
-// GetMetrics provides a prometheus-compatible metrics endpoint for monitoring.
+// GetMetrics provides a prometheus-compatible metrics for monitoring.
 //
-// GET /api/v1/metrics
+//	@Summary	provides a prometheus-compatible metrics for monitoring
+//	@Id			GetMetrics
+//	@Tags		Admin
+//	@Produce	event-stream
+//	@Success	200		{object}	[]dto.MetricFamily
+//	@Failure	401,403	{object}	i18n.Response
+//	@Router		/api/v1/metrics [get]
 func GetMetrics(router *gin.RouterGroup) {
 	router.GET("/metrics", func(c *gin.Context) {
 		s := Auth(c, acl.ResourceMetrics, acl.AccessAll)
@@ -43,14 +50,18 @@ func GetMetrics(router *gin.RouterGroup) {
 			registerCountMetrics(factory, counts)
 			registerBuildInfoMetric(factory, conf.ClientPublic())
 
-			metrics, err := reg.Gather()
+			var metrics []*dto.MetricFamily
+			var err error
+
+			metrics, err = reg.Gather()
+
 			if err != nil {
 				logErr("metrics", err)
 				return false
 			}
 
 			for _, metric := range metrics {
-				if _, err := expfmt.MetricFamilyToText(w, metric); err != nil {
+				if _, err = expfmt.MetricFamilyToText(w, metric); err != nil {
 					logErr("metrics", err)
 					return false
 				}
