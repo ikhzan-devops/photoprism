@@ -100,7 +100,7 @@ func Vips(imageName string, imageBuffer []byte, hash, thumbPath string, width, h
 			// a thumbnail file. I can't find a ref on what colour space
 			// this is, so I'm assuming without evidence that they are also srgb.
 		default:
-			log.Warnf("exif in %s has unknown interop index %s", clean.Log(filepath.Base(imageName)), ii)
+			log.Debugf("exif in %s has unknown interop index %s", clean.Log(filepath.Base(imageName)), ii)
 		}
 		if fallbackProfile != "" {
 			// icc profile gets embedded here
