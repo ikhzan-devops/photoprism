@@ -279,7 +279,7 @@ func TestConfig_PortalPath(t *testing.T) {
 	c := NewConfig(CliTestContext())
 
 	path := c.PortalPath()
-	assert.Equal(t, "/go/src/github.com/photoprism/photoprism/storage/testdata/config/portal", path)
+	assert.Equal(t, "/go/src/github.com/photoprism/photoprism/storage/testdata/"+functions.PhotoPrismTestToFolderName()+"/config/portal", path)
 }
 
 func TestConfig_IndexWorkers(t *testing.T) {
