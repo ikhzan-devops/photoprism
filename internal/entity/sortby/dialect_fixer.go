@@ -34,7 +34,6 @@ var PostgreSQLOrderByReplacer = strings.NewReplacer(PostgreSQLOrderColumnsSlice[
 // DialectOrderByFix updates order by strings to comply with requirements for specific database dialects.
 func DialectOrderByFix(s string, dialect string) string {
 	if dialect == Postgres {
-		// ToDo: Fix the string here.
 		return PostgreSQLOrderColumnsMatch.ReplaceAllStringFunc(s, PostgreSQLOrderByFix)
 	} else {
 		return s

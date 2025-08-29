@@ -101,8 +101,6 @@ func (m *Photo) EstimateLocation(force bool) {
 		err = UnscopedDb().
 			Where("photo_lat <> 0 AND photo_lng <> 0").
 			Where("place_src <> '' AND place_src <> ? AND place_id IS NOT NULL AND place_id <> '' AND place_id <> 'zz'", SrcEstimate).
-			// I do not know why the following fails to work.  ToDo: write a test harness to prove bug in Gorm/PostgreSQL driver?
-			// Where("taken_src <> '' AND taken_at BETWEEN to_date(?, 'YYYY-MM-DD HH24:MI:SS') AND to_date(?, 'YYYY-MM-DD HH24:MI:SS')", rangeMin, rangeMax).  // photo: failed to encode args[1]: unable to encode time.Date(2016, time.November, 9, 19, 7, 18, 0, time.UTC) into text format for text (OID 25): cannot find encode plan while estimating position
 			Where("taken_src <> '' AND taken_at BETWEEN to_date(?, 'YYYY-MM-DD HH24:MI:SS') AND to_date(?, 'YYYY-MM-DD HH24:MI:SS')", rangeMin.Format(time.DateTime), rangeMax.Format(time.DateTime)).
 			Clauses(clause.OrderBy{Expression: clause.Expr{
 				SQL:                "ABS(EXTRACT(EPOCH from (taken_at - to_date(?, 'YYYY-MM-DD HH24:MI:SS'))))",
