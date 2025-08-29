@@ -7,6 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/photoprism/photoprism/internal/functions"
+	"github.com/photoprism/photoprism/pkg/fs"
 	"github.com/photoprism/photoprism/pkg/rnd"
 )
 
@@ -474,13 +475,36 @@ func TestConfig_ImportAllow(t *testing.T) {
 	assert.Equal(t, "", c.ImportAllow().String())
 }
 
-func TestConfig_AssetsPath2(t *testing.T) {
+func TestConfig_AssetsPath(t *testing.T) {
 	c := NewConfig(CliTestContext())
+
+	assert.True(t, strings.HasSuffix(c.AssetsPath(), "/assets"))
 	assert.Equal(t, "/go/src/github.com/photoprism/photoprism/assets", c.AssetsPath())
 	c.options.AssetsPath = ""
 	if s := c.AssetsPath(); s != "" && s != "/opt/photoprism/assets" {
 		t.Errorf("unexpected assets path: %s", s)
 	}
+}
+
+func TestConfig_ProfilesPath(t *testing.T) {
+	c := NewConfig(CliTestContext())
+
+	result := c.ProfilesPath()
+	assert.True(t, strings.HasSuffix(result, "/assets/profiles"))
+	assert.True(t, fs.PathExists(result))
+}
+
+func TestConfig_IccProfilesPath(t *testing.T) {
+	c := NewConfig(CliTestContext())
+
+	result := c.IccProfilesPath()
+	assert.True(t, strings.HasSuffix(result, "/assets/profiles/icc"))
+}
+
+func TestConfig_CustomAssetsPath(t *testing.T) {
+	c := NewConfig(CliTestContext())
+
+	assert.Equal(t, "", c.CustomAssetsPath())
 }
 
 func TestConfig_MariadbBin(t *testing.T) {

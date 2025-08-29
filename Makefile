@@ -119,6 +119,8 @@ devtools: install-go dep-npm
 .SILENT: help;
 logs:
 	$(DOCKER_COMPOSE) logs -f
+down:
+	$(DOCKER_COMPOSE) --profile=all down --remove-orphans
 help:
 	@echo "For build instructions, visit <https://docs.photoprism.app/developer-guide/>."
 docs: swag
@@ -797,6 +799,10 @@ docker-release-plucky:
 	docker pull --platform=arm64 photoprism/develop:plucky
 	docker pull --platform=arm64 photoprism/develop:plucky-slim
 	scripts/docker/buildx-multi.sh photoprism linux/amd64,linux/arm64 ce /plucky
+start-traefik:
+	$(DOCKER_COMPOSE) up -d --wait traefik
+stop-traefik:
+	$(DOCKER_COMPOSE) down traefik
 start-local:
 	$(DOCKER_COMPOSE) -f compose.local.yaml up -d --wait
 stop-local:

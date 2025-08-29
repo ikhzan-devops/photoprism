@@ -291,6 +291,8 @@ func (c *Config) Propagate() {
 	thumb.SizeOnDemand = c.ThumbSizeUncached()
 	thumb.JpegQualityDefault = c.JpegQuality()
 	thumb.CachePublic = c.HttpCachePublic()
+	thumb.ExamplesPath = c.ExamplesPath()
+	thumb.IccProfilesPath = c.IccProfilesPath()
 	initThumbs()
 
 	// Configure video download package.

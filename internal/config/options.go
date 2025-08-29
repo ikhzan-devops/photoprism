@@ -140,6 +140,10 @@ type Options struct {
 	CORSOrigin             string        `yaml:"CORSOrigin" json:"-" flag:"cors-origin"`
 	CORSHeaders            string        `yaml:"CORSHeaders" json:"-" flag:"cors-headers"`
 	CORSMethods            string        `yaml:"CORSMethods" json:"-" flag:"cors-methods"`
+	PortalUrl              string        `yaml:"PortalUrl" json:"-" flag:"portal-url"`
+	PortalClient           string        `yaml:"PortalClient" json:"-" flag:"portal-client"`
+	PortalSecret           string        `yaml:"PortalSecret" json:"-" flag:"portal-secret"`
+	InstanceSecret         string        `yaml:"InstanceSecret" json:"-" flag:"instance-secret"`
 	HttpsProxy             string        `yaml:"HttpsProxy" json:"HttpsProxy" flag:"https-proxy"`
 	HttpsProxyInsecure     bool          `yaml:"HttpsProxyInsecure" json:"HttpsProxyInsecure" flag:"https-proxy-insecure"`
 	TrustedPlatform        string        `yaml:"TrustedPlatform" json:"-" flag:"trusted-platform"`

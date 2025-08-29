@@ -21,7 +21,7 @@ var UsersRemoveCommand = &cli.Command{
 		&cli.BoolFlag{
 			Name:    "force",
 			Aliases: []string{"f"},
-			Usage:   "don't ask for confirmation",
+			Usage:   "skips asking for confirmation",
 		},
 	},
 	Action: usersRemoveAction,

@@ -47,7 +47,7 @@ var FacesCommands = &cli.Command{
 				&cli.BoolFlag{
 					Name:    "force",
 					Aliases: []string{"f"},
-					Usage:   "remove all people and faces",
+					Usage:   "removes all people and faces",
 				},
 			},
 			Action: facesResetAction,
