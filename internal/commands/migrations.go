@@ -58,12 +58,12 @@ var MigrationsTransferCommand = &cli.Command{
 		&cli.BoolFlag{
 			Name:    "force",
 			Aliases: []string{"f"},
-			Usage:   "truncate target tables if populated",
+			Usage:   "truncates target tables if populated",
 		},
 		&cli.BoolFlag{
 			Name:    "trace",
 			Aliases: []string{"t"},
-			Usage:   "show trace logs for debugging",
+			Usage:   "shows trace logs for debugging",
 		},
 		&cli.UintFlag{
 			Name:    "batch",
