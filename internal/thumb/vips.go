@@ -9,7 +9,6 @@ import (
 
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/fs"
-	"github.com/photoprism/photoprism/pkg/media/colors"
 )
 
 // Vips generates a new thumbnail with the requested size and returns the file name and a buffer with the image bytes,
