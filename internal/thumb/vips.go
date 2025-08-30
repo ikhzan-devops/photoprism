@@ -76,39 +76,8 @@ func Vips(imageName string, imageBuffer []byte, hash, thumbPath string, width, h
 		size = vips.SizeBoth
 	}
 
-	// Many cameras will define a JPEG's colour space by setting the InteroperabilityIndex
-	// tag instead of embedding an inline ICC profile.
-	// We detect this and embed explicit icc profiles for thumbs of such images, for the benefit of Vips
-	// and web browsers, none of which pay any attention to the InteropIndex tag.
-	if iiFull := img.GetString("exif-ifd4-InteroperabilityIndex"); iiFull != "" {
-		// according to my reading, I think [:4] should be e.g. "R98\x00".
-		// However, vips always returns [:4] = "R98 ", e.g. space instead of null.
-		// I'm pulling [:3] instead to paper over this - the exif spec says "4 bytes
-		// incl null terminator" so I think this is safe.
-		ii := iiFull[:3]
-		log.Tracef("read exif and got interopindex %s, %s", ii, iiFull)
-		fallbackProfile := ""
-		switch ii {
-		case "R03":
-			// adobe rgb
-			fallbackProfile = MustGetAdobeRGB1998Path()
-		case "R98":
-			// srgb
-			// we could logically embed an srgb profile in the image here, but
-			// there's no value in doing so; everything assumes srgb anyway.
-		case "THM":
-			// a thumbnail file. I can't find a ref on what colour space
-			// this is, so I'm assuming without evidence that they are also srgb.
-		default:
-			log.Debugf("exif in %s has unknown interop index %s", clean.Log(filepath.Base(imageName)), ii)
-		}
-		if fallbackProfile != "" {
-			// icc profile gets embedded here
-			err = img.TransformICCProfileWithFallback(fallbackProfile, fallbackProfile)
-			if err != nil {
-				log.Errorf("%s in %s (set icc profile)", err, clean.Log(filepath.Base(imageName)))
-			}
-		}
+	if err = vipsSetIccProfileForInteropIndex(img, clean.Log(filepath.Base(imageName))); err != nil {
+		log.Debugf("vips: %s in %s (set icc profile for interop index tag)", err, clean.Log(filepath.Base(imageName)))
 	}
 
 	// Create thumbnail image.
@@ -230,4 +199,48 @@ func VipsRotate(img *vips.ImageRef, orientation int) error {
 	}
 
 	return err
+}
+
+func vipsSetIccProfileForInteropIndex(img *vips.ImageRef, logName string) error {
+
+	// Many cameras will define a JPEG's colour space by setting the InteroperabilityIndex
+	// tag instead of embedding an inline ICC profile.
+	// We detect this and embed explicit icc profiles for thumbs of such images, for the benefit of Vips
+	// and web browsers, none of which pay any attention to the InteropIndex tag.
+	iiFull := img.GetString("exif-ifd4-InteroperabilityIndex")
+	if iiFull == "" {
+		return nil
+	}
+
+	// according to my reading, I think [:4] should be e.g. "R98\x00".
+	// However, vips always returns [:4] = "R98 ", e.g. space instead of null.
+	// I'm pulling [:3] instead to paper over this - the exif spec says "4 bytes
+	// incl null terminator" so I think this is safe.
+	ii := iiFull[:3]
+	log.Tracef("interopindex: %s read exif and got interopindex %s, %s", logName, ii, iiFull)
+
+	if img.HasICCProfile() {
+		log.Debugf("interopindex: %s has both an interop index tag and an embedded ICC profile. ignoring.", logName)
+		return nil
+	}
+
+	fallbackProfile := ""
+	switch ii {
+	case "R03":
+		// adobe rgb
+		fallbackProfile = MustGetAdobeRGB1998Path()
+	case "R98":
+		// srgb
+		// we could logically embed an srgb profile in the image here, but
+		// there's no value in doing so; everything assumes srgb anyway.
+	case "THM":
+		// a thumbnail file. I can't find a ref on what colour space
+		// this is, so I'm assuming without evidence that they are also srgb.
+	default:
+		log.Debugf("interopindex: %s has unknown interop index %s", logName, ii)
+	}
+	if fallbackProfile == "" {
+		return nil
+	}
+	return img.TransformICCProfileWithFallback(fallbackProfile, fallbackProfile) // icc profile gets embedded here
 }
