@@ -27,9 +27,9 @@ func TestModel(t *testing.T) {
 		assert.Equal(t, "POST", method)
 
 		model, name, version := CaptionModel.Model()
-		assert.Equal(t, "qwen2.5vl:3b", model)
-		assert.Equal(t, "qwen2.5vl", name)
-		assert.Equal(t, "3b", version)
+		assert.Equal(t, "gemma3:latest", model)
+		assert.Equal(t, "gemma3", name)
+		assert.Equal(t, "latest", version)
 	})
 	t.Run("ParseName", func(t *testing.T) {
 		m := &Model{
