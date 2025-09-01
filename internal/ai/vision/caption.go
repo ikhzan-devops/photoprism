@@ -8,7 +8,7 @@ import (
 )
 
 // CaptionPromptDefault is the default prompt used to generate captions.
-var CaptionPromptDefault = `Create an interesting caption that sounds natural and briefly describes the visual content in up to 3 sentences.` +
+var CaptionPromptDefault = `Create an interesting caption that sounds natural and briefly describes the visual content in 1 to 2 sentences.` +
 	` Avoid text formatting, meta-language, and filler words.` +
 	` Do not start captions with phrases such as "This image", "The image", "This picture", "The picture", "A picture of", "Here are", or "There is".` +
 	` Instead, start describing the content by identifying the subjects, location, and any actions that might be performed.` +
