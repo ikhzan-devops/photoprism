@@ -41,8 +41,8 @@ func visionListAction(ctx *cli.Context) error {
 			modelUri, _ := model.Endpoint()
 			tags := ""
 
-			if model.Meta != nil && model.Meta.Tags != nil {
-				tags = strings.Join(model.Meta.Tags, ", ")
+			if model.TensorFlow != nil && model.TensorFlow.Tags != nil {
+				tags = strings.Join(model.TensorFlow.Tags, ", ")
 			}
 
 			rows[i] = []string{

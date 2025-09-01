@@ -13,7 +13,7 @@ var (
 		Name:       "nasnet",
 		Version:    VersionMobile,
 		Resolution: 224,
-		Meta: &tensorflow.ModelInfo{
+		TensorFlow: &tensorflow.ModelInfo{
 			TFVersion: "1.12.0",
 			Tags:      []string{"photoprism"},
 			Input: &tensorflow.PhotoInput{
@@ -45,7 +45,7 @@ var (
 		Name:       "nsfw",
 		Version:    VersionLatest,
 		Resolution: 224,
-		Meta: &tensorflow.ModelInfo{
+		TensorFlow: &tensorflow.ModelInfo{
 			TFVersion: "1.12.0",
 			Tags:      []string{"serve"},
 			Input: &tensorflow.PhotoInput{
@@ -69,7 +69,7 @@ var (
 		Name:       "facenet",
 		Version:    VersionLatest,
 		Resolution: 160,
-		Meta: &tensorflow.ModelInfo{
+		TensorFlow: &tensorflow.ModelInfo{
 			TFVersion: "1.7.1",
 			Tags:      []string{"serve"},
 			Input: &tensorflow.PhotoInput{

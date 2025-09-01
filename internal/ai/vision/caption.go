@@ -40,15 +40,14 @@ func Caption(images Files, mediaSrc media.Src) (result *CaptionResult, model *Mo
 				_, apiRequest.Model, apiRequest.Version = model.Model()
 			}
 
-			if model.System != "" {
-				apiRequest.System = model.System
-			}
+			// Set system prompt if configured.
+			apiRequest.System = model.GetSystemPrompt()
 
-			if model.Prompt != "" {
-				apiRequest.Prompt = model.Prompt
-			} else {
-				apiRequest.Prompt = CaptionPromptDefault
-			}
+			// Set caption prompt if configured.
+			apiRequest.Prompt = model.GetPrompt()
+
+			// Set caption model request options.
+			apiRequest.Options = model.GetOptions()
 
 			// Log JSON request data in trace mode.
 			apiRequest.WriteLog()

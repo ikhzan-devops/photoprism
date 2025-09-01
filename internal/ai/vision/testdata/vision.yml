@@ -4,7 +4,7 @@ Models:
   Name: nasnet
   Version: mobile
   Resolution: 224
-  Meta:
+  TensorFlow:
     Tags:
     - photoprism
     Input:
@@ -29,7 +29,7 @@ Models:
   Name: nsfw
   Version: latest
   Resolution: 224
-  Meta:
+  TensorFlow:
     Tags:
     - serve
     Input:
@@ -49,7 +49,7 @@ Models:
   Name: facenet
   Version: latest
   Resolution: 160
-  Meta:
+  TensorFlow:
     Tags:
     - serve
     Input:
