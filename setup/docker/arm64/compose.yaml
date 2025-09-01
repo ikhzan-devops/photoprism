@@ -181,7 +181,7 @@ services:
       OLLAMA_NOPRUNE: "false"          # disables pruning of model blobs at startup
       OLLAMA_NOHISTORY: "true"         # disables readline history
       OLLAMA_FLASH_ATTENTION: "false"  # enables the experimental flash attention feature
-      OLLAMA_KV_CACHE_TYPE: "f16"      # see https://mitjamartini.com/blog/kv-cache-quantization-in-ollama/
+      OLLAMA_KV_CACHE_TYPE: "f16"      # cache quantization (f16, q8_0, or q4_0)
       OLLAMA_SCHED_SPREAD: "false"     # allows scheduling models across all GPUs.
       OLLAMA_NEW_ENGINE: "true"        # enables the new Ollama engine
       # OLLAMA_DEBUG: "true"             # shows additional debug information

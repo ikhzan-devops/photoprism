@@ -90,7 +90,7 @@ var (
 	CaptionModel = &Model{
 		Type:       ModelTypeCaption,
 		Name:       CaptionModelDefault,
-		Version:    Version3B,
+		Version:    VersionLatest,
 		Resolution: 720, // Original aspect ratio, with a max size of 720 x 720 pixels.
 		Prompt:     CaptionPromptDefault,
 		Service: Service{
