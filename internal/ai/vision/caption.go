@@ -8,7 +8,7 @@ import (
 )
 
 // CaptionPromptDefault is the default prompt used to generate captions.
-var CaptionPromptDefault = `Create an interesting caption that sounds natural and briefly describes the visual content in up to 3 sentences.` +
+var CaptionPromptDefault = `Create an interesting caption that sounds natural and briefly describes the visual content in 1 to 2 sentences.` +
 	` Avoid text formatting, meta-language, and filler words.` +
 	` Do not start captions with phrases such as "This image", "The image", "This picture", "The picture", "A picture of", "Here are", or "There is".` +
 	` Instead, start describing the content by identifying the subjects, location, and any actions that might be performed.` +
@@ -40,15 +40,14 @@ func Caption(images Files, mediaSrc media.Src) (result *CaptionResult, model *Mo
 				_, apiRequest.Model, apiRequest.Version = model.Model()
 			}
 
-			if model.System != "" {
-				apiRequest.System = model.System
-			}
+			// Set system prompt if configured.
+			apiRequest.System = model.GetSystemPrompt()
 
-			if model.Prompt != "" {
-				apiRequest.Prompt = model.Prompt
-			} else {
-				apiRequest.Prompt = CaptionPromptDefault
-			}
+			// Set caption prompt if configured.
+			apiRequest.Prompt = model.GetPrompt()
+
+			// Set caption model request options.
+			apiRequest.Options = model.GetOptions()
 
 			// Log JSON request data in trace mode.
 			apiRequest.WriteLog()
