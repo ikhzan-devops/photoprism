@@ -19,6 +19,7 @@ var modelMutex = sync.Mutex{}
 var (
 	VersionLatest = "latest"
 	VersionMobile = "mobile"
+	Version3B     = "3b"
 )
 
 // Model represents a computer vision model configuration.

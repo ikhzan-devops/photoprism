@@ -66,7 +66,7 @@ Models:
       Outputs: 512
 - Type: caption
   Name: qwen2.5vl
-  Version: latest
+  Version: 3b
   Prompt: Create an interesting caption that sounds natural and briefly describes
     the visual content in 1 to 2 sentences. Avoid text formatting, meta-language,
     and filler words. Do not start captions with phrases such as "This image", "The
@@ -76,8 +76,9 @@ Models:
     if necessary for a proper understanding.
   Resolution: 720
   Service:
-    FileScheme: data
-    RequestFormat: vision
-    ResponseFormat: vision
+    Uri: http://ollama:11434/api/generate
+    FileScheme: base64
+    RequestFormat: ollama
+    ResponseFormat: ollama
 Thresholds:
   Confidence: 10

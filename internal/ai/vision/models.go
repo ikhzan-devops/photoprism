@@ -90,14 +90,14 @@ var (
 	CaptionModel = &Model{
 		Type:       ModelTypeCaption,
 		Name:       CaptionModelDefault,
-		Version:    VersionLatest,
+		Version:    Version3B,
 		Resolution: 720, // Original aspect ratio, with a max size of 720 x 720 pixels.
 		Prompt:     CaptionPromptDefault,
 		Service: Service{
-			// Uri:            "http://photoprism-vision:5000/api/v1/vision/caption",
-			FileScheme:     scheme.Data,
-			RequestFormat:  ApiFormatVision,
-			ResponseFormat: ApiFormatVision,
+			Uri:            "http://ollama:11434/api/generate",
+			FileScheme:     scheme.Base64,
+			RequestFormat:  ApiFormatOllama,
+			ResponseFormat: ApiFormatOllama,
 		},
 	}
 	DefaultModels     = Models{NasnetModel, NsfwModel, FacenetModel, CaptionModel}
