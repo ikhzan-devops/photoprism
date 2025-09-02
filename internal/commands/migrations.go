@@ -38,7 +38,7 @@ var MigrationsRunCommand = &cli.Command{
 		&cli.BoolFlag{
 			Name:    "failed",
 			Aliases: []string{"f"},
-			Usage:   "run previously failed migrations",
+			Usage:   "runs previously failed migrations",
 		},
 		&cli.BoolFlag{
 			Name:    "trace",

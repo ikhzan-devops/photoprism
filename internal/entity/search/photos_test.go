@@ -2363,6 +2363,40 @@ func TestPhotos(t *testing.T) {
 			assert.Empty(t, p.PhotoTitle)
 		}
 	})
+	t.Run("name photo|41", func(t *testing.T) {
+		var f form.SearchPhotos
+
+		f.Name = "photo\\|41"
+		f.Merged = true
+
+		photos, _, err := Photos(f)
+
+		if err != nil {
+			t.Fatal(err)
+		}
+		assert.Equal(t, 1, len(photos))
+
+		for _, p := range photos {
+			assert.NotEmpty(t, p.PhotoName)
+		}
+	})
+	t.Run("name:photo|41", func(t *testing.T) {
+		var f form.SearchPhotos
+
+		f.Query = "name:photo\\|41"
+		f.Merged = true
+
+		photos, _, err := Photos(f)
+
+		if err != nil {
+			t.Fatal(err)
+		}
+		assert.Equal(t, 1, len(photos))
+
+		for _, p := range photos {
+			assert.NotEmpty(t, p.PhotoName)
+		}
+	})
 	t.Run("form.album as6sg6bipotaajfa", func(t *testing.T) {
 		var f form.SearchPhotos
 
