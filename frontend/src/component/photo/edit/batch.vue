@@ -894,6 +894,8 @@ export default {
         if (processedValue === previousValue) {
           this.formData[fieldName].action = this.actions.none;
         }
+        // Auto-clamp only when date is fully known (no unknown/mixed) per spec.
+        this.clampBatchDayIfResolvable();
       } else if (fieldName === "Type") {
         // Special logic for the Type field
         const processedValue = newValue.value !== undefined ? newValue.value : newValue;
@@ -909,6 +911,35 @@ export default {
         if (newVal === previousValue) {
           this.formData[fieldName].action = this.actions.none;
         }
+      }
+    },
+    // Helpers for batch clamping when Month/Year are fully known and not mixed
+    batchYear() {
+      const y = parseInt(this.formData?.Year?.value, 10);
+      return isNaN(y) ? 0 : y;
+    },
+    batchMonth() {
+      const m = parseInt(this.formData?.Month?.value, 10);
+      return isNaN(m) ? 0 : m;
+    },
+    isBatchDateResolvable() {
+      // Only if both Month and Year are > 0 and their initial state was not mixed
+      const y = this.batchYear();
+      const m = this.batchMonth();
+      const yearMixed = !!this.formData?.Year?.mixed;
+      const monthMixed = !!this.formData?.Month?.mixed;
+      return y > 0 && m > 0 && !yearMixed && !monthMixed;
+    },
+    clampBatchDayIfResolvable() {
+      if (!this.isBatchDateResolvable()) return;
+      const y = this.batchYear();
+      const m = this.batchMonth();
+      const d = parseInt(this.formData?.Day?.value, 10);
+      if (isNaN(d) || d <= 0) return; // Unknown or empty: do nothing in batch UI
+      const maxDay = new Date(Date.UTC(y, m, 0)).getUTCDate();
+      if (d > maxDay) {
+        this.formData.Day.value = maxDay;
+        this.formData.Day.action = this.actions.update;
       }
     },
     changeToggleValue(newValue, fieldName) {

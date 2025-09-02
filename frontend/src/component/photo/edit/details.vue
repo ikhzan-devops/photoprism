@@ -490,34 +490,76 @@ export default {
     setDay(v) {
       if (Number.isInteger(v?.value)) {
         this.view.model.Day = v?.value;
+        this.clampDayToValidRange();
         this.syncTime();
       } else if (!v) {
+        // Day set to unknown -> set Year to unknown and update TakenAtLocal day to 01
         this.view.model.Day = -1;
+        this.view.model.Year = -1;
+        this.updateModel();
       } else if (this.rules.isNumberRange(v, 1, 31)) {
         this.view.model.Day = Number(v);
+        this.clampDayToValidRange();
         this.syncTime();
       }
     },
     setMonth(v) {
       if (Number.isInteger(v?.value)) {
         this.view.model.Month = v?.value;
+        this.clampDayToValidRange();
         this.syncTime();
       } else if (!v) {
+        // Month set to unknown -> set Year to unknown
         this.view.model.Month = -1;
+        this.view.model.Year = -1;
+        this.syncTime();
       } else if (this.rules.isNumberRange(v, 1, 12)) {
         this.view.model.Month = Number(v);
+        this.clampDayToValidRange();
         this.syncTime();
       }
     },
     setYear(v) {
       if (Number.isInteger(v?.value)) {
         this.view.model.Year = v?.value;
+        this.clampDayToValidRange();
         this.syncTime();
       } else if (!v) {
+        // Year set to unknown
         this.view.model.Year = -1;
+        this.syncTime();
       } else if (this.rules.isNumberRange(v, 1000, Number(new Date().getUTCFullYear()))) {
         this.view.model.Year = Number(v);
+        this.clampDayToValidRange();
         this.syncTime();
+      }
+    },
+    // Returns the effective year used for validation: explicit year or from TakenAtLocal if unknown
+    effectiveYear() {
+      if (this.view?.model?.Year && this.view.model.Year > 0) return this.view.model.Year;
+      const y = this.view?.model?.TakenAtLocal
+        ? parseInt(this.view.model.TakenAtLocal.substring(0, 4))
+        : new Date().getUTCFullYear();
+      return isNaN(y) ? new Date().getUTCFullYear() : y;
+    },
+    // Returns the effective month used for validation: explicit month or from TakenAtLocal if unknown
+    effectiveMonth() {
+      if (this.view?.model?.Month && this.view.model.Month > 0) return this.view.model.Month;
+      const m = this.view?.model?.TakenAtLocal
+        ? parseInt(this.view.model.TakenAtLocal.substring(5, 7))
+        : new Date().getUTCMonth() + 1;
+      return isNaN(m) ? new Date().getUTCMonth() + 1 : m;
+    },
+    // Clamp day to the maximum valid day of the current effective month/year
+    clampDayToValidRange() {
+      const day = this.view?.model?.Day || 0;
+      if (day <= 0) return; // Unknown day stays unknown
+      const y = this.effectiveYear();
+      const m = this.effectiveMonth();
+      // JS Date trick: day 0 of next month yields last day of current month
+      const maxDay = new Date(Date.UTC(y, m, 0)).getUTCDate();
+      if (day > maxDay) {
+        this.view.model.Day = maxDay;
       }
     },
     setTime() {
