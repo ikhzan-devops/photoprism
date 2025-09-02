@@ -108,7 +108,6 @@ func TestFilesByUID(t *testing.T) {
 		}
 		assert.Equal(t, 0, len(files))
 	})
-	//TODO check if this still fails on mariadb
 	t.Run("Error", func(t *testing.T) {
 		files, err := FilesByUID([]string{"fs6sg6bw45bnlxxx"}, -100, 0)
 
