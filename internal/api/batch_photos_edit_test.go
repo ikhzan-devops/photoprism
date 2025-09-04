@@ -381,11 +381,10 @@ func TestBatchPhotosEdit(t *testing.T) {
 		assert.Equal(t, "{\"value\":true,\"mixed\":false,\"action\":\"none\"}", privateAfter.String())
 		panoramaAfter := gjson.Get(saveValues, "Panorama")
 		assert.Equal(t, "{\"value\":true,\"mixed\":false,\"action\":\"none\"}", panoramaAfter.String())
-		//TODO Implement this logic
-		//takenAfter := gjson.Get(saveValues, "TakenAt")
-		//assert.Contains(t, takenAfter.String(), "{\"value\":\"2000-11")
-		//takenLocalAfter := gjson.Get(saveValues, "TakenAtLocal")
-		//assert.Contains(t, takenLocalAfter.String(), "{\"value\":\"2000-11")
+		takenAfter := gjson.Get(saveValues, "TakenAt")
+		assert.Contains(t, takenAfter.String(), "{\"value\":\"2000-11")
+		takenLocalAfter := gjson.Get(saveValues, "TakenAtLocal")
+		assert.Contains(t, takenLocalAfter.String(), "{\"value\":\"2000-11")
 
 		GetPhoto(router)
 		r1 := PerformRequest(app, "GET", "/api/v1/photos/pqkm36fjqvset9uz")
