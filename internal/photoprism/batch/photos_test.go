@@ -1,234 +1,233 @@
 package batch
 
-// TODO move test once related function is completed
-/*func TestNewPhotosForm(t *testing.T) {
-	t.Run("Success", func(t *testing.T) {
-		var photos search.PhotoResults
+import (
+	"encoding/json"
+	"os"
+	"testing"
+	"time"
 
-		dataFile := fs.Abs("./testdata/photos.json")
-		data, dataErr := os.ReadFile(dataFile)
+	"github.com/photoprism/photoprism/internal/entity/search"
+	"github.com/photoprism/photoprism/pkg/fs"
+	"github.com/stretchr/testify/assert"
+)
 
-		if dataErr != nil {
-			t.Fatal(dataErr)
-		}
+func TestNewPhotosForm_FromJSON(t *testing.T) {
+	var photos search.PhotoResults
 
-		jsonErr := json.Unmarshal(data, &photos)
+	dataFile := fs.Abs("./testdata/photos.json")
+	data, err := os.ReadFile(dataFile)
+	if err != nil {
+		t.Fatal(err)
+	}
 
-		if jsonErr != nil {
-			t.Fatal(jsonErr)
-		}
+	if err := json.Unmarshal(data, &photos); err != nil {
+		t.Fatal(err)
+	}
 
-		frm := NewPhotosForm(photos)
+	// Avoid DB access in unit tests by clearing PhotoUIDs (skips preload)
+	for i := range photos {
+		photos[i].PhotoUID = ""
+	}
 
-		// Photo metadata.
-		assert.Equal(t, "", frm.PhotoType.Value)
-		assert.Equal(t, true, frm.PhotoType.Mixed)
-		assert.Equal(t, "", frm.PhotoTitle.Value)
-		assert.Equal(t, true, frm.PhotoTitle.Mixed)
-		assert.Equal(t, "", frm.PhotoCaption.Value)
-		assert.Equal(t, true, frm.PhotoCaption.Mixed)
-		assert.Equal(t, false, frm.PhotoFavorite.Value)
-		assert.Equal(t, true, frm.PhotoFavorite.Mixed)
-		assert.Equal(t, false, frm.PhotoPrivate.Value)
-		assert.Equal(t, false, frm.PhotoPrivate.Mixed)
-		assert.Equal(t, 1000003, frm.CameraID.Value)
-		assert.Equal(t, false, frm.CameraID.Mixed)
-		assert.Equal(t, 1000000, frm.LensID.Value)
-		assert.Equal(t, false, frm.LensID.Mixed)
-		assert.Equal(t, 0, frm.PhotoIso.Value)
-		assert.Equal(t, true, frm.PhotoIso.Mixed)
-		assert.Equal(t, float32(0), frm.PhotoFNumber.Value)
-		assert.Equal(t, true, frm.PhotoFNumber.Mixed)
-		assert.Equal(t, 0, frm.PhotoFocalLength.Value)
-		assert.Equal(t, true, frm.PhotoFocalLength.Mixed)
-		assert.Equal(t, float64(0), frm.PhotoLat.Value)
-		assert.Equal(t, true, frm.PhotoLat.Mixed)
-		assert.Equal(t, float64(0), frm.PhotoLng.Value)
-		assert.Equal(t, true, frm.PhotoLng.Mixed)
-		assert.Equal(t, 0, frm.PhotoAltitude.Value)
-		assert.Equal(t, true, frm.PhotoAltitude.Mixed)
+	frm := NewPhotosForm(photos)
 
-		// Additional details.
-		assert.Equal(t, "", frm.DetailsKeywords.Value)
-		assert.Equal(t, true, frm.DetailsKeywords.Mixed)
-		assert.Equal(t, "", frm.DetailsSubject.Value)
-		assert.Equal(t, true, frm.DetailsSubject.Mixed)
-		assert.Equal(t, "", frm.DetailsArtist.Value)
-		assert.Equal(t, true, frm.DetailsArtist.Mixed)
-		assert.Equal(t, "", frm.DetailsCopyright.Value)
-		assert.Equal(t, true, frm.DetailsCopyright.Mixed)
-		assert.Equal(t, "", frm.DetailsLicense.Value)
-		assert.Equal(t, true, frm.DetailsLicense.Mixed)
-	})
-	t.Run("Success", func(t *testing.T) {
-		photo1 := search.Photo{
-			ID:            111115411,
-			TakenSrc:      "",
-			TimeZone:      "",
-			PhotoUID:      "ps6sg6be2lvl0x41",
-			PhotoType:     "image",
-			PhotoTitle:    "Same Title",
-			PhotoCountry:  "de",
-			PhotoPrivate:  true,
-			PhotoPanorama: true,
-			PhotoScan:     true,
-			PhotoFavorite: false,
-			CameraID:      1,
-			LensID:        2,
-			PhotoAltitude: -10,
-			PhotoLat:      48.519234,
-			PhotoLng:      9.057997,
-			PhotoDay:      4,
-			PhotoMonth:    5,
-			PhotoYear:     2021,
-		}
+	// Photo metadata.
+	assert.Equal(t, "", frm.PhotoType.Value)
+	assert.Equal(t, true, frm.PhotoType.Mixed)
+	assert.Equal(t, "", frm.PhotoTitle.Value)
+	assert.Equal(t, true, frm.PhotoTitle.Mixed)
+	assert.Equal(t, "", frm.PhotoCaption.Value)
+	assert.Equal(t, true, frm.PhotoCaption.Mixed)
+	assert.Equal(t, false, frm.PhotoFavorite.Value)
+	assert.Equal(t, true, frm.PhotoFavorite.Mixed)
+	assert.Equal(t, false, frm.PhotoPrivate.Value)
+	assert.Equal(t, false, frm.PhotoPrivate.Mixed)
+	assert.Equal(t, 1000003, frm.CameraID.Value)
+	assert.Equal(t, false, frm.CameraID.Mixed)
+	assert.Equal(t, 1000000, frm.LensID.Value)
+	assert.Equal(t, false, frm.LensID.Mixed)
+	assert.Equal(t, 0, frm.PhotoIso.Value)
+	assert.Equal(t, true, frm.PhotoIso.Mixed)
+	assert.Equal(t, float32(0), frm.PhotoFNumber.Value)
+	assert.Equal(t, true, frm.PhotoFNumber.Mixed)
+	assert.Equal(t, 0, frm.PhotoFocalLength.Value)
+	assert.Equal(t, true, frm.PhotoFocalLength.Mixed)
+	assert.Equal(t, float64(0), frm.PhotoLat.Value)
+	assert.Equal(t, true, frm.PhotoLat.Mixed)
+	assert.Equal(t, float64(0), frm.PhotoLng.Value)
+	assert.Equal(t, true, frm.PhotoLng.Mixed)
+	assert.Equal(t, 0, frm.PhotoAltitude.Value)
+	assert.Equal(t, true, frm.PhotoAltitude.Mixed)
 
-		photo2 := search.Photo{
-			ID:            111115511,
-			CreatedAt:     time.Time{},
-			TakenAt:       time.Time{},
-			TakenAtLocal:  time.Time{},
-			TakenSrc:      "",
-			TimeZone:      "",
-			PhotoUID:      "ps6sg6be2lvlx986",
-			PhotoType:     "image",
-			PhotoTitle:    "Same Title",
-			PhotoCountry:  "ca",
-			PhotoPrivate:  false,
-			PhotoPanorama: false,
-			PhotoScan:     false,
-			PhotoFavorite: true,
-			CameraID:      1,
-			LensID:        2,
-			PhotoAltitude: -15,
-			PhotoLat:      48.519234,
-			PhotoLng:      9.057997,
-			PhotoDay:      3,
-			PhotoMonth:    5,
-			PhotoYear:     2020,
-		}
+	// Additional details.
+	assert.Equal(t, "", frm.DetailsKeywords.Value)
+	assert.Equal(t, true, frm.DetailsKeywords.Mixed)
+	assert.Equal(t, "", frm.DetailsSubject.Value)
+	assert.Equal(t, true, frm.DetailsSubject.Mixed)
+	assert.Equal(t, "", frm.DetailsArtist.Value)
+	assert.Equal(t, true, frm.DetailsArtist.Mixed)
+	assert.Equal(t, "", frm.DetailsCopyright.Value)
+	assert.Equal(t, true, frm.DetailsCopyright.Mixed)
+	assert.Equal(t, "", frm.DetailsLicense.Value)
+	assert.Equal(t, true, frm.DetailsLicense.Mixed)
+}
 
-		photos := search.PhotoResults{photo1, photo2}
+func TestNewPhotosForm_TwoPhotosMixedFlags1(t *testing.T) {
+	photo1 := search.Photo{
+		ID:            111115411,
+		PhotoUID:      "",
+		PhotoType:     "image",
+		PhotoTitle:    "Same Title",
+		PhotoCountry:  "de",
+		PhotoPrivate:  true,
+		PhotoPanorama: true,
+		PhotoScan:     true,
+		PhotoFavorite: false,
+		CameraID:      1,
+		LensID:        2,
+		PhotoAltitude: -10,
+		PhotoLat:      48.519234,
+		PhotoLng:      9.057997,
+		PhotoDay:      4,
+		PhotoMonth:    5,
+		PhotoYear:     2021,
+	}
 
-		frm := NewPhotosForm(photos)
+	photo2 := search.Photo{
+		ID:            111115511,
+		CreatedAt:     time.Time{},
+		TakenAt:       time.Time{},
+		TakenAtLocal:  time.Time{},
+		PhotoUID:      "",
+		PhotoType:     "image",
+		PhotoTitle:    "Same Title",
+		PhotoCountry:  "ca",
+		PhotoPrivate:  false,
+		PhotoPanorama: false,
+		PhotoScan:     false,
+		PhotoFavorite: true,
+		CameraID:      1,
+		LensID:        2,
+		PhotoAltitude: -15,
+		PhotoLat:      48.519234,
+		PhotoLng:      9.057997,
+		PhotoDay:      3,
+		PhotoMonth:    5,
+		PhotoYear:     2020,
+	}
 
-		// Photo metadata.
-		assert.Equal(t, "image", frm.PhotoType.Value)
-		assert.Equal(t, false, frm.PhotoType.Mixed)
-		assert.Equal(t, "Same Title", frm.PhotoTitle.Value)
-		assert.Equal(t, false, frm.PhotoTitle.Mixed)
-		assert.Equal(t, "", frm.PhotoCaption.Value)
-		assert.Equal(t, false, frm.PhotoCaption.Mixed)
-		assert.Equal(t, false, frm.PhotoFavorite.Value)
-		assert.Equal(t, true, frm.PhotoFavorite.Mixed)
-		assert.Equal(t, false, frm.PhotoPrivate.Value)
-		assert.Equal(t, true, frm.PhotoPrivate.Mixed)
-		assert.Equal(t, false, frm.PhotoScan.Value)
-		assert.Equal(t, true, frm.PhotoScan.Mixed)
-		assert.Equal(t, false, frm.PhotoPanorama.Value)
-		assert.Equal(t, true, frm.PhotoPanorama.Mixed)
-		assert.Equal(t, false, frm.CameraID.Mixed)
-		assert.Equal(t, 1, frm.CameraID.Value)
-		assert.Equal(t, false, frm.CameraID.Mixed)
-		assert.Equal(t, 2, frm.LensID.Value)
-		assert.Equal(t, false, frm.LensID.Mixed)
-		assert.Equal(t, "", frm.PhotoCountry.Value)
-		assert.Equal(t, true, frm.PhotoCountry.Mixed)
-		assert.Equal(t, 0, frm.PhotoIso.Value)
-		assert.Equal(t, false, frm.PhotoIso.Mixed)
-		assert.Equal(t, float32(0), frm.PhotoFNumber.Value)
-		assert.Equal(t, false, frm.PhotoFNumber.Mixed)
-		assert.Equal(t, 0, frm.PhotoFocalLength.Value)
-		assert.Equal(t, false, frm.PhotoFocalLength.Mixed)
-		assert.Equal(t, 48.519234, frm.PhotoLat.Value)
-		assert.Equal(t, false, frm.PhotoLat.Mixed)
-		assert.Equal(t, 9.057997, frm.PhotoLng.Value)
-		assert.Equal(t, false, frm.PhotoLng.Mixed)
-		assert.Equal(t, 0, frm.PhotoAltitude.Value)
-		assert.Equal(t, true, frm.PhotoAltitude.Mixed)
-		assert.Equal(t, -2, frm.PhotoDay.Value)
-		assert.Equal(t, true, frm.PhotoDay.Mixed)
-		assert.Equal(t, 5, frm.PhotoMonth.Value)
-		assert.Equal(t, false, frm.PhotoMonth.Mixed)
-		assert.Equal(t, -2, frm.PhotoYear.Value)
-		assert.Equal(t, true, frm.PhotoYear.Mixed)
-	})
-	t.Run("Success", func(t *testing.T) {
-		photo1 := search.Photo{
-			ID:            111115411,
-			TakenSrc:      "",
-			TimeZone:      "",
-			PhotoUID:      "ps6sg6be2lvl0x41",
-			PhotoType:     "image",
-			PhotoTitle:    "Same Title",
-			PhotoCountry:  "de",
-			CameraID:      1000001,
-			LensID:        1000001,
-			PhotoDay:      3,
-			PhotoMonth:    5,
-			PhotoYear:     2020,
-			PhotoAltitude: 105,
-		}
+	photos := search.PhotoResults{photo1, photo2}
+	frm := NewPhotosForm(photos)
 
-		photo2 := search.Photo{
-			ID:            111115511,
-			CreatedAt:     time.Time{},
-			TakenAt:       time.Time{},
-			TakenAtLocal:  time.Time{},
-			TakenSrc:      "",
-			TimeZone:      "",
-			PhotoUID:      "ps6sg6be2lvlx986",
-			PhotoType:     "image",
-			PhotoTitle:    "Same Title",
-			PhotoCountry:  "",
-			CameraID:      1000000,
-			LensID:        1000000,
-			PhotoDay:      3,
-			PhotoMonth:    6,
-			PhotoYear:     2020,
-			PhotoAltitude: 105,
-		}
+	// Photo metadata.
+	assert.Equal(t, "image", frm.PhotoType.Value)
+	assert.Equal(t, false, frm.PhotoType.Mixed)
+	assert.Equal(t, "Same Title", frm.PhotoTitle.Value)
+	assert.Equal(t, false, frm.PhotoTitle.Mixed)
+	assert.Equal(t, "", frm.PhotoCaption.Value)
+	assert.Equal(t, false, frm.PhotoCaption.Mixed)
+	assert.Equal(t, false, frm.PhotoFavorite.Value)
+	assert.Equal(t, true, frm.PhotoFavorite.Mixed)
+	assert.Equal(t, false, frm.PhotoPrivate.Value)
+	assert.Equal(t, true, frm.PhotoPrivate.Mixed)
+	assert.Equal(t, false, frm.PhotoScan.Value)
+	assert.Equal(t, true, frm.PhotoScan.Mixed)
+	assert.Equal(t, false, frm.PhotoPanorama.Value)
+	assert.Equal(t, true, frm.PhotoPanorama.Mixed)
+	assert.Equal(t, false, frm.CameraID.Mixed)
+	assert.Equal(t, 1, frm.CameraID.Value)
+	assert.Equal(t, 2, frm.LensID.Value)
+	assert.Equal(t, false, frm.LensID.Mixed)
+	assert.Equal(t, "", frm.PhotoCountry.Value)
+	assert.Equal(t, true, frm.PhotoCountry.Mixed)
+	assert.Equal(t, 0, frm.PhotoIso.Value)
+	assert.Equal(t, false, frm.PhotoIso.Mixed)
+	assert.Equal(t, float32(0), frm.PhotoFNumber.Value)
+	assert.Equal(t, false, frm.PhotoFNumber.Mixed)
+	assert.Equal(t, 0, frm.PhotoFocalLength.Value)
+	assert.Equal(t, false, frm.PhotoFocalLength.Mixed)
+	assert.Equal(t, 48.519234, frm.PhotoLat.Value)
+	assert.Equal(t, false, frm.PhotoLat.Mixed)
+	assert.Equal(t, 9.057997, frm.PhotoLng.Value)
+	assert.Equal(t, false, frm.PhotoLng.Mixed)
+	assert.Equal(t, 0, frm.PhotoAltitude.Value)
+	assert.Equal(t, true, frm.PhotoAltitude.Mixed)
+	assert.Equal(t, -2, frm.PhotoDay.Value)
+	assert.Equal(t, true, frm.PhotoDay.Mixed)
+	assert.Equal(t, 5, frm.PhotoMonth.Value)
+	assert.Equal(t, false, frm.PhotoMonth.Mixed)
+	assert.Equal(t, -2, frm.PhotoYear.Value)
+	assert.Equal(t, true, frm.PhotoYear.Mixed)
+}
 
-		photos := search.PhotoResults{photo1, photo2}
+func TestNewPhotosForm_TwoPhotosMixedFlags2(t *testing.T) {
+	photo1 := search.Photo{
+		ID:            111115411,
+		PhotoUID:      "",
+		PhotoType:     "image",
+		PhotoTitle:    "Same Title",
+		PhotoCountry:  "de",
+		CameraID:      1000001,
+		LensID:        1000001,
+		PhotoDay:      3,
+		PhotoMonth:    5,
+		PhotoYear:     2020,
+		PhotoAltitude: 105,
+	}
 
-		frm := NewPhotosForm(photos)
+	photo2 := search.Photo{
+		ID:            111115511,
+		CreatedAt:     time.Time{},
+		TakenAt:       time.Time{},
+		TakenAtLocal:  time.Time{},
+		PhotoUID:      "",
+		PhotoType:     "image",
+		PhotoTitle:    "Same Title",
+		PhotoCountry:  "",
+		CameraID:      1000000,
+		LensID:        1000000,
+		PhotoDay:      3,
+		PhotoMonth:    6,
+		PhotoYear:     2020,
+		PhotoAltitude: 105,
+	}
 
-		// Photo metadata.
-		assert.Equal(t, "image", frm.PhotoType.Value)
-		assert.Equal(t, false, frm.PhotoType.Mixed)
-		assert.Equal(t, "Same Title", frm.PhotoTitle.Value)
-		assert.Equal(t, false, frm.PhotoTitle.Mixed)
-		assert.Equal(t, "", frm.PhotoCaption.Value)
-		assert.Equal(t, false, frm.PhotoCaption.Mixed)
-		assert.Equal(t, false, frm.PhotoFavorite.Value)
-		assert.Equal(t, false, frm.PhotoFavorite.Mixed)
-		assert.Equal(t, false, frm.PhotoPrivate.Value)
-		assert.Equal(t, false, frm.PhotoPrivate.Mixed)
-		assert.Equal(t, false, frm.PhotoScan.Value)
-		assert.Equal(t, false, frm.PhotoScan.Mixed)
-		assert.Equal(t, false, frm.PhotoPanorama.Value)
-		assert.Equal(t, false, frm.PhotoPanorama.Mixed)
-		assert.Equal(t, true, frm.CameraID.Mixed)
-		assert.Equal(t, -2, frm.CameraID.Value)
-		assert.Equal(t, true, frm.LensID.Mixed)
-		assert.Equal(t, -2, frm.LensID.Value)
-		assert.Equal(t, true, frm.LensID.Mixed)
-		assert.Equal(t, "", frm.PhotoCountry.Value)
-		assert.Equal(t, true, frm.PhotoCountry.Mixed)
-		assert.Equal(t, 0, frm.PhotoIso.Value)
-		assert.Equal(t, false, frm.PhotoIso.Mixed)
-		assert.Equal(t, float32(0), frm.PhotoFNumber.Value)
-		assert.Equal(t, false, frm.PhotoFNumber.Mixed)
-		assert.Equal(t, 0, frm.PhotoFocalLength.Value)
-		assert.Equal(t, false, frm.PhotoFocalLength.Mixed)
-		assert.Equal(t, 105, frm.PhotoAltitude.Value)
-		assert.Equal(t, false, frm.PhotoAltitude.Mixed)
-		assert.Equal(t, 3, frm.PhotoDay.Value)
-		assert.Equal(t, false, frm.PhotoDay.Mixed)
-		assert.Equal(t, -2, frm.PhotoMonth.Value)
-		assert.Equal(t, true, frm.PhotoMonth.Mixed)
-		assert.Equal(t, 2020, frm.PhotoYear.Value)
-		assert.Equal(t, false, frm.PhotoYear.Mixed)
-	})
+	photos := search.PhotoResults{photo1, photo2}
+	frm := NewPhotosForm(photos)
 
-}*/
+	// Photo metadata.
+	assert.Equal(t, "image", frm.PhotoType.Value)
+	assert.Equal(t, false, frm.PhotoType.Mixed)
+	assert.Equal(t, "Same Title", frm.PhotoTitle.Value)
+	assert.Equal(t, false, frm.PhotoTitle.Mixed)
+	assert.Equal(t, "", frm.PhotoCaption.Value)
+	assert.Equal(t, false, frm.PhotoCaption.Mixed)
+	assert.Equal(t, false, frm.PhotoFavorite.Value)
+	assert.Equal(t, false, frm.PhotoFavorite.Mixed)
+	assert.Equal(t, false, frm.PhotoPrivate.Value)
+	assert.Equal(t, false, frm.PhotoPrivate.Mixed)
+	assert.Equal(t, false, frm.PhotoScan.Value)
+	assert.Equal(t, false, frm.PhotoScan.Mixed)
+	assert.Equal(t, false, frm.PhotoPanorama.Value)
+	assert.Equal(t, false, frm.PhotoPanorama.Mixed)
+	assert.Equal(t, true, frm.CameraID.Mixed)
+	assert.Equal(t, -2, frm.CameraID.Value)
+	assert.Equal(t, true, frm.LensID.Mixed)
+	assert.Equal(t, -2, frm.LensID.Value)
+	assert.Equal(t, "", frm.PhotoCountry.Value)
+	assert.Equal(t, true, frm.PhotoCountry.Mixed)
+	assert.Equal(t, 0, frm.PhotoIso.Value)
+	assert.Equal(t, false, frm.PhotoIso.Mixed)
+	assert.Equal(t, float32(0), frm.PhotoFNumber.Value)
+	assert.Equal(t, false, frm.PhotoFNumber.Mixed)
+	assert.Equal(t, 0, frm.PhotoFocalLength.Value)
+	assert.Equal(t, false, frm.PhotoFocalLength.Mixed)
+	assert.Equal(t, 105, frm.PhotoAltitude.Value)
+	assert.Equal(t, false, frm.PhotoAltitude.Mixed)
+	assert.Equal(t, 3, frm.PhotoDay.Value)
+	assert.Equal(t, false, frm.PhotoDay.Mixed)
+	assert.Equal(t, -2, frm.PhotoMonth.Value)
+	assert.Equal(t, true, frm.PhotoMonth.Mixed)
+	assert.Equal(t, 2020, frm.PhotoYear.Value)
+	assert.Equal(t, false, frm.PhotoYear.Mixed)
+}
