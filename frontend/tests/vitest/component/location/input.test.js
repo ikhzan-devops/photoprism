@@ -7,8 +7,7 @@ describe("PLocationInput", () => {
   let wrapper;
 
   const defaultProps = {
-    lat: null,
-    lng: null,
+    latlng: [null, null],
     disabled: false,
     hideDetails: true,
     label: "Location",
@@ -67,7 +66,7 @@ describe("PLocationInput", () => {
     });
 
     it("should display existing coordinates in input field", async () => {
-      wrapper = createWrapper({ lat: 37.7749, lng: -122.4194 });
+      wrapper = createWrapper({ latlng: [37.7749, -122.4194] });
 
       await nextTick();
       const input = wrapper.find("input");
@@ -86,8 +85,7 @@ describe("PLocationInput", () => {
       await input.setValue("37.7749, -122.4194");
       await input.trigger("keydown.enter");
 
-      expect(wrapper.emitted("update:lat")).toEqual([[37.7749]]);
-      expect(wrapper.emitted("update:lng")).toEqual([[-122.4194]]);
+      expect(wrapper.emitted("update:latlng")).toEqual([[[37.7749, -122.4194]]]);
       expect(wrapper.emitted("changed")).toEqual([[{ lat: 37.7749, lng: -122.4194 }]]);
     });
 
@@ -97,8 +95,7 @@ describe("PLocationInput", () => {
       await input.setValue("invalid coordinates");
       await input.trigger("keydown.enter");
 
-      expect(wrapper.emitted("update:lat")).toBeFalsy();
-      expect(wrapper.emitted("update:lng")).toBeFalsy();
+      expect(wrapper.emitted("update:latlng")).toBeFalsy();
       expect(wrapper.emitted("changed")).toBeFalsy();
     });
 
@@ -109,8 +106,7 @@ describe("PLocationInput", () => {
       await input.setValue("90, 180");
       await input.trigger("keydown.enter");
 
-      expect(wrapper.emitted("update:lat")[0]).toEqual([90]);
-      expect(wrapper.emitted("update:lng")[0]).toEqual([180]);
+      expect(wrapper.emitted("update:latlng")[0]).toEqual([[90, 180]]);
     });
   });
 
@@ -125,7 +121,7 @@ describe("PLocationInput", () => {
     });
 
     it("should clear coordinates when clear button is clicked", async () => {
-      wrapper = createWrapper({ lat: 37.7749, lng: -122.4194 });
+      wrapper = createWrapper({ latlng: [37.7749, -122.4194] });
 
       // Wait for component to initialize and coordinateInput to be set
       await nextTick();
@@ -135,14 +131,13 @@ describe("PLocationInput", () => {
 
       await clearButton.trigger("click");
 
-      expect(wrapper.emitted("update:lat")).toEqual([[0]]);
-      expect(wrapper.emitted("update:lng")).toEqual([[0]]);
+      expect(wrapper.emitted("update:latlng")).toEqual([[[0, 0]]]);
       expect(wrapper.emitted("changed")).toEqual([[{ lat: 0, lng: 0 }]]);
       expect(wrapper.emitted("cleared")).toBeTruthy();
     });
 
     it("should show and work with undo button when enabled", async () => {
-      wrapper = createWrapper({ enableUndo: true, lat: 37.7749, lng: -122.4194 });
+      wrapper = createWrapper({ enableUndo: true, latlng: [37.7749, -122.4194] });
 
       // Wait for component to initialize and coordinateInput to be set
       await nextTick();
@@ -160,12 +155,10 @@ describe("PLocationInput", () => {
       // Click undo to restore coordinates
       await undoButton.trigger("click");
 
-      const latEmits = wrapper.emitted("update:lat");
-      const lngEmits = wrapper.emitted("update:lng");
+      const latlngEmits = wrapper.emitted("update:latlng");
 
       // Last emit should restore original coordinates
-      expect(latEmits[latEmits.length - 1]).toEqual([37.7749]);
-      expect(lngEmits[lngEmits.length - 1]).toEqual([-122.4194]);
+      expect(latlngEmits[latlngEmits.length - 1]).toEqual([[37.7749, -122.4194]]);
     });
   });
 
@@ -177,14 +170,13 @@ describe("PLocationInput", () => {
       await input.setValue("37.7749, -122.4194");
 
       // Should not emit immediately
-      expect(wrapper.emitted("update:lat")).toBeFalsy();
+      expect(wrapper.emitted("update:latlng")).toBeFalsy();
 
       // Fast forward timer
       vi.advanceTimersByTime(500);
       await nextTick();
 
-      expect(wrapper.emitted("update:lat")).toEqual([[37.7749]]);
-      expect(wrapper.emitted("update:lng")).toEqual([[-122.4194]]);
+      expect(wrapper.emitted("update:latlng")).toEqual([[[37.7749, -122.4194]]]);
     });
 
     it("should not auto apply when autoApply is disabled", async () => {
@@ -196,8 +188,7 @@ describe("PLocationInput", () => {
       vi.advanceTimersByTime(1000);
       await nextTick();
 
-      expect(wrapper.emitted("update:lat")).toBeFalsy();
-      expect(wrapper.emitted("update:lng")).toBeFalsy();
+      expect(wrapper.emitted("update:latlng")).toBeFalsy();
     });
   });
 
@@ -216,8 +207,7 @@ describe("PLocationInput", () => {
 
       await input.trigger("paste", { clipboardData: pasteEvent.clipboardData });
 
-      expect(wrapper.emitted("update:lat")).toEqual([[40.7128]]);
-      expect(wrapper.emitted("update:lng")).toEqual([[-74.006]]);
+      expect(wrapper.emitted("update:latlng")).toEqual([[[40.7128, -74.006]]]);
       expect(wrapper.emitted("changed")).toEqual([[{ lat: 40.7128, lng: -74.006 }]]);
     });
 
@@ -231,8 +221,7 @@ describe("PLocationInput", () => {
 
       await input.trigger("paste", { clipboardData: pasteEvent.clipboardData });
 
-      expect(wrapper.emitted("update:lat")).toEqual([[40.7128]]);
-      expect(wrapper.emitted("update:lng")).toEqual([[-74.006]]);
+      expect(wrapper.emitted("update:latlng")).toEqual([[[40.7128, -74.006]]]);
     });
   });
 
@@ -240,14 +229,14 @@ describe("PLocationInput", () => {
     it("should update input field when lat/lng props change", async () => {
       wrapper = createWrapper();
 
-      await wrapper.setProps({ lat: 40.7128, lng: -74.006 });
+      await wrapper.setProps({ latlng: [40.7128, -74.006] });
 
       const input = wrapper.find("input");
       expect(input.element.value).toBe("40.7128, -74.006");
     });
 
     it("should clear input field when coordinates are invalid", async () => {
-      wrapper = createWrapper({ lat: 0, lng: 0 });
+      wrapper = createWrapper({ latlng: [0, 0] });
 
       await nextTick();
       const input = wrapper.find("input");
