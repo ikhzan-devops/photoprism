@@ -22,10 +22,18 @@ func GetClientConfig(router *gin.RouterGroup) {
 		sess := Session(ClientIP(c), AuthToken(c))
 		conf := get.Config()
 
-		if sess == nil {
-			c.JSON(http.StatusOK, conf.ClientPublic())
-		} else {
+		// Check authentication.
+		if sess != nil {
+			// Return custom client config for authenticated user.
 			c.JSON(http.StatusOK, conf.ClientSession(sess))
+			return
+		} else if conf.DisableFrontend() {
+			// Abort if not authenticated, and the web frontend is disabled.
+			AbortUnauthorized(c)
+			return
 		}
+
+		// Return public client config for loading the web frontend
+		c.JSON(http.StatusOK, conf.ClientPublic())
 	})
 }

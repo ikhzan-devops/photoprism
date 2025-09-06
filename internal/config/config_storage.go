@@ -195,9 +195,9 @@ func (c *Config) CreateDirectories() error {
 		return createError(dir, err)
 	}
 
-	// Create TensorFlow model path if it doesn't exist yet.
-	if dir := c.NasnetModelPath(); dir == "" {
-		return notFoundError("tensorflow model")
+	// Create computer vision models path if it doesn't exist yet.
+	if dir := c.ModelsPath(); dir == "" {
+		return notFoundError("models")
 	} else if err := fs.MkdirAll(dir); err != nil {
 		return createError(dir, err)
 	}
@@ -598,6 +598,16 @@ func (c *Config) CustomAssetsPath() string {
 	}
 
 	return ""
+}
+
+// ProfilesPath returns the path where processing profile files are stored.
+func (c *Config) ProfilesPath() string {
+	return filepath.Join(c.AssetsPath(), "profiles")
+}
+
+// IccProfilesPath returns the path where ICC color profile files are stored.
+func (c *Config) IccProfilesPath() string {
+	return filepath.Join(c.AssetsPath(), "profiles/icc")
 }
 
 // CustomStaticPath returns the custom static assets' path.

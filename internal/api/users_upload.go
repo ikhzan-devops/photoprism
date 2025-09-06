@@ -28,7 +28,7 @@ import (
 // UploadUserFiles adds files to the user upload folder, from where they can be moved and indexed.
 //
 //	@Tags	Users, Files
-//	@Router /users/{uid}/upload/{token} [post]
+//	@Router	/users/{uid}/upload/{token} [post]
 func UploadUserFiles(router *gin.RouterGroup) {
 	router.POST("/users/:uid/upload/:token", func(c *gin.Context) {
 		conf := get.Config()
@@ -282,7 +282,7 @@ func ProcessUserUpload(router *gin.RouterGroup) {
 
 		// Assign and validate request form values.
 		if err := c.BindJSON(&frm); err != nil {
-			AbortBadRequest(c)
+			AbortBadRequest(c, err)
 			return
 		}
 

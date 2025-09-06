@@ -65,13 +65,13 @@ S6_BINARY_URL="https://github.com/just-containers/s6-overlay/releases/download/$
 
 echo "Installing S6 Overlay for ${S6_OVERLAY_ARCH^^}..."
 
-echo "------------------------------------------------"
+echo "--------------------------------------------------------------------------------"
 echo "VERSION: ${S6_OVERLAY_VERSION}"
 echo "LATEST : ${S6_OVERLAY_LATEST}"
 echo "NOARCH : ${ARCHIVE_NOARCH}"
 echo "BINARY : ${ARCHIVE_BINARY}"
 echo "DESTDIR: ${S6_OVERLAY_DESTDIR}"
-echo "------------------------------------------------"
+echo "--------------------------------------------------------------------------------"
 
 # Create the destination directory if it does not already exist.
 mkdir -p "${S6_OVERLAY_DESTDIR}"

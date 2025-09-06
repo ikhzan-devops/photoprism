@@ -6,6 +6,16 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestConfig_DisableFrontend(t *testing.T) {
+	c := NewConfig(CliTestContext())
+	assert.False(t, c.DisableFrontend())
+}
+
+func TestConfig_DisableSettings(t *testing.T) {
+	c := NewConfig(CliTestContext())
+	assert.False(t, c.DisableSettings())
+}
+
 func TestConfig_DisableWebDAV(t *testing.T) {
 	c := NewConfig(CliTestContext())
 

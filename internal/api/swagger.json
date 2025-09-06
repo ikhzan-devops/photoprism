@@ -402,8 +402,8 @@
                     "application/zip"
                 ],
                 "tags": [
-                    "Images",
-                    "Albums"
+                    "Albums",
+                    "Download"
                 ],
                 "summary": "streams the album contents as zip archive",
                 "operationId": "DownloadAlbum",
@@ -1376,7 +1376,7 @@
                 "parameters": [
                     {
                         "description": "photos selection and values",
-                        "name": "photos",
+                        "name": "Request",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -1388,7 +1388,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/batch.PhotosForm"
+                            "$ref": "#/definitions/batch.PhotosResponse"
                         }
                     },
                     "400": {
@@ -1710,6 +1710,20 @@
                         "schema": {
                             "type": "file"
                         }
+                    }
+                }
+            }
+        },
+        "/api/v1/echo": {
+            "get": {
+                "tags": [
+                    "Debug"
+                ],
+                "summary": "returns the request and response headers as JSON if debug mode is enabled",
+                "operationId": "Echo",
+                "responses": {
+                    "200": {
+                        "description": "OK"
                     }
                 }
             }
@@ -2046,6 +2060,44 @@
                     },
                     "500": {
                         "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/feedback": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "allows members to submit a feedback message to the PhotoPrism team",
+                "operationId": "SendFeedback",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/form.Feedback"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/i18n.Response"
                         }
@@ -2717,6 +2769,41 @@
                     "Files"
                 ],
                 "responses": {}
+            }
+        },
+        "/api/v1/metrics": {
+            "get": {
+                "produces": [
+                    "text/event-stream"
+                ],
+                "tags": [
+                    "Metrics"
+                ],
+                "summary": "a prometheus-compatible metrics endpoint for monitoring this instance",
+                "operationId": "GetMetrics",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/io_prometheus_client.MetricFamily"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    }
+                }
             }
         },
         "/api/v1/moments/time": {
@@ -3873,6 +3960,12 @@
                         "name": "lng",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Locale",
+                        "name": "locale",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -3960,6 +4053,38 @@
                         "description": "Search service error",
                         "schema": {
                             "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/server/stop": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "allows authorized admins to restart the server",
+                "operationId": "StopServer",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/config.Options"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
                         }
                     }
                 }
@@ -4504,9 +4629,9 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Server"
+                    "Debug"
                 ],
-                "summary": "reports if the server is operational",
+                "summary": "responds with status code 200 if the server is operational",
                 "operationId": "GetStatus",
                 "responses": {
                     "200": {
@@ -5258,10 +5383,102 @@
         },
         "/api/v1/zip": {
             "post": {
+                "produces": [
+                    "application/json"
+                ],
                 "tags": [
                     "Download"
                 ],
-                "responses": {}
+                "summary": "creates a zip file archive for download",
+                "operationId": "ZipCreate",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "file"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/zip/{filename}": {
+            "get": {
+                "produces": [
+                    "application/zip"
+                ],
+                "tags": [
+                    "Download"
+                ],
+                "summary": "returns a zip file archive after it has been created",
+                "operationId": "ZipDownload",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "zip archive filename returned by the POST /api/v1/zip endpoint",
+                        "name": "filename",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "file"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/{any}": {
+            "options": {
+                "description": "A preflight request is automatically issued by a browser and in normal cases, front-end developers don't need to craft such requests themselves. It appears when request is qualified as \"to be preflighted\" and omitted for simple requests.",
+                "tags": [
+                    "CORS"
+                ],
+                "summary": "returns CORS headers with an empty response body",
+                "operationId": "Options",
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
             }
         },
         "/api/v1/{entity}/{uid}/links": {
@@ -5354,9 +5571,46 @@
                 }
             }
         },
+        "batch.Item": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "$ref": "#/definitions/batch.Action"
+                },
+                "mixed": {
+                    "type": "boolean"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
+        "batch.Items": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "$ref": "#/definitions/batch.Action"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/batch.Item"
+                    }
+                },
+                "mixed": {
+                    "type": "boolean"
+                }
+            }
+        },
         "batch.PhotosForm": {
             "type": "object",
             "properties": {
+                "Albums": {
+                    "$ref": "#/definitions/batch.Items"
+                },
                 "Altitude": {
                     "$ref": "#/definitions/batch.Int"
                 },
@@ -5401,6 +5655,9 @@
                 },
                 "Iso": {
                     "$ref": "#/definitions/batch.Int"
+                },
+                "Labels": {
+                    "$ref": "#/definitions/batch.Items"
                 },
                 "Lat": {
                     "$ref": "#/definitions/batch.Float64"
@@ -5450,6 +5707,20 @@
                     "type": "array",
                     "items": {
                         "type": "string"
+                    }
+                },
+                "values": {
+                    "$ref": "#/definitions/batch.PhotosForm"
+                }
+            }
+        },
+        "batch.PhotosResponse": {
+            "type": "object",
+            "properties": {
+                "models": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/search.Photo"
                     }
                 },
                 "values": {
@@ -5664,6 +5935,9 @@
                 },
                 "OriginalsLimit": {
                     "type": "integer"
+                },
+                "PlacesLocale": {
+                    "type": "string"
                 },
                 "PngSize": {
                     "type": "integer"
@@ -7108,6 +7382,29 @@
                 }
             }
         },
+        "form.Feedback": {
+            "type": "object",
+            "properties": {
+                "Category": {
+                    "type": "string"
+                },
+                "Message": {
+                    "type": "string"
+                },
+                "UserAgent": {
+                    "type": "string"
+                },
+                "UserEmail": {
+                    "type": "string"
+                },
+                "UserLocales": {
+                    "type": "string"
+                },
+                "UserName": {
+                    "type": "string"
+                }
+            }
+        },
         "form.File": {
             "type": "object",
             "properties": {
@@ -7493,23 +7790,317 @@
                 }
             }
         },
+        "io_prometheus_client.Bucket": {
+            "type": "object",
+            "properties": {
+                "cumulative_count": {
+                    "description": "Cumulative in increasing order.",
+                    "type": "integer"
+                },
+                "cumulative_count_float": {
+                    "description": "Overrides cumulative_count if \u003e 0.",
+                    "type": "number"
+                },
+                "exemplar": {
+                    "$ref": "#/definitions/io_prometheus_client.Exemplar"
+                },
+                "upper_bound": {
+                    "description": "Inclusive.",
+                    "type": "number"
+                }
+            }
+        },
+        "io_prometheus_client.BucketSpan": {
+            "type": "object",
+            "properties": {
+                "length": {
+                    "description": "Length of consecutive buckets.",
+                    "type": "integer"
+                },
+                "offset": {
+                    "description": "Gap to previous span, or starting point for 1st span (which can be negative).",
+                    "type": "integer"
+                }
+            }
+        },
+        "io_prometheus_client.Counter": {
+            "type": "object",
+            "properties": {
+                "created_timestamp": {
+                    "$ref": "#/definitions/timestamppb.Timestamp"
+                },
+                "exemplar": {
+                    "$ref": "#/definitions/io_prometheus_client.Exemplar"
+                },
+                "value": {
+                    "type": "number"
+                }
+            }
+        },
+        "io_prometheus_client.Exemplar": {
+            "type": "object",
+            "properties": {
+                "label": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/io_prometheus_client.LabelPair"
+                    }
+                },
+                "timestamp": {
+                    "description": "OpenMetrics-style.",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/timestamppb.Timestamp"
+                        }
+                    ]
+                },
+                "value": {
+                    "type": "number"
+                }
+            }
+        },
+        "io_prometheus_client.Gauge": {
+            "type": "object",
+            "properties": {
+                "value": {
+                    "type": "number"
+                }
+            }
+        },
+        "io_prometheus_client.Histogram": {
+            "type": "object",
+            "properties": {
+                "bucket": {
+                    "description": "Buckets for the conventional histogram.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/io_prometheus_client.Bucket"
+                    }
+                },
+                "created_timestamp": {
+                    "$ref": "#/definitions/timestamppb.Timestamp"
+                },
+                "exemplars": {
+                    "description": "Only used for native histograms. These exemplars MUST have a timestamp.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/io_prometheus_client.Exemplar"
+                    }
+                },
+                "negative_count": {
+                    "description": "Absolute count of each bucket.",
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "negative_delta": {
+                    "description": "Use either \"negative_delta\" or \"negative_count\", the former for\nregular histograms with integer counts, the latter for float\nhistograms.",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "negative_span": {
+                    "description": "Negative buckets for the native histogram.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/io_prometheus_client.BucketSpan"
+                    }
+                },
+                "positive_count": {
+                    "description": "Absolute count of each bucket.",
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "positive_delta": {
+                    "description": "Use either \"positive_delta\" or \"positive_count\", the former for\nregular histograms with integer counts, the latter for float\nhistograms.",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "positive_span": {
+                    "description": "Positive buckets for the native histogram.\nUse a no-op span (offset 0, length 0) for a native histogram without any\nobservations yet and with a zero_threshold of 0. Otherwise, it would be\nindistinguishable from a classic histogram.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/io_prometheus_client.BucketSpan"
+                    }
+                },
+                "sample_count": {
+                    "type": "integer"
+                },
+                "sample_count_float": {
+                    "description": "Overrides sample_count if \u003e 0.",
+                    "type": "number"
+                },
+                "sample_sum": {
+                    "type": "number"
+                },
+                "schema": {
+                    "description": "schema defines the bucket schema. Currently, valid numbers are -4 \u003c= n \u003c= 8.\nThey are all for base-2 bucket schemas, where 1 is a bucket boundary in each case, and\nthen each power of two is divided into 2^n logarithmic buckets.\nOr in other words, each bucket boundary is the previous boundary times 2^(2^-n).\nIn the future, more bucket schemas may be added using numbers \u003c -4 or \u003e 8.",
+                    "type": "integer"
+                },
+                "zero_count": {
+                    "description": "Count in zero bucket.",
+                    "type": "integer"
+                },
+                "zero_count_float": {
+                    "description": "Overrides sb_zero_count if \u003e 0.",
+                    "type": "number"
+                },
+                "zero_threshold": {
+                    "description": "Breadth of the zero bucket.",
+                    "type": "number"
+                }
+            }
+        },
+        "io_prometheus_client.LabelPair": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
+        "io_prometheus_client.Metric": {
+            "type": "object",
+            "properties": {
+                "counter": {
+                    "$ref": "#/definitions/io_prometheus_client.Counter"
+                },
+                "gauge": {
+                    "$ref": "#/definitions/io_prometheus_client.Gauge"
+                },
+                "histogram": {
+                    "$ref": "#/definitions/io_prometheus_client.Histogram"
+                },
+                "label": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/io_prometheus_client.LabelPair"
+                    }
+                },
+                "summary": {
+                    "$ref": "#/definitions/io_prometheus_client.Summary"
+                },
+                "timestamp_ms": {
+                    "type": "integer"
+                },
+                "untyped": {
+                    "$ref": "#/definitions/io_prometheus_client.Untyped"
+                }
+            }
+        },
+        "io_prometheus_client.MetricFamily": {
+            "type": "object",
+            "properties": {
+                "help": {
+                    "type": "string"
+                },
+                "metric": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/io_prometheus_client.Metric"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
+                "type": {
+                    "$ref": "#/definitions/io_prometheus_client.MetricType"
+                },
+                "unit": {
+                    "type": "string"
+                }
+            }
+        },
+        "io_prometheus_client.MetricType": {
+            "type": "integer",
+            "format": "int32",
+            "enum": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5
+            ],
+            "x-enum-varnames": [
+                "MetricType_COUNTER",
+                "MetricType_GAUGE",
+                "MetricType_SUMMARY",
+                "MetricType_UNTYPED",
+                "MetricType_HISTOGRAM",
+                "MetricType_GAUGE_HISTOGRAM"
+            ]
+        },
+        "io_prometheus_client.Quantile": {
+            "type": "object",
+            "properties": {
+                "quantile": {
+                    "type": "number"
+                },
+                "value": {
+                    "type": "number"
+                }
+            }
+        },
+        "io_prometheus_client.Summary": {
+            "type": "object",
+            "properties": {
+                "created_timestamp": {
+                    "$ref": "#/definitions/timestamppb.Timestamp"
+                },
+                "quantile": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/io_prometheus_client.Quantile"
+                    }
+                },
+                "sample_count": {
+                    "type": "integer"
+                },
+                "sample_sum": {
+                    "type": "number"
+                }
+            }
+        },
+        "io_prometheus_client.Untyped": {
+            "type": "object",
+            "properties": {
+                "value": {
+                    "type": "number"
+                }
+            }
+        },
         "nsfw.Result": {
             "type": "object",
             "properties": {
                 "drawing": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "float32"
                 },
                 "hentai": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "float32"
                 },
                 "neutral": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "float32"
                 },
                 "porn": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "float32"
                 },
                 "sexy": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "float32"
                 }
             }
         },
@@ -7533,6 +8124,9 @@
                 },
                 "lng": {
                     "type": "number"
+                },
+                "locale": {
+                    "type": "string"
                 },
                 "name": {
                     "type": "string"
@@ -7580,7 +8174,7 @@
         "places.SearchResult": {
             "type": "object",
             "properties": {
-                "boundingbox": {
+                "bbox": {
                     "type": "array",
                     "items": {
                         "type": "number"
@@ -8157,27 +8751,140 @@
                 }
             }
         },
-        "time.Duration": {
+        "tensorflow.ColorChannelOrder": {
             "type": "integer",
             "enum": [
-                -9223372036854775808,
-                9223372036854775807,
+                0
+            ],
+            "x-enum-varnames": [
+                "UndefinedOrder"
+            ]
+        },
+        "tensorflow.Interval": {
+            "type": "object",
+            "properties": {
+                "end": {
+                    "type": "number"
+                },
+                "mean": {
+                    "type": "number"
+                },
+                "start": {
+                    "type": "number"
+                },
+                "stdDev": {
+                    "type": "number"
+                }
+            }
+        },
+        "tensorflow.ModelInfo": {
+            "type": "object",
+            "properties": {
+                "input": {
+                    "$ref": "#/definitions/tensorflow.PhotoInput"
+                },
+                "output": {
+                    "$ref": "#/definitions/tensorflow.ModelOutput"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "tensorflow.ModelOutput": {
+            "type": "object",
+            "properties": {
+                "index": {
+                    "type": "integer"
+                },
+                "logits": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "outputs": {
+                    "type": "integer"
+                }
+            }
+        },
+        "tensorflow.PhotoInput": {
+            "type": "object",
+            "properties": {
+                "height": {
+                    "type": "integer"
+                },
+                "index": {
+                    "type": "integer"
+                },
+                "inputOrder": {
+                    "$ref": "#/definitions/tensorflow.ColorChannelOrder"
+                },
+                "intervals": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/tensorflow.Interval"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
+                "resizeOperation": {
+                    "$ref": "#/definitions/tensorflow.ResizeOperation"
+                },
+                "shape": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/tensorflow.ShapeComponent"
+                    }
+                },
+                "width": {
+                    "type": "integer"
+                }
+            }
+        },
+        "tensorflow.ResizeOperation": {
+            "type": "integer",
+            "enum": [
+                0,
+                1,
+                2,
+                3
+            ],
+            "x-enum-varnames": [
+                "UndefinedResizeOperation",
+                "ResizeBreakAspectRatio",
+                "CenterCrop",
+                "Padding"
+            ]
+        },
+        "tensorflow.ShapeComponent": {
+            "type": "string",
+            "enum": [
+                "Batch"
+            ],
+            "x-enum-varnames": [
+                "ShapeBatch"
+            ]
+        },
+        "time.Duration": {
+            "type": "integer",
+            "format": "int64",
+            "enum": [
+                1,
+                1000,
+                1000000,
+                1000000000,
+                60000000000,
                 1,
                 1000,
                 1000000,
                 1000000000,
                 60000000000,
                 3600000000000,
-                -9223372036854775808,
-                9223372036854775807,
-                1,
-                1000,
-                1000000,
-                1000000000,
-                60000000000,
-                3600000000000,
-                -9223372036854775808,
-                9223372036854775807,
                 1,
                 1000,
                 1000000,
@@ -8186,24 +8893,17 @@
                 3600000000000
             ],
             "x-enum-varnames": [
-                "minDuration",
-                "maxDuration",
+                "Nanosecond",
+                "Microsecond",
+                "Millisecond",
+                "Second",
+                "Minute",
                 "Nanosecond",
                 "Microsecond",
                 "Millisecond",
                 "Second",
                 "Minute",
                 "Hour",
-                "minDuration",
-                "maxDuration",
-                "Nanosecond",
-                "Microsecond",
-                "Millisecond",
-                "Second",
-                "Minute",
-                "Hour",
-                "minDuration",
-                "maxDuration",
                 "Nanosecond",
                 "Microsecond",
                 "Millisecond",
@@ -8212,22 +8912,46 @@
                 "Hour"
             ]
         },
+        "timestamppb.Timestamp": {
+            "type": "object",
+            "properties": {
+                "nanos": {
+                    "description": "Non-negative fractions of a second at nanosecond resolution. Negative\nsecond values with fractions must still have non-negative nanos values\nthat count forward in time. Must be from 0 to 999,999,999\ninclusive.",
+                    "type": "integer"
+                },
+                "seconds": {
+                    "description": "Represents seconds of UTC time since Unix epoch\n1970-01-01T00:00:00Z. Must be from 0001-01-01T00:00:00Z to\n9999-12-31T23:59:59Z inclusive.",
+                    "type": "integer"
+                }
+            }
+        },
         "vision.ApiFormat": {
             "type": "string",
             "enum": [
                 "url",
                 "images",
-                "vision"
+                "vision",
+                "ollama"
             ],
             "x-enum-varnames": [
                 "ApiFormatUrl",
                 "ApiFormatImages",
-                "ApiFormatVision"
+                "ApiFormatVision",
+                "ApiFormatOllama"
             ]
         },
         "vision.ApiRequest": {
             "type": "object",
             "properties": {
+                "context": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "format": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "string"
                 },
@@ -8240,7 +8964,19 @@
                 "model": {
                     "type": "string"
                 },
+                "options": {
+                    "$ref": "#/definitions/vision.ApiRequestOptions"
+                },
                 "prompt": {
+                    "type": "string"
+                },
+                "stream": {
+                    "type": "boolean"
+                },
+                "suffix": {
+                    "type": "string"
+                },
+                "system": {
                     "type": "string"
                 },
                 "url": {
@@ -8248,6 +8984,98 @@
                 },
                 "version": {
                     "type": "string"
+                }
+            }
+        },
+        "vision.ApiRequestOptions": {
+            "type": "object",
+            "properties": {
+                "frequency_penalty": {
+                    "type": "number"
+                },
+                "low_vram": {
+                    "type": "boolean"
+                },
+                "main_gpu": {
+                    "type": "integer"
+                },
+                "min_p": {
+                    "type": "number"
+                },
+                "mirostat": {
+                    "type": "integer"
+                },
+                "mirostat_eta": {
+                    "type": "number"
+                },
+                "mirostat_tau": {
+                    "type": "number"
+                },
+                "num_batch": {
+                    "type": "integer"
+                },
+                "num_ctx": {
+                    "type": "integer"
+                },
+                "num_gpu": {
+                    "type": "integer"
+                },
+                "num_keep": {
+                    "type": "integer"
+                },
+                "num_predict": {
+                    "type": "integer"
+                },
+                "num_thread": {
+                    "type": "integer"
+                },
+                "numa": {
+                    "type": "boolean"
+                },
+                "penalize_newline": {
+                    "type": "boolean"
+                },
+                "presence_penalty": {
+                    "type": "number"
+                },
+                "repeat_last_n": {
+                    "type": "integer"
+                },
+                "repeat_penalty": {
+                    "type": "number"
+                },
+                "seed": {
+                    "type": "integer"
+                },
+                "stop": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "temperature": {
+                    "type": "number"
+                },
+                "tfs_z": {
+                    "type": "number"
+                },
+                "top_k": {
+                    "type": "integer"
+                },
+                "top_p": {
+                    "type": "number"
+                },
+                "typical_p": {
+                    "type": "number"
+                },
+                "use_mlock": {
+                    "type": "boolean"
+                },
+                "use_mmap": {
+                    "type": "boolean"
+                },
+                "vocab_only": {
+                    "type": "boolean"
                 }
             }
         },
@@ -8284,7 +9112,8 @@
                         "items": {
                             "type": "array",
                             "items": {
-                                "type": "number"
+                                "type": "number",
+                                "format": "float64"
                             }
                         }
                     }
@@ -8346,8 +9175,8 @@
         "vision.Model": {
             "type": "object",
             "properties": {
-                "Service": {
-                    "$ref": "#/definitions/vision.Service"
+                "default": {
+                    "type": "boolean"
                 },
                 "disabled": {
                     "type": "boolean"
@@ -8355,11 +9184,23 @@
                 "name": {
                     "type": "string"
                 },
+                "options": {
+                    "$ref": "#/definitions/vision.ApiRequestOptions"
+                },
                 "prompt": {
                     "type": "string"
                 },
                 "resolution": {
                     "type": "integer"
+                },
+                "service": {
+                    "$ref": "#/definitions/vision.Service"
+                },
+                "system": {
+                    "type": "string"
+                },
+                "tensorflow": {
+                    "$ref": "#/definitions/tensorflow.ModelInfo"
                 },
                 "type": {
                     "$ref": "#/definitions/vision.ModelType"

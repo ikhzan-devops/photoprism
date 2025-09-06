@@ -141,7 +141,7 @@ export default class Page {
 
   async getPhotoPreviewStyle(uid) {
     const selector = this.getPhotoCardPreviewSelector(uid);
-    const style = await selector.getStyleProperty('background-image');
+    const style = await selector.getStyleProperty("background-image");
     return style;
   }
 }

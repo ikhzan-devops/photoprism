@@ -149,7 +149,7 @@ func (m *MediaFile) GenerateThumbnails(thumbPath string, force bool) (err error)
 						msg := imgErr.Error()
 
 						// Non-repairable file error?
-						if !(strings.Contains(msg, "EOF") ||
+						if !(strings.Contains(msg, fs.EOF.Error()) ||
 							strings.HasPrefix(msg, "invalid JPEG")) {
 							log.Debugf("media: %s in %s", msg, clean.Log(m.RootRelName()))
 							return imgErr

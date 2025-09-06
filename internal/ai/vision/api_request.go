@@ -21,15 +21,56 @@ import (
 
 type Files = []string
 
+// ApiRequestOptions represents additional model parameters listed in the documentation.
+type ApiRequestOptions struct {
+	NumKeep          int      `yaml:"NumKeep,omitempty" json:"num_keep,omitempty"`
+	Seed             int      `yaml:"Seed,omitempty" json:"seed,omitempty"`
+	NumPredict       int      `yaml:"NumPredict,omitempty" json:"num_predict,omitempty"`
+	TopK             int      `yaml:"TopK,omitempty" json:"top_k,omitempty"`
+	TopP             float64  `yaml:"TopP,omitempty" json:"top_p,omitempty"`
+	MinP             float64  `yaml:"MinP,omitempty" json:"min_p,omitempty"`
+	TfsZ             float64  `yaml:"TfsZ,omitempty" json:"tfs_z,omitempty"`
+	TypicalP         float64  `yaml:"TypicalP,omitempty" json:"typical_p,omitempty"`
+	RepeatLastN      int      `yaml:"RepeatLastN,omitempty" json:"repeat_last_n,omitempty"`
+	Temperature      float64  `yaml:"Temperature,omitempty" json:"temperature,omitempty"`
+	RepeatPenalty    float64  `yaml:"RepeatPenalty,omitempty" json:"repeat_penalty,omitempty"`
+	PresencePenalty  float64  `yaml:"PresencePenalty,omitempty" json:"presence_penalty,omitempty"`
+	FrequencyPenalty float64  `yaml:"FrequencyPenalty,omitempty" json:"frequency_penalty,omitempty"`
+	Mirostat         int      `yaml:"Mirostat,omitempty" json:"mirostat,omitempty"`
+	MirostatTau      float64  `yaml:"MirostatTau,omitempty" json:"mirostat_tau,omitempty"`
+	MirostatEta      float64  `yaml:"MirostatEta,omitempty" json:"mirostat_eta,omitempty"`
+	PenalizeNewline  bool     `yaml:"PenalizeNewline,omitempty" json:"penalize_newline,omitempty"`
+	Stop             []string `yaml:"Stop,omitempty" json:"stop,omitempty"`
+	Numa             bool     `yaml:"Numa,omitempty" json:"numa,omitempty"`
+	NumCtx           int      `yaml:"NumCtx,omitempty" json:"num_ctx,omitempty"`
+	NumBatch         int      `yaml:"NumBatch,omitempty" json:"num_batch,omitempty"`
+	NumGpu           int      `yaml:"NumGpu,omitempty" json:"num_gpu,omitempty"`
+	MainGpu          int      `yaml:"MainGpu,omitempty" json:"main_gpu,omitempty"`
+	LowVram          bool     `yaml:"LowVram,omitempty" json:"low_vram,omitempty"`
+	VocabOnly        bool     `yaml:"VocabOnly,omitempty" json:"vocab_only,omitempty"`
+	UseMmap          bool     `yaml:"UseMmap,omitempty" json:"use_mmap,omitempty"`
+	UseMlock         bool     `yaml:"UseMlock,omitempty" json:"use_mlock,omitempty"`
+	NumThread        int      `yaml:"NumThread,omitempty" json:"num_thread,omitempty"`
+}
+
+// ApiRequestContext represents a context parameter returned from a previous request.
+type ApiRequestContext = []int
+
 // ApiRequest represents a Vision API service request.
 type ApiRequest struct {
-	Id             string    `form:"id" yaml:"Id,omitempty" json:"id,omitempty"`
-	Model          string    `form:"model" yaml:"Model,omitempty" json:"model,omitempty"`
-	Version        string    `form:"version" yaml:"Version,omitempty" json:"version,omitempty"`
-	Prompt         string    `form:"prompt" yaml:"Prompt,omitempty" json:"prompt,omitempty"`
-	Url            string    `form:"url" yaml:"Url,omitempty" json:"url,omitempty"`
-	Images         Files     `form:"images" yaml:"Images,omitempty" json:"images,omitempty"`
-	responseFormat ApiFormat `form:"-"`
+	Id             string             `form:"id" yaml:"Id,omitempty" json:"id,omitempty"`
+	Model          string             `form:"model" yaml:"Model,omitempty" json:"model,omitempty"`
+	Version        string             `form:"version" yaml:"Version,omitempty" json:"version,omitempty"`
+	System         string             `form:"system" yaml:"System,omitempty" json:"system,omitempty"`
+	Prompt         string             `form:"prompt" yaml:"Prompt,omitempty" json:"prompt,omitempty"`
+	Suffix         string             `form:"suffix" yaml:"Suffix,omitempty" json:"suffix"`
+	Format         string             `form:"format" yaml:"Format,omitempty" json:"format,omitempty"`
+	Url            string             `form:"url" yaml:"Url,omitempty" json:"url,omitempty"`
+	Options        *ApiRequestOptions `form:"options" yaml:"Options,omitempty" json:"options,omitempty"`
+	Context        *ApiRequestContext `form:"context" yaml:"Context,omitempty" json:"context,omitempty"`
+	Stream         bool               `form:"stream" yaml:"Stream,omitempty" json:"stream"`
+	Images         Files              `form:"images" yaml:"Images,omitempty" json:"images,omitempty"`
+	responseFormat ApiFormat          `form:"-"`
 }
 
 // NewApiRequest returns a new service API request with the specified format and payload.
@@ -43,6 +84,8 @@ func NewApiRequest(requestFormat ApiFormat, files Files, fileScheme scheme.Type)
 		return NewApiRequestUrl(files[0], fileScheme)
 	case ApiFormatImages, ApiFormatVision:
 		return NewApiRequestImages(files, fileScheme)
+	case ApiFormatOllama:
+		return NewApiRequestOllama(files, fileScheme)
 	default:
 		return result, errors.New("invalid request format")
 	}

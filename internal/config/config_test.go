@@ -187,18 +187,6 @@ func TestConfig_ThumbCachePath(t *testing.T) {
 	assert.True(t, strings.HasSuffix(c.ThumbCachePath(), "storage/testdata/cache/thumbnails"))
 }
 
-func TestConfig_AssetsPath(t *testing.T) {
-	c := NewConfig(CliTestContext())
-
-	assert.True(t, strings.HasSuffix(c.AssetsPath(), "/assets"))
-}
-
-func TestConfig_CustomAssetsPath(t *testing.T) {
-	c := NewConfig(CliTestContext())
-
-	assert.Equal(t, "", c.CustomAssetsPath())
-}
-
 func TestConfig_AdminUser(t *testing.T) {
 	c := NewConfig(CliTestContext())
 
@@ -272,6 +260,13 @@ func TestConfig_ThemePath(t *testing.T) {
 	assert.Equal(t, "/go/src/github.com/photoprism/photoprism/storage/testdata/config/theme", path)
 }
 
+func TestConfig_PortalPath(t *testing.T) {
+	c := NewConfig(CliTestContext())
+
+	path := c.PortalPath()
+	assert.Equal(t, "/go/src/github.com/photoprism/photoprism/storage/testdata/config/portal", path)
+}
+
 func TestConfig_IndexWorkers(t *testing.T) {
 	c := NewConfig(CliTestContext())
 
@@ -314,14 +309,6 @@ func TestConfig_AutoIndex(t *testing.T) {
 func TestConfig_AutoImport(t *testing.T) {
 	c := NewConfig(CliTestContext())
 	assert.Equal(t, 2*time.Hour, c.AutoImport())
-}
-
-func TestConfig_GeoApi(t *testing.T) {
-	c := NewConfig(CliTestContext())
-
-	assert.Equal(t, "places", c.GeoApi())
-	c.options.DisablePlaces = true
-	assert.Equal(t, "", c.GeoApi())
 }
 
 func TestConfig_OriginalsLimit(t *testing.T) {

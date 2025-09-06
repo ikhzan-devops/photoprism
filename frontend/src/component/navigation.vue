@@ -244,7 +244,7 @@
                   @click.stop=""
                 >
                   <v-list-item-title :class="`nav-menu-item menu-item`">
-                    {{ $gettext(`Archive`) }}
+                    {{ $pgettext("Noun", "Archive") }}
                   </v-list-item-title>
                   <span v-show="config.count.archived > 0" class="nav-count-item">{{ config.count.archived }}</span>
                 </v-list-item>
@@ -351,11 +351,11 @@
                   v-show="config.count.animated > 0"
                   :to="{ name: 'animated' }"
                   variant="text"
-                  class="nav-animated"
+                  class="nav-animated nav-animations"
                   @click.stop=""
                 >
                   <v-list-item-title :class="`nav-menu-item menu-item`">
-                    {{ $gettext(`Animated`) }}
+                    {{ $gettext(`Animations`) }}
                   </v-list-item-title>
                   <span v-show="config.count.animated > 0" class="nav-count-item">{{ config.count.animated }}</span>
                 </v-list-item>

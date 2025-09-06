@@ -59,7 +59,7 @@ func OAuthToken(router *gin.RouterGroup) {
 			frm.ClientSecret = clientSecret
 		} else if err = c.ShouldBind(&frm); err != nil {
 			event.AuditWarn([]string{clientIp, "oauth2", actor, action, "%s"}, err)
-			AbortBadRequest(c)
+			AbortBadRequest(c, err)
 			return
 		}
 

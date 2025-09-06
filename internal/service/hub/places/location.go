@@ -10,6 +10,7 @@ import (
 // Location represents a specific geolocation identified by its S2 ID.
 type Location struct {
 	ID          string  `json:"id"`
+	Locale      string  `json:"locale,omitempty"`
 	LocLat      float64 `json:"lat"`
 	LocLng      float64 `json:"lng"`
 	LocName     string  `json:"name"`

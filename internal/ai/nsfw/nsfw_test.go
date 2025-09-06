@@ -11,9 +11,9 @@ import (
 	"github.com/photoprism/photoprism/pkg/fs/fastwalk"
 )
 
-var modelPath, _ = filepath.Abs("../../../assets/nsfw")
+var modelPath, _ = filepath.Abs("../../../assets/models/nsfw")
 
-var detector = NewModel(modelPath, 224, nil, false)
+var detector = NewModel(modelPath, nil, false)
 
 func TestIsSafe(t *testing.T) {
 	detect := func(filename string) Result {

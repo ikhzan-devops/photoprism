@@ -32,7 +32,7 @@ func TestRequest(t *testing.T) {
 				Cookie:       []string{"CockpitLang=en-us; Foo=Bar"},
 			},
 		}
-		assert.Equal(t, "TEST", UserAgent(c))
+		assert.Equal(t, "TEST", ClientUserAgent(c))
 		assert.Equal(t, "\"Chromium\";v=\"130\", \"Google Chrome\";v=\"130\", \"Not?A_Brand\";v=\"99\"", c.GetHeader(Browser))
 		assert.Equal(t, "\"Linux\"", c.GetHeader(Platform))
 		assert.Equal(t, "navigate", c.GetHeader(FetchMode))

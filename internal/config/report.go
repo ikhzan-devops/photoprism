@@ -76,6 +76,7 @@ func (c *Config) Report() (rows [][]string, cols []string) {
 		{"thumb-cache-path", c.ThumbCachePath()},
 		{"temp-path", c.TempPath()},
 		{"assets-path", c.AssetsPath()},
+		{"models-path", c.ModelsPath()},
 		{"static-path", c.StaticPath()},
 		{"build-path", c.BuildPath()},
 		{"img-path", c.ImgPath()},
@@ -110,6 +111,7 @@ func (c *Config) Report() (rows [][]string, cols []string) {
 		{"read-only", fmt.Sprintf("%t", c.ReadOnly())},
 		{"develop", fmt.Sprintf("%t", c.Develop())},
 		{"experimental", fmt.Sprintf("%t", c.Experimental())},
+		{"disable-frontend", fmt.Sprintf("%t", c.DisableFrontend())},
 		{"disable-settings", fmt.Sprintf("%t", c.DisableSettings())},
 		{"disable-backups", fmt.Sprintf("%t", c.DisableBackups())},
 		{"disable-restart", fmt.Sprintf("%t", c.DisableRestart())},
@@ -139,6 +141,7 @@ func (c *Config) Report() (rows [][]string, cols []string) {
 		{"default-locale", c.DefaultLocale()},
 		{"default-timezone", c.DefaultTimezone().String()},
 		{"default-theme", c.DefaultTheme()},
+		{"places-locale", c.PlacesLocale()},
 		{"app-name", c.AppName()},
 		{"app-mode", c.AppMode()},
 		{"app-icon", c.AppIcon()},
@@ -165,6 +168,12 @@ func (c *Config) Report() (rows [][]string, cols []string) {
 		{"cors-headers", c.CORSHeaders()},
 		{"cors-methods", c.CORSMethods()},
 
+		// Portal Server.
+		{"portal-url", fmt.Sprintf("%s", c.Options().PortalUrl)},
+		{"portal-client", fmt.Sprintf("%s", c.Options().PortalClient)},
+		{"portal-secret", fmt.Sprintf("%s", strings.Repeat("*", utf8.RuneCountInString(c.Options().PortalSecret)))},
+		{"instance-secret", fmt.Sprintf("%s", strings.Repeat("*", utf8.RuneCountInString(c.Options().InstanceSecret)))},
+
 		// URIs.
 		{"base-uri", c.BaseUri("/")},
 		{"api-uri", c.ApiUri()},
@@ -175,7 +184,9 @@ func (c *Config) Report() (rows [][]string, cols []string) {
 		// Proxy Servers.
 		{"https-proxy", c.HttpsProxy()},
 		{"https-proxy-insecure", fmt.Sprintf("%t", c.HttpsProxyInsecure())},
+		{"trusted-platform", c.TrustedPlatform()},
 		{"trusted-proxy", c.TrustedProxy()},
+		{"proxy-client-header", c.ProxyClientHeader()},
 		{"proxy-proto-header", strings.Join(c.ProxyProtoHeader(), ", ")},
 		{"proxy-proto-https", strings.Join(c.ProxyProtoHttps(), ", ")},
 
@@ -252,8 +263,8 @@ func (c *Config) Report() (rows [][]string, cols []string) {
 		{"vision-uri", c.VisionUri()},
 		{"vision-key", strings.Repeat("*", utf8.RuneCountInString(c.VisionKey()))},
 		{"nasnet-model-path", c.NasnetModelPath()},
-		{"facenet-model-path", c.FaceNetModelPath()},
-		{"nsfw-model-path", c.NSFWModelPath()},
+		{"facenet-model-path", c.FacenetModelPath()},
+		{"nsfw-model-path", c.NsfwModelPath()},
 		{"detect-nsfw", fmt.Sprintf("%t", c.DetectNSFW())},
 
 		// Facial Recognition.

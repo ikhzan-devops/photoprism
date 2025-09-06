@@ -11,6 +11,7 @@ type SearchFaces struct {
 	Count   int    `form:"count" binding:"required" serialize:"-"`
 	Offset  int    `form:"offset" serialize:"-"`
 	Order   string `form:"order" serialize:"-"`
+	Reverse bool   `form:"reverse" serialize:"-"`
 }
 
 func (f *SearchFaces) GetQuery() string {

@@ -43,7 +43,8 @@ func IndexMain(related *RelatedFiles, ind *Index, o IndexOptions) (result IndexR
 	// Create JPEG sidecar for media files in other formats so that thumbnails can be created.
 	if o.Convert && f.IsMedia() && !f.HasPreviewImage() {
 		if img, imgErr := ind.convert.ToImage(f, false); imgErr != nil {
-			result.Err = fmt.Errorf("index: failed to create preview image for %s (%s)", clean.Log(f.RootRelName()), clean.Error(imgErr))
+			result.Err = fmt.Errorf("index: could not create preview image for %s", clean.Log(f.RootRelName()))
+			log.Error(result.Err)
 			result.Status = IndexFailed
 			return result
 		} else if img == nil {

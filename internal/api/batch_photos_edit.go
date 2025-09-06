@@ -21,12 +21,12 @@ import (
 //	@Tags		Photos
 //	@Accept		json
 //	@Produce	json
-//	@Success	200						{object}	batch.PhotosForm
+//	@Success	200						{object}	batch.PhotosResponse
 //	@Failure	400,401,403,404,429,500	{object}	i18n.Response
-//	@Param		photos					body		batch.PhotosRequest	true	"photos selection and values"
+//	@Param		Request					body		batch.PhotosRequest	true	"photos selection and values"
 //	@Router		/api/v1/batch/photos/edit [post]
 func BatchPhotosEdit(router *gin.RouterGroup) {
-	router.POST("/batch/photos/edit", func(c *gin.Context) {
+	router.Match(MethodsPutPost, "/batch/photos/edit", func(c *gin.Context) {
 		s := Auth(c, acl.ResourcePhotos, acl.ActionUpdate)
 
 		if s.Abort(c) {
@@ -44,7 +44,7 @@ func BatchPhotosEdit(router *gin.RouterGroup) {
 
 		// Assign and validate request form values.
 		if err := c.BindJSON(&frm); err != nil {
-			AbortBadRequest(c)
+			AbortBadRequest(c, err)
 			return
 		}
 
@@ -77,9 +77,9 @@ func BatchPhotosEdit(router *gin.RouterGroup) {
 		batchFrm := batch.NewPhotosForm(photos)
 
 		// Return models and form values.
-		data := gin.H{
-			"models": photos,
-			"values": batchFrm,
+		data := batch.PhotosResponse{
+			Models: photos,
+			Values: batchFrm,
 		}
 
 		c.JSON(http.StatusOK, data)

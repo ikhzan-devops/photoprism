@@ -33,6 +33,9 @@ import { Form } from "common/form";
 import { $config } from "app/session";
 
 export let BatchSize = 99999;
+export let WebDavRoles = ["admin", "manager", "user", "contributor"];
+export let NoBasePathRoles = ["admin", "manager", "user", "viewer"];
+export let NoUploadPathRoles = ["guest", "viewer"];
 
 export class User extends RestModel {
   getDefaults() {
@@ -229,16 +232,28 @@ export class User extends RestModel {
     return !this.AuthProvider || this.AuthProvider === "default" || this.AuthProvider === "local";
   }
 
+  // Checks if WebDAV access is allowed for this user.
   hasWebDAV() {
     return this.WebDAV && this.canEnableWebDAV();
   }
 
+  // Checks if the user role permits WebDAV access.
   canEnableWebDAV() {
     if (this.AuthProvider === "none" || !this.Name) {
       return false;
     }
 
-    return this.Role === "admin" || this.Role === "user" || this.Role === "contributor";
+    return WebDavRoles.includes(this.Role);
+  }
+
+  // Checks if the user role supports a custom base path.
+  canHaveBasePath() {
+    return !NoBasePathRoles.includes(this.Role);
+  }
+
+  // Checks if the user role supports a custom upload path.
+  canHaveUploadPath() {
+    return !NoUploadPathRoles.includes(this.Role);
   }
 
   authInfo() {

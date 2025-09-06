@@ -8,6 +8,7 @@ import (
 	"github.com/photoprism/photoprism/internal/ai/vision"
 	"github.com/photoprism/photoprism/internal/auth/acl"
 	"github.com/photoprism/photoprism/internal/photoprism/get"
+	"github.com/photoprism/photoprism/pkg/media"
 	"github.com/photoprism/photoprism/pkg/media/http/header"
 )
 
@@ -51,18 +52,30 @@ func PostVisionCaption(router *gin.RouterGroup) {
 			return
 		}
 
-		// TODO: Return error code 501 until this service is implemented.
-		code := http.StatusNotImplemented
+		// Run inference to generate a caption.
+		result, model, err := vision.Caption(request.Images, media.SrcRemote)
 
-		// Generate Vision API service response.
-		response := vision.ApiResponse{
-			Id:     request.GetId(),
-			Code:   code,
-			Error:  http.StatusText(http.StatusNotImplemented),
-			Model:  &vision.Model{Type: vision.ModelTypeCaption},
-			Result: vision.ApiResult{Caption: &vision.CaptionResult{Text: "This is a test.", Confidence: 0.14159265359}},
+		if err != nil {
+			log.Errorf("vision: %s (caption)", err)
+			c.JSON(http.StatusBadRequest, vision.NewApiError(request.GetId(), http.StatusBadRequest))
+			return
+		} else if model == nil {
+			log.Errorf("vision: no model specified (caption)")
+			c.JSON(http.StatusInternalServerError, vision.NewApiError(request.GetId(), http.StatusInternalServerError))
+			return
+		} else if result == nil {
+			log.Errorf("vision: no result (caption)")
+			c.JSON(http.StatusInternalServerError, vision.NewApiError(request.GetId(), http.StatusInternalServerError))
+			return
 		}
 
-		c.JSON(code, response)
+		// Generate Vision API service response.
+		response := vision.NewCaptionResponse(
+			request.GetId(),
+			&vision.Model{Type: model.Type, Name: model.Name, Version: model.Version},
+			result,
+		)
+
+		c.JSON(http.StatusOK, response)
 	})
 }

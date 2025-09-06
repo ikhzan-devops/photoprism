@@ -245,6 +245,69 @@ func (m *Photo) GetUID() string {
 	return m.PhotoUID
 }
 
+// MediaType returns the current PhotoType as media.Type.
+func (m *Photo) MediaType() media.Type {
+	return media.Type(m.PhotoType)
+}
+
+// ResetMediaType resets the media type and source to the defaults.
+func (m *Photo) ResetMediaType(resetSrc string) {
+	if m.PhotoType != "" && SrcPriority[m.TypeSrc] > SrcPriority[resetSrc] {
+		return
+	}
+
+	m.PhotoType = MediaImage
+	m.TypeSrc = SrcAuto
+}
+
+// ResetDuration sets the video duration to 0.
+func (m *Photo) ResetDuration() {
+	m.PhotoDuration = 0
+}
+
+// HasMediaType checks if the photo has any of the specified media types.
+func (m *Photo) HasMediaType(types ...media.Type) bool {
+	mediaType := m.MediaType()
+
+	for _, t := range types {
+		if mediaType == t {
+			return true
+		}
+	}
+
+	return false
+}
+
+// SetMediaType sets a new media type if its priority is higher than that of the current type.
+func (m *Photo) SetMediaType(newType media.Type, typeSrc string) {
+	// Only allow a new main media type to be set.
+	if !newType.IsMain() || newType.Equal(m.PhotoType) {
+		return
+	}
+
+	// Get current media type.
+	currentType := m.MediaType()
+
+	// Do not change the type if the source priority is lower than the current one.
+	if SrcPriority[typeSrc] < SrcPriority[m.TypeSrc] && currentType.IsMain() {
+		return
+	}
+
+	// Do not automatically change a higher priority type to a lower one.
+	if SrcPriority[typeSrc] <= SrcPriority[SrcFile] && media.Priority[newType] < media.Priority[currentType] {
+		return
+	}
+
+	// Set new type and type source.
+	m.PhotoType = newType.String()
+	m.TypeSrc = typeSrc
+
+	// Write a debug log containing the old and new media type.
+	log.Debugf("photo: changed type of %s from %s to %s", m.String(), currentType.String(), newType.String())
+
+	return
+}
+
 // String returns the id or name as string.
 func (m *Photo) String() string {
 	if m == nil {
@@ -715,10 +778,16 @@ func (m *Photo) AddLabels(labels classify.Labels) {
 			continue
 		}
 
-		if photoLabel.Uncertainty > classifyLabel.Uncertainty && photoLabel.Uncertainty < 100 {
+		if photoLabel.HasID() && photoLabel.Uncertainty > classifyLabel.Uncertainty && photoLabel.Uncertainty < 100 {
+			var labelSrc string
+			if classifyLabel.Source == "" {
+				labelSrc = SrcImage
+			} else {
+				labelSrc = clean.ShortTypeLower(classifyLabel.Source)
+			}
 			if err := photoLabel.Updates(map[string]interface{}{
 				"Uncertainty": classifyLabel.Uncertainty,
-				"LabelSrc":    classifyLabel.Source,
+				"LabelSrc":    labelSrc,
 			}); err != nil {
 				log.Errorf("index: %s", err)
 			}

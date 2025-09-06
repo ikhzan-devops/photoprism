@@ -6,6 +6,7 @@ type Type = string
 const (
 	File       Type = "file"
 	Data       Type = "data"
+	Base64     Type = "base64"
 	Http       Type = "http"
 	Https      Type = "https"
 	Websocket  Type = "wss"

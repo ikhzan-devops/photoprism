@@ -12,7 +12,7 @@ import (
 )
 
 // LatLng returns location details based on the specified latitude and longitude.
-func LatLng(lat, lng float64) (result Location, err error) {
+func LatLng(lat, lng float64, locale string) (result Location, err error) {
 	if lat == 0.0 || lng == 0.0 {
 		return result, ErrMissingCoordinates
 	}
@@ -24,9 +24,12 @@ func LatLng(lat, lng float64) (result Location, err error) {
 	values := url.Values{"lat": {fmt.Sprintf("%f", lat)}, "lng": {fmt.Sprintf("%f", lng)}}
 	params := values.Encode()
 
+	// Get request locale.
+	locale = Locale(locale)
+
 	// Create cache key based on query parameters.
 	id := s2.Token(lat, lng)
-	cacheKey := fmt.Sprintf("id:%s", id)
+	cacheKey := fmt.Sprintf("id:%s:%s", id, locale)
 
 	// Are location results cached?
 	if hit, ok := clientCache.Get(cacheKey); ok {
@@ -41,7 +44,7 @@ func LatLng(lat, lng float64) (result Location, err error) {
 	// Query the specified places service URLs.
 	for _, serviceUrl := range ReverseServiceUrls {
 		reqUrl := fmt.Sprintf("%s?%s", serviceUrl, params)
-		if r, err = GetRequest(reqUrl); err == nil {
+		if r, err = GetRequest(reqUrl, locale); err == nil {
 			break
 		}
 	}

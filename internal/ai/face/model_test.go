@@ -10,7 +10,7 @@ import (
 	"github.com/photoprism/photoprism/pkg/fs/fastwalk"
 )
 
-var modelPath, _ = filepath.Abs("../../../assets/facenet")
+var modelPath, _ = filepath.Abs("../../../assets/models/facenet")
 
 func TestNet(t *testing.T) {
 	expected := map[string]int{
@@ -54,7 +54,7 @@ func TestNet(t *testing.T) {
 
 	var embeddings = make(Embeddings, 11)
 
-	faceNet := NewModel(modelPath, "testdata/cache", 160, []string{"serve"}, false)
+	faceNet := NewModel(modelPath, "testdata/cache", 160, nil, false)
 
 	if err := fastwalk.Walk("testdata", func(fileName string, info os.FileMode) error {
 		if info.IsDir() || filepath.Base(filepath.Dir(fileName)) != "testdata" {

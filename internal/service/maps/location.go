@@ -52,7 +52,7 @@ func (l *Location) QueryApi(api string) error {
 }
 
 func (l *Location) QueryPlaces() error {
-	s, err := places.Cell(l.ID)
+	s, err := places.Cell(l.ID, places.DefaultLocale)
 
 	if err != nil {
 		return err

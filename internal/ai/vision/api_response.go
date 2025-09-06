@@ -9,6 +9,7 @@ import (
 	"github.com/photoprism/photoprism/internal/ai/classify"
 	"github.com/photoprism/photoprism/internal/ai/face"
 	"github.com/photoprism/photoprism/internal/ai/nsfw"
+	"github.com/photoprism/photoprism/internal/entity"
 	"github.com/photoprism/photoprism/pkg/clean"
 )
 
@@ -85,13 +86,31 @@ type LabelResult struct {
 }
 
 // ToClassify returns the label results as classify.Label.
-func (r LabelResult) ToClassify() classify.Label {
-	uncertainty := math.RoundToEven(float64(100 - r.Confidence*100))
+func (r LabelResult) ToClassify(labelSrc string) classify.Label {
+	// Calculate uncertainty from confidence or assume a default of 20%.
+	var uncertainty int
+
+	if r.Confidence <= 0 {
+		uncertainty = 20
+	} else {
+		uncertainty = int(math.RoundToEven(float64(100 - r.Confidence*100)))
+	}
+
+	// Default to "image" of no source name is provided.
+	if labelSrc != entity.SrcAuto {
+		labelSrc = clean.ShortTypeLower(labelSrc)
+	} else if r.Source != "" {
+		labelSrc = clean.ShortTypeLower(r.Source)
+	} else {
+		labelSrc = entity.SrcImage
+	}
+
+	// Return label.
 	return classify.Label{
 		Name:        r.Name,
-		Source:      r.Source,
+		Source:      labelSrc,
 		Priority:    r.Priority,
-		Uncertainty: int(uncertainty),
+		Uncertainty: uncertainty,
 		Categories:  r.Categories}
 }
 
@@ -127,5 +146,15 @@ func NewLabelsResponse(id string, model *Model, results classify.Labels) ApiResp
 		Code:   http.StatusOK,
 		Model:  &Model{Type: ModelTypeLabels, Name: model.Name, Version: model.Version, Resolution: model.Resolution},
 		Result: ApiResult{Labels: labels},
+	}
+}
+
+// NewCaptionResponse generates a new Vision API image caption service response.
+func NewCaptionResponse(id string, model *Model, result *CaptionResult) ApiResponse {
+	return ApiResponse{
+		Id:     clean.Type(id),
+		Code:   http.StatusOK,
+		Model:  &Model{Type: ModelTypeLabels, Name: model.Name, Version: model.Version, Resolution: model.Resolution},
+		Result: ApiResult{Caption: result},
 	}
 }

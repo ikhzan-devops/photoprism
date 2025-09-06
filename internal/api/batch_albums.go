@@ -35,7 +35,7 @@ func BatchAlbumsDelete(router *gin.RouterGroup) {
 		var frm form.Selection
 
 		if err := c.BindJSON(&frm); err != nil {
-			AbortBadRequest(c)
+			AbortBadRequest(c, err)
 			return
 		}
 

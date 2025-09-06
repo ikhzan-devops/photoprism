@@ -65,6 +65,7 @@ const (
 	ResourceWebhooks  Resource = "webhooks"
 	ResourceMetrics   Resource = "metrics"
 	ResourceVision    Resource = "vision"
+	ResourcePortal    Resource = "portal"
 	ResourceFeedback  Resource = "feedback"
 	ResourceDefault   Resource = "default"
 )

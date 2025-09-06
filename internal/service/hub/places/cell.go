@@ -11,7 +11,7 @@ import (
 )
 
 // Cell returns location details based on the specified S2 cell ID.
-func Cell(id string) (result Location, err error) {
+func Cell(id string, locale string) (result Location, err error) {
 
 	// Normalize S2 Cell ID.
 	id = s2.NormalizeToken(id)
@@ -34,8 +34,11 @@ func Cell(id string) (result Location, err error) {
 		return result, fmt.Errorf("skipping lat %f, lng %f", lat, lng)
 	}
 
+	// Get request locale.
+	locale = Locale(locale)
+
 	// Create cache key based on query parameters.
-	cacheKey := fmt.Sprintf("id:%s", id)
+	cacheKey := fmt.Sprintf("id:%s:%s", id, locale)
 
 	// Location details cached?
 	if hit, ok := clientCache.Get(cacheKey); ok {
@@ -50,7 +53,7 @@ func Cell(id string) (result Location, err error) {
 	// Query the specified places service URLs.
 	for _, serviceUrl := range LocationServiceUrls {
 		reqUrl := fmt.Sprintf(serviceUrl, id)
-		if r, err = GetRequest(reqUrl); err == nil {
+		if r, err = GetRequest(reqUrl, locale); err == nil {
 			break
 		}
 	}

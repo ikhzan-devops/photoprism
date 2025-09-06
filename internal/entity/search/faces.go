@@ -62,13 +62,13 @@ func Faces(frm form.SearchFaces) (results FaceResults, err error) {
 	// Set sort order.
 	switch frm.Order {
 	case "subject":
-		s = s.Order(fmt.Sprintf("%s.subj_uid", facesTable))
+		s = s.Order(OrderExpr(fmt.Sprintf("%s.subj_uid ASC", facesTable), frm.Reverse))
 	case "added":
-		s = s.Order(fmt.Sprintf("%s.created_at DESC", facesTable))
+		s = s.Order(OrderExpr(fmt.Sprintf("%s.created_at DESC", facesTable), frm.Reverse))
 	case "samples":
-		s = s.Order(fmt.Sprintf("%s.samples DESC, %s.id", facesTable, facesTable))
+		s = s.Order(OrderExpr(fmt.Sprintf("%s.samples DESC, %s.id", facesTable, facesTable), frm.Reverse))
 	default:
-		s = s.Order(fmt.Sprintf("%s.samples DESC, %s.id", facesTable, facesTable))
+		s = s.Order(OrderExpr(fmt.Sprintf("%s.samples DESC, %s.id", facesTable, facesTable), frm.Reverse))
 	}
 
 	// Find specific IDs?

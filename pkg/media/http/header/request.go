@@ -11,6 +11,7 @@ const (
 	Browser   = "Sec-Ch-Ua"
 	Platform  = "Sec-Ch-Ua-Platform"
 	FetchMode = "Sec-Fetch-Mode"
+	UserAgent = "User-Agent"
 )
 
 // Standard IP addresses and placeholders.
@@ -36,8 +37,9 @@ func ClientIP(c *gin.Context) (ip string) {
 	return UnknownIP
 }
 
-// UserAgent returns the user agent from the request context or an empty string if it is unknown.
-func UserAgent(c *gin.Context) string {
+// ClientUserAgent returns the client user agent string
+// from the request context, or an empty string if unknown.
+func ClientUserAgent(c *gin.Context) string {
 	if c == nil {
 		// Should never happen.
 		return ""

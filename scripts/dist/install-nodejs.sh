@@ -42,16 +42,16 @@ fi
 echo "Configuring NPM..."
 sudo npm config set cache ~/.cache/npm
 echo "Updating NPM..."
-sudo npm update --unsafe-perm=true --allow-root -g npm
+sudo npm update -g npm
 echo "Installing TestCafe..."
-sudo npm install --unsafe-perm=true --allow-root -g \
-  npm@latest npm-check-updates@latest license-report@latest n@latest testcafe@3.7.2
+sudo npm install -g npm@latest npm-check-updates@latest license-report@latest n@latest testcafe@3.7.2
+echo "Installing Vitest..."
+sudo npm install -g vitest @vitest/browser @vitest/coverage-v8 @vitest/ui
 echo "Installing ESLint..."
-sudo npm install --unsafe-perm=true --allow-root -g \
-  eslint globals @eslint/eslintrc @eslint/js eslint-config-prettier eslint-formatter-pretty \
+sudo npm install -g eslint prettier globals \
+  @eslint/eslintrc @eslint/js eslint-config-prettier eslint-formatter-pretty \
   eslint-plugin-html eslint-plugin-import eslint-plugin-node eslint-plugin-prettier \
-  eslint-plugin-promise eslint-plugin-vue eslint-webpack-plugin prettier
-echo "Installing Vue Language Tools..."
-sudo npm install --unsafe-perm=true --allow-root -g \
-  @vue/language-server @vue/typescript-plugin
+  eslint-plugin-vue eslint-plugin-vuetify eslint-webpack-plugin
+echo "Installing Vue Language Server..."
+sudo npm install -g @vue/language-server
 echo "Done."

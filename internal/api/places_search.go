@@ -48,7 +48,7 @@ func GetPlacesSearch(router *gin.RouterGroup) {
 
 		// Get the search string, locale, and result count limit from the query parameters.
 		query := clean.SearchString(c.Query("q"))
-		locale := clean.WebLocale(c.Query("locale"), conf.DefaultLocale())
+		locale := clean.WebLocale(c.Query("locale"), conf.PlacesLocale())
 		count := txt.IntVal(c.Query("count"), 1, 50, 10)
 
 		if query == "" {

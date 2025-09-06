@@ -43,6 +43,7 @@ type MediaFile struct {
 	fileNameResolved string
 	fileRoot         string
 	statErr          error
+	mimeErr          error
 	modTime          time.Time
 	fileSize         int64
 	fileType         fs.Type
@@ -390,16 +391,16 @@ func (m *MediaFile) RelPath(directory string) string {
 	pathname := m.fileName
 
 	if i := strings.Index(pathname, directory); i == 0 {
-		if i := strings.LastIndex(directory, string(os.PathSeparator)); i == len(directory)-1 {
+		if i = strings.LastIndex(directory, string(os.PathSeparator)); i == len(directory)-1 {
 			pathname = pathname[len(directory):]
-		} else if i := strings.LastIndex(directory, string(os.PathSeparator)); i != len(directory) {
+		} else if i = strings.LastIndex(directory, string(os.PathSeparator)); i != len(directory) {
 			pathname = pathname[len(directory)+1:]
 		}
 	}
 
 	if end := strings.LastIndex(pathname, string(os.PathSeparator)); end != -1 {
 		pathname = pathname[:end]
-	} else if end := strings.LastIndex(pathname, string(os.PathSeparator)); end == -1 {
+	} else if end = strings.LastIndex(pathname, string(os.PathSeparator)); end == -1 {
 		pathname = ""
 	}
 
@@ -518,24 +519,36 @@ func (m *MediaFile) Root() string {
 // since media types have become used in contexts unrelated to email, such as HTTP:
 // https://en.wikipedia.org/wiki/Media_type#Structure
 func (m *MediaFile) MimeType() string {
-	if m.mimeType != "" {
+	// Do not detect the MIME type again if it is already known,
+	// or if the detection failed.
+	if m.mimeType != "" || m.mimeErr != nil {
 		return m.mimeType
 	}
 
 	var err error
-	fileName := m.FileName()
 
-	// Resolve symlinks.
+	// Get the filename and resolve symbolic links, if necessary.
+	fileName := m.FileName()
 	if fileName, err = fs.Resolve(fileName); err != nil {
 		return m.mimeType
 	}
 
-	m.mimeType = fs.MimeType(fileName)
+	// Detect the file's MIME type based on its content and file extension.
+	m.mimeType, err = fs.DetectMimeType(fileName)
 
+	// Log and remember the error if the MIME type detection has failed.
+	if err != nil {
+		log.Errorf("media: failed to detect mime type of %s (%s)", clean.Log(m.RootRelName()), clean.Error(err))
+		m.mimeErr = err
+		return m.mimeType
+	}
+
+	// Adjust the MIME type for MP4 files containing MPEG-2 transport streams.
 	if m.mimeType == header.ContentTypeMp4 && m.MetaData().Codec == video.CodecM2TS {
 		m.mimeType = header.ContentTypeM2TS
 	}
 
+	// Return MIME type.
 	return m.mimeType
 }
 
@@ -930,22 +943,30 @@ func (m *MediaFile) CheckType() error {
 		return nil
 	}
 
-	// Exclude mime type from the error message if it could not be detected.
+	// If the MIME type is empty, it is usually because the file could not be read.
 	if mimeType == fs.MimeTypeUnknown {
-		return fmt.Errorf("has an invalid extension (unknown media type)")
+		return fmt.Errorf("could not be identified")
 	}
 
 	return fmt.Errorf("has an invalid extension for media type %s", clean.LogQuote(mimeType))
 }
 
-// Media returns the media content type (video, image, raw, sidecar,...).
-func (m *MediaFile) Media() media.Type {
+// MediaType returns the media content type, e.g. video, image, raw, or sidecar.
+func (m *MediaFile) MediaType() media.Type {
 	return media.FromName(m.fileName)
 }
 
-// HasMediaType checks if the file has is the given media type.
-func (m *MediaFile) HasMediaType(mediaType media.Type) bool {
-	return m.Media() == mediaType
+// HasMediaType checks if the file has any of the given media types.
+func (m *MediaFile) HasMediaType(mediaTypes ...media.Type) bool {
+	mediaType := m.MediaType()
+
+	for _, t := range mediaTypes {
+		if mediaType == t {
+			return true
+		}
+	}
+
+	return false
 }
 
 // HasFileType checks if the file has the given file type.
@@ -977,9 +998,9 @@ func (m *MediaFile) NotAnimated() bool {
 	return !m.IsAnimated()
 }
 
-// IsDocument returns true if this is a document file.
+// IsDocument returns true if this is a PDF document file.
 func (m *MediaFile) IsDocument() bool {
-	return m.HasMediaType(media.Document)
+	return m.HasMediaType(media.Document) && m.HasMimeType(header.ContentTypePDF)
 }
 
 // IsVector returns true if this is a vector graphics.
@@ -992,9 +1013,14 @@ func (m *MediaFile) IsVideo() bool {
 	return m.HasMediaType(media.Video)
 }
 
+// IsMov returns true if this is a MOV (QuickTime) video file.
+func (m *MediaFile) IsMov() bool {
+	return fs.FileType(m.fileName) == fs.VideoMov
+}
+
 // IsSidecar checks if the file is a metadata sidecar file, independent of the storage location.
 func (m *MediaFile) IsSidecar() bool {
-	return !m.Media().Main()
+	return !m.MediaType().IsMain()
 }
 
 // IsArchive returns true if this is an archive file.
@@ -1063,15 +1089,38 @@ func (m *MediaFile) IsImageNative() bool {
 }
 
 // IsLive checks if the file is a live photo.
-func (m *MediaFile) IsLive() bool {
-	if m.IsHeic() {
-		return fs.VideoMov.FindFirst(m.FileName(), []string{}, Config().OriginalsPath(), false) != ""
+func (m *MediaFile) IsLive(videoDuration time.Duration) bool {
+	if !m.InOriginals() {
+		// Live Photos must be located in the Originals folder.
+		return false
+	} else if !m.HasMediaType(media.Video, media.Image, media.Live) {
+		// Live Photos may only consist of video, image, or live files.
+		return false
+	} else if videoDuration > media.LiveMaxDuration {
+		// Live Photos can include a maximum of 3.1 seconds of video.
+		return false
 	}
 
-	if m.IsVideo() {
-		return fs.ImageHeic.FindFirst(m.FileName(), []string{}, Config().OriginalsPath(), false) != ""
+	// Check for related image or video files in the expected formats.
+	switch m.MediaType() {
+	case media.Video:
+		// Live Photos may only have MOV video sidecar files.
+		if m.IsMov() {
+			if fs.ImageHeic.FindFirst(m.FileName(), []string{}, Config().OriginalsPath(), false) != "" ||
+				fs.ImageJpeg.FindFirst(m.FileName(), []string{}, Config().OriginalsPath(), false) != "" {
+				return true
+			}
+		}
+	case media.Image:
+		// Live Photos must be either HEIC or JPEG image files.
+		if m.IsHeic() || m.IsJpeg() {
+			if fs.VideoMov.FindFirst(m.FileName(), []string{}, Config().OriginalsPath(), false) != "" {
+				return true
+			}
+		}
 	}
 
+	// If none of the above applies, check the metadata for embedded videos.
 	return m.MetaData().MediaType == media.Live && m.VideoInfo().Compatible
 }
 

@@ -77,6 +77,7 @@ type Options struct {
 	TempPath               string        `yaml:"TempPath" json:"-" flag:"temp-path"`
 	AssetsPath             string        `yaml:"AssetsPath" json:"-" flag:"assets-path"`
 	CustomAssetsPath       string        `yaml:"-" json:"-" flag:"custom-assets-path" tags:"plus,pro"`
+	ModelsPath             string        `yaml:"ModelsPath" json:"-" flag:"models-path"`
 	SidecarPath            string        `yaml:"SidecarPath" json:"-" flag:"sidecar-path"`
 	SidecarYaml            bool          `yaml:"SidecarYaml" json:"SidecarYaml" flag:"sidecar-yaml" default:"true"`
 	UsageInfo              bool          `yaml:"UsageInfo" json:"UsageInfo" flag:"usage-info"`
@@ -94,6 +95,7 @@ type Options struct {
 	AutoImport             int           `yaml:"AutoImport" json:"AutoImport" flag:"auto-import"`
 	ReadOnly               bool          `yaml:"ReadOnly" json:"ReadOnly" flag:"read-only"`
 	Experimental           bool          `yaml:"Experimental" json:"Experimental" flag:"experimental"`
+	DisableFrontend        bool          `yaml:"DisableFrontend" json:"-" flag:"disable-frontend"`
 	DisableSettings        bool          `yaml:"DisableSettings" json:"-" flag:"disable-settings"`
 	DisableBackups         bool          `yaml:"DisableBackups" json:"DisableBackups" flag:"disable-backups"`
 	DisableRestart         bool          `yaml:"DisableRestart" json:"-" flag:"disable-restart"`
@@ -118,6 +120,7 @@ type Options struct {
 	DefaultLocale          string        `yaml:"DefaultLocale" json:"DefaultLocale" flag:"default-locale"`
 	DefaultTimezone        string        `yaml:"DefaultTimezone" json:"DefaultTimezone" flag:"default-timezone"`
 	DefaultTheme           string        `yaml:"DefaultTheme" json:"DefaultTheme" flag:"default-theme"`
+	PlacesLocale           string        `yaml:"PlacesLocale" json:"PlacesLocale" flag:"places-locale"`
 	AppName                string        `yaml:"AppName" json:"AppName" flag:"app-name"`
 	AppMode                string        `yaml:"AppMode" json:"AppMode" flag:"app-mode"`
 	AppIcon                string        `yaml:"AppIcon" json:"AppIcon" flag:"app-icon"`
@@ -139,7 +142,9 @@ type Options struct {
 	CORSMethods            string        `yaml:"CORSMethods" json:"-" flag:"cors-methods"`
 	HttpsProxy             string        `yaml:"HttpsProxy" json:"HttpsProxy" flag:"https-proxy"`
 	HttpsProxyInsecure     bool          `yaml:"HttpsProxyInsecure" json:"HttpsProxyInsecure" flag:"https-proxy-insecure"`
+	TrustedPlatform        string        `yaml:"TrustedPlatform" json:"-" flag:"trusted-platform"`
 	TrustedProxies         []string      `yaml:"TrustedProxies" json:"-" flag:"trusted-proxy"`
+	ProxyClientHeaders     []string      `yaml:"ProxyClientHeaders" json:"-" flag:"proxy-client-header"`
 	ProxyProtoHeaders      []string      `yaml:"ProxyProtoHeaders" json:"-" flag:"proxy-proto-header"`
 	ProxyProtoHttps        []string      `yaml:"ProxyProtoHttps" json:"-" flag:"proxy-proto-https"`
 	DisableTLS             bool          `yaml:"DisableTLS" json:"DisableTLS" flag:"disable-tls"`
@@ -214,6 +219,11 @@ type Options struct {
 	PIDFilename            string        `yaml:"PIDFilename" json:"-" flag:"pid-filename"`
 	LogFilename            string        `yaml:"LogFilename" json:"-" flag:"log-filename"`
 	DetachServer           bool          `yaml:"DetachServer" json:"-" flag:"detach-server"`
+	PortalUrl              string        `yaml:"PortalUrl" json:"-" flag:"portal-url"`
+	PortalClient           string        `yaml:"PortalClient" json:"-" flag:"portal-client"`
+	PortalSecret           string        `yaml:"PortalSecret" json:"-" flag:"portal-secret"`
+	InstanceRoles          string        `yaml:"InstanceRoles" json:"-" flag:"instance-roles"`
+	InstanceSecret         string        `yaml:"InstanceSecret" json:"-" flag:"instance-secret"`
 }
 
 // NewOptions creates a new configuration entity by using two methods:

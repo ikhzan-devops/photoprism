@@ -1,7 +1,11 @@
 package entity
 
 import (
-	"github.com/photoprism/photoprism/internal/ai/classify"
+	"strings"
+	"time"
+
+	"github.com/dustin/go-humanize/english"
+
 	"github.com/photoprism/photoprism/pkg/txt"
 )
 
@@ -12,7 +16,7 @@ func (m *Photo) HasCaption() bool {
 
 // NoCaption returns true if the photo has no caption.
 func (m *Photo) NoCaption() bool {
-	return m.GetCaption() == ""
+	return strings.TrimSpace(m.GetCaption()) == ""
 }
 
 // GetCaption returns the photo caption, if any.
@@ -61,8 +65,22 @@ func (m *Photo) UpdateCaptionLabels() error {
 		return nil
 	} else if !m.HasCaption() {
 		return nil
-	} else if SrcPriority[m.GetCaptionSrc()] < SrcPriority[SrcMeta] {
+	}
+
+	captionSrcPriority := SrcPriority[m.GetCaptionSrc()]
+
+	if captionSrcPriority < SrcPriority[SrcImage] {
 		return nil
+	}
+
+	start := time.Now()
+
+	var uncertainty int
+
+	if captionSrcPriority < SrcPriority[SrcMeta] {
+		uncertainty = 20
+	} else {
+		uncertainty = 15
 	}
 
 	keywords := txt.UniqueKeywords(m.GetCaption())
@@ -76,9 +94,15 @@ func (m *Photo) UpdateCaptionLabels() error {
 			}
 
 			labelIds = append(labelIds, label.ID)
-			FirstOrCreatePhotoLabel(NewPhotoLabel(m.ID, label.ID, 15, classify.SrcCaption))
+			FirstOrCreatePhotoLabel(NewPhotoLabel(m.ID, label.ID, uncertainty, SrcCaption))
 		}
 	}
 
-	return Db().Where("label_src = ? AND photo_id = ? AND label_id NOT IN (?)", classify.SrcCaption, m.ID, labelIds).Delete(&PhotoLabel{}).Error
+	if err := Db().Where("label_src = ? AND photo_id = ? AND label_id NOT IN (?)", SrcCaption, m.ID, labelIds).Delete(&PhotoLabel{}).Error; err != nil {
+		return err
+	}
+
+	log.Debugf("index: updated %s [%s]", english.Plural(len(labelIds), "caption label", "caption labels"), time.Since(start))
+
+	return nil
 }

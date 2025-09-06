@@ -38,7 +38,7 @@ func SearchLabels(router *gin.RouterGroup) {
 		err := c.MustBindWith(&frm, binding.Form)
 
 		if err != nil {
-			AbortBadRequest(c)
+			AbortBadRequest(c, err)
 			return
 		}
 

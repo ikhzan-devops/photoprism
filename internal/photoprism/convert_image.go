@@ -157,8 +157,8 @@ func (w *Convert) ToImage(f *MediaFile, force bool) (result *MediaFile, err erro
 
 		log.Infof("convert: converting %s to %s (%s)", clean.Log(filepath.Base(fileName)), clean.Log(filepath.Base(imageName)), filepath.Base(cmd.Path))
 
-		// Log exact command for debugging in trace mode.
-		log.Trace(cmd.String())
+		// Log exact command in debug mode.
+		log.Debug(cmd.String())
 
 		// Run convert command.
 		if err = cmd.Run(); err != nil {
@@ -166,7 +166,7 @@ func (w *Convert) ToImage(f *MediaFile, force bool) (result *MediaFile, err erro
 				err = errors.New(errStr)
 			}
 
-			log.Tracef("convert: %s (%s)", strings.TrimSpace(err.Error()), filepath.Base(cmd.Path))
+			log.Debugf("convert: %s (%s)", clean.Error(err), filepath.Base(cmd.Path))
 			continue
 		} else if fs.FileExistsNotEmpty(imageName) {
 			log.Infof("convert: %s created in %s (%s)", clean.Log(filepath.Base(imageName)), time.Since(start), filepath.Base(cmd.Path))

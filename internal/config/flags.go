@@ -10,6 +10,7 @@ import (
 	"github.com/photoprism/photoprism/internal/config/ttl"
 	"github.com/photoprism/photoprism/internal/entity"
 	"github.com/photoprism/photoprism/internal/ffmpeg/encode"
+	"github.com/photoprism/photoprism/internal/service/hub/places"
 	"github.com/photoprism/photoprism/internal/thumb"
 	"github.com/photoprism/photoprism/pkg/authn"
 	"github.com/photoprism/photoprism/pkg/i18n"
@@ -34,7 +35,7 @@ var Flags = CliFlags{
 			Name:    "public",
 			Aliases: []string{"p"},
 			Hidden:  true,
-			Usage:   "disable authentication, advanced settings, and WebDAV remote access",
+			Usage:   "disables authentication, advanced settings, and WebDAV remote access",
 			EnvVars: EnvVars("PUBLIC"),
 		}}, {
 		Flag: &cli.StringFlag{
@@ -94,12 +95,12 @@ var Flags = CliFlags{
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "oidc-redirect",
-			Usage:   "automatically redirect unauthenticated users to the configured identity provider",
+			Usage:   "automatically redirects unauthenticated users to the configured identity provider",
 			EnvVars: EnvVars("OIDC_REDIRECT"),
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "oidc-register",
-			Usage:   "allow new users to create an account when they sign in with OpenID Connect",
+			Usage:   "allows new users to create an account when they sign in with OpenID Connect",
 			EnvVars: EnvVars("OIDC_REGISTER"),
 		}}, {
 		Flag: &cli.StringFlag{
@@ -110,12 +111,12 @@ var Flags = CliFlags{
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "oidc-webdav",
-			Usage:   "allow new OpenID Connect users to use WebDAV when they have a role that allows it",
+			Usage:   "allows new OpenID Connect users to use WebDAV when they have a role that allows it",
 			EnvVars: EnvVars("OIDC_WEBDAV"),
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "disable-oidc",
-			Usage:   "disable single sign-on via OpenID Connect, even if an identity provider has been configured",
+			Usage:   "disables single sign-on via OpenID Connect, even if an identity provider has been configured",
 			EnvVars: EnvVars("DISABLE_OIDC"),
 		}}, {
 		Flag: &cli.Int64Flag{
@@ -145,34 +146,34 @@ var Flags = CliFlags{
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "prod",
-			Usage:   "disable debug mode and log startup warnings and errors only",
+			Usage:   "disables debug mode and only logs startup warnings and errors",
 			EnvVars: EnvVars("PROD"),
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "debug",
-			Usage:   "enable debug mode for development and troubleshooting",
+			Usage:   "enables debug mode for development and troubleshooting",
 			EnvVars: EnvVars("DEBUG"),
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "trace",
-			Usage:   "enable trace mode to display all debug and trace logs",
+			Usage:   "enables trace mode to display all debug and trace logs",
 			EnvVars: EnvVars("TRACE"),
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:   "test",
 			Hidden: true,
-			Usage:  "enable test mode",
+			Usage:  "enables test mode",
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "unsafe",
 			Hidden:  true,
-			Usage:   "disable safety checks",
+			Usage:   "disables safety checks",
 			EnvVars: EnvVars("UNSAFE"),
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "demo",
 			Hidden:  true,
-			Usage:   "enable demo mode",
+			Usage:   "enables demo mode",
 			EnvVars: EnvVars("DEMO"),
 		}}, {
 		Flag: &cli.BoolFlag{
@@ -197,7 +198,7 @@ var Flags = CliFlags{
 		Flag: &cli.StringFlag{
 			Name:      "defaults-yaml",
 			Aliases:   []string{"y"},
-			Usage:     "load default config values from `FILENAME` if it exists, does not override CLI flags or environment variables",
+			Usage:     "loads default config values from `FILENAME` if it exists, does not override CLI flags or environment variables",
 			Value:     "/etc/photoprism/defaults.yml",
 			EnvVars:   EnvVars("DEFAULTS_YAML"),
 			TakesFile: true,
@@ -251,23 +252,23 @@ var Flags = CliFlags{
 		}}, {
 		Flag: &cli.StringFlag{
 			Name:    "import-allow",
-			Usage:   "restrict imports to these file types (comma-separated list of `EXTENSIONS`; leave blank to allow all)",
+			Usage:   "restricts imports to these file types (comma-separated list of `EXTENSIONS`; leave blank to allow all)",
 			EnvVars: EnvVars("IMPORT_ALLOW"),
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "upload-nsfw",
 			Aliases: []string{"n"},
-			Usage:   "allow uploads that might be offensive (detecting unsafe content requires TensorFlow)",
+			Usage:   "allows uploads that might be offensive (detecting unsafe content requires TensorFlow)",
 			EnvVars: EnvVars("UPLOAD_NSFW"),
 		}}, {
 		Flag: &cli.StringFlag{
 			Name:    "upload-allow",
-			Usage:   "restrict uploads to these file types (comma-separated list of `EXTENSIONS`; leave blank to allow all)",
+			Usage:   "restricts uploads to these file types (comma-separated list of `EXTENSIONS`; leave blank to allow all)",
 			EnvVars: EnvVars("UPLOAD_ALLOW"),
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "upload-archives",
-			Usage:   "allow upload of zip archives (will be extracted before import)",
+			Usage:   "allows upload of zip archives (will be extracted before import)",
 			EnvVars: EnvVars("UPLOAD_ARCHIVES"),
 		}}, {
 		Flag: &cli.IntFlag{
@@ -298,6 +299,12 @@ var Flags = CliFlags{
 			TakesFile: true,
 		}}, {
 		Flag: &cli.PathFlag{
+			Name:      "models-path",
+			Usage:     "custom model assets `PATH` where computer vision models are located",
+			EnvVars:   EnvVars("MODELS_PATH"),
+			TakesFile: true,
+		}}, {
+		Flag: &cli.PathFlag{
 			Name:    "sidecar-path",
 			Aliases: []string{"sc"},
 			Usage:   "custom relative or absolute sidecar `PATH` *optional*",
@@ -305,12 +312,12 @@ var Flags = CliFlags{
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "sidecar-yaml",
-			Usage:   "create YAML sidecar files to back up picture metadata",
+			Usage:   "creates YAML sidecar files to back up picture metadata",
 			EnvVars: EnvVars("SIDECAR_YAML"),
 		}, DocDefault: "true"}, {
 		Flag: &cli.BoolFlag{
 			Name:    "usage-info",
-			Usage:   "display usage information in the user interface",
+			Usage:   "displays storage usage information in the user interface",
 			EnvVars: EnvVars("USAGE_INFO"),
 		}}, {
 		Flag: &cli.Uint64Flag{
@@ -339,12 +346,12 @@ var Flags = CliFlags{
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "backup-database",
-			Usage:   "create regular backups based on the configured schedule",
+			Usage:   "enables regular backups based on the configured schedule",
 			EnvVars: EnvVars("BACKUP_DATABASE"),
 		}, DocDefault: "true"}, {
 		Flag: &cli.BoolFlag{
 			Name:    "backup-albums",
-			Usage:   "create YAML files to back up album metadata",
+			Usage:   "enables the use of YAML files for backing up album metadata",
 			EnvVars: EnvVars("BACKUP_ALBUMS"),
 		}, DocDefault: "true"}, {
 		Flag: &cli.IntFlag{
@@ -353,7 +360,7 @@ var Flags = CliFlags{
 			Usage:   "maximum `NUMBER` of indexing workers, default depends on the number of physical cores",
 			Value:   cpuid.CPU.PhysicalCores / 2,
 			EnvVars: EnvVars("INDEX_WORKERS", "WORKERS"),
-		}}, {
+		}, DocDefault: " "}, {
 		Flag: &cli.StringFlag{
 			Name:    "index-schedule",
 			Usage:   "indexing `SCHEDULE` in cron format (e.g. \"@every 3h\" for every 3 hours; \"\" to disable)",
@@ -382,113 +389,118 @@ var Flags = CliFlags{
 		Flag: &cli.BoolFlag{
 			Name:    "read-only",
 			Aliases: []string{"r"},
-			Usage:   "disable features that require write permission for the originals folder",
+			Usage:   "disables features that require write permission for the originals folder",
 			EnvVars: EnvVars("READONLY"),
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "experimental",
 			Aliases: []string{"e"},
-			Usage:   "enable new features that may be incomplete or unstable",
+			Usage:   "enables new features that may be incomplete or unstable",
 			EnvVars: EnvVars("EXPERIMENTAL"),
 		}}, {
 		Flag: &cli.BoolFlag{
+			Name:    "disable-frontend",
+			Usage:   "disables the web user interface so that only the service API endpoints are accessible",
+			EnvVars: EnvVars("DISABLE_FRONTEND"),
+		}}, {
+		Flag: &cli.BoolFlag{
 			Name:    "disable-settings",
-			Usage:   "disable the settings user interface and server API, e.g. in combination with public mode",
+			Usage:   "disables the settings frontend and related API endpoints, e.g. in combination with public mode",
 			EnvVars: EnvVars("DISABLE_SETTINGS"),
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "disable-backups",
-			Usage:   "prevent database and album backups as well as YAML sidecar files from being created",
+			Usage:   "prevents database and album backups as well as YAML sidecar files from being created",
 			EnvVars: EnvVars("DISABLE_BACKUPS"),
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "disable-restart",
-			Usage:   "prevent admins from restarting the server through the user interface",
+			Usage:   "prevents admins from restarting the server through the user interface",
 			EnvVars: EnvVars("DISABLE_RESTART"),
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "disable-webdav",
-			Usage:   "prevent other apps from accessing PhotoPrism as a shared network drive",
+			Usage:   "prevents other apps from accessing PhotoPrism as a shared network drive",
 			EnvVars: EnvVars("DISABLE_WEBDAV"),
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "disable-places",
-			Usage:   "disable interactive world maps and reverse geocoding",
+			Usage:   "disables interactive world maps and reverse geocoding",
 			EnvVars: EnvVars("DISABLE_PLACES"),
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "disable-tensorflow",
-			Usage:   "disable features depending on TensorFlow, e.g. image classification and face recognition",
+			Usage:   "disables features depending on TensorFlow, e.g. image classification and face recognition",
 			EnvVars: EnvVars("DISABLE_TENSORFLOW"),
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "disable-faces",
-			Usage:   "disable face detection and recognition (requires TensorFlow)",
+			Usage:   "disables face detection and recognition (requires TensorFlow)",
 			EnvVars: EnvVars("DISABLE_FACES"),
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "disable-classification",
-			Usage:   "disable image classification (requires TensorFlow)",
+			Usage:   "disables image classification (requires TensorFlow)",
 			EnvVars: EnvVars("DISABLE_CLASSIFICATION"),
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "disable-ffmpeg",
-			Usage:   "disable video transcoding and thumbnail extraction with FFmpeg",
+			Usage:   "disables video transcoding and thumbnail extraction with FFmpeg",
 			EnvVars: EnvVars("DISABLE_FFMPEG"),
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "disable-exiftool",
-			Usage:   "disable metadata extraction with ExifTool (required for full Video, Live Photo, and XMP support)",
+			Usage:   "disables metadata extraction with ExifTool (required for full Video, Live Photo, and XMP support)",
 			EnvVars: EnvVars("DISABLE_EXIFTOOL"),
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "disable-vips",
-			Usage:   "disable image processing and conversion with libvips",
+			Usage:   "disables image processing and conversion with libvips",
 			EnvVars: EnvVars("DISABLE_VIPS"),
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "disable-sips",
-			Usage:   "disable file conversion using the sips command under macOS",
+			Usage:   "disables file conversion using the sips command under macOS",
 			EnvVars: EnvVars("DISABLE_SIPS"),
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "disable-darktable",
-			Usage:   "disable conversion of RAW images with Darktable",
+			Usage:   "disables conversion of RAW images with Darktable",
 			EnvVars: EnvVars("DISABLE_DARKTABLE"),
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "disable-rawtherapee",
-			Usage:   "disable conversion of RAW images with RawTherapee",
+			Usage:   "disables conversion of RAW images with RawTherapee",
 			EnvVars: EnvVars("DISABLE_RAWTHERAPEE"),
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "disable-imagemagick",
-			Usage:   "disable conversion of image files with ImageMagick",
+			Usage:   "disables conversion of image files with ImageMagick",
 			EnvVars: EnvVars("DISABLE_IMAGEMAGICK"),
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "disable-heifconvert",
-			Usage:   "disable conversion of HEIC images with libheif",
+			Usage:   "disables conversion of HEIC images with libheif",
 			EnvVars: EnvVars("DISABLE_HEIFCONVERT"),
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "disable-jpegxl",
-			Usage:   "disable JPEG XL file format support",
+			Usage:   "disables JPEG XL file format support",
 			EnvVars: EnvVars("DISABLE_JPEGXL"),
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "disable-raw",
-			Usage:   "disable indexing and conversion of RAW images",
+			Usage:   "disables indexing and conversion of RAW images",
 			EnvVars: EnvVars("DISABLE_RAW"),
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "raw-presets",
-			Usage:   "enables applying user presets when converting RAW images (reduces performance)",
+			Usage:   "enables custom user presets when converting RAW images (reduces performance)",
 			EnvVars: EnvVars("RAW_PRESETS"),
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "exif-bruteforce",
-			Usage:   "always perform a brute-force search if no Exif headers were found",
+			Usage:   "performs a brute-force search if no Exif headers were found",
 			EnvVars: EnvVars("EXIF_BRUTEFORCE"),
 		}}, {
 		Flag: &cli.StringFlag{
@@ -509,6 +521,12 @@ var Flags = CliFlags{
 			Name:    "default-theme",
 			Usage:   "default user interface theme `NAME`",
 			EnvVars: EnvVars("DEFAULT_THEME"),
+		}}, {
+		Flag: &cli.StringFlag{
+			Name:    "places-locale",
+			Usage:   "location details language `CODE`, e.g. en, de, or local",
+			Value:   places.LocalLocale,
+			EnvVars: EnvVars("PLACES_LOCALE"),
 		}}, {
 		Flag: &cli.StringFlag{
 			Name:    "app-name",
@@ -612,7 +630,7 @@ var Flags = CliFlags{
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "cdn-video",
-			Usage:   "stream videos over the specified CDN",
+			Usage:   "streams videos over the specified CDN",
 			EnvVars: EnvVars("CDN_VIDEO"),
 		}}, {
 		Flag: &cli.StringFlag{
@@ -640,8 +658,14 @@ var Flags = CliFlags{
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "https-proxy-insecure",
-			Usage:   "ignore invalid HTTPS certificates when using a proxy",
+			Usage:   "ignores invalid HTTPS certificates when using a proxy",
 			EnvVars: EnvVars("HTTPS_PROXY_INSECURE"),
+		}}, {
+		Flag: &cli.StringFlag{
+			Name:    "trusted-platform",
+			Usage:   "trusted client IP header `NAME`, e.g. when running behind a cloud provider load balancer",
+			Value:   "",
+			EnvVars: EnvVars("TRUSTED_PLATFORM"),
 		}}, {
 		Flag: &cli.StringSliceFlag{
 			Name:    "trusted-proxy",
@@ -650,9 +674,15 @@ var Flags = CliFlags{
 			EnvVars: EnvVars("TRUSTED_PROXY"),
 		}}, {
 		Flag: &cli.StringSliceFlag{
+			Name:    "proxy-client-header",
+			Usage:   "proxy client IP header `NAME`, e.g. X-Forwarded-For, X-Client-IP, X-Real-IP, or CF-Connecting-IP",
+			Value:   cli.NewStringSlice(header.XForwardedFor),
+			EnvVars: EnvVars("PROXY_CLIENT_HEADER"),
+		}}, {
+		Flag: &cli.StringSliceFlag{
 			Name:    "proxy-proto-header",
 			Usage:   "proxy protocol header `NAME`",
-			Value:   cli.NewStringSlice(header.ForwardedProto),
+			Value:   cli.NewStringSlice(header.XForwardedProto),
 			EnvVars: EnvVars("PROXY_PROTO_HEADER"),
 		}}, {
 		Flag: &cli.StringSliceFlag{
@@ -663,12 +693,12 @@ var Flags = CliFlags{
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "disable-tls",
-			Usage:   "disable HTTPS/TLS even if the site URL starts with https:// and a certificate is available",
+			Usage:   "disables HTTPS/TLS even if the site URL starts with https:// and a certificate is available",
 			EnvVars: EnvVars("DISABLE_TLS"),
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "default-tls",
-			Usage:   "default to a self-signed HTTPS/TLS certificate if no other certificate is available",
+			Usage:   "uses a self-signed HTTPS/TLS certificate if no other certificate is available",
 			EnvVars: EnvVars("DEFAULT_TLS"),
 		}}, {
 		Flag: &cli.StringFlag{
@@ -701,7 +731,7 @@ var Flags = CliFlags{
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "http-cache-public",
-			Usage:   "allow static content to be cached by a CDN or caching proxy",
+			Usage:   "allows static content to be cached by a CDN or caching proxy",
 			EnvVars: EnvVars("HTTP_CACHE_PUBLIC"),
 		}}, {
 		Flag: &cli.IntFlag{
@@ -965,7 +995,7 @@ var Flags = CliFlags{
 		Flag: &cli.BoolFlag{
 			Name:    "thumb-uncached",
 			Aliases: []string{"u"},
-			Usage:   "generate missing thumbnails on demand (high memory and cpu usage)",
+			Usage:   "generates missing thumbnails on demand (high memory and cpu usage)",
 			EnvVars: EnvVars("THUMB_UNCACHED"),
 		}}, {
 		Flag: &cli.StringFlag{
@@ -996,24 +1026,24 @@ var Flags = CliFlags{
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "vision-api",
-			Usage:   "enable computer vision service API endpoints under /api/v1/vision (requires authorized access token)",
+			Usage:   "enables the computer vision API endpoints under /api/v1/vision (requires authorization)",
 			EnvVars: EnvVars("VISION_API"),
 		}}, {
 		Flag: &cli.StringFlag{
 			Name:    "vision-uri",
-			Usage:   "remote computer vision service `URI`, e.g. https://example.com/api/v1/vision (leave blank to disable)",
+			Usage:   "vision service base `URI`, e.g. https://example.com/api/v1/vision (leave blank to disable)",
 			Value:   "",
 			EnvVars: EnvVars("VISION_URI"),
 		}}, {
 		Flag: &cli.StringFlag{
 			Name:    "vision-key",
-			Usage:   "remote computer vision service access `TOKEN` *optional*",
+			Usage:   "vision service access `TOKEN` *optional*",
 			Value:   "",
 			EnvVars: EnvVars("VISION_KEY"),
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "detect-nsfw",
-			Usage:   "flag newly added pictures as private if they might be offensive (requires TensorFlow)",
+			Usage:   "flags newly added pictures as private if they might be offensive (requires TensorFlow)",
 			EnvVars: EnvVars("DETECT_NSFW"),
 		}}, {
 		Flag: &cli.IntFlag{
@@ -1076,5 +1106,35 @@ var Flags = CliFlags{
 			Value:     "",
 			EnvVars:   EnvVars("LOG_FILENAME"),
 			TakesFile: true,
-		}},
+		}}, {
+		Flag: &cli.StringFlag{
+			Name:    "portal-url",
+			Usage:   "PhotoPrism® Portal server `URL`",
+			EnvVars: EnvVars("PORTAL_URL"),
+			Hidden:  true,
+		}, Tags: []string{Pro}}, {
+		Flag: &cli.StringFlag{
+			Name:    "portal-client",
+			Usage:   "PhotoPrism® Portal client `ID`",
+			EnvVars: EnvVars("PORTAL_CLIENT"),
+			Hidden:  true,
+		}, Tags: []string{Pro}}, {
+		Flag: &cli.StringFlag{
+			Name:    "portal-secret",
+			Usage:   "PhotoPrism® Portal client `SECRET`",
+			EnvVars: EnvVars("PORTAL_SECRET"),
+			Hidden:  true,
+		}, Tags: []string{Pro}}, {
+		Flag: &cli.StringFlag{
+			Name:    "instance-roles",
+			Usage:   "`ROLES` of this instance within a cluster (library, vision, portal)",
+			EnvVars: EnvVars("INSTANCE_ROLES"),
+			Hidden:  true,
+		}, Tags: []string{Pro}}, {
+		Flag: &cli.StringFlag{
+			Name:    "instance-secret",
+			Usage:   "`SECRET` for authenticating this instance in a cluster (must be unique)",
+			EnvVars: EnvVars("INSTANCE_SECRET"),
+			Hidden:  true,
+		}, Tags: []string{Pro}},
 }

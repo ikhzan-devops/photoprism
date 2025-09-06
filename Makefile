@@ -73,6 +73,7 @@ pull: docker-pull
 test: test-js test-go
 test-go: reset-sqlite run-test-go
 test-pkg: reset-sqlite run-test-pkg
+test-ai: reset-sqlite run-test-ai
 test-api: reset-sqlite run-test-api
 test-video: reset-sqlite run-test-video
 test-entity: reset-sqlite run-test-entity
@@ -100,6 +101,8 @@ devtools: install-go dep-npm
 .SILENT: help;
 logs:
 	$(DOCKER_COMPOSE) logs -f
+down:
+	$(DOCKER_COMPOSE) --profile=all down --remove-orphans
 help:
 	@echo "For build instructions, visit <https://docs.photoprism.app/developer-guide/>."
 docs: swag
@@ -246,8 +249,9 @@ dep-go:
 	go build -v ./...
 dep-upgrade:
 	go get -u -t ./...
-dep-upgrade-js:
-	(cd frontend &&	npm update --legacy-peer-deps)
+frontend-update:
+	make -C frontend update
+dep-upgrade-js: frontend-update
 dep-tensorflow:
 	scripts/download-facenet.sh
 	scripts/download-nasnet.sh
@@ -323,6 +327,9 @@ docker-tensorflow-arm64:
 terminal-tensorflow-arm64:
 	mkdir -p ./build
 	docker run --rm --pull missing -ti --platform=arm64 -v "./build:/build" -e BUILD_ARCH=arm64 -e SYSTEM_ARCH=arm64 photoprism/tensorflow:arm64 bash
+build-setup: build-setup-nas-raspberry-pi
+build-setup-nas-raspberry-pi:
+	./scripts/setup/nas/raspberry-pi/build.sh
 watch-js:
 	(cd frontend &&	env BUILD_ENV=development NODE_ENV=production npm run watch)
 test-js:
@@ -391,6 +398,9 @@ run-test-mariadb:
 run-test-pkg:
 	$(info Running all Go tests in "/pkg"...)
 	$(GOTEST) -parallel 2 -count 1 -cpu 2 -tags="slow,develop" -timeout 20m ./pkg/...
+run-test-ai:
+	$(info Running all AI tests...)
+	$(GOTEST) -parallel 2 -count 1 -cpu 2 -tags="slow,develop" -timeout 20m ./internal/ai/...
 run-test-api:
 	$(info Running all API tests...)
 	$(GOTEST) -parallel 2 -count 1 -cpu 2 -tags="slow,develop" -timeout 20m ./internal/api/...
@@ -697,6 +707,10 @@ docker-release-plucky:
 	docker pull --platform=arm64 photoprism/develop:plucky
 	docker pull --platform=arm64 photoprism/develop:plucky-slim
 	scripts/docker/buildx-multi.sh photoprism linux/amd64,linux/arm64 ce /plucky
+start-traefik:
+	$(DOCKER_COMPOSE) up -d --wait traefik
+stop-traefik:
+	$(DOCKER_COMPOSE) down traefik
 start-local:
 	$(DOCKER_COMPOSE) -f compose.local.yaml up -d --wait
 stop-local:
