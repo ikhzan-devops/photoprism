@@ -40,10 +40,15 @@ export default class Page {
       await t.click(Selector("button.action-confirm"));
     }
     if ((action === "album") | (action === "clone")) {
-      await t.typeText(Selector(".input-album input"), albumName, { replace: true });
+      await t.click(Selector(".input-albums"));
       if (await Selector("div").withText(albumName).parent('div[role="option"]').visible) {
-        await t.click(Selector("div").withText(albumName).parent('div[role="option"]'));
+        await t
+          .click(Selector("div").withText(albumName).parent('div[role="option"]'))
+          .click(Selector("div i.mdi-bookmark"));
+      } else {
+        await t.typeText(Selector(".input-albums input"), albumName).click(Selector("div i.mdi-bookmark"));
       }
+
       await t.click(Selector("button.action-confirm"));
     }
   }

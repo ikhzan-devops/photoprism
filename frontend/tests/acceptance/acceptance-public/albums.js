@@ -235,7 +235,7 @@ test.meta("testID", "albums-006").meta({ mode: "public" })("Common: Test album a
   const FirstPhotoUid = await photo.getNthPhotoUid("image", 0);
   await photo.selectPhotoFromUID(FirstPhotoUid);
   await contextmenu.openContextMenu();
-  await t.click(Selector("button.action-album")).click(Selector(".input-album input"));
+  await t.click(Selector("button.action-album")).click(Selector(".input-albums input"));
 
   await t
     .expect(page.selectOption.withText("Holiday").visible)
@@ -243,7 +243,7 @@ test.meta("testID", "albums-006").meta({ mode: "public" })("Common: Test album a
     .expect(page.selectOption.withText("Christmas").visible)
     .ok();
 
-  await t.typeText(Selector(".input-album input"), "C", { replace: true });
+  await t.typeText(Selector(".input-albums input"), "C", { replace: true });
 
   await t
     .expect(page.selectOption.withText("Holiday").visible)
