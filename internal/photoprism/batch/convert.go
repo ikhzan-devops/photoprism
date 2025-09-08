@@ -66,6 +66,13 @@ func ConvertToPhotoForm(photo *entity.Photo, v *PhotosForm) (*form.Photo, error)
 		photoForm.TakenSrc = entity.SrcBatch
 	}
 
+	if v.PhotoDay.Action == ActionUpdate && v.PhotoDay.Value == -1 {
+		photoForm.PhotoYear = -1
+	}
+	if v.PhotoMonth.Action == ActionUpdate && v.PhotoMonth.Value == -1 {
+		photoForm.PhotoYear = -1
+	}
+
 	// If any date field changed, recompute TakenAtLocal per photo and clamp invalid day.
 	if v.PhotoDay.Action == ActionUpdate || v.PhotoMonth.Action == ActionUpdate || v.PhotoYear.Action == ActionUpdate {
 		base := photo.TakenAtLocal
@@ -109,6 +116,12 @@ func ConvertToPhotoForm(photo *entity.Photo, v *PhotosForm) (*form.Photo, error)
 
 		// Ensure PhotoDay is consistent with the clamped value when user provided a positive day.
 		if v.PhotoDay.Action == ActionUpdate && v.PhotoDay.Value > 0 {
+			photoForm.PhotoDay = day
+		}
+
+		// If only Month and/or Year changed (Day not explicitly updated),
+		// keep PhotoDay consistent with the computed/clamped value.
+		if v.PhotoDay.Action != ActionUpdate {
 			photoForm.PhotoDay = day
 		}
 	}
