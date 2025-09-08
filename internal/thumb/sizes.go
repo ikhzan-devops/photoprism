@@ -4,12 +4,6 @@ import (
 	"slices"
 )
 
-// Default thumbnail size limits (cached and uncached).
-var (
-	SizeCached   = SizeFit1920.Width
-	SizeOnDemand = SizeFit5120.Width
-)
-
 // MaxSize returns the max supported size in pixels.
 func MaxSize() int {
 	if SizeCached > SizeOnDemand {

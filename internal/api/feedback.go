@@ -11,9 +11,15 @@ import (
 	"github.com/photoprism/photoprism/pkg/i18n"
 )
 
-// SendFeedback sends a feedback message.
+// SendFeedback allows members to submit a feedback message to the PhotoPrism team.
 //
-// POST /api/v1/feedback
+//	@Summary	allows members to submit a feedback message to the PhotoPrism team
+//	@Id			SendFeedback
+//	@Tags		Admin
+//	@Produce	json
+//	@Success	200			{object}	form.Feedback
+//	@Failure	400,401,403	{object}	i18n.Response
+//	@Router		/api/v1/feedback [post]
 func SendFeedback(router *gin.RouterGroup) {
 	router.POST("/feedback", func(c *gin.Context) {
 		conf := get.Config()

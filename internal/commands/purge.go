@@ -26,11 +26,11 @@ var PurgeCommand = &cli.Command{
 var purgeFlags = []cli.Flag{
 	&cli.BoolFlag{
 		Name:  "hard",
-		Usage: "permanently remove from index",
+		Usage: "permanently removes data from the index",
 	},
 	&cli.BoolFlag{
 		Name:  "dry",
-		Usage: "dry run, don't actually remove anything",
+		Usage: "performs a dry run that doesn't actually remove anything",
 	},
 }
 

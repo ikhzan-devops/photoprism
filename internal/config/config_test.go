@@ -187,18 +187,6 @@ func TestConfig_ThumbCachePath(t *testing.T) {
 	assert.True(t, strings.HasSuffix(c.ThumbCachePath(), "storage/testdata/cache/thumbnails"))
 }
 
-func TestConfig_AssetsPath(t *testing.T) {
-	c := NewConfig(CliTestContext())
-
-	assert.True(t, strings.HasSuffix(c.AssetsPath(), "/assets"))
-}
-
-func TestConfig_CustomAssetsPath(t *testing.T) {
-	c := NewConfig(CliTestContext())
-
-	assert.Equal(t, "", c.CustomAssetsPath())
-}
-
 func TestConfig_AdminUser(t *testing.T) {
 	c := NewConfig(CliTestContext())
 
@@ -270,6 +258,13 @@ func TestConfig_ThemePath(t *testing.T) {
 
 	path := c.ThemePath()
 	assert.Equal(t, "/go/src/github.com/photoprism/photoprism/storage/testdata/config/theme", path)
+}
+
+func TestConfig_PortalPath(t *testing.T) {
+	c := NewConfig(CliTestContext())
+
+	path := c.PortalPath()
+	assert.Equal(t, "/go/src/github.com/photoprism/photoprism/storage/testdata/config/portal", path)
 }
 
 func TestConfig_IndexWorkers(t *testing.T) {

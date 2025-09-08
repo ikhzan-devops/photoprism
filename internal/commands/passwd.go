@@ -27,12 +27,12 @@ var PasswdCommand = &cli.Command{
 		&cli.BoolFlag{
 			Name:    "show",
 			Aliases: []string{"s"},
-			Usage:   "show bcrypt hash of new password",
+			Usage:   "shows bcrypt hash of new password",
 		},
 		&cli.BoolFlag{
 			Name:    "remove",
 			Aliases: []string{"rm"},
-			Usage:   "remove password to disable local authentication",
+			Usage:   "removes password to disable local authentication",
 		},
 	},
 	Action: passwdAction,

@@ -22,7 +22,7 @@ var CleanUpCommand = &cli.Command{
 var cleanUpFlags = []cli.Flag{
 	&cli.BoolFlag{
 		Name:  "dry",
-		Usage: "dry run, don't actually remove anything",
+		Usage: "performs a dry run that doesn't actually remove anything",
 	},
 }
 

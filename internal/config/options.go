@@ -219,6 +219,11 @@ type Options struct {
 	PIDFilename            string        `yaml:"PIDFilename" json:"-" flag:"pid-filename"`
 	LogFilename            string        `yaml:"LogFilename" json:"-" flag:"log-filename"`
 	DetachServer           bool          `yaml:"DetachServer" json:"-" flag:"detach-server"`
+	PortalUrl              string        `yaml:"PortalUrl" json:"-" flag:"portal-url"`
+	PortalClient           string        `yaml:"PortalClient" json:"-" flag:"portal-client"`
+	PortalSecret           string        `yaml:"PortalSecret" json:"-" flag:"portal-secret"`
+	InstanceRoles          string        `yaml:"InstanceRoles" json:"-" flag:"instance-roles"`
+	InstanceSecret         string        `yaml:"InstanceSecret" json:"-" flag:"instance-secret"`
 }
 
 // NewOptions creates a new configuration entity by using two methods:

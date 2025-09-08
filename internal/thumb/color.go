@@ -12,9 +12,6 @@ const (
 	ColorPreserve ColorSpace = "preserve"
 )
 
-// Color sets the standard color profile for thumbnails.
-var Color = ColorAuto
-
 // ParseColor returns a ColorSpace based on the config value string and image library.
 func ParseColor(name string, lib Lib) ColorSpace {
 	if lib == LibVips {

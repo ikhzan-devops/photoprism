@@ -15,10 +15,10 @@ const (
 	UserRoleUsage     = "user account `ROLE` (admin or guest)"
 	UserAuthUsage     = "authentication `PROVIDER` (default, local, oidc or none)"
 	UserAuthIDUsage   = "authentication `ID` e.g. Subject ID or Distinguished Name (DN)"
-	UserAdminUsage    = "make user super admin with full access"
-	UserNoLoginUsage  = "disable login on the web interface"
-	UserWebDAVUsage   = "allow to sync files via WebDAV"
-	UserDisable2FA    = "deactivate two-factor authentication"
+	UserAdminUsage    = "makes user super admin with full access"
+	UserNoLoginUsage  = "disables login on the web interface"
+	UserWebDAVUsage   = "allows to sync files via WebDAV"
+	UserDisable2FA    = "deactivates two-factor authentication"
 )
 
 // UsersCommands configures the user management subcommands.
@@ -98,19 +98,19 @@ var UserTokensFlag = &cli.BoolFlag{
 var UsersLoginFlag = &cli.BoolFlag{
 	Name:    "login",
 	Aliases: []string{"l"},
-	Usage:   "show date and time of last login",
+	Usage:   "shows date and time of last login",
 }
 
 // UsersCreatedFlag is a CLI flag for showing the account creation timestamp in reports.
 var UsersCreatedFlag = &cli.BoolFlag{
 	Name:    "created",
 	Aliases: []string{"a"},
-	Usage:   "show account creation timestamp",
+	Usage:   "shows account creation timestamp",
 }
 
 // UsersDeletedFlag is a CLI flag for showing deleted user accounts in reports.
 var UsersDeletedFlag = &cli.BoolFlag{
 	Name:    "deleted",
 	Aliases: []string{"r"},
-	Usage:   "show deleted user accounts",
+	Usage:   "shows deleted user accounts",
 }

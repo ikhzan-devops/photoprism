@@ -168,6 +168,12 @@ func (c *Config) Report() (rows [][]string, cols []string) {
 		{"cors-headers", c.CORSHeaders()},
 		{"cors-methods", c.CORSMethods()},
 
+		// Portal Server.
+		{"portal-url", fmt.Sprintf("%s", c.Options().PortalUrl)},
+		{"portal-client", fmt.Sprintf("%s", c.Options().PortalClient)},
+		{"portal-secret", fmt.Sprintf("%s", strings.Repeat("*", utf8.RuneCountInString(c.Options().PortalSecret)))},
+		{"instance-secret", fmt.Sprintf("%s", strings.Repeat("*", utf8.RuneCountInString(c.Options().InstanceSecret)))},
+
 		// URIs.
 		{"base-uri", c.BaseUri("/")},
 		{"api-uri", c.ApiUri()},

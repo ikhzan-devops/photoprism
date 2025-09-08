@@ -37,6 +37,7 @@ var OptionsReportSections = []ReportSection{
 		Info: faceFlagsInfo},
 	{Start: "PHOTOPRISM_PID_FILENAME", Title: "Daemon Mode",
 		Info: "If you start the server as a *daemon* in the background, you can additionally specify a filename for the log and the process ID:"},
+	{Start: "PHOTOPRISM_PORTAL_URL", Title: "Cluster Configuration"},
 }
 
 // YamlReportSections is used to generate config options reports in ../commands/show_config_yaml.go.
@@ -61,4 +62,5 @@ var YamlReportSections = []ReportSection{
 	{Start: "VisionYaml", Title: "Computer Vision"},
 	{Start: "PIDFilename", Title: "Daemon Mode",
 		Info: "If you start the server as a *daemon* in the background, you can additionally specify a filename for the log and the process ID:"},
+	{Start: "PortalUrl", Title: "Cluster Configuration"},
 }
