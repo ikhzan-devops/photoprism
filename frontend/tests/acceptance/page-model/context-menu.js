@@ -48,10 +48,12 @@ export default class Page {
       for (const name of albumNames) {
         if (await Selector("div").withText(name).parent('div[role="option"]').visible) {
           // Click on the album option to select it
-          await t.click(Selector("div").withText(name).parent('div[role="option"]'));
+          await t
+            .click(Selector("div").withText(name).parent('div[role="option"]'))
+            .click(Selector("div i.mdi-bookmark"));
         } else {
           // Type the new album name and press enter to create it
-          await t.typeText(Selector(".input-albums input"), name).pressKey("enter");
+          await t.typeText(Selector(".input-albums input"), name).click(Selector("div i.mdi-bookmark"));
         }
 
         // Wait a bit for the UI to update after selection

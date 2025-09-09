@@ -264,7 +264,7 @@ test.meta("testID", "albums-004").meta({ type: "short", mode: "public" })(
   }
 );
 
-test.only.meta("testID", "albums-004-duplicate-bug").meta({ type: "short", mode: "public" })(
+test.meta("testID", "albums-004-duplicate-bug").meta({ type: "short", mode: "public" })(
   "Bug Test: Album duplication when selecting from dropdown then typing same name",
   async (t) => {
     await menu.openPage("browse");
