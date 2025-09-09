@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This file tells automated coding agents (and humans) where to find the single sources of truth for building, testing, and contributing to PhotoPrism. Keep it short to prevent drift.
+This file tells automated coding agents (and humans) where to find the single sources of truth for building, testing, and contributing to PhotoPrism.
 
 ## Sources of Truth
 
@@ -24,7 +24,7 @@ This file tells automated coding agents (and humans) where to find the single so
   - Execute a single command: `docker compose exec photoprism <command>`, e.g. `docker compose exec photoprism ./photoprism help`
     - Why `./photoprism`? It runs the locally built binary in the project directory (as used in the setup guide).
     - Run as non-root to avoid root-owned files on bind mounts: `docker compose exec -u "$(id -u):$(id -g)" photoprism <command>`
-    - Durable alternative: set the service user or `PHOTOPRISM_UID` in `compose.yaml`; if you hit issues, run `make fix-permissions`.
+    - Durable alternative: set the service user or `PHOTOPRISM_UID`/`PHOTOPRISM_GID` in `compose.yaml`; if you hit issues, run `make fix-permissions`.
   - Open a terminal session: `make terminal`
 - From within the Development Environment:
   - Install deps: `make dep`
@@ -51,4 +51,4 @@ This file tells automated coding agents (and humans) where to find the single so
 - Never commit secrets. Use environment variables or a local `.env`.
 - Do not run destructive commands against production data. Prefer ephemeral volumes and test fixtures when running acceptance tests.
 
-If anything in this file conflicts with the `Makefile` or the Developer Guide, the `Makefile` and docs win.
+If anything in this file conflicts with the `Makefile` or the Developer Guide, the `Makefile` and docs win. Examples assume a Linux/Unix shell. For Windows specifics, see the [Developer Guide FAQ](https://docs.photoprism.app/developer-guide/faq/#can-your-development-environment-be-used-under-windows).
