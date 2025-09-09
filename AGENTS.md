@@ -30,7 +30,6 @@ This file tells automated coding agents (and humans) where to find the single so
 - Test frontend/backend: `make test-js` and `make test-go`
 - Frontend unit test scripts are defined in `frontend/package.json`
 - Acceptance tests: use the `acceptance-*` targets in the `Makefile`
-- For more information: https://docs.photoprism.app/developer-guide/tests/
 
 ## Code Style & Lint
 
