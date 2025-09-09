@@ -28,7 +28,7 @@
             :items="items"
             item-title="Title"
             item-value="UID"
-            :placeholder="$gettext('Select or create an album')"
+            :placeholder="$gettext('Select or create albums')"
             return-object
           >
             <template #no-data>
@@ -83,6 +83,7 @@ export default {
       default: false,
     },
   },
+  emits: ["close", "confirm"],
   data() {
     return {
       loading: false,
@@ -101,6 +102,49 @@ export default {
         this.reset();
         this.load("");
       }
+    },
+    selectedAlbums: {
+      handler(newVal) {
+        if (!Array.isArray(newVal)) return;
+
+        let changed = false;
+        const processed = [];
+        const seenUids = new Set();
+
+        newVal.forEach((item) => {
+          // If it's a string, try to match it with existing albums
+          if (typeof item === "string" && item.trim().length > 0) {
+            const matchedAlbum = this.items.find(
+              (album) => album.Title && album.Title.toLowerCase() === item.trim().toLowerCase()
+            );
+
+            if (matchedAlbum && !seenUids.has(matchedAlbum.UID)) {
+              // Replace string with actual album object
+              processed.push(matchedAlbum);
+              seenUids.add(matchedAlbum.UID);
+              changed = true;
+            } else if (!matchedAlbum) {
+              // Keep as string for new album creation
+              processed.push(item.trim());
+            }
+          } else if (typeof item === "object" && item?.UID && !seenUids.has(item.UID)) {
+            // Keep existing album objects, but prevent duplicates
+            processed.push(item);
+            seenUids.add(item.UID);
+          } else if (typeof item === "object" && item?.UID && seenUids.has(item.UID)) {
+            // Skip duplicate album objects
+            changed = true;
+          }
+        });
+
+        // Update selectedAlbums if changes were made
+        if (changed || processed.length !== newVal.length) {
+          this.$nextTick(() => {
+            this.selectedAlbums = processed;
+          });
+        }
+      },
+      deep: true,
     },
   },
   methods: {
@@ -129,10 +173,13 @@ export default {
         }
       });
 
+      // Deduplicate existing UIDs
+      const uniqueExistingUids = [...new Set(existingUids)];
+
       this.loading = true;
 
       if (namesToCreate.length === 0) {
-        this.$emit("confirm", existingUids);
+        this.$emit("confirm", uniqueExistingUids);
         this.loading = false;
         return;
       }
@@ -148,7 +195,14 @@ export default {
       )
         .then((created) => {
           const createdUids = created.filter((u) => typeof u === "string" && u.length > 0);
-          this.$emit("confirm", [...existingUids, ...createdUids]);
+          this.$emit("confirm", [...uniqueExistingUids, ...createdUids]);
+        })
+        .catch((error) => {
+          console.error("Failed to create some albums:", error);
+          // Still emit successful ones if any exist
+          if (uniqueExistingUids.length > 0) {
+            this.$emit("confirm", uniqueExistingUids);
+          }
         })
         .finally(() => {
           this.loading = false;

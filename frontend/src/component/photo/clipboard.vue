@@ -331,6 +331,11 @@ export default {
         return;
       }
 
+      // Validate array input
+      if (Array.isArray(ppidOrList) && ppidOrList.length === 0) {
+        return;
+      }
+
       if (this.busy) {
         return;
       }
@@ -339,10 +344,16 @@ export default {
       this.dialog.album = false;
 
       const albumUids = Array.isArray(ppidOrList) ? ppidOrList : [ppidOrList];
+      // Deduplicate album UIDs
+      const uniqueAlbumUids = [...new Set(albumUids.filter((uid) => uid))];
       const body = { photos: this.selection };
 
-      Promise.all(albumUids.map((uid) => $api.post(`albums/${uid}/photos`, body)))
+      Promise.all(uniqueAlbumUids.map((uid) => $api.post(`albums/${uid}/photos`, body)))
         .then(() => this.onAdded())
+        .catch((error) => {
+          console.error("Failed to add photos to some albums:", error);
+          $notify.error(this.$gettext("Some albums could not be updated"));
+        })
         .finally(() => {
           this.busy = false;
         });

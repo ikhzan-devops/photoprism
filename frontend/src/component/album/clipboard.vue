@@ -185,13 +185,27 @@ export default {
       this.expanded = false;
     },
     cloneAlbums(ppidOrList) {
+      if (!ppidOrList) {
+        return;
+      }
+
+      // Validate array input
+      if (Array.isArray(ppidOrList) && ppidOrList.length === 0) {
+        return;
+      }
+
       this.dialog.album = false;
 
       const targets = Array.isArray(ppidOrList) ? ppidOrList : [ppidOrList];
+      // Deduplicate target album UIDs
+      const uniqueTargets = [...new Set(targets.filter((uid) => uid))];
 
-      Promise.all(targets.map((uid) => $api.post(`albums/${uid}/clone`, { albums: this.selection }))).then(() =>
-        this.onCloned()
-      );
+      Promise.all(uniqueTargets.map((uid) => $api.post(`albums/${uid}/clone`, { albums: this.selection })))
+        .then(() => this.onCloned())
+        .catch((error) => {
+          console.error("Failed to clone albums to some targets:", error);
+          $notify.error(this.$gettext("Some albums could not be cloned"));
+        });
     },
     onCloned() {
       this.clearClipboard();
