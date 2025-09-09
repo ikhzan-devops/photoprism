@@ -4,6 +4,7 @@
 # more about our team, products and services: https://www.photoprism.app/
 
 export GO111MODULE=on
+export NPM_CONFIG_IGNORE_SCRIPTS ?= true
 
 -include .semver
 -include .env
@@ -247,7 +248,7 @@ dep-list:
 dep-npm:
 	sudo npm install -g npm
 dep-js:
-	(cd frontend && npm ci --no-update-notifier --no-audit)
+	(cd frontend && npm ci --ignore-scripts --no-update-notifier --no-audit)
 	# TODO: If in the future we want to test in a real browser environment, add this (Playwright)
 	# (cd frontend && npx playwright install chromium)
 dep-codex:
