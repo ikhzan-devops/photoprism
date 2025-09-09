@@ -1,4 +1,4 @@
-# Repository Guidelines
+# PhotoPrism® Repository Guidelines
 
 ## Purpose
 
