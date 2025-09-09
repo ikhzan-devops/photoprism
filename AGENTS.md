@@ -16,18 +16,20 @@ This file tells automated coding agents (and humans) where to find the single so
 ## Build & run (local)
 
 - Run `make help` to see all targets.
-- Install deps: `make dep`
-- Build frontend/backend: `make build-js` and `make build-go`
-- Start locally: run `./photoprism start` from within the Docker container (see below)
-- With Docker/Compose:
-  1. Run `make docker-build` once to build the development environment image based on the `Dockerfile`.
-  2. Run `docker compose up -d` to start the services in `compose.yaml` if they are not already running.
-  3. Run `make terminal` to open a terminal session to the development environment once the services have been started.
+- Starting the Development Environment with Docker/Compose:
+  1. Run `make docker-build` once to build a local image based on the `Dockerfile`.
+  2. Then, run `docker compose up -d` to start the Development Environment, if it is not already running.
+  3. Open a terminal session with `make terminal` once the services have been started.
+- From within the Development Environment:
+  - Install deps: `make dep`
+  - Build frontend/backend: `make build-js` and `make build-go`
+  - Start PhotoPrism server on port 2342: `./photoprism start`
 
 ## Tests
 
-- Full unit test suite: `make test` (runs backend and frontend from within the development environment)
-- Test frontend/backend: `make test-js` and `make test-go`
+- From within the Development Environment:
+  - Full unit test suite: `make test` (runs backend and frontend tests)
+  - Test frontend/backend: `make test-js` and `make test-go`
 - Frontend unit test scripts are defined in `frontend/package.json`
 - Acceptance tests: use the `acceptance-*` targets in the `Makefile`
 
