@@ -33,7 +33,12 @@ This file tells automated coding agents (and humans) where to find the single so
 - From within the Development Environment:
   - Install deps: `make dep`
   - Build frontend/backend: `make build-js` and `make build-go`
-  - Start PhotoPrism server on port 2342: `./photoprism start` (open http://localhost:2342/)
+  - Watch frontend changes (auto-rebuild): `make watch-js`
+    - Or run directly: `cd frontend && npm run watch`
+    - Tip: running the watcher outside the container can be faster on non-Linux hosts; stop with Ctrl+C
+  - Start the PhotoPrism server: `./photoprism start`
+    - Open http://localhost:2342/ (HTTP)
+    - Or https://app.localssl.dev/ (HTTPS via Traefik; ensure Traefik is running and the dev compose labels are active)
 - Stop the Development Environment with Docker/Compose: `docker compose --profile=all down --remove-orphans` (`--profile=all` ensures all services are stopped; `make down` does the same)
 
 ## Tests
