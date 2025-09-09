@@ -23,6 +23,8 @@ This file tells automated coding agents (and humans) where to find the single so
   - Then, run `docker compose up` to start the Development Environment, if it is not already running (add `-d` to start in the background)
   - If started in the background, follow live logs for the app: `docker compose logs -f --tail=100 photoprism` (Ctrl+C to stop)
     - All services: `docker compose logs -f --tail=100`
+    - Last 10 minutes only: `docker compose logs -f --since=10m photoprism`
+    - Plain output (easier to copy): `docker compose logs -f --no-log-prefix --no-color photoprism`
   - Execute a single command: `docker compose exec photoprism <command>`, e.g. `docker compose exec photoprism ./photoprism help`
     - Why `./photoprism`? It runs the locally built binary in the project directory (as used in the setup guide).
     - Run as non-root to avoid root-owned files on bind mounts: `docker compose exec -u "$(id -u):$(id -g)" photoprism <command>`
