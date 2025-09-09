@@ -41,6 +41,8 @@ This file tells automated coding agents (and humans) where to find the single so
     - Or https://app.localssl.dev/ (HTTPS via Traefik; ensure Traefik is running and the dev compose labels are active)
 - Stop the Development Environment with Docker/Compose: `docker compose --profile=all down --remove-orphans` (`--profile=all` ensures all services are stopped; `make down` does the same)
 
+Note: Across our public documentation, official images, and in production, the command-line interface (CLI) name is `photoprism`. Other PhotoPrism binary names are only used in development builds for side-by-side comparisons of the Community Edition (CE) with PhotoPrism Plus (`photoprism-plus`) and PhotoPrism Pro (`photoprism-pro`).
+
 ## Tests
 
 - From within the Development Environment:
