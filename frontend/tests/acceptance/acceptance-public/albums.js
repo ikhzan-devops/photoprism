@@ -145,18 +145,27 @@ test.meta("testID", "albums-003").meta({ type: "short", mode: "public" })("Commo
 });
 
 test.meta("testID", "albums-004").meta({ type: "short", mode: "public" })(
-  "Common: Add/Remove Photos to/from album",
+  "Common: Add/Remove Photos to/from multiple albums",
   async (t) => {
+    // Get initial counts for both Holiday and Christmas albums
     await menu.openPage("albums");
     await toolbar.search("Holiday");
-    const AlbumUid = await album.getNthAlbumUid("all", 0);
-    await album.openAlbumWithUid(AlbumUid);
-    const PhotoCount = await photo.getPhotoCount("all");
+    const HolidayAlbumUid = await album.getNthAlbumUid("all", 0);
+    await album.openAlbumWithUid(HolidayAlbumUid);
+    const HolidayPhotoCount = await photo.getPhotoCount("all");
+    await menu.openPage("albums");
+    await toolbar.search("Christmas");
+    const ChristmasAlbumUid = await album.getNthAlbumUid("all", 0);
+    await album.openAlbumWithUid(ChristmasAlbumUid);
+    const ChristmasPhotoCount = await photo.getPhotoCount("all");
+
+    // Select photos to add to albums
     await menu.openPage("browse");
     await toolbar.search("photo:true");
     const FirstPhotoUid = await photo.getNthPhotoUid("image", 0);
     const SecondPhotoUid = await photo.getNthPhotoUid("image", 1);
 
+    // Verify photos are not in any albums initially
     await page.clickCardTitleOfUID(FirstPhotoUid);
     await t
       .click(photoedit.infoTab)
@@ -164,19 +173,32 @@ test.meta("testID", "albums-004").meta({ type: "short", mode: "public" })(
       .notOk()
       .expect(Selector("td").withText("Holiday").visible)
       .notOk()
+      .expect(Selector("td").withText("Christmas").visible)
+      .notOk()
       .click(photoedit.dialogClose);
 
+    // Select both photos and add to multiple albums simultaneously
     await photo.selectPhotoFromUID(SecondPhotoUid);
     await photoviewer.openPhotoViewer("uid", FirstPhotoUid);
     await photoviewer.triggerPhotoViewerAction("select-toggle");
     await photoviewer.triggerPhotoViewerAction("close-button");
-    await contextmenu.triggerContextMenuAction("album", "Holiday");
+    await contextmenu.triggerContextMenuAction("album", ["Holiday", "Christmas"]);
+
+    // Verify photos were added to Holiday album
     await menu.openPage("albums");
-    await album.openAlbumWithUid(AlbumUid);
-    const PhotoCountAfterAdd = await photo.getPhotoCount("all");
+    await album.openAlbumWithUid(HolidayAlbumUid);
+    const HolidayPhotoCountAfterAdd = await photo.getPhotoCount("all");
+    await t.expect(HolidayPhotoCountAfterAdd).eql(HolidayPhotoCount + 2);
 
-    await t.expect(PhotoCountAfterAdd).eql(PhotoCount + 2);
+    // Verify photos were added to Christmas album
+    await menu.openPage("albums");
+    await album.openAlbumWithUid(ChristmasAlbumUid);
+    const ChristmasPhotoCountAfterAdd = await photo.getPhotoCount("all");
+    await t.expect(ChristmasPhotoCountAfterAdd).eql(ChristmasPhotoCount + 2);
 
+    // Verify photo info shows both albums
+    await menu.openPage("browse");
+    await toolbar.search("photo:true");
     await page.clickCardTitleOfUID(FirstPhotoUid);
     await t
       .click(photoedit.infoTab)
@@ -184,15 +206,49 @@ test.meta("testID", "albums-004").meta({ type: "short", mode: "public" })(
       .ok()
       .expect(Selector("td").withText("Holiday").visible)
       .ok()
+      .expect(Selector("td").withText("Christmas").visible)
+      .ok()
       .click(photoedit.dialogClose);
 
+    // Remove photos from Holiday album and verify count
+    await menu.openPage("albums");
+    await album.openAlbumWithUid(HolidayAlbumUid);
     await photo.selectPhotoFromUID(FirstPhotoUid);
     await photo.selectPhotoFromUID(SecondPhotoUid);
     await contextmenu.triggerContextMenuAction("remove", "");
-    const PhotoCountAfterRemove = await photo.getPhotoCount("all");
+    const HolidayPhotoCountAfterRemove = await photo.getPhotoCount("all");
+    await t.expect(HolidayPhotoCountAfterRemove).eql(HolidayPhotoCountAfterAdd - 2);
 
-    await t.expect(PhotoCountAfterRemove).eql(PhotoCountAfterAdd - 2);
+    // Verify photos are still in Christmas album
+    await menu.openPage("albums");
+    await album.openAlbumWithUid(ChristmasAlbumUid);
+    const ChristmasPhotoCountAfterHolidayRemove = await photo.getPhotoCount("all");
+    await t.expect(ChristmasPhotoCountAfterHolidayRemove).eql(ChristmasPhotoCountAfterAdd);
 
+    // Verify photo info shows only Christmas album now
+    await menu.openPage("browse");
+    await toolbar.search("photo:true");
+    await page.clickCardTitleOfUID(FirstPhotoUid);
+    await t
+      .click(photoedit.infoTab)
+      .expect(Selector("td").withText("Albums").visible)
+      .ok()
+      .expect(Selector("td").withText("Holiday").visible)
+      .notOk()
+      .expect(Selector("td").withText("Christmas").visible)
+      .ok()
+      .click(photoedit.dialogClose);
+
+    // Remove photos from Christmas album to clean up
+    await menu.openPage("albums");
+    await album.openAlbumWithUid(ChristmasAlbumUid);
+    await photo.selectPhotoFromUID(FirstPhotoUid);
+    await photo.selectPhotoFromUID(SecondPhotoUid);
+    await contextmenu.triggerContextMenuAction("remove", "");
+    const ChristmasPhotoCountAfterRemove = await photo.getPhotoCount("all");
+    await t.expect(ChristmasPhotoCountAfterRemove).eql(ChristmasPhotoCount);
+
+    // Final verification that photos are not in any albums
     await menu.openPage("browse");
     await toolbar.search("photo:true");
     await page.clickCardTitleOfUID(FirstPhotoUid);
@@ -202,7 +258,42 @@ test.meta("testID", "albums-004").meta({ type: "short", mode: "public" })(
       .notOk()
       .expect(Selector("td").withText("Holiday").visible)
       .notOk()
+      .expect(Selector("td").withText("Christmas").visible)
+      .notOk()
       .click(photoedit.dialogClose);
+  }
+);
+
+test.only.meta("testID", "albums-004-duplicate-bug").meta({ type: "short", mode: "public" })(
+  "Bug Test: Album duplication when selecting from dropdown then typing same name",
+  async (t) => {
+    await menu.openPage("browse");
+    await toolbar.search("photo:true");
+    const FirstPhotoUid = await photo.getNthPhotoUid("image", 0);
+    await photo.selectPhotoFromUID(FirstPhotoUid);
+
+    await contextmenu.openContextMenu();
+    await t.click(Selector("button.action-album"));
+
+    // Step 1: Select Holiday from dropdown
+    await t.click(Selector(".input-albums input"));
+    const holidayOption = Selector("div").withText("Holiday").parent('div[role="option"]');
+
+    if (await holidayOption.visible) {
+      await t.click(holidayOption);
+      const afterDropdown = await Selector("v-chip").withText("Holiday").count;
+
+      // Step 2: Type the same album name and press enter
+      await t.click(Selector(".input-albums input"));
+      await t.typeText(Selector(".input-albums input"), "Holiday", { replace: true }).pressKey("enter");
+
+      // Check for duplicates
+      const afterTyping = await Selector("v-chip").withText("Holiday").count;
+
+      await t.expect(afterTyping).lte(1, "Holiday should not appear more than once");
+    }
+
+    await t.click(Selector(".action-cancel"));
   }
 );
 
