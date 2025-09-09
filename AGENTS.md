@@ -15,12 +15,14 @@ This file tells automated coding agents (and humans) where to find the single so
   - https://docs.photoprism.dev/ (Swagger)
   - https://docs.photoprism.app/developer-guide/api/
 
-## Build & run (local)
+## Build & Run (local)
 
 - Run `make help` to see common targets (or open the `Makefile`).
 - Start the Development Environment with Docker/Compose:
   - Run `make docker-build` once to build a local image based on the `Dockerfile`.
   - Then, run `docker compose up` to start the Development Environment, if it is not already running (add `-d` to start in the background)
+  - If started in the background, follow live logs for the app: `docker compose logs -f --tail=100 photoprism` (Ctrl+C to stop)
+    - All services: `docker compose logs -f --tail=100`
   - Execute a single command: `docker compose exec photoprism <command>`, e.g. `docker compose exec photoprism ./photoprism help`
     - Why `./photoprism`? It runs the locally built binary in the project directory (as used in the setup guide).
     - Run as non-root to avoid root-owned files on bind mounts: `docker compose exec -u "$(id -u):$(id -g)" photoprism <command>`
