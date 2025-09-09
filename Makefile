@@ -106,6 +106,10 @@ logs:
 	$(DOCKER_COMPOSE) logs -f
 down:
 	$(DOCKER_COMPOSE) --profile=all down --remove-orphans
+codex: dep-codex codex-status
+codex-status:
+	codex --version
+	codex /status
 docs: swag
 swag: swag-json
 swag-json:
@@ -246,6 +250,9 @@ dep-js:
 	(cd frontend && npm ci --no-update-notifier --no-audit)
 	# TODO: If in the future we want to test in a real browser environment, add this (Playwright)
 	# (cd frontend && npx playwright install chromium)
+dep-codex:
+	@echo "Installing latest Codex CLI..."
+	sudo npm i -g "@openai/codex@latest"
 dep-go:
 	go build -v ./...
 dep-upgrade:
