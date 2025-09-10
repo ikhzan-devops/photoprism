@@ -2,7 +2,7 @@
   <v-dialog
     :model-value="visible"
     persistent
-    max-width="390"
+    max-width="500"
     class="p-dialog p-photo-album-dialog"
     @keydown.esc.exact="close"
     @after-enter="afterEnter"
