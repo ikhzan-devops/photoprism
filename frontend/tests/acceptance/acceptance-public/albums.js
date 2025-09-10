@@ -264,8 +264,8 @@ test.meta("testID", "albums-004").meta({ type: "short", mode: "public" })(
   }
 );
 
-test.meta("testID", "albums-004-duplicate-bug").meta({ type: "short", mode: "public" })(
-  "Bug Test: Album duplication when selecting from dropdown then typing same name",
+test.meta("testID", "albums-004-duplicate").meta({ type: "short", mode: "public" })(
+  "Album duplication when selecting from dropdown then typing same name",
   async (t) => {
     await menu.openPage("browse");
     await toolbar.search("photo:true");
@@ -275,22 +275,19 @@ test.meta("testID", "albums-004-duplicate-bug").meta({ type: "short", mode: "pub
     await contextmenu.openContextMenu();
     await t.click(Selector("button.action-album"));
 
-    // Step 1: Select Holiday from dropdown
     await t.click(Selector(".input-albums input"));
     const holidayOption = Selector("div").withText("Holiday").parent('div[role="option"]');
 
     if (await holidayOption.visible) {
       await t.click(holidayOption);
       const afterDropdown = await Selector("v-chip").withText("Holiday").count;
+      await t.expect(afterDropdown).eql(1, "Should have 1 chip after dropdown selection");
 
-      // Step 2: Type the same album name and press enter
       await t.click(Selector(".input-albums input"));
       await t.typeText(Selector(".input-albums input"), "Holiday", { replace: true }).pressKey("enter");
 
-      // Check for duplicates
       const afterTyping = await Selector("v-chip").withText("Holiday").count;
-
-      await t.expect(afterTyping).lte(1, "Holiday should not appear more than once");
+      await t.expect(afterTyping).eql(1, "Should still have only 1 chip after typing duplicate");
     }
 
     await t.click(Selector(".action-cancel"));
@@ -309,11 +306,6 @@ test.meta("testID", "albums-005").meta({ mode: "public" })("Common: Use album se
   const AlbumCount = await album.getAlbumCount("all");
   await t.expect(AlbumCount).eql(1);
 
-  if (t.browser.platform === "mobile") {
-  } else {
-    await toolbar.setFilter("category", "All Categories");
-  }
-
   await toolbar.search("Holiday");
 
   await t.expect(page.cardTitle.nth(0).innerText).contains("Holiday");
@@ -322,6 +314,7 @@ test.meta("testID", "albums-005").meta({ mode: "public" })("Common: Use album se
 });
 
 test.meta("testID", "albums-006").meta({ mode: "public" })("Common: Test album autocomplete", async (t) => {
+  await menu.openPage("browse");
   await toolbar.search("photo:true");
   const FirstPhotoUid = await photo.getNthPhotoUid("image", 0);
   await photo.selectPhotoFromUID(FirstPhotoUid);
