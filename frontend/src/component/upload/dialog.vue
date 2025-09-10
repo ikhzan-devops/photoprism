@@ -206,6 +206,48 @@ export default {
         this.reset();
       }
     },
+    selectedAlbums: {
+      handler(newVal) {
+        if (!Array.isArray(newVal)) return;
+
+        let changed = false;
+        const processed = [];
+        const seenUids = new Set();
+
+        newVal.forEach((item) => {
+          // If it's a string, try to match it with existing albums
+          if (typeof item === "string" && item.trim().length > 0) {
+            const matchedAlbum = this.albums.find(
+              (album) => album.Title && album.Title.toLowerCase() === item.trim().toLowerCase()
+            );
+
+            if (matchedAlbum && !seenUids.has(matchedAlbum.UID)) {
+              // Replace string with actual album object
+              processed.push(matchedAlbum);
+              seenUids.add(matchedAlbum.UID);
+              changed = true;
+            } else if (!matchedAlbum) {
+              // Keep as string for new album creation
+              processed.push(item.trim());
+            }
+          } else if (typeof item === "object" && item?.UID && !seenUids.has(item.UID)) {
+            // Keep existing album objects, but prevent duplicates
+            processed.push(item);
+            seenUids.add(item.UID);
+          } else if (typeof item === "object" && item?.UID && seenUids.has(item.UID)) {
+            // Skip duplicate album objects
+            changed = true;
+          }
+        });
+
+        // Update selectedAlbums if changes were made
+        if (changed || processed.length !== newVal.length) {
+          this.$nextTick(() => {
+            this.selectedAlbums = processed;
+          });
+        }
+      },
+    },
   },
   methods: {
     afterEnter() {
@@ -393,9 +435,14 @@ export default {
             addToAlbums.push(a);
           } else if (a instanceof Album && a.UID) {
             addToAlbums.push(a.UID);
+          } else if (typeof a === "object" && a?.UID) {
+            addToAlbums.push(a.UID);
           }
         });
       }
+
+      // Deduplicate album UIDs
+      addToAlbums = [...new Set(addToAlbums)];
 
       async function performUpload(ctx) {
         for (let i = 0; i < ctx.selected.length; i++) {
