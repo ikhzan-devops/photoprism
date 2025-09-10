@@ -68,29 +68,4 @@ export default class Page {
     await this.openContextMenu();
     await t.click(Selector(".action-clear"));
   }
-
-  async triggerAlbumDialogAndType(albumName) {
-    await this.openContextMenu();
-    if (t.browser.platform === "mobile") {
-      await t.wait(5000);
-    }
-    await t.click(Selector("#t-clipboard button.action-album"));
-
-    // Wait for dialog to open
-    await t.wait(1000);
-
-    // Type the album name and press enter (simulating the bug scenario)
-    await t
-      .click(Selector(".input-albums input"))
-      .typeText(Selector(".input-albums input"), albumName, { replace: true })
-      .pressKey("enter");
-
-    // Return the dialog selectors for further testing
-    return {
-      confirmButton: Selector("button.action-confirm"),
-      cancelButton: Selector("button").withText("Cancel"),
-      inputField: Selector(".input-albums input"),
-      chips: Selector("v-chip"),
-    };
-  }
 }
