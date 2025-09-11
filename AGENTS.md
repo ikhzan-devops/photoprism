@@ -55,6 +55,8 @@ Note: Across our public documentation, official images, and in production, the c
 ## Code Style & Lint
 
 - Go: `go fmt` / `goimports` (see `Makefile` targets such as `fmt` / `fmt-go`)
+  - Doc comments for packages and exported identifiers must be complete sentences that begin with the name of the thing being described and end with a period.
+  - For short examples inside comments, indent code rather than using backticks; godoc treats indented blocks as preformatted.
 - JS/Vue: use the lint/format scripts in `frontend/package.json` (ESLint + Prettier)
 
 ## Safety & Data

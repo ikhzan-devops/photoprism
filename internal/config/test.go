@@ -56,7 +56,7 @@ func NewTestOptions(pkg string) *Options {
 		storagePath = fs.Abs("../../storage")
 	}
 
-	dataPath := filepath.Join(storagePath, "testdata")
+	dataPath := filepath.Join(storagePath, fs.TestdataDir)
 
 	pkg = PkgNameRegexp.ReplaceAllString(pkg, "")
 	driver := os.Getenv("PHOTOPRISM_TEST_DRIVER")

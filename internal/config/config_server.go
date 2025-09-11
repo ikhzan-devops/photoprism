@@ -198,14 +198,14 @@ func (c *Config) HttpSocket() *url.URL {
 
 // TemplatesPath returns the server templates path.
 func (c *Config) TemplatesPath() string {
-	return filepath.Join(c.AssetsPath(), "templates")
+	return filepath.Join(c.AssetsPath(), fs.TemplatesDir)
 }
 
 // CustomTemplatesPath returns the path to custom templates.
 func (c *Config) CustomTemplatesPath() string {
 	if dir := c.CustomAssetsPath(); dir == "" {
 		return ""
-	} else if dir = filepath.Join(dir, "templates"); fs.PathExists(dir) {
+	} else if dir = filepath.Join(dir, fs.TemplatesDir); fs.PathExists(dir) {
 		return dir
 	}
 
@@ -269,30 +269,40 @@ func (c *Config) TemplateName() string {
 
 // StaticPath returns the static assets' path.
 func (c *Config) StaticPath() string {
-	return filepath.Join(c.AssetsPath(), "static")
+	return filepath.Join(c.AssetsPath(), fs.StaticDir)
 }
 
 // StaticFile returns the path to a static file.
 func (c *Config) StaticFile(fileName string) string {
-	return filepath.Join(c.AssetsPath(), "static", fileName)
+	return filepath.Join(c.AssetsPath(), fs.StaticDir, fileName)
 }
 
 // BuildPath returns the static build path.
 func (c *Config) BuildPath() string {
-	return filepath.Join(c.StaticPath(), "build")
+	return filepath.Join(c.StaticPath(), fs.BuildDir)
 }
 
 // ImgPath returns the path to static image files.
 func (c *Config) ImgPath() string {
-	return filepath.Join(c.StaticPath(), "img")
+	return filepath.Join(c.StaticPath(), fs.ImgDir)
 }
 
 // ThemePath returns the path to static theme files.
 func (c *Config) ThemePath() string {
-	return filepath.Join(c.ConfigPath(), "theme")
+	if c.options.CustomThemePath != "" {
+		return c.options.CustomThemePath
+	}
+
+	return filepath.Join(c.ConfigPath(), fs.ThemeDir)
 }
 
-// PortalPath returns the path to portal config files.
-func (c *Config) PortalPath() string {
-	return filepath.Join(c.ConfigPath(), "portal")
+// SetThemePath sets a custom theme files path.
+func (c *Config) SetThemePath(dir string) *Config {
+	if dir != "" {
+		dir = fs.Abs(dir)
+	}
+
+	c.options.CustomThemePath = dir
+
+	return c
 }

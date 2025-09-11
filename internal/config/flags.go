@@ -13,6 +13,7 @@ import (
 	"github.com/photoprism/photoprism/internal/service/hub/places"
 	"github.com/photoprism/photoprism/internal/thumb"
 	"github.com/photoprism/photoprism/pkg/authn"
+	"github.com/photoprism/photoprism/pkg/fs"
 	"github.com/photoprism/photoprism/pkg/i18n"
 	"github.com/photoprism/photoprism/pkg/media"
 	"github.com/photoprism/photoprism/pkg/media/http/header"
@@ -227,7 +228,7 @@ var Flags = CliFlags{
 		Flag: &cli.StringFlag{
 			Name:    "users-path",
 			Usage:   "relative `PATH` to create base and upload subdirectories for users",
-			Value:   "users",
+			Value:   fs.UsersDir,
 			EnvVars: EnvVars("USERS_PATH"),
 		}}, {
 		Flag: &cli.PathFlag{
@@ -297,6 +298,13 @@ var Flags = CliFlags{
 			Usage:     "assets `PATH` containing static resources like icons, models, and translations",
 			EnvVars:   EnvVars("ASSETS_PATH"),
 			TakesFile: true,
+		}}, {
+		Flag: &cli.PathFlag{
+			Name:      "theme-path",
+			Usage:     "custom user interface theme `PATH` containing styles, scripts, and images",
+			EnvVars:   EnvVars("THEME_PATH"),
+			TakesFile: true,
+			Hidden:    true,
 		}}, {
 		Flag: &cli.PathFlag{
 			Name:      "models-path",
@@ -1095,6 +1103,41 @@ var Flags = CliFlags{
 			EnvVars: EnvVars("FACE_MATCH_DIST"),
 		}}, {
 		Flag: &cli.StringFlag{
+			Name:    "instance-secret",
+			Usage:   "unique `TOKEN` for authenticating this instance in a cluster",
+			EnvVars: EnvVars("INSTANCE_SECRET"),
+		}}, {
+		Flag: &cli.StringFlag{
+			Name:    "portal-url",
+			Usage:   "portal server `URL` for joining a cluster",
+			EnvVars: EnvVars("PORTAL_URL"),
+			Hidden:  true,
+		}, Tags: []string{Pro}}, {
+		Flag: &cli.StringFlag{
+			Name:    "portal-client",
+			Usage:   "client `ID` for registering this instance as a new cluster node",
+			EnvVars: EnvVars("PORTAL_CLIENT"),
+			Hidden:  true,
+		}, Tags: []string{Pro}}, {
+		Flag: &cli.StringFlag{
+			Name:    "portal-secret",
+			Usage:   "client `SECRET` for registering this instance as a new cluster node",
+			EnvVars: EnvVars("PORTAL_SECRET"),
+			Hidden:  true,
+		}, Tags: []string{Pro}}, {
+		Flag: &cli.BoolFlag{
+			Name:    "cluster-node",
+			Usage:   "register this instance as a cluster node, if possible",
+			EnvVars: EnvVars("CLUSTER_NODE"),
+			Hidden:  true,
+		}, Tags: []string{Pro}}, {
+		Flag: &cli.BoolFlag{
+			Name:    "cluster-portal",
+			Usage:   "runs this instance as a portal server for managing a cluster, if possible",
+			EnvVars: EnvVars("CLUSTER_PORTAL"),
+			Hidden:  true,
+		}, Tags: []string{Pro}}, {
+		Flag: &cli.StringFlag{
 			Name:      "pid-filename",
 			Usage:     "process id `FILENAME` *daemon-mode only*",
 			EnvVars:   EnvVars("PID_FILENAME"),
@@ -1106,35 +1149,5 @@ var Flags = CliFlags{
 			Value:     "",
 			EnvVars:   EnvVars("LOG_FILENAME"),
 			TakesFile: true,
-		}}, {
-		Flag: &cli.StringFlag{
-			Name:    "portal-url",
-			Usage:   "PhotoPrism® Portal server `URL`",
-			EnvVars: EnvVars("PORTAL_URL"),
-			Hidden:  true,
-		}, Tags: []string{Pro}}, {
-		Flag: &cli.StringFlag{
-			Name:    "portal-client",
-			Usage:   "PhotoPrism® Portal client `ID`",
-			EnvVars: EnvVars("PORTAL_CLIENT"),
-			Hidden:  true,
-		}, Tags: []string{Pro}}, {
-		Flag: &cli.StringFlag{
-			Name:    "portal-secret",
-			Usage:   "PhotoPrism® Portal client `SECRET`",
-			EnvVars: EnvVars("PORTAL_SECRET"),
-			Hidden:  true,
-		}, Tags: []string{Pro}}, {
-		Flag: &cli.StringFlag{
-			Name:    "instance-roles",
-			Usage:   "`ROLES` of this instance within a cluster (library, vision, portal)",
-			EnvVars: EnvVars("INSTANCE_ROLES"),
-			Hidden:  true,
-		}, Tags: []string{Pro}}, {
-		Flag: &cli.StringFlag{
-			Name:    "instance-secret",
-			Usage:   "`SECRET` for authenticating this instance in a cluster (must be unique)",
-			EnvVars: EnvVars("INSTANCE_SECRET"),
-			Hidden:  true,
-		}, Tags: []string{Pro}},
+		}},
 }

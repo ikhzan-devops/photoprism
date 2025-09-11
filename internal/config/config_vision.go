@@ -49,7 +49,7 @@ func (c *Config) ModelsPath() string {
 		return fs.Abs(c.options.ModelsPath)
 	}
 
-	if dir := filepath.Join(c.AssetsPath(), "models"); fs.PathExists(dir) {
+	if dir := filepath.Join(c.AssetsPath(), fs.ModelsDir); fs.PathExists(dir) {
 		c.options.ModelsPath = dir
 		return c.options.ModelsPath
 	}

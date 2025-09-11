@@ -16,20 +16,15 @@ import (
 	"github.com/photoprism/photoprism/internal/form"
 	"github.com/photoprism/photoprism/internal/photoprism/get"
 	"github.com/photoprism/photoprism/internal/server/limiter"
+	"github.com/photoprism/photoprism/pkg/fs"
 	"github.com/photoprism/photoprism/pkg/media/http/header"
 )
 
-type CloseableResponseRecorder struct {
-	*httptest.ResponseRecorder
-	closeCh chan bool
-}
-
-func (r *CloseableResponseRecorder) CloseNotify() <-chan bool {
-	return r.closeCh
-}
-
-func (r *CloseableResponseRecorder) closeClient() {
-	r.closeCh <- true
+// Ensure assets path is set so TestMain in this package can initialize config.
+func init() {
+	if os.Getenv("PHOTOPRISM_ASSETS_PATH") == "" {
+		_ = os.Setenv("PHOTOPRISM_ASSETS_PATH", fs.Abs("../../assets"))
+	}
 }
 
 func TestMain(m *testing.M) {
@@ -50,6 +45,19 @@ func TestMain(m *testing.M) {
 	code := m.Run()
 
 	os.Exit(code)
+}
+
+type CloseableResponseRecorder struct {
+	*httptest.ResponseRecorder
+	closeCh chan bool
+}
+
+func (r *CloseableResponseRecorder) CloseNotify() <-chan bool {
+	return r.closeCh
+}
+
+func (r *CloseableResponseRecorder) closeClient() {
+	r.closeCh <- true
 }
 
 // NewApiTest returns new API test helper.

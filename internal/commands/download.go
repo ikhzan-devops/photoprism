@@ -81,7 +81,7 @@ func downloadAction(ctx *cli.Context) error {
 
 	var downloadPath, downloadFile string
 
-	downloadPath = filepath.Join(conf.TempPath(), "download_"+rnd.Base36(12))
+	downloadPath = filepath.Join(conf.TempPath(), fs.DownloadDir+"_"+rnd.Base36(12))
 
 	if err := fs.MkdirAll(downloadPath); err != nil {
 		return err

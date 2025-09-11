@@ -77,6 +77,7 @@ type Options struct {
 	TempPath               string        `yaml:"TempPath" json:"-" flag:"temp-path"`
 	AssetsPath             string        `yaml:"AssetsPath" json:"-" flag:"assets-path"`
 	CustomAssetsPath       string        `yaml:"-" json:"-" flag:"custom-assets-path" tags:"plus,pro"`
+	CustomThemePath        string        `yaml:"-" json:"-" flag:"theme-path"`
 	ModelsPath             string        `yaml:"ModelsPath" json:"-" flag:"models-path"`
 	SidecarPath            string        `yaml:"SidecarPath" json:"-" flag:"sidecar-path"`
 	SidecarYaml            bool          `yaml:"SidecarYaml" json:"SidecarYaml" flag:"sidecar-yaml" default:"true"`
@@ -216,14 +217,15 @@ type Options struct {
 	FaceClusterCore        int           `yaml:"-" json:"-" flag:"face-cluster-core"`
 	FaceClusterDist        float64       `yaml:"-" json:"-" flag:"face-cluster-dist"`
 	FaceMatchDist          float64       `yaml:"-" json:"-" flag:"face-match-dist"`
-	PIDFilename            string        `yaml:"PIDFilename" json:"-" flag:"pid-filename"`
-	LogFilename            string        `yaml:"LogFilename" json:"-" flag:"log-filename"`
-	DetachServer           bool          `yaml:"DetachServer" json:"-" flag:"detach-server"`
+	InstanceSecret         string        `yaml:"InstanceSecret" json:"-" flag:"instance-secret"`
 	PortalUrl              string        `yaml:"PortalUrl" json:"-" flag:"portal-url"`
 	PortalClient           string        `yaml:"PortalClient" json:"-" flag:"portal-client"`
 	PortalSecret           string        `yaml:"PortalSecret" json:"-" flag:"portal-secret"`
-	InstanceRoles          string        `yaml:"InstanceRoles" json:"-" flag:"instance-roles"`
-	InstanceSecret         string        `yaml:"InstanceSecret" json:"-" flag:"instance-secret"`
+	ClusterNode            bool          `yaml:"ClusterNode" json:"-" flag:"cluster-node"`
+	ClusterPortal          bool          `yaml:"ClusterPortal" json:"-" flag:"cluster-portal"`
+	PIDFilename            string        `yaml:"PIDFilename" json:"-" flag:"pid-filename"`
+	LogFilename            string        `yaml:"LogFilename" json:"-" flag:"log-filename"`
+	DetachServer           bool          `yaml:"DetachServer" json:"-" flag:"detach-server"`
 }
 
 // NewOptions creates a new configuration entity by using two methods:
