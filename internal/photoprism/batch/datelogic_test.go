@@ -29,13 +29,13 @@ func TestComputeDateChange_DayUnknown_YearNotForcedUnknown(t *testing.T) {
 	assert.Equal(t, 1, newLocal.Day()) // day used for TakenAtLocal when unknown
 }
 
-func TestComputeDateChange_MonthUnknown_ForcesYearUnknown(t *testing.T) {
+func TestComputeDateChange_MonthUnknown_KeepsYearValue(t *testing.T) {
 	base := time.Date(2020, 4, 30, 8, 0, 0, 0, time.UTC)
 	newLocal, y, m, d := ComputeDateChange(base, 2020, 4, 30, ActionNone, 0, ActionUpdate, -1, ActionUpdate, 2000)
 
-	assert.Equal(t, -1, y)
+	assert.Equal(t, 2000, y)
 	assert.Equal(t, -1, m)
-	assert.Equal(t, 30, d) // day reflects base month clamped result
+	assert.Equal(t, 30, d)
 	assert.Equal(t, 30, newLocal.Day())
 	assert.Equal(t, time.April, newLocal.Month())
 }

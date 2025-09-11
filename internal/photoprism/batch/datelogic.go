@@ -40,16 +40,11 @@ func ComputeDateChange(
 
 	newLocal = time.Date(year, time.Month(month), day, baseLocal.Hour(), baseLocal.Minute(), baseLocal.Second(), 0, time.UTC)
 
-	if monthAct == ActionUpdate && monthVal == -1 {
-		outMonth = -1
-		outYear = -1
-	} else {
-		if yearAct == ActionUpdate {
-			outYear = yearVal
-		}
-		if monthAct == ActionUpdate && monthVal > 0 {
-			outMonth = monthVal
-		}
+	if yearAct == ActionUpdate {
+		outYear = yearVal
+	}
+	if monthAct == ActionUpdate {
+		outMonth = monthVal
 	}
 
 	if dayAct == ActionUpdate {
