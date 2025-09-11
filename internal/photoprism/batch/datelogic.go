@@ -1,0 +1,66 @@
+package batch
+
+import "time"
+
+func ComputeDateChange(
+	baseLocal time.Time,
+	curYear, curMonth, curDay int,
+	dayAct Action, dayVal int,
+	monthAct Action, monthVal int,
+	yearAct Action, yearVal int,
+) (newLocal time.Time, outYear, outMonth, outDay int) {
+	outYear = curYear
+	outMonth = curMonth
+	outDay = curDay
+
+	year := baseLocal.Year()
+	if yearAct == ActionUpdate && yearVal > 0 {
+		year = yearVal
+	}
+
+	month := int(baseLocal.Month())
+	if monthAct == ActionUpdate && monthVal > 0 {
+		month = monthVal
+	}
+
+	day := baseLocal.Day()
+	if dayAct == ActionUpdate {
+		if dayVal == -1 {
+			day = 1
+		} else if dayVal > 0 {
+			day = dayVal
+		}
+	}
+
+	// Clamp to last valid day of target month/year.
+	lastDay := time.Date(year, time.Month(month)+1, 0, 0, 0, 0, 0, time.UTC).Day()
+	if day > lastDay {
+		day = lastDay
+	}
+
+	newLocal = time.Date(year, time.Month(month), day, baseLocal.Hour(), baseLocal.Minute(), baseLocal.Second(), 0, time.UTC)
+
+	if monthAct == ActionUpdate && monthVal == -1 {
+		outMonth = -1
+		outYear = -1
+	} else {
+		if yearAct == ActionUpdate {
+			outYear = yearVal
+		}
+		if monthAct == ActionUpdate && monthVal > 0 {
+			outMonth = monthVal
+		}
+	}
+
+	if dayAct == ActionUpdate {
+		if dayVal == -1 {
+			outDay = -1
+		} else if dayVal > 0 {
+			outDay = day
+		}
+	} else {
+		outDay = day
+	}
+
+	return newLocal, outYear, outMonth, outDay
+}

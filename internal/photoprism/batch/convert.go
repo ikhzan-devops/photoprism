@@ -2,7 +2,6 @@ package batch
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/photoprism/photoprism/internal/entity"
 	"github.com/photoprism/photoprism/internal/form"
@@ -66,64 +65,29 @@ func ConvertToPhotoForm(photo *entity.Photo, v *PhotosForm) (*form.Photo, error)
 		photoForm.TakenSrc = entity.SrcBatch
 	}
 
-	if v.PhotoDay.Action == ActionUpdate && v.PhotoDay.Value == -1 {
-		photoForm.PhotoYear = -1
-	}
-	if v.PhotoMonth.Action == ActionUpdate && v.PhotoMonth.Value == -1 {
-		photoForm.PhotoYear = -1
-	}
-
-	// If any date field changed, recompute TakenAtLocal per photo and clamp invalid day.
+	// If any date field changed, recompute TakenAtLocal per photo via ComputeDateChange.
 	if v.PhotoDay.Action == ActionUpdate || v.PhotoMonth.Action == ActionUpdate || v.PhotoYear.Action == ActionUpdate {
 		base := photo.TakenAtLocal
+		newLocal, outYear, outMonth, outDay := ComputeDateChange(
+			base,
+			photoForm.PhotoYear, photoForm.PhotoMonth, photoForm.PhotoDay,
+			v.PhotoDay.Action, v.PhotoDay.Value,
+			v.PhotoMonth.Action, v.PhotoMonth.Value,
+			v.PhotoYear.Action, v.PhotoYear.Value,
+		)
 
-		// Determine target year: apply updated value if > 0; keep base if unknown or unchanged.
-		year := base.Year()
-		if v.PhotoYear.Action == ActionUpdate {
-			if v.PhotoYear.Value > 0 {
-				year = v.PhotoYear.Value
-			}
-		}
-
-		// Determine target month: apply updated value if > 0; keep base if unknown or unchanged.
-		month := int(base.Month())
-		if v.PhotoMonth.Action == ActionUpdate {
-			if v.PhotoMonth.Value > 0 {
-				month = v.PhotoMonth.Value
-			}
-		}
-
-		// Determine target day: -1 becomes 1; otherwise apply updated value; if unchanged keep base day.
-		day := base.Day()
-		if v.PhotoDay.Action == ActionUpdate {
-			if v.PhotoDay.Value == -1 {
-				day = 1
-			} else if v.PhotoDay.Value > 0 {
-				day = v.PhotoDay.Value
-			}
-		}
-
-		// Clamp day to last valid day of month/year.
-		lastDay := time.Date(year, time.Month(month)+1, 0, 0, 0, 0, 0, time.UTC).Day()
-		if day > lastDay {
-			day = lastDay
-		}
-
-		// Preserve time-of-day from base, construct new local date.
-		newLocal := time.Date(year, time.Month(month), day, base.Hour(), base.Minute(), base.Second(), 0, time.UTC)
 		photoForm.TakenAtLocal = newLocal
 		photoForm.TakenSrc = entity.SrcBatch
 
-		// Ensure PhotoDay is consistent with the clamped value when user provided a positive day.
-		if v.PhotoDay.Action == ActionUpdate && v.PhotoDay.Value > 0 {
-			photoForm.PhotoDay = day
+		// Apply returned date components respecting unknown rules.
+		if v.PhotoYear.Action == ActionUpdate {
+			photoForm.PhotoYear = outYear
 		}
-
-		// If only Month and/or Year changed (Day not explicitly updated),
-		// keep PhotoDay consistent with the computed/clamped value.
-		if v.PhotoDay.Action != ActionUpdate {
-			photoForm.PhotoDay = day
+		if v.PhotoMonth.Action == ActionUpdate {
+			photoForm.PhotoMonth = outMonth
 		}
+		// Always keep PhotoDay consistent with computed result when any date field changed.
+		photoForm.PhotoDay = outDay
 	}
 
 	// Location fields
