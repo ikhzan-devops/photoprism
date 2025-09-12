@@ -160,6 +160,7 @@ func (c *Config) Report() (rows [][]string, cols []string) {
 		{"site-description", c.SiteDescription()},
 		{"site-favicon", c.SiteFavicon()},
 		{"site-preview", c.SitePreview()},
+		{"internal-url", c.InternalUrl()},
 
 		// CDN and Cross-Origin Resource Sharing (CORS).
 		{"cdn-url", c.CdnUrl("/")},
@@ -272,7 +273,8 @@ func (c *Config) Report() (rows [][]string, cols []string) {
 		{"face-match-dist", fmt.Sprintf("%f", c.FaceMatchDist())},
 
 		// Cluster Configuration.
-		{"instance-secret", fmt.Sprintf("%s", strings.Repeat("*", utf8.RuneCountInString(c.InstanceSecret())))},
+		{"node-name", c.NodeName()},
+		{"node-secret", fmt.Sprintf("%s", strings.Repeat("*", utf8.RuneCountInString(c.NodeSecret())))},
 		{"portal-url", c.PortalUrl()},
 		{"portal-client", c.PortalClient()},
 		{"portal-secret", fmt.Sprintf("%s", strings.Repeat("*", utf8.RuneCountInString(c.PortalSecret())))},

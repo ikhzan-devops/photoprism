@@ -57,18 +57,18 @@ func TestConfig_Cluster(t *testing.T) {
 		assert.Equal(t, "", c.PortalUrl())
 		assert.Equal(t, "", c.PortalClient())
 		assert.Equal(t, "", c.PortalSecret())
-		assert.Equal(t, "", c.InstanceSecret())
+		assert.Equal(t, "", c.NodeSecret())
 
 		// Set and read back values
 		c.options.PortalUrl = "https://portal.example.test"
 		c.options.PortalClient = "client-id"
 		c.options.PortalSecret = "client-secret"
-		c.options.InstanceSecret = "instance-secret"
+		c.options.NodeSecret = "node-secret"
 
 		assert.Equal(t, "https://portal.example.test", c.PortalUrl())
 		assert.Equal(t, "client-id", c.PortalClient())
 		assert.Equal(t, "client-secret", c.PortalSecret())
-		assert.Equal(t, "instance-secret", c.InstanceSecret())
+		assert.Equal(t, "node-secret", c.NodeSecret())
 	})
 
 	t.Run("AbsolutePaths", func(t *testing.T) {

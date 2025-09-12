@@ -632,6 +632,12 @@ var Flags = CliFlags{
 			EnvVars: EnvVars("SITE_PREVIEW"),
 		}}, {
 		Flag: &cli.StringFlag{
+			Name:    "internal-url",
+			Usage:   "internal site `URL` to be used for local networking *optional*",
+			Value:   "",
+			EnvVars: EnvVars("INTERNAL_URL"),
+		}}, {
+		Flag: &cli.StringFlag{
 			Name:    "cdn-url",
 			Usage:   "content delivery network `URL`",
 			EnvVars: EnvVars("CDN_URL"),
@@ -1103,37 +1109,42 @@ var Flags = CliFlags{
 			EnvVars: EnvVars("FACE_MATCH_DIST"),
 		}}, {
 		Flag: &cli.StringFlag{
-			Name:    "instance-secret",
-			Usage:   "unique `TOKEN` for authenticating this instance in a cluster",
-			EnvVars: EnvVars("INSTANCE_SECRET"),
+			Name:    "node-name",
+			Usage:   "unique `NAME` for this cluster node (lowercase, no spaces or special characters)",
+			EnvVars: EnvVars("NODE_NAME"),
+		}}, {
+		Flag: &cli.StringFlag{
+			Name:    "node-secret",
+			Usage:   "unique `SECRET` for authenticating this cluster node",
+			EnvVars: EnvVars("NODE_SECRET"),
 		}}, {
 		Flag: &cli.StringFlag{
 			Name:    "portal-url",
-			Usage:   "portal server `URL` for joining a cluster",
+			Usage:   "base `URL` of the cluster portal server e.g. https://portal.example.com",
 			EnvVars: EnvVars("PORTAL_URL"),
 			Hidden:  true,
 		}, Tags: []string{Pro}}, {
-		Flag: &cli.StringFlag{
+		/* Flag: &cli.StringFlag{
 			Name:    "portal-client",
-			Usage:   "client `ID` for registering this instance as a new cluster node",
+			Usage:   "OAuth2 client `ID` for joining a cluster *optional*",
 			EnvVars: EnvVars("PORTAL_CLIENT"),
 			Hidden:  true,
-		}, Tags: []string{Pro}}, {
+		}, Tags: []string{Pro}}, {*/
 		Flag: &cli.StringFlag{
-			Name:    "portal-secret",
-			Usage:   "client `SECRET` for registering this instance as a new cluster node",
-			EnvVars: EnvVars("PORTAL_SECRET"),
+			Name:    "portal-token",
+			Usage:   "access `TOKEN` for authenticating to the portal server (may be shared between nodes)",
+			EnvVars: EnvVars("PORTAL_TOKEN"),
 			Hidden:  true,
 		}, Tags: []string{Pro}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "cluster-node",
-			Usage:   "register this instance as a cluster node, if possible",
+			Usage:   "runs this instance as a cluster node and joins the configured portal",
 			EnvVars: EnvVars("CLUSTER_NODE"),
 			Hidden:  true,
 		}, Tags: []string{Pro}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "cluster-portal",
-			Usage:   "runs this instance as a portal server for managing a cluster, if possible",
+			Usage:   "runs this instance as a cluster portal for orchestrating nodes",
 			EnvVars: EnvVars("CLUSTER_PORTAL"),
 			Hidden:  true,
 		}, Tags: []string{Pro}}, {

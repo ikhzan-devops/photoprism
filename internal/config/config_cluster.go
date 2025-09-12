@@ -6,9 +6,14 @@ import (
 	"github.com/photoprism/photoprism/pkg/fs"
 )
 
-// InstanceSecret returns the node instance secret, if configured.
-func (c *Config) InstanceSecret() string {
-	return c.options.InstanceSecret
+// NodeName returns the human-readable instance name, if specified.
+func (c *Config) NodeName() string {
+	return c.options.NodeName
+}
+
+// NodeSecret returns the node's authentication secret, if specified.
+func (c *Config) NodeSecret() string {
+	return c.options.NodeSecret
 }
 
 // PortalUrl returns the URL of the cluster portal server, if configured.

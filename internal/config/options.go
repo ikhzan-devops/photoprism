@@ -136,6 +136,7 @@ type Options struct {
 	SiteDescription        string        `yaml:"SiteDescription" json:"SiteDescription" flag:"site-description"`
 	SiteFavicon            string        `yaml:"SiteFavicon" json:"SiteFavicon" flag:"site-favicon"`
 	SitePreview            string        `yaml:"SitePreview" json:"SitePreview" flag:"site-preview"`
+	InternalUrl            string        `yaml:"InternalUrl" json:"InternalUrl" flag:"internal-url"`
 	CdnUrl                 string        `yaml:"CdnUrl" json:"CdnUrl" flag:"cdn-url"`
 	CdnVideo               bool          `yaml:"CdnVideo" json:"CdnVideo" flag:"cdn-video"`
 	CORSOrigin             string        `yaml:"CORSOrigin" json:"-" flag:"cors-origin"`
@@ -217,7 +218,8 @@ type Options struct {
 	FaceClusterCore        int           `yaml:"-" json:"-" flag:"face-cluster-core"`
 	FaceClusterDist        float64       `yaml:"-" json:"-" flag:"face-cluster-dist"`
 	FaceMatchDist          float64       `yaml:"-" json:"-" flag:"face-match-dist"`
-	InstanceSecret         string        `yaml:"InstanceSecret" json:"-" flag:"instance-secret"`
+	NodeName               string        `yaml:"NodeName" json:"-" flag:"node-name"`
+	NodeSecret             string        `yaml:"NodeSecret" json:"-" flag:"node-secret"`
 	PortalUrl              string        `yaml:"PortalUrl" json:"-" flag:"portal-url"`
 	PortalClient           string        `yaml:"PortalClient" json:"-" flag:"portal-client"`
 	PortalSecret           string        `yaml:"PortalSecret" json:"-" flag:"portal-secret"`
