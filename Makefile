@@ -253,7 +253,12 @@ dep-js:
 	# (cd frontend && npx playwright install chromium)
 dep-codex:
 	@echo "Installing latest Codex CLI..."
-	sudo npm i -g "@openai/codex@latest"
+	@[ -n "$(CODEX_HOME)" ] && [ "$(CODEX_HOME)" != "/" ] && install -d -m 700 -- "$(CODEX_HOME)" || true
+	@if command -v sudo >/dev/null 2>&1; then \
+	  sudo npm install -g --location=global --no-fund --no-audit "@openai/codex@latest"; \
+	else \
+	  npm  install -g --location=global --no-fund --no-audit "@openai/codex@latest"; \
+	fi
 dep-go:
 	go build -v ./...
 dep-upgrade:
