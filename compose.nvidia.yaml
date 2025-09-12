@@ -133,7 +133,8 @@ services:
       PHOTOPRISM_FFMPEG_BITRATE: "64"                # video bitrate limit in Mbps (default: 60)
       ## External dependencies and tools:
       TF_CPP_MIN_LOG_LEVEL: 1
-      CODEX_HOME: "/go/src/github.com/photoprism/photoprism/.codex"
+      GOCACHE: "/go/src/github.com/photoprism/photoprism/.local/gocache"
+      CODEX_HOME: "/go/src/github.com/photoprism/photoprism/.local/codex"
     ## Shared devices for video hardware transcoding (optional):
     # devices:
     #  - "/dev/dri:/dev/dri"                         # Required Intel QSV or VAAPI hardware transcoding

@@ -124,7 +124,8 @@ services:
       PHOTOPRISM_INIT: "https intel tensorflow"
       ## External dependencies and tools:
       TF_CPP_MIN_LOG_LEVEL: 1
-      CODEX_HOME: "/go/src/github.com/photoprism/photoprism/.codex"
+      GOCACHE: "/go/src/github.com/photoprism/photoprism/.local/gocache"
+      CODEX_HOME: "/go/src/github.com/photoprism/photoprism/.local/codex"
     ## Share hardware devices with FFmpeg for hardware video transcoding:
     devices:
       - "/dev/dri:/dev/dri"

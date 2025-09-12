@@ -70,7 +70,8 @@ services:
       PHOTOPRISM_INIT: "https"
       ## External dependencies and tools:
       TF_CPP_MIN_LOG_LEVEL: 1
-      CODEX_HOME: "/go/src/github.com/photoprism/photoprism/.codex"
+      GOCACHE: "/go/src/github.com/photoprism/photoprism/.local/gocache"
+      CODEX_HOME: "/go/src/github.com/photoprism/photoprism/.local/codex"
   ## PostgreSQL Database Server
   ## Docs: https://www.postgresql.org/docs/
   postgres:
