@@ -118,6 +118,7 @@ Note: Across our public documentation, official images, and in production, the c
 ## Safety & Data
 
 - Never commit secrets. Use environment variables or a local `.env`.
+- Ensure `.codex` and `.gocache` are ignored in `.gitignore` and `.dockerignore`.
 - Do not run destructive commands against production data. Prefer ephemeral volumes and test fixtures when running acceptance tests.
 
 Examples assume a Linux/Unix shell. For Windows specifics, see the Developer Guide FAQ:
