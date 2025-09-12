@@ -60,7 +60,7 @@ RUN echo 'APT::Acquire::Retries "3";' > /etc/apt/apt.conf.d/80retries && \
         iputils-ping dnsutils \
     && \
     apt-get -qq install \
-        software-properties-common pkg-config apt-utils \
+        software-properties-common pkg-config apt-utils ripgrep \
         build-essential gcc g++ git gettext davfs2 chrpath apache2-utils \
         autoconf automake cmake libtool libjpeg-dev libpng-dev libwebp-dev libavcodec-dev \
         libx264-dev libx265-dev libaom-dev libvpx-dev libwebm-dev libxft-dev \

@@ -58,7 +58,7 @@ RUN echo 'APT::Acquire::Retries "3";' > /etc/apt/apt.conf.d/80retries && \
         x264 x265 libde265-dev libaom-dev libvpx-dev libwebm-dev libjpeg-dev libmatroska-dev libdvdread-dev \
     && \
     apt-get -qq install \
-        apt-utils pkg-config software-properties-common \
+        software-properties-common pkg-config apt-utils ripgrep \
         build-essential gcc g++ git gettext davfs2 chrpath apache2-utils \
         autoconf automake cmake libtool libjpeg-dev libpng-dev libwebp-dev \
         libx264-dev libx265-dev libaom-dev libvpx-dev libwebm-dev libxft-dev \
