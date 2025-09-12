@@ -91,7 +91,9 @@ console.log(inContainer || inDevPath ? "container" : "host");
     - Tips: refresh the browser to see changes; running the watcher outside the container can be faster on non-Linux hosts; stop with Ctrl+C
   - Start the PhotoPrism server: `./photoprism start`
     - Open http://localhost:2342/ (HTTP)
-    - Or https://app.localssl.dev/ (HTTPS via Traefik; ensure Traefik is running and the dev compose labels are active)
+    - Or https://app.localssl.dev/ (HTTPS via Traefik reverse proxy)
+      - Only if Traefik is running and the dev compose labels are active
+      - Labels for `*.localssl.dev` are defined in the dev compose files, e.g. https://github.com/photoprism/photoprism/blob/develop/compose.yaml
   - Do not use the Docker CLI inside the container; starting/stopping services requires host Docker access.
 
 Note: Across our public documentation, official images, and in production, the command-line interface (CLI) name is `photoprism`. Other PhotoPrism binary names are only used in development builds for side-by-side comparisons of the Community Edition (CE) with PhotoPrism Plus (`photoprism-plus`) and PhotoPrism Pro (`photoprism-pro`).
