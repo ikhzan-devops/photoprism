@@ -10,4 +10,5 @@ tests/upload-files/
 .tmp
 .local
 .cache
+.gocache
 .var

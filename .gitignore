@@ -73,6 +73,7 @@ Thumbs.db
 .glide
 .idea
 .codex
+.local
 .project
 .vscode
 *.tmproj
