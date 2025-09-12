@@ -107,10 +107,9 @@ logs:
 	$(DOCKER_COMPOSE) logs -f
 down:
 	$(DOCKER_COMPOSE) --profile=all down --remove-orphans
-codex: dep-codex codex-status
-codex-status:
+codex: dep-codex codex-version
+codex-version:
 	codex --version
-	codex /status
 docs: swag
 swag: swag-json
 swag-json:
