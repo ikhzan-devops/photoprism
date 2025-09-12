@@ -103,6 +103,7 @@ Note: Across our public documentation, official images, and in production, the c
 - From within the Development Environment:
   - Full unit test suite: `make test` (runs backend and frontend tests)
   - Test frontend/backend: `make test-js` and `make test-go`
+  - Go packages: `go test` (all tests) or `go test -run <name>` (specific tests only)
 - Frontend unit tests are driven by Vitest; see scripts in `frontend/package.json`
   - Vitest watch/coverage: `make vitest-watch` and `make vitest-coverage`
 - Acceptance tests: use the `acceptance-*` targets in the `Makefile`
