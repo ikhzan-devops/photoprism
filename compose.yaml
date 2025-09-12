@@ -289,7 +289,6 @@ services:
   ## See: https://github.com/photoprism/photoprism-vision
   photoprism-vision:
     image: photoprism/vision:latest
-    entrypoint: [ "/app/venv/bin/flask" ]
     ## Only starts this service if the "all" or "vision" profile is specified::
     ## docker compose --profile vision up -d
     profiles: ["all", "vision"]
