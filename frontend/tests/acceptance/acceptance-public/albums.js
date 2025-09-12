@@ -182,7 +182,7 @@ test.meta("testID", "albums-004").meta({ type: "short", mode: "public" })(
     await photoviewer.openPhotoViewer("uid", FirstPhotoUid);
     await photoviewer.triggerPhotoViewerAction("select-toggle");
     await photoviewer.triggerPhotoViewerAction("close-button");
-    await contextmenu.triggerContextMenuAction("album", ["Holiday", "Christmas"]);
+    await contextmenu.triggerContextMenuAction("album", ["Holiday", "Christmas", "Food"]);
 
     // Verify photos were added to Holiday album
     await menu.openPage("albums");
@@ -196,7 +196,7 @@ test.meta("testID", "albums-004").meta({ type: "short", mode: "public" })(
     const ChristmasPhotoCountAfterAdd = await photo.getPhotoCount("all");
     await t.expect(ChristmasPhotoCountAfterAdd).eql(ChristmasPhotoCount + 2);
 
-    // Verify photo info shows both albums
+    // Verify photo info shows all albums
     await menu.openPage("browse");
     await toolbar.search("photo:true");
     await page.clickCardTitleOfUID(FirstPhotoUid);
@@ -205,6 +205,8 @@ test.meta("testID", "albums-004").meta({ type: "short", mode: "public" })(
       .expect(Selector("td").withText("Albums").visible)
       .ok()
       .expect(Selector("td").withText("Holiday").visible)
+      .ok()
+      .expect(Selector("td").withText("Food").visible)
       .ok()
       .expect(Selector("td").withText("Christmas").visible)
       .ok()
@@ -248,6 +250,13 @@ test.meta("testID", "albums-004").meta({ type: "short", mode: "public" })(
     const ChristmasPhotoCountAfterRemove = await photo.getPhotoCount("all");
     await t.expect(ChristmasPhotoCountAfterRemove).eql(ChristmasPhotoCount);
 
+    // Delete Food album
+    await menu.openPage("albums");
+    await toolbar.search("Food");
+    const FoodUid = await album.getNthAlbumUid("all", 0);
+    await album.selectAlbumFromUID(FoodUid);
+    await contextmenu.triggerContextMenuAction("delete", "");
+
     // Final verification that photos are not in any albums
     await menu.openPage("browse");
     await toolbar.search("photo:true");
@@ -255,6 +264,8 @@ test.meta("testID", "albums-004").meta({ type: "short", mode: "public" })(
     await t
       .click(photoedit.infoTab)
       .expect(Selector("td").withText("Albums").visible)
+      .notOk()
+      .expect(Selector("td").withText("Food").visible)
       .notOk()
       .expect(Selector("td").withText("Holiday").visible)
       .notOk()
@@ -305,6 +316,11 @@ test.meta("testID", "albums-005").meta({ mode: "public" })("Common: Use album se
   await t.expect(page.cardTitle.nth(0).innerText).contains("Christmas");
   const AlbumCount = await album.getAlbumCount("all");
   await t.expect(AlbumCount).eql(1);
+
+  if (t.browser.platform === "mobile") {
+  } else {
+    await toolbar.setFilter("category", "All Categories");
+  }
 
   await toolbar.search("Holiday");
 

@@ -124,7 +124,7 @@ test.meta("testID", "labels-003").meta({ mode: "public" })("Common: Rename Label
   await t.expect(Selector("div.no-results").visible).ok();
 });
 
-test.meta("testID", "labels-003").meta({ mode: "public" })("Common: Add label to album", async (t) => {
+test.meta("testID", "labels-003").meta({ mode: "public" })("Common: Add label to albums", async (t) => {
   await menu.openPage("albums");
   await toolbar.search("Christmas");
   const AlbumUid = await album.getNthAlbumUid("all", 0);
@@ -143,7 +143,7 @@ test.meta("testID", "labels-003").meta({ mode: "public" })("Common: Add label to
   await menu.openPage("labels");
   await label.triggerHoverAction("uid", LabelSunglasses, "select");
   await contextmenu.checkContextMenuCount("1");
-  await contextmenu.triggerContextMenuAction("album", "Christmas");
+  await contextmenu.triggerContextMenuAction("album", ["Christmas", "Holiday"]);
   await menu.openPage("albums");
   await album.openAlbumWithUid(AlbumUid);
   const PhotoCountAfterAdd = await photo.getPhotoCount("all");
@@ -160,6 +160,19 @@ test.meta("testID", "labels-003").meta({ mode: "public" })("Common: Add label to
   const PhotoCountAfterDelete = await photo.getPhotoCount("all");
 
   await t.expect(PhotoCountAfterDelete).eql(PhotoCountAfterAdd - 5);
+  await menu.openPage("albums");
+  await toolbar.search("Holiday");
+  await album.openNthAlbum(0);
+  await photo.triggerHoverAction("uid", FirstPhotoSunglasses, "select");
+  await photo.triggerHoverAction("uid", SecondPhotoSunglasses, "select");
+  await photo.triggerHoverAction("uid", ThirdPhotoSunglasses, "select");
+  await photo.triggerHoverAction("uid", FourthPhotoSunglasses, "select");
+  await photo.triggerHoverAction("uid", FifthPhotoSunglasses, "select");
+
+  await contextmenu.triggerContextMenuAction("remove", "");
+  const PhotoCountHolidayAfterDelete = await photo.getPhotoCount("all");
+
+  await t.expect(PhotoCountHolidayAfterDelete).eql(2);
 });
 
 test.meta("testID", "labels-004").meta({ mode: "public" })("Common: Delete label", async (t) => {

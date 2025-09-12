@@ -134,7 +134,7 @@ test.meta("testID", "folders-004").meta({ mode: "public" })(
     const FirstPhotoUid = await photo.getNthPhotoUid("image", 0);
     await menu.openPage("folders");
     await album.selectAlbumFromUID(ThirdFolderUid);
-    await contextmenu.triggerContextMenuAction("clone", "NotYetExistingAlbumForFolder");
+    await contextmenu.triggerContextMenuAction("clone", ["Holiday", "NotYetExistingAlbumForFolder"]);
     await menu.openPage("albums");
     const AlbumCountAfterCreation = await album.getAlbumCount("all");
 
@@ -154,6 +154,14 @@ test.meta("testID", "folders-004").meta({ mode: "public" })(
     const AlbumCountAfterDelete = await album.getAlbumCount("all");
 
     await t.expect(AlbumCountAfterDelete).eql(AlbumCount);
+
+    await toolbar.search("Holiday");
+    await album.openNthAlbum(0);
+    await photo.selectPhotoFromUID(FirstPhotoUid);
+    await contextmenu.triggerContextMenuAction("remove", "");
+    const PhotoCountHolidayAfterDelete = await photo.getPhotoCount("all");
+
+    await t.expect(PhotoCountHolidayAfterDelete).eql(2);
 
     await menu.openPage("folders");
     await album.openAlbumWithUid(ThirdFolderUid);

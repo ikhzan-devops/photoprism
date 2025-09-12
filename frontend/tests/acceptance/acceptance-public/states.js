@@ -123,7 +123,7 @@ test.meta("testID", "states-003").meta({ mode: "public" })(
     const SecondPhotoUid = await photo.getNthPhotoUid("image", 1);
     await menu.openPage("states");
     await album.selectAlbumFromUID(FirstStateUid);
-    await contextmenu.triggerContextMenuAction("clone", "NotYetExistingAlbumForState");
+    await contextmenu.triggerContextMenuAction("clone", ["NotYetExistingAlbumForState", "Holiday"]);
     await menu.openPage("albums");
     const AlbumCountAfterCreation = await album.getAlbumCount("all");
 
@@ -144,6 +144,14 @@ test.meta("testID", "states-003").meta({ mode: "public" })(
     const AlbumCountAfterDelete = await album.getAlbumCount("all");
 
     await t.expect(AlbumCountAfterDelete).eql(AlbumCount);
+    await toolbar.search("Holiday");
+    await album.openNthAlbum(0);
+    await photo.selectPhotoFromUID(FirstPhotoUid);
+    await photo.selectPhotoFromUID(SecondPhotoUid);
+    await contextmenu.triggerContextMenuAction("remove", "");
+    const PhotoCountHolidayAfterDelete = await photo.getPhotoCount("all");
+
+    await t.expect(PhotoCountHolidayAfterDelete).eql(2);
 
     await menu.openPage("states");
     await album.openAlbumWithUid(FirstStateUid);
