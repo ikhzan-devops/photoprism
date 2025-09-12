@@ -154,7 +154,7 @@ services:
               count: "all"
 
   ## Ollama Large-Language Model Runner
-  ## Run "ollama pull [name]:[version]" to download a vision model
+  ## run "ollama pull [name]:[version]" to download a vision model
   ## listed at <https://ollama.com/search?c=vision>, for example:
   ## docker compose exec ollama ollama pull gemma3:latest
   ollama:
