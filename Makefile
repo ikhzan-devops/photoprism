@@ -257,7 +257,7 @@ dep-codex:
 	@if command -v sudo >/dev/null 2>&1; then \
 	  sudo npm install -g --location=global --no-fund --no-audit "@openai/codex@latest"; \
 	else \
-	  npm  install -g --location=global --no-fund --no-audit "@openai/codex@latest"; \
+	  npm install -g --location=global --no-fund --no-audit "@openai/codex@latest"; \
 	fi
 dep-go:
 	go build -v ./...
