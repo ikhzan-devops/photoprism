@@ -202,7 +202,7 @@ services:
     ports:
       - "127.0.0.1:8080:8080"
     environment:
-      WEBUI_URL: "http://localhost:80080"
+      WEBUI_URL: "http://localhost:8080"
       # WEBUI_SECRET_KEY: ""
       OLLAMA_BASE_URL: "http://ollama:11434"
       ANONYMIZED_TELEMETRY: "false"   # disable Chroma telemetry
