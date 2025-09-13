@@ -25,6 +25,7 @@ var OptionsReportSections = []ReportSection{
 	{Start: "PHOTOPRISM_READONLY", Title: "Feature Flags"},
 	{Start: "PHOTOPRISM_DEFAULT_LOCALE", Title: "Customization"},
 	{Start: "PHOTOPRISM_SITE_URL", Title: "Site Information"},
+	{Start: "PHOTOPRISM_NODE_NAME", Title: "Cluster Configuration"},
 	{Start: "PHOTOPRISM_HTTPS_PROXY", Title: "Proxy Server"},
 	{Start: "PHOTOPRISM_DISABLE_TLS", Title: "Web Server"},
 	{Start: "PHOTOPRISM_DATABASE_DRIVER", Title: "Database Connection"},
@@ -35,7 +36,6 @@ var OptionsReportSections = []ReportSection{
 	{Start: "PHOTOPRISM_VISION_YAML", Title: "Computer Vision"},
 	{Start: "PHOTOPRISM_FACE_SIZE", Title: "Face Recognition",
 		Info: faceFlagsInfo},
-	{Start: "PHOTOPRISM_NODE_NAME", Title: "Cluster Configuration"},
 	{Start: "PHOTOPRISM_PID_FILENAME", Title: "Daemon Mode",
 		Info: "If you start the server as a *daemon* in the background, you can additionally specify a filename for the log and the process ID:"},
 }
@@ -52,6 +52,7 @@ var YamlReportSections = []ReportSection{
 	{Start: "ReadOnly", Title: "Feature Flags"},
 	{Start: "DefaultLocale", Title: "Customization"},
 	{Start: "SiteUrl", Title: "Site Information"},
+	{Start: "NodeName", Title: "Cluster Configuration"},
 	{Start: "HttpsProxy", Title: "Proxy Server"},
 	{Start: "DisableTLS", Title: "Web Server"},
 	{Start: "DatabaseDriver", Title: "Database Connection"},
@@ -60,7 +61,6 @@ var YamlReportSections = []ReportSection{
 	{Start: "ThumbLibrary", Title: "Preview Images"},
 	{Start: "JpegQuality", Title: "Image Quality"},
 	{Start: "VisionYaml", Title: "Computer Vision"},
-	{Start: "NodeName", Title: "Cluster Configuration"},
 	{Start: "PIDFilename", Title: "Daemon Mode",
 		Info: "If you start the server as a *daemon* in the background, you can additionally specify a filename for the log and the process ID:"},
 }

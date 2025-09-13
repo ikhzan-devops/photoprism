@@ -16,8 +16,8 @@ import (
 	"github.com/photoprism/photoprism/pkg/fs"
 	"github.com/photoprism/photoprism/pkg/i18n"
 	"github.com/photoprism/photoprism/pkg/media"
-	"github.com/photoprism/photoprism/pkg/media/http/header"
-	"github.com/photoprism/photoprism/pkg/media/http/scheme"
+	"github.com/photoprism/photoprism/pkg/service/http/header"
+	"github.com/photoprism/photoprism/pkg/service/http/scheme"
 	"github.com/photoprism/photoprism/pkg/time/tz"
 	"github.com/photoprism/photoprism/pkg/txt"
 )
@@ -31,6 +31,12 @@ var Flags = CliFlags{
 			Usage:   "authentication `MODE` (public, password)",
 			Value:   "password",
 			EnvVars: EnvVars("AUTH_MODE"),
+		}}, {
+		Flag: &cli.StringFlag{
+			Name:    "auth-secret",
+			Usage:   "secret `KEY` for signing authentication tokens",
+			EnvVars: EnvVars("AUTH_SECRET"),
+			Hidden:  true,
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "public",
@@ -593,10 +599,15 @@ var Flags = CliFlags{
 		}}, {
 		Flag: &cli.StringFlag{
 			Name:    "site-url",
-			Aliases: []string{"url"},
-			Usage:   "public site `URL`",
+			Usage:   "public site `URL` used to build links and determine HTTPS/TLS; must include scheme (http/https)",
 			Value:   "http://localhost:2342/",
 			EnvVars: EnvVars("SITE_URL"),
+		}}, {
+		Flag: &cli.StringFlag{
+			Name:    "internal-url",
+			Usage:   "internal server `URL` for service-to-service communication and local networking *optional*",
+			Value:   "",
+			EnvVars: EnvVars("INTERNAL_URL"),
 		}}, {
 		Flag: &cli.StringFlag{
 			Name:    "site-author",
@@ -632,12 +643,6 @@ var Flags = CliFlags{
 			EnvVars: EnvVars("SITE_PREVIEW"),
 		}}, {
 		Flag: &cli.StringFlag{
-			Name:    "internal-url",
-			Usage:   "internal site `URL` to be used for local networking *optional*",
-			Value:   "",
-			EnvVars: EnvVars("INTERNAL_URL"),
-		}}, {
-		Flag: &cli.StringFlag{
 			Name:    "cdn-url",
 			Usage:   "content delivery network `URL`",
 			EnvVars: EnvVars("CDN_URL"),
@@ -665,6 +670,35 @@ var Flags = CliFlags{
 			EnvVars: EnvVars("CORS_METHODS"),
 			Value:   header.DefaultAccessControlAllowMethods,
 		}}, {
+		Flag: &cli.StringFlag{
+			Name:    "node-name",
+			Usage:   "cluster node `NAME` (lowercase letters, digits, hyphens; 1–63 chars)",
+			EnvVars: EnvVars("NODE_NAME"),
+		}}, {
+		Flag: &cli.StringFlag{
+			Name:    "node-type",
+			Usage:   "cluster node `TYPE` (portal, instance, service)",
+			EnvVars: EnvVars("NODE_TYPE"),
+			Hidden:  true,
+		}}, {
+		Flag: &cli.StringFlag{
+			Name:    "node-secret",
+			Usage:   "private `KEY` to secure intra-cluster communication *optional*",
+			EnvVars: EnvVars("NODE_SECRET"),
+			Hidden:  true,
+		}}, {
+		Flag: &cli.StringFlag{
+			Name:    "portal-url",
+			Usage:   "base `URL` of the cluster portal e.g. https://portal.example.com",
+			EnvVars: EnvVars("PORTAL_URL"),
+			Hidden:  true,
+		}, Tags: []string{Pro}}, {
+		Flag: &cli.StringFlag{
+			Name:    "portal-token",
+			Usage:   "access TOKEN for nodes to register and synchronize with the portal",
+			EnvVars: EnvVars("PORTAL_TOKEN"),
+			Hidden:  true,
+		}, Tags: []string{Pro}}, {
 		Flag: &cli.StringFlag{
 			Name:    "https-proxy",
 			Usage:   "proxy server `URL` to be used for outgoing connections *optional*",
@@ -1108,46 +1142,6 @@ var Flags = CliFlags{
 			Value:   face.MatchDist,
 			EnvVars: EnvVars("FACE_MATCH_DIST"),
 		}}, {
-		Flag: &cli.StringFlag{
-			Name:    "node-name",
-			Usage:   "unique `NAME` for this cluster node (lowercase, no spaces or special characters)",
-			EnvVars: EnvVars("NODE_NAME"),
-		}}, {
-		Flag: &cli.StringFlag{
-			Name:    "node-secret",
-			Usage:   "unique `SECRET` for authenticating this cluster node",
-			EnvVars: EnvVars("NODE_SECRET"),
-		}}, {
-		Flag: &cli.StringFlag{
-			Name:    "portal-url",
-			Usage:   "base `URL` of the cluster portal server e.g. https://portal.example.com",
-			EnvVars: EnvVars("PORTAL_URL"),
-			Hidden:  true,
-		}, Tags: []string{Pro}}, {
-		/* Flag: &cli.StringFlag{
-			Name:    "portal-client",
-			Usage:   "OAuth2 client `ID` for joining a cluster *optional*",
-			EnvVars: EnvVars("PORTAL_CLIENT"),
-			Hidden:  true,
-		}, Tags: []string{Pro}}, {*/
-		Flag: &cli.StringFlag{
-			Name:    "portal-token",
-			Usage:   "access `TOKEN` for authenticating to the portal server (may be shared between nodes)",
-			EnvVars: EnvVars("PORTAL_TOKEN"),
-			Hidden:  true,
-		}, Tags: []string{Pro}}, {
-		Flag: &cli.BoolFlag{
-			Name:    "cluster-node",
-			Usage:   "runs this instance as a cluster node and joins the configured portal",
-			EnvVars: EnvVars("CLUSTER_NODE"),
-			Hidden:  true,
-		}, Tags: []string{Pro}}, {
-		Flag: &cli.BoolFlag{
-			Name:    "cluster-portal",
-			Usage:   "runs this instance as a cluster portal for orchestrating nodes",
-			EnvVars: EnvVars("CLUSTER_PORTAL"),
-			Hidden:  true,
-		}, Tags: []string{Pro}}, {
 		Flag: &cli.StringFlag{
 			Name:      "pid-filename",
 			Usage:     "process id `FILENAME` *daemon-mode only*",

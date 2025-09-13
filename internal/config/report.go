@@ -152,6 +152,7 @@ func (c *Config) Report() (rows [][]string, cols []string) {
 
 		// Site Infos.
 		{"site-url", c.SiteUrl()},
+		{"internal-url", c.InternalUrl()},
 		{"site-https", fmt.Sprintf("%t", c.SiteHttps())},
 		{"site-domain", c.SiteDomain()},
 		{"site-author", c.SiteAuthor()},
@@ -160,7 +161,15 @@ func (c *Config) Report() (rows [][]string, cols []string) {
 		{"site-description", c.SiteDescription()},
 		{"site-favicon", c.SiteFavicon()},
 		{"site-preview", c.SitePreview()},
-		{"internal-url", c.InternalUrl()},
+
+		// Cluster Configuration.
+		{"node-name", c.NodeName()},
+		{"node-type", c.NodeType()},
+		{"node-secret", fmt.Sprintf("%s", strings.Repeat("*", utf8.RuneCountInString(c.NodeSecret())))},
+		{"portal-url", c.PortalUrl()},
+		{"portal-token", fmt.Sprintf("%s", strings.Repeat("*", utf8.RuneCountInString(c.PortalToken())))},
+		{"portal-config-path", c.PortalConfigPath()},
+		{"portal-theme-path", c.PortalThemePath()},
 
 		// CDN and Cross-Origin Resource Sharing (CORS).
 		{"cdn-url", c.CdnUrl("/")},
@@ -271,17 +280,6 @@ func (c *Config) Report() (rows [][]string, cols []string) {
 		{"face-cluster-core", fmt.Sprintf("%d", c.FaceClusterCore())},
 		{"face-cluster-dist", fmt.Sprintf("%f", c.FaceClusterDist())},
 		{"face-match-dist", fmt.Sprintf("%f", c.FaceMatchDist())},
-
-		// Cluster Configuration.
-		{"node-name", c.NodeName()},
-		{"node-secret", fmt.Sprintf("%s", strings.Repeat("*", utf8.RuneCountInString(c.NodeSecret())))},
-		{"portal-url", c.PortalUrl()},
-		{"portal-client", c.PortalClient()},
-		{"portal-secret", fmt.Sprintf("%s", strings.Repeat("*", utf8.RuneCountInString(c.PortalSecret())))},
-		{"cluster-node", fmt.Sprintf("%t", c.ClusterNode())},
-		{"cluster-portal", fmt.Sprintf("%t", c.ClusterPortal())},
-		{"cluster-config-path", c.ClusterConfigPath()},
-		{"cluster-theme-path", c.ClusterThemePath()},
 
 		// Daemon Mode.
 		{"pid-filename", c.PIDFilename()},

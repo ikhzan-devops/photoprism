@@ -25,6 +25,7 @@ type Options struct {
 	Copyright              string        `json:"-"`
 	PartnerID              string        `yaml:"-" json:"-" flag:"partner-id"`
 	AuthMode               string        `yaml:"AuthMode" json:"-" flag:"auth-mode"`
+	AuthSecret             string        `yaml:"AuthSecret" json:"-" flag:"auth-secret"`
 	Public                 bool          `yaml:"Public" json:"-" flag:"public"`
 	NoHub                  bool          `yaml:"-" json:"-" flag:"no-hub"`
 	AdminUser              string        `yaml:"AdminUser" json:"-" flag:"admin-user"`
@@ -130,18 +131,24 @@ type Options struct {
 	LegalUrl               string        `yaml:"LegalUrl" json:"LegalUrl" flag:"legal-url"`
 	WallpaperUri           string        `yaml:"WallpaperUri" json:"WallpaperUri" flag:"wallpaper-uri"`
 	SiteUrl                string        `yaml:"SiteUrl" json:"SiteUrl" flag:"site-url"`
+	InternalUrl            string        `yaml:"InternalUrl" json:"InternalUrl" flag:"internal-url"`
 	SiteAuthor             string        `yaml:"SiteAuthor" json:"SiteAuthor" flag:"site-author"`
 	SiteTitle              string        `yaml:"SiteTitle" json:"SiteTitle" flag:"site-title"`
 	SiteCaption            string        `yaml:"SiteCaption" json:"SiteCaption" flag:"site-caption"`
 	SiteDescription        string        `yaml:"SiteDescription" json:"SiteDescription" flag:"site-description"`
 	SiteFavicon            string        `yaml:"SiteFavicon" json:"SiteFavicon" flag:"site-favicon"`
 	SitePreview            string        `yaml:"SitePreview" json:"SitePreview" flag:"site-preview"`
-	InternalUrl            string        `yaml:"InternalUrl" json:"InternalUrl" flag:"internal-url"`
 	CdnUrl                 string        `yaml:"CdnUrl" json:"CdnUrl" flag:"cdn-url"`
 	CdnVideo               bool          `yaml:"CdnVideo" json:"CdnVideo" flag:"cdn-video"`
 	CORSOrigin             string        `yaml:"CORSOrigin" json:"-" flag:"cors-origin"`
 	CORSHeaders            string        `yaml:"CORSHeaders" json:"-" flag:"cors-headers"`
 	CORSMethods            string        `yaml:"CORSMethods" json:"-" flag:"cors-methods"`
+	NodeName               string        `yaml:"NodeName" json:"-" flag:"node-name"`
+	NodeType               string        `yaml:"NodeType" json:"-" flag:"node-type"`
+	NodeSecret             string        `yaml:"NodeSecret" json:"-" flag:"node-secret"`
+	PortalUrl              string        `yaml:"PortalUrl" json:"-" flag:"portal-url"`
+	PortalClient           string        `yaml:"PortalClient" json:"-" flag:"portal-client"`
+	PortalToken            string        `yaml:"PortalToken" json:"-" flag:"portal-token"`
 	HttpsProxy             string        `yaml:"HttpsProxy" json:"HttpsProxy" flag:"https-proxy"`
 	HttpsProxyInsecure     bool          `yaml:"HttpsProxyInsecure" json:"HttpsProxyInsecure" flag:"https-proxy-insecure"`
 	TrustedPlatform        string        `yaml:"TrustedPlatform" json:"-" flag:"trusted-platform"`
@@ -218,13 +225,6 @@ type Options struct {
 	FaceClusterCore        int           `yaml:"-" json:"-" flag:"face-cluster-core"`
 	FaceClusterDist        float64       `yaml:"-" json:"-" flag:"face-cluster-dist"`
 	FaceMatchDist          float64       `yaml:"-" json:"-" flag:"face-match-dist"`
-	NodeName               string        `yaml:"NodeName" json:"-" flag:"node-name"`
-	NodeSecret             string        `yaml:"NodeSecret" json:"-" flag:"node-secret"`
-	PortalUrl              string        `yaml:"PortalUrl" json:"-" flag:"portal-url"`
-	PortalClient           string        `yaml:"PortalClient" json:"-" flag:"portal-client"`
-	PortalSecret           string        `yaml:"PortalSecret" json:"-" flag:"portal-secret"`
-	ClusterNode            bool          `yaml:"ClusterNode" json:"-" flag:"cluster-node"`
-	ClusterPortal          bool          `yaml:"ClusterPortal" json:"-" flag:"cluster-portal"`
 	PIDFilename            string        `yaml:"PIDFilename" json:"-" flag:"pid-filename"`
 	LogFilename            string        `yaml:"LogFilename" json:"-" flag:"log-filename"`
 	DetachServer           bool          `yaml:"DetachServer" json:"-" flag:"detach-server"`

@@ -12,7 +12,7 @@ import (
 	"github.com/photoprism/photoprism/internal/photoprism/get"
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/fs"
-	"github.com/photoprism/photoprism/pkg/media/http/header"
+	"github.com/photoprism/photoprism/pkg/service/http/header"
 )
 
 // ClusterGetTheme returns custom theme files as zip, if available.
@@ -44,13 +44,13 @@ func ClusterGetTheme(router *gin.RouterGroup) {
 		conf := get.Config()
 
 		// Abort if this is not a portal server.
-		if !conf.ClusterPortal() {
+		if !conf.IsPortal() {
 			AbortFeatureDisabled(c)
 			return
 		}
 
 		clientIp := ClientIP(c)
-		themePath := conf.ClusterThemePath()
+		themePath := conf.PortalThemePath()
 
 		// Resolve symbolic links.
 		if resolved, err := filepath.EvalSymlinks(themePath); err != nil {
