@@ -599,13 +599,13 @@ var Flags = CliFlags{
 		}}, {
 		Flag: &cli.StringFlag{
 			Name:    "site-url",
-			Usage:   "public site `URL` used to build links and determine HTTPS/TLS; must include scheme (http/https)",
+			Usage:   "canonical site `URL` used in generated links and to determine HTTPS/TLS; must include scheme (http/https)",
 			Value:   "http://localhost:2342/",
 			EnvVars: EnvVars("SITE_URL"),
 		}}, {
 		Flag: &cli.StringFlag{
 			Name:    "internal-url",
-			Usage:   "internal server `URL` for service-to-service communication and local networking *optional*",
+			Usage:   "service base `URL` used for intra-cluster communication and other internal requests *optional*",
 			Value:   "",
 			EnvVars: EnvVars("INTERNAL_URL"),
 		}}, {
