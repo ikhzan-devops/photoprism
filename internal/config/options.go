@@ -149,6 +149,7 @@ type Options struct {
 	PortalUrl              string        `yaml:"PortalUrl" json:"-" flag:"portal-url"`
 	PortalClient           string        `yaml:"PortalClient" json:"-" flag:"portal-client"`
 	PortalToken            string        `yaml:"PortalToken" json:"-" flag:"portal-token"`
+	PortalUUID             string        `yaml:"PortalUUID" json:"-" flag:"portal-uuid"`
 	HttpsProxy             string        `yaml:"HttpsProxy" json:"HttpsProxy" flag:"https-proxy"`
 	HttpsProxyInsecure     bool          `yaml:"HttpsProxyInsecure" json:"HttpsProxyInsecure" flag:"https-proxy-insecure"`
 	TrustedPlatform        string        `yaml:"TrustedPlatform" json:"-" flag:"trusted-platform"`

@@ -700,6 +700,12 @@ var Flags = CliFlags{
 			Hidden:  true,
 		}, Tags: []string{Pro}}, {
 		Flag: &cli.StringFlag{
+			Name:    "portal-uuid",
+			Usage:   "portal `UUIDv4` used to scope per-node credentials *optional*",
+			EnvVars: EnvVars("PORTAL_UUID"),
+			Hidden:  true,
+		}, Tags: []string{Pro}}, {
+		Flag: &cli.StringFlag{
 			Name:    "https-proxy",
 			Usage:   "proxy server `URL` to be used for outgoing connections *optional*",
 			EnvVars: EnvVars("HTTPS_PROXY"),

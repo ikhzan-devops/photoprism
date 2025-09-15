@@ -6,8 +6,10 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"gopkg.in/yaml.v2"
 
 	"github.com/photoprism/photoprism/pkg/fs"
+	"github.com/photoprism/photoprism/pkg/rnd"
 	"github.com/photoprism/photoprism/pkg/service/cluster"
 )
 
@@ -138,4 +140,85 @@ func TestConfig_Cluster(t *testing.T) {
 		assert.Equal(t, "", c.NodeSecret())
 		assert.Equal(t, "", c.PortalToken())
 	})
+}
+
+func TestConfig_PortalUUID_FileOverridesEnv(t *testing.T) {
+	c := NewConfig(CliTestContext())
+
+	// Isolate config path.
+	tempCfg := t.TempDir()
+	c.options.ConfigPath = tempCfg
+
+	// Prepare options.yml with a UUID; file should override env/CLI.
+	opts := map[string]any{"PortalUUID": "11111111-1111-4111-8111-111111111111"}
+	b, _ := yaml.Marshal(opts)
+	assert.NoError(t, os.WriteFile(filepath.Join(tempCfg, "options.yml"), b, 0o644))
+
+	// Set env; file value must win for consistency with other options.
+	t.Setenv("PHOTOPRISM_PORTAL_UUID", "22222222-2222-4222-8222-222222222222")
+	// Load options.yml into options struct (we updated ConfigPath after creation).
+	assert.NoError(t, c.options.Load(c.OptionsYaml()))
+	got := c.PortalUUID()
+	assert.Equal(t, "11111111-1111-4111-8111-111111111111", got)
+}
+
+func TestConfig_PortalUUID_FromOptions(t *testing.T) {
+	c := NewConfig(CliTestContext())
+	tempCfg := t.TempDir()
+	c.options.ConfigPath = tempCfg
+
+	opts := map[string]any{"PortalUUID": "33333333-3333-4333-8333-333333333333"}
+	b, _ := yaml.Marshal(opts)
+	assert.NoError(t, os.WriteFile(filepath.Join(tempCfg, "options.yml"), b, 0o644))
+
+	// Ensure env is not set.
+	t.Setenv("PHOTOPRISM_PORTAL_UUID", "")
+
+	// Load options.yml into options struct (we updated ConfigPath after creation).
+	assert.NoError(t, c.options.Load(c.OptionsYaml()))
+	// Access the value via getter.
+	got := c.PortalUUID()
+	assert.Equal(t, "33333333-3333-4333-8333-333333333333", got)
+}
+
+func TestConfig_PortalUUID_FromCLIFlag(t *testing.T) {
+	// Create a config path so NewConfig reads/writes here and options.yml does not exist.
+	tempCfg := t.TempDir()
+
+	// Start from the default CLI test context and override flags we care about.
+	ctx := CliTestContext()
+	assert.NoError(t, ctx.Set("config-path", tempCfg))
+	assert.NoError(t, ctx.Set("portal-uuid", "44444444-4444-4444-8444-444444444444"))
+
+	c := NewConfig(ctx)
+
+	// No env and no options.yml: should take the CLI flag value directly from options.
+	t.Setenv("PHOTOPRISM_PORTAL_UUID", "")
+	got := c.PortalUUID()
+	assert.Equal(t, "44444444-4444-4444-8444-444444444444", got)
+}
+
+func TestConfig_PortalUUID_GenerateAndPersist(t *testing.T) {
+	c := NewConfig(CliTestContext())
+	tempCfg := t.TempDir()
+	c.options.ConfigPath = tempCfg
+
+	// No env, no options.yml → should generate and persist.
+	t.Setenv("PHOTOPRISM_PORTAL_UUID", "")
+
+	got := c.PortalUUID()
+	if !rnd.IsUUID(got) {
+		t.Fatalf("expected a UUIDv4, got %q", got)
+	}
+
+	// Verify content persisted to options.yml.
+	b, err := os.ReadFile(filepath.Join(tempCfg, "options.yml"))
+	assert.NoError(t, err)
+	var m map[string]any
+	assert.NoError(t, yaml.Unmarshal(b, &m))
+	assert.Equal(t, got, m["PortalUUID"])
+
+	// Second call returns the same value (from options in-memory / file).
+	got2 := c.PortalUUID()
+	assert.Equal(t, got, got2)
 }
