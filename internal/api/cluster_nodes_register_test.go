@@ -6,8 +6,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
+	"github.com/photoprism/photoprism/internal/service/cluster"
 	reg "github.com/photoprism/photoprism/internal/service/cluster/registry"
-	"github.com/photoprism/photoprism/pkg/service/cluster"
 )
 
 func TestClusterNodesRegister(t *testing.T) {

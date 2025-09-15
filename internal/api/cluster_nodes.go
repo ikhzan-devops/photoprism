@@ -9,9 +9,9 @@ import (
 	"github.com/photoprism/photoprism/internal/auth/acl"
 	"github.com/photoprism/photoprism/internal/event"
 	"github.com/photoprism/photoprism/internal/photoprism/get"
+	"github.com/photoprism/photoprism/internal/service/cluster"
 	reg "github.com/photoprism/photoprism/internal/service/cluster/registry"
 	"github.com/photoprism/photoprism/pkg/clean"
-	"github.com/photoprism/photoprism/pkg/service/cluster"
 	"github.com/photoprism/photoprism/pkg/txt"
 )
 
@@ -103,9 +103,9 @@ func ClusterListNodes(router *gin.RouterGroup) {
 		page := items[offset:end]
 
 		// Build response with session-based redaction.
-		opts := ClusterNodeOptionsForSession(s)
+		opts := reg.NodeOptsForSession(s)
 
-		resp := BuildClusterNodes(page, opts)
+		resp := reg.BuildClusterNodes(page, opts)
 
 		// Audit list access.
 		event.AuditInfo([]string{ClientIP(c), "session %s", string(acl.ResourceCluster), "nodes", "list", event.Succeeded, "count=%d", "offset=%d", "returned=%d"}, s.RefID, count, offset, len(resp))
@@ -162,8 +162,8 @@ func ClusterGetNode(router *gin.RouterGroup) {
 		}
 
 		// Build response with session-based redaction.
-		opts := ClusterNodeOptionsForSession(s)
-		resp := BuildClusterNode(*n, opts)
+		opts := reg.NodeOptsForSession(s)
+		resp := reg.BuildClusterNode(*n, opts)
 
 		// Audit get access.
 		event.AuditInfo([]string{ClientIP(c), "session %s", string(acl.ResourceCluster), "nodes", "get", n.ID, event.Succeeded}, s.RefID)

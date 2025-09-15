@@ -10,11 +10,11 @@ import (
 	"github.com/photoprism/photoprism/internal/event"
 	"github.com/photoprism/photoprism/internal/photoprism/get"
 	"github.com/photoprism/photoprism/internal/server/limiter"
+	"github.com/photoprism/photoprism/internal/service/cluster"
 	"github.com/photoprism/photoprism/internal/service/cluster/provisioner"
 	reg "github.com/photoprism/photoprism/internal/service/cluster/registry"
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/rnd"
-	"github.com/photoprism/photoprism/pkg/service/cluster"
 	"github.com/photoprism/photoprism/pkg/service/http/header"
 )
 
@@ -134,9 +134,9 @@ func ClusterNodesRegister(router *gin.RouterGroup) {
 			}
 
 			// Build response with struct types.
-			opts := ClusterNodeOptionsForSession(nil) // registration is token-based, not session; default redaction is fine
+			opts := reg.NodeOptsForSession(nil) // registration is token-based, not session; default redaction is fine
 			resp := cluster.RegisterResponse{
-				Node:               BuildClusterNode(*n, opts),
+				Node:               reg.BuildClusterNode(*n, opts),
 				DB:                 cluster.RegisterDB{Host: conf.DatabaseHost(), Port: conf.DatabasePort(), Name: n.DB.Name, User: n.DB.User},
 				Secrets:            respSecret,
 				AlreadyRegistered:  true,
@@ -184,7 +184,7 @@ func ClusterNodesRegister(router *gin.RouterGroup) {
 		}
 
 		resp := cluster.RegisterResponse{
-			Node:               BuildClusterNode(*n, ClusterNodeOptionsForSession(nil)),
+			Node:               reg.BuildClusterNode(*n, reg.NodeOptsForSession(nil)),
 			Secrets:            &cluster.RegisterSecrets{NodeSecret: n.Secret, NodeSecretLastRotatedAt: n.SecretRot},
 			DB:                 cluster.RegisterDB{Host: conf.DatabaseHost(), Port: conf.DatabasePort(), Name: creds.Name, User: creds.User, Password: creds.Password, DSN: creds.DSN, DBLastRotatedAt: creds.LastRotatedAt},
 			AlreadyRegistered:  false,

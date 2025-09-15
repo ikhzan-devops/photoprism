@@ -6,10 +6,10 @@ import (
 
 	"gopkg.in/yaml.v2"
 
+	"github.com/photoprism/photoprism/internal/service/cluster"
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/fs"
 	"github.com/photoprism/photoprism/pkg/rnd"
-	"github.com/photoprism/photoprism/pkg/service/cluster"
 )
 
 // NodeName returns the unique name of this node within the cluster (lowercase letters and numbers only).
