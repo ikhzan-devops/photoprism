@@ -5,6 +5,7 @@ import { Photo } from "model/photo";
 export class Batch extends Model {
   constructor(values) {
     super(values);
+    this.selectionById = new Map();
   }
 
   getDefaults() {
@@ -84,6 +85,13 @@ export class Batch extends Model {
     });
   }
 
+  async getValuesForSelection(selection) {
+    return await $api.post("batch/photos/edit", { photos: selection }).then((response) => {
+      this.values = response.data.values;
+      return this.values;
+    });
+  }
+
   setSelections(selection) {
     this.selection = selection.map((id) => {
       return {
@@ -91,18 +99,12 @@ export class Batch extends Model {
         selected: true,
       };
     });
+    this.selectionById = new Map(this.selection.map((entry) => [entry.id, entry]));
   }
 
   isSelected(id) {
-    let isSelected = null;
-
-    this.selection.find((element) => {
-      if (element.id === id) {
-        isSelected = element.selected;
-      }
-    });
-
-    return isSelected;
+    const entry = this.selectionById && this.selectionById.get(id);
+    return entry ? entry.selected : null;
   }
 
   getLengthOfAllSelected() {
@@ -110,11 +112,10 @@ export class Batch extends Model {
   }
 
   toggle(id) {
-    this.selection.find((element) => {
-      if (element.id === id) {
-        element.selected = !element.selected;
-      }
-    });
+    const entry = this.selectionById && this.selectionById.get(id);
+    if (entry) {
+      entry.selected = !entry.selected;
+    }
   }
 
   toggleAll(isToggledAll) {

@@ -1390,7 +1390,8 @@ export default {
 
         // Update form data with new values from backend (force-refresh to avoid stale UI)
         try {
-          await this.model.getData(currentlySelectedUIDs);
+          // Only refresh the values for the current selection to avoid losing sidebar items
+          await this.model.getValuesForSelection(currentlySelectedUIDs);
           this.values = this.model.values;
         } catch {
           // Fallback to response values if re-fetch fails
