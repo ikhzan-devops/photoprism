@@ -147,6 +147,7 @@ The following conventions summarize the insights gained when adding new configur
     - Add a field to `internal/config/options.go` with `yaml:"…"` and a `flag:"…"` tag.
     - Register a CLI flag and env mapping in `internal/config/flags.go` (use `EnvVars(...)`).
     - Expose a getter on `*config.Config` in the relevant file (e.g., cluster options in `config_cluster.go`).
+    - Add name/value to `rows` in `*config.Report()`, after the same option as in `internal/config/options.go` for `photoprism show config` to report it (obfuscate passwords with `*`).
     - If the value must persist (e.g., a generated UUID), write it back to `options.yml` using a focused helper that merges keys.
     - Tests: cover CLI/env/file precedence and persistence. When tests need a new flag, add it to `CliTestContext` in `internal/config/test.go`.
   - Example: `PortalUUID` precedence = `options.yml` → CLI/env (`--portal-uuid` / `PHOTOPRISM_PORTAL_UUID`) → generate UUIDv4 and persist.
