@@ -7,14 +7,22 @@ Learn more: https://agents.md/
 
 ## Sources of Truth
 
-- Makefile targets: https://github.com/photoprism/photoprism/blob/develop/Makefile
-- Developer Guide (setup): https://docs.photoprism.app/developer-guide/setup/
-- Developer Guide (tests): https://docs.photoprism.app/developer-guide/tests/
-- CONTRIBUTING: https://github.com/photoprism/photoprism/blob/develop/CONTRIBUTING.md
-- SECURITY: https://github.com/photoprism/photoprism/blob/develop/SECURITY.md
-- REST API docs:
+- Makefile targets (always prefer existing targets): https://github.com/photoprism/photoprism/blob/develop/Makefile
+- Developer Guide – Setup: https://docs.photoprism.app/developer-guide/setup/
+- Developer Guide – Tests: https://docs.photoprism.app/developer-guide/tests/
+- Contributing: https://github.com/photoprism/photoprism/blob/develop/CONTRIBUTING.md
+- Security: https://github.com/photoprism/photoprism/blob/develop/SECURITY.md
+- REST API:
   - https://docs.photoprism.dev/ (Swagger)
-  - https://docs.photoprism.app/developer-guide/api/
+  - https://docs.photoprism.app/developer-guide/api/ (Docs)
+
+## Project Structure & Languages
+
+- Backend: Go (`internal/`, `pkg/`, `cmd/`) + MariaDB/SQLite
+  - Package boundaries: Code in `pkg/*` MUST NOT import from `internal/*`.
+  - If you need access to config/entity/DB, put new code in a package under `internal/` instead of `pkg/`.
+- Frontend: Vue 3 + Vuetify 3 (`frontend/`)
+- Docker/compose for dev/CI; Traefik is used for local TLS (`*.localssl.dev`)
 
 ## Agent Runtime (Host vs Container)
 
@@ -110,19 +118,73 @@ Note: Across our public documentation, official images, and in production, the c
 
 ## Code Style & Lint
 
-- Go: `go fmt` / `goimports` (see `Makefile` targets such as `fmt` / `fmt-go`)
+- Go: run `make fmt-go swag-fmt` to reformat the backend code + Swagger annotations (see `Makefile` for additional targets)
   - Doc comments for packages and exported identifiers must be complete sentences that begin with the name of the thing being described and end with a period.
   - For short examples inside comments, indent code rather than using backticks; godoc treats indented blocks as preformatted.
 - JS/Vue: use the lint/format scripts in `frontend/package.json` (ESLint + Prettier)
+- All added code and tests **must** be formatted according to our standards.
 
 ## Safety & Data
 
-- Never commit secrets. Use environment variables or a local `.env`.
-- Ensure `.local`, `.codex` and `.gocache` are ignored in `.gitignore` and `.dockerignore`.
+- Never commit secrets, local configurations, or cache files. Use environment variables or a local `.env`.
+  - Ensure `.env` and `.local` are ignored in `.gitignore` and `.dockerignore`.
+- Prefer using existing caches, workers, and batching strategies referenced in code and `Makefile`. Consider memory/CPU impact; suggest benchmarks or profiling only when justified.
 - Do not run destructive commands against production data. Prefer ephemeral volumes and test fixtures when running acceptance tests.
+- Examples assume a Linux/Unix shell. For Windows specifics, see the Developer Guide FAQ:
+  https://docs.photoprism.app/developer-guide/faq/#can-your-development-environment-be-used-under-windows
 
-Examples assume a Linux/Unix shell. For Windows specifics, see the Developer Guide FAQ:
-https://docs.photoprism.app/developer-guide/faq/#can-your-development-environment-be-used-under-windows
+If anything in this file conflicts with the `Makefile` or the Developer Guide, the `Makefile` and the documentation win. When unsure, **ask** for clarification before proceeding.
 
-If anything in this file conflicts with the `Makefile` or the Developer Guide, the `Makefile` and docs win.
+## Agent Tips 
 
+### Backend Development
+
+The following conventions summarize the insights gained when adding new configuration options, API endpoints, and related tests. Follow these conventions unless a maintainer requests an exception.
+
+- Config precedence and new options
+  - Global precedence: `options.yml` overrides CLI flags and environment variables, if present. Don’t special‑case a single option.
+  - Adding a new option:
+    - Add a field to `internal/config/options.go` with `yaml:"…"` and a `flag:"…"` tag.
+    - Register a CLI flag and env mapping in `internal/config/flags.go` (use `EnvVars(...)`).
+    - Expose a getter on `*config.Config` in the relevant file (e.g., cluster options in `config_cluster.go`).
+    - If the value must persist (e.g., a generated UUID), write it back to `options.yml` using a focused helper that merges keys.
+    - Tests: cover CLI/env/file precedence and persistence. When tests need a new flag, add it to `CliTestContext` in `internal/config/test.go`.
+  - Example: `PortalUUID` precedence = `options.yml` → CLI/env (`--portal-uuid` / `PHOTOPRISM_PORTAL_UUID`) → generate UUIDv4 and persist.
+  - CLI flag precedence: when you need to favor an explicit CLI flag over defaults, check `c.cliCtx.IsSet("<flag>")` before applying additional precedence logic.
+  - Persisting generated options: when writing to `options.yml`, set `c.options.OptionsYaml = filepath.Join(c.ConfigPath(), "options.yml")` and reload the file to keep in‑memory
+
+- Database access
+  - The app uses GORM v1. Don’t use `WithContext`; for executing raw SQL, prefer `db.Raw(stmt).Scan(&nop)`.
+  - When provisioning MariaDB/MySQL objects, quote identifiers with backticks and limit the character set; avoid building identifiers from untrusted input.
+  - Reuse `conf.Db()` and `conf.Database*()` getters; reject unsupported drivers early with a clear error.
+
+- Rate limiting
+  - Reuse the existing limiter in `internal/server/limiter` (e.g., `limiter.Auth` / `limiter.Login`).
+  - For 429s, use `limiter.AbortJSON(c)` when applicable; avoid creating new limiter stacks.
+
+- API handlers
+  - Use existing helpers: `api.ClientIP(c)`, `header.BearerToken(c)`, `Abort*` functions for errors.
+  - Compare secrets/tokens using constant‑time compare; don’t log secrets.
+  - Set `Cache-Control: no-store` on responses containing secrets.
+  - Register new routes in `internal/server/routes.go`. Don’t edit `swagger.json` directly—run `make swag` to regenerate.
+  - Portal mode: set `PHOTOPRISM_NODE_TYPE=portal` and `PHOTOPRISM_PORTAL_TOKEN`.
+  - Pagination defaults: for new list endpoints, prefer `count` default 100 (max 1000) and `offset` ≥ 0; document both in Swagger and validate bounds in handlers.
+  - Document parameters explicitly in Swagger annotations (path, query, and body) so `make swag` produces accurate docs.
+  - Swagger: `make fmt-go swag-fmt && make swag` after adding or changing API annotations.
+  - Focused tests: `go test ./internal/api -run Cluster -count=1` (or limit to the package you changed).
+
+- Registry & secrets
+  - Store portal/node registry data under `conf.PortalConfigPath()/nodes/` as YAML with file mode `0600`.
+  - Keep node secrets out of logs and omit them from JSON responses unless explicitly returned on creation/rotation.
+
+- Testing patterns
+  - Use `t.TempDir()` for isolated config paths and files. After changing `ConfigPath` post‑construction, reload `options.yml` into `c.options` if needed.
+  - Prefer small, focused unit tests; use existing test helpers (`NewConfig`, `CliTestContext`, etc.).
+  - API tests: use `NewApiTest()`, `PerformRequest*`, `AuthenticateAdmin` / `AuthenticateUser`, and `OAuthToken` for client-scope scenarios.
+  - Permissions: cover public=false (401), CDN headers (403), admin access (200), and client tokens with insufficient scope (403).
+  - Auth mode in tests: use `conf.SetAuthMode(config.AuthModePasswd)` (and defer restore) instead of flipping `Options().Public`; this toggles related internals used by tests.
+  - Fixtures caveat: user fixtures often have admin role; for negative permission tests, prefer OAuth client tokens with limited scope rather than relying on a non‑admin user.
+  
+- Known tooling constraints
+  - Python may not be available in the dev container; prefer `apply_patch`, Go, or Make targets over ad‑hoc scripts.
+  - `make swag` may fetch modules; ensure network availability in CI before running.
