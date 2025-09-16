@@ -12,9 +12,9 @@ Learn more: https://agents.md/
 - Developer Guide – Tests: https://docs.photoprism.app/developer-guide/tests/
 - Contributing: https://github.com/photoprism/photoprism/blob/develop/CONTRIBUTING.md
 - Security: https://github.com/photoprism/photoprism/blob/develop/SECURITY.md
-- REST API:
-  - https://docs.photoprism.dev/ (Swagger)
-  - https://docs.photoprism.app/developer-guide/api/ (Docs)
+- REST API: https://docs.photoprism.dev/ (Swagger), https://docs.photoprism.app/developer-guide/api/ (Docs)
+- Developer Cheatsheet – Portal & Cluster: specs/portal/README.md
+- Backend (Go) Testing Guide: specs/dev/backend-testing.md
 
 ## Project Structure & Languages
 
@@ -191,8 +191,6 @@ The following conventions summarize the insights gained when adding new configur
   - `make swag` may fetch modules; ensure network availability in CI before running.
 
 ### Cluster & Bootstrap Quick Tips
-
-- Developer Cheatsheet – Portal & Cluster: `specs/portal/README.md` (if `specs` repo was cloned in local env)
 
 - Import rules (avoid cycles):
   - Do not import `internal/service/cluster/instance/*` from `internal/config` or the cluster root package.
