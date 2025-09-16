@@ -189,3 +189,32 @@ The following conventions summarize the insights gained when adding new configur
 - Known tooling constraints
   - Python may not be available in the dev container; prefer `apply_patch`, Go, or Make targets over ad‑hoc scripts.
   - `make swag` may fetch modules; ensure network availability in CI before running.
+
+### Cluster & Bootstrap Quick Tips
+
+- Developer Cheatsheet – Portal & Cluster: `specs/portal/README.md` (if `specs` repo was cloned in local env)
+
+- Import rules (avoid cycles):
+  - Do not import `internal/service/cluster/instance/*` from `internal/config` or the cluster root package.
+  - Instance/service bootstraps talk to the Portal via HTTP(S); do not import Portal internals such as `internal/api` or `internal/service/cluster/registry`/`provisioner`.
+  - Prefer constants from `internal/service/cluster/const.go` (e.g., `cluster.Instance`, `cluster.Portal`) over string literals.
+
+- Early extension lifecycle (config.Init sequence):
+  1) Load `options.yml` and settings (`c.initSettings()`)
+  2) Run early hooks: `EarlyExt().InitEarly(c)` (may adjust DB settings)
+  3) Connect DB: `connectDb()` and `RegisterDb()`
+  4) Run regular extensions: `Ext().Init(c)`
+
+- Theme endpoint usage:
+  - Server: `GET /api/v1/cluster/theme` generates a zip from `conf.ThemePath()`; returns 200 with a valid (possibly empty) zip or 404 if missing.
+  - Client/CLI: install only if `ThemePath()` is missing or lacks `app.js`; do not overwrite unless explicitly allowed.
+  - Use header helpers/constants from `pkg/service/http/header` (e.g., `header.Accept`, `header.ContentTypeZip`, `header.SetAuthorization`).
+
+- Registration (instance bootstrap):
+  - Send `rotate=true` only if driver is MySQL/MariaDB and no DSN/name/user/password is configured (including *_FILE for password); never for SQLite.
+  - Treat 401/403/404 as terminal; apply bounded retries with delay for transient/network/429.
+  - Persist only missing `NodeSecret` and DB settings when rotation was requested.
+
+- Testing patterns:
+  - Set `PHOTOPRISM_STORAGE_PATH=$(mktemp -d)` (or `t.Setenv`) to isolate options.yml and theme dirs.
+  - Use `httptest` for Portal endpoints and `pkg/fs.Unzip` with size caps for extraction tests.
