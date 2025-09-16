@@ -695,8 +695,14 @@ var Flags = CliFlags{
 		}, Tags: []string{Pro}}, {
 		Flag: &cli.StringFlag{
 			Name:    "portal-token",
-			Usage:   "access TOKEN for nodes to register and synchronize with the portal",
+			Usage:   "access `TOKEN` for nodes to register and synchronize with the portal",
 			EnvVars: EnvVars("PORTAL_TOKEN"),
+			Hidden:  true,
+		}, Tags: []string{Pro}}, {
+		Flag: &cli.StringFlag{
+			Name:    "portal-uuid",
+			Usage:   "`UUID` (version 4) for the portal to scope per-node credentials *optional*",
+			EnvVars: EnvVars("PORTAL_UUID"),
 			Hidden:  true,
 		}, Tags: []string{Pro}}, {
 		Flag: &cli.StringFlag{

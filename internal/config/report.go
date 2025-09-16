@@ -168,6 +168,7 @@ func (c *Config) Report() (rows [][]string, cols []string) {
 		{"node-secret", fmt.Sprintf("%s", strings.Repeat("*", utf8.RuneCountInString(c.NodeSecret())))},
 		{"portal-url", c.PortalUrl()},
 		{"portal-token", fmt.Sprintf("%s", strings.Repeat("*", utf8.RuneCountInString(c.PortalToken())))},
+		{"portal-uuid", c.PortalUUID()},
 		{"portal-config-path", c.PortalConfigPath()},
 		{"portal-theme-path", c.PortalThemePath()},
 
