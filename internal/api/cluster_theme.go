@@ -50,7 +50,7 @@ func ClusterGetTheme(router *gin.RouterGroup) {
 		}
 
 		clientIp := ClientIP(c)
-		themePath := conf.PortalThemePath()
+		themePath := conf.ThemePath()
 
 		// Resolve symbolic links.
 		if resolved, err := filepath.EvalSymlinks(themePath); err != nil {
