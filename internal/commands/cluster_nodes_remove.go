@@ -25,17 +25,17 @@ var ClusterNodesRemoveCommand = &cli.Command{
 func clusterNodesRemoveAction(ctx *cli.Context) error {
 	return CallWithDependencies(ctx, func(conf *config.Config) error {
 		if !conf.IsPortal() {
-			return fmt.Errorf("node delete is only available on a Portal node")
+			return cli.Exit(fmt.Errorf("node delete is only available on a Portal node"), 2)
 		}
 
 		key := ctx.Args().First()
 		if key == "" {
-			return cli.ShowSubcommandHelp(ctx)
+			return cli.Exit(fmt.Errorf("node id or name is required"), 2)
 		}
 
 		r, err := reg.NewFileRegistry(conf)
 		if err != nil {
-			return err
+			return cli.Exit(err, 1)
 		}
 
 		// Resolve to id for deletion, but also support name.
@@ -44,7 +44,7 @@ func clusterNodesRemoveAction(ctx *cli.Context) error {
 			if n, err2 := r.FindByName(clean.TypeLowerDash(key)); err2 == nil && n != nil {
 				id = n.ID
 			} else {
-				return fmt.Errorf("node not found")
+				return cli.Exit(fmt.Errorf("node not found"), 3)
 			}
 		}
 
@@ -58,7 +58,7 @@ func clusterNodesRemoveAction(ctx *cli.Context) error {
 		}
 
 		if err := r.Delete(id); err != nil {
-			return err
+			return cli.Exit(err, 1)
 		}
 
 		log.Infof("node %s has been deleted", clean.Log(id))

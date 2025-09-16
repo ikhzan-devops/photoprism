@@ -35,7 +35,7 @@ func clusterNodesRotateAction(ctx *cli.Context) error {
 	return CallWithDependencies(ctx, func(conf *config.Config) error {
 		key := ctx.Args().First()
 		if key == "" {
-			return cli.ShowSubcommandHelp(ctx)
+			return cli.Exit(fmt.Errorf("node id or name is required"), 2)
 		}
 
 		// Determine node name. On portal, resolve id->name via registry; otherwise treat key as name.
@@ -50,7 +50,7 @@ func clusterNodesRotateAction(ctx *cli.Context) error {
 			}
 		}
 		if name == "" {
-			return fmt.Errorf("invalid node identifier")
+			return cli.Exit(fmt.Errorf("invalid node identifier"), 2)
 		}
 
 		// Portal URL and token
@@ -62,7 +62,7 @@ func clusterNodesRotateAction(ctx *cli.Context) error {
 			portalURL = os.Getenv(config.EnvVar("portal-url"))
 		}
 		if portalURL == "" {
-			return fmt.Errorf("portal URL is required (use --portal-url or set portal-url)")
+			return cli.Exit(fmt.Errorf("portal URL is required (use --portal-url or set portal-url)"), 2)
 		}
 		token := ctx.String("portal-token")
 		if token == "" {
@@ -72,7 +72,7 @@ func clusterNodesRotateAction(ctx *cli.Context) error {
 			token = os.Getenv(config.EnvVar("portal-token"))
 		}
 		if token == "" {
-			return fmt.Errorf("portal token is required (use --portal-token or set portal-token)")
+			return cli.Exit(fmt.Errorf("portal token is required (use --portal-token or set portal-token)"), 2)
 		}
 
 		// Default: rotate DB only if no flag given (safer default)
@@ -107,7 +107,22 @@ func clusterNodesRotateAction(ctx *cli.Context) error {
 		url := stringsTrimRightSlash(portalURL) + "/api/v1/cluster/nodes/register"
 		var resp cluster.RegisterResponse
 		if err := postWithBackoff(url, token, b, &resp); err != nil {
-			return err
+			// Map common HTTP errors similarly to register command
+			if he, ok := err.(*httpError); ok {
+				switch he.Status {
+				case 401, 403:
+					return cli.Exit(fmt.Errorf("%s", he.Error()), 4)
+				case 409:
+					return cli.Exit(fmt.Errorf("%s", he.Error()), 5)
+				case 400:
+					return cli.Exit(fmt.Errorf("%s", he.Error()), 2)
+				case 404:
+					return cli.Exit(fmt.Errorf("%s", he.Error()), 3)
+				case 429:
+					return cli.Exit(fmt.Errorf("%s", he.Error()), 6)
+				}
+			}
+			return cli.Exit(err, 1)
 		}
 
 		if ctx.Bool("json") {

@@ -2,7 +2,6 @@ package commands
 
 import (
 	"archive/zip"
-	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -13,8 +12,10 @@ import (
 	"github.com/urfave/cli/v2"
 
 	"github.com/photoprism/photoprism/internal/config"
+	"github.com/photoprism/photoprism/internal/service/cluster"
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/fs"
+	"github.com/photoprism/photoprism/pkg/service/http/header"
 )
 
 // ClusterThemePullCommand downloads the Portal theme and installs it.
@@ -89,6 +90,8 @@ func clusterThemePullAction(ctx *cli.Context) error {
 
 		// Download zip to a temp file.
 		zipURL := portalURL + "/api/v1/cluster/theme"
+		// TODO: Enforce TLS for non-local Portal URLs (similar to bootstrap) unless an explicit
+		// insecure override is provided. Consider adding a --tls-only / --insecure flag.
 		tmpFile, err := os.CreateTemp("", "photoprism-theme-*.zip")
 		if err != nil {
 			return err
@@ -101,8 +104,12 @@ func clusterThemePullAction(ctx *cli.Context) error {
 		if err != nil {
 			return err
 		}
-		req.Header.Set("Authorization", "Bearer "+token)
-		resp, err := http.DefaultClient.Do(req)
+		header.SetAuthorization(req, token)
+		req.Header.Set(header.Accept, header.ContentTypeZip)
+
+		// Use a short timeout for responsiveness; align with bootstrap defaults.
+		client := &http.Client{Timeout: cluster.BootstrapRegisterTimeout}
+		resp, err := client.Do(req)
 		if err != nil {
 			return err
 		}
@@ -111,13 +118,15 @@ func clusterThemePullAction(ctx *cli.Context) error {
 			// Map common codes to clearer messages
 			switch resp.StatusCode {
 			case http.StatusUnauthorized, http.StatusForbidden:
-				return fmt.Errorf("unauthorized; check portal token and permissions (%s)", resp.Status)
+				return cli.Exit(fmt.Errorf("unauthorized; check portal token and permissions (%s)", resp.Status), 4)
 			case http.StatusTooManyRequests:
-				return fmt.Errorf("rate limited by portal (%s)", resp.Status)
+				return cli.Exit(fmt.Errorf("rate limited by portal (%s)", resp.Status), 6)
 			case http.StatusNotFound:
-				return fmt.Errorf("portal theme not found (%s)", resp.Status)
+				return cli.Exit(fmt.Errorf("portal theme not found (%s)", resp.Status), 3)
+			case http.StatusBadRequest:
+				return cli.Exit(fmt.Errorf("bad request (%s)", resp.Status), 2)
 			default:
-				return fmt.Errorf("download failed: %s", resp.Status)
+				return cli.Exit(fmt.Errorf("download failed: %s", resp.Status), 1)
 			}
 		}
 		if _, err = io.Copy(tmpFile, resp.Body); err != nil {
@@ -174,9 +183,7 @@ func unzipSafe(zipPath, dest string) error {
 		return err
 	}
 	defer r.Close()
-	if len(r.File) == 0 {
-		return errors.New("theme archive is empty")
-	}
+	// Empty theme archives are valid; install succeeds without files.
 	for _, f := range r.File {
 		// Directories are indicated by trailing '/'; ensure canonical path
 		name := filepath.Clean(f.Name)

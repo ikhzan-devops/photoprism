@@ -10,6 +10,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/tidwall/gjson"
+	"github.com/urfave/cli/v2"
 
 	cfg "github.com/photoprism/photoprism/internal/config"
 )
@@ -242,7 +243,11 @@ func TestClusterRegister_HTTPUnauthorized(t *testing.T) {
 	_, err := RunWithTestContext(ClusterRegisterCommand, []string{
 		"register", "--name", "pp-node-unauth", "--type", "instance", "--portal-url", ts.URL, "--portal-token", "wrong", "--json",
 	})
-	assert.Error(t, err)
+	if ec, ok := err.(cli.ExitCoder); ok {
+		assert.Equal(t, 4, ec.ExitCode())
+	} else {
+		t.Fatalf("expected ExitCoder, got %T", err)
+	}
 }
 
 func TestClusterRegister_HTTPConflict(t *testing.T) {
@@ -254,7 +259,11 @@ func TestClusterRegister_HTTPConflict(t *testing.T) {
 	_, err := RunWithTestContext(ClusterRegisterCommand, []string{
 		"register", "--name", "pp-node-conflict", "--type", "instance", "--portal-url", ts.URL, "--portal-token", "test-token", "--json",
 	})
-	assert.Error(t, err)
+	if ec, ok := err.(cli.ExitCoder); ok {
+		assert.Equal(t, 5, ec.ExitCode())
+	} else {
+		t.Fatalf("expected ExitCoder, got %T", err)
+	}
 }
 
 func TestClusterRegister_HTTPBadRequest(t *testing.T) {
@@ -266,7 +275,11 @@ func TestClusterRegister_HTTPBadRequest(t *testing.T) {
 	_, err := RunWithTestContext(ClusterRegisterCommand, []string{
 		"register", "--name", "pp node invalid", "--type", "instance", "--portal-url", ts.URL, "--portal-token", "test-token", "--json",
 	})
-	assert.Error(t, err)
+	if ec, ok := err.(cli.ExitCoder); ok {
+		assert.Equal(t, 2, ec.ExitCode())
+	} else {
+		t.Fatalf("expected ExitCoder, got %T", err)
+	}
 }
 
 func TestClusterRegister_HTTPRateLimitOnceThenOK(t *testing.T) {
@@ -304,7 +317,11 @@ func TestClusterNodesRotate_HTTPUnauthorized_JSON(t *testing.T) {
 	_, err := RunWithTestContext(ClusterNodesRotateCommand, []string{
 		"rotate", "--json", "--portal-url=" + ts.URL, "--portal-token=wrong", "--db", "--yes", "pp-node-x",
 	})
-	assert.Error(t, err)
+	if ec, ok := err.(cli.ExitCoder); ok {
+		assert.Equal(t, 4, ec.ExitCode())
+	} else {
+		t.Fatalf("expected ExitCoder, got %T", err)
+	}
 }
 
 func TestClusterNodesRotate_HTTPConflict_JSON(t *testing.T) {
@@ -316,7 +333,11 @@ func TestClusterNodesRotate_HTTPConflict_JSON(t *testing.T) {
 	_, err := RunWithTestContext(ClusterNodesRotateCommand, []string{
 		"rotate", "--json", "--portal-url=" + ts.URL, "--portal-token=test-token", "--db", "--yes", "pp-node-x",
 	})
-	assert.Error(t, err)
+	if ec, ok := err.(cli.ExitCoder); ok {
+		assert.Equal(t, 5, ec.ExitCode())
+	} else {
+		t.Fatalf("expected ExitCoder, got %T", err)
+	}
 }
 
 func TestClusterNodesRotate_HTTPBadRequest_JSON(t *testing.T) {
@@ -328,7 +349,11 @@ func TestClusterNodesRotate_HTTPBadRequest_JSON(t *testing.T) {
 	_, err := RunWithTestContext(ClusterNodesRotateCommand, []string{
 		"rotate", "--json", "--portal-url=" + ts.URL, "--portal-token=test-token", "--db", "--yes", "pp node invalid",
 	})
-	assert.Error(t, err)
+	if ec, ok := err.(cli.ExitCoder); ok {
+		assert.Equal(t, 2, ec.ExitCode())
+	} else {
+		t.Fatalf("expected ExitCoder, got %T", err)
+	}
 }
 
 func TestClusterNodesRotate_HTTPRateLimitOnceThenOK_JSON(t *testing.T) {

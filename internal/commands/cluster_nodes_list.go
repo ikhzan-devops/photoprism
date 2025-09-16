@@ -37,17 +37,17 @@ var ClusterNodesListCommand = &cli.Command{
 func clusterNodesListAction(ctx *cli.Context) error {
 	return CallWithDependencies(ctx, func(conf *config.Config) error {
 		if !conf.IsPortal() {
-			return fmt.Errorf("node listing is only available on a Portal node")
+			return cli.Exit(fmt.Errorf("node listing is only available on a Portal node"), 2)
 		}
 
 		r, err := reg.NewFileRegistry(conf)
 		if err != nil {
-			return err
+			return cli.Exit(err, 1)
 		}
 
 		items, err := r.List()
 		if err != nil {
-			return err
+			return cli.Exit(err, 1)
 		}
 
 		// Pagination identical to API defaults.
@@ -97,7 +97,10 @@ func clusterNodesListAction(ctx *cli.Context) error {
 
 		result, err := report.RenderFormat(rows, cols, report.CliFormat(ctx))
 		fmt.Printf("\n%s\n", result)
-		return err
+		if err != nil {
+			return cli.Exit(err, 1)
+		}
+		return nil
 	})
 }
 

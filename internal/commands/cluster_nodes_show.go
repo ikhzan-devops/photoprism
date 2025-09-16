@@ -24,17 +24,17 @@ var ClusterNodesShowCommand = &cli.Command{
 func clusterNodesShowAction(ctx *cli.Context) error {
 	return CallWithDependencies(ctx, func(conf *config.Config) error {
 		if !conf.IsPortal() {
-			return fmt.Errorf("node show is only available on a Portal node")
+			return cli.Exit(fmt.Errorf("node show is only available on a Portal node"), 2)
 		}
 
 		key := ctx.Args().First()
 		if key == "" {
-			return cli.ShowSubcommandHelp(ctx)
+			return cli.Exit(fmt.Errorf("node id or name is required"), 2)
 		}
 
 		r, err := reg.NewFileRegistry(conf)
 		if err != nil {
-			return err
+			return cli.Exit(err, 1)
 		}
 
 		// Resolve by id first, then by normalized name.
@@ -42,12 +42,12 @@ func clusterNodesShowAction(ctx *cli.Context) error {
 		if getErr != nil {
 			name := clean.TypeLowerDash(key)
 			if name == "" {
-				return fmt.Errorf("invalid node identifier")
+				return cli.Exit(fmt.Errorf("invalid node identifier"), 2)
 			}
 			n, getErr = r.FindByName(name)
 		}
 		if getErr != nil || n == nil {
-			return fmt.Errorf("node not found")
+			return cli.Exit(fmt.Errorf("node not found"), 3)
 		}
 
 		opts := reg.NodeOpts{IncludeInternalURL: true, IncludeDBMeta: true}
@@ -67,6 +67,9 @@ func clusterNodesShowAction(ctx *cli.Context) error {
 		rows := [][]string{{dto.ID, dto.Name, dto.Type, dto.InternalURL, dbName, dbUser, dbRot, dto.CreatedAt, dto.UpdatedAt}}
 		out, err := report.RenderFormat(rows, cols, report.CliFormat(ctx))
 		fmt.Printf("\n%s\n", out)
-		return err
+		if err != nil {
+			return cli.Exit(err, 1)
+		}
+		return nil
 	})
 }

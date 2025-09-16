@@ -18,6 +18,7 @@ import (
 	"github.com/photoprism/photoprism/internal/service/cluster"
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/fs"
+	"github.com/photoprism/photoprism/pkg/service/http/header"
 	"github.com/photoprism/photoprism/pkg/txt/report"
 )
 
@@ -51,13 +52,13 @@ func clusterRegisterAction(ctx *cli.Context) error {
 			name = clean.TypeLowerDash(conf.NodeName())
 		}
 		if name == "" {
-			return fmt.Errorf("node name is required (use --name or set node-name)")
+			return cli.Exit(fmt.Errorf("node name is required (use --name or set node-name)"), 2)
 		}
 		nodeType := clean.TypeLowerDash(ctx.String("type"))
 		switch nodeType {
 		case "instance", "service":
 		default:
-			return fmt.Errorf("invalid --type (must be instance or service)")
+			return cli.Exit(fmt.Errorf("invalid --type (must be instance or service)"), 2)
 		}
 
 		portalURL := ctx.String("portal-url")
@@ -65,14 +66,14 @@ func clusterRegisterAction(ctx *cli.Context) error {
 			portalURL = conf.PortalUrl()
 		}
 		if portalURL == "" {
-			return fmt.Errorf("portal URL is required (use --portal-url or set portal-url)")
+			return cli.Exit(fmt.Errorf("portal URL is required (use --portal-url or set portal-url)"), 2)
 		}
 		token := ctx.String("portal-token")
 		if token == "" {
 			token = conf.PortalToken()
 		}
 		if token == "" {
-			return fmt.Errorf("portal token is required (use --portal-token or set portal-token)")
+			return cli.Exit(fmt.Errorf("portal token is required (use --portal-token or set portal-token)"), 2)
 		}
 
 		body := map[string]interface{}{
@@ -91,22 +92,22 @@ func clusterRegisterAction(ctx *cli.Context) error {
 		if err := postWithBackoff(url, token, b, &resp); err != nil {
 			var httpErr *httpError
 			if errors.As(err, &httpErr) && httpErr.Status == http.StatusTooManyRequests {
-				return fmt.Errorf("portal rate-limited registration attempts")
+				return cli.Exit(fmt.Errorf("portal rate-limited registration attempts"), 6)
 			}
 			// Map common errors
 			if errors.As(err, &httpErr) {
 				switch httpErr.Status {
 				case http.StatusUnauthorized, http.StatusForbidden:
-					return fmt.Errorf("%s", httpErr.Error())
+					return cli.Exit(fmt.Errorf("%s", httpErr.Error()), 4)
 				case http.StatusConflict:
-					return fmt.Errorf("%s", httpErr.Error())
+					return cli.Exit(fmt.Errorf("%s", httpErr.Error()), 5)
 				case http.StatusBadRequest:
-					return fmt.Errorf("%s", httpErr.Error())
+					return cli.Exit(fmt.Errorf("%s", httpErr.Error()), 2)
 				case http.StatusNotFound:
-					return fmt.Errorf("%s", httpErr.Error())
+					return cli.Exit(fmt.Errorf("%s", httpErr.Error()), 3)
 				}
 			}
-			return err
+			return cli.Exit(err, 1)
 		}
 
 		// Output
@@ -169,10 +170,11 @@ func postWithBackoff(url, token string, payload []byte, out any) error {
 	delay := 500 * time.Millisecond
 	for attempt := 0; attempt < 6; attempt++ {
 		req, _ := http.NewRequest(http.MethodPost, url, bytes.NewReader(payload))
-		req.Header.Set("Authorization", "Bearer "+token)
-		req.Header.Set("Content-Type", "application/json")
+		header.SetAuthorization(req, token)
+		req.Header.Set(header.ContentType, "application/json")
 
-		resp, err := http.DefaultClient.Do(req)
+		client := &http.Client{Timeout: cluster.BootstrapRegisterTimeout}
+		resp, err := client.Do(req)
 		if err != nil {
 			return err
 		}

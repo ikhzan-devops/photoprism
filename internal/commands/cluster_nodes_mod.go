@@ -31,29 +31,29 @@ var ClusterNodesModCommand = &cli.Command{
 func clusterNodesModAction(ctx *cli.Context) error {
 	return CallWithDependencies(ctx, func(conf *config.Config) error {
 		if !conf.IsPortal() {
-			return fmt.Errorf("node update is only available on a Portal node")
+			return cli.Exit(fmt.Errorf("node update is only available on a Portal node"), 2)
 		}
 
 		key := ctx.Args().First()
 		if key == "" {
-			return cli.ShowSubcommandHelp(ctx)
+			return cli.Exit(fmt.Errorf("node id or name is required"), 2)
 		}
 
 		r, err := reg.NewFileRegistry(conf)
 		if err != nil {
-			return err
+			return cli.Exit(err, 1)
 		}
 
 		n, getErr := r.Get(key)
 		if getErr != nil {
 			name := clean.TypeLowerDash(key)
 			if name == "" {
-				return fmt.Errorf("invalid node identifier")
+				return cli.Exit(fmt.Errorf("invalid node identifier"), 2)
 			}
 			n, getErr = r.FindByName(name)
 		}
 		if getErr != nil || n == nil {
-			return fmt.Errorf("node not found")
+			return cli.Exit(fmt.Errorf("node not found"), 3)
 		}
 
 		if v := ctx.String("type"); v != "" {
@@ -83,7 +83,7 @@ func clusterNodesModAction(ctx *cli.Context) error {
 		}
 
 		if err := r.Put(n); err != nil {
-			return err
+			return cli.Exit(err, 1)
 		}
 
 		log.Infof("node %s has been updated", clean.LogQuote(n.Name))
