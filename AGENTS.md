@@ -116,6 +116,17 @@ Note: Across our public documentation, official images, and in production, the c
   - Vitest watch/coverage: `make vitest-watch` and `make vitest-coverage`
 - Acceptance tests: use the `acceptance-*` targets in the `Makefile`
 
+### CLI Testing Gotchas (Go)
+
+- Exit codes and `os.Exit`:
+  - `urfave/cli` calls `os.Exit(code)` when a command returns `cli.Exit(...)`, which will terminate `go test` abruptly (often after logs like `http 401:`).
+  - Use the test helper `RunWithTestContext` (in `internal/commands/commands_test.go`) which temporarily overrides `cli.OsExiter` so the process doesn’t exit; you still receive the error to assert `ExitCoder`.
+  - If you only need to assert the exit code and don’t need printed output, you can invoke `cmd.Action(ctx)` directly and check `err.(cli.ExitCoder).ExitCode()`.
+- Non‑interactive mode: set `PHOTOPRISM_CLI=noninteractive` and/or pass `--yes` to avoid prompts that block tests and CI.
+- SQLite DSN in tests:
+  - `config.NewTestConfig("<pkg>")` defaults to SQLite with a per‑suite DSN like `.<pkg>.db`. Don’t assert an empty DSN for SQLite.
+  - Clean up any per‑suite SQLite files in tests with `t.Cleanup(func(){ _ = os.Remove(dsn) })` if you capture the DSN.
+
 ## Code Style & Lint
 
 - Go: run `make fmt-go swag-fmt` to reformat the backend code + Swagger annotations (see `Makefile` for additional targets)
