@@ -689,7 +689,13 @@ export default {
         { key: "name", title: "Name", sortable: false },
       ],
       mobileTableHeaders: [
-        { key: "select", title: "", sortable: false, width: "50px", align: "center" },
+        {
+          key: "select",
+          title: "",
+          sortable: false,
+          width: "50px",
+          align: "center",
+        },
         { key: "preview", title: "Pictures", sortable: false, width: "80px" },
         { key: "name", title: "Name", sortable: false, align: "start" },
       ],
@@ -1032,8 +1038,16 @@ export default {
       });
 
       // Initialize Albums and Labels from backend data
-      const albumsData = this.values.Albums || { items: [], mixed: false, action: this.actions.none };
-      const labelsData = this.values.Labels || { items: [], mixed: false, action: this.actions.none };
+      const albumsData = this.values.Albums || {
+        items: [],
+        mixed: false,
+        action: this.actions.none,
+      };
+      const labelsData = this.values.Labels || {
+        items: [],
+        mixed: false,
+        action: this.actions.none,
+      };
 
       this.formData.Albums = {
         action: albumsData.action || this.actions.none,
@@ -1257,14 +1271,6 @@ export default {
         array.push({ Code: -2, Name: "mixed" });
       }
       return array;
-    },
-    // onUpdate() {
-    //   // console.log('Add event on update');
-    // },
-    onSelect(val, fieldName) {
-      if (this.values[fieldName]) {
-        console.log("onSelect");
-      }
     },
     openPhoto(index) {
       this.$lightbox.openModels(Thumb.fromPhotos([this.model.models[index]]), 0, null, this.isBatchDialog);

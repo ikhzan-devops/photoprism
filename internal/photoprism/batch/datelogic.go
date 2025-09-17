@@ -2,6 +2,9 @@ package batch
 
 import "time"
 
+// ComputeDateChange calculates a new date and output values based on the provided actions and values.
+// It takes a base time and current date components, along with actions and values for day, month, and year updates.
+// Returns the computed new local time and the output year, month, and day values.
 func ComputeDateChange(
 	baseLocal time.Time,
 	curYear, curMonth, curDay int,

@@ -268,7 +268,7 @@ export default {
       );
 
       if (existingItem) {
-        console.warn(`Item "${title}" already exists`);
+        // Item already exists, skip adding
         return;
       }
 
