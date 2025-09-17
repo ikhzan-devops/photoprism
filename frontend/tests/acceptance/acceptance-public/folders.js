@@ -127,6 +127,10 @@ test.meta("testID", "folders-004").meta({ mode: "public" })(
   async (t) => {
     await menu.openPage("albums");
     const AlbumCount = await album.getAlbumCount("all");
+    await toolbar.search("Holiday");
+    const HolidayAlbumUid = await album.getNthAlbumUid("all", 0);
+    await album.openAlbumWithUid(HolidayAlbumUid);
+    const InitialPhotoCountHoliday = await photo.getPhotoCount("all");
     await menu.openPage("folders");
     const ThirdFolderUid = await album.getNthAlbumUid("all", 2);
     await album.openAlbumWithUid(ThirdFolderUid);
@@ -155,13 +159,12 @@ test.meta("testID", "folders-004").meta({ mode: "public" })(
 
     await t.expect(AlbumCountAfterDelete).eql(AlbumCount);
 
-    await toolbar.search("Holiday");
-    await album.openNthAlbum(0);
+    await album.openAlbumWithUid(HolidayAlbumUid);
     await photo.selectPhotoFromUID(FirstPhotoUid);
     await contextmenu.triggerContextMenuAction("remove", "");
     const PhotoCountHolidayAfterDelete = await photo.getPhotoCount("all");
 
-    await t.expect(PhotoCountHolidayAfterDelete).eql(2);
+    await t.expect(PhotoCountHolidayAfterDelete).eql(InitialPhotoCountHoliday);
 
     await menu.openPage("folders");
     await album.openAlbumWithUid(ThirdFolderUid);

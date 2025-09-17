@@ -116,6 +116,10 @@ test.meta("testID", "moments-003").meta({ mode: "public" })(
   async (t) => {
     await menu.openPage("albums");
     const AlbumCount = await album.getAlbumCount("all");
+    await toolbar.search("Holiday");
+    const HolidayAlbumUid = await album.getNthAlbumUid("all", 0);
+    await album.openAlbumWithUid(HolidayAlbumUid);
+    const InitialPhotoCountHoliday = await photo.getPhotoCount("all");
     await menu.openPage("moments");
     const SecondMomentUid = await album.getNthAlbumUid("all", 1);
     await album.openAlbumWithUid(SecondMomentUid);
@@ -149,8 +153,7 @@ test.meta("testID", "moments-003").meta({ mode: "public" })(
     await contextmenu.triggerContextMenuAction("delete", "");
     const AlbumCountAfterDelete = await album.getAlbumCount("all");
 
-    await toolbar.search("Holiday");
-    await album.openNthAlbum(0);
+    await album.openAlbumWithUid(HolidayAlbumUid);
     await photo.selectPhotoFromUID(FirstPhotoUid);
     await photo.selectPhotoFromUID(SecondPhotoUid);
     await photo.selectPhotoFromUID(ThirdPhotoUid);
@@ -162,7 +165,7 @@ test.meta("testID", "moments-003").meta({ mode: "public" })(
 
     const PhotoCountHolidayAfterDelete = await photo.getPhotoCount("all");
 
-    await t.expect(PhotoCountHolidayAfterDelete).eql(2);
+    await t.expect(PhotoCountHolidayAfterDelete).eql(InitialPhotoCountHoliday);
 
     await t.expect(AlbumCountAfterDelete).eql(AlbumCount);
 

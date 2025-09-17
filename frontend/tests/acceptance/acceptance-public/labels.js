@@ -127,9 +127,14 @@ test.meta("testID", "labels-003").meta({ mode: "public" })("Common: Rename Label
 test.meta("testID", "labels-003").meta({ mode: "public" })("Common: Add label to albums", async (t) => {
   await menu.openPage("albums");
   await toolbar.search("Christmas");
-  const AlbumUid = await album.getNthAlbumUid("all", 0);
-  await album.openAlbumWithUid(AlbumUid);
-  const PhotoCount = await photo.getPhotoCount("all");
+  const ChristmasAlbumUid = await album.getNthAlbumUid("all", 0);
+  await album.openAlbumWithUid(ChristmasAlbumUid);
+  const InitialPhotoCountChristmas = await photo.getPhotoCount("all");
+  await menu.openPage("albums");
+  await toolbar.search("Holiday");
+  const HolidayAlbumUid = await album.getNthAlbumUid("all", 0);
+  await album.openAlbumWithUid(HolidayAlbumUid);
+  const InitialPhotoCountHoliday = await photo.getPhotoCount("all");
   await menu.openPage("labels");
   await toolbar.search("sunglasses");
   const LabelSunglasses = await label.getNthLabeltUid(0);
@@ -145,10 +150,10 @@ test.meta("testID", "labels-003").meta({ mode: "public" })("Common: Add label to
   await contextmenu.checkContextMenuCount("1");
   await contextmenu.triggerContextMenuAction("album", ["Christmas", "Holiday"]);
   await menu.openPage("albums");
-  await album.openAlbumWithUid(AlbumUid);
-  const PhotoCountAfterAdd = await photo.getPhotoCount("all");
+  await album.openAlbumWithUid(ChristmasAlbumUid);
+  const PhotoCountAfterAddChristmas = await photo.getPhotoCount("all");
 
-  await t.expect(PhotoCountAfterAdd).eql(PhotoCount + 5);
+  await t.expect(PhotoCountAfterAddChristmas).eql(InitialPhotoCountChristmas + 5);
 
   await photo.triggerHoverAction("uid", FirstPhotoSunglasses, "select");
   await photo.triggerHoverAction("uid", SecondPhotoSunglasses, "select");
@@ -157,12 +162,11 @@ test.meta("testID", "labels-003").meta({ mode: "public" })("Common: Add label to
   await photo.triggerHoverAction("uid", FifthPhotoSunglasses, "select");
 
   await contextmenu.triggerContextMenuAction("remove", "");
-  const PhotoCountAfterDelete = await photo.getPhotoCount("all");
+  const PhotoCountAfterDeleteChristmas = await photo.getPhotoCount("all");
 
-  await t.expect(PhotoCountAfterDelete).eql(PhotoCountAfterAdd - 5);
+  await t.expect(PhotoCountAfterDeleteChristmas).eql(PhotoCountAfterAddChristmas - 5);
   await menu.openPage("albums");
-  await toolbar.search("Holiday");
-  await album.openNthAlbum(0);
+  await album.openAlbumWithUid(HolidayAlbumUid);
   await photo.triggerHoverAction("uid", FirstPhotoSunglasses, "select");
   await photo.triggerHoverAction("uid", SecondPhotoSunglasses, "select");
   await photo.triggerHoverAction("uid", ThirdPhotoSunglasses, "select");
@@ -172,7 +176,7 @@ test.meta("testID", "labels-003").meta({ mode: "public" })("Common: Add label to
   await contextmenu.triggerContextMenuAction("remove", "");
   const PhotoCountHolidayAfterDelete = await photo.getPhotoCount("all");
 
-  await t.expect(PhotoCountHolidayAfterDelete).eql(2);
+  await t.expect(PhotoCountHolidayAfterDelete).eql(InitialPhotoCountHoliday);
 });
 
 test.meta("testID", "labels-004").meta({ mode: "public" })("Common: Delete label", async (t) => {

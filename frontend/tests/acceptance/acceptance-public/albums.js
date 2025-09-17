@@ -291,13 +291,13 @@ test.meta("testID", "albums-004-duplicate").meta({ type: "short", mode: "public"
 
     if (await holidayOption.visible) {
       await t.click(holidayOption);
-      const afterDropdown = await Selector("v-chip").withText("Holiday").count;
+      const afterDropdown = await Selector("span.v-chip").withText("Holiday").count;
       await t.expect(afterDropdown).eql(1, "Should have 1 chip after dropdown selection");
 
       await t.click(Selector(".input-albums input"));
       await t.typeText(Selector(".input-albums input"), "Holiday", { replace: true }).pressKey("enter");
 
-      const afterTyping = await Selector("v-chip").withText("Holiday").count;
+      const afterTyping = await Selector("span.v-chip").withText("Holiday").count;
       await t.expect(afterTyping).eql(1, "Should still have only 1 chip after typing duplicate");
     }
 

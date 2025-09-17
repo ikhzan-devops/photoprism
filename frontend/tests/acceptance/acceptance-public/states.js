@@ -114,6 +114,10 @@ test.meta("testID", "states-003").meta({ mode: "public" })(
   async (t) => {
     await menu.openPage("albums");
     const AlbumCount = await album.getAlbumCount("all");
+    await toolbar.search("Holiday");
+    const HolidayAlbumUid = await album.getNthAlbumUid("all", 0);
+    await album.openAlbumWithUid(HolidayAlbumUid);
+    const InitialPhotoCountHoliday = await photo.getPhotoCount("all");
     await menu.openPage("states");
     await toolbar.search("Canada");
     const FirstStateUid = await album.getNthAlbumUid("all", 0);
@@ -144,14 +148,13 @@ test.meta("testID", "states-003").meta({ mode: "public" })(
     const AlbumCountAfterDelete = await album.getAlbumCount("all");
 
     await t.expect(AlbumCountAfterDelete).eql(AlbumCount);
-    await toolbar.search("Holiday");
-    await album.openNthAlbum(0);
+    await album.openAlbumWithUid(HolidayAlbumUid);
     await photo.selectPhotoFromUID(FirstPhotoUid);
     await photo.selectPhotoFromUID(SecondPhotoUid);
     await contextmenu.triggerContextMenuAction("remove", "");
     const PhotoCountHolidayAfterDelete = await photo.getPhotoCount("all");
 
-    await t.expect(PhotoCountHolidayAfterDelete).eql(2);
+    await t.expect(PhotoCountHolidayAfterDelete).eql(InitialPhotoCountHoliday);
 
     await menu.openPage("states");
     await album.openAlbumWithUid(FirstStateUid);
