@@ -45,10 +45,22 @@ HTTP API
 - Common groups in `routes.go`: sessions, OAuth/OIDC, config, users, services, thumbnails, video, downloads/zip, index/import, photos/files/labels/subjects/faces, batch ops, cluster, technical (metrics, status, echo).
 
 Configuration & Flags
-- Options struct: `internal/config/options.go` with `yaml:"…"` and `flag:"…"` tags.
-- Flags/env: `internal/config/flags.go` (`EnvVars(...)`); report rows: `internal/config/options_report.go` → surfaced by `photoprism show config`.
+- Options struct: `internal/config/options.go` with `yaml:"…"` (for `defaults.yml`/`options.yml`), `json:"…"` (clients/API), and `flag:"…"` (CLI flags/env) tags.
+  - For secrets/internals: `json:"-"` disables JSON processing to prevent values from being exposed through the API (see `internal/api/config_options.go`).
+  - If needed: `yaml:"-"` disables YAML processing; `flag:"-"` prevents `ApplyCliContext()` from assigning CLI values (flags/env variables) to a field, without affecting the flags in `internal/config/flags.go`.
+  - Annotations may include edition tags like `tags:"plus,pro"` to control visibility (see `internal/config/options_report.go` logic).
+- Global flags/env: `internal/config/flags.go` (`EnvVars(...)`)
+  - Available flags/env: `internal/config/cli_flags_report.go` + `internal/config/report_sections.go` → surfaced by `photoprism show config-options --md`
+  - YAML options mapping: `internal/config/options_report.go` + `internal/config/report_sections.go` → surfaced by `photoprism show config-yaml --md`
+  - Report current values: `internal/config/report.go` → surfaced by `photoprism show config` (alias `photoprism config --md`).
+- Precedence: `defaults.yml` < CLI/env < `options.yml` (global options rule). See Agent Tips in `AGENTS.md`.
 - Getters are grouped by topic, e.g. DB in `internal/config/config_db.go`, server in `config_server.go`, TLS in `config_tls.go`, etc.
-- Precedence: options.yml overrides CLI/env (global rule). See Agent Tips in AGENTS.md.
+- Client Config (read-only)
+  - Endpoint: GET `/api/v1/config` (see `internal/api/api_client_config.go`).
+  - Assembly: Built from `internal/config/client_config.go` (not a direct serialization of Options) plus extension values registered via `config.Register` in `internal/config/extensions.go`.
+  - Updates: Back-end calls `UpdateClientConfig()` to publish "config.updated" over websockets after changes (see `internal/api/config_options.go` and `internal/api/config_settings.go`).
+  - ACL/mode aware: Values are filtered by user/session and may differ for public vs. authenticated users.
+  - Don’t expose secrets: Treat it as client-visible; avoid sensitive data. To add fields, extend client values via `config.Register` rather than exposing Options directly.
 
 Database & Migrations
 - Driver: GORM v1 (`github.com/jinzhu/gorm`). No `WithContext`. Use `db.Raw(stmt).Scan(&nop)` for raw SQL.
@@ -111,7 +123,7 @@ Common How‑Tos
   - Tests: cover CLI/env/file precedence (see `internal/config/test.go` helpers)
 
 - Touch the DB schema
-  - Add migration in `internal/entity/migrate/<dialect>/...` and/or the migrations registry
+  - Use GORM auto-migration, or add a custom migration in `internal/entity/migrate/<dialect>/...` and run `go generate` or `make generate` (runs `go generate` for all packages) 
   - Bump/review version gates in `migrate.Version` usage via `config_db.go`
   - Tests: run against SQLite by default; for MySQL cases, gate appropriately
 

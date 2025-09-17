@@ -153,7 +153,7 @@ If anything in this file conflicts with the `Makefile` or the Developer Guide, t
 The following conventions summarize the insights gained when adding new configuration options, API endpoints, and related tests. Follow these conventions unless a maintainer requests an exception.
 
 - Config precedence and new options
-  - Global precedence: `options.yml` overrides CLI flags and environment variables, if present. Don’t special‑case a single option.
+  - Global precedence: If present, values in `options.yml` override CLI flags and environment variables; all override config defaults in `defaults.yml`. Don’t special‑case a single option.
   - Adding a new option:
     - Add a field to `internal/config/options.go` with `yaml:"…"` and a `flag:"…"` tag.
     - Register a CLI flag and env mapping in `internal/config/flags.go` (use `EnvVars(...)`).
