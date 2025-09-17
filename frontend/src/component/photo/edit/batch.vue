@@ -1110,10 +1110,10 @@ export default {
         this.formData[fieldName].action = this.actions.none;
         this.formData[fieldName].value = this.previousFormData[fieldName]?.value || "";
 
-        // TODO: add this if it is necessary to change the mixed value
-        // if (this.formData[fieldName].mixed !== this.previousFormData[fieldName].mixed) {
-        //   this.formData[fieldName].mixed = true;
-        // }
+        // Restore the original mixed state when undoing changes
+        if (this.previousFormData[fieldName]?.mixed !== undefined) {
+          this.formData[fieldName].mixed = this.previousFormData[fieldName].mixed;
+        }
       } else if (classList.contains("mdi-delete")) {
         this.deletedFields[fieldName] = true;
 

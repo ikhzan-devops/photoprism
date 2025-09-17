@@ -99,7 +99,6 @@ export default {
   data() {
     return {
       newItemTitle: null,
-      originalStates: new Map(),
     };
   },
   computed: {
@@ -120,23 +119,6 @@ export default {
     shouldRenderChips() {
       // Render chips container only when there are chips
       return this.processedItems.length > 0 || !this.showInput;
-    },
-  },
-  watch: {
-    items: {
-      handler(newItems) {
-        newItems.forEach((item) => {
-          const itemKey = item.value || item.title;
-          if (!item.isNew && !this.originalStates.has(itemKey)) {
-            this.originalStates.set(itemKey, {
-              mixed: item.mixed,
-              action: item.action || "none",
-            });
-          }
-        });
-      },
-      immediate: true,
-      deep: true,
     },
   },
   methods: {

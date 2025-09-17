@@ -259,29 +259,4 @@ describe("component/file/chip-selector", () => {
       expect(wrapper.vm.shouldRenderChips).toBe(false);
     });
   });
-
-  describe("Original States Tracking", () => {
-    it("should track original states of items", async () => {
-      const newItems = [
-        { value: "test1", title: "Test 1", mixed: true, action: "none" },
-        { value: "test2", title: "Test 2", mixed: false, action: "add" },
-      ];
-
-      await wrapper.setProps({ items: newItems });
-
-      expect(wrapper.vm.originalStates.has("test1")).toBe(true);
-      expect(wrapper.vm.originalStates.get("test1")).toEqual({
-        mixed: true,
-        action: "none",
-      });
-    });
-
-    it("should not track original states for new items", async () => {
-      const newItems = [{ value: "new1", title: "New 1", mixed: false, action: "add", isNew: true }];
-
-      await wrapper.setProps({ items: newItems });
-
-      expect(wrapper.vm.originalStates.has("new1")).toBe(false);
-    });
-  });
 });
