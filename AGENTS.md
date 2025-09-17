@@ -13,6 +13,8 @@ Learn more: https://agents.md/
 - Contributing: https://github.com/photoprism/photoprism/blob/develop/CONTRIBUTING.md
 - Security: https://github.com/photoprism/photoprism/blob/develop/SECURITY.md
 - REST API: https://docs.photoprism.dev/ (Swagger), https://docs.photoprism.app/developer-guide/api/ (Docs)
+- Backend CODEMAP: CODEMAP.md
+- Frontend CODEMAP: frontend/CODEMAP.md
 - Developer Cheatsheet – Portal & Cluster: specs/portal/README.md
 - Backend (Go) Testing Guide: specs/dev/backend-testing.md
 

@@ -61,6 +61,7 @@ Configuration & Flags
   - Updates: Back-end calls `UpdateClientConfig()` to publish "config.updated" over websockets after changes (see `internal/api/config_options.go` and `internal/api/config_settings.go`).
   - ACL/mode aware: Values are filtered by user/session and may differ for public vs. authenticated users.
   - Don’t expose secrets: Treat it as client-visible; avoid sensitive data. To add fields, extend client values via `config.Register` rather than exposing Options directly.
+  - Refresh cadence: The web UI (non‑mobile) also polls for updates every 10 minutes via `$config.update()` in `frontend/src/app.js`, complementing the websocket push.
 
 Database & Migrations
 - Driver: GORM v1 (`github.com/jinzhu/gorm`). No `WithContext`. Use `db.Raw(stmt).Scan(&nop)` for raw SQL.
