@@ -20,7 +20,7 @@ Learn more: https://agents.md/
 
 - Always use the latest spec version for a topic (highest `-vN`), as linked from `specs/README.md` and the portal cheatsheet (`specs/portal/README.md`).
 - Older spec versions remain in the repo for historical reference but are not linked from the main TOC. Do not base new work on superseded files (e.g., `*-v1.md` when `*-v2.md` exists).
-- When adding or updating specs, publish changes under a new file with an incremented version suffix (e.g., `*-v3.md`) instead of overwriting.
+- When adding or updating specs, publish changes under a new file with an incremented version suffix (e.g., `*-v3.md`) instead of overwriting. Refer to the Change Management section of each document for specific instructions.
 - Developer Cheatsheet – Portal & Cluster: specs/portal/README.md
 - Backend (Go) Testing Guide: specs/dev/backend-testing.md
 
