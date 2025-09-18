@@ -163,76 +163,9 @@ describe("component/photo/edit/batch", () => {
             template: '<div class="v-dialog">' + '<slot v-if="modelValue" />' + "</div>",
             props: ["modelValue"],
           },
-          VCard: {
-            template: '<div class="v-card"><slot /></div>',
-          },
-          VToolbar: {
-            template: '<div class="v-toolbar"><slot /></div>',
-          },
-          VToolbarTitle: {
-            template: '<div class="v-toolbar-title"><slot /></div>',
-          },
-          VBtn: {
-            template: '<button class="v-btn"><slot /></button>',
-          },
-          VIcon: {
-            template: '<i class="v-icon"><slot /></i>',
-          },
-          VProgressLinear: {
-            template: '<div class="v-progress-linear"></div>',
-            props: ["indeterminate"],
-          },
-          VRow: {
-            template: '<div class="v-row"><slot /></div>',
-          },
-          VCol: {
-            template: '<div class="v-col"><slot /></div>',
-          },
-          VForm: {
-            template: '<form class="v-form"><slot /></form>',
-          },
-          VTextField: {
-            template: '<input class="v-text-field" />',
-            props: ["modelValue", "label"],
-            emits: ["update:modelValue"],
-          },
-          VTextarea: {
-            template: '<textarea class="v-textarea"></textarea>',
-            props: ["modelValue", "label"],
-            emits: ["update:modelValue"],
-          },
-          VCombobox: {
-            template: '<select class="v-combobox"></select>',
-            props: ["modelValue", "items", "label"],
-            emits: ["update:modelValue"],
-          },
-          VAutocomplete: {
-            template: '<select class="v-autocomplete"></select>',
-            props: ["modelValue", "items", "label"],
-            emits: ["update:modelValue"],
-          },
-          VBtnToggle: {
-            template: '<div class="v-btn-toggle"><slot /></div>',
-            props: ["modelValue"],
-            emits: ["update:modelValue"],
-          },
           VDataTable: {
             template: '<div class="v-data-table"></div>',
             props: ["headers", "items"],
-          },
-          VExpansionPanels: {
-            template: '<div class="v-expansion-panels"><slot /></div>',
-          },
-          VExpansionPanel: {
-            template: '<div class="v-expansion-panel"><slot /></div>',
-          },
-          VExpansionPanelText: {
-            template: '<div class="v-expansion-panel-text"><slot /></div>',
-          },
-          VCheckbox: {
-            template: '<input type="checkbox" class="v-checkbox" />',
-            props: ["modelValue"],
-            emits: ["update:modelValue"],
           },
           PLocationInput: {
             template: '<div class="p-location-input"></div>',
@@ -284,7 +217,7 @@ describe("component/photo/edit/batch", () => {
       };
     });
 
-    it("should compute form title correctly", () => {
+    it("should compute form title correctly", () => {1
       expect(wrapper.vm.formTitle).toBe("Batch Edit (3)");
     });
 
