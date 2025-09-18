@@ -437,6 +437,20 @@ test-coverage:
 	go test -parallel 1 -count 1 -cpu 1 -failfast -tags="slow,develop" -timeout 30m -coverprofile coverage.txt -covermode atomic ./pkg/... ./internal/...
 	go tool cover -html=coverage.txt -o coverage.html
 	go tool cover -func coverage.txt  | grep total:
+git-pull:
+	@echo "Pulling changes from remote repositories..."; \
+	if [ -d .git ]; then \
+		echo "Updating photoprism"; \
+		git pull --ff-only || echo "Warning: git pull failed in root"; \
+	else \
+		echo "Skipping: current directory is not a Git repo"; \
+	fi; \
+	for d in */ ; do \
+		[ -d "$$d" ] || continue; \
+		[ -d "$$d/.git" ] || continue; \
+		echo "Updating photoprism/$$d"; \
+		git -C "$$d" pull --ff-only || echo "Warning: git pull failed in $$d"; \
+	done;
 docker-pull:
 	$(DOCKER_COMPOSE) --profile=all pull --ignore-pull-failures
 	$(DOCKER_COMPOSE) -f compose.latest.yaml pull --ignore-pull-failures

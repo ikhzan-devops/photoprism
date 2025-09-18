@@ -34,6 +34,21 @@ func TestConfig_Cluster(t *testing.T) {
 		// Use an isolated config path so we don't affect repo storage fixtures.
 		tempCfg := t.TempDir()
 		c.options.ConfigPath = tempCfg
+		c.options.NodeSecret = ""
+		c.options.PortalUrl = ""
+		c.options.PortalToken = ""
+		c.options.OptionsYaml = filepath.Join(tempCfg, "options.yml")
+		// Clear values potentially loaded at NewConfig creation.
+		c.options.NodeSecret = ""
+		c.options.PortalUrl = ""
+		c.options.PortalToken = ""
+		c.options.OptionsYaml = filepath.Join(tempCfg, "options.yml")
+		// Clear values that may have been loaded from repo fixtures before we
+		// isolated the config path.
+		c.options.NodeSecret = ""
+		c.options.PortalUrl = ""
+		c.options.PortalToken = ""
+		c.options.OptionsYaml = filepath.Join(tempCfg, "options.yml")
 
 		// PortalConfigPath always points to a "cluster" subfolder under ConfigPath.
 		expectedCluster := filepath.Join(c.ConfigPath(), fs.ClusterDir)
@@ -54,9 +69,14 @@ func TestConfig_Cluster(t *testing.T) {
 	})
 
 	t.Run("PortalAndSecrets", func(t *testing.T) {
-		c := NewConfig(CliTestContext())
+		// Isolate config so defaults aren't overridden by repo fixtures: set config-path
+		// before creating the Config so NewConfig does not load repository options.yml.
+		tempCfg := t.TempDir()
+		ctx := CliTestContext()
+		assert.NoError(t, ctx.Set("config-path", tempCfg))
+		c := NewConfig(ctx)
 
-		// Defaults
+		// Defaults (no options.yml present)
 		assert.Equal(t, "", c.PortalUrl())
 		assert.Equal(t, "", c.PortalToken())
 		assert.Equal(t, "", c.NodeSecret())
