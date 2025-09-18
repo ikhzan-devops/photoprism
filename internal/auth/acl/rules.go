@@ -47,6 +47,8 @@ var Rules = ACL{
 		RoleAdmin:   GrantFullAccess,
 		RoleGuest:   GrantReactShared,
 		RoleVisitor: GrantViewShared,
+		RoleNode:    GrantUseOwn,
+		RolePortal:  GrantUseOwn,
 		RoleClient:  GrantFullAccess,
 	},
 	ResourceLabels: Roles{
@@ -62,30 +64,38 @@ var Rules = ACL{
 		RoleAdmin:   GrantFullAccess,
 		RoleGuest:   GrantViewUpdateOwn,
 		RoleVisitor: GrantViewOwn,
+		RolePortal:  GrantFullAccess,
 		RoleClient:  GrantViewUpdateOwn,
 	},
 	ResourceServices: Roles{
-		RoleAdmin: GrantFullAccess,
+		RoleAdmin:  GrantFullAccess,
+		RolePortal: GrantFullAccess,
 	},
 	ResourcePasscode: Roles{
-		RoleAdmin: GrantFullAccess,
-		RoleGuest: GrantConfigureOwn,
+		RoleAdmin:  GrantFullAccess,
+		RolePortal: GrantFullAccess,
+		RoleGuest:  GrantConfigureOwn,
 	},
 	ResourcePassword: Roles{
-		RoleAdmin: GrantFullAccess,
-		RoleGuest: GrantUpdateOwn,
+		RoleAdmin:  GrantFullAccess,
+		RolePortal: GrantFullAccess,
+		RoleGuest:  GrantUpdateOwn,
 	},
 	ResourceUsers: Roles{
 		RoleAdmin:  GrantManageOwn,
 		RoleGuest:  GrantViewUpdateOwn,
+		RoleNode:   GrantViewOwn,
+		RolePortal: GrantFullAccess,
 		RoleClient: GrantViewOwn,
 	},
 	ResourceSessions: Roles{
 		RoleAdmin:   GrantManageOwn,
+		RolePortal:  GrantFullAccess,
 		RoleDefault: GrantOwn,
 	},
 	ResourceLogs: Roles{
 		RoleAdmin:  GrantFullAccess,
+		RolePortal: GrantFullAccess,
 		RoleClient: GrantFullAccess,
 	},
 	ResourceApi: Roles{
@@ -94,6 +104,7 @@ var Rules = ACL{
 	},
 	ResourceWebDAV: Roles{
 		RoleAdmin:  GrantFullAccess,
+		RolePortal: GrantFullAccess,
 		RoleClient: GrantFullAccess,
 	},
 	ResourceWebhooks: Roles{
@@ -102,14 +113,20 @@ var Rules = ACL{
 	},
 	ResourceMetrics: Roles{
 		RoleAdmin:  GrantFullAccess,
+		RoleNode:   GrantNone,
+		RolePortal: GrantViewAll,
 		RoleClient: GrantViewAll,
 	},
 	ResourceVision: Roles{
 		RoleAdmin:  GrantFullAccess,
+		RoleNode:   GrantUseOwn,
+		RolePortal: GrantUseOwn,
 		RoleClient: GrantUseOwn,
 	},
 	ResourceCluster: Roles{
 		RoleAdmin:  GrantFullAccess,
+		RoleNode:   GrantSearchDownloadUpdateOwn,
+		RolePortal: GrantFullAccess,
 		RoleClient: GrantSearchDownloadUpdateOwn,
 	},
 	ResourceFeedback: Roles{
@@ -117,6 +134,8 @@ var Rules = ACL{
 	},
 	ResourceDefault: Roles{
 		RoleAdmin:  GrantFullAccess,
+		RoleNode:   GrantNone,
+		RolePortal: GrantNone,
 		RoleClient: GrantNone,
 	},
 }

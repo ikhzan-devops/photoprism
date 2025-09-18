@@ -157,6 +157,8 @@ var GrantDefaults = Roles{
 	RoleAdmin:   GrantFullAccess,
 	RoleGuest:   GrantReactShared,
 	RoleVisitor: GrantViewShared,
+	RoleNode:    GrantSearchShared,
+	RolePortal:  GrantFullAccess,
 	RoleClient:  GrantFullAccess,
 }
 

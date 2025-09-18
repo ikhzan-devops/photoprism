@@ -8,6 +8,8 @@ const (
 	RoleViewer  Role = "viewer"
 	RoleGuest   Role = "guest"
 	RoleVisitor Role = "visitor"
+	RoleNode    Role = "node"
+	RolePortal  Role = "portal"
 	RoleClient  Role = "client"
 	RoleNone    Role = ""
 )

@@ -14,7 +14,7 @@ type NodeOpts struct {
 // NodeOptsForSession returns the default exposure policy for a session.
 // Admin users see internalUrl and DB metadata; others get a redacted view.
 func NodeOptsForSession(s *entity.Session) NodeOpts {
-	if s != nil && s.User() != nil && s.User().IsAdmin() {
+	if s != nil && s.GetUser() != nil && s.GetUser().IsAdmin() {
 		return NodeOpts{IncludeInternalURL: true, IncludeDBMeta: true}
 	}
 
