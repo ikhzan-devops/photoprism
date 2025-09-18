@@ -70,7 +70,9 @@ func TestClusterNodesRegister(t *testing.T) {
 		assert.Equal(t, http.StatusConflict, r.Code) // DB conflict under SQLite
 
 		// Secret should have rotated and been persisted even though DB ensure failed.
-		n2, err := regy.Get("test-id")
+		// Fetch by name (most-recently-updated) to avoid flakiness if another test adds
+		// a node with the same name and a different id.
+		n2, err := regy.FindByName("pp-node-01")
 		assert.NoError(t, err)
 		assert.NotEqual(t, "oldsecret", n2.Secret)
 		assert.NotEmpty(t, n2.SecretRot)
