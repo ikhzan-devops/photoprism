@@ -65,22 +65,18 @@ func ClusterSummary(router *gin.RouterGroup) {
 //	@Router		/api/v1/cluster/health [get]
 func ClusterHealth(router *gin.RouterGroup) {
 	router.GET("/cluster/health", func(c *gin.Context) {
-		s := Auth(c, acl.ResourceCluster, acl.ActionView)
-
-		if s.Abort(c) {
-			return
-		}
-
 		conf := get.Config()
 
+		// Align headers with server-level health endpoints.
+		c.Header(header.CacheControl, header.CacheControlNoStore)
+		c.Header(header.AccessControlAllowOrigin, header.Any)
+
+		// Return error if not a portal node.
 		if !conf.IsPortal() {
 			AbortFeatureDisabled(c)
 			return
 		}
 
-		// Align headers with server-level health endpoints
-		c.Header(header.CacheControl, header.CacheControlNoStore)
-		c.Header(header.AccessControlAllowOrigin, header.Any)
 		c.JSON(http.StatusOK, NewHealthResponse("ok"))
 	})
 }
