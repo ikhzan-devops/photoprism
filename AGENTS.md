@@ -163,7 +163,7 @@ If anything in this file conflicts with the `Makefile` or the Developer Guide, t
   - Commands: `go test ./internal/commands -run <Name> -count=1`
   - Avoid `./...` unless you intend to run the whole suite.
 - Heavy tests (migrations/fixtures): internal/entity and internal/photoprism run DB migrations and load fixtures; expect 30–120s on first run. Narrow with `-run` and keep iterations low.
-- Photoprism config in tests: inside `internal/photoprism`, use the package global `photoprism.Config()` for runtime‑accurate behavior. Only construct a new config if you replace it via `photoprism.SetConfig`.
+- PhotoPrism config in tests: inside `internal/photoprism`, use the package global `photoprism.Config()` for runtime‑accurate behavior. Only construct a new config if you replace it via `photoprism.SetConfig`.
 - CLI command tests: use `RunWithTestContext(cmd, args)` to capture output and avoid `os.Exit`; assert `cli.ExitCoder` codes when you need them.
 - Reports are quoted: strings in CLI "show" output are rendered with quotes by the report helpers. Prefer `assert.Contains`/regex over strict, fully formatted equality when validating content.
 
