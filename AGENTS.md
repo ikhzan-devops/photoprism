@@ -201,7 +201,7 @@ The following conventions summarize the insights gained when adding new configur
     - Add name/value to `rows` in `*config.Report()`, after the same option as in `internal/config/options.go` for `photoprism show config` to report it (obfuscate passwords with `*`).
     - If the value must persist (e.g., a generated UUID), write it back to `options.yml` using a focused helper that merges keys.
     - Tests: cover CLI/env/file precedence and persistence. When tests need a new flag, add it to `CliTestContext` in `internal/config/test.go`.
-  - Example: `PortalUUID` precedence = `options.yml` → CLI/env (`--portal-uuid` / `PHOTOPRISM_PORTAL_UUID`) → generate UUIDv4 and persist.
+  - Example: `ClusterUUID` precedence = `options.yml` → CLI/env (`--cluster-uuid` / `PHOTOPRISM_CLUSTER_UUID`) → generate UUIDv4 and persist.
   - CLI flag precedence: when you need to favor an explicit CLI flag over defaults, check `c.cliCtx.IsSet("<flag>")` before applying additional precedence logic.
   - Persisting generated options: when writing to `options.yml`, set `c.options.OptionsYaml = filepath.Join(c.ConfigPath(), "options.yml")` and reload the file to keep in‑memory
 
@@ -219,7 +219,7 @@ The following conventions summarize the insights gained when adding new configur
   - Compare secrets/tokens using constant‑time compare; don’t log secrets.
   - Set `Cache-Control: no-store` on responses containing secrets.
   - Register new routes in `internal/server/routes.go`. Don’t edit `swagger.json` directly—run `make swag` to regenerate.
-  - Portal mode: set `PHOTOPRISM_NODE_TYPE=portal` and `PHOTOPRISM_PORTAL_TOKEN`.
+  - Portal mode: set `PHOTOPRISM_NODE_ROLE=portal` and `PHOTOPRISM_JOIN_TOKEN`.
   - Pagination defaults: for new list endpoints, prefer `count` default 100 (max 1000) and `offset` ≥ 0; document both in Swagger and validate bounds in handlers.
   - Document parameters explicitly in Swagger annotations (path, query, and body) so `make swag` produces accurate docs.
   - Swagger: `make fmt-go swag-fmt && make swag` after adding or changing API annotations.
@@ -246,7 +246,7 @@ The following conventions summarize the insights gained when adding new configur
 - Import rules (avoid cycles):
   - Do not import `internal/service/cluster/instance/*` from `internal/config` or the cluster root package.
   - Instance/service bootstraps talk to the Portal via HTTP(S); do not import Portal internals such as `internal/api` or `internal/service/cluster/registry`/`provisioner`.
-  - Prefer constants from `internal/service/cluster/const.go` (e.g., `cluster.Instance`, `cluster.Portal`) over string literals.
+  - Prefer constants from `internal/service/cluster/const.go` (e.g., `cluster.RoleInstance`, `cluster.RolePortal`) over string literals.
 
 - Early extension lifecycle (config.Init sequence):
   1) Load `options.yml` and settings (`c.initSettings()`)
