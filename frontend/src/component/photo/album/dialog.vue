@@ -71,6 +71,7 @@
 </template>
 <script>
 import Album from "model/album";
+import { createAlbumSelectionWatcher } from "common/albums";
 
 // TODO: Handle cases where users have more than 10000 albums.
 const MaxResults = 10000;
@@ -87,9 +88,9 @@ export default {
   data() {
     return {
       loading: false,
-      selectedAlbums: [],
       albums: [],
       items: [],
+      selectedAlbums: [],
       labels: {
         addToAlbum: this.$gettext("Add to album"),
         createAlbum: this.$gettext("Create album"),
@@ -103,48 +104,7 @@ export default {
         this.load("");
       }
     },
-    selectedAlbums: {
-      handler(newVal) {
-        if (!Array.isArray(newVal)) return;
-
-        let changed = false;
-        const processed = [];
-        const seenUids = new Set();
-
-        newVal.forEach((item) => {
-          // If it's a string, try to match it with existing albums
-          if (typeof item === "string" && item.trim().length > 0) {
-            const matchedAlbum = this.items.find(
-              (album) => album.Title && album.Title.toLowerCase() === item.trim().toLowerCase()
-            );
-
-            if (matchedAlbum && !seenUids.has(matchedAlbum.UID)) {
-              // Replace string with actual album object
-              processed.push(matchedAlbum);
-              seenUids.add(matchedAlbum.UID);
-              changed = true;
-            } else if (!matchedAlbum) {
-              // Keep as string for new album creation
-              processed.push(item.trim());
-            }
-          } else if (typeof item === "object" && item?.UID && !seenUids.has(item.UID)) {
-            // Keep existing album objects, but prevent duplicates
-            processed.push(item);
-            seenUids.add(item.UID);
-          } else if (typeof item === "object" && item?.UID && seenUids.has(item.UID)) {
-            // Skip duplicate album objects
-            changed = true;
-          }
-        });
-
-        // Update selectedAlbums if changes were made
-        if (changed || processed.length !== newVal.length) {
-          this.$nextTick(() => {
-            this.selectedAlbums = processed;
-          });
-        }
-      },
-    },
+    selectedAlbums: createAlbumSelectionWatcher('items'),
   },
   methods: {
     afterEnter() {
