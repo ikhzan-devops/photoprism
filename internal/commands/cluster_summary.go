@@ -35,10 +35,10 @@ func clusterSummaryAction(ctx *cli.Context) error {
 		nodes, _ := r.List()
 
 		resp := cluster.SummaryResponse{
-			PortalUUID: conf.PortalUUID(),
-			Nodes:      len(nodes),
-			DB:         cluster.DBInfo{Driver: conf.DatabaseDriverName(), Host: conf.DatabaseHost(), Port: conf.DatabasePort()},
-			Time:       time.Now().UTC().Format(time.RFC3339),
+			UUID:     conf.ClusterUUID(),
+			Nodes:    len(nodes),
+			Database: cluster.DatabaseInfo{Driver: conf.DatabaseDriverName(), Host: conf.DatabaseHost(), Port: conf.DatabasePort()},
+			Time:     time.Now().UTC().Format(time.RFC3339),
 		}
 
 		if ctx.Bool("json") {
@@ -48,7 +48,7 @@ func clusterSummaryAction(ctx *cli.Context) error {
 		}
 
 		cols := []string{"Portal UUID", "Nodes", "DB Driver", "DB Host", "DB Port", "Time"}
-		rows := [][]string{{resp.PortalUUID, fmt.Sprintf("%d", resp.Nodes), resp.DB.Driver, resp.DB.Host, fmt.Sprintf("%d", resp.DB.Port), resp.Time}}
+		rows := [][]string{{resp.UUID, fmt.Sprintf("%d", resp.Nodes), resp.Database.Driver, resp.Database.Host, fmt.Sprintf("%d", resp.Database.Port), resp.Time}}
 		out, err := report.RenderFormat(rows, cols, report.CliFormat(ctx))
 		fmt.Printf("\n%s\n", out)
 		return err

@@ -69,7 +69,7 @@ func clusterNodesListAction(ctx *cli.Context) error {
 		page := items[offset:end]
 
 		// Build admin view (include internal URL and DB meta).
-		opts := reg.NodeOpts{IncludeInternalURL: true, IncludeDBMeta: true}
+		opts := reg.NodeOpts{IncludeAdvertiseUrl: true, IncludeDatabase: true}
 		out := reg.BuildClusterNodes(page, opts)
 
 		if ctx.Bool("json") {
@@ -78,15 +78,15 @@ func clusterNodesListAction(ctx *cli.Context) error {
 			return nil
 		}
 
-		cols := []string{"ID", "Name", "Type", "Labels", "Internal URL", "DB Name", "DB User", "DB Last Rotated", "Created At", "Updated At"}
+		cols := []string{"ID", "Name", "Role", "Labels", "Internal URL", "DB Name", "DB User", "DB Last Rotated", "Created At", "Updated At"}
 		rows := make([][]string, 0, len(out))
 		for _, n := range out {
 			var dbName, dbUser, dbRot string
-			if n.DB != nil {
-				dbName, dbUser, dbRot = n.DB.Name, n.DB.User, n.DB.DBLastRotatedAt
+			if n.Database != nil {
+				dbName, dbUser, dbRot = n.Database.Name, n.Database.User, n.Database.RotatedAt
 			}
 			rows = append(rows, []string{
-				n.ID, n.Name, n.Type, formatLabels(n.Labels), n.InternalURL, dbName, dbUser, dbRot, n.CreatedAt, n.UpdatedAt,
+				n.ID, n.Name, n.Role, formatLabels(n.Labels), n.AdvertiseUrl, dbName, dbUser, dbRot, n.CreatedAt, n.UpdatedAt,
 			})
 		}
 

@@ -1719,7 +1719,7 @@
                 "operationId": "ClusterNodesRegister",
                 "parameters": [
                     {
-                        "description": "registration payload (nodeName required; optional: nodeType, labels, internalUrl, rotate, rotateSecret)",
+                        "description": "registration payload (nodeName required; optional: nodeRole, labels, advertiseUrl, rotate, rotateSecret)",
                         "name": "request",
                         "in": "body",
                         "required": true,
@@ -1898,7 +1898,7 @@
                         "required": true
                     },
                     {
-                        "description": "properties to update (type, labels, internalUrl)",
+                        "description": "properties to update (role, labels, advertiseUrl)",
                         "name": "node",
                         "in": "body",
                         "required": true,
@@ -6195,16 +6195,16 @@
         "cluster.Node": {
             "type": "object",
             "properties": {
+                "advertiseUrl": {
+                    "type": "string"
+                },
                 "createdAt": {
                     "type": "string"
                 },
-                "db": {
-                    "$ref": "#/definitions/cluster.NodeDB"
+                "database": {
+                    "$ref": "#/definitions/cluster.NodeDatabase"
                 },
                 "id": {
-                    "type": "string"
-                },
-                "internalUrl": {
                     "type": "string"
                 },
                 "labels": {
@@ -6216,7 +6216,7 @@
                 "name": {
                     "type": "string"
                 },
-                "type": {
+                "role": {
                     "type": "string"
                 },
                 "updatedAt": {
@@ -6224,13 +6224,13 @@
                 }
             }
         },
-        "cluster.NodeDB": {
+        "cluster.NodeDatabase": {
             "type": "object",
             "properties": {
-                "dbLastRotatedAt": {
+                "name": {
                     "type": "string"
                 },
-                "name": {
+                "rotatedAt": {
                     "type": "string"
                 },
                 "user": {
@@ -6238,12 +6238,9 @@
                 }
             }
         },
-        "cluster.RegisterDB": {
+        "cluster.RegisterDatabase": {
             "type": "object",
             "properties": {
-                "dbLastRotatedAt": {
-                    "type": "string"
-                },
                 "dsn": {
                     "type": "string"
                 },
@@ -6259,6 +6256,9 @@
                 "port": {
                     "type": "integer"
                 },
+                "rotatedAt": {
+                    "type": "string"
+                },
                 "user": {
                     "type": "string"
                 }
@@ -6273,8 +6273,8 @@
                 "alreadyRegistered": {
                     "type": "boolean"
                 },
-                "db": {
-                    "$ref": "#/definitions/cluster.RegisterDB"
+                "database": {
+                    "$ref": "#/definitions/cluster.RegisterDatabase"
                 },
                 "node": {
                     "$ref": "#/definitions/cluster.Node"
@@ -6306,14 +6306,14 @@
         "cluster.SummaryResponse": {
             "type": "object",
             "properties": {
+                "UUID": {
+                    "type": "string"
+                },
                 "db": {
                     "$ref": "#/definitions/cluster.DBInfo"
                 },
                 "nodes": {
                     "type": "integer"
-                },
-                "portalUUID": {
-                    "type": "string"
                 },
                 "time": {
                     "type": "string"
@@ -6486,9 +6486,6 @@
                 },
                 "IndexWorkers": {
                     "type": "integer"
-                },
-                "InternalUrl": {
-                    "type": "string"
                 },
                 "JpegQuality": {
                     "type": "integer"
@@ -9463,8 +9460,12 @@
                 1000000000,
                 60000000000,
                 3600000000000,
-                -9223372036854775808,
-                9223372036854775807,
+                1,
+                1000,
+                1000000,
+                1000000000,
+                60000000000,
+                3600000000000,
                 1,
                 1000,
                 1000000,
@@ -9481,8 +9482,12 @@
                 "Second",
                 "Minute",
                 "Hour",
-                "minDuration",
-                "maxDuration",
+                "Nanosecond",
+                "Microsecond",
+                "Millisecond",
+                "Second",
+                "Minute",
+                "Hour",
                 "Nanosecond",
                 "Microsecond",
                 "Millisecond",

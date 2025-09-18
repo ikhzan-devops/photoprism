@@ -16,19 +16,19 @@ import (
 
 // Node represents a registered cluster node persisted to YAML.
 type Node struct {
-	ID        string            `yaml:"id" json:"id"`
-	Name      string            `yaml:"name" json:"name"`
-	Type      string            `yaml:"type" json:"type"`
-	Labels    map[string]string `yaml:"labels" json:"labels"`
-	Internal  string            `yaml:"internalUrl" json:"internalUrl"`
-	CreatedAt string            `yaml:"createdAt" json:"createdAt"`
-	UpdatedAt string            `yaml:"updatedAt" json:"updatedAt"`
-	Secret    string            `yaml:"secret" json:"-"` // never JSON-encoded by default
-	SecretRot string            `yaml:"nodeSecretLastRotatedAt" json:"nodeSecretLastRotatedAt"`
-	DB        struct {
+	ID           string            `yaml:"id" json:"id"`
+	Name         string            `yaml:"name" json:"name"`
+	Role         string            `yaml:"role" json:"role"`
+	Labels       map[string]string `yaml:"labels" json:"labels"`
+	AdvertiseUrl string            `yaml:"advertiseUrl" json:"advertiseUrl"`
+	CreatedAt    string            `yaml:"createdAt" json:"createdAt"`
+	UpdatedAt    string            `yaml:"updatedAt" json:"updatedAt"`
+	Secret       string            `yaml:"secret" json:"-"` // never JSON-encoded by default
+	SecretRot    string            `yaml:"nodeSecretLastRotatedAt" json:"nodeSecretLastRotatedAt"`
+	DB           struct {
 		Name  string `yaml:"name" json:"name"`
 		User  string `yaml:"user" json:"user"`
-		RotAt string `yaml:"lastRotatedAt" json:"dbLastRotatedAt"`
+		RotAt string `yaml:"lastRotatedAt" json:"databaseLastRotatedAt"`
 	} `yaml:"db" json:"db"`
 }
 

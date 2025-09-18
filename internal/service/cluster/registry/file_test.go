@@ -27,14 +27,14 @@ func TestFindByNameDeterministic(t *testing.T) {
 	old := Node{
 		ID:        "id-old",
 		Name:      "pp-node-01",
-		Type:      "instance",
+		Role:      "instance",
 		CreatedAt: "2024-01-01T00:00:00Z",
 		UpdatedAt: "2024-01-01T00:00:00Z",
 	}
 	newer := Node{
 		ID:        "id-new",
 		Name:      "pp-node-01",
-		Type:      "instance",
+		Role:      "instance",
 		CreatedAt: "2024-02-01T00:00:00Z",
 		UpdatedAt: "2024-02-01T00:00:00Z",
 	}

@@ -30,7 +30,7 @@ var ClusterThemePullCommand = &cli.Command{
 				&cli.PathFlag{Name: "dest", Usage: "extract destination `PATH` (defaults to config/theme)", Value: ""},
 				&cli.BoolFlag{Name: "force", Aliases: []string{"f"}, Usage: "replace existing files at destination"},
 				&cli.StringFlag{Name: "portal-url", Usage: "Portal base `URL` (defaults to global config)"},
-				&cli.StringFlag{Name: "portal-token", Usage: "Portal access `TOKEN` (defaults to global config)"},
+				&cli.StringFlag{Name: "join-token", Usage: "Portal access `TOKEN` (defaults to global config)"},
 				JsonFlag,
 			},
 			Action: clusterThemePullAction,
@@ -50,15 +50,15 @@ func clusterThemePullAction(ctx *cli.Context) error {
 		if portalURL == "" {
 			return fmt.Errorf("portal-url not configured; set --portal-url or PHOTOPRISM_PORTAL_URL")
 		}
-		token := ctx.String("portal-token")
+		token := ctx.String("join-token")
 		if token == "" {
-			token = conf.PortalToken()
+			token = conf.JoinToken()
 		}
 		if token == "" {
-			token = os.Getenv(config.EnvVar("portal-token"))
+			token = os.Getenv(config.EnvVar("join-token"))
 		}
 		if token == "" {
-			return fmt.Errorf("portal-token not configured; set --portal-token or PHOTOPRISM_PORTAL_TOKEN")
+			return fmt.Errorf("join-token not configured; set --join-token or PHOTOPRISM_JOIN_TOKEN")
 		}
 
 		dest := ctx.Path("dest")

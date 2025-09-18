@@ -34,8 +34,8 @@ func TestClusterNodesListCommand(t *testing.T) {
 
 func TestClusterNodesShowCommand(t *testing.T) {
 	t.Run("NotFound", func(t *testing.T) {
-		_ = os.Setenv("PHOTOPRISM_NODE_TYPE", "portal")
-		defer os.Unsetenv("PHOTOPRISM_NODE_TYPE")
+		_ = os.Setenv("PHOTOPRISM_NODE_ROLE", "portal")
+		defer os.Unsetenv("PHOTOPRISM_NODE_ROLE")
 		out, err := RunWithTestContext(ClusterNodesShowCommand, []string{"show", "does-not-exist"})
 		assert.Error(t, err)
 		_ = out
@@ -52,7 +52,7 @@ func TestClusterThemePullCommand(t *testing.T) {
 
 func TestClusterRegisterCommand(t *testing.T) {
 	t.Run("ValidationMissingURL", func(t *testing.T) {
-		out, err := RunWithTestContext(ClusterRegisterCommand, []string{"register", "--name", "pp-node-01", "--type", "instance", "--portal-token", "token"})
+		out, err := RunWithTestContext(ClusterRegisterCommand, []string{"register", "--name", "pp-node-01", "--role", "instance", "--join-token", "token"})
 		assert.Error(t, err)
 		_ = out
 	})
@@ -61,7 +61,7 @@ func TestClusterRegisterCommand(t *testing.T) {
 func TestClusterSuccessPaths_PortalLocal(t *testing.T) {
 	// Enable portal mode for local admin commands.
 	c := get.Config()
-	c.Options().NodeType = "portal"
+	c.Options().NodeRole = "portal"
 
 	// Ensure registry and theme paths exist.
 	portCfg := c.PortalConfigPath()
@@ -77,7 +77,7 @@ func TestClusterSuccessPaths_PortalLocal(t *testing.T) {
 	// Create a registry node via FileRegistry.
 	r, err := reg.NewFileRegistry(c)
 	assert.NoError(t, err)
-	n := &reg.Node{Name: "pp-node-01", Type: "instance", Labels: map[string]string{"env": "test"}}
+	n := &reg.Node{Name: "pp-node-01", Role: "instance", Labels: map[string]string{"env": "test"}}
 	assert.NoError(t, r.Put(n))
 
 	// nodes ls (JSON)
@@ -121,11 +121,11 @@ func TestClusterSuccessPaths_PortalLocal(t *testing.T) {
 	defer ts.Close()
 
 	_ = os.Setenv("PHOTOPRISM_PORTAL_URL", ts.URL)
-	_ = os.Setenv("PHOTOPRISM_PORTAL_TOKEN", "test-token")
+	_ = os.Setenv("PHOTOPRISM_JOIN_TOKEN", "test-token")
 	defer os.Unsetenv("PHOTOPRISM_PORTAL_URL")
-	defer os.Unsetenv("PHOTOPRISM_PORTAL_TOKEN")
+	defer os.Unsetenv("PHOTOPRISM_JOIN_TOKEN")
 
-	out, err = RunWithTestContext(ClusterThemePullCommand.Subcommands[0], []string{"pull", "--dest", destDir, "-f", "--portal-url=" + ts.URL, "--portal-token=test-token"})
+	out, err = RunWithTestContext(ClusterThemePullCommand.Subcommands[0], []string{"pull", "--dest", destDir, "-f", "--portal-url=" + ts.URL, "--join-token=test-token"})
 	assert.NoError(t, err)
 	// Expect extracted file
 	assert.FileExists(t, filepath.Join(destDir, "test.txt"))

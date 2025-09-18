@@ -25,7 +25,7 @@ import (
 //	@Tags		Cluster
 //	@Accept		json
 //	@Produce	json
-//	@Param		request				body		object	true	"registration payload (nodeName required; optional: nodeType, labels, internalUrl, rotate, rotateSecret)"
+//	@Param		request				body		object	true	"registration payload (nodeName required; optional: nodeRole, labels, advertiseUrl, rotate, rotateSecret)"
 //	@Success	200,201				{object}	cluster.RegisterResponse
 //	@Failure	400,401,403,409,429	{object}	i18n.Response
 //	@Router		/api/v1/cluster/nodes/register [post]
@@ -50,7 +50,7 @@ func ClusterNodesRegister(router *gin.RouterGroup) {
 		}
 
 		// Token check (Bearer).
-		expected := conf.PortalToken()
+		expected := conf.JoinToken()
 		token := header.BearerToken(c)
 
 		if expected == "" || token == "" || subtle.ConstantTimeCompare([]byte(expected), []byte(token)) != 1 {
@@ -62,12 +62,12 @@ func ClusterNodesRegister(router *gin.RouterGroup) {
 
 		// Parse request.
 		var req struct {
-			NodeName     string            `json:"nodeName"`
-			NodeType     string            `json:"nodeType"`
-			Labels       map[string]string `json:"labels"`
-			InternalUrl  string            `json:"internalUrl"`
-			RotateDB     bool              `json:"rotate"`
-			RotateSecret bool              `json:"rotateSecret"`
+			NodeName       string            `json:"nodeName"`
+			NodeRole       string            `json:"nodeRole"`
+			Labels         map[string]string `json:"labels"`
+			AdvertiseUrl   string            `json:"advertiseUrl"`
+			RotateDatabase bool              `json:"rotateDatabase"`
+			RotateSecret   bool              `json:"rotateSecret"`
 		}
 
 		if err := c.ShouldBindJSON(&req); err != nil {
@@ -115,15 +115,15 @@ func ClusterNodesRegister(router *gin.RouterGroup) {
 			}
 
 			// Ensure that a database for this node exists (rotation optional).
-			creds, _, credsErr := provisioner.EnsureNodeDB(c, conf, name, req.RotateDB)
+			creds, _, credsErr := provisioner.EnsureNodeDatabase(c, conf, name, req.RotateDatabase)
 
 			if credsErr != nil {
-				event.AuditWarn([]string{clientIp, string(acl.ResourceCluster), "nodes", "register", "ensure db", event.Failed, "%s"}, clean.Error(credsErr))
+				event.AuditWarn([]string{clientIp, string(acl.ResourceCluster), "nodes", "register", "ensure database", event.Failed, "%s"}, clean.Error(credsErr))
 				c.JSON(http.StatusConflict, gin.H{"error": credsErr.Error()})
 				return
 			}
 
-			if req.RotateDB {
+			if req.RotateDatabase {
 				n.DB.RotAt = creds.LastRotatedAt
 				if putErr := regy.Put(n); putErr != nil {
 					event.AuditErr([]string{clientIp, string(acl.ResourceCluster), "nodes", "register", "persist node", event.Failed, "%s"}, clean.Error(putErr))
@@ -137,17 +137,17 @@ func ClusterNodesRegister(router *gin.RouterGroup) {
 			opts := reg.NodeOptsForSession(nil) // registration is token-based, not session; default redaction is fine
 			resp := cluster.RegisterResponse{
 				Node:               reg.BuildClusterNode(*n, opts),
-				DB:                 cluster.RegisterDB{Host: conf.DatabaseHost(), Port: conf.DatabasePort(), Name: n.DB.Name, User: n.DB.User},
+				Database:           cluster.RegisterDatabase{Host: conf.DatabaseHost(), Port: conf.DatabasePort(), Name: n.DB.Name, User: n.DB.User},
 				Secrets:            respSecret,
 				AlreadyRegistered:  true,
 				AlreadyProvisioned: true,
 			}
 
 			// Include password/dsn only if rotated now.
-			if req.RotateDB {
-				resp.DB.Password = creds.Password
-				resp.DB.DSN = creds.DSN
-				resp.DB.DBLastRotatedAt = creds.LastRotatedAt
+			if req.RotateDatabase {
+				resp.Database.Password = creds.Password
+				resp.Database.DSN = creds.DSN
+				resp.Database.RotatedAt = creds.LastRotatedAt
 			}
 
 			c.Header(header.CacheControl, header.CacheControlNoStore)
@@ -157,11 +157,11 @@ func ClusterNodesRegister(router *gin.RouterGroup) {
 
 		// New node.
 		n := &reg.Node{
-			ID:       rnd.UUID(),
-			Name:     name,
-			Type:     clean.TypeLowerDash(req.NodeType),
-			Labels:   req.Labels,
-			Internal: req.InternalUrl,
+			ID:           rnd.UUID(),
+			Name:         name,
+			Role:         clean.TypeLowerDash(req.NodeRole),
+			Labels:       req.Labels,
+			AdvertiseUrl: req.AdvertiseUrl,
 		}
 
 		// Generate node secret.
@@ -169,9 +169,9 @@ func ClusterNodesRegister(router *gin.RouterGroup) {
 		n.SecretRot = nowRFC3339()
 
 		// Ensure DB (force rotation at create path to return password).
-		creds, _, err := provisioner.EnsureNodeDB(c, conf, name, true)
+		creds, _, err := provisioner.EnsureNodeDatabase(c, conf, name, true)
 		if err != nil {
-			event.AuditWarn([]string{clientIp, string(acl.ResourceCluster), "nodes", "register", "ensure db", event.Failed, "%s"}, clean.Error(err))
+			event.AuditWarn([]string{clientIp, string(acl.ResourceCluster), "nodes", "register", "ensure database", event.Failed, "%s"}, clean.Error(err))
 			c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
 			return
 		}
@@ -186,7 +186,7 @@ func ClusterNodesRegister(router *gin.RouterGroup) {
 		resp := cluster.RegisterResponse{
 			Node:               reg.BuildClusterNode(*n, reg.NodeOptsForSession(nil)),
 			Secrets:            &cluster.RegisterSecrets{NodeSecret: n.Secret, NodeSecretLastRotatedAt: n.SecretRot},
-			DB:                 cluster.RegisterDB{Host: conf.DatabaseHost(), Port: conf.DatabasePort(), Name: creds.Name, User: creds.User, Password: creds.Password, DSN: creds.DSN, DBLastRotatedAt: creds.LastRotatedAt},
+			Database:           cluster.RegisterDatabase{Host: conf.DatabaseHost(), Port: conf.DatabasePort(), Name: creds.Name, User: creds.User, Password: creds.Password, DSN: creds.DSN, RotatedAt: creds.LastRotatedAt},
 			AlreadyRegistered:  false,
 			AlreadyProvisioned: false,
 		}

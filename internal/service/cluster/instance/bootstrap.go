@@ -13,7 +13,7 @@ import (
 	"strings"
 	"time"
 
-	yaml "gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v2"
 
 	"github.com/photoprism/photoprism/internal/config"
 	"github.com/photoprism/photoprism/internal/event"
@@ -37,13 +37,13 @@ func InitConfig(c *config.Config) error {
 	}
 
 	// Skip on portal nodes and unknown node types.
-	if c.IsPortal() || c.NodeType() != cluster.Instance {
+	if c.IsPortal() || c.NodeRole() != cluster.RoleInstance {
 		return nil
 	}
 
 	portalURL := strings.TrimSpace(c.PortalUrl())
-	portalToken := strings.TrimSpace(c.PortalToken())
-	if portalURL == "" || portalToken == "" {
+	joinToken := strings.TrimSpace(c.JoinToken())
+	if portalURL == "" || joinToken == "" {
 		return nil
 	}
 
@@ -61,7 +61,7 @@ func InitConfig(c *config.Config) error {
 
 	// Register with retry policy.
 	if cluster.BootstrapAutoJoinEnabled {
-		if err := registerWithPortal(c, u, portalToken); err != nil {
+		if err := registerWithPortal(c, u, joinToken); err != nil {
 			// Registration errors are expected when the Portal is temporarily unavailable
 			// or not configured with cluster endpoints (404). Keep as warn to signal
 			// exhaustion/terminal errors; per-attempt details are logged at debug level.
@@ -71,7 +71,7 @@ func InitConfig(c *config.Config) error {
 
 	// Pull theme if missing.
 	if cluster.BootstrapAutoThemeEnabled {
-		if err := installThemeIfMissing(c, u, portalToken); err != nil {
+		if err := installThemeIfMissing(c, u, joinToken); err != nil {
 			// Theme install failures are non-critical; log at debug to avoid noise.
 			log.Debugf("cluster: theme install skipped/failed (%s)", clean.Error(err))
 		}
@@ -110,16 +110,16 @@ func registerWithPortal(c *config.Config, portal *url.URL, token string) error {
 	// and no DSN/fields are set (raw options) and no password is provided via file.
 	opts := c.Options()
 	driver := c.DatabaseDriver()
-	wantRotateDB := (driver == config.MySQL || driver == config.MariaDB) &&
+	wantRotateDatabase := (driver == config.MySQL || driver == config.MariaDB) &&
 		opts.DatabaseDsn == "" && opts.DatabaseName == "" && opts.DatabaseUser == "" && opts.DatabasePassword == "" &&
 		c.DatabasePassword() == ""
 
 	payload := map[string]interface{}{
-		"nodeName":    c.NodeName(),
-		"nodeType":    string(cluster.Instance), // JSON wire format is string
-		"internalUrl": c.InternalUrl(),
+		"nodeName":     c.NodeName(),
+		"nodeRole":     cluster.RoleInstance, // JSON wire format is string
+		"advertiseUrl": c.AdvertiseUrl(),
 	}
-	if wantRotateDB {
+	if wantRotateDatabase {
 		payload["rotate"] = true
 	}
 
@@ -151,7 +151,7 @@ func registerWithPortal(c *config.Config, portal *url.URL, token string) error {
 			if err := dec.Decode(&r); err != nil {
 				return err
 			}
-			if err := persistRegistration(c, &r, wantRotateDB); err != nil {
+			if err := persistRegistration(c, &r, wantRotateDatabase); err != nil {
 				return err
 			}
 			if resp.StatusCode == http.StatusCreated {
@@ -191,7 +191,7 @@ func isTemporary(err error) bool {
 	return errors.As(err, &nerr) && nerr.Timeout()
 }
 
-func persistRegistration(c *config.Config, r *cluster.RegisterResponse, wantRotateDB bool) error {
+func persistRegistration(c *config.Config, r *cluster.RegisterResponse, wantRotateDatabase bool) error {
 	updates := map[string]interface{}{}
 
 	// Persist node secret only if missing locally and provided by server.
@@ -201,20 +201,20 @@ func persistRegistration(c *config.Config, r *cluster.RegisterResponse, wantRota
 
 	// Persist DB settings only if rotation was requested and driver is MySQL/MariaDB
 	// and local DB not configured (as checked before calling).
-	if wantRotateDB {
-		if r.DB.DSN != "" {
+	if wantRotateDatabase {
+		if r.Database.DSN != "" {
 			updates["DatabaseDriver"] = config.MySQL
-			updates["DatabaseDsn"] = r.DB.DSN
-		} else if r.DB.Name != "" && r.DB.User != "" && r.DB.Password != "" {
-			server := r.DB.Host
-			if r.DB.Port > 0 {
-				server = net.JoinHostPort(r.DB.Host, strconv.Itoa(r.DB.Port))
+			updates["DatabaseDsn"] = r.Database.DSN
+		} else if r.Database.Name != "" && r.Database.User != "" && r.Database.Password != "" {
+			server := r.Database.Host
+			if r.Database.Port > 0 {
+				server = net.JoinHostPort(r.Database.Host, strconv.Itoa(r.Database.Port))
 			}
 			updates["DatabaseDriver"] = config.MySQL
 			updates["DatabaseServer"] = server
-			updates["DatabaseName"] = r.DB.Name
-			updates["DatabaseUser"] = r.DB.User
-			updates["DatabasePassword"] = r.DB.Password
+			updates["DatabaseName"] = r.Database.Name
+			updates["DatabaseUser"] = r.Database.User
+			updates["DatabasePassword"] = r.Database.Password
 		}
 	}
 

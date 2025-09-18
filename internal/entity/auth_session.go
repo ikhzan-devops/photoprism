@@ -622,7 +622,7 @@ func (m *Session) GetData() (data *SessionData) {
 	if len(m.DataJSON) == 0 {
 		return data
 	} else if err := json.Unmarshal(m.DataJSON, data); err != nil {
-		log.Errorf("failed parsing session json: %s", err)
+		log.Errorf("auth: failed to read session data (%s)", err)
 	} else {
 		data.RefreshShares()
 		m.data = data
@@ -634,7 +634,7 @@ func (m *Session) GetData() (data *SessionData) {
 // SetData updates the data that belong to this session.
 func (m *Session) SetData(data *SessionData) *Session {
 	if data == nil {
-		log.Debugf("auth: empty data passed to session %s", m.RefID)
+		log.Debugf("auth: nil cannot be set as session data (%s)", m.RefID)
 		return m
 	}
 
@@ -642,7 +642,7 @@ func (m *Session) SetData(data *SessionData) *Session {
 	data.RefreshShares()
 
 	if j, err := json.Marshal(data); err != nil {
-		log.Debugf("auth:  %s", err)
+		log.Debugf("auth: failed to set session data (%s)", err)
 	} else {
 		m.DataJSON = j
 	}

@@ -12,7 +12,7 @@ import (
 
 func TestClusterEndpoints(t *testing.T) {
 	app, router, conf := NewApiTest()
-	conf.Options().NodeType = cluster.Portal
+	conf.Options().NodeRole = cluster.RolePortal
 
 	ClusterListNodes(router)
 	ClusterGetNode(router)
@@ -26,9 +26,9 @@ func TestClusterEndpoints(t *testing.T) {
 	// Seed nodes in the registry
 	regy, err := reg.NewFileRegistry(conf)
 	assert.NoError(t, err)
-	n := &reg.Node{ID: "n1", Name: "pp-node-01", Type: "instance"}
+	n := &reg.Node{ID: "n1", Name: "pp-node-01", Role: "instance"}
 	assert.NoError(t, regy.Put(n))
-	n2 := &reg.Node{ID: "n2", Name: "pp-node-02", Type: "service"}
+	n2 := &reg.Node{ID: "n2", Name: "pp-node-02", Role: "service"}
 	assert.NoError(t, regy.Put(n2))
 
 	// Get by id
@@ -40,7 +40,7 @@ func TestClusterEndpoints(t *testing.T) {
 	assert.Equal(t, http.StatusNotFound, r.Code)
 
 	// Patch (manage requires Auth; our Auth() in tests allows admin; skip strict role checks here)
-	r = PerformRequestWithBody(app, http.MethodPatch, "/api/v1/cluster/nodes/n1", `{"internalUrl":"http://n1:2342"}`)
+	r = PerformRequestWithBody(app, http.MethodPatch, "/api/v1/cluster/nodes/n1", `{"advertiseUrl":"http://n1:2342"}`)
 	assert.Equal(t, http.StatusOK, r.Code)
 
 	// Pagination: count=1 returns exactly one
@@ -63,7 +63,7 @@ func TestClusterEndpoints(t *testing.T) {
 // Test that ClusterGetNode validates the :id path parameter and rejects unsafe values.
 func TestClusterGetNode_IDValidation(t *testing.T) {
 	app, router, conf := NewApiTest()
-	conf.Options().NodeType = cluster.Portal
+	conf.Options().NodeRole = cluster.RolePortal
 
 	// Register route under test.
 	ClusterGetNode(router)
@@ -71,7 +71,7 @@ func TestClusterGetNode_IDValidation(t *testing.T) {
 	// Seed a node with a simple, valid id.
 	regy, err := reg.NewFileRegistry(conf)
 	assert.NoError(t, err)
-	n := &reg.Node{ID: "n1", Name: "pp-node-99", Type: "instance"}
+	n := &reg.Node{ID: "n1", Name: "pp-node-99", Role: "instance"}
 	assert.NoError(t, regy.Put(n))
 
 	// Valid ID returns 200.

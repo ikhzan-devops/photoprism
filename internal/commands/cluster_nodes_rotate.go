@@ -16,10 +16,10 @@ import (
 )
 
 var (
-	rotateDBFlag     = &cli.BoolFlag{Name: "db", Usage: "rotate DB credentials"}
-	rotateSecretFlag = &cli.BoolFlag{Name: "secret", Usage: "rotate node secret"}
-	rotatePortalURL  = &cli.StringFlag{Name: "portal-url", Usage: "Portal base `URL` (defaults to config)"}
-	rotatePortalTok  = &cli.StringFlag{Name: "portal-token", Usage: "Portal access `TOKEN` (defaults to config)"}
+	rotateDatabaseFlag = &cli.BoolFlag{Name: "database", Usage: "rotate DB credentials"}
+	rotateSecretFlag   = &cli.BoolFlag{Name: "secret", Usage: "rotate node secret"}
+	rotatePortalURL    = &cli.StringFlag{Name: "portal-url", Usage: "Portal base `URL` (defaults to config)"}
+	rotatePortalTok    = &cli.StringFlag{Name: "join-token", Usage: "Portal access `TOKEN` (defaults to config)"}
 )
 
 // ClusterNodesRotateCommand triggers rotation via the register endpoint.
@@ -27,7 +27,7 @@ var ClusterNodesRotateCommand = &cli.Command{
 	Name:      "rotate",
 	Usage:     "Rotates a node's DB and/or secret via Portal (HTTP)",
 	ArgsUsage: "<id|name>",
-	Flags:     append([]cli.Flag{rotateDBFlag, rotateSecretFlag, &cli.BoolFlag{Name: "yes", Aliases: []string{"y"}, Usage: "runs the command non-interactively"}, rotatePortalURL, rotatePortalTok, JsonFlag}, report.CliFlags...),
+	Flags:     append([]cli.Flag{rotateDatabaseFlag, rotateSecretFlag, &cli.BoolFlag{Name: "yes", Aliases: []string{"y"}, Usage: "runs the command non-interactively"}, rotatePortalURL, rotatePortalTok, JsonFlag}, report.CliFlags...),
 	Action:    clusterNodesRotateAction,
 }
 
@@ -64,28 +64,28 @@ func clusterNodesRotateAction(ctx *cli.Context) error {
 		if portalURL == "" {
 			return cli.Exit(fmt.Errorf("portal URL is required (use --portal-url or set portal-url)"), 2)
 		}
-		token := ctx.String("portal-token")
+		token := ctx.String("join-token")
 		if token == "" {
-			token = conf.PortalToken()
+			token = conf.JoinToken()
 		}
 		if token == "" {
-			token = os.Getenv(config.EnvVar("portal-token"))
+			token = os.Getenv(config.EnvVar("join-token"))
 		}
 		if token == "" {
-			return cli.Exit(fmt.Errorf("portal token is required (use --portal-token or set portal-token)"), 2)
+			return cli.Exit(fmt.Errorf("portal token is required (use --join-token or set join-token)"), 2)
 		}
 
 		// Default: rotate DB only if no flag given (safer default)
-		rotateDB := ctx.Bool("db") || (!ctx.IsSet("db") && !ctx.IsSet("secret"))
+		rotateDatabase := ctx.Bool("database") || (!ctx.IsSet("database") && !ctx.IsSet("secret"))
 		rotateSecret := ctx.Bool("secret")
 
 		confirmed := RunNonInteractively(ctx.Bool("yes"))
 		if !confirmed {
 			var what string
 			switch {
-			case rotateDB && rotateSecret:
+			case rotateDatabase && rotateSecret:
 				what = "DB credentials and node secret"
-			case rotateDB:
+			case rotateDatabase:
 				what = "DB credentials"
 			case rotateSecret:
 				what = "node secret"
@@ -99,7 +99,7 @@ func clusterNodesRotateAction(ctx *cli.Context) error {
 
 		body := map[string]interface{}{
 			"nodeName":     name,
-			"rotate":       rotateDB,
+			"rotate":       rotateDatabase,
 			"rotateSecret": rotateSecret,
 		}
 		b, _ := json.Marshal(body)
@@ -131,22 +131,22 @@ func clusterNodesRotateAction(ctx *cli.Context) error {
 			return nil
 		}
 
-		cols := []string{"ID", "Name", "Type", "DB Name", "DB User", "Host", "Port"}
-		rows := [][]string{{resp.Node.ID, resp.Node.Name, resp.Node.Type, resp.DB.Name, resp.DB.User, resp.DB.Host, fmt.Sprintf("%d", resp.DB.Port)}}
+		cols := []string{"ID", "Name", "Role", "DB Name", "DB User", "Host", "Port"}
+		rows := [][]string{{resp.Node.ID, resp.Node.Name, resp.Node.Role, resp.Database.Name, resp.Database.User, resp.Database.Host, fmt.Sprintf("%d", resp.Database.Port)}}
 		out, _ := report.RenderFormat(rows, cols, report.CliFormat(ctx))
 		fmt.Printf("\n%s\n", out)
 
-		if (resp.Secrets != nil && resp.Secrets.NodeSecret != "") || resp.DB.Password != "" {
+		if (resp.Secrets != nil && resp.Secrets.NodeSecret != "") || resp.Database.Password != "" {
 			fmt.Println("PLEASE WRITE DOWN THE FOLLOWING CREDENTIALS; THEY WILL NOT BE SHOWN AGAIN:")
-			if resp.Secrets != nil && resp.Secrets.NodeSecret != "" && resp.DB.Password != "" {
-				fmt.Printf("\n%s\n", report.Credentials("Node Secret", resp.Secrets.NodeSecret, "DB Password", resp.DB.Password))
+			if resp.Secrets != nil && resp.Secrets.NodeSecret != "" && resp.Database.Password != "" {
+				fmt.Printf("\n%s\n", report.Credentials("Node Secret", resp.Secrets.NodeSecret, "DB Password", resp.Database.Password))
 			} else if resp.Secrets != nil && resp.Secrets.NodeSecret != "" {
 				fmt.Printf("\n%s\n", report.Credentials("Node Secret", resp.Secrets.NodeSecret, "", ""))
-			} else if resp.DB.Password != "" {
-				fmt.Printf("\n%s\n", report.Credentials("DB User", resp.DB.User, "DB Password", resp.DB.Password))
+			} else if resp.Database.Password != "" {
+				fmt.Printf("\n%s\n", report.Credentials("DB User", resp.Database.User, "DB Password", resp.Database.Password))
 			}
-			if resp.DB.DSN != "" {
-				fmt.Printf("DSN: %s\n", resp.DB.DSN)
+			if resp.Database.DSN != "" {
+				fmt.Printf("DSN: %s\n", resp.Database.DSN)
 			}
 		}
 		return nil

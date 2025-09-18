@@ -28,11 +28,11 @@ var identRe = regexp.MustCompile(`^[a-z0-9\-_.]+$`)
 
 func quoteIdent(s string) string { return "`" + strings.ReplaceAll(s, "`", "``") + "`" }
 
-// EnsureNodeDB ensures a per-node database and user exist with minimal grants.
+// EnsureNodeDatabase ensures a per-node database and user exist with minimal grants.
 // - Requires MySQL/MariaDB driver on the portal.
 // - Returns created=true if the database schema did not exist before.
 // - If rotate is true or created, rotates the user password and includes it (and DSN) in the result.
-func EnsureNodeDB(ctx context.Context, conf *config.Config, nodeName string, rotate bool) (Creds, bool, error) {
+func EnsureNodeDatabase(ctx context.Context, conf *config.Config, nodeName string, rotate bool) (Creds, bool, error) {
 	out := Creds{}
 
 	switch conf.DatabaseDriver() {

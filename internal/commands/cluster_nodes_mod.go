@@ -14,8 +14,8 @@ import (
 
 // flags for nodes mod
 var (
-	nodesModTypeFlag = &cli.StringFlag{Name: "type", Aliases: []string{"t"}, Usage: "node `TYPE` (portal, instance, service)"}
-	nodesModInternal = &cli.StringFlag{Name: "internal-url", Aliases: []string{"i"}, Usage: "internal service `URL`"}
+	nodesModRoleFlag = &cli.StringFlag{Name: "role", Aliases: []string{"t"}, Usage: "node `ROLE` (portal, instance, service)"}
+	nodesModInternal = &cli.StringFlag{Name: "advertise-url", Aliases: []string{"i"}, Usage: "internal service `URL`"}
 	nodesModLabel    = &cli.StringSliceFlag{Name: "label", Aliases: []string{"l"}, Usage: "`k=v` label (repeatable)"}
 )
 
@@ -24,7 +24,7 @@ var ClusterNodesModCommand = &cli.Command{
 	Name:      "mod",
 	Usage:     "Updates node properties (Portal-only)",
 	ArgsUsage: "<id|name>",
-	Flags:     []cli.Flag{nodesModTypeFlag, nodesModInternal, nodesModLabel, &cli.BoolFlag{Name: "yes", Aliases: []string{"y"}, Usage: "runs the command non-interactively"}},
+	Flags:     []cli.Flag{nodesModRoleFlag, nodesModInternal, nodesModLabel, &cli.BoolFlag{Name: "yes", Aliases: []string{"y"}, Usage: "runs the command non-interactively"}},
 	Action:    clusterNodesModAction,
 }
 
@@ -56,11 +56,11 @@ func clusterNodesModAction(ctx *cli.Context) error {
 			return cli.Exit(fmt.Errorf("node not found"), 3)
 		}
 
-		if v := ctx.String("type"); v != "" {
-			n.Type = clean.TypeLowerDash(v)
+		if v := ctx.String("role"); v != "" {
+			n.Role = clean.TypeLowerDash(v)
 		}
-		if v := ctx.String("internal-url"); v != "" {
-			n.Internal = v
+		if v := ctx.String("advertise-url"); v != "" {
+			n.AdvertiseUrl = v
 		}
 		if labels := ctx.StringSlice("label"); len(labels) > 0 {
 			if n.Labels == nil {

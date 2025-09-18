@@ -19,7 +19,7 @@ import (
 func TestClusterPermissions(t *testing.T) {
 	t.Run("UnauthorizedWhenPublicDisabled", func(t *testing.T) {
 		app, router, conf := NewApiTest()
-		conf.Options().NodeType = cluster.Portal
+		conf.Options().NodeRole = cluster.RolePortal
 
 		// Disable public mode so Auth requires a session.
 		conf.SetAuthMode(config.AuthModePasswd)
@@ -33,7 +33,7 @@ func TestClusterPermissions(t *testing.T) {
 
 	t.Run("ForbiddenFromCDN", func(t *testing.T) {
 		app, router, conf := NewApiTest()
-		conf.Options().NodeType = cluster.Portal
+		conf.Options().NodeRole = cluster.RolePortal
 
 		ClusterListNodes(router)
 
@@ -47,7 +47,7 @@ func TestClusterPermissions(t *testing.T) {
 
 	t.Run("AdminCanAccess", func(t *testing.T) {
 		app, router, conf := NewApiTest()
-		conf.Options().NodeType = cluster.Portal
+		conf.Options().NodeRole = cluster.RolePortal
 		ClusterSummary(router)
 		token := AuthenticateAdmin(app, router)
 		r := AuthenticatedRequest(app, http.MethodGet, "/api/v1/cluster", token)
@@ -58,7 +58,7 @@ func TestClusterPermissions(t *testing.T) {
 
 	t.Run("ClientInsufficientScope", func(t *testing.T) {
 		app, router, conf := NewApiTest()
-		conf.Options().NodeType = cluster.Portal
+		conf.Options().NodeRole = cluster.RolePortal
 		conf.SetAuthMode(config.AuthModePasswd)
 		defer conf.SetAuthMode(config.AuthModePublic)
 

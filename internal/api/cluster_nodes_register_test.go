@@ -13,7 +13,7 @@ import (
 func TestClusterNodesRegister(t *testing.T) {
 	t.Run("FeatureDisabled", func(t *testing.T) {
 		app, router, conf := NewApiTest()
-		conf.Options().NodeType = cluster.Instance
+		conf.Options().NodeRole = cluster.RoleInstance
 		ClusterNodesRegister(router)
 
 		r := PerformRequestWithBody(app, http.MethodPost, "/api/v1/cluster/nodes/register", `{"nodeName":"pp-node-01"}`)
@@ -22,7 +22,7 @@ func TestClusterNodesRegister(t *testing.T) {
 
 	t.Run("MissingToken", func(t *testing.T) {
 		app, router, conf := NewApiTest()
-		conf.Options().NodeType = cluster.Portal
+		conf.Options().NodeRole = cluster.RolePortal
 		ClusterNodesRegister(router)
 
 		r := PerformRequestWithBody(app, http.MethodPost, "/api/v1/cluster/nodes/register", `{"nodeName":"pp-node-01"}`)
@@ -31,8 +31,8 @@ func TestClusterNodesRegister(t *testing.T) {
 
 	t.Run("DriverConflict", func(t *testing.T) {
 		app, router, conf := NewApiTest()
-		conf.Options().NodeType = cluster.Portal
-		conf.Options().PortalToken = "t0k3n"
+		conf.Options().NodeRole = cluster.RolePortal
+		conf.Options().JoinToken = "t0k3n"
 		ClusterNodesRegister(router)
 
 		// With SQLite driver in tests, provisioning should fail with conflict.
@@ -43,8 +43,8 @@ func TestClusterNodesRegister(t *testing.T) {
 
 	t.Run("BadName", func(t *testing.T) {
 		app, router, conf := NewApiTest()
-		conf.Options().NodeType = cluster.Portal
-		conf.Options().PortalToken = "t0k3n"
+		conf.Options().NodeRole = cluster.RolePortal
+		conf.Options().JoinToken = "t0k3n"
 		ClusterNodesRegister(router)
 
 		// Empty nodeName → 400
@@ -54,15 +54,15 @@ func TestClusterNodesRegister(t *testing.T) {
 
 	t.Run("RotateSecretPersistsDespiteDBConflict", func(t *testing.T) {
 		app, router, conf := NewApiTest()
-		conf.Options().NodeType = cluster.Portal
-		conf.Options().PortalToken = "t0k3n"
+		conf.Options().NodeRole = cluster.RolePortal
+		conf.Options().JoinToken = "t0k3n"
 		ClusterNodesRegister(router)
 
 		// Pre-create node in registry so handler goes through existing-node path
 		// and rotates the secret before attempting DB ensure.
 		regy, err := reg.NewFileRegistry(conf)
 		assert.NoError(t, err)
-		n := &reg.Node{ID: "test-id", Name: "pp-node-01", Type: "instance"}
+		n := &reg.Node{ID: "test-id", Name: "pp-node-01", Role: "instance"}
 		n.Secret = "oldsecret"
 		assert.NoError(t, regy.Put(n))
 
