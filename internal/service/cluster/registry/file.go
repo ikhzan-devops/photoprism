@@ -86,6 +86,8 @@ func (r *FileRegistry) FindByName(name string) (*Node, error) {
 	if err != nil {
 		return nil, err
 	}
+	var best *Node
+	var bestTime time.Time
 	for _, e := range entries {
 		if e.IsDir() || filepath.Ext(e.Name()) != ".yaml" {
 			continue
@@ -96,10 +98,18 @@ func (r *FileRegistry) FindByName(name string) (*Node, error) {
 		}
 		var n Node
 		if yaml.Unmarshal(b, &n) == nil && n.Name == name {
-			return &n, nil
+			// prefer most recently updated
+			if t, _ := time.Parse(time.RFC3339, n.UpdatedAt); best == nil || t.After(bestTime) {
+				cp := n
+				best = &cp
+				bestTime = t
+			}
 		}
 	}
-	return nil, os.ErrNotExist
+	if best == nil {
+		return nil, os.ErrNotExist
+	}
+	return best, nil
 }
 
 // List returns all registered nodes (without filtering), sorted by UpdatedAt descending.

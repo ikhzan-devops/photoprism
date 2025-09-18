@@ -58,6 +58,7 @@ func TestClusterGetTheme(t *testing.T) {
 
 		assert.NoError(t, os.MkdirAll(filepath.Join(tempTheme, "sub"), 0o755))
 		// Visible files
+		assert.NoError(t, os.WriteFile(filepath.Join(tempTheme, "app.js"), []byte("console.log('ok')\n"), 0o644))
 		assert.NoError(t, os.WriteFile(filepath.Join(tempTheme, "style.css"), []byte("body{}\n"), 0o644))
 		assert.NoError(t, os.WriteFile(filepath.Join(tempTheme, "sub", "visible.txt"), []byte("ok\n"), 0o644))
 		// Hidden file
@@ -112,22 +113,15 @@ func TestClusterGetTheme(t *testing.T) {
 		defer func() { _ = os.RemoveAll(tempTheme) }()
 		conf.SetThemePath(tempTheme)
 
-		// Hidden-only content to ensure exclusion yields empty archive.
+		// Hidden-only content and no app.js should yield 404.
 		assert.NoError(t, os.MkdirAll(filepath.Join(tempTheme, ".hidden-dir"), 0o755))
 		assert.NoError(t, os.WriteFile(filepath.Join(tempTheme, ".hidden-dir", "file.txt"), []byte("secret\n"), 0o644))
 		assert.NoError(t, os.WriteFile(filepath.Join(tempTheme, ".hidden"), []byte("secret\n"), 0o644))
 
-		r := PerformRequest(app, http.MethodGet, "/api/v1/cluster/theme")
-		assert.Equal(t, http.StatusOK, r.Code)
-
-		// Verify headers
-		assert.Equal(t, header.ContentTypeZip, r.Header().Get(header.ContentType))
-		assert.Contains(t, r.Header().Get(header.ContentDisposition), "attachment; filename=theme.zip")
-
-		// Verify zip is valid and empty (no files included)
-		body := r.Body.Bytes()
-		zr, err := zip.NewReader(bytes.NewReader(body), int64(len(body)))
-		assert.NoError(t, err)
-		assert.Equal(t, 0, len(zr.File))
+		req := httptest.NewRequest(http.MethodGet, "/api/v1/cluster/theme", nil)
+		req.Header.Set("Accept", "application/json")
+		w := httptest.NewRecorder()
+		app.ServeHTTP(w, req)
+		assert.Equal(t, http.StatusNotFound, w.Code)
 	})
 }

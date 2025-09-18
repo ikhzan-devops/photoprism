@@ -12,9 +12,17 @@ Learn more: https://agents.md/
 - Developer Guide – Tests: https://docs.photoprism.app/developer-guide/tests/
 - Contributing: https://github.com/photoprism/photoprism/blob/develop/CONTRIBUTING.md
 - Security: https://github.com/photoprism/photoprism/blob/develop/SECURITY.md
-- REST API:
-  - https://docs.photoprism.dev/ (Swagger)
-  - https://docs.photoprism.app/developer-guide/api/ (Docs)
+- REST API: https://docs.photoprism.dev/ (Swagger), https://docs.photoprism.app/developer-guide/api/ (Docs)
+- Backend CODEMAP: CODEMAP.md
+- Frontend CODEMAP: frontend/CODEMAP.md
+
+### Specifications (Versioning & Usage)
+
+- Always use the latest spec version for a topic (highest `-vN`), as linked from `specs/README.md` and the portal cheatsheet (`specs/portal/README.md`).
+- Older spec versions remain in the repo for historical reference but are not linked from the main TOC. Do not base new work on superseded files (e.g., `*-v1.md` when `*-v2.md` exists).
+- When adding or updating specs, publish changes under a new file with an incremented version suffix (e.g., `*-v3.md`) instead of overwriting. Refer to the Change Management section of each document for specific instructions.
+- Developer Cheatsheet – Portal & Cluster: specs/portal/README.md
+- Backend (Go) Testing Guide: specs/dev/backend-testing.md
 
 ## Project Structure & Languages
 
@@ -116,6 +124,17 @@ Note: Across our public documentation, official images, and in production, the c
   - Vitest watch/coverage: `make vitest-watch` and `make vitest-coverage`
 - Acceptance tests: use the `acceptance-*` targets in the `Makefile`
 
+### CLI Testing Gotchas (Go)
+
+- Exit codes and `os.Exit`:
+  - `urfave/cli` calls `os.Exit(code)` when a command returns `cli.Exit(...)`, which will terminate `go test` abruptly (often after logs like `http 401:`).
+  - Use the test helper `RunWithTestContext` (in `internal/commands/commands_test.go`) which temporarily overrides `cli.OsExiter` so the process doesn’t exit; you still receive the error to assert `ExitCoder`.
+  - If you only need to assert the exit code and don’t need printed output, you can invoke `cmd.Action(ctx)` directly and check `err.(cli.ExitCoder).ExitCode()`.
+- Non‑interactive mode: set `PHOTOPRISM_CLI=noninteractive` and/or pass `--yes` to avoid prompts that block tests and CI.
+- SQLite DSN in tests:
+  - `config.NewTestConfig("<pkg>")` defaults to SQLite with a per‑suite DSN like `.<pkg>.db`. Don’t assert an empty DSN for SQLite.
+  - Clean up any per‑suite SQLite files in tests with `t.Cleanup(func(){ _ = os.Remove(dsn) })` if you capture the DSN.
+
 ## Code Style & Lint
 
 - Go: run `make fmt-go swag-fmt` to reformat the backend code + Swagger annotations (see `Makefile` for additional targets)
@@ -142,7 +161,7 @@ If anything in this file conflicts with the `Makefile` or the Developer Guide, t
 The following conventions summarize the insights gained when adding new configuration options, API endpoints, and related tests. Follow these conventions unless a maintainer requests an exception.
 
 - Config precedence and new options
-  - Global precedence: `options.yml` overrides CLI flags and environment variables, if present. Don’t special‑case a single option.
+  - Global precedence: If present, values in `options.yml` override CLI flags and environment variables; all override config defaults in `defaults.yml`. Don’t special‑case a single option.
   - Adding a new option:
     - Add a field to `internal/config/options.go` with `yaml:"…"` and a `flag:"…"` tag.
     - Register a CLI flag and env mapping in `internal/config/flags.go` (use `EnvVars(...)`).
@@ -189,3 +208,30 @@ The following conventions summarize the insights gained when adding new configur
 - Known tooling constraints
   - Python may not be available in the dev container; prefer `apply_patch`, Go, or Make targets over ad‑hoc scripts.
   - `make swag` may fetch modules; ensure network availability in CI before running.
+
+### Cluster & Bootstrap Quick Tips
+
+- Import rules (avoid cycles):
+  - Do not import `internal/service/cluster/instance/*` from `internal/config` or the cluster root package.
+  - Instance/service bootstraps talk to the Portal via HTTP(S); do not import Portal internals such as `internal/api` or `internal/service/cluster/registry`/`provisioner`.
+  - Prefer constants from `internal/service/cluster/const.go` (e.g., `cluster.Instance`, `cluster.Portal`) over string literals.
+
+- Early extension lifecycle (config.Init sequence):
+  1) Load `options.yml` and settings (`c.initSettings()`)
+  2) Run early hooks: `EarlyExt().InitEarly(c)` (may adjust DB settings)
+  3) Connect DB: `connectDb()` and `RegisterDb()`
+  4) Run regular extensions: `Ext().Init(c)`
+
+- Theme endpoint usage:
+  - Server: `GET /api/v1/cluster/theme` generates a zip from `conf.ThemePath()`; returns 200 with a valid (possibly empty) zip or 404 if missing.
+  - Client/CLI: install only if `ThemePath()` is missing or lacks `app.js`; do not overwrite unless explicitly allowed.
+  - Use header helpers/constants from `pkg/service/http/header` (e.g., `header.Accept`, `header.ContentTypeZip`, `header.SetAuthorization`).
+
+- Registration (instance bootstrap):
+  - Send `rotate=true` only if driver is MySQL/MariaDB and no DSN/name/user/password is configured (including *_FILE for password); never for SQLite.
+  - Treat 401/403/404 as terminal; apply bounded retries with delay for transient/network/429.
+  - Persist only missing `NodeSecret` and DB settings when rotation was requested.
+
+- Testing patterns:
+  - Set `PHOTOPRISM_STORAGE_PATH=$(mktemp -d)` (or `t.Setenv`) to isolate options.yml and theme dirs.
+  - Use `httptest` for Portal endpoints and `pkg/fs.Unzip` with size caps for extraction tests.

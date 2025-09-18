@@ -79,8 +79,12 @@ func RunWithTestContext(cmd *cli.Command, args []string) (output string, err err
 	//       a nil pointer panic in the "github.com/urfave/cli/v2" package.
 	cmd.HideHelp = true
 
-	// Run command with test context.
+	// Run command via cli.Command.Run but neutralize os.Exit so ExitCoder
+	// errors don't terminate the test binary.
 	output = capture.Output(func() {
+		origExiter := cli.OsExiter
+		cli.OsExiter = func(int) {}
+		defer func() { cli.OsExiter = origExiter }()
 		err = cmd.Run(ctx, args...)
 	})
 
