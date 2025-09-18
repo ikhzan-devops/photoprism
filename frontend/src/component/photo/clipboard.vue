@@ -351,7 +351,6 @@ export default {
       Promise.all(uniqueAlbumUids.map((uid) => $api.post(`albums/${uid}/photos`, body)))
         .then(() => this.onAdded())
         .catch((error) => {
-          console.error("Failed to add photos to some albums:", error);
           $notify.error(this.$gettext("Some albums could not be updated"));
         })
         .finally(() => {
