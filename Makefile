@@ -4,6 +4,7 @@
 # more about our team, products and services: https://www.photoprism.app/
 
 export GO111MODULE=on
+export NPM_CONFIG_IGNORE_SCRIPTS ?= true
 
 -include .semver
 -include .env
@@ -85,6 +86,9 @@ acceptance-run-chromium: storage/acceptance acceptance-auth-sqlite-restart wait 
 acceptance-run-chromium-short: storage/acceptance acceptance-auth-sqlite-restart wait acceptance-auth-short acceptance-auth-sqlite-stop acceptance-sqlite-restart wait-2 acceptance-short acceptance-sqlite-stop
 acceptance-auth-run-chromium: storage/acceptance acceptance-auth-sqlite-restart wait acceptance-auth acceptance-auth-sqlite-stop
 acceptance-public-run-chromium: storage/acceptance acceptance-sqlite-restart wait acceptance acceptance-sqlite-stop
+help: list
+list:
+	@awk '/^[[:alnum:]]+[^[:space:]]+:/ {printf "%s",substr($$1,1,length($$1)-1); if (match($$0,/#/)) {desc=substr($$0,RSTART+1); sub(/^[[:space:]]+/,"",desc); printf " - %s\n",desc} else printf "\n" }' "$(firstword $(MAKEFILE_LIST))"
 wait:
 	sleep 20
 wait-2:
@@ -103,8 +107,9 @@ logs:
 	$(DOCKER_COMPOSE) logs -f
 down:
 	$(DOCKER_COMPOSE) --profile=all down --remove-orphans
-help:
-	@echo "For build instructions, visit <https://docs.photoprism.app/developer-guide/>."
+codex: dep-codex codex-version
+codex-version:
+	codex --version
 docs: swag
 swag: swag-json
 swag-json:
@@ -242,9 +247,17 @@ dep-list:
 dep-npm:
 	sudo npm install -g npm
 dep-js:
-	(cd frontend && npm ci --no-update-notifier --no-audit)
+	(cd frontend && npm ci --ignore-scripts --no-update-notifier --no-audit)
 	# TODO: If in the future we want to test in a real browser environment, add this (Playwright)
 	# (cd frontend && npx playwright install chromium)
+dep-codex:
+	@echo "Installing latest Codex CLI..."
+	@[ -n "$(CODEX_HOME)" ] && [ "$(CODEX_HOME)" != "/" ] && install -d -m 700 -- "$(CODEX_HOME)" || true
+	@if command -v sudo >/dev/null 2>&1; then \
+	  sudo npm install -g --location=global --no-fund --no-audit "@openai/codex@latest"; \
+	else \
+	  npm install -g --location=global --no-fund --no-audit "@openai/codex@latest"; \
+	fi
 dep-go:
 	go build -v ./...
 dep-upgrade:
@@ -424,6 +437,20 @@ test-coverage:
 	go test -parallel 1 -count 1 -cpu 1 -failfast -tags="slow,develop" -timeout 30m -coverprofile coverage.txt -covermode atomic ./pkg/... ./internal/...
 	go tool cover -html=coverage.txt -o coverage.html
 	go tool cover -func coverage.txt  | grep total:
+git-pull:
+	@echo "Pulling changes from remote repositories..."; \
+	if [ -d .git ]; then \
+		echo "Updating photoprism"; \
+		git pull --ff-only || echo "Warning: git pull failed in root"; \
+	else \
+		echo "Skipping: current directory is not a Git repo"; \
+	fi; \
+	for d in */ ; do \
+		[ -d "$$d" ] || continue; \
+		[ -d "$$d/.git" ] || continue; \
+		echo "Updating photoprism/$$d"; \
+		git -C "$$d" pull --ff-only || echo "Warning: git pull failed in $$d"; \
+	done;
 docker-pull:
 	$(DOCKER_COMPOSE) --profile=all pull --ignore-pull-failures
 	$(DOCKER_COMPOSE) -f compose.latest.yaml pull --ignore-pull-failures

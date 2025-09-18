@@ -56,7 +56,7 @@ func NewTestOptions(pkg string) *Options {
 		storagePath = fs.Abs("../../storage")
 	}
 
-	dataPath := filepath.Join(storagePath, "testdata")
+	dataPath := filepath.Join(storagePath, fs.TestdataDir)
 
 	pkg = PkgNameRegexp.ReplaceAllString(pkg, "")
 	driver := os.Getenv("PHOTOPRISM_TEST_DRIVER")
@@ -248,6 +248,7 @@ func CliTestContext() *cli.Context {
 	globalSet.String("import-path", config.OriginalsPath, "doc")
 	globalSet.String("cache-path", config.OriginalsPath, "doc")
 	globalSet.String("temp-path", config.OriginalsPath, "doc")
+	globalSet.String("portal-uuid", config.PortalUUID, "doc")
 	globalSet.String("backup-path", config.StoragePath, "doc")
 	globalSet.Int("backup-retain", config.BackupRetain, "doc")
 	globalSet.String("backup-schedule", config.BackupSchedule, "doc")

@@ -11,7 +11,7 @@ import (
 
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/fs"
-	"github.com/photoprism/photoprism/pkg/media/http/scheme"
+	"github.com/photoprism/photoprism/pkg/service/http/scheme"
 )
 
 var (
@@ -20,7 +20,7 @@ var (
 	DownloadUrl           = ""
 	ServiceUri            = ""
 	ServiceKey            = ""
-	ServiceTimeout        = 5 * time.Minute
+	ServiceTimeout        = 10 * time.Minute
 	ServiceMethod         = http.MethodPost
 	ServiceFileScheme     = scheme.Data
 	ServiceRequestFormat  = ApiFormatVision
