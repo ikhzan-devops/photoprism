@@ -129,3 +129,66 @@ func TestRoleStrings_GlobalMaps_AliasNoneAndUsage(t *testing.T) {
 		assert.Equal(t, RoleNone, UserRoles[RoleAliasNone])
 	})
 }
+
+func TestRole_Pretty_And_ParseRole(t *testing.T) {
+    t.Run("PrettyAdmin", func(t *testing.T) {
+        r := Role("admin")
+        assert.Equal(t, "Admin", r.Pretty())
+    })
+    t.Run("PrettyNoneEmpty", func(t *testing.T) {
+        r := Role("")
+        assert.Equal(t, "None", r.Pretty())
+    })
+    t.Run("PrettyNoneAlias", func(t *testing.T) {
+        r := Role(RoleAliasNone)
+        assert.Equal(t, "None", r.Pretty())
+    })
+    t.Run("ParseRoleTokensToNone", func(t *testing.T) {
+        tokens := []string{"", "0", "false", "nil", "null", "nan"}
+        for _, s := range tokens {
+            assert.Equal(t, RoleNone, ParseRole(s))
+        }
+    })
+    t.Run("ParseRoleAliasNone", func(t *testing.T) {
+        assert.Equal(t, RoleNone, ParseRole("none"))
+    })
+    t.Run("ParseRoleAdmin", func(t *testing.T) {
+        assert.Equal(t, RoleAdmin, ParseRole("admin"))
+    })
+}
+
+func TestPermission_String_And_Compare(t *testing.T) {
+    p := Permission("action_update_own")
+    assert.Equal(t, "action update own", p.String())
+    assert.True(t, p.Equal("Action Update Own"))
+    assert.True(t, p.NotEqual("delete"))
+}
+
+func TestPermissions_String_Join(t *testing.T) {
+    perms := Permissions{ActionView, ActionUpdateOwn, AccessAll}
+    s := perms.String()
+    assert.Contains(t, s, "view")
+    assert.Contains(t, s, "update own")
+    assert.Contains(t, s, "access all")
+}
+
+func TestResource_Default_String_And_Compare(t *testing.T) {
+    var r Resource
+    assert.Equal(t, "default", r.String())
+    assert.True(t, r.Equal("DEFAULT"))
+    assert.True(t, r.NotEqual("photos"))
+}
+
+func TestResourceNames_ContainsCore(t *testing.T) {
+    want := []Resource{ResourceDefault, ResourcePhotos, ResourceAlbums, ResourceWebDAV, ResourceApi}
+    for _, w := range want {
+        found := false
+        for _, have := range ResourceNames {
+            if have == w {
+                found = true
+                break
+            }
+        }
+        assert.Truef(t, found, "resource %s not found in ResourceNames", w)
+    }
+}
