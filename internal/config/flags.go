@@ -689,7 +689,7 @@ var Flags = CliFlags{
 		}}, {
 		Flag: &cli.StringFlag{
 			Name:    "portal-url",
-			Usage:   "base `URL` of the cluster portal e.g. https://portal.example.com",
+			Usage:   "base `URL` of the cluster portal, e.g. https://portal.example.com",
 			EnvVars: EnvVars("PORTAL_URL"),
 			Hidden:  true,
 		}, Tags: []string{Pro}}, {
@@ -837,7 +837,7 @@ var Flags = CliFlags{
 		Flag: &cli.StringFlag{
 			Name:    "database-server",
 			Aliases: []string{"db-server"},
-			Usage:   "database `HOST` incl. port e.g. \"mariadb:3306\" (or socket path)",
+			Usage:   "database `HOST` incl. port, e.g. \"mariadb:3306\" (or socket path)",
 			EnvVars: EnvVars("DATABASE_SERVER"),
 		}}, {
 		Flag: &cli.StringFlag{

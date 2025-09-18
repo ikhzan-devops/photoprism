@@ -1,6 +1,8 @@
 package commands
 
 import (
+	"fmt"
+
 	"github.com/urfave/cli/v2"
 
 	"github.com/photoprism/photoprism/internal/auth/acl"
@@ -13,8 +15,7 @@ const (
 	ClientIdUsage          = "static client `UID` for test purposes"
 	ClientSecretUsage      = "static client `SECRET` for test purposes"
 	ClientNameUsage        = "`CLIENT` name to help identify the application"
-	ClientRoleUsage        = "client authorization `ROLE`"
-	ClientAuthScope        = "client authorization `SCOPES` e.g. \"metrics\" or \"photos albums\" (\"*\" to allow all)"
+	ClientAuthScope        = "client authorization `SCOPES`, e.g. metrics or \"vision photos albums\" (\"*\" to allow all)"
 	ClientAuthProvider     = "client authentication `PROVIDER`"
 	ClientAuthMethod       = "client authentication `METHOD`"
 	ClientAuthExpires      = "access token `LIFETIME` in seconds, after which a new token must be requested"
@@ -23,6 +24,10 @@ const (
 	ClientEnable           = "enable client authentication if disabled"
 	ClientDisable          = "disable client authentication"
 	ClientSecretInfo       = "\nPLEASE WRITE DOWN THE %s CLIENT SECRET, AS YOU WILL NOT BE ABLE TO SEE IT AGAIN:\n"
+)
+
+var (
+	ClientRoleUsage = fmt.Sprintf("client authorization `ROLE`, e.g. %s", acl.ClientRoles.CliUsageString())
 )
 
 // ClientsCommands configures the client application subcommands.
