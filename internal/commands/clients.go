@@ -23,7 +23,7 @@ const (
 	ClientRegenerateSecret = "set a new randomly generated client secret"
 	ClientEnable           = "enable client authentication if disabled"
 	ClientDisable          = "disable client authentication"
-	ClientSecretInfo       = "\nPLEASE WRITE DOWN THE %s CLIENT SECRET, AS YOU WILL NOT BE ABLE TO SEE IT AGAIN:\n"
+	ClientSecretInfo       = "\nPLEASE WRITE DOWN THE %s CLIENT SECRET, AS YOU WILL NOT BE ABLE TO SEE IT AGAIN:"
 )
 
 var (

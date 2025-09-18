@@ -540,6 +540,7 @@ func (m *Client) SetFormValues(frm form.Client) *Client {
 
 	// Set values from form.
 	m.SetName(frm.Name())
+	m.SetRole(frm.Role())
 	m.SetProvider(frm.Provider())
 	m.SetMethod(frm.Method())
 	m.SetScope(frm.Scope())

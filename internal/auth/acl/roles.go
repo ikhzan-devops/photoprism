@@ -18,11 +18,12 @@ var UserRoles = RoleStrings{
 
 // ClientRoles maps valid API client roles.
 var ClientRoles = RoleStrings{
-	string(RoleAdmin):  RoleAdmin,
-	string(RoleNode):   RoleNode,
-	string(RolePortal): RolePortal,
-	string(RoleClient): RoleClient,
-	string(RoleNone):   RoleNone,
+	string(RoleAdmin):    RoleAdmin,
+	string(RoleInstance): RoleInstance,
+	string(RoleService):  RoleService,
+	string(RolePortal):   RolePortal,
+	string(RoleClient):   RoleClient,
+	string(RoleNone):     RoleNone,
 }
 
 // Strings returns the roles as string slice.
