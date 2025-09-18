@@ -154,8 +154,13 @@ func (m *Client) SetName(s string) *Client {
 
 // SetRole sets the client role specified as string.
 func (m *Client) SetRole(role string) *Client {
-	if role != "" {
-		m.ClientRole = acl.ClientRoles[clean.Role(role)].String()
+	r := clean.Role(role)
+
+	// Map known roles (includes aliases like "none" or empty); fall back to client if unknown.
+	if mapped, ok := acl.ClientRoles[r]; ok {
+		m.ClientRole = mapped.String()
+	} else {
+		m.ClientRole = acl.RoleClient.String()
 	}
 
 	return m

@@ -1,5 +1,8 @@
 package acl
 
+// RoleAliasNone is a more explicit, user-friendly alias for RoleNone.
+const RoleAliasNone = "none"
+
 // Roles that can be granted Permissions to use a Resource.
 const (
 	RoleDefault  Role = "default"
