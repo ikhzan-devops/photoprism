@@ -12,7 +12,7 @@ vi.mock("model/thumb");
 
 describe("component/photo/edit/batch", () => {
   let wrapper;
-  let mockBatch;
+  let mockBatchInstance;
 
   const mockSelection = ["uid1", "uid2", "uid3"];
 
@@ -70,12 +70,43 @@ describe("component/photo/edit/batch", () => {
     Labels: { items: [], mixed: false, action: "none" },
   };
 
+  const mockDefaultFormData = {
+    Title: { value: "Test", action: "none", mixed: false },
+    DetailsSubject: { value: "", action: "none", mixed: false },
+    Caption: { value: "", action: "none", mixed: false },
+    Day: { value: 0, action: "none", mixed: false },
+    Month: { value: 0, action: "none", mixed: false },
+    Year: { value: 0, action: "none", mixed: false },
+    TimeZone: { value: "UTC", action: "none", mixed: false },
+    Country: { value: "US", action: "none", mixed: false },
+    Altitude: { value: 0, action: "none", mixed: false },
+    Lat: { value: 37.7749, action: "none", mixed: false },
+    Lng: { value: -122.4194, action: "none", mixed: false },
+    DetailsArtist: { value: "", action: "none", mixed: false },
+    DetailsCopyright: { value: "", action: "none", mixed: false },
+    DetailsLicense: { value: "", action: "none", mixed: false },
+    DetailsKeywords: { value: "", action: "none", mixed: false },
+    Type: { value: "image", action: "none", mixed: false },
+    Iso: { value: 0, action: "none", mixed: false },
+    FocalLength: { value: 0, action: "none", mixed: false },
+    FNumber: { value: 0, action: "none", mixed: false },
+    Exposure: { value: "", action: "none", mixed: false },
+    CameraID: { value: 0, action: "none", mixed: false },
+    LensID: { value: 0, action: "none", mixed: false },
+    Scan: { value: false, action: "none", mixed: false },
+    Private: { value: false, action: "none", mixed: false },
+    Favorite: { value: false, action: "none", mixed: false },
+    Panorama: { value: false, action: "none", mixed: false },
+    Albums: { items: [], mixed: false, action: "none" },
+    Labels: { items: [], mixed: false, action: "none" },
+  };
+
   beforeEach(() => {
-    // Reset mocks
+    // Reset all mocks
     vi.clearAllMocks();
 
-    // Create mock batch instance
-    mockBatch = {
+    // Create a mock instance of Batch with proper method mocking
+    mockBatchInstance = {
       models: mockModels,
       values: mockValues,
       selection: [
@@ -83,62 +114,26 @@ describe("component/photo/edit/batch", () => {
         { id: "uid2", selected: true },
         { id: "uid3", selected: true },
       ],
-      getData: vi.fn().mockResolvedValue(mockBatch),
-      save: vi.fn().mockResolvedValue(mockBatch),
-      getValuesForSelection: vi.fn().mockResolvedValue(mockValues),
-      getDefaultFormData: vi.fn().mockReturnValue({
-        Title: { value: "Test", action: "none", mixed: false },
-        DetailsSubject: { value: "", action: "none", mixed: false },
-        Caption: { value: "", action: "none", mixed: false },
-        Day: { value: 0, action: "none", mixed: false },
-        Month: { value: 0, action: "none", mixed: false },
-        Year: { value: 0, action: "none", mixed: false },
-        TimeZone: { value: "UTC", action: "none", mixed: false },
-        Country: { value: "US", action: "none", mixed: false },
-        Altitude: { value: 0, action: "none", mixed: false },
-        Lat: { value: 37.7749, action: "none", mixed: false },
-        Lng: { value: -122.4194, action: "none", mixed: false },
-        DetailsArtist: { value: "", action: "none", mixed: false },
-        DetailsCopyright: { value: "", action: "none", mixed: false },
-        DetailsLicense: { value: "", action: "none", mixed: false },
-        DetailsKeywords: { value: "", action: "none", mixed: false },
-        Type: { value: "image", action: "none", mixed: false },
-        Iso: { value: 0, action: "none", mixed: false },
-        FocalLength: { value: 0, action: "none", mixed: false },
-        FNumber: { value: 0, action: "none", mixed: false },
-        Exposure: { value: "", action: "none", mixed: false },
-        CameraID: { value: 0, action: "none", mixed: false },
-        LensID: { value: 0, action: "none", mixed: false },
-        Scan: { value: false, action: "none", mixed: false },
-        Private: { value: false, action: "none", mixed: false },
-        Favorite: { value: false, action: "none", mixed: false },
-        Panorama: { value: false, action: "none", mixed: false },
-        Albums: { items: [], mixed: false, action: "none" },
-        Labels: { items: [], mixed: false, action: "none" },
-      }),
-      getLengthOfAllSelected: vi.fn().mockReturnValue(3),
-      isSelected: vi.fn().mockReturnValue(true),
+      getData: vi.fn(),
+      save: vi.fn(),
+      getValuesForSelection: vi.fn(),
+      getDefaultFormData: vi.fn(),
+      getLengthOfAllSelected: vi.fn(),
+      isSelected: vi.fn(),
       toggle: vi.fn(),
       toggleAll: vi.fn(),
     };
 
-    // Mock Batch constructor
-    Batch.mockImplementation(() => mockBatch);
+    // Configure mock method behaviors
+    mockBatchInstance.getData.mockResolvedValue(mockBatchInstance);
+    mockBatchInstance.save.mockResolvedValue(mockBatchInstance);
+    mockBatchInstance.getValuesForSelection.mockResolvedValue(mockValues);
+    mockBatchInstance.getDefaultFormData.mockReturnValue(mockDefaultFormData);
+    mockBatchInstance.getLengthOfAllSelected.mockReturnValue(3);
+    mockBatchInstance.isSelected.mockReturnValue(true);
 
-    // Mock global objects
-    global.$notify = {
-      success: vi.fn(),
-      error: vi.fn(),
-    };
-
-    global.$lightbox = {
-      openModels: vi.fn(),
-    };
-
-    global.$event = {
-      subscribe: vi.fn(),
-      unsubscribe: vi.fn(),
-    };
+    // Mock the Batch constructor to return our mock instance
+    vi.mocked(Batch).mockImplementation(() => mockBatchInstance);
 
     wrapper = shallowMount(PPhotoBatchEdit, {
       props: {
@@ -150,9 +145,17 @@ describe("component/photo/edit/batch", () => {
       },
       global: {
         mocks: {
-          $notify: global.$notify,
-          $lightbox: global.$lightbox,
-          $event: global.$event,
+          $notify: {
+            success: vi.fn(),
+            error: vi.fn(),
+          },
+          $lightbox: {
+            openModels: vi.fn(),
+          },
+          $event: {
+            subscribe: vi.fn(),
+            unsubscribe: vi.fn(),
+          },
           $config: {
             feature: vi.fn().mockReturnValue(true),
           },
@@ -189,13 +192,12 @@ describe("component/photo/edit/batch", () => {
       },
     });
 
-    // Ensure internal data initialized similar to when visible watcher runs
-    // Avoid direct assignment before component is ready; simulate visible=true flow
+    // Initialize component state to simulate visible=true flow
     wrapper.vm.values = { ...mockValues };
     if (typeof wrapper.vm.setFormData === "function") {
       wrapper.vm.setFormData();
     }
-    wrapper.vm.allSelectedLength = mockBatch.getLengthOfAllSelected();
+    wrapper.vm.allSelectedLength = mockBatchInstance.getLengthOfAllSelected();
   });
 
   afterEach(() => {
@@ -207,7 +209,7 @@ describe("component/photo/edit/batch", () => {
   describe("Computed Properties", () => {
     beforeEach(() => {
       // Set up component state for computed property tests
-      wrapper.vm.model = mockBatch;
+      wrapper.vm.model = mockBatchInstance;
       wrapper.vm.values = mockValues;
       // Merge into existing complete formData to avoid template access errors
       wrapper.vm.formData = {
@@ -217,7 +219,7 @@ describe("component/photo/edit/batch", () => {
       };
     });
 
-    it("should compute form title correctly", () => {1
+    it("should compute form title correctly", () => {
       expect(wrapper.vm.formTitle).toBe("Batch Edit (3)");
     });
 
@@ -239,7 +241,7 @@ describe("component/photo/edit/batch", () => {
 
   describe("Form Data Management", () => {
     beforeEach(() => {
-      wrapper.vm.model = mockBatch;
+      wrapper.vm.model = mockBatchInstance;
       wrapper.vm.formData = {
         ...wrapper.vm.formData,
         Title: { value: "Changed", action: "update", mixed: false },
@@ -312,7 +314,7 @@ describe("component/photo/edit/batch", () => {
 
   describe("Save Functionality", () => {
     beforeEach(() => {
-      wrapper.vm.model = mockBatch;
+      wrapper.vm.model = mockBatchInstance;
       wrapper.vm.formData = {
         ...wrapper.vm.formData,
         Title: { value: "New Title", action: "update", mixed: false },
@@ -323,17 +325,17 @@ describe("component/photo/edit/batch", () => {
     it("should save changes successfully", async () => {
       await wrapper.vm.save(false);
 
-      expect(mockBatch.save).toHaveBeenCalled();
-      expect(global.$notify.success).toHaveBeenCalledWith("Changes successfully saved");
+      expect(mockBatchInstance.save).toHaveBeenCalled();
+      expect(wrapper.vm.$notify.success).toHaveBeenCalledWith("Changes successfully saved");
       expect(wrapper.vm.saving).toBe(false);
     });
 
     it("should handle save errors", async () => {
-      mockBatch.save.mockRejectedValue(new Error("Save failed"));
+      mockBatchInstance.save.mockRejectedValue(new Error("Save failed"));
 
       await wrapper.vm.save(false);
 
-      expect(global.$notify.error).toHaveBeenCalledWith("Failed to save changes");
+      expect(wrapper.vm.$notify.error).toHaveBeenCalledWith("Failed to save changes");
       expect(wrapper.vm.saving).toBe(false);
     });
 
@@ -367,12 +369,12 @@ describe("component/photo/edit/batch", () => {
 
   describe("Selection Management", () => {
     beforeEach(() => {
-      wrapper.vm.model = mockBatch;
+      wrapper.vm.model = mockBatchInstance;
     });
 
     it("should handle photo opening", () => {
       wrapper.vm.openPhoto(0);
-      expect(global.$lightbox.openModels).toHaveBeenCalled();
+      expect(wrapper.vm.$lightbox.openModels).toHaveBeenCalled();
     });
   });
 
@@ -410,7 +412,7 @@ describe("component/photo/edit/batch", () => {
       await wrapper.setProps({ visible: true });
       await nextTick();
       await nextTick();
-      expect(mockBatch.getData).toHaveBeenCalledWith(mockSelection);
+      expect(mockBatchInstance.getData).toHaveBeenCalledWith(mockSelection);
     });
 
     it("should emit close event", () => {
