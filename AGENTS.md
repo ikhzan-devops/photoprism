@@ -154,9 +154,41 @@ Note: Across our public documentation, official images, and in production, the c
 
 If anything in this file conflicts with the `Makefile` or the Developer Guide, the `Makefile` and the documentation win. When unsure, **ask** for clarification before proceeding.
 
-## Agent Tips 
+## Agent Quick Tips (Do This)
 
-### Backend Development
+### Testing
+
+- Prefer targeted runs for speed:
+  - Unit/subpackage: `go test ./internal/<pkg> -run <Name> -count=1`
+  - Commands: `go test ./internal/commands -run <Name> -count=1`
+  - Avoid `./...` unless you intend to run the whole suite.
+- Heavy tests (migrations/fixtures): internal/entity and internal/photoprism run DB migrations and load fixtures; expect 30–120s on first run. Narrow with `-run` and keep iterations low.
+- Photoprism config in tests: inside `internal/photoprism`, use the package global `photoprism.Config()` for runtime‑accurate behavior. Only construct a new config if you replace it via `photoprism.SetConfig`.
+- CLI command tests: use `RunWithTestContext(cmd, args)` to capture output and avoid `os.Exit`; assert `cli.ExitCoder` codes when you need them.
+- Reports are quoted: strings in CLI "show" output are rendered with quotes by the report helpers. Prefer `assert.Contains`/regex over strict, fully formatted equality when validating content.
+
+### Roles & ACL
+
+- Always map roles via the central tables:
+  - Users: `acl.ParseRole(s)` or `acl.UserRoles[clean.Role(s)]`.
+  - Clients: `acl.ClientRoles[clean.Role(s)]`.
+- Aliases: `RoleAliasNone` ("none") and the empty string both map to `RoleNone`; do not special‑case them in callers.
+- Defaults:
+  - Client roles: if input is unknown, default to `RoleClient`.
+  - User roles: `acl.ParseRole` handles special tokens like `0/false/nil` as none.
+- CLI usage strings: build flag help from `Roles.CliUsageString()` (e.g., `acl.ClientRoles.CliUsageString()`), not from hard‑coded lists.
+
+### Import/Index
+
+- ImportWorker may skip files if an identical file already exists (duplicate detection). Use unique copies or assert DB rows after ensuring a non‑duplicate destination.
+- Mixed roots: when testing related files, keep `ExamplesPath()/ImportPath()/OriginalsPath()` consistent so `RelatedFiles` and `AllowExt` behave as expected.
+
+### CLI Usage & Assertions
+
+- Capture output with `RunWithTestContext`; usage and report values may be quoted and re‑ordered (e.g., set semantics). Use substring checks or regex for the final ", or <last>" rule from `CliUsageString`.
+- Prefer JSON output (`--json`) for stable machine assertions when commands offer it.
+
+### API Development & Config Options 
 
 The following conventions summarize the insights gained when adding new configuration options, API endpoints, and related tests. Follow these conventions unless a maintainer requests an exception.
 
@@ -204,12 +236,12 @@ The following conventions summarize the insights gained when adding new configur
   - Permissions: cover public=false (401), CDN headers (403), admin access (200), and client tokens with insufficient scope (403).
   - Auth mode in tests: use `conf.SetAuthMode(config.AuthModePasswd)` (and defer restore) instead of flipping `Options().Public`; this toggles related internals used by tests.
   - Fixtures caveat: user fixtures often have admin role; for negative permission tests, prefer OAuth client tokens with limited scope rather than relying on a non‑admin user.
-  
+
 - Known tooling constraints
   - Python may not be available in the dev container; prefer `apply_patch`, Go, or Make targets over ad‑hoc scripts.
   - `make swag` may fetch modules; ensure network availability in CI before running.
 
-### Cluster & Bootstrap Quick Tips
+### Cluster Config & Bootstrap
 
 - Import rules (avoid cycles):
   - Do not import `internal/service/cluster/instance/*` from `internal/config` or the cluster root package.
