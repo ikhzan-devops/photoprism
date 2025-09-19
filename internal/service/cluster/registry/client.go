@@ -118,6 +118,30 @@ func (r *ClientRegistry) Put(n *Node) error {
 			return err
 		}
 	}
+
+	// Reflect persisted values back into the provided node pointer so callers
+	// (e.g., API handlers) can return the actual ID and timestamps.
+	// Note: Do not overwrite sensitive in-memory fields like Secret.
+	n.ID = m.ClientUID
+	n.Name = m.ClientName
+	n.Role = m.ClientRole
+	n.AdvertiseUrl = m.ClientURL
+	n.CreatedAt = m.CreatedAt.UTC().Format(time.RFC3339)
+	n.UpdatedAt = m.UpdatedAt.UTC().Format(time.RFC3339)
+
+	if data := m.GetData(); data != nil {
+		// Labels and Site URL as persisted.
+		if data.Labels != nil {
+			n.Labels = data.Labels
+		}
+		n.SiteUrl = data.SiteURL
+		if db := data.Database; db != nil {
+			n.DB.Name = db.Name
+			n.DB.User = db.User
+			n.DB.RotAt = db.RotatedAt
+		}
+		n.SecretRot = data.SecretRotatedAt
+	}
 	// Set initial secret if provided on create/update.
 	if n.Secret != "" {
 		if err := m.SetSecret(n.Secret); err != nil {

@@ -119,8 +119,13 @@ func registerWithPortal(c *config.Config, portal *url.URL, token string) error {
 		"nodeRole":     cluster.RoleInstance, // JSON wire format is string
 		"advertiseUrl": c.AdvertiseUrl(),
 	}
+	// Include siteUrl when it differs from advertiseUrl; server will validate/normalize.
+	if su := c.SiteUrl(); su != "" && su != c.AdvertiseUrl() {
+		payload["siteUrl"] = su
+	}
 	if wantRotateDatabase {
-		payload["rotate"] = true
+		// Align with API: request database rotation/creation on (re)register.
+		payload["rotateDatabase"] = true
 	}
 
 	bodyBytes, _ := json.Marshal(payload)
