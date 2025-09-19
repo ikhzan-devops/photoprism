@@ -11,13 +11,13 @@ import (
 )
 
 // ClientRegistry implements Registry using auth_clients + passwords.
-type ClientRegistry struct{}
+type ClientRegistry struct{ conf *config.Config }
 
 func NewClientRegistry() *ClientRegistry { return &ClientRegistry{} }
 
 // NewClientRegistryWithConfig returns a client-backed registry; the config is accepted for parity with file-backed init.
-func NewClientRegistryWithConfig(_ *config.Config) (*ClientRegistry, error) {
-	return &ClientRegistry{}, nil
+func NewClientRegistryWithConfig(c *config.Config) (*ClientRegistry, error) {
+	return &ClientRegistry{conf: c}, nil
 }
 
 // toNode maps an auth client to the registry.Node DTO used by response builders.
@@ -83,6 +83,14 @@ func (r *ClientRegistry) Put(n *Node) error {
 	}
 	if n.Role != "" {
 		m.SetRole(n.Role)
+	}
+	// Ensure a default scope for node clients (instance/service) if none is set.
+	// Always include "vision"; this only permits access to Vision endpoints WHEN the Portal enables them.
+	if m.Scope() == "" {
+		role := m.AclRole().String()
+		if role == "instance" || role == "service" {
+			m.SetScope("cluster vision")
+		}
 	}
 	if n.AdvertiseUrl != "" {
 		m.ClientURL = n.AdvertiseUrl

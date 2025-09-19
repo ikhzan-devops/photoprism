@@ -78,12 +78,16 @@ func TestThemeInstall_Missing(t *testing.T) {
 	_, _ = f.Write([]byte("body{}\n"))
 	_ = zw.Close()
 
-	// Fake Portal server.
+	// Fake Portal server (register -> oauth token -> theme)
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case "/api/v1/cluster/nodes/register":
 			w.Header().Set("Content-Type", "application/json")
-			_ = json.NewEncoder(w).Encode(cluster.RegisterResponse{Node: cluster.Node{Name: "pp-node-01"}})
+			// Return NodeID + NodeSecret so bootstrap can request OAuth token
+			_ = json.NewEncoder(w).Encode(cluster.RegisterResponse{Node: cluster.Node{ID: "cid123", Name: "pp-node-01"}, Secrets: &cluster.RegisterSecrets{NodeSecret: "s3cr3t"}})
+		case "/api/v1/oauth/token":
+			w.Header().Set("Content-Type", "application/json")
+			_ = json.NewEncoder(w).Encode(map[string]any{"access_token": "tok", "token_type": "Bearer"})
 		case "/api/v1/cluster/theme":
 			w.Header().Set("Content-Type", "application/zip")
 			w.WriteHeader(http.StatusOK)

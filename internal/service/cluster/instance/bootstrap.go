@@ -1,8 +1,10 @@
 package instance
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"net"
 	"net/http"
@@ -199,6 +201,11 @@ func isTemporary(err error) bool {
 func persistRegistration(c *config.Config, r *cluster.RegisterResponse, wantRotateDatabase bool) error {
 	updates := map[string]interface{}{}
 
+	// Always persist NodeID (client UID) from response for future OAuth token requests.
+	if r.Node.ID != "" {
+		updates["NodeID"] = r.Node.ID
+	}
+
 	// Persist node secret only if missing locally and provided by server.
 	if r.Secrets != nil && r.Secrets.NodeSecret != "" && c.NodeSecret() == "" {
 		updates["NodeSecret"] = r.Secrets.NodeSecret
@@ -297,8 +304,23 @@ func installThemeIfMissing(c *config.Config, portal *url.URL, token string) erro
 	endpoint := *portal
 	endpoint.Path = strings.TrimRight(endpoint.Path, "/") + "/api/v1/cluster/theme"
 
+	// Prefer OAuth client-credentials using NodeID/NodeSecret if available; fallback to join token.
+	bearer := ""
+	if id, secret := strings.TrimSpace(c.NodeID()), strings.TrimSpace(c.NodeSecret()); id != "" && secret != "" {
+		if t, err := oauthAccessToken(c, portal, id, secret); err != nil {
+			log.Debugf("cluster: oauth token request failed (%s)", clean.Error(err))
+		} else {
+			bearer = t
+		}
+	}
+	// If we do not have a bearer token, skip theme install for this run (no insecure fallback).
+	if bearer == "" {
+		log.Debugf("cluster: theme install skipped (missing OAuth credentials)")
+		return nil
+	}
+
 	req, _ := http.NewRequest(http.MethodGet, endpoint.String(), nil)
-	req.Header.Set("Authorization", "Bearer "+token)
+	req.Header.Set("Authorization", "Bearer "+bearer)
 	req.Header.Set("Accept", "application/zip")
 
 	resp, err := newHTTPClient(cluster.BootstrapRegisterTimeout).Do(req)
@@ -338,4 +360,45 @@ func installThemeIfMissing(c *config.Config, portal *url.URL, token string) erro
 	default:
 		return errors.New(resp.Status)
 	}
+}
+
+// oauthAccessToken requests an OAuth access token via client_credentials using Basic auth.
+func oauthAccessToken(c *config.Config, portal *url.URL, clientID, clientSecret string) (string, error) {
+	if portal == nil {
+		return "", fmt.Errorf("invalid portal url")
+	}
+	tokenURL := *portal
+	tokenURL.Path = strings.TrimRight(tokenURL.Path, "/") + "/api/v1/oauth/token"
+
+	form := url.Values{}
+	form.Set("grant_type", "client_credentials")
+
+	req, _ := http.NewRequest(http.MethodPost, tokenURL.String(), strings.NewReader(form.Encode()))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req.Header.Set("Accept", "application/json")
+	// Basic auth for client credentials
+	basic := base64.StdEncoding.EncodeToString([]byte(clientID + ":" + clientSecret))
+	req.Header.Set("Authorization", "Basic "+basic)
+
+	resp, err := newHTTPClient(cluster.BootstrapRegisterTimeout).Do(req)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("%s", resp.Status)
+	}
+	var tok struct {
+		AccessToken string `json:"access_token"`
+		TokenType   string `json:"token_type"`
+		Scope       string `json:"scope"`
+	}
+	dec := json.NewDecoder(resp.Body)
+	if err := dec.Decode(&tok); err != nil {
+		return "", err
+	}
+	if tok.AccessToken == "" {
+		return "", fmt.Errorf("empty access_token")
+	}
+	return tok.AccessToken, nil
 }

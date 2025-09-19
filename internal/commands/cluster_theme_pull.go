@@ -2,9 +2,12 @@ package commands
 
 import (
 	"archive/zip"
+	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
@@ -25,12 +28,14 @@ var ClusterThemePullCommand = &cli.Command{
 	Subcommands: []*cli.Command{
 		{
 			Name:  "pull",
-			Usage: "Downloads the theme from a portal and installs it in config/theme or the dest path",
+			Usage: "Downloads the theme from a portal and installs it in config/theme or the dest path. If only a join token is provided, this command first registers the node to obtain client credentials, then downloads the theme (no extra command needed).",
 			Flags: []cli.Flag{
 				&cli.PathFlag{Name: "dest", Usage: "extract destination `PATH` (defaults to config/theme)", Value: ""},
 				&cli.BoolFlag{Name: "force", Aliases: []string{"f"}, Usage: "replace existing files at destination"},
 				&cli.StringFlag{Name: "portal-url", Usage: "Portal base `URL` (defaults to global config)"},
 				&cli.StringFlag{Name: "join-token", Usage: "Portal access `TOKEN` (defaults to global config)"},
+				&cli.StringFlag{Name: "client-id", Usage: "Node client `ID` (defaults to NodeID from config)"},
+				&cli.StringFlag{Name: "client-secret", Usage: "Node client `SECRET` (defaults to NodeSecret from config)"},
 				JsonFlag,
 			},
 			Action: clusterThemePullAction,
@@ -50,15 +55,44 @@ func clusterThemePullAction(ctx *cli.Context) error {
 		if portalURL == "" {
 			return fmt.Errorf("portal-url not configured; set --portal-url or PHOTOPRISM_PORTAL_URL")
 		}
-		token := ctx.String("join-token")
-		if token == "" {
-			token = conf.JoinToken()
+		// Credentials: prefer OAuth client credentials (client-id/secret), fallback to join-token for compatibility.
+		clientID := ctx.String("client-id")
+		if clientID == "" {
+			clientID = conf.NodeID()
+		}
+		clientSecret := ctx.String("client-secret")
+		if clientSecret == "" {
+			clientSecret = conf.NodeSecret()
+		}
+		token := ""
+		if clientID != "" && clientSecret != "" {
+			// OAuth client_credentials
+			t, err := obtainOAuthToken(portalURL, clientID, clientSecret)
+			if err != nil {
+				log.Warnf("cluster: oauth token failed, falling back to join token (%s)", clean.Error(err))
+			} else {
+				token = t
+			}
 		}
 		if token == "" {
-			token = os.Getenv(config.EnvVar("join-token"))
-		}
-		if token == "" {
-			return fmt.Errorf("join-token not configured; set --join-token or PHOTOPRISM_JOIN_TOKEN")
+			// Try join-token assisted path. If NodeID/NodeSecret not available, attempt register to obtain them, then OAuth.
+			jt := ctx.String("join-token")
+			if jt == "" {
+				jt = conf.JoinToken()
+			}
+			if jt == "" {
+				jt = os.Getenv(config.EnvVar("join-token"))
+			}
+			if jt != "" && (clientID == "" || clientSecret == "") {
+				if id, sec, err := obtainClientCredentialsViaRegister(portalURL, jt, conf.NodeName()); err == nil {
+					if t, err := obtainOAuthToken(portalURL, id, sec); err == nil {
+						token = t
+					}
+				}
+			}
+			if token == "" {
+				return fmt.Errorf("authentication required: provide --client-id/--client-secret or a join token to obtain credentials")
+			}
 		}
 
 		dest := ctx.Path("dest")
@@ -149,6 +183,46 @@ func clusterThemePullAction(ctx *cli.Context) error {
 		}
 		return nil
 	})
+}
+
+// obtainOAuthToken requests an access token via client_credentials using Basic auth.
+func obtainOAuthToken(portalURL, clientID, clientSecret string) (string, error) {
+	u, err := url.Parse(strings.TrimRight(portalURL, "/"))
+	if err != nil || u.Scheme == "" || u.Host == "" {
+		return "", fmt.Errorf("invalid portal-url: %s", portalURL)
+	}
+	tokenURL := *u
+	tokenURL.Path = strings.TrimRight(tokenURL.Path, "/") + "/api/v1/oauth/token"
+
+	form := url.Values{}
+	form.Set("grant_type", "client_credentials")
+	req, _ := http.NewRequest(http.MethodPost, tokenURL.String(), strings.NewReader(form.Encode()))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req.Header.Set("Accept", "application/json")
+	basic := base64.StdEncoding.EncodeToString([]byte(clientID + ":" + clientSecret))
+	req.Header.Set("Authorization", "Basic "+basic)
+
+	client := &http.Client{Timeout: cluster.BootstrapRegisterTimeout}
+	resp, err := client.Do(req)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("%s", resp.Status)
+	}
+	var tok struct {
+		AccessToken string `json:"access_token"`
+		TokenType   string `json:"token_type"`
+		Scope       string `json:"scope"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&tok); err != nil {
+		return "", err
+	}
+	if tok.AccessToken == "" {
+		return "", fmt.Errorf("empty access_token")
+	}
+	return tok.AccessToken, nil
 }
 
 func dirNonEmpty(dir string) (bool, error) {
