@@ -27,7 +27,7 @@ func clusterSummaryAction(ctx *cli.Context) error {
 			return fmt.Errorf("cluster summary is only available on a Portal node")
 		}
 
-		r, err := reg.NewFileRegistry(conf)
+		r, err := reg.NewClientRegistryWithConfig(conf)
 		if err != nil {
 			return err
 		}

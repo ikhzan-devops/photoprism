@@ -1719,7 +1719,7 @@
                 "operationId": "ClusterNodesRegister",
                 "parameters": [
                     {
-                        "description": "registration payload (nodeName required; optional: nodeRole, labels, advertiseUrl, rotate, rotateSecret)",
+                        "description": "registration payload (nodeName required; optional: nodeRole, labels, advertiseUrl, siteUrl, rotateDatabase, rotateSecret)",
                         "name": "request",
                         "in": "body",
                         "required": true,
@@ -1898,7 +1898,7 @@
                         "required": true
                     },
                     {
-                        "description": "properties to update (role, labels, advertiseUrl)",
+                        "description": "properties to update (role, labels, advertiseUrl, siteUrl)",
                         "name": "node",
                         "in": "body",
                         "required": true,
@@ -6178,7 +6178,7 @@
                 }
             }
         },
-        "cluster.DBInfo": {
+        "cluster.DatabaseInfo": {
             "type": "object",
             "properties": {
                 "driver": {
@@ -6217,6 +6217,9 @@
                     "type": "string"
                 },
                 "role": {
+                    "type": "string"
+                },
+                "siteUrl": {
                     "type": "string"
                 },
                 "updatedAt": {
@@ -6290,7 +6293,7 @@
                 "nodeSecret": {
                     "type": "string"
                 },
-                "nodeSecretLastRotatedAt": {
+                "secretRotatedAt": {
                     "type": "string"
                 }
             }
@@ -6309,8 +6312,8 @@
                 "UUID": {
                     "type": "string"
                 },
-                "db": {
-                    "$ref": "#/definitions/cluster.DBInfo"
+                "database": {
+                    "$ref": "#/definitions/cluster.DatabaseInfo"
                 },
                 "nodes": {
                     "type": "integer"
@@ -9459,35 +9462,11 @@
                 1000000,
                 1000000000,
                 60000000000,
-                3600000000000,
-                1,
-                1000,
-                1000000,
-                1000000000,
-                60000000000,
-                3600000000000,
-                1,
-                1000,
-                1000000,
-                1000000000,
-                60000000000,
                 3600000000000
             ],
             "x-enum-varnames": [
                 "minDuration",
                 "maxDuration",
-                "Nanosecond",
-                "Microsecond",
-                "Millisecond",
-                "Second",
-                "Minute",
-                "Hour",
-                "Nanosecond",
-                "Microsecond",
-                "Millisecond",
-                "Second",
-                "Minute",
-                "Hour",
                 "Nanosecond",
                 "Microsecond",
                 "Millisecond",

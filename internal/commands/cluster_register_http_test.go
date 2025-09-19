@@ -31,7 +31,7 @@ func TestClusterRegister_HTTPHappyPath(t *testing.T) {
 		_ = json.NewEncoder(w).Encode(map[string]any{
 			"node":               map[string]any{"id": "n1", "name": "pp-node-02", "role": "instance", "createdAt": "2025-09-15T00:00:00Z", "updatedAt": "2025-09-15T00:00:00Z"},
 			"database":           map[string]any{"host": "database", "port": 3306, "name": "pp_db", "user": "pp_user", "password": "pwd", "dsn": "user:pwd@tcp(db:3306)/pp_db?parseTime=true", "databaseLastRotatedAt": "2025-09-15T00:00:00Z"},
-			"secrets":            map[string]any{"nodeSecret": "secret", "nodeSecretLastRotatedAt": "2025-09-15T00:00:00Z"},
+			"secrets":            map[string]any{"nodeSecret": "secret", "secretRotatedAt": "2025-09-15T00:00:00Z"},
 			"alreadyRegistered":  false,
 			"alreadyProvisioned": false,
 		})
@@ -45,8 +45,8 @@ func TestClusterRegister_HTTPHappyPath(t *testing.T) {
 	// Parse JSON
 	assert.Equal(t, "pp-node-02", gjson.Get(out, "node.name").String())
 	assert.Equal(t, "secret", gjson.Get(out, "secrets.nodeSecret").String())
-	assert.Equal(t, "pwd", gjson.Get(out, "db.password").String())
-	dsn := gjson.Get(out, "db.dsn").String()
+	assert.Equal(t, "pwd", gjson.Get(out, "database.password").String())
+	dsn := gjson.Get(out, "database.dsn").String()
 	parsed := cfg.NewDSN(dsn)
 	assert.Equal(t, "user", parsed.User)
 	assert.Equal(t, "pwd", parsed.Password)
@@ -71,7 +71,7 @@ func TestClusterNodesRotate_HTTPHappyPath(t *testing.T) {
 		_ = json.NewEncoder(w).Encode(map[string]any{
 			"node":               map[string]any{"id": "n1", "name": "pp-node-03", "role": "instance", "createdAt": "2025-09-15T00:00:00Z", "updatedAt": "2025-09-15T00:00:00Z"},
 			"database":           map[string]any{"host": "database", "port": 3306, "name": "pp_db", "user": "pp_user", "password": "pwd2", "dsn": "user:pwd2@tcp(db:3306)/pp_db?parseTime=true", "databaseLastRotatedAt": "2025-09-15T00:00:00Z"},
-			"secrets":            map[string]any{"nodeSecret": "secret2", "nodeSecretLastRotatedAt": "2025-09-15T00:00:00Z"},
+			"secrets":            map[string]any{"nodeSecret": "secret2", "secretRotatedAt": "2025-09-15T00:00:00Z"},
 			"alreadyRegistered":  true,
 			"alreadyProvisioned": true,
 		})
@@ -109,7 +109,7 @@ func TestClusterNodesRotate_HTTPJson(t *testing.T) {
 		_ = json.NewEncoder(w).Encode(map[string]any{
 			"node":               map[string]any{"id": "n2", "name": "pp-node-04", "role": "instance", "createdAt": "2025-09-15T00:00:00Z", "updatedAt": "2025-09-15T00:00:00Z"},
 			"database":           map[string]any{"host": "database", "port": 3306, "name": "pp_db", "user": "pp_user", "password": "pwd3", "dsn": "user:pwd3@tcp(db:3306)/pp_db?parseTime=true", "databaseLastRotatedAt": "2025-09-15T00:00:00Z"},
-			"secrets":            map[string]any{"nodeSecret": "secret3", "nodeSecretLastRotatedAt": "2025-09-15T00:00:00Z"},
+			"secrets":            map[string]any{"nodeSecret": "secret3", "secretRotatedAt": "2025-09-15T00:00:00Z"},
 			"alreadyRegistered":  true,
 			"alreadyProvisioned": true,
 		})
@@ -128,8 +128,8 @@ func TestClusterNodesRotate_HTTPJson(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, "pp-node-04", gjson.Get(out, "node.name").String())
 	assert.Equal(t, "secret3", gjson.Get(out, "secrets.nodeSecret").String())
-	assert.Equal(t, "pwd3", gjson.Get(out, "db.password").String())
-	dsn := gjson.Get(out, "db.dsn").String()
+	assert.Equal(t, "pwd3", gjson.Get(out, "database.password").String())
+	dsn := gjson.Get(out, "database.dsn").String()
 	parsed := cfg.NewDSN(dsn)
 	assert.Equal(t, "user", parsed.User)
 	assert.Equal(t, "pwd3", parsed.Password)
@@ -180,8 +180,8 @@ func TestClusterNodesRotate_DBOnly_JSON(t *testing.T) {
 	})
 	assert.NoError(t, err)
 	assert.Equal(t, "pp-node-05", gjson.Get(out, "node.name").String())
-	assert.Equal(t, "pwd4", gjson.Get(out, "db.password").String())
-	dsn := gjson.Get(out, "db.dsn").String()
+	assert.Equal(t, "pwd4", gjson.Get(out, "database.password").String())
+	dsn := gjson.Get(out, "database.dsn").String()
 	parsed := cfg.NewDSN(dsn)
 	assert.Equal(t, "pp_user", parsed.User)
 	assert.Equal(t, "pwd4", parsed.Password)
@@ -214,7 +214,7 @@ func TestClusterNodesRotate_SecretOnly_JSON(t *testing.T) {
 		_ = json.NewEncoder(w).Encode(map[string]any{
 			"node":               map[string]any{"id": "n4", "name": "pp-node-06", "role": "instance", "createdAt": "2025-09-15T00:00:00Z", "updatedAt": "2025-09-15T00:00:00Z"},
 			"database":           map[string]any{"host": "database", "port": 3306, "name": "pp_db", "user": "pp_user", "databaseLastRotatedAt": "2025-09-15T00:00:00Z"},
-			"secrets":            map[string]any{"nodeSecret": "secret4", "nodeSecretLastRotatedAt": "2025-09-15T00:00:00Z"},
+			"secrets":            map[string]any{"nodeSecret": "secret4", "secretRotatedAt": "2025-09-15T00:00:00Z"},
 			"alreadyRegistered":  true,
 			"alreadyProvisioned": true,
 		})
@@ -231,7 +231,7 @@ func TestClusterNodesRotate_SecretOnly_JSON(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, "pp-node-06", gjson.Get(out, "node.name").String())
 	assert.Equal(t, "secret4", gjson.Get(out, "secrets.nodeSecret").String())
-	assert.Equal(t, "", gjson.Get(out, "db.password").String())
+	assert.Equal(t, "", gjson.Get(out, "database.password").String())
 }
 
 func TestClusterRegister_HTTPUnauthorized(t *testing.T) {
@@ -413,8 +413,8 @@ func TestClusterRegister_RotateDatabase_JSON(t *testing.T) {
 	})
 	assert.NoError(t, err)
 	assert.Equal(t, "pp-node-07", gjson.Get(out, "node.name").String())
-	assert.Equal(t, "pwd7", gjson.Get(out, "db.password").String())
-	dsn := gjson.Get(out, "db.dsn").String()
+	assert.Equal(t, "pwd7", gjson.Get(out, "database.password").String())
+	dsn := gjson.Get(out, "database.dsn").String()
 	parsed := cfg.NewDSN(dsn)
 	assert.Equal(t, "pp_user", parsed.User)
 	assert.Equal(t, "pwd7", parsed.Password)
@@ -443,7 +443,7 @@ func TestClusterRegister_RotateSecret_JSON(t *testing.T) {
 		_ = json.NewEncoder(w).Encode(map[string]any{
 			"node":               map[string]any{"id": "n6", "name": "pp-node-08", "role": "instance", "createdAt": "2025-09-15T00:00:00Z", "updatedAt": "2025-09-15T00:00:00Z"},
 			"database":           map[string]any{"host": "database", "port": 3306, "name": "pp_db", "user": "pp_user", "databaseLastRotatedAt": "2025-09-15T00:00:00Z"},
-			"secrets":            map[string]any{"nodeSecret": "pwd8secret", "nodeSecretLastRotatedAt": "2025-09-15T00:00:00Z"},
+			"secrets":            map[string]any{"nodeSecret": "pwd8secret", "secretRotatedAt": "2025-09-15T00:00:00Z"},
 			"alreadyRegistered":  true,
 			"alreadyProvisioned": true,
 		})
@@ -456,5 +456,5 @@ func TestClusterRegister_RotateSecret_JSON(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, "pp-node-08", gjson.Get(out, "node.name").String())
 	assert.Equal(t, "pwd8secret", gjson.Get(out, "secrets.nodeSecret").String())
-	assert.Equal(t, "", gjson.Get(out, "db.password").String())
+	assert.Equal(t, "", gjson.Get(out, "database.password").String())
 }

@@ -14,6 +14,7 @@ type Node struct {
 	ID           string            `json:"id"`
 	Name         string            `json:"name"`
 	Role         string            `json:"role"`
+	SiteUrl      string            `json:"siteUrl,omitempty"`
 	AdvertiseUrl string            `json:"advertiseUrl,omitempty"`
 	Labels       map[string]string `json:"labels,omitempty"`
 	CreatedAt    string            `json:"createdAt"`
@@ -41,8 +42,8 @@ type SummaryResponse struct {
 // RegisterSecrets contains newly issued or rotated node secrets.
 // swagger:model RegisterSecrets
 type RegisterSecrets struct {
-	NodeSecret              string `json:"nodeSecret,omitempty"`
-	NodeSecretLastRotatedAt string `json:"nodeSecretLastRotatedAt,omitempty"`
+	NodeSecret      string `json:"nodeSecret,omitempty"`
+	SecretRotatedAt string `json:"secretRotatedAt,omitempty"`
 }
 
 // RegisterDatabase describes database credentials returned during registration/rotation.

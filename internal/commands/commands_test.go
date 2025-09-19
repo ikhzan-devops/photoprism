@@ -14,6 +14,12 @@ import (
 	"github.com/photoprism/photoprism/pkg/capture"
 )
 
+// TODO: Several CLI commands defer conf.Shutdown(), which closes the shared
+// database connection. To avoid flakiness, RunWithTestContext re-initializes
+// and re-registers the DB provider before each command invocation. If you see
+// "config: database not connected" during test runs, consider moving shutdown
+// behavior behind an interface or gating it for tests.
+
 func TestMain(m *testing.M) {
 	_ = os.Setenv("TF_CPP_MIN_LOG_LEVEL", "3")
 
@@ -24,8 +30,8 @@ func TestMain(m *testing.M) {
 	c := config.NewTestConfig("commands")
 	get.SetConfig(c)
 
-	// Remember to close database connection.
-	defer c.CloseDb()
+	// Keep DB connection open for the duration of this package's tests to
+	// avoid late access after CloseDb() in concurrent test runs.
 
 	// Init config and connect to database.
 	InitConfig = func(ctx *cli.Context) (*config.Config, error) {
@@ -78,6 +84,12 @@ func RunWithTestContext(cmd *cli.Command, args []string) (output string, err err
 	// TODO: Help output can currently not be generated in test mode due to
 	//       a nil pointer panic in the "github.com/urfave/cli/v2" package.
 	cmd.HideHelp = true
+
+	// Ensure DB connection is open for each command run (some commands call Shutdown).
+	if c := get.Config(); c != nil {
+		_ = c.Init()   // safe to call; re-opens DB if needed
+		c.RegisterDb() // (re)register provider
+	}
 
 	// Run command via cli.Command.Run but neutralize os.Exit so ExitCoder
 	// errors don't terminate the test binary.

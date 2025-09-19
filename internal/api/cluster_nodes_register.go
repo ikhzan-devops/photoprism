@@ -3,6 +3,8 @@ package api
 import (
 	"crypto/subtle"
 	"net/http"
+	"net/url"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 
@@ -25,7 +27,7 @@ import (
 //	@Tags		Cluster
 //	@Accept		json
 //	@Produce	json
-//	@Param		request				body		object	true	"registration payload (nodeName required; optional: nodeRole, labels, advertiseUrl, rotate, rotateSecret)"
+//	@Param		request				body		object	true	"registration payload (nodeName required; optional: nodeRole, labels, advertiseUrl, siteUrl, rotateDatabase, rotateSecret)"
 //	@Success	200,201				{object}	cluster.RegisterResponse
 //	@Failure	400,401,403,409,429	{object}	i18n.Response
 //	@Router		/api/v1/cluster/nodes/register [post]
@@ -66,6 +68,7 @@ func ClusterNodesRegister(router *gin.RouterGroup) {
 			NodeRole       string            `json:"nodeRole"`
 			Labels         map[string]string `json:"labels"`
 			AdvertiseUrl   string            `json:"advertiseUrl"`
+			SiteUrl        string            `json:"siteUrl"`
 			RotateDatabase bool              `json:"rotateDatabase"`
 			RotateSecret   bool              `json:"rotateSecret"`
 		}
@@ -84,8 +87,8 @@ func ClusterNodesRegister(router *gin.RouterGroup) {
 			return
 		}
 
-		// Registry.
-		regy, err := reg.NewFileRegistry(conf)
+		// Registry (client-backed).
+		regy, err := reg.NewClientRegistryWithConfig(conf)
 
 		if err != nil {
 			event.AuditErr([]string{clientIp, string(acl.ResourceCluster), "nodes", "register", "registry", event.Failed, "%s"}, clean.Error(err))
@@ -95,6 +98,22 @@ func ClusterNodesRegister(router *gin.RouterGroup) {
 
 		// Try to find existing node.
 		if n, _ := regy.FindByName(name); n != nil {
+			// Update mutable metadata when provided.
+			if req.AdvertiseUrl != "" {
+				n.AdvertiseUrl = req.AdvertiseUrl
+			}
+			if req.Labels != nil {
+				n.Labels = req.Labels
+			}
+			if s := normalizeSiteURL(req.SiteUrl); s != "" {
+				n.SiteUrl = s
+			}
+			// Persist metadata changes so UpdatedAt advances.
+			if putErr := regy.Put(n); putErr != nil {
+				event.AuditErr([]string{clientIp, string(acl.ResourceCluster), "nodes", "register", "persist node", event.Failed, "%s"}, clean.Error(putErr))
+				AbortUnexpectedError(c)
+				return
+			}
 			// Optional rotations.
 			var respSecret *cluster.RegisterSecrets
 			if req.RotateSecret {
@@ -103,7 +122,7 @@ func ClusterNodesRegister(router *gin.RouterGroup) {
 					AbortUnexpectedError(c)
 					return
 				}
-				respSecret = &cluster.RegisterSecrets{NodeSecret: n.Secret, NodeSecretLastRotatedAt: n.SecretRot}
+				respSecret = &cluster.RegisterSecrets{NodeSecret: n.Secret, SecretRotatedAt: n.SecretRot}
 				event.AuditInfo([]string{clientIp, string(acl.ResourceCluster), "nodes", "register", "rotate secret", event.Succeeded, "node %s"}, clean.LogQuote(name))
 
 				// Extra safety: ensure the updated secret is persisted even if subsequent steps fail.
@@ -163,6 +182,9 @@ func ClusterNodesRegister(router *gin.RouterGroup) {
 			Labels:       req.Labels,
 			AdvertiseUrl: req.AdvertiseUrl,
 		}
+		if s := normalizeSiteURL(req.SiteUrl); s != "" {
+			n.SiteUrl = s
+		}
 
 		// Generate node secret.
 		n.Secret = rnd.Base62(48)
@@ -185,7 +207,7 @@ func ClusterNodesRegister(router *gin.RouterGroup) {
 
 		resp := cluster.RegisterResponse{
 			Node:               reg.BuildClusterNode(*n, reg.NodeOptsForSession(nil)),
-			Secrets:            &cluster.RegisterSecrets{NodeSecret: n.Secret, NodeSecretLastRotatedAt: n.SecretRot},
+			Secrets:            &cluster.RegisterSecrets{NodeSecret: n.Secret, SecretRotatedAt: n.SecretRot},
 			Database:           cluster.RegisterDatabase{Host: conf.DatabaseHost(), Port: conf.DatabasePort(), Name: creds.Name, User: creds.User, Password: creds.Password, DSN: creds.DSN, RotatedAt: creds.LastRotatedAt},
 			AlreadyRegistered:  false,
 			AlreadyProvisioned: false,
@@ -195,4 +217,28 @@ func ClusterNodesRegister(router *gin.RouterGroup) {
 		event.AuditInfo([]string{clientIp, string(acl.ResourceCluster), "nodes", "register", event.Created, event.Succeeded, "node %s"}, clean.LogQuote(name))
 		c.JSON(http.StatusCreated, resp)
 	})
+}
+
+// normalizeSiteURL validates and normalizes a site URL for storage.
+// Rules: require http/https scheme, non-empty host, <=255 chars; lowercase host.
+func normalizeSiteURL(u string) string {
+	u = strings.TrimSpace(u)
+	if u == "" {
+		return ""
+	}
+	if len(u) > 255 {
+		return ""
+	}
+	parsed, err := url.Parse(u)
+	if err != nil {
+		return ""
+	}
+	if parsed.Scheme != "http" && parsed.Scheme != "https" {
+		return ""
+	}
+	if parsed.Host == "" {
+		return ""
+	}
+	parsed.Host = strings.ToLower(parsed.Host)
+	return parsed.String()
 }

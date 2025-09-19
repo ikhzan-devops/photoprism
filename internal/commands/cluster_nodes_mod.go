@@ -39,7 +39,7 @@ func clusterNodesModAction(ctx *cli.Context) error {
 			return cli.Exit(fmt.Errorf("node id or name is required"), 2)
 		}
 
-		r, err := reg.NewFileRegistry(conf)
+		r, err := reg.NewClientRegistryWithConfig(conf)
 		if err != nil {
 			return cli.Exit(err, 1)
 		}

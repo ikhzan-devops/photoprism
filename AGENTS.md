@@ -237,6 +237,51 @@ The following conventions summarize the insights gained when adding new configur
   - Auth mode in tests: use `conf.SetAuthMode(config.AuthModePasswd)` (and defer restore) instead of flipping `Options().Public`; this toggles related internals used by tests.
   - Fixtures caveat: user fixtures often have admin role; for negative permission tests, prefer OAuth client tokens with limited scope rather than relying on a non‑admin user.
 
+### Formatting (Go)
+
+- Go is formatted by `gofmt` and uses tabs. Do not hand-format indentation.
+- Always run after edits: `make fmt-go` (gofmt + goimports).
+
+### API Shape Checklist
+
+- When renaming or adding fields:
+  - Update DTOs in `internal/service/cluster/response.go` and any mappers.
+  - Update handlers and regenerate Swagger: `make fmt-go swag-fmt swag`.
+  - Update tests (search/replace old field names) and examples in `specs/`.
+  - Quick grep: `rg -n 'oldField|newField' -S` across code, tests, and specs.
+
+### Cluster Registry (Source of Truth)
+
+- Use the client‑backed registry (`NewClientRegistryWithConfig`).
+- The file‑backed registry is historical; do not add new references to it.
+- Migration “done” checklist: swap callsites → build → API tests → CLI tests → remove legacy references.
+
+### API/CLI Tests: Known Pitfalls
+
+- Gin routes: Register `CreateSession(router)` once per test router; reusing it twice panics on duplicate route.
+- CLI commands: Some commands defer `conf.Shutdown()` or emit signals that close the DB. The harness re‑opens DB before each run, but avoid invoking `start` or emitting signals in unit tests.
+- Signals: `internal/commands/start.go` waits on `process.Signal`; calling `process.Shutdown()/Restart()` can close DB. Prefer not to trigger signals in tests.
+
+### Sessions & Redaction (building sessions in tests)
+
+- Admin session (full view): `AuthenticateAdmin(app, router)`.
+- User session: Create a non‑admin test user (role=guest), set a password, then `AuthenticateUser`.
+- Client session (redacted internal fields; `siteUrl` visible):
+  ```go
+  s, _ := entity.AddClientSession("test-client", conf.SessionMaxAge(), "cluster", authn.GrantClientCredentials, nil)
+  token := s.AuthToken()
+  r := AuthenticatedRequest(app, http.MethodGet, "/api/v1/cluster/nodes", token)
+  ```
+  Admins see `advertiseUrl` and `database`; client/user sessions don’t. `siteUrl` is safe to show to all roles.
+
+### Preflight Checklist
+
+- `go build ./...`
+- `make fmt-go swag-fmt swag`
+- `go test ./internal/service/cluster/registry -count=1`
+- `go test ./internal/api -run 'Cluster' -count=1`
+- `go test ./internal/commands -run 'ClusterRegister|ClusterNodesRotate' -count=1`
+
 - Known tooling constraints
   - Python may not be available in the dev container; prefer `apply_patch`, Go, or Make targets over ad‑hoc scripts.
   - `make swag` may fetch modules; ensure network availability in CI before running.
@@ -265,5 +310,4 @@ The following conventions summarize the insights gained when adding new configur
   - Persist only missing `NodeSecret` and DB settings when rotation was requested.
 
 - Testing patterns:
-  - Set `PHOTOPRISM_STORAGE_PATH=$(mktemp -d)` (or `t.Setenv`) to isolate options.yml and theme dirs.
   - Use `httptest` for Portal endpoints and `pkg/fs.Unzip` with size caps for extraction tests.

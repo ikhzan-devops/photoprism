@@ -16,7 +16,7 @@ import (
 )
 
 var (
-	rotateDatabaseFlag = &cli.BoolFlag{Name: "database", Usage: "rotate DB credentials"}
+	rotateDatabaseFlag = &cli.BoolFlag{Name: "database", Aliases: []string{"db"}, Usage: "rotate DB credentials"}
 	rotateSecretFlag   = &cli.BoolFlag{Name: "secret", Usage: "rotate node secret"}
 	rotatePortalURL    = &cli.StringFlag{Name: "portal-url", Usage: "Portal base `URL` (defaults to config)"}
 	rotatePortalTok    = &cli.StringFlag{Name: "join-token", Usage: "Portal access `TOKEN` (defaults to config)"}
@@ -41,7 +41,7 @@ func clusterNodesRotateAction(ctx *cli.Context) error {
 		// Determine node name. On portal, resolve id->name via registry; otherwise treat key as name.
 		name := clean.TypeLowerDash(key)
 		if conf.IsPortal() {
-			if r, err := reg.NewFileRegistry(conf); err == nil {
+			if r, err := reg.NewClientRegistryWithConfig(conf); err == nil {
 				if n, err := r.Get(key); err == nil && n != nil {
 					name = n.Name
 				} else if n, err := r.FindByName(clean.TypeLowerDash(key)); err == nil && n != nil {

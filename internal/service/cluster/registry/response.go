@@ -27,6 +27,7 @@ func BuildClusterNode(n Node, opts NodeOpts) cluster.Node {
 		ID:        n.ID,
 		Name:      n.Name,
 		Role:      n.Role,
+		SiteUrl:   n.SiteUrl,
 		Labels:    n.Labels,
 		CreatedAt: n.CreatedAt,
 		UpdatedAt: n.UpdatedAt,

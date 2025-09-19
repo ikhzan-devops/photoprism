@@ -40,7 +40,7 @@ func clusterNodesListAction(ctx *cli.Context) error {
 			return cli.Exit(fmt.Errorf("node listing is only available on a Portal node"), 2)
 		}
 
-		r, err := reg.NewFileRegistry(conf)
+		r, err := reg.NewClientRegistryWithConfig(conf)
 		if err != nil {
 			return cli.Exit(err, 1)
 		}

@@ -36,7 +36,7 @@ func ClusterSummary(router *gin.RouterGroup) {
 			return
 		}
 
-		regy, err := reg.NewFileRegistry(conf)
+		regy, err := reg.NewClientRegistryWithConfig(conf)
 
 		if err != nil {
 			AbortUnexpectedError(c)

@@ -4,9 +4,22 @@ import (
 	"encoding/json"
 )
 
-// ClientData represents Client data.
+// ClientDatabase captures DB metadata provisioned for a node.
+type ClientDatabase struct {
+	Name      string `json:"name,omitempty"`
+	User      string `json:"user,omitempty"`
+	RotatedAt string `json:"rotatedAt,omitempty"`
+}
+
+// ClientData represents instance/service-specific metadata for cluster clients.
 type ClientData struct {
-	// TODO: Define what types of data can have.
+	Labels          map[string]string `json:"labels,omitempty"`
+	Database        *ClientDatabase   `json:"database,omitempty"`
+	SecretRotatedAt string            `json:"secretRotatedAt,omitempty"`
+	SiteURL         string            `json:"siteUrl,omitempty"`
+	ClusterUUID     string            `json:"clusterUUID,omitempty"`
+	ServiceKind     string            `json:"serviceKind,omitempty"`
+	ServiceFeatures []string          `json:"serviceFeatures,omitempty"`
 }
 
 // NewClientData creates a new client data struct and returns a pointer to it.
