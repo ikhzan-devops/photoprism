@@ -157,6 +157,25 @@ Frequently Touched Files (by topic)
 - Cluster: `internal/service/cluster/*`
 - Headers: `pkg/service/http/header/*`
 
+Downloads (CLI) & yt-dlp helpers
+- CLI command & core:
+  - `internal/commands/download.go` (flags, defaults, examples)
+  - `internal/commands/download_impl.go` (testable implementation used by CLI)
+- yt-dlp wrappers:
+  - `internal/photoprism/dl/options.go` (arg wiring; `FFmpegPostArgs` hook for `--postprocessor-args`)
+  - `internal/photoprism/dl/info.go` (metadata discovery)
+  - `internal/photoprism/dl/file.go` (file method with `--output`/`--print`)
+  - `internal/photoprism/dl/meta.go` (`CreatedFromInfo` fallback; `RemuxOptionsFromInfo`)
+- Importer:
+  - `internal/photoprism/get/import.go` (work pool)
+  - `internal/photoprism/import_options.go` (`ImportOptionsMove/Copy`)
+- Testing hints:
+  - Fast loops: `go test ./internal/photoprism/dl -run 'Options|Created|PostprocessorArgs' -count=1`
+  - CLI only: `go test ./internal/commands -run 'DownloadImpl|HelpFlags' -count=1`
+  - Disable ffmpeg when not needed: set `FFmpegBin = "/bin/false"`, `Settings.Index.Convert=false` in tests.
+  - Stub yt-dlp: shell script that prints JSON for `--dump-single-json`, creates a file and prints path for `--print`.
+  - Avoid importer dedup: vary file bytes (e.g., `YTDLP_DUMMY_CONTENT`) or dest.
+
 Useful Make Targets (selection)
 - `make help` — list targets
 - `make dep` — install Go/JS deps in container

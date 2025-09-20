@@ -262,6 +262,42 @@ The following conventions summarize the insights gained when adding new configur
 - CLI commands: Some commands defer `conf.Shutdown()` or emit signals that close the DB. The harness re‑opens DB before each run, but avoid invoking `start` or emitting signals in unit tests.
 - Signals: `internal/commands/start.go` waits on `process.Signal`; calling `process.Shutdown()/Restart()` can close DB. Prefer not to trigger signals in tests.
 
+### Download CLI Workbench (yt-dlp, remux, importer)
+
+- Code anchors
+  - CLI flags and examples: `internal/commands/download.go`
+  - Core implementation (testable): `internal/commands/download_impl.go`
+  - yt-dlp helpers and arg wiring: `internal/photoprism/dl/*` (`options.go`, `info.go`, `file.go`, `meta.go`)
+  - Importer entry point: `internal/photoprism/get/import.go`; options: `internal/photoprism/import_options.go`
+
+- Quick test runs (fast feedback)
+  - yt-dlp package: `go test ./internal/photoprism/dl -run 'Options|Created|PostprocessorArgs' -count=1`
+  - CLI command: `go test ./internal/commands -run 'DownloadImpl|HelpFlags' -count=1`
+
+- FFmpeg-less tests
+  - In tests: set `c.Options().FFmpegBin = "/bin/false"` and `c.Settings().Index.Convert = false` to avoid ffmpeg dependencies when not validating remux.
+
+- Stubbing yt-dlp (no network)
+  - Use a tiny shell script that:
+    - prints minimal JSON for `--dump-single-json`
+    - creates a file and prints its path when `--print` is requested
+  - Harness env vars (supported by our tests):
+    - `YTDLP_ARGS_LOG` — append final args for assertion
+    - `YTDLP_OUTPUT_FILE` — absolute file path to create for `--print`
+    - `YTDLP_DUMMY_CONTENT` — file contents to avoid importer duplicate detection between tests
+
+- Remux policy and metadata
+  - Pipe method: PhotoPrism remux (ffmpeg) always embeds title/description/created.
+  - File method: yt‑dlp writes files; we pass `--postprocessor-args 'ffmpeg:-metadata creation_time=<RFC3339>'` so imports get `Created` even without local remux (fallback from `upload_date`/`release_date`).
+  - Default remux policy: `auto`; use `always` for the most complete metadata (chapters, extended tags).
+
+- Testing
+  - Prefer targeted runs before the full suite:
+    - `go test ./internal/<pkg> -run <Name> -count=1`
+    - Avoid `./...` unless you intend to run everything.
+  - Importer duplicates: When reusing names/paths across tests, the importer may dedupe; vary file bytes via `YTDLP_DUMMY_CONTENT` or adjust `dest` to ensure assertions see the new file.
+  - Long-running packages: `internal/photoprism` is heavy; validate CLI/dl changes first in their packages, then run broader suites.
+
 ### Sessions & Redaction (building sessions in tests)
 
 - Admin session (full view): `AuthenticateAdmin(app, router)`.
