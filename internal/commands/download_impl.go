@@ -71,7 +71,7 @@ func runDownload(conf *config.Config, opts DownloadOpts, inputURLs []string) err
 	}
 	fileRemux := strings.ToLower(strings.TrimSpace(opts.FileRemux))
 	if fileRemux == "" {
-		fileRemux = "always"
+		fileRemux = "auto"
 	}
 	switch fileRemux {
 	case "always", "auto", "skip":
@@ -128,6 +128,12 @@ func runDownload(conf *config.Config, opts DownloadOpts, inputURLs []string) err
 				log.Errorf("metadata failed: %v", err)
 				failures++
 				continue
+			}
+
+			// Best-effort creation time for file method when not remuxing locally.
+			if created := dl.CreatedFromInfo(result.Info); !created.IsZero() {
+				// Apply via yt-dlp ffmpeg post-processor so creation_time exists even without our remux.
+				result.Options.FFmpegPostArgs = "-metadata creation_time=" + created.UTC().Format(time.RFC3339)
 			}
 			if dlName := clean.DlName(result.Info.Title); dlName != "" {
 				downloadFile = dlName + fs.ExtMp4

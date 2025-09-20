@@ -35,7 +35,7 @@ func createFakeYtDlp(t *testing.T) string {
 	b.WriteString("set -euo pipefail\n")
 	b.WriteString("OUT_TPL=\"\"\n")
 	b.WriteString("i=0; while [[ $i -lt $# ]]; do i=$((i+1)); arg=\"${!i}\"; if [[ \"$arg\" == \"--dump-single-json\" ]]; then echo '{\"id\":\"abc\",\"title\":\"Test\",\"url\":\"http://example.com\",\"_type\":\"video\"}'; exit 0; fi; if [[ \"$arg\" == \"--output\" ]]; then i=$((i+1)); OUT_TPL=\"${!i}\"; fi; done\n")
-	b.WriteString("if [[ $* == *'--print '* ]]; then OUT=\"$OUT_TPL\"; OUT=${OUT//%(id)s/abc}; OUT=${OUT//%(ext)s/mp4}; mkdir -p \"$(dirname \"$OUT\")\"; echo 'dummy' > \"$OUT\"; echo \"$OUT\"; exit 0; fi\n")
+    b.WriteString("if [[ $* == *'--print '* ]]; then OUT=\"$OUT_TPL\"; OUT=${OUT//%(id)s/abc}; OUT=${OUT//%(ext)s/mp4}; mkdir -p \"$(dirname \"$OUT\")\"; CONTENT=\"${YTDLP_DUMMY_CONTENT:-dummy}\"; echo \"$CONTENT\" > \"$OUT\"; echo \"$OUT\"; exit 0; fi\n")
 	if err := os.WriteFile(path, []byte(b.String()), 0o755); err != nil {
 		t.Fatalf("failed to write fake yt-dlp: %v", err)
 	}
@@ -72,14 +72,47 @@ func TestDownloadImpl_FileMethod_AutoSkipsRemux(t *testing.T) {
 		FileRemux: "auto",
 	}, []string{"https://example.com/video"})
 	if err != nil {
-		t.Fatalf("runDownload failed: %v", err)
+		t.Fatalf("runDownload failed (auto should skip remux): %v", err)
 	}
 
-	// Verify a file exists under Originals/dest with .mp4 extension
-	c := get.Config()
-	if c == nil {
+	// Cleanup destination folder (best effort)
+	if c := get.Config(); c != nil {
+		outDir := filepath.Join(c.OriginalsPath(), dest)
+		_ = os.RemoveAll(outDir)
+	}
+}
+
+func TestDownloadImpl_FileMethod_Skip_NoRemux(t *testing.T) {
+    fake := createFakeYtDlp(t)
+    orig := dl.YtDlpBin
+    defer func() { dl.YtDlpBin = orig }()
+
+    dest := "dl-e2e-skip"
+    // Ensure different file content so duplicate detection won't collapse into prior test's file
+    t.Setenv("YTDLP_DUMMY_CONTENT", "dummy2")
+    if c := get.Config(); c != nil {
+        c.Options().FFmpegBin = "/bin/false" // would fail if remux attempted
+        s := c.Settings()
+        s.Index.Convert = false
+    }
+	conf := get.Config()
+	if conf == nil {
 		t.Fatalf("missing test config")
 	}
+	_ = conf.Init()
+	conf.RegisterDb()
+	dl.YtDlpBin = fake
+
+	if err := runDownload(conf, DownloadOpts{
+		Dest:      dest,
+		Method:    "file",
+		FileRemux: "skip",
+	}, []string{"https://example.com/video"}); err != nil {
+		t.Fatalf("runDownload failed with skip remux: %v", err)
+	}
+
+	// Verify an mp4 exists under Originals/dest
+	c := get.Config()
 	outDir := filepath.Join(c.OriginalsPath(), dest)
 	found := false
 	_ = filepath.WalkDir(outDir, func(path string, d os.DirEntry, err error) error {
@@ -95,7 +128,39 @@ func TestDownloadImpl_FileMethod_AutoSkipsRemux(t *testing.T) {
 	if !found {
 		t.Fatalf("expected at least one mp4 in %s", outDir)
 	}
+	_ = os.RemoveAll(outDir)
+}
 
-	// Cleanup destination folder
+func TestDownloadImpl_FileMethod_Always_RemuxFails(t *testing.T) {
+	fake := createFakeYtDlp(t)
+	orig := dl.YtDlpBin
+	defer func() { dl.YtDlpBin = orig }()
+
+	dest := "dl-e2e-always"
+	if c := get.Config(); c != nil {
+		c.Options().FFmpegBin = "/bin/false" // force remux failure when called
+		s := c.Settings()
+		s.Index.Convert = false
+	}
+	conf := get.Config()
+	if conf == nil {
+		t.Fatalf("missing test config")
+	}
+	_ = conf.Init()
+	conf.RegisterDb()
+	dl.YtDlpBin = fake
+
+	err := runDownload(conf, DownloadOpts{
+		Dest:      dest,
+		Method:    "file",
+		FileRemux: "always",
+	}, []string{"https://example.com/video"})
+	if err == nil {
+		t.Fatalf("expected failure when remux is required but ffmpeg is unavailable")
+	}
+
+	// Cleanup destination folder if anything was created
+	c := get.Config()
+	outDir := filepath.Join(c.OriginalsPath(), dest)
 	_ = os.RemoveAll(outDir)
 }

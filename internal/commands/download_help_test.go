@@ -13,6 +13,7 @@ func TestDownloadCommand_HelpFlagsAndArgs(t *testing.T) {
 		"cookies":    false,
 		"add-header": false,
 		"dl-method":  false,
+		"file-remux": false,
 	}
 	for _, f := range DownloadCommand.Flags {
 		name := f.Names()[0]

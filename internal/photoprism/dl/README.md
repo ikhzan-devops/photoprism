@@ -8,7 +8,8 @@ It currently supports two invocation methods:
 
 ## Auth & Headers
 
-- Supports `--cookies` and repeatable `--add-header` for both metadata and download flows.
+- Supports `--cookies`, `--cookies-from-browser BROWSER[:PROFILE]`, and repeatable `--add-header` for both metadata and download flows.  
+  - Container note: The `photoprism dl` CLI runs in a container by default and therefore does not expose a `--cookies-from-browser` flag (no access to local browser profiles). Use `--cookies <path>` with a Netscape cookies.txt file.
 - Secrets are never logged; header values are redacted in trace logs.
 
 ## Key APIs
@@ -27,4 +28,3 @@ It currently supports two invocation methods:
 
 - Prefer the file method for sources with separate audio/video streams; the pipe method cannot always merge in that case.
 - When the CLI’s `--file-remux=auto` is used, the final ffmpeg remux is skipped for MP4 outputs that already include metadata.
-

@@ -170,3 +170,73 @@ func TestDownloadToFileWithOptions_PrintsAndCreatesFiles(t *testing.T) {
 		t.Fatalf("expected file to exist: %v", statErr)
 	}
 }
+
+func TestDownloadToFileWithOptions_IncludesPostprocessorArgs(t *testing.T) {
+	fake := createFakeYtDlp(t)
+	orig := YtDlpBin
+	YtDlpBin = fake
+	defer func() { YtDlpBin = orig }()
+
+	argsLog := filepath.Join(t.TempDir(), "args.log")
+	t.Setenv("YTDLP_ARGS_LOG", argsLog)
+
+	outDir := t.TempDir()
+	outFile := filepath.Join(outDir, "ppdl_test.mp4")
+	t.Setenv("YTDLP_OUTPUT_FILE", outFile)
+
+	r := Metadata{
+		RawURL: "https://example.com/v",
+		Options: Options{
+			noInfoDownload: true,
+			FFmpegPostArgs: "-metadata creation_time=2021-11-20T00:00:00Z",
+		},
+	}
+	_, err := r.DownloadToFileWithOptions(context.Background(), DownloadOptions{Output: filepath.Join(outDir, "ppdl_%(id)s.%(ext)s")})
+	if err != nil {
+		t.Fatalf("DownloadToFileWithOptions error: %v", err)
+	}
+
+	data, err := os.ReadFile(argsLog)
+	if err != nil {
+		t.Fatalf("reading args log failed: %v", err)
+	}
+	s := string(data)
+	if !strings.Contains(s, "--postprocessor-args") || !strings.Contains(s, "ffmpeg:-metadata creation_time=2021-11-20T00:00:00Z") {
+		t.Fatalf("missing postprocessor args in yt-dlp invocation: %s", s)
+	}
+}
+
+func TestDownloadWithOptions_IncludesPostprocessorArgs_Pipe(t *testing.T) {
+	fake := createFakeYtDlp(t)
+	orig := YtDlpBin
+	YtDlpBin = fake
+	defer func() { YtDlpBin = orig }()
+
+	argsLog := filepath.Join(t.TempDir(), "args.log")
+	t.Setenv("YTDLP_ARGS_LOG", argsLog)
+
+	r := Metadata{
+		RawURL: "https://example.com/v",
+		Options: Options{
+			noInfoDownload: true,
+			FFmpegPostArgs: "-metadata creation_time=2021-11-20T00:00:00Z",
+		},
+	}
+	dr, err := r.DownloadWithOptions(context.Background(), DownloadOptions{})
+	if err != nil {
+		t.Fatalf("DownloadWithOptions error: %v", err)
+	}
+	// Read a bit and close to finish the process
+	buf := make([]byte, 4)
+	_, _ = dr.Read(buf)
+	_ = dr.Close()
+
+	data, err := os.ReadFile(argsLog)
+	if err != nil {
+		t.Fatalf("reading args log failed: %v", err)
+	}
+	s := string(data)
+	if !strings.Contains(s, "--postprocessor-args") || !strings.Contains(s, "ffmpeg:-metadata creation_time=2021-11-20T00:00:00Z") {
+		t.Fatalf("missing postprocessor args in yt-dlp invocation: %s", s)
+	}
+}

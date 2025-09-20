@@ -69,7 +69,7 @@ var DownloadCommand = &cli.Command{
 		&cli.StringFlag{
 			Name:    "file-remux",
 			Aliases: []string{"r"},
-			Value:   "always",
+			Value:   "auto",
 			Usage:   "remux `POLICY` for videos when using --dl-method file: auto (skip if MP4), always, or skip",
 		},
 	},
@@ -155,7 +155,7 @@ func downloadAction(ctx *cli.Context) error {
 	}
 	fileRemux := strings.ToLower(strings.TrimSpace(ctx.String("file-remux")))
 	if fileRemux == "" {
-		fileRemux = "always"
+		fileRemux = "auto"
 	}
 	switch fileRemux {
 	case "always", "auto", "skip":
@@ -212,6 +212,12 @@ func downloadAction(ctx *cli.Context) error {
 				log.Errorf("metadata failed: %v", err)
 				failures++
 				continue
+			}
+
+			// Best-effort creation time for file method when not remuxing locally.
+			if created := dl.CreatedFromInfo(result.Info); !created.IsZero() {
+				// Apply via yt-dlp ffmpeg post-processor so creation_time exists even without our remux.
+				result.Options.FFmpegPostArgs = "-metadata creation_time=" + created.UTC().Format(time.RFC3339)
 			}
 
 			// Base filename for pipe method

@@ -32,3 +32,31 @@ func TestRemuxOptionsFromInfo(t *testing.T) {
 		t.Fatalf("Created timestamp should be set")
 	}
 }
+
+func TestCreatedFromInfo_UploadDateFallback(t *testing.T) {
+	info := Info{
+		Title:      "X",
+		UploadDate: "20211120",
+	}
+	created := CreatedFromInfo(info)
+	if created.IsZero() {
+		t.Fatalf("expected created time from UploadDate fallback")
+	}
+	if got, want := created.UTC().Format(time.RFC3339), "2021-11-20T00:00:00Z"; got != want {
+		t.Fatalf("created mismatch: got %s want %s", got, want)
+	}
+}
+
+func TestCreatedFromInfo_ReleaseDateFallback(t *testing.T) {
+	info := Info{
+		Title:       "Y",
+		ReleaseDate: "20190501",
+	}
+	created := CreatedFromInfo(info)
+	if created.IsZero() {
+		t.Fatalf("expected created time from ReleaseDate fallback")
+	}
+	if got, want := created.UTC().Format(time.RFC3339), "2019-05-01T00:00:00Z"; got != want {
+		t.Fatalf("created mismatch: got %s want %s", got, want)
+	}
+}

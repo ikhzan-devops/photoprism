@@ -166,6 +166,10 @@ func (result Metadata) DownloadToFileWithOptions(
 
 	cmd.Dir = tempPath
 
+	if strings.TrimSpace(result.Options.FFmpegPostArgs) != "" {
+		cmd.Args = append(cmd.Args, "--postprocessor-args", "ffmpeg:"+result.Options.FFmpegPostArgs)
+	}
+
 	// Capture stdout/stderr for parsing results and errors
 	stdoutBuf := &bytes.Buffer{}
 	stderrBuf := &bytes.Buffer{}
