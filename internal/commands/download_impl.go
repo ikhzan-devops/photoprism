@@ -1,7 +1,6 @@
 package commands
 
 import (
-	"bufio"
 	"context"
 	"fmt"
 	"io"
@@ -10,8 +9,6 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
-
-	"github.com/urfave/cli/v2"
 
 	"github.com/photoprism/photoprism/internal/config"
 	"github.com/photoprism/photoprism/internal/ffmpeg"
@@ -25,145 +22,64 @@ import (
 	"github.com/photoprism/photoprism/pkg/service/http/scheme"
 )
 
-var downloadExamples = `
-Usage examples:
-
-photoprism dl --cookies cookies.txt \
- --add-header 'Authorization: Bearer <token>' \
- --dl-method file --file-remux auto -- \
- https://example.com/a.mp4 https://example.com/b.jpg
-
-# Add two headers (repeatable flag)
-photoprism dl -a 'Authorization: Bearer <token>' \
-			 -a 'Accept: application/json' -- URL`
-
-// DownloadCommand configures the command name, flags, and action.
-var DownloadCommand = &cli.Command{
-	Name:        "download",
-	Aliases:     []string{"dl"},
-	Usage:       "Imports media from one or more URLs",
-	Description: "Download and import media from one or more URLs.\n" + downloadExamples,
-	ArgsUsage:   "[url]...",
-	Flags: []cli.Flag{
-		&cli.StringFlag{
-			Name:    "dest",
-			Aliases: []string{"d"},
-			Usage:   "relative originals `PATH` in which new files should be imported",
-		},
-		&cli.StringFlag{
-			Name:    "cookies",
-			Aliases: []string{"c"},
-			Usage:   "use Netscape-format cookies.txt `FILE` for HTTP authentication",
-		},
-		&cli.StringSliceFlag{
-			Name:    "add-header",
-			Aliases: []string{"a"},
-			Usage:   "add HTTP request `HEADER` in the form 'Name: Value' (repeatable)",
-		},
-		&cli.StringFlag{
-			Name:    "dl-method",
-			Aliases: []string{"m"},
-			Value:   "pipe",
-			Usage:   "download `METHOD` when using external commands: pipe (stdio stream) or file (temporary files)",
-		},
-		&cli.StringFlag{
-			Name:    "file-remux",
-			Aliases: []string{"r"},
-			Value:   "always",
-			Usage:   "remux `POLICY` for videos when using --dl-method file: auto (skip if MP4), always, or skip",
-		},
-	},
-	Action: downloadAction,
+// DownloadOpts contains the command options used by runDownload.
+type DownloadOpts struct {
+	Dest               string
+	Cookies            string
+	CookiesFromBrowser string
+	AddHeaders         []string
+	Method             string // pipe|file
+	FileRemux          string // always|auto|skip
 }
 
-// downloadAction downloads and import media from a URL.
-func downloadAction(ctx *cli.Context) error {
+// runDownload executes the download/import flow for the given inputs and options.
+// It is the testable core used by the CLI action.
+func runDownload(conf *config.Config, opts DownloadOpts, inputURLs []string) error {
 	start := time.Now()
-
-	conf, confErr := InitConfig(ctx)
-
-	_, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
-	if confErr != nil {
-		return confErr
+	if conf == nil {
+		return fmt.Errorf("nil config")
 	}
-
-	// very if copy directory exist and is writable
 	if conf.ReadOnly() {
 		return config.ErrReadOnly
 	}
-
-	conf.InitDb()
-	defer conf.Shutdown()
-
-	// Collect URLs: args or STDIN when no args
-	var inputURLs []string
-	if ctx.Args().Len() > 0 {
-		inputURLs = append(inputURLs, ctx.Args().Slice()...)
-	} else {
-		// If STDIN is a pipe, read URLs line by line (Phase 1: args take precedence; no --stdin merge)
-		fi, _ := os.Stdin.Stat()
-		if (fi.Mode() & os.ModeCharDevice) == 0 {
-			scanner := bufio.NewScanner(os.Stdin)
-			buf := make([]byte, 0, 64*1024)
-			scanner.Buffer(buf, 1024*1024)
-			for scanner.Scan() {
-				line := strings.TrimSpace(scanner.Text())
-				if line == "" || strings.HasPrefix(line, "#") {
-					continue
-				}
-				inputURLs = append(inputURLs, line)
-			}
-			if err := scanner.Err(); err != nil {
-				return err
-			}
-		}
-	}
-
 	if len(inputURLs) == 0 {
 		return fmt.Errorf("no download URLs provided")
 	}
 
-	var destFolder string
-	if ctx.IsSet("dest") {
-		destFolder = clean.UserPath(ctx.String("dest"))
-	} else {
+	// Resolve destination folder
+	destFolder := opts.Dest
+	if destFolder == "" {
 		destFolder = conf.ImportDest()
+	} else {
+		destFolder = clean.UserPath(destFolder)
 	}
 
-	var downloadPath, downloadFile string
-
-	downloadPath = filepath.Join(conf.TempPath(), fs.DownloadDir+"_"+rnd.Base36(12))
-
+	// Create session download directory
+	downloadPath := filepath.Join(conf.TempPath(), fs.DownloadDir+"_"+rnd.Base36(12))
 	if err := fs.MkdirAll(downloadPath); err != nil {
 		return err
 	}
-
 	defer os.RemoveAll(downloadPath)
 
-	// Flags for yt-dlp auth and headers
-	cookies := strings.TrimSpace(ctx.String("cookies"))
-	// cookiesFromBrowser := strings.TrimSpace(ctx.String("cookies-from-browser"))
-	addHeaders := ctx.StringSlice("add-header")
-	method := strings.ToLower(strings.TrimSpace(ctx.String("dl-method")))
+	// Normalize method/remux policy
+	method := strings.ToLower(strings.TrimSpace(opts.Method))
 	if method == "" {
 		method = "pipe"
 	}
 	if method != "pipe" && method != "file" {
-		return fmt.Errorf("invalid --dl-method: %s (expected 'pipe' or 'file')", method)
+		return fmt.Errorf("invalid method: %s", method)
 	}
-	fileRemux := strings.ToLower(strings.TrimSpace(ctx.String("file-remux")))
+	fileRemux := strings.ToLower(strings.TrimSpace(opts.FileRemux))
 	if fileRemux == "" {
 		fileRemux = "always"
 	}
 	switch fileRemux {
 	case "always", "auto", "skip":
 	default:
-		return fmt.Errorf("invalid --file-remux: %s (expected 'always', 'auto', or 'skip')", fileRemux)
+		return fmt.Errorf("invalid file remux policy: %s", fileRemux)
 	}
 
-	// Process inputs sequentially (Phase 1)
+	// Process inputs sequentially
 	var failures int
 	for _, raw := range inputURLs {
 		u, perr := url.Parse(strings.TrimSpace(raw))
@@ -180,6 +96,7 @@ func downloadAction(ctx *cli.Context) error {
 
 		mt := media.FromName(u.Path)
 		ext := fs.Ext(u.Path)
+		var downloadFile string
 
 		switch mt {
 		case media.Image, media.Vector, media.Raw, media.Document, media.Audio:
@@ -198,23 +115,20 @@ func downloadAction(ctx *cli.Context) error {
 		default:
 			mt = media.Video
 			log.Infof("downloading %s from %s", mt, clean.Log(u.String()))
-
 			opt := dl.Options{
-				MergeOutputFormat: fs.VideoMp4.String(),
-				RemuxVideo:        fs.VideoMp4.String(),
-				SortingFormat:     "lang,quality,res,fps,codec:avc:m4a,channels,size,br,asr,proto,ext,hasaud,source,id",
-				Cookies:           cookies,
-				AddHeaders:        addHeaders,
+				MergeOutputFormat:  fs.VideoMp4.String(),
+				RemuxVideo:         fs.VideoMp4.String(),
+				SortingFormat:      "lang,quality,res,fps,codec:avc:m4a,channels,size,br,asr,proto,ext,hasaud,source,id",
+				Cookies:            opts.Cookies,
+				CookiesFromBrowser: opts.CookiesFromBrowser,
+				AddHeaders:         opts.AddHeaders,
 			}
-
 			result, err := dl.NewMetadata(context.Background(), u.String(), opt)
 			if err != nil {
 				log.Errorf("metadata failed: %v", err)
 				failures++
 				continue
 			}
-
-			// Base filename for pipe method
 			if dlName := clean.DlName(result.Info.Title); dlName != "" {
 				downloadFile = dlName + fs.ExtMp4
 			} else {
@@ -223,7 +137,6 @@ func downloadAction(ctx *cli.Context) error {
 			downloadFilePath := filepath.Join(downloadPath, downloadFile)
 
 			if method == "pipe" {
-				// Stream to stdout
 				downloadResult, err := result.DownloadWithOptions(context.Background(), dl.DownloadOptions{
 					Filter:            "best",
 					DownloadAudioOnly: false,
@@ -255,7 +168,6 @@ func downloadAction(ctx *cli.Context) error {
 					_ = f.Close()
 				}()
 
-				// Remux and embed metadata (pipe policy: always)
 				remuxOpt := dl.RemuxOptionsFromInfo(conf.FFmpegBin(), fs.VideoMp4, result.Info, u.String())
 				if remuxErr := ffmpeg.RemuxFile(downloadFilePath, "", remuxOpt); remuxErr != nil {
 					log.Errorf("remux failed: %v", remuxErr)
@@ -263,8 +175,6 @@ func downloadAction(ctx *cli.Context) error {
 					continue
 				}
 			} else {
-				// file method
-				// Deterministic output template within the session temp dir
 				outTpl := filepath.Join(downloadPath, "ppdl_%(id)s.%(ext)s")
 				files, err := result.DownloadToFileWithOptions(context.Background(), dl.DownloadOptions{
 					Filter:            "best",
@@ -278,13 +188,10 @@ func downloadAction(ctx *cli.Context) error {
 				})
 				if err != nil {
 					log.Errorf("download failed: %v", err)
-					// even on error, any completed files returned will be imported
 				}
-				// Ensure container/metadata per remux policy for file method
 				if fileRemux != "skip" {
 					for _, fp := range files {
 						if fileRemux == "auto" && strings.EqualFold(filepath.Ext(fp), fs.ExtMp4) {
-							// Assume yt-dlp produced a valid MP4 and embedded metadata
 							continue
 						}
 						remuxOpt := dl.RemuxOptionsFromInfo(conf.FFmpegBin(), fs.VideoMp4, result.Info, u.String())
@@ -299,7 +206,6 @@ func downloadAction(ctx *cli.Context) error {
 		}
 	}
 
-	// Import results once
 	log.Infof("importing downloads to %s", clean.Log(filepath.Join(conf.OriginalsPath(), destFolder)))
 	w := get.Import()
 	opt := photoprism.ImportOptionsMove(downloadPath, destFolder)
@@ -308,12 +214,8 @@ func downloadAction(ctx *cli.Context) error {
 	elapsed := time.Since(start)
 	if failures > 0 {
 		log.Warnf("completed with %d error(s) in %s", failures, elapsed)
-	} else {
-		log.Infof("completed in %s", elapsed)
-	}
-
-	if failures > 0 {
 		return fmt.Errorf("some downloads failed: %d", failures)
 	}
+	log.Infof("completed in %s", elapsed)
 	return nil
 }

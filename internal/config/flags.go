@@ -253,7 +253,7 @@ var Flags = CliFlags{
 		}}, {
 		Flag: &cli.PathFlag{
 			Name:      "import-dest",
-			Usage:     "relative originals `PATH` to which the files should be imported by default *optional*",
+			Usage:     "relative originals `PATH` in which files should be imported by default *optional*",
 			EnvVars:   EnvVars("IMPORT_DEST"),
 			TakesFile: true,
 		}}, {

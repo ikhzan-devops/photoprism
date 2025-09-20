@@ -30,6 +30,7 @@ type Options struct {
 	UseIPV4            bool                          // -4 Make all connections via IPv4
 	Cookies            string                        // --cookies FILE
 	CookiesFromBrowser string                        // --cookies-from-browser BROWSER[:FOLDER]
+	AddHeaders         []string                      // --add-header "Name: Value" (repeatable)
 	StderrFn           func(cmd *exec.Cmd) io.Writer // if not nil, function to get Writer for stderr
 	HttpClient         *http.Client                  // Client for download thumbnail and subtitles (nil use http.DefaultClient)
 	MergeOutputFormat  string                        // --merge-output-format
@@ -196,6 +197,19 @@ func (result Metadata) DownloadWithOptions(
 		cmd.Args = append(cmd.Args, "--cookies-from-browser", result.Options.CookiesFromBrowser)
 	}
 
+	if result.Options.Cookies != "" {
+		cmd.Args = append(cmd.Args, "--cookies", result.Options.Cookies)
+	}
+
+	if len(result.Options.AddHeaders) > 0 {
+		for _, h := range result.Options.AddHeaders {
+			if strings.TrimSpace(h) == "" {
+				continue
+			}
+			cmd.Args = append(cmd.Args, "--add-header", h)
+		}
+	}
+
 	if result.Options.MergeOutputFormat != "" {
 		cmd.Args = append(cmd.Args,
 			"--merge-output-format", result.Options.MergeOutputFormat,
@@ -239,7 +253,7 @@ func (result Metadata) DownloadWithOptions(
 	cmd.Stdout = stdoutW
 	cmd.Stderr = io.MultiWriter(optStderrWriter, stderrW)
 
-	log.Trace("cmd", " ", cmd.Args)
+	log.Trace("cmd", " ", redactArgs(cmd.Args))
 	if err := cmd.Start(); err != nil {
 		os.RemoveAll(tempPath)
 		return nil, err
