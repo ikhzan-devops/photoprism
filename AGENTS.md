@@ -167,6 +167,12 @@ If anything in this file conflicts with the `Makefile` or the Developer Guide, t
 - CLI command tests: use `RunWithTestContext(cmd, args)` to capture output and avoid `os.Exit`; assert `cli.ExitCoder` codes when you need them.
 - Reports are quoted: strings in CLI "show" output are rendered with quotes by the report helpers. Prefer `assert.Contains`/regex over strict, fully formatted equality when validating content.
 
+#### Test Data & Fixtures (storage/testdata)
+- Shared test files live under `storage/testdata`. The lifecycle is managed by `internal/config/test.go`.
+- `NewTestConfig("<pkg>")` now calls `InitializeTestData()` so required directories exist (originals, import, cache, temp) before tests run.
+- If you build a custom `*config.Config`, call `c.InitializeTestData()` (and optionally `c.AssertTestData(t)`) before asserting on filesystem paths.
+- `InitializeTestData()` deletes existing testdata (`RemoveTestData()`), downloads/unzips fixtures if needed, and then calls `CreateDirectories()` to ensure required directories exist.
+
 ### Roles & ACL
 
 - Always map roles via the central tables:

@@ -35,7 +35,7 @@ func createFakeYtDlp(t *testing.T) string {
 	b.WriteString("set -euo pipefail\n")
 	b.WriteString("OUT_TPL=\"\"\n")
 	b.WriteString("i=0; while [[ $i -lt $# ]]; do i=$((i+1)); arg=\"${!i}\"; if [[ \"$arg\" == \"--dump-single-json\" ]]; then echo '{\"id\":\"abc\",\"title\":\"Test\",\"url\":\"http://example.com\",\"_type\":\"video\"}'; exit 0; fi; if [[ \"$arg\" == \"--output\" ]]; then i=$((i+1)); OUT_TPL=\"${!i}\"; fi; done\n")
-    b.WriteString("if [[ $* == *'--print '* ]]; then OUT=\"$OUT_TPL\"; OUT=${OUT//%(id)s/abc}; OUT=${OUT//%(ext)s/mp4}; mkdir -p \"$(dirname \"$OUT\")\"; CONTENT=\"${YTDLP_DUMMY_CONTENT:-dummy}\"; echo \"$CONTENT\" > \"$OUT\"; echo \"$OUT\"; exit 0; fi\n")
+	b.WriteString("if [[ $* == *'--print '* ]]; then OUT=\"$OUT_TPL\"; OUT=${OUT//%(id)s/abc}; OUT=${OUT//%(ext)s/mp4}; mkdir -p \"$(dirname \"$OUT\")\"; CONTENT=\"${YTDLP_DUMMY_CONTENT:-dummy}\"; echo \"$CONTENT\" > \"$OUT\"; echo \"$OUT\"; exit 0; fi\n")
 	if err := os.WriteFile(path, []byte(b.String()), 0o755); err != nil {
 		t.Fatalf("failed to write fake yt-dlp: %v", err)
 	}
@@ -83,18 +83,18 @@ func TestDownloadImpl_FileMethod_AutoSkipsRemux(t *testing.T) {
 }
 
 func TestDownloadImpl_FileMethod_Skip_NoRemux(t *testing.T) {
-    fake := createFakeYtDlp(t)
-    orig := dl.YtDlpBin
-    defer func() { dl.YtDlpBin = orig }()
+	fake := createFakeYtDlp(t)
+	orig := dl.YtDlpBin
+	defer func() { dl.YtDlpBin = orig }()
 
-    dest := "dl-e2e-skip"
-    // Ensure different file content so duplicate detection won't collapse into prior test's file
-    t.Setenv("YTDLP_DUMMY_CONTENT", "dummy2")
-    if c := get.Config(); c != nil {
-        c.Options().FFmpegBin = "/bin/false" // would fail if remux attempted
-        s := c.Settings()
-        s.Index.Convert = false
-    }
+	dest := "dl-e2e-skip"
+	// Ensure different file content so duplicate detection won't collapse into prior test's file
+	t.Setenv("YTDLP_DUMMY_CONTENT", "dummy2")
+	if c := get.Config(); c != nil {
+		c.Options().FFmpegBin = "/bin/false" // would fail if remux attempted
+		s := c.Settings()
+		s.Index.Convert = false
+	}
 	conf := get.Config()
 	if conf == nil {
 		t.Fatalf("missing test config")

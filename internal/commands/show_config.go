@@ -1,6 +1,7 @@
 package commands
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -40,21 +41,34 @@ func showConfigAction(ctx *cli.Context) error {
 		log.Debug(err)
 	}
 
+	format, ferr := report.CliFormatStrict(ctx)
+	if ferr != nil {
+		return ferr
+	}
+
+	if format == report.JSON {
+		type section struct {
+			Title string              `json:"title"`
+			Items []map[string]string `json:"items"`
+		}
+		sections := make([]section, 0, len(ConfigReports))
+		for _, rep := range ConfigReports {
+			rows, cols := rep.Report(conf)
+			sections = append(sections, section{Title: rep.Title, Items: report.RowsToObjects(rows, cols)})
+		}
+		b, _ := json.Marshal(map[string]interface{}{"sections": sections})
+		fmt.Println(string(b))
+		return nil
+	}
+
 	for _, rep := range ConfigReports {
-		// Get values.
 		rows, cols := rep.Report(conf)
-
-		// Render report.
-		opt := report.Options{Format: report.CliFormat(ctx), NoWrap: rep.NoWrap}
+		opt := report.Options{Format: format, NoWrap: rep.NoWrap}
 		result, _ := report.Render(rows, cols, opt)
-
-		// Show report.
 		if opt.Format == report.Default {
 			fmt.Printf("\n%s\n\n", strings.ToUpper(rep.Title))
 		}
-
 		fmt.Println(result)
 	}
-
 	return nil
 }

@@ -21,10 +21,11 @@ var ShowThumbSizesCommand = &cli.Command{
 // showThumbSizesAction displays supported standard thumbnail sizes.
 func showThumbSizesAction(ctx *cli.Context) error {
 	rows, cols := thumb.Report(thumb.Sizes.All(), false)
-
-	result, err := report.RenderFormat(rows, cols, report.CliFormat(ctx))
-
+	format, ferr := report.CliFormatStrict(ctx)
+	if ferr != nil {
+		return ferr
+	}
+	result, err := report.RenderFormat(rows, cols, format)
 	fmt.Println(result)
-
 	return err
 }
