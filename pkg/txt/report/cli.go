@@ -50,16 +50,16 @@ var CliFlags = []cli.Flag{
 	&cli.BoolFlag{
 		Name:    "md",
 		Aliases: []string{"m"},
-		Usage:   "format as machine-readable Markdown",
+		Usage:   "print machine-readable Markdown",
 	},
 	&cli.BoolFlag{
 		Name:    "csv",
 		Aliases: []string{"c"},
-		Usage:   "export as semicolon separated values",
+		Usage:   "print semicolon separated values",
 	},
 	&cli.BoolFlag{
 		Name:    "tsv",
 		Aliases: []string{"t"},
-		Usage:   "export as tab separated values",
+		Usage:   "print tab separated values",
 	},
 }

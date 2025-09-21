@@ -50,8 +50,8 @@ Configuration & Flags
   - If needed: `yaml:"-"` disables YAML processing; `flag:"-"` prevents `ApplyCliContext()` from assigning CLI values (flags/env variables) to a field, without affecting the flags in `internal/config/flags.go`.
   - Annotations may include edition tags like `tags:"plus,pro"` to control visibility (see `internal/config/options_report.go` logic).
 - Global flags/env: `internal/config/flags.go` (`EnvVars(...)`)
-  - Available flags/env: `internal/config/cli_flags_report.go` + `internal/config/report_sections.go` → surfaced by `photoprism show config-options --md`
-  - YAML options mapping: `internal/config/options_report.go` + `internal/config/report_sections.go` → surfaced by `photoprism show config-yaml --md`
+  - Available flags/env: `internal/config/cli_flags_report.go` + `internal/config/report_sections.go` → surfaced by `photoprism show config-options --md/--json`
+  - YAML options mapping: `internal/config/options_report.go` + `internal/config/report_sections.go` → surfaced by `photoprism show config-yaml --md/--json`
   - Report current values: `internal/config/report.go` → surfaced by `photoprism show config` (alias `photoprism config --md`).
 - Precedence: `defaults.yml` < CLI/env < `options.yml` (global options rule). See Agent Tips in `AGENTS.md`.
 - Getters are grouped by topic, e.g. DB in `internal/config/config_db.go`, server in `config_server.go`, TLS in `config_tls.go`, etc.

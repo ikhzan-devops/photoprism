@@ -38,9 +38,9 @@ func showMetadataAction(ctx *cli.Context) error {
 	})
 
 	// Output overview of supported metadata tags.
-	format, ferr := report.CliFormatStrict(ctx)
-	if ferr != nil {
-		return ferr
+	format, formatErr := report.CliFormatStrict(ctx)
+	if formatErr != nil {
+		return formatErr
 	}
 	if format == report.JSON {
 		resp := struct {

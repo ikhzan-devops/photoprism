@@ -41,9 +41,9 @@ func showConfigAction(ctx *cli.Context) error {
 		log.Debug(err)
 	}
 
-	format, ferr := report.CliFormatStrict(ctx)
-	if ferr != nil {
-		return ferr
+	format, formatErr := report.CliFormatStrict(ctx)
+	if formatErr != nil {
+		return formatErr
 	}
 
 	if format == report.JSON {
@@ -65,8 +65,10 @@ func showConfigAction(ctx *cli.Context) error {
 		rows, cols := rep.Report(conf)
 		opt := report.Options{Format: format, NoWrap: rep.NoWrap}
 		result, _ := report.Render(rows, cols, opt)
-		if opt.Format == report.Default {
-			fmt.Printf("\n%s\n\n", strings.ToUpper(rep.Title))
+		if opt.Format == report.Markdown {
+			fmt.Printf("### %s\n\n", rep.Title)
+		} else if opt.Format == report.Default {
+			fmt.Printf("%s\n\n", strings.ToUpper(rep.Title))
 		}
 		fmt.Println(result)
 	}
