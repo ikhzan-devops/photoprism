@@ -30,9 +30,11 @@ func showSearchFiltersAction(ctx *cli.Context) error {
 		}
 	})
 
-	result, err := report.RenderFormat(rows, cols, report.CliFormat(ctx))
-
+	format, ferr := report.CliFormatStrict(ctx)
+	if ferr != nil {
+		return ferr
+	}
+	result, err := report.RenderFormat(rows, cols, format)
 	fmt.Println(result)
-
 	return err
 }

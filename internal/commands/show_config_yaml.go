@@ -1,6 +1,7 @@
 package commands
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -25,14 +26,52 @@ func showConfigYamlAction(ctx *cli.Context) error {
 	conf.SetLogLevel(logrus.TraceLevel)
 
 	rows, cols := conf.Options().Report()
+	format, ferr := report.CliFormatStrict(ctx)
+	if ferr != nil {
+		return ferr
+	}
 
-	// CSV Export?
-	if ctx.Bool("csv") || ctx.Bool("tsv") {
-		result, err := report.RenderFormat(rows, cols, report.CliFormat(ctx))
-
+	// CSV/TSV exports use default single-table rendering
+	if format == report.CSV || format == report.TSV {
+		result, err := report.RenderFormat(rows, cols, format)
 		fmt.Println(result)
-
 		return err
+	}
+
+	// JSON aggregation path
+	if format == report.JSON {
+		type section struct {
+			Title string              `json:"title"`
+			Info  string              `json:"info,omitempty"`
+			Items []map[string]string `json:"items"`
+		}
+		sectionsCfg := config.YamlReportSections
+		agg := make([]section, 0, len(sectionsCfg))
+		j := 0
+		for i, sec := range sectionsCfg {
+			secRows := make([][]string, 0)
+			for {
+				row := rows[j]
+				if len(row) < 1 {
+					continue
+				}
+				if i < len(sectionsCfg)-1 && sectionsCfg[i+1].Start == row[0] {
+					break
+				}
+				secRows = append(secRows, row)
+				j++
+				if j >= len(rows) {
+					break
+				}
+			}
+			agg = append(agg, section{Title: sec.Title, Info: sec.Info, Items: report.RowsToObjects(secRows, cols)})
+			if j >= len(rows) {
+				break
+			}
+		}
+		b, _ := json.Marshal(map[string]interface{}{"sections": agg})
+		fmt.Println(string(b))
+		return nil
 	}
 
 	markDown := ctx.Bool("md")
@@ -74,7 +113,8 @@ func showConfigYamlAction(ctx *cli.Context) error {
 			}
 		}
 
-		result, err := report.RenderFormat(secRows, cols, report.CliFormat(ctx))
+		// JSON handled earlier; Markdown and default render per section below
+		result, err := report.RenderFormat(secRows, cols, format)
 
 		if err != nil {
 			return err

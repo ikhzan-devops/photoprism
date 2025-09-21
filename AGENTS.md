@@ -154,9 +154,47 @@ Note: Across our public documentation, official images, and in production, the c
 
 If anything in this file conflicts with the `Makefile` or the Developer Guide, the `Makefile` and the documentation win. When unsure, **ask** for clarification before proceeding.
 
-## Agent Tips 
+## Agent Quick Tips (Do This)
 
-### Backend Development
+### Testing
+
+- Prefer targeted runs for speed:
+  - Unit/subpackage: `go test ./internal/<pkg> -run <Name> -count=1`
+  - Commands: `go test ./internal/commands -run <Name> -count=1`
+  - Avoid `./...` unless you intend to run the whole suite.
+- Heavy tests (migrations/fixtures): internal/entity and internal/photoprism run DB migrations and load fixtures; expect 30–120s on first run. Narrow with `-run` and keep iterations low.
+- PhotoPrism config in tests: inside `internal/photoprism`, use the package global `photoprism.Config()` for runtime‑accurate behavior. Only construct a new config if you replace it via `photoprism.SetConfig`.
+- CLI command tests: use `RunWithTestContext(cmd, args)` to capture output and avoid `os.Exit`; assert `cli.ExitCoder` codes when you need them.
+- Reports are quoted: strings in CLI "show" output are rendered with quotes by the report helpers. Prefer `assert.Contains`/regex over strict, fully formatted equality when validating content.
+
+#### Test Data & Fixtures (storage/testdata)
+- Shared test files live under `storage/testdata`. The lifecycle is managed by `internal/config/test.go`.
+- `NewTestConfig("<pkg>")` now calls `InitializeTestData()` so required directories exist (originals, import, cache, temp) before tests run.
+- If you build a custom `*config.Config`, call `c.InitializeTestData()` (and optionally `c.AssertTestData(t)`) before asserting on filesystem paths.
+- `InitializeTestData()` deletes existing testdata (`RemoveTestData()`), downloads/unzips fixtures if needed, and then calls `CreateDirectories()` to ensure required directories exist.
+
+### Roles & ACL
+
+- Always map roles via the central tables:
+  - Users: `acl.ParseRole(s)` or `acl.UserRoles[clean.Role(s)]`.
+  - Clients: `acl.ClientRoles[clean.Role(s)]`.
+- Aliases: `RoleAliasNone` ("none") and the empty string both map to `RoleNone`; do not special‑case them in callers.
+- Defaults:
+  - Client roles: if input is unknown, default to `RoleClient`.
+  - User roles: `acl.ParseRole` handles special tokens like `0/false/nil` as none.
+- CLI usage strings: build flag help from `Roles.CliUsageString()` (e.g., `acl.ClientRoles.CliUsageString()`), not from hard‑coded lists.
+
+### Import/Index
+
+- ImportWorker may skip files if an identical file already exists (duplicate detection). Use unique copies or assert DB rows after ensuring a non‑duplicate destination.
+- Mixed roots: when testing related files, keep `ExamplesPath()/ImportPath()/OriginalsPath()` consistent so `RelatedFiles` and `AllowExt` behave as expected.
+
+### CLI Usage & Assertions
+
+- Capture output with `RunWithTestContext`; usage and report values may be quoted and re‑ordered (e.g., set semantics). Use substring checks or regex for the final ", or <last>" rule from `CliUsageString`.
+- Prefer JSON output (`--json`) for stable machine assertions when commands offer it.
+
+### API Development & Config Options 
 
 The following conventions summarize the insights gained when adding new configuration options, API endpoints, and related tests. Follow these conventions unless a maintainer requests an exception.
 
@@ -169,7 +207,7 @@ The following conventions summarize the insights gained when adding new configur
     - Add name/value to `rows` in `*config.Report()`, after the same option as in `internal/config/options.go` for `photoprism show config` to report it (obfuscate passwords with `*`).
     - If the value must persist (e.g., a generated UUID), write it back to `options.yml` using a focused helper that merges keys.
     - Tests: cover CLI/env/file precedence and persistence. When tests need a new flag, add it to `CliTestContext` in `internal/config/test.go`.
-  - Example: `PortalUUID` precedence = `options.yml` → CLI/env (`--portal-uuid` / `PHOTOPRISM_PORTAL_UUID`) → generate UUIDv4 and persist.
+  - Example: `ClusterUUID` precedence = `options.yml` → CLI/env (`--cluster-uuid` / `PHOTOPRISM_CLUSTER_UUID`) → generate UUIDv4 and persist.
   - CLI flag precedence: when you need to favor an explicit CLI flag over defaults, check `c.cliCtx.IsSet("<flag>")` before applying additional precedence logic.
   - Persisting generated options: when writing to `options.yml`, set `c.options.OptionsYaml = filepath.Join(c.ConfigPath(), "options.yml")` and reload the file to keep in‑memory
 
@@ -187,7 +225,7 @@ The following conventions summarize the insights gained when adding new configur
   - Compare secrets/tokens using constant‑time compare; don’t log secrets.
   - Set `Cache-Control: no-store` on responses containing secrets.
   - Register new routes in `internal/server/routes.go`. Don’t edit `swagger.json` directly—run `make swag` to regenerate.
-  - Portal mode: set `PHOTOPRISM_NODE_TYPE=portal` and `PHOTOPRISM_PORTAL_TOKEN`.
+  - Portal mode: set `PHOTOPRISM_NODE_ROLE=portal` and `PHOTOPRISM_JOIN_TOKEN`.
   - Pagination defaults: for new list endpoints, prefer `count` default 100 (max 1000) and `offset` ≥ 0; document both in Swagger and validate bounds in handlers.
   - Document parameters explicitly in Swagger annotations (path, query, and body) so `make swag` produces accurate docs.
   - Swagger: `make fmt-go swag-fmt && make swag` after adding or changing API annotations.
@@ -204,17 +242,98 @@ The following conventions summarize the insights gained when adding new configur
   - Permissions: cover public=false (401), CDN headers (403), admin access (200), and client tokens with insufficient scope (403).
   - Auth mode in tests: use `conf.SetAuthMode(config.AuthModePasswd)` (and defer restore) instead of flipping `Options().Public`; this toggles related internals used by tests.
   - Fixtures caveat: user fixtures often have admin role; for negative permission tests, prefer OAuth client tokens with limited scope rather than relying on a non‑admin user.
-  
+
+### Formatting (Go)
+
+- Go is formatted by `gofmt` and uses tabs. Do not hand-format indentation.
+- Always run after edits: `make fmt-go` (gofmt + goimports).
+
+### API Shape Checklist
+
+- When renaming or adding fields:
+  - Update DTOs in `internal/service/cluster/response.go` and any mappers.
+  - Update handlers and regenerate Swagger: `make fmt-go swag-fmt swag`.
+  - Update tests (search/replace old field names) and examples in `specs/`.
+  - Quick grep: `rg -n 'oldField|newField' -S` across code, tests, and specs.
+
+### Cluster Registry (Source of Truth)
+
+- Use the client‑backed registry (`NewClientRegistryWithConfig`).
+- The file‑backed registry is historical; do not add new references to it.
+- Migration “done” checklist: swap callsites → build → API tests → CLI tests → remove legacy references.
+
+### API/CLI Tests: Known Pitfalls
+
+- Gin routes: Register `CreateSession(router)` once per test router; reusing it twice panics on duplicate route.
+- CLI commands: Some commands defer `conf.Shutdown()` or emit signals that close the DB. The harness re‑opens DB before each run, but avoid invoking `start` or emitting signals in unit tests.
+- Signals: `internal/commands/start.go` waits on `process.Signal`; calling `process.Shutdown()/Restart()` can close DB. Prefer not to trigger signals in tests.
+
+### Download CLI Workbench (yt-dlp, remux, importer)
+
+- Code anchors
+  - CLI flags and examples: `internal/commands/download.go`
+  - Core implementation (testable): `internal/commands/download_impl.go`
+  - yt-dlp helpers and arg wiring: `internal/photoprism/dl/*` (`options.go`, `info.go`, `file.go`, `meta.go`)
+  - Importer entry point: `internal/photoprism/get/import.go`; options: `internal/photoprism/import_options.go`
+
+- Quick test runs (fast feedback)
+  - yt-dlp package: `go test ./internal/photoprism/dl -run 'Options|Created|PostprocessorArgs' -count=1`
+  - CLI command: `go test ./internal/commands -run 'DownloadImpl|HelpFlags' -count=1`
+
+- FFmpeg-less tests
+  - In tests: set `c.Options().FFmpegBin = "/bin/false"` and `c.Settings().Index.Convert = false` to avoid ffmpeg dependencies when not validating remux.
+
+- Stubbing yt-dlp (no network)
+  - Use a tiny shell script that:
+    - prints minimal JSON for `--dump-single-json`
+    - creates a file and prints its path when `--print` is requested
+  - Harness env vars (supported by our tests):
+    - `YTDLP_ARGS_LOG` — append final args for assertion
+    - `YTDLP_OUTPUT_FILE` — absolute file path to create for `--print`
+    - `YTDLP_DUMMY_CONTENT` — file contents to avoid importer duplicate detection between tests
+
+- Remux policy and metadata
+  - Pipe method: PhotoPrism remux (ffmpeg) always embeds title/description/created.
+  - File method: yt‑dlp writes files; we pass `--postprocessor-args 'ffmpeg:-metadata creation_time=<RFC3339>'` so imports get `Created` even without local remux (fallback from `upload_date`/`release_date`).
+  - Default remux policy: `auto`; use `always` for the most complete metadata (chapters, extended tags).
+
+- Testing
+  - Prefer targeted runs before the full suite:
+    - `go test ./internal/<pkg> -run <Name> -count=1`
+    - Avoid `./...` unless you intend to run everything.
+  - Importer duplicates: When reusing names/paths across tests, the importer may dedupe; vary file bytes via `YTDLP_DUMMY_CONTENT` or adjust `dest` to ensure assertions see the new file.
+  - Long-running packages: `internal/photoprism` is heavy; validate CLI/dl changes first in their packages, then run broader suites.
+
+### Sessions & Redaction (building sessions in tests)
+
+- Admin session (full view): `AuthenticateAdmin(app, router)`.
+- User session: Create a non‑admin test user (role=guest), set a password, then `AuthenticateUser`.
+- Client session (redacted internal fields; `siteUrl` visible):
+  ```go
+  s, _ := entity.AddClientSession("test-client", conf.SessionMaxAge(), "cluster", authn.GrantClientCredentials, nil)
+  token := s.AuthToken()
+  r := AuthenticatedRequest(app, http.MethodGet, "/api/v1/cluster/nodes", token)
+  ```
+  Admins see `advertiseUrl` and `database`; client/user sessions don’t. `siteUrl` is safe to show to all roles.
+
+### Preflight Checklist
+
+- `go build ./...`
+- `make fmt-go swag-fmt swag`
+- `go test ./internal/service/cluster/registry -count=1`
+- `go test ./internal/api -run 'Cluster' -count=1`
+- `go test ./internal/commands -run 'ClusterRegister|ClusterNodesRotate' -count=1`
+
 - Known tooling constraints
   - Python may not be available in the dev container; prefer `apply_patch`, Go, or Make targets over ad‑hoc scripts.
   - `make swag` may fetch modules; ensure network availability in CI before running.
 
-### Cluster & Bootstrap Quick Tips
+### Cluster Config & Bootstrap
 
 - Import rules (avoid cycles):
   - Do not import `internal/service/cluster/instance/*` from `internal/config` or the cluster root package.
   - Instance/service bootstraps talk to the Portal via HTTP(S); do not import Portal internals such as `internal/api` or `internal/service/cluster/registry`/`provisioner`.
-  - Prefer constants from `internal/service/cluster/const.go` (e.g., `cluster.Instance`, `cluster.Portal`) over string literals.
+  - Prefer constants from `internal/service/cluster/const.go` (e.g., `cluster.RoleInstance`, `cluster.RolePortal`) over string literals.
 
 - Early extension lifecycle (config.Init sequence):
   1) Load `options.yml` and settings (`c.initSettings()`)
@@ -233,5 +352,4 @@ The following conventions summarize the insights gained when adding new configur
   - Persist only missing `NodeSecret` and DB settings when rotation was requested.
 
 - Testing patterns:
-  - Set `PHOTOPRISM_STORAGE_PATH=$(mktemp -d)` (or `t.Setenv`) to isolate options.yml and theme dirs.
   - Use `httptest` for Portal endpoints and `pkg/fs.Unzip` with size caps for extraction tests.

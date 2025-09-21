@@ -1719,7 +1719,7 @@
                 "operationId": "ClusterNodesRegister",
                 "parameters": [
                     {
-                        "description": "registration payload (nodeName required; optional: nodeType, labels, internalUrl, rotate, rotateSecret)",
+                        "description": "registration payload (nodeName required; optional: nodeRole, labels, advertiseUrl, siteUrl, rotateDatabase, rotateSecret)",
                         "name": "request",
                         "in": "body",
                         "required": true,
@@ -1898,7 +1898,7 @@
                         "required": true
                     },
                     {
-                        "description": "properties to update (type, labels, internalUrl)",
+                        "description": "properties to update (role, labels, advertiseUrl, siteUrl)",
                         "name": "node",
                         "in": "body",
                         "required": true,
@@ -6178,7 +6178,7 @@
                 }
             }
         },
-        "cluster.DBInfo": {
+        "cluster.DatabaseInfo": {
             "type": "object",
             "properties": {
                 "driver": {
@@ -6195,16 +6195,16 @@
         "cluster.Node": {
             "type": "object",
             "properties": {
+                "advertiseUrl": {
+                    "type": "string"
+                },
                 "createdAt": {
                     "type": "string"
                 },
-                "db": {
-                    "$ref": "#/definitions/cluster.NodeDB"
+                "database": {
+                    "$ref": "#/definitions/cluster.NodeDatabase"
                 },
                 "id": {
-                    "type": "string"
-                },
-                "internalUrl": {
                     "type": "string"
                 },
                 "labels": {
@@ -6216,7 +6216,10 @@
                 "name": {
                     "type": "string"
                 },
-                "type": {
+                "role": {
+                    "type": "string"
+                },
+                "siteUrl": {
                     "type": "string"
                 },
                 "updatedAt": {
@@ -6224,13 +6227,13 @@
                 }
             }
         },
-        "cluster.NodeDB": {
+        "cluster.NodeDatabase": {
             "type": "object",
             "properties": {
-                "dbLastRotatedAt": {
+                "name": {
                     "type": "string"
                 },
-                "name": {
+                "rotatedAt": {
                     "type": "string"
                 },
                 "user": {
@@ -6238,12 +6241,9 @@
                 }
             }
         },
-        "cluster.RegisterDB": {
+        "cluster.RegisterDatabase": {
             "type": "object",
             "properties": {
-                "dbLastRotatedAt": {
-                    "type": "string"
-                },
                 "dsn": {
                     "type": "string"
                 },
@@ -6259,6 +6259,9 @@
                 "port": {
                     "type": "integer"
                 },
+                "rotatedAt": {
+                    "type": "string"
+                },
                 "user": {
                     "type": "string"
                 }
@@ -6273,8 +6276,8 @@
                 "alreadyRegistered": {
                     "type": "boolean"
                 },
-                "db": {
-                    "$ref": "#/definitions/cluster.RegisterDB"
+                "database": {
+                    "$ref": "#/definitions/cluster.RegisterDatabase"
                 },
                 "node": {
                     "$ref": "#/definitions/cluster.Node"
@@ -6290,7 +6293,7 @@
                 "nodeSecret": {
                     "type": "string"
                 },
-                "nodeSecretLastRotatedAt": {
+                "secretRotatedAt": {
                     "type": "string"
                 }
             }
@@ -6306,14 +6309,14 @@
         "cluster.SummaryResponse": {
             "type": "object",
             "properties": {
-                "db": {
-                    "$ref": "#/definitions/cluster.DBInfo"
+                "UUID": {
+                    "type": "string"
+                },
+                "database": {
+                    "$ref": "#/definitions/cluster.DatabaseInfo"
                 },
                 "nodes": {
                     "type": "integer"
-                },
-                "portalUUID": {
-                    "type": "string"
                 },
                 "time": {
                     "type": "string"
@@ -6486,9 +6489,6 @@
                 },
                 "IndexWorkers": {
                     "type": "integer"
-                },
-                "InternalUrl": {
-                    "type": "string"
                 },
                 "JpegQuality": {
                     "type": "integer"
@@ -9455,16 +9455,6 @@
             "type": "integer",
             "format": "int64",
             "enum": [
-                -9223372036854775808,
-                9223372036854775807,
-                1,
-                1000,
-                1000000,
-                1000000000,
-                60000000000,
-                3600000000000,
-                -9223372036854775808,
-                9223372036854775807,
                 1,
                 1000,
                 1000000,
@@ -9473,16 +9463,6 @@
                 3600000000000
             ],
             "x-enum-varnames": [
-                "minDuration",
-                "maxDuration",
-                "Nanosecond",
-                "Microsecond",
-                "Millisecond",
-                "Second",
-                "Minute",
-                "Hour",
-                "minDuration",
-                "maxDuration",
                 "Nanosecond",
                 "Microsecond",
                 "Millisecond",

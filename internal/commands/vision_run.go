@@ -16,7 +16,7 @@ import (
 var VisionRunCommand = &cli.Command{
 	Name:      "run",
 	Usage:     "Runs one or more computer vision models on a set of pictures that match the specified search filters",
-	ArgsUsage: "[filter...]",
+	ArgsUsage: "[filter]...",
 	Flags: []cli.Flag{
 		&cli.StringFlag{
 			Name:    "models",
@@ -34,7 +34,7 @@ var VisionRunCommand = &cli.Command{
 			Name:    "source",
 			Aliases: []string{"s"},
 			Value:   entity.SrcImage,
-			Usage:   "custom data source `TYPE` e.g. default, image, meta, vision, or admin",
+			Usage:   "custom data source `ROLE` e.g. default, image, meta, vision, or admin",
 		},
 		&cli.BoolFlag{
 			Name:    "force",

@@ -9,7 +9,7 @@ import (
 
 func TestExitCodes_Register_ValidationAndUnauthorized(t *testing.T) {
 	t.Run("MissingURL", func(t *testing.T) {
-		ctx := NewTestContext([]string{"register", "--name", "pp-node-01", "--type", "instance", "--portal-token", "token"})
+		ctx := NewTestContext([]string{"register", "--name", "pp-node-01", "--role", "instance", "--join-token", "token"})
 		err := ClusterRegisterCommand.Action(ctx)
 		assert.Error(t, err)
 		if ec, ok := err.(cli.ExitCoder); ok {
@@ -52,7 +52,7 @@ func TestExitCodes_Nodes_PortalOnlyMisuse(t *testing.T) {
 		}
 	})
 	t.Run("ModNotPortal", func(t *testing.T) {
-		ctx := NewTestContext([]string{"mod", "any", "--type", "instance", "-y"})
+		ctx := NewTestContext([]string{"mod", "any", "--role", "instance", "-y"})
 		err := ClusterNodesModCommand.Action(ctx)
 		assert.Error(t, err)
 		if ec, ok := err.(cli.ExitCoder); ok {

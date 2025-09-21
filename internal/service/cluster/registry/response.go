@@ -7,15 +7,15 @@ import (
 
 // NodeOpts controls which optional fields get included in responses.
 type NodeOpts struct {
-	IncludeInternalURL bool
-	IncludeDBMeta      bool
+	IncludeAdvertiseUrl bool
+	IncludeDatabase     bool
 }
 
 // NodeOptsForSession returns the default exposure policy for a session.
-// Admin users see internalUrl and DB metadata; others get a redacted view.
+// Admin users see advertiseUrl and DB metadata; others get a redacted view.
 func NodeOptsForSession(s *entity.Session) NodeOpts {
-	if s != nil && s.User() != nil && s.User().IsAdmin() {
-		return NodeOpts{IncludeInternalURL: true, IncludeDBMeta: true}
+	if s != nil && s.GetUser() != nil && s.GetUser().IsAdmin() {
+		return NodeOpts{IncludeAdvertiseUrl: true, IncludeDatabase: true}
 	}
 
 	return NodeOpts{}
@@ -26,21 +26,22 @@ func BuildClusterNode(n Node, opts NodeOpts) cluster.Node {
 	out := cluster.Node{
 		ID:        n.ID,
 		Name:      n.Name,
-		Type:      n.Type,
+		Role:      n.Role,
+		SiteUrl:   n.SiteUrl,
 		Labels:    n.Labels,
 		CreatedAt: n.CreatedAt,
 		UpdatedAt: n.UpdatedAt,
 	}
 
-	if opts.IncludeInternalURL && n.Internal != "" {
-		out.InternalURL = n.Internal
+	if opts.IncludeAdvertiseUrl && n.AdvertiseUrl != "" {
+		out.AdvertiseUrl = n.AdvertiseUrl
 	}
 
-	if opts.IncludeDBMeta {
-		out.DB = &cluster.NodeDB{
-			Name:            n.DB.Name,
-			User:            n.DB.User,
-			DBLastRotatedAt: n.DB.RotAt,
+	if opts.IncludeDatabase {
+		out.Database = &cluster.NodeDatabase{
+			Name:      n.DB.Name,
+			User:      n.DB.User,
+			RotatedAt: n.DB.RotAt,
 		}
 	}
 

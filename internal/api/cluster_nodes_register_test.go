@@ -13,7 +13,7 @@ import (
 func TestClusterNodesRegister(t *testing.T) {
 	t.Run("FeatureDisabled", func(t *testing.T) {
 		app, router, conf := NewApiTest()
-		conf.Options().NodeType = cluster.Instance
+		conf.Options().NodeRole = cluster.RoleInstance
 		ClusterNodesRegister(router)
 
 		r := PerformRequestWithBody(app, http.MethodPost, "/api/v1/cluster/nodes/register", `{"nodeName":"pp-node-01"}`)
@@ -22,7 +22,7 @@ func TestClusterNodesRegister(t *testing.T) {
 
 	t.Run("MissingToken", func(t *testing.T) {
 		app, router, conf := NewApiTest()
-		conf.Options().NodeType = cluster.Portal
+		conf.Options().NodeRole = cluster.RolePortal
 		ClusterNodesRegister(router)
 
 		r := PerformRequestWithBody(app, http.MethodPost, "/api/v1/cluster/nodes/register", `{"nodeName":"pp-node-01"}`)
@@ -31,8 +31,8 @@ func TestClusterNodesRegister(t *testing.T) {
 
 	t.Run("DriverConflict", func(t *testing.T) {
 		app, router, conf := NewApiTest()
-		conf.Options().NodeType = cluster.Portal
-		conf.Options().PortalToken = "t0k3n"
+		conf.Options().NodeRole = cluster.RolePortal
+		conf.Options().JoinToken = "t0k3n"
 		ClusterNodesRegister(router)
 
 		// With SQLite driver in tests, provisioning should fail with conflict.
@@ -43,8 +43,8 @@ func TestClusterNodesRegister(t *testing.T) {
 
 	t.Run("BadName", func(t *testing.T) {
 		app, router, conf := NewApiTest()
-		conf.Options().NodeType = cluster.Portal
-		conf.Options().PortalToken = "t0k3n"
+		conf.Options().NodeRole = cluster.RolePortal
+		conf.Options().JoinToken = "t0k3n"
 		ClusterNodesRegister(router)
 
 		// Empty nodeName → 400
@@ -54,25 +54,48 @@ func TestClusterNodesRegister(t *testing.T) {
 
 	t.Run("RotateSecretPersistsDespiteDBConflict", func(t *testing.T) {
 		app, router, conf := NewApiTest()
-		conf.Options().NodeType = cluster.Portal
-		conf.Options().PortalToken = "t0k3n"
+		conf.Options().NodeRole = cluster.RolePortal
+		conf.Options().JoinToken = "t0k3n"
 		ClusterNodesRegister(router)
 
 		// Pre-create node in registry so handler goes through existing-node path
 		// and rotates the secret before attempting DB ensure.
-		regy, err := reg.NewFileRegistry(conf)
+		regy, err := reg.NewClientRegistryWithConfig(conf)
 		assert.NoError(t, err)
-		n := &reg.Node{ID: "test-id", Name: "pp-node-01", Type: "instance"}
-		n.Secret = "oldsecret"
+		n := &reg.Node{ID: "test-id", Name: "pp-node-01", Role: "instance"}
 		assert.NoError(t, regy.Put(n))
 
 		r := AuthenticatedRequestWithBody(app, http.MethodPost, "/api/v1/cluster/nodes/register", `{"nodeName":"pp-node-01","rotateSecret":true}`, "t0k3n")
 		assert.Equal(t, http.StatusConflict, r.Code) // DB conflict under SQLite
 
 		// Secret should have rotated and been persisted even though DB ensure failed.
-		n2, err := regy.Get("test-id")
+		// Fetch by name (most-recently-updated) to avoid flakiness if another test adds
+		// a node with the same name and a different id.
+		n2, err := regy.FindByName("pp-node-01")
 		assert.NoError(t, err)
-		assert.NotEqual(t, "oldsecret", n2.Secret)
+		// With client-backed registry, plaintext secret is not persisted; only rotation timestamp is updated.
 		assert.NotEmpty(t, n2.SecretRot)
+	})
+
+	t.Run("ExistingNodeSiteUrlPersistsEvenOnDBConflict", func(t *testing.T) {
+		app, router, conf := NewApiTest()
+		conf.Options().NodeRole = cluster.RolePortal
+		conf.Options().JoinToken = "t0k3n"
+		ClusterNodesRegister(router)
+
+		// Pre-create node in registry so handler goes through existing-node path.
+		regy, err := reg.NewClientRegistryWithConfig(conf)
+		assert.NoError(t, err)
+		n := &reg.Node{Name: "pp-node-02", Role: "instance"}
+		assert.NoError(t, regy.Put(n))
+
+		// With SQLite driver in tests, provisioning should fail with 409, but metadata should still persist.
+		r := AuthenticatedRequestWithBody(app, http.MethodPost, "/api/v1/cluster/nodes/register", `{"nodeName":"pp-node-02","siteUrl":"https://Photos.Example.COM"}`, "t0k3n")
+		assert.Equal(t, http.StatusConflict, r.Code)
+
+		// Ensure normalized/persisted siteUrl.
+		n2, err := regy.FindByName("pp-node-02")
+		assert.NoError(t, err)
+		assert.Equal(t, "https://photos.example.com", n2.SiteUrl)
 	})
 }

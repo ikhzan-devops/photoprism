@@ -24,23 +24,23 @@ import (
 
 // flags for register
 var (
-	regNameFlag   = &cli.StringFlag{Name: "name", Usage: "node `NAME` (lowercase letters, digits, hyphens)"}
-	regTypeFlag   = &cli.StringFlag{Name: "type", Usage: "node `TYPE` (instance, service)", Value: "instance"}
-	regIntUrlFlag = &cli.StringFlag{Name: "internal-url", Usage: "internal service `URL`"}
-	regLabelFlag  = &cli.StringSliceFlag{Name: "label", Usage: "`k=v` label (repeatable)"}
-	regRotateDB   = &cli.BoolFlag{Name: "rotate", Usage: "rotates the node's database password"}
-	regRotateSec  = &cli.BoolFlag{Name: "rotate-secret", Usage: "rotates the node's secret used for JWT"}
-	regPortalURL  = &cli.StringFlag{Name: "portal-url", Usage: "Portal base `URL` (defaults to config)"}
-	regPortalTok  = &cli.StringFlag{Name: "portal-token", Usage: "Portal access `TOKEN` (defaults to config)"}
-	regWriteConf  = &cli.BoolFlag{Name: "write-config", Usage: "persists returned secrets and DB settings to local config"}
-	regForceFlag  = &cli.BoolFlag{Name: "force", Aliases: []string{"f"}, Usage: "confirm actions that may overwrite/replace local data (e.g., --write-config)"}
+	regNameFlag       = &cli.StringFlag{Name: "name", Usage: "node `NAME` (lowercase letters, digits, hyphens)"}
+	regRoleFlag       = &cli.StringFlag{Name: "role", Usage: "node `ROLE` (instance, service)", Value: "instance"}
+	regIntUrlFlag     = &cli.StringFlag{Name: "advertise-url", Usage: "internal service `URL`"}
+	regLabelFlag      = &cli.StringSliceFlag{Name: "label", Usage: "`k=v` label (repeatable)"}
+	regRotateDatabase = &cli.BoolFlag{Name: "rotate", Usage: "rotates the node's database password"}
+	regRotateSec      = &cli.BoolFlag{Name: "rotate-secret", Usage: "rotates the node's secret used for JWT"}
+	regPortalURL      = &cli.StringFlag{Name: "portal-url", Usage: "Portal base `URL` (defaults to config)"}
+	regPortalTok      = &cli.StringFlag{Name: "join-token", Usage: "Portal access `TOKEN` (defaults to config)"}
+	regWriteConf      = &cli.BoolFlag{Name: "write-config", Usage: "persists returned secrets and DB settings to local config"}
+	regForceFlag      = &cli.BoolFlag{Name: "force", Aliases: []string{"f"}, Usage: "confirm actions that may overwrite/replace local data (e.g., --write-config)"}
 )
 
 // ClusterRegisterCommand registers a node with the Portal via HTTP.
 var ClusterRegisterCommand = &cli.Command{
 	Name:   "register",
 	Usage:  "Registers/rotates a node via Portal (HTTP)",
-	Flags:  append(append([]cli.Flag{regNameFlag, regTypeFlag, regIntUrlFlag, regLabelFlag, regRotateDB, regRotateSec, regPortalURL, regPortalTok, regWriteConf, regForceFlag, JsonFlag}, report.CliFlags...)),
+	Flags:  append(append([]cli.Flag{regNameFlag, regRoleFlag, regIntUrlFlag, regLabelFlag, regRotateDatabase, regRotateSec, regPortalURL, regPortalTok, regWriteConf, regForceFlag}, report.CliFlags...)),
 	Action: clusterRegisterAction,
 }
 
@@ -54,11 +54,11 @@ func clusterRegisterAction(ctx *cli.Context) error {
 		if name == "" {
 			return cli.Exit(fmt.Errorf("node name is required (use --name or set node-name)"), 2)
 		}
-		nodeType := clean.TypeLowerDash(ctx.String("type"))
-		switch nodeType {
+		nodeRole := clean.TypeLowerDash(ctx.String("role"))
+		switch nodeRole {
 		case "instance", "service":
 		default:
-			return cli.Exit(fmt.Errorf("invalid --type (must be instance or service)"), 2)
+			return cli.Exit(fmt.Errorf("invalid --role (must be instance or service)"), 2)
 		}
 
 		portalURL := ctx.String("portal-url")
@@ -68,19 +68,19 @@ func clusterRegisterAction(ctx *cli.Context) error {
 		if portalURL == "" {
 			return cli.Exit(fmt.Errorf("portal URL is required (use --portal-url or set portal-url)"), 2)
 		}
-		token := ctx.String("portal-token")
+		token := ctx.String("join-token")
 		if token == "" {
-			token = conf.PortalToken()
+			token = conf.JoinToken()
 		}
 		if token == "" {
-			return cli.Exit(fmt.Errorf("portal token is required (use --portal-token or set portal-token)"), 2)
+			return cli.Exit(fmt.Errorf("portal token is required (use --join-token or set join-token)"), 2)
 		}
 
 		body := map[string]interface{}{
 			"nodeName":     name,
-			"nodeType":     nodeType,
+			"nodeRole":     nodeRole,
 			"labels":       parseLabelSlice(ctx.StringSlice("label")),
-			"internalUrl":  ctx.String("internal-url"),
+			"advertiseUrl": ctx.String("advertise-url"),
 			"rotate":       ctx.Bool("rotate"),
 			"rotateSecret": ctx.Bool("rotate-secret"),
 		}
@@ -116,31 +116,31 @@ func clusterRegisterAction(ctx *cli.Context) error {
 			fmt.Println(string(jb))
 		} else {
 			// Human-readable: node row and credentials if present
-			cols := []string{"ID", "Name", "Type", "DB Name", "DB User", "Host", "Port"}
+			cols := []string{"ID", "Name", "Role", "DB Name", "DB User", "Host", "Port"}
 			var dbName, dbUser string
-			if resp.DB.Name != "" {
-				dbName = resp.DB.Name
+			if resp.Database.Name != "" {
+				dbName = resp.Database.Name
 			}
-			if resp.DB.User != "" {
-				dbUser = resp.DB.User
+			if resp.Database.User != "" {
+				dbUser = resp.Database.User
 			}
-			rows := [][]string{{resp.Node.ID, resp.Node.Name, resp.Node.Type, dbName, dbUser, resp.DB.Host, fmt.Sprintf("%d", resp.DB.Port)}}
+			rows := [][]string{{resp.Node.ID, resp.Node.Name, resp.Node.Role, dbName, dbUser, resp.Database.Host, fmt.Sprintf("%d", resp.Database.Port)}}
 			out, _ := report.RenderFormat(rows, cols, report.CliFormat(ctx))
 			fmt.Printf("\n%s\n", out)
 
 			// Secrets/credentials block if any
 			// Show secrets in up to two tables, then print DSN if present
-			if (resp.Secrets != nil && resp.Secrets.NodeSecret != "") || resp.DB.Password != "" {
+			if (resp.Secrets != nil && resp.Secrets.NodeSecret != "") || resp.Database.Password != "" {
 				fmt.Println("PLEASE WRITE DOWN THE FOLLOWING CREDENTIALS; THEY WILL NOT BE SHOWN AGAIN:")
-				if resp.Secrets != nil && resp.Secrets.NodeSecret != "" && resp.DB.Password != "" {
-					fmt.Printf("\n%s\n", report.Credentials("Node Secret", resp.Secrets.NodeSecret, "DB Password", resp.DB.Password))
+				if resp.Secrets != nil && resp.Secrets.NodeSecret != "" && resp.Database.Password != "" {
+					fmt.Printf("\n%s\n", report.Credentials("Node Secret", resp.Secrets.NodeSecret, "DB Password", resp.Database.Password))
 				} else if resp.Secrets != nil && resp.Secrets.NodeSecret != "" {
 					fmt.Printf("\n%s\n", report.Credentials("Node Secret", resp.Secrets.NodeSecret, "", ""))
-				} else if resp.DB.Password != "" {
-					fmt.Printf("\n%s\n", report.Credentials("DB User", resp.DB.User, "DB Password", resp.DB.Password))
+				} else if resp.Database.Password != "" {
+					fmt.Printf("\n%s\n", report.Credentials("DB User", resp.Database.User, "DB Password", resp.Database.Password))
 				}
-				if resp.DB.DSN != "" {
-					fmt.Printf("DSN: %s\n", resp.DB.DSN)
+				if resp.Database.DSN != "" {
+					fmt.Printf("DSN: %s\n", resp.Database.DSN)
 				}
 			}
 		}
@@ -256,13 +256,13 @@ func persistRegisterResponse(conf *config.Config, resp *cluster.RegisterResponse
 	}
 
 	// DB settings (MySQL/MariaDB only)
-	if resp.DB.Name != "" && resp.DB.User != "" {
+	if resp.Database.Name != "" && resp.Database.User != "" {
 		if err := mergeOptionsYaml(conf, map[string]any{
 			"DatabaseDriver":   config.MySQL,
-			"DatabaseName":     resp.DB.Name,
-			"DatabaseServer":   fmt.Sprintf("%s:%d", resp.DB.Host, resp.DB.Port),
-			"DatabaseUser":     resp.DB.User,
-			"DatabasePassword": resp.DB.Password,
+			"DatabaseName":     resp.Database.Name,
+			"DatabaseServer":   fmt.Sprintf("%s:%d", resp.Database.Host, resp.Database.Port),
+			"DatabaseUser":     resp.Database.User,
+			"DatabasePassword": resp.Database.Password,
 		}); err != nil {
 			return err
 		}

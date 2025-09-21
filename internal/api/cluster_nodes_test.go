@@ -12,7 +12,7 @@ import (
 
 func TestClusterEndpoints(t *testing.T) {
 	app, router, conf := NewApiTest()
-	conf.Options().NodeType = cluster.Portal
+	conf.Options().NodeRole = cluster.RolePortal
 
 	ClusterListNodes(router)
 	ClusterGetNode(router)
@@ -24,15 +24,18 @@ func TestClusterEndpoints(t *testing.T) {
 	assert.Equal(t, http.StatusOK, r.Code)
 
 	// Seed nodes in the registry
-	regy, err := reg.NewFileRegistry(conf)
+	regy, err := reg.NewClientRegistryWithConfig(conf)
 	assert.NoError(t, err)
-	n := &reg.Node{ID: "n1", Name: "pp-node-01", Type: "instance"}
+	n := &reg.Node{Name: "pp-node-01", Role: "instance"}
 	assert.NoError(t, regy.Put(n))
-	n2 := &reg.Node{ID: "n2", Name: "pp-node-02", Type: "service"}
+	n2 := &reg.Node{Name: "pp-node-02", Role: "service"}
 	assert.NoError(t, regy.Put(n2))
+	// Resolve actual IDs (client-backed registry generates IDs)
+	n, err = regy.FindByName("pp-node-01")
+	assert.NoError(t, err)
 
 	// Get by id
-	r = PerformRequest(app, http.MethodGet, "/api/v1/cluster/nodes/n1")
+	r = PerformRequest(app, http.MethodGet, "/api/v1/cluster/nodes/"+n.ID)
 	assert.Equal(t, http.StatusOK, r.Code)
 
 	// 404 for missing id
@@ -40,7 +43,7 @@ func TestClusterEndpoints(t *testing.T) {
 	assert.Equal(t, http.StatusNotFound, r.Code)
 
 	// Patch (manage requires Auth; our Auth() in tests allows admin; skip strict role checks here)
-	r = PerformRequestWithBody(app, http.MethodPatch, "/api/v1/cluster/nodes/n1", `{"internalUrl":"http://n1:2342"}`)
+	r = PerformRequestWithBody(app, http.MethodPatch, "/api/v1/cluster/nodes/"+n.ID, `{"advertiseUrl":"http://n1:2342"}`)
 	assert.Equal(t, http.StatusOK, r.Code)
 
 	// Pagination: count=1 returns exactly one
@@ -51,9 +54,21 @@ func TestClusterEndpoints(t *testing.T) {
 	r = PerformRequest(app, http.MethodGet, "/api/v1/cluster/nodes?offset=10")
 	assert.Equal(t, http.StatusOK, r.Code)
 
-	// Delete
-	r = PerformRequest(app, http.MethodDelete, "/api/v1/cluster/nodes/n1")
+	// Delete existing
+	r = PerformRequest(app, http.MethodDelete, "/api/v1/cluster/nodes/"+n.ID)
 	assert.Equal(t, http.StatusOK, r.Code)
+
+	// GET after delete -> 404
+	r = PerformRequest(app, http.MethodGet, "/api/v1/cluster/nodes/"+n.ID)
+	assert.Equal(t, http.StatusNotFound, r.Code)
+
+	// DELETE nonexistent id -> 404
+	r = PerformRequest(app, http.MethodDelete, "/api/v1/cluster/nodes/missing-id")
+	assert.Equal(t, http.StatusNotFound, r.Code)
+
+	// DELETE invalid id (uppercase) -> 404
+	r = PerformRequest(app, http.MethodDelete, "/api/v1/cluster/nodes/BadID")
+	assert.Equal(t, http.StatusNotFound, r.Code)
 
 	// List again (should not include the deleted node)
 	r = PerformRequest(app, http.MethodGet, "/api/v1/cluster/nodes")
@@ -63,19 +78,21 @@ func TestClusterEndpoints(t *testing.T) {
 // Test that ClusterGetNode validates the :id path parameter and rejects unsafe values.
 func TestClusterGetNode_IDValidation(t *testing.T) {
 	app, router, conf := NewApiTest()
-	conf.Options().NodeType = cluster.Portal
+	conf.Options().NodeRole = cluster.RolePortal
 
 	// Register route under test.
 	ClusterGetNode(router)
 
-	// Seed a node with a simple, valid id.
-	regy, err := reg.NewFileRegistry(conf)
+	// Seed a node and resolve its actual ID.
+	regy, err := reg.NewClientRegistryWithConfig(conf)
 	assert.NoError(t, err)
-	n := &reg.Node{ID: "n1", Name: "pp-node-99", Type: "instance"}
+	n := &reg.Node{Name: "pp-node-99", Role: "instance"}
 	assert.NoError(t, regy.Put(n))
+	n, err = regy.FindByName("pp-node-99")
+	assert.NoError(t, err)
 
 	// Valid ID returns 200.
-	r := PerformRequest(app, http.MethodGet, "/api/v1/cluster/nodes/n1")
+	r := PerformRequest(app, http.MethodGet, "/api/v1/cluster/nodes/"+n.ID)
 	assert.Equal(t, http.StatusOK, r.Code)
 
 	// Uppercase letters are not allowed.

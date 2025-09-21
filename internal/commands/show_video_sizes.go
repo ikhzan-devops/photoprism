@@ -20,10 +20,11 @@ var ShowVideoSizesCommand = &cli.Command{
 // showVideoSizesAction displays supported standard video sizes.
 func showVideoSizesAction(ctx *cli.Context) error {
 	rows, cols := thumb.Report(thumb.VideoSizes, true)
-
-	result, err := report.RenderFormat(rows, cols, report.CliFormat(ctx))
-
+	format, ferr := report.CliFormatStrict(ctx)
+	if ferr != nil {
+		return ferr
+	}
+	result, err := report.RenderFormat(rows, cols, format)
 	fmt.Println(result)
-
 	return err
 }
