@@ -52,14 +52,15 @@ func TestCommandInfo_GlobalFlagElimination(t *testing.T) {
 
 func TestBuildFlatAndNode(t *testing.T) {
 	add := &cli.Command{Name: "add"}
+	help := &cli.Command{Name: "help"}
 	rmHidden := &cli.Command{Name: "rm", Hidden: true}
-	auth := &cli.Command{Name: "auth", Subcommands: []*cli.Command{add, rmHidden}}
+	auth := &cli.Command{Name: "auth", Subcommands: []*cli.Command{add, rmHidden, help}}
 
 	globals := FlagsToCatalog(nil, false)
 
 	// Flat without hidden
 	flat := BuildFlat(auth, 1, "photoprism", false, globals)
-	if len(flat) != 2 { // auth + add
+	if len(flat) != 2 { // auth + add (help omitted)
 		t.Fatalf("expected 2 commands (auth, add), got %d", len(flat))
 	}
 	if flat[0].FullName != "photoprism auth" || flat[0].Depth != 1 {
@@ -71,7 +72,7 @@ func TestBuildFlatAndNode(t *testing.T) {
 
 	// Nested with hidden
 	node := BuildNode(auth, 1, "photoprism", true, globals)
-	if len(node.Subcommands) != 2 {
+	if len(node.Subcommands) != 2 { // add + rm (help omitted)
 		t.Fatalf("expected 2 subcommands when including hidden, got %d", len(node.Subcommands))
 	}
 }

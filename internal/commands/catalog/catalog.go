@@ -87,11 +87,15 @@ type MarkdownData struct {
 
 // BuildFlat returns a depth-first flat list of commands starting at c.
 func BuildFlat(c *cli.Command, depth int, parentFull string, includeHidden bool, global []Flag) []Command {
+	// Omit nested 'help' subcommands; keep only top-level 'photoprism help'
+	if skipHelp(c, parentFull) {
+		return nil
+	}
 	var out []Command
 	info := CommandInfo(c, depth, parentFull, includeHidden, global)
 	out = append(out, info)
 	for _, sub := range c.Subcommands {
-		if sub == nil || (sub.Hidden && !includeHidden) {
+		if sub == nil || (sub.Hidden && !includeHidden) || skipHelp(sub, info.FullName) {
 			continue
 		}
 		out = append(out, BuildFlat(sub, depth+1, info.FullName, includeHidden, global)...)
@@ -104,12 +108,25 @@ func BuildNode(c *cli.Command, depth int, parentFull string, includeHidden bool,
 	info := CommandInfo(c, depth, parentFull, includeHidden, global)
 	node := Node{Command: info}
 	for _, sub := range c.Subcommands {
-		if sub == nil || (sub.Hidden && !includeHidden) {
+		if sub == nil || (sub.Hidden && !includeHidden) || skipHelp(sub, info.FullName) {
 			continue
 		}
 		node.Subcommands = append(node.Subcommands, BuildNode(sub, depth+1, info.FullName, includeHidden, global))
 	}
 	return node
+}
+
+// skipHelp returns true for nested 'help' commands so they are omitted from output.
+// Top-level 'photoprism help' remains included.
+func skipHelp(c *cli.Command, parentFull string) bool {
+	if c == nil {
+		return false
+	}
+	if strings.EqualFold(c.Name, "help") {
+		// Keep only at the root where parent is 'photoprism'
+		return parentFull != "photoprism"
+	}
+	return false
 }
 
 // CommandInfo converts a cli.Command to a Command DTO.
@@ -279,10 +296,12 @@ func flagTypeString(f cli.Flag) string {
 
 // Default Markdown template (adjustable in source via rebuild).
 var commandsMDTemplate = `# {{ .App.Name }} CLI Commands ({{ .App.Edition }}) — {{ .App.Version }}
+
 _Generated: {{ .GeneratedAt }}_
 
 {{- $base := .BaseHeading -}}
 {{- range .Commands }}
+
 {{ heading (add $base (dec .Depth)) }} {{ .FullName }}
 
 **Usage:** {{ .Usage }}
