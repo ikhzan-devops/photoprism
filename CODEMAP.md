@@ -19,6 +19,7 @@ Executables & Entry Points
 - CLI app (binary name across docs/images is `photoprism`):
   - Main: `cmd/photoprism/photoprism.go`
   - Commands registry: `internal/commands/commands.go` (array `commands.PhotoPrism`)
+  - Catalog helpers: `internal/commands/catalog` (DTOs and builders to enumerate commands/flags; Markdown renderer)
 - Web server:
   - Startup: `internal/commands/start.go` → `server.Start` (starts HTTP(S), workers, session cleanup)
   - HTTP server: `internal/server/start.go` (compression, security, healthz, readiness, TLS/AutoTLS/unix socket)
@@ -27,6 +28,7 @@ Executables & Entry Points
 
 High-Level Package Map (Go)
 - `internal/api` — Gin handlers and Swagger annotations; only glue, no business logic
+- `internal/commands/catalog` — DTOs (App, Command, Flag, Node), builders (BuildFlat/BuildNode, CommandInfo, FlagsToCatalog), and a templated Markdown renderer (RenderMarkdown) for the CLI commands catalog. Depends only on `urfave/cli/v2` and stdlib.
 - `internal/server` — HTTP server, middleware, routing, static/ui/webdav
 - `internal/config` — configuration, flags/env/options, client config, DB init/migrate
 - `internal/entity` — GORM v1 models, queries, search helpers, migrations
@@ -53,6 +55,7 @@ Configuration & Flags
   - Available flags/env: `internal/config/cli_flags_report.go` + `internal/config/report_sections.go` → surfaced by `photoprism show config-options --md/--json`
   - YAML options mapping: `internal/config/options_report.go` + `internal/config/report_sections.go` → surfaced by `photoprism show config-yaml --md/--json`
   - Report current values: `internal/config/report.go` → surfaced by `photoprism show config` (alias `photoprism config --md`).
+  - CLI commands catalog: `internal/commands/show_commands.go` → surfaced by `photoprism show commands` (Markdown by default; `--json` alternative; `--nested` optional tree; `--all` includes hidden commands/flags; nested `help` subcommands omitted).
 - Precedence: `defaults.yml` < CLI/env < `options.yml` (global options rule). See Agent Tips in `AGENTS.md`.
 - Getters are grouped by topic, e.g. DB in `internal/config/config_db.go`, server in `config_server.go`, TLS in `config_tls.go`, etc.
 - Client Config (read-only)

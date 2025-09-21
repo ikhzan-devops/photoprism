@@ -192,6 +192,11 @@ If anything in this file conflicts with the `Makefile` or the Developer Guide, t
 
 - Capture output with `RunWithTestContext`; usage and report values may be quoted and re‑ordered (e.g., set semantics). Use substring checks or regex for the final ", or <last>" rule from `CliUsageString`.
 - Prefer JSON output (`--json`) for stable machine assertions when commands offer it.
+- Cataloging CLI commands (new):
+  - Use `internal/commands/catalog` to enumerate commands/flags without invoking the CLI or capturing stdout.
+  - Default format for `photoprism show commands` is Markdown; pass `--json` for machine output and `--nested` to get a tree. Hidden commands/flags appear only with `--all`.
+  - Nested `help` subcommands are omitted; the top‑level `photoprism help` remains included.
+  - When asserting large JSON documents, build DTOs via `catalog.BuildFlat/BuildNode` and marshal directly to avoid pipe back‑pressure in tests.
 - JSON shapes for `show` commands:
   - Most return a top‑level array of row objects (keys = snake_case columns).
   - `photoprism show config` returns `{ sections: [{ title, items[] }] }`.
