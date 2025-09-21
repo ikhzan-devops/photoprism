@@ -19,10 +19,9 @@ Learn more: https://agents.md/
 ### Specifications (Versioning & Usage)
 
 - Always use the latest spec version for a topic (highest `-vN`), as linked from `specs/README.md` and the portal cheatsheet (`specs/portal/README.md`).
+- Testing Guides: `specs/dev/backend-testing.md` (Backend/Go), `specs/dev/frontend-testing.md` (Frontend/JS)
+- Whenever the Change Management instructions for a document require it, publish changes as a new file with an incremented version suffix (e.g., `*-v3.md`) rather than overwriting the original file.
 - Older spec versions remain in the repo for historical reference but are not linked from the main TOC. Do not base new work on superseded files (e.g., `*-v1.md` when `*-v2.md` exists).
-- When adding or updating specs, publish changes under a new file with an incremented version suffix (e.g., `*-v3.md`) instead of overwriting. Refer to the Change Management section of each document for specific instructions.
-- Developer Cheatsheet – Portal & Cluster: specs/portal/README.md
-- Backend (Go) Testing Guide: specs/dev/backend-testing.md
 
 ## Project Structure & Languages
 
@@ -168,6 +167,7 @@ If anything in this file conflicts with the `Makefile` or the Developer Guide, t
 - Reports are quoted: strings in CLI "show" output are rendered with quotes by the report helpers. Prefer `assert.Contains`/regex over strict, fully formatted equality when validating content.
 
 #### Test Data & Fixtures (storage/testdata)
+
 - Shared test files live under `storage/testdata`. The lifecycle is managed by `internal/config/test.go`.
 - `NewTestConfig("<pkg>")` now calls `InitializeTestData()` so required directories exist (originals, import, cache, temp) before tests run.
 - If you build a custom `*config.Config`, call `c.InitializeTestData()` (and optionally `c.AssertTestData(t)`) before asserting on filesystem paths.
