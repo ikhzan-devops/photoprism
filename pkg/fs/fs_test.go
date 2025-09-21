@@ -21,7 +21,19 @@ func TestMain(m *testing.M) {
 	os.Exit(code)
 }
 
+func TestExists(t *testing.T) {
+	assert.True(t, Exists("./testdata"))
+	assert.True(t, Exists("./testdata/"))
+	assert.True(t, Exists("./testdata/test.jpg"))
+	assert.True(t, Exists("./testdata/test.jpg"))
+	assert.True(t, Exists("./testdata/empty.jpg"))
+	assert.False(t, Exists("./foo.jpg"))
+	assert.False(t, Exists(""))
+}
+
 func TestFileExists(t *testing.T) {
+	assert.False(t, FileExists("./testdata"))
+	assert.False(t, FileExists("./testdata/"))
 	assert.True(t, FileExists("./testdata/test.jpg"))
 	assert.True(t, FileExists("./testdata/test.jpg"))
 	assert.True(t, FileExists("./testdata/empty.jpg"))

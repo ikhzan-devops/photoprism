@@ -67,13 +67,25 @@ func SocketExists(socketName string) bool {
 	return true
 }
 
-// FileExists returns true if specified file exists and is not a directory.
-func FileExists(fileName string) bool {
-	if fileName == "" {
+// Exists returns true if the specified file system path exists,
+// regardless of whether it is a file, directory, or link.
+func Exists(fsPath string) bool {
+	if fsPath == "" {
 		return false
 	}
 
-	info, err := os.Stat(fileName)
+	_, err := os.Stat(fsPath)
+
+	return err == nil
+}
+
+// FileExists returns true if a file exists at the specified path.
+func FileExists(filePath string) bool {
+	if filePath == "" {
+		return false
+	}
+
+	info, err := os.Stat(filePath)
 
 	return err == nil && !info.IsDir()
 }
