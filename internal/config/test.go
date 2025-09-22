@@ -193,7 +193,7 @@ func NewTestConfig(pkg string) *Config {
 	}
 
 	if err := c.InitializeTestData(); err != nil {
-		log.Fatalf("config: %s", err.Error())
+		log.Errorf("config: %s", err.Error())
 	}
 
 	c.RegisterDb()
@@ -316,26 +316,18 @@ func CliTestContext() *cli.Context {
 func (c *Config) RemoveTestData() error {
 	if err := os.RemoveAll(c.ImportPath()); err != nil {
 		return err
-	} else if err = fs.MkdirAll(c.ImportPath()); err != nil {
-		log.Warnf("testdata: %s (mkdir)", err)
 	}
 
 	if err := os.RemoveAll(c.TempPath()); err != nil {
 		return err
-	} else if err = fs.MkdirAll(c.TempPath()); err != nil {
-		log.Warnf("testdata: %s (mkdir)", err)
 	}
 
 	if err := os.RemoveAll(c.OriginalsPath()); err != nil {
 		return err
-	} else if err = fs.MkdirAll(c.OriginalsPath()); err != nil {
-		log.Warnf("testdata: %s (mkdir)", err)
 	}
 
 	if err := os.RemoveAll(c.CachePath()); err != nil {
 		log.Warnf("test: %s (remove cache)", err)
-	} else if err = fs.MkdirAll(c.CachePath()); err != nil {
-		log.Warnf("testdata: %s (mkdir)", err)
 	}
 
 	return nil
@@ -388,23 +380,23 @@ func (c *Config) InitializeTestData() (err error) {
 
 	// Delete existing test files and directories in "storage/testdata".
 	if err = c.RemoveTestData(); err != nil {
-		return err
+		return fmt.Errorf("%s (remove testdata)", err)
 	}
 
 	// If the test file archive "/tmp/photoprism/testdata.zip" is missing,
 	// download it from https://dl.photoprism.app/qa/testdata.zip.
 	if err = c.DownloadTestData(); err != nil {
-		return err
+		return fmt.Errorf("%s (download testdata)", err)
 	}
 
 	// Extract "/tmp/photoprism/testdata.zip" in "storage/testdata".
 	if err = c.UnzipTestData(); err != nil {
-		return err
+		return fmt.Errorf("%s (unzip testdata)", err)
 	}
 
 	// Make sure all the required directories exist in "storage/testdata.
 	if err = c.CreateDirectories(); err != nil {
-		return err
+		return fmt.Errorf("%s (create directories)", err)
 	}
 
 	log.Infof("config: initialized test data [%s]", time.Since(start))
