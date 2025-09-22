@@ -138,6 +138,21 @@ Testing
 - SQLite DSN in tests is per‑suite (not empty). Clean up files if you capture the DSN.
 - Frontend unit tests via Vitest are separate; see `frontend/CODEMAP.md`.
 
+Security & Hot Spots (Where to Look)
+- Zip extraction (path traversal prevention): `pkg/fs/zip.go`
+  - Uses `safeJoin` to reject absolute/volume paths and `..` traversal; enforces per-file and total size limits.
+  - Tests: `pkg/fs/zip_extra_test.go` cover abs/volume/.. cases and limits.
+- Force-aware Copy/Move and truncation-safe writes:
+  - App helpers: `internal/photoprism/mediafile.go` (`MediaFile.Copy/Move` with `force`).
+  - Utils: `pkg/fs/copy.go`, `pkg/fs/move.go` (use `O_TRUNC` to avoid trailing bytes).
+- FFmpeg command builders and encoders:
+  - Core: `internal/ffmpeg/transcode_cmd.go`, `internal/ffmpeg/remux.go`.
+  - Encoders (string builders only): `internal/ffmpeg/{apple,intel,nvidia,vaapi,v4l}/avc.go`.
+  - Tests guard HW runs with `PHOTOPRISM_FFMPEG_ENCODER`; otherwise assert command strings and negative paths.
+- libvips thumbnails:
+  - Pipeline: `internal/thumb/vips.go` (VipsInit, VipsRotate, export params).
+  - Sizes & names: `internal/thumb/sizes.go`, `internal/thumb/names.go`, `internal/thumb/filter.go`.
+
 Performance & Limits
 - Prefer existing caches/workers/batching as per Makefile and code.
 - When adding list endpoints, default `count=100` (max `1000`); set `Cache-Control: no-store` for secrets.
@@ -191,3 +206,9 @@ See Also
 - AGENTS.md (repository rules and tips for agents)
 - Developer Guide (Setup/Tests/API) — links in AGENTS.md → Sources of Truth
 - Specs: `specs/dev/backend-testing.md`, `specs/portal/README.md`
+
+Fast Test Recipes
+- Filesystem + archives (fast): `go test ./pkg/fs -run 'Copy|Move|Unzip' -count=1`
+- Media helpers (fast): `go test ./pkg/media/... -count=1`
+- Thumbnails (libvips, moderate): `go test ./internal/thumb/... -count=1`
+- FFmpeg command builders (moderate): `go test ./internal/ffmpeg -run 'Remux|Transcode|Extract' -count=1`

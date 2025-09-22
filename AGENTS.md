@@ -122,6 +122,21 @@ Note: Across our public documentation, official images, and in production, the c
   - Vitest watch/coverage: `make vitest-watch` and `make vitest-coverage`
 - Acceptance tests: use the `acceptance-*` targets in the `Makefile`
 
+### FFmpeg Tests & Hardware Gating
+
+- By default, do not run GPU/HW encoder integrations in CI. Gate with `PHOTOPRISM_FFMPEG_ENCODER` (one of: `vaapi`, `intel`, `nvidia`).
+- Negative-path tests should remain fast and always run:
+  - Missing ffmpeg binary → immediate exec error.
+  - Unwritable destination → command fails without creating files.
+- Prefer command-string assertions when hardware is unavailable; enable HW runs locally only when a device is configured.
+
+### Fast, Focused Test Recipes
+
+- Filesystem + archives (fast): `go test ./pkg/fs -run 'Copy|Move|Unzip' -count=1`
+- Media helpers (fast): `go test ./pkg/media/... -count=1`
+- Thumbnails (libvips, moderate): `go test ./internal/thumb/... -count=1`
+- FFmpeg command builders (moderate): `go test ./internal/ffmpeg -run 'Remux|Transcode|Extract' -count=1`
+
 ### CLI Testing Gotchas (Go)
 
 - Exit codes and `os.Exit`:
@@ -147,6 +162,32 @@ Note: Across our public documentation, official images, and in production, the c
   - Ensure `.env` and `.local` are ignored in `.gitignore` and `.dockerignore`.
 - Prefer using existing caches, workers, and batching strategies referenced in code and `Makefile`. Consider memory/CPU impact; suggest benchmarks or profiling only when justified.
 - Do not run destructive commands against production data. Prefer ephemeral volumes and test fixtures when running acceptance tests.
+- ### File I/O — Overwrite Policy (force semantics)
+
+- Default is safety-first: callers must not overwrite non-empty destination files unless they opt-in with a `force` flag.
+- Replacing empty destination files is allowed without `force=true` (useful for placeholder files).
+- Open destinations with `O_WRONLY|O_CREATE|O_TRUNC` to avoid trailing bytes when overwriting; use `O_EXCL` when the caller must detect collisions.
+- Where this lives:
+  - App-level helpers: `internal/photoprism/mediafile.go` (`MediaFile.Copy/Move`).
+  - Reusable utils: `pkg/fs/copy.go`, `pkg/fs/move.go`.
+- When to set `force=true`:
+  - Explicit “replace” actions or admin tools where the user confirmed overwrite.
+  - Not for import/index flows; Originals must not be clobbered.
+
+- ### Archive Extraction — Security Checklist
+
+- Always validate ZIP entry names with a safe join; reject:
+  - absolute paths (e.g., `/etc/passwd`).
+  - Windows drive/volume paths (e.g., `C:\\…` or `C:/…`).
+  - any entry that escapes the target directory after cleaning (path traversal via `..`).
+- Enforce per-file and total size budgets to prevent resource exhaustion.
+- Skip OS metadata directories (e.g., `__MACOSX`) and reject suspicious names.
+- Where this lives: `pkg/fs/zip.go` (`Unzip`, `UnzipFile`, `safeJoin`).
+- Tests to keep:
+  - Absolute/volume paths rejected (Windows-specific backslash path covered on Windows).
+  - `..` traversal skipped; `__MACOSX` skipped.
+  - Per-file and total size limits enforced; directory entries created; nested paths extracted safely.
+
 - Examples assume a Linux/Unix shell. For Windows specifics, see the Developer Guide FAQ:
   https://docs.photoprism.app/developer-guide/faq/#can-your-development-environment-be-used-under-windows
 
