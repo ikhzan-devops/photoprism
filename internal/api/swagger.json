@@ -3192,6 +3192,136 @@
                 "responses": {}
             }
         },
+        "/api/v1/markers/{marker_uid}": {
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Files"
+                ],
+                "summary": "update a marker (face/subject region)",
+                "operationId": "UpdateMarker",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "marker uid",
+                        "name": "marker_uid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "marker properties",
+                        "name": "marker",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/form.Marker"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Marker"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "429": {
+                        "description": "Too Many Requests",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/markers/{marker_uid}/subject": {
+            "delete": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Files"
+                ],
+                "summary": "clear the subject of a marker",
+                "operationId": "ClearMarkerSubject",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "marker uid",
+                        "name": "marker_uid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Marker"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "429": {
+                        "description": "Too Many Requests",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/metrics": {
             "get": {
                 "produces": [
@@ -3271,20 +3401,232 @@
                 }
             }
         },
-        "/api/v1/oauth/revoke": {
-            "post": {
+        "/api/v1/oauth/authorize": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
                 "tags": [
                     "Authentication"
                 ],
-                "responses": {}
+                "summary": "OAuth2 authorization endpoint (not implemented)",
+                "operationId": "OAuthAuthorize",
+                "responses": {
+                    "405": {
+                        "description": "Method Not Allowed",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/oauth/revoke": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "revoke an OAuth2 access token or session",
+                "operationId": "OAuthRevoke",
+                "parameters": [
+                    {
+                        "description": "revoke request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/form.OAuthRevokeToken"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "429": {
+                        "description": "Too Many Requests",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    }
+                }
             }
         },
         "/api/v1/oauth/token": {
             "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
                 "tags": [
                     "Authentication"
                 ],
-                "responses": {}
+                "summary": "create an OAuth2 access token",
+                "operationId": "OAuthToken",
+                "parameters": [
+                    {
+                        "description": "token request (supports client_credentials, password, or session grant)",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/form.OAuthCreateToken"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "429": {
+                        "description": "Too Many Requests",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/oidc/login": {
+            "get": {
+                "produces": [
+                    "text/html"
+                ],
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "start OpenID Connect login (browser redirect)",
+                "operationId": "OIDCLogin",
+                "responses": {
+                    "307": {
+                        "description": "redirect to provider login page",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "429": {
+                        "description": "Too Many Requests",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/oidc/redirect": {
+            "get": {
+                "produces": [
+                    "text/html"
+                ],
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "complete OIDC login (callback)",
+                "operationId": "OIDCRedirect",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "opaque OAuth2 state value",
+                        "name": "state",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "authorization code",
+                        "name": "code",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "HTML page bootstrapping token storage",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "rendered error page",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "rendered error page",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "429": {
+                        "description": "rendered error page",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
             }
         },
         "/api/v1/photos": {
@@ -4933,19 +5275,387 @@
             }
         },
         "/api/v1/session": {
-            "post": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
                 "tags": [
                     "Authentication"
                 ],
-                "responses": {}
+                "summary": "get the current session or a session by id",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "429": {
+                        "description": "Too Many Requests",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "create a session (login)",
+                "parameters": [
+                    {
+                        "description": "login credentials",
+                        "name": "credentials",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/form.Login"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "429": {
+                        "description": "Too Many Requests",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "delete a session (logout)",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "429": {
+                        "description": "Too Many Requests",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/session/{id}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "get the current session or a session by id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "session id",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "429": {
+                        "description": "Too Many Requests",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "delete a session (logout)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "session id or ref id",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "429": {
+                        "description": "Too Many Requests",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    }
+                }
             }
         },
         "/api/v1/sessions": {
             "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
                 "tags": [
                     "Authentication"
                 ],
-                "responses": {}
+                "summary": "create a session (login)",
+                "parameters": [
+                    {
+                        "description": "login credentials",
+                        "name": "credentials",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/form.Login"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "429": {
+                        "description": "Too Many Requests",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/sessions/{id}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "get the current session or a session by id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "session id",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "429": {
+                        "description": "Too Many Requests",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "delete a session (logout)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "session id or ref id",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "429": {
+                        "description": "Too Many Requests",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    }
+                }
             }
         },
         "/api/v1/settings": {
@@ -5410,7 +6120,8 @@
             "get": {
                 "description": "Fore more information see:\n- https://docs.photoprism.app/developer-guide/api/thumbnails/#image-endpoint-uri",
                 "produces": [
-                    "image/jpeg"
+                    "image/jpeg",
+                    " image/svg+xml"
                 ],
                 "tags": [
                     "Images",
@@ -5477,68 +6188,548 @@
         },
         "/api/v1/users/{uid}": {
             "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
                 "tags": [
                     "Users"
                 ],
-                "responses": {}
+                "summary": "update user profile information",
+                "operationId": "UpdateUser",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user uid",
+                        "name": "uid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "properties to be updated",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/form.User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.User"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "429": {
+                        "description": "Too Many Requests",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    }
+                }
             }
         },
         "/api/v1/users/{uid}/avatar": {
             "post": {
+                "description": "Accepts a single PNG or JPEG file (max 20 MB) in a multipart form field named \"files\" and sets it as the user's avatar.",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
                 "tags": [
                     "Users"
                 ],
-                "responses": {}
+                "summary": "upload a new avatar image for a user",
+                "operationId": "UploadUserAvatar",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user uid",
+                        "name": "uid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "avatar image (png or jpeg, \u003c= 20 MB)",
+                        "name": "files",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.User"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "429": {
+                        "description": "Too Many Requests",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    }
+                }
             }
         },
         "/api/v1/users/{uid}/passcode": {
             "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
                 "tags": [
                     "Users"
                 ],
-                "responses": {}
+                "summary": "create a new 2FA passcode for a user",
+                "operationId": "CreateUserPasscode",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user uid",
+                        "name": "uid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "passcode setup (password required)",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/form.Passcode"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Passcode"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "429": {
+                        "description": "Too Many Requests",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    }
+                }
             }
         },
         "/api/v1/users/{uid}/passcode/activate": {
             "post": {
+                "produces": [
+                    "application/json"
+                ],
                 "tags": [
                     "Users"
                 ],
-                "responses": {}
+                "summary": "activate 2FA with a verified passcode",
+                "operationId": "ActivateUserPasscode",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user uid",
+                        "name": "uid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Passcode"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "429": {
+                        "description": "Too Many Requests",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    }
+                }
             }
         },
         "/api/v1/users/{uid}/passcode/confirm": {
             "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
                 "tags": [
                     "Users"
                 ],
-                "responses": {}
+                "summary": "verify a new 2FA passcode",
+                "operationId": "ConfirmUserPasscode",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user uid",
+                        "name": "uid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "verification code",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/form.Passcode"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Passcode"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "429": {
+                        "description": "Too Many Requests",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    }
+                }
             }
         },
         "/api/v1/users/{uid}/passcode/deactivate": {
             "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
                 "tags": [
                     "Users"
                 ],
-                "responses": {}
+                "summary": "deactivate 2FA and remove the passcode",
+                "operationId": "DeactivateUserPasscode",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user uid",
+                        "name": "uid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "password for confirmation",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/form.Passcode"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "429": {
+                        "description": "Too Many Requests",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    }
+                }
             }
         },
         "/api/v1/users/{uid}/password": {
             "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
                 "tags": [
                     "Users",
                     "Authentication"
                 ],
-                "responses": {}
+                "summary": "change a user's password",
+                "operationId": "UpdateUserPassword",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user uid",
+                        "name": "uid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "old and new password",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/form.ChangePassword"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "429": {
+                        "description": "Too Many Requests",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    }
+                }
             }
         },
         "/api/v1/users/{uid}/sessions": {
             "get": {
+                "produces": [
+                    "application/json"
+                ],
                 "tags": [
                     "Users",
                     "Authentication"
                 ],
-                "responses": {}
+                "summary": "list sessions for a user",
+                "operationId": "FindUserSessions",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user uid",
+                        "name": "uid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "maximum": 100000,
+                        "minimum": 1,
+                        "type": "integer",
+                        "description": "maximum number of results",
+                        "name": "count",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "minimum": 0,
+                        "type": "integer",
+                        "description": "result offset",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "filter by username or client name",
+                        "name": "q",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entity.Session"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "429": {
+                        "description": "Too Many Requests",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    }
+                }
             }
         },
         "/api/v1/videos/{hash}/{token}/{format}": {
@@ -5915,12 +7106,169 @@
             }
         },
         "/users/{uid}/upload/{token}": {
-            "post": {
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
                 "tags": [
                     "Users",
                     "Files"
                 ],
-                "responses": {}
+                "summary": "process previously uploaded files for a user",
+                "operationId": "ProcessUserUpload",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user uid",
+                        "name": "uid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "upload token",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "processing options",
+                        "name": "options",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/form.UploadOptions"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "429": {
+                        "description": "Too Many Requests",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users",
+                    "Files"
+                ],
+                "summary": "upload files to a user's upload folder",
+                "operationId": "UploadUserFiles",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user uid",
+                        "name": "uid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "upload token",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "one or more files to upload (repeat the field for multiple files)",
+                        "name": "files",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "413": {
+                        "description": "Request Entity Too Large",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "429": {
+                        "description": "Too Many Requests",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "507": {
+                        "description": "Insufficient Storage",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    }
+                }
             }
         }
     },
@@ -5935,6 +7283,37 @@
                     "type": "string"
                 }
             }
+        },
+        "authn.GrantType": {
+            "type": "string",
+            "enum": [
+                "",
+                "cli",
+                "implicit",
+                "session",
+                "password",
+                "client_credentials",
+                "share_token",
+                "refresh_token",
+                "authorization_code",
+                "urn:ietf:params:oauth:grant-type:jwt-bearer",
+                "urn:ietf:params:oauth:grant-type:saml2-bearer",
+                "urn:ietf:params:oauth:grant-type:token-exchange"
+            ],
+            "x-enum-varnames": [
+                "GrantUndefined",
+                "GrantCLI",
+                "GrantImplicit",
+                "GrantSession",
+                "GrantPassword",
+                "GrantClientCredentials",
+                "GrantShareToken",
+                "GrantRefreshToken",
+                "GrantAuthorizationCode",
+                "GrantJwtBearer",
+                "GrantSamlBearer",
+                "GrantTokenExchange"
+            ]
         },
         "batch.Action": {
             "type": "string",
@@ -7446,6 +8825,100 @@
                 }
             }
         },
+        "entity.Marker": {
+            "type": "object",
+            "properties": {
+                "FaceDist": {
+                    "type": "number"
+                },
+                "FaceID": {
+                    "type": "string"
+                },
+                "FileUID": {
+                    "type": "string"
+                },
+                "H": {
+                    "type": "number"
+                },
+                "Invalid": {
+                    "type": "boolean"
+                },
+                "MatchedAt": {
+                    "type": "string"
+                },
+                "Name": {
+                    "type": "string"
+                },
+                "Q": {
+                    "type": "integer"
+                },
+                "Review": {
+                    "type": "boolean"
+                },
+                "Score": {
+                    "type": "integer"
+                },
+                "Size": {
+                    "type": "integer"
+                },
+                "Src": {
+                    "type": "string"
+                },
+                "SubjSrc": {
+                    "type": "string"
+                },
+                "SubjUID": {
+                    "type": "string"
+                },
+                "Thumb": {
+                    "type": "string"
+                },
+                "Type": {
+                    "type": "string"
+                },
+                "UID": {
+                    "type": "string"
+                },
+                "W": {
+                    "type": "number"
+                },
+                "X": {
+                    "type": "number"
+                },
+                "Y": {
+                    "type": "number"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.Passcode": {
+            "type": "object",
+            "properties": {
+                "ActivatedAt": {
+                    "type": "string"
+                },
+                "CreatedAt": {
+                    "type": "string"
+                },
+                "Type": {
+                    "type": "string"
+                },
+                "UID": {
+                    "type": "string"
+                },
+                "UpdatedAt": {
+                    "type": "string"
+                },
+                "VerifiedAt": {
+                    "type": "string"
+                }
+            }
+        },
         "entity.Photo": {
             "type": "object",
             "properties": {
@@ -7793,6 +9266,77 @@
                 }
             }
         },
+        "entity.Session": {
+            "type": "object",
+            "properties": {
+                "AuthID": {
+                    "type": "string"
+                },
+                "AuthIssuer": {
+                    "type": "string"
+                },
+                "AuthMethod": {
+                    "type": "string"
+                },
+                "AuthProvider": {
+                    "type": "string"
+                },
+                "AuthScope": {
+                    "type": "string"
+                },
+                "ClientIP": {
+                    "type": "string"
+                },
+                "ClientName": {
+                    "type": "string"
+                },
+                "ClientUID": {
+                    "type": "string"
+                },
+                "CreatedAt": {
+                    "type": "string"
+                },
+                "Expires": {
+                    "type": "integer"
+                },
+                "GrantType": {
+                    "type": "string"
+                },
+                "ID": {
+                    "type": "string"
+                },
+                "IdToken": {
+                    "type": "string"
+                },
+                "LastActive": {
+                    "type": "integer"
+                },
+                "LoginAt": {
+                    "type": "string"
+                },
+                "LoginIP": {
+                    "type": "string"
+                },
+                "Status": {
+                    "type": "integer"
+                },
+                "Timeout": {
+                    "type": "integer"
+                },
+                "UpdatedAt": {
+                    "type": "string"
+                },
+                "UserAgent": {
+                    "type": "string"
+                },
+                "UserName": {
+                    "type": "string"
+                },
+                "UserUID": {
+                    "type": "string"
+                }
+            }
+        },
         "entity.Subject": {
             "type": "object",
             "properties": {
@@ -7858,6 +9402,290 @@
                 }
             }
         },
+        "entity.User": {
+            "type": "object",
+            "properties": {
+                "Attr": {
+                    "type": "string"
+                },
+                "AuthID": {
+                    "type": "string"
+                },
+                "AuthIssuer": {
+                    "type": "string"
+                },
+                "AuthMethod": {
+                    "type": "string"
+                },
+                "AuthProvider": {
+                    "type": "string"
+                },
+                "BackupEmail": {
+                    "type": "string"
+                },
+                "BasePath": {
+                    "type": "string"
+                },
+                "BornAt": {
+                    "type": "string"
+                },
+                "CanInvite": {
+                    "type": "boolean"
+                },
+                "CanLogin": {
+                    "type": "boolean"
+                },
+                "ConsentAt": {
+                    "type": "string"
+                },
+                "CreatedAt": {
+                    "type": "string"
+                },
+                "DeletedAt": {
+                    "type": "string"
+                },
+                "Details": {
+                    "$ref": "#/definitions/entity.UserDetails"
+                },
+                "DisplayName": {
+                    "type": "string"
+                },
+                "Email": {
+                    "type": "string"
+                },
+                "ExpiresAt": {
+                    "type": "string"
+                },
+                "ID": {
+                    "type": "integer"
+                },
+                "LoginAt": {
+                    "type": "string"
+                },
+                "Name": {
+                    "type": "string"
+                },
+                "Role": {
+                    "type": "string"
+                },
+                "Settings": {
+                    "$ref": "#/definitions/entity.UserSettings"
+                },
+                "Shares": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.UserShare"
+                    }
+                },
+                "SuperAdmin": {
+                    "type": "boolean"
+                },
+                "Thumb": {
+                    "type": "string"
+                },
+                "ThumbSrc": {
+                    "type": "string"
+                },
+                "UID": {
+                    "type": "string"
+                },
+                "UUID": {
+                    "type": "string"
+                },
+                "UpdatedAt": {
+                    "type": "string"
+                },
+                "UploadPath": {
+                    "type": "string"
+                },
+                "VerifiedAt": {
+                    "type": "string"
+                },
+                "WebDAV": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "entity.UserDetails": {
+            "type": "object",
+            "properties": {
+                "About": {
+                    "type": "string"
+                },
+                "AvatarURL": {
+                    "type": "string"
+                },
+                "Bio": {
+                    "type": "string"
+                },
+                "BirthDay": {
+                    "type": "integer"
+                },
+                "BirthMonth": {
+                    "type": "integer"
+                },
+                "BirthYear": {
+                    "type": "integer"
+                },
+                "Country": {
+                    "type": "string"
+                },
+                "CreatedAt": {
+                    "type": "string"
+                },
+                "FamilyName": {
+                    "type": "string"
+                },
+                "FeedURL": {
+                    "type": "string"
+                },
+                "Gender": {
+                    "type": "string"
+                },
+                "GivenName": {
+                    "type": "string"
+                },
+                "IdURL": {
+                    "type": "string"
+                },
+                "Location": {
+                    "type": "string"
+                },
+                "MiddleName": {
+                    "type": "string"
+                },
+                "NameSrc": {
+                    "type": "string"
+                },
+                "NameSuffix": {
+                    "type": "string"
+                },
+                "NameTitle": {
+                    "type": "string"
+                },
+                "NickName": {
+                    "type": "string"
+                },
+                "OrgEmail": {
+                    "type": "string"
+                },
+                "OrgName": {
+                    "type": "string"
+                },
+                "OrgPhone": {
+                    "type": "string"
+                },
+                "OrgTitle": {
+                    "type": "string"
+                },
+                "OrgURL": {
+                    "type": "string"
+                },
+                "Phone": {
+                    "type": "string"
+                },
+                "ProfileURL": {
+                    "type": "string"
+                },
+                "SiteURL": {
+                    "type": "string"
+                },
+                "SubjUID": {
+                    "type": "string"
+                },
+                "UpdatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.UserSettings": {
+            "type": "object",
+            "properties": {
+                "CreatedAt": {
+                    "type": "string"
+                },
+                "DownloadMediaRaw": {
+                    "type": "integer"
+                },
+                "DownloadMediaSidecar": {
+                    "type": "integer"
+                },
+                "DownloadOriginals": {
+                    "type": "integer"
+                },
+                "ImportMove": {
+                    "type": "integer"
+                },
+                "ImportPath": {
+                    "type": "string"
+                },
+                "IndexPath": {
+                    "type": "string"
+                },
+                "IndexRescan": {
+                    "type": "integer"
+                },
+                "MapsAnimate": {
+                    "type": "integer"
+                },
+                "MapsStyle": {
+                    "type": "string"
+                },
+                "SearchListView": {
+                    "type": "integer"
+                },
+                "SearchShowCaptions": {
+                    "type": "integer"
+                },
+                "SearchShowTitles": {
+                    "type": "integer"
+                },
+                "UILanguage": {
+                    "type": "string"
+                },
+                "UIStartPage": {
+                    "type": "string"
+                },
+                "UITheme": {
+                    "type": "string"
+                },
+                "UITimeZone": {
+                    "type": "string"
+                },
+                "UpdatedAt": {
+                    "type": "string"
+                },
+                "UploadPath": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.UserShare": {
+            "type": "object",
+            "properties": {
+                "Comment": {
+                    "type": "string"
+                },
+                "CreatedAt": {
+                    "type": "string"
+                },
+                "ExpiresAt": {
+                    "type": "string"
+                },
+                "LinkUID": {
+                    "type": "string"
+                },
+                "Perm": {
+                    "type": "integer"
+                },
+                "ShareUID": {
+                    "type": "string"
+                },
+                "UpdatedAt": {
+                    "type": "string"
+                }
+            }
+        },
         "form.Album": {
             "type": "object",
             "properties": {
@@ -7904,6 +9732,17 @@
                     "type": "string"
                 },
                 "Type": {
+                    "type": "string"
+                }
+            }
+        },
+        "form.ChangePassword": {
+            "type": "object",
+            "properties": {
+                "new": {
+                    "type": "string"
+                },
+                "old": {
                     "type": "string"
                 }
             }
@@ -8076,6 +9915,141 @@
                     "type": "string"
                 },
                 "Token": {
+                    "type": "string"
+                }
+            }
+        },
+        "form.Login": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "2FA Verification Code (Passcodes).",
+                    "type": "string"
+                },
+                "email": {
+                    "description": "Reserved.",
+                    "type": "string"
+                },
+                "password": {
+                    "description": "The user's Password.",
+                    "type": "string"
+                },
+                "token": {
+                    "description": "Share Token.",
+                    "type": "string"
+                },
+                "username": {
+                    "description": "The local Username or LDAP user principal name (UPN).",
+                    "type": "string"
+                }
+            }
+        },
+        "form.Marker": {
+            "type": "object",
+            "properties": {
+                "FileUID": {
+                    "type": "string"
+                },
+                "H": {
+                    "type": "number"
+                },
+                "Invalid": {
+                    "type": "boolean"
+                },
+                "MarkerReview": {
+                    "type": "boolean"
+                },
+                "Name": {
+                    "type": "string"
+                },
+                "Src": {
+                    "type": "string"
+                },
+                "SubjSrc": {
+                    "type": "string"
+                },
+                "Type": {
+                    "type": "string"
+                },
+                "W": {
+                    "type": "number"
+                },
+                "X": {
+                    "type": "number"
+                },
+                "Y": {
+                    "type": "number"
+                }
+            }
+        },
+        "form.OAuthCreateToken": {
+            "type": "object",
+            "properties": {
+                "assertion": {
+                    "type": "string"
+                },
+                "client_id": {
+                    "type": "string"
+                },
+                "client_name": {
+                    "type": "string"
+                },
+                "client_secret": {
+                    "type": "string"
+                },
+                "code": {
+                    "type": "string"
+                },
+                "code_verifier": {
+                    "type": "string"
+                },
+                "expires_in": {
+                    "type": "integer"
+                },
+                "grant_type": {
+                    "$ref": "#/definitions/authn.GrantType"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "redirect_uri": {
+                    "type": "string"
+                },
+                "refresh_token": {
+                    "type": "string"
+                },
+                "scope": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "form.OAuthRevokeToken": {
+            "type": "object",
+            "required": [
+                "token"
+            ],
+            "properties": {
+                "token": {
+                    "type": "string"
+                },
+                "token_type_hint": {
+                    "type": "string"
+                }
+            }
+        },
+        "form.Passcode": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "type": {
                     "type": "string"
                 }
             }
@@ -8346,6 +10320,150 @@
                     "type": "string"
                 },
                 "ThumbSrc": {
+                    "type": "string"
+                }
+            }
+        },
+        "form.UploadOptions": {
+            "type": "object",
+            "properties": {
+                "albums": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "form.User": {
+            "type": "object",
+            "properties": {
+                "Attr": {
+                    "type": "string"
+                },
+                "AuthID": {
+                    "type": "string"
+                },
+                "AuthIssuer": {
+                    "type": "string"
+                },
+                "AuthMethod": {
+                    "type": "string"
+                },
+                "AuthProvider": {
+                    "type": "string"
+                },
+                "BasePath": {
+                    "type": "string"
+                },
+                "CanLogin": {
+                    "type": "boolean"
+                },
+                "DeletedAt": {
+                    "type": "string"
+                },
+                "Details": {
+                    "$ref": "#/definitions/form.UserDetails"
+                },
+                "DisplayName": {
+                    "type": "string"
+                },
+                "Email": {
+                    "type": "string"
+                },
+                "Name": {
+                    "type": "string"
+                },
+                "Password": {
+                    "type": "string"
+                },
+                "Role": {
+                    "type": "string"
+                },
+                "SuperAdmin": {
+                    "type": "boolean"
+                },
+                "UploadPath": {
+                    "type": "string"
+                },
+                "WebDAV": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "form.UserDetails": {
+            "type": "object",
+            "properties": {
+                "About": {
+                    "type": "string"
+                },
+                "Bio": {
+                    "type": "string"
+                },
+                "BirthDay": {
+                    "type": "integer"
+                },
+                "BirthMonth": {
+                    "type": "integer"
+                },
+                "BirthYear": {
+                    "type": "integer"
+                },
+                "Country": {
+                    "type": "string"
+                },
+                "FamilyName": {
+                    "type": "string"
+                },
+                "FeedURL": {
+                    "type": "string"
+                },
+                "Gender": {
+                    "type": "string"
+                },
+                "GivenName": {
+                    "type": "string"
+                },
+                "Location": {
+                    "type": "string"
+                },
+                "MiddleName": {
+                    "type": "string"
+                },
+                "NameSrc": {
+                    "type": "string"
+                },
+                "NameSuffix": {
+                    "type": "string"
+                },
+                "NameTitle": {
+                    "type": "string"
+                },
+                "NickName": {
+                    "type": "string"
+                },
+                "OrgEmail": {
+                    "type": "string"
+                },
+                "OrgName": {
+                    "type": "string"
+                },
+                "OrgPhone": {
+                    "type": "string"
+                },
+                "OrgTitle": {
+                    "type": "string"
+                },
+                "OrgURL": {
+                    "type": "string"
+                },
+                "Phone": {
+                    "type": "string"
+                },
+                "ProfileURL": {
+                    "type": "string"
+                },
+                "SiteURL": {
                     "type": "string"
                 }
             }
@@ -9455,6 +11573,32 @@
             "type": "integer",
             "format": "int64",
             "enum": [
+                -9223372036854775808,
+                9223372036854775807,
+                1,
+                1000,
+                1000000,
+                1000000000,
+                60000000000,
+                3600000000000,
+                -9223372036854775808,
+                9223372036854775807,
+                1,
+                1000,
+                1000000,
+                1000000000,
+                60000000000,
+                3600000000000,
+                -9223372036854775808,
+                9223372036854775807,
+                1,
+                1000,
+                1000000,
+                1000000000,
+                60000000000,
+                3600000000000,
+                -9223372036854775808,
+                9223372036854775807,
                 1,
                 1000,
                 1000000,
@@ -9463,6 +11607,32 @@
                 3600000000000
             ],
             "x-enum-varnames": [
+                "minDuration",
+                "maxDuration",
+                "Nanosecond",
+                "Microsecond",
+                "Millisecond",
+                "Second",
+                "Minute",
+                "Hour",
+                "minDuration",
+                "maxDuration",
+                "Nanosecond",
+                "Microsecond",
+                "Millisecond",
+                "Second",
+                "Minute",
+                "Hour",
+                "minDuration",
+                "maxDuration",
+                "Nanosecond",
+                "Microsecond",
+                "Millisecond",
+                "Second",
+                "Minute",
+                "Hour",
+                "minDuration",
+                "maxDuration",
                 "Nanosecond",
                 "Microsecond",
                 "Millisecond",
