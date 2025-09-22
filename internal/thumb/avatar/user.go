@@ -49,7 +49,7 @@ func SetUserImageURL(m *entity.User, imageUrl, imageSrc, thumbPath string) error
 		}
 	}
 
-	if err = fs.Move(tmpName, imageName); err != nil {
+	if err = fs.Move(tmpName, imageName, true); err != nil {
 		return fmt.Errorf("failed to rename avatar image (%w)", err)
 	}
 

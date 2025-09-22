@@ -91,23 +91,34 @@ func FileExists(filePath string) bool {
 }
 
 // FileExistsNotEmpty returns true if file exists, is not a directory, and not empty.
-func FileExistsNotEmpty(fileName string) bool {
-	if fileName == "" {
+func FileExistsNotEmpty(filePath string) bool {
+	if filePath == "" {
 		return false
 	}
 
-	info, err := os.Stat(fileName)
+	info, err := os.Stat(filePath)
 
 	return err == nil && !info.IsDir() && info.Size() > 0
 }
 
+// FileExistsIsEmpty returns true if the file exists, but is empty.
+func FileExistsIsEmpty(filePath string) bool {
+	if filePath == "" {
+		return false
+	}
+
+	info, err := os.Stat(filePath)
+
+	return err == nil && !info.IsDir() && info.Size() == 0
+}
+
 // FileSize returns the size of a file in bytes or -1 in case of an error.
-func FileSize(fileName string) int64 {
-	if fileName == "" {
+func FileSize(filePath string) int64 {
+	if filePath == "" {
 		return -1
 	}
 
-	info, err := os.Stat(fileName)
+	info, err := os.Stat(filePath)
 
 	if err != nil || info == nil {
 		return -1

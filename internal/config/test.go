@@ -316,18 +316,26 @@ func CliTestContext() *cli.Context {
 func (c *Config) RemoveTestData() error {
 	if err := os.RemoveAll(c.ImportPath()); err != nil {
 		return err
+	} else if err = fs.MkdirAll(c.ImportPath()); err != nil {
+		log.Warnf("testdata: %s (mkdir)", err)
 	}
 
 	if err := os.RemoveAll(c.TempPath()); err != nil {
 		return err
+	} else if err = fs.MkdirAll(c.TempPath()); err != nil {
+		log.Warnf("testdata: %s (mkdir)", err)
 	}
 
 	if err := os.RemoveAll(c.OriginalsPath()); err != nil {
 		return err
+	} else if err = fs.MkdirAll(c.OriginalsPath()); err != nil {
+		log.Warnf("testdata: %s (mkdir)", err)
 	}
 
 	if err := os.RemoveAll(c.CachePath()); err != nil {
 		log.Warnf("test: %s (remove cache)", err)
+	} else if err = fs.MkdirAll(c.CachePath()); err != nil {
+		log.Warnf("testdata: %s (mkdir)", err)
 	}
 
 	return nil
