@@ -72,7 +72,8 @@ export class Batch extends Model {
   }
 
   async getData(selection) {
-    return await $api.post("batch/photos/edit", { photos: selection }).then((response) => {
+    try {
+      const response = await $api.post("batch/photos/edit", { photos: selection });
       const models = response.data.models || [];
 
       this.models = models.map((m) => {
@@ -82,14 +83,19 @@ export class Batch extends Model {
 
       this.values = response.data.values;
       this.setSelections(selection);
-    });
+    } catch (error) {
+      throw error;
+    }
   }
 
   async getValuesForSelection(selection) {
-    return await $api.post("batch/photos/edit", { photos: selection }).then((response) => {
+    try {
+      const response = await $api.post("batch/photos/edit", { photos: selection });
       this.values = response.data.values;
       return this.values;
-    });
+    } catch (error) {
+      throw error;
+    }
   }
 
   setSelections(selection) {
