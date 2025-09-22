@@ -37,7 +37,7 @@ import (
 //	@Param		files					formData	file	true	"one or more files to upload (repeat the field for multiple files)"
 //	@Success	200						{object}	i18n.Response
 //	@Failure	400,401,403,413,429,507	{object}	i18n.Response
-//	@Router		/users/{uid}/upload/{token} [post]
+//	@Router		/api/v1/users/{uid}/upload/{token} [post]
 func UploadUserFiles(router *gin.RouterGroup) {
 	router.POST("/users/:uid/upload/:token", func(c *gin.Context) {
 		conf := get.Config()
@@ -273,7 +273,7 @@ func UploadCheckFile(destName string, rejectRaw bool, totalSizeLimit int64) (rem
 //	@Param		options					body		form.UploadOptions	true	"processing options"
 //	@Success	200						{object}	i18n.Response
 //	@Failure	400,401,403,404,409,429	{object}	i18n.Response
-//	@Router		/users/{uid}/upload/{token} [put]
+//	@Router		/api/v1/users/{uid}/upload/{token} [put]
 func ProcessUserUpload(router *gin.RouterGroup) {
 	router.PUT("/users/:uid/upload/:token", func(c *gin.Context) {
 		s := AuthAny(c, acl.ResourceFiles, acl.Permissions{acl.ActionManage, acl.ActionUpload})

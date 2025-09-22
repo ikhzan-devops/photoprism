@@ -32,7 +32,8 @@ func SetUserImageURL(m *entity.User, imageUrl, imageSrc, thumbPath string) error
 
 	tmpName := filepath.Join(os.TempDir(), rnd.Base36(64))
 
-	if err = fs.Download(tmpName, u.String()); err != nil {
+	// Hardened remote fetch with SSRF and size limits.
+	if err = SafeDownload(tmpName, u.String(), nil); err != nil {
 		return fmt.Errorf("failed to download avatar image (%w)", err)
 	}
 

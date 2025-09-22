@@ -153,6 +153,12 @@ Security & Hot Spots (Where to Look)
   - Pipeline: `internal/thumb/vips.go` (VipsInit, VipsRotate, export params).
   - Sizes & names: `internal/thumb/sizes.go`, `internal/thumb/names.go`, `internal/thumb/filter.go`.
 
+- Safe HTTP downloader:
+  - Shared utility: `pkg/service/http/safe` (`Download`, `Options`).
+  - Protections: scheme allow‑list (http/https), pre‑DNS + per‑redirect hostname/IP validation, final peer IP check, size and timeout enforcement, temp file `0600` + rename.
+  - Avatars: wrapper `internal/thumb/avatar.SafeDownload` applies stricter defaults (15s, 10 MiB, `AllowPrivate=false`, image‑focused `Accept`).
+  - Tests: `go test ./pkg/service/http/safe -count=1` (includes redirect SSRF cases); avatars: `go test ./internal/thumb/avatar -count=1`.
+
 Performance & Limits
 - Prefer existing caches/workers/batching as per Makefile and code.
 - When adding list endpoints, default `count=100` (max `1000`); set `Cache-Control: no-store` for secrets.

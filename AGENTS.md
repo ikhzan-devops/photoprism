@@ -22,6 +22,9 @@ Learn more: https://agents.md/
 - Whenever the Change Management instructions for a document require it, publish changes as a new file with an incremented version suffix (e.g., `*-v3.md`) rather than overwriting the original file.
 - Older spec versions remain in the repo for historical reference but are not linked from the main TOC. Do not base new work on superseded files (e.g., `*-v1.md` when `*-v2.md` exists).
 
+Note on specs repository availability
+- The `specs/` repository may be private and is not guaranteed to be present in every clone or environment. Do not add Makefile targets in the main project that depend on `specs/` paths. When `specs/` is available, run its tools directly (e.g., `bash specs/scripts/lint-status.sh`).
+
 ## Project Structure & Languages
 
 - Backend: Go (`internal/`, `pkg/`, `cmd/`) + MariaDB/SQLite
@@ -190,6 +193,19 @@ Note: Across our public documentation, official images, and in production, the c
 
 - Examples assume a Linux/Unix shell. For Windows specifics, see the Developer Guide FAQ:
   https://docs.photoprism.app/developer-guide/faq/#can-your-development-environment-be-used-under-windows
+
+### HTTP Download — Security Checklist
+
+- Use the shared safe HTTP helper instead of ad‑hoc `net/http` code:
+  - Package: `pkg/service/http/safe` → `safe.Download(destPath, url, *safe.Options)`.
+  - Default policy in this repo: allow only `http/https`, enforce timeouts and max size, write to a `0600` temp file then rename.
+- SSRF protection (mandatory unless explicitly needed for tests):
+  - Set `AllowPrivate=false` to block private/loopback/multicast/link‑local ranges.
+  - All redirect targets are validated; the final connected peer IP is also checked.
+  - Prefer an image‑focused `Accept` header for image downloads: `"image/jpeg, image/png, */*;q=0.1"`.
+- Avatars and small images: use the thin wrapper in `internal/thumb/avatar.SafeDownload` which applies stricter defaults (15s timeout, 10 MiB, `AllowPrivate=false`).
+- Tests using `httptest.Server` on 127.0.0.1 must pass `AllowPrivate=true` explicitly to succeed.
+- Keep per‑resource size budgets small; rely on `io.LimitReader` + `Content-Length` prechecks.
 
 If anything in this file conflicts with the `Makefile` or the Developer Guide, the `Makefile` and the documentation win. When unsure, **ask** for clarification before proceeding.
 

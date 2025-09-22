@@ -115,6 +115,8 @@ swag: swag-json
 swag-json:
 	@echo "Generating ./internal/api/swagger.json..."
 	swag init --ot json --parseDependency --parseDepth 1 --dir internal/api -g api.go -o ./internal/api
+	@echo "Fixing unstable time.Duration enums in swagger.json..."
+	@GO111MODULE=on go run scripts/tools/swaggerfix/main.go internal/api/swagger.json || { echo "swaggerfix failed"; exit 1; }
 swag-yaml:
 	@echo "Generating ./internal/api/swagger.yaml..."
 	swag init --ot yaml --parseDependency --parseDepth 1 --dir internal/api -g api.go -o ./internal/api
