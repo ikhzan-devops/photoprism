@@ -44,6 +44,10 @@ HTTP API
 - Handlers live in `internal/api/*.go` and are registered in `internal/server/routes.go`.
 - Annotate new endpoints in handler files; generate docs with: `make fmt-go swag-fmt && make swag`.
 - Do not edit `internal/api/swagger.json` by hand.
+- Swagger notes:
+  - Use full `/api/v1/...` in every `@Router` annotation (match the group prefix).
+  - Annotate only public handlers; skip internal helpers to avoid stray generic paths.
+  - `make swag-json` runs a stabilization step (`swaggerfix`) removing duplicated enums for `time.Duration`; API uses integer nanoseconds for durations.
 - Common groups in `routes.go`: sessions, OAuth/OIDC, config, users, services, thumbnails, video, downloads/zip, index/import, photos/files/labels/subjects/faces, batch ops, cluster, technical (metrics, status, echo).
 
 Configuration & Flags
@@ -211,7 +215,7 @@ Useful Make Targets (selection)
 See Also
 - AGENTS.md (repository rules and tips for agents)
 - Developer Guide (Setup/Tests/API) — links in AGENTS.md → Sources of Truth
-- Specs: `specs/dev/backend-testing.md`, `specs/portal/README.md`
+- Specs: `specs/dev/backend-testing.md`, `specs/dev/api-docs-swagger.md`, `specs/portal/README.md`
 
 Fast Test Recipes
 - Filesystem + archives (fast): `go test ./pkg/fs -run 'Copy|Move|Unzip' -count=1`

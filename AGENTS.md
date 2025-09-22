@@ -293,7 +293,17 @@ The following conventions summarize the insights gained when adding new configur
   - Portal mode: set `PHOTOPRISM_NODE_ROLE=portal` and `PHOTOPRISM_JOIN_TOKEN`.
   - Pagination defaults: for new list endpoints, prefer `count` default 100 (max 1000) and `offset` ≥ 0; document both in Swagger and validate bounds in handlers.
   - Document parameters explicitly in Swagger annotations (path, query, and body) so `make swag` produces accurate docs.
-  - Swagger: `make fmt-go swag-fmt && make swag` after adding or changing API annotations.
+- Swagger: `make fmt-go swag-fmt && make swag` after adding or changing API annotations.
+
+### Swagger & API Docs
+
+- Annotations live next to handlers in `internal/api/*.go`. Only annotate public handlers that are registered in `internal/server/routes.go`.
+- Always include the full prefix in `@Router` paths: `/api/v1/...` (not relative segments).
+- Avoid annotating internal helpers (e.g., generic link creators) to prevent generating undocumented placeholder paths.
+- Generate docs locally with:
+  - `make swag-fmt` (formats annotations)
+  - `make swag-json` (generates `internal/api/swagger.json` and then runs `swaggerfix` to remove unstable `time.Duration` enums for deterministic diffs)
+- `time.Duration` fields are represented as integer nanoseconds in the API. The Makefile target `swag-json` automatically post-processes `swagger.json` to strip duplicated enums for this type.
   - Focused tests: `go test ./internal/api -run Cluster -count=1` (or limit to the package you changed).
 
 - Registry & secrets
