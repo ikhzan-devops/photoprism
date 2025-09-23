@@ -173,6 +173,7 @@ Conventions & Rules of Thumb
 - Never log secrets; compare tokens constant‑time.
 - Don’t import Portal internals from cluster instance/service bootstraps; use HTTP.
 - Prefer small, hermetic unit tests; isolate filesystem paths with `t.TempDir()` and env like `PHOTOPRISM_STORAGE_PATH`.
+- Go tests live beside sources: for `path/to/pkg/<file>.go`, add tests in `path/to/pkg/<file>_test.go` (create if missing). For the same function, group related cases as `t.Run(...)` sub-tests (table-driven where helpful).
 
 Frequently Touched Files (by topic)
 - CLI wiring: `cmd/photoprism/photoprism.go`, `internal/commands/commands.go`

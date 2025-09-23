@@ -121,6 +121,7 @@ Note: Across our public documentation, official images, and in production, the c
   - Full unit test suite: `make test` (runs backend and frontend tests)
   - Test frontend/backend: `make test-js` and `make test-go`
   - Go packages: `go test` (all tests) or `go test -run <name>` (specific tests only)
+- Go tests live beside sources: for `path/to/pkg/<file>.go`, add tests in `path/to/pkg/<file>_test.go` (create if missing). For the same function, group related cases as `t.Run(...)` sub-tests (table-driven where helpful).
 - Frontend unit tests are driven by Vitest; see scripts in `frontend/package.json`
   - Vitest watch/coverage: `make vitest-watch` and `make vitest-coverage`
 - Acceptance tests: use the `acceptance-*` targets in the `Makefile`
@@ -213,6 +214,7 @@ If anything in this file conflicts with the `Makefile` or the Developer Guide, t
 
 ### Testing
 
+- Go tests: When adding tests for sources in `path/to/pkg/<file>.go`, always place them in `path/to/pkg/<file>_test.go` (create this file if it does not yet exist). For the same function, group related cases as sub-tests with `t.Run(...)` (table-driven where helpful).
 - Prefer targeted runs for speed:
   - Unit/subpackage: `go test ./internal/<pkg> -run <Name> -count=1`
   - Commands: `go test ./internal/commands -run <Name> -count=1`
