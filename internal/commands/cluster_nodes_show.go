@@ -17,7 +17,7 @@ var ClusterNodesShowCommand = &cli.Command{
 	Name:      "show",
 	Usage:     "Shows node details (Portal-only)",
 	ArgsUsage: "<id|name>",
-	Flags:     append(report.CliFlags, JsonFlag),
+	Flags:     report.CliFlags,
 	Action:    clusterNodesShowAction,
 }
 
@@ -32,7 +32,7 @@ func clusterNodesShowAction(ctx *cli.Context) error {
 			return cli.Exit(fmt.Errorf("node id or name is required"), 2)
 		}
 
-		r, err := reg.NewFileRegistry(conf)
+		r, err := reg.NewClientRegistryWithConfig(conf)
 		if err != nil {
 			return cli.Exit(err, 1)
 		}
@@ -50,7 +50,7 @@ func clusterNodesShowAction(ctx *cli.Context) error {
 			return cli.Exit(fmt.Errorf("node not found"), 3)
 		}
 
-		opts := reg.NodeOpts{IncludeInternalURL: true, IncludeDBMeta: true}
+		opts := reg.NodeOpts{IncludeAdvertiseUrl: true, IncludeDatabase: true}
 		dto := reg.BuildClusterNode(*n, opts)
 
 		if ctx.Bool("json") {
@@ -59,12 +59,12 @@ func clusterNodesShowAction(ctx *cli.Context) error {
 			return nil
 		}
 
-		cols := []string{"ID", "Name", "Type", "Internal URL", "DB Name", "DB User", "DB Last Rotated", "Created At", "Updated At"}
+		cols := []string{"ID", "Name", "Role", "Internal URL", "DB Name", "DB User", "DB Last Rotated", "Created At", "Updated At"}
 		var dbName, dbUser, dbRot string
-		if dto.DB != nil {
-			dbName, dbUser, dbRot = dto.DB.Name, dto.DB.User, dto.DB.DBLastRotatedAt
+		if dto.Database != nil {
+			dbName, dbUser, dbRot = dto.Database.Name, dto.Database.User, dto.Database.RotatedAt
 		}
-		rows := [][]string{{dto.ID, dto.Name, dto.Type, dto.InternalURL, dbName, dbUser, dbRot, dto.CreatedAt, dto.UpdatedAt}}
+		rows := [][]string{{dto.ID, dto.Name, dto.Role, dto.AdvertiseUrl, dbName, dbUser, dbRot, dto.CreatedAt, dto.UpdatedAt}}
 		out, err := report.RenderFormat(rows, cols, report.CliFormat(ctx))
 		fmt.Printf("\n%s\n", out)
 		if err != nil {

@@ -20,7 +20,7 @@ func TestClusterGetTheme(t *testing.T) {
 	t.Run("FeatureDisabled", func(t *testing.T) {
 		app, router, conf := NewApiTest()
 		// Ensure portal feature flag is disabled.
-		conf.Options().NodeType = cluster.Instance
+		conf.Options().NodeRole = cluster.RoleInstance
 		ClusterGetTheme(router)
 
 		r := PerformRequest(app, http.MethodGet, "/api/v1/cluster/theme")
@@ -30,7 +30,7 @@ func TestClusterGetTheme(t *testing.T) {
 	t.Run("NotFound", func(t *testing.T) {
 		app, router, conf := NewApiTest()
 		// Enable portal feature flag for this endpoint.
-		conf.Options().NodeType = cluster.Portal
+		conf.Options().NodeRole = cluster.RolePortal
 		ClusterGetTheme(router)
 
 		missing := filepath.Join(os.TempDir(), "photoprism-test-missing-theme")
@@ -48,7 +48,7 @@ func TestClusterGetTheme(t *testing.T) {
 	t.Run("Success", func(t *testing.T) {
 		app, router, conf := NewApiTest()
 		// Enable portal feature flag for this endpoint.
-		conf.Options().NodeType = cluster.Portal
+		conf.Options().NodeRole = cluster.RolePortal
 		ClusterGetTheme(router)
 
 		tempTheme, err := os.MkdirTemp("", "pp-theme-*")
@@ -104,7 +104,7 @@ func TestClusterGetTheme(t *testing.T) {
 	t.Run("Empty", func(t *testing.T) {
 		app, router, conf := NewApiTest()
 		// Enable portal feature flag for this endpoint.
-		conf.Options().NodeType = cluster.Portal
+		conf.Options().NodeRole = cluster.RolePortal
 		ClusterGetTheme(router)
 
 		// Create an empty temporary theme directory (no includable files).

@@ -10,8 +10,8 @@ import (
 
 func TestGenerateCreds_StabilityAndBudgets(t *testing.T) {
 	c := config.NewConfig(config.CliTestContext())
-	// Fix the portal UUID via options to ensure determinism.
-	c.Options().PortalUUID = "11111111-1111-4111-8111-111111111111"
+	// Fix the cluster UUID via options to ensure determinism.
+	c.Options().ClusterUUID = "11111111-1111-4111-8111-111111111111"
 
 	db1, user1, pass1 := GenerateCreds(c, "pp-node-01")
 	db2, user2, pass2 := GenerateCreds(c, "pp-node-01")
@@ -31,8 +31,8 @@ func TestGenerateCreds_StabilityAndBudgets(t *testing.T) {
 func TestGenerateCreds_DifferentPortal(t *testing.T) {
 	c1 := config.NewConfig(config.CliTestContext())
 	c2 := config.NewConfig(config.CliTestContext())
-	c1.Options().PortalUUID = "11111111-1111-4111-8111-111111111111"
-	c2.Options().PortalUUID = "22222222-2222-4222-8222-222222222222"
+	c1.Options().ClusterUUID = "11111111-1111-4111-8111-111111111111"
+	c2.Options().ClusterUUID = "22222222-2222-4222-8222-222222222222"
 
 	db1, user1, _ := GenerateCreds(c1, "pp-node-01")
 	db2, user2, _ := GenerateCreds(c2, "pp-node-01")
@@ -43,7 +43,7 @@ func TestGenerateCreds_DifferentPortal(t *testing.T) {
 
 func TestGenerateCreds_Truncation(t *testing.T) {
 	c := config.NewConfig(config.CliTestContext())
-	c.Options().PortalUUID = "11111111-1111-4111-8111-111111111111"
+	c.Options().ClusterUUID = "11111111-1111-4111-8111-111111111111"
 	longName := "this-is-a-very-very-long-node-name-that-should-be-truncated-to-fit-username-and-db-budgets"
 	db, user, _ := GenerateCreds(c, longName)
 
@@ -58,12 +58,12 @@ func TestBuildDSN(t *testing.T) {
 	assert.Contains(t, dsn, "parseTime=true")
 }
 
-func TestEnsureNodeDB_SqliteRejected(t *testing.T) {
+func TestEnsureNodeDatabase_SqliteRejected(t *testing.T) {
 	c := config.NewConfig(config.CliTestContext())
 	// Ensure we're on SQLite in tests.
 	if c.DatabaseDriver() != config.SQLite3 {
 		t.Skip("test requires SQLite driver in test config")
 	}
-	_, _, err := EnsureNodeDB(nil, c, "pp-node-01", false)
+	_, _, err := EnsureNodeDatabase(nil, c, "pp-node-01", false)
 	assert.Error(t, err)
 }

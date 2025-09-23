@@ -19,8 +19,8 @@ import (
 func TestInitConfig_NoPortal_NoOp(t *testing.T) {
 	t.Setenv("PHOTOPRISM_STORAGE_PATH", t.TempDir())
 	c := config.NewTestConfig("bootstrap-np")
-	// Default NodeType() resolves to instance; no Portal configured.
-	assert.Equal(t, cluster.Instance, c.NodeType())
+	// Default NodeRole() resolves to instance; no Portal configured.
+	assert.Equal(t, cluster.RoleInstance, c.NodeRole())
 	assert.NoError(t, InitConfig(c))
 }
 
@@ -34,9 +34,9 @@ func TestRegister_PersistSecretAndDB(t *testing.T) {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusCreated)
 			resp := cluster.RegisterResponse{
-				Node:    cluster.Node{Name: "pp-node-01"},
-				Secrets: &cluster.RegisterSecrets{NodeSecret: "SECRET"},
-				DB:      cluster.RegisterDB{Host: "db.local", Port: 3306, Name: "pp_db", User: "pp_user", Password: "pp_pw", DSN: "pp_user:pp_pw@tcp(db.local:3306)/pp_db?charset=utf8mb4&parseTime=true"},
+				Node:     cluster.Node{Name: "pp-node-01"},
+				Secrets:  &cluster.RegisterSecrets{NodeSecret: "SECRET"},
+				Database: cluster.RegisterDatabase{Host: "db.local", Port: 3306, Name: "pp_db", User: "pp_user", Password: "pp_pw", DSN: "pp_user:pp_pw@tcp(db.local:3306)/pp_db?charset=utf8mb4&parseTime=true"},
 			}
 			_ = json.NewEncoder(w).Encode(resp)
 		case "/api/v1/cluster/theme":
@@ -51,7 +51,7 @@ func TestRegister_PersistSecretAndDB(t *testing.T) {
 	c := config.NewTestConfig("bootstrap-reg")
 	// Configure Portal.
 	c.Options().PortalUrl = srv.URL
-	c.Options().PortalToken = "t0k3n"
+	c.Options().JoinToken = "t0k3n"
 	// Gate rotate=true: driver mysql and no DSN/fields.
 	c.Options().DatabaseDriver = config.MySQL
 	c.Options().DatabaseDsn = ""
@@ -78,12 +78,16 @@ func TestThemeInstall_Missing(t *testing.T) {
 	_, _ = f.Write([]byte("body{}\n"))
 	_ = zw.Close()
 
-	// Fake Portal server.
+	// Fake Portal server (register -> oauth token -> theme)
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case "/api/v1/cluster/nodes/register":
 			w.Header().Set("Content-Type", "application/json")
-			_ = json.NewEncoder(w).Encode(cluster.RegisterResponse{Node: cluster.Node{Name: "pp-node-01"}})
+			// Return NodeID + NodeSecret so bootstrap can request OAuth token
+			_ = json.NewEncoder(w).Encode(cluster.RegisterResponse{Node: cluster.Node{ID: "cid123", Name: "pp-node-01"}, Secrets: &cluster.RegisterSecrets{NodeSecret: "s3cr3t"}})
+		case "/api/v1/oauth/token":
+			w.Header().Set("Content-Type", "application/json")
+			_ = json.NewEncoder(w).Encode(map[string]any{"access_token": "tok", "token_type": "Bearer"})
 		case "/api/v1/cluster/theme":
 			w.Header().Set("Content-Type", "application/zip")
 			w.WriteHeader(http.StatusOK)
@@ -97,7 +101,7 @@ func TestThemeInstall_Missing(t *testing.T) {
 	c := config.NewTestConfig("bootstrap-theme")
 	// Point Portal.
 	c.Options().PortalUrl = srv.URL
-	c.Options().PortalToken = "t0k3n"
+	c.Options().JoinToken = "t0k3n"
 
 	// Ensure theme dir is empty and unique.
 	tempTheme, err := os.MkdirTemp("", "pp-theme-*")
@@ -124,9 +128,9 @@ func TestRegister_SQLite_NoDBPersist(t *testing.T) {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusCreated)
 			resp := cluster.RegisterResponse{
-				Node:    cluster.Node{Name: "pp-node-01"},
-				Secrets: &cluster.RegisterSecrets{NodeSecret: "SECRET"},
-				DB:      cluster.RegisterDB{Host: "db.local", Port: 3306, Name: "pp_db", User: "pp_user", Password: "pp_pw", DSN: "pp_user:pp_pw@tcp(db.local:3306)/pp_db?charset=utf8mb4&parseTime=true"},
+				Node:     cluster.Node{Name: "pp-node-01"},
+				Secrets:  &cluster.RegisterSecrets{NodeSecret: "SECRET"},
+				Database: cluster.RegisterDatabase{Host: "db.local", Port: 3306, Name: "pp_db", User: "pp_user", Password: "pp_pw", DSN: "pp_user:pp_pw@tcp(db.local:3306)/pp_db?charset=utf8mb4&parseTime=true"},
 			}
 			_ = json.NewEncoder(w).Encode(resp)
 		default:
@@ -138,7 +142,7 @@ func TestRegister_SQLite_NoDBPersist(t *testing.T) {
 	c := config.NewTestConfig("bootstrap-sqlite")
 	// SQLite driver by default; set Portal.
 	c.Options().PortalUrl = srv.URL
-	c.Options().PortalToken = "t0k3n"
+	c.Options().JoinToken = "t0k3n"
 	// Remember original DSN so we can ensure it is not changed.
 	origDSN := c.Options().DatabaseDsn
 	t.Cleanup(func() { _ = os.Remove(origDSN) })
@@ -167,7 +171,7 @@ func TestRegister_404_NoRetry(t *testing.T) {
 
 	c := config.NewTestConfig("bootstrap-404")
 	c.Options().PortalUrl = srv.URL
-	c.Options().PortalToken = "t0k3n"
+	c.Options().JoinToken = "t0k3n"
 
 	// Run bootstrap; registration should attempt once and stop on 404.
 	_ = InitConfig(c)
@@ -195,7 +199,7 @@ func TestThemeInstall_SkipWhenAppJsExists(t *testing.T) {
 
 	c := config.NewTestConfig("bootstrap-theme-skip")
 	c.Options().PortalUrl = srv.URL
-	c.Options().PortalToken = "t0k3n"
+	c.Options().JoinToken = "t0k3n"
 
 	// Prepare theme dir with app.js
 	tempTheme, err := os.MkdirTemp("", "pp-theme-*")

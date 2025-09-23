@@ -62,7 +62,7 @@ func ClusterListNodes(router *gin.RouterGroup) {
 			return
 		}
 
-		regy, err := reg.NewFileRegistry(conf)
+		regy, err := reg.NewClientRegistryWithConfig(conf)
 
 		if err != nil {
 			AbortUnexpectedError(c)
@@ -147,7 +147,7 @@ func ClusterGetNode(router *gin.RouterGroup) {
 			return
 		}
 
-		regy, err := reg.NewFileRegistry(conf)
+		regy, err := reg.NewClientRegistryWithConfig(conf)
 
 		if err != nil {
 			AbortUnexpectedError(c)
@@ -172,7 +172,7 @@ func ClusterGetNode(router *gin.RouterGroup) {
 	})
 }
 
-// ClusterUpdateNode updates mutable fields: type, labels, internalUrl.
+// ClusterUpdateNode updates mutable fields: role, labels, advertiseUrl.
 //
 //	@Summary	update node fields
 //	@Id			ClusterUpdateNode
@@ -180,7 +180,7 @@ func ClusterGetNode(router *gin.RouterGroup) {
 //	@Accept		json
 //	@Produce	json
 //	@Param		id					path		string	true	"node id"
-//	@Param		node				body		object	true	"properties to update (type, labels, internalUrl)"
+//	@Param		node				body		object	true	"properties to update (role, labels, advertiseUrl, siteUrl)"
 //	@Success	200					{object}	cluster.StatusResponse
 //	@Failure	400,401,403,404,429	{object}	i18n.Response
 //	@Router		/api/v1/cluster/nodes/{id} [patch]
@@ -202,9 +202,10 @@ func ClusterUpdateNode(router *gin.RouterGroup) {
 		id := c.Param("id")
 
 		var req struct {
-			Type        string            `json:"type"`
-			Labels      map[string]string `json:"labels"`
-			InternalUrl string            `json:"internalUrl"`
+			Role         string            `json:"role"`
+			Labels       map[string]string `json:"labels"`
+			AdvertiseUrl string            `json:"advertiseUrl"`
+			SiteUrl      string            `json:"siteUrl"`
 		}
 
 		if err := c.ShouldBindJSON(&req); err != nil {
@@ -212,7 +213,7 @@ func ClusterUpdateNode(router *gin.RouterGroup) {
 			return
 		}
 
-		regy, err := reg.NewFileRegistry(conf)
+		regy, err := reg.NewClientRegistryWithConfig(conf)
 
 		if err != nil {
 			AbortUnexpectedError(c)
@@ -226,16 +227,19 @@ func ClusterUpdateNode(router *gin.RouterGroup) {
 			return
 		}
 
-		if req.Type != "" {
-			n.Type = clean.TypeLowerDash(req.Type)
+		if req.Role != "" {
+			n.Role = clean.TypeLowerDash(req.Role)
 		}
 
 		if req.Labels != nil {
 			n.Labels = req.Labels
 		}
 
-		if req.InternalUrl != "" {
-			n.Internal = req.InternalUrl
+		if req.AdvertiseUrl != "" {
+			n.AdvertiseUrl = req.AdvertiseUrl
+		}
+		if s := normalizeSiteURL(req.SiteUrl); s != "" {
+			n.SiteUrl = s
 		}
 
 		n.UpdatedAt = time.Now().UTC().Format(time.RFC3339)
@@ -277,7 +281,7 @@ func ClusterDeleteNode(router *gin.RouterGroup) {
 
 		id := c.Param("id")
 
-		regy, err := reg.NewFileRegistry(conf)
+		regy, err := reg.NewClientRegistryWithConfig(conf)
 
 		if err != nil {
 			AbortUnexpectedError(c)
