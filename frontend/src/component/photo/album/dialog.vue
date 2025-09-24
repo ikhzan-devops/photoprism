@@ -143,25 +143,59 @@ export default {
         return;
       }
 
-      Promise.all(
-        namesToCreate.map((title) => {
-          const newAlbum = new Album({ Title: title, UID: "", Favorite: false });
-          return newAlbum
-            .save()
-            .then((a) => a?.UID)
-            .catch(() => null);
-        })
-      )
-        .then((created) => {
-          const createdUids = created.filter((u) => typeof u === "string" && u.length > 0);
-          this.$emit("confirm", [...uniqueExistingUids, ...createdUids]);
-        })
-        .catch((error) => {
-          console.error("Failed to create some albums:", error);
-          // Still emit successful ones if any exist
-          if (uniqueExistingUids.length > 0) {
-            this.$emit("confirm", uniqueExistingUids);
+      // Create albums in parallel and handle partial failures without closing the dialog
+      const creations = namesToCreate.map((title) => ({
+        title,
+        promise: new Album({ Title: title, UID: "", Favorite: false }).save(),
+      }));
+
+      Promise.allSettled(creations.map((c) => c.promise))
+        .then((results) => {
+          const createdAlbums = [];
+          const failedTitles = [];
+
+          results.forEach((res, idx) => {
+            const originalTitle = creations[idx].title;
+            if (res.status === "fulfilled" && res.value && res.value.UID) {
+              createdAlbums.push(res.value);
+            } else {
+              failedTitles.push(originalTitle);
+            }
+          });
+
+          if (failedTitles.length > 0) {
+            // Replace successfully created string tokens with album objects so they are not retried
+            const byTitle = new Map(createdAlbums.map((a) => [a.Title || a.title || "", a]));
+            this.selectedAlbums = (this.selectedAlbums || []).map((it) => {
+              if (typeof it === "string") {
+                const t = it.trim();
+                const created = byTitle.get(t);
+                return created ? created : it;
+              }
+              return it;
+            });
+
+            // Add created albums to the combobox items so they can be selected by object
+            const known = new Set((this.items || []).map((a) => a.UID));
+            createdAlbums.forEach((a) => {
+              if (a && a.UID && !known.has(a.UID)) {
+                this.items.push(a);
+                known.add(a.UID);
+              }
+            });
+
+            // Notify user and keep dialog open for corrections
+            this.$notify.error(
+              this.$gettext("Some albums could not be created. Please correct the names and try again.")
+            );
+            return; // Do not emit confirm; keep dialog open
           }
+
+          // All created successfully → emit and let parent close the dialog
+          const createdUids = createdAlbums
+            .map((a) => a && a.UID)
+            .filter((u) => typeof u === "string" && u.length > 0);
+          this.$emit("confirm", [...uniqueExistingUids, ...createdUids]);
         })
         .finally(() => {
           this.loading = false;
