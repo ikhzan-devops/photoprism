@@ -163,10 +163,10 @@ Note: Across our public documentation, official images, and in production, the c
 ### Filesystem Permissions & io/fs Aliasing (Go)
 
 - Always use our shared permission variables from `pkg/fs` when creating files/directories:
-  - Directories: `fs.ModeDir` (default 0o755)
-  - Regular files: `fs.ModeFile` (default 0o644)
+  - Directories: `fs.ModeDir` (0o755 with umask)
+  - Regular files: `fs.ModeFile` (0o644 with umask)
   - Config files: `fs.ModeConfigFile` (default 0o664)
-  - Secrets/tokens: `fs.ModeSecret` (default 0o600)
+  - Secrets/tokens: `fs.ModeSecretFile` (default 0o600)
   - Backups: `fs.ModeBackupFile` (default 0o600)
 - Do not pass stdlib `io/fs` flags (e.g., `fs.ModeDir`) to functions expecting permission bits.
   - When importing the stdlib package, alias it to avoid collisions: `iofs "io/fs"` or `gofs "io/fs"`.
