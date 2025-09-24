@@ -8,6 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/photoprism/photoprism/internal/event"
+	"github.com/photoprism/photoprism/pkg/fs"
 )
 
 func TestMain(m *testing.M) {
@@ -22,6 +23,9 @@ func TestMain(m *testing.M) {
 	defer db.Close()
 
 	code := m.Run()
+
+	// Purge local SQLite test artifacts created during this package's tests.
+	fs.PurgeTestDbFiles(".", false)
 
 	os.Exit(code)
 }

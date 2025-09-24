@@ -160,6 +160,19 @@ Note: Across our public documentation, official images, and in production, the c
 - JS/Vue: use the lint/format scripts in `frontend/package.json` (ESLint + Prettier)
 - All added code and tests **must** be formatted according to our standards.
 
+### Filesystem Permissions & io/fs Aliasing (Go)
+
+- Always use our shared permission variables from `pkg/fs` when creating files/directories:
+  - Directories: `fs.ModeDir` (default 0o755)
+  - Regular files: `fs.ModeFile` (default 0o644)
+  - Config files: `fs.ModeConfigFile` (default 0o664)
+  - Secrets/tokens: `fs.ModeSecret` (default 0o600)
+  - Backups: `fs.ModeBackupFile` (default 0o600)
+- Do not pass stdlib `io/fs` flags (e.g., `fs.ModeDir`) to functions expecting permission bits.
+  - When importing the stdlib package, alias it to avoid collisions: `iofs "io/fs"` or `gofs "io/fs"`.
+  - Our package is `github.com/photoprism/photoprism/pkg/fs` and provides the only approved permission constants for `os.MkdirAll`, `os.WriteFile`, `os.OpenFile`, and `os.Chmod`.
+- Prefer `filepath.Join` for filesystem paths; reserve `path.Join` for URL paths.
+
 ## Safety & Data
 
 - Never commit secrets, local configurations, or cache files. Use environment variables or a local `.env`.
@@ -215,6 +228,13 @@ If anything in this file conflicts with the `Makefile` or the Developer Guide, t
 ### Testing
 
 - Go tests: When adding tests for sources in `path/to/pkg/<file>.go`, always place them in `path/to/pkg/<file>_test.go` (create this file if it does not yet exist). For the same function, group related cases as sub-tests with `t.Run(...)` (table-driven where helpful).
+- Client IDs & UUIDs in tests:
+  - For OAuth client IDs, generate valid IDs via `rnd.GenerateUID(entity.ClientUID)` or use a static, valid ID (16 chars, starts with `c`). To validate shape, use `rnd.IsUID(id, entity.ClientUID)`.
+  - For node UUIDs, prefer `rnd.UUIDv7()` and treat it as required in node responses (`node.uuid`).
+
+### Next‑Session Reminders
+- If we add Postgres provisioning support, extend BuildDSN and `provisioner.DatabaseDriver` handling, add validations, and return `driver=postgres` consistently in API/CLI.
+- Consider surfacing a short “uuid → db/user” mapping helper in CLI (e.g., `nodes show --creds`) if operators request it.
 - Prefer targeted runs for speed:
   - Unit/subpackage: `go test ./internal/<pkg> -run <Name> -count=1`
   - Commands: `go test ./internal/commands -run <Name> -count=1`
@@ -338,6 +358,8 @@ The following conventions summarize the insights gained when adding new configur
 - Use the client‑backed registry (`NewClientRegistryWithConfig`).
 - The file‑backed registry is historical; do not add new references to it.
 - Migration “done” checklist: swap callsites → build → API tests → CLI tests → remove legacy references.
+- Primary node identifier: UUID v7 (called `NodeUUID` in code/config). In API/CLI responses this is exposed as `uuid`. The OAuth client identifier (`NodeClientID`) is used only for OAuth and is exposed as `clientId`.
+- Lookups should prefer `uuid` → `clientId` (legacy) → DNS‑label name. Portal endpoints for nodes use `/api/v1/cluster/nodes/{uuid}`.
 
 ### API/CLI Tests: Known Pitfalls
 
@@ -426,7 +448,28 @@ The following conventions summarize the insights gained when adding new configur
 - Registration (instance bootstrap):
   - Send `rotate=true` only if driver is MySQL/MariaDB and no DSN/name/user/password is configured (including *_FILE for password); never for SQLite.
   - Treat 401/403/404 as terminal; apply bounded retries with delay for transient/network/429.
-  - Persist only missing `NodeSecret` and DB settings when rotation was requested.
+  - Identity changes (UUID/name): include `clientId` and `clientSecret` in the registration payload to authorize UUID/name changes for existing nodes. Without the secret, name-based UUID changes return HTTP 409.
+  - Persist only missing `NodeClientSecret` and DB settings when rotation was requested.
 
+### Cluster Registry, Provisioner, and DTOs
+
+- UUID-first Identity & endpoints
+  - Nodes use UUID v7 as the only primary identifier. All Portal node endpoints use `{uuid}`. Client IDs are OAuth‑only.
+  - Registry interface is UUID‑first: `Get(uuid)`, `FindByNodeUUID`, `FindByClientID`, `Delete(uuid)`, `RotateSecret(uuid)`, and `DeleteAllByUUID(uuid)` for admin cleanup.
+- DTO shapes
+  - API `cluster.Node`: `uuid` (required) first, `clientId` optional. `database` includes `driver`.
+  - Registry `Node`: mirrors the API shape; `ClientID` optional.
+- DTO fields are normalized:
+  - `database` (not `db`) with fields `name`, `user`, `driver`, `rotatedAt`.
+  - Node rotation timestamps use `rotatedAt`.
+  - Registration secrets expose `clientSecret` in API responses; the CLI persists it into config options as `NodeClientSecret`.
+  - Admin responses may include `advertiseUrl` and `database`; non-admin responses are redacted by default.
+- CLI
+  - Resolution order is `uuid → clientId → name`. `nodes rm` supports `--all-ids` to delete all client rows that share a UUID. Tables include a “DB Driver” column.
+- Provisioner
+  - DB/user names are UUID‑based without slugs: `photoprism_d<hmac11>`, `photoprism_u<hmac11>`. HMAC is scoped by ClusterUUID+NodeUUID.
+  - BuildDSN accepts `driver`; unsupported values fall back to MySQL format with a warning.
+- ClientData cleanup
+  - `NodeUUID` removed from `ClientData`; it lives on the top‑level client row (`auth_clients.node_uuid`). `ClientDatabase` now includes `driver`.
 - Testing patterns:
   - Use `httptest` for Portal endpoints and `pkg/fs.Unzip` with size caps for extraction tests.

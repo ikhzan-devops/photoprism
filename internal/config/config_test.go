@@ -31,6 +31,9 @@ func TestMain(m *testing.M) {
 
 	code := m.Run()
 
+	// Purge local SQLite test artifacts created during this package's tests.
+	fs.PurgeTestDbFiles(".", false)
+
 	os.Exit(code)
 }
 
@@ -123,7 +126,6 @@ func TestConfig_OptionsYaml(t *testing.T) {
 		c := NewConfig(CliTestContext())
 		assert.Contains(t, c.OptionsYaml(), "options.yml")
 	})
-
 	t.Run("ChangePath", func(t *testing.T) {
 		c := NewConfig(CliTestContext())
 		assert.Contains(t, c.OptionsYaml(), "options.yml")

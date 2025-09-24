@@ -176,7 +176,6 @@ func TestDetails_Save(t *testing.T) {
 
 		assert.True(t, afterDate.After(initialDate))
 	})
-
 	t.Run("Error", func(t *testing.T) {
 		details := Details{PhotoID: 0}
 

@@ -24,6 +24,7 @@ import (
 // SQL Databases.
 // TODO: PostgreSQL support requires upgrading GORM, so generic column data types can be used.
 const (
+	Auto     = "auto"
 	MySQL    = "mysql"
 	MariaDB  = "mariadb"
 	Postgres = "postgres"
@@ -46,11 +47,11 @@ func (c *Config) DatabaseDriver() string {
 	case "tidb":
 		log.Warnf("config: database driver 'tidb' is deprecated, using sqlite")
 		c.options.DatabaseDriver = SQLite3
-		c.options.DatabaseDsn = ""
+		c.options.DatabaseDSN = ""
 	default:
 		log.Warnf("config: unsupported database driver %s, using sqlite", c.options.DatabaseDriver)
 		c.options.DatabaseDriver = SQLite3
-		c.options.DatabaseDsn = ""
+		c.options.DatabaseDSN = ""
 	}
 
 	return c.options.DatabaseDriver
@@ -99,9 +100,9 @@ func (c *Config) DatabaseSsl() bool {
 	}
 }
 
-// DatabaseDsn returns the database data source name (DSN).
-func (c *Config) DatabaseDsn() string {
-	if c.options.DatabaseDsn == "" {
+// DatabaseDSN returns the database data source name (DSN).
+func (c *Config) DatabaseDSN() string {
+	if c.options.DatabaseDSN == "" {
 		switch c.DatabaseDriver() {
 		case MySQL, MariaDB:
 			databaseServer := c.DatabaseServer()
@@ -140,22 +141,22 @@ func (c *Config) DatabaseDsn() string {
 		}
 	}
 
-	return c.options.DatabaseDsn
+	return c.options.DatabaseDSN
 }
 
 // DatabaseFile returns the filename part of a sqlite database DSN.
 func (c *Config) DatabaseFile() string {
-	fileName, _, _ := strings.Cut(strings.TrimPrefix(c.DatabaseDsn(), "file:"), "?")
+	fileName, _, _ := strings.Cut(strings.TrimPrefix(c.DatabaseDSN(), "file:"), "?")
 	return fileName
 }
 
-// ParseDatabaseDsn parses the database dsn and extracts user, password, database server, and name.
-func (c *Config) ParseDatabaseDsn() {
-	if c.options.DatabaseDsn == "" || c.options.DatabaseServer != "" {
+// ParseDatabaseDSN parses the database dsn and extracts user, password, database server, and name.
+func (c *Config) ParseDatabaseDSN() {
+	if c.options.DatabaseDSN == "" || c.options.DatabaseServer != "" {
 		return
 	}
 
-	d := NewDSN(c.options.DatabaseDsn)
+	d := NewDSN(c.options.DatabaseDSN)
 
 	c.options.DatabaseName = d.Name
 	c.options.DatabaseServer = d.Server
@@ -165,7 +166,7 @@ func (c *Config) ParseDatabaseDsn() {
 
 // DatabaseServer the database server.
 func (c *Config) DatabaseServer() string {
-	c.ParseDatabaseDsn()
+	c.ParseDatabaseDSN()
 
 	if c.DatabaseDriver() == SQLite3 {
 		return ""
@@ -217,10 +218,10 @@ func (c *Config) DatabasePortString() string {
 
 // DatabaseName the database schema name.
 func (c *Config) DatabaseName() string {
-	c.ParseDatabaseDsn()
+	c.ParseDatabaseDSN()
 
 	if c.DatabaseDriver() == SQLite3 {
-		return c.DatabaseDsn()
+		return c.DatabaseDSN()
 	} else if c.options.DatabaseName == "" {
 		return "photoprism"
 	}
@@ -234,7 +235,7 @@ func (c *Config) DatabaseUser() string {
 		return ""
 	}
 
-	c.ParseDatabaseDsn()
+	c.ParseDatabaseDSN()
 
 	if c.options.DatabaseUser == "" {
 		return "photoprism"
@@ -249,7 +250,7 @@ func (c *Config) DatabasePassword() string {
 		return ""
 	}
 
-	c.ParseDatabaseDsn()
+	c.ParseDatabaseDSN()
 
 	// Try to read password from file if c.options.DatabasePassword is not set.
 	if c.options.DatabasePassword != "" {
@@ -457,7 +458,7 @@ func (c *Config) connectDb() error {
 
 	// Get database driver and data source name.
 	dbDriver := c.DatabaseDriver()
-	dbDsn := c.DatabaseDsn()
+	dbDsn := c.DatabaseDSN()
 
 	if dbDriver == "" {
 		return errors.New("config: database driver not specified")

@@ -48,6 +48,9 @@ func TestMain(m *testing.M) {
 	// Run unit tests.
 	code := m.Run()
 
+	// Purge local SQLite test artifacts created during this package's tests.
+	fs.PurgeTestDbFiles(".", false)
+
 	os.Exit(code)
 }
 

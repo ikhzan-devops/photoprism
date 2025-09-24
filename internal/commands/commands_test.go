@@ -12,6 +12,7 @@ import (
 	"github.com/photoprism/photoprism/internal/event"
 	"github.com/photoprism/photoprism/internal/photoprism/get"
 	"github.com/photoprism/photoprism/pkg/capture"
+	"github.com/photoprism/photoprism/pkg/fs"
 )
 
 // TODO: Several CLI commands defer conf.Shutdown(), which closes the shared
@@ -40,6 +41,9 @@ func TestMain(m *testing.M) {
 
 	// Run unit tests.
 	code := m.Run()
+
+	// Purge local SQLite test artifacts created during this package's tests.
+	fs.PurgeTestDbFiles(".", false)
 
 	os.Exit(code)
 }

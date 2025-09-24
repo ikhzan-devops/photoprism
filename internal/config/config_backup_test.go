@@ -58,7 +58,7 @@ func TestConfig_BackupDatabasePath(t *testing.T) {
 	c := NewConfig(CliTestContext())
 	// Ensure DB defaults (SQLite) so path resolves to sqlite backup path
 	c.options.DatabaseDriver = ""
-	c.options.DatabaseDsn = ""
+	c.options.DatabaseDSN = ""
 	assert.Contains(t, c.BackupDatabasePath(), "/storage/testdata/backup/sqlite")
 }
 

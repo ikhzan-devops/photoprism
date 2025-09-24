@@ -119,7 +119,6 @@ func TestThumb_FromFile(t *testing.T) {
 		assert.Nil(t, err)
 		assert.FileExists(t, thumbnail)
 	})
-
 	t.Run("hash too short", func(t *testing.T) {
 		file := &entity.File{
 			FileName: c.ExamplesPath() + "/elephants.jpg",
@@ -146,7 +145,6 @@ func TestThumb_FromFile(t *testing.T) {
 			t.Error("error is nil")
 		}
 	})
-
 	t.Run("rotate-6.tiff", func(t *testing.T) {
 		fileName := "testdata/rotate/6.tiff"
 
@@ -239,7 +237,6 @@ func TestThumb_Create(t *testing.T) {
 		bounds := thumbnail.Bounds()
 		assert.NotEqual(t, 150, bounds.Dx())
 	})
-
 	t.Run("invalid height", func(t *testing.T) {
 		expectedFilename, err := thumb.FileName("12345", thumbsPath, 150, 150, thumb.ResampleFit, thumb.ResampleNearestNeighbor)
 
