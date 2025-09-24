@@ -232,14 +232,12 @@ export default {
         return;
       }
 
+      this.isBatchDialog = !!data.isBatchDialog;
+
       if (data.view) {
         this.showView(data.view, data.index);
       } else {
         this.showThumbs(data.models, data.index, data);
-
-        if (data.isBatchDialog) {
-          this.isBatchDialog = data.isBatchDialog;
-        }
       }
     },
     // Pauses the lightbox slideshow and any videos that are playing.
@@ -1461,6 +1459,7 @@ export default {
     onReset() {
       this.resetControls();
       this.resetModels();
+      this.isBatchDialog = false;
     },
     // Resets the state of the lightbox controls.
     resetControls() {
