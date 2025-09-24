@@ -13,16 +13,17 @@ Learn more: https://agents.md/
 - Contributing: https://github.com/photoprism/photoprism/blob/develop/CONTRIBUTING.md
 - Security: https://github.com/photoprism/photoprism/blob/develop/SECURITY.md
 - REST API: https://docs.photoprism.dev/ (Swagger), https://docs.photoprism.app/developer-guide/api/ (Docs)
-- Backend CODEMAP: CODEMAP.md
-- Frontend CODEMAP: frontend/CODEMAP.md
+- Code Maps: `CODEMAP.md` (Backend/Go), `frontend/CODEMAP.md` (Frontend/JS)
 
 ### Specifications (Versioning & Usage)
 
 - Always use the latest spec version for a topic (highest `-vN`), as linked from `specs/README.md` and the portal cheatsheet (`specs/portal/README.md`).
+- Testing Guides: `specs/dev/backend-testing.md` (Backend/Go), `specs/dev/frontend-testing.md` (Frontend/JS)
+- Whenever the Change Management instructions for a document require it, publish changes as a new file with an incremented version suffix (e.g., `*-v3.md`) rather than overwriting the original file.
 - Older spec versions remain in the repo for historical reference but are not linked from the main TOC. Do not base new work on superseded files (e.g., `*-v1.md` when `*-v2.md` exists).
-- When adding or updating specs, publish changes under a new file with an incremented version suffix (e.g., `*-v3.md`) instead of overwriting. Refer to the Change Management section of each document for specific instructions.
-- Developer Cheatsheet – Portal & Cluster: specs/portal/README.md
-- Backend (Go) Testing Guide: specs/dev/backend-testing.md
+
+Note on specs repository availability
+- The `specs/` repository may be private and is not guaranteed to be present in every clone or environment. Do not add Makefile targets in the main project that depend on `specs/` paths. When `specs/` is available, run its tools directly (e.g., `bash specs/scripts/lint-status.sh`).
 
 ## Project Structure & Languages
 
@@ -120,9 +121,25 @@ Note: Across our public documentation, official images, and in production, the c
   - Full unit test suite: `make test` (runs backend and frontend tests)
   - Test frontend/backend: `make test-js` and `make test-go`
   - Go packages: `go test` (all tests) or `go test -run <name>` (specific tests only)
+- Go tests live beside sources: for `path/to/pkg/<file>.go`, add tests in `path/to/pkg/<file>_test.go` (create if missing). For the same function, group related cases as `t.Run(...)` sub-tests (table-driven where helpful).
 - Frontend unit tests are driven by Vitest; see scripts in `frontend/package.json`
   - Vitest watch/coverage: `make vitest-watch` and `make vitest-coverage`
 - Acceptance tests: use the `acceptance-*` targets in the `Makefile`
+
+### FFmpeg Tests & Hardware Gating
+
+- By default, do not run GPU/HW encoder integrations in CI. Gate with `PHOTOPRISM_FFMPEG_ENCODER` (one of: `vaapi`, `intel`, `nvidia`).
+- Negative-path tests should remain fast and always run:
+  - Missing ffmpeg binary → immediate exec error.
+  - Unwritable destination → command fails without creating files.
+- Prefer command-string assertions when hardware is unavailable; enable HW runs locally only when a device is configured.
+
+### Fast, Focused Test Recipes
+
+- Filesystem + archives (fast): `go test ./pkg/fs -run 'Copy|Move|Unzip' -count=1`
+- Media helpers (fast): `go test ./pkg/media/... -count=1`
+- Thumbnails (libvips, moderate): `go test ./internal/thumb/... -count=1`
+- FFmpeg command builders (moderate): `go test ./internal/ffmpeg -run 'Remux|Transcode|Extract' -count=1`
 
 ### CLI Testing Gotchas (Go)
 
@@ -143,14 +160,66 @@ Note: Across our public documentation, official images, and in production, the c
 - JS/Vue: use the lint/format scripts in `frontend/package.json` (ESLint + Prettier)
 - All added code and tests **must** be formatted according to our standards.
 
+### Filesystem Permissions & io/fs Aliasing (Go)
+
+- Always use our shared permission variables from `pkg/fs` when creating files/directories:
+  - Directories: `fs.ModeDir` (default 0o755)
+  - Regular files: `fs.ModeFile` (default 0o644)
+  - Config files: `fs.ModeConfigFile` (default 0o664)
+  - Secrets/tokens: `fs.ModeSecret` (default 0o600)
+  - Backups: `fs.ModeBackupFile` (default 0o600)
+- Do not pass stdlib `io/fs` flags (e.g., `fs.ModeDir`) to functions expecting permission bits.
+  - When importing the stdlib package, alias it to avoid collisions: `iofs "io/fs"` or `gofs "io/fs"`.
+  - Our package is `github.com/photoprism/photoprism/pkg/fs` and provides the only approved permission constants for `os.MkdirAll`, `os.WriteFile`, `os.OpenFile`, and `os.Chmod`.
+- Prefer `filepath.Join` for filesystem paths; reserve `path.Join` for URL paths.
+
 ## Safety & Data
 
 - Never commit secrets, local configurations, or cache files. Use environment variables or a local `.env`.
   - Ensure `.env` and `.local` are ignored in `.gitignore` and `.dockerignore`.
 - Prefer using existing caches, workers, and batching strategies referenced in code and `Makefile`. Consider memory/CPU impact; suggest benchmarks or profiling only when justified.
 - Do not run destructive commands against production data. Prefer ephemeral volumes and test fixtures when running acceptance tests.
+- ### File I/O — Overwrite Policy (force semantics)
+
+- Default is safety-first: callers must not overwrite non-empty destination files unless they opt-in with a `force` flag.
+- Replacing empty destination files is allowed without `force=true` (useful for placeholder files).
+- Open destinations with `O_WRONLY|O_CREATE|O_TRUNC` to avoid trailing bytes when overwriting; use `O_EXCL` when the caller must detect collisions.
+- Where this lives:
+  - App-level helpers: `internal/photoprism/mediafile.go` (`MediaFile.Copy/Move`).
+  - Reusable utils: `pkg/fs/copy.go`, `pkg/fs/move.go`.
+- When to set `force=true`:
+  - Explicit “replace” actions or admin tools where the user confirmed overwrite.
+  - Not for import/index flows; Originals must not be clobbered.
+
+- ### Archive Extraction — Security Checklist
+
+- Always validate ZIP entry names with a safe join; reject:
+  - absolute paths (e.g., `/etc/passwd`).
+  - Windows drive/volume paths (e.g., `C:\\…` or `C:/…`).
+  - any entry that escapes the target directory after cleaning (path traversal via `..`).
+- Enforce per-file and total size budgets to prevent resource exhaustion.
+- Skip OS metadata directories (e.g., `__MACOSX`) and reject suspicious names.
+- Where this lives: `pkg/fs/zip.go` (`Unzip`, `UnzipFile`, `safeJoin`).
+- Tests to keep:
+  - Absolute/volume paths rejected (Windows-specific backslash path covered on Windows).
+  - `..` traversal skipped; `__MACOSX` skipped.
+  - Per-file and total size limits enforced; directory entries created; nested paths extracted safely.
+
 - Examples assume a Linux/Unix shell. For Windows specifics, see the Developer Guide FAQ:
   https://docs.photoprism.app/developer-guide/faq/#can-your-development-environment-be-used-under-windows
+
+### HTTP Download — Security Checklist
+
+- Use the shared safe HTTP helper instead of ad‑hoc `net/http` code:
+  - Package: `pkg/service/http/safe` → `safe.Download(destPath, url, *safe.Options)`.
+  - Default policy in this repo: allow only `http/https`, enforce timeouts and max size, write to a `0600` temp file then rename.
+- SSRF protection (mandatory unless explicitly needed for tests):
+  - Set `AllowPrivate=false` to block private/loopback/multicast/link‑local ranges.
+  - All redirect targets are validated; the final connected peer IP is also checked.
+  - Prefer an image‑focused `Accept` header for image downloads: `"image/jpeg, image/png, */*;q=0.1"`.
+- Avatars and small images: use the thin wrapper in `internal/thumb/avatar.SafeDownload` which applies stricter defaults (15s timeout, 10 MiB, `AllowPrivate=false`).
+- Tests using `httptest.Server` on 127.0.0.1 must pass `AllowPrivate=true` explicitly to succeed.
+- Keep per‑resource size budgets small; rely on `io.LimitReader` + `Content-Length` prechecks.
 
 If anything in this file conflicts with the `Makefile` or the Developer Guide, the `Makefile` and the documentation win. When unsure, **ask** for clarification before proceeding.
 
@@ -158,16 +227,25 @@ If anything in this file conflicts with the `Makefile` or the Developer Guide, t
 
 ### Testing
 
+- Go tests: When adding tests for sources in `path/to/pkg/<file>.go`, always place them in `path/to/pkg/<file>_test.go` (create this file if it does not yet exist). For the same function, group related cases as sub-tests with `t.Run(...)` (table-driven where helpful).
+- Client IDs & UUIDs in tests:
+  - For OAuth client IDs, generate valid IDs via `rnd.GenerateUID(entity.ClientUID)` or use a static, valid ID (16 chars, starts with `c`). To validate shape, use `rnd.IsUID(id, entity.ClientUID)`.
+  - For node UUIDs, prefer `rnd.UUIDv7()` and treat it as required in node responses (`node.uuid`).
+
+### Next‑Session Reminders
+- If we add Postgres provisioning support, extend BuildDSN and `provisioner.DatabaseDriver` handling, add validations, and return `driver=postgres` consistently in API/CLI.
+- Consider surfacing a short “uuid → db/user” mapping helper in CLI (e.g., `nodes show --creds`) if operators request it.
 - Prefer targeted runs for speed:
   - Unit/subpackage: `go test ./internal/<pkg> -run <Name> -count=1`
   - Commands: `go test ./internal/commands -run <Name> -count=1`
   - Avoid `./...` unless you intend to run the whole suite.
-- Heavy tests (migrations/fixtures): internal/entity and internal/photoprism run DB migrations and load fixtures; expect 30–120s on first run. Narrow with `-run` and keep iterations low.
+- Heavy tests (migrations/fixtures): `internal/entity` and `internal/photoprism` run DB migrations and load fixtures; expect 30–120s on first run. Narrow with `-run` and keep iterations low.
 - PhotoPrism config in tests: inside `internal/photoprism`, use the package global `photoprism.Config()` for runtime‑accurate behavior. Only construct a new config if you replace it via `photoprism.SetConfig`.
 - CLI command tests: use `RunWithTestContext(cmd, args)` to capture output and avoid `os.Exit`; assert `cli.ExitCoder` codes when you need them.
 - Reports are quoted: strings in CLI "show" output are rendered with quotes by the report helpers. Prefer `assert.Contains`/regex over strict, fully formatted equality when validating content.
 
 #### Test Data & Fixtures (storage/testdata)
+
 - Shared test files live under `storage/testdata`. The lifecycle is managed by `internal/config/test.go`.
 - `NewTestConfig("<pkg>")` now calls `InitializeTestData()` so required directories exist (originals, import, cache, temp) before tests run.
 - If you build a custom `*config.Config`, call `c.InitializeTestData()` (and optionally `c.AssertTestData(t)`) before asserting on filesystem paths.
@@ -193,6 +271,15 @@ If anything in this file conflicts with the `Makefile` or the Developer Guide, t
 
 - Capture output with `RunWithTestContext`; usage and report values may be quoted and re‑ordered (e.g., set semantics). Use substring checks or regex for the final ", or <last>" rule from `CliUsageString`.
 - Prefer JSON output (`--json`) for stable machine assertions when commands offer it.
+- Cataloging CLI commands (new):
+  - Use `internal/commands/catalog` to enumerate commands/flags without invoking the CLI or capturing stdout.
+  - Default format for `photoprism show commands` is Markdown; pass `--json` for machine output and `--nested` to get a tree. Hidden commands/flags appear only with `--all`.
+  - Nested `help` subcommands are omitted; the top‑level `photoprism help` remains included.
+  - When asserting large JSON documents, build DTOs via `catalog.BuildFlat/BuildNode` and marshal directly to avoid pipe back‑pressure in tests.
+- JSON shapes for `show` commands:
+  - Most return a top‑level array of row objects (keys = snake_case columns).
+  - `photoprism show config` returns `{ sections: [{ title, items[] }] }`.
+  - `photoprism show config-options --json` and `photoprism show config-yaml --json` return a flat top‑level array (no `sections`).
 
 ### API Development & Config Options 
 
@@ -228,7 +315,17 @@ The following conventions summarize the insights gained when adding new configur
   - Portal mode: set `PHOTOPRISM_NODE_ROLE=portal` and `PHOTOPRISM_JOIN_TOKEN`.
   - Pagination defaults: for new list endpoints, prefer `count` default 100 (max 1000) and `offset` ≥ 0; document both in Swagger and validate bounds in handlers.
   - Document parameters explicitly in Swagger annotations (path, query, and body) so `make swag` produces accurate docs.
-  - Swagger: `make fmt-go swag-fmt && make swag` after adding or changing API annotations.
+- Swagger: `make fmt-go swag-fmt && make swag` after adding or changing API annotations.
+
+### Swagger & API Docs
+
+- Annotations live next to handlers in `internal/api/*.go`. Only annotate public handlers that are registered in `internal/server/routes.go`.
+- Always include the full prefix in `@Router` paths: `/api/v1/...` (not relative segments).
+- Avoid annotating internal helpers (e.g., generic link creators) to prevent generating undocumented placeholder paths.
+- Generate docs locally with:
+  - `make swag-fmt` (formats annotations)
+  - `make swag-json` (generates `internal/api/swagger.json` and then runs `swaggerfix` to remove unstable `time.Duration` enums for deterministic diffs)
+- `time.Duration` fields are represented as integer nanoseconds in the API. The Makefile target `swag-json` automatically post-processes `swagger.json` to strip duplicated enums for this type.
   - Focused tests: `go test ./internal/api -run Cluster -count=1` (or limit to the package you changed).
 
 - Registry & secrets
@@ -261,6 +358,8 @@ The following conventions summarize the insights gained when adding new configur
 - Use the client‑backed registry (`NewClientRegistryWithConfig`).
 - The file‑backed registry is historical; do not add new references to it.
 - Migration “done” checklist: swap callsites → build → API tests → CLI tests → remove legacy references.
+- Primary node identifier: UUID v7 (called `NodeUUID` in code/config). In API/CLI responses this is exposed as `uuid`. The OAuth client identifier (`NodeClientID`) is used only for OAuth and is exposed as `clientId`.
+- Lookups should prefer `uuid` → `clientId` (legacy) → DNS‑label name. Portal endpoints for nodes use `/api/v1/cluster/nodes/{uuid}`.
 
 ### API/CLI Tests: Known Pitfalls
 
@@ -349,7 +448,28 @@ The following conventions summarize the insights gained when adding new configur
 - Registration (instance bootstrap):
   - Send `rotate=true` only if driver is MySQL/MariaDB and no DSN/name/user/password is configured (including *_FILE for password); never for SQLite.
   - Treat 401/403/404 as terminal; apply bounded retries with delay for transient/network/429.
-  - Persist only missing `NodeSecret` and DB settings when rotation was requested.
+  - Identity changes (UUID/name): include `clientId` and `clientSecret` in the registration payload to authorize UUID/name changes for existing nodes. Without the secret, name-based UUID changes return HTTP 409.
+  - Persist only missing `NodeClientSecret` and DB settings when rotation was requested.
 
+### Cluster Registry, Provisioner, and DTOs
+
+- UUID-first Identity & endpoints
+  - Nodes use UUID v7 as the only primary identifier. All Portal node endpoints use `{uuid}`. Client IDs are OAuth‑only.
+  - Registry interface is UUID‑first: `Get(uuid)`, `FindByNodeUUID`, `FindByClientID`, `Delete(uuid)`, `RotateSecret(uuid)`, and `DeleteAllByUUID(uuid)` for admin cleanup.
+- DTO shapes
+  - API `cluster.Node`: `uuid` (required) first, `clientId` optional. `database` includes `driver`.
+  - Registry `Node`: mirrors the API shape; `ClientID` optional.
+- DTO fields are normalized:
+  - `database` (not `db`) with fields `name`, `user`, `driver`, `rotatedAt`.
+  - Node rotation timestamps use `rotatedAt`.
+  - Registration secrets expose `clientSecret` in API responses; the CLI persists it into config options as `NodeClientSecret`.
+  - Admin responses may include `advertiseUrl` and `database`; non-admin responses are redacted by default.
+- CLI
+  - Resolution order is `uuid → clientId → name`. `nodes rm` supports `--all-ids` to delete all client rows that share a UUID. Tables include a “DB Driver” column.
+- Provisioner
+  - DB/user names are UUID‑based without slugs: `photoprism_d<hmac11>`, `photoprism_u<hmac11>`. HMAC is scoped by ClusterUUID+NodeUUID.
+  - BuildDSN accepts `driver`; unsupported values fall back to MySQL format with a warning.
+- ClientData cleanup
+  - `NodeUUID` removed from `ClientData`; it lives on the top‑level client row (`auth_clients.node_uuid`). `ClientDatabase` now includes `driver`.
 - Testing patterns:
   - Use `httptest` for Portal endpoints and `pkg/fs.Unzip` with size caps for extraction tests.

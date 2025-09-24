@@ -120,7 +120,7 @@ func NewTestOptions(pkg string) *Options {
 		BackupRetain:    DefaultBackupRetain,
 		BackupSchedule:  DefaultBackupSchedule,
 		DatabaseDriver:  driver,
-		DatabaseDsn:     dsn,
+		DatabaseDSN:     dsn,
 		AdminPassword:   "photoprism",
 		OriginalsLimit:  66,
 		ResolutionLimit: 33,
@@ -145,7 +145,7 @@ func NewTestOptionsError() *Options {
 		ImportPath:     dataPath + "/import",
 		TempPath:       dataPath + "/temp",
 		DatabaseDriver: SQLite3,
-		DatabaseDsn:    ".test-error.db",
+		DatabaseDSN:    ".test-error.db",
 	}
 
 	return c
@@ -193,7 +193,7 @@ func NewTestConfig(pkg string) *Config {
 	}
 
 	if err := c.InitializeTestData(); err != nil {
-		log.Fatalf("config: %s", err.Error())
+		log.Errorf("config: %s", err.Error())
 	}
 
 	c.RegisterDb()
@@ -380,23 +380,23 @@ func (c *Config) InitializeTestData() (err error) {
 
 	// Delete existing test files and directories in "storage/testdata".
 	if err = c.RemoveTestData(); err != nil {
-		return err
+		return fmt.Errorf("%s (remove testdata)", err)
 	}
 
 	// If the test file archive "/tmp/photoprism/testdata.zip" is missing,
 	// download it from https://dl.photoprism.app/qa/testdata.zip.
 	if err = c.DownloadTestData(); err != nil {
-		return err
+		return fmt.Errorf("%s (download testdata)", err)
 	}
 
 	// Extract "/tmp/photoprism/testdata.zip" in "storage/testdata".
 	if err = c.UnzipTestData(); err != nil {
-		return err
+		return fmt.Errorf("%s (unzip testdata)", err)
 	}
 
 	// Make sure all the required directories exist in "storage/testdata.
 	if err = c.CreateDirectories(); err != nil {
-		return err
+		return fmt.Errorf("%s (create directories)", err)
 	}
 
 	log.Infof("config: initialized test data [%s]", time.Since(start))

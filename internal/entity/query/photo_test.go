@@ -18,7 +18,6 @@ func TestPhotoByID(t *testing.T) {
 		}
 		assert.Equal(t, 2790, result.PhotoYear)
 	})
-
 	t.Run("no photo found", func(t *testing.T) {
 		result, err := PhotoByID(99999)
 		assert.Error(t, err, "record not found")
@@ -34,7 +33,6 @@ func TestPhotoByUID(t *testing.T) {
 		}
 		assert.Equal(t, "Reunion", result.PhotoTitle)
 	})
-
 	t.Run("no photo found", func(t *testing.T) {
 		result, err := PhotoByUID("99999")
 		assert.Error(t, err, "record not found")
@@ -50,7 +48,6 @@ func TestPreloadPhotoByUID(t *testing.T) {
 		}
 		assert.Equal(t, "Reunion", result.PhotoTitle)
 	})
-
 	t.Run("no photo found", func(t *testing.T) {
 		result, err := PhotoPreloadByUID("99999")
 		assert.Error(t, err, "record not found")
@@ -122,7 +119,6 @@ func TestFlagHiddenPhotos(t *testing.T) {
 			t.Fatal(err)
 		}
 	})
-
 	t.Run("SuccessWith1000", func(t *testing.T) {
 		var checkedTime = time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC)
 		// Load 1000 photos that need to be hidden

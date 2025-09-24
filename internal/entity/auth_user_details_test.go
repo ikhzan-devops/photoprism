@@ -60,7 +60,6 @@ func TestUserDetails_DisplayName(t *testing.T) {
 
 		assert.Equal(t, "Dr. John Doe", m.UserDetails.DisplayName())
 	})
-
 	t.Run("Empty", func(t *testing.T) {
 		m := &User{}
 		assert.Equal(t, "", m.UserDetails.DisplayName())

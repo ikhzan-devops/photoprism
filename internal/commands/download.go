@@ -33,7 +33,6 @@ photoprism dl --cookies cookies.txt \
  --dl-method file --file-remux auto -- \
  https://example.com/a.mp4 https://example.com/b.jpg
 
-# Add two headers (repeatable flag)
 photoprism dl -a 'Authorization: Bearer <token>' \
 			 -a 'Accept: application/json' -- URL`
 

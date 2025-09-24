@@ -67,7 +67,6 @@ func TestAlbums(t *testing.T) {
 
 		assert.Equal(t, "Christmas 2030", result[0].AlbumTitle)
 	})
-
 	t.Run("SearchWithSlug", func(t *testing.T) {
 		query := form.NewAlbumSearch("slug:holiday")
 		query.Type = entity.AlbumManual
@@ -79,7 +78,6 @@ func TestAlbums(t *testing.T) {
 
 		assert.Equal(t, "Holiday 2030", result[0].AlbumTitle)
 	})
-
 	t.Run("SearchWithCountry", func(t *testing.T) {
 		query := form.NewAlbumSearch("country:ca")
 		result, err := Albums(query)
@@ -90,7 +88,6 @@ func TestAlbums(t *testing.T) {
 
 		assert.Equal(t, "April 1990", result[0].AlbumTitle)
 	})
-
 	t.Run("FavoritesTrue", func(t *testing.T) {
 		query := form.NewAlbumSearch("favorite:true")
 		query.Count = 100000

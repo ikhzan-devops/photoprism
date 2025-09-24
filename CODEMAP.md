@@ -19,6 +19,7 @@ Executables & Entry Points
 - CLI app (binary name across docs/images is `photoprism`):
   - Main: `cmd/photoprism/photoprism.go`
   - Commands registry: `internal/commands/commands.go` (array `commands.PhotoPrism`)
+  - Catalog helpers: `internal/commands/catalog` (DTOs and builders to enumerate commands/flags; Markdown renderer)
 - Web server:
   - Startup: `internal/commands/start.go` → `server.Start` (starts HTTP(S), workers, session cleanup)
   - HTTP server: `internal/server/start.go` (compression, security, healthz, readiness, TLS/AutoTLS/unix socket)
@@ -27,6 +28,7 @@ Executables & Entry Points
 
 High-Level Package Map (Go)
 - `internal/api` — Gin handlers and Swagger annotations; only glue, no business logic
+- `internal/commands/catalog` — DTOs (App, Command, Flag, Node), builders (BuildFlat/BuildNode, CommandInfo, FlagsToCatalog), and a templated Markdown renderer (RenderMarkdown) for the CLI commands catalog. Depends only on `urfave/cli/v2` and stdlib.
 - `internal/server` — HTTP server, middleware, routing, static/ui/webdav
 - `internal/config` — configuration, flags/env/options, client config, DB init/migrate
 - `internal/entity` — GORM v1 models, queries, search helpers, migrations
@@ -42,6 +44,10 @@ HTTP API
 - Handlers live in `internal/api/*.go` and are registered in `internal/server/routes.go`.
 - Annotate new endpoints in handler files; generate docs with: `make fmt-go swag-fmt && make swag`.
 - Do not edit `internal/api/swagger.json` by hand.
+- Swagger notes:
+  - Use full `/api/v1/...` in every `@Router` annotation (match the group prefix).
+  - Annotate only public handlers; skip internal helpers to avoid stray generic paths.
+  - `make swag-json` runs a stabilization step (`swaggerfix`) removing duplicated enums for `time.Duration`; API uses integer nanoseconds for durations.
 - Common groups in `routes.go`: sessions, OAuth/OIDC, config, users, services, thumbnails, video, downloads/zip, index/import, photos/files/labels/subjects/faces, batch ops, cluster, technical (metrics, status, echo).
 
 Configuration & Flags
@@ -50,9 +56,10 @@ Configuration & Flags
   - If needed: `yaml:"-"` disables YAML processing; `flag:"-"` prevents `ApplyCliContext()` from assigning CLI values (flags/env variables) to a field, without affecting the flags in `internal/config/flags.go`.
   - Annotations may include edition tags like `tags:"plus,pro"` to control visibility (see `internal/config/options_report.go` logic).
 - Global flags/env: `internal/config/flags.go` (`EnvVars(...)`)
-  - Available flags/env: `internal/config/cli_flags_report.go` + `internal/config/report_sections.go` → surfaced by `photoprism show config-options --md`
-  - YAML options mapping: `internal/config/options_report.go` + `internal/config/report_sections.go` → surfaced by `photoprism show config-yaml --md`
+  - Available flags/env: `internal/config/cli_flags_report.go` + `internal/config/report_sections.go` → surfaced by `photoprism show config-options --md/--json`
+  - YAML options mapping: `internal/config/options_report.go` + `internal/config/report_sections.go` → surfaced by `photoprism show config-yaml --md/--json`
   - Report current values: `internal/config/report.go` → surfaced by `photoprism show config` (alias `photoprism config --md`).
+  - CLI commands catalog: `internal/commands/show_commands.go` → surfaced by `photoprism show commands` (Markdown by default; `--json` alternative; `--nested` optional tree; `--all` includes hidden commands/flags; nested `help` subcommands omitted).
 - Precedence: `defaults.yml` < CLI/env < `options.yml` (global options rule). See Agent Tips in `AGENTS.md`.
 - Getters are grouped by topic, e.g. DB in `internal/config/config_db.go`, server in `config_server.go`, TLS in `config_tls.go`, etc.
 - Client Config (read-only)
@@ -135,6 +142,27 @@ Testing
 - SQLite DSN in tests is per‑suite (not empty). Clean up files if you capture the DSN.
 - Frontend unit tests via Vitest are separate; see `frontend/CODEMAP.md`.
 
+Security & Hot Spots (Where to Look)
+- Zip extraction (path traversal prevention): `pkg/fs/zip.go`
+  - Uses `safeJoin` to reject absolute/volume paths and `..` traversal; enforces per-file and total size limits.
+  - Tests: `pkg/fs/zip_extra_test.go` cover abs/volume/.. cases and limits.
+- Force-aware Copy/Move and truncation-safe writes:
+  - App helpers: `internal/photoprism/mediafile.go` (`MediaFile.Copy/Move` with `force`).
+  - Utils: `pkg/fs/copy.go`, `pkg/fs/move.go` (use `O_TRUNC` to avoid trailing bytes).
+- FFmpeg command builders and encoders:
+  - Core: `internal/ffmpeg/transcode_cmd.go`, `internal/ffmpeg/remux.go`.
+  - Encoders (string builders only): `internal/ffmpeg/{apple,intel,nvidia,vaapi,v4l}/avc.go`.
+  - Tests guard HW runs with `PHOTOPRISM_FFMPEG_ENCODER`; otherwise assert command strings and negative paths.
+- libvips thumbnails:
+  - Pipeline: `internal/thumb/vips.go` (VipsInit, VipsRotate, export params).
+  - Sizes & names: `internal/thumb/sizes.go`, `internal/thumb/names.go`, `internal/thumb/filter.go`.
+
+- Safe HTTP downloader:
+  - Shared utility: `pkg/service/http/safe` (`Download`, `Options`).
+  - Protections: scheme allow‑list (http/https), pre‑DNS + per‑redirect hostname/IP validation, final peer IP check, size and timeout enforcement, temp file `0600` + rename.
+  - Avatars: wrapper `internal/thumb/avatar.SafeDownload` applies stricter defaults (15s, 10 MiB, `AllowPrivate=false`, image‑focused `Accept`).
+  - Tests: `go test ./pkg/service/http/safe -count=1` (includes redirect SSRF cases); avatars: `go test ./internal/thumb/avatar -count=1`.
+
 Performance & Limits
 - Prefer existing caches/workers/batching as per Makefile and code.
 - When adding list endpoints, default `count=100` (max `1000`); set `Cache-Control: no-store` for secrets.
@@ -145,6 +173,28 @@ Conventions & Rules of Thumb
 - Never log secrets; compare tokens constant‑time.
 - Don’t import Portal internals from cluster instance/service bootstraps; use HTTP.
 - Prefer small, hermetic unit tests; isolate filesystem paths with `t.TempDir()` and env like `PHOTOPRISM_STORAGE_PATH`.
+- Cluster nodes: identify by UUID v7 (internally stored as `NodeUUID`; exposed as `uuid` in API/CLI). The OAuth client ID (`NodeClientID`, exposed as `clientId`) is for OAuth only. Registry lookups and CLI commands accept uuid, clientId, or DNS‑label name (priority in that order).
+
+Filesystem Permissions & io/fs Aliasing
+- Use `github.com/photoprism/photoprism/pkg/fs` permission variables when creating files/dirs:
+  - `fs.ModeDir` (0o755), `fs.ModeFile` (0o644), `fs.ModeConfigFile` (0o664), `fs.ModeSecret` (0o600), `fs.ModeBackupFile` (0o600).
+- Do not use stdlib `io/fs` mode bits as permission arguments. When importing stdlib `io/fs`, alias it (`iofs`/`gofs`) to avoid `fs.*` collisions with our package.
+- Prefer `filepath.Join` for filesystem paths across platforms; use `path.Join` for URLs only.
+
+Cluster Registry & Provisioner Cheatsheet
+- UUID‑first everywhere: API paths `{uuid}`, Registry `Get/Delete/RotateSecret` by UUID; explicit `FindByClientID` exists for OAuth.
+- Node/DTO fields: `uuid` required; `clientId` optional; database metadata includes `driver`.
+- Provisioner naming (no slugs):
+  - database: `photoprism_d<hmac11>`
+  - username: `photoprism_u<hmac11>`
+  HMAC is base32 of ClusterUUID+NodeUUID; drivers currently `mysql|mariadb`.
+- DSN builder: `BuildDSN(driver, host, port, user, pass, name)`; warns and falls back to MySQL format for unsupported drivers.
+- Go tests live beside sources: for `path/to/pkg/<file>.go`, add tests in `path/to/pkg/<file>_test.go` (create if missing). For the same function, group related cases as `t.Run(...)` sub-tests (table-driven where helpful).
+- Public API and internal registry DTOs use normalized field names:
+  - `database` (not `db`) with `name`, `user`, `driver`, `rotatedAt`.
+  - Node-level rotation timestamps use `rotatedAt`.
+  - Registration returns `secrets.clientSecret`; the CLI persists it under config `NodeClientSecret`.
+  - Admin responses may include `advertiseUrl` and `database`; non-admin responses are redacted by default.
 
 Frequently Touched Files (by topic)
 - CLI wiring: `cmd/photoprism/photoprism.go`, `internal/commands/commands.go`
@@ -187,4 +237,10 @@ Useful Make Targets (selection)
 See Also
 - AGENTS.md (repository rules and tips for agents)
 - Developer Guide (Setup/Tests/API) — links in AGENTS.md → Sources of Truth
-- Specs: `specs/dev/backend-testing.md`, `specs/portal/README.md`
+- Specs: `specs/dev/backend-testing.md`, `specs/dev/api-docs-swagger.md`, `specs/portal/README.md`
+
+Fast Test Recipes
+- Filesystem + archives (fast): `go test ./pkg/fs -run 'Copy|Move|Unzip' -count=1`
+- Media helpers (fast): `go test ./pkg/media/... -count=1`
+- Thumbnails (libvips, moderate): `go test ./internal/thumb/... -count=1`
+- FFmpeg command builders (moderate): `go test ./internal/ffmpeg -run 'Remux|Transcode|Extract' -count=1`

@@ -12,6 +12,10 @@ func TestType_String(t *testing.T) {
 	})
 }
 
+func TestType_ToUpper(t *testing.T) {
+	assert.Equal(t, "JPG", ImageJpeg.ToUpper())
+}
+
 func TestType_Equal(t *testing.T) {
 	t.Run("jpg", func(t *testing.T) {
 		assert.True(t, ImageJpeg.Equal("jpg"))
@@ -78,12 +82,10 @@ func TestType_Find(t *testing.T) {
 		result := ImageJpeg.Find("testdata/test (2).xmp", true)
 		assert.Equal(t, "testdata/test.jpg", result)
 	})
-
 	t.Run("name upper", func(t *testing.T) {
 		result := ImageJpeg.Find("testdata/CATYELLOW.xmp", true)
 		assert.Equal(t, "testdata/CATYELLOW.jpg", result)
 	})
-
 	t.Run("name lower", func(t *testing.T) {
 		result := ImageJpeg.Find("testdata/chameleon_lime.xmp", true)
 		assert.Equal(t, "testdata/chameleon_lime.jpg", result)

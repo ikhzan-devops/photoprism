@@ -1,7 +1,6 @@
 package commands
 
 import (
-	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -14,10 +13,11 @@ import (
 
 // ShowConfigYamlCommand configures the command name, flags, and action.
 var ShowConfigYamlCommand = &cli.Command{
-	Name:   "config-yaml",
-	Usage:  "Displays supported YAML config options and CLI flags",
-	Flags:  report.CliFlags,
-	Action: showConfigYamlAction,
+	Name:        "config-yaml",
+	Usage:       "Displays supported YAML config options and CLI flags",
+	Description: "For readability, standard and Markdown text output is divided into sections. The --json, --csv, and --tsv options return a flat list.",
+	Flags:       report.CliFlags,
+	Action:      showConfigYamlAction,
 }
 
 // showConfigYamlAction displays supported YAML config options and CLI flag.
@@ -26,20 +26,20 @@ func showConfigYamlAction(ctx *cli.Context) error {
 	conf.SetLogLevel(logrus.TraceLevel)
 
 	rows, cols := conf.Options().Report()
-	format, ferr := report.CliFormatStrict(ctx)
-	if ferr != nil {
-		return ferr
+	format, formatErr := report.CliFormatStrict(ctx)
+	if formatErr != nil {
+		return formatErr
 	}
 
-	// CSV/TSV exports use default single-table rendering
-	if format == report.CSV || format == report.TSV {
+	// CSV/TSV/JSON exports use default single-table rendering.
+	if format == report.CSV || format == report.TSV || format == report.JSON {
 		result, err := report.RenderFormat(rows, cols, format)
 		fmt.Println(result)
 		return err
 	}
 
-	// JSON aggregation path
-	if format == report.JSON {
+	// JSON aggregation path (commented out because non-nested output is preferred for now).
+	/* if format == report.JSON {
 		type section struct {
 			Title string              `json:"title"`
 			Info  string              `json:"info,omitempty"`
@@ -72,7 +72,7 @@ func showConfigYamlAction(ctx *cli.Context) error {
 		b, _ := json.Marshal(map[string]interface{}{"sections": agg})
 		fmt.Println(string(b))
 		return nil
-	}
+	} */
 
 	markDown := ctx.Bool("md")
 	sections := config.YamlReportSections
@@ -113,7 +113,7 @@ func showConfigYamlAction(ctx *cli.Context) error {
 			}
 		}
 
-		// JSON handled earlier; Markdown and default render per section below
+		// JSON handled earlier; Markdown and default render per section below.
 		result, err := report.RenderFormat(secRows, cols, format)
 
 		if err != nil {

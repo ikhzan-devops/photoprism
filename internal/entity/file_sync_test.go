@@ -36,7 +36,6 @@ func TestFirstOrCreateFileSync(t *testing.T) {
 			t.Errorf("ServiceID should be the same: %d %d", result.ServiceID, fileSync.ServiceID)
 		}
 	})
-
 	t.Run("existing", func(t *testing.T) {
 		fileSync := NewFileSync(778, "NameForRemote")
 		result := FirstOrCreateFileSync(fileSync)
