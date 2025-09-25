@@ -27,6 +27,7 @@ package get
 import (
 	gc "github.com/patrickmn/go-cache"
 
+	clusterjwt "github.com/photoprism/photoprism/internal/auth/jwt"
 	"github.com/photoprism/photoprism/internal/auth/oidc"
 	"github.com/photoprism/photoprism/internal/auth/session"
 	"github.com/photoprism/photoprism/internal/config"
@@ -54,6 +55,8 @@ var services struct {
 	Thumbs      *photoprism.Thumbs
 	Session     *session.Session
 	OIDC        *oidc.Client
+	JWTManager  *clusterjwt.Manager
+	JWTIssuer   *clusterjwt.Issuer
 }
 
 func SetConfig(c *config.Config) {

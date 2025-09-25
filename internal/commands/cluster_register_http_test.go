@@ -151,7 +151,7 @@ func TestClusterNodesRotate_DBOnly_JSON(t *testing.T) {
 		}
 		// Read payload to assert rotate flags
 		b, _ := io.ReadAll(r.Body)
-		rotate := gjson.GetBytes(b, "rotate").Bool()
+		rotate := gjson.GetBytes(b, "rotateDatabase").Bool()
 		rotateSecret := gjson.GetBytes(b, "rotateSecret").Bool()
 		// Expect DB rotation only
 		if !rotate || rotateSecret {
@@ -203,7 +203,7 @@ func TestClusterNodesRotate_SecretOnly_JSON(t *testing.T) {
 			return
 		}
 		b, _ := io.ReadAll(r.Body)
-		rotate := gjson.GetBytes(b, "rotate").Bool()
+		rotate := gjson.GetBytes(b, "rotateDatabase").Bool()
 		rotateSecret := gjson.GetBytes(b, "rotateSecret").Bool()
 		// Expect secret-only rotation
 		if rotate || !rotateSecret {
@@ -422,7 +422,7 @@ func TestClusterRegister_RotateDatabase_JSON(t *testing.T) {
 			return
 		}
 		b, _ := io.ReadAll(r.Body)
-		if !gjson.GetBytes(b, "rotate").Bool() || gjson.GetBytes(b, "rotateSecret").Bool() {
+		if !gjson.GetBytes(b, "rotateDatabase").Bool() || gjson.GetBytes(b, "rotateSecret").Bool() {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
@@ -463,7 +463,7 @@ func TestClusterRegister_RotateSecret_JSON(t *testing.T) {
 			return
 		}
 		b, _ := io.ReadAll(r.Body)
-		if gjson.GetBytes(b, "rotate").Bool() || !gjson.GetBytes(b, "rotateSecret").Bool() {
+		if gjson.GetBytes(b, "rotateDatabase").Bool() || !gjson.GetBytes(b, "rotateSecret").Bool() {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}

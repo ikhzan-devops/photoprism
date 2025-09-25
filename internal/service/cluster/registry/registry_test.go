@@ -9,14 +9,19 @@ import (
 
 	cfg "github.com/photoprism/photoprism/internal/config"
 	"github.com/photoprism/photoprism/internal/entity"
+	"github.com/photoprism/photoprism/internal/service/cluster"
 	"github.com/photoprism/photoprism/pkg/fs"
 	"github.com/photoprism/photoprism/pkg/rnd"
 )
 
 // TestMain ensures SQLite test DB artifacts are purged after the suite runs.
 func TestMain(m *testing.M) {
+	// Run unit tests.
 	code := m.Run()
+
+	// Remove temporary SQLite files after running the tests.
 	fs.PurgeTestDbFiles(".", false)
+
 	os.Exit(code)
 }
 
@@ -33,7 +38,7 @@ func TestClientRegistry_GetAndDelete(t *testing.T) {
 	}
 
 	// Create node
-	n := &Node{Name: "pp-del", Role: "instance", UUID: rnd.UUIDv7()}
+	n := &Node{Node: cluster.Node{Name: "pp-del", Role: "instance", UUID: rnd.UUIDv7()}}
 	assert.NoError(t, r.Put(n))
 	assert.NotEmpty(t, n.ClientID)
 	assert.True(t, rnd.IsUID(n.ClientID, entity.ClientUID))
@@ -69,8 +74,8 @@ func TestClientRegistry_ListOrderByUpdatedAtDesc(t *testing.T) {
 
 	r, _ := NewClientRegistryWithConfig(c)
 
-	a := &Node{Name: "pp-a", Role: "instance", UUID: rnd.UUIDv7()}
-	b := &Node{Name: "pp-b", Role: "service", UUID: rnd.UUIDv7()}
+	a := &Node{Node: cluster.Node{Name: "pp-a", Role: "instance", UUID: rnd.UUIDv7()}}
+	b := &Node{Node: cluster.Node{Name: "pp-b", Role: "service", UUID: rnd.UUIDv7()}}
 	assert.NoError(t, r.Put(a))
 	// Ensure distinct UpdatedAt values (DBs often have second precision)
 	time.Sleep(1100 * time.Millisecond)
@@ -78,7 +83,7 @@ func TestClientRegistry_ListOrderByUpdatedAtDesc(t *testing.T) {
 
 	// Update a to make it most recent
 	time.Sleep(1100 * time.Millisecond)
-	assert.NoError(t, r.Put(&Node{ClientID: a.ClientID, Name: a.Name}))
+	assert.NoError(t, r.Put(&Node{Node: cluster.Node{ClientID: a.ClientID, Name: a.Name}}))
 
 	list, err := r.List()
 	assert.NoError(t, err)
@@ -94,18 +99,21 @@ func TestClientRegistry_ListOrderByUpdatedAtDesc(t *testing.T) {
 func TestResponseBuilders_RedactionAndOpts(t *testing.T) {
 	// Base node with all fields
 	n := Node{
-		ClientID:     "cs5gfen1bgxz7s9i",
-		Name:         "pp-node",
-		Role:         "instance",
-		SiteUrl:      "https://photos.example.com",
-		AdvertiseUrl: "http://node:2342",
-		Labels:       map[string]string{"env": "prod"},
-		CreatedAt:    time.Now().UTC().Format(time.RFC3339),
-		UpdatedAt:    time.Now().UTC().Format(time.RFC3339),
+		Node: cluster.Node{
+			ClientID:     "cs5gfen1bgxz7s9i",
+			Name:         "pp-node",
+			Role:         "instance",
+			SiteUrl:      "https://photos.example.com",
+			AdvertiseUrl: "http://node:2342",
+			Labels:       map[string]string{"env": "prod"},
+			CreatedAt:    time.Now().UTC().Format(time.RFC3339),
+			UpdatedAt:    time.Now().UTC().Format(time.RFC3339),
+		},
 	}
-	n.Database.Name = "dbn"
-	n.Database.User = "dbu"
-	n.Database.RotatedAt = time.Now().UTC().Format(time.RFC3339)
+	dbInfo := n.ensureDatabase()
+	dbInfo.Name = "dbn"
+	dbInfo.User = "dbu"
+	dbInfo.RotatedAt = time.Now().UTC().Format(time.RFC3339)
 
 	// Non-admin (default opts): redact advertise/database
 	out := BuildClusterNode(n, NodeOpts{})
@@ -190,7 +198,7 @@ func TestClientRegistry_GetClusterNodeByUUID(t *testing.T) {
 	r, _ := NewClientRegistryWithConfig(c)
 	// Insert a node with NodeUUID
 	nu := rnd.UUIDv7()
-	n := &Node{Name: "pp-getuuid", Role: "instance", UUID: nu}
+	n := &Node{Node: cluster.Node{Name: "pp-getuuid", Role: "instance", UUID: nu}}
 	assert.NoError(t, r.Put(n))
 
 	// Fetch DTO by NodeUUID
@@ -208,7 +216,7 @@ func TestClientRegistry_FindByName_NormalizesDNSLabel(t *testing.T) {
 
 	r, _ := NewClientRegistryWithConfig(c)
 	// Create canonical node name
-	n := &Node{Name: "my-node-prod", Role: "instance"}
+	n := &Node{Node: cluster.Node{Name: "my-node-prod", Role: "instance"}}
 	assert.NoError(t, r.Put(n))
 	// Lookup using mixed separators and case
 	got, err := r.FindByName("My.Node/Prod")

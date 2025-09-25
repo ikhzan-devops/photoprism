@@ -210,6 +210,43 @@ func (c *Config) NodeClientSecret() string {
 	}
 }
 
+// JWKSUrl returns the configured JWKS endpoint for portal-issued JWTs. Nodes normally
+// persist this URL from the portal's register response, which derives it from SiteUrl;
+// manual overrides are only required for custom deployments.
+func (c *Config) JWKSUrl() string {
+	return strings.TrimSpace(c.options.JWKSUrl)
+}
+
+// SetJWKSUrl updates the configured JWKS endpoint for portal-issued JWTs.
+func (c *Config) SetJWKSUrl(url string) {
+	if c == nil || c.options == nil {
+		return
+	}
+	c.options.JWKSUrl = strings.TrimSpace(url)
+}
+
+// JWKSCacheTTL returns the JWKS cache lifetime in seconds (default 300, max 3600).
+func (c *Config) JWKSCacheTTL() int {
+	if c.options.JWKSCacheTTL <= 0 {
+		return 300
+	}
+	if c.options.JWKSCacheTTL > 3600 {
+		return 3600
+	}
+	return c.options.JWKSCacheTTL
+}
+
+// JWTLeeway returns the permitted clock skew in seconds (default 60, max 300).
+func (c *Config) JWTLeeway() int {
+	if c.options.JWTLeeway <= 0 {
+		return 60
+	}
+	if c.options.JWTLeeway > 300 {
+		return 300
+	}
+	return c.options.JWTLeeway
+}
+
 // AdvertiseUrl returns the advertised node URL for intra-cluster calls (scheme://host[:port]).
 func (c *Config) AdvertiseUrl() string {
 	if c.options.AdvertiseUrl != "" {

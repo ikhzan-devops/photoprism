@@ -99,12 +99,12 @@ func clusterNodesRotateAction(ctx *cli.Context) error {
 			}
 		}
 
-		body := map[string]interface{}{
-			"nodeName":     name,
-			"rotate":       rotateDatabase,
-			"rotateSecret": rotateSecret,
+		payload := cluster.RegisterRequest{
+			NodeName:       name,
+			RotateDatabase: rotateDatabase,
+			RotateSecret:   rotateSecret,
 		}
-		b, _ := json.Marshal(body)
+		b, _ := json.Marshal(payload)
 
 		url := stringsTrimRightSlash(portalURL) + "/api/v1/cluster/nodes/register"
 		var resp cluster.RegisterResponse

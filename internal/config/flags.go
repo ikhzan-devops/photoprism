@@ -721,6 +721,23 @@ var Flags = CliFlags{
 			Hidden:  true,
 		}}, {
 		Flag: &cli.StringFlag{
+			Name:    "jwks-url",
+			Usage:   "JWKS endpoint `URL` provided by the cluster portal for JWT verification",
+			EnvVars: EnvVars("JWKS_URL"),
+		}}, {
+		Flag: &cli.IntFlag{
+			Name:    "jwks-cache-ttl",
+			Usage:   "JWKS cache lifetime in `SECONDS` (default 300, max 3600)",
+			Value:   300,
+			EnvVars: EnvVars("JWKS_CACHE_TTL"),
+		}}, {
+		Flag: &cli.IntFlag{
+			Name:    "jwt-leeway",
+			Usage:   "JWT clock skew allowance in `SECONDS` (default 60, max 300)",
+			Value:   60,
+			EnvVars: EnvVars("JWT_LEEWAY"),
+		}}, {
+		Flag: &cli.StringFlag{
 			Name:    "advertise-url",
 			Usage:   "advertised `URL` for intra-cluster calls (scheme://host[:port])",
 			Value:   "",

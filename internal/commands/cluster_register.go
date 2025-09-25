@@ -85,28 +85,28 @@ func clusterRegisterAction(ctx *cli.Context) error {
 		}
 		site := conf.SiteUrl()
 
-		body := map[string]interface{}{
-			"nodeName":     name,
-			"nodeRole":     nodeRole,
-			"labels":       parseLabelSlice(ctx.StringSlice("label")),
-			"advertiseUrl": advertise,
-			"rotate":       ctx.Bool("rotate"),
-			"rotateSecret": ctx.Bool("rotate-secret"),
+		payload := cluster.RegisterRequest{
+			NodeName:       name,
+			NodeRole:       nodeRole,
+			Labels:         parseLabelSlice(ctx.StringSlice("label")),
+			AdvertiseUrl:   advertise,
+			RotateDatabase: ctx.Bool("rotate"),
+			RotateSecret:   ctx.Bool("rotate-secret"),
 		}
 		// If we already have client credentials (e.g., re-register), include them so the
 		// portal can verify and authorize UUID/name moves or metadata updates.
 		if id, secret := strings.TrimSpace(conf.NodeClientID()), strings.TrimSpace(conf.NodeClientSecret()); id != "" && secret != "" {
-			body["clientId"] = id
-			body["clientSecret"] = secret
+			payload.ClientID = id
+			payload.ClientSecret = secret
 		}
 		if site != "" && site != advertise {
-			body["siteUrl"] = site
+			payload.SiteUrl = site
 		}
-		b, _ := json.Marshal(body)
+		b, _ := json.Marshal(payload)
 
 		if ctx.Bool("dry-run") {
 			if ctx.Bool("json") {
-				out := map[string]any{"portalUrl": portalURL, "payload": body}
+				out := map[string]any{"portalUrl": portalURL, "payload": payload}
 				jb, _ := json.Marshal(out)
 				fmt.Println(string(jb))
 			} else {
@@ -116,19 +116,19 @@ func clusterRegisterAction(ctx *cli.Context) error {
 					fmt.Println("(derived defaults were used where flags were omitted)")
 				}
 				fmt.Printf("Advertise:  %s\n", advertise)
-				if v, ok := body["siteUrl"].(string); ok && v != "" {
-					fmt.Printf("Site URL:   %s\n", v)
+				if payload.SiteUrl != "" {
+					fmt.Printf("Site URL:   %s\n", payload.SiteUrl)
 				}
 				// Warn if non-HTTPS on public host; server will enforce too.
 				if warnInsecurePublicURL(advertise) {
 					fmt.Println("Warning: advertise-url is http for a public host; server may reject it (HTTPS required).")
 				}
-				if v, ok := body["siteUrl"].(string); ok && v != "" && warnInsecurePublicURL(v) {
+				if payload.SiteUrl != "" && warnInsecurePublicURL(payload.SiteUrl) {
 					fmt.Println("Warning: site-url is http for a public host; server may reject it (HTTPS required).")
 				}
 				// Single-line summary for quick operator scan
-				if v, ok := body["siteUrl"].(string); ok && v != "" {
-					fmt.Printf("Derived: portal=%s advertise=%s site=%s\n", portalURL, advertise, v)
+				if payload.SiteUrl != "" {
+					fmt.Printf("Derived: portal=%s advertise=%s site=%s\n", portalURL, advertise, payload.SiteUrl)
 				} else {
 					fmt.Printf("Derived: portal=%s advertise=%s\n", portalURL, advertise)
 				}

@@ -422,6 +422,9 @@
                 "database": {
                     "$ref": "#/definitions/cluster.RegisterDatabase"
                 },
+                "jwksUrl": {
+                    "type": "string"
+                },
                 "node": {
                     "$ref": "#/definitions/cluster.Node"
                 },

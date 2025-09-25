@@ -68,6 +68,7 @@ type RegisterResponse struct {
 	Node               Node             `json:"node"`
 	Database           RegisterDatabase `json:"database"`
 	Secrets            *RegisterSecrets `json:"secrets,omitempty"`
+	JWKSUrl            string           `json:"jwksUrl,omitempty"`
 	AlreadyRegistered  bool             `json:"alreadyRegistered"`
 	AlreadyProvisioned bool             `json:"alreadyProvisioned"`
 }

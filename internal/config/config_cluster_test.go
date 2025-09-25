@@ -72,6 +72,17 @@ func TestConfig_Cluster(t *testing.T) {
 		assert.True(t, c.IsPortal())
 		c.Options().NodeRole = ""
 	})
+	t.Run("JWKSUrlSetter", func(t *testing.T) {
+		c := NewConfig(CliTestContext())
+		c.options.JWKSUrl = ""
+		assert.Equal(t, "", c.JWKSUrl())
+
+		c.SetJWKSUrl("  https://portal.example/.well-known/jwks.json  ")
+		assert.Equal(t, "https://portal.example/.well-known/jwks.json", c.JWKSUrl())
+
+		c.SetJWKSUrl("")
+		assert.Equal(t, "", c.JWKSUrl())
+	})
 	t.Run("Paths", func(t *testing.T) {
 		c := NewConfig(CliTestContext())
 

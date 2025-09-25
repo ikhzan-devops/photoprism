@@ -8,6 +8,7 @@ import (
 
 	cfg "github.com/photoprism/photoprism/internal/config"
 	"github.com/photoprism/photoprism/internal/entity"
+	"github.com/photoprism/photoprism/internal/service/cluster"
 	"github.com/photoprism/photoprism/pkg/rnd"
 )
 
@@ -44,7 +45,7 @@ func TestClientRegistry_RoleChange(t *testing.T) {
 	assert.NoError(t, c.Init())
 
 	r, _ := NewClientRegistryWithConfig(c)
-	n := &Node{Name: "pp-role", Role: "service"}
+	n := &Node{Node: cluster.Node{Name: "pp-role", Role: "service"}}
 	assert.NoError(t, r.Put(n))
 	got, err := r.FindByName("pp-role")
 	assert.NoError(t, err)
@@ -52,7 +53,7 @@ func TestClientRegistry_RoleChange(t *testing.T) {
 		assert.Equal(t, "service", got.Role)
 	}
 	// Change to instance
-	upd := &Node{ClientID: got.ClientID, Name: got.Name, Role: "instance"}
+	upd := &Node{Node: cluster.Node{ClientID: got.ClientID, Name: got.Name, Role: "instance"}}
 	assert.NoError(t, r.Put(upd))
 	got2, err := r.FindByName("pp-role")
 	assert.NoError(t, err)

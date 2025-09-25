@@ -1,6 +1,7 @@
 /*
-Package intel collects ffmpeg helpers for configuring Intel Quick Sync Video
-(QSV) encoders when building PhotoPrism transcoding pipelines.
+Package jwt provides helpers for managing Ed25519 signing keys and issuing or
+verifying short-lived JWTs used for secure communication between the Portal and
+cluster nodes.
 
 Copyright (c) 2018 - 2025 PhotoPrism UG. All rights reserved.
 
@@ -23,4 +24,4 @@ want to support our work, or just want to say hello.
 Additional information can be found in our Developer Guide:
 <https://docs.photoprism.app/developer-guide/>
 */
-package intel
+package jwt

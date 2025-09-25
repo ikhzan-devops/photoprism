@@ -23,6 +23,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/photoprism/photoprism/internal/photoprism/get"
+	"github.com/photoprism/photoprism/internal/service/cluster"
 	reg "github.com/photoprism/photoprism/internal/service/cluster/registry"
 	"github.com/photoprism/photoprism/pkg/fs"
 )
@@ -95,7 +96,7 @@ func TestClusterSuccessPaths_PortalLocal(t *testing.T) {
 	// Create a registry node via FileRegistry.
 	r, err := reg.NewClientRegistryWithConfig(c)
 	assert.NoError(t, err)
-	n := &reg.Node{Name: "pp-node-01", Role: "instance", Labels: map[string]string{"env": "test"}}
+	n := &reg.Node{Node: cluster.Node{Name: "pp-node-01", Role: "instance", Labels: map[string]string{"env": "test"}}}
 	assert.NoError(t, r.Put(n))
 
 	// nodes ls (JSON)

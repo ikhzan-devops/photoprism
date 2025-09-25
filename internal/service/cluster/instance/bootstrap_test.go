@@ -29,6 +29,7 @@ func TestInitConfig_NoPortal_NoOp(t *testing.T) {
 func TestRegister_PersistSecretAndDB(t *testing.T) {
 	t.Setenv("PHOTOPRISM_STORAGE_PATH", t.TempDir())
 	// Fake Portal server.
+	var jwksURL string
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case "/api/v1/cluster/nodes/register":
@@ -39,6 +40,7 @@ func TestRegister_PersistSecretAndDB(t *testing.T) {
 				Node:    cluster.Node{Name: "pp-node-01"},
 				UUID:    rnd.UUID(),
 				Secrets: &cluster.RegisterSecrets{ClientSecret: "SECRET"},
+				JWKSUrl: jwksURL,
 				Database: cluster.RegisterDatabase{
 					Driver:   config.MySQL,
 					Host:     "db.local",
@@ -57,6 +59,7 @@ func TestRegister_PersistSecretAndDB(t *testing.T) {
 			http.NotFound(w, r)
 		}
 	}))
+	jwksURL = srv.URL + "/.well-known/jwks.json"
 	defer srv.Close()
 
 	c := config.NewTestConfig("bootstrap-reg")
@@ -78,6 +81,7 @@ func TestRegister_PersistSecretAndDB(t *testing.T) {
 	// DSN branch should be preferred and persisted.
 	assert.Contains(t, c.Options().DatabaseDSN, "@tcp(db.local:3306)/pp_db")
 	assert.Equal(t, config.MySQL, c.Options().DatabaseDriver)
+	assert.Equal(t, srv.URL+"/.well-known/jwks.json", c.JWKSUrl())
 }
 
 func TestThemeInstall_Missing(t *testing.T) {
@@ -90,12 +94,13 @@ func TestThemeInstall_Missing(t *testing.T) {
 	_ = zw.Close()
 
 	// Fake Portal server (register -> oauth token -> theme)
+	var jwksURL2 string
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case "/api/v1/cluster/nodes/register":
 			w.Header().Set("Content-Type", "application/json")
 			// Return NodeClientID + NodeClientSecret so bootstrap can request OAuth token
-			_ = json.NewEncoder(w).Encode(cluster.RegisterResponse{UUID: rnd.UUID(), Node: cluster.Node{ClientID: "cs5gfen1bgxz7s9i", Name: "pp-node-01"}, Secrets: &cluster.RegisterSecrets{ClientSecret: "s3cr3t"}})
+			_ = json.NewEncoder(w).Encode(cluster.RegisterResponse{UUID: rnd.UUID(), Node: cluster.Node{ClientID: "cs5gfen1bgxz7s9i", Name: "pp-node-01"}, Secrets: &cluster.RegisterSecrets{ClientSecret: "s3cr3t"}, JWKSUrl: jwksURL2})
 		case "/api/v1/oauth/token":
 			w.Header().Set("Content-Type", "application/json")
 			_ = json.NewEncoder(w).Encode(map[string]any{"access_token": "tok", "token_type": "Bearer"})
@@ -107,6 +112,7 @@ func TestThemeInstall_Missing(t *testing.T) {
 			http.NotFound(w, r)
 		}
 	}))
+	jwksURL2 = srv.URL + "/.well-known/jwks.json"
 	defer srv.Close()
 
 	c := config.NewTestConfig("bootstrap-theme")
@@ -133,6 +139,7 @@ func TestThemeInstall_Missing(t *testing.T) {
 func TestRegister_SQLite_NoDBPersist(t *testing.T) {
 	t.Setenv("PHOTOPRISM_STORAGE_PATH", t.TempDir())
 	// Portal responds with DB DSN, but local driver is SQLite → must not persist DB.
+	var jwksURL3 string
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case "/api/v1/cluster/nodes/register":
@@ -141,6 +148,7 @@ func TestRegister_SQLite_NoDBPersist(t *testing.T) {
 			resp := cluster.RegisterResponse{
 				Node:     cluster.Node{Name: "pp-node-01"},
 				Secrets:  &cluster.RegisterSecrets{ClientSecret: "SECRET"},
+				JWKSUrl:  jwksURL3,
 				Database: cluster.RegisterDatabase{Host: "db.local", Port: 3306, Name: "pp_db", User: "pp_user", Password: "pp_pw", DSN: "pp_user:pp_pw@tcp(db.local:3306)/pp_db?charset=utf8mb4&parseTime=true"},
 			}
 			_ = json.NewEncoder(w).Encode(resp)
@@ -148,6 +156,7 @@ func TestRegister_SQLite_NoDBPersist(t *testing.T) {
 			http.NotFound(w, r)
 		}
 	}))
+	jwksURL3 = srv.URL + "/.well-known/jwks.json"
 	defer srv.Close()
 
 	c := config.NewTestConfig("bootstrap-sqlite")
@@ -165,6 +174,7 @@ func TestRegister_SQLite_NoDBPersist(t *testing.T) {
 	assert.Equal(t, "SECRET", c.NodeClientSecret())
 	assert.Equal(t, config.SQLite3, c.DatabaseDriver())
 	assert.Equal(t, origDSN, c.Options().DatabaseDSN)
+	assert.Equal(t, srv.URL+"/.well-known/jwks.json", c.JWKSUrl())
 }
 
 func TestRegister_404_NoRetry(t *testing.T) {
