@@ -26,9 +26,8 @@ func TestMain(m *testing.M) {
 }
 
 func TestClientRegistry_GetAndDelete(t *testing.T) {
-	c := cfg.NewTestConfig("cluster-registry-delete")
+	c := cfg.NewMinimalTestConfigWithDb("cluster-registry-delete", t.TempDir())
 	defer c.CloseDb()
-	assert.NoError(t, c.Init())
 
 	r, _ := NewClientRegistryWithConfig(c)
 
@@ -68,9 +67,8 @@ func TestClientRegistry_GetAndDelete(t *testing.T) {
 }
 
 func TestClientRegistry_ListOrderByUpdatedAtDesc(t *testing.T) {
-	c := cfg.NewTestConfig("cluster-registry-order")
+	c := cfg.NewMinimalTestConfigWithDb("cluster-registry-order", t.TempDir())
 	defer c.CloseDb()
-	assert.NoError(t, c.Init())
 
 	r, _ := NewClientRegistryWithConfig(c)
 
@@ -160,9 +158,8 @@ func TestNodeOptsForSession_AdminVsNonAdmin(t *testing.T) {
 }
 
 func TestToNode_Mapping(t *testing.T) {
-	c := cfg.NewTestConfig("cluster-registry-map")
+	c := cfg.NewMinimalTestConfigWithDb("cluster-registry-map", t.TempDir())
 	defer c.CloseDb()
-	assert.NoError(t, c.Init())
 
 	m := entity.NewClient().SetName("pp-map").SetRole("instance")
 	m.NodeUUID = rnd.UUIDv7()
@@ -191,7 +188,7 @@ func TestToNode_Mapping(t *testing.T) {
 }
 
 func TestClientRegistry_GetClusterNodeByUUID(t *testing.T) {
-	c := cfg.NewTestConfig("cluster-registry-getbyuuid")
+	c := cfg.NewMinimalTestConfigWithDb("cluster-registry-getbyuuid", t.TempDir())
 	defer c.CloseDb()
 	assert.NoError(t, c.Init())
 
@@ -210,7 +207,7 @@ func TestClientRegistry_GetClusterNodeByUUID(t *testing.T) {
 }
 
 func TestClientRegistry_FindByName_NormalizesDNSLabel(t *testing.T) {
-	c := cfg.NewTestConfig("cluster-registry-findname")
+	c := cfg.NewMinimalTestConfigWithDb("cluster-registry-findname", t.TempDir())
 	defer c.CloseDb()
 	assert.NoError(t, c.Init())
 

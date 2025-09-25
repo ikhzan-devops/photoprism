@@ -28,7 +28,13 @@ func TestMain(m *testing.M) {
 	log.SetLevel(logrus.TraceLevel)
 	event.AuditLog = log
 
-	c := config.NewTestConfig("commands")
+	tempDir, err := os.MkdirTemp("", "commands-test")
+	if err != nil {
+		panic(err)
+	}
+	defer os.RemoveAll(tempDir)
+
+	c := config.NewMinimalTestConfigWithDb("commands", tempDir)
 	get.SetConfig(c)
 
 	// Keep DB connection open for the duration of this package's tests to

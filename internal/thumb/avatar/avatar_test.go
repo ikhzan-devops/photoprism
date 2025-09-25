@@ -15,7 +15,13 @@ func TestMain(m *testing.M) {
 	log = logrus.StandardLogger()
 	log.SetLevel(logrus.TraceLevel)
 
-	c := config.NewTestConfig("avatar")
+	tempDir, err := os.MkdirTemp("", "avatar-test")
+	if err != nil {
+		panic(err)
+	}
+	defer os.RemoveAll(tempDir)
+
+	c := config.NewMinimalTestConfigWithDb("avatar", tempDir)
 	get.SetConfig(c)
 	photoprism.SetConfig(c)
 	defer c.CloseDb()

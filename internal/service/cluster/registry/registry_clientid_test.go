@@ -14,9 +14,8 @@ import (
 
 // Basic FindByClientID flow with Put and DTO mapping.
 func TestClientRegistry_FindByClientID(t *testing.T) {
-	c := cfg.NewTestConfig("cluster-registry-find-clientid")
+	c := cfg.NewMinimalTestConfigWithDb("cluster-registry-find-clientid", t.TempDir())
 	defer c.CloseDb()
-	assert.NoError(t, c.Init())
 
 	r, _ := NewClientRegistryWithConfig(c)
 	n := &Node{Node: cluster.Node{Name: "pp-find-client", Role: "instance", UUID: rnd.UUIDv7()}}
@@ -34,9 +33,8 @@ func TestClientRegistry_FindByClientID(t *testing.T) {
 
 // Simulate client ID changing after a restore: old row removed, new row created with same NodeUUID.
 func TestClientRegistry_ClientIDChangedAfterRestore(t *testing.T) {
-	c := cfg.NewTestConfig("cluster-registry-clientid-restore")
+	c := cfg.NewMinimalTestConfigWithDb("cluster-registry-clientid-restore", t.TempDir())
 	defer c.CloseDb()
-	assert.NoError(t, c.Init())
 
 	uuid := rnd.UUIDv7()
 	// Original row
@@ -71,9 +69,8 @@ func TestClientRegistry_ClientIDChangedAfterRestore(t *testing.T) {
 
 // Names swapped between two nodes: UUIDs must remain authoritative.
 func TestClientRegistry_SwapNames_UUIDAuthoritative(t *testing.T) {
-	c := cfg.NewTestConfig("cluster-registry-swap-names")
+	c := cfg.NewMinimalTestConfigWithDb("cluster-registry-swap-names", t.TempDir())
 	defer c.CloseDb()
-	assert.NoError(t, c.Init())
 
 	r, _ := NewClientRegistryWithConfig(c)
 	a := &Node{Node: cluster.Node{UUID: rnd.UUIDv7(), Name: "pp-a", Role: "instance"}}
@@ -117,9 +114,8 @@ func TestClientRegistry_SwapNames_UUIDAuthoritative(t *testing.T) {
 
 // Ensure DB driver and fields round-trip through Put → toNode → BuildClusterNode.
 func TestClientRegistry_DBDriverAndFields(t *testing.T) {
-	c := cfg.NewTestConfig("cluster-registry-dbdriver")
+	c := cfg.NewMinimalTestConfigWithDb("cluster-registry-dbdriver", t.TempDir())
 	defer c.CloseDb()
-	assert.NoError(t, c.Init())
 
 	r, _ := NewClientRegistryWithConfig(c)
 	n := &Node{Node: cluster.Node{UUID: rnd.UUIDv7(), Name: "pp-db", Role: "instance"}}

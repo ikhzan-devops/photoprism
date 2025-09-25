@@ -14,9 +14,8 @@ import (
 
 // Rotating secret selects the latest row for a UUID and persists rotation timestamp and password.
 func TestClientRegistry_RotateSecretByUUID_LatestRow(t *testing.T) {
-	c := cfg.NewTestConfig("cluster-registry-rotate-latest")
+	c := cfg.NewMinimalTestConfigWithDb("cluster-registry-rotate-latest", t.TempDir())
 	defer c.CloseDb()
-	assert.NoError(t, c.Init())
 
 	r, _ := NewClientRegistryWithConfig(c)
 	uuid := rnd.UUIDv7()

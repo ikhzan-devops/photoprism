@@ -13,11 +13,8 @@ import (
 )
 
 func TestClientRegistry_PutFindListRotate(t *testing.T) {
-	c := cfg.NewTestConfig("cluster-registry-client")
+	c := cfg.NewMinimalTestConfigWithDb("cluster-registry-client", t.TempDir())
 	defer c.CloseDb()
-	if err := c.Init(); err != nil {
-		t.Fatalf("init config: %v", err)
-	}
 
 	r, err := NewClientRegistryWithConfig(c)
 	assert.NoError(t, err)

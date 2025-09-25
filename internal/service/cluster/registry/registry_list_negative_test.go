@@ -12,9 +12,8 @@ import (
 
 // Ensure List() excludes clients that look like nodes by role but have no NodeUUID.
 func TestClientRegistry_ListExcludesNodeRoleWithoutUUID(t *testing.T) {
-	c := cfg.NewTestConfig("cluster-registry-list-exclude-node-role")
+	c := cfg.NewMinimalTestConfigWithDb("cluster-registry-list-exclude-node-role", t.TempDir())
 	defer c.CloseDb()
-	assert.NoError(t, c.Init())
 
 	// Bad records: node-like roles but empty NodeUUID
 	bad1 := entity.NewClient().SetName("pp-bad1").SetRole("instance")

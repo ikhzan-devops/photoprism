@@ -253,11 +253,12 @@ type portalJWTFixture struct {
 
 func newPortalJWTFixture(t *testing.T, suffix string) portalJWTFixture {
 	t.Helper()
-	t.Setenv("PHOTOPRISM_STORAGE_PATH", t.TempDir())
+
 	origConf := get.Config()
 	t.Cleanup(func() { get.SetConfig(origConf) })
 
-	nodeConf := config.NewTestConfig("auth-any-portal-jwt-" + suffix)
+	nodeConf := config.NewMinimalTestConfigWithDb("auth-any-portal-jwt-"+suffix, t.TempDir())
+
 	nodeConf.Options().NodeRole = cluster.RoleInstance
 	nodeConf.Options().Public = false
 	clusterUUID := rnd.UUID()
@@ -265,7 +266,8 @@ func newPortalJWTFixture(t *testing.T, suffix string) portalJWTFixture {
 	nodeUUID := nodeConf.NodeUUID()
 	nodeConf.Options().PortalUrl = "https://portal.example.test"
 
-	portalConf := config.NewTestConfig("auth-any-portal-jwt-issuer-" + suffix)
+	portalConf := config.NewMinimalTestConfigWithDb("auth-any-portal-jwt-issuer-"+suffix, t.TempDir())
+
 	portalConf.Options().NodeRole = cluster.RolePortal
 	portalConf.Options().ClusterUUID = clusterUUID
 

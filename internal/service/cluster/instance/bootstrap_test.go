@@ -19,15 +19,15 @@ import (
 )
 
 func TestInitConfig_NoPortal_NoOp(t *testing.T) {
-	t.Setenv("PHOTOPRISM_STORAGE_PATH", t.TempDir())
-	c := config.NewTestConfig("bootstrap-np")
+	c := config.NewMinimalTestConfigWithDb("bootstrap", t.TempDir())
+	defer c.CloseDb()
+
 	// Default NodeRole() resolves to instance; no Portal configured.
 	assert.Equal(t, cluster.RoleInstance, c.NodeRole())
 	assert.NoError(t, InitConfig(c))
 }
 
 func TestRegister_PersistSecretAndDB(t *testing.T) {
-	t.Setenv("PHOTOPRISM_STORAGE_PATH", t.TempDir())
 	// Fake Portal server.
 	var jwksURL string
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -62,7 +62,9 @@ func TestRegister_PersistSecretAndDB(t *testing.T) {
 	jwksURL = srv.URL + "/.well-known/jwks.json"
 	defer srv.Close()
 
-	c := config.NewTestConfig("bootstrap-reg")
+	c := config.NewMinimalTestConfigWithDb("bootstrap-reg", t.TempDir())
+	defer c.CloseDb()
+
 	// Configure Portal.
 	c.Options().PortalUrl = srv.URL
 	c.Options().JoinToken = "t0k3n"
@@ -85,7 +87,6 @@ func TestRegister_PersistSecretAndDB(t *testing.T) {
 }
 
 func TestThemeInstall_Missing(t *testing.T) {
-	t.Setenv("PHOTOPRISM_STORAGE_PATH", t.TempDir())
 	// Build a tiny zip in-memory with one file style.css
 	var buf bytes.Buffer
 	zw := zip.NewWriter(&buf)
@@ -115,7 +116,9 @@ func TestThemeInstall_Missing(t *testing.T) {
 	jwksURL2 = srv.URL + "/.well-known/jwks.json"
 	defer srv.Close()
 
-	c := config.NewTestConfig("bootstrap-theme")
+	c := config.NewMinimalTestConfigWithDb("bootstrap-theme", t.TempDir())
+	defer c.CloseDb()
+
 	// Point Portal.
 	c.Options().PortalUrl = srv.URL
 	c.Options().JoinToken = "t0k3n"
@@ -137,7 +140,6 @@ func TestThemeInstall_Missing(t *testing.T) {
 }
 
 func TestRegister_SQLite_NoDBPersist(t *testing.T) {
-	t.Setenv("PHOTOPRISM_STORAGE_PATH", t.TempDir())
 	// Portal responds with DB DSN, but local driver is SQLite → must not persist DB.
 	var jwksURL3 string
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -159,7 +161,9 @@ func TestRegister_SQLite_NoDBPersist(t *testing.T) {
 	jwksURL3 = srv.URL + "/.well-known/jwks.json"
 	defer srv.Close()
 
-	c := config.NewTestConfig("bootstrap-sqlite")
+	c := config.NewMinimalTestConfigWithDb("bootstrap-sqlite", t.TempDir())
+	defer c.CloseDb()
+
 	// SQLite driver by default; set Portal.
 	c.Options().PortalUrl = srv.URL
 	c.Options().JoinToken = "t0k3n"
@@ -178,7 +182,6 @@ func TestRegister_SQLite_NoDBPersist(t *testing.T) {
 }
 
 func TestRegister_404_NoRetry(t *testing.T) {
-	t.Setenv("PHOTOPRISM_STORAGE_PATH", t.TempDir())
 	var hits int
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path == "/api/v1/cluster/nodes/register" {
@@ -190,7 +193,9 @@ func TestRegister_404_NoRetry(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	c := config.NewTestConfig("bootstrap-404")
+	c := config.NewMinimalTestConfigWithDb("bootstrap", t.TempDir())
+	defer c.CloseDb()
+
 	c.Options().PortalUrl = srv.URL
 	c.Options().JoinToken = "t0k3n"
 
@@ -201,7 +206,6 @@ func TestRegister_404_NoRetry(t *testing.T) {
 }
 
 func TestThemeInstall_SkipWhenAppJsExists(t *testing.T) {
-	t.Setenv("PHOTOPRISM_STORAGE_PATH", t.TempDir())
 	// Portal returns a valid zip, but theme dir already has app.js → skip.
 	var served int
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -218,7 +222,9 @@ func TestThemeInstall_SkipWhenAppJsExists(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	c := config.NewTestConfig("bootstrap-theme-skip")
+	c := config.NewMinimalTestConfigWithDb("bootstrap", t.TempDir())
+	defer c.CloseDb()
+
 	c.Options().PortalUrl = srv.URL
 	c.Options().JoinToken = "t0k3n"
 

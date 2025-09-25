@@ -13,12 +13,11 @@ import (
 
 	gojwt "github.com/golang-jwt/jwt/v5"
 
-	cfg "github.com/photoprism/photoprism/internal/config"
 	"github.com/photoprism/photoprism/pkg/rnd"
 )
 
 func TestVerifierPrimeAndVerify(t *testing.T) {
-	portalCfg := cfg.TestConfig()
+	portalCfg := newTestConfig(t)
 	clusterUUID := rnd.UUIDv7()
 	portalCfg.Options().ClusterUUID = clusterUUID
 
@@ -47,7 +46,7 @@ func TestVerifierPrimeAndVerify(t *testing.T) {
 	}))
 	defer server.Close()
 
-	nodeCfg := cfg.NewTestConfig("jwt-verifier-node")
+	nodeCfg := newTestConfig(t)
 	nodeCfg.SetJWKSUrl(server.URL + "/.well-known/jwks.json")
 	nodeCfg.Options().ClusterUUID = clusterUUID
 	nodeUUID := nodeCfg.NodeUUID()
@@ -105,7 +104,7 @@ func TestVerifierPrimeAndVerify(t *testing.T) {
 }
 
 func TestIssuerClampTTL(t *testing.T) {
-	portalCfg := cfg.TestConfig()
+	portalCfg := newTestConfig(t)
 	mgr, err := NewManager(portalCfg)
 	require.NoError(t, err)
 	mgr.now = func() time.Time { return time.Unix(0, 0) }

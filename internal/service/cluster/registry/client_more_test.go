@@ -14,9 +14,8 @@ import (
 
 // Duplicate names: FindByName should return the most recently updated.
 func TestClientRegistry_DuplicateNamePrefersLatest(t *testing.T) {
-	c := cfg.NewTestConfig("cluster-registry-dupes")
+	c := cfg.NewMinimalTestConfigWithDb("cluster-registry-dupes", t.TempDir())
 	defer c.CloseDb()
-	assert.NoError(t, c.Init())
 
 	// Create two clients directly to simulate duplicates with same name.
 	c1 := entity.NewClient().SetName("pp-dupe").SetRole("instance")
@@ -40,9 +39,8 @@ func TestClientRegistry_DuplicateNamePrefersLatest(t *testing.T) {
 
 // Role change path: Put should update ClientRole via mapping.
 func TestClientRegistry_RoleChange(t *testing.T) {
-	c := cfg.NewTestConfig("cluster-registry-role")
+	c := cfg.NewMinimalTestConfigWithDb("cluster-registry-role", t.TempDir())
 	defer c.CloseDb()
-	assert.NoError(t, c.Init())
 
 	r, _ := NewClientRegistryWithConfig(c)
 	n := &Node{Node: cluster.Node{Name: "pp-role", Role: "service"}}

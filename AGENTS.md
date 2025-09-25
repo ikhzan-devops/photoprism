@@ -243,6 +243,7 @@ If anything in this file conflicts with the `Makefile` or the Developer Guide, t
 - In `internal/photoprism` tests, rely on `photoprism.Config()` for runtime-accurate behavior; only build a new config if you replace it via `photoprism.SetConfig`.
 - Generate identifiers with `rnd.GenerateUID(entity.ClientUID)` for OAuth client IDs and `rnd.UUIDv7()` for node UUIDs; treat `node.uuid` as required in responses.
 - Shared fixtures live under `storage/testdata`; `NewTestConfig("<pkg>")` already calls `InitializeTestData()`, but call `c.InitializeTestData()` (and optionally `c.AssertTestData(t)`) when you construct custom configs so originals/import/cache/temp exist. `InitializeTestData()` clears old data, downloads fixtures if needed, then calls `CreateDirectories()`.
+- For slimmer tests that only need config objects, prefer the new helpers in `internal/config/test.go`: `NewMinimalTestConfig(t.TempDir())` when no database is needed, or `NewMinimalTestConfigWithDb("<pkg>", t.TempDir())` to spin up an isolated SQLite schema without seeding all fixtures.
 
 ### Roles & ACL
 - Map roles via the shared tables: users through `acl.ParseRole(s)` / `acl.UserRoles[...]`, clients through `acl.ClientRoles[...]`.

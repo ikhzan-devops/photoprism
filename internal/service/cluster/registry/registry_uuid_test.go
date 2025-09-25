@@ -14,9 +14,8 @@ import (
 
 // UUID-first upsert: Put finds existing row by UUID and updates fields.
 func TestClientRegistry_PutUpdateByUUID(t *testing.T) {
-	c := cfg.NewTestConfig("cluster-registry-put-uuid")
+	c := cfg.NewMinimalTestConfigWithDb("cluster-registry-put-uuid", t.TempDir())
 	defer c.CloseDb()
-	assert.NoError(t, c.Init())
 
 	r, _ := NewClientRegistryWithConfig(c)
 	uuid := rnd.UUIDv7()
@@ -47,9 +46,8 @@ func TestClientRegistry_PutUpdateByUUID(t *testing.T) {
 
 // Latest-by-UpdatedAt when multiple rows share the same NodeUUID (historical duplicates).
 func TestClientRegistry_FindByNodeUUID_PrefersLatest(t *testing.T) {
-	c := cfg.NewTestConfig("cluster-registry-find-uuid-latest")
+	c := cfg.NewMinimalTestConfigWithDb("cluster-registry-find-uuid-latest", t.TempDir())
 	defer c.CloseDb()
-	assert.NoError(t, c.Init())
 
 	uuid := rnd.UUIDv7()
 	// Create two raw client rows with the same NodeUUID and different UpdatedAt
@@ -74,9 +72,8 @@ func TestClientRegistry_FindByNodeUUID_PrefersLatest(t *testing.T) {
 
 // DeleteAllByUUID removes all rows that share a NodeUUID.
 func TestClientRegistry_DeleteAllByUUID(t *testing.T) {
-	c := cfg.NewTestConfig("cluster-registry-delete-all")
+	c := cfg.NewMinimalTestConfigWithDb("cluster-registry-delete-all", t.TempDir())
 	defer c.CloseDb()
-	assert.NoError(t, c.Init())
 
 	uuid := rnd.UUIDv7()
 	// Two rows with same UUID
@@ -99,9 +96,8 @@ func TestClientRegistry_DeleteAllByUUID(t *testing.T) {
 
 // List() should only include clients that represent cluster nodes (i.e., have a NodeUUID).
 func TestClientRegistry_ListOnlyUUID(t *testing.T) {
-	c := cfg.NewTestConfig("cluster-registry-list-only-uuid")
+	c := cfg.NewMinimalTestConfigWithDb("cluster-registry-list-only-uuid", t.TempDir())
 	defer c.CloseDb()
-	assert.NoError(t, c.Init())
 
 	// Create one client with empty NodeUUID (non-node), and one proper node
 	nonNode := entity.NewClient().SetName("webapp").SetRole("client")
@@ -122,9 +118,8 @@ func TestClientRegistry_ListOnlyUUID(t *testing.T) {
 
 // Put should prefer UUID over ClientID when both are provided, avoiding cross-attachment.
 func TestClientRegistry_PutPrefersUUIDOverClientID(t *testing.T) {
-	c := cfg.NewTestConfig("cluster-registry-put-prefers-uuid")
+	c := cfg.NewMinimalTestConfigWithDb("cluster-registry-put-prefers-uuid", t.TempDir())
 	defer c.CloseDb()
-	assert.NoError(t, c.Init())
 
 	r, _ := NewClientRegistryWithConfig(c)
 	// Seed two separate records

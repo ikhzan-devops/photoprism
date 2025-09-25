@@ -6,7 +6,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 
-	"github.com/photoprism/photoprism/internal/config"
+	cfg "github.com/photoprism/photoprism/internal/config"
 	"github.com/photoprism/photoprism/internal/event"
 	"github.com/photoprism/photoprism/pkg/fs"
 )
@@ -17,9 +17,6 @@ func TestMain(m *testing.M) {
 	log.SetLevel(logrus.TraceLevel)
 	event.AuditLog = log
 
-	c := config.TestConfig()
-	defer c.CloseDb()
-
 	// Run unit tests.
 	code := m.Run()
 
@@ -27,4 +24,8 @@ func TestMain(m *testing.M) {
 	fs.PurgeTestDbFiles(".", false)
 
 	os.Exit(code)
+}
+
+func newTestConfig(t *testing.T) *cfg.Config {
+	return cfg.NewMinimalTestConfig(t.TempDir())
 }

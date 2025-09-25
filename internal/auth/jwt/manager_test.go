@@ -9,12 +9,11 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	cfg "github.com/photoprism/photoprism/internal/config"
 	"github.com/photoprism/photoprism/pkg/fs"
 )
 
 func TestManagerEnsureActiveKey(t *testing.T) {
-	c := cfg.TestConfig()
+	c := newTestConfig(t)
 	m, err := NewManager(c)
 	require.NoError(t, err)
 	require.NotNil(t, m)
@@ -53,7 +52,7 @@ func TestManagerEnsureActiveKey(t *testing.T) {
 }
 
 func TestManagerGenerateSecondKey(t *testing.T) {
-	c := cfg.TestConfig()
+	c := newTestConfig(t)
 	m, err := NewManager(c)
 	require.NoError(t, err)
 
