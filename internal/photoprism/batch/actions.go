@@ -20,26 +20,58 @@ const (
 
 // ApplyAlbums adds/removes the given photo to/from albums according to items action.
 func ApplyAlbums(photoUID string, albums Items) error {
+	// Validate photo UID
+	if !rnd.IsUID(photoUID, entity.PhotoUID) {
+		return fmt.Errorf("invalid photo uid: %s", photoUID)
+	}
+
 	var addTargets []string
 
 	for _, it := range albums.Items {
 		switch it.Action {
 		case ActionAdd:
+			// Validate that we have either value or title
+			if it.Value == "" && it.Title == "" {
+				return fmt.Errorf("album value or title required for add action")
+			}
+			
 			// Add by UID if provided, otherwise use title to create/find
 			if it.Value != "" {
+				// If value is provided, validate it's a proper UID format
+				if !rnd.IsUID(it.Value, entity.AlbumUID) {
+					return fmt.Errorf("invalid album uid format: %s", it.Value)
+				}
+				
+				// Check if album exists when adding by UID
+				if _, err := query.AlbumByUID(it.Value); err != nil {
+					return fmt.Errorf("album not found: %s", it.Value)
+				}
+				
 				addTargets = append(addTargets, it.Value)
 			} else if it.Title != "" {
 				addTargets = append(addTargets, it.Title)
 			}
 		case ActionRemove:
-			// Remove only if we have a valid album UID
-			if rnd.IsUID(it.Value, entity.AlbumUID) {
-				if a, err := query.AlbumByUID(it.Value); err != nil {
-					log.Debugf("batch: album %s not found for removal: %s", it.Value, err)
-				} else if a.HasID() {
-					a.RemovePhotos([]string{photoUID})
-				}
+			// Validate that we have a value for removal
+			if it.Value == "" {
+				return fmt.Errorf("album uid required for remove action")
 			}
+			
+			// Remove only if we have a valid album UID
+			if !rnd.IsUID(it.Value, entity.AlbumUID) {
+				return fmt.Errorf("invalid album uid format: %s", it.Value)
+			}
+			
+			if a, err := query.AlbumByUID(it.Value); err != nil {
+				return fmt.Errorf("album not found for removal: %s", it.Value)
+			} else if a.HasID() {
+				a.RemovePhotos([]string{photoUID})
+			}
+		case ActionNone, ActionUpdate:
+			// Valid actions that do nothing for albums
+			continue
+		default:
+			return fmt.Errorf("invalid action: %s", it.Action)
 		}
 	}
 
@@ -64,13 +96,23 @@ func ApplyLabels(photo *entity.Photo, labels Items) error {
 	for _, it := range labels.Items {
 		switch it.Action {
 		case ActionAdd:
+			// Validate that we have either value or title
+			if it.Value == "" && it.Title == "" {
+				return fmt.Errorf("label value or title required for add action")
+			}
+
 			// Try by UID first
 			var labelEntity *entity.Label
 			var err error
 			if it.Value != "" {
+				// If value is provided, validate it's a proper UID format
+				if !rnd.IsUID(it.Value, entity.LabelUID) {
+					return fmt.Errorf("invalid label uid format: %s", it.Value)
+				}
+				
 				labelEntity, err = query.LabelByUID(it.Value)
 				if err != nil {
-					labelEntity = nil
+					return fmt.Errorf("label not found: %s", it.Value)
 				}
 			}
 			if labelEntity == nil && it.Title != "" {
@@ -79,8 +121,7 @@ func ApplyLabels(photo *entity.Photo, labels Items) error {
 			}
 
 			if labelEntity == nil {
-				log.Debugf("batch: could not resolve label to add: value=%s title=%s", it.Value, clean.Log(it.Title))
-				continue
+				return fmt.Errorf("could not resolve label to add: value=%s title=%s", it.Value, clean.Log(it.Title))
 			}
 
 			if err := labelEntity.Restore(); err != nil {
@@ -107,18 +148,21 @@ func ApplyLabels(photo *entity.Photo, labels Items) error {
 
 		case ActionRemove:
 			if it.Value == "" {
-				log.Debugf("batch: label remove skipped (uid required): photo=%s title=%s", photo.PhotoUID, clean.Log(it.Title))
-				continue
+				return fmt.Errorf("label uid required for remove action")
+			}
+
+			// Validate UID format
+			if !rnd.IsUID(it.Value, entity.LabelUID) {
+				return fmt.Errorf("invalid label uid format: %s", it.Value)
 			}
 
 			labelEntity, err := query.LabelByUID(it.Value)
 			if err != nil || labelEntity == nil || !labelEntity.HasID() {
-				log.Debugf("batch: label not found for removal by uid: photo=%s uid=%s", photo.PhotoUID, it.Value)
-				continue
+				return fmt.Errorf("label not found for removal: %s", it.Value)
 			}
 
 			if pl, err := query.PhotoLabel(photo.ID, labelEntity.ID); err != nil {
-				log.Debugf("batch: photo-label not found for removal: photo=%s label_id=%d", photo.PhotoUID, labelEntity.ID)
+				return fmt.Errorf("photo-label not found for removal: photo=%s label_id=%d", photo.PhotoUID, labelEntity.ID)
 			} else if pl != nil {
 				if (pl.LabelSrc == entity.SrcManual || pl.LabelSrc == entity.SrcBatch) && pl.Uncertainty < 100 {
 					if err := entity.Db().Delete(&pl).Error; err != nil {
@@ -143,6 +187,11 @@ func ApplyLabels(photo *entity.Photo, labels Items) error {
 				}
 				_ = photo.RemoveKeyword(labelEntity.LabelName)
 			}
+		case ActionNone, ActionUpdate:
+			// Valid actions that do nothing for labels
+			continue
+		default:
+			return fmt.Errorf("invalid action: %s", it.Action)
 		}
 	}
 

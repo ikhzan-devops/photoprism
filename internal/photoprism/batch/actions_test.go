@@ -128,6 +128,116 @@ func TestApplyAlbums(t *testing.T) {
 			t.Error("expected photo to be marked as hidden in album")
 		}
 	})
+
+	// Error cases
+	t.Run("AddPhotoToNonExistingAlbumByUID", func(t *testing.T) {
+		photo := entity.PhotoFixtures.Get("Photo04")
+		nonExistingAlbumUID := "at9lxuqxpoaaaaaa" // Invalid/non-existing UID
+
+		albums := Items{
+			Items: []Item{
+				{Action: ActionAdd, Value: nonExistingAlbumUID},
+			},
+		}
+
+		err := ApplyAlbums(photo.PhotoUID, albums)
+		if err == nil {
+			t.Error("expected error when adding photo to non-existing album, but got none")
+		}
+	})
+
+	t.Run("AddPhotoToAlbumWithInvalidUID", func(t *testing.T) {
+		photo := entity.PhotoFixtures.Get("Photo04")
+		invalidUID := "invalid-uid-format" // Invalid UID format
+
+		albums := Items{
+			Items: []Item{
+				{Action: ActionAdd, Value: invalidUID},
+			},
+		}
+
+		err := ApplyAlbums(photo.PhotoUID, albums)
+		if err == nil {
+			t.Error("expected error when adding photo to album with invalid UID, but got none")
+		}
+	})
+
+	t.Run("RemovePhotoFromNonExistingAlbum", func(t *testing.T) {
+		photo := entity.PhotoFixtures.Get("Photo05")
+		nonExistingAlbumUID := "at9lxuqxpobbbbbb" // Non-existing UID
+
+		albums := Items{
+			Items: []Item{
+				{Action: ActionRemove, Value: nonExistingAlbumUID},
+			},
+		}
+
+		err := ApplyAlbums(photo.PhotoUID, albums)
+		if err == nil {
+			t.Error("expected error when removing photo from non-existing album, but got none")
+		}
+	})
+
+	t.Run("InvalidActionOnAlbum", func(t *testing.T) {
+		photo := entity.PhotoFixtures.Get("Photo06")
+		albumUID := entity.AlbumFixtures.Get("christmas2030").AlbumUID
+
+		albums := Items{
+			Items: []Item{
+				{Action: "invalid-action", Value: albumUID}, // Invalid action
+			},
+		}
+
+		err := ApplyAlbums(photo.PhotoUID, albums)
+		if err == nil {
+			t.Error("expected error for invalid action, but got none")
+		}
+	})
+
+	t.Run("EmptyAlbumItems", func(t *testing.T) {
+		photo := entity.PhotoFixtures.Get("Photo07")
+
+		albums := Items{
+			Items: []Item{}, // Empty items
+		}
+
+		// This should not error, but should be a no-op
+		err := ApplyAlbums(photo.PhotoUID, albums)
+		if err != nil {
+			t.Errorf("expected no error for empty album items, but got: %v", err)
+		}
+	})
+
+	t.Run("AddPhotoToAlbumWithEmptyValueAndTitle", func(t *testing.T) {
+		photo := entity.PhotoFixtures.Get("Photo08")
+
+		albums := Items{
+			Items: []Item{
+				{Action: ActionAdd, Value: "", Title: ""}, // Both empty
+			},
+		}
+
+		err := ApplyAlbums(photo.PhotoUID, albums)
+		if err == nil {
+			t.Error("expected error when both Value and Title are empty, but got none")
+		}
+	})
+
+	t.Run("InvalidPhotoUID", func(t *testing.T) {
+		invalidPhotoUID := "invalid-photo-uid"
+		albumUID := entity.AlbumFixtures.Get("christmas2030").AlbumUID
+
+		albums := Items{
+			Items: []Item{
+				{Action: ActionAdd, Value: albumUID},
+			},
+		}
+
+		err := ApplyAlbums(invalidPhotoUID, albums)
+		if err == nil {
+			t.Error("expected error for invalid photo UID, but got none")
+		}
+	})
 }
 
 func TestApplyLabels(t *testing.T) {
@@ -332,6 +442,119 @@ func TestApplyLabels(t *testing.T) {
 		err = ApplyLabels(emptyPhoto, labels)
 		if err == nil {
 			t.Error("expected error for empty photo")
+		}
+	})
+
+	// Additional error cases
+	t.Run("AddNonExistingLabelByUID", func(t *testing.T) {
+		photo := entity.PhotoFixtures.Pointer("Photo11")
+		nonExistingLabelUID := "lt9lxuqxpoaaaaaa" // Invalid/non-existing UID
+
+		labels := Items{
+			Items: []Item{
+				{Action: ActionAdd, Value: nonExistingLabelUID},
+			},
+		}
+
+		err := ApplyLabels(photo, labels)
+		if err == nil {
+			t.Error("expected error when adding non-existing label by UID, but got none")
+		}
+	})
+
+	t.Run("AddLabelWithInvalidUID", func(t *testing.T) {
+		photo := entity.PhotoFixtures.Pointer("Photo12")
+		invalidUID := "invalid-label-uid-format" // Invalid UID format
+
+		labels := Items{
+			Items: []Item{
+				{Action: ActionAdd, Value: invalidUID},
+			},
+		}
+
+		err := ApplyLabels(photo, labels)
+		if err == nil {
+			t.Error("expected error when adding label with invalid UID, but got none")
+		}
+	})
+
+	t.Run("RemoveNonExistingLabelByUID", func(t *testing.T) {
+		photo := entity.PhotoFixtures.Pointer("Photo13")
+		nonExistingLabelUID := "lt9lxuqxpobbbbbb" // Non-existing UID
+
+		labels := Items{
+			Items: []Item{
+				{Action: ActionRemove, Value: nonExistingLabelUID},
+			},
+		}
+
+		err := ApplyLabels(photo, labels)
+		if err == nil {
+			t.Error("expected error when removing non-existing label, but got none")
+		}
+	})
+
+	t.Run("InvalidActionOnLabel", func(t *testing.T) {
+		photo := entity.PhotoFixtures.Pointer("Photo14")
+		labelUID := entity.LabelFixtures.Get("landscape").LabelUID
+
+		labels := Items{
+			Items: []Item{
+				{Action: "invalid-action", Value: labelUID}, // Invalid action
+			},
+		}
+
+		err := ApplyLabels(photo, labels)
+		if err == nil {
+			t.Error("expected error for invalid action, but got none")
+		}
+	})
+
+	t.Run("EmptyLabelItems", func(t *testing.T) {
+		photo := entity.PhotoFixtures.Pointer("Photo15")
+
+		labels := Items{
+			Items: []Item{}, // Empty items
+		}
+
+		// This should not error, but should be a no-op
+		err := ApplyLabels(photo, labels)
+		if err != nil {
+			t.Errorf("expected no error for empty label items, but got: %v", err)
+		}
+	})
+
+	t.Run("AddLabelWithEmptyValueAndTitle", func(t *testing.T) {
+		photo := entity.PhotoFixtures.Pointer("Photo16")
+
+		labels := Items{
+			Items: []Item{
+				{Action: ActionAdd, Value: "", Title: ""}, // Both empty
+			},
+		}
+
+		err := ApplyLabels(photo, labels)
+		if err == nil {
+			t.Error("expected error when both Value and Title are empty, but got none")
+		}
+	})
+
+	t.Run("RemoveLabelNotAssignedToPhoto", func(t *testing.T) {
+		photo := entity.PhotoFixtures.Pointer("Photo17")
+		labelUID := entity.LabelFixtures.Get("bird").LabelUID
+
+		// Ensure the label is not assigned to this photo
+		entity.Db().Where("photo_id = ? AND label_id = (SELECT id FROM labels WHERE label_uid = ?)", photo.ID, labelUID).Delete(&entity.PhotoLabel{})
+
+		labels := Items{
+			Items: []Item{
+				{Action: ActionRemove, Value: labelUID},
+			},
+		}
+
+		err := ApplyLabels(photo, labels)
+		if err == nil {
+			t.Error("expected error when removing label not assigned to photo, but got none")
 		}
 	})
 }
