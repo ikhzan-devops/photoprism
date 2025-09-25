@@ -163,6 +163,15 @@ Note: Across our public documentation, official images, and in production, the c
 - JS/Vue: use the lint/format scripts in `frontend/package.json` (ESLint + Prettier)
 - All added code and tests **must** be formatted according to our standards.
 
+> Remember to update the `**Last Updated:**` line at the top whenever you edit these guidelines or other files containing a timestamp.
+
+## Safety & Data
+
+- Never commit secrets, local configurations, or cache files. Use environment variables or a local `.env`.
+  - Ensure `.env` and `.local` are ignored in `.gitignore` and `.dockerignore`.
+- Prefer using existing caches, workers, and batching strategies referenced in code and `Makefile`. Consider memory/CPU impact; suggest benchmarks or profiling only when justified.
+- Do not run destructive commands against production data. Prefer ephemeral volumes and test fixtures when running acceptance tests.
+
 ### Filesystem Permissions & io/fs Aliasing (Go)
 
 - Always use our shared permission variables from `pkg/fs` when creating files/directories:
@@ -176,13 +185,7 @@ Note: Across our public documentation, official images, and in production, the c
   - Our package is `github.com/photoprism/photoprism/pkg/fs` and provides the only approved permission constants for `os.MkdirAll`, `os.WriteFile`, `os.OpenFile`, and `os.Chmod`.
 - Prefer `filepath.Join` for filesystem paths; reserve `path.Join` for URL paths.
 
-## Safety & Data
-
-- Never commit secrets, local configurations, or cache files. Use environment variables or a local `.env`.
-  - Ensure `.env` and `.local` are ignored in `.gitignore` and `.dockerignore`.
-- Prefer using existing caches, workers, and batching strategies referenced in code and `Makefile`. Consider memory/CPU impact; suggest benchmarks or profiling only when justified.
-- Do not run destructive commands against production data. Prefer ephemeral volumes and test fixtures when running acceptance tests.
-- ### File I/O — Overwrite Policy (force semantics)
+### File I/O — Overwrite Policy (force semantics)
 
 - Default is safety-first: callers must not overwrite non-empty destination files unless they opt-in with a `force` flag.
 - Replacing empty destination files is allowed without `force=true` (useful for placeholder files).
