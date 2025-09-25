@@ -1,5 +1,7 @@
 PhotoPrism — Backend CODEMAP
 
+**Last Updated:** September 24, 2025
+
 Purpose
 - Give agents and contributors a fast, reliable map of where things live and how they fit together, so you can add features, fix bugs, and write tests without spelunking.
 - Sources of truth: prefer Makefile targets and the Developer Guide linked in AGENTS.md.
