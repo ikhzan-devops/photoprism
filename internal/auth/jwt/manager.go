@@ -134,6 +134,7 @@ func (m *Manager) AllKeys() []*Key {
 	return out
 }
 
+// loadKeys reads existing key records from disk into memory.
 func (m *Manager) loadKeys() error {
 	dir := m.keyDir()
 
@@ -208,6 +209,7 @@ func (m *Manager) loadKeys() error {
 	return nil
 }
 
+// generateKey creates a fresh Ed25519 key pair, persists it, and returns a clone.
 func (m *Manager) generateKey() (*Key, error) {
 	seed := make([]byte, ed25519.SeedSize)
 	if _, err := rand.Read(seed); err != nil {
@@ -243,6 +245,7 @@ func (m *Manager) generateKey() (*Key, error) {
 	return k.clone(), nil
 }
 
+// persistKey writes the private and public key records to disk using secure permissions.
 func (m *Manager) persistKey(k *Key) error {
 	dir := m.keyDir()
 	if err := fs.MkdirAll(dir); err != nil {

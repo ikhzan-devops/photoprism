@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"math/rand"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -24,6 +25,19 @@ var (
 	errKeyNotFound = errors.New("jwt: key not found")
 )
 
+const (
+	// jwksFetchMaxRetries caps the number of immediate retry attempts after a fetch error.
+	jwksFetchMaxRetries = 3
+	// jwksFetchBaseDelay is the initial retry delay (with jitter) applied after the first failure.
+	jwksFetchBaseDelay = 200 * time.Millisecond
+	// jwksFetchMaxDelay is the upper bound for retry delays to prevent unbounded backoff.
+	jwksFetchMaxDelay = 2 * time.Second
+)
+
+// randInt63n is defined for deterministic testing of jitter (overridable in tests).
+var randInt63n = rand.Int63n
+
+// cacheEntry stores the JWKS material cached on disk and in memory.
 type cacheEntry struct {
 	URL       string      `json:"url"`
 	ETag      string      `json:"etag,omitempty"`
@@ -149,6 +163,7 @@ func (v *Verifier) VerifyToken(ctx context.Context, tokenString string, expected
 	return claims, nil
 }
 
+// publicKeyForKid resolves the public key for the given key ID, fetching JWKS data if needed.
 func (v *Verifier) publicKeyForKid(ctx context.Context, url, kid string, force bool) (ed25519.PublicKey, error) {
 	keys, err := v.keysForURL(ctx, url, force)
 	if err != nil {
@@ -172,71 +187,155 @@ func (v *Verifier) publicKeyForKid(ctx context.Context, url, kid string, force b
 	return nil, errKeyNotFound
 }
 
+// keysForURL returns JWKS keys for the specified endpoint, reusing cache when possible.
 func (v *Verifier) keysForURL(ctx context.Context, url string, force bool) ([]PublicJWK, error) {
-	v.mu.Lock()
-	defer v.mu.Unlock()
-
 	ttl := 300 * time.Second
 	if v.conf != nil && v.conf.JWKSCacheTTL() > 0 {
 		ttl = time.Duration(v.conf.JWKSCacheTTL()) * time.Second
 	}
 
-	if !force && v.cache.URL == url && len(v.cache.Keys) > 0 {
-		age := v.now().Unix() - v.cache.FetchedAt
-		if age >= 0 && time.Duration(age)*time.Second <= ttl {
-			return append([]PublicJWK(nil), v.cache.Keys...), nil
-		}
-	}
+	attempts := 0
 
+	for {
+		cached := v.snapshotCache()
+
+		if keys, ok := v.cachedKeys(url, ttl, cached, force); ok {
+			return keys, nil
+		}
+
+		etag := ""
+		if !force && cached.URL == url {
+			etag = cached.ETag
+		}
+
+		result, err := v.fetchJWKS(ctx, url, etag)
+		if err != nil {
+			if !force && cached.URL == url && len(cached.Keys) > 0 {
+				return append([]PublicJWK(nil), cached.Keys...), nil
+			}
+
+			attempts++
+			if attempts >= jwksFetchMaxRetries {
+				return nil, err
+			}
+
+			delay := backoffDuration(attempts)
+			log.Debugf("jwt: jwks fetch retry %d for %s in %s (%s)", attempts, url, delay, err)
+
+			select {
+			case <-time.After(delay):
+				continue
+			case <-ctx.Done():
+				return nil, ctx.Err()
+			}
+		}
+
+		if keys, ok := v.updateCache(url, result); ok {
+			return keys, nil
+		}
+		// Cache changed by another goroutine between snapshot and update; retry.
+	}
+}
+
+// snapshotCache returns the current JWKS cache entry under lock for safe reading.
+func (v *Verifier) snapshotCache() cacheEntry {
+	v.mu.Lock()
+	defer v.mu.Unlock()
+	cache := v.cache
+	return cache
+}
+
+// cachedKeys returns cached JWKS keys if they are fresh enough and match the target URL.
+func (v *Verifier) cachedKeys(url string, ttl time.Duration, cache cacheEntry, force bool) ([]PublicJWK, bool) {
+	if force || cache.URL != url || len(cache.Keys) == 0 {
+		return nil, false
+	}
+	age := v.now().Unix() - cache.FetchedAt
+	if age < 0 {
+		return nil, false
+	}
+	if time.Duration(age)*time.Second > ttl {
+		return nil, false
+	}
+	return append([]PublicJWK(nil), cache.Keys...), true
+}
+
+type jwksFetchResult struct {
+	keys        []PublicJWK
+	etag        string
+	fetchedAt   int64
+	notModified bool
+}
+
+// fetchJWKS downloads the JWKS document (respecting conditional requests) and returns the parsed keys.
+func (v *Verifier) fetchJWKS(ctx context.Context, url, etag string) (*jwksFetchResult, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
 	}
-	if v.cache.URL == url && v.cache.ETag != "" {
-		req.Header.Set("If-None-Match", v.cache.ETag)
+	if etag != "" {
+		req.Header.Set("If-None-Match", etag)
 	}
 
 	resp, err := v.httpClient.Do(req)
 	if err != nil {
-		if v.cache.URL == url && len(v.cache.Keys) > 0 {
-			return append([]PublicJWK(nil), v.cache.Keys...), nil
-		}
 		return nil, err
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode == http.StatusNotModified {
-		v.cache.FetchedAt = v.now().Unix()
-		_ = v.saveCacheLocked()
-		return append([]PublicJWK(nil), v.cache.Keys...), nil
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		if v.cache.URL == url && len(v.cache.Keys) > 0 {
-			return append([]PublicJWK(nil), v.cache.Keys...), nil
+	switch resp.StatusCode {
+	case http.StatusNotModified:
+		return &jwksFetchResult{
+			etag:        etag,
+			fetchedAt:   v.now().Unix(),
+			notModified: true,
+		}, nil
+	case http.StatusOK:
+		var body JWKS
+		if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+			return nil, err
 		}
+		if len(body.Keys) == 0 {
+			return nil, errors.New("jwt: jwks contains no keys")
+		}
+		return &jwksFetchResult{
+			keys:      append([]PublicJWK(nil), body.Keys...),
+			etag:      resp.Header.Get("ETag"),
+			fetchedAt: v.now().Unix(),
+		}, nil
+	default:
 		return nil, fmt.Errorf("jwt: jwks fetch failed: %s", resp.Status)
 	}
+}
 
-	var body JWKS
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
-		return nil, err
-	}
-	if len(body.Keys) == 0 {
-		return nil, errors.New("jwt: jwks contains no keys")
+// updateCache stores the JWKS fetch result on success and returns the fresh keys.
+func (v *Verifier) updateCache(url string, result *jwksFetchResult) ([]PublicJWK, bool) {
+	v.mu.Lock()
+	defer v.mu.Unlock()
+
+	if result.notModified {
+		if v.cache.URL != url {
+			return nil, false
+		}
+		v.cache.FetchedAt = result.fetchedAt
+		if result.etag != "" {
+			v.cache.ETag = result.etag
+		}
+		_ = v.saveCacheLocked()
+		return append([]PublicJWK(nil), v.cache.Keys...), true
 	}
 
 	v.cache = cacheEntry{
 		URL:       url,
-		ETag:      resp.Header.Get("ETag"),
-		Keys:      append([]PublicJWK(nil), body.Keys...),
-		FetchedAt: v.now().Unix(),
+		ETag:      result.etag,
+		Keys:      append([]PublicJWK(nil), result.keys...),
+		FetchedAt: result.fetchedAt,
 	}
 	_ = v.saveCacheLocked()
-
-	return append([]PublicJWK(nil), body.Keys...), nil
+	return append([]PublicJWK(nil), v.cache.Keys...), true
 }
 
+// loadCache restores a previously persisted JWKS cache entry from disk.
 func (v *Verifier) loadCache() error {
 	if v.cachePath == "" || !fs.FileExists(v.cachePath) {
 		return nil
@@ -256,6 +355,7 @@ func (v *Verifier) loadCache() error {
 	return nil
 }
 
+// saveCacheLocked persists the current cache entry to disk; caller must hold the mutex.
 func (v *Verifier) saveCacheLocked() error {
 	if v.cachePath == "" {
 		return nil
@@ -268,4 +368,23 @@ func (v *Verifier) saveCacheLocked() error {
 		return err
 	}
 	return os.WriteFile(v.cachePath, data, fs.ModeSecretFile)
+}
+
+// backoffDuration returns the retry delay for the given fetch attempt, adding jitter.
+func backoffDuration(attempt int) time.Duration {
+	if attempt < 1 {
+		attempt = 1
+	}
+
+	base := jwksFetchBaseDelay << (attempt - 1)
+	if base > jwksFetchMaxDelay {
+		base = jwksFetchMaxDelay
+	}
+
+	jitterRange := base / 2
+	if jitterRange > 0 {
+		base += time.Duration(randInt63n(int64(jitterRange) + 1))
+	}
+
+	return base
 }

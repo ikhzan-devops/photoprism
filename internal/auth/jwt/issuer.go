@@ -29,6 +29,7 @@ type ClaimsSpec struct {
 	TTL      time.Duration
 }
 
+// validate performs sanity checks on the claim specification before issuing a token.
 func (s ClaimsSpec) validate() error {
 	if strings.TrimSpace(s.Issuer) == "" {
 		return errors.New("jwt: issuer required")

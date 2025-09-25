@@ -14,7 +14,7 @@ import (
 )
 
 func TestManagerEnsureActiveKey(t *testing.T) {
-	c := cfg.NewTestConfig("jwt-manager-active")
+	c := cfg.TestConfig()
 	m, err := NewManager(c)
 	require.NoError(t, err)
 	require.NotNil(t, m)
@@ -53,7 +53,7 @@ func TestManagerEnsureActiveKey(t *testing.T) {
 }
 
 func TestManagerGenerateSecondKey(t *testing.T) {
-	c := cfg.NewTestConfig("jwt-manager-rotate")
+	c := cfg.TestConfig()
 	m, err := NewManager(c)
 	require.NoError(t, err)
 

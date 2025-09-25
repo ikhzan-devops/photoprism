@@ -18,7 +18,7 @@ import (
 )
 
 func TestVerifierPrimeAndVerify(t *testing.T) {
-	portalCfg := cfg.NewTestConfig("jwt-verifier-portal")
+	portalCfg := cfg.TestConfig()
 	clusterUUID := rnd.UUIDv7()
 	portalCfg.Options().ClusterUUID = clusterUUID
 
@@ -105,7 +105,7 @@ func TestVerifierPrimeAndVerify(t *testing.T) {
 }
 
 func TestIssuerClampTTL(t *testing.T) {
-	portalCfg := cfg.NewTestConfig("jwt-issuer-ttl")
+	portalCfg := cfg.TestConfig()
 	mgr, err := NewManager(portalCfg)
 	require.NoError(t, err)
 	mgr.now = func() time.Time { return time.Unix(0, 0) }
@@ -135,4 +135,34 @@ func TestIssuerClampTTL(t *testing.T) {
 	require.NoError(t, err)
 	ttl := parsed.ExpiresAt.Time.Sub(parsed.IssuedAt.Time)
 	require.Equal(t, MaxTokenTTL, ttl)
+}
+
+func TestBackoffDuration(t *testing.T) {
+	origRand := randInt63n
+	randInt63n = func(n int64) int64 {
+		if n <= 0 {
+			return 0
+		}
+		return n - 1
+	}
+	t.Cleanup(func() { randInt63n = origRand })
+
+	tests := []struct {
+		name    string
+		attempt int
+		expect  time.Duration
+	}{
+		{"Attempt1", 1, 300 * time.Millisecond},
+		{"Attempt2", 2, 600 * time.Millisecond},
+		{"Attempt3", 3, 1200 * time.Millisecond},
+		{"Attempt4", 4, 2400 * time.Millisecond},
+		{"Attempt5", 5, 3 * time.Second},
+		{"AttemptZero", 0, 300 * time.Millisecond},
+	}
+
+	for _, tt := range tests {
+		if got := backoffDuration(tt.attempt); got != tt.expect {
+			t.Errorf("%s: expected %s, got %s", tt.name, tt.expect, got)
+		}
+	}
 }
