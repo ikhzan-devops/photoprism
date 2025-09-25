@@ -51,7 +51,7 @@
           </v-row>
           <v-row dense>
             <v-col cols="4" lg="2">
-              <v-combobox
+              <v-autocomplete
                 :model-value="view.model.Day > 0 ? view.model.Day : null"
                 :disabled="disabled"
                 :error="invalidDate"
@@ -70,10 +70,10 @@
                 class="input-day"
                 @update:model-value="setDay"
               >
-              </v-combobox>
+              </v-autocomplete>
             </v-col>
             <v-col cols="4" lg="2">
-              <v-combobox
+              <v-autocomplete
                 :model-value="view.model.Month > 0 ? view.model.Month : null"
                 :disabled="disabled"
                 :error="invalidDate"
@@ -91,10 +91,10 @@
                 class="input-month"
                 @update:model-value="setMonth"
               >
-              </v-combobox>
+              </v-autocomplete>
             </v-col>
             <v-col cols="4" lg="2">
-              <v-combobox
+              <v-autocomplete
                 :model-value="view.model.Year > 0 ? view.model.Year : null"
                 :disabled="disabled"
                 :error="invalidDate"
@@ -112,7 +112,7 @@
                 class="input-year"
                 @update:model-value="setYear"
               >
-              </v-combobox>
+              </v-autocomplete>
             </v-col>
             <v-col cols="6" lg="2">
               <v-text-field

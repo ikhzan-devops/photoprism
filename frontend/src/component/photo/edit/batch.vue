@@ -263,7 +263,7 @@
                   </v-row>
                   <v-row dense>
                     <v-col cols="6" md="2">
-                      <v-combobox
+                      <v-autocomplete
                         v-model="formData.Day.value"
                         :label="$gettext('Day')"
                         autocomplete="off"
@@ -279,10 +279,10 @@
                         class="input-day"
                         @update:model-value="(val) => changeSelectValue(val, 'select-field', 'Day')"
                       >
-                      </v-combobox>
+                      </v-autocomplete>
                     </v-col>
                     <v-col cols="6" md="3">
-                      <v-combobox
+                      <v-autocomplete
                         v-model="formData.Month.value"
                         :label="$gettext('Month')"
                         autocomplete="off"
@@ -298,10 +298,10 @@
                         class="input-month"
                         @update:model-value="(val) => changeSelectValue(val, 'select-field', 'Month')"
                       >
-                      </v-combobox>
+                      </v-autocomplete>
                     </v-col>
                     <v-col cols="12" sm="6" md="3">
-                      <v-combobox
+                      <v-autocomplete
                         v-model="formData.Year.value"
                         :label="$gettext('Year')"
                         autocomplete="off"
@@ -317,7 +317,7 @@
                         class="input-year"
                         @update:model-value="(val) => changeSelectValue(val, 'select-field', 'Year')"
                       >
-                      </v-combobox>
+                      </v-autocomplete>
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
                       <v-autocomplete
@@ -518,7 +518,7 @@
                   </v-row>
                   <v-row dense>
                     <v-col cols="12">
-                      <v-combobox
+                      <v-autocomplete
                         v-model="formData.Type.value"
                         :label="$gettext('Type')"
                         autocomplete="off"
@@ -534,7 +534,7 @@
                         class="input-type"
                         @update:model-value="(val) => changeSelectValue(val, 'select-field', 'Type')"
                       >
-                      </v-combobox>
+                      </v-autocomplete>
                     </v-col>
                   </v-row>
                 </div>
