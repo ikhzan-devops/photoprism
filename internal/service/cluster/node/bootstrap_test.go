@@ -1,4 +1,4 @@
-package instance
+package node
 
 import (
 	"archive/zip"
@@ -24,6 +24,15 @@ func TestInitConfig_NoPortal_NoOp(t *testing.T) {
 
 	// Default NodeRole() resolves to instance; no Portal configured.
 	assert.Equal(t, cluster.RoleInstance, c.NodeRole())
+	assert.NoError(t, InitConfig(c))
+}
+
+func TestInitConfig_ServiceRole(t *testing.T) {
+	c := config.NewMinimalTestConfigWithDb("bootstrap-service", t.TempDir())
+	defer c.CloseDb()
+
+	c.Options().NodeRole = cluster.RoleService
+
 	assert.NoError(t, InitConfig(c))
 }
 
