@@ -13,11 +13,12 @@ import (
 	"github.com/photoprism/photoprism/pkg/txt/report"
 )
 
-// ClusterSummaryCommand prints a minimal cluster summary (Portal-only).
+// ClusterSummaryCommand prints a minimal cluster summary.
 var ClusterSummaryCommand = &cli.Command{
 	Name:   "summary",
-	Usage:  "Shows cluster summary (Portal-only)",
+	Usage:  "Shows cluster summary",
 	Flags:  report.CliFlags,
+	Hidden: true, // Required for cluster-management only.
 	Action: clusterSummaryAction,
 }
 

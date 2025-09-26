@@ -1,5 +1,7 @@
 PhotoPrism — Backend CODEMAP
 
+**Last Updated:** September 24, 2025
+
 Purpose
 - Give agents and contributors a fast, reliable map of where things live and how they fit together, so you can add features, fix bugs, and write tests without spelunking.
 - Sources of truth: prefer Makefile targets and the Developer Guide linked in AGENTS.md.
@@ -177,7 +179,7 @@ Conventions & Rules of Thumb
 
 Filesystem Permissions & io/fs Aliasing
 - Use `github.com/photoprism/photoprism/pkg/fs` permission variables when creating files/dirs:
-  - `fs.ModeDir` (0o755), `fs.ModeFile` (0o644), `fs.ModeConfigFile` (0o664), `fs.ModeSecret` (0o600), `fs.ModeBackupFile` (0o600).
+  - `fs.ModeDir` (0o755 with umask), `fs.ModeFile` (0o644 with umask), `fs.ModeConfigFile` (0o664), `fs.ModeSecretFile` (0o600), `fs.ModeBackupFile` (0o600).
 - Do not use stdlib `io/fs` mode bits as permission arguments. When importing stdlib `io/fs`, alias it (`iofs`/`gofs`) to avoid `fs.*` collisions with our package.
 - Prefer `filepath.Join` for filesystem paths across platforms; use `path.Join` for URLs only.
 
