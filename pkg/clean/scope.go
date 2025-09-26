@@ -7,6 +7,7 @@ import (
 )
 
 // Scope sanitizes a string that contains authentication scope identifiers.
+// Callers should use acl.ScopeAttrPermits / acl.ScopePermits for authorization checks.
 func Scope(s string) string {
 	if s == "" {
 		return ""
@@ -16,6 +17,7 @@ func Scope(s string) string {
 }
 
 // Scopes sanitizes authentication scope identifiers and returns them as string slice.
+// Callers should use acl.ScopeAttrPermits / acl.ScopePermits for authorization checks.
 func Scopes(s string) []string {
 	if s == "" {
 		return []string{}
