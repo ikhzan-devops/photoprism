@@ -105,18 +105,54 @@ func (c *Config) PortalThemePath() string {
 	return c.ThemePath()
 }
 
-// JoinToken returns the token required to access the portal API endpoints.
+// JoinToken returns the token required to use the node register API endpoint.
+// Example: k9sEFe6-A7gt6zqm-gY9gFh0
 func (c *Config) JoinToken() string {
-	if c.options.JoinToken != "" {
-		return c.options.JoinToken
-	} else if fileName := FlagFilePath("JOIN_TOKEN"); fileName == "" {
-		return ""
-	} else if b, err := os.ReadFile(fileName); err != nil || len(b) == 0 {
-		log.Warnf("config: failed to read portal token from %s (%s)", fileName, err)
-		return ""
-	} else {
-		return string(b)
+	if s := strings.TrimSpace(c.options.JoinToken); rnd.IsJoinToken(s, false) {
+		c.options.JoinToken = s
+		return s
 	}
+
+	if fileName := FlagFilePath("JOIN_TOKEN"); fileName != "" && fs.FileExistsNotEmpty(fileName) {
+		if b, err := os.ReadFile(fileName); err != nil || len(b) == 0 {
+			log.Warnf("config: could not read portal token from %s (%s)", fileName, err)
+		} else if s := strings.TrimSpace(string(b)); rnd.IsJoinToken(s, false) {
+			return s
+		} else {
+			log.Warnf("config: portal join token from %s is shorter than %d characters", fileName, rnd.JoinTokenLength)
+		}
+	}
+
+	if !c.IsPortal() {
+		return ""
+	}
+
+	fileName := filepath.Join(c.PortalConfigPath(), "secrets", "join_token")
+
+	if fs.FileExistsNotEmpty(fileName) {
+		if b, err := os.ReadFile(fileName); err != nil || len(b) == 0 {
+			log.Warnf("config: could not read portal token from %s (%s)", fileName, err)
+		} else if s := strings.TrimSpace(string(b)); rnd.IsJoinToken(s, false) {
+			c.options.JoinToken = s
+			return s
+		} else {
+			log.Warnf("config: portal join token stored in %s is shorter than %d characters; generating a new one", fileName, rnd.JoinTokenLength)
+		}
+	}
+
+	token := rnd.JoinToken()
+	if !rnd.IsJoinToken(token, true) {
+		return ""
+	}
+
+	if err := fs.WriteFile(fileName, []byte(token), fs.ModeSecretFile); err != nil {
+		log.Errorf("config: could not write portal join token (%s)", err)
+		return ""
+	}
+
+	c.options.JoinToken = token
+
+	return token
 }
 
 // deriveNodeNameAndDomainFromHttpHost attempts to derive cluster host and domain name from the site URL.

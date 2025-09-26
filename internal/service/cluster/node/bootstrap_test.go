@@ -49,7 +49,7 @@ func TestRegister_PersistSecretAndDB(t *testing.T) {
 				Node:        cluster.Node{Name: "pp-node-01"},
 				UUID:        rnd.UUID(),
 				ClusterCIDR: "192.0.2.0/24",
-				Secrets:     &cluster.RegisterSecrets{ClientSecret: "SECRET"},
+				Secrets:     &cluster.RegisterSecrets{ClientSecret: cluster.ExampleClientSecret},
 				JWKSUrl:     jwksURL,
 				Database: cluster.RegisterDatabase{
 					Driver:   config.MySQL,
@@ -77,7 +77,7 @@ func TestRegister_PersistSecretAndDB(t *testing.T) {
 
 	// Configure Portal.
 	c.Options().PortalUrl = srv.URL
-	c.Options().JoinToken = "t0k3n"
+	c.Options().JoinToken = cluster.ExampleJoinToken
 	// Gate rotate=true: driver mysql and no DSN/fields.
 	c.Options().DatabaseDriver = config.MySQL
 	c.Options().DatabaseDSN = ""
@@ -89,7 +89,7 @@ func TestRegister_PersistSecretAndDB(t *testing.T) {
 	assert.NoError(t, InitConfig(c))
 
 	// Options should be reloaded; check values.
-	assert.Equal(t, "SECRET", c.NodeClientSecret())
+	assert.Equal(t, cluster.ExampleClientSecret, c.NodeClientSecret())
 	// DSN branch should be preferred and persisted.
 	assert.Contains(t, c.Options().DatabaseDSN, "@tcp(db.local:3306)/pp_db")
 	assert.Equal(t, config.MySQL, c.Options().DatabaseDriver)
@@ -106,13 +106,14 @@ func TestThemeInstall_Missing(t *testing.T) {
 	_ = zw.Close()
 
 	// Fake Portal server (register -> oauth token -> theme)
+	clientSecret := cluster.ExampleClientSecret
 	var jwksURL2 string
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case "/api/v1/cluster/nodes/register":
 			w.Header().Set("Content-Type", "application/json")
 			// Return NodeClientID + NodeClientSecret so bootstrap can request OAuth token
-			_ = json.NewEncoder(w).Encode(cluster.RegisterResponse{UUID: rnd.UUID(), ClusterCIDR: "198.51.100.0/24", Node: cluster.Node{ClientID: "cs5gfen1bgxz7s9i", Name: "pp-node-01"}, Secrets: &cluster.RegisterSecrets{ClientSecret: "s3cr3t"}, JWKSUrl: jwksURL2})
+			_ = json.NewEncoder(w).Encode(cluster.RegisterResponse{UUID: rnd.UUID(), ClusterCIDR: "198.51.100.0/24", Node: cluster.Node{ClientID: "cs5gfen1bgxz7s9i", Name: "pp-node-01"}, Secrets: &cluster.RegisterSecrets{ClientSecret: clientSecret}, JWKSUrl: jwksURL2})
 		case "/api/v1/oauth/token":
 			w.Header().Set("Content-Type", "application/json")
 			_ = json.NewEncoder(w).Encode(map[string]any{"access_token": "tok", "token_type": "Bearer"})
@@ -132,7 +133,7 @@ func TestThemeInstall_Missing(t *testing.T) {
 
 	// Point Portal.
 	c.Options().PortalUrl = srv.URL
-	c.Options().JoinToken = "t0k3n"
+	c.Options().JoinToken = cluster.ExampleJoinToken
 
 	// Ensure theme dir is empty and unique.
 	tempTheme, err := os.MkdirTemp("", "pp-theme-*")
@@ -160,7 +161,7 @@ func TestRegister_SQLite_NoDBPersist(t *testing.T) {
 			w.WriteHeader(http.StatusCreated)
 			resp := cluster.RegisterResponse{
 				Node:        cluster.Node{Name: "pp-node-01"},
-				Secrets:     &cluster.RegisterSecrets{ClientSecret: "SECRET"},
+				Secrets:     &cluster.RegisterSecrets{ClientSecret: cluster.ExampleClientSecret},
 				ClusterCIDR: "203.0.113.0/24",
 				JWKSUrl:     jwksURL3,
 				Database:    cluster.RegisterDatabase{Host: "db.local", Port: 3306, Name: "pp_db", User: "pp_user", Password: "pp_pw", DSN: "pp_user:pp_pw@tcp(db.local:3306)/pp_db?charset=utf8mb4&parseTime=true"},
@@ -178,7 +179,7 @@ func TestRegister_SQLite_NoDBPersist(t *testing.T) {
 
 	// SQLite driver by default; set Portal.
 	c.Options().PortalUrl = srv.URL
-	c.Options().JoinToken = "t0k3n"
+	c.Options().JoinToken = cluster.ExampleJoinToken
 	// Remember original DSN so we can ensure it is not changed.
 	origDSN := c.Options().DatabaseDSN
 	t.Cleanup(func() { _ = os.Remove(origDSN) })
@@ -187,7 +188,7 @@ func TestRegister_SQLite_NoDBPersist(t *testing.T) {
 	assert.NoError(t, InitConfig(c))
 
 	// NodeClientSecret should persist, but DB should remain SQLite (no DSN update).
-	assert.Equal(t, "SECRET", c.NodeClientSecret())
+	assert.Equal(t, cluster.ExampleClientSecret, c.NodeClientSecret())
 	assert.Equal(t, config.SQLite3, c.DatabaseDriver())
 	assert.Equal(t, origDSN, c.Options().DatabaseDSN)
 	assert.Equal(t, srv.URL+"/.well-known/jwks.json", c.JWKSUrl())
@@ -210,7 +211,7 @@ func TestRegister_404_NoRetry(t *testing.T) {
 	defer c.CloseDb()
 
 	c.Options().PortalUrl = srv.URL
-	c.Options().JoinToken = "t0k3n"
+	c.Options().JoinToken = cluster.ExampleJoinToken
 
 	// Run bootstrap; registration should attempt once and stop on 404.
 	_ = InitConfig(c)
