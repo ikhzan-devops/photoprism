@@ -1,5 +1,5 @@
 /*
-Package instance bootstraps a PhotoPrism node that joins a cluster Portal.
+Package node bootstraps a PhotoPrism node (instance or service) that joins a cluster Portal.
 
 Responsibilities include:
 
@@ -35,4 +35,4 @@ want to support our work, or just want to say hello.
 Additional information can be found in our Developer Guide:
 <https://docs.photoprism.app/developer-guide/>
 */
-package instance
+package node

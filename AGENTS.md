@@ -349,7 +349,7 @@ If anything in this file conflicts with the `Makefile` or the Developer Guide, t
 
 ### Cluster Operations
 
-- Keep bootstrap code decoupled: avoid importing `internal/service/cluster/instance/*` from `internal/config` or the cluster root, let instances talk to the Portal over HTTP(S), and rely on constants from `internal/service/cluster/const.go`.
+- Keep bootstrap code decoupled: avoid importing `internal/service/cluster/node/*` from `internal/config` or the cluster root, let nodes talk to the Portal over HTTP(S), and rely on constants from `internal/service/cluster/const.go`.
 - Config init order: load `options.yml` (`c.initSettings()`), run `EarlyExt().InitEarly(c)`, connect/register the DB, then invoke `Ext().Init(c)`.
 - Theme endpoint: `GET /api/v1/cluster/theme` streams a zip from `conf.ThemePath()`; only reinstall when `app.js` is missing and always use the header helpers in `pkg/service/http/header`.
 - Registration flow: send `rotate=true` only for MySQL/MariaDB nodes without credentials, treat 401/403/404 as terminal, include `clientId` + `clientSecret` when renaming an existing node, and persist only newly generated secrets or DB settings.

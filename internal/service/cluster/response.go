@@ -42,6 +42,15 @@ type SummaryResponse struct {
 	Time        string       `json:"time"`
 }
 
+// MetricsResponse is the response type for GET /api/v1/cluster/metrics.
+// swagger:model MetricsResponse
+type MetricsResponse struct {
+	UUID        string         `json:"uuid"`
+	ClusterCIDR string         `json:"clusterCidr,omitempty"`
+	Nodes       map[string]int `json:"nodes"`
+	Time        string         `json:"time"`
+}
+
 // RegisterSecrets contains newly issued or rotated node secrets.
 // swagger:model RegisterSecrets
 type RegisterSecrets struct {

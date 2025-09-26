@@ -1,4 +1,4 @@
-package instance
+package node
 
 import (
 	"context"
@@ -31,18 +31,19 @@ var log = event.Log
 
 func init() {
 	// Register early so this can adjust DB settings before connectDb().
-	config.RegisterEarly("cluster-instance", InitConfig, nil)
+	config.RegisterEarly("cluster-node", InitConfig, nil)
 }
 
-// InitConfig performs instance bootstrap: optional registration with the Portal
+// InitConfig performs node bootstrap: optional registration with the Portal
 // and theme installation. Runs early during config.Init().
 func InitConfig(c *config.Config) error {
 	if !cluster.BootstrapAutoJoinEnabled && !cluster.BootstrapAutoThemeEnabled {
 		return nil
 	}
 
+	role := c.NodeRole()
 	// Skip on portal nodes and unknown node types.
-	if c.IsPortal() || c.NodeRole() != cluster.RoleInstance {
+	if c.IsPortal() || (role != cluster.RoleInstance && role != cluster.RoleService) {
 		return nil
 	}
 
@@ -122,7 +123,7 @@ func registerWithPortal(c *config.Config, portal *url.URL, token string) error {
 	payload := cluster.RegisterRequest{
 		NodeName:     c.NodeName(),
 		NodeUUID:     c.NodeUUID(),
-		NodeRole:     cluster.RoleInstance,
+		NodeRole:     c.NodeRole(),
 		AdvertiseUrl: c.AdvertiseUrl(),
 	}
 	// Include client credentials when present so the Portal can verify re-registration

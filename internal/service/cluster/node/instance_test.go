@@ -1,4 +1,4 @@
-package instance
+package node
 
 import (
 	"os"

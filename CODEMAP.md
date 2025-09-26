@@ -94,7 +94,7 @@ Background Workers
 
 Cluster / Portal
 - Node types: `internal/service/cluster/const.go` (`cluster.RoleInstance`, `cluster.RolePortal`, `cluster.RoleService`).
-- Instance bootstrap & registration: `internal/service/cluster/instance/*` (HTTP to Portal; do not import Portal internals).
+- Node bootstrap & registration: `internal/service/cluster/node/*` (HTTP to Portal; do not import Portal internals).
 - Registry/provisioner: `internal/service/cluster/registry/*`, `internal/service/cluster/provisioner/*`.
 - Theme endpoint (server): GET `/api/v1/cluster/theme`; client/CLI installs theme only if missing or no `app.js`.
 - See specs cheat sheet: `specs/portal/README.md`.
