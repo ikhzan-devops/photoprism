@@ -42,7 +42,8 @@ var (
 	}
 )
 
-// ScopeAttr parses an authentication scope string and returns it as list.Attr.
+// ScopeAttr parses an auth scope string and returns a normalized Attr
+// with duplicate and invalid entries removed.
 func ScopeAttr(s string) list.Attr {
 	if s == "" {
 		return list.Attr{}
@@ -51,7 +52,8 @@ func ScopeAttr(s string) list.Attr {
 	return list.ParseAttr(strings.ToLower(s))
 }
 
-// ScopePermits verifies if the authorized scope permits access to the specified resource.
+// ScopePermits sanitizes the raw scope string and then calls ScopeAttrPermits for
+// the actual authorization check.
 func ScopePermits(scope string, resource Resource, perms Permissions) bool {
 	if scope == "" {
 		return false
@@ -61,7 +63,8 @@ func ScopePermits(scope string, resource Resource, perms Permissions) bool {
 	return ScopeAttrPermits(ScopeAttr(scope), resource, perms)
 }
 
-// ScopeAttrPermits verifies if the authorized scope permits access to the specified resource.
+// ScopeAttrPermits evaluates an already-parsed scope attribute list against a
+// resource and permission set, enforcing wildcard/read/write semantics.
 func ScopeAttrPermits(attr list.Attr, resource Resource, perms Permissions) bool {
 	if len(attr) == 0 {
 		return false
