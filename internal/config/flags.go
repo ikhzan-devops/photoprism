@@ -731,6 +731,11 @@ var Flags = CliFlags{
 			Value:   300,
 			EnvVars: EnvVars("JWKS_CACHE_TTL"),
 		}}, {
+		Flag: &cli.StringFlag{
+			Name:    "jwt-scope",
+			Usage:   "allowed JWT `SCOPES` (space separated). Leave empty to accept defaults",
+			EnvVars: EnvVars("JWT_SCOPE"),
+		}}, {
 		Flag: &cli.IntFlag{
 			Name:    "jwt-leeway",
 			Usage:   "JWT clock skew allowance in `SECONDS` (default 60, max 300)",

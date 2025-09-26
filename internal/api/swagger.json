@@ -419,6 +419,9 @@
                 "alreadyRegistered": {
                     "type": "boolean"
                 },
+                "clusterCidr": {
+                    "type": "string"
+                },
                 "database": {
                     "$ref": "#/definitions/cluster.RegisterDatabase"
                 },
@@ -459,6 +462,9 @@
         },
         "cluster.SummaryResponse": {
             "properties": {
+                "clusterCidr": {
+                    "type": "string"
+                },
                 "database": {
                     "$ref": "#/definitions/cluster.DatabaseInfo"
                 },

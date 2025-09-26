@@ -35,10 +35,11 @@ type DatabaseInfo struct {
 // SummaryResponse is the response type for GET /api/v1/cluster.
 // swagger:model SummaryResponse
 type SummaryResponse struct {
-	UUID     string       `json:"uuid"` // ClusterUUID
-	Nodes    int          `json:"nodes"`
-	Database DatabaseInfo `json:"database"`
-	Time     string       `json:"time"`
+	UUID        string       `json:"uuid"` // ClusterUUID
+	ClusterCIDR string       `json:"clusterCidr,omitempty"`
+	Nodes       int          `json:"nodes"`
+	Database    DatabaseInfo `json:"database"`
+	Time        string       `json:"time"`
 }
 
 // RegisterSecrets contains newly issued or rotated node secrets.
@@ -65,6 +66,7 @@ type RegisterDatabase struct {
 // swagger:model RegisterResponse
 type RegisterResponse struct {
 	UUID               string           `json:"uuid"` // ClusterUUID
+	ClusterCIDR        string           `json:"clusterCidr,omitempty"`
 	Node               Node             `json:"node"`
 	Database           RegisterDatabase `json:"database"`
 	Secrets            *RegisterSecrets `json:"secrets,omitempty"`

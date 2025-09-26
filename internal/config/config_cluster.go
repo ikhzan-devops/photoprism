@@ -13,6 +13,7 @@ import (
 	"github.com/photoprism/photoprism/internal/service/cluster"
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/fs"
+	"github.com/photoprism/photoprism/pkg/list"
 	"github.com/photoprism/photoprism/pkg/rnd"
 	"github.com/photoprism/photoprism/pkg/service/http/header"
 )
@@ -276,6 +277,18 @@ func (c *Config) JWTLeeway() int {
 		return 300
 	}
 	return c.options.JWTLeeway
+}
+
+// JWTAllowedScopes returns an optional allow-list of accepted JWT scopes.
+func (c *Config) JWTAllowedScopes() list.Attr {
+	if s := strings.TrimSpace(c.options.JWTScope); s != "" {
+		parsed := list.ParseAttr(strings.ToLower(s))
+		if len(parsed) > 0 {
+			return parsed
+		}
+	}
+
+	return list.ParseAttr("cluster vision metrics")
 }
 
 // AdvertiseUrl returns the advertised node URL for intra-cluster calls (scheme://host[:port]).

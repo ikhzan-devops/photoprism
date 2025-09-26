@@ -95,9 +95,10 @@ func TestClusterThemePull_JoinTokenToOAuth(t *testing.T) {
 			w.Header().Set("Content-Type", "application/json")
 			// Return NodeClientID and a fresh secret
 			_ = json.NewEncoder(w).Encode(cluster.RegisterResponse{
-				UUID:    rnd.UUID(),
-				Node:    cluster.Node{ClientID: "cs5gfen1bgxz7s9i", Name: "pp-node-01"},
-				Secrets: &cluster.RegisterSecrets{ClientSecret: "s3cr3t"},
+				UUID:        rnd.UUID(),
+				ClusterCIDR: "203.0.113.0/24",
+				Node:        cluster.Node{ClientID: "cs5gfen1bgxz7s9i", Name: "pp-node-01"},
+				Secrets:     &cluster.RegisterSecrets{ClientSecret: "s3cr3t"},
 			})
 		case "/api/v1/oauth/token":
 			// Expect Basic for the returned creds

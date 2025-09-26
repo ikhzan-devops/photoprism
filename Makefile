@@ -72,15 +72,15 @@ watch: watch-js
 build-all: build-go build-js
 pull: docker-pull
 test: test-js test-go
-test-go: reset-sqlite run-test-go
-test-pkg: reset-sqlite run-test-pkg
-test-ai: reset-sqlite run-test-ai
-test-api: reset-sqlite run-test-api
-test-video: reset-sqlite run-test-video
-test-entity: reset-sqlite run-test-entity
-test-commands: reset-sqlite run-test-commands
-test-photoprism: reset-sqlite run-test-photoprism
-test-short: reset-sqlite run-test-short
+test-go: run-test-go
+test-pkg: run-test-pkg
+test-ai: run-test-ai
+test-api: run-test-api
+test-video: run-test-video
+test-entity: run-test-entity
+test-commands: run-test-commands
+test-photoprism: run-test-photoprism
+test-short: run-test-short
 test-mariadb: reset-acceptance run-test-mariadb
 acceptance-run-chromium: storage/acceptance acceptance-auth-sqlite-restart wait acceptance-auth acceptance-auth-sqlite-stop acceptance-sqlite-restart wait-2 acceptance acceptance-sqlite-stop
 acceptance-run-chromium-short: storage/acceptance acceptance-auth-sqlite-restart wait acceptance-auth-short acceptance-auth-sqlite-stop acceptance-sqlite-restart wait-2 acceptance-short acceptance-sqlite-stop

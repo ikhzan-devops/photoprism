@@ -250,6 +250,7 @@ If anything in this file conflicts with the `Makefile` or the Developer Guide, t
 - Treat `RoleAliasNone` ("none") and an empty string as `RoleNone`; no caller-specific overrides.
 - Default unknown client roles to `RoleClient`; `acl.ParseRole` already handles `0/false/nil` as none for users.
 - Build CLI role help from `Roles.CliUsageString()` (e.g., `acl.ClientRoles.CliUsageString()`); never hand-maintain role lists.
+- When checking JWT/client scopes, use the shared helpers (`acl.ScopePermits` / `acl.ScopeAttrPermits`) instead of hand-written parsing.
 
 ### Import/Index
 

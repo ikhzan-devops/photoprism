@@ -20,6 +20,7 @@ import (
 	"github.com/photoprism/photoprism/internal/service/cluster"
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/fs"
+	"github.com/photoprism/photoprism/pkg/rnd"
 	"github.com/photoprism/photoprism/pkg/service/http/header"
 	"github.com/photoprism/photoprism/pkg/txt/report"
 )
@@ -330,6 +331,16 @@ func parseLabelSlice(labels []string) map[string]string {
 
 // Persistence helpers for --write-config
 func persistRegisterResponse(conf *config.Config, resp *cluster.RegisterResponse) error {
+	updates := map[string]any{}
+
+	if rnd.IsUUID(resp.UUID) {
+		updates["ClusterUUID"] = resp.UUID
+	}
+
+	if cidr := strings.TrimSpace(resp.ClusterCIDR); cidr != "" {
+		updates["ClusterCIDR"] = cidr
+	}
+
 	// Node client secret file
 	if resp.Secrets != nil && resp.Secrets.ClientSecret != "" {
 		// Prefer PHOTOPRISM_NODE_CLIENT_SECRET_FILE; otherwise config cluster path
@@ -348,16 +359,18 @@ func persistRegisterResponse(conf *config.Config, resp *cluster.RegisterResponse
 
 	// DB settings (MySQL/MariaDB only)
 	if resp.Database.Name != "" && resp.Database.User != "" {
-		if err := mergeOptionsYaml(conf, map[string]any{
-			"DatabaseDriver":   config.MySQL,
-			"DatabaseName":     resp.Database.Name,
-			"DatabaseServer":   fmt.Sprintf("%s:%d", resp.Database.Host, resp.Database.Port),
-			"DatabaseUser":     resp.Database.User,
-			"DatabasePassword": resp.Database.Password,
-		}); err != nil {
+		updates["DatabaseDriver"] = config.MySQL
+		updates["DatabaseName"] = resp.Database.Name
+		updates["DatabaseServer"] = fmt.Sprintf("%s:%d", resp.Database.Host, resp.Database.Port)
+		updates["DatabaseUser"] = resp.Database.User
+		updates["DatabasePassword"] = resp.Database.Password
+	}
+
+	if len(updates) > 0 {
+		if err := mergeOptionsYaml(conf, updates); err != nil {
 			return err
 		}
-		log.Infof("updated options.yml with database settings for node %s", clean.LogQuote(resp.Node.Name))
+		log.Infof("updated options.yml with cluster registration settings for node %s", clean.LogQuote(resp.Node.Name))
 	}
 	return nil
 }
