@@ -25,6 +25,20 @@ var (
 	errKeyNotFound = errors.New("jwt: key not found")
 )
 
+// VerifierStatus captures diagnostic information about a verifier's JWKS cache state.
+type VerifierStatus struct {
+	CacheURL        string    `json:"cacheUrl,omitempty"`
+	CacheETag       string    `json:"cacheEtag,omitempty"`
+	KeyIDs          []string  `json:"keyIds,omitempty"`
+	KeyCount        int       `json:"keyCount"`
+	CacheFetchedAt  time.Time `json:"cacheFetchedAt,omitempty"`
+	CacheAgeSeconds int64     `json:"cacheAgeSeconds"`
+	CacheTTLSeconds int       `json:"cacheTtlSeconds"`
+	CacheStale      bool      `json:"cacheStale"`
+	CachePath       string    `json:"cachePath,omitempty"`
+	JWKSURL         string    `json:"jwksUrl,omitempty"`
+}
+
 const (
 	// jwksFetchMaxRetries caps the number of immediate retry attempts after a fetch error.
 	jwksFetchMaxRetries = 3
@@ -99,15 +113,14 @@ func (v *Verifier) VerifyToken(ctx context.Context, tokenString string, expected
 	if strings.TrimSpace(expected.Audience) == "" {
 		return nil, errors.New("jwt: expected audience required")
 	}
-	if len(expected.Scope) == 0 {
-		return nil, errors.New("jwt: expected scope required")
+
+	jwksUrl := strings.TrimSpace(expected.JWKSURL)
+
+	if jwksUrl == "" && v.conf != nil {
+		jwksUrl = strings.TrimSpace(v.conf.JWKSUrl())
 	}
 
-	url := strings.TrimSpace(expected.JWKSURL)
-	if url == "" && v.conf != nil {
-		url = strings.TrimSpace(v.conf.JWKSUrl())
-	}
-	if url == "" {
+	if jwksUrl == "" {
 		return nil, errors.New("jwt: jwks url not configured")
 	}
 
@@ -126,15 +139,110 @@ func (v *Verifier) VerifyToken(ctx context.Context, tokenString string, expected
 	claims := &Claims{}
 	keyFunc := func(token *gojwt.Token) (interface{}, error) {
 		kid, _ := token.Header["kid"].(string)
+
 		if kid == "" {
 			return nil, errors.New("jwt: missing kid header")
 		}
-		pk, err := v.publicKeyForKid(ctx, url, kid, false)
+
+		pk, err := v.publicKeyForKid(ctx, jwksUrl, kid, false)
+
 		if errors.Is(err, errKeyNotFound) {
-			pk, err = v.publicKeyForKid(ctx, url, kid, true)
+			pk, err = v.publicKeyForKid(ctx, jwksUrl, kid, true)
 		}
+
 		if err != nil {
 			return nil, err
+		}
+
+		return pk, nil
+	}
+
+	if _, err := parser.ParseWithClaims(tokenString, claims, keyFunc); err != nil {
+		return nil, err
+	}
+
+	if claims.IssuedAt == nil || claims.ExpiresAt == nil {
+		return nil, errors.New("jwt: missing temporal claims")
+	}
+
+	if ttl := claims.ExpiresAt.Time.Sub(claims.IssuedAt.Time); ttl > MaxTokenTTL {
+		return nil, errors.New("jwt: token ttl exceeds maximum")
+	}
+
+	scopeSet := map[string]struct{}{}
+
+	for _, s := range strings.Fields(claims.Scope) {
+		scopeSet[s] = struct{}{}
+	}
+
+	for _, req := range expected.Scope {
+		if _, ok := scopeSet[req]; !ok {
+			return nil, fmt.Errorf("jwt: missing scope %s", req)
+		}
+	}
+
+	return claims, nil
+}
+
+// VerifyTokenWithKeys verifies a token using the provided JWKS keys without performing HTTP fetches.
+func VerifyTokenWithKeys(tokenString string, expected ExpectedClaims, keys []PublicJWK, leeway time.Duration) (*Claims, error) {
+	if strings.TrimSpace(tokenString) == "" {
+		return nil, errors.New("jwt: token is empty")
+	}
+
+	if len(keys) == 0 {
+		return nil, errors.New("jwt: no jwks keys provided")
+	}
+
+	if leeway <= 0 {
+		leeway = 60 * time.Second
+	}
+
+	keyMap := make(map[string]ed25519.PublicKey, len(keys))
+
+	for _, jwk := range keys {
+		if jwk.Kid == "" {
+			continue
+		}
+		raw, err := base64.RawURLEncoding.DecodeString(jwk.X)
+		if err != nil {
+			return nil, err
+		}
+		if len(raw) != ed25519.PublicKeySize {
+			return nil, fmt.Errorf("jwt: invalid public key length %d", len(raw))
+		}
+		pk := make(ed25519.PublicKey, ed25519.PublicKeySize)
+		copy(pk, raw)
+		keyMap[jwk.Kid] = pk
+	}
+
+	if len(keyMap) == 0 {
+		return nil, errors.New("jwt: no valid jwks keys provided")
+	}
+
+	options := []gojwt.ParserOption{
+		gojwt.WithLeeway(leeway),
+		gojwt.WithValidMethods([]string{gojwt.SigningMethodEdDSA.Alg()}),
+	}
+
+	if iss := strings.TrimSpace(expected.Issuer); iss != "" {
+		options = append(options, gojwt.WithIssuer(iss))
+	}
+
+	if aud := strings.TrimSpace(expected.Audience); aud != "" {
+		options = append(options, gojwt.WithAudience(aud))
+	}
+
+	parser := gojwt.NewParser(options...)
+	claims := &Claims{}
+	keyFunc := func(token *gojwt.Token) (interface{}, error) {
+		kid, _ := token.Header["kid"].(string)
+		if kid == "" {
+			return nil, errors.New("jwt: missing kid header")
+		}
+		pk, ok := keyMap[kid]
+		if !ok {
+			return nil, errKeyNotFound
 		}
 		return pk, nil
 	}
@@ -146,29 +254,70 @@ func (v *Verifier) VerifyToken(ctx context.Context, tokenString string, expected
 	if claims.IssuedAt == nil || claims.ExpiresAt == nil {
 		return nil, errors.New("jwt: missing temporal claims")
 	}
+
 	if ttl := claims.ExpiresAt.Time.Sub(claims.IssuedAt.Time); ttl > MaxTokenTTL {
 		return nil, errors.New("jwt: token ttl exceeds maximum")
 	}
 
-	scopeSet := map[string]struct{}{}
-	for _, s := range strings.Fields(claims.Scope) {
-		scopeSet[s] = struct{}{}
-	}
-	for _, req := range expected.Scope {
-		if _, ok := scopeSet[req]; !ok {
-			return nil, fmt.Errorf("jwt: missing scope %s", req)
+	if len(expected.Scope) > 0 {
+		scopeSet := map[string]struct{}{}
+		for _, s := range strings.Fields(claims.Scope) {
+			scopeSet[s] = struct{}{}
+		}
+		for _, req := range expected.Scope {
+			if _, ok := scopeSet[req]; !ok {
+				return nil, fmt.Errorf("jwt: missing scope %s", req)
+			}
 		}
 	}
 
 	return claims, nil
 }
 
+// Status returns diagnostic information about the verifier's current JWKS cache.
+func (v *Verifier) Status(ttl time.Duration) VerifierStatus {
+	status := VerifierStatus{}
+
+	if ttl > 0 {
+		status.CacheTTLSeconds = int(ttl / time.Second)
+	}
+
+	v.mu.Lock()
+	defer v.mu.Unlock()
+
+	status.CacheURL = v.cache.URL
+	status.CacheETag = v.cache.ETag
+	status.JWKSURL = v.cache.URL
+	status.KeyCount = len(v.cache.Keys)
+	status.KeyIDs = make([]string, 0, len(v.cache.Keys))
+
+	for _, key := range v.cache.Keys {
+		status.KeyIDs = append(status.KeyIDs, key.Kid)
+	}
+
+	status.CachePath = v.cachePath
+
+	if v.cache.FetchedAt > 0 {
+		fetched := time.Unix(v.cache.FetchedAt, 0).UTC()
+		status.CacheFetchedAt = fetched
+		age := time.Since(fetched)
+		status.CacheAgeSeconds = int64(age.Seconds())
+		if ttl > 0 && age > ttl {
+			status.CacheStale = true
+		}
+	}
+
+	return status
+}
+
 // publicKeyForKid resolves the public key for the given key ID, fetching JWKS data if needed.
 func (v *Verifier) publicKeyForKid(ctx context.Context, url, kid string, force bool) (ed25519.PublicKey, error) {
 	keys, err := v.keysForURL(ctx, url, force)
+
 	if err != nil {
 		return nil, err
 	}
+
 	for _, k := range keys {
 		if k.Kid != kid {
 			continue
@@ -184,12 +333,14 @@ func (v *Verifier) publicKeyForKid(ctx context.Context, url, kid string, force b
 		copy(pk, raw)
 		return pk, nil
 	}
+
 	return nil, errKeyNotFound
 }
 
 // keysForURL returns JWKS keys for the specified endpoint, reusing cache when possible.
 func (v *Verifier) keysForURL(ctx context.Context, url string, force bool) ([]PublicJWK, error) {
 	ttl := 300 * time.Second
+
 	if v.conf != nil && v.conf.JWKSCacheTTL() > 0 {
 		ttl = time.Duration(v.conf.JWKSCacheTTL()) * time.Second
 	}
@@ -250,13 +401,16 @@ func (v *Verifier) cachedKeys(url string, ttl time.Duration, cache cacheEntry, f
 	if force || cache.URL != url || len(cache.Keys) == 0 {
 		return nil, false
 	}
+
 	age := v.now().Unix() - cache.FetchedAt
 	if age < 0 {
 		return nil, false
 	}
+
 	if time.Duration(age)*time.Second > ttl {
 		return nil, false
 	}
+
 	return append([]PublicJWK(nil), cache.Keys...), true
 }
 
@@ -270,17 +424,21 @@ type jwksFetchResult struct {
 // fetchJWKS downloads the JWKS document (respecting conditional requests) and returns the parsed keys.
 func (v *Verifier) fetchJWKS(ctx context.Context, url, etag string) (*jwksFetchResult, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+
 	if err != nil {
 		return nil, err
 	}
+
 	if etag != "" {
 		req.Header.Set("If-None-Match", etag)
 	}
 
 	resp, err := v.httpClient.Do(req)
+
 	if err != nil {
 		return nil, err
 	}
+
 	defer resp.Body.Close()
 
 	switch resp.StatusCode {
@@ -331,6 +489,7 @@ func (v *Verifier) updateCache(url string, result *jwksFetchResult) ([]PublicJWK
 		Keys:      append([]PublicJWK(nil), result.keys...),
 		FetchedAt: result.fetchedAt,
 	}
+
 	_ = v.saveCacheLocked()
 	return append([]PublicJWK(nil), v.cache.Keys...), true
 }
@@ -347,7 +506,7 @@ func (v *Verifier) loadCache() error {
 	}
 
 	var entry cacheEntry
-	if err := json.Unmarshal(b, &entry); err != nil {
+	if err = json.Unmarshal(b, &entry); err != nil {
 		return err
 	}
 
@@ -360,13 +519,17 @@ func (v *Verifier) saveCacheLocked() error {
 	if v.cachePath == "" {
 		return nil
 	}
+
 	if err := fs.MkdirAll(filepath.Dir(v.cachePath)); err != nil {
 		return err
 	}
+
 	data, err := json.Marshal(v.cache)
+
 	if err != nil {
 		return err
 	}
+
 	return os.WriteFile(v.cachePath, data, fs.ModeSecretFile)
 }
 
@@ -377,11 +540,13 @@ func backoffDuration(attempt int) time.Duration {
 	}
 
 	base := jwksFetchBaseDelay << (attempt - 1)
+
 	if base > jwksFetchMaxDelay {
 		base = jwksFetchMaxDelay
 	}
 
 	jitterRange := base / 2
+
 	if jitterRange > 0 {
 		base += time.Duration(randInt63n(int64(jitterRange) + 1))
 	}

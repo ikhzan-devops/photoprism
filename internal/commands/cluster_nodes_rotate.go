@@ -2,6 +2,7 @@ package commands
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 
@@ -106,11 +107,13 @@ func clusterNodesRotateAction(ctx *cli.Context) error {
 		}
 		b, _ := json.Marshal(payload)
 
-		url := stringsTrimRightSlash(portalURL) + "/api/v1/cluster/nodes/register"
+		endpointUrl := stringsTrimRightSlash(portalURL) + "/api/v1/cluster/nodes/register"
+
 		var resp cluster.RegisterResponse
-		if err := postWithBackoff(url, token, b, &resp); err != nil {
+		if err := postWithBackoff(endpointUrl, token, b, &resp); err != nil {
 			// Map common HTTP errors similarly to register command
-			if he, ok := err.(*httpError); ok {
+			var he *httpError
+			if errors.As(err, &he) {
 				switch he.Status {
 				case 401, 403:
 					return cli.Exit(fmt.Errorf("%s", he.Error()), 4)
@@ -151,6 +154,7 @@ func clusterNodesRotateAction(ctx *cli.Context) error {
 				fmt.Printf("DSN: %s\n", resp.Database.DSN)
 			}
 		}
+
 		return nil
 	})
 }

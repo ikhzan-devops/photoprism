@@ -73,15 +73,77 @@ func TestConfig_Cluster(t *testing.T) {
 		c.Options().NodeRole = ""
 	})
 	t.Run("JWKSUrlSetter", func(t *testing.T) {
-		c := NewConfig(CliTestContext())
-		c.options.JWKSUrl = ""
-		assert.Equal(t, "", c.JWKSUrl())
+		const existing = "https://existing.example/.well-known/jwks.json"
+		tests := []struct {
+			name   string
+			prev   string
+			input  string
+			expect string
+		}{
+			{
+				name:   "TrimHTTPS",
+				prev:   "",
+				input:  "  https://portal.example/.well-known/jwks.json  ",
+				expect: "https://portal.example/.well-known/jwks.json",
+			},
+			{
+				name:   "CaseInsensitiveScheme",
+				prev:   "",
+				input:  "HTTPS://portal.example/.well-known/jwks.json",
+				expect: "HTTPS://portal.example/.well-known/jwks.json",
+			},
+			{
+				name:   "AllowHTTPOnLocalhost",
+				prev:   "",
+				input:  "http://localhost:2342/.well-known/jwks.json",
+				expect: "http://localhost:2342/.well-known/jwks.json",
+			},
+			{
+				name:   "AllowHTTPOnLoopbackIPv4",
+				prev:   "",
+				input:  "http://127.0.0.1/.well-known/jwks.json",
+				expect: "http://127.0.0.1/.well-known/jwks.json",
+			},
+			{
+				name:   "AllowHTTPOnLoopbackIPv6",
+				prev:   "",
+				input:  "http://[::1]/.well-known/jwks.json",
+				expect: "http://[::1]/.well-known/jwks.json",
+			},
+			{
+				name:   "RejectHTTPNonLoopback",
+				prev:   existing,
+				input:  "http://portal.example/.well-known/jwks.json",
+				expect: existing,
+			},
+			{
+				name:   "RejectUnsupportedScheme",
+				prev:   existing,
+				input:  "ftp://portal.example/.well-known/jwks.json",
+				expect: existing,
+			},
+			{
+				name:   "RejectMalformedURL",
+				prev:   existing,
+				input:  "://not-a-url",
+				expect: existing,
+			},
+			{
+				name:   "ClearValue",
+				prev:   existing,
+				input:  "",
+				expect: "",
+			},
+		}
 
-		c.SetJWKSUrl("  https://portal.example/.well-known/jwks.json  ")
-		assert.Equal(t, "https://portal.example/.well-known/jwks.json", c.JWKSUrl())
-
-		c.SetJWKSUrl("")
-		assert.Equal(t, "", c.JWKSUrl())
+		for _, tc := range tests {
+			t.Run(tc.name, func(t *testing.T) {
+				c := NewConfig(CliTestContext())
+				c.options.JWKSUrl = tc.prev
+				c.SetJWKSUrl(tc.input)
+				assert.Equal(t, tc.expect, c.JWKSUrl())
+			})
+		}
 	})
 	t.Run("Paths", func(t *testing.T) {
 		c := NewConfig(CliTestContext())

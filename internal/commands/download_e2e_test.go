@@ -81,9 +81,10 @@ func TestDownloadImpl_FileMethod_AutoSkipsRemux(t *testing.T) {
 	if conf == nil {
 		t.Fatalf("missing test config")
 	}
+
 	// Ensure DB is initialized and registered (bypassing CLI InitConfig)
-	_ = conf.Init()
 	conf.RegisterDb()
+
 	// Override yt-dlp after config init (config may set dl.YtDlpBin)
 	dl.YtDlpBin = fake
 	t.Logf("using yt-dlp binary: %s", dl.YtDlpBin)
@@ -125,7 +126,6 @@ func TestDownloadImpl_FileMethod_Skip_NoRemux(t *testing.T) {
 	if conf == nil {
 		t.Fatalf("missing test config")
 	}
-	_ = conf.Init()
 	conf.RegisterDb()
 	dl.YtDlpBin = fake
 
@@ -196,8 +196,9 @@ func TestDownloadImpl_FileMethod_Always_RemuxFails(t *testing.T) {
 	if conf == nil {
 		t.Fatalf("missing test config")
 	}
-	_ = conf.Init()
+
 	conf.RegisterDb()
+
 	dl.YtDlpBin = fake
 
 	err := runDownload(conf, DownloadOpts{

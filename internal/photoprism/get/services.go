@@ -57,12 +57,16 @@ var services struct {
 	OIDC        *oidc.Client
 	JWTManager  *clusterjwt.Manager
 	JWTIssuer   *clusterjwt.Issuer
+	JWTVerifier *clusterjwt.Verifier
 }
 
 func SetConfig(c *config.Config) {
 	if c == nil {
 		log.Panic("panic: argument is nil in get.SetConfig(c *config.Config)")
+		return
 	}
+
+	resetJWT()
 
 	conf = c
 
@@ -72,6 +76,7 @@ func SetConfig(c *config.Config) {
 func Config() *config.Config {
 	if conf == nil {
 		log.Panic("panic: conf is nil in get.Config()")
+		return nil
 	}
 
 	return conf

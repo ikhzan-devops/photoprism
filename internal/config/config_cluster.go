@@ -2,6 +2,8 @@ package config
 
 import (
 	"errors"
+	"net"
+	urlpkg "net/url"
 	"os"
 	"path/filepath"
 	"strings"
@@ -222,7 +224,36 @@ func (c *Config) SetJWKSUrl(url string) {
 	if c == nil || c.options == nil {
 		return
 	}
-	c.options.JWKSUrl = strings.TrimSpace(url)
+
+	trimmed := strings.TrimSpace(url)
+	if trimmed == "" {
+		c.options.JWKSUrl = ""
+		return
+	}
+
+	parsed, err := urlpkg.Parse(trimmed)
+	if err != nil || parsed == nil || parsed.Scheme == "" || parsed.Host == "" {
+		log.Warnf("config: ignoring JWKS URL %q (%v)", trimmed, err)
+		return
+	}
+
+	scheme := strings.ToLower(parsed.Scheme)
+	host := parsed.Hostname()
+
+	switch scheme {
+	case "https":
+		// Always allowed.
+	case "http":
+		if !isLoopbackHost(host) {
+			log.Warnf("config: rejecting JWKS URL %q (http only allowed for localhost/loopback)", trimmed)
+			return
+		}
+	default:
+		log.Warnf("config: rejecting JWKS URL %q (unsupported scheme)", trimmed)
+		return
+	}
+
+	c.options.JWKSUrl = trimmed
 }
 
 // JWKSCacheTTL returns the JWKS cache lifetime in seconds (default 300, max 3600).
@@ -259,6 +290,23 @@ func (c *Config) AdvertiseUrl() string {
 		}
 	}
 	return c.SiteUrl()
+}
+
+// isLoopbackHost returns true when host represents localhost or a loopback IP.
+func isLoopbackHost(host string) bool {
+	if host == "" {
+		return false
+	}
+
+	if strings.EqualFold(host, "localhost") {
+		return true
+	}
+
+	if ip := net.ParseIP(host); ip != nil {
+		return ip.IsLoopback()
+	}
+
+	return false
 }
 
 // SaveClusterUUID writes or updates the ClusterUUID key in options.yml without

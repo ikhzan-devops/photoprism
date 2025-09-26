@@ -229,9 +229,9 @@ func persistRegistration(c *config.Config, r *cluster.RegisterResponse, wantRota
 		updates["NodeClientSecret"] = r.Secrets.ClientSecret
 	}
 
-	if url := strings.TrimSpace(r.JWKSUrl); url != "" {
-		updates["JWKSUrl"] = url
-		c.SetJWKSUrl(url)
+	if jwksUrl := strings.TrimSpace(r.JWKSUrl); jwksUrl != "" {
+		updates["JWKSUrl"] = jwksUrl
+		c.SetJWKSUrl(jwksUrl)
 	}
 
 	// Persist NodeUUID from portal response if provided and not set locally.

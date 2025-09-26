@@ -24,7 +24,7 @@ import (
 	"github.com/photoprism/photoprism/pkg/txt/report"
 )
 
-// flags for register
+// Supported cluster node register flags.
 var (
 	regNameFlag       = &cli.StringFlag{Name: "name", Usage: "node `NAME` (lowercase letters, digits, hyphens)"}
 	regRoleFlag       = &cli.StringFlag{Name: "role", Usage: "node `ROLE` (instance, service)", Value: "instance"}
@@ -42,7 +42,7 @@ var (
 // ClusterRegisterCommand registers a node with the Portal via HTTP.
 var ClusterRegisterCommand = &cli.Command{
 	Name:   "register",
-	Usage:  "Registers/rotates a node via Portal (HTTP)",
+	Usage:  "Registers a node or updates its credentials within a cluster",
 	Flags:  append(append([]cli.Flag{regNameFlag, regRoleFlag, regIntUrlFlag, regLabelFlag, regRotateDatabase, regRotateSec, regPortalURL, regPortalTok, regWriteConf, regForceFlag, regDryRun}, report.CliFlags...)),
 	Action: clusterRegisterAction,
 }
@@ -52,15 +52,18 @@ func clusterRegisterAction(ctx *cli.Context) error {
 		// Resolve inputs
 		name := clean.DNSLabel(ctx.String("name"))
 		derivedName := false
+
 		if name == "" { // default from config if set
 			name = clean.DNSLabel(conf.NodeName())
 			if name != "" {
 				derivedName = true
 			}
 		}
+
 		if name == "" {
 			return cli.Exit(fmt.Errorf("node name is required (use --name or set node-name)"), 2)
 		}
+
 		nodeRole := clean.TypeLowerDash(ctx.String("role"))
 		switch nodeRole {
 		case "instance", "service":
@@ -76,7 +79,6 @@ func clusterRegisterAction(ctx *cli.Context) error {
 				derivedPortal = true
 			}
 		}
-		// In dry-run, we allow empty portalURL (will print derived/empty values).
 
 		// Derive advertise/site URLs when omitted.
 		advertise := ctx.String("advertise-url")
@@ -93,17 +95,20 @@ func clusterRegisterAction(ctx *cli.Context) error {
 			RotateDatabase: ctx.Bool("rotate"),
 			RotateSecret:   ctx.Bool("rotate-secret"),
 		}
+
 		// If we already have client credentials (e.g., re-register), include them so the
 		// portal can verify and authorize UUID/name moves or metadata updates.
 		if id, secret := strings.TrimSpace(conf.NodeClientID()), strings.TrimSpace(conf.NodeClientSecret()); id != "" && secret != "" {
 			payload.ClientID = id
 			payload.ClientSecret = secret
 		}
+
 		if site != "" && site != advertise {
 			payload.SiteUrl = site
 		}
 		b, _ := json.Marshal(payload)
 
+		// In dry-run, we allow empty portalURL (will print derived/empty values).
 		if ctx.Bool("dry-run") {
 			if ctx.Bool("json") {
 				out := map[string]any{"portalUrl": portalURL, "payload": payload}
@@ -140,18 +145,22 @@ func clusterRegisterAction(ctx *cli.Context) error {
 		if portalURL == "" {
 			return cli.Exit(fmt.Errorf("portal URL is required (use --portal-url or set portal-url)"), 2)
 		}
+
 		token := ctx.String("join-token")
+
 		if token == "" {
 			token = conf.JoinToken()
 		}
+
 		if token == "" {
 			return cli.Exit(fmt.Errorf("portal token is required (use --join-token or set join-token)"), 2)
 		}
 
 		// POST with bounded backoff on 429
-		url := stringsTrimRightSlash(portalURL) + "/api/v1/cluster/nodes/register"
+		endpointUrl := stringsTrimRightSlash(portalURL) + "/api/v1/cluster/nodes/register"
+
 		var resp cluster.RegisterResponse
-		if err := postWithBackoff(url, token, b, &resp); err != nil {
+		if err := postWithBackoff(endpointUrl, token, b, &resp); err != nil {
 			var httpErr *httpError
 			if errors.As(err, &httpErr) && httpErr.Status == http.StatusTooManyRequests {
 				return cli.Exit(fmt.Errorf("portal rate-limited registration attempts"), 6)
@@ -179,13 +188,17 @@ func clusterRegisterAction(ctx *cli.Context) error {
 		} else {
 			// Human-readable: node row and credentials if present (UUID first as primary identifier)
 			cols := []string{"UUID", "ClientID", "Name", "Role", "DB Driver", "DB Name", "DB User", "Host", "Port"}
+
 			var dbName, dbUser string
+
 			if resp.Database.Name != "" {
 				dbName = resp.Database.Name
 			}
+
 			if resp.Database.User != "" {
 				dbUser = resp.Database.User
 			}
+
 			rows := [][]string{{resp.Node.UUID, resp.Node.ClientID, resp.Node.Name, resp.Node.Role, resp.Database.Driver, dbName, dbUser, resp.Database.Host, fmt.Sprintf("%d", resp.Database.Port)}}
 			out, _ := report.RenderFormat(rows, cols, report.CliFormat(ctx))
 			fmt.Printf("\n%s\n", out)

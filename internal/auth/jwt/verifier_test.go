@@ -103,6 +103,56 @@ func TestVerifierPrimeAndVerify(t *testing.T) {
 	require.Error(t, err)
 }
 
+func TestVerifyTokenWithKeys(t *testing.T) {
+	portalCfg := newTestConfig(t)
+	clusterUUID := rnd.UUIDv7()
+	portalCfg.Options().ClusterUUID = clusterUUID
+
+	mgr, err := NewManager(portalCfg)
+	require.NoError(t, err)
+	mgr.now = func() time.Time { return time.Date(2025, 9, 24, 10, 30, 0, 0, time.UTC) }
+	_, err = mgr.EnsureActiveKey()
+	require.NoError(t, err)
+
+	issuer := NewIssuer(mgr)
+	issuer.now = func() time.Time { return time.Now().UTC() }
+
+	spec := ClaimsSpec{
+		Issuer:   fmt.Sprintf("portal:%s", clusterUUID),
+		Subject:  "portal:client-test",
+		Audience: "node:1234",
+		Scope:    []string{"cluster"},
+	}
+
+	token, err := issuer.Issue(spec)
+	require.NoError(t, err)
+
+	keys := mgr.JWKS().Keys
+	claims, err := VerifyTokenWithKeys(token, ExpectedClaims{
+		Issuer:   spec.Issuer,
+		Audience: spec.Audience,
+		Scope:    []string{"cluster"},
+	}, keys, 60*time.Second)
+	require.NoError(t, err)
+	require.Equal(t, spec.Subject, claims.Subject)
+
+	// Ensure scope filtering is honored when expected scope is empty.
+	claims, err = VerifyTokenWithKeys(token, ExpectedClaims{
+		Issuer:   spec.Issuer,
+		Audience: spec.Audience,
+	}, keys, 60*time.Second)
+	require.NoError(t, err)
+	require.Equal(t, spec.Subject, claims.Subject)
+
+	// Missing scope should fail when explicitly required.
+	_, err = VerifyTokenWithKeys(token, ExpectedClaims{
+		Issuer:   spec.Issuer,
+		Audience: spec.Audience,
+		Scope:    []string{"vision"},
+	}, keys, 60*time.Second)
+	require.Error(t, err)
+}
+
 func TestIssuerClampTTL(t *testing.T) {
 	portalCfg := newTestConfig(t)
 	mgr, err := NewManager(portalCfg)

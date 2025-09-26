@@ -50,7 +50,6 @@ func authAnyJWT(c *gin.Context, clientIP, authToken string, resource acl.Resourc
 		return nil
 	}
 
-	verifier := clusterjwt.NewVerifier(conf)
 	requiredScopes := []string{"cluster"}
 	if resource == acl.ResourceVision {
 		requiredScopes = []string{"vision"}
@@ -77,7 +76,7 @@ func authAnyJWT(c *gin.Context, clientIP, authToken string, resource acl.Resourc
 
 	for _, issuer := range issuers {
 		expected.Issuer = issuer
-		claims, err = verifier.VerifyToken(ctx, authToken, expected)
+		claims, err = get.VerifyJWT(ctx, authToken, expected)
 		if err == nil {
 			break
 		}
