@@ -229,6 +229,7 @@ func ClusterNodesRegister(router *gin.RouterGroup) {
 
 			resp := cluster.RegisterResponse{
 				UUID:               conf.ClusterUUID(),
+				ClusterCIDR:        conf.ClusterCIDR(),
 				Node:               reg.BuildClusterNode(*n, opts),
 				Database:           cluster.RegisterDatabase{Host: conf.DatabaseHost(), Port: conf.DatabasePort(), Name: dbInfo.Name, User: dbInfo.User, Driver: provisioner.DatabaseDriver},
 				Secrets:            respSecret,
@@ -299,6 +300,8 @@ func ClusterNodesRegister(router *gin.RouterGroup) {
 		}
 
 		resp := cluster.RegisterResponse{
+			UUID:               conf.ClusterUUID(),
+			ClusterCIDR:        conf.ClusterCIDR(),
 			Node:               reg.BuildClusterNode(*n, reg.NodeOptsForSession(nil)),
 			Secrets:            &cluster.RegisterSecrets{ClientSecret: n.ClientSecret, RotatedAt: n.RotatedAt},
 			Database:           cluster.RegisterDatabase{Host: conf.DatabaseHost(), Port: conf.DatabasePort(), Name: creds.Name, User: creds.User, Driver: provisioner.DatabaseDriver, Password: creds.Password, DSN: creds.DSN, RotatedAt: creds.RotatedAt},

@@ -219,6 +219,10 @@ func persistRegistration(c *config.Config, r *cluster.RegisterResponse, wantRota
 		updates["ClusterUUID"] = r.UUID
 	}
 
+	if cidr := strings.TrimSpace(r.ClusterCIDR); cidr != "" {
+		updates["ClusterCIDR"] = cidr
+	}
+
 	// Always persist NodeClientID (client UID) from response for future OAuth token requests.
 	if r.Node.ClientID != "" {
 		updates["NodeClientID"] = r.Node.ClientID

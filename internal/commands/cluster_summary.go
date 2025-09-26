@@ -36,10 +36,11 @@ func clusterSummaryAction(ctx *cli.Context) error {
 		nodes, _ := r.List()
 
 		resp := cluster.SummaryResponse{
-			UUID:     conf.ClusterUUID(),
-			Nodes:    len(nodes),
-			Database: cluster.DatabaseInfo{Driver: conf.DatabaseDriverName(), Host: conf.DatabaseHost(), Port: conf.DatabasePort()},
-			Time:     time.Now().UTC().Format(time.RFC3339),
+			UUID:        conf.ClusterUUID(),
+			ClusterCIDR: conf.ClusterCIDR(),
+			Nodes:       len(nodes),
+			Database:    cluster.DatabaseInfo{Driver: conf.DatabaseDriverName(), Host: conf.DatabaseHost(), Port: conf.DatabasePort()},
+			Time:        time.Now().UTC().Format(time.RFC3339),
 		}
 
 		if ctx.Bool("json") {
@@ -48,8 +49,8 @@ func clusterSummaryAction(ctx *cli.Context) error {
 			return nil
 		}
 
-		cols := []string{"Portal UUID", "Nodes", "DB Driver", "DB Host", "DB Port", "Time"}
-		rows := [][]string{{resp.UUID, fmt.Sprintf("%d", resp.Nodes), resp.Database.Driver, resp.Database.Host, fmt.Sprintf("%d", resp.Database.Port), resp.Time}}
+		cols := []string{"Portal UUID", "Cluster CIDR", "Nodes", "DB Driver", "DB Host", "DB Port", "Time"}
+		rows := [][]string{{resp.UUID, resp.ClusterCIDR, fmt.Sprintf("%d", resp.Nodes), resp.Database.Driver, resp.Database.Host, fmt.Sprintf("%d", resp.Database.Port), resp.Time}}
 		out, err := report.RenderFormat(rows, cols, report.CliFormat(ctx))
 		fmt.Printf("\n%s\n", out)
 		return err
