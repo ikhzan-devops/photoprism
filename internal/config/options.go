@@ -154,6 +154,7 @@ type Options struct {
 	NodeClientSecret        string        `yaml:"NodeClientSecret" json:"-" flag:"node-client-secret"`
 	JWKSUrl                 string        `yaml:"JWKSUrl" json:"-" flag:"jwks-url"`
 	JWKSCacheTTL            int           `yaml:"JWKSCacheTTL" json:"-" flag:"jwks-cache-ttl"`
+	JWTScope                string        `yaml:"JWTScope" json:"-" flag:"jwt-scope"`
 	JWTLeeway               int           `yaml:"JWTLeeway" json:"-" flag:"jwt-leeway"`
 	AdvertiseUrl            string        `yaml:"AdvertiseUrl" json:"-" flag:"advertise-url"`
 	HttpsProxy              string        `yaml:"HttpsProxy" json:"HttpsProxy" flag:"https-proxy"`

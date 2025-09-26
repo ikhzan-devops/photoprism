@@ -11,6 +11,7 @@ import (
 
 	"github.com/photoprism/photoprism/internal/service/cluster"
 	"github.com/photoprism/photoprism/pkg/fs"
+	"github.com/photoprism/photoprism/pkg/list"
 	"github.com/photoprism/photoprism/pkg/rnd"
 )
 
@@ -144,6 +145,13 @@ func TestConfig_Cluster(t *testing.T) {
 				assert.Equal(t, tc.expect, c.JWKSUrl())
 			})
 		}
+	})
+	t.Run("JWTAllowedScopes", func(t *testing.T) {
+		c := NewConfig(CliTestContext())
+		c.options.JWTScope = "cluster vision"
+		assert.Equal(t, list.ParseAttr("cluster vision"), c.JWTAllowedScopes())
+		c.options.JWTScope = ""
+		assert.Equal(t, list.ParseAttr("cluster vision metrics"), c.JWTAllowedScopes())
 	})
 	t.Run("Paths", func(t *testing.T) {
 		c := NewConfig(CliTestContext())
