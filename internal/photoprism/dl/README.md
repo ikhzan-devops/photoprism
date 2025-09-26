@@ -45,3 +45,5 @@ It currently supports two invocation methods:
 
 - Prefer the file method for sources with separate audio/video streams; the pipe method cannot always merge in that case.
 - When the CLI’s `--file-remux=auto` is used, the final ffmpeg remux is skipped for MP4 outputs that already include metadata.
+- Keep `yt-dlp` updated. Releases older than `2025.09.23` are known to miss YouTube video formats (SABR gating); the CLI now logs a warning when it detects an outdated build.
+- Users who favor one approach can set `PHOTOPRISM_DL_METHOD=file` (or `pipe`) in the environment to change the default without touching CLI flags.
