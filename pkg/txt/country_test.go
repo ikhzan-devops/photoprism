@@ -43,6 +43,10 @@ func TestCountryCode(t *testing.T) {
 		result := CountryCode("I was in Los Angeles")
 		assert.Equal(t, "us", result)
 	})
+	t.Run("Brandenburg", func(t *testing.T) {
+		result := CountryCode("Trip to Brandenburg in Spring")
+		assert.Equal(t, "de", result)
+	})
 	t.Run("Melbourne", func(t *testing.T) {
 		result := CountryCode("The name Narrm is commonly used by the broader Aboriginal community\n\rto refer to the city, \t stemming from the traditional name recorded for the area on which the Melbourne city centre is built.")
 		assert.Equal(t, "au", result)
