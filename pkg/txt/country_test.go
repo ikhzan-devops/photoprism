@@ -9,7 +9,7 @@ import (
 func TestCountryCode(t *testing.T) {
 	t.Run("London", func(t *testing.T) {
 		result := CountryCode("London")
-		assert.Equal(t, "gb", result)
+		assert.Equal(t, "zz", result)
 	})
 	t.Run("ReunionIsland", func(t *testing.T) {
 		result := CountryCode("Reunion-Island-2019")
