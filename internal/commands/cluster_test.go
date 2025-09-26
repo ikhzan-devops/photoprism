@@ -64,7 +64,7 @@ func TestClusterThemePullCommand(t *testing.T) {
 
 func TestClusterRegisterCommand(t *testing.T) {
 	t.Run("ValidationMissingURL", func(t *testing.T) {
-		out, err := RunWithTestContext(ClusterRegisterCommand, []string{"register", "--name", "pp-node-01", "--role", "instance", "--join-token", "token"})
+		out, err := RunWithTestContext(ClusterRegisterCommand, []string{"register", "--name", "pp-node-01", "--role", "instance", "--join-token", cluster.ExampleJoinToken})
 		assert.Error(t, err)
 		_ = out
 	})
@@ -124,7 +124,7 @@ func TestClusterSuccessPaths_PortalLocal(t *testing.T) {
 			http.NotFound(w, r)
 			return
 		}
-		if r.Header.Get("Authorization") != "Bearer test-token" {
+		if r.Header.Get("Authorization") != "Bearer "+cluster.ExampleJoinToken {
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
@@ -140,11 +140,11 @@ func TestClusterSuccessPaths_PortalLocal(t *testing.T) {
 	defer ts.Close()
 
 	_ = os.Setenv("PHOTOPRISM_PORTAL_URL", ts.URL)
-	_ = os.Setenv("PHOTOPRISM_JOIN_TOKEN", "test-token")
+	_ = os.Setenv("PHOTOPRISM_JOIN_TOKEN", cluster.ExampleJoinToken)
 	defer os.Unsetenv("PHOTOPRISM_PORTAL_URL")
 	defer os.Unsetenv("PHOTOPRISM_JOIN_TOKEN")
 
-	out, err = RunWithTestContext(ClusterThemePullCommand.Subcommands[0], []string{"pull", "--dest", destDir, "-f", "--portal-url=" + ts.URL, "--join-token=test-token"})
+	out, err = RunWithTestContext(ClusterThemePullCommand.Subcommands[0], []string{"pull", "--dest", destDir, "-f", "--portal-url=" + ts.URL, "--join-token=" + cluster.ExampleJoinToken})
 	assert.NoError(t, err)
 	// Expect extracted file
 	assert.FileExists(t, filepath.Join(destDir, "test.txt"))

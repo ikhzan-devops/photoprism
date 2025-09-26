@@ -15,6 +15,8 @@ import (
 	"github.com/photoprism/photoprism/pkg/rnd"
 )
 
+const shortTestJoinToken = "short-token"
+
 func TestConfig_PortalUrl(t *testing.T) {
 	t.Run("Unset", func(t *testing.T) {
 		c := NewConfig(CliTestContext())
@@ -22,6 +24,32 @@ func TestConfig_PortalUrl(t *testing.T) {
 		c.options.ClusterDomain = "example.dev"
 		assert.Equal(t, "", c.PortalUrl())
 		c.options.PortalUrl = DefaultPortalUrl
+	})
+	t.Run("JoinTokenTooShort", func(t *testing.T) {
+		c := NewConfig(CliTestContext())
+		c.options.JoinToken = shortTestJoinToken
+		assert.Equal(t, "", c.JoinToken())
+	})
+	t.Run("PortalAutoGeneratesJoinToken", func(t *testing.T) {
+		tempCfg := t.TempDir()
+		ctx := CliTestContext()
+		assert.NoError(t, ctx.Set("config-path", tempCfg))
+		c := NewConfig(ctx)
+		c.options.NodeRole = cluster.RolePortal
+		c.options.JoinToken = ""
+
+		token := c.JoinToken()
+		assert.NotEmpty(t, token)
+		assert.GreaterOrEqual(t, len(token), rnd.JoinTokenLength)
+		assert.True(t, rnd.IsJoinToken(token, false))
+		assert.True(t, rnd.IsJoinToken(token, true))
+
+		secretFile := filepath.Join(c.PortalConfigPath(), "secrets", "join_token")
+		assert.FileExists(t, secretFile)
+		info, err := os.Stat(secretFile)
+		assert.NoError(t, err)
+		assert.Equal(t, fs.ModeSecretFile, info.Mode().Perm())
+		assert.Equal(t, token, c.JoinToken())
 	})
 	t.Run("Default", func(t *testing.T) {
 		c := NewConfig(CliTestContext())
@@ -209,11 +237,11 @@ func TestConfig_Cluster(t *testing.T) {
 
 		// Set and read back values
 		c.options.PortalUrl = "https://portal.example.test"
-		c.options.JoinToken = "join-token"
+		c.options.JoinToken = cluster.ExampleJoinToken
 		c.options.NodeClientSecret = "node-secret"
 
 		assert.Equal(t, "https://portal.example.test", c.PortalUrl())
-		assert.Equal(t, "join-token", c.JoinToken())
+		assert.Equal(t, cluster.ExampleJoinToken, c.JoinToken())
 		assert.Equal(t, "node-secret", c.NodeClientSecret())
 	})
 	t.Run("AbsolutePaths", func(t *testing.T) {
@@ -298,8 +326,8 @@ func TestConfig_Cluster(t *testing.T) {
 		dir := t.TempDir()
 		nsFile := filepath.Join(dir, "node_client_secret")
 		tkFile := filepath.Join(dir, "portal_token")
-		assert.NoError(t, os.WriteFile(nsFile, []byte("s3cr3t"), 0o600))
-		assert.NoError(t, os.WriteFile(tkFile, []byte("t0k3n"), 0o600))
+		assert.NoError(t, os.WriteFile(nsFile, []byte(cluster.ExampleClientSecret), fs.ModeSecretFile))
+		assert.NoError(t, os.WriteFile(tkFile, []byte(cluster.ExampleJoinTokenAlt), fs.ModeSecretFile))
 
 		// Clear inline values so file-based lookup is used.
 		c.options.NodeClientSecret = ""
@@ -308,8 +336,8 @@ func TestConfig_Cluster(t *testing.T) {
 		// Point env vars at the files and verify.
 		t.Setenv("PHOTOPRISM_NODE_CLIENT_SECRET_FILE", nsFile)
 		t.Setenv("PHOTOPRISM_JOIN_TOKEN_FILE", tkFile)
-		assert.Equal(t, "s3cr3t", c.NodeClientSecret())
-		assert.Equal(t, "t0k3n", c.JoinToken())
+		assert.Equal(t, cluster.ExampleClientSecret, c.NodeClientSecret())
+		assert.Equal(t, cluster.ExampleJoinTokenAlt, c.JoinToken())
 
 		// Empty / missing should yield empty strings.
 		t.Setenv("PHOTOPRISM_NODE_CLIENT_SECRET_FILE", filepath.Join(dir, "missing"))

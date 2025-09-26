@@ -689,7 +689,7 @@ var Flags = CliFlags{
 		}}, {
 		Flag: &cli.StringFlag{
 			Name:    "join-token",
-			Usage:   "secret `TOKEN` required to join the cluster",
+			Usage:   "secret `TOKEN` required to join a cluster; min 24 chars",
 			EnvVars: EnvVars("JOIN_TOKEN"),
 		}}, {
 		Flag: &cli.StringFlag{

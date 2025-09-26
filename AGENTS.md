@@ -1,6 +1,6 @@
 # PhotoPrism® Repository Guidelines
 
-**Last Updated:** September 25, 2025
+**Last Updated:** September 26, 2025
 
 ## Purpose
 
@@ -197,7 +197,7 @@ Note: Across our public documentation, official images, and in production, the c
   - Explicit “replace” actions or admin tools where the user confirmed overwrite.
   - Not for import/index flows; Originals must not be clobbered.
 
-- ### Archive Extraction — Security Checklist
+### Archive Extraction — Security Checklist
 
 - Always validate ZIP entry names with a safe join; reject:
   - absolute paths (e.g., `/etc/passwd`).
@@ -231,11 +231,8 @@ If anything in this file conflicts with the `Makefile` or the Developer Guide, t
 
 ## Agent Quick Tips (Do This)
 
-### Next‑Session Priorities
-- If we add Postgres provisioning support, extend `BuildDSN` and `provisioner.DatabaseDriver` handling, add validations, and return `driver=postgres` consistently in API/CLI.
-- Consider surfacing a short “uuid → db/user” mapping helper in the CLI (e.g., `nodes show --creds`) if operators request it.
-
 ### Testing & Fixtures
+
 - Go tests live next to their sources (`path/to/pkg/<file>_test.go`); group related cases as `t.Run(...)` sub-tests to keep table-driven coverage readable.
 - Prefer focused `go test` runs for speed (`go test ./internal/<pkg> -run <Name> -count=1`, `go test ./internal/commands -run <Name> -count=1`) and avoid `./...` unless you need the entire suite.
 - Heavy packages such as `internal/entity` and `internal/photoprism` run migrations and fixtures; expect 30–120s on first run and narrow with `-run` to keep iterations low.
@@ -244,8 +241,10 @@ If anything in this file conflicts with the `Makefile` or the Developer Guide, t
 - Generate identifiers with `rnd.GenerateUID(entity.ClientUID)` for OAuth client IDs and `rnd.UUIDv7()` for node UUIDs; treat `node.uuid` as required in responses.
 - Shared fixtures live under `storage/testdata`; `NewTestConfig("<pkg>")` already calls `InitializeTestData()`, but call `c.InitializeTestData()` (and optionally `c.AssertTestData(t)`) when you construct custom configs so originals/import/cache/temp exist. `InitializeTestData()` clears old data, downloads fixtures if needed, then calls `CreateDirectories()`.
 - For slimmer tests that only need config objects, prefer the new helpers in `internal/config/test.go`: `NewMinimalTestConfig(t.TempDir())` when no database is needed, or `NewMinimalTestConfigWithDb("<pkg>", t.TempDir())` to spin up an isolated SQLite schema without seeding all fixtures.
+- When you need illustrative credentials (join tokens, client IDs/secrets, etc.), reuse the shared `Example*` constants (see `internal/service/cluster/examples.go`) so tests, docs, and examples stay consistent.
 
 ### Roles & ACL
+
 - Map roles via the shared tables: users through `acl.ParseRole(s)` / `acl.UserRoles[...]`, clients through `acl.ClientRoles[...]`.
 - Treat `RoleAliasNone` ("none") and an empty string as `RoleNone`; no caller-specific overrides.
 - Default unknown client roles to `RoleClient`; `acl.ParseRole` already handles `0/false/nil` as none for users.
@@ -258,6 +257,7 @@ If anything in this file conflicts with the `Makefile` or the Developer Guide, t
 - Mixed roots: when testing related files, keep `ExamplesPath()/ImportPath()/OriginalsPath()` consistent so `RelatedFiles` and `AllowExt` behave as expected.
 
 ### CLI Usage & Assertions
+
 - Wrap CLI tests in `RunWithTestContext(cmd, args)` so `urfave/cli` cannot exit the process; assert quoted `show` output with `assert.Contains`/regex for the trailing ", or <last>" rule.
 - Prefer `--json` responses for automation. `photoprism show commands --json [--nested]` exposes the tree view (add `--all` for hidden entries).
 - Use `internal/commands/catalog` to inspect commands/flags without running the binary; when validating large JSON docs, marshal DTOs via `catalog.BuildFlat/BuildNode` instead of parsing CLI stdout.
@@ -355,4 +355,5 @@ If anything in this file conflicts with the `Makefile` or the Developer Guide, t
 - Registration flow: send `rotate=true` only for MySQL/MariaDB nodes without credentials, treat 401/403/404 as terminal, include `clientId` + `clientSecret` when renaming an existing node, and persist only newly generated secrets or DB settings.
 - Registry & DTOs: use the client-backed registry (`NewClientRegistryWithConfig`)—the file-backed version is legacy—and treat migration as complete only after swapping callsites, building, and running focused API/CLI tests. Nodes are keyed by UUID v7 (`/api/v1/cluster/nodes/{uuid}`), the registry interface stays UUID-first (`Get`, `FindByNodeUUID`, `FindByClientID`, `RotateSecret`, `DeleteAllByUUID`), CLI lookups resolve `uuid → clientId → name`, and DTOs normalize `database.{name,user,driver,rotatedAt}` while exposing `clientSecret` only during creation/rotation. `nodes rm --all-ids` cleans duplicate client rows, admin responses may include `advertiseUrl`/`database`, client/user sessions stay redacted, registry files live under `conf.PortalConfigPath()/nodes/` (mode 0600), and `ClientData` no longer stores `NodeUUID`.
 - Provisioner & DSN: database/user names use UUID-based HMACs (`photoprism_d<hmac11>`, `photoprism_u<hmac11>`); `BuildDSN` accepts a `driver` but falls back to MySQL format with a warning when unsupported.
+- If we add Postgres provisioning support, extend `BuildDSN` and `provisioner.DatabaseDriver` handling, add validations, and return `driver=postgres` consistently in API/CLI.
 - Testing: exercise Portal endpoints with `httptest`, guard extraction paths with `pkg/fs.Unzip` size caps, and expect admin-only fields to disappear when authenticated as a client/user session.
