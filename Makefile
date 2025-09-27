@@ -245,23 +245,23 @@ dep-list:
 	go list -u -m -json all | go-mod-outdated -direct
 npm: dep-npm npm-version
 npm-version:
-	npm --version
+	@echo "✅ Installed npm $$(npm --version)"
 dep-npm:
-	@echo "Installing latest NPM package manager..."
+	@echo "Installing NPM package manager..."
 	@if command -v sudo >/dev/null 2>&1; then \
 	  sudo npm install -g --location=global --no-fund --no-audit "npm@latest"; \
         else \
 	  npm install -g --location=global --no-fund --no-audit "npm@latest"; \
         fi
 dep-js:
-	(cd frontend && npm ci --ignore-scripts --no-update-notifier --no-audit)
 	# TODO: If in the future we want to test in a real browser environment, add this (Playwright)
 	# (cd frontend && npx playwright install chromium)
+	(cd frontend && npm ci --ignore-scripts --no-update-notifier --no-audit)
 codex: dep-codex codex-version
 codex-version:
-	codex --version
+	@echo "✅ Installed $$(codex --version)"
 dep-codex:
-	@echo "Installing latest Codex CLI..."
+	@echo "Installing Codex CLI..."
 	@[ -n "$(CODEX_HOME)" ] && [ "$(CODEX_HOME)" != "/" ] && install -d -m 700 -- "$(CODEX_HOME)" || true
 	@if command -v sudo >/dev/null 2>&1; then \
 	  sudo npm install -g --location=global --no-fund --no-audit "@openai/codex@latest"; \
