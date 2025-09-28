@@ -82,7 +82,7 @@ func PerformApiRequest(apiRequest *ApiRequest, uri, method, key string) (apiResp
 			Source: entity.SrcImage,
 		}
 	default:
-		return apiResponse, fmt.Errorf("unsupported response format %s", clean.Log(apiRequest.responseFormat))
+		return apiResponse, fmt.Errorf("unsupported response format %s", clean.Log(apiRequest.ResponseFormat))
 	}
 
 	return apiResponse, nil
