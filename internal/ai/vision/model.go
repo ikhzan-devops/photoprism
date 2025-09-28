@@ -2,6 +2,7 @@ package vision
 
 import (
 	"fmt"
+	"os"
 	"strings"
 	"sync"
 
@@ -10,10 +11,13 @@ import (
 	"github.com/photoprism/photoprism/internal/ai/nsfw"
 	"github.com/photoprism/photoprism/internal/ai/tensorflow"
 	"github.com/photoprism/photoprism/pkg/clean"
+	"github.com/photoprism/photoprism/pkg/fs"
 	"github.com/photoprism/photoprism/pkg/service/http/scheme"
 )
 
 var modelMutex = sync.Mutex{}
+
+const labelSchemaEnvVar = "PHOTOPRISM_VISION_LABEL_SCHEMA_FILE"
 
 // Default model version strings.
 var (
@@ -30,6 +34,9 @@ type Model struct {
 	Version       string                `yaml:"Version,omitempty" json:"version,omitempty"`
 	System        string                `yaml:"System,omitempty" json:"system,omitempty"`
 	Prompt        string                `yaml:"Prompt,omitempty" json:"prompt,omitempty"`
+	Format        string                `yaml:"Format,omitempty" json:"format,omitempty"`
+	Schema        string                `yaml:"Schema,omitempty" json:"schema,omitempty"`
+	SchemaFile    string                `yaml:"SchemaFile,omitempty" json:"schemaFile,omitempty"`
 	Resolution    int                   `yaml:"Resolution,omitempty" json:"resolution,omitempty"`
 	TensorFlow    *tensorflow.ModelInfo `yaml:"TensorFlow,omitempty" json:"tensorflow,omitempty"`
 	Options       *ApiRequestOptions    `yaml:"Options,omitempty" json:"options,omitempty"`
@@ -39,6 +46,8 @@ type Model struct {
 	classifyModel *classify.Model
 	faceModel     *face.Model
 	nsfwModel     *nsfw.Model
+	schemaOnce    sync.Once
+	schema        string
 }
 
 // Models represents a set of computer vision models.
@@ -152,6 +161,19 @@ func (m *Model) GetSystemPrompt() string {
 	}
 }
 
+// GetFormat returns the configured response format or a sensible default.
+func (m *Model) GetFormat() string {
+	if f := strings.TrimSpace(strings.ToLower(m.Format)); f != "" {
+		return f
+	}
+
+	if m.Type == ModelTypeLabels && m.EndpointResponseFormat() == ApiFormatOllama {
+		return FormatJSON
+	}
+
+	return ""
+}
+
 // GetOptions returns the API request options.
 func (m *Model) GetOptions() *ApiRequestOptions {
 	if m.Options != nil {
@@ -172,6 +194,56 @@ func (m *Model) GetOptions() *ApiRequestOptions {
 	default:
 		return nil
 	}
+}
+
+// SchemaTemplate returns the model-specific JSON schema template, if any.
+func (m *Model) SchemaTemplate() string {
+	m.schemaOnce.Do(func() {
+		var schema string
+
+		if m.Type == ModelTypeLabels {
+			if envFile := strings.TrimSpace(os.Getenv(labelSchemaEnvVar)); envFile != "" {
+				path := fs.Abs(envFile)
+				if path == "" {
+					path = envFile
+				}
+				if data, err := os.ReadFile(path); err != nil {
+					log.Warnf("vision: failed to read schema from %s (%s)", clean.Log(path), err)
+				} else {
+					schema = string(data)
+				}
+			}
+		}
+
+		if schema == "" && strings.TrimSpace(m.Schema) != "" {
+			schema = m.Schema
+		}
+
+		if schema == "" && strings.TrimSpace(m.SchemaFile) != "" {
+			path := fs.Abs(m.SchemaFile)
+			if path == "" {
+				path = m.SchemaFile
+			}
+			if data, err := os.ReadFile(path); err != nil {
+				log.Warnf("vision: failed to read schema from %s (%s)", clean.Log(path), err)
+			} else {
+				schema = string(data)
+			}
+		}
+
+		m.schema = strings.TrimSpace(schema)
+	})
+
+	return m.schema
+}
+
+// SchemaInstructions returns a helper string that can be appended to prompts.
+func (m *Model) SchemaInstructions() string {
+	if schema := m.SchemaTemplate(); schema != "" {
+		return fmt.Sprintf("Return JSON that matches this schema:\n%s", schema)
+	}
+
+	return ""
 }
 
 // ClassifyModel returns the matching classify model instance, if any.

@@ -21,6 +21,10 @@ import (
 
 type Files = []string
 
+const (
+	FormatJSON = "json"
+)
+
 // ApiRequestOptions represents additional model parameters listed in the documentation.
 type ApiRequestOptions struct {
 	NumKeep          int      `yaml:"NumKeep,omitempty" json:"num_keep,omitempty"`

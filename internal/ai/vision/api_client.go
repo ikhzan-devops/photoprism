@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 
 	"github.com/photoprism/photoprism/internal/entity"
 	"github.com/photoprism/photoprism/pkg/clean"
@@ -48,6 +49,10 @@ func PerformApiRequest(apiRequest *ApiRequest, uri, method, key string) (apiResp
 		return apiResponse, clientErr
 	}
 
+	defer func() {
+		_ = clientResp.Body.Close()
+	}()
+
 	apiResponse = &ApiResponse{}
 
 	// Parse and return response, or an error if the request failed.
@@ -61,13 +66,17 @@ func PerformApiRequest(apiRequest *ApiRequest, uri, method, key string) (apiResp
 			log.Debugf("vision: %s (status code %d)", apiJson, clientResp.StatusCode)
 		}
 	case ApiFormatOllama:
-		ollamaResponse := &ApiResponseOllama{}
+		apiJson, apiErr := io.ReadAll(clientResp.Body)
+		if apiErr != nil {
+			return apiResponse, apiErr
+		}
 
-		if apiJson, apiErr := io.ReadAll(clientResp.Body); apiErr != nil {
-			return apiResponse, apiErr
-		} else if apiErr = json.Unmarshal(apiJson, ollamaResponse); apiErr != nil {
-			return apiResponse, apiErr
-		} else if clientResp.StatusCode >= 300 {
+		ollamaResponse, decodeErr := decodeOllamaResponse(apiJson)
+		if decodeErr != nil {
+			return apiResponse, decodeErr
+		}
+
+		if clientResp.StatusCode >= 300 {
 			log.Debugf("vision: %s (status code %d)", apiJson, clientResp.StatusCode)
 		}
 
@@ -77,13 +86,81 @@ func PerformApiRequest(apiRequest *ApiRequest, uri, method, key string) (apiResp
 			Name: ollamaResponse.Model,
 		}
 
-		apiResponse.Result.Caption = &CaptionResult{
-			Text:   ollamaResponse.Response,
-			Source: entity.SrcImage,
+		// Copy structured results when provided.
+		if len(ollamaResponse.Result.Labels) > 0 {
+			apiResponse.Result.Labels = append(apiResponse.Result.Labels, ollamaResponse.Result.Labels...)
+		}
+
+		parsedLabels := false
+
+		if len(apiResponse.Result.Labels) > 0 {
+			parsedLabels = true
+		}
+
+		if !parsedLabels {
+			if apiRequest.Format == FormatJSON {
+				if labels, parseErr := parseOllamaLabels(ollamaResponse.Response); parseErr != nil {
+					log.Debugf("vision: %s (parse ollama labels)", clean.Error(parseErr))
+				} else if len(labels) > 0 {
+					apiResponse.Result.Labels = append(apiResponse.Result.Labels, labels...)
+					parsedLabels = true
+				}
+			}
+		}
+
+		if parsedLabels {
+			for i := range apiResponse.Result.Labels {
+				if apiResponse.Result.Labels[i].Source == "" {
+					apiResponse.Result.Labels[i].Source = entity.SrcVision
+				}
+			}
+		} else {
+			if caption := strings.TrimSpace(ollamaResponse.Response); caption != "" {
+				apiResponse.Result.Caption = &CaptionResult{
+					Text:   caption,
+					Source: entity.SrcImage,
+				}
+			}
 		}
 	default:
 		return apiResponse, fmt.Errorf("unsupported response format %s", clean.Log(apiRequest.ResponseFormat))
 	}
 
 	return apiResponse, nil
+}
+
+func decodeOllamaResponse(data []byte) (*ApiResponseOllama, error) {
+	resp := &ApiResponseOllama{}
+	dec := json.NewDecoder(bytes.NewReader(data))
+
+	for {
+		var chunk ApiResponseOllama
+		if err := dec.Decode(&chunk); err != nil {
+			if errors.Is(err, io.EOF) {
+				break
+			}
+			return nil, err
+		}
+
+		*resp = chunk
+	}
+
+	return resp, nil
+}
+
+func parseOllamaLabels(raw string) ([]LabelResult, error) {
+	raw = strings.TrimSpace(raw)
+	if raw == "" {
+		return nil, nil
+	}
+
+	var payload struct {
+		Labels []LabelResult `json:"labels"`
+	}
+
+	if err := json.Unmarshal([]byte(raw), &payload); err != nil {
+		return nil, err
+	}
+
+	return payload.Labels, nil
 }

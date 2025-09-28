@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"sort"
+	"strings"
 
 	"github.com/photoprism/photoprism/internal/ai/classify"
 	"github.com/photoprism/photoprism/pkg/clean"
@@ -30,6 +31,10 @@ func Labels(images Files, mediaSrc media.Src, labelSrc string) (result classify.
 				return result, err
 			}
 
+			if format := model.GetFormat(); format != "" {
+				apiRequest.Format = format
+			}
+
 			switch model.Service.RequestFormat {
 			case ApiFormatOllama:
 				apiRequest.Model, _, _ = model.Model()
@@ -43,6 +48,15 @@ func Labels(images Files, mediaSrc media.Src, labelSrc string) (result classify.
 
 			if model.Prompt != "" {
 				apiRequest.Prompt = model.Prompt
+			}
+
+			if schemaPrompt := model.SchemaInstructions(); schemaPrompt != "" {
+				prompt := strings.TrimSpace(apiRequest.Prompt)
+				if prompt != "" {
+					apiRequest.Prompt = fmt.Sprintf("%s\n\n%s", prompt, schemaPrompt)
+				} else {
+					apiRequest.Prompt = schemaPrompt
+				}
 			}
 
 			// Log JSON request data in trace mode.
