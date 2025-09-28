@@ -2,10 +2,13 @@ package vision
 
 import (
 	"net/http"
+	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 
+	"github.com/photoprism/photoprism/pkg/fs"
 	"github.com/photoprism/photoprism/pkg/service/http/scheme"
 )
 
@@ -69,5 +72,57 @@ func TestParseTypes(t *testing.T) {
 	t.Run("Invalid", func(t *testing.T) {
 		result := ParseTypes("foo, captions")
 		assert.Equal(t, ModelTypes{}, result)
+	})
+}
+
+func TestModelFormatAndSchema(t *testing.T) {
+	t.Run("DefaultOllamaFormat", func(t *testing.T) {
+		m := &Model{
+			Type: ModelTypeLabels,
+			Service: Service{
+				RequestFormat:  ApiFormatOllama,
+				ResponseFormat: ApiFormatOllama,
+			},
+		}
+
+		assert.Equal(t, FormatJSON, m.GetFormat())
+	})
+
+	t.Run("InlineSchema", func(t *testing.T) {
+		schema := "{\n  \"labels\": []\n}"
+		m := &Model{Schema: schema}
+
+		assert.Equal(t, schema, m.SchemaTemplate())
+		assert.Contains(t, m.SchemaInstructions(), "Return JSON")
+	})
+
+	t.Run("SchemaFileAndEnv", func(t *testing.T) {
+		tempDir := t.TempDir()
+		filePath := filepath.Join(tempDir, "schema.json")
+		content := "{\n  \"labels\": [{\"name\": \"test\"}]\n}"
+		assert.NoError(t, os.WriteFile(filePath, []byte(content), fs.ModeConfigFile))
+
+		m := &Model{
+			Type:       ModelTypeLabels,
+			SchemaFile: filePath,
+		}
+
+		// First read should use file content.
+		assert.Equal(t, content, m.SchemaTemplate())
+
+		// Reset and use env override with a different file.
+		otherFile := filepath.Join(tempDir, "schema-override.json")
+		otherContent := "{\n  \"labels\": []\n,  \"markers\": []\n}"
+		assert.NoError(t, os.WriteFile(otherFile, []byte(otherContent), fs.ModeConfigFile))
+
+		t.Setenv(labelSchemaEnvVar, otherFile)
+
+		m2 := &Model{Type: ModelTypeLabels}
+		assert.Equal(t, otherContent, m2.SchemaTemplate())
+	})
+
+	t.Run("FormatOverride", func(t *testing.T) {
+		m := &Model{Format: "JSON"}
+		assert.Equal(t, FormatJSON, m.GetFormat())
 	})
 }
