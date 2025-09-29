@@ -13,6 +13,7 @@ import (
 	"github.com/photoprism/photoprism/internal/entity"
 	"github.com/photoprism/photoprism/internal/entity/search"
 	"github.com/photoprism/photoprism/internal/workers"
+	"github.com/photoprism/photoprism/pkg/txt"
 )
 
 // VisionResetCommand configures the command name, flags, and action.
@@ -70,7 +71,7 @@ func visionResetAction(ctx *cli.Context) error {
 		confirmed := RunNonInteractively(ctx.Bool("yes"))
 
 		if !confirmed && len(selectedModels) > 0 {
-			label := fmt.Sprintf("Reset generated %s for matching pictures?", describeVisionModels(selectedModels))
+			label := fmt.Sprintf("Reset generated %s for matching pictures?", txt.JoinAnd(selectedModels))
 			prompt := promptui.Prompt{Label: label, IsConfirm: true}
 			if _, err := prompt.Run(); err != nil {
 				return nil
@@ -86,31 +87,4 @@ func visionResetAction(ctx *cli.Context) error {
 			ctx.String("source"),
 		)
 	})
-}
-
-func describeVisionModels(models []string) string {
-	descriptions := make([]string, 0, len(models))
-
-	for _, m := range models {
-		switch m {
-		case vision.ModelTypeCaption:
-			descriptions = append(descriptions, "captions")
-		case vision.ModelTypeLabels:
-			descriptions = append(descriptions, "labels")
-		default:
-			descriptions = append(descriptions, m)
-		}
-	}
-
-	switch len(descriptions) {
-	case 0:
-		return "metadata"
-	case 1:
-		return descriptions[0]
-	case 2:
-		return descriptions[0] + " and " + descriptions[1]
-	default:
-		head := strings.Join(descriptions[:len(descriptions)-1], ", ")
-		return head + ", and " + descriptions[len(descriptions)-1]
-	}
 }

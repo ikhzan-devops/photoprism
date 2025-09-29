@@ -5,7 +5,6 @@ import (
 	"os"
 	"path"
 	"path/filepath"
-	"strings"
 	"time"
 
 	"github.com/dustin/go-humanize/english"
@@ -22,6 +21,7 @@ import (
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/fs"
 	"github.com/photoprism/photoprism/pkg/i18n"
+	"github.com/photoprism/photoprism/pkg/txt"
 )
 
 const (
@@ -118,7 +118,7 @@ func StartImport(router *gin.RouterGroup) {
 		// Add imported files to albums if allowed.
 		if len(frm.Albums) > 0 &&
 			acl.Rules.AllowAny(acl.ResourceAlbums, s.GetUserRole(), acl.Permissions{acl.ActionCreate, acl.ActionUpload}) {
-			log.Debugf("import: adding files to album %s", clean.Log(strings.Join(frm.Albums, " and ")))
+			log.Debugf("import: adding files to album %s", clean.Log(txt.JoinAnd(frm.Albums)))
 			opt.Albums = frm.Albums
 		}
 

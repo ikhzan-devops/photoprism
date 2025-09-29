@@ -63,10 +63,8 @@ func (w *Vision) Start(filter string, count int, models []string, customSrc stri
 	if n := len(models); n == 0 {
 		log.Warnf("vision: no models were specified")
 		return nil
-	} else if n == 1 {
-		log.Infof("vision: running %s model", models[0])
 	} else {
-		log.Infof("vision: running %s models", strings.Join(models, " and "))
+		log.Infof("vision: running %s models", txt.JoinAnd(models))
 	}
 
 	// Source type for AI generated data.
