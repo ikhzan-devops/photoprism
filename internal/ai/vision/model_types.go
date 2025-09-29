@@ -9,10 +9,11 @@ type ModelType = string
 type ModelTypes = []ModelType
 
 const (
-	ModelTypeLabels  ModelType = "labels"
-	ModelTypeNsfw    ModelType = "nsfw"
-	ModelTypeFace    ModelType = "face"
-	ModelTypeCaption ModelType = "caption"
+	ModelTypeLabels   ModelType = "labels"
+	ModelTypeNsfw     ModelType = "nsfw"
+	ModelTypeFace     ModelType = "face"
+	ModelTypeCaption  ModelType = "caption"
+	ModelTypeGenerate ModelType = "generate"
 )
 
 // ParseTypes parses a model type string.

@@ -187,7 +187,7 @@ func (m *Model) GetOptions() *ApiRequestOptions {
 	}
 
 	switch m.Type {
-	case ModelTypeCaption:
+	case ModelTypeLabels, ModelTypeCaption, ModelTypeGenerate:
 		return &ApiRequestOptions{
 			Temperature: DefaultTemperature,
 		}

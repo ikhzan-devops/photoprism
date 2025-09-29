@@ -1,6 +1,6 @@
 # PhotoPrism® Repository Guidelines
 
-**Last Updated:** September 26, 2025
+**Last Updated:** September 29, 2025
 
 ## Purpose
 
@@ -26,6 +26,7 @@ Learn more: https://agents.md/
 
 Note on specs repository availability
 - The `specs/` repository may be private and is not guaranteed to be present in every clone or environment. Do not add Makefile targets in the main project that depend on `specs/` paths. When `specs/` is available, run its tools directly (e.g., `bash specs/scripts/lint-status.sh`).
+- In the main repo, `specs/` appears ignored because it is managed as a nested Git repository; change into `specs/` before staging or committing spec updates.
 
 ## Project Structure & Languages
 
