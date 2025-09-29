@@ -353,6 +353,65 @@ func TestPhoto_AddLabels(t *testing.T) {
 		assert.Equal(t, 10, m.Labels[0].Uncertainty)
 		assert.Equal(t, SrcManual, m.Labels[0].LabelSrc)
 	})
+	resetLabel := func(t *testing.T, photoName, labelName, src string, uncertainty int) {
+		t.Helper()
+		photo := PhotoFixtures.Get(photoName)
+		label := LabelFixtures.Get(labelName)
+		assert.NoError(t, UnscopedDb().Model(&PhotoLabel{}).
+			Where("photo_id = ? AND label_id = ?", photo.ID, label.ID).
+			UpdateColumns(map[string]interface{}{"Uncertainty": uncertainty, "LabelSrc": src}).Error)
+	}
+
+	t.Run("OllamaReplacesLowerConfidence", func(t *testing.T) {
+		photoName := "Photo15"
+		labelName := "landscape"
+		resetLabel(t, photoName, labelName, SrcImage, 20)
+
+		photo := PhotoFixtures.Get(photoName)
+		classifyLabels := classify.Labels{{Name: labelName, Uncertainty: 5, Source: SrcOllama}}
+		photo.AddLabels(classifyLabels)
+
+		updated, err := FindPhotoLabel(photo.ID, LabelFixtures.Get(labelName).ID, true)
+		if err != nil {
+			t.Fatalf("FindPhotoLabel failed: %v", err)
+		}
+		assert.Equal(t, 5, updated.Uncertainty)
+		assert.Equal(t, SrcOllama, updated.LabelSrc)
+	})
+
+	t.Run("KeepExistingWhenLessConfident", func(t *testing.T) {
+		photoName := "19800101_000002_D640C559"
+		labelName := "flower"
+		resetLabel(t, photoName, labelName, SrcImage, 20)
+
+		photo := PhotoFixtures.Get(photoName)
+		classifyLabels := classify.Labels{{Name: labelName, Uncertainty: 40, Source: SrcOllama}}
+		photo.AddLabels(classifyLabels)
+
+		updated, err := FindPhotoLabel(photo.ID, LabelFixtures.Get(labelName).ID, true)
+		if err != nil {
+			t.Fatalf("FindPhotoLabel failed: %v", err)
+		}
+		assert.Equal(t, 20, updated.Uncertainty)
+		assert.Equal(t, SrcImage, updated.LabelSrc)
+	})
+
+	t.Run("NormalizesProviderSourceCase", func(t *testing.T) {
+		photoName := "Photo01"
+		labelName := "cow"
+		resetLabel(t, photoName, labelName, SrcImage, 20)
+
+		photo := PhotoFixtures.Get(photoName)
+		classifyLabels := classify.Labels{{Name: labelName, Uncertainty: 15, Source: "OlLaMa"}}
+		photo.AddLabels(classifyLabels)
+
+		updated, err := FindPhotoLabel(photo.ID, LabelFixtures.Get(labelName).ID, true)
+		if err != nil {
+			t.Fatalf("FindPhotoLabel failed: %v", err)
+		}
+		assert.Equal(t, 15, updated.Uncertainty)
+		assert.Equal(t, SrcOllama, updated.LabelSrc)
+	})
 }
 
 func TestPhoto_Delete(t *testing.T) {

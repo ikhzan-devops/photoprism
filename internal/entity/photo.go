@@ -771,7 +771,14 @@ func (m *Photo) AddLabels(labels classify.Labels) {
 			log.Errorf("index: failed to update label %s (%s)", clean.Log(classifyLabel.Title()), err)
 		}
 
-		photoLabel := FirstOrCreatePhotoLabel(NewPhotoLabel(m.ID, labelEntity.ID, classifyLabel.Uncertainty, classifyLabel.Source))
+		labelSrc := classifyLabel.Source
+		if labelSrc == "" {
+			labelSrc = SrcImage
+		} else {
+			labelSrc = clean.ShortTypeLower(labelSrc)
+		}
+
+		photoLabel := FirstOrCreatePhotoLabel(NewPhotoLabel(m.ID, labelEntity.ID, classifyLabel.Uncertainty, labelSrc))
 
 		if photoLabel == nil {
 			log.Errorf("index: photo-label %d should not be nil - you may have found a bug (%s)", labelEntity.ID, m)
@@ -779,12 +786,6 @@ func (m *Photo) AddLabels(labels classify.Labels) {
 		}
 
 		if photoLabel.HasID() && photoLabel.Uncertainty > classifyLabel.Uncertainty && photoLabel.Uncertainty < 100 {
-			var labelSrc string
-			if classifyLabel.Source == "" {
-				labelSrc = SrcImage
-			} else {
-				labelSrc = clean.ShortTypeLower(classifyLabel.Source)
-			}
 			if err := photoLabel.Updates(map[string]interface{}{
 				"Uncertainty": classifyLabel.Uncertainty,
 				"LabelSrc":    labelSrc,

@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -62,8 +63,8 @@ func TestModel(t *testing.T) {
 
 func TestParseTypes(t *testing.T) {
 	t.Run("Valid", func(t *testing.T) {
-		result := ParseTypes("nsfw, labels, Caption")
-		assert.Equal(t, ModelTypes{"nsfw", "labels", "caption"}, result)
+		result := ParseTypes("nsfw, labels, Caption, generate")
+		assert.Equal(t, ModelTypes{"nsfw", "labels", "caption", "generate"}, result)
 	})
 	t.Run("None", func(t *testing.T) {
 		result := ParseTypes("")
@@ -121,8 +122,20 @@ func TestModelFormatAndSchema(t *testing.T) {
 		assert.Equal(t, otherContent, m2.SchemaTemplate())
 	})
 
+	t.Run("DefaultLabelSchema", func(t *testing.T) {
+		m := &Model{Type: ModelTypeLabels}
+		assert.Equal(t, strings.TrimSpace(LabelSchemaDefault), m.SchemaTemplate())
+		assert.Contains(t, m.SchemaInstructions(), "Return JSON")
+	})
+
 	t.Run("FormatOverride", func(t *testing.T) {
 		m := &Model{Format: "JSON"}
 		assert.Equal(t, FormatJSON, m.GetFormat())
+	})
+
+	t.Run("DefaultLabelPrompts", func(t *testing.T) {
+		m := &Model{Type: ModelTypeLabels}
+		assert.Equal(t, LabelPromptDefault, m.GetPrompt())
+		assert.Equal(t, LabelSystemDefault, m.GetSystemPrompt())
 	})
 }

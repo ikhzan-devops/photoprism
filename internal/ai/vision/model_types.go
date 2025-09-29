@@ -28,7 +28,7 @@ func ParseTypes(s string) (types ModelTypes) {
 	for _, t := range strings.Split(s, ",") {
 		t = strings.TrimSpace(t)
 		switch t {
-		case ModelTypeLabels, ModelTypeNsfw, ModelTypeFace, ModelTypeCaption:
+		case ModelTypeLabels, ModelTypeNsfw, ModelTypeFace, ModelTypeCaption, ModelTypeGenerate:
 			if !slices.Contains(types, t) {
 				types = append(types, t)
 			}

@@ -7,4 +7,5 @@ const (
 	ApiFormatImages ApiFormat = "images"
 	ApiFormatVision ApiFormat = "vision"
 	ApiFormatOllama ApiFormat = "ollama"
+	ApiFormatOpenAI ApiFormat = "openai"
 )
