@@ -52,7 +52,7 @@ func TestUserAlbums(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		assert.Equal(t, 0, len(result))
+		assert.Len(t, result, 0)
 	})
 }
 
@@ -144,7 +144,7 @@ func TestAlbums(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		assert.Equal(t, 1, len(result))
+		assert.Len(t, result, 1)
 		assert.Equal(t, "christmas-2030", result[0].AlbumSlug)
 	})
 	t.Run("SearchWithMultipleFilters", func(t *testing.T) {
@@ -165,7 +165,7 @@ func TestAlbums(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		assert.Equal(t, 1, len(result))
+		assert.Len(t, result, 1)
 		assert.Equal(t, "Empty Moment", result[0].AlbumTitle)
 	})
 	t.Run("SearchForYear/Month/Day", func(t *testing.T) {
@@ -184,7 +184,7 @@ func TestAlbums(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		assert.Equal(t, 0, len(result))
+		assert.Len(t, result, 0)
 	})
 	t.Run("SearchAlbumForYear", func(t *testing.T) {
 		f := form.SearchAlbums{
@@ -203,7 +203,7 @@ func TestAlbums(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		assert.Equal(t, 2, len(result))
+		assert.Len(t, result, 2)
 	})
 	t.Run("Folders", func(t *testing.T) {
 		query := form.NewAlbumSearch("19")
@@ -235,7 +235,7 @@ func TestAlbums(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		assert.Equal(t, 2, len(result))
+		assert.Len(t, result, 2)
 	})
 	t.Run("FolderSortNameReverse", func(t *testing.T) {
 		f := form.SearchAlbums{

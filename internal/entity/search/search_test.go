@@ -14,6 +14,9 @@ func TestMain(m *testing.M) {
 	log = logrus.StandardLogger()
 	log.SetLevel(logrus.TraceLevel)
 
+	// Remove temporary SQLite files before running the tests.
+	fs.PurgeTestDbFiles(".", false)
+
 	db := entity.InitTestDb(
 		os.Getenv("PHOTOPRISM_TEST_DRIVER"),
 		os.Getenv("PHOTOPRISM_TEST_DSN"))

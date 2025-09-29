@@ -529,7 +529,7 @@ func (m *File) Rename(fileName, rootName, filePath, fileBase string) error {
 	log.Debugf("file %s: renaming %s to %s", clean.Log(m.FileUID), clean.Log(m.FileName), clean.Log(fileName))
 
 	// Update database row.
-	if err := m.Updates(map[string]interface{}{
+	if err := m.Updates(Values{
 		"FileName":    fileName,
 		"FileRoot":    rootName,
 		"FileMissing": false,
@@ -545,7 +545,7 @@ func (m *File) Rename(fileName, rootName, filePath, fileBase string) error {
 
 	// Update photo path and name if possible.
 	if p := m.RelatedPhoto(); p != nil {
-		return p.Updates(map[string]interface{}{
+		return p.Updates(Values{
 			"PhotoPath": filePath,
 			"PhotoName": fileBase,
 		})
@@ -561,7 +561,7 @@ func (m *File) Undelete() error {
 	}
 
 	// Update database row.
-	err := m.Updates(map[string]interface{}{
+	err := m.Updates(Values{
 		"FileMissing": false,
 		"DeletedAt":   nil,
 	})

@@ -359,7 +359,7 @@ func TestPhoto_AddLabels(t *testing.T) {
 		label := LabelFixtures.Get(labelName)
 		assert.NoError(t, UnscopedDb().Model(&PhotoLabel{}).
 			Where("photo_id = ? AND label_id = ?", photo.ID, label.ID).
-			UpdateColumns(map[string]interface{}{"Uncertainty": uncertainty, "LabelSrc": src}).Error)
+			UpdateColumns(Values{"Uncertainty": uncertainty, "LabelSrc": src}).Error)
 	}
 
 	t.Run("OllamaReplacesLowerConfidence", func(t *testing.T) {

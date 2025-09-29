@@ -338,7 +338,7 @@ func NewTestContext(args []string) *cli.Context {
 	app.Copyright = "(c) 2018-2025 PhotoPrism UG. All rights reserved."
 	app.EnableBashCompletion = true
 	app.Flags = Flags.Cli()
-	app.Metadata = map[string]interface{}{
+	app.Metadata = Map{
 		"Name":    "PhotoPrism",
 		"About":   "PhotoPrism®",
 		"Edition": "ce",
