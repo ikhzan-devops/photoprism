@@ -16,6 +16,9 @@ import (
 
 // TestMain ensures SQLite test DB artifacts are purged after the suite runs.
 func TestMain(m *testing.M) {
+	// Remove temporary SQLite files before running the tests.
+	fs.PurgeTestDbFiles(".", false)
+
 	// Run unit tests.
 	code := m.Run()
 
