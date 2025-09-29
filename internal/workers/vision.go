@@ -35,6 +35,28 @@ func NewVision(conf *config.Config) *Vision {
 	return &Vision{conf: conf}
 }
 
+func captionSourceFromModel(model *vision.Model) string {
+	if model == nil {
+		return entity.SrcImage
+	}
+
+	switch model.EndpointRequestFormat() {
+	case vision.ApiFormatOllama:
+		return entity.SrcOllama
+	case vision.ApiFormatOpenAI:
+		return entity.SrcOpenAI
+	}
+
+	switch model.ProviderName() {
+	case "ollama":
+		return entity.SrcOllama
+	case "openai":
+		return entity.SrcOpenAI
+	}
+
+	return entity.SrcImage
+}
+
 // originalsPath returns the original media files path as string.
 func (w *Vision) originalsPath() string {
 	return w.conf.OriginalsPath()
@@ -63,19 +85,25 @@ func (w *Vision) Start(filter string, count int, models []string, customSrc stri
 	if n := len(models); n == 0 {
 		log.Warnf("vision: no models were specified")
 		return nil
-	} else if n == 1 {
-		log.Infof("vision: running %s model", models[0])
 	} else {
-		log.Infof("vision: running %s models", strings.Join(models, " and "))
+		log.Infof("vision: running %s models", txt.JoinAnd(models))
 	}
 
-	// Source type for AI generated data.
-	var dataSrc string
+	customSrc = clean.ShortTypeLower(customSrc)
+	useAutoSource := customSrc == entity.SrcAuto
 
-	if customSrc = clean.ShortTypeLower(customSrc); customSrc != "" {
-		dataSrc = customSrc
-	} else {
-		dataSrc = entity.SrcImage
+	labelSource := customSrc
+	if useAutoSource {
+		labelSource = entity.SrcAuto
+	}
+
+	if labelSource == entity.SrcImage {
+		labelSource = entity.SrcAuto
+	}
+
+	captionSource := customSrc
+	if useAutoSource {
+		captionSource = captionSourceFromModel(vision.Config.Model(vision.ModelTypeCaption))
 	}
 
 	// Check time when worker was last executed.
@@ -152,10 +180,7 @@ func (w *Vision) Start(filter string, count int, models []string, customSrc stri
 
 		// Generate labels.
 		if updateLabels && (len(m.Labels) == 0 || force) {
-			labelSrc := dataSrc
-			if labelSrc == entity.SrcImage {
-				labelSrc = entity.SrcAuto
-			}
+			labelSrc := labelSource
 			if labels := ind.Labels(file, labelSrc); len(labels) > 0 {
 				m.AddLabels(labels)
 				changed = true
@@ -173,11 +198,11 @@ func (w *Vision) Start(filter string, count int, models []string, customSrc stri
 
 		// Generate a caption if none exists or the force flag is used,
 		// and only if no caption was set or removed by a higher-priority source.
-		if updateCaptions && entity.SrcPriority[dataSrc] >= entity.SrcPriority[m.CaptionSrc] && (m.NoCaption() || force) {
+		if updateCaptions && entity.SrcPriority[captionSource] >= entity.SrcPriority[m.CaptionSrc] && (m.NoCaption() || force) {
 			if caption, captionErr := ind.Caption(file); captionErr != nil {
 				log.Warnf("vision: %s in %s (generate caption)", clean.Error(captionErr), photoName)
 			} else if caption.Text = strings.TrimSpace(caption.Text); caption.Text != "" {
-				m.SetCaption(caption.Text, dataSrc)
+				m.SetCaption(caption.Text, captionSource)
 				if updateErr := m.UpdateCaptionLabels(); updateErr != nil {
 					log.Warnf("vision: %s in %s (update caption labels)", clean.Error(updateErr), photoName)
 				}

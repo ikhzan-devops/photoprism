@@ -70,7 +70,6 @@ func TestPerformApiRequestOllama(t *testing.T) {
 		assert.Equal(t, "test", resp.Result.Labels[0].Name)
 		assert.Nil(t, resp.Result.Caption)
 	})
-
 	t.Run("CaptionFallback", func(t *testing.T) {
 		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			assert.NoError(t, json.NewEncoder(w).Encode(ApiResponseOllama{

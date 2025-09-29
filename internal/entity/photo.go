@@ -772,7 +772,8 @@ func (m *Photo) AddLabels(labels classify.Labels) {
 		}
 
 		labelSrc := classifyLabel.Source
-		if labelSrc == "" {
+
+		if labelSrc == SrcAuto {
 			labelSrc = SrcImage
 		} else {
 			labelSrc = clean.ShortTypeLower(labelSrc)
@@ -786,7 +787,7 @@ func (m *Photo) AddLabels(labels classify.Labels) {
 		}
 
 		if photoLabel.HasID() && photoLabel.Uncertainty > classifyLabel.Uncertainty && photoLabel.Uncertainty < 100 {
-			if err := photoLabel.Updates(map[string]interface{}{
+			if err := photoLabel.Updates(Values{
 				"Uncertainty": classifyLabel.Uncertainty,
 				"LabelSrc":    labelSrc,
 			}); err != nil {
@@ -944,7 +945,7 @@ func (m *Photo) Delete(permanently bool) (files Files, err error) {
 		}
 	}
 
-	return files, m.Updates(map[string]interface{}{"DeletedAt": Now(), "PhotoQuality": -1})
+	return files, m.Updates(Values{"DeletedAt": Now(), "PhotoQuality": -1})
 }
 
 // DeletePermanently permanently removes a photo from the index.
@@ -1022,7 +1023,7 @@ func (m *Photo) SetFavorite(favorite bool) error {
 	m.PhotoFavorite = favorite
 	m.PhotoQuality = m.QualityScore()
 
-	if err := m.Updates(map[string]interface{}{"PhotoFavorite": m.PhotoFavorite, "PhotoQuality": m.PhotoQuality}); err != nil {
+	if err := m.Updates(Values{"PhotoFavorite": m.PhotoFavorite, "PhotoQuality": m.PhotoQuality}); err != nil {
 		return err
 	}
 
@@ -1165,4 +1166,15 @@ func (m *Photo) FaceCount() int {
 	} else {
 		return f.ValidFaceCount()
 	}
+}
+
+// IsNewlyIndexed returns true if no CheckedAt timestamp is set yet.
+func (m *Photo) IsNewlyIndexed() bool {
+	if m.CheckedAt == nil {
+		return true
+	} else if m.CheckedAt.IsZero() {
+		return true
+	}
+
+	return false
 }

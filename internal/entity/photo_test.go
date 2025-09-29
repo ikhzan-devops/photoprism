@@ -136,6 +136,23 @@ func TestPhoto_HasMediaType(t *testing.T) {
 	})
 }
 
+func TestPhoto_IsNewlyIndexed(t *testing.T) {
+	t.Run("NilTimestamp", func(t *testing.T) {
+		photo := Photo{}
+		assert.True(t, photo.IsNewlyIndexed())
+	})
+	t.Run("ZeroTimestamp", func(t *testing.T) {
+		zero := time.Time{}
+		photo := Photo{CheckedAt: &zero}
+		assert.True(t, photo.IsNewlyIndexed())
+	})
+	t.Run("HasCheckedAt", func(t *testing.T) {
+		now := time.Now()
+		photo := Photo{CheckedAt: &now}
+		assert.False(t, photo.IsNewlyIndexed())
+	})
+}
+
 func TestPhoto_SetMediaType(t *testing.T) {
 	t.Run("Image", func(t *testing.T) {
 		m := PhotoFixtures.Get("19800101_000002_D640C559")
@@ -359,7 +376,7 @@ func TestPhoto_AddLabels(t *testing.T) {
 		label := LabelFixtures.Get(labelName)
 		assert.NoError(t, UnscopedDb().Model(&PhotoLabel{}).
 			Where("photo_id = ? AND label_id = ?", photo.ID, label.ID).
-			UpdateColumns(map[string]interface{}{"Uncertainty": uncertainty, "LabelSrc": src}).Error)
+			UpdateColumns(Values{"Uncertainty": uncertainty, "LabelSrc": src}).Error)
 	}
 
 	t.Run("OllamaReplacesLowerConfidence", func(t *testing.T) {
@@ -378,7 +395,6 @@ func TestPhoto_AddLabels(t *testing.T) {
 		assert.Equal(t, 5, updated.Uncertainty)
 		assert.Equal(t, SrcOllama, updated.LabelSrc)
 	})
-
 	t.Run("KeepExistingWhenLessConfident", func(t *testing.T) {
 		photoName := "19800101_000002_D640C559"
 		labelName := "flower"
@@ -395,7 +411,6 @@ func TestPhoto_AddLabels(t *testing.T) {
 		assert.Equal(t, 20, updated.Uncertainty)
 		assert.Equal(t, SrcImage, updated.LabelSrc)
 	})
-
 	t.Run("NormalizesProviderSourceCase", func(t *testing.T) {
 		photoName := "Photo01"
 		labelName := "cow"

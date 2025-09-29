@@ -41,10 +41,16 @@ type ConfigValues struct {
 
 // NewConfig returns a new computer vision config with defaults.
 func NewConfig() *ConfigValues {
-	return &ConfigValues{
+	cfg := &ConfigValues{
 		Models:     DefaultModels,
 		Thresholds: DefaultThresholds,
 	}
+
+	for _, model := range cfg.Models {
+		model.ApplyProviderDefaults()
+	}
+
+	return cfg
 }
 
 // Load user settings from file.
@@ -88,6 +94,10 @@ func (c *ConfigValues) Load(fileName string) error {
 		}
 	}
 
+	for _, model := range c.Models {
+		model.ApplyProviderDefaults()
+	}
+
 	if c.Thresholds.Confidence <= 0 || c.Thresholds.Confidence > 100 {
 		c.Thresholds.Confidence = DefaultThresholds.Confidence
 	}
@@ -116,13 +126,36 @@ func (c *ConfigValues) Save(fileName string) error {
 
 // Model returns the first enabled model with the matching type from the configuration.
 func (c *ConfigValues) Model(t ModelType) *Model {
-	for _, m := range c.Models {
+	for i := len(c.Models) - 1; i >= 0; i-- {
+		m := c.Models[i]
 		if m.Type == t && !m.Disabled {
 			return m
 		}
 	}
 
 	return nil
+}
+
+// IsDefault checks whether the specified type is the built-in default model.
+func (c *ConfigValues) IsDefault(t ModelType) bool {
+	m := c.Model(t)
+
+	if m == nil {
+		return false
+	}
+
+	return m.IsDefault()
+}
+
+// IsCustom checks whether the specified type uses a custom model or service.
+func (c *ConfigValues) IsCustom(t ModelType) bool {
+	m := c.Model(t)
+
+	if m == nil {
+		return false
+	}
+
+	return !m.IsDefault()
 }
 
 // SetCachePath updates the cache path.

@@ -10,6 +10,9 @@ import (
 	"github.com/photoprism/photoprism/internal/ai/face"
 	"github.com/photoprism/photoprism/internal/ai/nsfw"
 	"github.com/photoprism/photoprism/internal/ai/tensorflow"
+	"github.com/photoprism/photoprism/internal/ai/vision/ollama"
+	"github.com/photoprism/photoprism/internal/ai/vision/openai"
+	visionschema "github.com/photoprism/photoprism/internal/ai/vision/schema"
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/fs"
 	"github.com/photoprism/photoprism/pkg/service/http/scheme"
@@ -32,6 +35,7 @@ type Model struct {
 	Default       bool                  `yaml:"Default,omitempty" json:"default,omitempty"`
 	Name          string                `yaml:"Name,omitempty" json:"name,omitempty"`
 	Version       string                `yaml:"Version,omitempty" json:"version,omitempty"`
+	Provider      ModelProvider         `yaml:"Provider,omitempty" json:"provider,omitempty"`
 	System        string                `yaml:"System,omitempty" json:"system,omitempty"`
 	Prompt        string                `yaml:"Prompt,omitempty" json:"prompt,omitempty"`
 	Format        string                `yaml:"Format,omitempty" json:"format,omitempty"`
@@ -84,6 +88,30 @@ func (m *Model) Model() (model, name, version string) {
 
 	// Return normalized model identifier, name, and version.
 	return model, name, version
+}
+
+// IsDefault checks if this is a built-in default model.
+func (m *Model) IsDefault() bool {
+	if m.Default {
+		return true
+	}
+
+	if m.TensorFlow == nil {
+		return false
+	}
+
+	switch m.Type {
+	case ModelTypeLabels:
+		return m.Name == NasnetModel.Name
+	case ModelTypeNsfw:
+		return m.Name == NsfwModel.Name
+	case ModelTypeFace:
+		return m.Name == FacenetModel.Name
+	case ModelTypeCaption:
+		return m.Name == CaptionModel.Name
+	}
+
+	return false
 }
 
 // Endpoint returns the remote service request method and endpoint URL, if any.
@@ -141,11 +169,17 @@ func (m *Model) GetPrompt() string {
 		return m.Prompt
 	}
 
+	if defaults := m.defaultsProvider(); defaults != nil {
+		if prompt := defaults.UserPrompt(m); prompt != "" {
+			return prompt
+		}
+	}
+
 	switch m.Type {
 	case ModelTypeCaption:
-		return CaptionPromptDefault
+		return ollama.CaptionPrompt
 	case ModelTypeLabels:
-		return LabelPromptDefault
+		return ollama.LabelPrompt
 	default:
 		return ""
 	}
@@ -157,9 +191,15 @@ func (m *Model) GetSystemPrompt() string {
 		return m.System
 	}
 
+	if defaults := m.defaultsProvider(); defaults != nil {
+		if system := defaults.SystemPrompt(m); system != "" {
+			return system
+		}
+	}
+
 	switch m.Type {
 	case ModelTypeLabels:
-		return LabelSystemDefault
+		return ollama.LabelSystem
 	default:
 		return ""
 	}
@@ -180,30 +220,136 @@ func (m *Model) GetFormat() string {
 
 // GetOptions returns the API request options.
 func (m *Model) GetOptions() *ApiRequestOptions {
-	if m.Options != nil {
-		if m.Options.Temperature <= 0 {
-			m.Options.Temperature = DefaultTemperature
-		} else if m.Options.Temperature > MaxTemperature {
-			m.Options.Temperature = MaxTemperature
-		}
-
-		return m.Options
+	var providerDefaults *ApiRequestOptions
+	if defaults := m.defaultsProvider(); defaults != nil {
+		providerDefaults = cloneOptions(defaults.Options(m))
 	}
 
-	switch m.Type {
-	case ModelTypeLabels, ModelTypeCaption, ModelTypeGenerate:
-		return &ApiRequestOptions{
-			Temperature: DefaultTemperature,
+	if m.Options == nil {
+		switch m.Type {
+		case ModelTypeLabels, ModelTypeCaption, ModelTypeGenerate:
+			if providerDefaults == nil {
+				providerDefaults = &ApiRequestOptions{}
+			}
+			normalizeOptions(providerDefaults)
+			m.Options = providerDefaults
+			return m.Options
+		default:
+			return nil
 		}
-	default:
+	}
+
+	mergeOptionDefaults(m.Options, providerDefaults)
+	normalizeOptions(m.Options)
+
+	return m.Options
+}
+
+func mergeOptionDefaults(target, defaults *ApiRequestOptions) {
+	if target == nil || defaults == nil {
+		return
+	}
+
+	if target.TopP <= 0 && defaults.TopP > 0 {
+		target.TopP = defaults.TopP
+	}
+
+	if len(target.Stop) == 0 && len(defaults.Stop) > 0 {
+		target.Stop = append([]string(nil), defaults.Stop...)
+	}
+}
+
+func normalizeOptions(opts *ApiRequestOptions) {
+	if opts == nil {
+		return
+	}
+
+	if opts.Temperature <= 0 {
+		opts.Temperature = DefaultTemperature
+	} else if opts.Temperature > MaxTemperature {
+		opts.Temperature = MaxTemperature
+	}
+}
+
+func cloneOptions(opts *ApiRequestOptions) *ApiRequestOptions {
+	if opts == nil {
 		return nil
 	}
+
+	clone := *opts
+
+	if len(opts.Stop) > 0 {
+		clone.Stop = append([]string(nil), opts.Stop...)
+	}
+
+	return &clone
+}
+
+// ProviderName returns the configured provider or infers a sensible default based on the model settings.
+func (m *Model) ProviderName() string {
+	if m == nil {
+		return ""
+	}
+
+	if provider := strings.TrimSpace(strings.ToLower(m.Provider)); provider != "" {
+		return provider
+	}
+
+	uri, method := m.Endpoint()
+	if uri != "" && method != "" {
+		format := m.EndpointRequestFormat()
+		switch format {
+		case ApiFormatOllama:
+			return ollama.ProviderName
+		case ApiFormatOpenAI:
+			return openai.ProviderName
+		case ApiFormatVision, "":
+			return ProviderVision
+		default:
+			return strings.ToLower(string(format))
+		}
+	}
+
+	if m.TensorFlow != nil {
+		return ProviderTensorFlow
+	}
+
+	return ProviderLocal
+}
+
+// ApplyProviderDefaults normalizes the provider name and applies registered provider defaults
+// for request/response formats and file schemes when these are not explicitly configured.
+func (m *Model) ApplyProviderDefaults() {
+	if m == nil {
+		return
+	}
+
+	provider := strings.TrimSpace(strings.ToLower(m.Provider))
+	if provider == "" {
+		return
+	}
+
+	if info, ok := ProviderInfoFor(provider); ok {
+		if m.Service.RequestFormat == "" {
+			m.Service.RequestFormat = info.RequestFormat
+		}
+
+		if m.Service.ResponseFormat == "" {
+			m.Service.ResponseFormat = info.ResponseFormat
+		}
+
+		if info.FileScheme != "" && m.Service.FileScheme == "" {
+			m.Service.FileScheme = info.FileScheme
+		}
+	}
+
+	m.Provider = provider
 }
 
 // SchemaTemplate returns the model-specific JSON schema template, if any.
 func (m *Model) SchemaTemplate() string {
 	m.schemaOnce.Do(func() {
-		var schema string
+		var schemaText string
 
 		if m.Type == ModelTypeLabels {
 			if envFile := strings.TrimSpace(os.Getenv(labelSchemaEnvVar)); envFile != "" {
@@ -214,16 +360,16 @@ func (m *Model) SchemaTemplate() string {
 				if data, err := os.ReadFile(path); err != nil {
 					log.Warnf("vision: failed to read schema from %s (%s)", clean.Log(path), err)
 				} else {
-					schema = string(data)
+					schemaText = string(data)
 				}
 			}
 		}
 
-		if schema == "" && strings.TrimSpace(m.Schema) != "" {
-			schema = m.Schema
+		if schemaText == "" && strings.TrimSpace(m.Schema) != "" {
+			schemaText = m.Schema
 		}
 
-		if schema == "" && strings.TrimSpace(m.SchemaFile) != "" {
+		if schemaText == "" && strings.TrimSpace(m.SchemaFile) != "" {
 			path := fs.Abs(m.SchemaFile)
 			if path == "" {
 				path = m.SchemaFile
@@ -231,18 +377,37 @@ func (m *Model) SchemaTemplate() string {
 			if data, err := os.ReadFile(path); err != nil {
 				log.Warnf("vision: failed to read schema from %s (%s)", clean.Log(path), err)
 			} else {
-				schema = string(data)
+				schemaText = string(data)
 			}
 		}
 
-		m.schema = strings.TrimSpace(schema)
+		m.schema = strings.TrimSpace(schemaText)
 
 		if m.schema == "" && m.Type == ModelTypeLabels {
-			m.schema = strings.TrimSpace(LabelSchemaDefault)
+			if defaults := m.defaultsProvider(); defaults != nil {
+				m.schema = strings.TrimSpace(defaults.SchemaTemplate(m))
+			}
+		}
+
+		if m.schema == "" && m.Type == ModelTypeLabels {
+			m.schema = visionschema.LabelDefaultV1
 		}
 	})
 
 	return m.schema
+}
+
+func (m *Model) defaultsProvider() DefaultsProvider {
+	if provider, ok := ProviderFor(m.EndpointRequestFormat()); ok {
+		return provider.Defaults
+	}
+
+	if info, ok := ProviderInfoFor(m.ProviderName()); ok {
+		if provider, ok := ProviderFor(info.RequestFormat); ok {
+			return provider.Defaults
+		}
+	}
+	return nil
 }
 
 // SchemaInstructions returns a helper string that can be appended to prompts.

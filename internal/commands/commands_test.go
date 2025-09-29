@@ -28,6 +28,9 @@ func TestMain(m *testing.M) {
 	log.SetLevel(logrus.TraceLevel)
 	event.AuditLog = log
 
+	// Remove temporary SQLite files before running the tests.
+	fs.PurgeTestDbFiles(".", false)
+
 	tempDir, err := os.MkdirTemp("", "commands-test")
 	if err != nil {
 		panic(err)

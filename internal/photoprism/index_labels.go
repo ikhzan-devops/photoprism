@@ -7,13 +7,14 @@ import (
 
 	"github.com/photoprism/photoprism/internal/ai/classify"
 	"github.com/photoprism/photoprism/internal/ai/vision"
+	"github.com/photoprism/photoprism/internal/entity"
 	"github.com/photoprism/photoprism/internal/thumb"
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/media"
 )
 
 // Labels classifies a JPEG image and returns matching labels.
-func (ind *Index) Labels(file *MediaFile, labelSrc string) (labels classify.Labels) {
+func (ind *Index) Labels(file *MediaFile, labelSrc entity.Src) (labels classify.Labels) {
 	start := time.Now()
 
 	var err error

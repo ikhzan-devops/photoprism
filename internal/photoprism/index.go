@@ -47,7 +47,7 @@ func NewIndex(conf *config.Config, convert *Convert, files *Files, photos *Photo
 		files:      files,
 		photos:     photos,
 		findFaces:  !conf.DisableFaces(),
-		findLabels: !conf.DisableClassification(),
+		findLabels: conf.GenerateLabelsWhileIndexing(),
 	}
 
 	return i

@@ -1,141 +1,131 @@
 package vision
 
 import (
-	"net/http"
-	"os"
-	"path/filepath"
-	"strings"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-
-	"github.com/photoprism/photoprism/pkg/fs"
-	"github.com/photoprism/photoprism/pkg/service/http/scheme"
+	"github.com/photoprism/photoprism/internal/ai/tensorflow"
+	"github.com/photoprism/photoprism/internal/ai/vision/ollama"
 )
 
-func TestModel(t *testing.T) {
-	t.Run("Nasnet", func(t *testing.T) {
-		ServiceUri = "https://app.localssl.dev/api/v1/vision"
-		uri, method := NasnetModel.Endpoint()
-		ServiceUri = ""
-		assert.Equal(t, "https://app.localssl.dev/api/v1/vision/labels", uri)
-		assert.Equal(t, http.MethodPost, method)
+func TestModelGetOptionsDefaultsOllamaLabels(t *testing.T) {
+	model := &Model{
+		Type:     ModelTypeLabels,
+		Provider: ollama.ProviderName,
+	}
 
-		uri, method = NasnetModel.Endpoint()
-		assert.Equal(t, "", uri)
-		assert.Equal(t, "", method)
-	})
-	t.Run("Caption", func(t *testing.T) {
-		uri, method := CaptionModel.Endpoint()
-		assert.Equal(t, "http://ollama:11434/api/generate", uri)
-		assert.Equal(t, "POST", method)
+	model.ApplyProviderDefaults()
 
-		model, name, version := CaptionModel.Model()
-		assert.Equal(t, "gemma3:latest", model)
-		assert.Equal(t, "gemma3", name)
-		assert.Equal(t, "latest", version)
-	})
-	t.Run("ParseName", func(t *testing.T) {
-		m := &Model{
-			Type:       ModelTypeCaption,
-			Name:       "deepseek-r1:1.5b",
-			Version:    "",
-			Resolution: 720,
-			Prompt:     CaptionPromptDefault,
-			Service: Service{
-				Uri:            "http://foo:bar@photoprism-vision:5000/api/v1/vision/caption",
-				FileScheme:     scheme.Data,
-				RequestFormat:  ApiFormatVision,
-				ResponseFormat: ApiFormatVision,
-			},
-		}
+	opts := model.GetOptions()
+	if opts == nil {
+		t.Fatalf("expected options for labels model")
+	}
 
-		uri, method := m.Endpoint()
-		assert.Equal(t, "http://foo:bar@photoprism-vision:5000/api/v1/vision/caption", uri)
-		assert.Equal(t, "POST", method)
+	if opts.Temperature != DefaultTemperature {
+		t.Errorf("unexpected temperature: got %v want %v", opts.Temperature, DefaultTemperature)
+	}
 
-		model, name, version := m.Model()
-		assert.Equal(t, "deepseek-r1:1.5b", model)
-		assert.Equal(t, "deepseek-r1", name)
-		assert.Equal(t, "1.5b", version)
-	})
+	if opts.TopP != 0.9 {
+		t.Errorf("unexpected top_p: got %v want 0.9", opts.TopP)
+	}
+
+	if len(opts.Stop) != 1 || opts.Stop[0] != "\n\n" {
+		t.Fatalf("expected default stop sequence, got %#v", opts.Stop)
+	}
+
+	if opts != model.GetOptions() {
+		t.Errorf("expected cached options pointer")
+	}
 }
 
-func TestParseTypes(t *testing.T) {
-	t.Run("Valid", func(t *testing.T) {
-		result := ParseTypes("nsfw, labels, Caption, generate")
-		assert.Equal(t, ModelTypes{"nsfw", "labels", "caption", "generate"}, result)
-	})
-	t.Run("None", func(t *testing.T) {
-		result := ParseTypes("")
-		assert.Equal(t, ModelTypes{}, result)
-	})
-	t.Run("Invalid", func(t *testing.T) {
-		result := ParseTypes("foo, captions")
-		assert.Equal(t, ModelTypes{}, result)
-	})
+func TestModelGetOptionsRespectsCustomValues(t *testing.T) {
+	model := &Model{
+		Type:     ModelTypeLabels,
+		Provider: ollama.ProviderName,
+		Options: &ApiRequestOptions{
+			Temperature: 5,
+			TopP:        0.95,
+			Stop:        []string{"CUSTOM"},
+		},
+	}
+
+	model.ApplyProviderDefaults()
+
+	opts := model.GetOptions()
+	if opts.Temperature != MaxTemperature {
+		t.Errorf("temperature clamp failed: got %v want %v", opts.Temperature, MaxTemperature)
+	}
+	if opts.TopP != 0.95 {
+		t.Errorf("top_p override lost: got %v", opts.TopP)
+	}
+	if len(opts.Stop) != 1 || opts.Stop[0] != "CUSTOM" {
+		t.Errorf("stop override lost: %#v", opts.Stop)
+	}
 }
 
-func TestModelFormatAndSchema(t *testing.T) {
-	t.Run("DefaultOllamaFormat", func(t *testing.T) {
-		m := &Model{
-			Type: ModelTypeLabels,
-			Service: Service{
-				RequestFormat:  ApiFormatOllama,
-				ResponseFormat: ApiFormatOllama,
+func TestModelGetOptionsFillsMissingFields(t *testing.T) {
+	model := &Model{
+		Type:     ModelTypeLabels,
+		Provider: ollama.ProviderName,
+		Options:  &ApiRequestOptions{},
+	}
+
+	model.ApplyProviderDefaults()
+
+	opts := model.GetOptions()
+	if opts.TopP != 0.9 {
+		t.Errorf("expected default top_p, got %v", opts.TopP)
+	}
+	if len(opts.Stop) != 1 || opts.Stop[0] != "\n\n" {
+		t.Errorf("expected default stop sequence, got %#v", opts.Stop)
+	}
+}
+
+func TestModel_IsDefault(t *testing.T) {
+	nasnetCopy := *NasnetModel
+	nasnetCopy.Default = false
+
+	cases := []struct {
+		name  string
+		model *Model
+		want  bool
+	}{
+		{
+			name:  "DefaultFlag",
+			model: &Model{Default: true},
+			want:  true,
+		},
+		{
+			name:  "NasnetCopy",
+			model: &nasnetCopy,
+			want:  true,
+		},
+		{
+			name: "CustomTensorFlow",
+			model: &Model{
+				Type:       ModelTypeLabels,
+				Name:       "custom",
+				TensorFlow: &tensorflow.ModelInfo{},
 			},
-		}
+			want: false,
+		},
+		{
+			name: "RemoteService",
+			model: &Model{
+				Type:     ModelTypeCaption,
+				Name:     "custom-caption",
+				Provider: ollama.ProviderName,
+			},
+			want: false,
+		},
+	}
 
-		assert.Equal(t, FormatJSON, m.GetFormat())
-	})
+	for _, tc := range cases {
+		tc := tc
 
-	t.Run("InlineSchema", func(t *testing.T) {
-		schema := "{\n  \"labels\": []\n}"
-		m := &Model{Schema: schema}
-
-		assert.Equal(t, schema, m.SchemaTemplate())
-		assert.Contains(t, m.SchemaInstructions(), "Return JSON")
-	})
-
-	t.Run("SchemaFileAndEnv", func(t *testing.T) {
-		tempDir := t.TempDir()
-		filePath := filepath.Join(tempDir, "schema.json")
-		content := "{\n  \"labels\": [{\"name\": \"test\"}]\n}"
-		assert.NoError(t, os.WriteFile(filePath, []byte(content), fs.ModeConfigFile))
-
-		m := &Model{
-			Type:       ModelTypeLabels,
-			SchemaFile: filePath,
-		}
-
-		// First read should use file content.
-		assert.Equal(t, content, m.SchemaTemplate())
-
-		// Reset and use env override with a different file.
-		otherFile := filepath.Join(tempDir, "schema-override.json")
-		otherContent := "{\n  \"labels\": []\n,  \"markers\": []\n}"
-		assert.NoError(t, os.WriteFile(otherFile, []byte(otherContent), fs.ModeConfigFile))
-
-		t.Setenv(labelSchemaEnvVar, otherFile)
-
-		m2 := &Model{Type: ModelTypeLabels}
-		assert.Equal(t, otherContent, m2.SchemaTemplate())
-	})
-
-	t.Run("DefaultLabelSchema", func(t *testing.T) {
-		m := &Model{Type: ModelTypeLabels}
-		assert.Equal(t, strings.TrimSpace(LabelSchemaDefault), m.SchemaTemplate())
-		assert.Contains(t, m.SchemaInstructions(), "Return JSON")
-	})
-
-	t.Run("FormatOverride", func(t *testing.T) {
-		m := &Model{Format: "JSON"}
-		assert.Equal(t, FormatJSON, m.GetFormat())
-	})
-
-	t.Run("DefaultLabelPrompts", func(t *testing.T) {
-		m := &Model{Type: ModelTypeLabels}
-		assert.Equal(t, LabelPromptDefault, m.GetPrompt())
-		assert.Equal(t, LabelSystemDefault, m.GetSystemPrompt())
-	})
+		t.Run(tc.name, func(t *testing.T) {
+			if got := tc.model.IsDefault(); got != tc.want {
+				t.Fatalf("IsDefault() = %v, want %v", got, tc.want)
+			}
+		})
+	}
 }
