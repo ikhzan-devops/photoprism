@@ -772,7 +772,8 @@ func (m *Photo) AddLabels(labels classify.Labels) {
 		}
 
 		labelSrc := classifyLabel.Source
-		if labelSrc == "" {
+
+		if labelSrc == SrcAuto {
 			labelSrc = SrcImage
 		} else {
 			labelSrc = clean.ShortTypeLower(labelSrc)

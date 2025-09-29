@@ -28,3 +28,34 @@ func TestOptions(t *testing.T) {
 		assert.Error(t, err)
 	})
 }
+
+func TestConfigModelPrefersLastEnabled(t *testing.T) {
+	defaultModel := *NasnetModel
+	defaultModel.Disabled = false
+	defaultModel.Name = "nasnet-default"
+
+	customModel := &Model{
+		Type:     ModelTypeLabels,
+		Name:     "ollama-labels",
+		Provider: "ollama",
+		Disabled: false,
+	}
+
+	cfg := &ConfigValues{
+		Models: Models{
+			&defaultModel,
+			customModel,
+		},
+	}
+
+	got := cfg.Model(ModelTypeLabels)
+	if got != customModel {
+		t.Fatalf("expected last enabled model, got %v", got)
+	}
+
+	customModel.Disabled = true
+	got = cfg.Model(ModelTypeLabels)
+	if got == nil || got.Name != defaultModel.Name {
+		t.Fatalf("expected fallback to default model, got %v", got)
+	}
+}

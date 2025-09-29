@@ -33,6 +33,7 @@ type DefaultsProvider interface {
 	SystemPrompt(model *Model) string
 	UserPrompt(model *Model) string
 	SchemaTemplate(model *Model) string
+	Options(model *Model) *ApiRequestOptions
 }
 
 // Provider groups the callbacks required to integrate a third-party vision service.

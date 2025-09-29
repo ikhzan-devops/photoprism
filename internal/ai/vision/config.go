@@ -126,7 +126,8 @@ func (c *ConfigValues) Save(fileName string) error {
 
 // Model returns the first enabled model with the matching type from the configuration.
 func (c *ConfigValues) Model(t ModelType) *Model {
-	for _, m := range c.Models {
+	for i := len(c.Models) - 1; i >= 0; i-- {
+		m := c.Models[i]
 		if m.Type == t && !m.Disabled {
 			return m
 		}

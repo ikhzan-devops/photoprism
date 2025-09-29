@@ -26,7 +26,7 @@ func Labels(images Files, mediaSrc media.Src, labelSrc string) (result classify.
 	if Config == nil {
 		return result, errors.New("vision service is not configured")
 	} else if model := Config.Model(ModelTypeLabels); model != nil {
-		if labelSrc == "" || labelSrc == entity.SrcAuto {
+		if labelSrc == entity.SrcAuto {
 			switch model.EndpointRequestFormat() {
 			case ApiFormatOllama:
 				labelSrc = entity.SrcOllama

@@ -196,24 +196,69 @@ func (m *Model) GetFormat() string {
 
 // GetOptions returns the API request options.
 func (m *Model) GetOptions() *ApiRequestOptions {
-	if m.Options != nil {
-		if m.Options.Temperature <= 0 {
-			m.Options.Temperature = DefaultTemperature
-		} else if m.Options.Temperature > MaxTemperature {
-			m.Options.Temperature = MaxTemperature
-		}
-
-		return m.Options
+	var providerDefaults *ApiRequestOptions
+	if defaults := m.defaultsProvider(); defaults != nil {
+		providerDefaults = cloneOptions(defaults.Options(m))
 	}
 
-	switch m.Type {
-	case ModelTypeLabels, ModelTypeCaption, ModelTypeGenerate:
-		return &ApiRequestOptions{
-			Temperature: DefaultTemperature,
+	if m.Options == nil {
+		switch m.Type {
+		case ModelTypeLabels, ModelTypeCaption, ModelTypeGenerate:
+			if providerDefaults == nil {
+				providerDefaults = &ApiRequestOptions{}
+			}
+			normalizeOptions(providerDefaults)
+			m.Options = providerDefaults
+			return m.Options
+		default:
+			return nil
 		}
-	default:
+	}
+
+	mergeOptionDefaults(m.Options, providerDefaults)
+	normalizeOptions(m.Options)
+
+	return m.Options
+}
+
+func mergeOptionDefaults(target, defaults *ApiRequestOptions) {
+	if target == nil || defaults == nil {
+		return
+	}
+
+	if target.TopP <= 0 && defaults.TopP > 0 {
+		target.TopP = defaults.TopP
+	}
+
+	if len(target.Stop) == 0 && len(defaults.Stop) > 0 {
+		target.Stop = append([]string(nil), defaults.Stop...)
+	}
+}
+
+func normalizeOptions(opts *ApiRequestOptions) {
+	if opts == nil {
+		return
+	}
+
+	if opts.Temperature <= 0 {
+		opts.Temperature = DefaultTemperature
+	} else if opts.Temperature > MaxTemperature {
+		opts.Temperature = MaxTemperature
+	}
+}
+
+func cloneOptions(opts *ApiRequestOptions) *ApiRequestOptions {
+	if opts == nil {
 		return nil
 	}
+
+	clone := *opts
+
+	if len(opts.Stop) > 0 {
+		clone.Stop = append([]string(nil), opts.Stop...)
+	}
+
+	return &clone
 }
 
 // ProviderName returns the configured provider or infers a sensible default based on the model settings.
@@ -331,6 +376,12 @@ func (m *Model) SchemaTemplate() string {
 func (m *Model) defaultsProvider() DefaultsProvider {
 	if provider, ok := ProviderFor(m.EndpointRequestFormat()); ok {
 		return provider.Defaults
+	}
+
+	if info, ok := ProviderInfoFor(m.ProviderName()); ok {
+		if provider, ok := ProviderFor(info.RequestFormat); ok {
+			return provider.Defaults
+		}
 	}
 	return nil
 }

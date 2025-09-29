@@ -7,6 +7,7 @@ import (
 
 	"github.com/photoprism/photoprism/internal/ai/vision"
 	"github.com/photoprism/photoprism/internal/config"
+	"github.com/photoprism/photoprism/internal/entity"
 	"github.com/photoprism/photoprism/internal/workers"
 )
 
@@ -23,7 +24,7 @@ var VisionRunCommand = &cli.Command{
 			Value:   "caption",
 		},
 		PicturesCountFlag(),
-		VisionSourceFlag(),
+		VisionSourceFlag(entity.SrcAuto),
 		&cli.BoolFlag{
 			Name:    "force",
 			Aliases: []string{"f"},

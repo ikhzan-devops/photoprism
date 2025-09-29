@@ -63,6 +63,27 @@ func (ollamaDefaults) SchemaTemplate(model *Model) string {
 	return ollama.LabelSchema()
 }
 
+func (ollamaDefaults) Options(model *Model) *ApiRequestOptions {
+	if model == nil {
+		return nil
+	}
+
+	switch model.Type {
+	case ModelTypeLabels:
+		return &ApiRequestOptions{
+			Temperature: DefaultTemperature,
+			TopP:        0.9,
+			Stop:        []string{"\n\n"},
+		}
+	case ModelTypeCaption:
+		return &ApiRequestOptions{
+			Temperature: DefaultTemperature,
+		}
+	default:
+		return nil
+	}
+}
+
 func (ollamaBuilder) Build(ctx context.Context, model *Model, files Files) (*ApiRequest, error) {
 	if model == nil {
 		return nil, ErrInvalidModel
