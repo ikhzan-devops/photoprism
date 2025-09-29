@@ -152,7 +152,11 @@ func (w *Vision) Start(filter string, count int, models []string, customSrc stri
 
 		// Generate labels.
 		if updateLabels && (len(m.Labels) == 0 || force) {
-			if labels := ind.Labels(file, dataSrc); len(labels) > 0 {
+			labelSrc := dataSrc
+			if labelSrc == entity.SrcImage {
+				labelSrc = entity.SrcAuto
+			}
+			if labels := ind.Labels(file, labelSrc); len(labels) > 0 {
 				m.AddLabels(labels)
 				changed = true
 			}

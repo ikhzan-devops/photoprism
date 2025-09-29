@@ -7,11 +7,14 @@ import (
 	"strings"
 
 	"github.com/photoprism/photoprism/internal/ai/classify"
+	"github.com/photoprism/photoprism/internal/entity"
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/media"
 )
 
 // Labels finds matching labels for the specified image.
+// Caller must pass the appropriate metadata source string (e.g., entity.SrcOllama, entity.SrcOpenAI)
+// so that downstream indexing can record where the labels originated.
 func Labels(images Files, mediaSrc media.Src, labelSrc string) (result classify.Labels, err error) {
 	// Return if no thumbnail filenames were given.
 	if len(images) == 0 {
@@ -22,6 +25,17 @@ func Labels(images Files, mediaSrc media.Src, labelSrc string) (result classify.
 	if Config == nil {
 		return result, errors.New("vision service is not configured")
 	} else if model := Config.Model(ModelTypeLabels); model != nil {
+		if labelSrc == "" || labelSrc == entity.SrcAuto {
+			switch model.EndpointRequestFormat() {
+			case ApiFormatOllama:
+				labelSrc = entity.SrcOllama
+			case ApiFormatOpenAI:
+				labelSrc = entity.SrcOpenAI
+			default:
+				labelSrc = entity.SrcImage
+			}
+		}
+
 		// Use remote service API if a server endpoint has been configured.
 		if uri, method := model.Endpoint(); uri != "" && method != "" {
 			var apiRequest *ApiRequest
@@ -42,21 +56,25 @@ func Labels(images Files, mediaSrc media.Src, labelSrc string) (result classify.
 				_, apiRequest.Model, apiRequest.Version = model.Model()
 			}
 
-			if model.System != "" {
-				apiRequest.System = model.System
+			if system := model.GetSystemPrompt(); system != "" {
+				apiRequest.System = system
 			}
 
-			if model.Prompt != "" {
-				apiRequest.Prompt = model.Prompt
-			}
-
+			prompt := strings.TrimSpace(model.GetPrompt())
 			if schemaPrompt := model.SchemaInstructions(); schemaPrompt != "" {
-				prompt := strings.TrimSpace(apiRequest.Prompt)
 				if prompt != "" {
-					apiRequest.Prompt = fmt.Sprintf("%s\n\n%s", prompt, schemaPrompt)
+					prompt = fmt.Sprintf("%s\n\n%s", prompt, schemaPrompt)
 				} else {
-					apiRequest.Prompt = schemaPrompt
+					prompt = schemaPrompt
 				}
+			}
+
+			if prompt != "" {
+				apiRequest.Prompt = prompt
+			}
+
+			if options := model.GetOptions(); options != nil {
+				apiRequest.Options = options
 			}
 
 			// Log JSON request data in trace mode.

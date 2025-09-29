@@ -29,16 +29,18 @@ const (
 	SrcLocation Src = classify.SrcLocation // Prio 8
 	SrcMarker   Src = "marker"             // Prio 8
 	SrcImage    Src = classify.SrcImage    // Prio 8
-	SrcTitle    Src = classify.SrcTitle    // Prio 16
-	SrcCaption  Src = classify.SrcCaption  // Prio 16
-	SrcSubject  Src = classify.SrcSubject  // Prio 16
-	SrcKeyword  Src = classify.SrcKeyword  // Prio 16
-	SrcMeta     Src = "meta"               // Prio 16
-	SrcXmp      Src = "xmp"                // Prio 32
-	SrcBatch    Src = "batch"              // Prio 64
-	SrcVision   Src = "vision"             // Prio 64
-	SrcManual   Src = "manual"             // Prio 64
-	SrcAdmin    Src = "admin"              // Prio 128
+	SrcOllama   Src = "ollama"
+	SrcOpenAI   Src = "openai"
+	SrcTitle    Src = classify.SrcTitle   // Prio 16
+	SrcCaption  Src = classify.SrcCaption // Prio 16
+	SrcSubject  Src = classify.SrcSubject // Prio 16
+	SrcKeyword  Src = classify.SrcKeyword // Prio 16
+	SrcMeta     Src = "meta"              // Prio 16
+	SrcXmp      Src = "xmp"               // Prio 32
+	SrcBatch    Src = "batch"             // Prio 64
+	SrcVision   Src = "vision"            // Prio 64
+	SrcManual   Src = "manual"            // Prio 64
+	SrcAdmin    Src = "admin"             // Prio 128
 )
 
 // SrcString returns the specified source as a string for logging purposes.
@@ -63,6 +65,8 @@ var SrcPriority = Priorities{
 	SrcLocation: 8,
 	SrcMarker:   8,
 	SrcImage:    8,
+	SrcOllama:   16,
+	SrcOpenAI:   16,
 	SrcTitle:    16,
 	SrcCaption:  16,
 	SrcSubject:  16,
@@ -87,6 +91,8 @@ var SrcDesc = map[Src]string{
 	SrcLDAP:     "LDAP / Active Directory",
 	SrcLocation: "GPS position",
 	SrcMarker:   "face / object detection",
+	SrcOllama:   "Ollama",
+	SrcOpenAI:   "OpenAI",
 	SrcImage:    "computer vision (default)",
 	SrcTitle:    "picture title",
 	SrcCaption:  "picture caption",

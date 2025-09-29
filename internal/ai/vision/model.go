@@ -144,6 +144,8 @@ func (m *Model) GetPrompt() string {
 	switch m.Type {
 	case ModelTypeCaption:
 		return CaptionPromptDefault
+	case ModelTypeLabels:
+		return LabelPromptDefault
 	default:
 		return ""
 	}
@@ -156,6 +158,8 @@ func (m *Model) GetSystemPrompt() string {
 	}
 
 	switch m.Type {
+	case ModelTypeLabels:
+		return LabelSystemDefault
 	default:
 		return ""
 	}
@@ -187,7 +191,7 @@ func (m *Model) GetOptions() *ApiRequestOptions {
 	}
 
 	switch m.Type {
-	case ModelTypeCaption:
+	case ModelTypeLabels, ModelTypeCaption, ModelTypeGenerate:
 		return &ApiRequestOptions{
 			Temperature: DefaultTemperature,
 		}
@@ -232,6 +236,10 @@ func (m *Model) SchemaTemplate() string {
 		}
 
 		m.schema = strings.TrimSpace(schema)
+
+		if m.schema == "" && m.Type == ModelTypeLabels {
+			m.schema = strings.TrimSpace(LabelSchemaDefault)
+		}
 	})
 
 	return m.schema
