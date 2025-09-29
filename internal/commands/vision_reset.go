@@ -10,8 +10,6 @@ import (
 
 	"github.com/photoprism/photoprism/internal/ai/vision"
 	"github.com/photoprism/photoprism/internal/config"
-	"github.com/photoprism/photoprism/internal/entity"
-	"github.com/photoprism/photoprism/internal/entity/search"
 	"github.com/photoprism/photoprism/internal/workers"
 	"github.com/photoprism/photoprism/pkg/txt"
 )
@@ -28,18 +26,8 @@ var VisionResetCommand = &cli.Command{
 			Usage:   "computer vision `MODELS` to reset, e.g. caption or labels",
 			Value:   "",
 		},
-		&cli.IntFlag{
-			Name:    "count",
-			Aliases: []string{"n"},
-			Usage:   "maximum `NUMBER` of pictures to be processed",
-			Value:   search.MaxResults,
-		},
-		&cli.StringFlag{
-			Name:    "source",
-			Aliases: []string{"s"},
-			Usage:   "generated data source `TYPE` to reset, e.g. vision or ollama",
-			Value:   entity.SrcVision,
-		},
+		PicturesCountFlag(),
+		VisionSourceFlag(),
 		&cli.BoolFlag{
 			Name:    "yes",
 			Aliases: []string{"y"},
@@ -61,6 +49,7 @@ func visionResetAction(ctx *cli.Context) error {
 		}
 
 		selectedModels := make([]string, 0, 2)
+
 		if resetCaptions {
 			selectedModels = append(selectedModels, vision.ModelTypeCaption)
 		}
@@ -80,11 +69,17 @@ func visionResetAction(ctx *cli.Context) error {
 
 		worker := workers.NewVision(conf)
 		filter := strings.TrimSpace(strings.Join(ctx.Args().Slice(), " "))
+		source, err := sanitizeVisionSource(ctx.String("source"))
+
+		if err != nil {
+			return cli.Exit(err.Error(), 1)
+		}
+
 		return worker.Reset(
 			filter,
 			ctx.Int("count"),
 			selectedModels,
-			ctx.String("source"),
+			string(source),
 		)
 	})
 }

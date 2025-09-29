@@ -3,6 +3,7 @@ package entity
 import (
 	"sort"
 	"strconv"
+	"strings"
 
 	"github.com/photoprism/photoprism/internal/ai/classify"
 )
@@ -15,6 +16,9 @@ type Priority = int
 
 // Priorities maps source strings to their relative priorities.
 type Priorities map[Src]Priority
+
+// SrcMap maps source names to sources.
+type SrcMap map[string]Src
 
 // Supported metadata source strings.
 const (
@@ -79,31 +83,52 @@ var SrcPriority = Priorities{
 	SrcAdmin:    128,
 }
 
+// VisionSrcNames maps source names to the sources that can be used as arguments for computer vision commands.
+var VisionSrcNames = SrcMap{
+	SrcAuto:            SrcAuto,
+	SrcString(SrcAuto): SrcAuto,
+	SrcDefault:         SrcDefault,
+	SrcMarker:          SrcMarker,
+	SrcImage:           SrcImage,
+	SrcOllama:          SrcOllama,
+	SrcOpenAI:          SrcOpenAI,
+	SrcVision:          SrcVision,
+}
+
+// VisionSrc contains all the sources commonly used by computer vision models and services.
+var VisionSrc = []Src{
+	SrcMarker,
+	SrcImage,
+	SrcOllama,
+	SrcOpenAI,
+	SrcVision,
+}
+
 // SrcDesc maps source strings to their descriptions for documentation purposes.
 var SrcDesc = map[Src]string{
-	SrcAuto:     SrcString(SrcAuto),
-	SrcDefault:  "default",
-	SrcEstimate: "estimated data",
-	SrcFile:     "filesystem metadata",
-	SrcName:     "file name",
-	SrcYaml:     "YAML sidecar file",
+	SrcAuto:     "Auto",
+	SrcDefault:  "Default",
+	SrcEstimate: "Estimated",
+	SrcFile:     "File System",
+	SrcName:     "File Name",
+	SrcYaml:     "YAML Sidecar",
 	SrcOIDC:     "OpenID Connect (OIDC)",
 	SrcLDAP:     "LDAP / Active Directory",
-	SrcLocation: "GPS position",
-	SrcMarker:   "face / object detection",
-	SrcOllama:   "Ollama",
-	SrcOpenAI:   "OpenAI",
-	SrcImage:    "computer vision (default)",
-	SrcTitle:    "picture title",
-	SrcCaption:  "picture caption",
-	SrcSubject:  "subject / person",
-	SrcKeyword:  "picture keywords",
-	SrcMeta:     "embedded metadata",
-	SrcXmp:      "XMP sidecar file",
-	SrcBatch:    "batch edit",
-	SrcVision:   "computer vision (manual)",
-	SrcManual:   "manually changed",
-	SrcAdmin:    "overrides manual changes",
+	SrcLocation: "GPS Position",
+	SrcMarker:   "Object Detection",
+	SrcImage:    "Computer Vision (default)",
+	SrcOllama:   "Computer Vision (Ollama)",
+	SrcOpenAI:   "Computer Vision (OpenAI)",
+	SrcTitle:    "Picture Title",
+	SrcCaption:  "Picture Caption",
+	SrcSubject:  "Person",
+	SrcKeyword:  "Picture Keywords",
+	SrcMeta:     "Embedded Metadata",
+	SrcXmp:      "XMP Sidecar",
+	SrcBatch:    "Batch Edit",
+	SrcVision:   "Computer Vision (manual)",
+	SrcManual:   "Edited Manually",
+	SrcAdmin:    "Admin Override",
 }
 
 // Report returns a metadata sources documentation table.
@@ -111,15 +136,33 @@ func (p Priorities) Report() (rows [][]string, cols []string) {
 	cols = []string{"Source", "Priority", "Description"}
 
 	keys := make([]string, 0, len(SrcPriority))
+
 	for s := range SrcPriority {
 		keys = append(keys, s)
 	}
+
 	sort.Slice(keys, func(i, j int) bool {
 		pi, pj := SrcPriority[keys[i]], SrcPriority[keys[j]]
-		if pi == pj {
-			return keys[i] < keys[j]
+
+		if pi != pj {
+			return pi < pj
 		}
-		return pi < pj
+
+		di := strings.ToLower(SrcDesc[keys[i]])
+		if di == "" {
+			di = strings.ToLower(keys[i])
+		}
+
+		dj := strings.ToLower(SrcDesc[keys[j]])
+		if dj == "" {
+			dj = strings.ToLower(keys[j])
+		}
+
+		if di != dj {
+			return di < dj
+		}
+
+		return strings.ToLower(keys[i]) < strings.ToLower(keys[j])
 	})
 
 	rows = make([][]string, len(keys))
