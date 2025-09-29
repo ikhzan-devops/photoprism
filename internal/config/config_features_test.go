@@ -4,6 +4,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+
+	"github.com/photoprism/photoprism/internal/ai/vision"
 )
 
 func TestConfig_DisableFrontend(t *testing.T) {
@@ -94,6 +96,102 @@ func TestConfig_DisableClassification(t *testing.T) {
 	assert.True(t, c.DisableClassification())
 	c.options.DisableTensorFlow = false
 	assert.False(t, c.DisableClassification())
+}
+
+func TestConfig_GenerateLabelsWhileIndexing(t *testing.T) {
+	t.Run("ClassificationDisabled", func(t *testing.T) {
+		c := NewConfig(CliTestContext())
+		c.options.DisableClassification = true
+		withVisionConfig(t, vision.NewConfig())
+		if c.GenerateLabelsWhileIndexing() {
+			t.Fatalf("expected labels to be skipped when classification disabled")
+		}
+	})
+	t.Run("NilVisionConfig", func(t *testing.T) {
+		c := NewConfig(CliTestContext())
+		withVisionConfig(t, nil)
+		if c.GenerateLabelsWhileIndexing() {
+			t.Fatalf("expected labels to be skipped without vision config")
+		}
+	})
+	t.Run("DefaultModelUsesInlineGeneration", func(t *testing.T) {
+		c := NewConfig(CliTestContext())
+		defaultModel := cloneVisionModel(vision.NasnetModel)
+		withVisionConfig(t, &vision.ConfigValues{Models: vision.Models{defaultModel}})
+		if !c.GenerateLabelsWhileIndexing() {
+			t.Fatalf("expected default model to run during indexing")
+		}
+	})
+	t.Run("CustomModelDefersGeneration", func(t *testing.T) {
+		c := NewConfig(CliTestContext())
+		defaultModel := cloneVisionModel(vision.NasnetModel)
+		custom := &vision.Model{Type: vision.ModelTypeLabels, Name: "custom", Provider: "ollama"}
+		withVisionConfig(t, &vision.ConfigValues{Models: vision.Models{defaultModel, custom}})
+		if c.GenerateLabelsWhileIndexing() {
+			t.Fatalf("expected custom labels model to defer indexing generation")
+		}
+	})
+}
+
+func TestConfig_GenerateLabelsAfterIndexing(t *testing.T) {
+	t.Run("DefaultModel", func(t *testing.T) {
+		c := NewConfig(CliTestContext())
+		defaultModel := cloneVisionModel(vision.NasnetModel)
+		withVisionConfig(t, &vision.ConfigValues{Models: vision.Models{defaultModel}})
+		if c.GenerateLabelsAfterIndexing() {
+			t.Fatalf("expected default model to skip post-index generation")
+		}
+	})
+	t.Run("CustomModel", func(t *testing.T) {
+		c := NewConfig(CliTestContext())
+		defaultModel := cloneVisionModel(vision.NasnetModel)
+		custom := &vision.Model{Type: vision.ModelTypeLabels, Name: "custom", Provider: "ollama"}
+		withVisionConfig(t, &vision.ConfigValues{Models: vision.Models{defaultModel, custom}})
+		if !c.GenerateLabelsAfterIndexing() {
+			t.Fatalf("expected custom model to run after indexing")
+		}
+	})
+	t.Run("NilVisionConfig", func(t *testing.T) {
+		c := NewConfig(CliTestContext())
+		withVisionConfig(t, nil)
+		if c.GenerateLabelsAfterIndexing() {
+			t.Fatalf("expected nil vision config to skip label generation")
+		}
+	})
+}
+
+func TestConfig_GenerateCaptionsAfterIndexing(t *testing.T) {
+	t.Run("ClassificationDisabled", func(t *testing.T) {
+		c := NewConfig(CliTestContext())
+		c.options.DisableClassification = true
+		withVisionConfig(t, vision.NewConfig())
+		if c.GenerateCaptionsAfterIndexing() {
+			t.Fatalf("expected captions to be skipped when classification disabled")
+		}
+	})
+	t.Run("DefaultCaptionModel", func(t *testing.T) {
+		c := NewConfig(CliTestContext())
+		withVisionConfig(t, vision.NewConfig())
+		if !c.GenerateCaptionsAfterIndexing() {
+			t.Fatalf("expected default caption model to run after indexing")
+		}
+	})
+	t.Run("ExplicitDefaultCaption", func(t *testing.T) {
+		c := NewConfig(CliTestContext())
+		caption := cloneVisionModel(vision.CaptionModel)
+		caption.Default = true
+		withVisionConfig(t, &vision.ConfigValues{Models: vision.Models{caption}})
+		if c.GenerateCaptionsAfterIndexing() {
+			t.Fatalf("expected explicit default caption model to skip post-index generation")
+		}
+	})
+	t.Run("NilVisionConfig", func(t *testing.T) {
+		c := NewConfig(CliTestContext())
+		withVisionConfig(t, nil)
+		if c.GenerateCaptionsAfterIndexing() {
+			t.Fatalf("expected nil vision config to skip caption generation")
+		}
+	})
 }
 
 func TestConfig_DisableDarktable(t *testing.T) {
@@ -200,4 +298,18 @@ func TestConfig_DisableRaw(t *testing.T) {
 	assert.False(t, c.DisableRaw())
 	assert.False(t, c.DisableDarktable())
 	assert.False(t, c.DisableRawTherapee())
+}
+
+func withVisionConfig(t *testing.T, cfg *vision.ConfigValues) {
+	t.Helper()
+	prev := vision.Config
+	vision.Config = cfg
+	t.Cleanup(func() {
+		vision.Config = prev
+	})
+}
+
+func cloneVisionModel(m *vision.Model) *vision.Model {
+	copy := *m
+	return &copy
 }

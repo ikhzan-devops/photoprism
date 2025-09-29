@@ -59,3 +59,48 @@ func TestConfigModelPrefersLastEnabled(t *testing.T) {
 		t.Fatalf("expected fallback to default model, got %v", got)
 	}
 }
+
+func TestConfigValues_IsDefaultAndIsCustom(t *testing.T) {
+	nasnetModel := *NasnetModel
+	defaultModel := &nasnetModel
+	defaultModel.Default = false
+
+	t.Run("DefaultModel", func(t *testing.T) {
+		cfg := &ConfigValues{Models: Models{defaultModel}}
+		if !cfg.IsDefault(ModelTypeLabels) {
+			t.Fatalf("expected default model to be reported as default")
+		}
+		if cfg.IsCustom(ModelTypeLabels) {
+			t.Fatalf("expected default model not to be reported as custom")
+		}
+	})
+	t.Run("CustomOverridesDefault", func(t *testing.T) {
+		custom := &Model{Type: ModelTypeLabels, Name: "custom", Provider: "ollama"}
+		cfg := &ConfigValues{Models: Models{defaultModel, custom}}
+		if cfg.IsDefault(ModelTypeLabels) {
+			t.Fatalf("expected custom model to disable default detection")
+		}
+		if !cfg.IsCustom(ModelTypeLabels) {
+			t.Fatalf("expected custom model to be detected")
+		}
+	})
+	t.Run("DisabledCustomFallsBackToDefault", func(t *testing.T) {
+		custom := &Model{Type: ModelTypeLabels, Name: "custom", Provider: "ollama", Disabled: true}
+		cfg := &ConfigValues{Models: Models{defaultModel, custom}}
+		if !cfg.IsDefault(ModelTypeLabels) {
+			t.Fatalf("expected disabled custom model to fall back to default")
+		}
+		if cfg.IsCustom(ModelTypeLabels) {
+			t.Fatalf("expected disabled custom model not to force custom mode")
+		}
+	})
+	t.Run("MissingModel", func(t *testing.T) {
+		cfg := &ConfigValues{}
+		if cfg.IsDefault(ModelTypeLabels) {
+			t.Fatalf("expected missing model to return false for default detection")
+		}
+		if cfg.IsCustom(ModelTypeLabels) {
+			t.Fatalf("expected missing model to return false for custom detection")
+		}
+	})
+}

@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 
+	"github.com/photoprism/photoprism/internal/ai/vision/ollama"
+	"github.com/photoprism/photoprism/internal/ai/vision/openai"
 	"github.com/photoprism/photoprism/internal/entity"
 	"github.com/photoprism/photoprism/pkg/media"
 )
@@ -49,7 +51,14 @@ func Caption(images Files, mediaSrc media.Src) (result *CaptionResult, model *Mo
 
 			// Set image as the default caption source.
 			if apiResponse.Result.Caption.Text != "" && apiResponse.Result.Caption.Source == "" {
-				apiResponse.Result.Caption.Source = entity.SrcImage
+				switch model.Provider {
+				case ollama.ProviderName:
+					apiResponse.Result.Caption.Source = entity.SrcOllama
+				case openai.ProviderName:
+					apiResponse.Result.Caption.Source = entity.SrcOpenAI
+				default:
+					apiResponse.Result.Caption.Source = entity.SrcImage
+				}
 			}
 
 			result = apiResponse.Result.Caption

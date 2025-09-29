@@ -136,6 +136,28 @@ func (c *ConfigValues) Model(t ModelType) *Model {
 	return nil
 }
 
+// IsDefault checks whether the specified type is the built-in default model.
+func (c *ConfigValues) IsDefault(t ModelType) bool {
+	m := c.Model(t)
+
+	if m == nil {
+		return false
+	}
+
+	return m.IsDefault()
+}
+
+// IsCustom checks whether the specified type uses a custom model or service.
+func (c *ConfigValues) IsCustom(t ModelType) bool {
+	m := c.Model(t)
+
+	if m == nil {
+		return false
+	}
+
+	return !m.IsDefault()
+}
+
 // SetCachePath updates the cache path.
 func SetCachePath(dir string) {
 	if dir = fs.Abs(dir); dir == "" {

@@ -136,6 +136,23 @@ func TestPhoto_HasMediaType(t *testing.T) {
 	})
 }
 
+func TestPhoto_IsNewlyIndexed(t *testing.T) {
+	t.Run("NilTimestamp", func(t *testing.T) {
+		photo := Photo{}
+		assert.True(t, photo.IsNewlyIndexed())
+	})
+	t.Run("ZeroTimestamp", func(t *testing.T) {
+		zero := time.Time{}
+		photo := Photo{CheckedAt: &zero}
+		assert.True(t, photo.IsNewlyIndexed())
+	})
+	t.Run("HasCheckedAt", func(t *testing.T) {
+		now := time.Now()
+		photo := Photo{CheckedAt: &now}
+		assert.False(t, photo.IsNewlyIndexed())
+	})
+}
+
 func TestPhoto_SetMediaType(t *testing.T) {
 	t.Run("Image", func(t *testing.T) {
 		m := PhotoFixtures.Get("19800101_000002_D640C559")

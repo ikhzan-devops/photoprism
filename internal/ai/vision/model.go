@@ -90,6 +90,30 @@ func (m *Model) Model() (model, name, version string) {
 	return model, name, version
 }
 
+// IsDefault checks if this is a built-in default model.
+func (m *Model) IsDefault() bool {
+	if m.Default {
+		return true
+	}
+
+	if m.TensorFlow == nil {
+		return false
+	}
+
+	switch m.Type {
+	case ModelTypeLabels:
+		return m.Name == NasnetModel.Name
+	case ModelTypeNsfw:
+		return m.Name == NsfwModel.Name
+	case ModelTypeFace:
+		return m.Name == FacenetModel.Name
+	case ModelTypeCaption:
+		return m.Name == CaptionModel.Name
+	}
+
+	return false
+}
+
 // Endpoint returns the remote service request method and endpoint URL, if any.
 func (m *Model) Endpoint() (uri, method string) {
 	if uri, method = m.Service.Endpoint(); uri != "" && method != "" {

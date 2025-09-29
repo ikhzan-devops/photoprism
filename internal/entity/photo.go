@@ -1167,3 +1167,14 @@ func (m *Photo) FaceCount() int {
 		return f.ValidFaceCount()
 	}
 }
+
+// IsNewlyIndexed returns true if no CheckedAt timestamp is set yet.
+func (m *Photo) IsNewlyIndexed() bool {
+	if m.CheckedAt == nil {
+		return true
+	} else if m.CheckedAt.IsZero() {
+		return true
+	}
+
+	return false
+}
