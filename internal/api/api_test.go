@@ -33,6 +33,9 @@ func TestMain(m *testing.M) {
 	log.SetLevel(logrus.TraceLevel)
 	event.AuditLog = log
 
+	// Remove temporary SQLite files before running the tests.
+	fs.PurgeTestDbFiles(".", false)
+
 	// Init test config.
 	c := config.TestConfig()
 	get.SetConfig(c)
