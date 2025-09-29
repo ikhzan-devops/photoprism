@@ -41,10 +41,16 @@ type ConfigValues struct {
 
 // NewConfig returns a new computer vision config with defaults.
 func NewConfig() *ConfigValues {
-	return &ConfigValues{
+	cfg := &ConfigValues{
 		Models:     DefaultModels,
 		Thresholds: DefaultThresholds,
 	}
+
+	for _, model := range cfg.Models {
+		model.ApplyProviderDefaults()
+	}
+
+	return cfg
 }
 
 // Load user settings from file.
@@ -86,6 +92,10 @@ func (c *ConfigValues) Load(fileName string) error {
 		case ModelTypeCaption:
 			c.Models[i] = CaptionModel
 		}
+	}
+
+	for _, model := range c.Models {
+		model.ApplyProviderDefaults()
 	}
 
 	if c.Thresholds.Confidence <= 0 || c.Thresholds.Confidence > 100 {

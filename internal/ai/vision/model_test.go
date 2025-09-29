@@ -9,6 +9,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
+	"github.com/photoprism/photoprism/internal/ai/vision/ollama"
+	"github.com/photoprism/photoprism/internal/ai/vision/schema"
 	"github.com/photoprism/photoprism/pkg/fs"
 	"github.com/photoprism/photoprism/pkg/service/http/scheme"
 )
@@ -29,6 +31,11 @@ func TestModel(t *testing.T) {
 		uri, method := CaptionModel.Endpoint()
 		assert.Equal(t, "http://ollama:11434/api/generate", uri)
 		assert.Equal(t, "POST", method)
+		assert.Equal(t, ollama.ProviderName, CaptionModel.Provider)
+		assert.Equal(t, ApiFormatOllama, CaptionModel.Service.RequestFormat)
+		assert.Equal(t, ApiFormatOllama, CaptionModel.Service.ResponseFormat)
+		assert.Equal(t, string(scheme.Base64), CaptionModel.Service.FileScheme)
+		assert.Equal(t, ollama.ProviderName, CaptionModel.ProviderName())
 
 		model, name, version := CaptionModel.Model()
 		assert.Equal(t, "gemma3:latest", model)
@@ -41,7 +48,7 @@ func TestModel(t *testing.T) {
 			Name:       "deepseek-r1:1.5b",
 			Version:    "",
 			Resolution: 720,
-			Prompt:     CaptionPromptDefault,
+			Prompt:     ollama.CaptionPrompt,
 			Service: Service{
 				Uri:            "http://foo:bar@photoprism-vision:5000/api/v1/vision/caption",
 				FileScheme:     scheme.Data,
@@ -88,15 +95,13 @@ func TestModelFormatAndSchema(t *testing.T) {
 
 		assert.Equal(t, FormatJSON, m.GetFormat())
 	})
-
 	t.Run("InlineSchema", func(t *testing.T) {
-		schema := "{\n  \"labels\": []\n}"
-		m := &Model{Schema: schema}
+		s := "{\n  \"labels\": []\n}"
+		m := &Model{Schema: s}
 
-		assert.Equal(t, schema, m.SchemaTemplate())
+		assert.Equal(t, s, m.SchemaTemplate())
 		assert.Contains(t, m.SchemaInstructions(), "Return JSON")
 	})
-
 	t.Run("SchemaFileAndEnv", func(t *testing.T) {
 		tempDir := t.TempDir()
 		filePath := filepath.Join(tempDir, "schema.json")
@@ -121,21 +126,62 @@ func TestModelFormatAndSchema(t *testing.T) {
 		m2 := &Model{Type: ModelTypeLabels}
 		assert.Equal(t, otherContent, m2.SchemaTemplate())
 	})
-
 	t.Run("DefaultLabelSchema", func(t *testing.T) {
 		m := &Model{Type: ModelTypeLabels}
-		assert.Equal(t, strings.TrimSpace(LabelSchemaDefault), m.SchemaTemplate())
+		assert.Equal(t, strings.TrimSpace(schema.LabelDefaultV1), m.SchemaTemplate())
 		assert.Contains(t, m.SchemaInstructions(), "Return JSON")
 	})
-
 	t.Run("FormatOverride", func(t *testing.T) {
 		m := &Model{Format: "JSON"}
 		assert.Equal(t, FormatJSON, m.GetFormat())
 	})
-
 	t.Run("DefaultLabelPrompts", func(t *testing.T) {
-		m := &Model{Type: ModelTypeLabels}
-		assert.Equal(t, LabelPromptDefault, m.GetPrompt())
-		assert.Equal(t, LabelSystemDefault, m.GetSystemPrompt())
+		m := &Model{Type: ModelTypeLabels,
+			Service: Service{RequestFormat: ApiFormatOllama, ResponseFormat: ApiFormatOllama},
+		}
+		assert.Equal(t, ollama.LabelPrompt, m.GetPrompt())
+		assert.Equal(t, ollama.LabelSystem, m.GetSystemPrompt())
+	})
+	t.Run("ProviderDefaults", func(t *testing.T) {
+		m := &Model{
+			Type:     ModelTypeCaption,
+			Provider: ollama.ProviderName,
+			Service: Service{
+				Uri: "http://localhost:11434/api/generate",
+			},
+		}
+
+		m.ApplyProviderDefaults()
+
+		assert.Equal(t, ApiFormatOllama, m.Service.RequestFormat)
+		assert.Equal(t, ApiFormatOllama, m.Service.ResponseFormat)
+		assert.Equal(t, string(scheme.Base64), m.Service.FileScheme)
+		assert.Equal(t, ollama.ProviderName, m.ProviderName())
+	})
+	t.Run("ProviderInference", func(t *testing.T) {
+		m := &Model{
+			Type: ModelTypeGenerate,
+			Service: Service{
+				Uri:           "https://example.com/api/vision",
+				RequestFormat: ApiFormatVision,
+			},
+		}
+
+		assert.Equal(t, ProviderVision, m.ProviderName())
+
+		m2 := &Model{
+			Type: ModelTypeLabels,
+			Service: Service{
+				Uri:           "https://example.com/api/ollama",
+				RequestFormat: ApiFormatOllama,
+			},
+		}
+
+		assert.Equal(t, ollama.ProviderName, m2.ProviderName())
+
+		assert.Equal(t, ProviderTensorFlow, NasnetModel.ProviderName())
+
+		m3 := &Model{}
+		assert.Equal(t, ProviderLocal, m3.ProviderName())
 	})
 }

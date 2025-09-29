@@ -1,6 +1,7 @@
 package vision
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"sort"
@@ -41,7 +42,11 @@ func Labels(images Files, mediaSrc media.Src, labelSrc string) (result classify.
 			var apiRequest *ApiRequest
 			var apiResponse *ApiResponse
 
-			if apiRequest, err = NewApiRequest(model.EndpointRequestFormat(), images, model.EndpointFileScheme()); err != nil {
+			if provider, ok := ProviderFor(model.EndpointRequestFormat()); ok && provider.Builder != nil {
+				if apiRequest, err = provider.Builder.Build(context.Background(), model, images); err != nil {
+					return result, err
+				}
+			} else if apiRequest, err = NewApiRequest(model.EndpointRequestFormat(), images, model.EndpointFileScheme()); err != nil {
 				return result, err
 			}
 
@@ -49,11 +54,13 @@ func Labels(images Files, mediaSrc media.Src, labelSrc string) (result classify.
 				apiRequest.Format = format
 			}
 
-			switch model.Service.RequestFormat {
-			case ApiFormatOllama:
-				apiRequest.Model, _, _ = model.Model()
-			default:
-				_, apiRequest.Model, apiRequest.Version = model.Model()
+			if apiRequest.Model == "" {
+				switch model.Service.RequestFormat {
+				case ApiFormatOllama:
+					apiRequest.Model, _, _ = model.Model()
+				default:
+					_, apiRequest.Model, apiRequest.Version = model.Model()
+				}
 			}
 
 			if system := model.GetSystemPrompt(); system != "" {
@@ -77,7 +84,6 @@ func Labels(images Files, mediaSrc media.Src, labelSrc string) (result classify.
 				apiRequest.Options = options
 			}
 
-			// Log JSON request data in trace mode.
 			apiRequest.WriteLog()
 
 			if apiResponse, err = PerformApiRequest(apiRequest, uri, method, model.EndpointKey()); err != nil {

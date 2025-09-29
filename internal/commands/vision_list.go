@@ -26,7 +26,19 @@ func visionListAction(ctx *cli.Context) error {
 	return CallWithDependencies(ctx, func(conf *config.Config) error {
 		var rows [][]string
 
-		cols := []string{"Type", "Name", "Version", "Resolution", "Service Endpoint", "Options", "Tags", "Disabled"}
+		cols := []string{
+			"Type",
+			"Name",
+			"Version",
+			"Resolution",
+			"Provider",
+			"Service Endpoint",
+			"Request Format",
+			"Response Format",
+			"Options",
+			"Tags",
+			"Disabled",
+		}
 
 		// Show log message.
 		log.Infof("found %s", english.Plural(len(vision.Config.Models), "model", "models"))
@@ -57,12 +69,29 @@ func visionListAction(ctx *cli.Context) error {
 				options, _ = json.Marshal(*o)
 			}
 
+			var responseFormat, requestFormat string
+
+			if modelUri != "" && modelMethod != "" {
+				if f := strings.TrimSpace(string(model.EndpointRequestFormat())); f != "" {
+					requestFormat = f
+				}
+
+				if f := strings.TrimSpace(string(model.EndpointResponseFormat())); f != "" {
+					responseFormat = f
+				}
+			}
+
+			provider := model.ProviderName()
+
 			rows[i] = []string{
 				model.Type,
 				name,
 				version,
 				fmt.Sprintf("%d", model.Resolution),
+				provider,
 				fmt.Sprintf("%s %s", modelMethod, modelUri),
+				requestFormat,
+				responseFormat,
 				string(options),
 				tags,
 				report.Bool(model.Disabled, report.Yes, report.No),

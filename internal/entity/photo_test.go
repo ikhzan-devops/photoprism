@@ -378,7 +378,6 @@ func TestPhoto_AddLabels(t *testing.T) {
 		assert.Equal(t, 5, updated.Uncertainty)
 		assert.Equal(t, SrcOllama, updated.LabelSrc)
 	})
-
 	t.Run("KeepExistingWhenLessConfident", func(t *testing.T) {
 		photoName := "19800101_000002_D640C559"
 		labelName := "flower"
@@ -395,7 +394,6 @@ func TestPhoto_AddLabels(t *testing.T) {
 		assert.Equal(t, 20, updated.Uncertainty)
 		assert.Equal(t, SrcImage, updated.LabelSrc)
 	})
-
 	t.Run("NormalizesProviderSourceCase", func(t *testing.T) {
 		photoName := "Photo01"
 		labelName := "cow"
