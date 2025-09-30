@@ -9,11 +9,14 @@ import (
 	"github.com/photoprism/photoprism/internal/entity/query"
 )
 
-// Files represents a list of already indexed file names and their unix modification timestamps.
+// Files caches indexed originals keyed by root/name with their last-modified timestamps. The
+// cache is only considered hydrated after Init() loads the database snapshot; partial writes
+// before Init() must not trick callers into skipping a full reload.
 type Files struct {
-	count int
-	files query.FileMap
-	mutex sync.RWMutex
+	count  int
+	files  query.FileMap
+	loaded bool
+	mutex  sync.RWMutex
 }
 
 // NewFiles returns a new Files instance.
@@ -25,12 +28,14 @@ func NewFiles() *Files {
 	return m
 }
 
-// Init lazily loads the indexed file map from the database and stores the initial count.
+// Init loads the indexed file snapshot from the database on first use. If the cache only contains
+// ad-hoc entries (for example, uploaded files recorded before Init was called), this forces a
+// refresh so rescan=false jobs can safely skip unchanged files.
 func (m *Files) Init() error {
 	m.mutex.Lock()
 	defer m.mutex.Unlock()
 
-	if len(m.files) > 0 {
+	if m.loaded {
 		m.count = len(m.files)
 		return nil
 	}
@@ -46,20 +51,18 @@ func (m *Files) Init() error {
 	} else {
 		m.files = files
 		m.count = len(files)
+		m.loaded = true
 		return nil
 	}
 }
 
-// Done clears the in-memory cache so the next index pass reloads a fresh snapshot.
+// Done clears the cache and marks it stale so the next Init() call pulls a fresh database snapshot.
 func (m *Files) Done() {
 	m.mutex.Lock()
 	defer m.mutex.Unlock()
-	if (len(m.files) - m.count) == 0 {
-		return
-	}
-
 	m.count = 0
 	m.files = make(query.FileMap)
+	m.loaded = false
 }
 
 // Remove evicts a file entry from the cache (e.g. after deletion or re-import).

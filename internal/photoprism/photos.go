@@ -10,10 +10,13 @@ import (
 	"github.com/photoprism/photoprism/internal/entity/query"
 )
 
-// Photos caches a lookup table from capture timestamp + S2 cell IDs to photo IDs so workers can skip redundant database scans.
+// Photos caches a lookup table from capture timestamp + S2 cell IDs to photo IDs so workers can
+// skip redundant database scans. The cache is marked loaded only after Init() hydrates it from
+// the database to avoid reusing stale or partially populated maps.
 type Photos struct {
 	count  int
 	photos query.PhotoMap
+	loaded bool
 	mutex  sync.RWMutex
 }
 
@@ -26,13 +29,14 @@ func NewPhotos() *Photos {
 	return m
 }
 
-// Init hydrates the cache from the database if it has not been loaded yet.
-// Subsequent calls are no-ops unless the internal map was reset.
+// Init hydrates the cache from the database when it has not been loaded yet; subsequent calls are
+// no-ops unless Done() reset the cache. This guarantees consumers see a consistent snapshot even if
+// the map contained a few provisional entries added before initialization.
 func (m *Photos) Init() error {
 	m.mutex.Lock()
 	defer m.mutex.Unlock()
 
-	if len(m.photos) > 0 {
+	if m.loaded {
 		m.count = len(m.photos)
 		return nil
 	}
@@ -44,6 +48,7 @@ func (m *Photos) Init() error {
 	} else {
 		m.photos = photos
 		m.count = len(photos)
+		m.loaded = true
 		return nil
 	}
 }

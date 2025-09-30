@@ -8,7 +8,8 @@ import (
 
 type PhotoMap map[string]uint
 
-// IndexedPhotos returns a map of already indexed files with their mod time unix timestamp as value.
+// IndexedPhotos returns MapKey → photo ID pairs for all non-deleted photos. It mirrors the key
+// format used by the Photos cache so callers can hydrate it without recomputing capture keys.
 func IndexedPhotos() (result PhotoMap, err error) {
 	result = make(PhotoMap)
 
@@ -20,7 +21,7 @@ func IndexedPhotos() (result PhotoMap, err error) {
 
 	var rows []Photo
 
-	if err := UnscopedDb().Raw("SELECT id, taken_at, cell_id FROM photos WHERE deleted_at IS NULL").Scan(&rows).Error; err != nil {
+	if err = UnscopedDb().Raw("SELECT id, taken_at, cell_id FROM photos WHERE deleted_at IS NULL").Scan(&rows).Error; err != nil {
 		return result, err
 	}
 
