@@ -28,16 +28,14 @@ func visionListAction(ctx *cli.Context) error {
 
 		cols := []string{
 			"Type",
-			"Name",
-			"Version",
+			"Model",
+			"Engine",
+			"Endpoint",
+			"Format",
 			"Resolution",
-			"Provider",
-			"Service Endpoint",
-			"Request Format",
-			"Response Format",
 			"Options",
-			"Tags",
-			"Disabled",
+			"Schedule",
+			"Status",
 		}
 
 		// Show log message.
@@ -54,14 +52,10 @@ func visionListAction(ctx *cli.Context) error {
 			modelUri, modelMethod := model.Endpoint()
 			tags := ""
 
-			_, name, version := model.Model()
+			name, _, _ := model.Model()
 
 			if model.TensorFlow != nil && model.TensorFlow.Tags != nil {
 				tags = strings.Join(model.TensorFlow.Tags, ", ")
-			}
-
-			if model.Default {
-				version = "default"
 			}
 
 			var options []byte
@@ -69,32 +63,44 @@ func visionListAction(ctx *cli.Context) error {
 				options, _ = json.Marshal(*o)
 			}
 
-			var responseFormat, requestFormat string
+			var format string
 
 			if modelUri != "" && modelMethod != "" {
-				if f := strings.TrimSpace(string(model.EndpointRequestFormat())); f != "" {
-					requestFormat = f
-				}
-
-				if f := strings.TrimSpace(string(model.EndpointResponseFormat())); f != "" {
-					responseFormat = f
+				if f := model.EndpointRequestFormat(); f != "" {
+					format = f
 				}
 			}
 
-			provider := model.ProviderName()
+			if responseFormat := model.GetFormat(); responseFormat != "" {
+				if format != "" {
+					format = fmt.Sprintf("%s:%s", format, responseFormat)
+				} else {
+					format = responseFormat
+				}
+			}
+
+			if format == "" && model.Default {
+				format = "default"
+			}
+
+			var run string
+
+			if run = model.RunType(); run == "" {
+				run = "auto"
+			}
+
+			engine := model.EngineName()
 
 			rows[i] = []string{
 				model.Type,
 				name,
-				version,
-				fmt.Sprintf("%d", model.Resolution),
-				provider,
+				engine,
 				fmt.Sprintf("%s %s", modelMethod, modelUri),
-				requestFormat,
-				responseFormat,
-				string(options),
-				tags,
-				report.Bool(model.Disabled, report.Yes, report.No),
+				format,
+				fmt.Sprintf("%d", model.Resolution),
+				report.Bool(len(options) == 0, "tags: "+tags, string(options)),
+				run,
+				report.Bool(model.Disabled, report.Disabled, report.Enabled),
 			}
 		}
 

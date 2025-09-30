@@ -13,7 +13,9 @@ import (
 	"github.com/photoprism/photoprism/pkg/media"
 )
 
-// Labels classifies a JPEG image and returns matching labels.
+// Labels classifies the media file and returns matching labels. When labelSrc
+// is SrcAuto the model's declared source is used; otherwise the provided source
+// is applied to every returned label.
 func (ind *Index) Labels(file *MediaFile, labelSrc entity.Src) (labels classify.Labels) {
 	start := time.Now()
 
@@ -21,8 +23,24 @@ func (ind *Index) Labels(file *MediaFile, labelSrc entity.Src) (labels classify.
 	var sizes []thumb.Name
 	var thumbnails []string
 
+	model := vision.Config.Model(vision.ModelTypeLabels)
+
+	// No label generation model configured or usable.
+	if model == nil {
+		return labels
+	}
+
+	if labelSrc == entity.SrcAuto {
+		labelSrc = model.GetSource()
+	}
+
+	size := vision.Thumb(vision.ModelTypeLabels)
+
 	// The thumbnail size may need to be adjusted to use other models.
-	if file.Square() {
+	if size.Name != "" && size.Name != thumb.Tile224 {
+		sizes = []thumb.Name{size.Name}
+		thumbnails = make([]string, 0, 1)
+	} else if file.Square() {
 		// Only one thumbnail is required for square images.
 		sizes = []thumb.Name{thumb.Tile224}
 		thumbnails = make([]string, 0, 1)
@@ -33,8 +51,8 @@ func (ind *Index) Labels(file *MediaFile, labelSrc entity.Src) (labels classify.
 	}
 
 	// Get thumbnail filenames for the selected sizes.
-	for _, size := range sizes {
-		if thumbnail, fileErr := file.Thumbnail(Config().ThumbCachePath(), size); fileErr != nil {
+	for _, s := range sizes {
+		if thumbnail, fileErr := file.Thumbnail(Config().ThumbCachePath(), s); fileErr != nil {
 			log.Debugf("index: %s in %s", err, clean.Log(file.BaseName()))
 			continue
 		} else {
@@ -42,7 +60,7 @@ func (ind *Index) Labels(file *MediaFile, labelSrc entity.Src) (labels classify.
 		}
 	}
 
-	// Get matching labels from computer vision model.
+	// Run the configured vision model to obtain labels for the generated thumbnails.
 	if labels, err = vision.Labels(thumbnails, media.SrcLocal, labelSrc); err != nil {
 		log.Debugf("labels: %s in %s", err, clean.Log(file.BaseName()))
 		return labels

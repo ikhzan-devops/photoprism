@@ -3,6 +3,7 @@ package config
 import (
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/photoprism/photoprism/internal/ai/vision"
 	"github.com/photoprism/photoprism/pkg/clean"
@@ -20,6 +21,16 @@ func (c *Config) VisionYaml() string {
 	} else {
 		return filepath.Join(c.ConfigPath(), "vision.yml")
 	}
+}
+
+// VisionSchedule returns the cron schedule configured for the vision worker, or "" if disabled.
+func (c *Config) VisionSchedule() string {
+	return Schedule(c.options.VisionSchedule)
+}
+
+// VisionFilter returns the search filter to use for scheduled vision runs.
+func (c *Config) VisionFilter() string {
+	return strings.TrimSpace(c.options.VisionFilter)
 }
 
 // VisionModelShouldRun checks when the specified model type should run.

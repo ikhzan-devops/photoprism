@@ -51,6 +51,7 @@ func visionRunAction(ctx *cli.Context) error {
 			vision.ParseModelTypes(ctx.String("models")),
 			string(source),
 			ctx.Bool("force"),
+			vision.RunManual,
 		)
 	})
 }

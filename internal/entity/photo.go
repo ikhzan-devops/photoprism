@@ -16,6 +16,7 @@ import (
 	"github.com/photoprism/photoprism/internal/event"
 	"github.com/photoprism/photoprism/internal/form"
 	"github.com/photoprism/photoprism/pkg/clean"
+	"github.com/photoprism/photoprism/pkg/list"
 	"github.com/photoprism/photoprism/pkg/media"
 	"github.com/photoprism/photoprism/pkg/react"
 	"github.com/photoprism/photoprism/pkg/rnd"
@@ -750,6 +751,25 @@ func (m *Photo) SaveDetails() error {
 		log.Errorf("photo: %s (save details for %d)", err, m.ID)
 		return err
 	}
+}
+
+// ShouldGenerateLabels checks if labels should be generated for this model.
+func (m *Photo) ShouldGenerateLabels(force bool) bool {
+	// Return true if force is set or there are no labels yet.
+	if len(m.Labels) == 0 || force {
+		return true
+	}
+
+	// Check if any of the existing labels were generated using a vision model.
+	for _, l := range m.Labels {
+		if list.Contains(VisionSrcList, l.LabelSrc) {
+			return false
+		} else if l.LabelSrc == SrcCaption && list.Contains(VisionSrcList, m.CaptionSrc) {
+			return false
+		}
+	}
+
+	return true
 }
 
 // AddLabels updates the entity with additional or updated label information.

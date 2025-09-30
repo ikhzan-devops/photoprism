@@ -47,7 +47,7 @@ func NewConfig() *ConfigValues {
 	}
 
 	for _, model := range cfg.Models {
-		model.ApplyProviderDefaults()
+		model.ApplyEngineDefaults()
 	}
 
 	return cfg
@@ -95,7 +95,7 @@ func (c *ConfigValues) Load(fileName string) error {
 	}
 
 	for _, model := range c.Models {
-		model.ApplyProviderDefaults()
+		model.ApplyEngineDefaults()
 	}
 
 	if c.Thresholds.Confidence <= 0 || c.Thresholds.Confidence > 100 {
@@ -124,7 +124,9 @@ func (c *ConfigValues) Save(fileName string) error {
 	return nil
 }
 
-// Model returns the first enabled model with the matching type from the configuration.
+// Model returns the first enabled model with the matching type.
+// It returns nil if no matching model is available or every model of that
+// type is disabled, allowing callers to chain nil-safe Model methods.
 func (c *ConfigValues) Model(t ModelType) *Model {
 	for i := len(c.Models) - 1; i >= 0; i-- {
 		m := c.Models[i]
@@ -136,7 +138,9 @@ func (c *ConfigValues) Model(t ModelType) *Model {
 	return nil
 }
 
-// ShouldRun checks when the specified model type should run.
+// ShouldRun reports whether the configured model for the given type is
+// allowed to run in the specified context. It returns false when no
+// suitable model exists or when execution is explicitly disabled.
 func (c *ConfigValues) ShouldRun(t ModelType, when RunType) bool {
 	m := c.Model(t)
 

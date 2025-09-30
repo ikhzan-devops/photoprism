@@ -113,3 +113,25 @@ func TestConfig_VisionModelShouldRun(t *testing.T) {
 		}
 	})
 }
+
+func TestConfig_VisionSchedule(t *testing.T) {
+	c := NewConfig(CliTestContext())
+
+	c.options.VisionSchedule = ""
+	assert.Equal(t, "", c.VisionSchedule())
+
+	c.options.VisionSchedule = "0 6 * * *"
+	assert.Equal(t, "0 6 * * *", c.VisionSchedule())
+
+	c.options.VisionSchedule = "invalid"
+	assert.Equal(t, "", c.VisionSchedule())
+}
+
+func TestConfig_VisionFilter(t *testing.T) {
+	c := NewConfig(CliTestContext())
+	c.options.VisionFilter = "  private:false  "
+	assert.Equal(t, "private:false", c.VisionFilter())
+
+	c.options.VisionFilter = ""
+	assert.Equal(t, "", c.VisionFilter())
+}

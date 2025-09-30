@@ -241,6 +241,94 @@ func TestPhoto_SaveLabels(t *testing.T) {
 	})
 }
 
+func TestPhoto_ShouldGenerateLabels(t *testing.T) {
+	t.Run("NoLabels", func(t *testing.T) {
+		p := Photo{}
+		assert.True(t, p.ShouldGenerateLabels(false))
+	})
+
+	t.Run("Force", func(t *testing.T) {
+		p := Photo{Labels: []PhotoLabel{{LabelSrc: string(SrcManual)}}}
+		assert.True(t, p.ShouldGenerateLabels(true))
+	})
+
+	t.Run("ExistingVisionLabel", func(t *testing.T) {
+		p := Photo{Labels: []PhotoLabel{{LabelSrc: string(SrcOllama)}}}
+		assert.False(t, p.ShouldGenerateLabels(false))
+	})
+
+	t.Run("CaptionGeneratedLabels", func(t *testing.T) {
+		p := Photo{
+			Labels:     []PhotoLabel{{LabelSrc: string(SrcCaption)}},
+			CaptionSrc: SrcOllama,
+		}
+		assert.False(t, p.ShouldGenerateLabels(false))
+	})
+
+	t.Run("ManualLabels", func(t *testing.T) {
+		p := Photo{Labels: []PhotoLabel{{LabelSrc: string(SrcManual)}}}
+		assert.True(t, p.ShouldGenerateLabels(false))
+	})
+
+	t.Run("CaptionManualWithoutVision", func(t *testing.T) {
+		p := Photo{
+			Labels:     []PhotoLabel{{LabelSrc: string(SrcCaption)}},
+			CaptionSrc: SrcManual,
+		}
+		assert.True(t, p.ShouldGenerateLabels(false))
+	})
+}
+
+func TestPhoto_ShouldGenerateCaption(t *testing.T) {
+	ctx := []struct {
+		name   string
+		photo  Photo
+		source Src
+		force  bool
+		expect bool
+	}{
+		{
+			name:   "NoCaptionAutoSource",
+			photo:  Photo{CaptionSrc: SrcAuto},
+			source: SrcOllama,
+			expect: true,
+		},
+		{
+			name:   "LowerPriority",
+			photo:  Photo{CaptionSrc: SrcOllama},
+			source: SrcImage,
+			expect: false,
+		},
+		{
+			name:   "HigherPriority",
+			photo:  Photo{CaptionSrc: SrcImage},
+			source: SrcOllama,
+			expect: true,
+		},
+		{
+			name:   "ForceOverrides",
+			photo:  Photo{CaptionSrc: SrcImage, PhotoCaption: "existing"},
+			source: SrcImage,
+			force:  true,
+			expect: true,
+		},
+		{
+			name:   "SamePriorityNoForce",
+			photo:  Photo{CaptionSrc: SrcOllama, PhotoCaption: "existing"},
+			source: SrcOllama,
+			expect: false,
+		},
+	}
+
+	for _, tc := range ctx {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			result := tc.photo.ShouldGenerateCaption(tc.source, tc.force)
+			assert.Equal(t, tc.expect, result)
+		})
+	}
+}
+
 func TestPhoto_ClassifyLabels(t *testing.T) {
 	t.Run("NewPhoto", func(t *testing.T) {
 		m := PhotoFixtures.Get("Photo19")

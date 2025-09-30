@@ -38,7 +38,8 @@ var RunTypes = map[string]RunType{
 	"index":         RunOnIndex,
 }
 
-// ParseRunType parses a run type string.
+// ParseRunType parses a run type string into the canonical RunType constant.
+// Unknown or empty values default to RunAuto.
 func ParseRunType(s string) RunType {
 	if t, ok := RunTypes[clean.TypeLowerDash(s)]; ok {
 		return t
@@ -47,13 +48,23 @@ func ParseRunType(s string) RunType {
 	return RunAuto
 }
 
-// RunType returns a normalized type that specifies when a vision model should run.
+// RunType returns the normalized run type configured for the model. Nil
+// receivers default to RunAuto.
 func (m *Model) RunType() RunType {
+	if m == nil {
+		return RunAuto
+	}
+
 	return ParseRunType(m.Run)
 }
 
-// ShouldRun checks when the model should run based on the specified type.
+// ShouldRun reports whether the model should execute in the specified
+// scheduling context. Nil receivers always return false.
 func (m *Model) ShouldRun(when RunType) bool {
+	if m == nil {
+		return false
+	}
+
 	when = ParseRunType(when)
 
 	switch m.RunType() {

@@ -57,8 +57,8 @@ func (w *Meta) Start(delay, interval time.Duration, force bool) (err error) {
 		log.Debugf("index: running face recognition")
 		if faces := photoprism.NewFaces(w.conf); faces.Disabled() {
 			log.Debugf("index: skipping face recognition")
-		} else if err := faces.Start(photoprism.FacesOptions{}); err != nil {
-			log.Warn(err)
+		} else if facesErr := faces.Start(photoprism.FacesOptions{}); facesErr != nil {
+			log.Warn(facesErr)
 		}
 	}
 
@@ -74,8 +74,8 @@ func (w *Meta) Start(delay, interval time.Duration, force bool) (err error) {
 
 	ind := get.Index()
 
-	generateLabels := w.conf.VisionModelShouldRun(vision.ModelTypeLabels, vision.RunNewlyIndexed)
-	generateCaptions := w.conf.VisionModelShouldRun(vision.ModelTypeCaption, vision.RunNewlyIndexed)
+	labelsModelShouldRun := w.conf.VisionModelShouldRun(vision.ModelTypeLabels, vision.RunNewlyIndexed)
+	captionModelShouldRun := w.conf.VisionModelShouldRun(vision.ModelTypeCaption, vision.RunNewlyIndexed)
 
 	for {
 		photos, queryErr := query.PhotosMetadataUpdate(limit, offset, delay, interval)
@@ -99,8 +99,11 @@ func (w *Meta) Start(delay, interval time.Duration, force bool) (err error) {
 
 			done[photo.PhotoUID] = true
 
+			generateLabels := labelsModelShouldRun && photo.ShouldGenerateLabels(false)
+			generateCaption := captionModelShouldRun && photo.ShouldGenerateCaption(entity.SrcAuto, false)
+
 			// If configured, generate metadata for newly indexed photos using external vision services.
-			if photo.IsNewlyIndexed() && (generateLabels || generateCaptions) {
+			if photo.IsNewlyIndexed() && (generateLabels || generateCaption) {
 				primaryFile, fileErr := photo.PrimaryFile()
 
 				if fileErr != nil {
@@ -120,16 +123,13 @@ func (w *Meta) Start(delay, interval time.Duration, force bool) (err error) {
 							}
 						}
 
-						if generateCaptions && photo.PhotoCaption == "" && photo.CaptionSrc == entity.SrcAuto {
-							if caption, captionErr := ind.Caption(mediaFile); captionErr != nil {
+						if generateCaption {
+							if caption, captionErr := ind.Caption(mediaFile, entity.SrcAuto); captionErr != nil {
 								log.Debugf("index: %s (generate caption for %s)", clean.Error(captionErr), photo.PhotoUID)
-							} else if caption != nil {
-								text := strings.TrimSpace(caption.Text)
-								if text != "" && caption.Source != "" {
-									photo.SetCaption(text, clean.ShortTypeLower(caption.Source))
-									if updateErr := photo.UpdateCaptionLabels(); updateErr != nil {
-										log.Warnf("index: %s (update caption labels for %s)", clean.Error(updateErr), photo.PhotoUID)
-									}
+							} else if text := strings.TrimSpace(caption.Text); text != "" {
+								photo.SetCaption(text, caption.Source)
+								if updateErr := photo.UpdateCaptionLabels(); updateErr != nil {
+									log.Warnf("index: %s (update caption labels for %s)", clean.Error(updateErr), photo.PhotoUID)
 								}
 							}
 						}

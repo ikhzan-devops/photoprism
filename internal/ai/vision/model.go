@@ -13,6 +13,7 @@ import (
 	"github.com/photoprism/photoprism/internal/ai/vision/ollama"
 	"github.com/photoprism/photoprism/internal/ai/vision/openai"
 	visionschema "github.com/photoprism/photoprism/internal/ai/vision/schema"
+	"github.com/photoprism/photoprism/internal/entity"
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/fs"
 	"github.com/photoprism/photoprism/pkg/service/http/scheme"
@@ -35,7 +36,7 @@ type Model struct {
 	Default       bool                  `yaml:"Default,omitempty" json:"default,omitempty"`
 	Name          string                `yaml:"Name,omitempty" json:"name,omitempty"`
 	Version       string                `yaml:"Version,omitempty" json:"version,omitempty"`
-	Provider      ModelProvider         `yaml:"Provider,omitempty" json:"provider,omitempty"`
+	Engine        ModelEngine           `yaml:"Engine,omitempty" json:"engine,omitempty"`
 	Run           RunType               `yaml:"Run,omitempty" json:"Run,omitempty"` // "auto", "never", "manual", "always", "newly-indexed", "on-schedule"
 	System        string                `yaml:"System,omitempty" json:"system,omitempty"`
 	Prompt        string                `yaml:"Prompt,omitempty" json:"prompt,omitempty"`
@@ -58,8 +59,14 @@ type Model struct {
 // Models represents a set of computer vision models.
 type Models []*Model
 
-// Model returns the parsed and normalized model identifier, name, and version strings.
+// Model returns the parsed and normalized identifier, name, and version
+// strings. Nil receivers return empty values so callers can destructure the
+// tuple without additional nil checks.
 func (m *Model) Model() (model, name, version string) {
+	if m == nil {
+		return "", "", ""
+	}
+
 	// Return empty identifier string if no name was set.
 	if m.Name == "" {
 		return "", "", clean.TypeLowerDash(m.Version)
@@ -91,8 +98,13 @@ func (m *Model) Model() (model, name, version string) {
 	return model, name, version
 }
 
-// IsDefault checks if this is a built-in default model.
+// IsDefault reports whether the model refers to one of the built-in defaults.
+// Nil receivers return false.
 func (m *Model) IsDefault() bool {
+	if m == nil {
+		return false
+	}
+
 	if m.Default {
 		return true
 	}
@@ -115,8 +127,13 @@ func (m *Model) IsDefault() bool {
 	return false
 }
 
-// Endpoint returns the remote service request method and endpoint URL, if any.
+// Endpoint returns the remote service request method and endpoint URL. Nil
+// receivers return empty strings.
 func (m *Model) Endpoint() (uri, method string) {
+	if m == nil {
+		return uri, method
+	}
+
 	if uri, method = m.Service.Endpoint(); uri != "" && method != "" {
 		return uri, method
 	} else if ServiceUri == "" {
@@ -128,8 +145,13 @@ func (m *Model) Endpoint() (uri, method string) {
 	}
 }
 
-// EndpointKey returns the access token belonging to the remote service endpoint, if any.
+// EndpointKey returns the access token belonging to the remote service
+// endpoint, or an empty string for nil receivers.
 func (m *Model) EndpointKey() (key string) {
+	if m == nil {
+		return ""
+	}
+
 	if key = m.Service.EndpointKey(); key != "" {
 		return key
 	} else {
@@ -137,8 +159,13 @@ func (m *Model) EndpointKey() (key string) {
 	}
 }
 
-// EndpointFileScheme returns the endpoint API request file scheme type.
+// EndpointFileScheme returns the endpoint API request file scheme type. Nil
+// receivers fall back to the global default scheme.
 func (m *Model) EndpointFileScheme() (fileScheme scheme.Type) {
+	if m == nil {
+		return ""
+	}
+
 	if fileScheme = m.Service.EndpointFileScheme(); fileScheme != "" {
 		return fileScheme
 	}
@@ -146,8 +173,13 @@ func (m *Model) EndpointFileScheme() (fileScheme scheme.Type) {
 	return ServiceFileScheme
 }
 
-// EndpointRequestFormat returns the endpoint API request format.
+// EndpointRequestFormat returns the endpoint API request format. Nil receivers
+// fall back to the global default format.
 func (m *Model) EndpointRequestFormat() (format ApiFormat) {
+	if m == nil {
+		return ""
+	}
+
 	if format = m.Service.EndpointRequestFormat(); format != "" {
 		return format
 	}
@@ -155,8 +187,13 @@ func (m *Model) EndpointRequestFormat() (format ApiFormat) {
 	return ServiceRequestFormat
 }
 
-// EndpointResponseFormat returns the endpoint API response format.
+// EndpointResponseFormat returns the endpoint API response format. Nil
+// receivers fall back to the global default format.
 func (m *Model) EndpointResponseFormat() (format ApiFormat) {
+	if m == nil {
+		return ""
+	}
+
 	if format = m.Service.EndpointResponseFormat(); format != "" {
 		return format
 	}
@@ -164,13 +201,18 @@ func (m *Model) EndpointResponseFormat() (format ApiFormat) {
 	return ServiceResponseFormat
 }
 
-// GetPrompt returns the configured model prompt, or the default prompt if none is specified.
+// GetPrompt returns the configured model prompt, using engine defaults when
+// none is specified. Nil receivers return an empty string.
 func (m *Model) GetPrompt() string {
+	if m == nil {
+		return ""
+	}
+
 	if m.Prompt != "" {
 		return m.Prompt
 	}
 
-	if defaults := m.defaultsProvider(); defaults != nil {
+	if defaults := m.engineDefaults(); defaults != nil {
 		if prompt := defaults.UserPrompt(m); prompt != "" {
 			return prompt
 		}
@@ -186,13 +228,19 @@ func (m *Model) GetPrompt() string {
 	}
 }
 
-// GetSystemPrompt returns the configured system model prompt, or the default system prompt if none is specified.
+// GetSystemPrompt returns the configured system prompt, falling back to
+// engine defaults when none is specified. Nil receivers return an empty
+// string.
 func (m *Model) GetSystemPrompt() string {
+	if m == nil {
+		return ""
+	}
+
 	if m.System != "" {
 		return m.System
 	}
 
-	if defaults := m.defaultsProvider(); defaults != nil {
+	if defaults := m.engineDefaults(); defaults != nil {
 		if system := defaults.SystemPrompt(m); system != "" {
 			return system
 		}
@@ -206,8 +254,13 @@ func (m *Model) GetSystemPrompt() string {
 	}
 }
 
-// GetFormat returns the configured response format or a sensible default.
+// GetFormat returns the configured response format or a sensible default. Nil
+// receivers return an empty string.
 func (m *Model) GetFormat() string {
+	if m == nil {
+		return ""
+	}
+
 	if f := strings.TrimSpace(strings.ToLower(m.Format)); f != "" {
 		return f
 	}
@@ -219,28 +272,56 @@ func (m *Model) GetFormat() string {
 	return ""
 }
 
-// GetOptions returns the API request options.
+// GetSource returns the default entity src based on the model configuration.
+func (m *Model) GetSource() string {
+	if m == nil {
+		return entity.SrcAuto
+	}
+
+	switch m.EngineName() {
+	case ollama.EngineName:
+		return entity.SrcOllama
+	case openai.EngineName:
+		return entity.SrcOpenAI
+	}
+
+	switch m.EndpointRequestFormat() {
+	case ApiFormatOllama:
+		return entity.SrcOllama
+	case ApiFormatOpenAI:
+		return entity.SrcOpenAI
+	}
+
+	return entity.SrcImage
+}
+
+// GetOptions returns the API request options, applying engine defaults on
+// demand. Nil receivers return nil.
 func (m *Model) GetOptions() *ApiRequestOptions {
-	var providerDefaults *ApiRequestOptions
-	if defaults := m.defaultsProvider(); defaults != nil {
-		providerDefaults = cloneOptions(defaults.Options(m))
+	if m == nil {
+		return nil
+	}
+
+	var engineDefaults *ApiRequestOptions
+	if defaults := m.engineDefaults(); defaults != nil {
+		engineDefaults = cloneOptions(defaults.Options(m))
 	}
 
 	if m.Options == nil {
 		switch m.Type {
 		case ModelTypeLabels, ModelTypeCaption, ModelTypeGenerate:
-			if providerDefaults == nil {
-				providerDefaults = &ApiRequestOptions{}
+			if engineDefaults == nil {
+				engineDefaults = &ApiRequestOptions{}
 			}
-			normalizeOptions(providerDefaults)
-			m.Options = providerDefaults
+			normalizeOptions(engineDefaults)
+			m.Options = engineDefaults
 			return m.Options
 		default:
 			return nil
 		}
 	}
 
-	mergeOptionDefaults(m.Options, providerDefaults)
+	mergeOptionDefaults(m.Options, engineDefaults)
 	normalizeOptions(m.Options)
 
 	return m.Options
@@ -286,14 +367,15 @@ func cloneOptions(opts *ApiRequestOptions) *ApiRequestOptions {
 	return &clone
 }
 
-// ProviderName returns the configured provider or infers a sensible default based on the model settings.
-func (m *Model) ProviderName() string {
+// EngineName returns the normalized engine identifier or infers one from the
+// request configuration. Nil receivers return an empty string.
+func (m *Model) EngineName() string {
 	if m == nil {
 		return ""
 	}
 
-	if provider := strings.TrimSpace(strings.ToLower(m.Provider)); provider != "" {
-		return provider
+	if engine := strings.TrimSpace(strings.ToLower(m.Engine)); engine != "" {
+		return engine
 	}
 
 	uri, method := m.Endpoint()
@@ -301,36 +383,36 @@ func (m *Model) ProviderName() string {
 		format := m.EndpointRequestFormat()
 		switch format {
 		case ApiFormatOllama:
-			return ollama.ProviderName
+			return ollama.EngineName
 		case ApiFormatOpenAI:
-			return openai.ProviderName
+			return openai.EngineName
 		case ApiFormatVision, "":
-			return ProviderVision
+			return EngineVision
 		default:
 			return strings.ToLower(string(format))
 		}
 	}
 
 	if m.TensorFlow != nil {
-		return ProviderTensorFlow
+		return EngineTensorFlow
 	}
 
-	return ProviderLocal
+	return EngineLocal
 }
 
-// ApplyProviderDefaults normalizes the provider name and applies registered provider defaults
-// for request/response formats and file schemes when these are not explicitly configured.
-func (m *Model) ApplyProviderDefaults() {
+// ApplyEngineDefaults normalizes the engine name and applies registered engine
+// defaults (formats, schemes, resolution) when these are not explicitly configured.
+func (m *Model) ApplyEngineDefaults() {
 	if m == nil {
 		return
 	}
 
-	provider := strings.TrimSpace(strings.ToLower(m.Provider))
-	if provider == "" {
+	engine := strings.TrimSpace(strings.ToLower(m.Engine))
+	if engine == "" {
 		return
 	}
 
-	if info, ok := ProviderInfoFor(provider); ok {
+	if info, ok := EngineInfoFor(engine); ok {
 		if m.Service.RequestFormat == "" {
 			m.Service.RequestFormat = info.RequestFormat
 		}
@@ -342,13 +424,22 @@ func (m *Model) ApplyProviderDefaults() {
 		if info.FileScheme != "" && m.Service.FileScheme == "" {
 			m.Service.FileScheme = info.FileScheme
 		}
+
+		if info.Resolution > 0 && m.Resolution <= 0 {
+			m.Resolution = info.Resolution
+		}
 	}
 
-	m.Provider = provider
+	m.Engine = engine
 }
 
-// SchemaTemplate returns the model-specific JSON schema template, if any.
+// SchemaTemplate returns the model-specific JSON schema template, if any. Nil
+// receivers return an empty string.
 func (m *Model) SchemaTemplate() string {
+	if m == nil {
+		return ""
+	}
+
 	m.schemaOnce.Do(func() {
 		var schemaText string
 
@@ -385,7 +476,7 @@ func (m *Model) SchemaTemplate() string {
 		m.schema = strings.TrimSpace(schemaText)
 
 		if m.schema == "" && m.Type == ModelTypeLabels {
-			if defaults := m.defaultsProvider(); defaults != nil {
+			if defaults := m.engineDefaults(); defaults != nil {
 				m.schema = strings.TrimSpace(defaults.SchemaTemplate(m))
 			}
 		}
@@ -398,21 +489,30 @@ func (m *Model) SchemaTemplate() string {
 	return m.schema
 }
 
-func (m *Model) defaultsProvider() DefaultsProvider {
-	if provider, ok := ProviderFor(m.EndpointRequestFormat()); ok {
-		return provider.Defaults
+func (m *Model) engineDefaults() EngineDefaults {
+	if m == nil {
+		return nil
 	}
 
-	if info, ok := ProviderInfoFor(m.ProviderName()); ok {
-		if provider, ok := ProviderFor(info.RequestFormat); ok {
-			return provider.Defaults
+	if engine, ok := EngineFor(m.EndpointRequestFormat()); ok {
+		return engine.Defaults
+	}
+
+	if info, ok := EngineInfoFor(m.EngineName()); ok {
+		if engine, ok := EngineFor(info.RequestFormat); ok {
+			return engine.Defaults
 		}
 	}
 	return nil
 }
 
 // SchemaInstructions returns a helper string that can be appended to prompts.
+// Nil receivers return an empty string.
 func (m *Model) SchemaInstructions() string {
+	if m == nil {
+		return ""
+	}
+
 	if schema := m.SchemaTemplate(); schema != "" {
 		return fmt.Sprintf("Return JSON that matches this schema:\n%s", schema)
 	}
@@ -420,8 +520,13 @@ func (m *Model) SchemaInstructions() string {
 	return ""
 }
 
-// ClassifyModel returns the matching classify model instance, if any.
+// ClassifyModel returns the matching classify model instance, if any. Nil
+// receivers return nil.
 func (m *Model) ClassifyModel() *classify.Model {
+	if m == nil {
+		return nil
+	}
+
 	// Use mutex to prevent models from being loaded and
 	// initialized twice by different indexing workers.
 	modelMutex.Lock()
@@ -481,8 +586,13 @@ func (m *Model) ClassifyModel() *classify.Model {
 	return m.classifyModel
 }
 
-// FaceModel returns the matching face model instance, if any.
+// FaceModel returns the matching face recognition model instance, if any. Nil
+// receivers return nil.
 func (m *Model) FaceModel() *face.Model {
+	if m == nil {
+		return nil
+	}
+
 	// Use mutex to prevent models from being loaded and
 	// initialized twice by different indexing workers.
 	modelMutex.Lock()
@@ -536,8 +646,13 @@ func (m *Model) FaceModel() *face.Model {
 	return m.faceModel
 }
 
-// NsfwModel returns the matching nsfw model instance, if any.
+// NsfwModel returns the matching nsfw model instance, if any. Nil receivers
+// return nil.
 func (m *Model) NsfwModel() *nsfw.Model {
+	if m == nil {
+		return nil
+	}
+
 	// Use mutex to prevent models from being loaded and
 	// initialized twice by different indexing workers.
 	modelMutex.Lock()
@@ -597,8 +712,12 @@ func (m *Model) NsfwModel() *nsfw.Model {
 	return m.nsfwModel
 }
 
-// Clone returns a clone of this model.
+// Clone returns a shallow copy of the model. Nil receivers return nil.
 func (m *Model) Clone() *Model {
+	if m == nil {
+		return nil
+	}
+
 	c := *m
 	return &c
 }

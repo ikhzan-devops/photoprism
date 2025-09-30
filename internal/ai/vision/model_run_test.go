@@ -36,6 +36,11 @@ func TestModel_RunType(t *testing.T) {
 		want  RunType
 	}{
 		{
+			name:  "Nil",
+			model: nil,
+			want:  RunAuto,
+		},
+		{
 			name:  "Manual",
 			model: &Model{Run: "manual"},
 			want:  RunManual,
@@ -133,6 +138,13 @@ func TestModel_ShouldRun_RunNever(t *testing.T) {
 
 	assertShouldRun(t, model, RunManual, false)
 	assertShouldRun(t, model, RunOnDemand, false)
+}
+
+func TestModel_ShouldRun_NilModel(t *testing.T) {
+	var model *Model
+	if model.ShouldRun(RunManual) {
+		t.Fatalf("expected nil model to never run")
+	}
 }
 
 func TestModel_ShouldRun_RunOnIndex(t *testing.T) {

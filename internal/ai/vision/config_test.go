@@ -37,7 +37,7 @@ func TestConfigModelPrefersLastEnabled(t *testing.T) {
 	customModel := &Model{
 		Type:     ModelTypeLabels,
 		Name:     "ollama-labels",
-		Provider: "ollama",
+		Engine:   "ollama",
 		Disabled: false,
 	}
 
@@ -74,7 +74,7 @@ func TestConfigValues_IsDefaultAndIsCustom(t *testing.T) {
 		}
 	})
 	t.Run("CustomOverridesDefault", func(t *testing.T) {
-		custom := &Model{Type: ModelTypeLabels, Name: "custom", Provider: "ollama"}
+		custom := &Model{Type: ModelTypeLabels, Name: "custom", Engine: "ollama"}
 		cfg := &ConfigValues{Models: Models{defaultModel, custom}}
 		if cfg.IsDefault(ModelTypeLabels) {
 			t.Fatalf("expected custom model to disable default detection")
@@ -84,7 +84,7 @@ func TestConfigValues_IsDefaultAndIsCustom(t *testing.T) {
 		}
 	})
 	t.Run("DisabledCustomFallsBackToDefault", func(t *testing.T) {
-		custom := &Model{Type: ModelTypeLabels, Name: "custom", Provider: "ollama", Disabled: true}
+		custom := &Model{Type: ModelTypeLabels, Name: "custom", Engine: "ollama", Disabled: true}
 		cfg := &ConfigValues{Models: Models{defaultModel, custom}}
 		if !cfg.IsDefault(ModelTypeLabels) {
 			t.Fatalf("expected disabled custom model to fall back to default")

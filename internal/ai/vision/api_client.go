@@ -60,12 +60,12 @@ func PerformApiRequest(apiRequest *ApiRequest, uri, method, key string) (apiResp
 
 	format := apiRequest.GetResponseFormat()
 
-	if provider, ok := ProviderFor(format); ok && provider.Parser != nil {
+	if engine, ok := EngineFor(format); ok && engine.Parser != nil {
 		if clientResp.StatusCode >= 300 {
 			log.Debugf("vision: %s (status code %d)", body, clientResp.StatusCode)
 		}
 
-		parsed, parseErr := provider.Parser.Parse(context.Background(), apiRequest, body, clientResp.StatusCode)
+		parsed, parseErr := engine.Parser.Parse(context.Background(), apiRequest, body, clientResp.StatusCode)
 		if parseErr != nil {
 			return nil, parseErr
 		}

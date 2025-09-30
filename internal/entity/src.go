@@ -95,8 +95,8 @@ var VisionSrcNames = SrcMap{
 	SrcVision:          SrcVision,
 }
 
-// VisionSrc contains all the sources commonly used by computer vision models and services.
-var VisionSrc = []Src{
+// VisionSrcList contains all the sources commonly used by computer vision models and services.
+var VisionSrcList = []Src{
 	SrcMarker,
 	SrcImage,
 	SrcOllama,

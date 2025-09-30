@@ -18,20 +18,23 @@ type ollamaBuilder struct{}
 type ollamaParser struct{}
 
 func init() {
-	RegisterProvider(ApiFormatOllama, Provider{
+	RegisterEngine(ApiFormatOllama, Engine{
 		Builder:  ollamaBuilder{},
 		Parser:   ollamaParser{},
 		Defaults: ollamaDefaults{},
 	})
 
-	RegisterProviderAlias(ollama.ProviderName, ProviderInfo{
+	// Register the human-friendly engine name so configuration can simply use
+	// `Engine: "ollama"` and inherit adapter defaults.
+	RegisterEngineAlias(ollama.EngineName, EngineInfo{
 		RequestFormat:  ApiFormatOllama,
 		ResponseFormat: ApiFormatOllama,
 		FileScheme:     string(scheme.Base64),
+		Resolution:     ollama.Resolution,
 	})
 
-	CaptionModel.Provider = ollama.ProviderName
-	CaptionModel.ApplyProviderDefaults()
+	CaptionModel.Engine = ollama.EngineName
+	CaptionModel.ApplyEngineDefaults()
 }
 
 func (ollamaDefaults) SystemPrompt(model *Model) string {
