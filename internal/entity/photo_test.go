@@ -246,17 +246,18 @@ func TestPhoto_ShouldGenerateLabels(t *testing.T) {
 		p := Photo{}
 		assert.True(t, p.ShouldGenerateLabels(false))
 	})
-
 	t.Run("Force", func(t *testing.T) {
 		p := Photo{Labels: []PhotoLabel{{LabelSrc: string(SrcManual)}}}
 		assert.True(t, p.ShouldGenerateLabels(true))
 	})
-
 	t.Run("ExistingVisionLabel", func(t *testing.T) {
 		p := Photo{Labels: []PhotoLabel{{LabelSrc: string(SrcOllama)}}}
 		assert.False(t, p.ShouldGenerateLabels(false))
 	})
-
+	t.Run("VisionLabelHighUncertainty", func(t *testing.T) {
+		p := Photo{Labels: []PhotoLabel{{LabelSrc: string(SrcOllama), Uncertainty: 100}}}
+		assert.True(t, p.ShouldGenerateLabels(false))
+	})
 	t.Run("CaptionGeneratedLabels", func(t *testing.T) {
 		p := Photo{
 			Labels:     []PhotoLabel{{LabelSrc: string(SrcCaption)}},
@@ -264,12 +265,10 @@ func TestPhoto_ShouldGenerateLabels(t *testing.T) {
 		}
 		assert.False(t, p.ShouldGenerateLabels(false))
 	})
-
 	t.Run("ManualLabels", func(t *testing.T) {
 		p := Photo{Labels: []PhotoLabel{{LabelSrc: string(SrcManual)}}}
 		assert.True(t, p.ShouldGenerateLabels(false))
 	})
-
 	t.Run("CaptionManualWithoutVision", func(t *testing.T) {
 		p := Photo{
 			Labels:     []PhotoLabel{{LabelSrc: string(SrcCaption)}},

@@ -753,7 +753,9 @@ func (m *Photo) SaveDetails() error {
 	}
 }
 
-// ShouldGenerateLabels checks if labels should be generated for this model.
+// ShouldGenerateLabels reports whether automatic vision labels should be generated for the photo.
+// It allows regeneration when forced, when no labels exist, or when only manual/high-uncertainty
+// labels are present so low-confidence results do not block improved predictions.
 func (m *Photo) ShouldGenerateLabels(force bool) bool {
 	// Return true if force is set or there are no labels yet.
 	if len(m.Labels) == 0 || force {
@@ -762,6 +764,10 @@ func (m *Photo) ShouldGenerateLabels(force bool) bool {
 
 	// Check if any of the existing labels were generated using a vision model.
 	for _, l := range m.Labels {
+		if l.Uncertainty >= 100 {
+			continue
+		}
+
 		if list.Contains(VisionSrcList, l.LabelSrc) {
 			return false
 		} else if l.LabelSrc == SrcCaption && list.Contains(VisionSrcList, m.CaptionSrc) {
