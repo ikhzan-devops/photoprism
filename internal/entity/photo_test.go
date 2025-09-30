@@ -439,6 +439,15 @@ func TestPhoto_GetDetails(t *testing.T) {
 }
 
 func TestPhoto_AddLabels(t *testing.T) {
+	resetLabel := func(t *testing.T, photoName, labelName, src string, uncertainty int) {
+		t.Helper()
+		photo := PhotoFixtures.Get(photoName)
+		label := LabelFixtures.Get(labelName)
+		assert.NoError(t, UnscopedDb().Model(&PhotoLabel{}).
+			Where("photo_id = ? AND label_id = ?", photo.ID, label.ID).
+			UpdateColumns(Values{"Uncertainty": uncertainty, "LabelSrc": src}).Error)
+	}
+
 	t.Run("Add", func(t *testing.T) {
 		m := PhotoFixtures.Get("19800101_000002_D640C559")
 		classifyLabels := classify.Labels{{Name: "cactus", Uncertainty: 30, Source: SrcManual, Priority: 5, Categories: []string{"plant"}}}
@@ -457,15 +466,6 @@ func TestPhoto_AddLabels(t *testing.T) {
 		assert.Equal(t, 10, m.Labels[0].Uncertainty)
 		assert.Equal(t, SrcManual, m.Labels[0].LabelSrc)
 	})
-	resetLabel := func(t *testing.T, photoName, labelName, src string, uncertainty int) {
-		t.Helper()
-		photo := PhotoFixtures.Get(photoName)
-		label := LabelFixtures.Get(labelName)
-		assert.NoError(t, UnscopedDb().Model(&PhotoLabel{}).
-			Where("photo_id = ? AND label_id = ?", photo.ID, label.ID).
-			UpdateColumns(Values{"Uncertainty": uncertainty, "LabelSrc": src}).Error)
-	}
-
 	t.Run("OllamaReplacesLowerConfidence", func(t *testing.T) {
 		photoName := "Photo15"
 		labelName := "landscape"
@@ -513,6 +513,47 @@ func TestPhoto_AddLabels(t *testing.T) {
 		}
 		assert.Equal(t, 15, updated.Uncertainty)
 		assert.Equal(t, SrcOllama, updated.LabelSrc)
+	})
+	t.Run("SkipBlankTitle", func(t *testing.T) {
+		photo := PhotoFixtures.Get("Photo15")
+		initialLen := len(photo.Labels)
+
+		var labelCountBefore int
+		if err := Db().Model(&Label{}).Where("label_slug = ?", "unknown").Count(&labelCountBefore).Error; err != nil {
+			t.Fatalf("count before failed: %v", err)
+		}
+
+		classifyLabels := classify.Labels{{Name: "   ", Uncertainty: 30, Source: SrcManual}}
+		photo.AddLabels(classifyLabels)
+
+		assert.Equal(t, initialLen, len(photo.Labels))
+
+		var labelCountAfter int
+		if err := Db().Model(&Label{}).Where("label_slug = ?", "unknown").Count(&labelCountAfter).Error; err != nil {
+			t.Fatalf("count after failed: %v", err)
+		}
+		assert.Equal(t, labelCountBefore, labelCountAfter)
+	})
+	t.Run("SkipZeroProbability", func(t *testing.T) {
+		photo := PhotoFixtures.Get("Photo15")
+		initialLen := len(photo.Labels)
+
+		labelSlug := "zero-probability"
+		var labelCountBefore int
+		if err := Db().Model(&Label{}).Where("label_slug = ?", labelSlug).Count(&labelCountBefore).Error; err != nil {
+			t.Fatalf("count before failed: %v", err)
+		}
+
+		classifyLabels := classify.Labels{{Name: "Zero Probability", Uncertainty: 100, Source: SrcManual}}
+		photo.AddLabels(classifyLabels)
+
+		assert.Equal(t, initialLen, len(photo.Labels))
+
+		var labelCountAfter int
+		if err := Db().Model(&Label{}).Where("label_slug = ?", labelSlug).Count(&labelCountAfter).Error; err != nil {
+			t.Fatalf("count after failed: %v", err)
+		}
+		assert.Equal(t, labelCountBefore, labelCountAfter)
 	})
 }
 

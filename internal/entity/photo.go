@@ -779,23 +779,38 @@ func (m *Photo) ShouldGenerateLabels(force bool) bool {
 	return true
 }
 
-// AddLabels ensures classify labels exist as Label entities and attaches them to the photo, tightening uncertainty when higher confidence values arrive.
+// AddLabels ensures classify labels exist as Label entities and attaches them to the photo.
+// Labels are skipped when they have no usable title or carry 0% probability so that UpdateClassify
+// never receives invalid input from upstream detectors.
 func (m *Photo) AddLabels(labels classify.Labels) {
 	for _, classifyLabel := range labels {
-		labelEntity := FirstOrCreateLabel(NewLabel(classifyLabel.Title(), classifyLabel.Priority))
+
+		title := classifyLabel.Title()
+
+		if title == "" || txt.Slug(title) == "" {
+			log.Debugf("index: skipping blank label (%s)", m)
+			continue
+		}
+
+		if classifyLabel.Uncertainty >= 100 {
+			log.Debugf("index: skipping label %s with zero probability (%s)", title, m)
+			continue
+		}
+
+		labelEntity := FirstOrCreateLabel(NewLabel(title, classifyLabel.Priority))
 
 		if labelEntity == nil {
-			log.Errorf("index: label %s could not be created (%s)", clean.Log(classifyLabel.Title()), m)
+			log.Errorf("index: label %s could not be created (%s)", clean.Log(title), m)
 			continue
 		}
 
 		if labelEntity.Deleted() {
-			log.Debugf("index: skipping deleted label %s (%s)", clean.Log(classifyLabel.Title()), m)
+			log.Debugf("index: skipping deleted label %s (%s)", clean.Log(title), m)
 			continue
 		}
 
 		if err := labelEntity.UpdateClassify(classifyLabel); err != nil {
-			log.Errorf("index: failed to update label %s (%s)", clean.Log(classifyLabel.Title()), err)
+			log.Errorf("index: failed to update label %s (%s)", clean.Log(title), err)
 		}
 
 		labelSrc := classifyLabel.Source
