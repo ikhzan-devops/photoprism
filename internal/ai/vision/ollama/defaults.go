@@ -11,11 +11,11 @@ const (
 	LabelSystem = "You are a PhotoPrism vision model. Output concise JSON that matches the schema."
 	// LabelPrompt asks the model to return scored labels for the provided image.
 	LabelPrompt = "Analyze the image and return label objects with name, confidence (0-1), and topicality (0-1)."
-	// DefaultResolution is the maximum image edge length submitted to Ollama label models.
+	// DefaultResolution is the default thumbnail size submitted to Ollama models.
 	DefaultResolution = 720
 )
 
-// LabelsSchema returns the canonical label schema string consumed by Ollama engines.
+// LabelsSchema returns the canonical label schema string consumed by Ollama models.
 func LabelsSchema() string {
 	return schema.LabelsDefaultV1
 }
