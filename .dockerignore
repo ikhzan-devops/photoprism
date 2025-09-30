@@ -19,6 +19,7 @@
 /frontend/tests/acceptance/screenshots
 /test/
 /specs/
+/bin/
 
 # Docker configuration files:
 .dockerignore

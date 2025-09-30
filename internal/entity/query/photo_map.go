@@ -6,10 +6,11 @@ import (
 	"time"
 )
 
+// PhotoMap maps composite MapKey values to their photo IDs.
 type PhotoMap map[string]uint
 
-// IndexedPhotos returns MapKey → photo ID pairs for all non-deleted photos. It mirrors the key
-// format used by the Photos cache so callers can hydrate it without recomputing capture keys.
+// IndexedPhotos returns entity.MapKey(time, cellID) to photo ID pairs for all non-deleted photos.
+// This mirrors the format used by photoprism.Photos, enabling callers to hydrate keys without recomputing them.
 func IndexedPhotos() (result PhotoMap, err error) {
 	result = make(PhotoMap)
 
