@@ -36,6 +36,7 @@ type Model struct {
 	Name          string                `yaml:"Name,omitempty" json:"name,omitempty"`
 	Version       string                `yaml:"Version,omitempty" json:"version,omitempty"`
 	Provider      ModelProvider         `yaml:"Provider,omitempty" json:"provider,omitempty"`
+	Run           RunType               `yaml:"Run,omitempty" json:"Run,omitempty"` // "auto", "never", "manual", "always", "newly-indexed", "on-schedule"
 	System        string                `yaml:"System,omitempty" json:"system,omitempty"`
 	Prompt        string                `yaml:"Prompt,omitempty" json:"prompt,omitempty"`
 	Format        string                `yaml:"Format,omitempty" json:"format,omitempty"`
@@ -594,4 +595,10 @@ func (m *Model) NsfwModel() *nsfw.Model {
 	}
 
 	return m.nsfwModel
+}
+
+// Clone returns a clone of this model.
+func (m *Model) Clone() *Model {
+	c := *m
+	return &c
 }

@@ -136,6 +136,17 @@ func (c *ConfigValues) Model(t ModelType) *Model {
 	return nil
 }
 
+// ShouldRun checks when the specified model type should run.
+func (c *ConfigValues) ShouldRun(t ModelType, when RunType) bool {
+	m := c.Model(t)
+
+	if m == nil {
+		return false
+	}
+
+	return m.ShouldRun(when)
+}
+
 // IsDefault checks whether the specified type is the built-in default model.
 func (c *ConfigValues) IsDefault(t ModelType) bool {
 	m := c.Model(t)

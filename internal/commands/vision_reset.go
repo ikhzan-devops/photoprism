@@ -40,7 +40,7 @@ var VisionResetCommand = &cli.Command{
 
 func visionResetAction(ctx *cli.Context) error {
 	return CallWithDependencies(ctx, func(conf *config.Config) error {
-		models := vision.ParseTypes(ctx.String("models"))
+		models := vision.ParseModelTypes(ctx.String("models"))
 		resetCaptions := slices.Contains(models, vision.ModelTypeCaption)
 		resetLabels := slices.Contains(models, vision.ModelTypeLabels)
 

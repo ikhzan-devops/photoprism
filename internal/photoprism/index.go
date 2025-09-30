@@ -11,6 +11,7 @@ import (
 
 	"github.com/karrick/godirwalk"
 
+	"github.com/photoprism/photoprism/internal/ai/vision"
 	"github.com/photoprism/photoprism/internal/config"
 	"github.com/photoprism/photoprism/internal/entity"
 	"github.com/photoprism/photoprism/internal/event"
@@ -47,7 +48,7 @@ func NewIndex(conf *config.Config, convert *Convert, files *Files, photos *Photo
 		files:      files,
 		photos:     photos,
 		findFaces:  !conf.DisableFaces(),
-		findLabels: conf.GenerateLabelsWhileIndexing(),
+		findLabels: conf.VisionModelShouldRun(vision.ModelTypeLabels, vision.RunOnIndex),
 	}
 
 	return i

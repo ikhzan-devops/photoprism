@@ -9,6 +9,7 @@ import (
 
 	"github.com/dustin/go-humanize/english"
 
+	"github.com/photoprism/photoprism/internal/ai/vision"
 	"github.com/photoprism/photoprism/internal/config"
 	"github.com/photoprism/photoprism/internal/entity"
 	"github.com/photoprism/photoprism/internal/entity/query"
@@ -73,8 +74,8 @@ func (w *Meta) Start(delay, interval time.Duration, force bool) (err error) {
 
 	ind := get.Index()
 
-	generateLabels := w.conf.GenerateLabelsAfterIndexing()
-	generateCaptions := w.conf.GenerateCaptionsAfterIndexing()
+	generateLabels := w.conf.VisionModelShouldRun(vision.ModelTypeLabels, vision.RunNewlyIndexed)
+	generateCaptions := w.conf.VisionModelShouldRun(vision.ModelTypeCaption, vision.RunNewlyIndexed)
 
 	for {
 		photos, queryErr := query.PhotosMetadataUpdate(limit, offset, delay, interval)
