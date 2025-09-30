@@ -10,9 +10,9 @@ import (
 // preferred thumbnail resolution).
 func init() {
 	RegisterEngineAlias(openai.EngineName, EngineInfo{
-		RequestFormat:  ApiFormatOpenAI,
-		ResponseFormat: ApiFormatOpenAI,
-		FileScheme:     string(scheme.Base64),
-		Resolution:     openai.Resolution,
+		RequestFormat:     ApiFormatOpenAI,
+		ResponseFormat:    ApiFormatOpenAI,
+		FileScheme:        string(scheme.Base64),
+		DefaultResolution: openai.DefaultResolution,
 	})
 }

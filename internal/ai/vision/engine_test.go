@@ -21,7 +21,7 @@ func TestRegisterEngineAlias(t *testing.T) {
 		engineMu.Unlock()
 	})
 
-	RegisterEngineAlias("  Unit-Test  ", EngineInfo{RequestFormat: ApiFormat("custom"), ResponseFormat: "", FileScheme: "data", Resolution: 512})
+	RegisterEngineAlias("  Unit-Test  ", EngineInfo{RequestFormat: ApiFormat("custom"), ResponseFormat: "", FileScheme: "data", DefaultResolution: 512})
 
 	info, ok := EngineInfoFor(alias)
 	if !ok {
@@ -40,8 +40,8 @@ func TestRegisterEngineAlias(t *testing.T) {
 		t.Errorf("unexpected file scheme: %s", info.FileScheme)
 	}
 
-	if info.Resolution != 512 {
-		t.Errorf("unexpected resolution: %d", info.Resolution)
+	if info.DefaultResolution != 512 {
+		t.Errorf("unexpected resolution: %d", info.DefaultResolution)
 	}
 }
 

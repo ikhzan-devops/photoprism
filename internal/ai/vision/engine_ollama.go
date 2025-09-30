@@ -27,10 +27,10 @@ func init() {
 	// Register the human-friendly engine name so configuration can simply use
 	// `Engine: "ollama"` and inherit adapter defaults.
 	RegisterEngineAlias(ollama.EngineName, EngineInfo{
-		RequestFormat:  ApiFormatOllama,
-		ResponseFormat: ApiFormatOllama,
-		FileScheme:     string(scheme.Base64),
-		Resolution:     ollama.Resolution,
+		RequestFormat:     ApiFormatOllama,
+		ResponseFormat:    ApiFormatOllama,
+		FileScheme:        string(scheme.Base64),
+		DefaultResolution: ollama.DefaultResolution,
 	})
 
 	CaptionModel.Engine = ollama.EngineName
@@ -60,10 +60,16 @@ func (ollamaDefaults) UserPrompt(model *Model) string {
 }
 
 func (ollamaDefaults) SchemaTemplate(model *Model) string {
-	if model == nil || model.Type != ModelTypeLabels {
+	if model == nil {
 		return ""
 	}
-	return ollama.LabelSchema()
+
+	switch model.Type {
+	case ModelTypeLabels:
+		return ollama.LabelsSchema()
+	}
+
+	return ""
 }
 
 func (ollamaDefaults) Options(model *Model) *ApiRequestOptions {

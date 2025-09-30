@@ -2,11 +2,11 @@ package openai
 
 import "github.com/photoprism/photoprism/internal/ai/vision/schema"
 
-const (
-	DefaultModel = "gpt-5-mini"
-	Resolution   = 720
+var (
+	DefaultModel      = "gpt-5-mini"
+	DefaultResolution = 720
 )
 
-func LabelSchema() string {
-	return schema.LabelDefaultV1
+func LabelsSchema() string {
+	return schema.LabelsDefaultV1
 }

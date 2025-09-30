@@ -86,8 +86,8 @@ func TestModelApplyEngineDefaultsSetsResolution(t *testing.T) {
 
 	model.ApplyEngineDefaults()
 
-	if model.Resolution != ollama.Resolution {
-		t.Fatalf("expected resolution %d, got %d", ollama.Resolution, model.Resolution)
+	if model.Resolution != ollama.DefaultResolution {
+		t.Fatalf("expected resolution %d, got %d", ollama.DefaultResolution, model.Resolution)
 	}
 
 	model.Resolution = 1024

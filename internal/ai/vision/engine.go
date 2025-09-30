@@ -56,17 +56,17 @@ var (
 // human-friendly engine names without duplicating adapter metadata.
 func init() {
 	RegisterEngineAlias(EngineVision, EngineInfo{
-		RequestFormat:  ApiFormatVision,
-		ResponseFormat: ApiFormatVision,
-		FileScheme:     string(scheme.Data),
-		Resolution:     DefaultResolution,
+		RequestFormat:     ApiFormatVision,
+		ResponseFormat:    ApiFormatVision,
+		FileScheme:        string(scheme.Data),
+		DefaultResolution: DefaultResolution,
 	})
 
 	RegisterEngineAlias(openai.EngineName, EngineInfo{
-		RequestFormat:  ApiFormatOpenAI,
-		ResponseFormat: ApiFormatOpenAI,
-		FileScheme:     string(scheme.Data),
-		Resolution:     openai.Resolution,
+		RequestFormat:     ApiFormatOpenAI,
+		ResponseFormat:    ApiFormatOpenAI,
+		FileScheme:        string(scheme.Data),
+		DefaultResolution: openai.DefaultResolution,
 	})
 }
 
@@ -79,10 +79,10 @@ func RegisterEngine(format ApiFormat, engine Engine) {
 
 // EngineInfo describes metadata that can be associated with an engine alias.
 type EngineInfo struct {
-	RequestFormat  ApiFormat
-	ResponseFormat ApiFormat
-	FileScheme     string
-	Resolution     int
+	RequestFormat     ApiFormat
+	ResponseFormat    ApiFormat
+	FileScheme        string
+	DefaultResolution int
 }
 
 // RegisterEngineAlias maps a logical engine name (e.g., "ollama") to a

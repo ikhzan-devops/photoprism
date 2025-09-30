@@ -425,8 +425,8 @@ func (m *Model) ApplyEngineDefaults() {
 			m.Service.FileScheme = info.FileScheme
 		}
 
-		if info.Resolution > 0 && m.Resolution <= 0 {
-			m.Resolution = info.Resolution
+		if info.DefaultResolution > 0 && m.Resolution <= 0 {
+			m.Resolution = info.DefaultResolution
 		}
 	}
 
@@ -482,7 +482,7 @@ func (m *Model) SchemaTemplate() string {
 		}
 
 		if m.schema == "" && m.Type == ModelTypeLabels {
-			m.schema = visionschema.LabelDefaultV1
+			m.schema = visionschema.LabelsDefaultV1
 		}
 	})
 

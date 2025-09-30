@@ -3,13 +3,19 @@ package ollama
 import "github.com/photoprism/photoprism/internal/ai/vision/schema"
 
 const (
+	// CaptionPrompt instructs Ollama caption models to emit a single, active-voice sentence.
 	CaptionPrompt = "Create a caption with exactly one sentence in the active voice that describes the main visual content. Begin with the main subject and clear action. Avoid text formatting, meta-language, and filler words."
-	CaptionModel  = "gemma3"
-	LabelSystem   = "You are a PhotoPrism vision model. Output concise JSON that matches the schema."
-	LabelPrompt   = "Analyze the image and return label objects with name, confidence (0-1), and topicality (0-1)."
-	Resolution    = 720
+	// CaptionModel names the default caption model bundled with our adapter defaults.
+	CaptionModel = "gemma3"
+	// LabelSystem defines the system prompt shared by Ollama label models.
+	LabelSystem = "You are a PhotoPrism vision model. Output concise JSON that matches the schema."
+	// LabelPrompt asks the model to return scored labels for the provided image.
+	LabelPrompt = "Analyze the image and return label objects with name, confidence (0-1), and topicality (0-1)."
+	// DefaultResolution is the maximum image edge length submitted to Ollama label models.
+	DefaultResolution = 720
 )
 
-func LabelSchema() string {
-	return schema.LabelDefaultV1
+// LabelsSchema returns the canonical label schema string consumed by Ollama engines.
+func LabelsSchema() string {
+	return schema.LabelsDefaultV1
 }
