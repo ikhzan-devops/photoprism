@@ -25,7 +25,7 @@ func NewFiles() *Files {
 	return m
 }
 
-// Init fetches the list from the database once.
+// Init lazily loads the indexed file map from the database and stores the initial count.
 func (m *Files) Init() error {
 	m.mutex.Lock()
 	defer m.mutex.Unlock()
@@ -50,7 +50,7 @@ func (m *Files) Init() error {
 	}
 }
 
-// Done should be called after all files have been processed.
+// Done clears the in-memory cache so the next index pass reloads a fresh snapshot.
 func (m *Files) Done() {
 	m.mutex.Lock()
 	defer m.mutex.Unlock()
@@ -62,7 +62,7 @@ func (m *Files) Done() {
 	m.files = make(query.FileMap)
 }
 
-// Remove a file from the lookup table.
+// Remove evicts a file entry from the cache (e.g. after deletion or re-import).
 func (m *Files) Remove(fileName, fileRoot string) {
 	key := path.Join(fileRoot, fileName)
 
@@ -72,7 +72,7 @@ func (m *Files) Remove(fileName, fileRoot string) {
 	delete(m.files, key)
 }
 
-// Ignore tests of a file requires indexing, file name must be relative to the originals path.
+// Ignore determines whether a file should be skipped based on modification timestamp, updating the cache when needed.
 func (m *Files) Ignore(fileName, fileRoot string, modTime time.Time, rescan bool) bool {
 	timestamp := modTime.UTC().Truncate(time.Second).Unix()
 	key := path.Join(fileRoot, fileName)
@@ -95,7 +95,7 @@ func (m *Files) Ignore(fileName, fileRoot string, modTime time.Time, rescan bool
 	}
 }
 
-// Indexed tests of a file was already indexed without modifying the files map.
+// Indexed checks if a file has already been indexed without mutating the cache.
 func (m *Files) Indexed(fileName, fileRoot string, modTime time.Time, rescan bool) bool {
 	if rescan {
 		return false
@@ -116,7 +116,7 @@ func (m *Files) Indexed(fileName, fileRoot string, modTime time.Time, rescan boo
 	}
 }
 
-// Exists tests of a file exists.
+// Exists reports whether the given file key is present in the cache.
 func (m *Files) Exists(fileName, fileRoot string) bool {
 	key := path.Join(fileRoot, fileName)
 

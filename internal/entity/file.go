@@ -159,7 +159,7 @@ func (m File) RegenerateIndex() {
 	log.Debugf("search: updated %s [%s]", scope, time.Since(start))
 }
 
-// FirstFileByHash gets a file in db from its hash
+// FirstFileByHash fetches the first file with the given hash, including soft-deleted rows via UnscopedDb.
 func FirstFileByHash(fileHash string) (File, error) {
 	var file File
 
@@ -168,7 +168,7 @@ func FirstFileByHash(fileHash string) (File, error) {
 	return file, res.Error
 }
 
-// PrimaryFile returns the primary file for a photo uid.
+// PrimaryFile finds the photo's primary file (primary flag set) regardless of soft-delete state.
 func PrimaryFile(photoUid string) (*File, error) {
 	file := File{}
 

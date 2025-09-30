@@ -23,12 +23,13 @@ import (
 	"github.com/photoprism/photoprism/pkg/txt/clip"
 )
 
-// MediaFile indexes a single media file.
+// MediaFile indexes a single media file on behalf of the default owner.
 func (ind *Index) MediaFile(m *MediaFile, o IndexOptions, originalName, photoUID string) (result IndexResult) {
 	return ind.UserMediaFile(m, o, originalName, photoUID, entity.OwnerUnknown)
 }
 
-// UserMediaFile indexes a single media file owned by a user.
+// UserMediaFile indexes a single media file for the provided owner, performing duplicate detection,
+// metadata extraction, and database updates before returning an IndexResult describing the outcome.
 func (ind *Index) UserMediaFile(m *MediaFile, o IndexOptions, originalName, photoUID, userUID string) (result IndexResult) {
 	if m == nil {
 		result.Status = IndexFailed

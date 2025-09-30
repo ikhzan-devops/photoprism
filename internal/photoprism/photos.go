@@ -10,14 +10,14 @@ import (
 	"github.com/photoprism/photoprism/internal/entity/query"
 )
 
-// Photos represents photo id lookup table, sorted by date and S2 cell id.
+// Photos caches a lookup table from capture timestamp + S2 cell IDs to photo IDs so workers can skip redundant database scans.
 type Photos struct {
 	count  int
 	photos query.PhotoMap
 	mutex  sync.RWMutex
 }
 
-// NewPhotos returns a new Photos instance.
+// NewPhotos constructs an empty Photos cache. Call Init before using Find.
 func NewPhotos() *Photos {
 	m := &Photos{
 		photos: make(query.PhotoMap),
@@ -26,7 +26,8 @@ func NewPhotos() *Photos {
 	return m
 }
 
-// Init fetches the list from the database once.
+// Init hydrates the cache from the database if it has not been loaded yet.
+// Subsequent calls are no-ops unless the internal map was reset.
 func (m *Photos) Init() error {
 	m.mutex.Lock()
 	defer m.mutex.Unlock()
@@ -47,7 +48,7 @@ func (m *Photos) Init() error {
 	}
 }
 
-// Remove a photo from the lookup table.
+// Remove evicts a photo from the lookup table when media has been deleted or re-indexed.
 func (m *Photos) Remove(takenAt time.Time, cellId string) {
 	key := entity.MapKey(takenAt, cellId)
 
@@ -57,7 +58,7 @@ func (m *Photos) Remove(takenAt time.Time, cellId string) {
 	delete(m.photos, key)
 }
 
-// Find returns the photo ID for a time and cell id.
+// Find returns the cached photo ID for the given capture time and cell. Zero means no entry exists.
 func (m *Photos) Find(takenAt time.Time, cellId string) uint {
 	key := entity.MapKey(takenAt, cellId)
 

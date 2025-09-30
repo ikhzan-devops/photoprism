@@ -84,7 +84,8 @@ func (w *Vision) originalsPath() string {
 // Start runs the requested vision models against photos matching the search
 // filter. `customSrc` allows the caller to override the metadata source string,
 // `force` regenerates metadata regardless of existing values, and `runType`
-// describes the scheduling context (manual, scheduled, etc.).
+// describes the scheduling context (manual, scheduled, etc.). A global worker
+// mutex prevents multiple vision jobs from running concurrently.
 func (w *Vision) Start(filter string, count int, models []string, customSrc string, force bool, runType vision.RunType) (err error) {
 	defer func() {
 		if r := recover(); r != nil {
