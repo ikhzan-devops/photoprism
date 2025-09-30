@@ -3,18 +3,29 @@ package vision
 import (
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	"github.com/photoprism/photoprism/internal/ai/tensorflow"
 	"github.com/photoprism/photoprism/internal/ai/vision/ollama"
 	"github.com/photoprism/photoprism/internal/entity"
 )
 
 func TestModelGetOptionsDefaultsOllamaLabels(t *testing.T) {
+	ollamaModel := "redule26/huihui_ai_qwen2.5-vl-7b-abliterated:latest"
+
 	model := &Model{
 		Type:   ModelTypeLabels,
+		Name:   ollamaModel,
 		Engine: ollama.EngineName,
 	}
 
 	model.ApplyEngineDefaults()
+
+	m, n, v := model.Model()
+
+	assert.Equal(t, ollamaModel, m)
+	assert.Equal(t, "redule26/huihui_ai_qwen2.5-vl-7b-abliterated", n)
+	assert.Equal(t, "latest", v)
 
 	opts := model.GetOptions()
 	if opts == nil {

@@ -73,7 +73,7 @@ func (m *Model) Model() (model, name, version string) {
 	}
 
 	// Normalize model name.
-	name = clean.TypeLowerDash(m.Name)
+	name = clean.TypeLower(m.Name)
 
 	// Split name to check if it contains the version.
 	s := strings.SplitN(name, ":", 2)
