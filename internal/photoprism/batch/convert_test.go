@@ -9,6 +9,12 @@ import (
 )
 
 func TestConvertToPhotoForm(t *testing.T) {
+	t.Run("NilInputs", func(t *testing.T) {
+		form, err := ConvertToPhotoForm(nil, nil)
+		assert.Nil(t, form)
+		assert.Error(t, err)
+	})
+
 	t.Run("UpdateTitleCaptionTypeAndBooleans", func(t *testing.T) {
 		photo := &entity.Photo{
 			PhotoTitle:   "Old Title",
@@ -79,6 +85,52 @@ func TestConvertToPhotoForm(t *testing.T) {
 		assert.Equal(t, entity.SrcBatch, form.PlaceSrc)
 	})
 
+	t.Run("TitleRemove_CaptionUpdate", func(t *testing.T) {
+		photo := &entity.Photo{PhotoTitle: "Old", PhotoCaption: "OldCap"}
+
+		v := &PhotosForm{}
+		v.PhotoTitle.Action = ActionRemove
+		v.PhotoCaption.Action = ActionUpdate
+		v.PhotoCaption.Value = "NewCap"
+
+		form, err := ConvertToPhotoForm(photo, v)
+		assert.NoError(t, err)
+		assert.Equal(t, "", form.PhotoTitle)
+		assert.Equal(t, entity.SrcBatch, form.TitleSrc)
+		assert.Equal(t, "NewCap", form.PhotoCaption)
+		assert.Equal(t, entity.SrcBatch, form.CaptionSrc)
+	})
+
+	t.Run("TimeZoneUpdateSetsTakenSrc", func(t *testing.T) {
+		photo := &entity.Photo{}
+
+		v := &PhotosForm{}
+		v.TimeZone.Action = ActionUpdate
+		v.TimeZone.Value = "Europe/Berlin"
+
+		form, err := ConvertToPhotoForm(photo, v)
+		assert.NoError(t, err)
+		assert.Equal(t, "Europe/Berlin", form.TimeZone)
+		assert.Equal(t, entity.SrcBatch, form.TakenSrc)
+	})
+
+	t.Run("YearUpdate_RecomputesTakenAtLocalAndOutputs", func(t *testing.T) {
+		photo := &entity.Photo{}
+		// Assume current date fields are set via NewPhoto(photo)
+
+		v := &PhotosForm{}
+		v.PhotoYear.Action = ActionUpdate
+		v.PhotoYear.Value = 2021
+
+		form, err := ConvertToPhotoForm(photo, v)
+		assert.NoError(t, err)
+		// Must set TakenSrc and keep PhotoDay consistent
+		assert.Equal(t, entity.SrcBatch, form.TakenSrc)
+		assert.Equal(t, 2021, form.PhotoYear)
+		// PhotoDay is set via ComputeDateChange; must be non-zero or -1 depending on base
+		assert.NotZero(t, form.PhotoDay)
+	})
+
 	t.Run("UpdateDetails", func(t *testing.T) {
 		photo := &entity.Photo{}
 
@@ -102,6 +154,28 @@ func TestConvertToPhotoForm(t *testing.T) {
 		assert.Equal(t, "Copyright", form.Details.Copyright)
 		assert.Equal(t, entity.SrcBatch, form.Details.CopyrightSrc)
 		assert.Equal(t, "License", form.Details.License)
+		assert.Equal(t, entity.SrcBatch, form.Details.LicenseSrc)
+	})
+
+	t.Run("RemoveDetailsFieldsAndCarryPhotoID", func(t *testing.T) {
+		photo := &entity.Photo{ID: 42}
+
+		v := &PhotosForm{}
+		v.DetailsSubject.Action = ActionRemove
+		v.DetailsArtist.Action = ActionRemove
+		v.DetailsCopyright.Action = ActionRemove
+		v.DetailsLicense.Action = ActionRemove
+
+		form, err := ConvertToPhotoForm(photo, v)
+		assert.NoError(t, err)
+		assert.Equal(t, uint(42), form.Details.PhotoID)
+		assert.Equal(t, "", form.Details.Subject)
+		assert.Equal(t, entity.SrcBatch, form.Details.SubjectSrc)
+		assert.Equal(t, "", form.Details.Artist)
+		assert.Equal(t, entity.SrcBatch, form.Details.ArtistSrc)
+		assert.Equal(t, "", form.Details.Copyright)
+		assert.Equal(t, entity.SrcBatch, form.Details.CopyrightSrc)
+		assert.Equal(t, "", form.Details.License)
 		assert.Equal(t, entity.SrcBatch, form.Details.LicenseSrc)
 	})
 }

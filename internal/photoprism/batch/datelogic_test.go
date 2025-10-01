@@ -121,4 +121,31 @@ func TestComputeDateChange(t *testing.T) {
 		assert.Equal(t, 2021, newLocal2.Year())
 		assert.Equal(t, 31, newLocal2.Day())
 	})
+
+	t.Run("AllUnknown_KeepBaseYearMonth_SetDayOne", func(t *testing.T) {
+		// Current values: 2024-04-30 13:29:54 (local)
+		base := time.Date(2024, 4, 30, 13, 29, 54, 0, time.UTC)
+
+		// User sets Day, Month, Year to unknown (-1)
+		newLocal, y, m, d := ComputeDateChange(
+			base,
+			2024, 4, 30,
+			ActionUpdate, -1, // Day -> unknown
+			ActionUpdate, -1, // Month -> unknown
+			ActionUpdate, -1, // Year -> unknown
+		)
+
+		// Output components should be marked unknown
+		assert.Equal(t, -1, y)
+		assert.Equal(t, -1, m)
+		assert.Equal(t, -1, d)
+
+		// TakenAtLocal recomputed using base year/month and day=1, preserving time
+		assert.Equal(t, 2024, newLocal.Year())
+		assert.Equal(t, time.April, newLocal.Month())
+		assert.Equal(t, 1, newLocal.Day())
+		assert.Equal(t, 13, newLocal.Hour())
+		assert.Equal(t, 29, newLocal.Minute())
+		assert.Equal(t, 54, newLocal.Second())
+	})
 }

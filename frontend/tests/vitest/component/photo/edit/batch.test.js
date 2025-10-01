@@ -420,4 +420,127 @@ describe("component/photo/edit/batch", () => {
       expect(wrapper.emitted("close")).toBeTruthy();
     });
   });
+
+  describe("Country field read-only when coordinates are set", () => {
+    beforeEach(() => {
+      wrapper.vm.values = { ...mockValues };
+      wrapper.vm.setFormData();
+    });
+
+    it("is not read-only when both Lat/Lng are zero", () => {
+      wrapper.vm.formData.Lat.value = 0;
+      wrapper.vm.formData.Lng.value = 0;
+      expect(wrapper.vm.isCountryReadOnly).toBe(false);
+    });
+
+    it("is read-only when Lat is non-zero", () => {
+      wrapper.vm.formData.Lat.value = 37.5;
+      wrapper.vm.formData.Lng.value = 0;
+      expect(wrapper.vm.isCountryReadOnly).toBe(true);
+    });
+
+    it("is read-only when Lng is non-zero", () => {
+      wrapper.vm.formData.Lat.value = 0;
+      wrapper.vm.formData.Lng.value = -122.4;
+      expect(wrapper.vm.isCountryReadOnly).toBe(true);
+    });
+  });
+
+  describe("Mixed vs Identical Display", () => {
+    beforeEach(() => {
+      // Ensure component has model values and formData initialized
+      wrapper.vm.values = { ...mockValues };
+      wrapper.vm.setFormData();
+    });
+
+    it("shows 'mixed' placeholder for text fields when values differ", () => {
+      // Caption is mixed in mockValues
+      const field = wrapper.vm.getFieldData("text-field", "Caption");
+      expect(field.placeholder).toBe("mixed");
+      expect(field.persistent).toBe(true);
+    });
+
+    it("shows actual value for text fields when identical across selection", () => {
+      wrapper.vm.values.Title = { value: "Same Title", mixed: false };
+      wrapper.vm.setFormData();
+
+      const field = wrapper.vm.getFieldData("text-field", "Title");
+      expect(field.value).toBe("Same Title");
+      expect(field.placeholder).toBe("");
+    });
+
+    it("shows 'mixed' placeholder and option for select fields (Year)", () => {
+      wrapper.vm.values.Year.mixed = true;
+      wrapper.vm.setFormData();
+
+      const field = wrapper.vm.getFieldData("select-field", "Year");
+      expect(field.placeholder).toBe("mixed");
+      expect(field.items.find((i) => i.value === -2)).toBeTruthy();
+    });
+
+    it("boolean toggles include 'Mixed' option and current value is 'mixed' when mixed", () => {
+      wrapper.vm.values.Favorite.mixed = true;
+      wrapper.vm.setFormData();
+
+      const options = wrapper.vm.toggleOptions("Favorite");
+      expect(options.some((o) => o.value === "mixed")).toBe(true);
+      expect(wrapper.vm.getToggleValue("Favorite")).toBe("mixed");
+    });
+
+    it("location placeholder shows 'mixed' when coordinates differ", () => {
+      wrapper.vm.values.Lat = { value: 0, mixed: true };
+      wrapper.vm.values.Lng = { value: 0, mixed: true };
+      wrapper.vm.setFormData();
+
+      expect(wrapper.vm.locationPlaceholder).toBe("mixed");
+    });
+  });
+
+  describe("Delete and Undo indicators", () => {
+    beforeEach(() => {
+      // Initialize with concrete values so delete is available
+      wrapper.vm.values = { ...mockValues, Title: { value: "Some Title", mixed: false }, Altitude: { value: 123, mixed: false } };
+      wrapper.vm.setFormData();
+    });
+
+    const makeEvent = (cls) => ({ target: { classList: { contains: (c) => c === cls } } });
+
+    it("shows delete icon for text field, then shows <deleted> + undo after delete", () => {
+      // Delete icon visible before deleting
+      expect(wrapper.vm.getIcon("text-field", "Title")).toBe("mdi-delete");
+
+      // Click delete icon
+      wrapper.vm.toggleField("Title", makeEvent("mdi-delete"));
+
+      // Now undo icon should be visible and placeholder should show <deleted>
+      expect(wrapper.vm.getIcon("text-field", "Title")).toBe("mdi-undo");
+      const field = wrapper.vm.getFieldData("text-field", "Title");
+      expect(field.placeholder).toBe("<deleted>");
+      expect(field.persistent).toBe(true);
+      expect(wrapper.vm.deletedFields.Title).toBe(true);
+
+      // Click undo icon
+      wrapper.vm.toggleField("Title", makeEvent("mdi-undo"));
+      expect(wrapper.vm.deletedFields.Title).toBe(false);
+      expect(wrapper.vm.formData.Title.action).toBe("none");
+      expect(wrapper.vm.getIcon("text-field", "Title")).toBe("mdi-delete");
+    });
+
+    it("shows delete icon for numeric field, then undo after delete", () => {
+      // Delete icon visible before deleting
+      expect(wrapper.vm.getIcon("input-field", "Altitude")).toBe("mdi-delete");
+
+      // Click delete icon
+      wrapper.vm.toggleField("Altitude", makeEvent("mdi-delete"));
+
+      // Now undo icon should be visible and value should be zeroed
+      expect(wrapper.vm.getIcon("input-field", "Altitude")).toBe("mdi-undo");
+      expect(wrapper.vm.formData.Altitude.value).toBe(0);
+
+      // Undo
+      wrapper.vm.toggleField("Altitude", makeEvent("mdi-undo"));
+      expect(wrapper.vm.formData.Altitude.value).toBe(123);
+      expect(wrapper.vm.getIcon("input-field", "Altitude")).toBe("mdi-delete");
+    });
+  });
 });

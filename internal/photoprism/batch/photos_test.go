@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/photoprism/photoprism/internal/config"
 	"github.com/photoprism/photoprism/internal/entity/search"
 	"github.com/photoprism/photoprism/pkg/fs"
 	"github.com/stretchr/testify/assert"
@@ -70,6 +71,29 @@ func TestNewPhotosForm_FromJSON(t *testing.T) {
 	assert.Equal(t, true, frm.DetailsCopyright.Mixed)
 	assert.Equal(t, "", frm.DetailsLicense.Value)
 	assert.Equal(t, true, frm.DetailsLicense.Mixed)
+}
+
+func TestNewPhotosForm_FromFixturesAlbumsLabels(t *testing.T) {
+
+	// Ensure test config and fixtures/DB are initialized.
+	_ = config.TestConfig()
+
+	// Build minimal PhotoResults with only UIDs set; NewPhotosForm will preload details.
+	photos := search.PhotoResults{
+		{PhotoUID: "pqkm36fjqvset9uz"},
+		{PhotoUID: "pqkm36fjqvset9uy"},
+	}
+
+	frm := NewPhotosForm(photos)
+
+	// Expect albums and labels collected from fixtures to be non-empty.
+	if assert.NotNil(t, frm) {
+		assert.Greater(t, len(frm.Albums.Items), 0, "expected at least one album item")
+		assert.Greater(t, len(frm.Labels.Items), 0, "expected at least one label item")
+		// Titles should be non-empty for the first items.
+		assert.NotEmpty(t, frm.Albums.Items[0].Title)
+		assert.NotEmpty(t, frm.Labels.Items[0].Title)
+	}
 }
 
 func TestNewPhotosForm_TwoPhotosMixedFlags1(t *testing.T) {

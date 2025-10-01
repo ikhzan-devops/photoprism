@@ -23,6 +23,18 @@ const vuetify = createVuetify({
   },
 });
 
+// Polyfill ResizeObserver in jsdom environment for Vuetify components
+if (typeof global.ResizeObserver === "undefined") {
+  global.ResizeObserver = class ResizeObserver {
+    constructor(callback) {
+      this.callback = callback;
+    }
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  };
+}
+
 // Configure Vue Test Utils global configuration
 config.global.mocks = {
   $gettext: (text) => text,
