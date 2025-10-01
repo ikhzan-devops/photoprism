@@ -5,8 +5,12 @@ import (
 	"reflect"
 )
 
-// Values is an shorthand alias for map[string]interface{}.
+// Values is a shorthand alias for map[string]interface{}.
 type Values = map[string]interface{}
+
+// Map is retained for backward compatibility.
+// TODO: Remove when no longer needed.
+type Map = Values
 
 // ModelValues extracts Values from an entity model.
 func ModelValues(m interface{}, omit ...string) (result Values, omitted []interface{}, err error) {
