@@ -618,13 +618,13 @@ export default {
       const typeName = this.staticFilter?.type;
       const keyName = "albums.order." + typeName;
       const queryParam = this.$route.query["order"];
-      const storedType = window.localStorage.getItem(keyName);
+      const storeOrder = window.localStorage.getItem(keyName);
 
       if (queryParam) {
         window.localStorage.setItem(keyName, queryParam);
         return queryParam;
-      } else if (storedType) {
-        return storedType;
+      } else if (storeOrder) {
+        return storeOrder;
       }
 
       return this.defaultOrder;

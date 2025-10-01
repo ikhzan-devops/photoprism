@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/photoprism/photoprism/internal/entity"
+	"github.com/photoprism/photoprism/internal/entity/sortby"
 	"github.com/photoprism/photoprism/internal/form"
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/txt"
@@ -34,8 +35,10 @@ func Labels(frm form.SearchLabels) (results []Label, err error) {
 
 	// Set sort order.
 	switch frm.Order {
-	case "slug":
+	case sortby.Slug:
 		s = s.Order("labels.label_favorite DESC, custom_slug ASC")
+	case sortby.Default, sortby.Count:
+		s = s.Order("labels.label_favorite DESC, labels.photo_count DESC, custom_slug ASC")
 	default:
 		s = s.Order("labels.label_favorite DESC, custom_slug ASC")
 	}

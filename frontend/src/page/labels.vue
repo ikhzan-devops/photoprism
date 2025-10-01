@@ -199,11 +199,16 @@ export default {
       type: Object,
       default: () => {},
     },
+    defaultOrder: {
+      type: String,
+      default: "slug",
+    },
   },
   expose: ["onShortCut"],
   data() {
     const query = this.$route.query;
     const routeName = this.$route.name;
+    const order = this.sortOrder();
     const q = query["q"] ? query["q"] : "";
     const all = query["all"] ? query["all"] : "";
 
@@ -229,7 +234,7 @@ export default {
       page: 0,
       selection: [],
       settings: {},
-      filter: { q, all },
+      filter: { q, order, all },
       lastFilter: {},
       routeName: routeName,
       titleRule: (v) => v.length <= this.$config.get("clip") || this.$gettext("Name too long"),
@@ -260,6 +265,7 @@ export default {
       this.routeName = this.$route.name;
       this.lastFilter = {};
       this.filter.q = query["q"] ? query["q"] : "";
+      this.filter.order = this.sortOrder();
       this.filter.all = query["all"] ? query["all"] : "";
 
       this.search();
@@ -342,6 +348,23 @@ export default {
 
       this.model = label;
       this.dialog.edit = true;
+    },
+    sortOrder() {
+      const keyName = "labels.order";
+      const queryParam = this.$route.query["order"];
+      const storedOrder = window.localStorage.getItem(keyName);
+
+      if (queryParam) {
+        window.localStorage.setItem(keyName, queryParam);
+        return queryParam;
+      } else if (storedOrder) {
+        return storedOrder;
+      }
+
+      return this.defaultOrder;
+    },
+    sortReverse() {
+      return !!this.$route?.query["reverse"] && this.$route.query["reverse"] === "true";
     },
     searchCount() {
       const offset = parseInt(window.localStorage.getItem("labels.offset"));
