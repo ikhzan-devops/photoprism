@@ -34,19 +34,19 @@ func ApplyAlbums(photoUID string, albums Items) error {
 			if it.Value == "" && it.Title == "" {
 				return fmt.Errorf("album value or title required for add action")
 			}
-			
+
 			// Add by UID if provided, otherwise use title to create/find
 			if it.Value != "" {
 				// If value is provided, validate it's a proper UID format
 				if !rnd.IsUID(it.Value, entity.AlbumUID) {
 					return fmt.Errorf("invalid album uid format: %s", it.Value)
 				}
-				
+
 				// Check if album exists when adding by UID
 				if _, err := query.AlbumByUID(it.Value); err != nil {
 					return fmt.Errorf("album not found: %s", it.Value)
 				}
-				
+
 				addTargets = append(addTargets, it.Value)
 			} else if it.Title != "" {
 				addTargets = append(addTargets, it.Title)
@@ -56,12 +56,12 @@ func ApplyAlbums(photoUID string, albums Items) error {
 			if it.Value == "" {
 				return fmt.Errorf("album uid required for remove action")
 			}
-			
+
 			// Remove only if we have a valid album UID
 			if !rnd.IsUID(it.Value, entity.AlbumUID) {
 				return fmt.Errorf("invalid album uid format: %s", it.Value)
 			}
-			
+
 			if a, err := query.AlbumByUID(it.Value); err != nil {
 				return fmt.Errorf("album not found for removal: %s", it.Value)
 			} else if a.HasID() {
@@ -109,7 +109,7 @@ func ApplyLabels(photo *entity.Photo, labels Items) error {
 				if !rnd.IsUID(it.Value, entity.LabelUID) {
 					return fmt.Errorf("invalid label uid format: %s", it.Value)
 				}
-				
+
 				labelEntity, err = query.LabelByUID(it.Value)
 				if err != nil {
 					return fmt.Errorf("label not found: %s", it.Value)
@@ -162,7 +162,8 @@ func ApplyLabels(photo *entity.Photo, labels Items) error {
 			}
 
 			if pl, err := query.PhotoLabel(photo.ID, labelEntity.ID); err != nil {
-				return fmt.Errorf("photo-label not found for removal: photo=%s label_id=%d", photo.PhotoUID, labelEntity.ID)
+				log.Debugf("batch: photo-label not found for removal: photo=%s label_id=%d", photo.PhotoUID, labelEntity.ID)
+				continue
 			} else if pl != nil {
 				if (pl.LabelSrc == entity.SrcManual || pl.LabelSrc == entity.SrcBatch) && pl.Uncertainty < 100 {
 					if err := entity.Db().Delete(&pl).Error; err != nil {
