@@ -127,7 +127,6 @@ func candidateTokens(raw string) []string {
 }
 
 // sanitizeToken strips punctuation, digits, and separators so tokens can be matched consistently.
-// sanitizeToken strips punctuation, digits, and separators so tokens can be matched consistently.
 func sanitizeToken(token string) string {
 	trimmed := strings.Trim(token, "\"'()[]{}<>.,!?`~")
 	if trimmed == "" {
@@ -145,7 +144,6 @@ func sanitizeToken(token string) string {
 	return strings.TrimSpace(noDigits)
 }
 
-// trimPlural removes a trailing 's' when the token is long enough, giving us a singular candidate.
 // trimPlural removes a trailing "s" from longer tokens to produce a singular candidate.
 func trimPlural(token string) string {
 	runes := []rune(token)
@@ -167,7 +165,6 @@ func trimPlural(token string) string {
 }
 
 // lookupExistingLabel reuses labels already stored in the database (if the connection is available).
-// lookupExistingLabel reuses PhotoPrism labels already persisted in the database when available.
 func lookupExistingLabel(name string) (canonicalLabel, bool) {
 	if db := entity.Db(); db == nil {
 		return canonicalLabel{}, false
@@ -197,7 +194,6 @@ func lookupExistingLabel(name string) (canonicalLabel, bool) {
 }
 
 // canonicalLabelFor reads canonical names from classify.Rules (TensorFlow vocabulary).
-// canonicalLabelFor returns canonical metadata from the TensorFlow rules map when present.
 func canonicalLabelFor(name string) (canonicalLabel, bool) {
 	ensureCanonicalLabels()
 
@@ -210,7 +206,6 @@ func canonicalLabelFor(name string) (canonicalLabel, bool) {
 	return canonical, ok
 }
 
-// ensureCanonicalLabels lazily populates the canonical map once per process.
 // ensureCanonicalLabels lazily populates the canonical label map once per process.
 func ensureCanonicalLabels() {
 	canonicalLabelOnce.Do(func() {
@@ -234,7 +229,6 @@ func ensureCanonicalLabels() {
 	})
 }
 
-// addCanonicalMapping stores or merges canonical metadata for the slug.
 // addCanonicalMapping stores or merges canonical metadata for a given slug.
 func addCanonicalMapping(name string, meta canonicalLabel) {
 	name = strings.TrimSpace(name)
@@ -268,7 +262,6 @@ func addCanonicalMapping(name string, meta canonicalLabel) {
 	}
 }
 
-// mergeCategories keeps category lists unique, comparing slugs case-insensitively.
 // mergeCategories keeps categories unique by comparing slugs case-insensitively.
 func mergeCategories(existing, additional []string) []string {
 	if len(additional) == 0 {
@@ -305,7 +298,6 @@ func mergeCategories(existing, additional []string) []string {
 	return merged
 }
 
-// priorityFromTopicality converts the model's topicality score to our priority scale (-2..5).
 // priorityFromTopicality converts topicality scores to our priority scale (-2..5).
 func priorityFromTopicality(topicality float32) int {
 	switch {
