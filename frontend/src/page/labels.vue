@@ -201,7 +201,7 @@ export default {
     },
     defaultOrder: {
       type: String,
-      default: "slug",
+      default: "count",
     },
   },
   expose: ["onShortCut"],
