@@ -153,15 +153,16 @@ func (ollamaParser) Parse(ctx context.Context, req *ApiRequest, raw []byte, stat
 
 	if parsedLabels {
 		for i := range result.Result.Labels {
+			normalizeLabelResult(&result.Result.Labels[i])
 			if result.Result.Labels[i].Source == "" {
-				result.Result.Labels[i].Source = entity.SrcVision
+				result.Result.Labels[i].Source = entity.SrcOllama
 			}
 		}
 	} else {
 		if caption := strings.TrimSpace(ollamaResp.Response); caption != "" {
 			result.Result.Caption = &CaptionResult{
 				Text:   caption,
-				Source: entity.SrcImage,
+				Source: entity.SrcOllama,
 			}
 		}
 	}
