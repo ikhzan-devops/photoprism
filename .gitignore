@@ -61,6 +61,7 @@ frontend/coverage/
 /assets/*net
 /assets/vision
 /specs/
+/docs/
 /bin/
 
 # Files created automatically by editors and/or operating systems:

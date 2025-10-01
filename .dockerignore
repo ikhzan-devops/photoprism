@@ -19,6 +19,7 @@
 /frontend/tests/acceptance/screenshots
 /test/
 /specs/
+/docs/
 /bin/
 
 # Docker configuration files:
