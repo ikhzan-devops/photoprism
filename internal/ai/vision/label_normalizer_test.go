@@ -40,7 +40,7 @@ func TestPriorityFromTopicality(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		if got := priorityFromTopicality(tc.top); got != tc.exp {
+		if got := PriorityFromTopicality(tc.top); got != tc.exp {
 			t.Fatalf("topicality %v expected priority %d, got %d", tc.top, tc.exp, got)
 		}
 	}
@@ -55,7 +55,7 @@ func TestNormalizeLabelResult(t *testing.T) {
 			t.Fatalf("expected canonical name, got %q", label.Name)
 		}
 
-		if label.Priority != priorityFromTopicality(0.7) {
+		if label.Priority != PriorityFromTopicality(0.7) {
 			t.Fatalf("expected priority derived from topicality, got %d", label.Priority)
 		}
 

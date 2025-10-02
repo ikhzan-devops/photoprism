@@ -66,7 +66,7 @@ func normalizeLabelResult(result *LabelResult) {
 	}
 
 	if result.Priority == 0 {
-		result.Priority = priorityFromTopicality(result.Topicality)
+		result.Priority = PriorityFromTopicality(result.Topicality)
 	}
 }
 
@@ -319,8 +319,8 @@ func mergeCategories(existing, additional []string) []string {
 	return merged
 }
 
-// priorityFromTopicality converts topicality scores to our priority scale (-2..5).
-func priorityFromTopicality(topicality float32) int {
+// PriorityFromTopicality converts topicality scores to our priority scale (-2..5).
+func PriorityFromTopicality(topicality float32) int {
 	switch {
 	case topicality >= 0.95:
 		return 5
