@@ -7,6 +7,7 @@ import (
 	"github.com/photoprism/photoprism/internal/ai/face"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestFace_TableName(t *testing.T) {
@@ -175,6 +176,20 @@ func TestFace_SetEmbeddings(t *testing.T) {
 		}
 		assert.Equal(t, e[0][0], m.Embedding()[0])
 	})
+	t.Run("CapsSampleRadius", func(t *testing.T) {
+		embeddings := make(face.Embeddings, 2)
+		for i := range embeddings {
+			embeddings[i] = make(face.Embedding, len(face.NullEmbedding))
+		}
+		embeddings[0][0] = 1
+		embeddings[1][0] = -1
+
+		m := &Face{}
+
+		require.NoError(t, m.SetEmbeddings(embeddings))
+		require.Equal(t, 2, m.Samples)
+		assert.InDelta(t, 0.35, m.SampleRadius, 1e-9)
+	})
 }
 
 func TestFace_Embedding(t *testing.T) {
@@ -195,6 +210,12 @@ func TestFace_Embedding(t *testing.T) {
 
 		assert.Equal(t, float64(0), m.Embedding()[0])
 	})
+}
+
+func TestFace_MatchMarkersEmpty(t *testing.T) {
+	m := FaceFixtures.Get("joe-biden")
+	require.NoError(t, m.MatchMarkers(nil))
+	require.NoError(t, m.MatchMarkers([]string{}))
 }
 
 func TestFace_UpdateMatchTime(t *testing.T) {

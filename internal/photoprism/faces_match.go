@@ -18,6 +18,13 @@ type FacesMatchResult struct {
 	Unknown    int64
 }
 
+// faceMatchStats accumulates per-face matching metrics within a single run.
+type faceMatchStats struct {
+	matched int
+	maxDist float64
+}
+
+// faceCandidate caches the expensive data needed to compare markers with a face cluster.
 type faceCandidate struct {
 	ref             *entity.Face
 	emb             face.Embedding
@@ -152,6 +159,7 @@ func (w *Faces) Match(opt FacesOptions) (result FacesMatchResult, err error) {
 	}
 
 	var unmatchedMarkers int
+	stats := make(map[*entity.Face]*faceMatchStats)
 
 	// Skip matching if index contains no new face markers, and force option isn't set.
 	if opt.Force {
@@ -171,7 +179,7 @@ func (w *Faces) Match(opt FacesOptions) (result FacesMatchResult, err error) {
 			return result, err
 		}
 
-		if r, err := w.MatchFaces(faces, opt.Force, nil); err != nil {
+		if r, err := w.MatchFaces(faces, opt.Force, nil, stats); err != nil {
 			return result, err
 		} else {
 			result.Add(r)
@@ -182,7 +190,7 @@ func (w *Faces) Match(opt FacesOptions) (result FacesMatchResult, err error) {
 	if unmatchedFaces, err := query.Faces(false, true, false, false); err != nil {
 		log.Error(err)
 	} else if len(unmatchedFaces) > 0 {
-		if r, err := w.MatchFaces(unmatchedFaces, false, matchedAt); err != nil {
+		if r, err := w.MatchFaces(unmatchedFaces, false, matchedAt, stats); err != nil {
 			return result, err
 		} else {
 			result.Add(r)
@@ -202,12 +210,26 @@ func (w *Faces) Match(opt FacesOptions) (result FacesMatchResult, err error) {
 		result.Recognized += m
 	}
 
+	for facePtr, stat := range stats {
+		if stat == nil {
+			continue
+		}
+
+		if err := facePtr.UpdateMatchStats(stat.matched, stat.maxDist); err != nil {
+			log.Warnf("faces: %s (update stats)", err)
+		}
+	}
+
 	return result, nil
 }
 
 // MatchFaces matches markers against a slice of faces.
-func (w *Faces) MatchFaces(faces entity.Faces, force bool, matchedBefore *time.Time) (result FacesMatchResult, err error) {
+func (w *Faces) MatchFaces(faces entity.Faces, force bool, matchedBefore *time.Time, stats map[*entity.Face]*faceMatchStats) (result FacesMatchResult, err error) {
 	limit := 500
+
+	if stats == nil {
+		stats = make(map[*entity.Face]*faceMatchStats)
+	}
 
 	index := buildFaceIndex(faces)
 
@@ -257,6 +279,10 @@ func (w *Faces) MatchFaces(faces entity.Faces, force bool, matchedBefore *time.T
 			totalProcessed++
 			batchProcessed++
 
+			if w.vetoed(marker.MarkerUID) {
+				continue
+			}
+
 			if w.Canceled() {
 				return result, fmt.Errorf("worker canceled")
 			}
@@ -285,6 +311,18 @@ func (w *Faces) MatchFaces(faces entity.Faces, force bool, matchedBefore *time.T
 					log.Warnf("faces: %s while updating marker %s match timestamp", err, marker.MarkerUID)
 				}
 
+				if selFace != nil && dist >= 0 {
+					stat := stats[selFace]
+					if stat == nil {
+						stat = &faceMatchStats{}
+						stats[selFace] = stat
+					}
+					stat.matched++
+					if dist > stat.maxDist {
+						stat.maxDist = dist
+					}
+				}
+
 				continue
 			}
 
@@ -294,6 +332,7 @@ func (w *Faces) MatchFaces(faces entity.Faces, force bool, matchedBefore *time.T
 					log.Warnf("faces: %s (clear marker face)", err)
 				} else if updated {
 					result.Updated++
+					w.rememberVeto(marker.MarkerUID)
 				}
 
 				continue
@@ -310,6 +349,20 @@ func (w *Faces) MatchFaces(faces entity.Faces, force bool, matchedBefore *time.T
 			if updated {
 				result.Updated++
 			}
+
+			if selFace != nil && dist >= 0 {
+				stat := stats[selFace]
+				if stat == nil {
+					stat = &faceMatchStats{}
+					stats[selFace] = stat
+				}
+				stat.matched++
+				if dist > stat.maxDist {
+					stat.maxDist = dist
+				}
+			}
+
+			w.clearVeto(marker.MarkerUID)
 
 			if marker.SubjUID != "" {
 				result.Recognized++

@@ -68,3 +68,36 @@ func TestSelectBestFace(t *testing.T) {
 	require.Equal(t, matchFace.ID, best.ID)
 	require.InDelta(t, 0.0, dist, 1e-9)
 }
+
+func TestFacesMatchRespectsVeto(t *testing.T) {
+	conf := config.TestConfig()
+	w := NewFaces(conf)
+
+	var marker entity.Marker
+	require.NoError(t, entity.Db().Where("marker_type = ? AND marker_invalid = 0 AND face_id <> ''", entity.MarkerFace).Take(&marker).Error)
+
+	origFaceID := marker.FaceID
+	require.NotEqual(t, "", origFaceID)
+
+	var face entity.Face
+	require.NoError(t, entity.Db().Where("id = ?", origFaceID).Take(&face).Error)
+
+	_, err := marker.ClearFace()
+	require.NoError(t, err)
+
+	stats := make(map[*entity.Face]*faceMatchStats)
+	faces := entity.Faces{face}
+
+	w.rememberVeto(marker.MarkerUID)
+	_, err = w.MatchFaces(faces, false, nil, stats)
+	require.NoError(t, err)
+
+	require.NoError(t, entity.Db().Where("marker_uid = ?", marker.MarkerUID).Take(&marker).Error)
+	require.Equal(t, "", marker.FaceID)
+
+	// restore original assignment to keep fixtures consistent
+	dist := minMarkerDistance(face.Embedding(), marker.Embeddings())
+	_, err = marker.SetFace(&face, dist)
+	require.NoError(t, err)
+	w.clearVeto(marker.MarkerUID)
+}
