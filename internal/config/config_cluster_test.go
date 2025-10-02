@@ -57,7 +57,7 @@ func TestConfig_PortalUrl(t *testing.T) {
 		c.options.ClusterDomain = "foo.bar.baz"
 		assert.Equal(t, "https://portal.foo.bar.baz", c.PortalUrl())
 	})
-	t.Run("SubstitutePhotoprismClusterDomain", func(t *testing.T) {
+	t.Run("SubstitutePhotoPrismClusterDomain", func(t *testing.T) {
 		c := NewConfig(CliTestContext())
 		c.options.ClusterDomain = "example.dev"
 		// Use curly braces style as found in repo fixtures; resolver normalizes to ${...}.
