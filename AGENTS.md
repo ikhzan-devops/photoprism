@@ -16,6 +16,7 @@ Learn more: https://agents.md/
 - Security: https://github.com/photoprism/photoprism/blob/develop/SECURITY.md
 - REST API: https://docs.photoprism.dev/ (Swagger), https://docs.photoprism.app/developer-guide/api/ (Docs)
 - Code Maps: `CODEMAP.md` (Backend/Go), `frontend/CODEMAP.md` (Frontend/JS)
+- Face Detection & Embeddings Notes: `internal/ai/face/README.md`
 
 ### Specifications (Versioning & Usage)
 
