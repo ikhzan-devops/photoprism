@@ -45,6 +45,7 @@ All embeddings, regardless of origin, are normalized to unit length (‖x‖₂�
 - `EmbeddingsMidpoint` normalizes each contributor, averages component-wise, and renormalizes the centroid.
 - `UnmarshalEmbedding` and `UnmarshalEmbeddings` normalize data when loading from persisted JSON.
 - Static datasets (`KidsEmbeddings`, `IgnoredEmbeddings`) and random generators now normalize their entries after perturbation.
+- `photoprism faces audit --fix` re-normalizes persisted embeddings, rekeys face IDs, and re-links markers (ID + `FaceDist`) so historical data adopts the canonical unit-length vectors.
 
 This guarantees that Euclidean distance comparisons are equivalent to cosine comparisons, aligning our thresholds with FaceNet literature.
 
