@@ -3,7 +3,11 @@ package photoprism
 import (
 	"testing"
 
+	"github.com/stretchr/testify/require"
+
+	"github.com/photoprism/photoprism/internal/ai/face"
 	"github.com/photoprism/photoprism/internal/config"
+	"github.com/photoprism/photoprism/internal/entity"
 )
 
 func TestFaces_Match(t *testing.T) {
@@ -23,4 +27,41 @@ func TestFaces_Match(t *testing.T) {
 	}
 
 	t.Log(r)
+}
+
+func TestBuildFaceCandidates(t *testing.T) {
+	regular := entity.NewFace("", entity.SrcAuto, face.RandomEmbeddings(3, face.RegularFace))
+	require.NotNil(t, regular)
+
+	kids := entity.NewFace("", entity.SrcAuto, face.RandomEmbeddings(3, face.KidsFace))
+	require.NotNil(t, kids)
+
+	faces := entity.Faces{*regular, *kids}
+
+	candidates := buildFaceCandidates(faces)
+
+	require.Len(t, candidates, 1)
+	require.Equal(t, regular.ID, candidates[0].ref.ID)
+}
+
+func TestSelectBestFace(t *testing.T) {
+	markerEmb := face.RandomEmbeddings(1, face.RegularFace)
+
+	matchFace := entity.NewFace("", entity.SrcAuto, markerEmb)
+	require.NotNil(t, matchFace)
+
+	// Force a different face that should not be a better match.
+	otherEmb := face.RandomEmbeddings(4, face.RegularFace)
+	otherFace := entity.NewFace("", entity.SrcAuto, otherEmb)
+	require.NotNil(t, otherFace)
+
+	faces := entity.Faces{*matchFace, *otherFace}
+
+	candidates := buildFaceCandidates(faces)
+	require.Len(t, candidates, 2)
+
+	best, dist := selectBestFace(markerEmb, candidates)
+	require.NotNil(t, best)
+	require.Equal(t, matchFace.ID, best.ID)
+	require.InDelta(t, 0.0, dist, 1e-9)
 }

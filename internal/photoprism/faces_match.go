@@ -6,6 +6,7 @@ import (
 
 	"github.com/dustin/go-humanize/english"
 
+	"github.com/photoprism/photoprism/internal/ai/face"
 	"github.com/photoprism/photoprism/internal/entity"
 	"github.com/photoprism/photoprism/internal/entity/query"
 )
@@ -17,11 +18,88 @@ type FacesMatchResult struct {
 	Unknown    int64
 }
 
+type faceCandidate struct {
+	ref             *entity.Face
+	emb             face.Embedding
+	sampleRadius    float64
+	collisionRadius float64
+}
+
 // Add adds result counts.
 func (r *FacesMatchResult) Add(result FacesMatchResult) {
 	r.Updated += result.Updated
 	r.Recognized += result.Recognized
 	r.Unknown += result.Unknown
+}
+
+// buildFaceCandidates filters the provided faces down to a slice that can be used for
+// distance-based matching while caching the embeddings we repeatedly compare against.
+func buildFaceCandidates(faces entity.Faces) []faceCandidate {
+	candidates := make([]faceCandidate, 0, len(faces))
+
+	for i := range faces {
+		f := &faces[i]
+
+		if f.SkipMatching() {
+			continue
+		}
+
+		embedding := f.Embedding()
+
+		if len(embedding) == 0 {
+			continue
+		}
+
+		candidates = append(candidates, faceCandidate{
+			ref:             f,
+			emb:             embedding,
+			sampleRadius:    f.SampleRadius,
+			collisionRadius: f.CollisionRadius,
+		})
+	}
+
+	return candidates
+}
+
+// match checks whether the supplied marker embeddings fall within the distance and collision
+// thresholds for the candidate face, returning the match flag and distance.
+func (c faceCandidate) match(embeddings face.Embeddings) (bool, float64) {
+	if embeddings.Empty() || len(c.emb) == 0 {
+		return false, -1
+	}
+
+	dist := minEmbeddingDistance(c.emb, embeddings)
+
+	if dist < 0 {
+		return false, dist
+	}
+
+	if dist > (c.sampleRadius + face.MatchDist) {
+		return false, dist
+	}
+
+	if c.collisionRadius > 0.1 && dist > c.collisionRadius {
+		return false, dist
+	}
+
+	return true, dist
+}
+
+// selectBestFace finds the best matching face candidate for the given marker embeddings.
+func selectBestFace(embeddings face.Embeddings, candidates []faceCandidate) (*entity.Face, float64) {
+	var best *entity.Face
+	bestDist := -1.0
+
+	for i := range candidates {
+		if ok, dist := candidates[i].match(embeddings); ok {
+			if best == nil || dist < bestDist {
+				best = candidates[i].ref
+				bestDist = dist
+			}
+		}
+	}
+
+	return best, bestDist
 }
 
 // Match matches markers with faces and subjects.
@@ -86,15 +164,26 @@ func (w *Faces) Match(opt FacesOptions) (result FacesMatchResult, err error) {
 
 // MatchFaces matches markers against a slice of faces.
 func (w *Faces) MatchFaces(faces entity.Faces, force bool, matchedBefore *time.Time) (result FacesMatchResult, err error) {
-	matched := 0
 	limit := 500
+
+	candidates := buildFaceCandidates(faces)
+
+	if len(candidates) == 0 {
+		log.Debugf("faces: no eligible faces for matching")
+		return result, nil
+	}
+
 	max := query.CountMarkers(entity.MarkerFace)
+	processed := make(map[string]struct{}, max)
+	totalProcessed := 0
+
+	offset := 0
 
 	for {
 		var markers entity.Markers
 
 		if force {
-			markers, err = query.FaceMarkers(limit, matched)
+			markers, err = query.FaceMarkers(limit, offset)
 		} else {
 			markers, err = query.UnmatchedFaceMarkers(limit, 0, matchedBefore)
 		}
@@ -107,8 +196,23 @@ func (w *Faces) MatchFaces(faces entity.Faces, force bool, matchedBefore *time.T
 			break
 		}
 
+		if force {
+			offset += len(markers)
+			if offset >= max {
+				offset = max
+			}
+		}
+
+		batchProcessed := 0
+
 		for _, marker := range markers {
-			matched++
+			if _, seen := processed[marker.MarkerUID]; seen {
+				continue
+			}
+
+			processed[marker.MarkerUID] = struct{}{}
+			totalProcessed++
+			batchProcessed++
 
 			if w.Canceled() {
 				return result, fmt.Errorf("worker canceled")
@@ -119,22 +223,17 @@ func (w *Faces) MatchFaces(faces entity.Faces, force bool, matchedBefore *time.T
 				continue
 			}
 
-			// Pointer to the matching face.
-			var f *entity.Face
+			markerEmbeddings := marker.Embeddings()
 
-			// Dist to the matching face.
-			var d float64
-
-			// Find the closest face match for marker.
-			for i, m := range faces {
-				if ok, dist := m.Match(marker.Embeddings()); ok && (f == nil || dist < d) {
-					f = &faces[i]
-					d = dist
-				}
+			if markerEmbeddings.Empty() {
+				continue
 			}
 
+			// Pointer to the matching face.
+			selFace, dist := selectBestFace(markerEmbeddings, candidates)
+
 			// Marker already has the best matching face?
-			if !marker.HasFace(f, d) {
+			if !marker.HasFace(selFace, dist) {
 				// Marker needs a (new) face.
 			} else {
 				log.Debugf("faces: marker %s already has the best matching face %s with dist %f", marker.MarkerUID, marker.FaceID, marker.FaceDist)
@@ -147,7 +246,7 @@ func (w *Faces) MatchFaces(faces entity.Faces, force bool, matchedBefore *time.T
 			}
 
 			// No matching face?
-			if f == nil {
+			if selFace == nil {
 				if updated, err := marker.ClearFace(); err != nil {
 					log.Warnf("faces: %s (clear marker face)", err)
 				} else if updated {
@@ -158,7 +257,7 @@ func (w *Faces) MatchFaces(faces entity.Faces, force bool, matchedBefore *time.T
 			}
 
 			// Assign matching face to marker.
-			updated, err := marker.SetFace(f, d)
+			updated, err := marker.SetFace(selFace, dist)
 
 			if err != nil {
 				log.Warnf("faces: %s while setting a face for marker %s", err, marker.MarkerUID)
@@ -176,9 +275,14 @@ func (w *Faces) MatchFaces(faces entity.Faces, force bool, matchedBefore *time.T
 			}
 		}
 
-		log.Debugf("faces: matched %s", english.Plural(matched, "marker", "markers"))
+		if batchProcessed == 0 {
+			log.Debugf("faces: no new markers to match, stopping")
+			break
+		}
 
-		if matched > max {
+		log.Debugf("faces: matched %s", english.Plural(totalProcessed, "marker", "markers"))
+
+		if totalProcessed >= max {
 			break
 		}
 

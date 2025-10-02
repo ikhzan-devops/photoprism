@@ -311,7 +311,7 @@ func (w *Faces) normalizeStoredEmbeddings(fix bool) (normalized, rekeyed, distan
 	}
 
 	if len(candidates) == 0 {
-		log.Infof("faces: stored embeddings are already normalized")
+		log.Infof("faces: stored embeddings are normalized")
 		return 0, 0, 0, nil
 	}
 
