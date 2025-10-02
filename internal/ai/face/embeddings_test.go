@@ -29,13 +29,13 @@ func TestEmbeddings_Count(t *testing.T) {
 	one := Embeddings{e1}
 	two := Embeddings{e1, e2}
 
-	t.Run("0", func(t *testing.T) {
+	t.Run("Zero", func(t *testing.T) {
 		assert.Equal(t, 0, Embeddings{}.Count())
 	})
-	t.Run("1", func(t *testing.T) {
+	t.Run("One", func(t *testing.T) {
 		assert.Equal(t, 1, one.Count())
 	})
-	t.Run("2", func(t *testing.T) {
+	t.Run("Two", func(t *testing.T) {
 		assert.Equal(t, 2, two.Count())
 	})
 }
@@ -81,7 +81,7 @@ func TestEmbeddings_First(t *testing.T) {
 }
 
 func TestEmbeddingsMidpoint(t *testing.T) {
-	t.Run("2 embeddings, 1 dimension", func(t *testing.T) {
+	t.Run("TwoEmbeddingsOneDimension", func(t *testing.T) {
 		e := Embeddings{Embedding{1}, Embedding{3}}
 
 		result, r, c := EmbeddingsMidpoint(e)
@@ -90,7 +90,7 @@ func TestEmbeddingsMidpoint(t *testing.T) {
 		assert.Equal(t, 1.01, r)
 		assert.Equal(t, 2, c)
 	})
-	t.Run("3 embeddings, 1 dimension", func(t *testing.T) {
+	t.Run("ThreeEmbeddingsOneDimension", func(t *testing.T) {
 		e := Embeddings{Embedding{1}, Embedding{3}, Embedding{4}}
 
 		result, r, c := EmbeddingsMidpoint(e)
@@ -99,7 +99,7 @@ func TestEmbeddingsMidpoint(t *testing.T) {
 		assert.Equal(t, 1.6766666666666665, r)
 		assert.Equal(t, 3, c)
 	})
-	t.Run("4 embeddings, 1 dimension", func(t *testing.T) {
+	t.Run("FourEmbeddingsOneDimension", func(t *testing.T) {
 		e := Embeddings{Embedding{1}, Embedding{3}, Embedding{4}, Embedding{8}}
 
 		result, r, c := EmbeddingsMidpoint(e)
@@ -108,7 +108,7 @@ func TestEmbeddingsMidpoint(t *testing.T) {
 		assert.Equal(t, 4.01, r)
 		assert.Equal(t, 4, c)
 	})
-	t.Run("empty embedding", func(t *testing.T) {
+	t.Run("EmptyEmbedding", func(t *testing.T) {
 		e := Embeddings{}
 
 		result, r, c := EmbeddingsMidpoint(e)
@@ -117,7 +117,7 @@ func TestEmbeddingsMidpoint(t *testing.T) {
 		assert.Equal(t, float64(0), r)
 		assert.Equal(t, 0, c)
 	})
-	t.Run("embedding with different length", func(t *testing.T) {
+	t.Run("EmbeddingWithDifferentLength", func(t *testing.T) {
 		e := Embeddings{Embedding{1}, Embedding{3, 5}}
 
 		result, r, c := EmbeddingsMidpoint(e)
@@ -126,7 +126,7 @@ func TestEmbeddingsMidpoint(t *testing.T) {
 		assert.Equal(t, 1.01, r)
 		assert.Equal(t, 2, c)
 	})
-	t.Run("vectors", func(t *testing.T) {
+	t.Run("Vectors", func(t *testing.T) {
 		e := Embeddings{Embedding{1, 0, 0, 0}, Embedding{0, 1, 0, 0}, Embedding{0, 0, 1, 0}, Embedding{0, 0, 0, 1}}
 
 		result, radius, count := EmbeddingsMidpoint(e)

@@ -15,7 +15,7 @@ func TestFace_TableName(t *testing.T) {
 }
 
 func TestFace_Match(t *testing.T) {
-	t.Run("1000003-4", func(t *testing.T) {
+	t.Run("Num1000003Four", func(t *testing.T) {
 		m := FaceFixtures.Get("joe-biden")
 		match, dist := m.Match(MarkerFixtures.Pointer("1000003-4").Embeddings())
 
@@ -23,7 +23,7 @@ func TestFace_Match(t *testing.T) {
 		assert.Greater(t, dist, 1.31)
 		assert.Less(t, dist, 1.32)
 	})
-	t.Run("1000003-6", func(t *testing.T) {
+	t.Run("Num1000003Six", func(t *testing.T) {
 		m := FaceFixtures.Get("joe-biden")
 		match, dist := m.Match(MarkerFixtures.Pointer("1000003-6").Embeddings())
 
@@ -31,21 +31,21 @@ func TestFace_Match(t *testing.T) {
 		assert.Greater(t, dist, 1.27)
 		assert.Less(t, dist, 1.28)
 	})
-	t.Run("len(embeddings) == 0", func(t *testing.T) {
+	t.Run("LenEmbeddingsEqualZero", func(t *testing.T) {
 		m := FaceFixtures.Get("joe-biden")
 		match, dist := m.Match(face.Embeddings{})
 
 		assert.False(t, match)
 		assert.Equal(t, dist, float64(-1))
 	})
-	t.Run("len(efacEmbeddings) == 0", func(t *testing.T) {
+	t.Run("LenEfacEmbeddingsEqualZero", func(t *testing.T) {
 		m := NewFace("12345", SrcAuto, face.Embeddings{})
 		match, dist := m.Match(MarkerFixtures.Pointer("1000003-6").Embeddings())
 
 		assert.False(t, match)
 		assert.Equal(t, dist, float64(-1))
 	})
-	t.Run("jane doe- no match", func(t *testing.T) {
+	t.Run("JaneDoeNoMatch", func(t *testing.T) {
 		m := FaceFixtures.Get("jane-doe")
 		match, _ := m.Match(MarkerFixtures.Pointer("1000003-5").Embeddings())
 
@@ -54,7 +54,7 @@ func TestFace_Match(t *testing.T) {
 }
 
 func TestFace_ResolveCollision(t *testing.T) {
-	t.Run("collision", func(t *testing.T) {
+	t.Run("Collision", func(t *testing.T) {
 		m := FaceFixtures.Get("joe-biden")
 
 		assert.Zero(t, m.Collisions)
@@ -86,7 +86,7 @@ func TestFace_ResolveCollision(t *testing.T) {
 		assert.Greater(t, m.CollisionRadius, 1.1)
 		assert.Less(t, m.CollisionRadius, 1.272)
 	})
-	t.Run("subject id empty", func(t *testing.T) {
+	t.Run("SubjectIdEmpty", func(t *testing.T) {
 		m := NewFace("", SrcAuto, face.KidsEmbeddings)
 		if reported, err := m.ResolveCollision(MarkerFixtures.Pointer("1000003-4").Embeddings()); err != nil {
 			t.Fatal(err)
@@ -94,7 +94,7 @@ func TestFace_ResolveCollision(t *testing.T) {
 			assert.False(t, reported)
 		}
 	})
-	t.Run("invalid face id", func(t *testing.T) {
+	t.Run("InvalidFaceId", func(t *testing.T) {
 		m := NewFace("123", SrcAuto, face.Embeddings{})
 		m.ID = ""
 		if reported, err := m.ResolveCollision(MarkerFixtures.Pointer("1000003-4").Embeddings()); err == nil {
@@ -104,7 +104,7 @@ func TestFace_ResolveCollision(t *testing.T) {
 			assert.Equal(t, "invalid face id", err.Error())
 		}
 	})
-	t.Run("embedding empty", func(t *testing.T) {
+	t.Run("EmbeddingEmpty", func(t *testing.T) {
 		m := NewFace("123", SrcAuto, face.Embeddings{})
 		m.EmbeddingJSON = []byte("")
 		m.ID = "foo"
@@ -140,7 +140,7 @@ func TestNewFace(t *testing.T) {
 }
 
 func TestFace_MatchId(t *testing.T) {
-	t.Run("A123-B456", func(t *testing.T) {
+	t.Run("ANum123BNum456", func(t *testing.T) {
 		f1 := Face{ID: "A123"}
 		f2 := Face{ID: "B456"}
 		f3 := Face{ID: ""}
@@ -183,13 +183,13 @@ func TestFace_Embedding(t *testing.T) {
 
 		assert.Equal(t, 0.10730543085474682, m.Embedding()[0])
 	})
-	t.Run("empty embedding", func(t *testing.T) {
+	t.Run("EmptyEmbedding", func(t *testing.T) {
 		m := NewFace("12345", SrcAuto, face.Embeddings{})
 		m.EmbeddingJSON = []byte("")
 
 		assert.Empty(t, m.Embedding())
 	})
-	t.Run("invalid embedding json", func(t *testing.T) {
+	t.Run("InvalidEmbeddingJson", func(t *testing.T) {
 		m := NewFace("12345", SrcAuto, face.Embeddings{})
 		m.EmbeddingJSON = []byte("[false]")
 
@@ -263,12 +263,12 @@ func TestFace_RefreshPhotos(t *testing.T) {
 }
 
 func TestFirstOrCreateFace(t *testing.T) {
-	t.Run("create new face", func(t *testing.T) {
+	t.Run("CreateNewFace", func(t *testing.T) {
 		m := NewFace("12345unique", SrcAuto, face.RandomEmbeddings(1, face.RegularFace))
 		r := FirstOrCreateFace(m)
 		assert.Equal(t, "12345unique", r.SubjUID)
 	})
-	t.Run("return existing entity", func(t *testing.T) {
+	t.Run("ReturnExistingEntity", func(t *testing.T) {
 		m := FaceFixtures.Pointer("joe-biden")
 		r := FirstOrCreateFace(m)
 		assert.Equal(t, "js6sg6b2h8njw0sx", r.SubjUID)
@@ -277,11 +277,11 @@ func TestFirstOrCreateFace(t *testing.T) {
 }
 
 func TestFindFace(t *testing.T) {
-	t.Run("existing face", func(t *testing.T) {
+	t.Run("ExistingFace", func(t *testing.T) {
 		assert.NotNil(t, FindFace("VF7ANLDET2BKZNT4VQWJMMC6HBEFDOG7"))
 		assert.Equal(t, 3, FindFace("VF7ANLDET2BKZNT4VQWJMMC6HBEFDOG7").Samples)
 	})
-	t.Run("empty id", func(t *testing.T) {
+	t.Run("EmptyId", func(t *testing.T) {
 		assert.Nil(t, FindFace(""))
 	})
 }

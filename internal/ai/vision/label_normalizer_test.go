@@ -25,7 +25,7 @@ func TestCanonicalLabelForUnknown(t *testing.T) {
 }
 
 func TestNormalizeLabelResult(t *testing.T) {
-	t.Run("canonical", func(t *testing.T) {
+	t.Run("Canonical", func(t *testing.T) {
 		label := LabelResult{Name: "sea lion", Confidence: 0.8, Topicality: 0.7}
 		normalizeLabelResult(&label)
 
@@ -41,7 +41,7 @@ func TestNormalizeLabelResult(t *testing.T) {
 			t.Fatalf("expected categories to be set")
 		}
 	})
-	t.Run("fallback", func(t *testing.T) {
+	t.Run("Fallback", func(t *testing.T) {
 		label := LabelResult{Name: "kittens", Confidence: 0.2, Topicality: 0.25}
 		normalizeLabelResult(&label)
 
@@ -53,7 +53,7 @@ func TestNormalizeLabelResult(t *testing.T) {
 			t.Fatalf("expected priority to be derived from topicality")
 		}
 	})
-	t.Run("ignored_threshold", func(t *testing.T) {
+	t.Run("IgnoredThreshold", func(t *testing.T) {
 		label := LabelResult{Name: "background", Topicality: 0.9}
 		normalizeLabelResult(&label)
 
@@ -61,7 +61,7 @@ func TestNormalizeLabelResult(t *testing.T) {
 			t.Fatalf("expected background to be ignored, got %q", label.Name)
 		}
 	})
-	t.Run("global_threshold", func(t *testing.T) {
+	t.Run("GlobalThreshold", func(t *testing.T) {
 		prev := Config.Thresholds.Confidence
 		Config.Thresholds.Confidence = 90
 		defer func() { Config.Thresholds.Confidence = prev }()
@@ -73,7 +73,7 @@ func TestNormalizeLabelResult(t *testing.T) {
 			t.Fatalf("expected label to be dropped due to global threshold, got %q", label.Name)
 		}
 	})
-	t.Run("apostrophe", func(t *testing.T) {
+	t.Run("Apostrophe", func(t *testing.T) {
 		label := LabelResult{Name: "McDonald's", Confidence: 0.8, Topicality: 0.6}
 		normalizeLabelResult(&label)
 

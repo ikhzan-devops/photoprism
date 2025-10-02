@@ -79,7 +79,7 @@ func TestManuallyAddedFaces(t *testing.T) {
 
 		assert.Empty(t, results)
 	})
-	t.Run("Specific Subject", func(t *testing.T) {
+	t.Run("SpecificSubject", func(t *testing.T) {
 		results, err := ManuallyAddedFaces(false, false, "foobar")
 
 		if err != nil {
@@ -137,16 +137,16 @@ func TestRemoveAnonymousFaceClusters(t *testing.T) {
 }
 
 func TestCountNewFaceMarkers(t *testing.T) {
-	t.Run("all", func(t *testing.T) {
+	t.Run("All", func(t *testing.T) {
 		assert.GreaterOrEqual(t, CountNewFaceMarkers(0, 0), 1)
 	})
-	t.Run("score 10", func(t *testing.T) {
+	t.Run("ScoreTen", func(t *testing.T) {
 		assert.GreaterOrEqual(t, CountNewFaceMarkers(0, 10), 1)
 	})
-	t.Run("size 160", func(t *testing.T) {
+	t.Run("SizeNum160", func(t *testing.T) {
 		assert.GreaterOrEqual(t, CountNewFaceMarkers(160, 0), 1)
 	})
-	t.Run("score 50 and size 160", func(t *testing.T) {
+	t.Run("ScoreNum50AndSizeNum160", func(t *testing.T) {
 		assert.GreaterOrEqual(t, CountNewFaceMarkers(160, 50), 1)
 	})
 }

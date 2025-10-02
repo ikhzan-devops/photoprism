@@ -11,7 +11,7 @@ import (
 )
 
 func TestLabels(t *testing.T) {
-	t.Run("search with query", func(t *testing.T) {
+	t.Run("SearchWithQuery", func(t *testing.T) {
 		query := form.NewLabelSearch("q:C")
 		query.Count = 1005
 		query.Order = "slug"
@@ -39,7 +39,7 @@ func TestLabels(t *testing.T) {
 			}
 		}
 	})
-	t.Run("search for cow", func(t *testing.T) {
+	t.Run("SearchForCow", func(t *testing.T) {
 		query := form.NewLabelSearch("Q:cow")
 		query.Count = 1005
 		query.Order = "slug"
@@ -67,7 +67,7 @@ func TestLabels(t *testing.T) {
 			}
 		}
 	})
-	t.Run("search for favorites", func(t *testing.T) {
+	t.Run("SearchForFavorites", func(t *testing.T) {
 		query := form.NewLabelSearch("Favorite:true")
 		query.Count = 15
 		result, err := Labels(query)
@@ -93,7 +93,7 @@ func TestLabels(t *testing.T) {
 			}
 		}
 	})
-	t.Run("order count", func(t *testing.T) {
+	t.Run("OrderCount", func(t *testing.T) {
 		query := form.NewLabelSearch("")
 		query.All = true
 		query.Order = sortby.Count
@@ -111,7 +111,7 @@ func TestLabels(t *testing.T) {
 			t.Fatalf("expected descending photo count")
 		}
 	})
-	t.Run("order slug", func(t *testing.T) {
+	t.Run("OrderSlug", func(t *testing.T) {
 		query := form.NewLabelSearch("")
 		query.All = true
 		query.Order = sortby.Slug
@@ -129,7 +129,7 @@ func TestLabels(t *testing.T) {
 			t.Fatalf("expected slug ascending")
 		}
 	})
-	t.Run("default filter excludes low priority", func(t *testing.T) {
+	t.Run("DefaultFilterExcludesLowPriority", func(t *testing.T) {
 		query := form.NewLabelSearch("")
 		result, err := Labels(query)
 
@@ -145,7 +145,7 @@ func TestLabels(t *testing.T) {
 			}
 		}
 	})
-	t.Run("search with empty query", func(t *testing.T) {
+	t.Run("SearchWithEmptyQuery", func(t *testing.T) {
 		query := form.NewLabelSearch("")
 		result, err := Labels(query)
 
@@ -156,14 +156,14 @@ func TestLabels(t *testing.T) {
 		t.Log(result)
 		assert.LessOrEqual(t, 3, len(result))
 	})
-	t.Run("search with invalid query string", func(t *testing.T) {
+	t.Run("SearchWithInvalidQueryString", func(t *testing.T) {
 		query := form.NewLabelSearch("xxx:bla")
 		result, err := Labels(query)
 
 		assert.Error(t, err, "unknown filter")
 		assert.Empty(t, result)
 	})
-	t.Run("search for ID", func(t *testing.T) {
+	t.Run("SearchForId", func(t *testing.T) {
 		f := form.SearchLabels{
 			Query:    "",
 			UID:      "ls6sg6b1wowuy3c4",
@@ -184,7 +184,7 @@ func TestLabels(t *testing.T) {
 
 		assert.Equal(t, "cake", result[0].LabelSlug)
 	})
-	t.Run("search for label landscape", func(t *testing.T) {
+	t.Run("SearchForLabelLandscape", func(t *testing.T) {
 		f := form.SearchLabels{
 			Query: "landscape",
 		}

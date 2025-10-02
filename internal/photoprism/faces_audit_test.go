@@ -7,7 +7,7 @@ import (
 )
 
 func TestFaces_Audit(t *testing.T) {
-	t.Run("fix == true", func(t *testing.T) {
+	t.Run("FixEqualTrue", func(t *testing.T) {
 		c := config.TestConfig()
 
 		m := NewFaces(c)
@@ -18,7 +18,7 @@ func TestFaces_Audit(t *testing.T) {
 			t.Fatal(err)
 		}
 	})
-	t.Run("fixe == false", func(t *testing.T) {
+	t.Run("FixeEqualFalse", func(t *testing.T) {
 		c := config.TestConfig()
 
 		m := NewFaces(c)
