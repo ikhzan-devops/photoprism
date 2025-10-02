@@ -7,8 +7,9 @@ import (
 	"github.com/photoprism/photoprism/internal/entity"
 )
 
+// BenchmarkSelectBestFace measures matching performance when the bucketed index is used.
 func BenchmarkSelectBestFace(b *testing.B) {
-	const candidateCount = 32
+	const candidateCount = 1024
 
 	faces := make(entity.Faces, 0, candidateCount)
 
@@ -17,18 +18,26 @@ func BenchmarkSelectBestFace(b *testing.B) {
 		faces = append(faces, *f)
 	}
 
-	candidates := buildFaceCandidates(faces)
 	markerEmb := face.RandomEmbeddings(3, face.RegularFace)
+	faces[0] = *entity.NewFace("", entity.SrcAuto, markerEmb)
+
+	index := buildFaceIndex(faces)
+	hash := embeddingSignHashFromEmbeddings(markerEmb)
+	bucketSize := len(index.buckets[hash])
 
 	b.ResetTimer()
 
+	b.ReportMetric(float64(bucketSize), "bucket_candidates")
+	b.ReportMetric(float64(len(index.fallback)), "total_candidates")
+
 	for i := 0; i < b.N; i++ {
-		selectBestFace(markerEmb, candidates)
+		selectBestFace(markerEmb, index)
 	}
 }
 
+// BenchmarkSelectBestFaceLegacy captures the legacy behaviour that scans every face.
 func BenchmarkSelectBestFaceLegacy(b *testing.B) {
-	const candidateCount = 32
+	const candidateCount = 1024
 
 	faces := make(entity.Faces, 0, candidateCount)
 
@@ -38,6 +47,7 @@ func BenchmarkSelectBestFaceLegacy(b *testing.B) {
 	}
 
 	markerEmb := face.RandomEmbeddings(3, face.RegularFace)
+	faces[0] = *entity.NewFace("", entity.SrcAuto, markerEmb)
 
 	b.ResetTimer()
 

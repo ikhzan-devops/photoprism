@@ -10,6 +10,7 @@ import (
 	"github.com/photoprism/photoprism/internal/entity"
 )
 
+// TestFaces_Match exercises the end-to-end matching flow with a loaded test configuration.
 func TestFaces_Match(t *testing.T) {
 	c := config.TestConfig()
 
@@ -29,6 +30,7 @@ func TestFaces_Match(t *testing.T) {
 	t.Log(r)
 }
 
+// TestBuildFaceCandidates validates that we drop non-matchable faces when building the index.
 func TestBuildFaceCandidates(t *testing.T) {
 	regular := entity.NewFace("", entity.SrcAuto, face.RandomEmbeddings(3, face.RegularFace))
 	require.NotNil(t, regular)
@@ -38,12 +40,13 @@ func TestBuildFaceCandidates(t *testing.T) {
 
 	faces := entity.Faces{*regular, *kids}
 
-	candidates := buildFaceCandidates(faces)
+	index := buildFaceIndex(faces)
 
-	require.Len(t, candidates, 1)
-	require.Equal(t, regular.ID, candidates[0].ref.ID)
+	require.Len(t, index.fallback, 1)
+	require.Equal(t, regular.ID, index.fallback[0].ref.ID)
 }
 
+// TestSelectBestFace ensures the best candidate is returned after indexing.
 func TestSelectBestFace(t *testing.T) {
 	markerEmb := face.RandomEmbeddings(1, face.RegularFace)
 
@@ -57,10 +60,10 @@ func TestSelectBestFace(t *testing.T) {
 
 	faces := entity.Faces{*matchFace, *otherFace}
 
-	candidates := buildFaceCandidates(faces)
-	require.Len(t, candidates, 2)
+	index := buildFaceIndex(faces)
+	require.Len(t, index.fallback, 2)
 
-	best, dist := selectBestFace(markerEmb, candidates)
+	best, dist := selectBestFace(markerEmb, index)
 	require.NotNil(t, best)
 	require.Equal(t, matchFace.ID, best.ID)
 	require.InDelta(t, 0.0, dist, 1e-9)
