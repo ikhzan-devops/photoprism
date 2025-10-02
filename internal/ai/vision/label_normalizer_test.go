@@ -30,11 +30,12 @@ func TestPriorityFromTopicality(t *testing.T) {
 		exp int
 	}{
 		{0.95, 5},
+		{0.90, 4},
 		{0.80, 3},
 		{0.65, 2},
 		{0.50, 1},
-		{0.35, 0},
-		{0.20, -1},
+		{0.40, 1},
+		{0.35, -1},
 		{0.05, -2},
 	}
 
@@ -45,54 +46,61 @@ func TestPriorityFromTopicality(t *testing.T) {
 	}
 }
 
-func TestNormalizeLabelResultCanonical(t *testing.T) {
-	label := LabelResult{Name: "sea lion", Confidence: 0.8, Topicality: 0.7}
-	normalizeLabelResult(&label)
+func TestNormalizeLabelResult(t *testing.T) {
+	t.Run("canonical", func(t *testing.T) {
+		label := LabelResult{Name: "sea lion", Confidence: 0.8, Topicality: 0.7}
+		normalizeLabelResult(&label)
 
-	if label.Name != "Sea Lion" {
-		t.Fatalf("expected canonical name, got %q", label.Name)
-	}
+		if label.Name != "Sea Lion" {
+			t.Fatalf("expected canonical name, got %q", label.Name)
+		}
 
-	if label.Priority != priorityFromTopicality(0.7) {
-		t.Fatalf("expected priority derived from topicality, got %d", label.Priority)
-	}
+		if label.Priority != priorityFromTopicality(0.7) {
+			t.Fatalf("expected priority derived from topicality, got %d", label.Priority)
+		}
 
-	if len(label.Categories) == 0 {
-		t.Fatalf("expected categories to be set")
-	}
-}
+		if len(label.Categories) == 0 {
+			t.Fatalf("expected categories to be set")
+		}
+	})
+	t.Run("fallback", func(t *testing.T) {
+		label := LabelResult{Name: "kittens", Confidence: 0.2, Topicality: 0.25}
+		normalizeLabelResult(&label)
 
-func TestNormalizeLabelResultFallback(t *testing.T) {
-	label := LabelResult{Name: "kittens", Confidence: 0.2, Topicality: 0.25}
-	normalizeLabelResult(&label)
+		if label.Name == "" {
+			t.Fatalf("expected non-empty name")
+		}
 
-	if label.Name == "" {
-		t.Fatalf("expected non-empty name")
-	}
+		if label.Priority == 0 {
+			t.Fatalf("expected priority to be derived from topicality")
+		}
+	})
+	t.Run("ignored_threshold", func(t *testing.T) {
+		label := LabelResult{Name: "background", Topicality: 0.9}
+		normalizeLabelResult(&label)
 
-	if label.Priority == 0 {
-		t.Fatalf("expected priority to be derived from topicality")
-	}
-}
+		if label.Name != "" {
+			t.Fatalf("expected background to be ignored, got %q", label.Name)
+		}
+	})
+	t.Run("global_threshold", func(t *testing.T) {
+		prev := Config.Thresholds.Confidence
+		Config.Thresholds.Confidence = 90
+		defer func() { Config.Thresholds.Confidence = prev }()
 
-func TestNormalizeLabelResultIgnoredThreshold(t *testing.T) {
-	label := LabelResult{Name: "background", Topicality: 0.9}
-	normalizeLabelResult(&label)
+		label := LabelResult{Name: "unknown label", Confidence: 0.2}
+		normalizeLabelResult(&label)
 
-	if label.Name != "" {
-		t.Fatalf("expected background to be ignored, got %q", label.Name)
-	}
-}
+		if label.Name != "" {
+			t.Fatalf("expected label to be dropped due to global threshold, got %q", label.Name)
+		}
+	})
+	t.Run("apostrophe", func(t *testing.T) {
+		label := LabelResult{Name: "McDonald's", Confidence: 0.8, Topicality: 0.6}
+		normalizeLabelResult(&label)
 
-func TestNormalizeLabelResultGlobalThreshold(t *testing.T) {
-	prev := Config.Thresholds.Confidence
-	Config.Thresholds.Confidence = 90
-	defer func() { Config.Thresholds.Confidence = prev }()
-
-	label := LabelResult{Name: "unknown label", Confidence: 0.2}
-	normalizeLabelResult(&label)
-
-	if label.Name != "" {
-		t.Fatalf("expected label to be dropped due to global threshold, got %q", label.Name)
-	}
+		if label.Name != "McDonald's" {
+			t.Fatalf("expected label to retain apostrophe, got %q", label.Name)
+		}
+	})
 }
