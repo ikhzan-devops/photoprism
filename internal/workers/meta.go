@@ -77,6 +77,12 @@ func (w *Meta) Start(delay, interval time.Duration, force bool) (err error) {
 	labelsModelShouldRun := w.conf.VisionModelShouldRun(vision.ModelTypeLabels, vision.RunNewlyIndexed)
 	captionModelShouldRun := w.conf.VisionModelShouldRun(vision.ModelTypeCaption, vision.RunNewlyIndexed)
 
+	nsfwModelShouldRun := w.conf.VisionModelShouldRun(vision.ModelTypeNsfw, vision.RunNewlyIndexed)
+
+	if nsfwModelShouldRun {
+		log.Debugf("index: cannot run %s model on %s", vision.ModelTypeNsfw, vision.RunNewlyIndexed)
+	}
+
 	for {
 		photos, queryErr := query.PhotosMetadataUpdate(limit, offset, delay, interval)
 
