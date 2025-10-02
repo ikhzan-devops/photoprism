@@ -55,7 +55,7 @@ msgstr "Đã tìm thấy %{n} thư mục"
 msgid "%{n} GB of %{q} GB used"
 msgstr "%{n} GB trong số %{q} GB đã sử dụng"
 
-#: src/page/labels.vue:533
+#: src/page/labels.vue:602
 msgid "%{n} labels found"
 msgstr "Đã tìm thấy %{n} nhãn"
 
@@ -227,7 +227,7 @@ msgstr "Thêm"
 msgid "Adjust Location"
 msgstr "Điều chỉnh vị trí"
 
-#: src/options/admin.js:6 src/common/util.js:748 src/options/auth.js:6
+#: src/options/admin.js:6 src/common/util.js:752 src/options/auth.js:6
 msgid "Admin"
 msgstr "Quản trị viên"
 
@@ -305,7 +305,7 @@ msgstr "Tất cả"
 msgid "All %{n} albums loaded"
 msgstr "Đã tải tất cả %{n} album"
 
-#: src/page/labels.vue:367
+#: src/page/labels.vue:436
 msgid "All %{n} labels loaded"
 msgstr "Đã tải tất cả nhãn %{n}"
 
@@ -504,7 +504,7 @@ msgstr "Huy hiệu"
 msgid "Base Path"
 msgstr "Đường dẫn cơ sở"
 
-#: src/common/util.js:742
+#: src/common/util.js:746
 msgid "Batch"
 msgstr "Lô"
 
@@ -598,8 +598,8 @@ msgid "Can't load more, limit reached"
 msgstr "Không thể tải thêm, đã đạt đến giới hạn"
 
 #: src/common/clipboard.js:102 src/common/clipboard.js:139
-#: src/page/albums.vue:695 src/page/albums.vue:711 src/page/labels.vue:293
-#: src/page/labels.vue:313 src/page/library/browse.vue:233
+#: src/page/albums.vue:695 src/page/albums.vue:711 src/page/labels.vue:362
+#: src/page/labels.vue:382 src/page/library/browse.vue:233
 #: src/page/library/browse.vue:249 src/page/people/new.vue:278
 #: src/page/people/new.vue:294 src/page/people/recognized.vue:305
 #: src/page/people/recognized.vue:321
@@ -627,11 +627,11 @@ msgstr "Không thể chọn thêm mục"
 msgid "Cancel"
 msgstr "Hủy bỏ"
 
-#: src/common/util.js:911 src/common/util.js:918
+#: src/common/util.js:915 src/common/util.js:922
 msgid "Cannot copy to clipboard"
 msgstr "Không thể sao chép vào clipboard"
 
-#: src/common/util.js:730 src/component/photo/edit/details.vue:89
+#: src/common/util.js:734 src/component/photo/edit/details.vue:89
 #: src/component/photo/view/cards.vue:445 src/component/sidebar/info.vue:72
 msgid "Caption"
 msgstr "Đầu đề"
@@ -790,12 +790,12 @@ msgstr "Chi tiết liên hệ"
 msgid "Contact Us"
 msgstr "Liên hệ chúng tôi"
 
-#: src/page/albums.vue:433 src/page/labels.vue:237
+#: src/page/albums.vue:433 src/page/labels.vue:216
 #: src/page/people/recognized.vue:306
 msgid "Contains %{n} pictures."
 msgstr "Chứa %{n} hình ảnh."
 
-#: src/page/albums.vue:427 src/page/labels.vue:231
+#: src/page/albums.vue:427 src/page/labels.vue:210
 #: src/page/people/recognized.vue:300
 msgid "Contains one picture."
 msgstr "Chứa một hình ảnh."
@@ -820,7 +820,7 @@ msgstr "Người đóng góp"
 msgid "Converting"
 msgstr "Chuyển đổi"
 
-#: src/common/util.js:904
+#: src/common/util.js:908
 msgid "Copied to clipboard"
 msgstr "Sao chép vào clipboard"
 
@@ -877,7 +877,7 @@ msgstr "Khối: Chất lượng vừa phải, Hiệu suất tốt"
 msgid "Current Password"
 msgstr "Mật khẩu hiện tại"
 
-#: src/options/themes.js:920 src/options/themes.js:929
+#: src/options/themes.js:935 src/options/themes.js:944
 msgid "Custom"
 msgstr "Phong tục"
 
@@ -911,7 +911,7 @@ msgstr "Nhật ký gỡ lỗi"
 #: src/model/user.js:261 src/options/auth.js:21 src/options/auth.js:22
 #: src/options/auth.js:40 src/options/auth.js:41 src/options/options.js:196
 #: src/options/options.js:232 src/options/options.js:316
-#: src/options/themes.js:774
+#: src/options/themes.js:789
 msgid "Default"
 msgstr "Mặc định"
 
@@ -1541,7 +1541,7 @@ msgid "in"
 msgstr "TRONG"
 
 #: src/component/photo/view/cards.vue:149 src/component/photo/view/list.vue:87
-#: src/component/photo/view/mosaic.vue:73 src/page/labels.vue:156
+#: src/component/photo/view/mosaic.vue:73 src/page/labels.vue:135
 #: src/page/library/browse.vue:124
 msgid "In case pictures you expect are missing, please rescan your library and wait until indexing has been completed."
 msgstr "Trong trường hợp hình ảnh bạn mong đợi bị thiếu, vui lòng quét lại thư viện của bạn và đợi cho đến khi quá trình lập chỉ mục hoàn tất."
@@ -1659,7 +1659,7 @@ msgstr "Giới hạn kích thước JPEG: %{n}px"
 msgid "JPEGs and thumbnails are automatically rendered as needed."
 msgstr "JPEG và hình thu nhỏ được tự động hiển thị khi cần."
 
-#: src/common/util.js:732
+#: src/common/util.js:736
 msgid "Keyword"
 msgstr "Từ khóa"
 
@@ -1726,7 +1726,7 @@ msgid "Learn more"
 msgstr "Tìm hiểu thêm"
 
 #: src/page/admin/sessions.vue:110 src/page/admin/users.vue:137
-#: src/page/labels.vue:132
+#: src/page/labels.vue:184
 msgid "Learn More"
 msgstr "Tìm hiểu thêm"
 
@@ -1867,7 +1867,7 @@ msgstr "Quản lý tài khoản"
 msgid "Manager"
 msgstr "Giám đốc"
 
-#: src/common/util.js:744
+#: src/common/util.js:748
 msgid "Manual"
 msgstr "Thủ công"
 
@@ -1912,7 +1912,7 @@ msgstr "Tin nhắn"
 msgid "Message sent"
 msgstr "Đã gửi tin nhắn"
 
-#: src/common/util.js:734
+#: src/common/util.js:738
 msgid "Metadata"
 msgstr "metadata"
 
@@ -1987,7 +1987,7 @@ msgstr "Tên"
 #: src/component/label/edit/dialog.vue:19
 #: src/component/people/edit/dialog.vue:19
 #: src/component/photo/edit/labels.vue:46
-#: src/component/photo/edit/people.vue:39 src/page/labels.vue:54
+#: src/component/photo/edit/people.vue:39 src/page/labels.vue:60
 #: src/page/library/browse.vue:46 src/page/people/new.vue:51
 #: src/page/people/recognized.vue:46
 msgid "Name too long"
@@ -2040,7 +2040,7 @@ msgstr "Không tìm thấy album nào"
 msgid "No data available"
 msgstr "Không có dữ liệu có sẵn"
 
-#: src/page/labels.vue:528 src/page/labels.vue:155
+#: src/page/labels.vue:597 src/page/labels.vue:134
 msgid "No labels found"
 msgstr "Không tìm thấy nhãn"
 
@@ -2193,7 +2193,7 @@ msgstr "Đã tải lên một tệp"
 msgid "One folder found"
 msgstr "Đã tìm thấy một thư mục"
 
-#: src/page/labels.vue:530
+#: src/page/labels.vue:599
 msgid "One label found"
 msgstr "Đã tìm thấy một nhãn"
 
@@ -2538,7 +2538,7 @@ msgstr "Màu đỏ"
 
 #: src/page/admin/sessions.vue:101 src/page/admin/users.vue:128
 #: src/component/album/toolbar.vue:84 src/component/photo/toolbar.vue:169
-#: src/page/albums.vue:175 src/page/labels.vue:112
+#: src/page/albums.vue:175 src/page/labels.vue:119
 #: src/page/library/browse.vue:90 src/page/library/errors.vue:81
 #: src/page/people/new.vue:54 src/page/people/recognized.vue:88
 msgid "Refresh"
@@ -2665,7 +2665,7 @@ msgstr "Phạm vi"
 #: src/page/admin/sessions.vue:70 src/page/admin/users.vue:69
 #: src/component/location/dialog.vue:131 src/component/navigation.vue:342
 #: src/component/navigation.vue:1866 src/component/photo/toolbar.vue:57
-#: src/options/options.js:197 src/page/albums.vue:100 src/page/labels.vue:77
+#: src/options/options.js:197 src/page/albums.vue:100 src/page/labels.vue:76
 #: src/page/library/errors.vue:76 src/page/people/recognized.vue:66
 #: src/page/places.vue:79 src/page/settings/content.vue:235
 msgid "Search"
@@ -2792,6 +2792,10 @@ msgstr "Chia sẻ hình ảnh của bạn với các ứng dụng và dịch v�
 msgid "Show"
 msgstr "Trình diễn"
 
+#: src/page/labels.vue:129
+msgid "Show All Labels"
+msgstr ""
+
 #: src/page/people/new.vue:116 src/page/people/new.vue:233
 msgid "Show all new faces"
 msgstr "Hiển thị tất cả các khuôn mặt mới"
@@ -2804,13 +2808,9 @@ msgstr "Hiển thị phụ đề"
 msgid "Show hidden"
 msgstr "Hiển thị ẩn"
 
-#: src/page/labels.vue:109
-msgid "Show less"
-msgstr "Hiện ít hơn"
-
-#: src/page/labels.vue:101
-msgid "Show more"
-msgstr "Cho xem nhiều hơn"
+#: src/page/labels.vue:138
+msgid "Show Important Only"
+msgstr ""
 
 #: src/page/settings/general.vue:558
 msgid "Show server logs in Library."
@@ -2864,6 +2864,18 @@ msgstr "Đã xảy ra lỗi, hãy thử lại"
 #: src/locales.js:227
 msgid "Sort by"
 msgstr "Sắp xếp theo"
+
+#: src/page/labels.vue:156
+msgid "Sort by Name (A–Z)"
+msgstr ""
+
+#: src/page/labels.vue:165
+msgid "Sort by Photo Count"
+msgstr ""
+
+#: src/page/labels.vue:147
+msgid "Sort by Relevance"
+msgstr ""
 
 #: src/component/album/edit/dialog.vue:142 src/component/photo/toolbar.vue:288
 #: src/page/albums.vue:214
@@ -2928,7 +2940,7 @@ msgstr "Kho"
 msgid "Streets"
 msgstr "Đường phố"
 
-#: src/common/util.js:736 src/component/photo/edit/details.vue:468
+#: src/common/util.js:740 src/component/photo/edit/details.vue:468
 msgid "Subject"
 msgstr "Chủ thể"
 
@@ -3053,7 +3065,7 @@ msgctxt "Photo"
 msgid "Title"
 msgstr "Tiêu đề"
 
-#: src/common/util.js:738 src/component/photo/edit/info.vue:155
+#: src/common/util.js:742 src/component/photo/edit/info.vue:155
 #: src/component/photo/view/list.vue:114 src/component/sidebar/info.vue:57
 msgid "Title"
 msgstr "Tiêu đề"
@@ -3112,7 +3124,7 @@ msgstr "Xử lý sự cố"
 
 #: src/component/photo/view/cards.vue:146 src/component/photo/view/list.vue:54
 #: src/component/photo/view/list.vue:84 src/component/photo/view/mosaic.vue:70
-#: src/page/albums.vue:284 src/page/labels.vue:156
+#: src/page/albums.vue:284 src/page/labels.vue:135
 #: src/page/people/recognized.vue:147
 msgid "Try again using other filters or keywords."
 msgstr "Hãy thử lại bằng các bộ lọc hoặc từ khóa khác."
@@ -3215,7 +3227,7 @@ msgstr "Nâng cấp ngay bây giờ"
 #: src/component/album/toolbar.vue:113 src/component/navigation.vue:1824
 #: src/component/photo/toolbar.vue:179 src/component/service/upload.vue:144
 #: src/component/upload/dialog.vue:51 src/page/albums.vue:185
-#: src/page/labels.vue:122 src/page/library/import.vue:133
+#: src/page/labels.vue:174 src/page/library/import.vue:133
 #: src/page/settings/general.vue:307 src/page/settings/services.vue:38
 msgid "Upload"
 msgstr "Tải lên"
@@ -3343,7 +3355,7 @@ msgstr "Xem kết quả tìm kiếm dưới dạng danh sách."
 msgid "Viewer"
 msgstr "Người xem"
 
-#: src/common/util.js:746
+#: src/common/util.js:750
 msgid "Vision"
 msgstr "Tầm nhìn"
 
@@ -3481,6 +3493,12 @@ msgstr "Thư viện của bạn được phân tích liên tục để tự đ�
 #: src/component/lightbox.vue:285
 msgid "Zoom in/out"
 msgstr "Phóng to / thu nhỏ"
+
+#~ msgid "Show less"
+#~ msgstr "Hiện ít hơn"
+
+#~ msgid "Show more"
+#~ msgstr "Cho xem nhiều hơn"
 
 #~ msgid "Archive"
 #~ msgstr "Lưu trữ"

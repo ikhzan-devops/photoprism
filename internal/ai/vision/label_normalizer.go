@@ -14,6 +14,8 @@ type canonicalLabel struct {
 	Name       string
 	Priority   int
 	Categories []string
+	Threshold  float32
+	hasRule    bool
 }
 
 var (
@@ -41,6 +43,18 @@ func normalizeLabelResult(result *LabelResult) {
 	name, meta := resolveLabelName(result.Name)
 	if name != "" {
 		result.Name = name
+	}
+
+	threshold := meta.Threshold
+	if threshold <= 0 {
+		threshold = float32(Config.Thresholds.Confidence) / 100
+	}
+
+	if threshold > 0 && result.Confidence < threshold {
+		result.Name = ""
+		result.Categories = nil
+		result.Priority = 0
+		return
 	}
 
 	if len(meta.Categories) > 0 {
@@ -221,6 +235,8 @@ func ensureCanonicalLabels() {
 				Name:       txt.Title(canonicalName),
 				Priority:   rule.Priority,
 				Categories: append([]string(nil), rule.Categories...),
+				Threshold:  rule.Threshold,
+				hasRule:    true,
 			}
 
 			addCanonicalMapping(key, meta)
@@ -251,6 +267,10 @@ func addCanonicalMapping(name string, meta canonicalLabel) {
 		}
 
 		existing.Categories = mergeCategories(existing.Categories, meta.Categories)
+		if meta.Threshold > existing.Threshold {
+			existing.Threshold = meta.Threshold
+		}
+		existing.hasRule = existing.hasRule || meta.hasRule
 		canonicalLabels[slug] = existing
 		return
 	}
@@ -259,6 +279,7 @@ func addCanonicalMapping(name string, meta canonicalLabel) {
 		Name:       meta.Name,
 		Priority:   meta.Priority,
 		Categories: append([]string(nil), meta.Categories...),
+		Threshold:  meta.Threshold,
 	}
 }
 

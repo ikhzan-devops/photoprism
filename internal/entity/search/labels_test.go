@@ -6,6 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/photoprism/photoprism/internal/entity"
+	"github.com/photoprism/photoprism/internal/entity/sortby"
 	"github.com/photoprism/photoprism/internal/form"
 )
 
@@ -89,6 +90,58 @@ func TestLabels(t *testing.T) {
 				assert.Equal(t, fix.LabelName, r.LabelName)
 				assert.Equal(t, fix.LabelSlug, r.LabelSlug)
 				assert.Equal(t, fix.CustomSlug, r.CustomSlug)
+			}
+		}
+	})
+	t.Run("order count", func(t *testing.T) {
+		query := form.NewLabelSearch("")
+		query.All = true
+		query.Order = sortby.Count
+		result, err := Labels(query)
+
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if len(result) < 2 {
+			t.Fatalf("expected multiple labels")
+		}
+
+		if result[0].PhotoCount < result[1].PhotoCount {
+			t.Fatalf("expected descending photo count")
+		}
+	})
+	t.Run("order slug", func(t *testing.T) {
+		query := form.NewLabelSearch("")
+		query.All = true
+		query.Order = sortby.Slug
+		result, err := Labels(query)
+
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if len(result) < 2 {
+			t.Fatalf("expected multiple labels")
+		}
+
+		if result[0].CustomSlug > result[1].CustomSlug {
+			t.Fatalf("expected slug ascending")
+		}
+	})
+	t.Run("default filter excludes low priority", func(t *testing.T) {
+		query := form.NewLabelSearch("")
+		result, err := Labels(query)
+
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		for _, label := range result {
+			if !label.LabelFavorite {
+				if label.LabelPriority < 0 || label.PhotoCount <= 1 {
+					t.Fatalf("label %s should have been filtered", label.LabelSlug)
+				}
 			}
 		}
 	})

@@ -821,19 +821,28 @@ func (m *Photo) AddLabels(labels classify.Labels) {
 			labelSrc = clean.ShortTypeLower(labelSrc)
 		}
 
-		photoLabel := FirstOrCreatePhotoLabel(NewPhotoLabel(m.ID, labelEntity.ID, classifyLabel.Uncertainty, labelSrc))
+		template := NewPhotoLabel(m.ID, labelEntity.ID, classifyLabel.Uncertainty, labelSrc)
+		template.Topicality = classifyLabel.Topicality
+		photoLabel := FirstOrCreatePhotoLabel(template)
 
 		if photoLabel == nil {
 			log.Errorf("index: photo-label %d should not be nil - you may have found a bug (%s)", labelEntity.ID, m)
 			continue
 		}
 
-		if photoLabel.HasID() && photoLabel.Uncertainty > classifyLabel.Uncertainty && photoLabel.Uncertainty < 100 {
-			if err := photoLabel.Updates(Values{
-				"Uncertainty": classifyLabel.Uncertainty,
-				"LabelSrc":    labelSrc,
-			}); err != nil {
-				log.Errorf("index: %s", err)
+		if photoLabel.HasID() {
+			updates := Values{}
+			if photoLabel.Uncertainty > classifyLabel.Uncertainty && photoLabel.Uncertainty < 100 {
+				updates["Uncertainty"] = classifyLabel.Uncertainty
+				updates["LabelSrc"] = labelSrc
+			}
+			if classifyLabel.Topicality > 0 && photoLabel.Topicality != classifyLabel.Topicality {
+				updates["Topicality"] = classifyLabel.Topicality
+			}
+			if len(updates) > 0 {
+				if err := photoLabel.Updates(updates); err != nil {
+					log.Errorf("index: %s", err)
+				}
 			}
 		}
 	}

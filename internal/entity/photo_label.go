@@ -15,6 +15,7 @@ type PhotoLabel struct {
 	LabelID     uint   `gorm:"primary_key;auto_increment:false;index"`
 	LabelSrc    string `gorm:"type:VARBINARY(8);"`
 	Uncertainty int    `gorm:"type:SMALLINT"`
+	Topicality  int    `gorm:"type:SMALLINT"`
 	Photo       *Photo `gorm:"PRELOAD:false"`
 	Label       *Label `gorm:"PRELOAD:true"`
 }
@@ -145,6 +146,7 @@ func (m *PhotoLabel) ClassifyLabel() classify.Label {
 		Name:        m.Label.LabelName,
 		Source:      m.LabelSrc,
 		Uncertainty: m.Uncertainty,
+		Topicality:  m.Topicality,
 		Priority:    m.Label.LabelPriority,
 	}
 

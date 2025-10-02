@@ -11,6 +11,7 @@ import (
 
 	"github.com/photoprism/photoprism/internal/mutex"
 	"github.com/photoprism/photoprism/pkg/clean"
+	"github.com/photoprism/photoprism/pkg/time/unix"
 )
 
 // countsBusy is true when the covers are currently updating.
@@ -144,6 +145,40 @@ func UpdateSubjectCounts(public bool) (err error) {
 	return nil
 }
 
+// updateLabelCountsLastUpdated stores the unix timestamp of the last successful label
+// count refresh. Keeping this in memory avoids expensive recounts when labels are
+// requested repeatedly (for example, when browsing the Labels tab).
+var updateLabelCountsLastUpdated atomic.Int64
+
+// UpdateLabelCountsInterval defines the minimum number of seconds between two automatic
+// label count refreshes. It is exposed for tests so that the interval can be shortened.
+var UpdateLabelCountsInterval int64 = 300
+
+// ShouldUpdateLabelCounts returns true when enough time has passed to justify another
+// label count refresh. It never mutates state on its own; callers must update the
+// timestamp after performing the refresh (see UpdateLabelCounts).
+func ShouldUpdateLabelCounts() bool {
+	lastUpdated := updateLabelCountsLastUpdated.Load()
+	if lastUpdated <= 0 {
+		return true
+	}
+
+	if (unix.Now() - lastUpdated) > UpdateLabelCountsInterval {
+		return true
+	}
+
+	return false
+}
+
+// UpdateLabelCountsIfNeeded updates the label photo counts if needed.
+func UpdateLabelCountsIfNeeded() (err error) {
+	if !ShouldUpdateLabelCounts() {
+		return nil
+	}
+
+	return UpdateLabelCounts()
+}
+
 // UpdateLabelCounts updates the label photo counts.
 func UpdateLabelCounts() (err error) {
 	mutex.Index.Lock()
@@ -195,6 +230,7 @@ func UpdateLabelCounts() (err error) {
 	}
 
 	log.Debugf("counts: updated %s [%s]", english.Plural(int(res.RowsAffected), "label", "labels"), time.Since(start))
+	updateLabelCountsLastUpdated.Store(unix.Now())
 
 	return nil
 }
