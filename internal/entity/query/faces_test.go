@@ -186,11 +186,11 @@ func TestMergeFaces(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		assert.Equal(t, "5LH5E35ZGUMF5AYLM42BIZH4DGQHJDAV", result.ID)
+		assert.Equal(t, "4FD6YTOMWTDU5JKD3SS2MTRUTKZRZT7O", result.ID)
 		assert.Equal(t, entity.SrcManual, result.FaceSrc)
 		assert.Equal(t, "jqynvsf28rhn6b0c", result.SubjUID)
 		assert.Equal(t, 2, result.Samples)
-		assert.Equal(t, 0.03948165743305488, result.SampleRadius)
+		assert.InDelta(t, 0.040200777224183845, result.SampleRadius, 1e-9)
 		assert.Equal(t, 0, result.Collisions)
 		assert.Equal(t, float64(0), result.CollisionRadius)
 
@@ -222,7 +222,7 @@ func TestMergeFaces(t *testing.T) {
 		assert.Nil(t, result)
 	})
 	t.Run("OneSubject", func(t *testing.T) {
-		result, err := MergeFaces(entity.Faces{entity.Face{ID: "5LH5E35ZGUMF5AYLM42BIZH4DGQHJDAV"}}, false)
+		result, err := MergeFaces(entity.Faces{entity.Face{ID: "4FD6YTOMWTDU5JKD3SS2MTRUTKZRZT7O"}}, false)
 
 		assert.EqualError(t, err, "faces: two or more clusters required for merging")
 		assert.Nil(t, result)

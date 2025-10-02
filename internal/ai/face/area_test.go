@@ -3,9 +3,10 @@ package face
 import (
 	"testing"
 
-	"github.com/photoprism/photoprism/internal/thumb/crop"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/photoprism/photoprism/internal/thumb/crop"
 )
 
 var area1 = NewArea("face1", 400, 250, 200)
