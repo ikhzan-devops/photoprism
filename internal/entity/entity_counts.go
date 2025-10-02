@@ -14,7 +14,7 @@ import (
 	"github.com/photoprism/photoprism/pkg/time/unix"
 )
 
-// countsBusy is true when the covers are currently updating.
+// countsBusy indicates whether count refresh jobs are currently running.
 var countsBusy = atomic.Bool{}
 
 type LabelPhotoCount struct {
@@ -22,9 +22,10 @@ type LabelPhotoCount struct {
 	PhotoCount int
 }
 
+// LabelPhotoCounts groups label count results.
 type LabelPhotoCounts []LabelPhotoCount
 
-// LabelCounts returns the number of photos for each label ID.
+// LabelCounts returns the number of public, non-deleted photos for each label ID.
 func LabelCounts() LabelPhotoCounts {
 	result := LabelPhotoCounts{}
 
