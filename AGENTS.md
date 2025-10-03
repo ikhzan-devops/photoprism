@@ -1,6 +1,6 @@
 # PhotoPrism® Repository Guidelines
 
-**Last Updated:** October 2, 2025
+**Last Updated:** October 3, 2025
 
 ## Purpose
 
@@ -126,6 +126,7 @@ Note: Across our public documentation, official images, and in production, the c
   - Full unit test suite: `make test` (runs backend and frontend tests)
   - Test frontend/backend: `make test-js` and `make test-go`
   - Go packages: `go test` (all tests) or `go test -run <name>` (specific tests only)
+- Need to inspect the MariaDB data while iterating? Connect directly inside the dev shell with `mariadb -D photoprism` and run SQL without rebuilding Go code.
 - Go tests live beside sources: for `path/to/pkg/<file>.go`, add tests in `path/to/pkg/<file>_test.go` (create if missing). For the same function, group related cases as `t.Run(...)` sub-tests (table-driven where helpful) and use PascalCase subtest names (for example, `t.Run("Success", ...)`).
 - Frontend unit tests are driven by Vitest; see scripts in `frontend/package.json`
   - Vitest watch/coverage: `make vitest-watch` and `make vitest-coverage`
