@@ -893,7 +893,9 @@ export default {
     updateQuery(props) {
       this.updateFilter(props);
 
-      if (this.loading) return;
+      if (this.loading) {
+        return false;
+      }
 
       const query = {
         view: this.settings.view,
@@ -908,10 +910,12 @@ export default {
       }
 
       if (JSON.stringify(this.$route.query) === JSON.stringify(query)) {
-        return;
+        return false;
       }
 
       this.$router.replace({ query: query });
+
+      return true;
     },
     searchParams() {
       const params = {

@@ -43,11 +43,7 @@
           "
         ></v-text-field>
 
-        <p-action-menu
-          :items="menuActions"
-          :tabindex="3"
-          button-class="ms-1"
-        ></p-action-menu>
+        <p-action-menu :items="menuActions" :tabindex="3" button-class="ms-1"></p-action-menu>
       </v-toolbar>
     </v-form>
 
@@ -152,6 +148,11 @@
             </div>
           </div>
         </div>
+      </div>
+      <div v-if="results.length && !filter.all && !filter.q" class="d-flex justify-center my-8">
+        <v-btn color="button" rounded variant="flat" @click.stop="showAll">
+          {{ $gettext(`Show All Labels`) }}
+        </v-btn>
       </div>
     </div>
 
@@ -509,8 +510,11 @@ export default {
       label.update();
     },
     showAll() {
+      this.$view.saveWindowScrollPos();
       this.filter.all = "true";
-      this.updateQuery();
+      if (!this.updateQuery()) {
+        this.$view.clearWindowScrollPos();
+      }
     },
     showImportant() {
       this.filter.all = "";
@@ -659,7 +663,9 @@ export default {
     updateQuery(props) {
       this.updateFilter(props);
 
-      if (this.loading) return;
+      if (this.loading) {
+        return false;
+      }
 
       const query = {
         view: this.settings.view,
@@ -674,10 +680,12 @@ export default {
       }
 
       if (JSON.stringify(this.$route.query) === JSON.stringify(query)) {
-        return;
+        return false;
       }
 
       this.$router.replace({ query: query });
+
+      return true;
     },
     searchParams() {
       const params = {

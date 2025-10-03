@@ -29,7 +29,7 @@ import { DateTime } from "luxon";
 import { $config } from "app/session";
 import { $gettext } from "common/gettext";
 
-export let BatchSize = 120;
+export let BatchSize = 180;
 
 export class Label extends RestModel {
   getDefaults() {
