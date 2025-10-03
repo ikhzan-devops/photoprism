@@ -48,6 +48,7 @@ Auth, Session, and Config
 
 Models (REST)
 - Base class: `src/model/rest.js` provides `search`, `find`, `save`, `update`, `remove` for concrete models (`photo`, `album`, `label`, `subject`, etc.)
+- Collection helpers: `src/model/collection.js` adds shared behaviors (for example `setCover`) used by collection-types such as albums and labels.
 - Pagination headers used: `X-Count`, `X-Limit`, `X-Offset`
 
 Routing Conventions
