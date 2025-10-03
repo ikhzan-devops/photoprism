@@ -44,6 +44,7 @@ Auth, Session, and Config
 - `$session`: `src/common/session.js` — stores `X-Auth-Token` and `session.id` in storage; provides guards and default routes
 - `$config`: `src/common/config.js` — reactive view of server config and user settings; sets theme, language, limits; exposes `deny()` for feature flags
 - Route guards live in `src/app.js` (router `beforeEach`/`afterEach`) and use `$session` + `$config`
+- `$view`: `src/common/view.js` — manages focus/scroll helpers; use `saveWindowScrollPos()` / `restoreWindowScrollPos()` when navigating so infinite-scroll pages land back where users left them; behaviour is covered by `tests/vitest/common/view.test.js`
 
 Models (REST)
 - Base class: `src/model/rest.js` provides `search`, `find`, `save`, `update`, `remove` for concrete models (`photo`, `album`, `label`, `subject`, etc.)
@@ -75,6 +76,7 @@ Common How‑Tos
   - Create `src/page/<name>.vue` (or nested directory)
   - Add route in `src/app/routes.js` with `name`, `path`, `component`, and `meta`
   - Use `$api` for data, `$notify` for UX, `$session` for guards
+  - `updateQuery(props)` helpers should return a boolean indicating whether a navigation was scheduled (recently standardised across pages); callers can bail early when `false`
 
 - Add a REST model
   - Create `src/model/<thing>.js` extending `Rest` and implement `static getCollectionResource()` + `static getModelName()`
