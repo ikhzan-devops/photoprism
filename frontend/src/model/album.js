@@ -1,9 +1,9 @@
 import $api from "common/api";
-import Collection from "model/collection";
 import countries from "options/countries.json";
 import { DateTime } from "luxon";
 import { $config } from "app/session";
 import { $gettext } from "common/gettext";
+import Collection from "model/collection";
 
 export let BatchSize = 60;
 
