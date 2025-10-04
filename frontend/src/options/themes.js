@@ -632,7 +632,7 @@ let themes = {
       "border-opacity": 0.18,
       "disabled-opacity": 0.58,
       "hover-opacity": 0.045,
-      "focus-opacity": 0.09,
+      "focus-opacity": 0.06,
       "fill-opacity": 0,
     },
   },
