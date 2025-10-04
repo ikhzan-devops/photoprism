@@ -400,15 +400,15 @@ msgstr "Chiave API"
 msgid "Application"
 msgstr "Applicazione"
 
-#: src/component/photo/edit/details.vue:619
-msgid "Apply"
-msgstr "Applica"
-
 #: src/component/photo/clipboard.vue:64
-#: src/component/photo/edit/details.vue:618
+#: src/component/photo/edit/details.vue:620
 #: src/component/photo/view/cards.vue:416
 msgid "Approve"
 msgstr "Approva"
+
+#: src/component/photo/edit/details.vue:614
+msgid "Approve and save changes"
+msgstr ""
 
 #: src/page/settings/account.vue:374 src/component/settings/apps.vue:91
 msgid "Apps and Devices"
@@ -724,9 +724,10 @@ msgstr "Credenziali del cliente"
 
 #: src/component/user/edit/dialog.vue:473 src/page/admin/sessions.vue:529
 #: src/component/lightbox.vue:285 src/component/lightbox.vue:1011
-#: src/component/lightbox.vue:1012 src/component/photo/edit/details.vue:605
-#: src/component/photo/toolbar.vue:160 src/component/settings/apps.vue:224
-#: src/component/settings/apps.vue:437 src/component/settings/passcode.vue:148
+#: src/component/lightbox.vue:1012 src/component/photo/edit/details.vue:599
+#: src/component/photo/edit/details.vue:606 src/component/photo/toolbar.vue:160
+#: src/component/settings/apps.vue:224 src/component/settings/apps.vue:437
+#: src/component/settings/passcode.vue:148
 #: src/component/settings/passcode.vue:456
 #: src/component/settings/passcode.vue:497
 #: src/component/settings/webdav.vue:131 src/component/share/dialog.vue:231
@@ -1022,9 +1023,13 @@ msgstr "Disattiva il supporto della grafica vettoriale."
 msgid "Disables video transcoding and thumbnail extraction."
 msgstr "Disattiva la transcodifica video e l'estrazione delle miniature."
 
-#: src/component/photo/edit/details.vue:604
+#: src/component/photo/edit/details.vue:605
 msgid "Discard"
 msgstr "Scartare"
+
+#: src/component/photo/edit/details.vue:599
+msgid "Discard changes and close"
+msgstr ""
 
 #: src/app/routes.js:569 src/app/routes.js:576 src/app/routes.js:583
 #: src/app/routes.js:590
@@ -2647,10 +2652,15 @@ msgstr "Satellite"
 #: src/component/user/edit/dialog.vue:487
 #: src/component/album/edit/dialog.vue:211
 #: src/component/label/edit/dialog.vue:119
-#: src/component/people/edit/dialog.vue:132 src/component/service/edit.vue:466
+#: src/component/people/edit/dialog.vue:132
+#: src/component/photo/edit/details.vue:621 src/component/service/edit.vue:466
 #: src/component/settings/password.vue:172 src/component/share/dialog.vue:181
 msgid "Save"
 msgstr "Salva"
+
+#: src/component/photo/edit/details.vue:614
+msgid "Save changes"
+msgstr ""
 
 #: src/component/photo/edit/info.vue:319
 msgid "Scan"
@@ -3498,6 +3508,9 @@ msgstr "La tua libreria viene continuamente analizzata per creare automaticament
 #: src/component/lightbox.vue:286
 msgid "Zoom in/out"
 msgstr "Zoom avanti/indietro"
+
+#~ msgid "Apply"
+#~ msgstr "Applica"
 
 #~ msgid "Show less"
 #~ msgstr "Mostra meno"
