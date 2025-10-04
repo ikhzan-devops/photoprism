@@ -17,7 +17,7 @@ func TestMain(m *testing.M) {
 	log = logrus.StandardLogger()
 	log.SetLevel(logrus.TraceLevel)
 
-	ServiceURL = "https://hub-int.photoprism.app/v1/hello"
+	ApplyTestConfig()
 
 	code := m.Run()
 
@@ -78,6 +78,11 @@ func TestConfig_Refresh(t *testing.T) {
 			t.Fatal(err)
 		}
 
+		// Skip assertions if disabled.
+		if Disabled() {
+			return
+		}
+
 		assert.Len(t, c.Key, 40)
 		assert.Len(t, c.Secret, 32)
 		assert.Equal(t, "test", c.Version)
@@ -111,7 +116,7 @@ func TestConfig_Refresh(t *testing.T) {
 		} else if sess.Expired() {
 			t.Fatal("session expired")
 		} else {
-			t.Logf("(2) session: %#v", sess)
+			t.Logf("session: %#v", sess)
 		}
 
 		if err := c.Save(); err != nil {

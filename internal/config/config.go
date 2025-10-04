@@ -781,7 +781,7 @@ func (c *Config) RenewApiKeysWithToken(token string) error {
 			return i18n.Error(i18n.ErrAccountConnect)
 		}
 	} else if err = c.hub.Save(); err != nil {
-		log.Warnf("config: failed to save api keys for maps and places (%s)", err)
+		log.Warnf("config: failed to save API keys for maps and places (%s)", err)
 		return i18n.Error(i18n.ErrSaveFailed)
 	} else {
 		c.hub.Propagate()

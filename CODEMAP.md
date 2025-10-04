@@ -1,6 +1,6 @@
 PhotoPrism — Backend CODEMAP
 
-**Last Updated:** October 2, 2025
+**Last Updated:** October 4, 2025
 
 Purpose
 - Give agents and contributors a fast, reliable map of where things live and how they fit together, so you can add features, fix bugs, and write tests without spelunking.
@@ -143,6 +143,8 @@ Testing
 - CLI tests: `PHOTOPRISM_CLI=noninteractive` or pass `--yes` to avoid prompts; use `RunWithTestContext` to prevent `os.Exit`.
 - SQLite DSN in tests is per‑suite (not empty). Clean up files if you capture the DSN.
 - Frontend unit tests via Vitest are separate; see `frontend/CODEMAP.md`.
+- Config helpers automatically disable Hub service calls for tests (`hub.ApplyTestConfig()`).
+- Test configs auto-discover the repo `assets/` folder, so avoid adding per-package `PHOTOPRISM_ASSETS_PATH` shims unless you have an unusual layout.
 
 Security & Hot Spots (Where to Look)
 - Zip extraction (path traversal prevention): `pkg/fs/zip.go`
