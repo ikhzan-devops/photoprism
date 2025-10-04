@@ -398,7 +398,8 @@
       <div v-if="!disabled" class="form-actions form-actions--sticky">
         <div class="action-buttons">
           <v-btn color="button" variant="flat" class="action-close" @click.stop="close">
-            {{ $gettext(`Close`) }}
+            <span v-if="view.model?.wasChanged()">{{ $gettext(`Discard`) }}</span>
+            <span v-else>{{ $gettext(`Close`) }}</span>
           </v-btn>
           <v-btn
             color="highlight"
