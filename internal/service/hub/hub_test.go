@@ -90,7 +90,7 @@ func TestConfig_Refresh(t *testing.T) {
 		if sess, err := c.DecodeSession(false); err != nil {
 			t.Fatal(err)
 		} else if sess.Expired() {
-			t.Fatalf("session expired: %+v", sess)
+			t.Fatalf("(1) session expired: %+v", sess)
 		} else {
 			t.Logf("(1) session: %#v", sess)
 		}
@@ -114,9 +114,9 @@ func TestConfig_Refresh(t *testing.T) {
 		if sess, err := c.DecodeSession(false); err != nil {
 			t.Fatal(err)
 		} else if sess.Expired() {
-			t.Fatal("session expired")
+			t.Fatal("(2) session expired")
 		} else {
-			t.Logf("session: %#v", sess)
+			t.Logf("(2) session: %#v", sess)
 		}
 
 		if err := c.Save(); err != nil {

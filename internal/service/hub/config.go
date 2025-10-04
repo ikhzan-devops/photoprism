@@ -226,7 +226,7 @@ func (c *Config) ReSync(token string) (err error) {
 
 	// Return if no endpoint URL is set.
 	if endpointUrl == "" {
-		log.Debugf("config: unable to obtain API key for maps and places (service disabled)")
+		log.Debugf("config: unable to obtain key for maps and places (service disabled)")
 		return nil
 	}
 
@@ -235,10 +235,10 @@ func (c *Config) ReSync(token string) (err error) {
 
 	if c.Key == "" {
 		method = http.MethodPost
-		log.Tracef("config: requesting new API key for maps and places")
+		log.Tracef("config: requesting new key for maps and places")
 	} else {
 		method = http.MethodPut
-		log.Tracef("config: requesting API key for maps and places")
+		log.Tracef("config: requesting key for maps and places")
 	}
 
 	// Create JSON request.
@@ -275,7 +275,7 @@ func (c *Config) ReSync(token string) (err error) {
 	if err != nil {
 		return err
 	} else if r.StatusCode >= 400 {
-		err = fmt.Errorf("requesting api key from %s failed (error %d)", GetServiceHost(), r.StatusCode)
+		err = fmt.Errorf("failed to request key from %s (error %d)", GetServiceHost(), r.StatusCode)
 		return err
 	}
 
