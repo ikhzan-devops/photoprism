@@ -401,7 +401,7 @@
             color="button"
             variant="flat"
             :aria-label="view.model?.wasChanged() ? $gettext('Discard changes and close') : $gettext('Close')"
-            class="action-close"
+            class="action-discard action-close"
             @click.stop="close"
           >
             <span v-if="view.model?.wasChanged()">{{ $gettext(`Discard`) }}</span>
@@ -412,7 +412,7 @@
             variant="flat"
             :disabled="!view.model?.wasChanged() && !inReview"
             :aria-label="inReview ? $gettext(`Approve and save changes`) : $gettext('Save changes')"
-            class="action-apply action-approve"
+            class="action-save action-apply action-approve"
             @click.stop="save(false)"
           >
             <span v-if="inReview">{{ $gettext(`Approve`) }}</span>
