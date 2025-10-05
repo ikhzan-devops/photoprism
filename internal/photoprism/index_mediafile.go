@@ -353,12 +353,8 @@ func (ind *Index) UserMediaFile(m *MediaFile, o IndexOptions, originalName, phot
 				file.AddFaces(faces)
 			}
 
-			// Any new markers?
-			if file.UnsavedMarkers() {
-				// Add matching labels.
-				extraLabels = append(extraLabels, file.Markers().Labels()...)
-			} else if o.FacesOnly {
-				// Skip when indexing faces only.
+			// Skip when indexing faces only and no new markers were found.
+			if !file.UnsavedMarkers() && o.FacesOnly {
 				result.Status = IndexSkipped
 				return result
 			}
