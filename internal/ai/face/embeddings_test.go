@@ -54,7 +54,11 @@ func TestEmbeddings_Kind(t *testing.T) {
 		assert.Equal(t, RegularFace, regular.Kind())
 	})
 	t.Run("IsChild", func(t *testing.T) {
-		assert.Equal(t, KidsFace, Children.Kind())
+		clustersEmbeddings := make(Embeddings, len(Children))
+		for i := range Children {
+			clustersEmbeddings[i] = Children[i].Embedding
+		}
+		assert.Equal(t, KidsFace, clustersEmbeddings.Kind())
 	})
 	t.Run("IgnoredFace", func(t *testing.T) {
 		assert.Equal(t, IgnoredFace, ignored.Kind())
