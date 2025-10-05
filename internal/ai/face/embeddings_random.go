@@ -72,8 +72,8 @@ func RandomKidsEmbedding() (result Embedding) {
 	result = make(Embedding, 512)
 
 	d := 0.1 / 512.0
-	n := 1 + rand.IntN(len(KidsEmbeddings)-1)
-	e := KidsEmbeddings[n]
+	n := 1 + rand.IntN(len(Children)-1)
+	e := Children[n]
 
 	for i := range result {
 		result[i] = RandomFloat64(e[i], d)
@@ -89,8 +89,8 @@ func RandomIgnoredEmbedding() (result Embedding) {
 	result = make(Embedding, 512)
 
 	d := 0.1 / 512.0
-	n := 1 + rand.IntN(len(IgnoredEmbeddings)-1)
-	e := IgnoredEmbeddings[n]
+	n := 1 + rand.IntN(len(TestEmbeddings)-1)
+	e := TestEmbeddings[n]
 
 	for i := range result {
 		result[i] = RandomFloat64(e[i], d)

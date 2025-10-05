@@ -30,9 +30,9 @@ func NewEmbedding(inference []float32) Embedding {
 
 // Kind returns the type of face e.g. regular, kids, or ignored.
 func (m Embedding) Kind() Kind {
-	if m.KidsFace() {
+	if m.IsChild() {
 		return KidsFace
-	} else if m.Ignored() {
+	} else if m.IsBackground() {
 		return IgnoredFace
 	}
 
@@ -41,12 +41,12 @@ func (m Embedding) Kind() Kind {
 
 // SkipMatching checks if the face embedding seems unsuitable for matching.
 func (m Embedding) SkipMatching() bool {
-	return m.KidsFace() || m.Ignored()
+	return m.IsChild() || m.IsBackground()
 }
 
 // CanMatch tests if the face embedding is not excluded.
 func (m Embedding) CanMatch() bool {
-	return !m.Ignored()
+	return !m.IsBackground()
 }
 
 // Dist calculates the distance to another face embedding.
