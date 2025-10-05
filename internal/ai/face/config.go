@@ -13,10 +13,10 @@ var (
 
 func init() {
 	// Disable ignore/skip for background and children if legacy env variables are set.
-	if os.Getenv("PHOTOPRISM_FACE_KIDS_DIST") != "" {
+	if os.Getenv("PHOTOPRISM_FACE_CHILDREN_DIST") != "" || os.Getenv("PHOTOPRISM_FACE_KIDS_DIST") != "" {
 		SkipChildren = false
 	}
-	if os.Getenv("PHOTOPRISM_FACE_IGNORED_DIST") != "" {
+	if os.Getenv("PHOTOPRISM_FACE_BACKGROUND_DIST") != "" || os.Getenv("PHOTOPRISM_FACE_IGNORED_DIST") != "" {
 		IgnoreBackground = false
 	}
 }

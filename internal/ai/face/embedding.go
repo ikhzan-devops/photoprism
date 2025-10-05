@@ -28,12 +28,12 @@ func NewEmbedding(inference []float32) Embedding {
 	return result
 }
 
-// Kind returns the type of face e.g. regular, kids, or ignored.
+// Kind returns the type of face e.g. regular, children, or background.
 func (m Embedding) Kind() Kind {
 	if m.IsChild() {
-		return KidsFace
+		return ChildrenFace
 	} else if m.IsBackground() {
-		return IgnoredFace
+		return BackgroundFace
 	}
 
 	return RegularFace

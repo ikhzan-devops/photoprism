@@ -65,7 +65,7 @@ func (w *Faces) Audit(fix bool) (err error) {
 	conflicts := 0
 	resolved := 0
 
-	faces, ids, err := query.FacesByID(true, false, false, false)
+	faces, ids, err := query.FacesByID(false, false, false, false)
 
 	if err != nil {
 		return err
@@ -167,14 +167,98 @@ func (w *Faces) Audit(fix bool) (err error) {
 		for _, m := range markers {
 			if m.FaceID == "" {
 				log.Warnf("faces: marker %s has an empty face id - you may have found a bug", m.MarkerUID)
-			} else if f, ok := faces[m.FaceID]; !ok {
-				log.Warnf("faces: marker %s has invalid face %s of subject %s (%s)", m.MarkerUID, m.FaceID, entity.SubjNames.Log(f.SubjUID), f.SubjUID)
-			} else if m.SubjUID != "" {
-				log.Infof("faces: marker %s with %s subject %s (%s) conflicts with face %s (%s) of subject %s (%s)", m.MarkerUID, entity.SrcString(m.SubjSrc), entity.SubjNames.Log(m.SubjUID), m.SubjUID, m.FaceID, entity.SrcString(f.FaceSrc), entity.SubjNames.Log(f.SubjUID), f.SubjUID)
+				continue
+			}
+
+			faceEntry, ok := faces[m.FaceID]
+			if !ok {
+				msg := fmt.Sprintf("faces: marker %s references missing face %s while subject is %s (%s)", m.MarkerUID, m.FaceID, entity.SubjNames.Log(m.SubjUID), m.SubjUID)
+				if fix {
+					updates := entity.Values{"face_id": "", "face_dist": -1.0, "matched_at": nil, "marker_review": true}
+
+					if err := entity.Db().Model(&entity.Marker{}).
+						Where("marker_uid = ?", m.MarkerUID).
+						UpdateColumns(updates).Error; err != nil {
+						log.Errorf("faces: failed clearing face reference for marker %s (%s)", m.MarkerUID, err)
+					} else {
+						log.Warnf("%s – cleared face reference for reprocessing", msg)
+					}
+				} else {
+					log.Warnf("%s", msg)
+				}
+				continue
+			}
+
+			markerSubject := entity.SubjNames.Log(m.SubjUID)
+			faceSubject := entity.SubjNames.Log(faceEntry.SubjUID)
+
+			if faceEntry.SubjUID == "" {
+				msg := fmt.Sprintf("faces: marker %s with %s subject %s (%s) points to face %s without a subject", m.MarkerUID, entity.SrcString(m.SubjSrc), markerSubject, m.SubjUID, m.FaceID)
+
+				if fix {
+					updates := entity.Values{"face_id": "", "face_dist": -1.0, "matched_at": nil, "marker_review": true}
+					if err := entity.Db().Model(&entity.Marker{}).
+						Where("marker_uid = ?", m.MarkerUID).
+						UpdateColumns(updates).Error; err != nil {
+						log.Errorf("faces: failed clearing marker %s (%s)", m.MarkerUID, err)
+					} else {
+						log.Warnf("%s – cleared face reference for reprocessing", msg)
+					}
+				} else {
+					log.Warnf("%s", msg)
+				}
+				continue
+			}
+
+			if m.SubjUID != faceEntry.SubjUID {
+				dist := -1.0
+				if emb := m.Embeddings(); !emb.Empty() {
+					dist = minEmbeddingDistance(faceEntry.Embedding(), emb)
+				}
+
+				msg := fmt.Sprintf("faces: marker %s with %s subject %s (%s) conflicts with face %s (%s) of subject %s (%s)",
+					m.MarkerUID, entity.SrcString(m.SubjSrc), markerSubject, m.SubjUID,
+					m.FaceID, entity.SrcString(faceEntry.FaceSrc), faceSubject, faceEntry.SubjUID)
+
+				if !fix {
+					log.Warnf("%s", msg)
+					continue
+				}
+
+				if m.SubjSrc == entity.SrcManual {
+					updates := entity.Values{"face_id": "", "face_dist": -1.0, "matched_at": nil, "marker_review": true}
+
+					if err := entity.Db().Model(&entity.Marker{}).
+						Where("marker_uid = ?", m.MarkerUID).
+						UpdateColumns(updates).Error; err != nil {
+						log.Errorf("faces: failed keeping manual subject for marker %s (%s)", m.MarkerUID, err)
+					} else {
+						log.Warnf("%s – kept manual subject and cleared conflicting face id", msg)
+					}
+					continue
+				}
+
+				updates := entity.Values{
+					"subj_uid":      faceEntry.SubjUID,
+					"subj_src":      entity.SrcAuto,
+					"marker_review": false,
+				}
+
+				if dist >= 0 {
+					updates["face_dist"] = dist
+				}
+
+				if err := entity.Db().Model(&entity.Marker{}).
+					Where("marker_uid = ?", m.MarkerUID).
+					UpdateColumns(updates).Error; err != nil {
+					log.Errorf("faces: failed aligning marker %s with face %s (%s)", m.MarkerUID, m.FaceID, err)
+				} else {
+					log.Infof("faces: updated marker %s to match face %s subject %s (%s)", m.MarkerUID, m.FaceID, faceSubject, faceEntry.SubjUID)
+				}
 			} else if m.MarkerName != "" {
-				log.Infof("faces: marker %s with %s subject name %s conflicts with face %s (%s) of subject %s (%s)", m.MarkerUID, entity.SrcString(m.SubjSrc), clean.Log(m.MarkerName), m.FaceID, entity.SrcString(f.FaceSrc), entity.SubjNames.Log(f.SubjUID), f.SubjUID)
+				log.Infof("faces: marker %s with %s subject name %s conflicts with face %s (%s) of subject %s (%s)", m.MarkerUID, entity.SrcString(m.SubjSrc), clean.Log(m.MarkerName), m.FaceID, entity.SrcString(faceEntry.FaceSrc), faceSubject, faceEntry.SubjUID)
 			} else {
-				log.Infof("faces: marker %s with unknown subject (%s) conflicts with face %s (%s) of subject %s (%s)", m.MarkerUID, entity.SrcString(m.SubjSrc), m.FaceID, entity.SrcString(f.FaceSrc), entity.SubjNames.Log(f.SubjUID), f.SubjUID)
+				log.Infof("faces: marker %s with unknown subject (%s) conflicts with face %s (%s) of subject %s (%s)", m.MarkerUID, entity.SrcString(m.SubjSrc), m.FaceID, entity.SrcString(faceEntry.FaceSrc), faceSubject, faceEntry.SubjUID)
 			}
 
 		}

@@ -1,6 +1,6 @@
 ## Face Detection and Embedding Guidelines
 
-**Last Updated:** October 2, 2025
+**Last Updated:** October 5, 2025
 
 ### Overview
 
@@ -44,7 +44,7 @@ All embeddings, regardless of origin, are normalized to unit length (‖x‖₂�
 - `NewEmbedding` normalizes the raw float32 inference output.
 - `EmbeddingsMidpoint` normalizes each contributor, averages component-wise, and renormalizes the centroid.
 - `UnmarshalEmbedding` and `UnmarshalEmbeddings` normalize data when loading from persisted JSON.
-- Static datasets (`KidsEmbeddings`, `IgnoredEmbeddings`) and random generators now normalize their entries after perturbation.
+- Static datasets (children/background samples) and random generators now normalize their entries after perturbation.
 - `photoprism faces audit --fix` re-normalizes persisted embeddings, rekeys face IDs, and re-links markers (ID + `FaceDist`) so historical data adopts the canonical unit-length vectors.
 - `Faces.Match` pre-filters matchable clusters, keeps an in-memory veto list for freshly cleared markers, and caches embeddings to avoid redundant distance checks; `BenchmarkSelectBestFace` (1024 faces) now reports a bucket size of ~16 candidates out of 1024 (≈98 % fewer distance evaluations) at ≈0.55 ms/op with zero allocations.
 - Face clusters update their sample statistics (`Samples`, `SampleRadius`) from the latest matches via `Face.UpdateMatchStats`, avoiding stale radii during optimize loops.
@@ -75,13 +75,11 @@ This guarantees that Euclidean distance comparisons are equivalent to cosine com
 
 ### Configuration Summary
 
-| Setting             | Default                      | Description                                                                     |
-|---------------------|------------------------------|---------------------------------------------------------------------------------|
-| `FACE_ANGLE`        | `-0.3,0,0.3`                 | Detection angles (radians) swept by Pigo.                                       |
-| `FACE_SCORE`        | `9.0` (with dynamic offsets) | Base quality threshold before scale adjustments.                                |
-| `FACE_OVERLAP`      | `42`                         | Maximum allowed IoU when deduplicating markers.                                 |
-| `FACE_KIDS_DIST`    | `0.695`                      | Distance cutoff for kids-face detection (still interpreted in Euclidean space). |
-| `FACE_IGNORED_DIST` | `0.86`                       | Distance cutoff for ignoring generic embeddings.                                |
+| Setting                | Default                      | Description                                                                          |
+|------------------------|------------------------------|--------------------------------------------------------------------------------------|
+| `FACE_ANGLE`           | `-0.3,0,0.3`                 | Detection angles (radians) swept by Pigo.                                            |
+| `FACE_SCORE`           | `9.0` (with dynamic offsets) | Base quality threshold before scale adjustments.                                     |
+| `FACE_OVERLAP`         | `42`                         | Maximum allowed IoU when deduplicating markers.                                      |
 
 ### Benchmark Reference
 

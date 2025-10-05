@@ -28,7 +28,7 @@ func TestClustersContains(t *testing.T) {
 		assert.False(t, clusters.Contains(embedding))
 	})
 
-	t.Run("DisabledClusterIgnored", func(t *testing.T) {
+	t.Run("DisabledClusterBackground", func(t *testing.T) {
 		clusters := Clusters{
 			{Radius: 1, Embedding: Embedding{0, 0}, Disabled: true},
 		}

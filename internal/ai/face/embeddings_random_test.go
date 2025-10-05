@@ -23,15 +23,15 @@ func TestRandomEmbeddings(t *testing.T) {
 			assert.False(t, e[i].IsBackground())
 		}
 	})
-	t.Run("Kids", func(t *testing.T) {
-		e := RandomEmbeddings(2, KidsFace)
+	t.Run("Children", func(t *testing.T) {
+		e := RandomEmbeddings(2, ChildrenFace)
 		for i := range e {
 			assert.False(t, e[i].IsBackground())
 			assert.True(t, e[i].IsChild())
 		}
 	})
-	t.Run("Ignored", func(t *testing.T) {
-		e := RandomEmbeddings(2, IgnoredFace)
+	t.Run("Background", func(t *testing.T) {
+		e := RandomEmbeddings(2, BackgroundFace)
 		for i := range e {
 			assert.True(t, e[i].IsBackground())
 			assert.False(t, e[i].IsChild())
