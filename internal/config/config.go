@@ -310,6 +310,7 @@ func (c *Config) Propagate() {
 	vision.ServiceUri = c.VisionUri()
 	vision.ServiceKey = c.VisionKey()
 	vision.DownloadUrl = c.DownloadUrl()
+	vision.DetectNSFWLabels = c.DetectNSFW() && c.Experimental()
 
 	// Set allowed path in download package.
 	download.AllowedPaths = []string{

@@ -35,6 +35,7 @@ Note on specs repository availability
 - Backend: Go (`internal/`, `pkg/`, `cmd/`) + MariaDB/SQLite
   - Package boundaries: Code in `pkg/*` MUST NOT import from `internal/*`.
   - If you need access to config/entity/DB, put new code in a package under `internal/` instead of `pkg/`.
+  - GORM field naming: When adding struct fields that include uppercase abbreviations (e.g., `LabelNSFW`), set an explicit `gorm:"column:<name>"` tag so column names stay consistent (`label_nsfw` instead of `label_n_s_f_w`).
 - Frontend: Vue 3 + Vuetify 3 (`frontend/`)
 - Docker/compose for dev/CI; Traefik is used for local TLS (`*.localssl.dev`)
 

@@ -11,6 +11,7 @@ import (
 
 	"github.com/karrick/godirwalk"
 
+	"github.com/photoprism/photoprism/internal/ai/classify"
 	"github.com/photoprism/photoprism/internal/ai/vision"
 	"github.com/photoprism/photoprism/internal/config"
 	"github.com/photoprism/photoprism/internal/entity"
@@ -54,6 +55,22 @@ func NewIndex(conf *config.Config, convert *Convert, files *Files, photos *Photo
 	}
 
 	return i
+}
+
+func (ind *Index) shouldFlagPrivate(labels classify.Labels) bool {
+	if ind == nil || ind.conf == nil || !ind.conf.DetectNSFW() {
+		return false
+	}
+
+	threshold := vision.Config.Thresholds.GetNSFW()
+
+	for _, label := range labels {
+		if label.NSFW || label.NSFWConfidence >= threshold {
+			return true
+		}
+	}
+
+	return false
 }
 
 func (ind *Index) originalsPath() string {

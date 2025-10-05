@@ -15,7 +15,6 @@ import (
 	"github.com/photoprism/photoprism/internal/entity/query"
 	"github.com/photoprism/photoprism/internal/mutex"
 	"github.com/photoprism/photoprism/internal/photoprism"
-	"github.com/photoprism/photoprism/internal/photoprism/get"
 	"github.com/photoprism/photoprism/pkg/clean"
 )
 
@@ -72,11 +71,8 @@ func (w *Meta) Start(delay, interval time.Duration, force bool) (err error) {
 	offset := 0
 	optimized := 0
 
-	ind := get.Index()
-
 	labelsModelShouldRun := w.conf.VisionModelShouldRun(vision.ModelTypeLabels, vision.RunNewlyIndexed)
 	captionModelShouldRun := w.conf.VisionModelShouldRun(vision.ModelTypeCaption, vision.RunNewlyIndexed)
-
 	nsfwModelShouldRun := w.conf.VisionModelShouldRun(vision.ModelTypeNsfw, vision.RunNewlyIndexed)
 
 	if nsfwModelShouldRun {
@@ -105,15 +101,18 @@ func (w *Meta) Start(delay, interval time.Duration, force bool) (err error) {
 
 			done[photo.PhotoUID] = true
 
+			logName := photo.String()
+
 			generateLabels := labelsModelShouldRun && photo.ShouldGenerateLabels(false)
 			generateCaption := captionModelShouldRun && photo.ShouldGenerateCaption(entity.SrcAuto, false)
+			detectNsfw := w.conf.DetectNSFW() && !photo.PhotoPrivate
 
 			// If configured, generate metadata for newly indexed photos using external vision services.
 			if photo.IsNewlyIndexed() && (generateLabels || generateCaption) {
 				primaryFile, fileErr := photo.PrimaryFile()
 
 				if fileErr != nil {
-					log.Debugf("index: photo %s has invalid primary file (%s)", photo.PhotoUID, clean.Error(fileErr))
+					log.Debugf("index: photo %s has invalid primary file (%s)", logName, clean.Error(fileErr))
 				} else {
 					fileName := photoprism.FileName(primaryFile.FileRoot, primaryFile.FileName)
 
@@ -127,19 +126,25 @@ func (w *Meta) Start(delay, interval time.Duration, force bool) (err error) {
 					} else {
 						// Generate photo labels if needed.
 						if generateLabels {
-							if labels := ind.Labels(mediaFile, entity.SrcAuto); len(labels) > 0 {
+							if labels := mediaFile.GenerateLabels(entity.SrcAuto); len(labels) > 0 {
+								if detectNsfw {
+									if labels.IsNSFW(vision.Config.Thresholds.GetNSFW()) {
+										photo.PhotoPrivate = true
+										log.Infof("vision: changed private flag of %s to %t (labels)", logName, photo.PhotoPrivate)
+									}
+								}
 								photo.AddLabels(labels)
 							}
 						}
 
 						// Generate photo caption if needed.
 						if generateCaption {
-							if caption, captionErr := ind.Caption(mediaFile, entity.SrcAuto); captionErr != nil {
-								log.Debugf("index: %s (generate caption for %s)", clean.Error(captionErr), photo.PhotoUID)
+							if caption, captionErr := mediaFile.GenerateCaption(entity.SrcAuto); captionErr != nil {
+								log.Debugf("index: failed to generate caption for %s (%s)", logName, clean.Error(captionErr))
 							} else if text := strings.TrimSpace(caption.Text); text != "" {
 								photo.SetCaption(text, caption.Source)
 								if updateErr := photo.UpdateCaptionLabels(); updateErr != nil {
-									log.Warnf("index: %s (update caption labels for %s)", clean.Error(updateErr), photo.PhotoUID)
+									log.Warnf("index: failed to update caption labels for %s (%s)", logName, clean.Error(updateErr))
 								}
 							}
 						}
@@ -158,12 +163,14 @@ func (w *Meta) Start(delay, interval time.Duration, force bool) (err error) {
 				log.Errorf("index: %s in optimization worker", optimizeErr)
 			} else if updated {
 				optimized++
-				log.Debugf("index: updated photo %s", photo.String())
+				log.Debugf("index: updated photo %s", logName)
 			}
 
 			for _, p := range merged {
-				log.Infof("index: merged %s", p.PhotoUID)
-				done[p.PhotoUID] = true
+				if p != nil {
+					log.Infof("index: merged %s", p.String())
+					done[p.PhotoUID] = true
+				}
 			}
 		}
 

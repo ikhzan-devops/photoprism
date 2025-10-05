@@ -3,7 +3,6 @@ package workers
 import (
 	"errors"
 	"fmt"
-	"path"
 	"runtime/debug"
 	"slices"
 	"strings"
@@ -20,7 +19,6 @@ import (
 	"github.com/photoprism/photoprism/internal/form"
 	"github.com/photoprism/photoprism/internal/mutex"
 	"github.com/photoprism/photoprism/internal/photoprism"
-	"github.com/photoprism/photoprism/internal/photoprism/get"
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/txt"
 )
@@ -131,8 +129,6 @@ func (w *Vision) Start(filter string, count int, models []string, customSrc stri
 		count = search.MaxResults
 	}
 
-	ind := get.Index()
-
 	frm := form.SearchPhotos{
 		Query:   filter,
 		Primary: true,
@@ -172,20 +168,20 @@ func (w *Vision) Start(filter string, count int, models []string, customSrc stri
 
 		done[photo.PhotoUID] = true
 
-		photoName := path.Join(photo.PhotoPath, photo.PhotoName)
+		logName := photo.String()
 
 		m, loadErr := query.PhotoByUID(photo.PhotoUID)
 
 		if loadErr != nil {
-			log.Errorf("vision: failed to load %s (%s)", photoName, loadErr)
+			log.Errorf("vision: failed to load %s (%s)", logName, loadErr)
 			continue
 		}
 
 		generateLabels := updateLabels && m.ShouldGenerateLabels(force)
 		generateCaptions := updateCaptions && m.ShouldGenerateCaption(customSrc, force)
-		generateNsfw := updateNsfw && (!photo.PhotoPrivate || force)
+		detectNsfw := updateNsfw && (!photo.PhotoPrivate || force)
 
-		if !(generateLabels || generateCaptions || generateNsfw) {
+		if !(generateLabels || generateCaptions || detectNsfw) {
 			continue
 		}
 
@@ -193,7 +189,7 @@ func (w *Vision) Start(filter string, count int, models []string, customSrc stri
 		file, fileErr := photoprism.NewMediaFile(fileName)
 
 		if fileErr != nil {
-			log.Errorf("vision: failed to open %s (%s)", photoName, fileErr)
+			log.Errorf("vision: failed to open %s (%s)", logName, fileErr)
 			continue
 		}
 
@@ -201,42 +197,48 @@ func (w *Vision) Start(filter string, count int, models []string, customSrc stri
 
 		// Generate labels.
 		if generateLabels {
-			if labels := ind.Labels(file, customSrc); len(labels) > 0 {
+			if labels := file.GenerateLabels(customSrc); len(labels) > 0 {
+				if w.conf.DetectNSFW() && !m.PhotoPrivate {
+					if labels.IsNSFW(vision.Config.Thresholds.GetNSFW()) {
+						m.PhotoPrivate = true
+						log.Infof("vision: changed private flag of %s to %t (labels)", logName, m.PhotoPrivate)
+					}
+				}
 				m.AddLabels(labels)
 				changed = true
 			}
 		}
 
 		// Detect NSFW content.
-		if generateNsfw {
-			if isNsfw := ind.IsNsfw(file); m.PhotoPrivate != isNsfw {
+		if detectNsfw {
+			if isNsfw := file.DetectNSFW(); m.PhotoPrivate != isNsfw {
 				m.PhotoPrivate = isNsfw
 				changed = true
-				log.Infof("vision: changed private flag of %s to %t", photoName, m.PhotoPrivate)
+				log.Infof("vision: changed private flag of %s to %t", logName, m.PhotoPrivate)
 			}
 		}
 
 		// Generate a caption if none exists or the force flag is used,
 		// and only if no caption was set or removed by a higher-priority source.
 		if generateCaptions {
-			if caption, captionErr := ind.Caption(file, customSrc); captionErr != nil {
-				log.Warnf("vision: %s in %s (generate caption)", clean.Error(captionErr), photoName)
+			if caption, captionErr := file.GenerateCaption(customSrc); captionErr != nil {
+				log.Warnf("vision: %s in %s (generate caption)", clean.Error(captionErr), logName)
 			} else if text := strings.TrimSpace(caption.Text); text != "" {
 				m.SetCaption(text, caption.Source)
 				if updateErr := m.UpdateCaptionLabels(); updateErr != nil {
-					log.Warnf("vision: %s in %s (update caption labels)", clean.Error(updateErr), photoName)
+					log.Warnf("vision: %s in %s (update caption labels)", clean.Error(updateErr), logName)
 				}
 				changed = true
-				log.Infof("vision: changed caption of %s to %s", photoName, clean.Log(m.PhotoCaption))
+				log.Infof("vision: changed caption of %s to %s", logName, clean.Log(m.PhotoCaption))
 			}
 		}
 
 		if changed {
 			if saveErr := m.GenerateAndSaveTitle(); saveErr != nil {
-				log.Infof("vision: failed to updated %s (%s)", photoName, clean.Error(saveErr))
+				log.Errorf("vision: failed to update %s (%s)", logName, clean.Error(saveErr))
 			} else {
 				updated++
-				log.Debugf("vision: updated %s", photoName)
+				log.Infof("vision: updated %s", logName)
 			}
 		}
 

@@ -12,13 +12,14 @@ type PhotoLabels []PhotoLabel
 // PhotoLabel represents the many-to-many relation between Photo and Label.
 // Labels are weighted by uncertainty (100 - confidence).
 type PhotoLabel struct {
-	PhotoID     uint   `gorm:"primary_key;auto_increment:false"`
-	LabelID     uint   `gorm:"primary_key;auto_increment:false;index"`
-	LabelSrc    string `gorm:"type:VARBINARY(8);"`
-	Uncertainty int    `gorm:"type:SMALLINT"`
-	Topicality  int    `gorm:"type:SMALLINT"`
-	Photo       *Photo `gorm:"PRELOAD:false"`
-	Label       *Label `gorm:"PRELOAD:true"`
+	PhotoID     uint   `gorm:"primary_key;auto_increment:false" json:"PhotoID,omitempty" yaml:"PhotoID"`
+	LabelID     uint   `gorm:"primary_key;auto_increment:false;index" json:"LabelID,omitempty" yaml:"LabelID"`
+	LabelSrc    string `gorm:"type:VARBINARY(8);" json:"LabelSrc,omitempty" yaml:"LabelSrc,omitempty"`
+	Uncertainty int    `gorm:"type:SMALLINT" json:"Uncertainty" yaml:"Uncertainty"`
+	Topicality  int    `gorm:"type:SMALLINT;default:0;" json:"Topicality" yaml:"Topicality,omitempty"`
+	NSFW        int    `gorm:"type:SMALLINT;column:nsfw;default:0;" json:"NSFW,omitempty" yaml:"NSFW,omitempty"`
+	Photo       *Photo `gorm:"PRELOAD:false" json:"-" yaml:"-"`
+	Label       *Label `gorm:"PRELOAD:true" json:"Label,omitempty" yaml:"-"`
 }
 
 // TableName returns the database table name for PhotoLabel.
@@ -145,11 +146,13 @@ func (m *PhotoLabel) ClassifyLabel() classify.Label {
 	}
 
 	result := classify.Label{
-		Name:        m.Label.LabelName,
-		Source:      m.LabelSrc,
-		Uncertainty: m.Uncertainty,
-		Topicality:  m.Topicality,
-		Priority:    m.Label.LabelPriority,
+		Name:           m.Label.LabelName,
+		Source:         m.LabelSrc,
+		Uncertainty:    m.Uncertainty,
+		Topicality:     m.Topicality,
+		Priority:       m.Label.LabelPriority,
+		NSFW:           m.Label.LabelNSFW,
+		NSFWConfidence: m.NSFW,
 	}
 
 	return result

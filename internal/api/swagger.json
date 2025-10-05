@@ -1586,6 +1586,9 @@
                 "ID": {
                     "type": "integer"
                 },
+                "NSFW": {
+                    "type": "boolean"
+                },
                 "Name": {
                     "type": "string"
                 },
@@ -1991,25 +1994,25 @@
         },
         "entity.PhotoLabel": {
             "properties": {
-                "label": {
+                "Label": {
                     "$ref": "#/definitions/entity.Label"
                 },
-                "labelID": {
+                "LabelID": {
                     "type": "integer"
                 },
-                "labelSrc": {
+                "LabelSrc": {
                     "type": "string"
                 },
-                "photo": {
-                    "$ref": "#/definitions/entity.Photo"
-                },
-                "photoID": {
+                "NSFW": {
                     "type": "integer"
                 },
-                "topicality": {
+                "PhotoID": {
                     "type": "integer"
                 },
-                "uncertainty": {
+                "Topicality": {
+                    "type": "integer"
+                },
+                "Uncertainty": {
                     "type": "integer"
                 }
             },
@@ -4007,6 +4010,9 @@
                 "ID": {
                     "type": "integer"
                 },
+                "NSFW": {
+                    "type": "boolean"
+                },
                 "Name": {
                     "type": "string"
                 },
@@ -4700,6 +4706,12 @@
                 },
                 "name": {
                     "type": "string"
+                },
+                "nsfw": {
+                    "type": "boolean"
+                },
+                "nsfw_confidence": {
+                    "type": "number"
                 },
                 "priority": {
                     "type": "integer"

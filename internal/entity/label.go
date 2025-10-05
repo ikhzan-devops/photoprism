@@ -33,8 +33,9 @@ type Label struct {
 	LabelSlug        string     `gorm:"type:VARBINARY(160);unique_index;" json:"Slug" yaml:"-"`
 	CustomSlug       string     `gorm:"type:VARBINARY(160);index;" json:"CustomSlug" yaml:"-"`
 	LabelName        string     `gorm:"type:VARCHAR(160);" json:"Name" yaml:"Name"`
-	LabelPriority    int        `json:"Priority" yaml:"Priority,omitempty"`
-	LabelFavorite    bool       `json:"Favorite" yaml:"Favorite,omitempty"`
+	LabelFavorite    bool       `gorm:"default:0;" json:"Favorite" yaml:"Favorite,omitempty"`
+	LabelPriority    int        `gorm:"default:0;" json:"Priority" yaml:"Priority,omitempty"`
+	LabelNSFW        bool       `gorm:"column:label_nsfw;default:0;" json:"NSFW,omitempty" yaml:"NSFW,omitempty"`
 	LabelDescription string     `gorm:"type:VARCHAR(2048);" json:"Description" yaml:"Description,omitempty"`
 	LabelNotes       string     `gorm:"type:VARCHAR(1024);" json:"Notes" yaml:"Notes,omitempty"`
 	LabelCategories  []*Label   `gorm:"many2many:categories;association_jointable_foreignkey:category_id" json:"-" yaml:"-"`

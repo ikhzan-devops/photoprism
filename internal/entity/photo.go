@@ -310,23 +310,29 @@ func (m *Photo) SetMediaType(newType media.Type, typeSrc string) {
 	return
 }
 
-// String returns the id or name as string.
+// PhotoLogString returns a sanitized identifier for logging that prefers
+// photo name, falling back to original name, UID, or numeric ID.
+func PhotoLogString(photoPath, photoName, originalName, photoUID string, id uint) string {
+	if photoName != "" {
+		return clean.Log(path.Join(photoPath, photoName))
+	} else if originalName != "" {
+		return clean.Log(originalName)
+	} else if photoUID != "" {
+		return "uid " + clean.Log(photoUID)
+	} else if id > 0 {
+		return fmt.Sprintf("id %d", id)
+	}
+
+	return "*Photo"
+}
+
+// String returns the id or name as string for logging purposes.
 func (m *Photo) String() string {
 	if m == nil {
 		return "Photo<nil>"
 	}
 
-	if m.PhotoName != "" {
-		return clean.Log(path.Join(m.PhotoPath, m.PhotoName))
-	} else if m.OriginalName != "" {
-		return clean.Log(m.OriginalName)
-	} else if m.PhotoUID != "" {
-		return "uid " + clean.Log(m.PhotoUID)
-	} else if m.ID > 0 {
-		return fmt.Sprintf("id %d", m.ID)
-	}
-
-	return "*Photo"
+	return PhotoLogString(m.PhotoPath, m.PhotoName, m.OriginalName, m.PhotoUID, m.ID)
 }
 
 // FirstOrCreate inserts the Photo if it does not exist and otherwise reloads the persisted row with its associations.
@@ -784,7 +790,6 @@ func (m *Photo) ShouldGenerateLabels(force bool) bool {
 // never receives invalid input from upstream detectors.
 func (m *Photo) AddLabels(labels classify.Labels) {
 	for _, classifyLabel := range labels {
-
 		title := classifyLabel.Title()
 
 		if title == "" || txt.Slug(title) == "" {
@@ -823,6 +828,21 @@ func (m *Photo) AddLabels(labels classify.Labels) {
 
 		template := NewPhotoLabel(m.ID, labelEntity.ID, classifyLabel.Uncertainty, labelSrc)
 		template.Topicality = classifyLabel.Topicality
+		score := 0
+
+		if classifyLabel.NSFWConfidence > 0 {
+			score = classifyLabel.NSFWConfidence
+		}
+
+		if classifyLabel.NSFW && score == 0 {
+			score = 100
+		}
+
+		if score > 100 {
+			score = 100
+		}
+
+		template.NSFW = score
 		photoLabel := FirstOrCreatePhotoLabel(template)
 
 		if photoLabel == nil {
@@ -832,13 +852,32 @@ func (m *Photo) AddLabels(labels classify.Labels) {
 
 		if photoLabel.HasID() {
 			updates := Values{}
+
 			if photoLabel.Uncertainty > classifyLabel.Uncertainty && photoLabel.Uncertainty < 100 {
 				updates["Uncertainty"] = classifyLabel.Uncertainty
 				updates["LabelSrc"] = labelSrc
 			}
+
 			if classifyLabel.Topicality > 0 && photoLabel.Topicality != classifyLabel.Topicality {
 				updates["Topicality"] = classifyLabel.Topicality
 			}
+
+			if classifyLabel.NSFWConfidence > 0 || classifyLabel.NSFW {
+				nsfwScore := 0
+				if classifyLabel.NSFWConfidence > 0 {
+					nsfwScore = classifyLabel.NSFWConfidence
+				}
+				if classifyLabel.NSFW && nsfwScore == 0 {
+					nsfwScore = 100
+				}
+				if nsfwScore > 100 {
+					nsfwScore = 100
+				}
+				if photoLabel.NSFW != nsfwScore {
+					updates["NSFW"] = nsfwScore
+				}
+			}
+
 			if len(updates) > 0 {
 				if err := photoLabel.Updates(updates); err != nil {
 					log.Errorf("index: %s", err)

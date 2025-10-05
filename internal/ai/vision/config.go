@@ -30,6 +30,7 @@ var (
 	DefaultTemperature    = 0.1
 	MaxTemperature        = 2.0
 	DefaultSrc            = entity.SrcImage
+	DetectNSFWLabels      = false
 )
 
 // Config reference the current configuration options.
@@ -102,6 +103,14 @@ func (c *ConfigValues) Load(fileName string) error {
 
 	if c.Thresholds.Confidence <= 0 || c.Thresholds.Confidence > 100 {
 		c.Thresholds.Confidence = DefaultThresholds.Confidence
+	}
+
+	if c.Thresholds.Topicality <= 0 || c.Thresholds.Topicality > 100 {
+		c.Thresholds.Topicality = DefaultThresholds.Topicality
+	}
+
+	if c.Thresholds.NSFW <= 0 || c.Thresholds.NSFW > 100 {
+		c.Thresholds.NSFW = DefaultThresholds.NSFW
 	}
 
 	return nil

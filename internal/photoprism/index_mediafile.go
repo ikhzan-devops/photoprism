@@ -10,6 +10,7 @@ import (
 	"github.com/jinzhu/gorm"
 
 	"github.com/photoprism/photoprism/internal/ai/classify"
+	"github.com/photoprism/photoprism/internal/ai/vision"
 	"github.com/photoprism/photoprism/internal/entity"
 	"github.com/photoprism/photoprism/internal/entity/query"
 	"github.com/photoprism/photoprism/internal/event"
@@ -58,6 +59,7 @@ func (ind *Index) UserMediaFile(m *MediaFile, o IndexOptions, originalName, phot
 	photo := entity.NewUserPhoto(o.Stack, userUID)
 	metaData := meta.NewData()
 	labels := classify.Labels{}
+	isNSFW := false
 	stripSequence := Config().Settings().StackSequences() && o.Stack
 
 	fileRoot, fileBase, filePath, fileName := m.PathNameInfo(stripSequence)
@@ -816,17 +818,23 @@ func (ind *Index) UserMediaFile(m *MediaFile, o IndexOptions, originalName, phot
 
 		// Classify images with TensorFlow?
 		if ind.findLabels {
-			labels = ind.Labels(m, entity.SrcAuto)
+			labels = m.GenerateLabels(entity.SrcAuto)
 
 			// Append labels from other sources such as face detection.
 			if len(extraLabels) > 0 {
 				labels = append(labels, extraLabels...)
 			}
+
+			isNSFW = labels.IsNSFW(vision.Config.Thresholds.GetNSFW())
 		}
 
 		// Decouple NSFW detection from label generation.
-		if !photoExists && ind.detectNsfw {
-			photo.PhotoPrivate = ind.IsNsfw(m)
+		if !photoExists {
+			if isNSFW {
+				photo.PhotoPrivate = true
+			} else if ind.detectNsfw {
+				photo.PhotoPrivate = m.DetectNSFW()
+			}
 		}
 
 		// Read metadata from embedded Exif and JSON sidecar file, if exists.
