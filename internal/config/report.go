@@ -283,6 +283,10 @@ func (c *Config) Report() (rows [][]string, cols []string) {
 		{"detect-nsfw", fmt.Sprintf("%t", c.DetectNSFW())},
 
 		// Facial Recognition.
+		{"face-engine", c.FaceEngine()},
+		{"face-engine-run", c.FaceEngineRunType()},
+		{"face-engine-retry", fmt.Sprintf("%t", c.FaceEngineRetry())},
+		{"face-engine-threads", fmt.Sprintf("%d", c.FaceEngineThreads())},
 		{"face-size", fmt.Sprintf("%d", c.FaceSize())},
 		{"face-score", fmt.Sprintf("%f", c.FaceScore())},
 		{"face-angle", fmt.Sprintf("%v", c.FaceAngles())},

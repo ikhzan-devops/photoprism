@@ -2,11 +2,17 @@ package config
 
 import (
 	"math"
+	"os"
+	"path/filepath"
+	"runtime"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/photoprism/photoprism/internal/ai/face"
+	"github.com/photoprism/photoprism/internal/ai/vision"
 )
 
 func TestConfig_FaceSize(t *testing.T) {
@@ -90,4 +96,101 @@ func TestConfig_FaceAngles(t *testing.T) {
 
 	c.options.FaceAngles = []float64{math.Pi + 0.1, math.NaN(), 4}
 	assert.Equal(t, face.DefaultAngles, c.FaceAngles())
+}
+
+func TestConfig_FaceEngineShouldRun(t *testing.T) {
+	c := NewConfig(CliTestContext())
+
+	assert.True(t, c.FaceEngineShouldRun(vision.RunOnIndex))
+	assert.True(t, c.FaceEngineShouldRun(vision.RunNewlyIndexed))
+	assert.True(t, c.FaceEngineShouldRun(vision.RunManual))
+
+	c.options.FaceEngineRun = string(vision.RunOnIndex)
+	assert.True(t, c.FaceEngineShouldRun(vision.RunOnIndex))
+	assert.False(t, c.FaceEngineShouldRun(vision.RunNewlyIndexed))
+
+	c.options.FaceEngineRun = string(vision.RunNever)
+	assert.False(t, c.FaceEngineShouldRun(vision.RunOnIndex))
+	assert.False(t, c.FaceEngineShouldRun(vision.RunNewlyIndexed))
+
+	c.options.FaceEngineRun = string(vision.RunManual)
+	assert.True(t, c.FaceEngineShouldRun(vision.RunManual))
+	assert.False(t, c.FaceEngineShouldRun(vision.RunOnDemand))
+
+	c.options.DisableFaces = true
+	assert.False(t, c.FaceEngineShouldRun(vision.RunOnIndex))
+}
+
+func TestConfig_FaceEngine(t *testing.T) {
+	c := NewConfig(CliTestContext())
+	tempModels := t.TempDir()
+	c.options.ModelsPath = tempModels
+	c.options.FaceEngine = face.EnginePigo
+
+	assert.Equal(t, face.EnginePigo, c.FaceEngine())
+
+	modelDir := filepath.Join(tempModels, "scrfs")
+	require.NoError(t, os.MkdirAll(modelDir, 0o755))
+	modelFile := filepath.Join(modelDir, face.DefaultONNXModelFilename)
+	require.NoError(t, os.WriteFile(modelFile, []byte("onnx"), 0o644))
+
+	c.options.FaceEngine = face.EngineAuto
+	assert.Equal(t, face.EngineONNX, c.FaceEngine())
+
+	c.options.FaceEngine = face.EnginePigo
+	assert.Equal(t, face.EnginePigo, c.FaceEngine())
+
+	c.options.FaceEngine = face.EngineONNX
+	assert.Equal(t, face.EngineONNX, c.FaceEngine())
+}
+
+func TestConfig_FaceEngineRunType(t *testing.T) {
+	c := NewConfig(CliTestContext())
+	assert.Equal(t, "auto", c.FaceEngineRunType())
+	assert.Equal(t, "", c.options.FaceEngineRun)
+
+	c.options.FaceEngineRun = vision.RunOnDemand
+	assert.Equal(t, vision.RunOnDemand, c.FaceEngineRunType())
+
+	c.options.FaceEngineRun = vision.RunAuto
+	c.options.FaceEngine = face.EngineONNX
+	c.options.FaceEngineThreads = 1
+	assert.Equal(t, "on-demand", c.FaceEngineRunType())
+	assert.Equal(t, "on-demand", vision.ParseRunType(c.options.FaceEngineRun))
+
+	c.options.FaceEngineThreads = 4
+	c.options.FaceEngineRun = vision.RunAuto
+	assert.Equal(t, "auto", c.FaceEngineRunType())
+	assert.Equal(t, "", c.options.FaceEngineRun)
+}
+
+func TestConfig_FaceEngineRetry(t *testing.T) {
+	c := NewConfig(CliTestContext())
+	assert.False(t, c.FaceEngineRetry())
+
+	c.options.FaceEngineRetry = false
+	assert.False(t, c.FaceEngineRetry())
+}
+
+func TestConfig_FaceEngineThreads(t *testing.T) {
+	c := NewConfig(CliTestContext())
+	expected := runtime.NumCPU() / 2
+	if expected < 1 {
+		expected = 1
+	}
+	assert.Equal(t, expected, c.FaceEngineThreads())
+
+	c.options.FaceEngineThreads = 8
+	assert.Equal(t, 8, c.FaceEngineThreads())
+}
+
+func TestConfig_FaceEngineModelPath(t *testing.T) {
+	c := NewConfig(CliTestContext())
+	path := c.FaceEngineModelPath()
+	assert.Contains(t, path, "scrfs")
+	expected := filepath.Join(c.ModelsPath(), "scrfs", face.DefaultONNXModelFilename)
+	if strings.HasSuffix(path, "scrfd_500m_bnkps_shape640x640.onnx") {
+		expected = filepath.Join(c.ModelsPath(), "scrfs", "scrfd_500m_bnkps_shape640x640.onnx")
+	}
+	assert.Equal(t, expected, path)
 }

@@ -51,16 +51,6 @@ func (w *Meta) Start(delay, interval time.Duration, force bool) (err error) {
 	// Check time when worker was last executed.
 	updateIndex := force || mutex.MetaWorker.LastRun().Before(time.Now().Add(-1*entity.IndexUpdateInterval))
 
-	// Run faces worker if needed.
-	if updateIndex || entity.UpdateFaces.Load() {
-		log.Debugf("index: running face recognition")
-		if faces := photoprism.NewFaces(w.conf); faces.Disabled() {
-			log.Debugf("index: skipping face recognition")
-		} else if facesErr := faces.Start(photoprism.FacesOptions{}); facesErr != nil {
-			log.Warn(facesErr)
-		}
-	}
-
 	// Refresh index metadata.
 	log.Debugf("index: updating metadata")
 
@@ -70,10 +60,12 @@ func (w *Meta) Start(delay, interval time.Duration, force bool) (err error) {
 	limit := 1000
 	offset := 0
 	optimized := 0
+	facesJobRequired := updateIndex || entity.UpdateFaces.Load()
 
 	labelsModelShouldRun := w.conf.VisionModelShouldRun(vision.ModelTypeLabels, vision.RunNewlyIndexed)
 	captionModelShouldRun := w.conf.VisionModelShouldRun(vision.ModelTypeCaption, vision.RunNewlyIndexed)
 	nsfwModelShouldRun := w.conf.VisionModelShouldRun(vision.ModelTypeNsfw, vision.RunNewlyIndexed)
+	faceRunNewlyIndexed := w.conf.FaceEngineShouldRun(vision.RunNewlyIndexed)
 
 	if nsfwModelShouldRun {
 		log.Debugf("index: cannot run %s model on %s", vision.ModelTypeNsfw, vision.RunNewlyIndexed)
@@ -106,9 +98,10 @@ func (w *Meta) Start(delay, interval time.Duration, force bool) (err error) {
 			generateLabels := labelsModelShouldRun && photo.ShouldGenerateLabels(false)
 			generateCaption := captionModelShouldRun && photo.ShouldGenerateCaption(entity.SrcAuto, false)
 			detectNsfw := w.conf.DetectNSFW() && !photo.PhotoPrivate
+			runDetection := faceRunNewlyIndexed && photo.IsNewlyIndexed()
 
 			// If configured, generate metadata for newly indexed photos using external vision services.
-			if photo.IsNewlyIndexed() && (generateLabels || generateCaption) {
+			if photo.IsNewlyIndexed() && (runDetection || generateLabels || generateCaption) {
 				primaryFile, fileErr := photo.PrimaryFile()
 
 				if fileErr != nil {
@@ -124,6 +117,24 @@ func (w *Meta) Start(delay, interval time.Duration, force bool) (err error) {
 							log.Debugf("index: could not open primary file %s (generate metadata)", clean.Error(mediaErr))
 						}
 					} else {
+						if runDetection {
+							if markers := primaryFile.Markers(); markers == nil {
+								log.Errorf("index: failed loading markers for %s", logName)
+							} else {
+								expected := markers.DetectedFaceCount()
+								faces, detectErr := photoprism.DetectFaces(mediaFile, expected)
+
+								if detectErr != nil {
+									log.Debugf("vision: %s in %s (detect faces)", detectErr, clean.Log(mediaFile.BaseName()))
+								} else if saved, count, applyErr := photoprism.ApplyDetectedFaces(primaryFile, faces); applyErr != nil {
+									log.Warnf("index: %s in %s (save faces)", clean.Error(applyErr), logName)
+								} else if saved {
+									photo.PhotoFaces = count
+									facesJobRequired = true
+								}
+							}
+						}
+
 						// Generate photo labels if needed.
 						if generateLabels {
 							if labels := mediaFile.GenerateLabels(entity.SrcAuto); len(labels) > 0 {
@@ -188,6 +199,7 @@ func (w *Meta) Start(delay, interval time.Duration, force bool) (err error) {
 
 	// Only update index if necessary.
 	if updateIndex {
+		facesJobRequired = true
 		// Set photo quality scores to -1 if files are missing.
 		if err = query.FlagHiddenPhotos(); err != nil {
 			log.Warnf("index: %s in optimization worker", err)
@@ -208,6 +220,15 @@ func (w *Meta) Start(delay, interval time.Duration, force bool) (err error) {
 		// Update album, subject, and label cover thumbs.
 		if err = query.UpdateCovers(); err != nil {
 			log.Warnf("index: %s in optimization worker", err)
+		}
+	}
+
+	if facesJobRequired {
+		log.Debugf("index: running face recognition")
+		if faces := photoprism.NewFaces(w.conf); faces.Disabled() {
+			log.Debugf("index: skipping face recognition")
+		} else if facesErr := faces.Start(photoprism.FacesOptions{}); facesErr != nil {
+			log.Warn(facesErr)
 		}
 	}
 

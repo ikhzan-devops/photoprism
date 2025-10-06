@@ -2,8 +2,12 @@ package config
 
 import (
 	"math"
+	"os"
+	"path/filepath"
+	"runtime"
 
 	"github.com/photoprism/photoprism/internal/ai/face"
+	"github.com/photoprism/photoprism/internal/ai/vision"
 )
 
 // FaceSize returns the face size threshold in pixels.
@@ -109,4 +113,141 @@ func (c *Config) FaceAngles() []float64 {
 	}
 
 	return angles
+}
+
+// FaceEngine returns the configured face detection engine name.
+func (c *Config) FaceEngine() string {
+	if c == nil {
+		return face.EnginePigo
+	} else if c.options.FaceEngine == face.EnginePigo || c.options.FaceEngine == face.EngineONNX {
+		return c.options.FaceEngine
+	}
+
+	desired := face.ParseEngine(c.options.FaceEngine)
+	modelPath := c.FaceEngineModelPath()
+
+	if desired == face.EngineAuto {
+		if modelPath != "" {
+			if _, err := os.Stat(modelPath); err == nil {
+				desired = face.EngineONNX
+			} else {
+				desired = face.EnginePigo
+			}
+		} else {
+			desired = face.EnginePigo
+		}
+
+		c.options.FaceEngine = desired
+	}
+
+	return desired
+}
+
+// FaceEngineRunType returns the configured run type for the face detection engine.
+func (c *Config) FaceEngineRunType() vision.RunType {
+	if c == nil {
+		return "auto"
+	}
+
+	c.options.FaceEngineRun = vision.ParseRunType(c.options.FaceEngineRun)
+
+	if c.options.FaceEngineRun == vision.RunAuto {
+		if c.FaceEngine() == face.EngineONNX && c.FaceEngineThreads() < 2 {
+			c.options.FaceEngineRun = vision.RunOnDemand
+		}
+	}
+
+	if c.options.FaceEngineRun == vision.RunAuto {
+		return "auto"
+	}
+
+	return c.options.FaceEngineRun
+}
+
+// FaceEngineShouldRun reports whether the face detection engine should execute in the
+// specified scheduling context.
+func (c *Config) FaceEngineShouldRun(when vision.RunType) bool {
+	if c == nil || c.DisableFaces() {
+		return false
+	}
+
+	run := c.FaceEngineRunType()
+	when = vision.ParseRunType(when)
+
+	switch run {
+	case vision.RunNever:
+		return false
+	case vision.RunManual:
+		return when == vision.RunManual
+	case vision.RunAlways:
+		return when != vision.RunNever
+	case vision.RunNewlyIndexed:
+		return when == vision.RunManual || when == vision.RunNewlyIndexed || when == vision.RunOnDemand
+	case vision.RunOnDemand:
+		return when == vision.RunAuto || when == vision.RunManual || when == vision.RunNewlyIndexed || when == vision.RunOnDemand || when == vision.RunOnSchedule
+	case vision.RunOnSchedule:
+		return when == vision.RunAuto || when == vision.RunManual || when == vision.RunOnSchedule || when == vision.RunOnDemand
+	case vision.RunOnIndex:
+		return when == vision.RunManual || when == vision.RunOnIndex
+	case vision.RunAuto:
+		fallthrough
+	default:
+		switch when {
+		case vision.RunAuto, vision.RunManual, vision.RunOnDemand, vision.RunOnSchedule, vision.RunNewlyIndexed, vision.RunOnIndex:
+			return true
+		case vision.RunAlways:
+			return true
+		case vision.RunNever:
+			return false
+		}
+	}
+
+	return false
+}
+
+// FaceEngineRetry controls whether detection retries at a higher resolution should be performed.
+func (c *Config) FaceEngineRetry() bool {
+	if c == nil {
+		return false
+	}
+
+	return c.FaceEngine() == face.EnginePigo && c.IndexWorkers() > 2
+}
+
+// FaceEngineThreads returns the configured thread count for ONNX inference.
+func (c *Config) FaceEngineThreads() int {
+	if c == nil {
+		return 1
+	} else if c.options.FaceEngineThreads <= 0 {
+		threads := runtime.NumCPU() / 2
+		if threads < 1 {
+			threads = 1
+		}
+
+		c.options.FaceEngineThreads = threads
+
+		return threads
+	}
+
+	return c.options.FaceEngineThreads
+}
+
+// FaceEngineModelPath returns the absolute path to the bundled SCRFD ONNX detector.
+func (c *Config) FaceEngineModelPath() string {
+	if c == nil {
+		return ""
+	}
+
+	dir := filepath.Join(c.ModelsPath(), "scrfs")
+	primary := filepath.Join(dir, face.DefaultONNXModelFilename)
+	if _, err := os.Stat(primary); err == nil {
+		return primary
+	}
+
+	legacy := filepath.Join(dir, "scrfd_500m_bnkps_shape640x640.onnx")
+	if _, err := os.Stat(legacy); err == nil {
+		return legacy
+	}
+
+	return primary
 }

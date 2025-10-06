@@ -65,7 +65,7 @@ endif
 
 # Declare "make" targets.
 all: dep build-js
-dep: dep-tensorflow dep-js
+dep: dep-tensorflow dep-onnx dep-js
 biuld: build
 build: build-go
 watch: watch-js
@@ -177,6 +177,7 @@ install:
 	@[ ! -d "$(DESTDIR)" ] || (echo "ERROR: Install path '$(DESTDIR)' already exists!"; exit 1)
 	mkdir --mode=$(INSTALL_MODE) -p $(DESTDIR)
 	env TMPDIR="$(BUILD_PATH)" ./scripts/dist/install-tensorflow.sh $(DESTDIR)
+	env TMPDIR="$(BUILD_PATH)" ./scripts/dist/install-onnx.sh $(DESTDIR)
 	rm -rf --preserve-root $(DESTDIR)/include
 	(cd $(DESTDIR) && mkdir -p bin lib assets)
 	./scripts/build.sh prod "$(DESTDIR)/bin/$(BINARY_NAME)"
@@ -192,6 +193,8 @@ install-go:
 	go build -v ./...
 install-tensorflow:
 	sudo scripts/dist/install-tensorflow.sh
+install-onnx:
+	sudo scripts/dist/install-onnx.sh
 install-darktable:
 	sudo scripts/dist/install-darktable.sh
 acceptance-sqlite-restart:
@@ -280,6 +283,8 @@ dep-tensorflow:
 	scripts/download-facenet.sh
 	scripts/download-nasnet.sh
 	scripts/download-nsfw.sh
+dep-onnx:
+	scripts/download-scrfs.sh
 dep-acceptance: storage/acceptance
 storage/acceptance:
 	[ -f "./storage/acceptance/index.db" ] || (cd storage && rm -rf acceptance && wget -c https://dl.photoprism.app/qa/acceptance.tar.gz -O - | tar -xz)

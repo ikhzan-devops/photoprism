@@ -351,6 +351,15 @@ func (c *Config) Propagate() {
 	face.ClusterDist = c.FaceClusterDist()
 	face.MatchDist = c.FaceMatchDist()
 	face.DetectionAngles = c.FaceAngles()
+	if err := face.ConfigureEngine(face.EngineSettings{
+		Name: c.FaceEngine(),
+		ONNX: face.ONNXOptions{
+			ModelPath: c.FaceEngineModelPath(),
+			Threads:   c.FaceEngineThreads(),
+		},
+	}); err != nil {
+		log.Warnf("faces: %s (configure engine)", err)
+	}
 
 	// Set default theme and locale.
 	customize.DefaultTheme = c.DefaultTheme()

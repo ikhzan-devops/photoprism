@@ -49,6 +49,10 @@ var FacesCommands = &cli.Command{
 					Aliases: []string{"f"},
 					Usage:   "removes all people and faces",
 				},
+				&cli.StringFlag{
+					Name:  "engine",
+					Usage: "regenerate markers using detection engine `NAME` (auto, pigo, onnx)",
+				},
 			},
 			Action: facesResetAction,
 		},
@@ -169,13 +173,20 @@ func facesResetAction(ctx *cli.Context) error {
 
 	w := get.Faces()
 
-	if err := w.Reset(); err != nil {
-		return err
-	} else {
-		elapsed := time.Since(start)
+	engine := strings.TrimSpace(ctx.String("engine"))
 
-		log.Infof("completed in %s", elapsed)
+	if engine != "" {
+		if err := w.ResetAndReindex(engine); err != nil {
+			return err
+		}
+	} else {
+		if err := w.Reset(); err != nil {
+			return err
+		}
 	}
+
+	elapsed := time.Since(start)
+	log.Infof("completed in %s", elapsed)
 
 	return nil
 }

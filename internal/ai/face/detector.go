@@ -64,8 +64,25 @@ var (
 	mouthCascades = []string{"lp93", "lp84", "lp82", "lp81"}
 )
 
-// Detector struct contains Pigo face detector general settings.
-type Detector struct {
+// pigoEngine implements DetectionEngine using the bundled Pigo cascades.
+type pigoEngine struct{}
+
+// newPigoEngine constructs a Pigo-backed DetectionEngine instance.
+func newPigoEngine() *pigoEngine {
+	return &pigoEngine{}
+}
+
+func (p *pigoEngine) Name() string {
+	return EnginePigo
+}
+
+// Close releases resources held by the Pigo engine (none at the moment).
+func (p *pigoEngine) Close() error {
+	return nil
+}
+
+// pigoDetector contains Pigo face detector general settings.
+type pigoDetector struct {
 	minSize       int
 	shiftFactor   float64
 	scaleFactor   float64
@@ -76,7 +93,7 @@ type Detector struct {
 }
 
 // Detect runs the detection algorithm over the provided source image.
-func Detect(fileName string, findLandmarks bool, minSize int) (faces Faces, err error) {
+func (p *pigoEngine) Detect(fileName string, findLandmarks bool, minSize int) (faces Faces, err error) {
 	defer func() {
 		if r := recover(); r != nil {
 			log.Errorf("faces: %s (panic)\nstack: %s", r, debug.Stack())
@@ -89,7 +106,7 @@ func Detect(fileName string, findLandmarks bool, minSize int) (faces Faces, err 
 
 	angles := append([]float64(nil), DetectionAngles...)
 
-	d := &Detector{
+	d := &pigoDetector{
 		minSize:       minSize,
 		shiftFactor:   0.1,
 		scaleFactor:   1.1,
@@ -123,7 +140,7 @@ func Detect(fileName string, findLandmarks bool, minSize int) (faces Faces, err 
 }
 
 // Detect runs the detection algorithm over the provided source image.
-func (d *Detector) Detect(fileName string) (faces []pigo.Detection, params pigo.CascadeParams, err error) {
+func (d *pigoDetector) Detect(fileName string) (faces []pigo.Detection, params pigo.CascadeParams, err error) {
 	if len(d.angles) == 0 {
 		// Fallback to defaults when the detector is constructed manually (e.g. tests).
 		d.angles = append([]float64(nil), DetectionAngles...)
@@ -199,7 +216,7 @@ func (d *Detector) Detect(fileName string) (faces []pigo.Detection, params pigo.
 }
 
 // Faces adds landmark coordinates to detected faces and returns the results.
-func (d *Detector) Faces(det []pigo.Detection, params pigo.CascadeParams, findLandmarks bool) (results Faces, err error) {
+func (d *pigoDetector) Faces(det []pigo.Detection, params pigo.CascadeParams, findLandmarks bool) (results Faces, err error) {
 	// Sort results by size.
 	sort.Slice(det, func(i, j int) bool {
 		return det[i].Scale > det[j].Scale

@@ -175,7 +175,7 @@ func TestDetectQualityFallback(t *testing.T) {
 func BenchmarkDetectorFacesLandmarks(b *testing.B) {
 	const sample = "testdata/18.jpg"
 
-	d := &Detector{
+	d := &pigoDetector{
 		minSize:       20,
 		shiftFactor:   0.1,
 		scaleFactor:   1.1,

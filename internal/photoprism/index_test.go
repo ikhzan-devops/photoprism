@@ -6,6 +6,7 @@ import (
 
 	"github.com/dustin/go-humanize/english"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/photoprism/photoprism/internal/ai/vision"
 	"github.com/photoprism/photoprism/internal/config"
@@ -101,4 +102,33 @@ func TestIndex_File(t *testing.T) {
 	err := ind.FileName("xxx", IndexOptionsAll())
 
 	assert.Equal(t, IndexFailed, err.Status)
+}
+
+// TestIndexConfigureFaceDetectionFacesOnlyManual ensures faces-only runs override manual scheduling.
+func TestIndexConfigureFaceDetectionFacesOnlyManual(t *testing.T) {
+	cfg := config.NewConfig(config.CliTestContext())
+	cfg.Options().FaceEngineRun = string(vision.RunManual)
+
+	ind := NewIndex(cfg, nil, nil, nil)
+	require.NotNil(t, ind)
+	require.False(t, ind.findFaces)
+
+	opt := NewIndexOptions("", true, false, true, true, true)
+	ind.configureFaceDetection(opt)
+
+	require.True(t, ind.findFaces)
+}
+
+// TestIndexConfigureFaceDetectionFacesOnlyNever confirms the scheduler honors the "never" run mode.
+func TestIndexConfigureFaceDetectionFacesOnlyNever(t *testing.T) {
+	cfg := config.NewConfig(config.CliTestContext())
+	cfg.Options().FaceEngineRun = string(vision.RunNever)
+
+	ind := NewIndex(cfg, nil, nil, nil)
+	require.NotNil(t, ind)
+
+	opt := NewIndexOptions("", true, false, true, true, true)
+	ind.configureFaceDetection(opt)
+
+	require.False(t, ind.findFaces)
 }

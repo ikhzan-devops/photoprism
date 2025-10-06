@@ -89,6 +89,7 @@ require (
 	github.com/ugjka/go-tz/v2 v2.2.6
 	github.com/urfave/cli/v2 v2.27.7
 	github.com/wamuir/graft v0.10.0
+	github.com/yalue/onnxruntime_go v1.21.0
 	github.com/zitadel/oidc/v3 v3.45.0
 	golang.org/x/mod v0.28.0
 	golang.org/x/sys v0.36.0
