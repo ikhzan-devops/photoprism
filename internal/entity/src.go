@@ -33,6 +33,7 @@ const (
 	SrcLocation Src = classify.SrcLocation // Prio 8
 	SrcMarker   Src = "marker"             // Prio 8
 	SrcImage    Src = classify.SrcImage    // Prio 8
+	SrcONNX     Src = "onnx"
 	SrcOllama   Src = "ollama"
 	SrcOpenAI   Src = "openai"
 	SrcTitle    Src = classify.SrcTitle   // Prio 16
@@ -69,6 +70,7 @@ var SrcPriority = Priorities{
 	SrcLocation: 8,
 	SrcMarker:   8,
 	SrcImage:    8,
+	SrcONNX:     16,
 	SrcOllama:   16,
 	SrcOpenAI:   16,
 	SrcTitle:    16,
@@ -117,6 +119,7 @@ var SrcDesc = map[Src]string{
 	SrcLocation: "GPS Position",
 	SrcMarker:   "Object Detection",
 	SrcImage:    "Computer Vision (default)",
+	SrcONNX:     "Computer Vision (ONNX)",
 	SrcOllama:   "Computer Vision (Ollama)",
 	SrcOpenAI:   "Computer Vision (OpenAI)",
 	SrcTitle:    "Picture Title",

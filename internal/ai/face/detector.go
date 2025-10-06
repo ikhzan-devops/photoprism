@@ -208,35 +208,45 @@ func (d *Detector) Faces(det []pigo.Detection, params pigo.CascadeParams, findLa
 	results = make(Faces, 0, len(det))
 
 	for _, face := range det {
-		// Skip result if quality is too low.
-		if face.Q < QualityThreshold(face.Scale) {
-			continue
+		score := face.Q
+		scale := face.Scale
+		requiredScore := QualityThreshold(scale)
+		scaleMin := LandmarkQualityScaleMin
+		scaleMax := LandmarkQualityScaleMax
+		fallbackCandidate := false
+		if !findLandmarks && score < requiredScore && score >= LandmarkQualityFloor && scale >= scaleMin && scale <= scaleMax && requiredScore-score <= LandmarkQualitySlack {
+			fallbackCandidate = true
 		}
 
 		faceCoord := NewArea(
 			"face",
 			face.Row,
 			face.Col,
-			face.Scale,
+			scale,
 		)
 
 		var eyesCoords []Area
 		var landmarkCoords []Area
+		var eyesFound bool
 
-		if findLandmarks && face.Scale > 50 {
-			eyesCoords = make([]Area, 0, 2)
+		needLandmarks := (findLandmarks || fallbackCandidate) && scale > 50
 
-			scale := float32(face.Scale)
+		if needLandmarks {
+			if findLandmarks {
+				eyesCoords = make([]Area, 0, 2)
+			}
+
+			scaleF := float32(scale)
 			leftCandidate := pigo.Puploc{
-				Row:      face.Row - int(0.075*scale),
-				Col:      face.Col - int(0.175*scale),
-				Scale:    scale * 0.25,
+				Row:      face.Row - int(0.075*scaleF),
+				Col:      face.Col - int(0.175*scaleF),
+				Scale:    scaleF * 0.25,
 				Perturbs: d.perturb,
 			}
 
 			leftEye := plc.RunDetector(leftCandidate, params.ImageParams, d.landmarkAngle, false)
 			leftEyeFound := leftEye.Row > 0 && leftEye.Col > 0
-			if leftEyeFound {
+			if leftEyeFound && findLandmarks {
 				eyesCoords = append(eyesCoords, NewArea(
 					"eye_l",
 					leftEye.Row,
@@ -246,15 +256,15 @@ func (d *Detector) Faces(det []pigo.Detection, params pigo.CascadeParams, findLa
 			}
 
 			rightCandidate := pigo.Puploc{
-				Row:      face.Row - int(0.075*scale),
-				Col:      face.Col + int(0.185*scale),
-				Scale:    scale * 0.25,
+				Row:      face.Row - int(0.075*scaleF),
+				Col:      face.Col + int(0.185*scaleF),
+				Scale:    scaleF * 0.25,
 				Perturbs: d.perturb,
 			}
 
 			rightEye := plc.RunDetector(rightCandidate, params.ImageParams, d.landmarkAngle, false)
 			rightEyeFound := rightEye.Row > 0 && rightEye.Col > 0
-			if rightEyeFound {
+			if rightEyeFound && findLandmarks {
 				eyesCoords = append(eyesCoords, NewArea(
 					"eye_r",
 					rightEye.Row,
@@ -264,69 +274,81 @@ func (d *Detector) Faces(det []pigo.Detection, params pigo.CascadeParams, findLa
 			}
 
 			if leftEyeFound && rightEyeFound {
-				landmarkCapacity := len(eyeCascades)*2 + len(mouthCascades) + 1
-				landmarkCoords = make([]Area, 0, landmarkCapacity)
+				eyesFound = true
 
-				for _, eye := range eyeCascades {
-					for _, flpc := range flpcs[eye] {
-						if flpc == nil {
-							continue
-						}
+				if findLandmarks {
+					landmarkCapacity := len(eyeCascades)*2 + len(mouthCascades) + 1
+					landmarkCoords = make([]Area, 0, landmarkCapacity)
 
-						flp := flpc.GetLandmarkPoint(leftEye, rightEye, params.ImageParams, d.perturb, false)
-						if flp.Row > 0 && flp.Col > 0 {
-							landmarkCoords = append(landmarkCoords, NewArea(
-								eye,
-								flp.Row,
-								flp.Col,
-								int(flp.Scale),
-							))
-						}
+					for _, eye := range eyeCascades {
+						for _, flpc := range flpcs[eye] {
+							if flpc == nil {
+								continue
+							}
 
-						flp = flpc.GetLandmarkPoint(leftEye, rightEye, params.ImageParams, d.perturb, true)
-						if flp.Row > 0 && flp.Col > 0 {
-							landmarkCoords = append(landmarkCoords, NewArea(
-								eye+"_v",
-								flp.Row,
-								flp.Col,
-								int(flp.Scale),
-							))
-						}
-					}
-				}
+							flp := flpc.GetLandmarkPoint(leftEye, rightEye, params.ImageParams, d.perturb, false)
+							if flp.Row > 0 && flp.Col > 0 {
+								landmarkCoords = append(landmarkCoords, NewArea(
+									eye,
+									flp.Row,
+									flp.Col,
+									int(flp.Scale),
+								))
+							}
 
-				for _, mouth := range mouthCascades {
-					for _, flpc := range flpcs[mouth] {
-						if flpc == nil {
-							continue
-						}
-
-						flp := flpc.GetLandmarkPoint(leftEye, rightEye, params.ImageParams, d.perturb, false)
-						if flp.Row > 0 && flp.Col > 0 {
-							landmarkCoords = append(landmarkCoords, NewArea(
-								"mouth_"+mouth,
-								flp.Row,
-								flp.Col,
-								int(flp.Scale),
-							))
+							flp = flpc.GetLandmarkPoint(leftEye, rightEye, params.ImageParams, d.perturb, true)
+							if flp.Row > 0 && flp.Col > 0 {
+								landmarkCoords = append(landmarkCoords, NewArea(
+									eye+"_v",
+									flp.Row,
+									flp.Col,
+									int(flp.Scale),
+								))
+							}
 						}
 					}
-				}
 
-				if cascades := flpcs["lp84"]; len(cascades) > 0 {
-					if flpc := cascades[0]; flpc != nil {
-						flp := flpc.GetLandmarkPoint(leftEye, rightEye, params.ImageParams, d.perturb, true)
-						if flp.Row > 0 && flp.Col > 0 {
-							landmarkCoords = append(landmarkCoords, NewArea(
-								"lp84",
-								flp.Row,
-								flp.Col,
-								int(flp.Scale),
-							))
+					for _, mouth := range mouthCascades {
+						for _, flpc := range flpcs[mouth] {
+							if flpc == nil {
+								continue
+							}
+
+							flp := flpc.GetLandmarkPoint(leftEye, rightEye, params.ImageParams, d.perturb, false)
+							if flp.Row > 0 && flp.Col > 0 {
+								landmarkCoords = append(landmarkCoords, NewArea(
+									"mouth_"+mouth,
+									flp.Row,
+									flp.Col,
+									int(flp.Scale),
+								))
+							}
+						}
+					}
+
+					if cascades := flpcs["lp84"]; len(cascades) > 0 {
+						if flpc := cascades[0]; flpc != nil {
+							flp := flpc.GetLandmarkPoint(leftEye, rightEye, params.ImageParams, d.perturb, true)
+							if flp.Row > 0 && flp.Col > 0 {
+								landmarkCoords = append(landmarkCoords, NewArea(
+									"lp84",
+									flp.Row,
+									flp.Col,
+									int(flp.Scale),
+								))
+							}
 						}
 					}
 				}
 			}
+		}
+
+		if eyesFound && fallbackCandidate && requiredScore > LandmarkQualityFloor {
+			requiredScore = LandmarkQualityFloor
+		}
+
+		if score < requiredScore {
+			continue
 		}
 
 		// Create face.

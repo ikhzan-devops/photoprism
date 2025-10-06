@@ -46,6 +46,31 @@ func (ind *Index) Faces(jpeg *MediaFile, expected int) face.Faces {
 		log.Debugf("vision: %s in %s (detect faces)", err, clean.Log(jpeg.BaseName()))
 	}
 
+	if thumbSize != thumb.Fit1280 {
+		needRetry := len(faces) == 0
+
+		if !needRetry && expected > 0 && len(faces) < expected {
+			needRetry = true
+		}
+
+		if !needRetry && len(faces) > 0 && faces.MaxScale() < 96 {
+			needRetry = true
+		}
+
+		if needRetry {
+			if altThumb, altErr := jpeg.Thumbnail(Config().ThumbCachePath(), thumb.Fit1280); altErr != nil {
+				log.Debugf("vision: %s in %s (detect faces @1280)", altErr, clean.Log(jpeg.BaseName()))
+			} else if altThumb == "" {
+				log.Debugf("vision: thumb %s not found in %s (detect faces @1280)", thumb.Fit1280, clean.Log(jpeg.BaseName()))
+			} else if retryFaces, retryErr := vision.Faces(altThumb, Config().FaceSize(), true, expected); retryErr != nil {
+				log.Debugf("vision: %s in %s (detect faces @1280)", retryErr, clean.Log(jpeg.BaseName()))
+			} else if len(retryFaces) > 0 {
+				log.Debugf("vision: retry face detection for %s using %s", clean.Log(jpeg.BaseName()), thumb.Fit1280)
+				faces = retryFaces
+			}
+		}
+	}
+
 	if l := len(faces); l > 0 {
 		log.Infof("vision: found %s in %s [%s]", english.Plural(l, "face", "faces"), clean.Log(jpeg.BaseName()), time.Since(start))
 	}
