@@ -16,7 +16,6 @@ import (
 	"github.com/photoprism/photoprism/internal/event"
 	"github.com/photoprism/photoprism/internal/form"
 	"github.com/photoprism/photoprism/pkg/clean"
-	"github.com/photoprism/photoprism/pkg/list"
 	"github.com/photoprism/photoprism/pkg/media"
 	"github.com/photoprism/photoprism/pkg/react"
 	"github.com/photoprism/photoprism/pkg/rnd"
@@ -776,9 +775,9 @@ func (m *Photo) ShouldGenerateLabels(force bool) bool {
 			continue
 		}
 
-		if list.Contains(VisionSrcList, l.LabelSrc) {
+		if SrcGenerated[l.LabelSrc] > 0 {
 			return false
-		} else if l.LabelSrc == SrcCaption && list.Contains(VisionSrcList, m.CaptionSrc) {
+		} else if l.LabelSrc == SrcCaption && SrcGenerated[m.CaptionSrc] > 0 {
 			return false
 		}
 	}
