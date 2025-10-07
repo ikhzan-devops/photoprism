@@ -48,7 +48,7 @@ verify_hash() {
 
 if [[ -f "${MODEL_FILE}" ]]; then
   CURRENT_HASH=$(hash_file "${MODEL_FILE}")
-  if [[ "${CURRENT_HASH}" == ${MODEL_HASH%% *} ]]; then
+  if [[ "${CURRENT_HASH}" == "${MODEL_HASH%% *}" ]]; then
     echo "SCRFD model already up to date."
     exit 0
   fi
