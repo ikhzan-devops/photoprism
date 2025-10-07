@@ -240,15 +240,17 @@ func (c *Config) FaceEngineModelPath() string {
 		return ""
 	}
 
-	dir := filepath.Join(c.ModelsPath(), "scrfs")
+	dir := filepath.Join(c.ModelsPath(), "scrfd")
 	primary := filepath.Join(dir, face.DefaultONNXModelFilename)
+
 	if _, err := os.Stat(primary); err == nil {
 		return primary
 	}
 
-	legacy := filepath.Join(dir, "scrfd_500m_bnkps_shape640x640.onnx")
-	if _, err := os.Stat(legacy); err == nil {
-		return legacy
+	alt := filepath.Join(dir, "scrfd_500m_bnkps_shape640x640.onnx")
+
+	if _, err := os.Stat(alt); err == nil {
+		return alt
 	}
 
 	return primary

@@ -5,7 +5,6 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
-	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -142,7 +141,7 @@ func TestConfig_FaceEngine(t *testing.T) {
 
 	assert.Equal(t, face.EnginePigo, c.FaceEngine())
 
-	modelDir := filepath.Join(tempModels, "scrfs")
+	modelDir := filepath.Join(tempModels, "scrfd")
 	require.NoError(t, os.MkdirAll(modelDir, 0o755))
 	modelFile := filepath.Join(modelDir, face.DefaultONNXModelFilename)
 	require.NoError(t, os.WriteFile(modelFile, []byte("onnx"), 0o644))
@@ -190,12 +189,14 @@ func TestConfig_FaceEngineThreads(t *testing.T) {
 }
 
 func TestConfig_FaceEngineModelPath(t *testing.T) {
-	c := NewConfig(CliTestContext())
-	path := c.FaceEngineModelPath()
-	assert.Contains(t, path, "scrfs")
-	expected := filepath.Join(c.ModelsPath(), "scrfs", face.DefaultONNXModelFilename)
-	if strings.HasSuffix(path, "scrfd_500m_bnkps_shape640x640.onnx") {
-		expected = filepath.Join(c.ModelsPath(), "scrfs", "scrfd_500m_bnkps_shape640x640.onnx")
-	}
-	assert.Equal(t, expected, path)
+	t.Run("DefaultPath", func(t *testing.T) {
+		c := NewConfig(CliTestContext())
+		tempModels := t.TempDir()
+		c.options.ModelsPath = tempModels
+
+		path := c.FaceEngineModelPath()
+		assert.Contains(t, path, "scrfd")
+		expected := filepath.Join(tempModels, "scrfd", face.DefaultONNXModelFilename)
+		assert.Equal(t, expected, path)
+	})
 }
