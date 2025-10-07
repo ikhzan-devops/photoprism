@@ -3,10 +3,12 @@ package photoprism
 import (
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/photoprism/photoprism/internal/ai/face"
 	"github.com/photoprism/photoprism/internal/entity"
 	"github.com/photoprism/photoprism/internal/entity/query"
+	"github.com/photoprism/photoprism/internal/event"
 )
 
 // FacesOptimizeResult represents the outcome of Faces.Optimize().
@@ -51,7 +53,21 @@ func (w *Faces) OptimizeFor(subj_uid string) (result FacesOptimizeResult, err er
 					// Nothing to merge.
 				} else if _, mergeErr := query.MergeFaces(merge, false); mergeErr != nil {
 					if errors.Is(mergeErr, query.ErrRetainedManualClusters) {
-						log.Warnf("%s (merge) itr %d cluster %d count %d", mergeErr, i, j, len(merge))
+						subject := entity.SubjNames.Log(merge[0].SubjUID)
+						clusterIDs := strings.Join(merge.IDs(), ", ")
+
+						event.SystemWarn([]string{
+							"faces",
+							"optimize",
+							"retained manual clusters after merge",
+							"subject %s",
+							"iteration %d",
+							"cluster %d",
+							"count %d",
+							"ids %s",
+						}, subject, i, j, len(merge), clusterIDs)
+
+						log.Debugf("faces: retained manual clusters after merge: kept %d candidate cluster(s) [%s] for subject %s (merge) itr %d cluster %d", len(merge), clusterIDs, subject, i, j)
 					} else {
 						log.Errorf("%s (merge) itr %d cluster %d count %d", mergeErr, i, j, len(merge))
 					}
