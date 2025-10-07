@@ -157,6 +157,8 @@ func (c *ConfigValues) ShouldRun(t ModelType, when RunType) bool {
 
 	if m == nil {
 		return false
+	} else if m.Disabled {
+		return false
 	}
 
 	return m.ShouldRun(when)

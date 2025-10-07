@@ -164,14 +164,6 @@ func TestConfig_FaceEngineRunType(t *testing.T) {
 	assert.Equal(t, "", c.options.FaceEngineRun)
 }
 
-func TestConfig_FaceEngineRetry(t *testing.T) {
-	c := NewConfig(CliTestContext())
-	assert.False(t, c.FaceEngineRetry())
-
-	c.options.FaceEngineRetry = false
-	assert.False(t, c.FaceEngineRetry())
-}
-
 func TestConfig_FaceEngineThreads(t *testing.T) {
 	c := NewConfig(CliTestContext())
 	expected := runtime.NumCPU() / 2

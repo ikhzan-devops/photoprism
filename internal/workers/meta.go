@@ -65,7 +65,7 @@ func (w *Meta) Start(delay, interval time.Duration, force bool) (err error) {
 	labelsModelShouldRun := w.conf.VisionModelShouldRun(vision.ModelTypeLabels, vision.RunNewlyIndexed)
 	captionModelShouldRun := w.conf.VisionModelShouldRun(vision.ModelTypeCaption, vision.RunNewlyIndexed)
 	nsfwModelShouldRun := w.conf.VisionModelShouldRun(vision.ModelTypeNsfw, vision.RunNewlyIndexed)
-	faceRunNewlyIndexed := w.conf.FaceEngineShouldRun(vision.RunNewlyIndexed)
+	faceEngineShouldRun := w.conf.FaceEngineShouldRun(vision.RunNewlyIndexed)
 
 	if nsfwModelShouldRun {
 		log.Debugf("index: cannot run %s model on %s", vision.ModelTypeNsfw, vision.RunNewlyIndexed)
@@ -97,11 +97,9 @@ func (w *Meta) Start(delay, interval time.Duration, force bool) (err error) {
 
 			generateLabels := labelsModelShouldRun && photo.ShouldGenerateLabels(false)
 			generateCaption := captionModelShouldRun && photo.ShouldGenerateCaption(entity.SrcAuto, false)
-			detectNsfw := w.conf.DetectNSFW() && !photo.PhotoPrivate
-			runDetection := faceRunNewlyIndexed && photo.IsNewlyIndexed()
 
 			// If configured, generate metadata for newly indexed photos using external vision services.
-			if photo.IsNewlyIndexed() && (runDetection || generateLabels || generateCaption) {
+			if photo.IsNewlyIndexed() && (faceEngineShouldRun || generateLabels || generateCaption) {
 				primaryFile, fileErr := photo.PrimaryFile()
 
 				if fileErr != nil {
@@ -117,7 +115,8 @@ func (w *Meta) Start(delay, interval time.Duration, force bool) (err error) {
 							log.Debugf("index: could not open primary file %s (generate metadata)", clean.Error(mediaErr))
 						}
 					} else {
-						if runDetection {
+						// Detect faces.
+						if faceEngineShouldRun {
 							if markers := primaryFile.Markers(); markers == nil {
 								log.Errorf("index: failed loading markers for %s", logName)
 							} else {
@@ -138,7 +137,7 @@ func (w *Meta) Start(delay, interval time.Duration, force bool) (err error) {
 						// Generate photo labels if needed.
 						if generateLabels {
 							if labels := mediaFile.GenerateLabels(entity.SrcAuto); len(labels) > 0 {
-								if detectNsfw {
+								if w.conf.DetectNSFW() && !photo.PhotoPrivate {
 									if labels.IsNSFW(vision.Config.Thresholds.GetNSFW()) {
 										photo.PhotoPrivate = true
 										log.Infof("vision: changed private flag of %s to %t (labels)", logName, photo.PhotoPrivate)
