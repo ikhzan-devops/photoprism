@@ -60,12 +60,12 @@ func (w *Meta) Start(delay, interval time.Duration, force bool) (err error) {
 	limit := 1000
 	offset := 0
 	optimized := 0
-	facesJobRequired := updateIndex || entity.UpdateFaces.Load()
+	updateFaces := updateIndex || entity.UpdateFaces.Load()
 
 	labelsModelShouldRun := w.conf.VisionModelShouldRun(vision.ModelTypeLabels, vision.RunNewlyIndexed)
 	captionModelShouldRun := w.conf.VisionModelShouldRun(vision.ModelTypeCaption, vision.RunNewlyIndexed)
 	nsfwModelShouldRun := w.conf.VisionModelShouldRun(vision.ModelTypeNsfw, vision.RunNewlyIndexed)
-	faceEngineShouldRun := w.conf.FaceEngineShouldRun(vision.RunNewlyIndexed)
+	detectFaces := w.conf.FaceEngineShouldRun(vision.RunNewlyIndexed)
 
 	if nsfwModelShouldRun {
 		log.Debugf("index: cannot run %s model on %s", vision.ModelTypeNsfw, vision.RunNewlyIndexed)
@@ -95,11 +95,14 @@ func (w *Meta) Start(delay, interval time.Duration, force bool) (err error) {
 
 			logName := photo.String()
 
+			// Track whether any persistence happened for the current photo.
+			updated := false
+
 			generateLabels := labelsModelShouldRun && photo.ShouldGenerateLabels(false)
 			generateCaption := captionModelShouldRun && photo.ShouldGenerateCaption(entity.SrcAuto, false)
 
 			// If configured, generate metadata for newly indexed photos using external vision services.
-			if photo.IsNewlyIndexed() && (faceEngineShouldRun || generateLabels || generateCaption) {
+			if photo.IsNewlyIndexed() && (detectFaces || generateLabels || generateCaption) {
 				primaryFile, fileErr := photo.PrimaryFile()
 
 				if fileErr != nil {
@@ -115,8 +118,11 @@ func (w *Meta) Start(delay, interval time.Duration, force bool) (err error) {
 							log.Debugf("index: could not open primary file %s (generate metadata)", clean.Error(mediaErr))
 						}
 					} else {
+						// Record whether any in-memory metadata changed before saving.
+						changed := false
+
 						// Detect faces.
-						if faceEngineShouldRun {
+						if detectFaces {
 							if markers := primaryFile.Markers(); markers == nil {
 								log.Errorf("index: failed loading markers for %s", logName)
 							} else {
@@ -129,7 +135,8 @@ func (w *Meta) Start(delay, interval time.Duration, force bool) (err error) {
 									log.Warnf("index: %s in %s (save faces)", clean.Error(applyErr), logName)
 								} else if saved {
 									photo.PhotoFaces = count
-									facesJobRequired = true
+									updateFaces = true
+									changed = true
 								}
 							}
 						}
@@ -144,6 +151,7 @@ func (w *Meta) Start(delay, interval time.Duration, force bool) (err error) {
 									}
 								}
 								photo.AddLabels(labels)
+								changed = true
 							}
 						}
 
@@ -156,24 +164,32 @@ func (w *Meta) Start(delay, interval time.Duration, force bool) (err error) {
 								if updateErr := photo.UpdateCaptionLabels(); updateErr != nil {
 									log.Warnf("index: failed to update caption labels for %s (%s)", logName, clean.Error(updateErr))
 								}
+								changed = true
 							}
 						}
 
-						// Update precalculated label photo counts if needed.
-						if err = entity.UpdateLabelCountsIfNeeded(); err != nil {
-							log.Warnf("labels: could not update photo counts (%s)", err)
+						// Persist the derived metadata updates (title, label counts) once per photo.
+						if changed {
+							if saveErr := photo.SaveVision(); saveErr == nil {
+								updated = true
+							}
 						}
 					}
 				}
+
 			}
 
-			updated, merged, optimizeErr := photo.Optimize(settings.StackMeta(), settings.StackUUID(), settings.Features.Estimates, force)
+			saved, merged, optimizeErr := photo.Optimize(settings.StackMeta(), settings.StackUUID(), settings.Features.Estimates, force)
 
 			if optimizeErr != nil {
 				log.Errorf("index: %s in optimization worker", optimizeErr)
-			} else if updated {
-				optimized++
+			} else if saved {
+				updated = true
 				log.Debugf("index: updated photo %s", logName)
+			}
+
+			if updated {
+				optimized++
 			}
 
 			for _, p := range merged {
@@ -196,9 +212,18 @@ func (w *Meta) Start(delay, interval time.Duration, force bool) (err error) {
 		updateIndex = true
 	}
 
+	// Perform face recognition.
+	if updateFaces {
+		log.Debugf("index: running face recognition")
+		if faces := photoprism.NewFaces(w.conf); faces.Disabled() {
+			log.Debugf("index: skipping face recognition")
+		} else if facesErr := faces.Start(photoprism.FacesOptions{}); facesErr != nil {
+			log.Warn(facesErr)
+		}
+	}
+
 	// Only update index if necessary.
 	if updateIndex {
-		facesJobRequired = true
 		// Set photo quality scores to -1 if files are missing.
 		if err = query.FlagHiddenPhotos(); err != nil {
 			log.Warnf("index: %s in optimization worker", err)
@@ -219,15 +244,6 @@ func (w *Meta) Start(delay, interval time.Duration, force bool) (err error) {
 		// Update album, subject, and label cover thumbs.
 		if err = query.UpdateCovers(); err != nil {
 			log.Warnf("index: %s in optimization worker", err)
-		}
-	}
-
-	if facesJobRequired {
-		log.Debugf("index: running face recognition")
-		if faces := photoprism.NewFaces(w.conf); faces.Disabled() {
-			log.Debugf("index: skipping face recognition")
-		} else if facesErr := faces.Start(photoprism.FacesOptions{}); facesErr != nil {
-			log.Warn(facesErr)
 		}
 	}
 
