@@ -152,7 +152,7 @@ func (c *Config) FaceEngineRunType() vision.RunType {
 	c.options.FaceEngineRun = vision.ParseRunType(c.options.FaceEngineRun)
 
 	if c.options.FaceEngineRun == vision.RunAuto {
-		if c.FaceEngine() == face.EngineONNX && c.FaceEngineThreads() <= 2 {
+		if c.FaceEngineThreads() <= 2 {
 			c.options.FaceEngineRun = vision.RunOnDemand
 		}
 	}
