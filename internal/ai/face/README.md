@@ -1,6 +1,6 @@
 ## Face Detection and Embedding Guidelines
 
-**Last Updated:** October 6, 2025
+**Last Updated:** October 7, 2025
 
 ### Overview
 
@@ -58,6 +58,22 @@ All embeddings, regardless of origin, are normalized to unit length (‖x‖₂�
 - Cluster materialisation now pre-sizes buffers; `BenchmarkClusterMaterialize` reports ~14.8 µs/op with 64 allocations (≈56 KB) versus the legacy ~29.8 µs/op with 384 allocations (≈105 KB).
 
 This guarantees that Euclidean distance comparisons are equivalent to cosine comparisons, aligning our thresholds with FaceNet literature.
+
+### Manual Cluster Merging & Retained Markers
+
+The `Faces.Optimize` loop still prefers the operator-curated clusters (`face_src = 'manual'`). When multiple manual clusters for the same subject can be merged, `query.MergeFaces` materialises a midpoint cluster and reassigns markers to it. If some markers remain attached to the original clusters (for example because their embeddings sit far from the midpoint), the old clusters cannot be purged and the optimiser now emits a **warning**:
+
+```
+faces: retained manual clusters after merge: kept 4 candidate cluster(s) [...] for subject <uid> because markers still reference them
+```
+
+This is informational—the optimiser skips that merge and progresses. To reduce noise, consider:
+
+- Running `photoprism faces reset --engine=<pigo|onnx>` to regenerate markers with consistent embeddings.
+- Reviewing the subject’s manual clusters in the UI and trimming outliers or reassigning photos to other people.
+- Confirming that the remaining clusters genuinely represent different appearances (lighting, age); in that case it is safe to ignore the warning.
+
+No automatic data cleanup runs in this scenario, so operators remain in control of manual edits.
 
 #### Midpoint Computation
 

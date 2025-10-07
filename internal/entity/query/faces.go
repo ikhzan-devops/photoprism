@@ -1,7 +1,9 @@
 package query
 
 import (
+	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/jinzhu/gorm"
 
@@ -16,6 +18,10 @@ type IDs []string
 
 // FaceMap maps identification strings to face entities.
 type FaceMap map[string]entity.Face
+
+// ErrRetainedManualClusters indicates that candidate clusters could not be purged after merging
+// because markers still reference them. Callers may treat this as a non-fatal warning.
+var ErrRetainedManualClusters = errors.New("faces: retained manual clusters after merge")
 
 // FacesByID retrieves faces from the database and returns a map with the Face ID as key.
 func FacesByID(knownOnly, unmatchedOnly, hidden, ignored bool) (FaceMap, IDs, error) {
@@ -223,7 +229,7 @@ func MergeFaces(merge entity.Faces, ignored bool) (merged *entity.Face, err erro
 	} else if removed > 0 {
 		log.Debugf("faces: removed %d orphans of %d candidate for subject %s", removed, len(merge), clean.Log(subjUID))
 	} else {
-		return merged, fmt.Errorf("faces: failed to remove any orphan clusters of %d candidate for subject %s", len(merge), clean.Log(subjUID))
+		return merged, fmt.Errorf("%w: kept %d candidate cluster(s) [%s] for subject %s because markers still reference them", ErrRetainedManualClusters, len(merge), clean.Log(strings.Join(merge.IDs(), ", ")), clean.Log(subjUID))
 	}
 
 	return merged, err
