@@ -152,7 +152,7 @@ func (c *Config) FaceEngineRunType() vision.RunType {
 	c.options.FaceEngineRun = vision.ParseRunType(c.options.FaceEngineRun)
 
 	if c.options.FaceEngineRun == vision.RunAuto {
-		if c.FaceEngine() == face.EngineONNX && c.FaceEngineThreads() < 2 {
+		if c.FaceEngine() == face.EngineONNX && c.FaceEngineThreads() <= 2 {
 			c.options.FaceEngineRun = vision.RunOnDemand
 		}
 	}
@@ -193,10 +193,12 @@ func (c *Config) FaceEngineShouldRun(when vision.RunType) bool {
 		fallthrough
 	default:
 		switch when {
-		case vision.RunAuto, vision.RunManual, vision.RunOnDemand, vision.RunOnSchedule, vision.RunNewlyIndexed, vision.RunOnIndex:
+		case vision.RunAuto, vision.RunAlways, vision.RunManual, vision.RunOnDemand, vision.RunOnSchedule:
 			return true
-		case vision.RunAlways:
-			return true
+		case vision.RunOnIndex:
+			return c.FaceEngineThreads() > 2
+		case vision.RunNewlyIndexed:
+			return c.FaceEngineThreads() <= 2
 		case vision.RunNever:
 			return false
 		}

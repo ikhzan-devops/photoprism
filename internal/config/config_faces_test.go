@@ -99,26 +99,39 @@ func TestConfig_FaceAngles(t *testing.T) {
 }
 
 func TestConfig_FaceEngineShouldRun(t *testing.T) {
-	c := NewConfig(CliTestContext())
+	t.Run("AutoHighThreads", func(t *testing.T) {
+		c := NewConfig(CliTestContext())
+		c.options.FaceEngineThreads = 4
 
-	assert.True(t, c.FaceEngineShouldRun(vision.RunOnIndex))
-	assert.True(t, c.FaceEngineShouldRun(vision.RunNewlyIndexed))
-	assert.True(t, c.FaceEngineShouldRun(vision.RunManual))
+		assert.True(t, c.FaceEngineShouldRun(vision.RunOnIndex))
+		assert.False(t, c.FaceEngineShouldRun(vision.RunNewlyIndexed))
+		assert.True(t, c.FaceEngineShouldRun(vision.RunManual))
+	})
+	t.Run("AutoLowThreads", func(t *testing.T) {
+		c := NewConfig(CliTestContext())
+		c.options.FaceEngineThreads = 2
 
-	c.options.FaceEngineRun = string(vision.RunOnIndex)
-	assert.True(t, c.FaceEngineShouldRun(vision.RunOnIndex))
-	assert.False(t, c.FaceEngineShouldRun(vision.RunNewlyIndexed))
+		assert.False(t, c.FaceEngineShouldRun(vision.RunOnIndex))
+		assert.True(t, c.FaceEngineShouldRun(vision.RunNewlyIndexed))
+	})
+	t.Run("ExplicitRunModes", func(t *testing.T) {
+		c := NewConfig(CliTestContext())
 
-	c.options.FaceEngineRun = string(vision.RunNever)
-	assert.False(t, c.FaceEngineShouldRun(vision.RunOnIndex))
-	assert.False(t, c.FaceEngineShouldRun(vision.RunNewlyIndexed))
+		c.options.FaceEngineRun = vision.RunOnIndex
+		assert.True(t, c.FaceEngineShouldRun(vision.RunOnIndex))
+		assert.False(t, c.FaceEngineShouldRun(vision.RunNewlyIndexed))
 
-	c.options.FaceEngineRun = string(vision.RunManual)
-	assert.True(t, c.FaceEngineShouldRun(vision.RunManual))
-	assert.False(t, c.FaceEngineShouldRun(vision.RunOnDemand))
+		c.options.FaceEngineRun = vision.RunNever
+		assert.False(t, c.FaceEngineShouldRun(vision.RunOnIndex))
+		assert.False(t, c.FaceEngineShouldRun(vision.RunNewlyIndexed))
 
-	c.options.DisableFaces = true
-	assert.False(t, c.FaceEngineShouldRun(vision.RunOnIndex))
+		c.options.FaceEngineRun = vision.RunManual
+		assert.True(t, c.FaceEngineShouldRun(vision.RunManual))
+		assert.False(t, c.FaceEngineShouldRun(vision.RunOnDemand))
+
+		c.options.DisableFaces = true
+		assert.False(t, c.FaceEngineShouldRun(vision.RunOnIndex))
+	})
 }
 
 func TestConfig_FaceEngine(t *testing.T) {

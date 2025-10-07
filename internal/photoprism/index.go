@@ -65,6 +65,7 @@ func (ind *Index) configureFaceDetection(o IndexOptions) {
 	}
 
 	faceRun := vision.RunOnIndex
+
 	if o.FacesOnly {
 		faceRun = vision.RunManual
 	}
