@@ -6,7 +6,7 @@ TODAY=$(date -u +%Y%m%d)
 
 MODEL_SOURCE="scrfd_500m_bnkps_shape640x640.onnx"
 LOCAL_MODEL_NAME="scrfd.onnx"
-PRIMARY_URL="https://dl.photoprism.app/onnx/scrfd/${MODEL_SOURCE}?${TODAY}"
+PRIMARY_URL="https://dl.photoprism.app/onnx/models/${MODEL_SOURCE}?${TODAY}"
 FALLBACK_URL="https://raw.githubusercontent.com/laolaolulu/FaceTrain/master/model/scrfd/${MODEL_SOURCE}"
 MODEL_URL=${MODEL_URL:-"${PRIMARY_URL}"}
 MODELS_PATH="assets/models"
