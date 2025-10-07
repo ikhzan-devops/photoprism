@@ -1,6 +1,6 @@
 # PhotoPrism® Repository Guidelines
 
-**Last Updated:** October 4, 2025
+**Last Updated:** October 7, 2025
 
 ## Purpose
 
@@ -268,6 +268,7 @@ If anything in this file conflicts with the `Makefile` or the Developer Guide, t
 
 - ImportWorker may skip files if an identical file already exists (duplicate detection). Use unique copies or assert DB rows after ensuring a non‑duplicate destination.
 - Mixed roots: when testing related files, keep `ExamplesPath()/ImportPath()/OriginalsPath()` consistent so `RelatedFiles` and `AllowExt` behave as expected.
+- `IndexOptions*` helpers now require a `*config.Config`; pass the active config (or `config.NewMinimalTestConfig(t.TempDir())` in unit tests) so face/label/NSFW scheduling matches the current run.
 
 ### CLI Usage & Assertions
 

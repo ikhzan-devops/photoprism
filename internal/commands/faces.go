@@ -176,7 +176,7 @@ func facesResetAction(ctx *cli.Context) error {
 	engine := strings.TrimSpace(ctx.String("engine"))
 
 	if engine != "" {
-		if err := w.ResetAndReindex(engine); err != nil {
+		if err := w.ResetAndReindex(engine, get.Index()); err != nil {
 			return err
 		}
 	} else {
@@ -267,7 +267,7 @@ func facesIndexAction(ctx *cli.Context) error {
 		indexStart := time.Now()
 		_, lastFound = w.LastRun()
 		convert := settings.Index.Convert && conf.SidecarWritable()
-		opt := photoprism.NewIndexOptions(subPath, true, convert, true, true, true)
+		opt := photoprism.NewIndexOptions(subPath, true, convert, true, true, true, conf)
 
 		found, indexed = w.Start(opt)
 
