@@ -15,7 +15,7 @@ fi
 
 DESTDIR=$(realpath "${DESTDIR_ARG}")
 
-if [[ $(id -u) != 0 ]] && ([[ "${DESTDIR}" == "/usr" ]] || [[ "${DESTDIR}" == "/usr/local" ]]); then
+if [[ $(id -u) != 0 ]] && { [[ "${DESTDIR}" == "/usr" ]] || [[ "${DESTDIR}" == "/usr/local" ]]; }; then
   echo "Error: Run ${0##*/} as root to install in '${DESTDIR}'." >&2
   exit 1
 fi
