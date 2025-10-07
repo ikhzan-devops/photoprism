@@ -13,6 +13,8 @@ Key changes:
 - All face embeddings are now L2-normalized at creation, midpoint calculation, and deserialization time to keep cosine and Euclidean comparisons consistent.
 - Benchmarks were added to track the cost of hotspot routines (`Embedding.Dist` and `EmbeddingsMidpoint`).
 
+> **TODO:** Persist detector provenance in `FaceSrc` (e.g., use `entity.SrcONNX` for SCRFD detections) so hybrid libraries can toggle background filtering per embedding source when upgrading from Pigo.
+
 ### Detection Pipeline
 
 PhotoPrism now supports two interchangeable detection engines:
