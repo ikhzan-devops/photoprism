@@ -76,7 +76,7 @@ If you have used a *.deb* package for installation, you may need to remove the c
 
 PhotoPrism packages bundle TensorFlow 2.18.0 and, starting with the October 2025 builds, ONNX Runtime 1.22.0 as described in [`specs/intelligence/onnx-face-detection.md`](../../../specs/intelligence/onnx-face-detection.md). The shared libraries for both frameworks are shipped inside `/opt/photoprism/lib`, so no additional system packages are needed to switch `PHOTOPRISM_FACE_ENGINE` to `onnx`. The binaries still rely on glibc ≥ 2.35 and the standard C/C++ runtime libraries (`libstdc++6`, `libgcc_s1`, `libgomp1`, …) provided by your distribution.
 
-### Required runtime packages
+### Required Runtime Packages
 
 Install the following packages **before** running PhotoPrism so that thumbnailing, metadata extraction, and the SQLite fallback database work out of the box:
 
@@ -88,17 +88,19 @@ Install the following packages **before** running PhotoPrism so that thumbnailin
 
 These packages pull in the full libvips stack (GLib, libjpeg/libtiff/libwebp, archive/zstd, etc.) that the PhotoPrism binary links against. Run `ldd /opt/photoprism/bin/photoprism` if you need to diagnose missing libraries on custom distributions.
 
-### Recommended extras
+### Recommended Extras
 
 For extended RAW processing, HEIF/HEIC support, and database scalability we recommend installing:
 
 - MariaDB or MariaDB Server (external database)
 - Darktable and/or RawTherapee (RAW converters)
 - ImageMagick (CLI utilities)
-- libheif-tools / libheif-examples (HEIF decoder, package name depends on distro)
+- libheif (prefer the up-to-date binaries from [dl.photoprism.app/dist/libheif/](https://dl.photoprism.app/dist/libheif/); install with `bash <(curl -s https://raw.githubusercontent.com/photoprism/photoprism/develop/scripts/dist/install-libheif.sh)` when distro packages are outdated)
 - librsvg2-bin or librsvg2-tools (SVG conversion helpers)
 
 Use `sudo apt install`, `sudo dnf install`, or `sudo zypper install` with the package names above to pull them in as needed.
+
+We publish the same libheif builds that ship in our Docker images. They include fixes for rotation metadata and newer iOS HEIC variants that are often missing from distribution packages. Advanced users can regenerate them via `make build-libheif-*`, which calls `scripts/dist/build-libheif.sh` for each supported base image and architecture before uploading the archives to `dl.photoprism.app`.
 
 Keep in mind that even if all dependencies are installed, it is possible that you are using a version that is not fully compatible with your pictures, phone, or camera. Our team cannot [provide support](https://www.photoprism.app/kb/getting-support) in these cases if the same issue does not occur with our [official Docker images](https://docs.photoprism.app/getting-started/docker-compose/). Details on the packages and package versions we use can be found in the Dockerfiles available in our [public project repository](https://github.com/photoprism/photoprism/tree/develop/docker).
 
