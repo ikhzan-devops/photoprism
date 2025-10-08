@@ -120,7 +120,7 @@ After unpacking the binaries you only need a writable configuration and storage 
 
 Run `photoprism --help` in a terminal to get an [overview of the command flags and environment variables](https://docs.photoprism.app/getting-started/config-options/) available for configuration. Their current values can always be displayed with the `photoprism config` command.
 
-### Configuration precedence
+### Precedence
 
 PhotoPrism reads settings in the following order (later entries override earlier ones):
 
