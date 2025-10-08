@@ -145,54 +145,62 @@ func TestConfig_FaceEngine(t *testing.T) {
 }
 
 func TestConfig_FaceEngineRunType(t *testing.T) {
-	c := NewConfig(CliTestContext())
+	t.Run("AutoDefaults", func(t *testing.T) {
+		c := NewConfig(CliTestContext())
+		c.options.FaceEngineThreads = 1
+		assert.Equal(t, "auto", vision.ReportRunType(c.FaceEngineRunType()))
 
-	c.options.FaceEngineThreads = 1
-	assert.Equal(t, "auto", vision.ReportRunType(c.FaceEngineRunType()))
+		c.options.DisableFaces = true
+		assert.Equal(t, "never", vision.ReportRunType(c.FaceEngineRunType()))
+		c.options.DisableFaces = false
 
-	c.options.DisableFaces = true
-	assert.Equal(t, "never", vision.ReportRunType(c.FaceEngineRunType()))
-	c.options.DisableFaces = false
-
-	c.options.FaceEngineThreads = 4
-	assert.Equal(t, "auto", vision.ReportRunType(c.FaceEngineRunType()))
-}
-
-func TestConfig_FaceEngineRunType_DisabledFaceModel(t *testing.T) {
-	origVision := vision.Config
-	t.Cleanup(func() {
-		vision.Config = origVision
+		c.options.FaceEngineThreads = 4
+		assert.Equal(t, "auto", vision.ReportRunType(c.FaceEngineRunType()))
 	})
+	t.Run("DisabledFaceModel", func(t *testing.T) {
+		origVision := vision.Config
+		t.Cleanup(func() { vision.Config = origVision })
 
-	c := NewConfig(CliTestContext())
-	vision.Config = &vision.ConfigValues{Models: vision.Models{{Type: vision.ModelTypeFace, Disabled: true}}}
-	assert.Equal(t, vision.RunNever, c.FaceEngineRunType())
-}
-
-func TestConfig_FaceEngineRunType_NoFaceModel(t *testing.T) {
-	origVision := vision.Config
-	t.Cleanup(func() {
-		vision.Config = origVision
+		vision.Config = &vision.ConfigValues{Models: vision.Models{{Type: vision.ModelTypeFace, Disabled: true}}}
+		c := NewConfig(CliTestContext())
+		assert.Equal(t, vision.RunNever, c.FaceEngineRunType())
 	})
+	t.Run("NoFaceModel", func(t *testing.T) {
+		origVision := vision.Config
+		t.Cleanup(func() { vision.Config = origVision })
 
-	c := NewConfig(CliTestContext())
-	vision.Config = &vision.ConfigValues{Models: vision.Models{}}
-	assert.Equal(t, vision.RunNever, c.FaceEngineRunType())
-}
-
-func TestConfig_FaceEngineRunType_DelegatesToVisionModel(t *testing.T) {
-	origVision := vision.Config
-	t.Cleanup(func() {
-		vision.Config = origVision
+		vision.Config = &vision.ConfigValues{Models: vision.Models{}}
+		c := NewConfig(CliTestContext())
+		assert.Equal(t, vision.RunNever, c.FaceEngineRunType())
 	})
+	t.Run("DelegatesToVisionModel", func(t *testing.T) {
+		origVision := vision.Config
+		t.Cleanup(func() { vision.Config = origVision })
 
-	c := NewConfig(CliTestContext())
-	vision.Config = &vision.ConfigValues{Models: vision.Models{{Type: vision.ModelTypeFace}}}
-	m := vision.Config.Model(vision.ModelTypeFace)
-	require.NotNil(t, m)
-	m.Run = string(vision.RunOnSchedule)
-	require.Equal(t, vision.RunOnSchedule, vision.Config.RunType(vision.ModelTypeFace))
-	assert.Equal(t, vision.RunOnSchedule, c.FaceEngineRunType())
+		vision.Config = &vision.ConfigValues{Models: vision.Models{{Type: vision.ModelTypeFace}}}
+		c := NewConfig(CliTestContext())
+		m := vision.Config.Model(vision.ModelTypeFace)
+		require.NotNil(t, m)
+		m.Run = vision.RunOnSchedule
+		require.Equal(t, vision.RunOnSchedule, vision.Config.RunType(vision.ModelTypeFace))
+		assert.Equal(t, vision.RunOnSchedule, c.FaceEngineRunType())
+	})
+	t.Run("VisionModelShouldRunFace", func(t *testing.T) {
+		origVision := vision.Config
+		t.Cleanup(func() { vision.Config = origVision })
+
+		vision.Config = &vision.ConfigValues{Models: vision.Models{{Type: vision.ModelTypeFace}}}
+		c := NewConfig(CliTestContext())
+
+		m := vision.Config.Model(vision.ModelTypeFace)
+		require.NotNil(t, m)
+		m.Run = vision.RunOnSchedule
+
+		assert.True(t, c.VisionModelShouldRun(vision.ModelTypeFace, vision.RunOnSchedule))
+
+		m.Disabled = true
+		assert.False(t, c.VisionModelShouldRun(vision.ModelTypeFace, vision.RunOnSchedule))
+	})
 }
 
 func TestConfig_FaceEngineThreads(t *testing.T) {

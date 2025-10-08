@@ -57,6 +57,10 @@ func (w *Vision) StartScheduled() {
 
 // scheduledModels returns the model types that should run for scheduled jobs.
 func (w *Vision) scheduledModels() []string {
+	if w.conf == nil {
+		return nil
+	}
+
 	models := make([]string, 0, 4)
 
 	if w.conf.VisionModelShouldRun(vision.ModelTypeLabels, vision.RunOnSchedule) {
@@ -103,10 +107,6 @@ func (w *Vision) Start(filter string, count int, models []string, customSrc stri
 	defer mutex.VisionWorker.Stop()
 
 	models = vision.FilterModels(models, runType, func(mt vision.ModelType, when vision.RunType) bool {
-		if mt == vision.ModelTypeFace {
-			return w.conf.FaceEngineShouldRun(when)
-		}
-
 		return w.conf.VisionModelShouldRun(mt, when)
 	})
 

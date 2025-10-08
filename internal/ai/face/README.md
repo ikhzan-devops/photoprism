@@ -116,6 +116,8 @@ Additional safeguards were introduced in October 2025 so stubborn clusters are o
 | `FACE_SCORE`             | `9.0` (with dynamic offsets) | Base quality threshold before scale adjustments.                                                |
 | `FACE_OVERLAP`           | `42`                         | Maximum allowed IoU when deduplicating markers.                                                 |
 
+Run scheduling is configured through the face model entry in `vision.yml`. Adjust the model’s `Run` value (for example `on-schedule`, `manual`, or `never`) to control when detection and embedding jobs execute—no separate `FACE_ENGINE_RUN` flag is required.
+
 > Additional merge tuning: set `PHOTOPRISM_FACE_MERGE_MAX_RETRY` to control how often manual clusters are retried (default 1, `0` = unlimited). See the optimiser notes above.
 
 ### Benchmark Reference

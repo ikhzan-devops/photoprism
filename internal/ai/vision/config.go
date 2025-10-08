@@ -164,6 +164,21 @@ func (c *ConfigValues) ShouldRun(t ModelType, when RunType) bool {
 	return m.ShouldRun(when)
 }
 
+// RunType returns the normalized run type for the first enabled model matching
+// the provided type. Disabled or missing models fall back to RunNever so
+// callers can treat the result as authoritative scheduling information.
+func (c *ConfigValues) RunType(t ModelType) RunType {
+	m := c.Model(t)
+
+	if m == nil {
+		return RunNever
+	} else if m.Disabled {
+		return RunNever
+	}
+
+	return m.RunType()
+}
+
 // IsDefault checks whether the specified type is the built-in default model.
 func (c *ConfigValues) IsDefault(t ModelType) bool {
 	m := c.Model(t)

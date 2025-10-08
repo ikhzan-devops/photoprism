@@ -123,6 +123,10 @@ func (c *Config) FaceEngine() string {
 		return c.options.FaceEngine
 	}
 
+	if vision.Config == nil {
+		return face.EngineNone
+	}
+
 	desired := face.ParseEngine(c.options.FaceEngine)
 	modelPath := c.FaceEngineModelPath()
 
@@ -149,6 +153,10 @@ func (c *Config) FaceEngine() string {
 // or faces are disabled entirely, the run type falls back to RunNever.
 func (c *Config) FaceEngineRunType() vision.RunType {
 	if c == nil {
+		return vision.RunNever
+	}
+
+	if vision.Config == nil {
 		return vision.RunNever
 	}
 

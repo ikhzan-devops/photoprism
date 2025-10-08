@@ -51,6 +51,10 @@ func (c *Config) VisionModelShouldRun(t vision.ModelType, when vision.RunType) b
 		return false
 	}
 
+	if t == vision.ModelTypeFace && c.DisableFaces() {
+		return false
+	}
+
 	if t == vision.ModelTypeLabels && c.DisableClassification() {
 		return false
 	}
@@ -61,6 +65,10 @@ func (c *Config) VisionModelShouldRun(t vision.ModelType, when vision.RunType) b
 
 	if vision.Config == nil {
 		return false
+	}
+
+	if t == vision.ModelTypeFace {
+		return c.FaceEngineShouldRun(when)
 	}
 
 	return vision.Config.ShouldRun(t, when)
