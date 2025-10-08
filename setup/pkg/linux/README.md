@@ -26,7 +26,7 @@ Since the packages currently do not include a default configuration, we recommen
 
 ### *.deb* Packages for Ubuntu / Debian Linux
 
-As an alternative to the plain *tar.gz* archives, that you need to unpack manually, we also offer *.deb* packages for Debian-based distributions such as Ubuntu Linux. Note that these packages are not fully mature yet and will install `-dev` packages to satisfy library dependencies. This may result in more packages being installed than are actually needed in production environments.
+As an alternative to the plain *tar.gz* archives, that you need to unpack manually, we also offer *.deb* packages for Debian-based distributions such as Ubuntu Linux. They install PhotoPrism under `/opt/photoprism`, add a `/usr/local/bin/photoprism` symlink, create `/etc/photoprism/defaults.yml`, and pull in the runtime libraries listed in the [Dependencies](#dependencies) section.
 
 On servers with a **64-bit Intel or AMD CPU**, our [latest stable release](https://github.com/photoprism/photoprism/releases) can be installed as follows:
 
@@ -42,7 +42,23 @@ curl -sLO https://dl.photoprism.app/pkg/linux/deb/arm64.deb
 sudo apt install --no-install-recommends ./arm64.deb
 ```
 
-This installs PhotoPrism to `/opt/photoprism`, adds a `/usr/local/bin/photoprism` symlink for the CLI command, an `/etc/photoprism/defaults.yml` file and the required system dependencies (omit `--no-install-recommends` to also install MariaDB, Darktable, and RawTherapee).
+Omit `--no-install-recommends` if you want APT to install MariaDB, Darktable, RawTherapee, ImageMagick, and other recommended extras automatically.
+
+### *.rpm* Packages for Fedora / RHEL / openSUSE
+
+For RPM-based distributions we publish *.rpm* packages that mirror the layout described above. Install the latest release on **x86_64** hardware with:
+
+```
+sudo dnf install https://dl.photoprism.app/pkg/linux/rpm/x86_64.rpm
+```
+
+and on **aarch64** (ARM64):
+
+```
+sudo dnf install https://dl.photoprism.app/pkg/linux/rpm/aarch64.rpm
+```
+
+Replace `dnf` with `zypper` on openSUSE (use `--allow-unsigned-rpm` when required). On distributions that do not ship FFmpeg in the base repositories, enable the appropriate multimedia repository (EPEL, RPM Fusion, Packman, …) before installing the dependencies below.
 
 ### AUR Packages for Arch Linux
 
@@ -58,7 +74,31 @@ If you have used a *.deb* package for installation, you may need to remove the c
 
 ## Dependencies
 
-In order to use all PhotoPrism features and have [full file format support](https://www.photoprism.app/kb/file-formats), additional system dependencies **must be installed** as they are not included in the packages we provide, for example exiftool, darktable, rawtherapee, [libheif](https://dl.photoprism.app/dist/libheif/README.html), imagemagick, libvips, libjxl, libjxl-tools, ffmpeg, libavcodec-extra, libde265, libaom, libvpx, libwebm, mariadb, sqlite3, and tzdata. The actual names may vary depending on what distribution you use.
+PhotoPrism packages bundle TensorFlow 2.18.0 and, starting with the October 2025 builds, ONNX Runtime 1.22.0 as described in [`specs/intelligence/onnx-face-detection.md`](../../../specs/intelligence/onnx-face-detection.md). The shared libraries for both frameworks are shipped inside `/opt/photoprism/lib`, so no additional system packages are needed to switch `PHOTOPRISM_FACE_ENGINE` to `onnx`. The binaries still rely on glibc ≥ 2.35 and the standard C/C++ runtime libraries (`libstdc++6`, `libgcc_s1`, `libgomp1`, …) provided by your distribution.
+
+### Required runtime packages
+
+Install the following packages **before** running PhotoPrism so that thumbnailing, metadata extraction, and the SQLite fallback database work out of the box:
+
+| Distribution family          | Command                                                                                                                                              |
+|------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Debian / Ubuntu              | `sudo apt install libvips42t64 libimage-exiftool-perl ffmpeg sqlite3 tzdata`<br/>Use `libvips42` or, as a fallback, `libvips-dev` on older releases. |
+| Fedora / RHEL / Alma / Rocky | `sudo dnf install vips perl-Image-ExifTool ffmpeg sqlite tzdata`                                                                                     |
+| openSUSE                     | `sudo zypper install vips perl-Image-ExifTool ffmpeg sqlite3 tzdata`                                                                                 |
+
+These packages pull in the full libvips stack (GLib, libjpeg/libtiff/libwebp, archive/zstd, etc.) that the PhotoPrism binary links against. Run `ldd /opt/photoprism/bin/photoprism` if you need to diagnose missing libraries on custom distributions.
+
+### Recommended extras
+
+For extended RAW processing, HEIF/HEIC support, and database scalability we recommend installing:
+
+- MariaDB or MariaDB Server (external database)
+- Darktable and/or RawTherapee (RAW converters)
+- ImageMagick (CLI utilities)
+- libheif-tools / libheif-examples (HEIF decoder, package name depends on distro)
+- librsvg2-bin or librsvg2-tools (SVG conversion helpers)
+
+Use `sudo apt install`, `sudo dnf install`, or `sudo zypper install` with the package names above to pull them in as needed.
 
 Keep in mind that even if all dependencies are installed, it is possible that you are using a version that is not fully compatible with your pictures, phone, or camera. Our team cannot [provide support](https://www.photoprism.app/kb/getting-support) in these cases if the same issue does not occur with our [official Docker images](https://docs.photoprism.app/getting-started/docker-compose/). Details on the packages and package versions we use can be found in the Dockerfiles available in our [public project repository](https://github.com/photoprism/photoprism/tree/develop/docker).
 
