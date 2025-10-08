@@ -198,6 +198,10 @@ func TestConfig_FaceEngineRunType(t *testing.T) {
 
 		assert.True(t, c.VisionModelShouldRun(vision.ModelTypeFace, vision.RunOnSchedule))
 
+		c.options.DisableFaces = true
+		assert.False(t, c.VisionModelShouldRun(vision.ModelTypeFace, vision.RunOnSchedule))
+		c.options.DisableFaces = false
+
 		m.Disabled = true
 		assert.False(t, c.VisionModelShouldRun(vision.ModelTypeFace, vision.RunOnSchedule))
 	})
