@@ -22,7 +22,7 @@ PhotoPrism now supports two interchangeable detection engines:
 - **Pigo** (default) — CPU-only cascade classifier, retains historical behaviour.
 - **ONNX SCRFD 0.5g** — optional ONNX Runtime-backed CNN that delivers higher recall on occluded or off-axis faces. The ONNX engine consumes 720 px thumbnails (model input 640 px), schedules work on the meta/vision workers, and defaults to half the available CPUs (minimum 1 thread). The engine is enabled automatically when `FACE_ENGINE=auto` and the bundled SCRFD model is present (the prebuilt runtime targets glibc ≥ 2.27 on x86_64/arm64). Operators can switch at runtime via `photoprism --face-engine=<auto|pigo|onnx>` or `photoprism faces reset --engine=<auto|pigo|onnx>` for a full re-index.
 
-Runtime selection lives in `Config.FaceEngine()`; `auto` resolves to ONNX when the SCRFD assets are available, otherwise Pigo. `Config.FaceEngineRunType()` mirrors the vision run-type semantics: ONNX defaults to asynchronous `on-demand` mode when only a single inference thread is configured so the indexer remains responsive.
+Runtime selection lives in `Config.FaceEngine()`; `auto` resolves to ONNX when the SCRFD assets are available, otherwise Pigo. Scheduling is controlled by the face model entry in `vision.yml`: `Config.FaceEngineRunType()` simply forwards to `vision.Config.RunType(ModelTypeFace)` and returns `never` if no detector is configured. This keeps face detection aligned with embedding generation so both always run together.
 
 #### Angle Sweep
 
@@ -111,7 +111,6 @@ Additional safeguards were introduced in October 2025 so stubborn clusters are o
 | Setting                  | Default                      | Description                                                                                     |
 |--------------------------|------------------------------|-------------------------------------------------------------------------------------------------|
 | `FACE_ENGINE`            | `auto`                       | Detection engine (`auto`, `pigo`, `onnx`). `auto` resolves to ONNX when the SCRFD model exists. |
-| `FACE_ENGINE_RUN`        | `auto`                       | Run schedule (`auto`, `on-demand`, `on-index`, ...). `auto` is stored as an empty string.       |
 | `FACE_ENGINE_THREADS`    | `runtime.NumCPU()/2` (≥1)    | ONNX inference threads; ignored by Pigo.                                                        |
 | `FACE_ANGLE`             | `-0.3,0,0.3`                 | Detection angles (radians) swept by Pigo.                                                       |
 | `FACE_SCORE`             | `9.0` (with dynamic offsets) | Base quality threshold before scale adjustments.                                                |
