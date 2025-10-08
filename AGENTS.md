@@ -1,6 +1,6 @@
 # PhotoPrism® Repository Guidelines
 
-**Last Updated:** October 7, 2025
+**Last Updated:** October 8, 2025
 
 ## Purpose
 
@@ -15,20 +15,20 @@ Learn more: https://agents.md/
 - Contributing: https://github.com/photoprism/photoprism/blob/develop/CONTRIBUTING.md
 - Security: https://github.com/photoprism/photoprism/blob/develop/SECURITY.md
 - REST API: https://docs.photoprism.dev/ (Swagger), https://docs.photoprism.app/developer-guide/api/ (Docs)
-- Code Maps: `CODEMAP.md` (Backend/Go), `frontend/CODEMAP.md` (Frontend/JS)
-- Face Detection & Embeddings Notes: `internal/ai/face/README.md`
+- Code Maps: [`CODEMAP.md`](CODEMAP.md) (Backend/Go), [`frontend/CODEMAP.md`](frontend/CODEMAP.md) (Frontend/JS)
+- Face Detection & Embeddings Notes: [`internal/ai/face/README.md`](internal/ai/face/README.md)
 
 ### Specifications (Versioning & Usage)
 
-- Always use the latest spec version for a topic (highest `-vN`), as linked from `specs/README.md` and the portal cheatsheet (`specs/portal/README.md`).
+- In the main repo, `specs/` appears ignored because it is managed as a nested Git repository; change into `specs/` before staging or committing spec updates.
+- Availability: The `specs/` repository is private and is not guaranteed to be present in every clone or environment. Do not add `Makefile` targets in the main project that depend on `specs/` paths. When `specs/` is available, run its tools directly (e.g., `bash specs/scripts/lint-status.sh`).
+- If available, always use the latest spec version for a topic (highest `-vN`), as linked from `specs/README.md` and the portal cheatsheet (`specs/portal/README.md`).
 - Testing Guides: `specs/dev/backend-testing.md` (Backend/Go), `specs/dev/frontend-testing.md` (Frontend/JS)
+- When introducing new metadata sources (e.g., `SrcOllama`, `SrcOpenAI`), define them in both `internal/entity/src.go` and the frontend lookup tables (`frontend/src/common/util.js`) so UI badges and server priorities stay aligned.
 - Whenever the Change Management instructions for a document require it, publish changes as a new file with an incremented version suffix (e.g., `*-v3.md`) rather than overwriting the original file.
 - Older spec versions remain in the repo for historical reference but are not linked from the main TOC. Do not base new work on superseded files (e.g., `*-v1.md` when `*-v2.md` exists).
 
-Note on specs repository availability
-- The `specs/` repository may be private and is not guaranteed to be present in every clone or environment. Do not add Makefile targets in the main project that depend on `specs/` paths. When `specs/` is available, run its tools directly (e.g., `bash specs/scripts/lint-status.sh`).
-- In the main repo, `specs/` appears ignored because it is managed as a nested Git repository; change into `specs/` before staging or committing spec updates.
-- When introducing new metadata sources (e.g., `SrcOllama`, `SrcOpenAI`), define them in both `internal/entity/src.go` and the frontend lookup tables (`frontend/src/common/util.js`) so UI badges and server priorities stay aligned.
+**Style note:** Document headings must use Title Case (capitalize every significant word) across Markdown files to keep generated navigation and changelogs consistent.
 
 ## Project Structure & Languages
 
