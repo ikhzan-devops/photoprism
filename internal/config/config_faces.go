@@ -143,31 +143,31 @@ func (c *Config) FaceEngine() string {
 	return desired
 }
 
-// FaceEngineRunType returns the configured run type for the face detection engine.
+// FaceEngineRunType returns the effective run type for the face detection engine.
+// Detection and embedding always run together, so we defer to the face model
+// configuration in the vision subsystem. If no detection model is configured,
+// or faces are disabled entirely, the run type falls back to RunNever.
 func (c *Config) FaceEngineRunType() vision.RunType {
 	if c == nil {
-		return "auto"
+		return vision.RunNever
 	}
 
-	c.options.FaceEngineRun = vision.ParseRunType(c.options.FaceEngineRun)
-
-	if c.options.FaceEngineRun == vision.RunAuto {
-		if c.FaceEngineThreads() <= 2 {
-			c.options.FaceEngineRun = vision.RunOnDemand
-		}
+	if c.DisableFaces() || c.FaceEngine() == face.EngineNone {
+		return vision.RunNever
 	}
 
-	if c.options.FaceEngineRun == vision.RunAuto {
-		return "auto"
-	}
-
-	return c.options.FaceEngineRun
+	return vision.Config.RunType(vision.ModelTypeFace)
 }
 
 // FaceEngineShouldRun reports whether the face detection engine should execute in the
-// specified scheduling context.
+// specified scheduling context. The decision mirrors the face model run schedule in
+// the vision subsystem, so detection stays aligned with embedding generation.
 func (c *Config) FaceEngineShouldRun(when vision.RunType) bool {
-	if c == nil || c.DisableFaces() {
+	if c == nil {
+		return false
+	}
+
+	if c.DisableFaces() || c.FaceEngine() == face.EngineNone {
 		return false
 	}
 
