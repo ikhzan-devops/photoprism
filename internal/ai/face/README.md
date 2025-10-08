@@ -61,7 +61,7 @@ All embeddings, regardless of origin, are normalized to unit length (‖x‖₂�
 
 This guarantees that Euclidean distance comparisons are equivalent to cosine comparisons, aligning our thresholds with FaceNet literature.
 
-### Face Kind Reference
+#### Face Kind Reference
 
 | Kind             | Value | Source                                     | Matching Behavior                               | Notes                                                                                                   |
 |------------------|:-----:|--------------------------------------------|-------------------------------------------------|---------------------------------------------------------------------------------------------------------|
