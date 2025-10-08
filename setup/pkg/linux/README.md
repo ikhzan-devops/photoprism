@@ -106,19 +106,39 @@ Keep in mind that even if all dependencies are installed, it is possible that yo
 
 ## Configuration
 
-Run `photoprism --help` in a terminal to get an [overview of the command flags and environment variables](https://docs.photoprism.app/getting-started/config-options/) available for configuration. Their current values can be displayed with the `photoprism config` command.
+After unpacking the binaries you only need a writable configuration and storage location. The typical workflow is:
 
-Global config defaults [can be defined in a `/etc/photoprism/defaults.yml` file](#defaultsyml). When specifying paths, `~` is supported as a placeholder for the current user's home directory, e.g. `~/Pictures`. Relative paths can also be specified via `./pathname`.
+1. Inspect the current settings: `photoprism config`
+2. Create dedicated directories for runtime data, for example (replace `photoprism:photoprism` with the user/group that should own the data):
+   ```
+   sudo mkdir -p /var/lib/photoprism/{config,storage}
+   sudo chown -R photoprism:photoprism /var/lib/photoprism
+   ```
+3. Update `/etc/photoprism/defaults.yml` so `ConfigPath`, `StoragePath`, `OriginalsPath`, and `ImportPath` point outside the installation directory.
+4. Optionally place per-instance overrides in `<config-path>/options.yml`.
+5. Restart the PhotoPrism service (or rerun the CLI command) so the changes take effect.
 
-If no explicit *originals*, *import* and/or *assets* path has been configured, a list of [default directory paths](https://github.com/photoprism/photoprism/blob/develop/pkg/fs/directories.go) will be searched and the first existing directory will be used for the respective path. To simplify [updates](#updates), we recommend **not to store** any media, database, or custom config files in the same directory where you installed PhotoPrism, e.g. `/opt/photoprism`, and to use a different base directory for them instead, for example `/photoprism`, `/var/lib/photoprism`, or a path relative to each user's home directory.
+Run `photoprism --help` in a terminal to get an [overview of the command flags and environment variables](https://docs.photoprism.app/getting-started/config-options/) available for configuration. Their current values can always be displayed with the `photoprism config` command.
 
-Note that all configuration changes, either [via UI](https://docs.photoprism.app/user-guide/settings/advanced/), [config files](https://docs.photoprism.app/getting-started/config-files/) or by [setting environment variables](https://docs.photoprism.app/getting-started/config-options/), **require a restart** to take effect.
+### Configuration precedence
+
+PhotoPrism reads settings in the following order (later entries override earlier ones):
+
+| Order | Source                            | Notes                                                                      |
+|-------|-----------------------------------|----------------------------------------------------------------------------|
+| 1     | Built-in defaults                 | Hard-coded, fall back when nothing else is set.                            |
+| 2     | `/etc/photoprism/defaults.yml`    | Global defaults for all users on the host.                                 |
+| 3     | Environment variables / CLI flags | Combine with service managers or wrappers.                                 |
+| 4     | `<config-path>/options.yml`       | Instance-specific overrides (per user or per deployment).                  |
+| 5     | Runtime changes in the UI         | Persisted to `options.yml`; require a restart when running outside Docker. |
+
+If no explicit *originals*, *import* and/or *assets* path has been configured, a list of [default directory paths](https://github.com/photoprism/photoprism/blob/develop/pkg/fs/directories.go) will be searched and the first existing directory will be used for the respective path. To simplify [updates](#updates), we recommend **not** storing media, database files, or custom configs in the installation directory itself (for example `/opt/photoprism`); use another base such as `/var/lib/photoprism` or a path under the user’s home directory.
+
+All configuration changes—whether made [via UI](https://docs.photoprism.app/user-guide/settings/advanced/), [config files](https://docs.photoprism.app/getting-started/config-files/), or [environment variables](https://docs.photoprism.app/getting-started/config-options/)—**require a restart** to take effect when PhotoPrism runs as a standalone process.
 
 ### `defaults.yml`
 
-Global config defaults, including the config and storage paths to use, can optionally be [set with a `defaults.yml` file](https://docs.photoprism.app/getting-started/config-files/defaults/) in the `/etc/photoprism` directory (requires root privileges). A custom filename for loading the defaults can be specified with the `PHOTOPRISM_DEFAULTS_YAML` environment variable or the `--defaults-yaml` command flag.
-
-A `defaults.yml` file affects all users and should only contain values for options for which you want to set a global default, e.g.:
+Packages install a starter `/etc/photoprism/defaults.yml`. Adjust it with root privileges to set global defaults such as filesystem locations, database options, and network ports. When specifying strings you can use `~` as the current user’s home directory and relative paths starting with `./`:
 
 ```yaml
 ConfigPath: "~/.config/photoprism"
@@ -143,6 +163,8 @@ When specifying values, make sure that the data type is the [same as in the docu
 Default config values can be overridden by values [specified in an `options.yml` file](https://docs.photoprism.app/getting-started/config-files/) as well as with command flags and environment variables. To load values from an existing `options.yml` file, you can specify its storage path (excluding the filename) by setting the `ConfigPath` option in your `defaults.yml` file, using the `--config-path` command flag, or with the `PHOTOPRISM_CONFIG_PATH` environment variable.
 
 The values in an `options.yml` file are not global and can be used to customize individual instances e.g. based on the default values in a `defaults.yml` file. Both files allow you to set any of the [supported options](https://docs.photoprism.app/getting-started/config-files/#config-options).
+
+Tip: when running PhotoPrism as a systemd service, export environment variables in the service unit or in `/etc/default/photoprism`. For interactive shells, specify the corresponding flags or prefix commands with variables (for example `PHOTOPRISM_DEBUG=true photoprism index`). Use the smallest scope that fits your deployment so updates stay manageable.
 
 ## Documentation
 
