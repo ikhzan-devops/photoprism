@@ -1,6 +1,6 @@
 ## Face Detection and Embedding Guidelines
 
-**Last Updated:** October 8, 2025
+**Last Updated:** October 8, 2025 (Updated)
 
 ### Overview
 
@@ -60,6 +60,15 @@ All embeddings, regardless of origin, are normalized to unit length (‖x‖₂�
 - Cluster materialisation now pre-sizes buffers; `BenchmarkClusterMaterialize` reports ~14.8 µs/op with 64 allocations (≈56 KB) versus the legacy ~29.8 µs/op with 384 allocations (≈105 KB).
 
 This guarantees that Euclidean distance comparisons are equivalent to cosine comparisons, aligning our thresholds with FaceNet literature.
+
+### Face Kind Reference
+
+| Kind             | Value | Source                                     | Matching Behavior                               | Notes                                                                                                   |
+|------------------|:-----:|--------------------------------------------|-------------------------------------------------|---------------------------------------------------------------------------------------------------------|
+| `RegularFace`    |   1   | Default embedding classification           | Eligible for matching and clustering            | Produced when embeddings are distinct and not flagged as child/background.                              |
+| `ChildrenFace`   |   2   | `Embedding.IsChild()` vs. curated samples  | Excluded from matching (`SkipMatching = true`)  | Helps avoid unreliable matches on juvenile faces; clusters are retained but not auto-assigned.          |
+| `BackgroundFace` |   3   | `Embedding.IsBackground()` heuristics      | Excluded from matching and clustering           | Used for non-face artifacts and background detections; prevents noise from entering optimization runs.  |
+| `AmbiguousFace`  |   4   | `entity.Face.ResolveCollision()` heuristic | Excluded from matching and manual merge retries | Assigned when two subjects collide at very low distance (< 0.02); face remains until collision cleared. |
 
 ### Manual Cluster Merging & Retained Markers
 
