@@ -85,6 +85,8 @@ func (c *ConfigValues) Load(fileName string) error {
 			continue
 		}
 
+		runType := model.Run
+
 		switch model.Type {
 		case ModelTypeLabels:
 			c.Models[i] = NasnetModel
@@ -94,6 +96,10 @@ func (c *ConfigValues) Load(fileName string) error {
 			c.Models[i] = FacenetModel
 		case ModelTypeCaption:
 			c.Models[i] = CaptionModel
+		}
+
+		if runType != RunAuto {
+			c.Models[i].Run = runType
 		}
 	}
 
