@@ -1,6 +1,6 @@
 ## Face Detection and Embedding Guidelines
 
-**Last Updated:** October 7, 2025
+**Last Updated:** October 8, 2025
 
 ### Overview
 
@@ -77,6 +77,14 @@ This is informational—the optimiser skips that merge and progresses. To reduce
 
 No automatic data cleanup runs in this scenario, so operators remain in control of manual edits.
 
+Additional safeguards were introduced in October 2025 so stubborn clusters are only retried a limited number of times:
+
+- Every manual cluster now stores a retry counter (`faces.merge_retry`) and optional note (`merge_notes`). The optimiser skips clusters once the retry count reaches `MergeMaxRetry` (default **1**). The limit may be raised or disabled with the environment variable `PHOTOPRISM_FACE_MERGE_MAX_RETRY` (`0` = unlimited retries).
+- Warnings surface only when the retry counter is incremented. Subsequent optimise runs log at debug level until counters are reset.
+- `photoprism faces optimize --retry` clears retry counters before running the optimiser, allowing administrators to reprocess clusters after manual cleanup.
+- `photoprism faces audit --subject=<uid>` focuses the audit report on a specific person and prints retry counts, sample statistics, and outstanding clusters so operators know which photos still need attention.
+- The warning text now includes the retry count and cluster IDs, mirroring the guidance captured in `specs/proposals/resolve-face-conflicts.md`.
+
 #### Midpoint Computation
 
 - The midpoint routine now performs a single pass (with vector normalization) and uses an inlined L2 distance when computing the sample radius.
@@ -108,6 +116,8 @@ No automatic data cleanup runs in this scenario, so operators remain in control 
 | `FACE_ANGLE`             | `-0.3,0,0.3`                 | Detection angles (radians) swept by Pigo.                                                       |
 | `FACE_SCORE`             | `9.0` (with dynamic offsets) | Base quality threshold before scale adjustments.                                                |
 | `FACE_OVERLAP`           | `42`                         | Maximum allowed IoU when deduplicating markers.                                                 |
+
+> Additional merge tuning: set `PHOTOPRISM_FACE_MERGE_MAX_RETRY` to control how often manual clusters are retried (default 1, `0` = unlimited). See the optimiser notes above.
 
 ### Benchmark Reference
 
