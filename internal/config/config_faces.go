@@ -118,7 +118,7 @@ func (c *Config) FaceAngles() []float64 {
 // FaceEngine returns the configured face detection engine name.
 func (c *Config) FaceEngine() string {
 	if c == nil {
-		return face.EnginePigo
+		return face.EngineNone
 	} else if c.options.FaceEngine == face.EnginePigo || c.options.FaceEngine == face.EngineONNX {
 		return c.options.FaceEngine
 	}
