@@ -115,7 +115,9 @@ func (c *Config) FaceAngles() []float64 {
 	return angles
 }
 
-// FaceEngine returns the configured face detection engine name.
+// FaceEngine returns the configured face detection engine. When the config is
+// nil or the vision subsystem is not initialised it reports `face.EngineNone`
+// so callers can short-circuit gracefully.
 func (c *Config) FaceEngine() string {
 	if c == nil {
 		return face.EngineNone

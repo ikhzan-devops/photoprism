@@ -122,26 +122,42 @@ func TestConfig_FaceEngineShouldRun(t *testing.T) {
 }
 
 func TestConfig_FaceEngine(t *testing.T) {
-	c := NewConfig(CliTestContext())
-	tempModels := t.TempDir()
-	c.options.ModelsPath = tempModels
-	c.options.FaceEngine = face.EnginePigo
+	t.Run("Defaults", func(t *testing.T) {
+		c := NewConfig(CliTestContext())
+		engine := c.FaceEngine()
+		assert.Contains(t, []string{face.EnginePigo, face.EngineONNX}, engine)
+	})
+	t.Run("NilConfig", func(t *testing.T) {
+		assert.Equal(t, face.EngineNone, (*Config)(nil).FaceEngine())
+	})
+	t.Run("MissingVisionConfig", func(t *testing.T) {
+		origVision := vision.Config
+		vision.Config = nil
+		defer func() { vision.Config = origVision }()
 
-	assert.Equal(t, face.EnginePigo, c.FaceEngine())
+		c := NewConfig(CliTestContext())
+		assert.Equal(t, face.EngineNone, c.FaceEngine())
+	})
+	t.Run("AutoResolvesToONNX", func(t *testing.T) {
+		c := NewConfig(CliTestContext())
+		tempModels := t.TempDir()
+		c.options.ModelsPath = tempModels
 
-	modelDir := filepath.Join(tempModels, "scrfd")
-	require.NoError(t, os.MkdirAll(modelDir, 0o755))
-	modelFile := filepath.Join(modelDir, face.DefaultONNXModelFilename)
-	require.NoError(t, os.WriteFile(modelFile, []byte("onnx"), 0o644))
+		modelDir := filepath.Join(tempModels, "scrfd")
+		require.NoError(t, os.MkdirAll(modelDir, 0o755))
+		modelFile := filepath.Join(modelDir, face.DefaultONNXModelFilename)
+		require.NoError(t, os.WriteFile(modelFile, []byte("onnx"), 0o644))
 
-	c.options.FaceEngine = face.EngineAuto
-	assert.Equal(t, face.EngineONNX, c.FaceEngine())
-
-	c.options.FaceEngine = face.EnginePigo
-	assert.Equal(t, face.EnginePigo, c.FaceEngine())
-
-	c.options.FaceEngine = face.EngineONNX
-	assert.Equal(t, face.EngineONNX, c.FaceEngine())
+		c.options.FaceEngine = face.EngineAuto
+		assert.Equal(t, face.EngineONNX, c.FaceEngine())
+	})
+	t.Run("ExplicitEngine", func(t *testing.T) {
+		c := NewConfig(CliTestContext())
+		c.options.FaceEngine = face.EnginePigo
+		assert.Equal(t, face.EnginePigo, c.FaceEngine())
+		c.options.FaceEngine = face.EngineONNX
+		assert.Equal(t, face.EngineONNX, c.FaceEngine())
+	})
 }
 
 func TestConfig_FaceEngineRunType(t *testing.T) {
