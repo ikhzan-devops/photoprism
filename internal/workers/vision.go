@@ -57,7 +57,7 @@ func (w *Vision) StartScheduled() {
 
 // scheduledModels returns the model types that should run for scheduled jobs.
 func (w *Vision) scheduledModels() []string {
-	models := make([]string, 0, 3)
+	models := make([]string, 0, 4)
 
 	if w.conf.VisionModelShouldRun(vision.ModelTypeLabels, vision.RunOnSchedule) {
 		models = append(models, vision.ModelTypeLabels)
