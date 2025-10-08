@@ -83,7 +83,7 @@ Additional safeguards were introduced in October 2025 so stubborn clusters are o
 - Warnings surface only when the retry counter is incremented. Subsequent optimise runs log at debug level until counters are reset.
 - `photoprism faces optimize --retry` clears retry counters before running the optimiser, allowing administrators to reprocess clusters after manual cleanup.
 - `photoprism faces audit --subject=<uid>` focuses the audit report on a specific person and prints retry counts, sample statistics, and outstanding clusters so operators know which photos still need attention.
-- The warning text now includes the retry count and cluster IDs, mirroring the guidance captured in `specs/proposals/resolve-face-conflicts.md`.
+- The warning text now includes the retry count and cluster IDs.
 
 #### Midpoint Computation
 
