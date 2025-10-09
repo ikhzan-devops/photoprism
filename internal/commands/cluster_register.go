@@ -42,9 +42,21 @@ var (
 
 // ClusterRegisterCommand registers a node with the Portal via HTTP.
 var ClusterRegisterCommand = &cli.Command{
-	Name:   "register",
-	Usage:  "Registers a node or updates its credentials within a cluster",
-	Flags:  append(append([]cli.Flag{regNameFlag, regRoleFlag, regIntUrlFlag, regLabelFlag, regRotateDatabase, regRotateSec, regPortalURL, regPortalTok, regWriteConf, regForceFlag, regDryRun}, report.CliFlags...)),
+	Name:  "register",
+	Usage: "Registers a node or updates its credentials within a cluster",
+	Flags: append(append([]cli.Flag{
+		regDryRun,
+		regNameFlag,
+		regRoleFlag,
+		regPortalURL,
+		regPortalTok,
+		regIntUrlFlag,
+		regLabelFlag,
+		regRotateDatabase,
+		regRotateSec,
+		regWriteConf,
+		regForceFlag,
+	}, report.CliFlags...)),
 	Action: clusterRegisterAction,
 }
 

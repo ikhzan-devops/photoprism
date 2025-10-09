@@ -24,8 +24,11 @@ var ClusterNodesModCommand = &cli.Command{
 	Name:      "mod",
 	Usage:     "Updates node properties",
 	ArgsUsage: "<id|name>",
-	Flags: []cli.Flag{nodesModRoleFlag, nodesModInternal, nodesModLabel,
+	Flags: []cli.Flag{
 		DryRunFlag("preview updates without modifying the registry"),
+		nodesModRoleFlag,
+		nodesModInternal,
+		nodesModLabel,
 		YesFlag(),
 	},
 	Hidden: true, // Required for cluster-management only.

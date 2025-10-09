@@ -20,10 +20,10 @@ var ClusterNodesRemoveCommand = &cli.Command{
 	Usage:     "Deletes a node from the registry",
 	ArgsUsage: "<id|name>",
 	Flags: []cli.Flag{
-		YesFlag(),
-		&cli.BoolFlag{Name: "all-ids", Usage: "delete all records that share the same UUID (admin cleanup)"},
-		&cli.BoolFlag{Name: "drop-db", Aliases: []string{"d"}, Usage: "drop the node’s provisioned database and user after registry deletion"},
 		DryRunFlag("preview deletion without modifying the registry or database"),
+		&cli.BoolFlag{Name: "drop-db", Aliases: []string{"d"}, Usage: "drop the node’s provisioned database and user after registry deletion"},
+		&cli.BoolFlag{Name: "all-ids", Usage: "delete all records that share the same UUID (admin cleanup)"},
+		YesFlag(),
 	},
 	Hidden: true, // Required for cluster-management only.
 	Action: clusterNodesRemoveAction,
