@@ -1,6 +1,6 @@
 # PhotoPrism® Repository Guidelines
 
-**Last Updated:** October 8, 2025
+**Last Updated:** October 9, 2025
 
 ## Purpose
 
@@ -30,6 +30,8 @@ Learn more: https://agents.md/
 - Auto-generated configuration and command references live under `specs/generated/`. Agents MUST NOT read, analyse, or modify anything in this directory; refer humans to `specs/generated/README.md` if regeneration is required.
 
 **Style note:** Document headings must use Title Case (capitalize every significant word) across Markdown files to keep generated navigation and changelogs consistent.
+
+**CLI note:** When writing CLI examples or scripts, place option flags before positional arguments unless the command requires a different order.
 
 ## Project Structure & Languages
 
