@@ -155,7 +155,7 @@ export default [
     path: "/all",
     component: Photos,
     meta: { title: siteTitle, requiresAuth: true },
-    props: { staticFilter: { quality: "0", public: "" } },
+    props: { staticFilter: { quality: "0" } },
   },
   {
     name: "photos",
