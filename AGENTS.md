@@ -31,7 +31,7 @@ Learn more: https://agents.md/
 
 **Style note:** Document headings must use Title Case (capitalize every significant word) across Markdown files to keep generated navigation and changelogs consistent.
 
-**CLI note:** When writing CLI examples or scripts, place option flags before positional arguments unless the command requires a different order.
+**CLI note:** When writing CLI examples or scripts, place option flags before positional arguments unless the command requires a different order, and prefer the shared helpers `DryRunFlag(...)` and `YesFlag()` when adding new CLI flags so behaviour stays consistent across commands.
 
 ## Project Structure & Languages
 
