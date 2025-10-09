@@ -37,7 +37,7 @@ var (
 	regPortalTok      = &cli.StringFlag{Name: "join-token", Usage: "Portal access `TOKEN` (defaults to config)"}
 	regWriteConf      = &cli.BoolFlag{Name: "write-config", Usage: "persists returned secrets and DB settings to local config"}
 	regForceFlag      = &cli.BoolFlag{Name: "force", Aliases: []string{"f"}, Usage: "confirm actions that may overwrite/replace local data (e.g., --write-config)"}
-	regDryRun         = &cli.BoolFlag{Name: "dry-run", Usage: "print derived values and payload without performing registration"}
+	regDryRun         = DryRunFlag("print derived values and payload without performing registration")
 )
 
 // ClusterRegisterCommand registers a node with the Portal via HTTP.
