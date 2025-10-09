@@ -712,7 +712,6 @@ export default {
       const cap = Album.restoreCap(this.batchSize);
       const count = Number(state.count);
       const offset = Number(state.offset);
-      const scrollTop = Number(state.scrollTop);
 
       this.restoreTargetCount = Math.max(0, Number.isFinite(count) ? count : 0);
 
@@ -725,10 +724,6 @@ export default {
 
       if (Number.isFinite(offset) && offset >= 0) {
         this.setOffset(offset);
-      }
-
-      if (Number.isFinite(scrollTop) && scrollTop >= 0) {
-        this.$view.saveWindowScrollPos({ left: 0, top: Math.round(scrollTop) });
       }
     },
     resetRestoreState() {
@@ -783,8 +778,6 @@ export default {
 
       const scrollTop = window.scrollY ?? window.pageYOffset ?? 0;
       const offset = Number.isFinite(this.offset) && this.offset > 0 ? this.offset : this.results.length;
-
-      this.$view.saveWindowScrollPos();
 
       return this.$view.saveRestoreState(key, {
         filterKey: key,
