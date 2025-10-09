@@ -20,7 +20,7 @@ The `commands` package hosts the CLI implementation for the PhotoPrism binary. C
 - When integrating configuration options, call the accessors on `*config.Config` (for example, `conf.ClusterUUID()`) rather than mutating option structs directly.
 - For HTTP interactions, depend on the safe download helpers in `pkg/service/http/safe` or the specialized wrappers in `internal/thumb/avatar` to inherit timeout, size, and SSRF protection defaults.
 
-## Configuration And Flags Integration
+## Configuration & Flags Integration
 
 - Define new options in `internal/config/options.go` with the appropriate struct tags (`yaml`, `json`, `flag`) so they propagate to YAML, CLI, and API layers consistently.
 - Surface CLI flags in `internal/config/flags.go` to keep environment variable mappings aligned. Commands should call `conf.ApplyCliContext()` once to hydrate configuration from parsed flags.
@@ -44,7 +44,7 @@ The `commands` package hosts the CLI implementation for the PhotoPrism binary. C
 - Full package smoke test: `go test ./internal/commands -count=1`
 - Backend-wide validation: `go test ./internal/service/cluster/registry -count=1` and `go test ./internal/api -run 'Cluster' -count=1` ensure CLI and API stay in sync before release.
 
-## CLI And Test Utilities
+## CLI & Test Utilities
 
 - Stub external binaries such as `yt-dlp` with lightweight shell scripts that honor `--dump-single-json` and `--print` requests. Support environment variables like `YTDLP_ARGS_LOG`, `YTDLP_OUTPUT_FILE`, and `YTDLP_DUMMY_CONTENT` to capture arguments, create deterministic artifacts, and avoid duplicate detection in importer flows.
 - Disable FFmpeg during tests that focus on command construction by setting `conf.Options().FFmpegBin = "/bin/false"` and `conf.Settings().Index.Convert = false`.
