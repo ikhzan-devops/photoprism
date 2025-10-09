@@ -91,6 +91,11 @@ Common How‑Tos
   - Wrap strings with `$gettext(...)` / `$pgettext(...)`
   - Extract: `npm run gettext-extract`; compile: `npm run gettext-compile`
 
+- Restore scroll state on back navigation
+  - Use `$view.saveRestoreState(key, { count, offset, scrollTop })` when unloads happen and `$view.consumeRestoreState(key)` on popstate to preload prior batches (Albums, Labels already supply examples).
+  - Compute `key` from route + filter params and cap eager loads with `Rest.restoreCap(Model.batchSize())` (defaults to 10× the batch size).
+  - Check `$view.wasBackwardNavigation()` when deciding whether to reuse stored state; `src/app.js` wires the router guards that keep the history direction in sync so no globals like `window.backwardsNavigationDetected` are needed.
+
 Conventions & Safety
 - Avoid `v-html`; use `v-sanitize` or `$util.sanitizeHtml()` (build enforces this)
 - Keep big components lazy if needed; split views logically under `src/page`
