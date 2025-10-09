@@ -31,7 +31,7 @@ Learn more: https://agents.md/
 
 **Style note:** Document headings must use Title Case (capitalize every significant word) across Markdown files to keep generated navigation and changelogs consistent.
 
-**CLI note:** When writing CLI examples or scripts, place option flags before positional arguments unless the command requires a different order, and prefer the shared helpers `DryRunFlag(...)` and `YesFlag()` when adding new CLI flags so behaviour stays consistent across commands.
+**CLI note:** When writing CLI examples or scripts, place option flags before positional arguments unless the command requires a different order.
 
 ## Project Structure & Languages
 
@@ -275,6 +275,7 @@ If anything in this file conflicts with the `Makefile` or the Developer Guide, t
 
 ### CLI Usage & Assertions
 
+- Prefer the shared helpers like `DryRunFlag(...)` and `YesFlag()` when adding new CLI flags so behaviour stays consistent across commands.
 - Wrap CLI tests in `RunWithTestContext(cmd, args)` so `urfave/cli` cannot exit the process; assert quoted `show` output with `assert.Contains`/regex for the trailing ", or <last>" rule.
 - Prefer `--json` responses for automation. `photoprism show commands --json [--nested]` exposes the tree view (add `--all` for hidden entries).
 - Use `internal/commands/catalog` to inspect commands/flags without running the binary; when validating large JSON docs, marshal DTOs via `catalog.BuildFlat/BuildNode` instead of parsing CLI stdout.
