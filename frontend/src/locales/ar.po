@@ -42,7 +42,7 @@ msgstr "تم اختيار {0}"
 msgid "{0}-{1} of {2}"
 msgstr "{0}-{1} من {2}"
 
-#: src/page/albums.vue:621
+#: src/page/albums.vue:821
 msgid "%{n} albums found"
 msgstr "تم العثور على %{n} من الألبومات"
 
@@ -58,7 +58,7 @@ msgstr "تم العثور على %{n} من مجلدات"
 msgid "%{n} GB of %{q} GB used"
 msgstr "%{n} جيجابايت من %{q} جيجابايت مستخدمة"
 
-#: src/page/labels.vue:609
+#: src/page/labels.vue:808
 msgid "%{n} labels found"
 msgstr "تم العثور على %{n} من التصنيفات"
 
@@ -183,7 +183,7 @@ msgstr "رمز التفعيل"
 msgid "Add"
 msgstr "إضافة"
 
-#: src/component/photo/edit/people.vue:162 src/page/people/new.vue:244
+#: src/component/photo/edit/people.vue:176 src/page/people/new.vue:244
 msgid "Add %{s}?"
 msgstr "إضافة %{s}؟"
 
@@ -203,8 +203,8 @@ msgstr "إضافة ملفات إلى المكتبة عبر تحميل الويب
 msgid "Add Link"
 msgstr "إضافة رابط"
 
-#: src/component/photo/edit/people.vue:25
-#: src/component/photo/edit/people.vue:162 src/page/people/new.vue:57
+#: src/component/photo/edit/people.vue:27
+#: src/component/photo/edit/people.vue:176 src/page/people/new.vue:57
 #: src/page/people/new.vue:244
 msgid "Add person?"
 msgstr "إضافة شخص؟"
@@ -282,7 +282,7 @@ msgstr "البوم"
 msgid "Album Backups"
 msgstr "النسخ الاحتياطية للألبوم"
 
-#: src/page/albums.vue:689
+#: src/page/albums.vue:909
 msgid "Album created"
 msgstr "تم إنشاء الألبوم"
 
@@ -304,11 +304,11 @@ msgstr "تم حذف الألبومات"
 msgid "All"
 msgstr "الجميع"
 
-#: src/page/albums.vue:470
+#: src/page/albums.vue:644
 msgid "All %{n} albums loaded"
 msgstr "تم تحميل كافة الألبومات الـ %{n}"
 
-#: src/page/labels.vue:439
+#: src/page/labels.vue:610
 msgid "All %{n} labels loaded"
 msgstr "تم تحميل كافة التسميات الـ %{n}"
 
@@ -321,7 +321,7 @@ msgid "All Cameras"
 msgstr "جميع الكاميرات"
 
 #: src/component/photo/toolbar.vue:74 src/page/albums.vue:45
-#: src/page/albums.vue:242 src/page/albums.vue:761
+#: src/page/albums.vue:257 src/page/albums.vue:981
 msgid "All Categories"
 msgstr "جميع الفئات"
 
@@ -353,7 +353,7 @@ msgstr "كل الشهور"
 msgid "All originals"
 msgstr "جميع النسخ الأصلية"
 
-#: src/component/photo/toolbar.vue:76 src/page/albums.vue:94
+#: src/component/photo/toolbar.vue:76 src/page/albums.vue:99
 msgid "All Years"
 msgstr "جميع السنوات"
 
@@ -566,6 +566,10 @@ msgstr "تصفح الملفات"
 msgid "Browse indexed files and folders in Library."
 msgstr "تصفح الملفات والمجلدات المفهرسة في المكتبة."
 
+#: src/component/photo/edit/people.vue:107
+msgid "Browse Pictures"
+msgstr ""
+
 #: src/page/about/feedback.vue:10 src/options/options.js:403
 msgid "Bug Report"
 msgstr "تقرير المشاكل"
@@ -601,8 +605,8 @@ msgid "Can't load more, limit reached"
 msgstr "لا يمكن تحميل المزيد ، تم الوصول إلى الحد الأقصى"
 
 #: src/common/clipboard.js:102 src/common/clipboard.js:139
-#: src/page/albums.vue:699 src/page/albums.vue:715 src/page/labels.vue:365
-#: src/page/labels.vue:385 src/page/library/browse.vue:233
+#: src/page/albums.vue:919 src/page/albums.vue:935 src/page/labels.vue:506
+#: src/page/labels.vue:526 src/page/library/browse.vue:233
 #: src/page/library/browse.vue:249 src/page/people/new.vue:278
 #: src/page/people/new.vue:294 src/page/people/recognized.vue:305
 #: src/page/people/recognized.vue:321
@@ -684,7 +688,7 @@ msgstr "لا يمكن حفظ التغييرات"
 #: src/component/label/edit/dialog.vue:46 src/component/lightbox.vue:1963
 #: src/component/photo/edit/files.vue:178 src/component/service/edit.vue:90
 #: src/component/share/dialog.vue:92 src/component/share/dialog.vue:111
-#: src/page/albums.vue:692 src/page/people/recognized.vue:119
+#: src/page/albums.vue:912 src/page/people/recognized.vue:119
 #: src/page/settings/advanced.vue:62 src/page/settings/content.vue:62
 #: src/page/settings/general.vue:108
 msgid "Changes successfully saved"
@@ -836,6 +840,10 @@ msgstr "نسخ"
 msgid "Copyright"
 msgstr "حقوق النشر"
 
+#: src/component/photo/edit/people.vue:179
+msgid "Could not update person cover"
+msgstr ""
+
 #: src/component/photo/view/list.vue:52
 msgid "Couldn't find anything."
 msgstr "لا يمكن العثور على أي شيء."
@@ -881,7 +889,7 @@ msgstr "Cubic: جودة متوسطة ، أداء جيد"
 msgid "Current Password"
 msgstr "كلمة المرور الحالية"
 
-#: src/options/themes.js:994 src/options/themes.js:1003
+#: src/options/themes.js:995 src/options/themes.js:1004
 msgid "Custom"
 msgstr "مخصص"
 
@@ -915,7 +923,7 @@ msgstr "سجلات التصحيح"
 #: src/model/user.js:237 src/options/auth.js:21 src/options/auth.js:22
 #: src/options/auth.js:40 src/options/auth.js:41 src/options/options.js:196
 #: src/options/options.js:232 src/options/options.js:316
-#: src/options/themes.js:843
+#: src/options/themes.js:844
 msgid "Default"
 msgstr "مبدئي"
 
@@ -1310,7 +1318,7 @@ msgid "Favorite"
 msgstr "مفضل"
 
 #: src/app/routes.js:230 src/component/navigation.vue:893
-#: src/options/options.js:202 src/page/albums.vue:98
+#: src/options/options.js:202 src/page/albums.vue:103
 msgid "Favorites"
 msgstr "المفضلة"
 
@@ -1651,7 +1659,7 @@ msgstr "عنوان URL غير صالح"
 msgid "It is a one-time use code that will disable 2FA for your account when you use it."
 msgstr "إنه رمز للاستخدام لمرة واحدة والذي سيؤدي إلى تعطيل المصادقة الثنائية لحسابك عند استخدامه."
 
-#: src/model/rest.js:155
+#: src/model/rest.js:157
 msgid "Item"
 msgstr "العنصر"
 
@@ -1738,7 +1746,7 @@ msgid "Learn more"
 msgstr "اعرف المزيد"
 
 #: src/page/admin/sessions.vue:110 src/page/admin/users.vue:137
-#: src/page/labels.vue:184
+#: src/page/labels.vue:199
 msgid "Learn More"
 msgstr "اعرف المزيد"
 
@@ -1827,7 +1835,7 @@ msgstr "التوقيت المحلي"
 #: src/component/photo/edit/details.vue:116
 #: src/component/photo/edit/details.vue:210
 #: src/component/photo/view/cards.vue:555 src/component/photo/view/list.vue:117
-#: src/component/sidebar/info.vue:107 src/page/albums.vue:100
+#: src/component/sidebar/info.vue:107 src/page/albums.vue:105
 #: src/page/settings/account.vue:557 src/page/settings/account.vue:559
 msgid "Location"
 msgstr "موقع"
@@ -1987,9 +1995,9 @@ msgstr "صامت"
 #: src/component/label/edit/dialog.vue:71
 #: src/component/people/edit/dialog.vue:71
 #: src/component/photo/edit/files.vue:43 src/component/photo/edit/info.vue:125
-#: src/component/photo/edit/people.vue:36 src/component/photo/view/list.vue:117
+#: src/component/photo/edit/people.vue:38 src/component/photo/view/list.vue:117
 #: src/component/service/edit.vue:310 src/component/settings/apps.vue:53
-#: src/component/settings/apps.vue:286 src/page/albums.vue:99
+#: src/component/settings/apps.vue:286 src/page/albums.vue:104
 #: src/page/auth/login.vue:168 src/page/people/new.vue:68
 #: src/page/settings/services.vue:37
 msgid "Name"
@@ -1999,7 +2007,7 @@ msgstr "اسم"
 #: src/component/label/edit/dialog.vue:19
 #: src/component/people/edit/dialog.vue:19
 #: src/component/photo/edit/labels.vue:46
-#: src/component/photo/edit/people.vue:39 src/page/labels.vue:60
+#: src/component/photo/edit/people.vue:41 src/page/labels.vue:60
 #: src/page/library/browse.vue:46 src/page/people/new.vue:51
 #: src/page/people/recognized.vue:46
 msgid "Name too long"
@@ -2020,7 +2028,7 @@ msgstr "كلمة السر الجديدة"
 
 #: src/component/album/edit/dialog.vue:24 src/component/photo/toolbar.vue:114
 #: src/component/photo/toolbar.vue:126 src/component/photo/toolbar.vue:136
-#: src/page/albums.vue:101
+#: src/page/albums.vue:106
 msgid "Newest First"
 msgstr "الاحدث اولا"
 
@@ -2044,7 +2052,7 @@ msgstr "الصورة التالية"
 msgid "No"
 msgstr "رقم"
 
-#: src/page/albums.vue:616 src/page/albums.vue:282
+#: src/page/albums.vue:816 src/page/albums.vue:282
 msgid "No albums found"
 msgstr "لم يتم العثور على ألبومات"
 
@@ -2052,7 +2060,7 @@ msgstr "لم يتم العثور على ألبومات"
 msgid "No data available"
 msgstr "لا توجد بيانات متاحة"
 
-#: src/page/labels.vue:604 src/page/labels.vue:139
+#: src/page/labels.vue:803 src/page/labels.vue:139
 msgid "No labels found"
 msgstr "لم يتم العثور على تسميات"
 
@@ -2064,7 +2072,7 @@ msgstr "لم يتم العثور على سجلات مطابقة"
 msgid "No more"
 msgstr "لا مزيد"
 
-#: src/component/photo/edit/people.vue:34 src/page/people/new.vue:346
+#: src/component/photo/edit/people.vue:40 src/page/people/new.vue:346
 #: src/page/people/new.vue:452 src/page/people/new.vue:103
 #: src/page/people/recognized.vue:538 src/page/people/recognized.vue:146
 msgid "No people found"
@@ -2173,7 +2181,7 @@ msgstr "نعم"
 
 #: src/component/album/edit/dialog.vue:25 src/component/photo/toolbar.vue:115
 #: src/component/photo/toolbar.vue:127 src/component/photo/toolbar.vue:137
-#: src/page/albums.vue:102
+#: src/page/albums.vue:107
 msgid "Oldest First"
 msgstr "الاقدم اولا"
 
@@ -2189,7 +2197,7 @@ msgstr "قد يؤدي إنشاء الصور المصغرة عند الطلب إ�
 msgid "Once a week"
 msgstr "مرة في الأسبوع"
 
-#: src/page/albums.vue:618
+#: src/page/albums.vue:818
 msgid "One album found"
 msgstr "تم العثور على ألبوم واحد"
 
@@ -2205,7 +2213,7 @@ msgstr "تم تحميل ملف واحد"
 msgid "One folder found"
 msgstr "تم العثور على مجلد واحد"
 
-#: src/page/labels.vue:606
+#: src/page/labels.vue:805
 msgid "One label found"
 msgstr "تم العثور على تسمية واحدة"
 
@@ -2327,6 +2335,15 @@ msgstr "قم بإزالة الملفات بشكل دائم لتحرير مساح
 #: src/model/subject.js:134
 msgid "Person"
 msgstr "شخص"
+
+#: src/component/photo/edit/people.vue:176
+msgid "Person cover updated"
+msgstr ""
+
+#: src/component/photo/edit/people.vue:140
+#: src/component/photo/edit/people.vue:170
+msgid "Person not found"
+msgstr ""
 
 #: src/options/auth.js:43
 msgid "Personal"
@@ -2515,7 +2532,7 @@ msgstr "وضع القراءة فقط"
 
 #: src/component/album/edit/dialog.vue:26 src/component/photo/toolbar.vue:116
 #: src/component/photo/toolbar.vue:128 src/component/photo/toolbar.vue:138
-#: src/page/albums.vue:103
+#: src/page/albums.vue:108
 msgid "Recently Added"
 msgstr "أضيف حديثا"
 
@@ -2523,11 +2540,11 @@ msgstr "أضيف حديثا"
 msgid "Recently Archived"
 msgstr "مؤرشفة مؤخرا"
 
-#: src/component/photo/toolbar.vue:139 src/page/albums.vue:104
+#: src/component/photo/toolbar.vue:139 src/page/albums.vue:109
 msgid "Recently Edited"
 msgstr "تم تحريره مؤخرًا"
 
-#: src/component/photo/edit/people.vue:35 src/page/people/new.vue:104
+#: src/component/photo/edit/people.vue:41 src/page/people/new.vue:104
 #: src/page/people/recognized.vue:147
 msgid "Recognition starts after indexing has been completed."
 msgstr "يبدأ التعرف بعد اكتمال الفهرسة."
@@ -2550,7 +2567,7 @@ msgstr "أحمر"
 
 #: src/page/admin/sessions.vue:101 src/page/admin/users.vue:128
 #: src/component/album/toolbar.vue:84 src/component/photo/toolbar.vue:169
-#: src/page/albums.vue:175 src/page/labels.vue:119
+#: src/page/albums.vue:190 src/page/labels.vue:134
 #: src/page/library/browse.vue:90 src/page/library/errors.vue:81
 #: src/page/people/new.vue:54 src/page/people/recognized.vue:88
 msgid "Refresh"
@@ -2578,7 +2595,7 @@ msgstr "جارٍ إعادة التحميل…"
 msgid "Remote Sync"
 msgstr "مزامنة عن بعد"
 
-#: src/component/photo/edit/people.vue:66
+#: src/component/photo/edit/people.vue:72
 msgid "Remove"
 msgstr "إزالة"
 
@@ -2777,6 +2794,10 @@ msgstr "الجلسات"
 msgid "Set as Album Cover"
 msgstr "تعيين كغلاف للألبوم"
 
+#: src/component/photo/edit/people.vue:115
+msgid "Set as Cover Image"
+msgstr ""
+
 #: src/app/routes.js:101 src/app/routes.js:503 src/app/routes.js:515
 #: src/app/routes.js:532 src/app/routes.js:545 src/app/routes.js:558
 #: src/component/navigation.vue:1394 src/component/navigation.vue:1806
@@ -2809,7 +2830,7 @@ msgstr "شارك الصور مع التطبيقات والخدمات الأخر�
 msgid "Show"
 msgstr "عرض"
 
-#: src/page/labels.vue:129 src/page/labels.vue:237
+#: src/page/labels.vue:144 src/page/labels.vue:237
 msgid "Show All Labels"
 msgstr "إظهار كافة التسميات"
 
@@ -2825,7 +2846,7 @@ msgstr "إظهار التسميات التوضيحية"
 msgid "Show hidden"
 msgstr "أظهر المخفي"
 
-#: src/page/labels.vue:138
+#: src/page/labels.vue:153
 msgid "Show Important Only"
 msgstr "عرض مهم فقط"
 
@@ -2882,15 +2903,15 @@ msgstr "حدث خطأ ما، حاول مرة أخرى"
 msgid "Sort by"
 msgstr "فرز حسب"
 
-#: src/page/labels.vue:156
+#: src/page/labels.vue:171
 msgid "Sort by Name (A–Z)"
 msgstr "الترتيب حسب الاسم (من ألف إلى ياء)"
 
-#: src/page/labels.vue:165
+#: src/page/labels.vue:180
 msgid "Sort by Photo Count"
 msgstr "فرز حسب عدد الصور"
 
-#: src/page/labels.vue:147
+#: src/page/labels.vue:162
 msgid "Sort by Relevance"
 msgstr "فرز حسب الصلة بالموضوع"
 
@@ -3163,7 +3184,7 @@ msgstr "تعذر الحذف"
 msgid "Unauthorized"
 msgstr "غير مصرح"
 
-#: src/component/photo/edit/people.vue:94
+#: src/component/photo/edit/people.vue:108
 msgid "Undo"
 msgstr "الغاء التحميل"
 
@@ -3243,8 +3264,8 @@ msgstr "تحديث الآن"
 
 #: src/component/album/toolbar.vue:113 src/component/navigation.vue:1824
 #: src/component/photo/toolbar.vue:179 src/component/service/upload.vue:144
-#: src/component/upload/dialog.vue:51 src/page/albums.vue:185
-#: src/page/labels.vue:174 src/page/library/import.vue:133
+#: src/component/upload/dialog.vue:51 src/page/albums.vue:200
+#: src/page/labels.vue:189 src/page/library/import.vue:133
 #: src/page/settings/general.vue:307 src/page/settings/services.vue:38
 msgid "Upload"
 msgstr "تحميل"
@@ -3483,7 +3504,7 @@ msgstr "يمكنك تحميل ما يصل إلى %{n} من الملفات لأغ
 msgid "You may only select one item"
 msgstr "يمكنك اختيار عنصر واحد فقط"
 
-#: src/component/photo/edit/people.vue:35 src/page/people/new.vue:104
+#: src/component/photo/edit/people.vue:41 src/page/people/new.vue:104
 #: src/page/people/recognized.vue:147
 msgid "You may rescan your library to find additional faces."
 msgstr "يمكنك إعادة فحص مكتبتك للعثور على وجوه إضافية."

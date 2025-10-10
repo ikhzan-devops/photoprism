@@ -20,11 +20,24 @@
         <div v-for="m in markers" :key="m.UID" class="v-col-12 v-col-sm-6 v-col-md-4 v-col-lg-3 d-flex">
           <v-card :data-id="m.UID" :class="m.classes()" class="result not-selectable flex-grow-1" tabindex="1">
             <v-img :src="m.thumbnailUrl('tile_320')" aspect-ratio="1" class="card">
-              <div v-if="hasFaceMenu(m)" class="face-actions" data-testid="face-actions">
+              <v-btn
+                v-if="!m.SubjUID && !m.Invalid"
+                :ripple="false"
+                class="input-reject"
+                icon
+                variant="text"
+                density="comfortable"
+                position="absolute"
+                :title="$gettext('Remove')"
+                @click.stop.prevent="onReject(m)"
+              >
+                <v-icon class="action-reject">mdi-close</v-icon>
+              </v-btn>
+              <div v-else-if="hasFaceMenu(m)" class="face-actions" data-testid="face-actions">
                 <p-action-menu
                   :items="() => getFaceActions(m)"
-                  button-icon="mdi-dots-vertical"
-                  button-class="input-reject"
+                  button-class="input-menu"
+                  list-class="opacity-80"
                 ></p-action-menu>
               </div>
             </v-img>
@@ -203,27 +216,19 @@ export default {
       return [
         {
           name: "go-to-person",
-          icon: "mdi-account-arrow-right",
-          text: this.$gettext("Go to person"),
+          /* icon: "mdi-account-search", */
+          text: this.$gettext("Browse Pictures"),
           visible: assigned && !invalid,
           disabled,
           click: () => this.onGoToPerson(marker),
         },
         {
           name: "set-person-cover",
-          icon: "mdi-account-box",
-          text: this.$gettext("Set as Person Cover"),
+          /* icon: "mdi-account-check", */
+          text: this.$gettext("Set as Cover Image"),
           visible: assigned && !invalid && !!marker?.Thumb,
           disabled,
           click: () => this.onSetPersonCover(marker),
-        },
-        {
-          name: "remove-face",
-          icon: "mdi-close",
-          text: this.$gettext("Remove Face"),
-          visible: !assigned && !invalid,
-          disabled,
-          click: () => this.onReject(marker),
         },
       ];
     },
