@@ -8,6 +8,8 @@ describe("PTabPhotoPeople face actions", () => {
   let wrapper;
   let setCoverSpy;
   let windowOpenSpy;
+  let assignedMarker;
+  let unassignedMarker;
 
   const mockPeople = [
     {
@@ -27,6 +29,22 @@ describe("PTabPhotoPeople face actions", () => {
     });
 
     windowOpenSpy = vi.spyOn(window, "open").mockImplementation(() => {});
+
+    assignedMarker = new Marker({
+      UID: "marker-assigned",
+      SubjUID: "js6sg6b2h8njw0sx",
+      Invalid: false,
+      Thumb: "hash-1234",
+      Name: "John Doe",
+    });
+
+    unassignedMarker = new Marker({
+      UID: "marker-unassigned",
+      SubjUID: "",
+      Invalid: false,
+      Thumb: "",
+      Name: "",
+    });
 
     wrapper = mount(PeopleTab, {
       props: {
@@ -57,15 +75,7 @@ describe("PTabPhotoPeople face actions", () => {
           $view: {
             getData: vi.fn(() => ({
               model: {
-                getMarkers: vi.fn(() => [
-                  new Marker({
-                    UID: "marker1",
-                    SubjUID: "js6sg6b2h8njw0sx",
-                    Invalid: false,
-                    Thumb: "hash-1234",
-                    Name: "John Doe",
-                  }),
-                ]),
+                getMarkers: vi.fn(() => [assignedMarker, unassignedMarker]),
               },
             })),
           },
@@ -95,23 +105,35 @@ describe("PTabPhotoPeople face actions", () => {
     }
   });
 
-  it("provides go-to-person and set-cover actions for assigned faces", () => {
+  it("provides go-to-person and set-cover actions for assigned faces", async () => {
     const marker = { SubjUID: "js6sg6b2h8njw0sx", Invalid: false, Thumb: "hash-1234" };
 
     const actions = wrapper.vm.getFaceActions(marker);
     const visible = actions.filter((action) => action.visible).map((action) => action.name);
 
-    expect(visible).toEqual(expect.arrayContaining(["go-to-person", "set-person-cover"]));
-    expect(actions.find((action) => action.name === "remove-face").visible).toBe(false);
+    expect(visible).toEqual(["go-to-person", "set-person-cover"]);
+    expect(actions.some((action) => action.name === "remove-face")).toBe(false);
+
+    wrapper.vm.markers = [assignedMarker];
+    await wrapper.vm.$nextTick();
+
+    const removeButton = wrapper.find(`[data-id="${assignedMarker.UID}"] .action-reject`);
+    expect(removeButton.exists()).toBe(false);
   });
 
-  it("shows remove-face action for unassigned faces only", () => {
+  it("renders quick remove button for unassigned faces", async () => {
     const marker = { SubjUID: "", Invalid: false };
 
     const actions = wrapper.vm.getFaceActions(marker);
     const visible = actions.filter((action) => action.visible).map((action) => action.name);
 
-    expect(visible).toEqual(["remove-face"]);
+    expect(visible).toEqual([]);
+
+    wrapper.vm.markers = [unassignedMarker];
+    await wrapper.vm.$nextTick();
+
+    const removeButton = wrapper.find(`[data-id="${unassignedMarker.UID}"] .action-reject`);
+    expect(removeButton.exists()).toBe(true);
   });
 
   it("opens subject route in new window when navigating to person", async () => {
@@ -159,14 +181,14 @@ describe("PTabPhotoPeople face actions", () => {
       expect(wrapper.vm.hasFaceMenu(marker)).toBe(false);
     });
 
-    it("returns true for unassigned valid faces (remove action)", () => {
+    it("returns false for unassigned valid faces", () => {
       const marker = new Marker({
         UID: "marker3",
         SubjUID: "",
         Invalid: false,
       });
 
-      expect(wrapper.vm.hasFaceMenu(marker)).toBe(true);
+      expect(wrapper.vm.hasFaceMenu(marker)).toBe(false);
     });
   });
 
@@ -186,18 +208,17 @@ describe("PTabPhotoPeople face actions", () => {
 
       // Check props
       expect(actionMenu.props("buttonIcon")).toBe("mdi-dots-vertical");
-      expect(actionMenu.props("buttonClass")).toBe("input-reject");
+      expect(actionMenu.props("buttonClass")).toBe("input-menu");
       expect(actionMenu.props("items")).toBeInstanceOf(Function);
 
       // Call items function to verify it returns correct actions
       const actions = actionMenu.props("items")();
       expect(Array.isArray(actions)).toBe(true);
-      expect(actions.length).toBe(3); // go-to-person, set-person-cover, remove-face
+      expect(actions.length).toBe(2); // go-to-person, set-person-cover
 
       const actionNames = actions.map((a) => a.name);
       expect(actionNames).toContain("go-to-person");
       expect(actionNames).toContain("set-person-cover");
-      expect(actionNames).toContain("remove-face");
     });
   });
 });
