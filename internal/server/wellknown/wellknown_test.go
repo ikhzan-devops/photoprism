@@ -8,6 +8,9 @@ import (
 )
 
 func TestMain(m *testing.M) {
+	// Remove temporary SQLite files before running the tests.
+	fs.PurgeTestDbFiles(".", false)
+
 	// Run unit tests.
 	code := m.Run()
 

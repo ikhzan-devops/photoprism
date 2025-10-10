@@ -26,7 +26,7 @@ func PicturesCountFlag() *cli.IntFlag {
 }
 
 // VisionSourceFlag returns the CLI flag used to choose a metadata source for computer-vision commands.
-// Allowing only whitelisted aliases keeps CLI input aligned with entity.VisionSrcNames.
+// Allowing only whitelisted aliases keeps CLI input aligned with entity.SrcVisionCommands.
 func VisionSourceFlag(src entity.Src) *cli.StringFlag {
 	return &cli.StringFlag{
 		Name:    "source",

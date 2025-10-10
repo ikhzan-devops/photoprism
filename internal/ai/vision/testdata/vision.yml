@@ -67,7 +67,7 @@ Models:
 - Type: caption
   Name: gemma3
   Version: latest
-  Provider: ollama
+  Engine: ollama
   Resolution: 720
   Service:
     Uri: http://ollama:11434/api/generate
@@ -76,3 +76,4 @@ Models:
     ResponseFormat: ollama
 Thresholds:
   Confidence: 10
+  NSFW: 75

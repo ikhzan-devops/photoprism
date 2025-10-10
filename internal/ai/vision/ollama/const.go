@@ -1,8 +1,8 @@
 package ollama
 
 const (
-	// ProviderName is the canonical identifier for Ollama-based vision services.
-	ProviderName = "ollama"
+	// EngineName is the canonical identifier for Ollama-based vision services.
+	EngineName = "ollama"
 	// ApiFormat identifies Ollama-compatible request and response payloads.
 	ApiFormat = "ollama"
 )

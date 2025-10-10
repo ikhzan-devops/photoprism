@@ -640,7 +640,7 @@ export default {
       this.updateFilter(props);
 
       if (this.loading || !this.active) {
-        return;
+        return false;
       }
 
       const query = {
@@ -656,10 +656,12 @@ export default {
       }
 
       if (JSON.stringify(this.$route.query) === JSON.stringify(query)) {
-        return;
+        return false;
       }
 
       this.$router.replace({ query: query });
+
+      return true;
     },
     searchParams() {
       const params = {
@@ -708,7 +710,7 @@ export default {
        * back-navigation. We therefore reset the remembered scroll-position
        * in any other scenario
        */
-      if (!window.backwardsNavigationDetected) {
+      if (!this.$view.wasBackwardNavigation()) {
         this.setOffset(0);
       }
 

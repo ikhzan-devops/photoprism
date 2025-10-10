@@ -16,8 +16,8 @@ const (
 	ModelTypeGenerate ModelType = "generate"
 )
 
-// ParseTypes parses a model type string.
-func ParseTypes(s string) (types ModelTypes) {
+// ParseModelTypes parses a model type string.
+func ParseModelTypes(s string) (types ModelTypes) {
 	if s = strings.TrimSpace(s); s == "" {
 		return ModelTypes{}
 	}

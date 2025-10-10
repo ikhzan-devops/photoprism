@@ -6,6 +6,8 @@ export class Lightbox {
     $event.publish("lightbox.open", options);
   }
 
+  openModels(models, index, collection) {
+    $event.publish("lightbox.open", { models, index, collection });
   openModels(models, index, album, isBatchDialog) {
     $event.publish("lightbox.open", { models, index, album, isBatchDialog });
   }

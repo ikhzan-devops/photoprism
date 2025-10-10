@@ -3,7 +3,6 @@ package config
 import (
 	"math/bits"
 
-	"github.com/photoprism/photoprism/internal/ai/vision"
 	"github.com/photoprism/photoprism/internal/service/hub/places"
 )
 
@@ -80,39 +79,6 @@ func (c *Config) DisableClassification() bool {
 	}
 
 	return false
-}
-
-// GenerateLabelsWhileIndexing checks if image classification should be performed while indexing.
-func (c *Config) GenerateLabelsWhileIndexing() bool {
-	if c.DisableClassification() {
-		return false
-	} else if vision.Config == nil {
-		return false
-	}
-
-	return vision.Config.IsDefault(vision.ModelTypeLabels)
-}
-
-// GenerateLabelsAfterIndexing checks if image classification should be performed after indexing.
-func (c *Config) GenerateLabelsAfterIndexing() bool {
-	if c.DisableClassification() {
-		return false
-	} else if vision.Config == nil {
-		return false
-	}
-
-	return vision.Config.IsCustom(vision.ModelTypeLabels)
-}
-
-// GenerateCaptionsAfterIndexing checks if captions should be generated after indexing.
-func (c *Config) GenerateCaptionsAfterIndexing() bool {
-	if c.DisableClassification() {
-		return false
-	} else if vision.Config == nil {
-		return false
-	}
-
-	return vision.Config.IsCustom(vision.ModelTypeCaption)
 }
 
 // DisableFFmpeg checks if FFmpeg is disabled for video transcoding.

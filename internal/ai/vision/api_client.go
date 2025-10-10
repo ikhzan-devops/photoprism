@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"strings"
 
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/service/http/header"
@@ -60,12 +59,12 @@ func PerformApiRequest(apiRequest *ApiRequest, uri, method, key string) (apiResp
 
 	format := apiRequest.GetResponseFormat()
 
-	if provider, ok := ProviderFor(format); ok && provider.Parser != nil {
+	if engine, ok := EngineFor(format); ok && engine.Parser != nil {
 		if clientResp.StatusCode >= 300 {
 			log.Debugf("vision: %s (status code %d)", body, clientResp.StatusCode)
 		}
 
-		parsed, parseErr := provider.Parser.Parse(context.Background(), apiRequest, body, clientResp.StatusCode)
+		parsed, parseErr := engine.Parser.Parse(context.Background(), apiRequest, body, clientResp.StatusCode)
 		if parseErr != nil {
 			return nil, parseErr
 		}
@@ -110,8 +109,8 @@ func decodeOllamaResponse(data []byte) (*ApiResponseOllama, error) {
 }
 
 func parseOllamaLabels(raw string) ([]LabelResult, error) {
-	raw = strings.TrimSpace(raw)
-	if raw == "" {
+	cleaned := clean.JSON(raw)
+	if cleaned == "" {
 		return nil, nil
 	}
 
@@ -119,7 +118,7 @@ func parseOllamaLabels(raw string) ([]LabelResult, error) {
 		Labels []LabelResult `json:"labels"`
 	}
 
-	if err := json.Unmarshal([]byte(raw), &payload); err != nil {
+	if err := json.Unmarshal([]byte(cleaned), &payload); err != nil {
 		return nil, err
 	}
 

@@ -3,17 +3,29 @@ package vision
 import (
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	"github.com/photoprism/photoprism/internal/ai/tensorflow"
 	"github.com/photoprism/photoprism/internal/ai/vision/ollama"
+	"github.com/photoprism/photoprism/internal/entity"
 )
 
 func TestModelGetOptionsDefaultsOllamaLabels(t *testing.T) {
+	ollamaModel := "redule26/huihui_ai_qwen2.5-vl-7b-abliterated:latest"
+
 	model := &Model{
-		Type:     ModelTypeLabels,
-		Provider: ollama.ProviderName,
+		Type:   ModelTypeLabels,
+		Name:   ollamaModel,
+		Engine: ollama.EngineName,
 	}
 
-	model.ApplyProviderDefaults()
+	model.ApplyEngineDefaults()
+
+	m, n, v := model.Model()
+
+	assert.Equal(t, ollamaModel, m)
+	assert.Equal(t, "redule26/huihui_ai_qwen2.5-vl-7b-abliterated", n)
+	assert.Equal(t, "latest", v)
 
 	opts := model.GetOptions()
 	if opts == nil {
@@ -39,8 +51,8 @@ func TestModelGetOptionsDefaultsOllamaLabels(t *testing.T) {
 
 func TestModelGetOptionsRespectsCustomValues(t *testing.T) {
 	model := &Model{
-		Type:     ModelTypeLabels,
-		Provider: ollama.ProviderName,
+		Type:   ModelTypeLabels,
+		Engine: ollama.EngineName,
 		Options: &ApiRequestOptions{
 			Temperature: 5,
 			TopP:        0.95,
@@ -48,7 +60,7 @@ func TestModelGetOptionsRespectsCustomValues(t *testing.T) {
 		},
 	}
 
-	model.ApplyProviderDefaults()
+	model.ApplyEngineDefaults()
 
 	opts := model.GetOptions()
 	if opts.Temperature != MaxTemperature {
@@ -64,12 +76,12 @@ func TestModelGetOptionsRespectsCustomValues(t *testing.T) {
 
 func TestModelGetOptionsFillsMissingFields(t *testing.T) {
 	model := &Model{
-		Type:     ModelTypeLabels,
-		Provider: ollama.ProviderName,
-		Options:  &ApiRequestOptions{},
+		Type:    ModelTypeLabels,
+		Engine:  ollama.EngineName,
+		Options: &ApiRequestOptions{},
 	}
 
-	model.ApplyProviderDefaults()
+	model.ApplyEngineDefaults()
 
 	opts := model.GetOptions()
 	if opts.TopP != 0.9 {
@@ -78,6 +90,52 @@ func TestModelGetOptionsFillsMissingFields(t *testing.T) {
 	if len(opts.Stop) != 1 || opts.Stop[0] != "\n\n" {
 		t.Errorf("expected default stop sequence, got %#v", opts.Stop)
 	}
+}
+
+func TestModelApplyEngineDefaultsSetsResolution(t *testing.T) {
+	model := &Model{Type: ModelTypeLabels, Engine: ollama.EngineName}
+
+	model.ApplyEngineDefaults()
+
+	if model.Resolution != ollama.DefaultResolution {
+		t.Fatalf("expected resolution %d, got %d", ollama.DefaultResolution, model.Resolution)
+	}
+
+	model.Resolution = 1024
+	model.ApplyEngineDefaults()
+	if model.Resolution != 1024 {
+		t.Fatalf("expected custom resolution to be preserved, got %d", model.Resolution)
+	}
+}
+
+func TestModelGetSource(t *testing.T) {
+	t.Run("NilModel", func(t *testing.T) {
+		var model *Model
+		if src := model.GetSource(); src != entity.SrcAuto {
+			t.Fatalf("expected SrcAuto for nil model, got %s", src)
+		}
+	})
+
+	t.Run("EngineAlias", func(t *testing.T) {
+		model := &Model{Engine: ollama.EngineName}
+		if src := model.GetSource(); src != entity.SrcOllama {
+			t.Fatalf("expected SrcOllama, got %s", src)
+		}
+	})
+
+	t.Run("RequestFormat", func(t *testing.T) {
+		model := &Model{Service: Service{RequestFormat: ApiFormatOpenAI}}
+		if src := model.GetSource(); src != entity.SrcOpenAI {
+			t.Fatalf("expected SrcOpenAI, got %s", src)
+		}
+	})
+
+	t.Run("DefaultImage", func(t *testing.T) {
+		model := &Model{}
+		if src := model.GetSource(); src != entity.SrcImage {
+			t.Fatalf("expected SrcImage fallback, got %s", src)
+		}
+	})
 }
 
 func TestModel_IsDefault(t *testing.T) {
@@ -111,9 +169,9 @@ func TestModel_IsDefault(t *testing.T) {
 		{
 			name: "RemoteService",
 			model: &Model{
-				Type:     ModelTypeCaption,
-				Name:     "custom-caption",
-				Provider: ollama.ProviderName,
+				Type:   ModelTypeCaption,
+				Name:   "custom-caption",
+				Engine: ollama.EngineName,
 			},
 			want: false,
 		},

@@ -91,12 +91,21 @@ var (
 		Type:       ModelTypeCaption,
 		Name:       ollama.CaptionModel,
 		Version:    VersionLatest,
-		Provider:   ollama.ProviderName,
+		Engine:     ollama.EngineName,
 		Resolution: 720, // Original aspect ratio, with a max size of 720 x 720 pixels.
 		Service: Service{
 			Uri: "http://ollama:11434/api/generate",
 		},
 	}
-	DefaultModels     = Models{NasnetModel, NsfwModel, FacenetModel, CaptionModel}
-	DefaultThresholds = Thresholds{Confidence: 10}
+	DefaultModels = Models{
+		NasnetModel,
+		NsfwModel,
+		FacenetModel,
+		CaptionModel,
+	}
+	DefaultThresholds = Thresholds{
+		Confidence: 10, // 0-100%
+		Topicality: 0,  // 0-100%
+		NSFW:       75, // 1-100%
+	}
 )

@@ -1,6 +1,6 @@
 /*
 Package ollama integrates PhotoPrism's vision pipeline with Ollama-compatible
-multi-modal models so adapters can share logging and provider helpers.
+multi-modal models so adapters can share logging and engine helpers.
 
 Copyright (c) 2018 - 2025 PhotoPrism UG. All rights reserved.
 

@@ -24,6 +24,7 @@ import (
 	"github.com/photoprism/photoprism/pkg/txt"
 )
 
+// UploadPath is the root directory underneath which user uploads are staged.
 const (
 	UploadPath = "/upload"
 )

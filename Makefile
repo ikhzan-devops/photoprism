@@ -65,7 +65,7 @@ endif
 
 # Declare "make" targets.
 all: dep build-js
-dep: dep-tensorflow dep-js
+dep: dep-tensorflow dep-onnx dep-js
 biuld: build
 build: build-go
 watch: watch-js
@@ -73,6 +73,7 @@ build-all: build-go build-js
 pull: docker-pull
 test: test-js test-go
 test-go: run-test-go
+test-hub: run-test-hub
 test-pkg: run-test-pkg
 test-ai: run-test-ai
 test-api: run-test-api
@@ -176,6 +177,7 @@ install:
 	@[ ! -d "$(DESTDIR)" ] || (echo "ERROR: Install path '$(DESTDIR)' already exists!"; exit 1)
 	mkdir --mode=$(INSTALL_MODE) -p $(DESTDIR)
 	env TMPDIR="$(BUILD_PATH)" ./scripts/dist/install-tensorflow.sh $(DESTDIR)
+	env TMPDIR="$(BUILD_PATH)" ./scripts/dist/install-onnx.sh $(DESTDIR)
 	rm -rf --preserve-root $(DESTDIR)/include
 	(cd $(DESTDIR) && mkdir -p bin lib assets)
 	./scripts/build.sh prod "$(DESTDIR)/bin/$(BINARY_NAME)"
@@ -191,6 +193,8 @@ install-go:
 	go build -v ./...
 install-tensorflow:
 	sudo scripts/dist/install-tensorflow.sh
+install-onnx:
+	sudo scripts/dist/install-onnx.sh
 install-darktable:
 	sudo scripts/dist/install-darktable.sh
 acceptance-sqlite-restart:
@@ -279,6 +283,8 @@ dep-tensorflow:
 	scripts/download-facenet.sh
 	scripts/download-nasnet.sh
 	scripts/download-nsfw.sh
+dep-onnx:
+	scripts/download-scrfd.sh
 dep-acceptance: storage/acceptance
 storage/acceptance:
 	[ -f "./storage/acceptance/index.db" ] || (cd storage && rm -rf acceptance && wget -c https://dl.photoprism.app/qa/acceptance.tar.gz -O - | tar -xz)
@@ -364,18 +370,12 @@ acceptance:
 acceptance-short:
 	$(info Running JS acceptance tests in Chrome...)
 	(cd frontend &&	npm run testcafe -- "chrome --headless=new" --test-grep "^(Multi-Window)\:*" --test-meta mode=public --config-file ./testcaferc.json --experimental-multiple-windows "tests/acceptance" && npm run testcafe -- "chrome --headless=new" --test-grep "^(Common|Core)\:*" --test-meta mode=public,type=short --config-file ./testcaferc.json "tests/acceptance")
-acceptance-firefox:
-	$(info Running JS acceptance tests in Firefox...)
-	(cd frontend && npm run testcafe -- firefox:headless --test-grep "^(Common|Core)\:*" --test-meta mode=public --config-file ./testcaferc.json --disable-native-automation "tests/acceptance")
 acceptance-auth:
 	$(info Running JS acceptance-auth tests in Chrome...)
 	(cd frontend &&	npm run testcafe -- "chrome --headless=new" --test-grep "^(Multi-Window)\:*" --test-meta mode=auth --config-file ./testcaferc.json --experimental-multiple-windows "tests/acceptance" && npm run testcafe -- "chrome --headless=new" --test-grep "^(Common|Core)\:*" --test-meta mode=auth --config-file ./testcaferc.json "tests/acceptance")
 acceptance-auth-short:
 	$(info Running JS acceptance-auth tests in Chrome...)
 	(cd frontend &&	npm run testcafe -- "chrome --headless=new" --test-grep "^(Multi-Window)\:*" --test-meta mode=auth --config-file ./testcaferc.json --experimental-multiple-windows "tests/acceptance" && npm run testcafe -- "chrome --headless=new" --test-grep "^(Common|Core)\:*" --test-meta mode=auth,type=short --config-file ./testcaferc.json "tests/acceptance")
-acceptance-auth-firefox:
-	$(info Running JS acceptance-auth tests in Firefox...)
-	(cd frontend && npm run testcafe -- firefox:headless --test-grep "^(Common|Core)\:*" --test-meta mode=auth --config-file ./testcaferc.json --disable-native-automation "tests/acceptance")
 vitest-watch:
 	$(info Running Vitest unit tests in watch mode...)
 	(cd frontend && npm run test-watch)
@@ -409,6 +409,9 @@ run-test-short:
 run-test-go:
 	$(info Running all Go tests...)
 	$(GOTEST) -parallel 1 -count 1 -cpu 1 -tags="slow,develop" -timeout 20m ./pkg/... ./internal/...
+run-test-hub:
+	$(info Running all Go tests with hub requests...)
+	env PHOTOPRISM_TEST_HUB="true" $(GOTEST) -parallel 1 -count 1 -cpu 1 -tags="slow,develop,debug" -timeout 20m ./pkg/... ./internal/...
 run-test-mariadb:
 	$(info Running all Go tests on MariaDB...)
 	PHOTOPRISM_TEST_DRIVER="mysql" PHOTOPRISM_TEST_DSN="root:photoprism@tcp(mariadb:4001)/acceptance?charset=utf8mb4,utf8&collation=utf8mb4_unicode_ci&parseTime=true" $(GOTEST) -parallel 1 -count 1 -cpu 1 -tags="slow,develop" -timeout 20m ./pkg/... ./internal/...

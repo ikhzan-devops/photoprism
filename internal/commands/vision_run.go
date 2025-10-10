@@ -48,9 +48,10 @@ func visionRunAction(ctx *cli.Context) error {
 		return worker.Start(
 			filter,
 			ctx.Int("count"),
-			vision.ParseTypes(ctx.String("models")),
+			vision.ParseModelTypes(ctx.String("models")),
 			string(source),
 			ctx.Bool("force"),
+			vision.RunManual,
 		)
 	})
 }

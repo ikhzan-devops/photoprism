@@ -10,7 +10,6 @@ import (
 
 	"github.com/photoprism/photoprism/internal/ai/vision"
 	"github.com/photoprism/photoprism/internal/config"
-	"github.com/photoprism/photoprism/internal/entity"
 	"github.com/photoprism/photoprism/internal/workers"
 	"github.com/photoprism/photoprism/pkg/txt"
 )
@@ -28,7 +27,7 @@ var VisionResetCommand = &cli.Command{
 			Value:   "",
 		},
 		PicturesCountFlag(),
-		VisionSourceFlag(entity.SrcImage),
+		VisionSourceFlag(vision.DefaultSrc),
 		&cli.BoolFlag{
 			Name:    "yes",
 			Aliases: []string{"y"},
@@ -40,7 +39,7 @@ var VisionResetCommand = &cli.Command{
 
 func visionResetAction(ctx *cli.Context) error {
 	return CallWithDependencies(ctx, func(conf *config.Config) error {
-		models := vision.ParseTypes(ctx.String("models"))
+		models := vision.ParseModelTypes(ctx.String("models"))
 		resetCaptions := slices.Contains(models, vision.ModelTypeCaption)
 		resetLabels := slices.Contains(models, vision.ModelTypeLabels)
 

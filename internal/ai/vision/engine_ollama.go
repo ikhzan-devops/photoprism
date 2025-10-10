@@ -2,7 +2,6 @@ package vision
 
 import (
 	"context"
-	"fmt"
 	"strings"
 
 	"github.com/photoprism/photoprism/internal/ai/vision/ollama"
@@ -18,22 +17,26 @@ type ollamaBuilder struct{}
 type ollamaParser struct{}
 
 func init() {
-	RegisterProvider(ApiFormatOllama, Provider{
+	RegisterEngine(ApiFormatOllama, Engine{
 		Builder:  ollamaBuilder{},
 		Parser:   ollamaParser{},
 		Defaults: ollamaDefaults{},
 	})
 
-	RegisterProviderAlias(ollama.ProviderName, ProviderInfo{
-		RequestFormat:  ApiFormatOllama,
-		ResponseFormat: ApiFormatOllama,
-		FileScheme:     string(scheme.Base64),
+	// Register the human-friendly engine name so configuration can simply use
+	// `Engine: "ollama"` and inherit adapter defaults.
+	RegisterEngineAlias(ollama.EngineName, EngineInfo{
+		RequestFormat:     ApiFormatOllama,
+		ResponseFormat:    ApiFormatOllama,
+		FileScheme:        string(scheme.Base64),
+		DefaultResolution: ollama.DefaultResolution,
 	})
 
-	CaptionModel.Provider = ollama.ProviderName
-	CaptionModel.ApplyProviderDefaults()
+	CaptionModel.Engine = ollama.EngineName
+	CaptionModel.ApplyEngineDefaults()
 }
 
+// SystemPrompt returns the Ollama system prompt for the specified model type.
 func (ollamaDefaults) SystemPrompt(model *Model) string {
 	if model == nil || model.Type != ModelTypeLabels {
 		return ""
@@ -41,6 +44,7 @@ func (ollamaDefaults) SystemPrompt(model *Model) string {
 	return ollama.LabelSystem
 }
 
+// UserPrompt returns the Ollama user prompt for the specified model type.
 func (ollamaDefaults) UserPrompt(model *Model) string {
 	if model == nil {
 		return ""
@@ -50,19 +54,31 @@ func (ollamaDefaults) UserPrompt(model *Model) string {
 	case ModelTypeCaption:
 		return ollama.CaptionPrompt
 	case ModelTypeLabels:
-		return ollama.LabelPrompt
+		if DetectNSFWLabels {
+			return ollama.LabelPromptNSFW
+		} else {
+			return ollama.LabelPromptDefault
+		}
 	default:
 		return ""
 	}
 }
 
+// SchemaTemplate returns the Ollama JSON schema template.
 func (ollamaDefaults) SchemaTemplate(model *Model) string {
-	if model == nil || model.Type != ModelTypeLabels {
+	if model == nil {
 		return ""
 	}
-	return ollama.LabelSchema()
+
+	switch model.Type {
+	case ModelTypeLabels:
+		return ollama.LabelsSchema(model.PromptContains("nsfw"))
+	}
+
+	return ""
 }
 
+// Options returns the Ollama service request options.
 func (ollamaDefaults) Options(model *Model) *ApiRequestOptions {
 	if model == nil {
 		return nil
@@ -84,6 +100,7 @@ func (ollamaDefaults) Options(model *Model) *ApiRequestOptions {
 	}
 }
 
+// Build builds the Ollama service request.
 func (ollamaBuilder) Build(ctx context.Context, model *Model, files Files) (*ApiRequest, error) {
 	if model == nil {
 		return nil, ErrInvalidModel
@@ -109,8 +126,10 @@ func (ollamaBuilder) Build(ctx context.Context, model *Model, files Files) (*Api
 	return req, nil
 }
 
+// Parse processes the Ollama service response.
 func (ollamaParser) Parse(ctx context.Context, req *ApiRequest, raw []byte, status int) (*ApiResponse, error) {
 	ollamaResp, err := decodeOllamaResponse(raw)
+
 	if err != nil {
 		return nil, err
 	}
@@ -143,21 +162,36 @@ func (ollamaParser) Parse(ctx context.Context, req *ApiRequest, raw []byte, stat
 	}
 
 	if parsedLabels {
+		filtered := result.Result.Labels[:0]
 		for i := range result.Result.Labels {
+			if result.Result.Labels[i].Confidence <= 0 {
+				result.Result.Labels[i].Confidence = ollama.LabelConfidenceDefault
+			}
+
+			if result.Result.Labels[i].Topicality <= 0 {
+				result.Result.Labels[i].Topicality = result.Result.Labels[i].Confidence
+			}
+
+			// Apply thresholds and canonicalize the name.
+			normalizeLabelResult(&result.Result.Labels[i])
+
+			if result.Result.Labels[i].Name == "" {
+				continue
+			}
+
 			if result.Result.Labels[i].Source == "" {
-				result.Result.Labels[i].Source = entity.SrcVision
+				result.Result.Labels[i].Source = entity.SrcOllama
 			}
+
+			filtered = append(filtered, result.Result.Labels[i])
 		}
-	} else {
-		if caption := strings.TrimSpace(ollamaResp.Response); caption != "" {
-			result.Result.Caption = &CaptionResult{
-				Text:   caption,
-				Source: entity.SrcImage,
-			}
+		result.Result.Labels = filtered
+	} else if caption := strings.TrimSpace(ollamaResp.Response); caption != "" {
+		result.Result.Caption = &CaptionResult{
+			Text:   caption,
+			Source: entity.SrcOllama,
 		}
 	}
 
 	return result, nil
 }
-
-var ErrInvalidModel = fmt.Errorf("vision: invalid model")

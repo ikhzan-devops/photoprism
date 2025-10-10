@@ -28,6 +28,8 @@ type Face struct {
 	SampleRadius    float64         `json:"SampleRadius" yaml:"SampleRadius,omitempty"`
 	Collisions      int             `json:"Collisions" yaml:"Collisions,omitempty"`
 	CollisionRadius float64         `json:"CollisionRadius" yaml:"CollisionRadius,omitempty"`
+	MergeRetry      uint8           `gorm:"type:TINYINT(3);default:0" json:"-" yaml:"-"`
+	MergeNotes      string          `gorm:"type:VARCHAR(255);default:'';" json:"-" yaml:"-"`
 	EmbeddingJSON   json.RawMessage `gorm:"type:MEDIUMBLOB;" json:"-" yaml:"EmbeddingJSON,omitempty"`
 	embedding       face.Embedding  `gorm:"-" yaml:"-"`
 	MatchedAt       *time.Time      `json:"MatchedAt" yaml:"MatchedAt,omitempty"`
@@ -88,8 +90,8 @@ func (m *Face) SetEmbeddings(embeddings face.Embeddings) (err error) {
 	}
 
 	// Limit sample radius to reduce false positives.
-	if m.SampleRadius > 0.35 {
-		m.SampleRadius = 0.35
+	if m.SampleRadius > face.SampleRadius {
+		m.SampleRadius = face.SampleRadius
 	}
 
 	m.EmbeddingJSON, err = json.Marshal(m.embedding)
@@ -201,7 +203,7 @@ func (m *Face) ResolveCollision(embeddings face.Embeddings) (resolved bool, err 
 	} else {
 		m.MatchedAt = nil
 		m.Collisions++
-		m.CollisionRadius = dist - 0.01
+		m.CollisionRadius = dist - face.Epsilon
 		UpdateFaces.Store(true)
 	}
 
@@ -250,6 +252,10 @@ func (m *Face) ReviseMatches() (revised Markers, err error) {
 
 // MatchMarkers finds and references matching markers.
 func (m *Face) MatchMarkers(faceIds []string) error {
+	if len(faceIds) == 0 {
+		return nil
+	}
+
 	var markers Markers
 
 	err := Db().
@@ -270,6 +276,33 @@ func (m *Face) MatchMarkers(faceIds []string) error {
 	}
 
 	return nil
+}
+
+// UpdateMatchStats persists sample statistics derived from recent matches.
+func (m *Face) UpdateMatchStats(samples int, maxDistance float64) error {
+	if m.ID == "" || samples <= 0 {
+		return nil
+	}
+
+	radius := maxDistance + face.Epsilon
+
+	if radius > face.SampleRadius {
+		radius = face.SampleRadius
+	}
+
+	if radius < 0 {
+		radius = 0
+	}
+
+	if m.Samples == samples && m.SampleRadius == radius {
+		return nil
+	}
+
+	m.Samples = samples
+	m.SampleRadius = radius
+	UpdateFaces.Store(true)
+
+	return m.Updates(Values{"Samples": m.Samples, "SampleRadius": m.SampleRadius})
 }
 
 // SetSubjectUID updates the face's subject uid and related markers.

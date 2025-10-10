@@ -8,6 +8,38 @@ const TouchMoveEvent = "touchmove";
 const debug = window.__CONFIG__?.debug;
 const trace = window.__CONFIG__?.trace;
 
+// Enumerates the possible navigation directions observed between Vue Router history states.
+const NavigationDirection = Object.freeze({
+  None: "none",
+  Back: "back",
+  Forward: "forward",
+  Replace: "replace",
+});
+
+// Reads the current history state if the environment exposes the history API.
+const getHistoryState = () => {
+  if (typeof window === "undefined" || typeof window.history === "undefined") {
+    return undefined;
+  }
+
+  return window.history.state;
+};
+
+// Extracts the numeric `position` field Vue Router stores inside history.state.
+const parseHistoryPosition = (state) => {
+  if (!state || typeof state !== "object") {
+    return undefined;
+  }
+
+  const numeric = Number(state.position);
+
+  if (!Number.isFinite(numeric)) {
+    return undefined;
+  }
+
+  return numeric;
+};
+
 // Returns the <html> element.
 export function getHtmlElement() {
   return document.documentElement;
@@ -91,6 +123,70 @@ export function isMediaElement(el) {
 
 // Component refs supported for automatic focus element detection.
 const focusRefs = ["form", "content", "container", "dialog", "page"];
+
+// Returns true if the given value looks like a persisted scroll position.
+const isPos = (v) => v && typeof v === "object" && Number.isFinite(v.left) && Number.isFinite(v.top);
+
+// Minimal localStorage wrapper that tolerates quota / access errors.
+const storage = {
+  get(key) {
+    try {
+      return localStorage.getItem(key);
+    } catch {
+      return null;
+    }
+  },
+  set(key, val) {
+    try {
+      localStorage.setItem(key, val);
+    } catch {
+      /* ignore */
+    }
+  },
+  remove(key) {
+    try {
+      localStorage.removeItem(key);
+    } catch {
+      /* ignore */
+    }
+  },
+};
+
+// Minimal sessionStorage wrapper for ephemeral navigation state.
+const sessionStore = {
+  get(key) {
+    try {
+      return sessionStorage.getItem(key);
+    } catch {
+      return null;
+    }
+  },
+  set(key, val) {
+    try {
+      sessionStorage.setItem(key, val);
+    } catch {
+      /* ignore */
+    }
+  },
+  remove(key) {
+    try {
+      sessionStorage.removeItem(key);
+    } catch {
+      /* ignore */
+    }
+  },
+};
+
+const restoreNamespace = "view.restore.";
+const restoreMaxAgeMs = 30 * 60 * 1000; // 30 minutes
+
+const encodeRestoreKey = (key) => {
+  if (!key || typeof key !== "string") {
+    return "";
+  }
+
+  return restoreNamespace + encodeURIComponent(key);
+};
 
 // Returns the most likely focus element for the given component, or null if none exists.
 export function findFocusElement(c) {
@@ -236,6 +332,15 @@ export class View {
     this.scopes = [];
     this.hideScrollbar = false;
     this.preventNavigation = false;
+
+    // Tracks the most recent history position and derived navigation direction so components can
+    // determine whether a transition was triggered by browser back/forward buttons.
+    this.navigation = {
+      currentPosition: parseHistoryPosition(getHistoryState()),
+      pendingPosition: undefined,
+      direction: NavigationDirection.None,
+      consumed: false,
+    };
 
     addEventListener("keydown", this.onKeyDown.bind(this));
 
@@ -597,6 +702,308 @@ export class View {
     const c = this.scopes[this.scopes.length - 1];
 
     return c?.$options?.name === "App" || c?.$?.uid === 0;
+  }
+
+  // Persists batched restore data (e.g., number of items loaded, scroll offset) for the specified key.
+  saveRestoreState(key, state) {
+    if (!key || !state || typeof state !== "object") {
+      return false;
+    }
+
+    const storageKey = encodeRestoreKey(key);
+
+    if (!storageKey) {
+      return false;
+    }
+
+    const payload = { ...state };
+
+    if (!Object.prototype.hasOwnProperty.call(payload, "filterKey")) {
+      payload.filterKey = key;
+    }
+
+    payload.timestamp = Date.now();
+
+    sessionStore.set(storageKey, JSON.stringify(payload));
+
+    return true;
+  }
+
+  // Reads stored restore data without removing it. Returns undefined if none exists or the entry expired.
+  getRestoreState(key, maxAge = restoreMaxAgeMs) {
+    const storageKey = encodeRestoreKey(key);
+
+    if (!storageKey) {
+      return undefined;
+    }
+
+    const raw = sessionStore.get(storageKey);
+
+    if (!raw) {
+      return undefined;
+    }
+
+    try {
+      const parsed = JSON.parse(raw);
+
+      if (!parsed || typeof parsed !== "object") {
+        sessionStore.remove(storageKey);
+        return undefined;
+      }
+
+      const ts = Number(parsed.timestamp);
+
+      if (Number.isFinite(ts) && maxAge > 0 && Date.now() - ts > maxAge) {
+        sessionStore.remove(storageKey);
+        return undefined;
+      }
+
+      return { ...parsed };
+    } catch {
+      sessionStore.remove(storageKey);
+      return undefined;
+    }
+  }
+
+  // Reads and removes stored restore data atomically.
+  consumeRestoreState(key, maxAge = restoreMaxAgeMs) {
+    const restore = this.getRestoreState(key, maxAge);
+    const storageKey = encodeRestoreKey(key);
+
+    if (storageKey) {
+      sessionStore.remove(storageKey);
+    }
+
+    return restore;
+  }
+
+  // Removes stored restore data for the specified key.
+  clearRestoreState(key) {
+    const storageKey = encodeRestoreKey(key);
+
+    if (!storageKey) {
+      return false;
+    }
+
+    sessionStore.remove(storageKey);
+
+    return true;
+  }
+
+  // Computes the direction of the upcoming navigation using the provided history state snapshot.
+  prepareNavigation(state) {
+    const nextPos = parseHistoryPosition(state);
+
+    if (typeof nextPos !== "number") {
+      this.navigation.pendingPosition = undefined;
+      this.navigation.direction = NavigationDirection.None;
+      this.navigation.consumed = false;
+      return this.navigation.direction;
+    }
+
+    const current = typeof this.navigation.currentPosition === "number" ? this.navigation.currentPosition : nextPos;
+    let direction = NavigationDirection.Replace;
+
+    if (nextPos < current) {
+      direction = NavigationDirection.Back;
+    } else if (nextPos > current) {
+      direction = NavigationDirection.Forward;
+    }
+
+    this.navigation.pendingPosition = nextPos;
+    this.navigation.direction = direction;
+    this.navigation.consumed = false;
+
+    return direction;
+  }
+
+  // Commits the navigation after Vue Router resolves and updates the tracked history position.
+  commitNavigation(state) {
+    const nextPos = parseHistoryPosition(state);
+
+    if (typeof nextPos !== "number") {
+      this.navigation.pendingPosition = undefined;
+      return this.navigation.currentPosition;
+    }
+
+    const current = typeof this.navigation.currentPosition === "number" ? this.navigation.currentPosition : nextPos;
+
+    if (
+      this.navigation.direction !== NavigationDirection.Back &&
+      this.navigation.direction !== NavigationDirection.Forward
+    ) {
+      if (nextPos < current) {
+        this.navigation.direction = NavigationDirection.Back;
+      } else if (nextPos > current) {
+        this.navigation.direction = NavigationDirection.Forward;
+      } else {
+        this.navigation.direction = NavigationDirection.Replace;
+      }
+    }
+
+    this.navigation.currentPosition = nextPos;
+    this.navigation.pendingPosition = undefined;
+
+    return nextPos;
+  }
+
+  // Returns the last known navigation direction.
+  navigationDirection() {
+    return this.navigation.direction;
+  }
+
+  // True when the latest navigation moved backwards in the history stack and has not been consumed.
+  wasBackwardNavigation() {
+    return this.navigation.direction === NavigationDirection.Back;
+  }
+
+  // Alias retained for legacy call sites that expect a boolean guard.
+  isBackwardNavigationActive() {
+    return this.navigation.direction === NavigationDirection.Back;
+  }
+
+  // Marks the back-navigation flag as consumed so subsequent queries revert to the default flow.
+  consumeBackwardNavigation() {
+    if (this.navigation.direction === NavigationDirection.Back && !this.navigation.consumed) {
+      this.navigation.consumed = true;
+      return true;
+    }
+
+    return false;
+  }
+
+  // Clears the cached navigation direction once components have reacted to it.
+  resetNavigationDirection(direction = NavigationDirection.None) {
+    this.navigation.direction = direction;
+    this.navigation.consumed = false;
+    this.navigation.pendingPosition = undefined;
+  }
+
+  // Saves the window scroll position.
+  saveWindowScrollPos(pos) {
+    if (!isPos(pos)) {
+      pos = { left: Math.round(window.scrollX), top: Math.round(window.scrollY) };
+    }
+
+    // Clone and store position.
+    window.positionToRestore = { left: pos.left, top: pos.top };
+    storage.set("window.scroll.pos", JSON.stringify(window.positionToRestore));
+  }
+
+  // Removes the stored window scroll position.
+  clearWindowScrollPos() {
+    window.positionToRestore = undefined;
+    storage.remove("window.scroll.pos");
+  }
+
+  // Gets the saved window scroll position.
+  getWindowScrollPos(pos) {
+    if (isPos(pos)) {
+      return pos;
+    }
+
+    let result;
+
+    // 1) Try in-memory value.
+    const mem = window.positionToRestore;
+
+    if (isPos(mem)) {
+      // Clone so clearing the original won't affect the return value.
+      result = { left: mem.left, top: mem.top };
+    } else {
+      // 2) Fallback to localStorage.
+      const s = storage.get("window.scroll.pos"); // string or null
+      if (s) {
+        try {
+          const parsed = JSON.parse(s);
+          if (isPos(parsed)) {
+            result = parsed;
+          } // already a new object
+        } catch {
+          /* ignore parse errors */
+        }
+      }
+    }
+
+    // Clear after we've safely copied the value.
+    this.clearWindowScrollPos();
+
+    // object {x, y} or undefined if nothing saved/valid
+    return result;
+  }
+
+  // Restores the saved window scroll position after pending requests finish.
+  restoreWindowScrollPos(pos) {
+    pos = this.getWindowScrollPos(pos);
+
+    if (!isPos(pos)) {
+      return;
+    }
+
+    const target = { left: pos.left, top: pos.top };
+    // Allow pending API calls (pagination batches) to finish before attempting to restore.
+    const idleDelay = 72;
+    const maxAttempts = 20;
+    const tolerance = 2;
+    let attempts = 0;
+    let lastHeight = 0;
+
+    const getContainer = () => document.scrollingElement || document.documentElement;
+
+    const clamp = () => {
+      const el = getContainer();
+      const maxX = Math.max(0, el.scrollWidth - el.clientWidth);
+      const maxY = Math.max(0, el.scrollHeight - el.clientHeight);
+      return {
+        left: Math.min(Math.max(0, target.left), maxX),
+        top: Math.min(Math.max(0, target.top), maxY),
+      };
+    };
+
+    const attemptRestore = (waitForAjax) => {
+      if (attempts >= maxAttempts) {
+        return;
+      }
+
+      const wait = waitForAjax ? $notify.ajaxWait(idleDelay) : Promise.resolve();
+
+      wait.then(() => {
+        window.setTimeout(() => {
+          if (attempts >= maxAttempts) {
+            return;
+          }
+
+          attempts++;
+
+          const el = getContainer();
+          const { left, top } = clamp();
+
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              window.scrollTo({ left, top });
+
+              const currentTop = window.scrollY || window.pageYOffset;
+              const reachedTarget = Math.abs(currentTop - target.top) <= tolerance;
+
+              const newHeight = el.scrollHeight;
+              const needsMoreContent = target.top > newHeight - el.clientHeight;
+              const layoutChanged = newHeight !== lastHeight;
+              lastHeight = newHeight;
+
+              if (reachedTarget) {
+                return;
+              }
+
+              const shouldWait = $notify.ajaxBusy() || needsMoreContent;
+              attemptRestore(shouldWait || layoutChanged);
+            });
+          });
+        }, idleDelay);
+      });
+    };
+
+    lastHeight = getContainer().scrollHeight;
+    attemptRestore(true);
   }
 }
 

@@ -5,6 +5,8 @@ import (
 	"strings"
 	"time"
 	"unicode/utf8"
+
+	"github.com/photoprism/photoprism/internal/ai/vision"
 )
 
 // Report returns global config values as a table for reporting.
@@ -275,14 +277,20 @@ func (c *Config) Report() (rows [][]string, cols []string) {
 		{"vision-api", fmt.Sprintf("%t", c.VisionApi())},
 		{"vision-uri", c.VisionUri()},
 		{"vision-key", strings.Repeat("*", utf8.RuneCountInString(c.VisionKey()))},
+		{"vision-schedule", c.VisionSchedule()},
+		{"vision-filter", c.VisionFilter()},
 		{"nasnet-model-path", c.NasnetModelPath()},
 		{"facenet-model-path", c.FacenetModelPath()},
 		{"nsfw-model-path", c.NsfwModelPath()},
 		{"detect-nsfw", fmt.Sprintf("%t", c.DetectNSFW())},
 
 		// Facial Recognition.
+		{"face-engine", c.FaceEngine()},
+		{"face-engine-run", vision.ReportRunType(c.FaceEngineRunType())},
+		{"face-engine-threads", fmt.Sprintf("%d", c.FaceEngineThreads())},
 		{"face-size", fmt.Sprintf("%d", c.FaceSize())},
 		{"face-score", fmt.Sprintf("%f", c.FaceScore())},
+		{"face-angle", fmt.Sprintf("%v", c.FaceAngles())},
 		{"face-overlap", fmt.Sprintf("%d", c.FaceOverlap())},
 		{"face-cluster-size", fmt.Sprintf("%d", c.FaceClusterSize())},
 		{"face-cluster-score", fmt.Sprintf("%d", c.FaceClusterScore())},
