@@ -589,7 +589,7 @@ let themes = {
     colors: {
       "background": "#191a1a",
       "on-background": "#f4f6fc",
-      "surface": "#1e1f1f",
+      "surface": "#262628",
       "on-surface": "#f6f6fa",
       "surface-bright": "#262626",
       "surface-variant": "#999999",
