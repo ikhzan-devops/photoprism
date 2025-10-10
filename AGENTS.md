@@ -1,6 +1,6 @@
 # PhotoPrism® Repository Guidelines
 
-**Last Updated:** October 9, 2025
+**Last Updated:** October 10, 2025
 
 ## Purpose
 
@@ -119,6 +119,7 @@ console.log(inContainer || inDevPath ? "container" : "host");
     - Or https://app.localssl.dev/ (HTTPS via Traefik reverse proxy)
       - Only if Traefik is running and the dev compose labels are active
       - Labels for `*.localssl.dev` are defined in the dev compose files, e.g. https://github.com/photoprism/photoprism/blob/develop/compose.yaml
+  - Admin Login: Local compose files set `PHOTOPRISM_ADMIN_USER=admin` and `PHOTOPRISM_ADMIN_PASSWORD=photoprism`; if the credentials differ, inspect `compose.yaml` (or the active environment) for these variables before logging in.
   - Do not use the Docker CLI inside the container; starting/stopping services requires host Docker access.
 
 Note: Across our public documentation, official images, and in production, the command-line interface (CLI) name is `photoprism`. Other PhotoPrism binary names are only used in development builds for side-by-side comparisons of the Community Edition (CE) with PhotoPrism Plus (`photoprism-plus`) and PhotoPrism Pro (`photoprism-pro`).
@@ -134,6 +135,13 @@ Note: Across our public documentation, official images, and in production, the c
 - Frontend unit tests are driven by Vitest; see scripts in `frontend/package.json`
   - Vitest watch/coverage: `make vitest-watch` and `make vitest-coverage`
 - Acceptance tests: use the `acceptance-*` targets in the `Makefile`
+
+### Playwright MCP Usage
+
+- Playwright MCP is preconfigured to reach the dev server at http://localhost:2342/; use `playwright__browser_navigate` to load `/library/login`, sign in, then `playwright__browser_take_screenshot`.
+- Default admin credentials remain `admin` / `photoprism`; if login fails, inspect the active compose file or environment for `PHOTOPRISM_ADMIN_USER` and `PHOTOPRISM_ADMIN_PASSWORD`.
+- When capturing artifacts, save screenshots under `.local/screenshots/` (create the folder if needed) by copying the MCP output file into that directory.
+- After scripted interactions, close the browser tab with `playwright__browser_close` so the MCP session stays tidy for subsequent runs.
 
 ### FFmpeg Tests & Hardware Gating
 
