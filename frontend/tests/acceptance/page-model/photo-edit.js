@@ -68,7 +68,7 @@ export default class Page {
 
     this.rejectName = Selector("i.mdi-eject", { timeout: 15000 });
     this.faceActionMenuButton = Selector(".p-faces .p-action-menu .action-menu__btn", { timeout: 15000 });
-    this.removeFaceAction = Selector(".v-list-item.action-remove-face, .action-remove-face", { timeout: 15000 });
+    this.removeMarker = Selector("button.input-reject", { timeout: 15000 });
     this.goToPersonAction = Selector(".v-list-item.action-go-to-person, .action-go-to-person", { timeout: 15000 });
     this.setPersonCoverAction = Selector(".v-list-item.action-set-person-cover, .action-set-person-cover", {
       timeout: 15000,
@@ -166,8 +166,7 @@ export default class Page {
   }
 
   async removeFace(index = 0) {
-    await this.openFaceMenu(index);
-    await t.click(this.removeFaceAction.nth(0));
+    await t.click(this.removeMarker.nth(0));
   }
 
   async goToPerson(index = 0) {

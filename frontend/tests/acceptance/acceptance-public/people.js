@@ -185,13 +185,13 @@ test.meta("testID", "people-005").meta({ mode: "public" })("Common: Remove face"
   await t.click(photoedit.peopleTab);
   const MarkerCount = await subject.getMarkerCount();
 
-  if ((await photoedit.inputName.nth(0).value) == "") {
+  if ((await photoedit.inputName.nth(0).value) === "") {
     await t.expect(photoedit.undoRemoveMarker.nth(0).visible).notOk();
     await t.expect(photoedit.inputName.nth(0).value).eql("");
     await photoedit.removeFace();
     await t.expect(photoedit.undoRemoveMarker.nth(0).visible).ok();
     await t.click(photoedit.undoRemoveMarker);
-  } else if ((await photoedit.inputName.nth(0).value) != "") {
+  } else if ((await photoedit.inputName.nth(0).value) !== "") {
     await t.expect(photoedit.inputName.nth(1).value).eql("");
     await photoedit.removeFace(1);
     await t.expect(photoedit.undoRemoveMarker.nth(0).visible).ok();
@@ -206,12 +206,12 @@ test.meta("testID", "people-005").meta({ mode: "public" })("Common: Remove face"
   await contextmenu.triggerContextMenuAction("edit", "");
   await t.click(photoedit.peopleTab);
 
-  if ((await photoedit.inputName.nth(0).value) == "") {
+  if ((await photoedit.inputName.nth(0).value) === "") {
     await t.expect(photoedit.undoRemoveMarker.nth(0).visible).notOk();
     await t.expect(photoedit.inputName.nth(0).value).eql("");
     await photoedit.removeFace();
     await t.expect(photoedit.undoRemoveMarker.nth(0).visible).ok();
-  } else if ((await photoedit.inputName.nth(0).value) != "") {
+  } else if ((await photoedit.inputName.nth(0).value) !== "") {
     await t.expect(photoedit.undoRemoveMarker.nth(0).visible).notOk();
     await t.expect(photoedit.inputName.nth(1).value).eql("");
     await photoedit.removeFace();
