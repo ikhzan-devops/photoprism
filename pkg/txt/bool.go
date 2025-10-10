@@ -2,11 +2,8 @@ package txt
 
 import (
 	"strings"
-)
 
-const (
-	True  = "true"
-	False = "false"
+	"github.com/photoprism/photoprism/pkg/enum"
 )
 
 // Bool casts a string to bool.
@@ -20,26 +17,31 @@ func Bool(s string) bool {
 	return true
 }
 
-// Yes tests if a string represents "yes".
-func Yes(s string) bool {
-	if s == "" {
+// Yes tests if a string represents "yes" in the following languages Czech, Danish, Dutch, English, French, German, Indonesian, Italian, Polish, Portuguese, Russian, Ukrainian.
+func Yes(s string) (result bool) {
+	t := strings.ToLower(strings.TrimSpace(s))
+	if t == "" {
 		return false
+	} else if strings.Contains(t, " ") {
+		result = false
+	} else {
+
+		_, result = enum.YesMap[t]
 	}
-
-	s = strings.ToLower(strings.TrimSpace(s))
-
-	return strings.IndexAny(s, "ytjposiд") == 0
+	return result
 }
 
-// No tests if a string represents "no".
-func No(s string) bool {
-	if s == "" {
+// No tests if a string represents "no"  in the following languages Czech, Danish, Dutch, English, French, German, Indonesian, Italian, Polish, Portuguese, Russian, Ukrainian.
+func No(s string) (result bool) {
+	t := strings.ToLower(strings.TrimSpace(s))
+	if t == "" {
 		return false
+	} else if strings.Contains(t, " ") {
+		result = false
+	} else {
+		_, result = enum.NoMap[t]
 	}
-
-	s = strings.ToLower(strings.TrimSpace(s))
-
-	return strings.IndexAny(s, "0nhufeн") == 0
+	return result
 }
 
 // New tests if a string represents "new".
