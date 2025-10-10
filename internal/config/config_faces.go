@@ -89,7 +89,7 @@ func (c *Config) FaceEngineShouldRun(when vision.RunType) bool {
 	case vision.RunNewlyIndexed:
 		return when == vision.RunManual || when == vision.RunNewlyIndexed || when == vision.RunOnDemand
 	case vision.RunOnDemand:
-		return when == vision.RunAuto || when == vision.RunManual || when == vision.RunNewlyIndexed || when == vision.RunOnDemand || when == vision.RunOnSchedule
+		return when == vision.RunAuto || when == vision.RunManual || when == vision.RunNewlyIndexed || when == vision.RunOnDemand
 	case vision.RunOnSchedule:
 		return when == vision.RunAuto || when == vision.RunManual || when == vision.RunOnSchedule || when == vision.RunOnDemand
 	case vision.RunOnIndex:
