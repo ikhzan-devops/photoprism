@@ -5,15 +5,17 @@ package cluster
 type NodeDatabase struct {
 	Name      string `json:"name"`
 	User      string `json:"user"`
+	Driver    string `json:"driver,omitempty"`
 	RotatedAt string `json:"rotatedAt"`
 }
 
 // Node is the API response DTO for a cluster node.
 // swagger:model Node
 type Node struct {
-	ID           string            `json:"id"`
-	Name         string            `json:"name"`
-	Role         string            `json:"role"`
+	UUID         string            `json:"uuid"` // NodeUUID
+	Name         string            `json:"name"` // NodeName
+	Role         string            `json:"role"` // NodeRole
+	ClientID     string            `json:"clientId,omitempty"`
 	SiteUrl      string            `json:"siteUrl,omitempty"`
 	AdvertiseUrl string            `json:"advertiseUrl,omitempty"`
 	Labels       map[string]string `json:"labels,omitempty"`
@@ -33,22 +35,33 @@ type DatabaseInfo struct {
 // SummaryResponse is the response type for GET /api/v1/cluster.
 // swagger:model SummaryResponse
 type SummaryResponse struct {
-	UUID     string       `json:"UUID"`
-	Nodes    int          `json:"nodes"`
-	Database DatabaseInfo `json:"database"`
-	Time     string       `json:"time"`
+	UUID        string       `json:"uuid"` // ClusterUUID
+	ClusterCIDR string       `json:"clusterCidr,omitempty"`
+	Nodes       int          `json:"nodes"`
+	Database    DatabaseInfo `json:"database"`
+	Time        string       `json:"time"`
+}
+
+// MetricsResponse is the response type for GET /api/v1/cluster/metrics.
+// swagger:model MetricsResponse
+type MetricsResponse struct {
+	UUID        string         `json:"uuid"`
+	ClusterCIDR string         `json:"clusterCidr,omitempty"`
+	Nodes       map[string]int `json:"nodes"`
+	Time        string         `json:"time"`
 }
 
 // RegisterSecrets contains newly issued or rotated node secrets.
 // swagger:model RegisterSecrets
 type RegisterSecrets struct {
-	NodeSecret      string `json:"nodeSecret,omitempty"`
-	SecretRotatedAt string `json:"secretRotatedAt,omitempty"`
+	ClientSecret string `json:"clientSecret,omitempty"`
+	RotatedAt    string `json:"rotatedAt,omitempty"`
 }
 
 // RegisterDatabase describes database credentials returned during registration/rotation.
 // swagger:model RegisterDatabase
 type RegisterDatabase struct {
+	Driver    string `json:"driver"`
 	Host      string `json:"host"`
 	Port      int    `json:"port"`
 	Name      string `json:"name"`
@@ -61,9 +74,12 @@ type RegisterDatabase struct {
 // RegisterResponse is the response body for POST /api/v1/cluster/nodes/register.
 // swagger:model RegisterResponse
 type RegisterResponse struct {
+	UUID               string           `json:"uuid"` // ClusterUUID
+	ClusterCIDR        string           `json:"clusterCidr,omitempty"`
 	Node               Node             `json:"node"`
 	Database           RegisterDatabase `json:"database"`
 	Secrets            *RegisterSecrets `json:"secrets,omitempty"`
+	JWKSUrl            string           `json:"jwksUrl,omitempty"`
 	AlreadyRegistered  bool             `json:"alreadyRegistered"`
 	AlreadyProvisioned bool             `json:"alreadyProvisioned"`
 }

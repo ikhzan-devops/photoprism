@@ -26,7 +26,7 @@ func TestIndex_Start(t *testing.T) {
 
 	imp.Start(opt)
 
-	indexOpt := IndexOptionsAll()
+	indexOpt := IndexOptionsAll(cfg)
 	indexOpt.Rescan = false
 
 	found, updated := ind.Start(indexOpt)
@@ -67,7 +67,7 @@ func TestIndex_File(t *testing.T) {
 	convert := NewConvert(cfg)
 	ind := NewIndex(cfg, convert, NewFiles(), NewPhotos())
 
-	err := ind.FileName("xxx", IndexOptionsAll())
+	err := ind.FileName("xxx", IndexOptionsAll(cfg))
 
 	assert.Equal(t, IndexFailed, err.Status)
 }

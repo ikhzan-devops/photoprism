@@ -44,9 +44,11 @@ Auth, Session, and Config
 - `$session`: `src/common/session.js` — stores `X-Auth-Token` and `session.id` in storage; provides guards and default routes
 - `$config`: `src/common/config.js` — reactive view of server config and user settings; sets theme, language, limits; exposes `deny()` for feature flags
 - Route guards live in `src/app.js` (router `beforeEach`/`afterEach`) and use `$session` + `$config`
+- `$view`: `src/common/view.js` — manages focus/scroll helpers; use `saveWindowScrollPos()` / `restoreWindowScrollPos()` when navigating so infinite-scroll pages land back where users left them; behaviour is covered by `tests/vitest/common/view.test.js`
 
 Models (REST)
 - Base class: `src/model/rest.js` provides `search`, `find`, `save`, `update`, `remove` for concrete models (`photo`, `album`, `label`, `subject`, etc.)
+- Collection helpers: `src/model/collection.js` adds shared behaviors (for example `setCover`) used by collection-types such as albums and labels.
 - Pagination headers used: `X-Count`, `X-Limit`, `X-Offset`
 
 Routing Conventions
@@ -69,12 +71,14 @@ Build & Tooling
   - Lint/format: `npm run lint`, `npm run fmt`
   - Security scan: `npm run security:scan` (checks `--ignore-scripts` and forbids `v-html`)
 - Make targets (from repo root): `make build-js`, `make watch-js`, `make test-js`
+- Browser automation (Playwright MCP): workflows are documented in `AGENTS.md` under “Playwright MCP Usage”; use those directions when agents need to script UI checks or capture screenshots.
 
 Common How‑Tos
 - Add a page
   - Create `src/page/<name>.vue` (or nested directory)
   - Add route in `src/app/routes.js` with `name`, `path`, `component`, and `meta`
   - Use `$api` for data, `$notify` for UX, `$session` for guards
+  - `updateQuery(props)` helpers should return a boolean indicating whether a navigation was scheduled (recently standardised across pages); callers can bail early when `false`
 
 - Add a REST model
   - Create `src/model/<thing>.js` extending `Rest` and implement `static getCollectionResource()` + `static getModelName()`
@@ -87,6 +91,11 @@ Common How‑Tos
 - Add translations
   - Wrap strings with `$gettext(...)` / `$pgettext(...)`
   - Extract: `npm run gettext-extract`; compile: `npm run gettext-compile`
+
+- Restore scroll state on back navigation
+  - Use `$view.saveRestoreState(key, { count, offset, scrollTop })` when unloads happen and `$view.consumeRestoreState(key)` on popstate to preload prior batches (Albums, Labels already supply examples).
+  - Compute `key` from route + filter params and cap eager loads with `Rest.restoreCap(Model.batchSize())` (defaults to 10× the batch size).
+  - Check `$view.wasBackwardNavigation()` when deciding whether to reuse stored state; `src/app.js` wires the router guards that keep the history direction in sync so no globals like `window.backwardsNavigationDetected` are needed.
 
 Conventions & Safety
 - Avoid `v-html`; use `v-sanitize` or `$util.sanitizeHtml()` (build enforces this)

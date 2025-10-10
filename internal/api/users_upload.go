@@ -23,6 +23,7 @@ import (
 	"github.com/photoprism/photoprism/pkg/fs"
 	"github.com/photoprism/photoprism/pkg/i18n"
 	"github.com/photoprism/photoprism/pkg/media"
+	"github.com/photoprism/photoprism/pkg/txt"
 )
 
 // UploadUserFiles adds files to the user's upload folder from where they can be processed and indexed.
@@ -198,7 +199,7 @@ func UploadUserFiles(router *gin.RouterGroup) {
 			containsNSFW := false
 
 			for _, filename := range uploads {
-				labels, nsfwErr := vision.Nsfw([]string{filename}, media.SrcLocal)
+				labels, nsfwErr := vision.DetectNSFW([]string{filename}, media.SrcLocal)
 
 				if nsfwErr != nil {
 					log.Debug(nsfwErr)
@@ -329,7 +330,7 @@ func ProcessUserUpload(router *gin.RouterGroup) {
 		// Add imported files to albums if allowed.
 		if len(frm.Albums) > 0 &&
 			acl.Rules.AllowAny(acl.ResourceAlbums, s.GetUserRole(), acl.Permissions{acl.ActionCreate, acl.ActionUpload}) {
-			log.Debugf("upload: adding files to album %s", clean.Log(strings.Join(frm.Albums, " and ")))
+			log.Debugf("upload: adding files to album %s", clean.Log(txt.JoinAnd(frm.Albums)))
 			opt.Albums = frm.Albums
 		}
 

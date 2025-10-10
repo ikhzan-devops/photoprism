@@ -15,9 +15,10 @@ import (
 // ClusterNodesShowCommand shows node details.
 var ClusterNodesShowCommand = &cli.Command{
 	Name:      "show",
-	Usage:     "Shows node details (Portal-only)",
+	Usage:     "Shows node details",
 	ArgsUsage: "<id|name>",
 	Flags:     report.CliFlags,
+	Hidden:    true, // Required for cluster-management only.
 	Action:    clusterNodesShowAction,
 }
 
@@ -38,9 +39,12 @@ func clusterNodesShowAction(ctx *cli.Context) error {
 		}
 
 		// Resolve by id first, then by normalized name.
-		n, getErr := r.Get(key)
-		if getErr != nil {
-			name := clean.TypeLowerDash(key)
+		n, getErr := r.FindByNodeUUID(key)
+		if getErr != nil || n == nil {
+			n, getErr = r.FindByClientID(key)
+		}
+		if getErr != nil || n == nil {
+			name := clean.DNSLabel(key)
 			if name == "" {
 				return cli.Exit(fmt.Errorf("invalid node identifier"), 2)
 			}
@@ -59,12 +63,12 @@ func clusterNodesShowAction(ctx *cli.Context) error {
 			return nil
 		}
 
-		cols := []string{"ID", "Name", "Role", "Internal URL", "DB Name", "DB User", "DB Last Rotated", "Created At", "Updated At"}
-		var dbName, dbUser, dbRot string
+		cols := []string{"UUID", "ClientID", "Name", "Role", "Internal URL", "DB Driver", "DB Name", "DB User", "DB Last Rotated", "Created At", "Updated At"}
+		var dbName, dbUser, dbRot, dbDriver string
 		if dto.Database != nil {
-			dbName, dbUser, dbRot = dto.Database.Name, dto.Database.User, dto.Database.RotatedAt
+			dbName, dbUser, dbRot, dbDriver = dto.Database.Name, dto.Database.User, dto.Database.RotatedAt, dto.Database.Driver
 		}
-		rows := [][]string{{dto.ID, dto.Name, dto.Role, dto.AdvertiseUrl, dbName, dbUser, dbRot, dto.CreatedAt, dto.UpdatedAt}}
+		rows := [][]string{{dto.UUID, dto.ClientID, dto.Name, dto.Role, dto.AdvertiseUrl, dbDriver, dbName, dbUser, dbRot, dto.CreatedAt, dto.UpdatedAt}}
 		out, err := report.RenderFormat(rows, cols, report.CliFormat(ctx))
 		fmt.Printf("\n%s\n", out)
 		if err != nil {

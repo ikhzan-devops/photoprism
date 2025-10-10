@@ -17,7 +17,6 @@ import (
 	"github.com/photoprism/photoprism/pkg/authn"
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/i18n"
-	"github.com/photoprism/photoprism/pkg/list"
 	"github.com/photoprism/photoprism/pkg/rnd"
 	"github.com/photoprism/photoprism/pkg/service/http/header"
 	"github.com/photoprism/photoprism/pkg/time/unix"
@@ -31,10 +30,10 @@ const (
 	UnknownIP     = limiter.DefaultIP
 )
 
-// Sessions represents a list of sessions.
+// Sessions is a convenience alias for slices of Session.
 type Sessions []Session
 
-// Session represents a User session.
+// Session represents an authenticated user or client session persisted in the database.
 type Session struct {
 	ID            string          `gorm:"type:VARBINARY(2048);primary_key;auto_increment:false;" json:"-" yaml:"ID"`
 	authToken     string          `gorm:"-" yaml:"-"`
@@ -492,40 +491,7 @@ func (m *Session) Scope() string {
 
 // ValidateScope checks if the scope does not exclude access to specified resource.
 func (m *Session) ValidateScope(resource acl.Resource, perms acl.Permissions) bool {
-	// Get scope string.
-	scope := m.Scope()
-
-	// Skip detailed check and allow all if scope is "*".
-	if scope == list.All {
-		return true
-	}
-
-	// Skip resource check if scope includes all read operations.
-	if scope == acl.ScopeRead.String() {
-		return !acl.GrantScopeRead.DenyAny(perms)
-	}
-
-	// Parse scope to check for resources and permissions.
-	attr := list.ParseAttr(scope)
-
-	// Check if resource is within scope.
-	if granted := attr.Contains(resource.String()); !granted {
-		return false
-	}
-
-	// Check if permission is within scope.
-	if len(perms) == 0 {
-		return true
-	}
-
-	// Check if scope is limited to read or write operations.
-	if a := attr.Find(acl.ScopeRead.String()); a.Value == list.True && acl.GrantScopeRead.DenyAny(perms) {
-		return false
-	} else if a = attr.Find(acl.ScopeWrite.String()); a.Value == list.True && acl.GrantScopeWrite.DenyAny(perms) {
-		return false
-	}
-
-	return true
+	return acl.ScopePermits(m.AuthScope, resource, perms)
 }
 
 // InsufficientScope checks if the scope does not include access to specified resource.

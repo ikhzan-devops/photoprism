@@ -13,6 +13,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/photoprism/photoprism/internal/service/cluster"
+	"github.com/photoprism/photoprism/pkg/rnd"
 )
 
 // Verifies OAuth path in cluster theme pull using client_id/client_secret.
@@ -80,7 +81,7 @@ func TestClusterThemePull_JoinTokenToOAuth(t *testing.T) {
 		switch r.URL.Path {
 		case "/api/v1/cluster/nodes/register":
 			// Must have Bearer join token
-			if r.Header.Get("Authorization") != "Bearer jt" {
+			if r.Header.Get("Authorization") != "Bearer "+cluster.ExampleJoinToken {
 				w.WriteHeader(http.StatusUnauthorized)
 				return
 			}
@@ -92,14 +93,16 @@ func TestClusterThemePull_JoinTokenToOAuth(t *testing.T) {
 			_ = json.NewDecoder(r.Body).Decode(&req)
 			sawRotateSecret = req.RotateSecret
 			w.Header().Set("Content-Type", "application/json")
-			// Return NodeID and a fresh secret
+			// Return NodeClientID and a fresh secret
 			_ = json.NewEncoder(w).Encode(cluster.RegisterResponse{
-				Node:    cluster.Node{ID: "cid123", Name: "pp-node-01"},
-				Secrets: &cluster.RegisterSecrets{NodeSecret: "s3cr3t"},
+				UUID:        rnd.UUID(),
+				ClusterCIDR: "203.0.113.0/24",
+				Node:        cluster.Node{ClientID: cluster.ExampleClientID, Name: "pp-node-01"},
+				Secrets:     &cluster.RegisterSecrets{ClientSecret: cluster.ExampleClientSecret},
 			})
 		case "/api/v1/oauth/token":
 			// Expect Basic for the returned creds
-			if r.Header.Get("Authorization") != "Basic "+base64.StdEncoding.EncodeToString([]byte("cid123:s3cr3t")) {
+			if r.Header.Get("Authorization") != "Basic "+base64.StdEncoding.EncodeToString([]byte(cluster.ExampleClientID+":"+cluster.ExampleClientSecret)) {
 				w.WriteHeader(http.StatusUnauthorized)
 				return
 			}
@@ -122,7 +125,7 @@ func TestClusterThemePull_JoinTokenToOAuth(t *testing.T) {
 	out, err := RunWithTestContext(ClusterThemePullCommand.Subcommands[0], []string{
 		"pull", "--dest", dest, "-f",
 		"--portal-url=" + ts.URL,
-		"--join-token=jt",
+		"--join-token=" + cluster.ExampleJoinToken,
 	})
 	_ = out
 	assert.NoError(t, err)

@@ -2,6 +2,7 @@ package commands
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 
@@ -12,6 +13,7 @@ import (
 	"github.com/photoprism/photoprism/internal/service/cluster"
 	reg "github.com/photoprism/photoprism/internal/service/cluster/registry"
 	"github.com/photoprism/photoprism/pkg/clean"
+	"github.com/photoprism/photoprism/pkg/txt"
 	"github.com/photoprism/photoprism/pkg/txt/report"
 )
 
@@ -27,8 +29,15 @@ var ClusterNodesRotateCommand = &cli.Command{
 	Name:      "rotate",
 	Usage:     "Rotates a node's DB and/or secret via Portal (HTTP)",
 	ArgsUsage: "<id|name>",
-	Flags:     append([]cli.Flag{rotateDatabaseFlag, rotateSecretFlag, &cli.BoolFlag{Name: "yes", Aliases: []string{"y"}, Usage: "runs the command non-interactively"}, rotatePortalURL, rotatePortalTok}, report.CliFlags...),
-	Action:    clusterNodesRotateAction,
+	Flags: append([]cli.Flag{
+		DryRunFlag("preview rotation without contacting the Portal"),
+		rotateDatabaseFlag,
+		rotateSecretFlag,
+		rotatePortalURL,
+		rotatePortalTok,
+		YesFlag(),
+	}, report.CliFlags...),
+	Action: clusterNodesRotateAction,
 }
 
 func clusterNodesRotateAction(ctx *cli.Context) error {
@@ -39,12 +48,14 @@ func clusterNodesRotateAction(ctx *cli.Context) error {
 		}
 
 		// Determine node name. On portal, resolve id->name via registry; otherwise treat key as name.
-		name := clean.TypeLowerDash(key)
+		name := clean.DNSLabel(key)
 		if conf.IsPortal() {
 			if r, err := reg.NewClientRegistryWithConfig(conf); err == nil {
-				if n, err := r.Get(key); err == nil && n != nil {
+				if n, err := r.FindByNodeUUID(key); err == nil && n != nil {
 					name = n.Name
-				} else if n, err := r.FindByName(clean.TypeLowerDash(key)); err == nil && n != nil {
+				} else if n, err := r.FindByClientID(key); err == nil && n != nil {
+					name = n.Name
+				} else if n, err := r.FindByName(clean.DNSLabel(key)); err == nil && n != nil {
 					name = n.Name
 				}
 			}
@@ -61,9 +72,6 @@ func clusterNodesRotateAction(ctx *cli.Context) error {
 		if portalURL == "" {
 			portalURL = os.Getenv(config.EnvVar("portal-url"))
 		}
-		if portalURL == "" {
-			return cli.Exit(fmt.Errorf("portal URL is required (use --portal-url or set portal-url)"), 2)
-		}
 		token := ctx.String("join-token")
 		if token == "" {
 			token = conf.JoinToken()
@@ -71,13 +79,40 @@ func clusterNodesRotateAction(ctx *cli.Context) error {
 		if token == "" {
 			token = os.Getenv(config.EnvVar("join-token"))
 		}
-		if token == "" {
-			return cli.Exit(fmt.Errorf("portal token is required (use --join-token or set join-token)"), 2)
-		}
 
 		// Default: rotate DB only if no flag given (safer default)
 		rotateDatabase := ctx.Bool("database") || (!ctx.IsSet("database") && !ctx.IsSet("secret"))
 		rotateSecret := ctx.Bool("secret")
+
+		if ctx.Bool("dry-run") {
+			target := clean.LogQuote(name)
+			if target == "" {
+				target = "(unnamed node)"
+			}
+			var what []string
+			if rotateDatabase {
+				what = append(what, "database credentials")
+			}
+			if rotateSecret {
+				what = append(what, "node secret")
+			}
+			if len(what) == 0 {
+				what = append(what, "no resources (no rotation flags set)")
+			}
+			if portalURL == "" {
+				log.Infof("dry-run: would rotate %s for %s (portal URL not set)", txt.JoinAnd(what), target)
+			} else {
+				log.Infof("dry-run: would rotate %s for %s via %s", txt.JoinAnd(what), target, clean.Log(portalURL))
+			}
+			return nil
+		}
+
+		if portalURL == "" {
+			return cli.Exit(fmt.Errorf("portal URL is required (use --portal-url or set portal-url)"), 2)
+		}
+		if token == "" {
+			return cli.Exit(fmt.Errorf("portal token is required (use --join-token or set join-token)"), 2)
+		}
 
 		confirmed := RunNonInteractively(ctx.Bool("yes"))
 		if !confirmed {
@@ -97,18 +132,20 @@ func clusterNodesRotateAction(ctx *cli.Context) error {
 			}
 		}
 
-		body := map[string]interface{}{
-			"nodeName":     name,
-			"rotate":       rotateDatabase,
-			"rotateSecret": rotateSecret,
+		payload := cluster.RegisterRequest{
+			NodeName:       name,
+			RotateDatabase: rotateDatabase,
+			RotateSecret:   rotateSecret,
 		}
-		b, _ := json.Marshal(body)
+		b, _ := json.Marshal(payload)
 
-		url := stringsTrimRightSlash(portalURL) + "/api/v1/cluster/nodes/register"
+		endpointUrl := stringsTrimRightSlash(portalURL) + "/api/v1/cluster/nodes/register"
+
 		var resp cluster.RegisterResponse
-		if err := postWithBackoff(url, token, b, &resp); err != nil {
+		if err := postWithBackoff(endpointUrl, token, b, &resp); err != nil {
 			// Map common HTTP errors similarly to register command
-			if he, ok := err.(*httpError); ok {
+			var he *httpError
+			if errors.As(err, &he) {
 				switch he.Status {
 				case 401, 403:
 					return cli.Exit(fmt.Errorf("%s", he.Error()), 4)
@@ -131,17 +168,17 @@ func clusterNodesRotateAction(ctx *cli.Context) error {
 			return nil
 		}
 
-		cols := []string{"ID", "Name", "Role", "DB Name", "DB User", "Host", "Port"}
-		rows := [][]string{{resp.Node.ID, resp.Node.Name, resp.Node.Role, resp.Database.Name, resp.Database.User, resp.Database.Host, fmt.Sprintf("%d", resp.Database.Port)}}
+		cols := []string{"UUID", "ClientID", "Name", "Role", "DB Driver", "DB Name", "DB User", "Host", "Port"}
+		rows := [][]string{{resp.Node.UUID, resp.Node.ClientID, resp.Node.Name, resp.Node.Role, resp.Database.Driver, resp.Database.Name, resp.Database.User, resp.Database.Host, fmt.Sprintf("%d", resp.Database.Port)}}
 		out, _ := report.RenderFormat(rows, cols, report.CliFormat(ctx))
 		fmt.Printf("\n%s\n", out)
 
-		if (resp.Secrets != nil && resp.Secrets.NodeSecret != "") || resp.Database.Password != "" {
+		if (resp.Secrets != nil && resp.Secrets.ClientSecret != "") || resp.Database.Password != "" {
 			fmt.Println("PLEASE WRITE DOWN THE FOLLOWING CREDENTIALS; THEY WILL NOT BE SHOWN AGAIN:")
-			if resp.Secrets != nil && resp.Secrets.NodeSecret != "" && resp.Database.Password != "" {
-				fmt.Printf("\n%s\n", report.Credentials("Node Secret", resp.Secrets.NodeSecret, "DB Password", resp.Database.Password))
-			} else if resp.Secrets != nil && resp.Secrets.NodeSecret != "" {
-				fmt.Printf("\n%s\n", report.Credentials("Node Secret", resp.Secrets.NodeSecret, "", ""))
+			if resp.Secrets != nil && resp.Secrets.ClientSecret != "" && resp.Database.Password != "" {
+				fmt.Printf("\n%s\n", report.Credentials("Node Client Secret", resp.Secrets.ClientSecret, "DB Password", resp.Database.Password))
+			} else if resp.Secrets != nil && resp.Secrets.ClientSecret != "" {
+				fmt.Printf("\n%s\n", report.Credentials("Node Client Secret", resp.Secrets.ClientSecret, "", ""))
 			} else if resp.Database.Password != "" {
 				fmt.Printf("\n%s\n", report.Credentials("DB User", resp.Database.User, "DB Password", resp.Database.Password))
 			}
@@ -149,6 +186,7 @@ func clusterNodesRotateAction(ctx *cli.Context) error {
 				fmt.Printf("DSN: %s\n", resp.Database.DSN)
 			}
 		}
+
 		return nil
 	})
 }

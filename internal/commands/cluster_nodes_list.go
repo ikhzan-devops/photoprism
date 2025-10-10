@@ -14,8 +14,9 @@ import (
 
 // ClusterNodesCommands groups node subcommands.
 var ClusterNodesCommands = &cli.Command{
-	Name:  "nodes",
-	Usage: "Node registry subcommands",
+	Name:   "nodes",
+	Usage:  "Node registry subcommands",
+	Hidden: true, // Required for cluster-management only.
 	Subcommands: []*cli.Command{
 		ClusterNodesListCommand,
 		ClusterNodesShowCommand,
@@ -28,9 +29,10 @@ var ClusterNodesCommands = &cli.Command{
 // ClusterNodesListCommand lists registered nodes.
 var ClusterNodesListCommand = &cli.Command{
 	Name:      "ls",
-	Usage:     "Lists registered cluster nodes (Portal-only)",
+	Usage:     "Lists registered cluster nodes",
 	Flags:     append(report.CliFlags, CountFlag, OffsetFlag),
 	ArgsUsage: "",
+	Hidden:    true, // Required for cluster-management only.
 	Action:    clusterNodesListAction,
 }
 
@@ -78,15 +80,15 @@ func clusterNodesListAction(ctx *cli.Context) error {
 			return nil
 		}
 
-		cols := []string{"ID", "Name", "Role", "Labels", "Internal URL", "DB Name", "DB User", "DB Last Rotated", "Created At", "Updated At"}
+		cols := []string{"UUID", "ClientID", "Name", "Role", "Labels", "Internal URL", "DB Driver", "DB Name", "DB User", "DB Last Rotated", "Created At", "Updated At"}
 		rows := make([][]string, 0, len(out))
 		for _, n := range out {
-			var dbName, dbUser, dbRot string
+			var dbName, dbUser, dbRot, dbDriver string
 			if n.Database != nil {
-				dbName, dbUser, dbRot = n.Database.Name, n.Database.User, n.Database.RotatedAt
+				dbName, dbUser, dbRot, dbDriver = n.Database.Name, n.Database.User, n.Database.RotatedAt, n.Database.Driver
 			}
 			rows = append(rows, []string{
-				n.ID, n.Name, n.Role, formatLabels(n.Labels), n.AdvertiseUrl, dbName, dbUser, dbRot, n.CreatedAt, n.UpdatedAt,
+				n.UUID, n.ClientID, n.Name, n.Role, formatLabels(n.Labels), n.AdvertiseUrl, dbDriver, dbName, dbUser, dbRot, n.CreatedAt, n.UpdatedAt,
 			})
 		}
 

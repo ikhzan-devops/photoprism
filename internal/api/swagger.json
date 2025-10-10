@@ -324,9 +324,32 @@
             },
             "type": "object"
         },
+        "cluster.MetricsResponse": {
+            "properties": {
+                "clusterCidr": {
+                    "type": "string"
+                },
+                "nodes": {
+                    "additionalProperties": {
+                        "type": "integer"
+                    },
+                    "type": "object"
+                },
+                "time": {
+                    "type": "string"
+                },
+                "uuid": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
         "cluster.Node": {
             "properties": {
                 "advertiseUrl": {
+                    "type": "string"
+                },
+                "clientId": {
                     "type": "string"
                 },
                 "createdAt": {
@@ -335,9 +358,6 @@
                 "database": {
                     "$ref": "#/definitions/cluster.NodeDatabase"
                 },
-                "id": {
-                    "type": "string"
-                },
                 "labels": {
                     "additionalProperties": {
                         "type": "string"
@@ -345,9 +365,11 @@
                     "type": "object"
                 },
                 "name": {
+                    "description": "NodeName",
                     "type": "string"
                 },
                 "role": {
+                    "description": "NodeRole",
                     "type": "string"
                 },
                 "siteUrl": {
@@ -355,12 +377,19 @@
                 },
                 "updatedAt": {
                     "type": "string"
+                },
+                "uuid": {
+                    "description": "NodeUUID",
+                    "type": "string"
                 }
             },
             "type": "object"
         },
         "cluster.NodeDatabase": {
             "properties": {
+                "driver": {
+                    "type": "string"
+                },
                 "name": {
                     "type": "string"
                 },
@@ -375,6 +404,9 @@
         },
         "cluster.RegisterDatabase": {
             "properties": {
+                "driver": {
+                    "type": "string"
+                },
                 "dsn": {
                     "type": "string"
                 },
@@ -407,24 +439,34 @@
                 "alreadyRegistered": {
                     "type": "boolean"
                 },
+                "clusterCidr": {
+                    "type": "string"
+                },
                 "database": {
                     "$ref": "#/definitions/cluster.RegisterDatabase"
+                },
+                "jwksUrl": {
+                    "type": "string"
                 },
                 "node": {
                     "$ref": "#/definitions/cluster.Node"
                 },
                 "secrets": {
                     "$ref": "#/definitions/cluster.RegisterSecrets"
+                },
+                "uuid": {
+                    "description": "ClusterUUID",
+                    "type": "string"
                 }
             },
             "type": "object"
         },
         "cluster.RegisterSecrets": {
             "properties": {
-                "nodeSecret": {
+                "clientSecret": {
                     "type": "string"
                 },
-                "secretRotatedAt": {
+                "rotatedAt": {
                     "type": "string"
                 }
             },
@@ -440,7 +482,7 @@
         },
         "cluster.SummaryResponse": {
             "properties": {
-                "UUID": {
+                "clusterCidr": {
                     "type": "string"
                 },
                 "database": {
@@ -450,6 +492,10 @@
                     "type": "integer"
                 },
                 "time": {
+                    "type": "string"
+                },
+                "uuid": {
+                    "description": "ClusterUUID",
                     "type": "string"
                 }
             },
@@ -726,6 +772,12 @@
                 },
                 "UsageInfo": {
                     "type": "boolean"
+                },
+                "VisionFilter": {
+                    "type": "string"
+                },
+                "VisionSchedule": {
+                    "type": "string"
                 },
                 "WakeupInterval": {
                     "$ref": "#/definitions/time.Duration"
@@ -1534,6 +1586,9 @@
                 "ID": {
                     "type": "integer"
                 },
+                "NSFW": {
+                    "type": "boolean"
+                },
                 "Name": {
                     "type": "string"
                 },
@@ -1772,10 +1827,16 @@
                 "CellID": {
                     "type": "string"
                 },
+                "CheckedAt": {
+                    "type": "string"
+                },
                 "Color": {
                     "type": "integer"
                 },
                 "Country": {
+                    "type": "string"
+                },
+                "CreatedAt": {
                     "type": "string"
                 },
                 "CreatedBy": {
@@ -1783,6 +1844,9 @@
                 },
                 "Day": {
                     "type": "integer"
+                },
+                "DeletedAt": {
+                    "type": "string"
                 },
                 "Description": {
                     "type": "string"
@@ -1798,6 +1862,9 @@
                 },
                 "Duration": {
                     "$ref": "#/definitions/time.Duration"
+                },
+                "EditedAt": {
+                    "type": "string"
                 },
                 "EstimatedAt": {
                     "type": "string"
@@ -1816,6 +1883,9 @@
                 },
                 "FocalLength": {
                     "type": "integer"
+                },
+                "IndexedAt": {
+                    "type": "string"
                 },
                 "Iso": {
                     "type": "integer"
@@ -1901,20 +1971,11 @@
                 "UID": {
                     "type": "string"
                 },
+                "UpdatedAt": {
+                    "type": "string"
+                },
                 "Year": {
                     "type": "integer"
-                },
-                "checkedAt": {
-                    "type": "string"
-                },
-                "createdAt": {
-                    "type": "string"
-                },
-                "deletedAt": {
-                    "type": "string"
-                },
-                "editedAt": {
-                    "type": "string"
                 },
                 "files": {
                     "items": {
@@ -1930,31 +1991,31 @@
                         "$ref": "#/definitions/entity.PhotoLabel"
                     },
                     "type": "array"
-                },
-                "updatedAt": {
-                    "type": "string"
                 }
             },
             "type": "object"
         },
         "entity.PhotoLabel": {
             "properties": {
-                "label": {
+                "Label": {
                     "$ref": "#/definitions/entity.Label"
                 },
-                "labelID": {
+                "LabelID": {
                     "type": "integer"
                 },
-                "labelSrc": {
+                "LabelSrc": {
                     "type": "string"
                 },
-                "photo": {
-                    "$ref": "#/definitions/entity.Photo"
-                },
-                "photoID": {
+                "NSFW": {
                     "type": "integer"
                 },
-                "uncertainty": {
+                "PhotoID": {
+                    "type": "integer"
+                },
+                "Topicality": {
+                    "type": "integer"
+                },
+                "Uncertainty": {
                     "type": "integer"
                 }
             },
@@ -3952,6 +4013,9 @@
                 "ID": {
                     "type": "integer"
                 },
+                "NSFW": {
+                    "type": "boolean"
+                },
                 "Name": {
                     "type": "string"
                 },
@@ -4414,14 +4478,16 @@
                 "url",
                 "images",
                 "vision",
-                "ollama"
+                "ollama",
+                "openai"
             ],
             "type": "string",
             "x-enum-varnames": [
                 "ApiFormatUrl",
                 "ApiFormatImages",
                 "ApiFormatVision",
-                "ApiFormatOllama"
+                "ApiFormatOllama",
+                "ApiFormatOpenAI"
             ]
         },
         "vision.ApiRequest": {
@@ -4644,6 +4710,12 @@
                 "name": {
                     "type": "string"
                 },
+                "nsfw": {
+                    "type": "boolean"
+                },
+                "nsfw_confidence": {
+                    "type": "number"
+                },
                 "priority": {
                     "type": "integer"
                 },
@@ -4658,11 +4730,25 @@
         },
         "vision.Model": {
             "properties": {
+                "Run": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/vision.RunType"
+                        }
+                    ],
+                    "description": "\"auto\", \"never\", \"manual\", \"always\", \"newly-indexed\", \"on-schedule\""
+                },
                 "default": {
                     "type": "boolean"
                 },
                 "disabled": {
                     "type": "boolean"
+                },
+                "engine": {
+                    "$ref": "#/definitions/vision.ModelEngine"
+                },
+                "format": {
+                    "type": "string"
                 },
                 "name": {
                     "type": "string"
@@ -4675,6 +4761,12 @@
                 },
                 "resolution": {
                     "type": "integer"
+                },
+                "schema": {
+                    "type": "string"
+                },
+                "schemaFile": {
+                    "type": "string"
                 },
                 "service": {
                     "$ref": "#/definitions/vision.Service"
@@ -4694,19 +4786,77 @@
             },
             "type": "object"
         },
+        "vision.ModelEngine": {
+            "enum": [
+                "vision",
+                "tensorflow",
+                "local"
+            ],
+            "type": "string",
+            "x-enum-varnames": [
+                "EngineVision",
+                "EngineTensorFlow",
+                "EngineLocal"
+            ]
+        },
         "vision.ModelType": {
             "enum": [
                 "labels",
                 "nsfw",
                 "face",
-                "caption"
+                "caption",
+                "generate"
             ],
             "type": "string",
             "x-enum-varnames": [
                 "ModelTypeLabels",
                 "ModelTypeNsfw",
                 "ModelTypeFace",
-                "ModelTypeCaption"
+                "ModelTypeCaption",
+                "ModelTypeGenerate"
+            ]
+        },
+        "vision.RunType": {
+            "enum": [
+                "",
+                "never",
+                "manual",
+                "always",
+                "newly-indexed",
+                "on-demand",
+                "on-schedule",
+                "on-index"
+            ],
+            "type": "string",
+            "x-enum-comments": {
+                "RunAlways": "Run manually, on-schedule, on-demand, and on-index.",
+                "RunAuto": "Automatically decide when to run based on model type and configuration.",
+                "RunManual": "Only run manually e.g. with the \"vision run\" command.",
+                "RunNever": "Never run the model.",
+                "RunNewlyIndexed": "Run manually amd for newly-indexed pictures.",
+                "RunOnDemand": "Run manually, for newly-indexed pictures, and on configured schedule.",
+                "RunOnIndex": "Run manually and on-index.",
+                "RunOnSchedule": "Run manually and on-schedule."
+            },
+            "x-enum-descriptions": [
+                "Automatically decide when to run based on model type and configuration.",
+                "Never run the model.",
+                "Only run manually e.g. with the \"vision run\" command.",
+                "Run manually, on-schedule, on-demand, and on-index.",
+                "Run manually amd for newly-indexed pictures.",
+                "Run manually, for newly-indexed pictures, and on configured schedule.",
+                "Run manually and on-schedule.",
+                "Run manually and on-index."
+            ],
+            "x-enum-varnames": [
+                "RunAuto",
+                "RunNever",
+                "RunManual",
+                "RunAlways",
+                "RunNewlyIndexed",
+                "RunOnDemand",
+                "RunOnSchedule",
+                "RunOnIndex"
             ]
         },
         "vision.Service": {
@@ -6383,6 +6533,44 @@
                 ]
             }
         },
+        "/api/v1/cluster/metrics": {
+            "get": {
+                "operationId": "ClusterMetrics",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/cluster.MetricsResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    },
+                    "429": {
+                        "description": "Too Many Requests",
+                        "schema": {
+                            "$ref": "#/definitions/i18n.Response"
+                        }
+                    }
+                },
+                "summary": "temporary cluster metrics (counts only)",
+                "tags": [
+                    "Cluster"
+                ]
+            }
+        },
         "/api/v1/cluster/nodes": {
             "get": {
                 "operationId": "ClusterListNodes",
@@ -6449,7 +6637,7 @@
                 "operationId": "ClusterNodesRegister",
                 "parameters": [
                     {
-                        "description": "registration payload (nodeName required; optional: nodeRole, labels, advertiseUrl, siteUrl, rotateDatabase, rotateSecret)",
+                        "description": "registration payload (nodeName required; optional: nodeRole, labels, advertiseUrl, siteUrl; to authorize UUID/name changes include clientId+clientSecret; rotation: rotateDatabase, rotateSecret)",
                         "in": "body",
                         "name": "request",
                         "required": true,
@@ -6505,20 +6693,20 @@
                         }
                     }
                 },
-                "summary": "registers a node, provisions DB credentials, and issues nodeSecret",
+                "summary": "registers a node, provisions DB credentials, and issues clientSecret",
                 "tags": [
                     "Cluster"
                 ]
             }
         },
-        "/api/v1/cluster/nodes/{id}": {
+        "/api/v1/cluster/nodes/{uuid}": {
             "delete": {
                 "operationId": "ClusterDeleteNode",
                 "parameters": [
                     {
-                        "description": "node id",
+                        "description": "node uuid",
                         "in": "path",
-                        "name": "id",
+                        "name": "uuid",
                         "required": true,
                         "type": "string"
                     }
@@ -6558,7 +6746,7 @@
                         }
                     }
                 },
-                "summary": "delete node by id",
+                "summary": "delete node by uuid",
                 "tags": [
                     "Cluster"
                 ]
@@ -6567,9 +6755,9 @@
                 "operationId": "ClusterGetNode",
                 "parameters": [
                     {
-                        "description": "node id",
+                        "description": "node uuid",
                         "in": "path",
-                        "name": "id",
+                        "name": "uuid",
                         "required": true,
                         "type": "string"
                     }
@@ -6609,7 +6797,7 @@
                         }
                     }
                 },
-                "summary": "get node by id",
+                "summary": "get node by uuid",
                 "tags": [
                     "Cluster"
                 ]
@@ -6621,9 +6809,9 @@
                 "operationId": "ClusterUpdateNode",
                 "parameters": [
                     {
-                        "description": "node id",
+                        "description": "node uuid",
                         "in": "path",
-                        "name": "id",
+                        "name": "uuid",
                         "required": true,
                         "type": "string"
                     },

@@ -12,6 +12,7 @@ import (
 	"github.com/photoprism/photoprism/internal/event"
 	"github.com/photoprism/photoprism/internal/photoprism/get"
 	"github.com/photoprism/photoprism/pkg/capture"
+	"github.com/photoprism/photoprism/pkg/fs"
 )
 
 // TODO: Several CLI commands defer conf.Shutdown(), which closes the shared
@@ -27,7 +28,16 @@ func TestMain(m *testing.M) {
 	log.SetLevel(logrus.TraceLevel)
 	event.AuditLog = log
 
-	c := config.NewTestConfig("commands")
+	// Remove temporary SQLite files before running the tests.
+	fs.PurgeTestDbFiles(".", false)
+
+	tempDir, err := os.MkdirTemp("", "commands-test")
+	if err != nil {
+		panic(err)
+	}
+	defer os.RemoveAll(tempDir)
+
+	c := config.NewMinimalTestConfigWithDb("commands", tempDir)
 	get.SetConfig(c)
 
 	// Keep DB connection open for the duration of this package's tests to
@@ -40,6 +50,9 @@ func TestMain(m *testing.M) {
 
 	// Run unit tests.
 	code := m.Run()
+
+	// Remove temporary SQLite files after running the tests.
+	fs.PurgeTestDbFiles(".", false)
 
 	os.Exit(code)
 }
@@ -87,7 +100,6 @@ func RunWithTestContext(cmd *cli.Command, args []string) (output string, err err
 
 	// Ensure DB connection is open for each command run (some commands call Shutdown).
 	if c := get.Config(); c != nil {
-		_ = c.Init()   // safe to call; re-opens DB if needed
 		c.RegisterDb() // (re)register provider
 	}
 
@@ -99,6 +111,12 @@ func RunWithTestContext(cmd *cli.Command, args []string) (output string, err err
 		defer func() { cli.OsExiter = origExiter }()
 		err = cmd.Run(ctx, args...)
 	})
+
+	// Re-open the database after the command completed so follow-up checks
+	// (potentially issued by the test itself) have an active connection.
+	if c := get.Config(); c != nil {
+		c.RegisterDb()
+	}
 
 	return output, err
 }

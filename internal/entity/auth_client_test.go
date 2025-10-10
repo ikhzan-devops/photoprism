@@ -160,7 +160,7 @@ func TestClient_User(t *testing.T) {
 }
 
 func TestClient_SetUser(t *testing.T) {
-	t.Run("john", func(t *testing.T) {
+	t.Run("John", func(t *testing.T) {
 		c := Client{ClientName: "test"}
 		u := &User{UserUID: "uqxc08w3d0ej2111", UserName: "john"}
 
@@ -636,7 +636,6 @@ func TestClient_SetFormValues_Role(t *testing.T) {
 		assert.True(t, c.HasRole(acl.RolePortal))
 		assert.False(t, c.HasRole(acl.RoleClient))
 	})
-
 	t.Run("InvalidRoleFromFormDefaultsToClient", func(t *testing.T) {
 		m := Client{ClientName: "InvalidRole", ClientUID: "cs5cpu17n6gj9r02"}
 		if err := m.Save(); err != nil {
@@ -649,7 +648,6 @@ func TestClient_SetFormValues_Role(t *testing.T) {
 		assert.Equal(t, "client", c.ClientRole)
 		assert.True(t, c.HasRole(acl.RoleClient))
 	})
-
 	t.Run("ChangeRoleFromClientToAdmin", func(t *testing.T) {
 		m := NewClient()
 		m.ClientName = "ChangeRole"
@@ -702,7 +700,6 @@ func TestClient_SetFormValues_SetUser(t *testing.T) {
 		assert.Equal(t, uid, c.UserUID)
 		assert.Equal(t, uid, c.User().UserUID)
 	})
-
 	t.Run("ByUserName", func(t *testing.T) {
 		m := NewClient()
 		m.ClientName = "SetUserByName"
@@ -717,7 +714,6 @@ func TestClient_SetFormValues_SetUser(t *testing.T) {
 		assert.Equal(t, "alice", c.UserName)
 		assert.Equal(t, "alice", c.User().UserName)
 	})
-
 	t.Run("UnknownUserNoChange", func(t *testing.T) {
 		// Seed with a known user, then attempt to change to an unknown one.
 		m := NewClient()
@@ -741,7 +737,6 @@ func TestClient_AclRole_Resolution(t *testing.T) {
 		m := &Client{ClientRole: ""}
 		assert.Equal(t, acl.RoleNone, m.AclRole())
 	})
-
 	t.Run("ClientIsClient", func(t *testing.T) {
 		m := &Client{ClientRole: "client"}
 		assert.Equal(t, acl.RoleClient, m.AclRole())

@@ -1,5 +1,7 @@
 PhotoPrism — Backend CODEMAP
 
+**Last Updated:** October 4, 2025
+
 Purpose
 - Give agents and contributors a fast, reliable map of where things live and how they fit together, so you can add features, fix bugs, and write tests without spelunking.
 - Sources of truth: prefer Makefile targets and the Developer Guide linked in AGENTS.md.
@@ -78,13 +80,14 @@ Database & Migrations
 
 AuthN/Z & Sessions
 - Session model and cache: `internal/entity/auth_session*` and `internal/auth/session/*` (cleanup worker).
-- ACL: `internal/auth/acl/*` — roles, grants, scopes; use constants; avoid logging secrets, compare tokens constant‑time.
+- ACL: `internal/auth/acl/*` — roles, grants, scopes; use constants; avoid logging secrets, compare tokens constant‑time; for scope checks use `acl.ScopePermits` / `ScopeAttrPermits` instead of rolling your own parsing.
 - OIDC: `internal/auth/oidc/*`.
 
 Media Processing
 - Thumbnails: `internal/thumb/*` and helpers in `internal/photoprism/mediafile_thumbs.go`.
 - Metadata: `internal/meta/*`.
 - FFmpeg integration: `internal/ffmpeg/*`.
+- HEIF tooling: distribution binaries live under `scripts/dist/install-libheif.sh`; regenerate archives with `make build-libheif-*` (wraps `scripts/dist/build-libheif.sh` for each supported distro/arch) before publishing to `dl.photoprism.app/dist/libheif/`.
 
 Background Workers
 - Scheduler and workers: `internal/workers/*.go` (index, vision, meta, sync, backup, share); started from `internal/commands/start.go`.
@@ -92,7 +95,7 @@ Background Workers
 
 Cluster / Portal
 - Node types: `internal/service/cluster/const.go` (`cluster.RoleInstance`, `cluster.RolePortal`, `cluster.RoleService`).
-- Instance bootstrap & registration: `internal/service/cluster/instance/*` (HTTP to Portal; do not import Portal internals).
+- Node bootstrap & registration: `internal/service/cluster/node/*` (HTTP to Portal; do not import Portal internals).
 - Registry/provisioner: `internal/service/cluster/registry/*`, `internal/service/cluster/provisioner/*`.
 - Theme endpoint (server): GET `/api/v1/cluster/theme`; client/CLI installs theme only if missing or no `app.js`.
 - See specs cheat sheet: `specs/portal/README.md`.
@@ -141,6 +144,8 @@ Testing
 - CLI tests: `PHOTOPRISM_CLI=noninteractive` or pass `--yes` to avoid prompts; use `RunWithTestContext` to prevent `os.Exit`.
 - SQLite DSN in tests is per‑suite (not empty). Clean up files if you capture the DSN.
 - Frontend unit tests via Vitest are separate; see `frontend/CODEMAP.md`.
+- Config helpers automatically disable Hub service calls for tests (`hub.ApplyTestConfig()`).
+- Test configs auto-discover the repo `assets/` folder, so avoid adding per-package `PHOTOPRISM_ASSETS_PATH` shims unless you have an unusual layout.
 
 Security & Hot Spots (Where to Look)
 - Zip extraction (path traversal prevention): `pkg/fs/zip.go`
@@ -155,7 +160,7 @@ Security & Hot Spots (Where to Look)
   - Tests guard HW runs with `PHOTOPRISM_FFMPEG_ENCODER`; otherwise assert command strings and negative paths.
 - libvips thumbnails:
   - Pipeline: `internal/thumb/vips.go` (VipsInit, VipsRotate, export params).
-  - Sizes & names: `internal/thumb/sizes.go`, `internal/thumb/names.go`, `internal/thumb/filter.go`.
+  - Sizes & names: `internal/thumb/sizes.go`, `internal/thumb/names.go`, `internal/thumb/filter.go`; face/marker crop helpers live in `internal/thumb/crop` (e.g., `ParseThumb`, `IsCroppedThumb`).
 
 - Safe HTTP downloader:
   - Shared utility: `pkg/service/http/safe` (`Download`, `Options`).
@@ -173,7 +178,28 @@ Conventions & Rules of Thumb
 - Never log secrets; compare tokens constant‑time.
 - Don’t import Portal internals from cluster instance/service bootstraps; use HTTP.
 - Prefer small, hermetic unit tests; isolate filesystem paths with `t.TempDir()` and env like `PHOTOPRISM_STORAGE_PATH`.
-- Go tests live beside sources: for `path/to/pkg/<file>.go`, add tests in `path/to/pkg/<file>_test.go` (create if missing). For the same function, group related cases as `t.Run(...)` sub-tests (table-driven where helpful).
+- Cluster nodes: identify by UUID v7 (internally stored as `NodeUUID`; exposed as `uuid` in API/CLI). The OAuth client ID (`NodeClientID`, exposed as `clientId`) is for OAuth only. Registry lookups and CLI commands accept uuid, clientId, or DNS‑label name (priority in that order).
+
+Filesystem Permissions & io/fs Aliasing
+- Use `github.com/photoprism/photoprism/pkg/fs` permission variables when creating files/dirs:
+  - `fs.ModeDir` (0o755 with umask), `fs.ModeFile` (0o644 with umask), `fs.ModeConfigFile` (0o664), `fs.ModeSecretFile` (0o600), `fs.ModeBackupFile` (0o600).
+- Do not use stdlib `io/fs` mode bits as permission arguments. When importing stdlib `io/fs`, alias it (`iofs`/`gofs`) to avoid `fs.*` collisions with our package.
+- Prefer `filepath.Join` for filesystem paths across platforms; use `path.Join` for URLs only.
+
+Cluster Registry & Provisioner Cheatsheet
+- UUID‑first everywhere: API paths `{uuid}`, Registry `Get/Delete/RotateSecret` by UUID; explicit `FindByClientID` exists for OAuth.
+- Node/DTO fields: `uuid` required; `clientId` optional; database metadata includes `driver`.
+- Provisioner naming (no slugs):
+  - database: `photoprism_d<hmac11>`
+  - username: `photoprism_u<hmac11>`
+  HMAC is base32 of ClusterUUID+NodeUUID; drivers currently `mysql|mariadb`.
+- DSN builder: `BuildDSN(driver, host, port, user, pass, name)`; warns and falls back to MySQL format for unsupported drivers.
+- Go tests live beside sources: for `path/to/pkg/<file>.go`, add tests in `path/to/pkg/<file>_test.go` (create if missing). For the same function, group related cases as `t.Run(...)` sub-tests (table-driven where helpful) and name each subtest string in PascalCase.
+- Public API and internal registry DTOs use normalized field names:
+  - `database` (not `db`) with `name`, `user`, `driver`, `rotatedAt`.
+  - Node-level rotation timestamps use `rotatedAt`.
+  - Registration returns `secrets.clientSecret`; the CLI persists it under config `NodeClientSecret`.
+  - Admin responses may include `advertiseUrl` and `database`; non-admin responses are redacted by default.
 
 Frequently Touched Files (by topic)
 - CLI wiring: `cmd/photoprism/photoprism.go`, `internal/commands/commands.go`

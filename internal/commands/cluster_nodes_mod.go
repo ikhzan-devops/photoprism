@@ -22,10 +22,17 @@ var (
 // ClusterNodesModCommand updates node fields.
 var ClusterNodesModCommand = &cli.Command{
 	Name:      "mod",
-	Usage:     "Updates node properties (Portal-only)",
+	Usage:     "Updates node properties",
 	ArgsUsage: "<id|name>",
-	Flags:     []cli.Flag{nodesModRoleFlag, nodesModInternal, nodesModLabel, &cli.BoolFlag{Name: "yes", Aliases: []string{"y"}, Usage: "runs the command non-interactively"}},
-	Action:    clusterNodesModAction,
+	Flags: []cli.Flag{
+		DryRunFlag("preview updates without modifying the registry"),
+		nodesModRoleFlag,
+		nodesModInternal,
+		nodesModLabel,
+		YesFlag(),
+	},
+	Hidden: true, // Required for cluster-management only.
+	Action: clusterNodesModAction,
 }
 
 func clusterNodesModAction(ctx *cli.Context) error {
@@ -44,9 +51,14 @@ func clusterNodesModAction(ctx *cli.Context) error {
 			return cli.Exit(err, 1)
 		}
 
-		n, getErr := r.Get(key)
-		if getErr != nil {
-			name := clean.TypeLowerDash(key)
+		// Resolve by NodeUUID first, then by client UID, then by normalized name.
+		var n *reg.Node
+		var getErr error
+		if n, getErr = r.FindByNodeUUID(key); getErr != nil || n == nil {
+			n, getErr = r.FindByClientID(key)
+		}
+		if getErr != nil || n == nil {
+			name := clean.DNSLabel(key)
 			if name == "" {
 				return cli.Exit(fmt.Errorf("invalid node identifier"), 2)
 			}
@@ -56,11 +68,15 @@ func clusterNodesModAction(ctx *cli.Context) error {
 			return cli.Exit(fmt.Errorf("node not found"), 3)
 		}
 
+		changes := make([]string, 0, 4)
+
 		if v := ctx.String("role"); v != "" {
 			n.Role = clean.TypeLowerDash(v)
+			changes = append(changes, fmt.Sprintf("role=%s", clean.Log(n.Role)))
 		}
 		if v := ctx.String("advertise-url"); v != "" {
 			n.AdvertiseUrl = v
+			changes = append(changes, fmt.Sprintf("advertise-url=%s", clean.Log(n.AdvertiseUrl)))
 		}
 		if labels := ctx.StringSlice("label"); len(labels) > 0 {
 			if n.Labels == nil {
@@ -71,6 +87,16 @@ func clusterNodesModAction(ctx *cli.Context) error {
 					n.Labels[k] = v
 				}
 			}
+			changes = append(changes, fmt.Sprintf("labels+=%s", clean.Log(strings.Join(labels, ","))))
+		}
+
+		if ctx.Bool("dry-run") {
+			if len(changes) == 0 {
+				log.Infof("dry-run: no updates to apply for node %s", clean.LogQuote(n.Name))
+			} else {
+				log.Infof("dry-run: would update node %s (%s)", clean.LogQuote(n.Name), strings.Join(changes, ", "))
+			}
+			return nil
 		}
 
 		confirmed := RunNonInteractively(ctx.Bool("yes"))
