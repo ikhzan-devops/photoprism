@@ -98,13 +98,13 @@ func (c *Config) FaceEngineShouldRun(when vision.RunType) bool {
 		fallthrough
 	default:
 		switch when {
-		case vision.RunAuto, vision.RunAlways, vision.RunManual, vision.RunOnDemand, vision.RunOnSchedule:
+		case vision.RunAuto, vision.RunAlways, vision.RunManual, vision.RunOnDemand:
 			return true
 		case vision.RunOnIndex:
 			return c.FaceEngineThreads() > 2
 		case vision.RunNewlyIndexed:
 			return c.FaceEngineThreads() <= 2
-		case vision.RunNever:
+		case vision.RunOnSchedule, vision.RunNever:
 			return false
 		}
 	}

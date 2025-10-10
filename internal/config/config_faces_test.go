@@ -61,6 +61,8 @@ func TestConfig_FaceEngineShouldRun(t *testing.T) {
 		assert.True(t, c.FaceEngineShouldRun(vision.RunOnIndex))
 		assert.False(t, c.FaceEngineShouldRun(vision.RunNewlyIndexed))
 		assert.True(t, c.FaceEngineShouldRun(vision.RunManual))
+		assert.True(t, c.FaceEngineShouldRun(vision.RunAuto))
+		assert.False(t, c.FaceEngineShouldRun(vision.RunOnSchedule))
 	})
 	t.Run("AutoLowThreads", func(t *testing.T) {
 		c := NewConfig(CliTestContext())
@@ -68,6 +70,8 @@ func TestConfig_FaceEngineShouldRun(t *testing.T) {
 
 		assert.False(t, c.FaceEngineShouldRun(vision.RunOnIndex))
 		assert.True(t, c.FaceEngineShouldRun(vision.RunNewlyIndexed))
+		assert.True(t, c.FaceEngineShouldRun(vision.RunAuto))
+		assert.False(t, c.FaceEngineShouldRun(vision.RunOnSchedule))
 	})
 	t.Run("ExplicitRunModes", func(t *testing.T) {
 		c := NewConfig(CliTestContext())
