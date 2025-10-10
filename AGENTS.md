@@ -139,9 +139,11 @@ Note: Across our public documentation, official images, and in production, the c
 ### Playwright MCP Usage
 
 - Playwright MCP is preconfigured to reach the dev server at http://localhost:2342/; use `playwright__browser_navigate` to load `/library/login`, sign in, then `playwright__browser_take_screenshot`.
+- Desktop sessions should open with a 1280x900 viewport by default; call `playwright__browser_resize` if the viewport size is not pre-configured or you need a different size mid-run.
+- Where available, use the `playwright_mobile` server for mobile workflows (for example, `playwright_mobile__browser_navigate`), which launches at 375x667 so you can capture smartphone layouts without manual resizing.
 - Default admin credentials remain `admin` / `photoprism`; if login fails, inspect the active compose file or environment for `PHOTOPRISM_ADMIN_USER` and `PHOTOPRISM_ADMIN_PASSWORD`.
 - When capturing artifacts, save screenshots under `.local/screenshots/` (create the folder if needed) by copying the MCP output file into that directory.
-- After scripted interactions, close the browser tab with `playwright__browser_close` so the MCP session stays tidy for subsequent runs.
+- After scripted interactions, close the browser tab with `playwright__browser_close` (or `playwright_mobile__browser_close`) so the MCP session stays tidy for subsequent runs.
 
 ### FFmpeg Tests & Hardware Gating
 
