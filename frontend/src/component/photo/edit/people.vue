@@ -37,7 +37,7 @@
                 <p-action-menu
                   :items="() => getFaceActions(m)"
                   button-class="input-menu"
-                  list-class="opacity-80"
+                  list-class="opacity-85"
                 ></p-action-menu>
               </div>
             </v-img>
