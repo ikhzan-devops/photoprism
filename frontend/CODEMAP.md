@@ -71,6 +71,7 @@ Build & Tooling
   - Lint/format: `npm run lint`, `npm run fmt`
   - Security scan: `npm run security:scan` (checks `--ignore-scripts` and forbids `v-html`)
 - Make targets (from repo root): `make build-js`, `make watch-js`, `make test-js`
+- Browser automation (Playwright MCP): workflows are documented in `AGENTS.md` under “Playwright MCP Usage”; use those directions when agents need to script UI checks or capture screenshots.
 
 Common How‑Tos
 - Add a page
