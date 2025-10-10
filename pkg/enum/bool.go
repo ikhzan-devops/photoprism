@@ -1,6 +1,15 @@
 package enum
 
-// YesMap map to represent Yes in the following languages Czech, Danish, Dutch, English, French, German, Indonesian, Italian, Polish, Portuguese, Russian, Ukrainian.
+// True and False specify boolean string representations.
+const (
+	True  = "true"
+	False = "false"
+)
+
+// YesMap enumerates lower-case tokens we accept as an affirmative answer across
+// supported languages (Czech, Danish, Dutch, English, French, German,
+// Indonesian, Italian, Polish, Portuguese, Russian, Ukrainian). Callers should
+// trim and lowercase input before performing lookups.
 var YesMap = map[string]struct{}{
 	"1":        {},
 	"yes":      {},
@@ -12,6 +21,7 @@ var YesMap = map[string]struct{}{
 	"ja":       {},
 	"oui":      {},
 	"si":       {},
+	"sí":       {},
 	"tak":      {},
 	"sim":      {},
 	"да":       {},
@@ -19,7 +29,9 @@ var YesMap = map[string]struct{}{
 	"так":      {},
 }
 
-// NoMap map to represent No in the following languages Czech, Danish, Dutch, English, French, German, Indonesian, Italian, Polish, Portuguese, Russian, Ukrainian.
+// NoMap enumerates lower-case tokens we accept as a negative answer across the
+// same set of supported languages. Callers should trim and lowercase input
+// before performing lookups.
 var NoMap = map[string]struct{}{
 	"0":        {},
 	"no":       {},

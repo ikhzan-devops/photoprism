@@ -6,6 +6,30 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestNew(t *testing.T) {
+	t.Run("Empty", func(t *testing.T) {
+		assert.False(t, New(""))
+	})
+	t.Run("EnNew", func(t *testing.T) {
+		assert.True(t, New(EnNew))
+	})
+	t.Run("Spaces", func(t *testing.T) {
+		assert.True(t, New("     new "))
+	})
+	t.Run("Uppercase", func(t *testing.T) {
+		assert.True(t, New("NEW"))
+	})
+	t.Run("Lowercase", func(t *testing.T) {
+		assert.True(t, New("new"))
+	})
+	t.Run("True", func(t *testing.T) {
+		assert.True(t, New("New"))
+	})
+	t.Run("False", func(t *testing.T) {
+		assert.False(t, New("non"))
+	})
+}
+
 func TestBool(t *testing.T) {
 	t.Run("NotEmpty", func(t *testing.T) {
 		assert.True(t, Bool("Browse your life in pictures"))
@@ -33,6 +57,9 @@ func TestBool(t *testing.T) {
 	})
 	t.Run("Empty", func(t *testing.T) {
 		assert.False(t, Bool(""))
+	})
+	t.Run("UppercaseNo", func(t *testing.T) {
+		assert.False(t, Bool("NO"))
 	})
 }
 
@@ -97,6 +124,12 @@ func TestYes(t *testing.T) {
 	t.Run("russian", func(t *testing.T) {
 		assert.True(t, Yes("да"))
 		assert.True(t, Yes("Да"))
+	})
+	t.Run("TabSeparatedPhrase", func(t *testing.T) {
+		assert.False(t, Yes("yes\tplease"))
+	})
+	t.Run("NonBreakingSpace", func(t *testing.T) {
+		assert.False(t, Yes("yes\u00a0please"))
 	})
 }
 
@@ -181,28 +214,10 @@ func TestNo(t *testing.T) {
 	t.Run("Nein", func(t *testing.T) {
 		assert.True(t, No("nein"))
 	})
-}
-
-func TestNew(t *testing.T) {
-	t.Run("Empty", func(t *testing.T) {
-		assert.False(t, New(""))
+	t.Run("TabSeparatedPhrase", func(t *testing.T) {
+		assert.False(t, No("no\tthanks"))
 	})
-	t.Run("EnNew", func(t *testing.T) {
-		assert.True(t, New(EnNew))
-	})
-	t.Run("Spaces", func(t *testing.T) {
-		assert.True(t, New("     new "))
-	})
-	t.Run("Uppercase", func(t *testing.T) {
-		assert.True(t, New("NEW"))
-	})
-	t.Run("Lowercase", func(t *testing.T) {
-		assert.True(t, New("new"))
-	})
-	t.Run("True", func(t *testing.T) {
-		assert.True(t, New("New"))
-	})
-	t.Run("False", func(t *testing.T) {
-		assert.False(t, New("non"))
+	t.Run("NonBreakingSpace", func(t *testing.T) {
+		assert.True(t, No("нет\u00a0"))
 	})
 }

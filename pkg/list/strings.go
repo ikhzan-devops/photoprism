@@ -1,6 +1,8 @@
 package list
 
-import "github.com/photoprism/photoprism/pkg/enum"
+import (
+	"github.com/photoprism/photoprism/pkg/enum"
+)
 
 // StringLengthLimit specifies the maximum length of string return values.
 var StringLengthLimit = 767
