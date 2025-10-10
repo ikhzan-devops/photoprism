@@ -46,7 +46,7 @@
                 class="text-truncate"
                 @click:close="removeSelection(chip.index)"
               >
-                {{ chip.item.Title ?? chip.item }}
+                {{ chip.item.title ? chip.item.title : chip.item }}
               </v-chip>
             </template>
           </v-combobox>
