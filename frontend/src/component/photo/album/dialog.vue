@@ -186,7 +186,7 @@ export default {
 
             // Notify user and keep dialog open for corrections
             this.$notify.error(
-              this.$gettext("Some albums could not be created. Please correct the names and try again.")
+              this.$gettext("Some albums could not be created. Please edit the names and try again.")
             );
             return; // Do not emit confirm; keep dialog open
           }

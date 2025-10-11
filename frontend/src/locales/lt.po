@@ -72,11 +72,11 @@ msgstr "rasta %{n} žmonių"
 msgid "%{n} pictures found"
 msgstr "rasta %{n} paveikslėlių"
 
-#: src/common/form.js:263 src/common/form.js:268
+#: src/common/form.js:291 src/common/form.js:296
 msgid "%{s} is too long"
 msgstr "%{s} yra per ilgas"
 
-#: src/common/form.js:262 src/common/form.js:267
+#: src/common/form.js:290 src/common/form.js:295
 msgid "%{s} is too short"
 msgstr "%{s} yra per trumpas"
 
@@ -215,8 +215,8 @@ msgstr "Pridėkite nuotraukas iš paieškos rezultatų jas pasirinkdami."
 
 #: src/component/album/clipboard.vue:85 src/component/file/clipboard.vue:61
 #: src/component/label/clipboard.vue:48 src/component/people/clipboard.vue:58
-#: src/component/photo/album/dialog.vue:22
-#: src/component/photo/album/dialog.vue:43
+#: src/component/photo/album/dialog.vue:23
+#: src/component/photo/album/dialog.vue:46
 #: src/component/photo/clipboard.vue:129
 msgid "Add to album"
 msgstr "Pridėti į albumą"
@@ -296,7 +296,7 @@ msgstr "Ištrintas albumas"
 msgid "Albums"
 msgstr "Albumai"
 
-#: src/component/album/clipboard.vue:95
+#: src/component/album/clipboard.vue:112
 msgid "Albums deleted"
 msgstr "Ištrinti albumai"
 
@@ -623,7 +623,7 @@ msgstr "Negalima pasirinkti daugiau elementų"
 #: src/component/label/edit/dialog.vue:107
 #: src/component/location/dialog.vue:197
 #: src/component/people/edit/dialog.vue:120
-#: src/component/photo/album/dialog.vue:78 src/component/service/add.vue:19
+#: src/component/photo/album/dialog.vue:110 src/component/service/add.vue:19
 #: src/component/service/edit.vue:455 src/component/service/remove.vue:49
 #: src/component/service/upload.vue:117 src/component/settings/apps.vue:352
 #: src/component/settings/passcode.vue:249
@@ -771,7 +771,7 @@ msgid "Confidence"
 msgstr "Konfidencialu"
 
 #: src/component/location/dialog.vue:210
-#: src/component/photo/album/dialog.vue:90
+#: src/component/photo/album/dialog.vue:122
 #: src/component/settings/passcode.vue:261
 msgid "Confirm"
 msgstr "Patvirtinti"
@@ -857,7 +857,7 @@ msgstr "Šalis"
 msgid "Create Account"
 msgstr "Sukurti paskyrą"
 
-#: src/component/photo/album/dialog.vue:23
+#: src/component/photo/album/dialog.vue:24
 msgid "Create album"
 msgstr "Sukurti albumą"
 
@@ -1115,10 +1115,10 @@ msgstr "Atsisiųsti nuotolinius failus"
 msgid "Download single files and zip archives."
 msgstr "Atsisiųskite atskirus failus ir zip archyvus."
 
-#: src/component/album/clipboard.vue:104 src/component/album/toolbar.vue:172
-#: src/component/file/clipboard.vue:61 src/component/label/clipboard.vue:86
-#: src/component/lightbox.vue:2043 src/component/people/clipboard.vue:59
-#: src/component/photo/clipboard.vue:220 src/component/photo/edit/files.vue:135
+#: src/component/album/clipboard.vue:121 src/component/album/toolbar.vue:172
+#: src/component/file/clipboard.vue:79 src/component/label/clipboard.vue:100
+#: src/component/lightbox.vue:2043 src/component/people/clipboard.vue:77
+#: src/component/photo/clipboard.vue:232 src/component/photo/edit/files.vue:135
 #: src/component/photo/view/cards.vue:169 src/component/photo/view/list.vue:142
 #: src/page/library/browse.vue:139
 msgid "Downloading…"
@@ -1616,20 +1616,20 @@ msgstr "Nepakankama saugykla."
 msgid "Interval"
 msgstr "Intervalas"
 
-#: src/common/form.js:213 src/common/form.js:215 src/common/form.js:221
-#: src/common/form.js:223 src/common/form.js:285 src/common/form.js:286
-#: src/common/form.js:290 src/common/form.js:291 src/common/form.js:315
-#: src/common/form.js:318 src/common/form.js:326 src/common/form.js:329
-#: src/common/form.js:345 src/common/form.js:348
+#: src/common/form.js:236 src/common/form.js:238 src/common/form.js:245
+#: src/common/form.js:247 src/common/form.js:319 src/common/form.js:322
+#: src/common/form.js:333 src/common/form.js:336 src/common/form.js:367
+#: src/common/form.js:370 src/common/form.js:379 src/common/form.js:382
+#: src/common/form.js:399 src/common/form.js:402
 msgid "Invalid"
 msgstr "Neteisinga data"
 
-#: src/common/form.js:239 src/common/form.js:242
+#: src/common/form.js:265 src/common/form.js:268
 msgid "Invalid address"
 msgstr "Neteisingas adresas"
 
-#: src/common/form.js:300 src/common/form.js:301 src/common/form.js:305
-#: src/common/form.js:306
+#: src/common/form.js:351 src/common/form.js:352 src/common/form.js:356
+#: src/common/form.js:357
 msgid "Invalid country"
 msgstr "Netinkama šalis"
 
@@ -1646,11 +1646,11 @@ msgstr "Neteisinga data"
 msgid "Invalid photo selected"
 msgstr "Pasirinkta netinkama nuotrauka"
 
-#: src/common/form.js:229 src/common/form.js:231
+#: src/common/form.js:254 src/common/form.js:256
 msgid "Invalid time"
 msgstr "Netinkamas laikas"
 
-#: src/common/form.js:248 src/common/form.js:250
+#: src/common/form.js:275 src/common/form.js:277
 msgid "Invalid URL"
 msgstr "Netinkamas URL adresas"
 
@@ -1699,7 +1699,7 @@ msgstr "Etiketė"
 msgid "Labels"
 msgstr "Etiketės"
 
-#: src/component/label/clipboard.vue:68
+#: src/component/label/clipboard.vue:82
 msgid "Labels deleted"
 msgstr "Ištrintos etiketės"
 
@@ -2438,7 +2438,7 @@ msgstr "Portretas"
 msgid "Preserve filenames"
 msgstr "Išsaugoti failų pavadinimus"
 
-#: src/component/upload/dialog.vue:162
+#: src/component/photo/album/dialog.vue:74 src/component/upload/dialog.vue:162
 msgid "Press enter to create a new album."
 msgstr "Paspauskite Enter, kad sukurtumėte naują albumą."
 
@@ -2599,7 +2599,7 @@ msgstr "Nuotolinis sinchronizavimas"
 msgid "Remove"
 msgstr "Pašalinti"
 
-#: src/component/photo/clipboard.vue:166
+#: src/component/photo/clipboard.vue:178
 msgid "remove failed: unknown album"
 msgstr "pašalinti nepavyko: nežinomas albumas"
 
@@ -2737,9 +2737,9 @@ msgstr "Pasirinkite datą"
 msgid "Select dates"
 msgstr "Pasirinkite datas"
 
-#: src/component/photo/album/dialog.vue:54 src/component/upload/dialog.vue:154
-msgid "Select or create an album"
-msgstr "Pasirinkite arba sukurkite albumą"
+#: src/component/photo/album/dialog.vue:66 src/component/upload/dialog.vue:154
+msgid "Select or create albums"
+msgstr ""
 
 #: src/component/upload/dialog.vue:138
 msgid "Select the files to upload…"
@@ -2895,6 +2895,19 @@ msgstr "Programinė įranga"
 msgid "Software Update"
 msgstr "Programinės įrangos atnaujinimas"
 
+#: src/component/album/clipboard.vue:100
+msgid "Some albums could not be cloned"
+msgstr ""
+
+#: src/component/photo/album/dialog.vue:117
+msgid "Some albums could not be created. Please edit the names and try again."
+msgstr ""
+
+#: src/component/file/clipboard.vue:65 src/component/label/clipboard.vue:66
+#: src/component/people/clipboard.vue:65 src/component/photo/clipboard.vue:167
+msgid "Some albums could not be updated"
+msgstr ""
+
 #: src/component/lightbox.vue:738
 msgid "Something went wrong, try again"
 msgstr "Kažkas nepavyko, bandykite dar kartą"
@@ -3041,7 +3054,7 @@ msgstr "\"TensorFlow\" reikalingas vaizdų klasifikavimui, veido atpažinimui ir
 msgid "Terrain"
 msgstr "Vietovė"
 
-#: src/common/form.js:256
+#: src/common/form.js:284
 msgid "Text"
 msgstr "Tekstas"
 
@@ -3069,10 +3082,10 @@ msgstr "Jų formatas gali būti nepalaikomas, jos dar nebuvo konvertuotos į JPE
 msgid "Theme"
 msgstr "Tema"
 
-#: src/common/form.js:213 src/common/form.js:221 src/common/form.js:229
-#: src/common/form.js:238 src/common/form.js:248 src/common/form.js:261
-#: src/common/form.js:284 src/common/form.js:299 src/common/form.js:314
-#: src/common/form.js:325 src/common/form.js:344
+#: src/common/form.js:236 src/common/form.js:245 src/common/form.js:254
+#: src/common/form.js:264 src/common/form.js:275 src/common/form.js:289
+#: src/common/form.js:340 src/common/form.js:350 src/common/form.js:366
+#: src/common/form.js:378 src/common/form.js:398
 msgid "This field is required"
 msgstr "Šis laukas yra privalomas"
 
@@ -3148,7 +3161,7 @@ msgstr "Perjungti vaizdą"
 msgid "Token"
 msgstr "Žetonas"
 
-#: src/component/upload/dialog.vue:217
+#: src/component/upload/dialog.vue:219
 msgid "Too many files selected"
 msgstr "Pasirinkta per daug failų"
 
@@ -3264,13 +3277,13 @@ msgstr "Atnaujinti dabar"
 
 #: src/component/album/toolbar.vue:113 src/component/navigation.vue:1824
 #: src/component/photo/toolbar.vue:179 src/component/service/upload.vue:144
-#: src/component/upload/dialog.vue:51 src/page/albums.vue:200
+#: src/component/upload/dialog.vue:52 src/page/albums.vue:200
 #: src/page/labels.vue:189 src/page/library/import.vue:133
 #: src/page/settings/general.vue:307 src/page/settings/services.vue:38
 msgid "Upload"
 msgstr "Įkelti"
 
-#: src/component/upload/dialog.vue:310
+#: src/component/upload/dialog.vue:317
 msgid "Upload complete"
 msgstr "Įkėlimas baigtas"
 
@@ -3278,7 +3291,7 @@ msgstr "Įkėlimas baigtas"
 msgid "Upload complete. Indexing…"
 msgstr "Įkėlimas baigtas. Indeksavimas…"
 
-#: src/component/upload/dialog.vue:296 src/component/upload/dialog.vue:315
+#: src/component/upload/dialog.vue:303 src/component/upload/dialog.vue:322
 #: src/component/upload/dialog.vue:129
 msgid "Upload failed"
 msgstr "Įkelti nepavyko"
@@ -3300,8 +3313,8 @@ msgstr "Įkelkite į WebDAV ir bendrinkite nuorodas su draugais."
 msgid "Uploading %{n} of %{t}…"
 msgstr "Įkeliama %{n} iš %{t}…"
 
-#: src/component/upload/dialog.vue:131 src/component/upload/dialog.vue:139
-#: src/component/upload/dialog.vue:253
+#: src/component/upload/dialog.vue:133 src/component/upload/dialog.vue:141
+#: src/component/upload/dialog.vue:255
 msgid "Uploading photos…"
 msgstr "Nuotraukų įkėlimas…"
 
@@ -3484,11 +3497,11 @@ msgstr "Taip"
 msgid "You are welcome to contact us at membership@photoprism.app for questions regarding your membership."
 msgstr "Kviečiame susisiekti su mumis el. paštu membership@photoprism.app ir užduoti klausimus, susijusius su naryste."
 
-#: src/component/album/clipboard.vue:100 src/component/people/clipboard.vue:55
+#: src/component/album/clipboard.vue:117 src/component/people/clipboard.vue:73
 msgid "You can only download one album"
 msgstr "Galite atsisiųsti tik vieną albumą"
 
-#: src/component/label/clipboard.vue:77
+#: src/component/label/clipboard.vue:91
 msgid "You can only download one label"
 msgstr "Galite atsisiųsti tik vieną etiketę"
 
@@ -3529,6 +3542,9 @@ msgstr "Jūsų biblioteka nuolat analizuojama, kad būtų galima automatiškai k
 #: src/component/lightbox.vue:286
 msgid "Zoom in/out"
 msgstr "Priartinimas / atitolinimas"
+
+#~ msgid "Select or create an album"
+#~ msgstr "Pasirinkite arba sukurkite albumą"
 
 #~ msgid "Apply"
 #~ msgstr "Taikyti"

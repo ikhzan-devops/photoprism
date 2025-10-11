@@ -72,11 +72,11 @@ msgstr "已找到 %{n} 个人物"
 msgid "%{n} pictures found"
 msgstr "已找到 %{n} 张图片"
 
-#: src/common/form.js:263 src/common/form.js:268
+#: src/common/form.js:291 src/common/form.js:296
 msgid "%{s} is too long"
 msgstr "%{s} 太长"
 
-#: src/common/form.js:262 src/common/form.js:267
+#: src/common/form.js:290 src/common/form.js:295
 msgid "%{s} is too short"
 msgstr "%{s}太短"
 
@@ -215,8 +215,8 @@ msgstr "从搜索结果中选择添加图片。"
 
 #: src/component/album/clipboard.vue:85 src/component/file/clipboard.vue:61
 #: src/component/label/clipboard.vue:48 src/component/people/clipboard.vue:58
-#: src/component/photo/album/dialog.vue:22
-#: src/component/photo/album/dialog.vue:43
+#: src/component/photo/album/dialog.vue:23
+#: src/component/photo/album/dialog.vue:46
 #: src/component/photo/clipboard.vue:129
 msgid "Add to album"
 msgstr "添加到相册"
@@ -296,7 +296,7 @@ msgstr "相册已删除"
 msgid "Albums"
 msgstr "相册"
 
-#: src/component/album/clipboard.vue:95
+#: src/component/album/clipboard.vue:112
 msgid "Albums deleted"
 msgstr "相册已删除"
 
@@ -623,7 +623,7 @@ msgstr "无法选择更多项目"
 #: src/component/label/edit/dialog.vue:107
 #: src/component/location/dialog.vue:197
 #: src/component/people/edit/dialog.vue:120
-#: src/component/photo/album/dialog.vue:78 src/component/service/add.vue:19
+#: src/component/photo/album/dialog.vue:110 src/component/service/add.vue:19
 #: src/component/service/edit.vue:455 src/component/service/remove.vue:49
 #: src/component/service/upload.vue:117 src/component/settings/apps.vue:352
 #: src/component/settings/passcode.vue:249
@@ -771,7 +771,7 @@ msgid "Confidence"
 msgstr "置信度"
 
 #: src/component/location/dialog.vue:210
-#: src/component/photo/album/dialog.vue:90
+#: src/component/photo/album/dialog.vue:122
 #: src/component/settings/passcode.vue:261
 msgid "Confirm"
 msgstr "确认"
@@ -857,7 +857,7 @@ msgstr "国家"
 msgid "Create Account"
 msgstr "创建账户"
 
-#: src/component/photo/album/dialog.vue:23
+#: src/component/photo/album/dialog.vue:24
 msgid "Create album"
 msgstr "创建相册"
 
@@ -1115,10 +1115,10 @@ msgstr "下载远端文件"
 msgid "Download single files and zip archives."
 msgstr "下载单个文件并用 zip 压缩。"
 
-#: src/component/album/clipboard.vue:104 src/component/album/toolbar.vue:172
-#: src/component/file/clipboard.vue:61 src/component/label/clipboard.vue:86
-#: src/component/lightbox.vue:2043 src/component/people/clipboard.vue:59
-#: src/component/photo/clipboard.vue:220 src/component/photo/edit/files.vue:135
+#: src/component/album/clipboard.vue:121 src/component/album/toolbar.vue:172
+#: src/component/file/clipboard.vue:79 src/component/label/clipboard.vue:100
+#: src/component/lightbox.vue:2043 src/component/people/clipboard.vue:77
+#: src/component/photo/clipboard.vue:232 src/component/photo/edit/files.vue:135
 #: src/component/photo/view/cards.vue:169 src/component/photo/view/list.vue:142
 #: src/page/library/browse.vue:139
 msgid "Downloading…"
@@ -1616,20 +1616,20 @@ msgstr "存储不足"
 msgid "Interval"
 msgstr "间隔"
 
-#: src/common/form.js:213 src/common/form.js:215 src/common/form.js:221
-#: src/common/form.js:223 src/common/form.js:285 src/common/form.js:286
-#: src/common/form.js:290 src/common/form.js:291 src/common/form.js:315
-#: src/common/form.js:318 src/common/form.js:326 src/common/form.js:329
-#: src/common/form.js:345 src/common/form.js:348
+#: src/common/form.js:236 src/common/form.js:238 src/common/form.js:245
+#: src/common/form.js:247 src/common/form.js:319 src/common/form.js:322
+#: src/common/form.js:333 src/common/form.js:336 src/common/form.js:367
+#: src/common/form.js:370 src/common/form.js:379 src/common/form.js:382
+#: src/common/form.js:399 src/common/form.js:402
 msgid "Invalid"
 msgstr "无效"
 
-#: src/common/form.js:239 src/common/form.js:242
+#: src/common/form.js:265 src/common/form.js:268
 msgid "Invalid address"
 msgstr "无效地址"
 
-#: src/common/form.js:300 src/common/form.js:301 src/common/form.js:305
-#: src/common/form.js:306
+#: src/common/form.js:351 src/common/form.js:352 src/common/form.js:356
+#: src/common/form.js:357
 msgid "Invalid country"
 msgstr "无效国家"
 
@@ -1646,11 +1646,11 @@ msgstr "参数无效"
 msgid "Invalid photo selected"
 msgstr "选择了无效的照片"
 
-#: src/common/form.js:229 src/common/form.js:231
+#: src/common/form.js:254 src/common/form.js:256
 msgid "Invalid time"
 msgstr "无效时间"
 
-#: src/common/form.js:248 src/common/form.js:250
+#: src/common/form.js:275 src/common/form.js:277
 msgid "Invalid URL"
 msgstr "无效 URL"
 
@@ -1699,7 +1699,7 @@ msgstr "标签"
 msgid "Labels"
 msgstr "标签"
 
-#: src/component/label/clipboard.vue:68
+#: src/component/label/clipboard.vue:82
 msgid "Labels deleted"
 msgstr "标签已移除"
 
@@ -2439,7 +2439,7 @@ msgstr "人像"
 msgid "Preserve filenames"
 msgstr "保留文件名"
 
-#: src/component/upload/dialog.vue:162
+#: src/component/photo/album/dialog.vue:74 src/component/upload/dialog.vue:162
 msgid "Press enter to create a new album."
 msgstr "按下 Enter 键创建一个新相册。"
 
@@ -2601,7 +2601,7 @@ msgstr "远端同步"
 msgid "Remove"
 msgstr "移除"
 
-#: src/component/photo/clipboard.vue:166
+#: src/component/photo/clipboard.vue:178
 msgid "remove failed: unknown album"
 msgstr "移除失败：未知相册"
 
@@ -2739,9 +2739,9 @@ msgstr "选择日期"
 msgid "Select dates"
 msgstr "选择日期"
 
-#: src/component/photo/album/dialog.vue:54 src/component/upload/dialog.vue:154
-msgid "Select or create an album"
-msgstr "选择或创建相册"
+#: src/component/photo/album/dialog.vue:66 src/component/upload/dialog.vue:154
+msgid "Select or create albums"
+msgstr ""
 
 #: src/component/upload/dialog.vue:138
 msgid "Select the files to upload…"
@@ -2897,6 +2897,19 @@ msgstr "软件"
 msgid "Software Update"
 msgstr "软件更新"
 
+#: src/component/album/clipboard.vue:100
+msgid "Some albums could not be cloned"
+msgstr ""
+
+#: src/component/photo/album/dialog.vue:117
+msgid "Some albums could not be created. Please edit the names and try again."
+msgstr ""
+
+#: src/component/file/clipboard.vue:65 src/component/label/clipboard.vue:66
+#: src/component/people/clipboard.vue:65 src/component/photo/clipboard.vue:167
+msgid "Some albums could not be updated"
+msgstr ""
+
 #: src/component/lightbox.vue:738
 msgid "Something went wrong, try again"
 msgstr "出错了，再试一次"
@@ -3043,7 +3056,7 @@ msgstr "图像分类、面部识别和检测不安全内容都需要使用 Tenso
 msgid "Terrain"
 msgstr "地形"
 
-#: src/common/form.js:256
+#: src/common/form.js:284
 msgid "Text"
 msgstr "文本"
 
@@ -3071,10 +3084,10 @@ msgstr "它们的格式可能不受支持，它们尚未转换为 JPEG 或存在
 msgid "Theme"
 msgstr "主题"
 
-#: src/common/form.js:213 src/common/form.js:221 src/common/form.js:229
-#: src/common/form.js:238 src/common/form.js:248 src/common/form.js:261
-#: src/common/form.js:284 src/common/form.js:299 src/common/form.js:314
-#: src/common/form.js:325 src/common/form.js:344
+#: src/common/form.js:236 src/common/form.js:245 src/common/form.js:254
+#: src/common/form.js:264 src/common/form.js:275 src/common/form.js:289
+#: src/common/form.js:340 src/common/form.js:350 src/common/form.js:366
+#: src/common/form.js:378 src/common/form.js:398
 msgid "This field is required"
 msgstr "该字段为必填字段"
 
@@ -3150,7 +3163,7 @@ msgstr "切换视图"
 msgid "Token"
 msgstr "令牌"
 
-#: src/component/upload/dialog.vue:217
+#: src/component/upload/dialog.vue:219
 msgid "Too many files selected"
 msgstr "选择的文件过多"
 
@@ -3266,13 +3279,13 @@ msgstr "立即升级"
 
 #: src/component/album/toolbar.vue:113 src/component/navigation.vue:1824
 #: src/component/photo/toolbar.vue:179 src/component/service/upload.vue:144
-#: src/component/upload/dialog.vue:51 src/page/albums.vue:200
+#: src/component/upload/dialog.vue:52 src/page/albums.vue:200
 #: src/page/labels.vue:189 src/page/library/import.vue:133
 #: src/page/settings/general.vue:307 src/page/settings/services.vue:38
 msgid "Upload"
 msgstr "上传"
 
-#: src/component/upload/dialog.vue:310
+#: src/component/upload/dialog.vue:317
 msgid "Upload complete"
 msgstr "上传完成"
 
@@ -3280,7 +3293,7 @@ msgstr "上传完成"
 msgid "Upload complete. Indexing…"
 msgstr "上传完成，索引中…"
 
-#: src/component/upload/dialog.vue:296 src/component/upload/dialog.vue:315
+#: src/component/upload/dialog.vue:303 src/component/upload/dialog.vue:322
 #: src/component/upload/dialog.vue:129
 msgid "Upload failed"
 msgstr "上传失败"
@@ -3302,8 +3315,8 @@ msgstr "上传到 WebDAV 并与朋友共享链接。"
 msgid "Uploading %{n} of %{t}…"
 msgstr "上传 %{n} / %{t} …"
 
-#: src/component/upload/dialog.vue:131 src/component/upload/dialog.vue:139
-#: src/component/upload/dialog.vue:253
+#: src/component/upload/dialog.vue:133 src/component/upload/dialog.vue:141
+#: src/component/upload/dialog.vue:255
 msgid "Uploading photos…"
 msgstr "上传照片…"
 
@@ -3486,11 +3499,11 @@ msgstr "是"
 msgid "You are welcome to contact us at membership@photoprism.app for questions regarding your membership."
 msgstr "欢迎你与我们联系，membership@photoprism.app，询问有关你的会员资格的问题。"
 
-#: src/component/album/clipboard.vue:100 src/component/people/clipboard.vue:55
+#: src/component/album/clipboard.vue:117 src/component/people/clipboard.vue:73
 msgid "You can only download one album"
 msgstr "你只能下载一个相册"
 
-#: src/component/label/clipboard.vue:77
+#: src/component/label/clipboard.vue:91
 msgid "You can only download one label"
 msgstr "你只能下载一个标签"
 
@@ -3531,6 +3544,9 @@ msgstr "你的库被不断分析，以自动创建特殊时刻、旅行和地点
 #: src/component/lightbox.vue:286
 msgid "Zoom in/out"
 msgstr "缩放"
+
+#~ msgid "Select or create an album"
+#~ msgstr "选择或创建相册"
 
 #~ msgid "Apply"
 #~ msgstr "应用"

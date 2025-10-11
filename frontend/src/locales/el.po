@@ -69,11 +69,11 @@ msgstr "%{n} άνθρωποι βρέθηκαν"
 msgid "%{n} pictures found"
 msgstr "%{n} φωτογραφίες βρέθηκαν"
 
-#: src/common/form.js:263 src/common/form.js:268
+#: src/common/form.js:291 src/common/form.js:296
 msgid "%{s} is too long"
 msgstr "Το %{s} είναι πολύ μεγάλο"
 
-#: src/common/form.js:262 src/common/form.js:267
+#: src/common/form.js:290 src/common/form.js:295
 msgid "%{s} is too short"
 msgstr "Το %{s} είναι πολύ μικρό"
 
@@ -212,8 +212,8 @@ msgstr "Προσθέστε εικόνες από τα αποτελέσματα �
 
 #: src/component/album/clipboard.vue:85 src/component/file/clipboard.vue:61
 #: src/component/label/clipboard.vue:48 src/component/people/clipboard.vue:58
-#: src/component/photo/album/dialog.vue:22
-#: src/component/photo/album/dialog.vue:43
+#: src/component/photo/album/dialog.vue:23
+#: src/component/photo/album/dialog.vue:46
 #: src/component/photo/clipboard.vue:129
 msgid "Add to album"
 msgstr "Προσθήκη στο άλμπουμ"
@@ -293,7 +293,7 @@ msgstr "Άλμπουμ που διαγράφηκε"
 msgid "Albums"
 msgstr "Συλλογές"
 
-#: src/component/album/clipboard.vue:95
+#: src/component/album/clipboard.vue:112
 msgid "Albums deleted"
 msgstr "Οι Συλλογές διαγράφηκαν"
 
@@ -620,7 +620,7 @@ msgstr "Δεν μπορείτε να επιλέξετε περισσότερα �
 #: src/component/label/edit/dialog.vue:107
 #: src/component/location/dialog.vue:197
 #: src/component/people/edit/dialog.vue:120
-#: src/component/photo/album/dialog.vue:78 src/component/service/add.vue:19
+#: src/component/photo/album/dialog.vue:110 src/component/service/add.vue:19
 #: src/component/service/edit.vue:455 src/component/service/remove.vue:49
 #: src/component/service/upload.vue:117 src/component/settings/apps.vue:352
 #: src/component/settings/passcode.vue:249
@@ -768,7 +768,7 @@ msgid "Confidence"
 msgstr "Εμπιστοσύνη"
 
 #: src/component/location/dialog.vue:210
-#: src/component/photo/album/dialog.vue:90
+#: src/component/photo/album/dialog.vue:122
 #: src/component/settings/passcode.vue:261
 msgid "Confirm"
 msgstr "Επιβεβαιώνω"
@@ -854,7 +854,7 @@ msgstr "Χώρα"
 msgid "Create Account"
 msgstr "Δημιουργία λογαριασμού"
 
-#: src/component/photo/album/dialog.vue:23
+#: src/component/photo/album/dialog.vue:24
 msgid "Create album"
 msgstr "Δημιουργία Συλλογής"
 
@@ -1112,10 +1112,10 @@ msgstr "Λήψη απομακρυσμένων αρχείων"
 msgid "Download single files and zip archives."
 msgstr "Λήψη μεμονωμένων αρχείων και αρχείων συμπίεσης."
 
-#: src/component/album/clipboard.vue:104 src/component/album/toolbar.vue:172
-#: src/component/file/clipboard.vue:61 src/component/label/clipboard.vue:86
-#: src/component/lightbox.vue:2043 src/component/people/clipboard.vue:59
-#: src/component/photo/clipboard.vue:220 src/component/photo/edit/files.vue:135
+#: src/component/album/clipboard.vue:121 src/component/album/toolbar.vue:172
+#: src/component/file/clipboard.vue:79 src/component/label/clipboard.vue:100
+#: src/component/lightbox.vue:2043 src/component/people/clipboard.vue:77
+#: src/component/photo/clipboard.vue:232 src/component/photo/edit/files.vue:135
 #: src/component/photo/view/cards.vue:169 src/component/photo/view/list.vue:142
 #: src/page/library/browse.vue:139
 msgid "Downloading…"
@@ -1613,20 +1613,20 @@ msgstr "Ανεπαρκής αποθήκευση."
 msgid "Interval"
 msgstr "Διάστημα"
 
-#: src/common/form.js:213 src/common/form.js:215 src/common/form.js:221
-#: src/common/form.js:223 src/common/form.js:285 src/common/form.js:286
-#: src/common/form.js:290 src/common/form.js:291 src/common/form.js:315
-#: src/common/form.js:318 src/common/form.js:326 src/common/form.js:329
-#: src/common/form.js:345 src/common/form.js:348
+#: src/common/form.js:236 src/common/form.js:238 src/common/form.js:245
+#: src/common/form.js:247 src/common/form.js:319 src/common/form.js:322
+#: src/common/form.js:333 src/common/form.js:336 src/common/form.js:367
+#: src/common/form.js:370 src/common/form.js:379 src/common/form.js:382
+#: src/common/form.js:399 src/common/form.js:402
 msgid "Invalid"
 msgstr "Μη έγκυρη ημερομηνία"
 
-#: src/common/form.js:239 src/common/form.js:242
+#: src/common/form.js:265 src/common/form.js:268
 msgid "Invalid address"
 msgstr "Μη έγκυρη διεύθυνση"
 
-#: src/common/form.js:300 src/common/form.js:301 src/common/form.js:305
-#: src/common/form.js:306
+#: src/common/form.js:351 src/common/form.js:352 src/common/form.js:356
+#: src/common/form.js:357
 msgid "Invalid country"
 msgstr "Μη έγκυρη χώρα"
 
@@ -1643,11 +1643,11 @@ msgstr "Μη έγκυρη ημερομηνία"
 msgid "Invalid photo selected"
 msgstr "Επιλογή μη έγκυρης φωτογραφίας"
 
-#: src/common/form.js:229 src/common/form.js:231
+#: src/common/form.js:254 src/common/form.js:256
 msgid "Invalid time"
 msgstr "Μη έγκυρη ώρα"
 
-#: src/common/form.js:248 src/common/form.js:250
+#: src/common/form.js:275 src/common/form.js:277
 msgid "Invalid URL"
 msgstr "Μη έγκυρο URL"
 
@@ -1696,7 +1696,7 @@ msgstr "Ετικέτα"
 msgid "Labels"
 msgstr "Ετικέτες"
 
-#: src/component/label/clipboard.vue:68
+#: src/component/label/clipboard.vue:82
 msgid "Labels deleted"
 msgstr "Οι Ετικέτες διαγράφηκαν"
 
@@ -2435,7 +2435,7 @@ msgstr "Πορτρέτο"
 msgid "Preserve filenames"
 msgstr "Διατήρηση ονομάτων αρχείων"
 
-#: src/component/upload/dialog.vue:162
+#: src/component/photo/album/dialog.vue:74 src/component/upload/dialog.vue:162
 msgid "Press enter to create a new album."
 msgstr "Πιέστε enter για να δημιουργήσετε ένα νέο άλμπουμ."
 
@@ -2596,7 +2596,7 @@ msgstr "Απομακρυσμένος συγχρονισμός"
 msgid "Remove"
 msgstr "Απομάκρυνση"
 
-#: src/component/photo/clipboard.vue:166
+#: src/component/photo/clipboard.vue:178
 msgid "remove failed: unknown album"
 msgstr "remove failed: άγνωστη συλλογή"
 
@@ -2734,9 +2734,9 @@ msgstr "Επιλέξτε ημερομηνία"
 msgid "Select dates"
 msgstr "Επιλέξτε ημερομηνίες"
 
-#: src/component/photo/album/dialog.vue:54 src/component/upload/dialog.vue:154
-msgid "Select or create an album"
-msgstr "Επιλέξτε ή δημιουργήστε ένα άλμπουμ"
+#: src/component/photo/album/dialog.vue:66 src/component/upload/dialog.vue:154
+msgid "Select or create albums"
+msgstr ""
 
 #: src/component/upload/dialog.vue:138
 msgid "Select the files to upload…"
@@ -2892,6 +2892,19 @@ msgstr "Λογισμικό"
 msgid "Software Update"
 msgstr "Ενημέρωση λογισμικού"
 
+#: src/component/album/clipboard.vue:100
+msgid "Some albums could not be cloned"
+msgstr ""
+
+#: src/component/photo/album/dialog.vue:117
+msgid "Some albums could not be created. Please edit the names and try again."
+msgstr ""
+
+#: src/component/file/clipboard.vue:65 src/component/label/clipboard.vue:66
+#: src/component/people/clipboard.vue:65 src/component/photo/clipboard.vue:167
+msgid "Some albums could not be updated"
+msgstr ""
+
 #: src/component/lightbox.vue:738
 msgid "Something went wrong, try again"
 msgstr "Κάτι πήγε στραβά, δοκιμάστε ξανά"
@@ -3038,7 +3051,7 @@ msgstr "Το TensorFlow απαιτείται για την ταξινόμηση 
 msgid "Terrain"
 msgstr "Έδαφος"
 
-#: src/common/form.js:256
+#: src/common/form.js:284
 msgid "Text"
 msgstr "Κείμενο"
 
@@ -3066,10 +3079,10 @@ msgstr "Μπορεί να μην υποστηρίζεται η μορφή του
 msgid "Theme"
 msgstr "Θέμα"
 
-#: src/common/form.js:213 src/common/form.js:221 src/common/form.js:229
-#: src/common/form.js:238 src/common/form.js:248 src/common/form.js:261
-#: src/common/form.js:284 src/common/form.js:299 src/common/form.js:314
-#: src/common/form.js:325 src/common/form.js:344
+#: src/common/form.js:236 src/common/form.js:245 src/common/form.js:254
+#: src/common/form.js:264 src/common/form.js:275 src/common/form.js:289
+#: src/common/form.js:340 src/common/form.js:350 src/common/form.js:366
+#: src/common/form.js:378 src/common/form.js:398
 msgid "This field is required"
 msgstr "Το πεδίο αυτό είναι υποχρεωτικό"
 
@@ -3145,7 +3158,7 @@ msgstr "Εναλλαγή προβολής"
 msgid "Token"
 msgstr "Token"
 
-#: src/component/upload/dialog.vue:217
+#: src/component/upload/dialog.vue:219
 msgid "Too many files selected"
 msgstr "Πολλά επιλεγμένα αρχεία"
 
@@ -3261,13 +3274,13 @@ msgstr "Αναβάθμιση τώρα"
 
 #: src/component/album/toolbar.vue:113 src/component/navigation.vue:1824
 #: src/component/photo/toolbar.vue:179 src/component/service/upload.vue:144
-#: src/component/upload/dialog.vue:51 src/page/albums.vue:200
+#: src/component/upload/dialog.vue:52 src/page/albums.vue:200
 #: src/page/labels.vue:189 src/page/library/import.vue:133
 #: src/page/settings/general.vue:307 src/page/settings/services.vue:38
 msgid "Upload"
 msgstr "Ανέβασμα"
 
-#: src/component/upload/dialog.vue:310
+#: src/component/upload/dialog.vue:317
 msgid "Upload complete"
 msgstr "Ανέβασμα ολοκληρωμένο"
 
@@ -3275,7 +3288,7 @@ msgstr "Ανέβασμα ολοκληρωμένο"
 msgid "Upload complete. Indexing…"
 msgstr "Το ανέβασμα ολοκληρώθηκε. Δημιουργία ευρετηρίου…"
 
-#: src/component/upload/dialog.vue:296 src/component/upload/dialog.vue:315
+#: src/component/upload/dialog.vue:303 src/component/upload/dialog.vue:322
 #: src/component/upload/dialog.vue:129
 msgid "Upload failed"
 msgstr "Αποτυχία αποστολής"
@@ -3297,8 +3310,8 @@ msgstr "Ανεβάστε σε WebDAV και μοιραστείτε συνδέσ�
 msgid "Uploading %{n} of %{t}…"
 msgstr "Ανέβασμα %{n} του %{t}…"
 
-#: src/component/upload/dialog.vue:131 src/component/upload/dialog.vue:139
-#: src/component/upload/dialog.vue:253
+#: src/component/upload/dialog.vue:133 src/component/upload/dialog.vue:141
+#: src/component/upload/dialog.vue:255
 msgid "Uploading photos…"
 msgstr "Ανέβασμα φωτογραφιών…"
 
@@ -3481,11 +3494,11 @@ msgstr "Ναι"
 msgid "You are welcome to contact us at membership@photoprism.app for questions regarding your membership."
 msgstr "Μπορείτε να επικοινωνήσετε μαζί μας στο membership@photoprism.app για ερωτήσεις σχετικά με τη συνδρομή σας."
 
-#: src/component/album/clipboard.vue:100 src/component/people/clipboard.vue:55
+#: src/component/album/clipboard.vue:117 src/component/people/clipboard.vue:73
 msgid "You can only download one album"
 msgstr "Μπορείτε να κατεβάσετε μόνο μια συλλογή"
 
-#: src/component/label/clipboard.vue:77
+#: src/component/label/clipboard.vue:91
 msgid "You can only download one label"
 msgstr "Μπορείτε να κατεβάσετε μόνο μία ετικέτα"
 
@@ -3526,6 +3539,9 @@ msgstr "Η βιβλιοθήκη σας αναλύεται συνεχώς για 
 #: src/component/lightbox.vue:286
 msgid "Zoom in/out"
 msgstr "Μεγέθυνση/ σμίκρυνση"
+
+#~ msgid "Select or create an album"
+#~ msgstr "Επιλέξτε ή δημιουργήστε ένα άλμπουμ"
 
 #~ msgid "Apply"
 #~ msgstr "Εφαρμογή"

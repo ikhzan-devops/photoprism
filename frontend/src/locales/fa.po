@@ -72,11 +72,11 @@ msgstr "%{n} نفر پیدا شد"
 msgid "%{n} pictures found"
 msgstr "%{n} عکس پیدا شد"
 
-#: src/common/form.js:263 src/common/form.js:268
+#: src/common/form.js:291 src/common/form.js:296
 msgid "%{s} is too long"
 msgstr "%{s} خیلی طولانی است"
 
-#: src/common/form.js:262 src/common/form.js:267
+#: src/common/form.js:290 src/common/form.js:295
 msgid "%{s} is too short"
 msgstr "%{s} خیلی کوتاه است"
 
@@ -215,8 +215,8 @@ msgstr "با انتخاب آنها ، تصاویر را از نتایج جستج
 
 #: src/component/album/clipboard.vue:85 src/component/file/clipboard.vue:61
 #: src/component/label/clipboard.vue:48 src/component/people/clipboard.vue:58
-#: src/component/photo/album/dialog.vue:22
-#: src/component/photo/album/dialog.vue:43
+#: src/component/photo/album/dialog.vue:23
+#: src/component/photo/album/dialog.vue:46
 #: src/component/photo/clipboard.vue:129
 msgid "Add to album"
 msgstr "افزودن به آلبوم"
@@ -296,7 +296,7 @@ msgstr "آلبوم حذف شد"
 msgid "Albums"
 msgstr "آلبوم ها"
 
-#: src/component/album/clipboard.vue:95
+#: src/component/album/clipboard.vue:112
 msgid "Albums deleted"
 msgstr "آلبوم ها حذف شدند"
 
@@ -623,7 +623,7 @@ msgstr "موارد بیشتری را انتخاب نمی کند"
 #: src/component/label/edit/dialog.vue:107
 #: src/component/location/dialog.vue:197
 #: src/component/people/edit/dialog.vue:120
-#: src/component/photo/album/dialog.vue:78 src/component/service/add.vue:19
+#: src/component/photo/album/dialog.vue:110 src/component/service/add.vue:19
 #: src/component/service/edit.vue:455 src/component/service/remove.vue:49
 #: src/component/service/upload.vue:117 src/component/settings/apps.vue:352
 #: src/component/settings/passcode.vue:249
@@ -771,7 +771,7 @@ msgid "Confidence"
 msgstr "اعتماد"
 
 #: src/component/location/dialog.vue:210
-#: src/component/photo/album/dialog.vue:90
+#: src/component/photo/album/dialog.vue:122
 #: src/component/settings/passcode.vue:261
 msgid "Confirm"
 msgstr "تایید"
@@ -857,7 +857,7 @@ msgstr "کشور"
 msgid "Create Account"
 msgstr "ایجاد حساب کاربری"
 
-#: src/component/photo/album/dialog.vue:23
+#: src/component/photo/album/dialog.vue:24
 msgid "Create album"
 msgstr "ایجاد آلبوم"
 
@@ -1115,10 +1115,10 @@ msgstr "بارگیری پرونده های از راه دور"
 msgid "Download single files and zip archives."
 msgstr "بارگیری پرونده های تک و بایگانی زیپ."
 
-#: src/component/album/clipboard.vue:104 src/component/album/toolbar.vue:172
-#: src/component/file/clipboard.vue:61 src/component/label/clipboard.vue:86
-#: src/component/lightbox.vue:2043 src/component/people/clipboard.vue:59
-#: src/component/photo/clipboard.vue:220 src/component/photo/edit/files.vue:135
+#: src/component/album/clipboard.vue:121 src/component/album/toolbar.vue:172
+#: src/component/file/clipboard.vue:79 src/component/label/clipboard.vue:100
+#: src/component/lightbox.vue:2043 src/component/people/clipboard.vue:77
+#: src/component/photo/clipboard.vue:232 src/component/photo/edit/files.vue:135
 #: src/component/photo/view/cards.vue:169 src/component/photo/view/list.vue:142
 #: src/page/library/browse.vue:139
 msgid "Downloading…"
@@ -1616,20 +1616,20 @@ msgstr "ذخیره سازی ناکافی."
 msgid "Interval"
 msgstr "وقفه"
 
-#: src/common/form.js:213 src/common/form.js:215 src/common/form.js:221
-#: src/common/form.js:223 src/common/form.js:285 src/common/form.js:286
-#: src/common/form.js:290 src/common/form.js:291 src/common/form.js:315
-#: src/common/form.js:318 src/common/form.js:326 src/common/form.js:329
-#: src/common/form.js:345 src/common/form.js:348
+#: src/common/form.js:236 src/common/form.js:238 src/common/form.js:245
+#: src/common/form.js:247 src/common/form.js:319 src/common/form.js:322
+#: src/common/form.js:333 src/common/form.js:336 src/common/form.js:367
+#: src/common/form.js:370 src/common/form.js:379 src/common/form.js:382
+#: src/common/form.js:399 src/common/form.js:402
 msgid "Invalid"
 msgstr "تاریخ نامعتبر است"
 
-#: src/common/form.js:239 src/common/form.js:242
+#: src/common/form.js:265 src/common/form.js:268
 msgid "Invalid address"
 msgstr "آدرس نامعتبر است"
 
-#: src/common/form.js:300 src/common/form.js:301 src/common/form.js:305
-#: src/common/form.js:306
+#: src/common/form.js:351 src/common/form.js:352 src/common/form.js:356
+#: src/common/form.js:357
 msgid "Invalid country"
 msgstr "کشور نامعتبر"
 
@@ -1646,11 +1646,11 @@ msgstr "پارامترهای نامعتبر"
 msgid "Invalid photo selected"
 msgstr "عکس نامعتبر انتخاب شد"
 
-#: src/common/form.js:229 src/common/form.js:231
+#: src/common/form.js:254 src/common/form.js:256
 msgid "Invalid time"
 msgstr "زمان نامعتبر"
 
-#: src/common/form.js:248 src/common/form.js:250
+#: src/common/form.js:275 src/common/form.js:277
 msgid "Invalid URL"
 msgstr "URL نامعتبر است"
 
@@ -1699,7 +1699,7 @@ msgstr "برچسب"
 msgid "Labels"
 msgstr "برچسب ها"
 
-#: src/component/label/clipboard.vue:68
+#: src/component/label/clipboard.vue:82
 msgid "Labels deleted"
 msgstr "برچسب ها حذف شدند"
 
@@ -2438,7 +2438,7 @@ msgstr "پرتره"
 msgid "Preserve filenames"
 msgstr "حفظ نام فایل ها"
 
-#: src/component/upload/dialog.vue:162
+#: src/component/photo/album/dialog.vue:74 src/component/upload/dialog.vue:162
 msgid "Press enter to create a new album."
 msgstr "برای ایجاد یک آلبوم جدید، اینتر را فشار دهید."
 
@@ -2599,7 +2599,7 @@ msgstr "همگام سازی از راه دور"
 msgid "Remove"
 msgstr "حذف"
 
-#: src/component/photo/clipboard.vue:166
+#: src/component/photo/clipboard.vue:178
 msgid "remove failed: unknown album"
 msgstr "حذف نشد: آلبوم ناشناخته"
 
@@ -2737,9 +2737,9 @@ msgstr "تاریخ را انتخاب کنید"
 msgid "Select dates"
 msgstr "تاریخ ها را انتخاب کنید"
 
-#: src/component/photo/album/dialog.vue:54 src/component/upload/dialog.vue:154
-msgid "Select or create an album"
-msgstr "آلبومی را انتخاب یا ایجاد کنید"
+#: src/component/photo/album/dialog.vue:66 src/component/upload/dialog.vue:154
+msgid "Select or create albums"
+msgstr ""
 
 #: src/component/upload/dialog.vue:138
 msgid "Select the files to upload…"
@@ -2895,6 +2895,19 @@ msgstr "نرم افزار"
 msgid "Software Update"
 msgstr "به روز رسانی نرم افزار"
 
+#: src/component/album/clipboard.vue:100
+msgid "Some albums could not be cloned"
+msgstr ""
+
+#: src/component/photo/album/dialog.vue:117
+msgid "Some albums could not be created. Please edit the names and try again."
+msgstr ""
+
+#: src/component/file/clipboard.vue:65 src/component/label/clipboard.vue:66
+#: src/component/people/clipboard.vue:65 src/component/photo/clipboard.vue:167
+msgid "Some albums could not be updated"
+msgstr ""
+
 #: src/component/lightbox.vue:738
 msgid "Something went wrong, try again"
 msgstr "یه چیزی اشتباه شد دوباره تلاش کن"
@@ -3041,7 +3054,7 @@ msgstr "TensorFlow برای طبقه بندی تصویر، تشخیص چهره �
 msgid "Terrain"
 msgstr "زمین"
 
-#: src/common/form.js:256
+#: src/common/form.js:284
 msgid "Text"
 msgstr "متن"
 
@@ -3069,10 +3082,10 @@ msgstr "ممکن است فرمت آنها پشتیبانی نشود، هنوز �
 msgid "Theme"
 msgstr "قالب"
 
-#: src/common/form.js:213 src/common/form.js:221 src/common/form.js:229
-#: src/common/form.js:238 src/common/form.js:248 src/common/form.js:261
-#: src/common/form.js:284 src/common/form.js:299 src/common/form.js:314
-#: src/common/form.js:325 src/common/form.js:344
+#: src/common/form.js:236 src/common/form.js:245 src/common/form.js:254
+#: src/common/form.js:264 src/common/form.js:275 src/common/form.js:289
+#: src/common/form.js:340 src/common/form.js:350 src/common/form.js:366
+#: src/common/form.js:378 src/common/form.js:398
 msgid "This field is required"
 msgstr "این فیلد الزامی است"
 
@@ -3148,7 +3161,7 @@ msgstr "تغییر حالت نمایش"
 msgid "Token"
 msgstr "توکن"
 
-#: src/component/upload/dialog.vue:217
+#: src/component/upload/dialog.vue:219
 msgid "Too many files selected"
 msgstr "تعداد زیادی فایل انتخاب شده است"
 
@@ -3264,13 +3277,13 @@ msgstr "اکنون ارتقا دهید"
 
 #: src/component/album/toolbar.vue:113 src/component/navigation.vue:1824
 #: src/component/photo/toolbar.vue:179 src/component/service/upload.vue:144
-#: src/component/upload/dialog.vue:51 src/page/albums.vue:200
+#: src/component/upload/dialog.vue:52 src/page/albums.vue:200
 #: src/page/labels.vue:189 src/page/library/import.vue:133
 #: src/page/settings/general.vue:307 src/page/settings/services.vue:38
 msgid "Upload"
 msgstr "آپلود"
 
-#: src/component/upload/dialog.vue:310
+#: src/component/upload/dialog.vue:317
 msgid "Upload complete"
 msgstr "آپلود کامل شد"
 
@@ -3278,7 +3291,7 @@ msgstr "آپلود کامل شد"
 msgid "Upload complete. Indexing…"
 msgstr "آپلود کامل شد. در حال نمایه سازی…"
 
-#: src/component/upload/dialog.vue:296 src/component/upload/dialog.vue:315
+#: src/component/upload/dialog.vue:303 src/component/upload/dialog.vue:322
 #: src/component/upload/dialog.vue:129
 msgid "Upload failed"
 msgstr "آپلود انجام نشد"
@@ -3300,8 +3313,8 @@ msgstr "در WebDAV آپلود کنید و پیوندها را با دوستان
 msgid "Uploading %{n} of %{t}…"
 msgstr "در حال آپلود %{n} از %{t}…"
 
-#: src/component/upload/dialog.vue:131 src/component/upload/dialog.vue:139
-#: src/component/upload/dialog.vue:253
+#: src/component/upload/dialog.vue:133 src/component/upload/dialog.vue:141
+#: src/component/upload/dialog.vue:255
 msgid "Uploading photos…"
 msgstr "در حال آپلود تصاویر…"
 
@@ -3486,11 +3499,11 @@ msgstr "بله"
 msgid "You are welcome to contact us at membership@photoprism.app for questions regarding your membership."
 msgstr "می توانید برای سؤالات در مورد عضویت خود با ما به آدرس Member@photoprism.app تماس بگیرید."
 
-#: src/component/album/clipboard.vue:100 src/component/people/clipboard.vue:55
+#: src/component/album/clipboard.vue:117 src/component/people/clipboard.vue:73
 msgid "You can only download one album"
 msgstr "شما فقط می توانید یک آلبوم را دانلود کنید"
 
-#: src/component/label/clipboard.vue:77
+#: src/component/label/clipboard.vue:91
 msgid "You can only download one label"
 msgstr "شما فقط می توانید یک برچسب را دانلود کنید"
 
@@ -3531,6 +3544,9 @@ msgstr "کتابخانه شما به طور مداوم تجزیه و تحلیل 
 #: src/component/lightbox.vue:286
 msgid "Zoom in/out"
 msgstr "بزرگنمایی/کوچک کردن"
+
+#~ msgid "Select or create an album"
+#~ msgstr "آلبومی را انتخاب یا ایجاد کنید"
 
 #~ msgid "Apply"
 #~ msgstr "درخواست"
