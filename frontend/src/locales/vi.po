@@ -2893,8 +2893,8 @@ msgid "Software Update"
 msgstr "Cập nhật phần mềm"
 
 #: src/component/album/clipboard.vue:100
-msgid "Some albums could not be cloned"
-msgstr "Một số album không thể sao chép được"
+msgid "Some albums could not be copied"
+msgstr ""
 
 #: src/component/photo/album/dialog.vue:117
 msgid "Some albums could not be created. Please edit the names and try again."
@@ -3541,6 +3541,9 @@ msgstr "Thư viện của bạn được phân tích liên tục để tự đ�
 #: src/component/lightbox.vue:286
 msgid "Zoom in/out"
 msgstr "Phóng to / thu nhỏ"
+
+#~ msgid "Some albums could not be cloned"
+#~ msgstr "Một số album không thể sao chép được"
 
 #~ msgid "Select or create an album"
 #~ msgstr "Chọn hoặc tạo một album"

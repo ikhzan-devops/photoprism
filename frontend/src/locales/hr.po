@@ -2896,8 +2896,8 @@ msgid "Software Update"
 msgstr "Ažuriranje softvera"
 
 #: src/component/album/clipboard.vue:100
-msgid "Some albums could not be cloned"
-msgstr "Neki albumi nisu mogli biti klonirani"
+msgid "Some albums could not be copied"
+msgstr ""
 
 #: src/component/photo/album/dialog.vue:117
 msgid "Some albums could not be created. Please edit the names and try again."
@@ -3542,6 +3542,9 @@ msgstr "Vaša se knjižnica kontinuirano analizira kako bi se automatski izradil
 #: src/component/lightbox.vue:286
 msgid "Zoom in/out"
 msgstr "Povećavanje/smanjivanje"
+
+#~ msgid "Some albums could not be cloned"
+#~ msgstr "Neki albumi nisu mogli biti klonirani"
 
 #~ msgid "Select or create an album"
 #~ msgstr "Odaberite ili izradite album"

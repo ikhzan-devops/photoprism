@@ -2896,8 +2896,8 @@ msgid "Software Update"
 msgstr "Kemas Kini Perisian"
 
 #: src/component/album/clipboard.vue:100
-msgid "Some albums could not be cloned"
-msgstr "Sesetengah album tidak dapat diklon"
+msgid "Some albums could not be copied"
+msgstr ""
 
 #: src/component/photo/album/dialog.vue:117
 msgid "Some albums could not be created. Please edit the names and try again."
@@ -3542,6 +3542,9 @@ msgstr "Pustaka anda dianalisis secara berterusan untuk mencipta album detik, pe
 #: src/component/lightbox.vue:286
 msgid "Zoom in/out"
 msgstr "Zum masuk/keluar"
+
+#~ msgid "Some albums could not be cloned"
+#~ msgstr "Sesetengah album tidak dapat diklon"
 
 #~ msgid "Select or create an album"
 #~ msgstr "Pilih atau buat album"

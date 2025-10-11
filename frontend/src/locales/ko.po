@@ -2897,8 +2897,8 @@ msgid "Software Update"
 msgstr "소프트웨어 업데이트"
 
 #: src/component/album/clipboard.vue:100
-msgid "Some albums could not be cloned"
-msgstr "일부 앨범을 복제할 수 없습니다."
+msgid "Some albums could not be copied"
+msgstr ""
 
 #: src/component/photo/album/dialog.vue:117
 msgid "Some albums could not be created. Please edit the names and try again."
@@ -3543,6 +3543,9 @@ msgstr "라이브러리는 지속적으로 분석되어 특별한 순간, 여행
 #: src/component/lightbox.vue:286
 msgid "Zoom in/out"
 msgstr "확대/축소"
+
+#~ msgid "Some albums could not be cloned"
+#~ msgstr "일부 앨범을 복제할 수 없습니다."
 
 #~ msgid "Select or create an album"
 #~ msgstr "앨범 선택 또는 생성"

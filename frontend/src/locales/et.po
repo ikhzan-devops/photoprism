@@ -2893,8 +2893,8 @@ msgid "Software Update"
 msgstr "Tarkvara värskendus"
 
 #: src/component/album/clipboard.vue:100
-msgid "Some albums could not be cloned"
-msgstr "Mõnda albumit ei saanud kloonida"
+msgid "Some albums could not be copied"
+msgstr ""
 
 #: src/component/photo/album/dialog.vue:117
 msgid "Some albums could not be created. Please edit the names and try again."
@@ -3541,6 +3541,9 @@ msgstr "Sinu fototeeki analüüsitakse pidevalt, et luua automaatselt albumied e
 #: src/component/lightbox.vue:286
 msgid "Zoom in/out"
 msgstr "Suumi sisse/välja"
+
+#~ msgid "Some albums could not be cloned"
+#~ msgstr "Mõnda albumit ei saanud kloonida"
 
 #~ msgid "Select or create an album"
 #~ msgstr "Valige või looge album"

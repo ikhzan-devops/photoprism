@@ -2893,8 +2893,8 @@ msgid "Software Update"
 msgstr "Nuashonrú Bogearraí"
 
 #: src/component/album/clipboard.vue:100
-msgid "Some albums could not be cloned"
-msgstr "Níorbh fhéidir roinnt albam a chlónáil"
+msgid "Some albums could not be copied"
+msgstr ""
 
 #: src/component/photo/album/dialog.vue:117
 msgid "Some albums could not be created. Please edit the names and try again."
@@ -3539,6 +3539,9 @@ msgstr "Déantar anailís leanúnach ar do leabharlann chun albam chuimhneachái
 #: src/component/lightbox.vue:286
 msgid "Zoom in/out"
 msgstr "Súmáil isteach/amach"
+
+#~ msgid "Some albums could not be cloned"
+#~ msgstr "Níorbh fhéidir roinnt albam a chlónáil"
 
 #~ msgid "Select or create an album"
 #~ msgstr "Roghnaigh nó cruthaigh albam"

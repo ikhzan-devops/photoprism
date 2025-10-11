@@ -2896,8 +2896,8 @@ msgid "Software Update"
 msgstr "Yazılım Güncellemesi"
 
 #: src/component/album/clipboard.vue:100
-msgid "Some albums could not be cloned"
-msgstr "Bazı albümler klonlanamadı"
+msgid "Some albums could not be copied"
+msgstr ""
 
 #: src/component/photo/album/dialog.vue:117
 msgid "Some albums could not be created. Please edit the names and try again."
@@ -3542,6 +3542,9 @@ msgstr "Özel anların, gezilerin ve yerlerin albümlerini otomatik olarak oluş
 #: src/component/lightbox.vue:286
 msgid "Zoom in/out"
 msgstr "Yakınlaştır / uzaklaştır"
+
+#~ msgid "Some albums could not be cloned"
+#~ msgstr "Bazı albümler klonlanamadı"
 
 #~ msgid "Select or create an album"
 #~ msgstr "Bir albüm seçin veya oluşturun"

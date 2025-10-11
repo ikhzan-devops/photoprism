@@ -3312,7 +3312,7 @@ msgid "Software Update"
 msgstr ""
 
 #: src/component/album/clipboard.vue:100
-msgid "Some albums could not be cloned"
+msgid "Some albums could not be copied"
 msgstr ""
 
 #: src/component/photo/album/dialog.vue:117

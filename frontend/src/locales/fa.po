@@ -2896,8 +2896,8 @@ msgid "Software Update"
 msgstr "به روز رسانی نرم افزار"
 
 #: src/component/album/clipboard.vue:100
-msgid "Some albums could not be cloned"
-msgstr "بعضی از آلبوم‌ها قابل کلون کردن نبودند"
+msgid "Some albums could not be copied"
+msgstr ""
 
 #: src/component/photo/album/dialog.vue:117
 msgid "Some albums could not be created. Please edit the names and try again."
@@ -3544,6 +3544,9 @@ msgstr "کتابخانه شما به طور مداوم تجزیه و تحلیل 
 #: src/component/lightbox.vue:286
 msgid "Zoom in/out"
 msgstr "بزرگنمایی/کوچک کردن"
+
+#~ msgid "Some albums could not be cloned"
+#~ msgstr "بعضی از آلبوم‌ها قابل کلون کردن نبودند"
 
 #~ msgid "Select or create an album"
 #~ msgstr "آلبومی را انتخاب یا ایجاد کنید"

@@ -2898,8 +2898,8 @@ msgid "Software Update"
 msgstr "软件更新"
 
 #: src/component/album/clipboard.vue:100
-msgid "Some albums could not be cloned"
-msgstr "某些相册无法克隆"
+msgid "Some albums could not be copied"
+msgstr ""
 
 #: src/component/photo/album/dialog.vue:117
 msgid "Some albums could not be created. Please edit the names and try again."
@@ -3544,6 +3544,9 @@ msgstr "你的库被不断分析，以自动创建特殊时刻、旅行和地点
 #: src/component/lightbox.vue:286
 msgid "Zoom in/out"
 msgstr "缩放"
+
+#~ msgid "Some albums could not be cloned"
+#~ msgstr "某些相册无法克隆"
 
 #~ msgid "Select or create an album"
 #~ msgstr "选择或创建相册"

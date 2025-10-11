@@ -2897,8 +2897,8 @@ msgid "Software Update"
 msgstr "Actualización del software"
 
 #: src/component/album/clipboard.vue:100
-msgid "Some albums could not be cloned"
-msgstr "Algunos álbumes no pudieron clonarse"
+msgid "Some albums could not be copied"
+msgstr ""
 
 #: src/component/photo/album/dialog.vue:117
 msgid "Some albums could not be created. Please edit the names and try again."
@@ -3543,6 +3543,9 @@ msgstr "Tu biblioteca se analiza continuamente para crear automáticamente álbu
 #: src/component/lightbox.vue:286
 msgid "Zoom in/out"
 msgstr "Acercar/Alejar"
+
+#~ msgid "Some albums could not be cloned"
+#~ msgstr "Algunos álbumes no pudieron clonarse"
 
 #~ msgid "Select or create an album"
 #~ msgstr "Selecciona o crea un álbum"

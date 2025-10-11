@@ -2896,8 +2896,8 @@ msgid "Software Update"
 msgstr "עדכון תוכנה"
 
 #: src/component/album/clipboard.vue:100
-msgid "Some albums could not be cloned"
-msgstr "לא ניתן היה לשכפל חלק מהאלבומים"
+msgid "Some albums could not be copied"
+msgstr ""
 
 #: src/component/photo/album/dialog.vue:117
 msgid "Some albums could not be created. Please edit the names and try again."
@@ -3542,6 +3542,9 @@ msgstr "הספרייה שלך מנותחת באופן רציף ליצירת אל
 #: src/component/lightbox.vue:286
 msgid "Zoom in/out"
 msgstr "זום פנימה\\החוצה"
+
+#~ msgid "Some albums could not be cloned"
+#~ msgstr "לא ניתן היה לשכפל חלק מהאלבומים"
 
 #~ msgid "Select or create an album"
 #~ msgstr "בחר או צור אלבום"

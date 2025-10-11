@@ -2896,8 +2896,8 @@ msgid "Software Update"
 msgstr "Aktualizace softwaru"
 
 #: src/component/album/clipboard.vue:100
-msgid "Some albums could not be cloned"
-msgstr "Některá alba nebylo možné naklonovat"
+msgid "Some albums could not be copied"
+msgstr ""
 
 #: src/component/photo/album/dialog.vue:117
 msgid "Some albums could not be created. Please edit the names and try again."
@@ -3542,6 +3542,9 @@ msgstr "Vaše knihovna je průběžně analyzována a automaticky vytváří alb
 #: src/component/lightbox.vue:286
 msgid "Zoom in/out"
 msgstr "Přiblížit/Oddálit"
+
+#~ msgid "Some albums could not be cloned"
+#~ msgstr "Některá alba nebylo možné naklonovat"
 
 #~ msgid "Select or create an album"
 #~ msgstr "Výběr nebo vytvoření alba"

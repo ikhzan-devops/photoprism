@@ -2893,8 +2893,8 @@ msgid "Software Update"
 msgstr "Software eguneratzea"
 
 #: src/component/album/clipboard.vue:100
-msgid "Some albums could not be cloned"
-msgstr "Album batzuk ezin izan dira klonatu"
+msgid "Some albums could not be copied"
+msgstr ""
 
 #: src/component/photo/album/dialog.vue:117
 msgid "Some albums could not be created. Please edit the names and try again."
@@ -3539,6 +3539,9 @@ msgstr "Zure liburutegia etengabe aztertzen da momentu, bidai eta leku berezien 
 #: src/component/lightbox.vue:286
 msgid "Zoom in/out"
 msgstr "Handitu/txikiagotu"
+
+#~ msgid "Some albums could not be cloned"
+#~ msgstr "Album batzuk ezin izan dira klonatu"
 
 #~ msgid "Select or create an album"
 #~ msgstr "Hautatu edo sortu album bat"

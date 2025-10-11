@@ -2896,8 +2896,8 @@ msgid "Software Update"
 msgstr "Обновление программного обеспечения"
 
 #: src/component/album/clipboard.vue:100
-msgid "Some albums could not be cloned"
-msgstr "Некоторые альбомы нельзя было клонировать"
+msgid "Some albums could not be copied"
+msgstr ""
 
 #: src/component/photo/album/dialog.vue:117
 msgid "Some albums could not be created. Please edit the names and try again."
@@ -3542,6 +3542,9 @@ msgstr "Ваша библиотека постоянно анализирует�
 #: src/component/lightbox.vue:286
 msgid "Zoom in/out"
 msgstr "Увеличение/уменьшение масштаба"
+
+#~ msgid "Some albums could not be cloned"
+#~ msgstr "Некоторые альбомы нельзя было клонировать"
 
 #~ msgid "Select or create an album"
 #~ msgstr "Выберите или создайте альбом"

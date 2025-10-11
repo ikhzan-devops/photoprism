@@ -2893,8 +2893,8 @@ msgid "Software Update"
 msgstr "Ενημέρωση λογισμικού"
 
 #: src/component/album/clipboard.vue:100
-msgid "Some albums could not be cloned"
-msgstr "Ορισμένα άλμπουμ δεν μπορούσαν να κλωνοποιηθούν"
+msgid "Some albums could not be copied"
+msgstr ""
 
 #: src/component/photo/album/dialog.vue:117
 msgid "Some albums could not be created. Please edit the names and try again."
@@ -3539,6 +3539,9 @@ msgstr "Η βιβλιοθήκη σας αναλύεται συνεχώς για 
 #: src/component/lightbox.vue:286
 msgid "Zoom in/out"
 msgstr "Μεγέθυνση/ σμίκρυνση"
+
+#~ msgid "Some albums could not be cloned"
+#~ msgstr "Ορισμένα άλμπουμ δεν μπορούσαν να κλωνοποιηθούν"
 
 #~ msgid "Select or create an album"
 #~ msgstr "Επιλέξτε ή δημιουργήστε ένα άλμπουμ"

@@ -2896,8 +2896,8 @@ msgid "Software Update"
 msgstr "การอัปเดตซอฟต์แวร์"
 
 #: src/component/album/clipboard.vue:100
-msgid "Some albums could not be cloned"
-msgstr "บางอัลบั้มไม่สามารถโคลนได้"
+msgid "Some albums could not be copied"
+msgstr ""
 
 #: src/component/photo/album/dialog.vue:117
 msgid "Some albums could not be created. Please edit the names and try again."
@@ -3542,6 +3542,9 @@ msgstr "คลังของคุณได้รับการวิเคร
 #: src/component/lightbox.vue:286
 msgid "Zoom in/out"
 msgstr "ซูมเข้า/ออก"
+
+#~ msgid "Some albums could not be cloned"
+#~ msgstr "บางอัลบั้มไม่สามารถโคลนได้"
 
 #~ msgid "Select or create an album"
 #~ msgstr "เลือกหรือสร้างอัลบั้ม"
