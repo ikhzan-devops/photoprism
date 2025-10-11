@@ -1,6 +1,6 @@
 # PhotoPrism® Repository Guidelines
 
-**Last Updated:** October 10, 2025
+**Last Updated:** October 11, 2025
 
 ## Purpose
 
@@ -40,6 +40,13 @@ Learn more: https://agents.md/
   - GORM field naming: When adding struct fields that include uppercase abbreviations (e.g., `LabelNSFW`), set an explicit `gorm:"column:<name>"` tag so column names stay consistent (`label_nsfw` instead of `label_n_s_f_w`).
 - Frontend: Vue 3 + Vuetify 3 (`frontend/`)
 - Docker/compose for dev/CI; Traefik is used for local TLS (`*.localssl.dev`)
+
+### Web Templates & Shared Assets
+
+- HTML entrypoints live under `assets/templates/`; key files are `index.gohtml`, `app.gohtml`, `app.js.gohtml`, and `splash.gohtml`. The SPA loader logic resides in `assets/static/js/app-loader.js` and is included via `app.js.gohtml`; it performs capability checks (Promise, fetch, AbortController, `script.noModule`, etc.) before appending `window.__CONFIG__.jsUri`.
+- The same loader partial is reused in private packages (`pro/assets/templates/index.gohtml`, `plus/assets/templates/index.gohtml`). Whenever you touch `app.js.gohtml` or change how we load the bundle, mirror the update by running commands such as `cd pro && sed -n '1,160p' assets/templates/index.gohtml` (and similarly for `plus`) to confirm they include the shared partial instead of hard-coding `<script src="{{ .config.JsUri }}">`.
+- Splash styles are defined in `frontend/src/css/splash.css`. Add new splash elements (for example `.splash-warning`) there so both public and private editions remain visually consistent.
+- Browser baseline: PhotoPrism requires Safari 13 / iOS 13 or current Chrome, Edge, or Firefox. Update the message in `assets/templates/app.js.gohtml` (and the matching CSS) if support changes.
 
 ## Agent Runtime (Host vs Container)
 
