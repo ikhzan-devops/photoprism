@@ -18,6 +18,8 @@ Learn more: https://agents.md/
 - Code Maps: [`CODEMAP.md`](CODEMAP.md) (Backend/Go), [`frontend/CODEMAP.md`](frontend/CODEMAP.md) (Frontend/JS)
 - Face Detection & Embeddings Notes: [`internal/ai/face/README.md`](internal/ai/face/README.md)
 
+> Quick Tip: to inspect GitHub issue details without leaving the terminal, run `curl -s https://api.github.com/repos/photoprism/photoprism/issues/<id>`.
+
 ### Specifications (Versioning & Usage)
 
 - In the main repo, `specs/` appears ignored because it is managed as a nested Git repository; change into `specs/` before staging or committing spec updates.
