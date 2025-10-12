@@ -204,10 +204,9 @@ export default {
     };
   },
   created() {
-    // this.subscriptions["lightbox.change"] = this.$event.subscribe("lightbox.change", this.onChange);
-    this.subscriptions["lightbox.open"] = this.$event.subscribe("lightbox.open", this.openLightbox.bind(this));
-    this.subscriptions["lightbox.pause"] = this.$event.subscribe("lightbox.pause", this.pauseLightbox.bind(this));
-    this.subscriptions["lightbox.close"] = this.$event.subscribe("lightbox.close", this.onClose.bind(this));
+    this.subscriptions.push(this.$event.subscribe("lightbox.open", this.openLightbox.bind(this)));
+    this.subscriptions.push(this.$event.subscribe("lightbox.pause", this.pauseLightbox.bind(this)));
+    this.subscriptions.push(this.$event.subscribe("lightbox.close", this.onClose.bind(this)));
   },
   beforeUnmount() {
     // Exit fullscreen mode if enabled, has no effect otherwise.
