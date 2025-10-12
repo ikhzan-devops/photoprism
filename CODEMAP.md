@@ -1,6 +1,6 @@
 PhotoPrism — Backend CODEMAP
 
-**Last Updated:** October 11, 2025
+**Last Updated:** October 12, 2025
 
 Purpose
 - Give agents and contributors a fast, reliable map of where things live and how they fit together, so you can add features, fix bugs, and write tests without spelunking.
@@ -30,7 +30,7 @@ Executables & Entry Points
 
 High-Level Package Map (Go)
 - `internal/api` — Gin handlers and Swagger annotations; only glue, no business logic
-- `internal/commands/catalog` — DTOs (App, Command, Flag, Node), builders (BuildFlat/BuildNode, CommandInfo, FlagsToCatalog), and a templated Markdown renderer (RenderMarkdown) for the CLI commands catalog. Depends only on `urfave/cli/v2` and stdlib.
+- `internal/commands` — CLI command definitions and orchestration (`start`, `index`, `import`, `migrate`, etc.); `commands.go` wires them into the app and subpackages like `catalog` emit CLI documentation.
 - `internal/server` — HTTP server, middleware, routing, static/ui/webdav
 - `internal/config` — configuration, flags/env/options, client config, DB init/migrate
 - `internal/entity` — GORM v1 models, queries, search helpers, migrations
