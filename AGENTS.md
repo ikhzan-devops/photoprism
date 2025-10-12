@@ -194,6 +194,7 @@ Note: Across our public documentation, official images, and in production, the c
 
 - Go: run `make fmt-go swag-fmt` to reformat the backend code + Swagger annotations (see `Makefile` for additional targets)
   - Doc comments for packages and exported identifiers must be complete sentences that begin with the name of the thing being described and end with a period.
+  - All newly added functions, including unexported helpers, must have a concise doc comment that explains their behavior.
   - For short examples inside comments, indent code rather than using backticks; godoc treats indented blocks as preformatted.
 - Branding: Always spell the product name as `PhotoPrism`; this proper noun is an exception to generic naming rules.
 - Every Go package must contain a `<package>.go` file in its root (for example, `internal/auth/jwt/jwt.go`) with the standard license header and a short package description comment explaining its purpose.
