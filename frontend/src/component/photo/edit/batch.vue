@@ -585,7 +585,7 @@
                   variant="flat"
                   class="action-apply action-approve"
                   :loading="saving"
-                  :disabled="saving"
+                  :disabled="saving || !hasUnsavedChanges()"
                   @click.stop="save(false)"
                 >
                   <span>{{ $gettext(`Apply`) }}</span>
@@ -1387,6 +1387,14 @@ export default {
 
       // Filter form data to only include fields with changes
       const filteredFormData = this.getFilteredFormData();
+
+      if (!filteredFormData || Object.keys(filteredFormData).length === 0) {
+        this.saving = false;
+        if (close) {
+          this.$emit("close");
+        }
+        return;
+      }
 
       // Get currently selected photo UIDs from the model
       const currentlySelectedUIDs = this.model.selection.filter((photo) => photo.selected).map((photo) => photo.id);
