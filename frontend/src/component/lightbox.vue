@@ -122,6 +122,27 @@ import { Photo } from "model/photo";
 import { Album } from "model/album";
 import * as media from "common/media";
 
+const VIDEO_EVENT_TYPES = [
+  "loadstart",
+  "loadedmetadata",
+  "loadeddata",
+  "progress",
+  "stalled",
+  "abort",
+  "error",
+  "play",
+  "playing",
+  "pause",
+  "waiting",
+  "ended",
+  "seeked",
+  "seeking",
+  "timeupdate",
+  "durationchange",
+];
+
+const VIDEO_REMOTE_EVENT_TYPES = ["connect", "connecting", "disconnect"];
+
 import PLightboxMenu from "component/lightbox/menu.vue";
 import PSidebarInfo from "component/sidebar/info.vue";
 
@@ -171,6 +192,12 @@ export default {
       models: [], // Slide models.
       index: 0, // Current slide index in models.
       subscriptions: [], // Event subscriptions.
+      videoEventListener: (ev) => this.onVideo(ev),
+      videoRemoteEventListener: (ev) => this.onVideoRemote(ev),
+      videoAvailabilityListener: (castable) => {
+        this.video.castable = castable;
+      },
+      videoRemoteWatched: new WeakSet(),
       // Video properties for rendering the controls.
       video: {
         controls: false,
@@ -588,6 +615,8 @@ export default {
         // Prevent default loading behavior.
         ev.preventDefault();
 
+        this.cleanupContentElement(content.element);
+
         try {
           // Create pswp__media element.
           const mediaElement = document.createElement("div");
@@ -618,6 +647,14 @@ export default {
           this.log("failed to load video", err);
         }
       }
+    },
+    onContentRemove(ev) {
+      const element = ev?.content?.element ?? ev?.content ?? null;
+      this.cleanupContentElement(element);
+    },
+    onContentDestroy(ev) {
+      const element = ev?.content?.element ?? ev?.content ?? null;
+      this.cleanupContentElement(element);
     },
     // Creates an HTMLMediaElement for playing videos, animations, and live photos.
     createVideoElement(data, autoplay = false, loop = false, mute = false) {
@@ -651,24 +688,6 @@ export default {
       video.controls = false;
       video.dir = document.dir ? document.dir : this.$config.dir(this.$isRtl);
 
-      // Attach video event handler.
-      video.addEventListener("loadstart", (ev) => this.onVideo(ev));
-      video.addEventListener("loadedmetadata", (ev) => this.onVideo(ev));
-      video.addEventListener("loadeddata", (ev) => this.onVideo(ev));
-      video.addEventListener("progress", (ev) => this.onVideo(ev));
-      video.addEventListener("stalled", (ev) => this.onVideo(ev));
-      video.addEventListener("abort", (ev) => this.onVideo(ev));
-      video.addEventListener("error", (ev) => this.onVideo(ev));
-      video.addEventListener("play", (ev) => this.onVideo(ev));
-      video.addEventListener("playing", (ev) => this.onVideo(ev));
-      video.addEventListener("pause", (ev) => this.onVideo(ev));
-      video.addEventListener("waiting", (ev) => this.onVideo(ev));
-      video.addEventListener("ended", (ev) => this.onVideo(ev));
-      video.addEventListener("seeked", (ev) => this.onVideo(ev));
-      video.addEventListener("seeking", (ev) => this.onVideo(ev));
-      video.addEventListener("timeupdate", (ev) => this.onVideo(ev));
-      video.addEventListener("durationchange", (ev) => this.onVideo(ev));
-
       // Create and append video source elements, depending on file format support.
       if (
         format !== media.FormatAvc &&
@@ -687,28 +706,144 @@ export default {
         video.appendChild(avcSource);
       }
 
-      if (video.remote && video.remote instanceof RemotePlayback) {
-        if (!this.video.castable) {
-          video.remote.watchAvailability((castable) => {
-            this.video.castable = castable;
-          });
-        }
-
-        video.addEventListener("connect", (ev) => this.onVideoRemote(ev));
-        video.addEventListener("connecting", (ev) => this.onVideoRemote(ev));
-        video.addEventListener("disconnect", (ev) => this.onVideoRemote(ev));
-      }
+      this.attachVideoEventListeners(video);
 
       // Return HTMLMediaElement.
       return video;
+    },
+    attachVideoEventListeners(video) {
+      if (!video || !(video instanceof HTMLMediaElement)) {
+        return;
+      }
+
+      this.detachVideoEventListeners(video);
+
+      VIDEO_EVENT_TYPES.forEach((event) => {
+        video.addEventListener(event, this.videoEventListener);
+      });
+
+      this.attachVideoRemoteListeners(video);
+    },
+    attachVideoRemoteListeners(video) {
+      if (!video || !(video instanceof HTMLMediaElement)) {
+        return;
+      }
+
+      const RemotePlaybackCtor = typeof window !== "undefined" ? window.RemotePlayback : undefined;
+
+      if (!RemotePlaybackCtor || !video.remote || !(video.remote instanceof RemotePlaybackCtor)) {
+        return;
+      }
+
+      const remote = video.remote;
+
+      if (typeof remote.cancelWatchAvailability === "function" && this.videoRemoteWatched.has(video)) {
+        remote
+          .cancelWatchAvailability(this.videoAvailabilityListener)
+          .catch((err) => {
+            if (this.trace) {
+              this.log(err);
+            }
+          })
+          .finally(() => {
+            this.videoRemoteWatched.delete(video);
+          });
+      }
+
+      remote.watchAvailability(this.videoAvailabilityListener).then(
+        () => {
+          this.videoRemoteWatched.add(video);
+        },
+        (err) => {
+          if (this.trace) {
+            this.log(err);
+          }
+        }
+      );
+
+      VIDEO_REMOTE_EVENT_TYPES.forEach((event) => {
+        video.addEventListener(event, this.videoRemoteEventListener);
+      });
+    },
+    detachVideoEventListeners(video) {
+      if (!video || !(video instanceof HTMLMediaElement)) {
+        return;
+      }
+
+      VIDEO_EVENT_TYPES.forEach((event) => {
+        video.removeEventListener(event, this.videoEventListener);
+      });
+
+      this.detachVideoRemoteListeners(video);
+    },
+    detachVideoRemoteListeners(video) {
+      if (!video || !(video instanceof HTMLMediaElement)) {
+        return;
+      }
+
+      VIDEO_REMOTE_EVENT_TYPES.forEach((event) => {
+        video.removeEventListener(event, this.videoRemoteEventListener);
+      });
+
+      if (!this.videoRemoteWatched.has(video)) {
+        return;
+      }
+
+      const RemotePlaybackCtor = typeof window !== "undefined" ? window.RemotePlayback : undefined;
+
+      if (!RemotePlaybackCtor || !video.remote || !(video.remote instanceof RemotePlaybackCtor)) {
+        this.videoRemoteWatched.delete(video);
+        return;
+      }
+
+      const remote = video.remote;
+
+      if (typeof remote.cancelWatchAvailability === "function") {
+        remote
+          .cancelWatchAvailability(this.videoAvailabilityListener)
+          .catch((err) => {
+            if (this.trace) {
+              this.log(err);
+            }
+          })
+          .finally(() => {
+            this.videoRemoteWatched.delete(video);
+          });
+      } else {
+        this.videoRemoteWatched.delete(video);
+      }
+    },
+    cleanupContentElement(element) {
+      if (!element) {
+        return;
+      }
+
+      let video = null;
+
+      if (element instanceof HTMLMediaElement) {
+        video = element;
+      } else if (element instanceof HTMLElement) {
+        video = element.querySelector("video");
+      }
+
+      if (video) {
+        this.detachVideoEventListeners(video);
+      }
     },
     onVideo(ev) {
       const { video, data } = this.getContent();
 
       if (!video || !data) {
         return;
-      } else if (ev && ev.target.src !== video.src) {
-        return;
+      }
+
+      if (ev && ev.target instanceof HTMLMediaElement) {
+        const eventSrc = ev.target.currentSrc || ev.target.src;
+        const videoSrc = video.currentSrc || video.src;
+
+        if (eventSrc && videoSrc && eventSrc !== videoSrc) {
+          return;
+        }
       }
 
       return this.setVideo(video, data, ev);
@@ -1026,8 +1161,8 @@ export default {
       // see https://photoswipe.com/events/#slide-content-events.
       this.lightbox.on("contentLoad", this.onContentLoad.bind(this));
       // this.lightbox.on("contentResize", this.onContentResize.bind(this));
-      // this.lightbox.on("contentRemove", this.onContentRemove.bind(this));
-      // this.lightbox.on("contentDestroy", this.onContentDestroy.bind(this));
+      this.lightbox.on("contentRemove", this.onContentRemove.bind(this));
+      this.lightbox.on("contentDestroy", this.onContentDestroy.bind(this));
 
       // Pauses videos, animations, and live photos when slide content becomes active (can be default prevented),
       // see https://photoswipe.com/events/#slide-content-events.
@@ -1394,6 +1529,15 @@ export default {
     // Destroys the PhotoSwipe lightbox instance after use, see onClose().
     destroyLightbox() {
       if (this.lightbox) {
+        const pswp = this.pswp();
+
+        if (pswp && Array.isArray(pswp.slides)) {
+          pswp.slides.forEach((slide) => {
+            const element = slide?.content?.element ?? null;
+            this.cleanupContentElement(element);
+          });
+        }
+
         this.lightbox.destroy();
         this.$event.publish("lightbox.destroy");
         return;
@@ -1748,8 +1892,10 @@ export default {
               }
             });
           }
-        } catch (_) {
-          // Ignore.
+        } catch (err) {
+          if (this.trace) {
+            this.log(err);
+          }
         }
       }
     },
@@ -2476,7 +2622,7 @@ export default {
         data.loading = true;
 
         // Attach an onload event handler to swap the thumbnail when the new image is loaded.
-        image.addEventListener("load", (ev) => {
+        const onImageLoad = (ev) => {
           if (!ev || !ev.target) {
             return;
           }
@@ -2517,7 +2663,9 @@ export default {
           data.width = thumb.w;
           data.height = thumb.h;
           data.loading = false;
-        });
+        };
+
+        image.addEventListener("load", onImageLoad, { once: true });
 
         // Set thumbnail src to load the new image.
         image.src = thumb.src;
