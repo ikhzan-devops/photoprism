@@ -1,6 +1,6 @@
 # PhotoPrism® Repository Guidelines
 
-**Last Updated:** October 11, 2025
+**Last Updated:** October 12, 2025
 
 ## Purpose
 
@@ -200,6 +200,8 @@ Note: Across our public documentation, official images, and in production, the c
 - Prefer using existing caches, workers, and batching strategies referenced in code and `Makefile`. Consider memory/CPU impact; suggest benchmarks or profiling only when justified.
 - Do not run destructive commands against production data. Prefer ephemeral volumes and test fixtures when running acceptance tests.
 
+> If anything in this file conflicts with the `Makefile` or the Developer Guide, the `Makefile` and the documentation win. When unsure, **ask** for clarification before proceeding.
+
 ### Filesystem Permissions & io/fs Aliasing (Go)
 
 - Always use our shared permission variables from `pkg/fs` when creating files/directories:
@@ -254,8 +256,6 @@ Note: Across our public documentation, official images, and in production, the c
 - Avatars and small images: use the thin wrapper in `internal/thumb/avatar.SafeDownload` which applies stricter defaults (15s timeout, 10 MiB, `AllowPrivate=false`).
 - Tests using `httptest.Server` on 127.0.0.1 must pass `AllowPrivate=true` explicitly to succeed.
 - Keep per‑resource size budgets small; rely on `io.LimitReader` + `Content-Length` prechecks.
-
-If anything in this file conflicts with the `Makefile` or the Developer Guide, the `Makefile` and the documentation win. When unsure, **ask** for clarification before proceeding.
 
 ## Agent Quick Tips (Do This)
 
