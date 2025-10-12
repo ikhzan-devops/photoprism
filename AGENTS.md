@@ -140,20 +140,28 @@ Note: Across our public documentation, official images, and in production, the c
   - Test frontend/backend: `make test-js` and `make test-go`
   - Go packages: `go test` (all tests) or `go test -run <name>` (specific tests only)
 - Need to inspect the MariaDB data while iterating? Connect directly inside the dev shell with `mariadb -D photoprism` and run SQL without rebuilding Go code.
-- Go tests live beside sources: for `path/to/pkg/<file>.go`, add tests in `path/to/pkg/<file>_test.go` (create if missing). For the same function, group related cases as `t.Run(...)` sub-tests (table-driven where helpful) and use PascalCase subtest names (for example, `t.Run("Success", ...)`).
-- Frontend unit tests are driven by Vitest; see scripts in `frontend/package.json`
+- Go tests live beside sources: for `path/to/pkg/<file>.go`, add tests in `path/to/pkg/<file>_test.go` (create if missing). For the same function, group related cases as `t.Run(...)` sub-tests (table-driven where helpful) and use **PascalCase** for subtest names (for example, `t.Run("Success", ...)`).
+- Frontend unit tests use **Vitest**; see scripts in `frontend/package.json`.
   - Vitest watch/coverage: `make vitest-watch` and `make vitest-coverage`
 - Acceptance tests: use the `acceptance-*` targets in the `Makefile`
 
 ### Playwright MCP Usage
 
-- Playwright MCP is preconfigured to reach the dev server at http://localhost:2342/; use `playwright__browser_navigate` to load `/library/login`, sign in, then `playwright__browser_take_screenshot`.
-- Desktop sessions should open with a 1280x900 viewport by default; call `playwright__browser_resize` if the viewport size is not pre-configured or you need a different size mid-run.
-- Where available, use the `playwright_mobile` server for mobile workflows (for example, `playwright_mobile__browser_navigate`), which launches at 375x667 so you can capture smartphone layouts without manual resizing.
-- Default admin credentials remain `admin` / `photoprism`; if login fails, inspect the active compose file or environment for `PHOTOPRISM_ADMIN_USER` and `PHOTOPRISM_ADMIN_PASSWORD`.
-- When capturing artifacts, keep Playwright screenshots to the visible viewport (leave `fullPage` unset/false) unless a full-page capture is explicitly required, then copy the MCP output file into `.local/screenshots/` (create the folder if needed).
-- The sidebar navigation nests items such as `Library` → `Errors`; expand the parent entry by clicking its chevron before targeting links inside.
-- After scripted interactions, close the browser tab with `playwright__browser_close` (or `playwright_mobile__browser_close`) so the MCP session stays tidy for subsequent runs.
+- **Endpoint & Navigation** — Playwright MCP is preconfigured to reach the dev server at `http://localhost:2342/`.  
+  Use `playwright__browser_navigate` to open `/library/login`, sign in, and then call `playwright__browser_take_screenshot` to capture the page state.
+- **Viewport Defaults** — Desktop sessions open with a `1280×900` viewport by default.  
+  Use `playwright__browser_resize` if the viewport is not preconfigured or you need to adjust it mid-run.
+- **Mobile Workflows** — When testing responsive layouts, use the `playwright_mobile` server (for example, `playwright_mobile__browser_navigate`).  
+  It launches with a `375×667` viewport, matching a typical smartphone display, so you can capture mobile layouts without manual resizing.
+- **Authentication** — Default admin credentials are `admin` / `photoprism`.  
+  If login fails, check your active Compose file or container environment for `PHOTOPRISM_ADMIN_USER` and `PHOTOPRISM_ADMIN_PASSWORD`.
+- **Capturing Artifacts** —
+  - Keep screenshots limited to the visible viewport (`fullPage: false` or unset) unless a full-page capture is explicitly required.
+  - Copy the MCP output file into `.local/screenshots/` (create the folder if it doesn’t exist).
+  - To reduce context size, avoid embedding large screenshots in chat history—reference the file path instead.
+- **Sidebar Navigation** — The sidebar nests items such as `Library → Errors`.  
+  Expand a parent entry by clicking its chevron before selecting links inside.
+- **Session Cleanup** — After scripted interactions, close the browser tab with `playwright__browser_close` (or `playwright_mobile__browser_close`) to keep the MCP session tidy for subsequent runs.
 
 ### FFmpeg Tests & Hardware Gating
 
