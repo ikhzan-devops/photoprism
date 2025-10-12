@@ -198,6 +198,8 @@ export default {
         waitAfterVideo: 2500,
         next: -1,
       },
+      touchStartListener: null,
+      mouseMoveListener: null,
     };
   },
   created() {
@@ -205,6 +207,7 @@ export default {
     this.subscriptions["lightbox.open"] = this.$event.subscribe("lightbox.open", this.openLightbox.bind(this));
     this.subscriptions["lightbox.pause"] = this.$event.subscribe("lightbox.pause", this.pauseLightbox.bind(this));
     this.subscriptions["lightbox.close"] = this.$event.subscribe("lightbox.close", this.onClose.bind(this));
+    this.ensurePointerHandlers();
   },
   beforeUnmount() {
     // Exit fullscreen mode if enabled, has no effect otherwise.
@@ -1552,6 +1555,23 @@ export default {
         return;
       }
 
+      // Ignore clicks that originate from PhotoSwipe UI controls (for example
+      // the close button). The container uses a capture click handler to
+      // reveal controls when the user taps the top of the screen, but this
+      // unintentionally prevents the individual control handlers from
+      // receiving the event on touch devices. Let the control handle the
+      // event itself when the target is inside the PSWP top bar or a PSWP
+      // button.
+      if (ev.target && typeof ev.target.closest === "function") {
+        if (
+          ev.target.closest(".pswp__top-bar") ||
+          ev.target.closest(".pswp__button") ||
+          ev.target.closest(".pswp__button--close-button")
+        ) {
+          return;
+        }
+      }
+
       if (ev.y <= 128) {
         // Reveal controls when user clicks/touches the top of the screen.
         if (!this.controlsVisible()) {
@@ -2308,15 +2328,30 @@ export default {
     onMouseMoveOnce() {
       this.showControls();
     },
+    ensurePointerHandlers() {
+      if (!this.touchStartListener) {
+        this.touchStartListener = this.onTouchStartOnce.bind(this);
+      }
+
+      if (!this.mouseMoveListener) {
+        this.mouseMoveListener = this.onMouseMoveOnce.bind(this);
+      }
+    },
     // Removes any touch and mouse event handlers.
     removeEventListeners() {
-      document.removeEventListener("touchstart", this.onTouchStartOnce.bind(this), { once: true });
-      document.removeEventListener("mousemove", this.onMouseMoveOnce.bind(this), { once: true });
+      if (this.touchStartListener) {
+        document.removeEventListener("touchstart", this.touchStartListener, false);
+      }
+
+      if (this.mouseMoveListener) {
+        document.removeEventListener("mousemove", this.mouseMoveListener, false);
+      }
     },
     // Attaches touch and mouse event handlers to automatically hide controls.
     addEventListeners() {
-      document.addEventListener("touchstart", this.onTouchStartOnce.bind(this), { once: true });
-      document.addEventListener("mousemove", this.onMouseMoveOnce.bind(this), { once: true });
+      this.ensurePointerHandlers();
+      document.addEventListener("touchstart", this.touchStartListener, { once: true });
+      document.addEventListener("mousemove", this.mouseMoveListener, { once: true });
     },
     startTimer() {
       if (this.hasTouch) {
@@ -2325,7 +2360,8 @@ export default {
 
       this.hideControlsWithDelay(this.defaultControlHideDelay);
 
-      document.addEventListener("mousemove", this.onMouseMoveOnce.bind(this), { once: true });
+      this.ensurePointerHandlers();
+      document.addEventListener("mousemove", this.mouseMoveListener, { once: true });
     },
     clearTimeouts() {
       this.clearIdleTimeout();
