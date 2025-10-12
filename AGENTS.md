@@ -371,6 +371,7 @@ Note: Across our public documentation, official images, and in production, the c
   - Pipe method: PhotoPrism remux (ffmpeg) always embeds title/description/created.
   - File method: yt‑dlp writes files; we pass `--postprocessor-args 'ffmpeg:-metadata creation_time=<RFC3339>'` so imports get `Created` even without local remux (fallback from `upload_date`/`release_date`).
   - Default remux policy: `auto`; use `always` for the most complete metadata (chapters, extended tags).
+  - CLI defaults: `photoprism dl` now defaults to `--method pipe` and `--impersonate firefox`; pass `-i none` to disable impersonation. Pipe mode streams raw media and PhotoPrism handles the final FFmpeg remux so metadata (title, description, author, creation time) still comes from `RemuxOptionsFromInfo`.
 
 - Testing workflow: lean on the focused commands above; if importer dedupe kicks in, vary bytes with `YTDLP_DUMMY_CONTENT` or adjust `dest`, and remember `internal/photoprism` is heavy so validate downstream packages first.
 
