@@ -40,7 +40,7 @@ High-Level Package Map (Go)
 - `internal/service` — cluster/portal, maps, hub, webdav
 - `internal/event` — logging, pub/sub, audit
 - `internal/ffmpeg`, `internal/thumb`, `internal/meta`, `internal/form`, `internal/mutex` — media, thumbs, metadata, forms, coordination
-- `pkg/*` — reusable utilities (must never import from `internal/*`), e.g. `pkg/fs`, `pkg/log`, `pkg/service/http/header`
+- `pkg/*` — reusable utilities (must never import from `internal/*`), e.g. `pkg/clean`, `pkg/enum`, `pkg/fs`, `pkg/txt`, `pkg/service/http/header`
 
 Templates & Static Assets
 - Entry HTML lives in `assets/templates/index.gohtml`, which includes the splash markup from `app.gohtml` and the SPA loader from `app.js.gohtml`.
