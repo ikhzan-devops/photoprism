@@ -637,3 +637,12 @@
     -webkit-box-shadow: none;
     box-shadow: none;
 }
+
+/*
+ By default, PhotoSwipe’s CSS applies an opacity transition to any element with .pswp__hide-on-close
+ and that transition is driven by whether the root element has .pswp--ui-visible.
+ */
+.p-lightbox__container .pswp .pswp__hide-on-close,
+.p-lightbox__container .pswp--ui-visible .pswp__hide-on-close {
+    transition: none !important;
+}
