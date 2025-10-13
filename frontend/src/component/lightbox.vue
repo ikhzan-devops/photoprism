@@ -648,16 +648,16 @@ export default {
       }
     },
     onContentDestroy(ev) {
-      if (typeof ev?.content?.data?.ctrlVideoListeners === "object") {
+      if (typeof ev?.content?.data?.events === "object") {
         const data = ev.content.data;
 
         if (this.debug) {
-          this.log(`dialog.abortVideoListeners`, data);
+          this.log(`content.destroy`, data);
         }
 
         // Remove video event listeners.
-        data.ctrlVideoListeners?.abort();
-        data.ctrlVideoListeners = null;
+        data.events?.abort();
+        data.events = null;
       }
     },
     // Creates an HTMLMediaElement for playing videos, animations, and live photos.
@@ -695,7 +695,7 @@ export default {
 
       // Create an AbortController to clean up the event handlers.
       const ctrl = new AbortController();
-      data.ctrlVideoListeners = ctrl;
+      data.events = ctrl;
 
       // Attach video event handlers.
       VIDEO_EVENT_TYPES.forEach((ev) => {
