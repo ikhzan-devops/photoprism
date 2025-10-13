@@ -725,14 +725,16 @@ export default {
 
       // Check if remote playback is supported by this browser.
       if (video.remote && video.remote instanceof RemotePlayback) {
-        const cancel = () => {
-          video.remote
-            .cancelWatchAvailability?.(this.videoAvailabilityListener)
-            .catch(this.trace ? this.log : () => {});
-        };
+        if (!this.video.castable) {
+          const cancel = () => {
+            video.remote
+              .cancelWatchAvailability?.(this.videoAvailabilityListener)
+              .catch(this.trace ? this.log : () => {});
+          };
 
-        ctrl.signal.addEventListener("abort", cancel, { once: true });
-        video.remote.watchAvailability(this.videoAvailabilityListener).catch(this.trace ? this.log : () => {});
+          ctrl.signal.addEventListener("abort", cancel, { once: true });
+          video.remote.watchAvailability(this.videoAvailabilityListener).catch(this.trace ? this.log : () => {});
+        }
 
         // Attach video remote event handlers.
         VIDEO_REMOTE_EVENT_TYPES.forEach((ev) => {
