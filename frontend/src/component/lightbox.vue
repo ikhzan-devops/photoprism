@@ -200,6 +200,7 @@ export default {
       videoRemoteWatched: new WeakSet(),
       // Video properties for rendering the controls.
       video: {
+        element: null,
         controls: false,
         src: "",
         error: "",
@@ -216,6 +217,7 @@ export default {
         castable: false,
         casting: false,
         remote: "",
+        uid: null,
       },
       // Slideshow properties.
       slideshow: {
@@ -837,13 +839,8 @@ export default {
         return;
       }
 
-      if (ev && ev.target instanceof HTMLMediaElement) {
-        const eventSrc = ev.target.currentSrc || ev.target.src;
-        const videoSrc = video.currentSrc || video.src;
-
-        if (eventSrc && videoSrc && eventSrc !== videoSrc) {
-          return;
-        }
+      if (ev && ev.target instanceof HTMLMediaElement && ev.target !== video) {
+        return;
       }
 
       return this.setVideo(video, data, ev);
@@ -895,7 +892,7 @@ export default {
 
       if (!video || !data) {
         return;
-      } else if (ev && ev.target.src !== video.src) {
+      } else if (ev && ev.target instanceof HTMLMediaElement && ev.target !== video) {
         return;
       }
 
@@ -910,7 +907,19 @@ export default {
         return;
       }
 
-      if (video.src !== this.video.src) {
+      const modelUid = data?.model?.UID ?? data?.model?.Hash ?? null;
+      const currentSrc = video.currentSrc || video.src || "";
+      const mediaContainer = video.parentElement instanceof HTMLElement ? video.parentElement : null;
+
+      let shouldReset = false;
+
+      if (this.video.element && this.video.element !== video) {
+        shouldReset = true;
+      } else if (this.video.uid && modelUid && this.video.uid !== modelUid) {
+        shouldReset = true;
+      }
+
+      if (shouldReset) {
         this.resetVideo();
       }
 
@@ -923,17 +932,23 @@ export default {
             // Automatically hide the lightbox controls after a video has started playing.
             this.video.waiting = false;
             this.hideControlsWithDelay(this.playControlHideDelay);
-            video.parentElement.classList.add("is-playing");
-            video.parentElement.classList.remove("is-waiting");
+            if (mediaContainer) {
+              mediaContainer.classList.add("is-playing");
+              mediaContainer.classList.remove("is-waiting");
+            }
             break;
           case "ended":
           case "pause":
-            video.parentElement.classList.remove("is-playing");
+            if (mediaContainer) {
+              mediaContainer.classList.remove("is-playing");
+            }
             break;
           case "abort":
           case "error":
-            video.parentElement.classList.add("is-broken");
-            video.parentElement.classList.remove("is-playing");
+            if (mediaContainer) {
+              mediaContainer.classList.add("is-broken");
+              mediaContainer.classList.remove("is-playing");
+            }
             break;
           case "timeupdate":
           case "loadeddata":
@@ -942,7 +957,9 @@ export default {
             break;
           case "waiting":
             this.video.waiting = true;
-            video.parentElement.classList.add("is-waiting");
+            if (mediaContainer) {
+              mediaContainer.classList.add("is-waiting");
+            }
         }
 
         // Automatically hide the lightbox controls after a video has started playing.
@@ -957,8 +974,9 @@ export default {
         }
       }
 
-      // URL of the currently playing video.
-      this.video.src = video.src;
+      this.video.element = video;
+      this.video.uid = modelUid || null;
+      this.video.src = currentSrc;
 
       // Loop short videos of 5 seconds or less, even if the server does not know the duration.
       if (
@@ -998,10 +1016,14 @@ export default {
             this.video.error = video.error.message;
         }
 
-        video.parentElement.classList.add("is-broken");
+        if (mediaContainer) {
+          mediaContainer.classList.add("is-broken");
+        }
         this.video.errorCode = video.error.code;
       } else {
-        video.parentElement.classList.remove("is-broken");
+        if (mediaContainer) {
+          mediaContainer.classList.remove("is-broken");
+        }
         this.video.error = "";
         this.video.errorCode = 0;
       }
@@ -1028,9 +1050,24 @@ export default {
       this.video.playing = isPlaying;
       this.video.paused = video.paused;
       this.video.ended = video.ended;
+
+      if (mediaContainer) {
+        if (isPlaying) {
+          mediaContainer.classList.add("is-playing");
+        } else {
+          mediaContainer.classList.remove("is-playing");
+        }
+
+        if (this.video.waiting) {
+          mediaContainer.classList.add("is-waiting");
+        } else {
+          mediaContainer.classList.remove("is-waiting");
+        }
+      }
     },
     resetVideo(showControls = false) {
       this.video = {
+        element: null,
         controls: !!showControls,
         src: "",
         error: "",
@@ -1044,8 +1081,10 @@ export default {
         playing: false,
         paused: false,
         ended: false,
+        castable: false,
         casting: false,
         remote: "",
+        uid: null,
       };
     },
     // Initializes and opens the PhotoSwipe lightbox with the
@@ -1703,6 +1742,7 @@ export default {
       if (ev.y <= 128) {
         if (!this.controlsVisible()) {
           ev.stopPropagation();
+          ev.preventDefault();
           this.clearIdleTimeout();
           this.showControls();
         }
