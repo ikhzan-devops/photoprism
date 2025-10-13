@@ -693,8 +693,11 @@ export default {
       video.controls = false;
       video.dir = document.dir ? document.dir : this.$config.dir(this.$isRtl);
 
-      // Create an AbortController to clean up the event handlers.
+      // Create AbortController instance to clean up the event handlers.
       const ctrl = new AbortController();
+
+      // Abort any existing controller.
+      data.events?.abort();
       data.events = ctrl;
 
       // Attach video event handlers.
