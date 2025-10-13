@@ -53,7 +53,7 @@
     "@vue/compiler-sfc": "^3.5.18",
     "@vue/language-server": "^3.1.1",
     "@vue/test-utils": "^2.4.6",
-    "@vvo/tzdb": "^6.186.0",
+    "@vvo/tzdb": "^6.187.0",
     "axios": "^1.12.2",
     "axios-mock-adapter": "^2.1.0",
     "babel-loader": "^10.0.0",
