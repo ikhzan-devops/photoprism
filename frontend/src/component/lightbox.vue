@@ -192,15 +192,8 @@ export default {
       models: [], // Slide models.
       index: 0, // Current slide index in models.
       subscriptions: [], // Event subscriptions.
-      videoEventListener: (ev) => this.onVideo(ev),
-      videoRemoteEventListener: (ev) => this.onVideoRemote(ev),
-      videoAvailabilityListener: (castable) => {
-        this.video.castable = castable;
-      },
-      videoRemoteWatched: new WeakSet(),
       // Video properties for rendering the controls.
       video: {
-        element: null,
         controls: false,
         src: "",
         error: "",
@@ -217,7 +210,6 @@ export default {
         castable: false,
         casting: false,
         remote: "",
-        uid: null,
       },
       // Slideshow properties.
       slideshow: {
@@ -230,6 +222,13 @@ export default {
       touchStartListener: (ev) => this.onTouchStartOnce(ev),
       mouseMoveListener: (ev) => this.onMouseMoveOnce(ev),
       lightboxPointerListener: (ev) => this.onLightboxPointerEvent(ev),
+      videoEventListener: (ev) => this.onVideoEvent(ev),
+      videoRemoteListener: (ev) => this.onVideoRemote(ev),
+      videoAvailabilityListener: (castable) => {
+        if (typeof this.video === "object") {
+          this.video.castable = castable;
+        }
+      },
     };
   },
   created() {
@@ -617,8 +616,6 @@ export default {
         // Prevent default loading behavior.
         ev.preventDefault();
 
-        this.cleanupContentElement(content.element);
-
         try {
           // Create pswp__media element.
           const mediaElement = document.createElement("div");
@@ -626,7 +623,7 @@ export default {
           mediaElement.classList.add(`pswp__media--${content.data.model.Type}`);
 
           // Create and append video player.
-          mediaElement.appendChild(this.createVideoElement(content.data, false, false, false));
+          mediaElement.appendChild(this.createVideoElement(content, false, false, false));
 
           // Create and append cover image.
           if (content.data.msrc) {
@@ -650,16 +647,22 @@ export default {
         }
       }
     },
-    onContentRemove(ev) {
-      const element = ev?.content?.element ?? ev?.content ?? null;
-      this.cleanupContentElement(element);
-    },
     onContentDestroy(ev) {
-      const element = ev?.content?.element ?? ev?.content ?? null;
-      this.cleanupContentElement(element);
+      if (typeof ev?.content?.data?.ctrlVideoListeners === "object") {
+        const data = ev.content.data;
+
+        if (this.debug) {
+          this.log(`dialog.abortVideoListeners`, data);
+        }
+
+        // Remove video event listeners.
+        data.ctrlVideoListeners?.abort();
+        data.ctrlVideoListeners = null;
+      }
     },
     // Creates an HTMLMediaElement for playing videos, animations, and live photos.
-    createVideoElement(data, autoplay = false, loop = false, mute = false) {
+    createVideoElement(content, autoplay = false, loop = false, mute = false) {
+      const data = content.data;
       const model = data.model;
       const format = data.format;
       const posterSrc = data.msrc;
@@ -690,6 +693,15 @@ export default {
       video.controls = false;
       video.dir = document.dir ? document.dir : this.$config.dir(this.$isRtl);
 
+      // Create an AbortController to clean up the event handlers.
+      const ctrl = new AbortController();
+      data.ctrlVideoListeners = ctrl;
+
+      // Attach video event handlers.
+      VIDEO_EVENT_TYPES.forEach((ev) => {
+        video.addEventListener(ev, this.videoEventListener, { signal: ctrl.signal });
+      });
+
       // Create and append video source elements, depending on file format support.
       if (
         format !== media.FormatAvc &&
@@ -708,138 +720,27 @@ export default {
         video.appendChild(avcSource);
       }
 
-      this.attachVideoEventListeners(video);
+      // Check if remote playback is supported by this browser.
+      if (video.remote && video.remote instanceof RemotePlayback) {
+        if (!this.video.castable) {
+          video.remote.watchAvailability(this.videoAvailabilityListener);
+        }
+
+        // Attach video remote event handlers.
+        VIDEO_REMOTE_EVENT_TYPES.forEach((ev) => {
+          video.addEventListener(ev, this.videoRemoteListener, { signal: ctrl.signal });
+        });
+      }
 
       // Return HTMLMediaElement.
       return video;
     },
-    attachVideoEventListeners(video) {
-      if (!video || !(video instanceof HTMLMediaElement)) {
-        return;
-      }
-
-      this.detachVideoEventListeners(video);
-
-      VIDEO_EVENT_TYPES.forEach((event) => {
-        video.addEventListener(event, this.videoEventListener);
-      });
-
-      this.attachVideoRemoteListeners(video);
-    },
-    attachVideoRemoteListeners(video) {
-      if (!video || !(video instanceof HTMLMediaElement)) {
-        return;
-      }
-
-      const RemotePlaybackCtor = typeof window !== "undefined" ? window.RemotePlayback : undefined;
-
-      if (!RemotePlaybackCtor || !video.remote || !(video.remote instanceof RemotePlaybackCtor)) {
-        return;
-      }
-
-      const remote = video.remote;
-
-      if (typeof remote.cancelWatchAvailability === "function" && this.videoRemoteWatched.has(video)) {
-        remote
-          .cancelWatchAvailability(this.videoAvailabilityListener)
-          .catch((err) => {
-            if (this.trace) {
-              this.log(err);
-            }
-          })
-          .finally(() => {
-            this.videoRemoteWatched.delete(video);
-          });
-      }
-
-      remote.watchAvailability(this.videoAvailabilityListener).then(
-        () => {
-          this.videoRemoteWatched.add(video);
-        },
-        (err) => {
-          if (this.trace) {
-            this.log(err);
-          }
-        }
-      );
-
-      VIDEO_REMOTE_EVENT_TYPES.forEach((event) => {
-        video.addEventListener(event, this.videoRemoteEventListener);
-      });
-    },
-    detachVideoEventListeners(video) {
-      if (!video || !(video instanceof HTMLMediaElement)) {
-        return;
-      }
-
-      VIDEO_EVENT_TYPES.forEach((event) => {
-        video.removeEventListener(event, this.videoEventListener);
-      });
-
-      this.detachVideoRemoteListeners(video);
-    },
-    detachVideoRemoteListeners(video) {
-      if (!video || !(video instanceof HTMLMediaElement)) {
-        return;
-      }
-
-      VIDEO_REMOTE_EVENT_TYPES.forEach((event) => {
-        video.removeEventListener(event, this.videoRemoteEventListener);
-      });
-
-      if (!this.videoRemoteWatched.has(video)) {
-        return;
-      }
-
-      const RemotePlaybackCtor = typeof window !== "undefined" ? window.RemotePlayback : undefined;
-
-      if (!RemotePlaybackCtor || !video.remote || !(video.remote instanceof RemotePlaybackCtor)) {
-        this.videoRemoteWatched.delete(video);
-        return;
-      }
-
-      const remote = video.remote;
-
-      if (typeof remote.cancelWatchAvailability === "function") {
-        remote
-          .cancelWatchAvailability(this.videoAvailabilityListener)
-          .catch((err) => {
-            if (this.trace) {
-              this.log(err);
-            }
-          })
-          .finally(() => {
-            this.videoRemoteWatched.delete(video);
-          });
-      } else {
-        this.videoRemoteWatched.delete(video);
-      }
-    },
-    cleanupContentElement(element) {
-      if (!element) {
-        return;
-      }
-
-      let video = null;
-
-      if (element instanceof HTMLMediaElement) {
-        video = element;
-      } else if (element instanceof HTMLElement) {
-        video = element.querySelector("video");
-      }
-
-      if (video) {
-        this.detachVideoEventListeners(video);
-      }
-    },
-    onVideo(ev) {
+    onVideoEvent(ev) {
       const { video, data } = this.getContent();
 
       if (!video || !data) {
         return;
-      }
-
-      if (ev && ev.target instanceof HTMLMediaElement && ev.target !== video) {
+      } else if (ev && ev.target.src !== video.src) {
         return;
       }
 
@@ -892,7 +793,7 @@ export default {
 
       if (!video || !data) {
         return;
-      } else if (ev && ev.target instanceof HTMLMediaElement && ev.target !== video) {
+      } else if (ev && ev.target.src !== video.src) {
         return;
       }
 
@@ -907,19 +808,7 @@ export default {
         return;
       }
 
-      const modelUid = data?.model?.UID ?? data?.model?.Hash ?? null;
-      const currentSrc = video.currentSrc || video.src || "";
-      const mediaContainer = video.parentElement instanceof HTMLElement ? video.parentElement : null;
-
-      let shouldReset = false;
-
-      if (this.video.element && this.video.element !== video) {
-        shouldReset = true;
-      } else if (this.video.uid && modelUid && this.video.uid !== modelUid) {
-        shouldReset = true;
-      }
-
-      if (shouldReset) {
+      if (video.src !== this.video.src) {
         this.resetVideo();
       }
 
@@ -932,23 +821,17 @@ export default {
             // Automatically hide the lightbox controls after a video has started playing.
             this.video.waiting = false;
             this.hideControlsWithDelay(this.playControlHideDelay);
-            if (mediaContainer) {
-              mediaContainer.classList.add("is-playing");
-              mediaContainer.classList.remove("is-waiting");
-            }
+            video.parentElement.classList.add("is-playing");
+            video.parentElement.classList.remove("is-waiting");
             break;
           case "ended":
           case "pause":
-            if (mediaContainer) {
-              mediaContainer.classList.remove("is-playing");
-            }
+            video.parentElement.classList.remove("is-playing");
             break;
           case "abort":
           case "error":
-            if (mediaContainer) {
-              mediaContainer.classList.add("is-broken");
-              mediaContainer.classList.remove("is-playing");
-            }
+            video.parentElement.classList.add("is-broken");
+            video.parentElement.classList.remove("is-playing");
             break;
           case "timeupdate":
           case "loadeddata":
@@ -957,9 +840,7 @@ export default {
             break;
           case "waiting":
             this.video.waiting = true;
-            if (mediaContainer) {
-              mediaContainer.classList.add("is-waiting");
-            }
+            video.parentElement.classList.add("is-waiting");
         }
 
         // Automatically hide the lightbox controls after a video has started playing.
@@ -974,9 +855,8 @@ export default {
         }
       }
 
-      this.video.element = video;
-      this.video.uid = modelUid || null;
-      this.video.src = currentSrc;
+      // URL of the currently playing video.
+      this.video.src = video.src;
 
       // Loop short videos of 5 seconds or less, even if the server does not know the duration.
       if (
@@ -1016,14 +896,10 @@ export default {
             this.video.error = video.error.message;
         }
 
-        if (mediaContainer) {
-          mediaContainer.classList.add("is-broken");
-        }
+        video.parentElement.classList.add("is-broken");
         this.video.errorCode = video.error.code;
       } else {
-        if (mediaContainer) {
-          mediaContainer.classList.remove("is-broken");
-        }
+        video.parentElement.classList.remove("is-broken");
         this.video.error = "";
         this.video.errorCode = 0;
       }
@@ -1050,24 +926,9 @@ export default {
       this.video.playing = isPlaying;
       this.video.paused = video.paused;
       this.video.ended = video.ended;
-
-      if (mediaContainer) {
-        if (isPlaying) {
-          mediaContainer.classList.add("is-playing");
-        } else {
-          mediaContainer.classList.remove("is-playing");
-        }
-
-        if (this.video.waiting) {
-          mediaContainer.classList.add("is-waiting");
-        } else {
-          mediaContainer.classList.remove("is-waiting");
-        }
-      }
     },
     resetVideo(showControls = false) {
       this.video = {
-        element: null,
         controls: !!showControls,
         src: "",
         error: "",
@@ -1084,7 +945,6 @@ export default {
         castable: false,
         casting: false,
         remote: "",
-        uid: null,
       };
     },
     // Initializes and opens the PhotoSwipe lightbox with the
@@ -1200,7 +1060,7 @@ export default {
       // see https://photoswipe.com/events/#slide-content-events.
       this.lightbox.on("contentLoad", this.onContentLoad.bind(this));
       // this.lightbox.on("contentResize", this.onContentResize.bind(this));
-      this.lightbox.on("contentRemove", this.onContentRemove.bind(this));
+      // this.lightbox.on("contentRemove", this.onContentRemove.bind(this));
       this.lightbox.on("contentDestroy", this.onContentDestroy.bind(this));
 
       // Pauses videos, animations, and live photos when slide content becomes active (can be default prevented),
@@ -1568,15 +1428,6 @@ export default {
     // Destroys the PhotoSwipe lightbox instance after use, see onClose().
     destroyLightbox() {
       if (this.lightbox) {
-        const pswp = this.pswp();
-
-        if (pswp && Array.isArray(pswp.slides)) {
-          pswp.slides.forEach((slide) => {
-            const element = slide?.content?.element ?? null;
-            this.cleanupContentElement(element);
-          });
-        }
-
         this.lightbox.destroy();
         this.$event.publish("lightbox.destroy");
         return;
@@ -1932,10 +1783,8 @@ export default {
               }
             });
           }
-        } catch (err) {
-          if (this.trace) {
-            this.log(err);
-          }
+        } catch {
+          // Ignore.
         }
       }
     },
