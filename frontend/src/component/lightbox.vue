@@ -18,7 +18,7 @@
     @keydown.space.exact="onKeyDown"
     @keydown.left.exact="onKeyDown"
     @keydown.right.exact="onKeyDown"
-    @keydown.esc.stop="close()"
+    @keydown.esc.stop="close"
     @click.capture="captureDialogClick"
     @pointerdown.capture="captureDialogPointerDown"
     @mousedown.stop.prevent
