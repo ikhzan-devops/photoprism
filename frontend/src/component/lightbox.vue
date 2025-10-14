@@ -4,7 +4,6 @@
     :model-value="visible"
     :scrollable="false"
     :transition="false"
-    :close-on-back="false"
     :close-delay="0"
     :open-delay="0"
     fullscreen
