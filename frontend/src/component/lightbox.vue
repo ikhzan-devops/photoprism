@@ -21,8 +21,6 @@
     @keydown.esc.stop="close"
     @click.capture="captureDialogClick"
     @pointerdown.capture="captureDialogPointerDown"
-    @mousedown.stop.prevent
-    @pointerdown.stop.prevent
   >
     <div class="p-lightbox__underlay"></div>
     <div ref="container" class="p-lightbox__container">
