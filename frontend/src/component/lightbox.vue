@@ -1032,16 +1032,28 @@ export default {
       // Register animation event handlers to prevent user actions during animations,
       // see https://photoswipe.com/events/#opening-or-closing-transition-events.
       this.lightbox.on("openingAnimationStart", () => {
+        if (this.debug) {
+          this.log("start opening animation");
+        }
         this.busy = true;
       });
       this.lightbox.on("openingAnimationEnd", () => {
         this.busy = false;
+        if (this.debug) {
+          this.log("end opening animation");
+        }
       });
       this.lightbox.on("closingAnimationStart", () => {
+        if (this.debug) {
+          this.log("start closing animation");
+        }
         this.busy = true;
       });
       this.lightbox.on("closingAnimationEnd", () => {
         this.busy = false;
+        if (this.debug) {
+          this.log("end closing animation");
+        }
       });
 
       // Add a custom pointer event handler to prevent the default
@@ -1188,7 +1200,7 @@ export default {
           onClick: (ev) =>
             this.onControlClick(ev, () => {
               if (this.debug) {
-                this.log("lightbox.close.click", ev);
+                this.log("pswp.ui.close", ev);
               }
 
               this.close();
@@ -1583,7 +1595,7 @@ export default {
       }
 
       if (this.debug) {
-        this.log(`background.event.${ev?.type}`, { ev });
+        this.log(`background.${ev?.type}`, { ev });
       }
 
       if (this.controlsVisible()) {
@@ -1612,7 +1624,7 @@ export default {
       if (typeof target.closest === "function") {
         if (target.closest(".pswp__button--close-button")) {
           if (this.debug) {
-            this.log(`pswp.${ev?.type} on close`, { ev });
+            this.log(`${ev?.type} on close`, { ev });
           }
 
           return "close";
@@ -1620,7 +1632,7 @@ export default {
 
         if (target.closest(".pswp__button")) {
           if (this.debug) {
-            this.log(`pswp.${ev?.type} on button`, { ev });
+            this.log(`${ev?.type} on button`, { ev });
           }
 
           return "button";
@@ -1628,7 +1640,7 @@ export default {
 
         if (target.closest(".pswp__top-bar")) {
           if (this.debug) {
-            this.log(`pswp.${ev?.type} on top-bar`, { ev });
+            this.log(`${ev?.type} on top-bar`, { ev });
           }
 
           return "top-bar";
@@ -1647,7 +1659,7 @@ export default {
       const target = ev.originalEvent.target;
 
       if (this.debug) {
-        this.log(`lightbox.event.${ev.type}`, { ev, target, action });
+        this.log(`pointer.${ev.type}`, { ev, target, action });
       }
 
       // Close the lightbox when the user clicks the close button if it is visible.
@@ -1671,7 +1683,7 @@ export default {
       }
 
       if (this.debug) {
-        this.log(`control.event.${ev.type}`, { ev, action });
+        this.log(`control.${ev.type}`, { ev, action });
       }
 
       if (ev && ev.cancelable) {
@@ -1767,7 +1779,7 @@ export default {
       }
 
       if (this.debug) {
-        this.log(`content.event.${ev.type}`, { ev, target: ev.target, originalTarget: ev.originalEvent?.target });
+        this.log(`content.${ev.type}`, { ev, target: ev.target, originalTarget: ev.originalEvent?.target });
       }
 
       if (this.slideshow.active) {
@@ -1789,7 +1801,7 @@ export default {
       }
 
       if (this.debug) {
-        this.log(`content.event.${ev.type}`, { ev, target: ev.target, originalTarget: ev.originalEvent?.target });
+        this.log(`content.${ev.type}`, { ev, target: ev.target, originalTarget: ev.originalEvent?.target });
       }
 
       if (ev.target instanceof HTMLMediaElement) {
@@ -2646,7 +2658,7 @@ export default {
           data.loading = false;
 
           if (this.trace) {
-            this.log(`image.event.${ev.type}`, { ev, target: ev.target });
+            this.log(`image.${ev.type}`, { ev, target: ev.target });
           }
 
           // Abort if image URL is empty or the current slide is undefined.
