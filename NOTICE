@@ -9,7 +9,7 @@ The following 3rd-party software packages may be used by or distributed with
 PhotoPrism. Any information relevant to third-party vendors listed below are
 collected using common, reasonable means.
 
-Date generated: 2025-10-10
+Date generated: 2025-10-14
 
 ================================================================================
 
@@ -1906,8 +1906,8 @@ SOFTWARE.
 --------------------------------------------------------------------------------
 
 Package: github.com/go-playground/validator/v10
-Version: v10.27.0
-License: MIT (https://github.com/go-playground/validator/blob/v10.27.0/LICENSE)
+Version: v10.28.0
+License: MIT (https://github.com/go-playground/validator/blob/v10.28.0/LICENSE)
 
 The MIT License (MIT)
 
@@ -5699,8 +5699,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 --------------------------------------------------------------------------------
 
 Package: github.com/quic-go/quic-go
-Version: v0.54.0
-License: MIT (https://github.com/quic-go/quic-go/blob/v0.54.0/LICENSE)
+Version: v0.55.0
+License: MIT (https://github.com/quic-go/quic-go/blob/v0.55.0/LICENSE)
 
 MIT License
 
