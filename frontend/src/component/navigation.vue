@@ -14,7 +14,7 @@
             <img :src="appIcon" :alt="appName" :class="{ 'animate-hue': indexing }" />
           </v-btn>
           <v-toolbar-title class="nav-toolbar-title">
-            <span :class="{ clickable: auth }" @click.stop.prevent="toggleDrawer">{{ page.title }}</span>
+            <span :class="{ clickable: auth }" @click.stop.prevent.self="toggleDrawer">{{ page.title }}</span>
           </v-toolbar-title>
           <v-btn
             icon="mdi-dots-vertical"
@@ -62,12 +62,11 @@
               width="100%"
               density="compact"
               tabindex="-1"
-              @click.capture="toggleDrawer"
             >
-              <v-list-item class="px-3" :elevation="0" :ripple="false" @click.stop.prevent="goHome">
+              <v-list-item class="px-3" :elevation="0" :ripple="false" @click.stop.prevent="onHome">
                 <template #prepend>
                   <div class="v-avatar bg-transparent nav-logo">
-                    <a :href="siteUrl" tabindex="-1" @click.stop.prevent="goHome">
+                    <a :href="siteUrl" tabindex="-1" @click.stop.prevent="onHome">
                       <img :src="appIcon" :alt="appName" :class="{ 'animate-hue': indexing }" />
                     </a>
                   </div>
@@ -1092,7 +1091,12 @@ export default {
     openUpload() {
       this.$event.publish("dialog.upload");
     },
-    goHome() {
+    onHome(ev) {
+      if (this.$vuetify.display.smAndDown) {
+        this.toggleDrawer(ev);
+        return;
+      }
+
       if (this.$route.name !== "home") {
         this.$router.push({ name: "home" });
       }
@@ -1110,8 +1114,9 @@ export default {
       }
     },
     toggleDrawer(ev) {
-      ev?.preventDefault();
-      ev?.stopPropagation();
+      if (!ev || ev.target === undefined) {
+        return;
+      }
 
       if (this.$vuetify.display.smAndDown) {
         if (this.drawer) {

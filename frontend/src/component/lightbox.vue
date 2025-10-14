@@ -15,14 +15,13 @@
     @keydown.space.exact="onKeyDown"
     @keydown.left.exact="onKeyDown"
     @keydown.right.exact="onKeyDown"
+    @click.capture="captureDialogClick"
+    @pointerdown.capture="captureDialogPointerDown"
+    @mousedown.stop.prevent
+    @pointerdown.stop.prevent
   >
     <div class="p-lightbox__underlay"></div>
-    <div
-      ref="container"
-      class="p-lightbox__container"
-      @click.capture="onContainerClick"
-      @pointerdown.capture="onContainerPointerDown"
-    >
+    <div ref="container" class="p-lightbox__container">
       <div
         ref="content"
         tabindex="1"
@@ -160,6 +159,7 @@ export default {
       trace,
       visible: false,
       busy: false,
+      closing: false,
       info: localStorage.getItem("lightbox.info") === "true",
       menuElement: null,
       menuBgColor: "#252525",
@@ -286,6 +286,7 @@ export default {
     showDialog() {
       this.$view.enter(this, this.$refs?.content);
       this.busy = true;
+      this.closing = false;
       this.visible = true;
       this.wasFullscreen = $fullscreen.isEnabled();
       this.info = localStorage.getItem("lightbox.info") === "true";
@@ -307,6 +308,7 @@ export default {
       }
 
       this.busy = false;
+      this.closing = false;
 
       // Publish event to be consumed by other components.
       this.$event.publish("lightbox.closed");
@@ -328,7 +330,7 @@ export default {
     // Traps the focus inside the lightbox dialog.
     onFocusOut(ev) {
       if (this.debug) {
-        this.log(`dialog.${ev.type}`, ev);
+        this.log(`dialog.${ev.type}`, { ev });
       }
 
       if (!this.$view.isActive(this)) {
@@ -451,7 +453,8 @@ export default {
             this.busy = false;
           })
           .catch(() => {
-            this.hideDialog();
+            this.busy = false;
+            this.close();
           });
       });
 
@@ -1041,7 +1044,7 @@ export default {
       // action when events are triggered on an HTMLMediaElement.
       this.lightbox.on("pointerUp", this.lightboxPointerListener);
       this.lightbox.on("pointerDown", this.lightboxPointerListener);
-      this.lightbox.on("pointerMove", this.lightboxPointerListener);
+      // this.lightbox.on("pointerMove", this.lightboxPointerListener);
 
       // Add PhotoSwipe lightbox controls,
       // see https://photoswipe.com/adding-ui-elements/.
@@ -1150,6 +1153,7 @@ export default {
 
       // Show first image.
       this.lightbox.loadAndOpen(this.index);
+      this.busy = false;
 
       return Promise.resolve();
     },
@@ -1179,9 +1183,11 @@ export default {
           },
           onClick: (ev) =>
             this.onControlClick(ev, () => {
-              if (lightbox && lightbox.pswp) {
-                lightbox.pswp.close();
+              if (this.debug) {
+                this.log("lightbox.close.click", ev);
               }
+
+              this.close();
             }),
         });
 
@@ -1410,22 +1416,28 @@ export default {
     onHideMenu() {
       this.menuVisible = false;
     },
-    closeLightbox() {
-      if (this.isBusy("close lightbox")) {
-        return Promise.reject();
-      }
-
-      const pswp = this.pswp();
-
-      if (pswp) {
-        this.busy = true;
+    close() {
+      if (this.closing) {
         return new Promise((resolve) => {
           this.$event.subscribeOnce("lightbox.leave", resolve);
-          this.destroyLightbox();
         });
       }
 
-      return this.hideDialog();
+      this.closing = true;
+
+      if (this.lightbox) {
+        return new Promise((resolve) => {
+          this.$event.subscribeOnce("lightbox.leave", resolve);
+          setTimeout(() => {
+            this.destroyLightbox();
+          }, 150);
+        });
+      }
+
+      return new Promise((resolve) => {
+        this.$event.subscribeOnce("lightbox.leave", resolve);
+        this.hideDialog();
+      });
     },
     onLightboxOpened() {
       this.addEventListeners();
@@ -1437,20 +1449,23 @@ export default {
     },
     // Destroys the PhotoSwipe lightbox instance after use, see onClose().
     destroyLightbox() {
-      if (this.lightbox) {
-        this.lightbox.destroy();
-        this.$event.publish("lightbox.destroy");
-        return;
-      }
+      this.$nextTick(() => {
+        if (this.lightbox) {
+          this.lightbox.destroy();
+          return;
+        }
 
-      this.hideDialog();
+        this.hideDialog();
+      });
     },
     onLightboxDestroyed() {
       // Remove lightbox reference.
       this.lightbox = null;
 
       // Hide lightbox and sidebar.
-      this.hideDialog();
+      this.$nextTick(() => {
+        this.hideDialog();
+      });
     },
     // Returns the picture (model) caption as sanitized HTML, if any.
     formatCaption(model) {
@@ -1499,6 +1514,7 @@ export default {
 
       this.clearTimeouts();
       this.removeEventListeners();
+      this.closing = true;
     },
     // Resets the component state after closing the lightbox.
     onReset() {
@@ -1562,19 +1578,98 @@ export default {
         return;
       }
 
+      if (this.debug) {
+        this.log(`background.event.${ev?.type}`, { ev });
+      }
+
       if (this.controlsVisible()) {
-        this.closeLightbox();
+        this.close();
       } else {
         this.showControls();
       }
     },
-    // Called when the lightbox receives a pointer move, down or up event.
-    onLightboxPointerEvent(ev) {
-      if (ev && ev.originalEvent.target.closest(".pswp__dynamic-caption")) {
+    // Returns the type of control if the event originates
+    // from a PhotoSwipe UI control, like the close button.
+    pswpControl(ev) {
+      if (!ev) {
+        return false;
+      }
+
+      let target;
+
+      if (ev.originalEvent?.target) {
+        target = ev.originalEvent.target;
+      } else if (ev.target) {
+        target = ev.target;
+      } else {
+        return false;
+      }
+
+      if (typeof target.closest === "function") {
+        if (target.closest(".pswp__button--close-button")) {
+          if (this.debug) {
+            this.log(`pswp.${ev?.type} on close`, { ev });
+          }
+
+          return "close";
+        }
+
+        if (target.closest(".pswp__button")) {
+          if (this.debug) {
+            this.log(`pswp.${ev?.type} on button`, { ev });
+          }
+
+          return "button";
+        }
+
+        if (target.closest(".pswp__top-bar")) {
+          if (this.debug) {
+            this.log(`pswp.${ev?.type} on top-bar`, { ev });
+          }
+
+          return "top-bar";
+        }
+      }
+
+      return false;
+    },
+    // Called when the lightbox receives a pointer down or up event.
+    // Move events are ignored for now.
+    onLightboxPointerEvent(ev, action) {
+      if (!ev || !ev.originalEvent?.target) {
+        return;
+      }
+
+      const target = ev.originalEvent.target;
+
+      if (this.debug) {
+        this.log(`lightbox.event.${ev.type}`, { ev, target, action });
+      }
+
+      // Close the lightbox when the user clicks the close button if it is visible.
+      const pswpControl = this.pswpControl(ev);
+      if (pswpControl === "close") {
+        if (this.controlsVisible()) {
+          ev.preventDefault();
+          this.close();
+        }
+        return;
+      }
+
+      if (target.closest(".pswp__dynamic-caption")) {
         ev.preventDefault();
       }
     },
+    // Handle user clicks on a control. Does not reliably work for the close button.
     onControlClick(ev, action) {
+      if (!ev) {
+        return;
+      }
+
+      if (this.debug) {
+        this.log(`control.event.${ev.type}`, { ev, action });
+      }
+
       if (ev && ev.cancelable) {
         ev.stopPropagation();
         ev.preventDefault();
@@ -1593,9 +1688,14 @@ export default {
 
       return false;
     },
-    onContainerClick(ev) {
+    // Capture click events on the dialog component.
+    captureDialogClick(ev) {
       if (!ev) {
         return;
+      }
+
+      if (this.debug) {
+        this.log(`dialog.capture.${ev.type}`, { ev, target: ev.target });
       }
 
       // Reveal the controls when the user clicks or touches the top of the screen,
@@ -1612,10 +1712,14 @@ export default {
         ev.preventDefault();
       }
     },
-    // Called when a pointer down (click, touch) event is captured by the lightbox container.
-    onContainerPointerDown(ev) {
+    // Capture pointer down events on the dialog component.
+    captureDialogPointerDown(ev) {
       if (!ev) {
         return;
+      }
+
+      if (this.debug) {
+        this.log(`dialog.capture.${ev.type}`, { ev, target: ev.target });
       }
 
       // Handle the click and touch events on custom content.
@@ -1652,10 +1756,14 @@ export default {
         this.toggleVideo();
       }
     },
-    // Called when the user clicks on an image slide in the lightbox.
+    // Handle user clicks on an image slide in the lightbox.
     onContentClick(ev) {
       if (!ev) {
         return;
+      }
+
+      if (this.debug) {
+        this.log(`content.event.${ev.type}`, { ev, target: ev.target, originalTarget: ev.originalEvent?.target });
       }
 
       if (this.slideshow.active) {
@@ -1670,10 +1778,14 @@ export default {
         pswp.currSlide.toggleZoom();
       }
     },
-    // Called when the user taps on an image slide in the lightbox.
+    // Handle user taps on an image slide in the lightbox.
     onContentTap(ev) {
       if (!ev) {
         return;
+      }
+
+      if (this.debug) {
+        this.log(`content.event.${ev.type}`, { ev, target: ev.target, originalTarget: ev.originalEvent?.target });
       }
 
       if (ev.target instanceof HTMLMediaElement) {
@@ -1806,7 +1918,7 @@ export default {
 
       switch (ev.code) {
         case "Escape":
-          this.closeLightbox();
+          this.close();
           return true;
         case "Period":
           this.onShowMenu();
@@ -2224,7 +2336,7 @@ export default {
       let album = null;
 
       // Close lightbox and open edit dialog when closed.
-      this.closeLightbox().then(() => {
+      this.close().then(() => {
         this.$event.publish("dialog.edit", { selection, album, index });
       });
     },
@@ -2530,7 +2642,7 @@ export default {
           data.loading = false;
 
           if (this.trace) {
-            this.log(`image.${ev.type}`, [ev, ev.target]);
+            this.log(`image.event.${ev.type}`, { ev, target: ev.target });
           }
 
           // Abort if image URL is empty or the current slide is undefined.
@@ -2569,7 +2681,7 @@ export default {
         // Set thumbnail src to load the new image.
         image.src = thumb.src;
       } catch (err) {
-        this.log(`failed to load image size ${thumb.size}`, err);
+        this.log(`failed to load image size ${thumb.size}`, { err });
         data.loading = false;
       }
     },
