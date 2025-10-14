@@ -3,6 +3,10 @@
     ref="dialog"
     :model-value="visible"
     :scrollable="false"
+    :transition="false"
+    :close-on-back="false"
+    :close-delay="0"
+    :open-delay="0"
     fullscreen
     scrim
     persistent
@@ -15,6 +19,7 @@
     @keydown.space.exact="onKeyDown"
     @keydown.left.exact="onKeyDown"
     @keydown.right.exact="onKeyDown"
+    @keydown.esc.stop="close()"
     @click.capture="captureDialogClick"
     @pointerdown.capture="captureDialogPointerDown"
     @mousedown.stop.prevent
