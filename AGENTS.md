@@ -1,6 +1,6 @@
 # PhotoPrism® Repository Guidelines
 
-**Last Updated:** October 12, 2025
+**Last Updated:** October 14, 2025
 
 ## Purpose
 
@@ -272,6 +272,7 @@ Note: Across our public documentation, official images, and in production, the c
 ### Testing & Fixtures
 
 - Go tests live next to their sources (`path/to/pkg/<file>_test.go`); group related cases as `t.Run(...)` sub-tests to keep table-driven coverage readable, and name each subtest with a PascalCase string.
+- Keep Go scratch work inside `internal/...`; Go refuses to import `internal/` packages from directories like `/tmp`, so create temporary helpers under a throwaway folder such as `internal/tmp/` instead of using external paths.
 - Prefer focused `go test` runs for speed (`go test ./internal/<pkg> -run <Name> -count=1`, `go test ./internal/commands -run <Name> -count=1`) and avoid `./...` unless you need the entire suite.
 - Heavy packages such as `internal/entity` and `internal/photoprism` run migrations and fixtures; expect 30–120s on first run and narrow with `-run` to keep iterations low.
 - For CLI-driven tests, wrap commands with `RunWithTestContext(cmd, args)` so `urfave/cli` cannot exit the process, and assert CLI output with `assert.Contains`/regex because `show` reports quote strings.

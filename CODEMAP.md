@@ -1,6 +1,6 @@
 PhotoPrism — Backend CODEMAP
 
-**Last Updated:** October 12, 2025
+**Last Updated:** October 14, 2025
 
 Purpose
 - Give agents and contributors a fast, reliable map of where things live and how they fit together, so you can add features, fix bugs, and write tests without spelunking.
@@ -249,6 +249,9 @@ See Also
 - AGENTS.md (repository rules and tips for agents)
 - Developer Guide (Setup/Tests/API) — links in AGENTS.md → Sources of Truth
 - Specs: `specs/dev/backend-testing.md`, `specs/dev/api-docs-swagger.md`, `specs/portal/README.md`
+
+Go Internal Import Rule
+- Keep temporary Go helpers inside `internal/...`; the Go toolchain blocks importing `internal/` packages from directories such as `/tmp`, so use a disposable path like `internal/tmp/` when you need scratch space.
 
 Fast Test Recipes
 - Filesystem + archives (fast): `go test ./pkg/fs -run 'Copy|Move|Unzip' -count=1`
