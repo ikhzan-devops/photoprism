@@ -30,7 +30,7 @@ Learn more: https://agents.md/
 - Older spec versions remain in the repo for historical reference but are not linked from the main TOC. Do not base new work on superseded files (e.g., `*-v1.md` when `*-v2.md` exists).
 - Auto-generated configuration and command references live under `specs/generated/`. Agents MUST NOT read, analyse, or modify anything in this directory; refer humans to `specs/generated/README.md` if regeneration is required.
 
-**Style note:** Document headings must use Title Case (capitalize every significant word) across Markdown files to keep generated navigation and changelogs consistent.
+**Style note:** Document headings must use Title Case (capitalize words ≥4 letters in AP-style) across Markdown files to keep generated navigation and changelogs consistent.
 
 **CLI note:** When writing CLI examples or scripts, place option flags before positional arguments unless the command requires a different order.
 
