@@ -820,7 +820,7 @@ export default class Config {
 
   // isPortal returns true if this is a cluster portal server.
   isPortal() {
-    return this.feature("portal");
+    return this.values && this.values.portal;
   }
 
   // isPro returns true if this is team version.

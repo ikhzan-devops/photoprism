@@ -64,7 +64,7 @@
               <v-select
                 v-model="settings.ui.startPage"
                 :disabled="busy"
-                :items="options.StartPages(settings.features)"
+                :items="options.StartPages(settings.features, isPortal)"
                 tabindex="2"
                 item-title="text"
                 item-value="value"
@@ -437,7 +437,7 @@ export default {
       isDemo: this.$config.isDemo(),
       isAdmin: this.$session.isAdmin(),
       isSuperAdmin: this.$session.isSuperAdmin(),
-      isPublic: this.$config.get("public"),
+      isPublic: this.$config.isPublic(),
       isPortal: this.$config.isPortal(),
       config: this.$config.values,
       settings: new Settings(this.$config.getSettings()),

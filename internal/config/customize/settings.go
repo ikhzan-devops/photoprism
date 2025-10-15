@@ -97,7 +97,6 @@ func NewSettings(theme, language, timeZone string) *Settings {
 			Services:  true,
 			Account:   true,
 			Delete:    true,
-			Portal:    false,
 		},
 		Import: ImportSettings{
 			Path: RootPath,

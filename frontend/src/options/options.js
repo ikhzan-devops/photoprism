@@ -192,8 +192,8 @@ export const ItemsPerPage = () => [
   { text: "100", title: "100", value: 100 },
 ];
 
-export const StartPages = (features) => {
-  if (features.portal) {
+export const StartPages = (features, isPortal) => {
+  if (isPortal) {
     return [{ value: "default", text: $gettext("Default"), visible: true }];
   }
   return [

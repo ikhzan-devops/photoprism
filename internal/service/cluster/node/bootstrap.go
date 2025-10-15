@@ -46,7 +46,7 @@ func InitConfig(c *config.Config) error {
 
 	role := c.NodeRole()
 	// Skip on portal nodes and unknown node types.
-	if c.IsPortal() || (role != cluster.RoleInstance && role != cluster.RoleService) {
+	if c.Portal() || (role != cluster.RoleInstance && role != cluster.RoleService) {
 		return nil
 	}
 
