@@ -1,6 +1,6 @@
 # PhotoPrism® Repository Guidelines
 
-**Last Updated:** October 14, 2025
+**Last Updated:** October 15, 2025
 
 ## Purpose
 
@@ -148,21 +148,37 @@ Note: Across our public documentation, official images, and in production, the c
 
 ### Playwright MCP Usage
 
-- **Endpoint & Navigation** — Playwright MCP is preconfigured to reach the dev server at `http://localhost:2342/`.  
+- **Endpoint & Navigation** — Playwright MCP is preconfigured to reach the dev server at `http://localhost:2342/`.
   Use `playwright__browser_navigate` to open `/library/login`, sign in, and then call `playwright__browser_take_screenshot` to capture the page state.
-- **Viewport Defaults** — Desktop sessions open with a `1280×900` viewport by default.  
+- **Viewport Defaults** — Desktop sessions open with a `1280×900` viewport by default.
   Use `playwright__browser_resize` if the viewport is not preconfigured or you need to adjust it mid-run.
 - **Mobile Workflows** — When testing responsive layouts, use the `playwright_mobile` server (for example, `playwright_mobile__browser_navigate`).  
   It launches with a `375×667` viewport, matching a typical smartphone display, so you can capture mobile layouts without manual resizing.
-- **Authentication** — Default admin credentials are `admin` / `photoprism`.  
-  If login fails, check your active Compose file or container environment for `PHOTOPRISM_ADMIN_USER` and `PHOTOPRISM_ADMIN_PASSWORD`.
-- **Capturing Artifacts** —
-  - Keep screenshots limited to the visible viewport (`fullPage: false` or unset) unless a full-page capture is explicitly required.
-  - Copy the MCP output file into `.local/screenshots/` (create the folder if it doesn’t exist).
-  - To reduce context size, avoid embedding large screenshots in chat history—reference the file path instead.
-- **Sidebar Navigation** — The sidebar nests items such as `Library → Errors`.  
-  Expand a parent entry by clicking its chevron before selecting links inside.
+- **Authentication** — Default admin credentials are `admin` / `photoprism`:
+  - If login fails, check your active Compose file or container environment for `PHOTOPRISM_ADMIN_USER` and `PHOTOPRISM_ADMIN_PASSWORD`.
+  - Tip: if your MCP supports it, persist a storage state after login and reuse it in later steps to skip re-authentication.
+- **Sidebar Navigation** — The sidebar nests items such as `Library → Errors`:
+  - Expand a parent entry by clicking its chevron before selecting links inside.
 - **Session Cleanup** — After scripted interactions, close the browser tab with `playwright__browser_close` (or `playwright_mobile__browser_close`) to keep the MCP session tidy for subsequent runs.
+- **Stability / Waiting** — Prefer robust waits over sleeps:
+  - After navigation: `waitUntil: 'networkidle'` (or wait for a key locator).
+  - Before clicking: ensure the locator is `visible` and `enabled`.
+  - Use role/label/text selectors over brittle XPaths.
+- **Screenshot Format & Size** — Keep artifacts small and reproducible:
+  - Prefer **JPEG** with quality (e.g., `quality: 80`) instead of PNG.
+  - Limit to the visible viewport (`fullPage: false`), unless explicitly required.
+  - Name files deterministically, e.g., `.local/screenshots/<case>/<step>__<viewport>.jpg` (create the folder if it doesn’t exist).
+  - Avoid embedding large screenshots in chat history—reference the file path instead.
+  - **Desktop example** (if your MCP tool exposes Playwright options 1:1):
+    ```json
+    {
+      "path": ".local/screenshots/fix-event-leaks/login__desktop.jpg",
+      "type": "jpeg",
+      "quality": 80,
+      "fullPage": false
+    }
+    ```
+- **Non-interactive runs** — If `npx` is fetching the MCP server at runtime, add `--yes` to its args (or preinstall and use `--no-install`) to avoid prompts in CI.
 
 ### FFmpeg Tests & Hardware Gating
 
