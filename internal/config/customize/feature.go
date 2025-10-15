@@ -21,6 +21,7 @@ type FeatureSettings struct {
 	People    bool `json:"people" yaml:"People"`
 	Places    bool `json:"places" yaml:"Places"`
 	Private   bool `json:"private" yaml:"Private"`
+	Portal    bool `json:"portal" yaml:"-"`
 	Ratings   bool `json:"ratings" yaml:"Ratings"`
 	Reactions bool `json:"reactions" yaml:"Reactions"`
 	Review    bool `json:"review" yaml:"Review"`

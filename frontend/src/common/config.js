@@ -818,6 +818,16 @@ export default class Config {
     return this.values && this.values.demo;
   }
 
+  // isPortal returns true if this is a cluster portal server.
+  isPortal() {
+    return this.feature("portal");
+  }
+
+  // isPro returns true if this is team version.
+  isPro() {
+    return !!this.values?.ext["pro"];
+  }
+
   isSponsor() {
     if (!this.values || !this.values.sponsor) {
       return false;

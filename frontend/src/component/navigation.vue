@@ -993,7 +993,7 @@ export default {
 
     const canManagePhotos = this.$config.allow("photos", "manage");
     const isDemo = this.$config.get("demo");
-    const isPro = !!this.$config.values?.ext["pro"];
+    const isPro = this.$config.isPro();
     const isPublic = this.$config.get("public");
     const isReadOnly = this.$config.get("readonly");
     const isRestricted = this.$config.deny("photos", "access_library");

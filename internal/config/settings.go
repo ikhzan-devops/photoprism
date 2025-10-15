@@ -36,6 +36,8 @@ func (c *Config) initSettings() {
 		log.Debugf("settings: saved to %s ", settingsFile)
 	}
 
+	c.settings.Features.Portal = c.IsPortal()
+
 	i18n.SetDir(c.LocalesPath())
 
 	c.settings.Propagate()
