@@ -47,7 +47,8 @@
         hide-no-data
         return-object
         class="chip-selector__input"
-        @keydown.enter="addNewItem"
+        @keydown.enter.prevent="addNewItem"
+        @blur="addNewItem"
         @update:model-value="onComboboxChange"
       >
         <template #no-data>
