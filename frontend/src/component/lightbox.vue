@@ -972,7 +972,7 @@ export default {
         playing: false,
         paused: false,
         ended: false,
-        castable: false,
+        castable: this.video.castable,
         casting: false,
         remote: "",
       };
@@ -1918,6 +1918,11 @@ export default {
 
       if (video.preload === "none") {
         video.preload = "auto";
+        try {
+          video.load();
+        } catch {
+          /* ignore */
+        }
       }
 
       video.loop = loop && !this.slideshow.active;
@@ -1933,11 +1938,6 @@ export default {
         try {
           requestAnimationFrame(() => {
             requestAnimationFrame(async () => {
-              try {
-                video.load();
-              } catch {
-                // Ignore.
-              }
               const playPromise = video.play();
               if (playPromise !== undefined) {
                 playPromise.catch((err) => {
