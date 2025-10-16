@@ -668,6 +668,10 @@ export default class Config {
 
   // getDefaultRoute returns the default route to use after login or in case of routing errors.
   getDefaultRoute() {
+    if (this.isPortal()) {
+      return "cluster";
+    }
+
     const albumsRoute = "albums";
     const browseRoute = "browse";
     const defaultRoute = this.deny("photos", "access_library") ? albumsRoute : browseRoute;
