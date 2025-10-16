@@ -10,6 +10,9 @@ import (
 	"github.com/tidwall/gjson"
 
 	"github.com/photoprism/photoprism/internal/config"
+	"github.com/photoprism/photoprism/internal/entity"
+	"github.com/photoprism/photoprism/internal/entity/query"
+	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/i18n"
 )
 
@@ -760,5 +763,75 @@ func TestBatchPhotosEdit(t *testing.T) {
 
 		val := gjson.Get(response.Body.String(), "error")
 		assert.Equal(t, "Permission denied", val.String())
+	})
+
+	// This covers the case where a label was added via batch (uncertainty=0, source=batch),
+	// then removed, and later another batch edit is performed. Previously, the removed label
+	// could reappear with 75% confidence and source=keyword because Details.Keywords were not
+	// persisted before reload. The fix persists Details immediately after keyword removal.
+	t.Run("RemovedLabelDoesNotReappearFromKeyword", func(t *testing.T) {
+		app, router, conf := NewApiTest()
+		conf.SetAuthMode(config.AuthModePasswd)
+		defer conf.SetAuthMode(config.AuthModePublic)
+
+		authToken := AuthenticateUser(app, router, "alice", "Alice123!")
+
+		BatchPhotosEdit(router)
+
+		photoUID := "pqkm36fjqvset9uz"
+		flowerLabelPtr, err := entity.FindLabel("Flower", false)
+		if err != nil || flowerLabelPtr == nil || !flowerLabelPtr.HasID() {
+			t.Fatalf("fixture label 'Flower' not found: %v", err)
+		}
+		cakeLabelPtr, err := entity.FindLabel("Cake", false)
+		if err != nil || cakeLabelPtr == nil || !cakeLabelPtr.HasID() {
+			t.Fatalf("fixture label 'Cake' not found: %v", err)
+		}
+
+		addBody := fmt.Sprintf(`{"photos":["%s"],"values":{"Labels":{"action":"update","items":[{"action":"add","value":"%s"}]}}}`, photoUID, flowerLabelPtr.LabelUID)
+		resp1 := AuthenticatedRequestWithBody(app, http.MethodPost, "/api/v1/batch/photos/edit", addBody, authToken)
+		if resp1.Code != http.StatusOK {
+			t.Fatalf("add label failed: %s", resp1.Body.String())
+		}
+
+		p, err := query.PhotoPreloadByUID(clean.UID(photoUID))
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		var pl entity.PhotoLabel
+		if err := entity.Db().Where("photo_id = ? AND label_id = ?", p.ID, flowerLabelPtr.ID).First(&pl).Error; err != nil {
+			t.Fatalf("photo-label missing after add: %v", err)
+		}
+		if pl.Uncertainty != 0 {
+			t.Fatalf("expected uncertainty 0 after add, got %d", pl.Uncertainty)
+		}
+		if pl.LabelSrc != entity.SrcBatch {
+			t.Fatalf("expected label src 'batch' after add, got %s", pl.LabelSrc)
+		}
+
+		removeBody := fmt.Sprintf(`{"photos":["%s"],"values":{"Labels":{"action":"update","items":[{"action":"remove","value":"%s"}]}}}`, photoUID, flowerLabelPtr.LabelUID)
+		resp2 := AuthenticatedRequestWithBody(app, http.MethodPost, "/api/v1/batch/photos/edit", removeBody, authToken)
+		if resp2.Code != http.StatusOK {
+			t.Fatalf("remove label failed: %s", resp2.Body.String())
+		}
+
+		var removed entity.PhotoLabel
+		err = entity.Db().Where("photo_id = ? AND label_id = ?", p.ID, flowerLabelPtr.ID).First(&removed).Error
+		if err == nil {
+			t.Fatalf("expected photo-label to be deleted, but it exists")
+		}
+
+		addSecondBody := fmt.Sprintf(`{"photos":["%s"],"values":{"Labels":{"action":"update","items":[{"action":"add","value":"%s"}]}}}`, photoUID, cakeLabelPtr.LabelUID)
+		resp3 := AuthenticatedRequestWithBody(app, http.MethodPost, "/api/v1/batch/photos/edit", addSecondBody, authToken)
+		if resp3.Code != http.StatusOK {
+			t.Fatalf("add second label failed: %s", resp3.Body.String())
+		}
+
+		var re entity.PhotoLabel
+		reErr := entity.Db().Where("photo_id = ? AND label_id = ?", p.ID, flowerLabelPtr.ID).First(&re).Error
+		if reErr == nil {
+			t.Fatalf("removed label reappeared unexpectedly (src=%s uncertainty=%d)", re.LabelSrc, re.Uncertainty)
+		}
 	})
 }
