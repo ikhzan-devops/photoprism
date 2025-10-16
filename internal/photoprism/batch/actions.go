@@ -187,7 +187,6 @@ func ApplyLabels(photo *entity.Photo, labels Items) error {
 					}
 				}
 				_ = photo.RemoveKeyword(labelEntity.LabelName)
-				a
 				// Persist updated keywords immediately so the change survives reloads
 				if err := photo.SaveDetails(); err != nil {
 					log.Debugf("batch: failed to save details after keyword removal: %s", err)
