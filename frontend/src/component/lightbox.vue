@@ -729,13 +729,15 @@ export default {
         video.appendChild(avcSource);
       }
 
-      // If we set preload programmatically, kick Safari to honor it
-      try {
-        if (preload !== "none") {
+      // If we set preload programmatically, kick Safari to honor it.
+      if (preload !== "none") {
+        try {
           video.load();
+        } catch (error) {
+          if (this.debug) {
+            this.log("video.load", { error });
+          }
         }
-      } catch {
-        /* ignore */
       }
 
       // Check if remote playback is supported by this browser.
@@ -837,7 +839,7 @@ export default {
         this.resetVideo();
       }
 
-      const isPlaying =
+      let isPlaying =
         video.readyState && !video.paused && !video.ended && !video.waiting && (!video.error || video.error.code === 0);
 
       if (ev && ev.type) {
@@ -846,8 +848,7 @@ export default {
             // Automatically hide the lightbox controls after a video has started playing.
             this.hideControlsWithDelay(this.playControlHideDelay);
             this.video.waiting = false;
-            video.parentElement.classList.add("is-playing");
-            video.parentElement.classList.remove("is-waiting");
+            isPlaying = true;
             break;
           case "ended":
           case "pause":
@@ -953,9 +954,15 @@ export default {
         this.video.seekable = false;
       }
 
-      this.video.playing = isPlaying;
       this.video.paused = video.paused;
       this.video.ended = video.ended;
+      this.video.playing = isPlaying;
+
+      if (this.video.playing) {
+        video.parentElement.classList.add("is-playing");
+        video.parentElement.classList.remove("is-waiting");
+        video.parentElement.classList.remove("is-broken");
+      }
     },
     resetVideo(showControls = false) {
       this.video = {
@@ -1898,12 +1905,12 @@ export default {
       // Calling pause() before a play promise has been resolved may result in an error,
       // see https://github.com/flutter/flutter/issues/136309 (we'll ignore this for now).
       if (!video.paused) {
-        video?.parentElement?.classList?.remove("is-playing");
         try {
           video.pause();
         } catch (e) {
           this.log(e);
         }
+        video.parentElement?.classList.remove("is-playing");
       }
     },
     // Starts playback on the specified video element, if any.
@@ -1920,8 +1927,10 @@ export default {
         video.preload = "auto";
         try {
           video.load();
-        } catch {
-          /* ignore */
+        } catch (error) {
+          if (this.debug) {
+            this.log("video.load", { error });
+          }
         }
       }
 
@@ -2150,12 +2159,12 @@ export default {
       }
 
       if (!video.paused) {
-        video?.parentElement?.classList?.remove("is-playing");
         try {
           video.pause();
         } catch (e) {
           this.log(e);
         }
+        video.parentElement?.classList.remove("is-playing");
         this.showControls();
       }
     },
