@@ -11,7 +11,7 @@
     persistent
     tiled
     theme="lightbox"
-    class="p-dialog p-lightbox v-dialog--lightbox"
+    class="p-dialog p-lightbox v-dialog--lightbox no-transition"
     @after-enter="afterEnter"
     @after-leave="afterLeave"
     @focusout="onFocusOut"
@@ -22,12 +22,12 @@
     @click.capture="captureDialogClick"
     @pointerdown.capture="captureDialogPointerDown"
   >
-    <div class="p-lightbox__underlay"></div>
-    <div ref="container" class="p-lightbox__container">
+    <div class="p-lightbox__underlay no-transition"></div>
+    <div ref="container" class="p-lightbox__container no-transition">
       <div
         ref="content"
         tabindex="1"
-        class="p-lightbox__content"
+        class="p-lightbox__content no-transition"
         :class="{
           'sidebar-visible': info,
           'slideshow-active': slideshow.active,
@@ -39,7 +39,7 @@
           'is-selected': $clipboard.has(model),
         }"
       >
-        <div ref="lightbox" tabindex="2" class="p-lightbox__pswp"></div>
+        <div ref="lightbox" tabindex="2" class="p-lightbox__pswp no-transition"></div>
         <div
           v-show="video.controls && controlsShown !== 0"
           ref="controls"
@@ -833,25 +833,30 @@ export default {
       if (ev && ev.type) {
         switch (ev.type) {
           case "playing":
-            // Automatically hide the lightbox controls after a video has started playing.
             this.video.waiting = false;
-            this.hideControlsWithDelay(this.playControlHideDelay);
             video.parentElement.classList.add("is-playing");
             video.parentElement.classList.remove("is-waiting");
+            // Automatically hide the lightbox controls after a video has started playing.
+            this.hideControlsWithDelay(this.playControlHideDelay);
             break;
           case "ended":
           case "pause":
+            this.video.waiting = false;
             video.parentElement.classList.remove("is-playing");
+            video.parentElement.classList.remove("is-waiting");
             break;
           case "abort":
           case "error":
+            this.video.waiting = false;
             video.parentElement.classList.add("is-broken");
             video.parentElement.classList.remove("is-playing");
+            video.parentElement.classList.remove("is-waiting");
             break;
           case "timeupdate":
           case "loadeddata":
           case "loadedmetadata":
             this.video.waiting = false;
+            video.parentElement.classList.remove("is-waiting");
             break;
           case "waiting":
             this.video.waiting = true;
@@ -1919,6 +1924,7 @@ export default {
               }
             });
           }
+          video?.parentElement?.classList?.add("is-playing");
         } catch {
           // Ignore.
         }
@@ -2123,6 +2129,7 @@ export default {
       if (!video.paused) {
         try {
           video.pause();
+          video?.parentElement?.classList?.remove("is-playing");
           this.showControls();
         } catch (e) {
           this.log(e);

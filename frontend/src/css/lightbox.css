@@ -11,10 +11,7 @@
 }
 
 .p-lightbox,
-.v-dialog--lightbox,
-.p-lightbox__container,
-.p-lightbox__container .pswp .pswp__hide-on-close,
-.p-lightbox__container .pswp--ui-visible .pswp__hide-on-close {
+.p-lightbox > .v-overlay__scrim {
     transition: none !important;
 }
 
@@ -618,30 +615,4 @@
 
 .p-lightbox__container > .p-lightbox__content > .pswp--touch .pswp__button--arrow .pswp__icn {
     display: none;
-}
-
-/* Other / Unused Styles */
-
-.pswp__taken {
-    padding: 10px;
-    line-height: 20px;
-    font-size: 14px;
-    color: #E0E0E0;
-    font-weight: 300;
-    width: auto;
-    height: 44px;
-    position: relative;
-    background: none;
-    cursor: none;
-    overflow: visible;
-    -webkit-appearance: none;
-    display: block;
-    border: 0;
-    margin: 0;
-    float: left;
-    opacity: 0.75;
-    -webkit-transition: opacity 0.2s;
-    transition: opacity 0.2s;
-    -webkit-box-shadow: none;
-    box-shadow: none;
 }
