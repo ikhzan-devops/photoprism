@@ -1924,7 +1924,6 @@ export default {
               }
             });
           }
-          video?.parentElement?.classList?.add("is-playing");
         } catch {
           // Ignore.
         }
