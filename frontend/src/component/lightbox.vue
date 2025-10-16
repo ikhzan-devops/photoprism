@@ -733,15 +733,15 @@ export default {
       if (preload !== "none") {
         try {
           video.load();
-        } catch (error) {
+        } catch (err) {
           if (this.debug) {
-            this.log("video.load", { error });
+            this.log("video.load", { err });
           }
         }
       }
 
       // Check if remote playback is supported by this browser.
-      if (!this.$isMobile && video.remote && video.remote instanceof RemotePlayback) {
+      if (this.featExperimental && video.remote && video.remote instanceof RemotePlayback) {
         if (!this.video.castable) {
           const cancel = () => {
             video.remote
@@ -812,7 +812,7 @@ export default {
             this.$notify.error(err.message);
         }
       } else {
-        this.log(err);
+        this.log("video.remote", { err });
       }
     },
     onVideoRemote(ev) {
@@ -909,7 +909,7 @@ export default {
       // https://developer.mozilla.org/de/docs/Web/API/HTMLMediaElement/error
       if (video.error && video.error instanceof MediaError && video.error.code > 0) {
         if (this.debug) {
-          this.log(video.error.message);
+          this.log("video.error", video.error);
         }
 
         switch (video.error.code) {
@@ -1907,8 +1907,10 @@ export default {
       if (!video.paused) {
         try {
           video.pause();
-        } catch (e) {
-          this.log(e);
+        } catch (err) {
+          if (this.debug) {
+            this.log("video.pause", { err });
+          }
         }
         video.parentElement?.classList.remove("is-playing");
       }
@@ -1927,9 +1929,9 @@ export default {
         video.preload = "auto";
         try {
           video.load();
-        } catch (error) {
+        } catch (err) {
           if (this.debug) {
-            this.log("video.load", { error });
+            this.log("video.load", { err });
           }
         }
       }
@@ -1951,7 +1953,7 @@ export default {
               if (playPromise !== undefined) {
                 playPromise.catch((err) => {
                   if (this.trace && err && err.message) {
-                    this.log(err.message);
+                    this.log("video.play", { err });
                   }
                 });
               }
@@ -2161,8 +2163,8 @@ export default {
       if (!video.paused) {
         try {
           video.pause();
-        } catch (e) {
-          this.log(e);
+        } catch (err) {
+          this.log("video.pause", { err });
         }
         video.parentElement?.classList.remove("is-playing");
         this.showControls();
