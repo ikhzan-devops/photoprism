@@ -689,10 +689,11 @@ export default {
       // Set HTMLMediaElement properties.
       video.className = "pswp__video";
       video.poster = posterSrc;
-      video.autoplay = autoplay;
-      video.loop = loop && !slideshow;
-      video.muted = mute || this.muted;
+      video.autoplay = Boolean(autoplay);
+      video.loop = Boolean(loop && !slideshow);
+      video.muted = Boolean(mute || this.muted);
       video.preload = preload;
+      video.setAttribute("playsinline", ""); // iOS requires attribute
       video.playsInline = true;
       video.disableRemotePlayback = false;
       video.controls = false;
@@ -728,8 +729,17 @@ export default {
         video.appendChild(avcSource);
       }
 
+      // If we set preload programmatically, kick Safari to honor it
+      try {
+        if (preload !== "none") {
+          video.load();
+        }
+      } catch {
+        /* ignore */
+      }
+
       // Check if remote playback is supported by this browser.
-      if (video.remote && video.remote instanceof RemotePlayback) {
+      if (!this.$isMobile && video.remote && video.remote instanceof RemotePlayback) {
         if (!this.video.castable) {
           const cancel = () => {
             video.remote
@@ -833,11 +843,11 @@ export default {
       if (ev && ev.type) {
         switch (ev.type) {
           case "playing":
+            // Automatically hide the lightbox controls after a video has started playing.
+            this.hideControlsWithDelay(this.playControlHideDelay);
             this.video.waiting = false;
             video.parentElement.classList.add("is-playing");
             video.parentElement.classList.remove("is-waiting");
-            // Automatically hide the lightbox controls after a video has started playing.
-            this.hideControlsWithDelay(this.playControlHideDelay);
             break;
           case "ended":
           case "pause":
@@ -1888,6 +1898,7 @@ export default {
       // Calling pause() before a play promise has been resolved may result in an error,
       // see https://github.com/flutter/flutter/issues/136309 (we'll ignore this for now).
       if (!video.paused) {
+        video?.parentElement?.classList?.remove("is-playing");
         try {
           video.pause();
         } catch (e) {
@@ -1912,18 +1923,31 @@ export default {
       video.loop = loop && !this.slideshow.active;
       video.muted = this.muted;
 
+      if (this.muted) {
+        video.setAttribute("muted", "");
+      } else {
+        video.removeAttribute("muted");
+      }
+
       if (video.paused || video.ended) {
         try {
-          // Calling pause() before a play promise has been resolved may result in an error,
-          // see https://developer.chrome.com/blog/play-request-was-interrupted.
-          const playPromise = video.play();
-          if (playPromise !== undefined) {
-            playPromise.catch((err) => {
-              if (this.trace && err && err.message) {
-                this.log(err.message);
+          requestAnimationFrame(() => {
+            requestAnimationFrame(async () => {
+              try {
+                video.load();
+              } catch {
+                // Ignore.
+              }
+              const playPromise = video.play();
+              if (playPromise !== undefined) {
+                playPromise.catch((err) => {
+                  if (this.trace && err && err.message) {
+                    this.log(err.message);
+                  }
+                });
               }
             });
-          }
+          });
         } catch {
           // Ignore.
         }
@@ -2126,13 +2150,13 @@ export default {
       }
 
       if (!video.paused) {
+        video?.parentElement?.classList?.remove("is-playing");
         try {
           video.pause();
-          video?.parentElement?.classList?.remove("is-playing");
-          this.showControls();
         } catch (e) {
           this.log(e);
         }
+        this.showControls();
       }
     },
     // Mutes/unmutes the sound for videos.
@@ -2148,6 +2172,12 @@ export default {
       }
 
       video.muted = this.muted;
+
+      if (this.muted) {
+        video.setAttribute("muted", "");
+      } else {
+        video.removeAttribute("muted");
+      }
     },
     // Starts/stops a slideshow so that the next slide opens automatically at regular intervals.
     toggleSlideshow() {
