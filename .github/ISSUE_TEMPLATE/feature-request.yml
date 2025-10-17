@@ -8,7 +8,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Before submitting a new feature request, please [review our public roadmap](https://link.photoprism.app/roadmap) and [search GitHub for similar requests](https://github.com/photoprism/photoprism/issues).
+        Be sure to [check our roadmap](https://link.photoprism.app/roadmap) and [search GitHub for similar features](https://github.com/photoprism/photoprism/issues) before submitting a new request.
   - type: checkboxes
     id: request-prep
     attributes:
