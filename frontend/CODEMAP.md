@@ -40,7 +40,7 @@ Runtime & Plugins
 - HTML sanitization: `vue-3-sanitize` + `vue-sanitize-directive`
 - Tooltips: `floating-vue`
 - Video: HLS.js assigned to `window.Hls`
-- PWA: `@lcdp/offline-plugin/runtime` installs when `baseUri === ""`
+- PWA: Workbox registers a service worker after config load (see `src/app.js`); scope and registration URL derive from `$config.baseUri` so non-root deployments work.
 - WebSocket: `src/common/websocket.js` publishes `websocket.*` events, used by `$session` for client info
 
 HTTP Client
@@ -79,6 +79,7 @@ Build & Tooling
   - `npm run build` (prod), `npm run build-dev` (dev), `npm run watch`
   - Lint/format: `npm run lint`, `npm run fmt`
   - Security scan: `npm run security:scan` (checks `--ignore-scripts` and forbids `v-html`)
+- Licensing: run `make notice` from the repo root to regenerate `NOTICE` files after dependency changes—never edit them manually.
 - Make targets (from repo root): `make build-js`, `make watch-js`, `make test-js`
 - Browser automation (Playwright MCP): workflows are documented in `AGENTS.md` under “Playwright MCP Usage”; use those directions when agents need to script UI checks or capture screenshots.
 
