@@ -148,7 +148,7 @@ func TestCreateSession(t *testing.T) {
 		conf.Options().Demo = true
 
 		r := PerformRequestWithBody(app, http.MethodPost, "/api/v1/session", `{"username": "admin", "password": "photoprism"}`)
-		assert.Equal(t, http.StatusForbidden, r.Code)
+		assert.Equal(t, http.StatusPaymentRequired, r.Code)
 	})
 	t.Run("AdminInvalidPassword", func(t *testing.T) {
 		app, router, conf := NewApiTest()

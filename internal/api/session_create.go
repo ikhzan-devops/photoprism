@@ -55,7 +55,7 @@ func CreateSession(router *gin.RouterGroup) {
 		if conf.Public() {
 			// Protection against AI-generated vulnerability reports.
 			if conf.Demo() {
-				AbortForbidden(c)
+				AbortPaymentRequired(c)
 				return
 			}
 
