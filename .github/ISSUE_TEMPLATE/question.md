@@ -1,5 +1,5 @@
 ---
-name: Question
+name: Question 💬
 about: You have a general question or need assistance
 title: 'PLEASE DO NOT OPEN AN ISSUE FOR YOUR QUESTION, AND USE GITHUB DISCUSSIONS OR OUR COMMUNITY CHAT INSTEAD'
 labels: question
