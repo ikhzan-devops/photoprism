@@ -1,5 +1,5 @@
 name: Question 💬
-description: General questions or assistance requests should go to Discussions or community channels
+description: Use Discussions for general questions, community support, and troubleshooting help
 title: "Category: Short Description (PLEASE CHANGE)"
 labels:
   - question
@@ -8,15 +8,14 @@ body:
   - type: markdown
     attributes:
       value: |
-        FOR GENERAL QUESTIONS, TECHNICAL SUPPORT, AND TO GET TO KNOW OTHER COMMUNITY MEMBERS, VISIT https://github.com/photoprism/photoprism/discussions.
-        OUR TROUBLESHOOTING CHECKLISTS HELP YOU QUICKLY DIAGNOSE AND FIX COMMON PROBLEMS: https://docs.photoprism.app/getting-started/troubleshooting/.
-        PLEASE DO NOT OPEN AN ISSUE FOR YOUR QUESTION, AND USE GITHUB DISCUSSIONS OR OUR COMMUNITY CHAT INSTEAD. THANK YOU VERY MUCH!
+        Use Discussions for general questions, community support, and troubleshooting help:
+        https://github.com/photoprism/photoprism/discussions
   - type: checkboxes
     id: question-confirmation
     attributes:
       label: Please Confirm
       options:
-        - label: I understand that general questions should be posted in Discussions or community chat, and I still need to open an issue here.
+        - label: I understand that questions should not be asked through GitHub Issues
           required: true
   - type: textarea
     id: question-details
