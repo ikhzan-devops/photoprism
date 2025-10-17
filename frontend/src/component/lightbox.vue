@@ -325,6 +325,7 @@ export default {
       // Publish enter event.
       this.visible = false;
       this.busy = false;
+      this.closing = false;
       this.$view.leave(this);
       this.$event.publish("lightbox.leave");
       this.$emit("leave");
@@ -2164,7 +2165,9 @@ export default {
         try {
           video.pause();
         } catch (err) {
-          this.log("video.pause", { err });
+          if (this.debug) {
+            this.log("video.pause", { err });
+          }
         }
         video.parentElement?.classList.remove("is-playing");
         this.showControls();
