@@ -1,4 +1,4 @@
-name: Bug Report
+name: 🐞 Bug Report
 description: Report a new and clearly identified bug that must be fixed directly in the application
 title: "Category: Short Description (PLEASE CHANGE)"
 labels:
@@ -8,13 +8,10 @@ body:
   - type: markdown
     attributes:
       value: |
-        Before filing a bug report, verify that it is not a technical support request or question:
-        - thoroughly review our Getting Started and User Guides:
-          https://docs.photoprism.app/
-        - work through our troubleshooting checklists:
-          https://docs.photoprism.app/getting-started/troubleshooting/ 
-        - do not report known issues or missing features as bugs:
-          https://docs.photoprism.app/known-issues/
+        Before filing a bug report, verify that it is not a question or support request:
+        1. thoroughly review our [Getting Started](https://docs.photoprism.app/getting-started/) and [User Guides](https://docs.photoprism.app/user-guide/)          
+        2. work through our [troubleshooting checklists](https://docs.photoprism.app/getting-started/troubleshooting/)           
+        3. do not report [known issues](https://docs.photoprism.app/known-issues/) or [missing features](https://github.com/photoprism/photoprism/issues) as bugs
   - type: checkboxes
     id: prerequisites
     attributes:
