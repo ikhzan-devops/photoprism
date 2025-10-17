@@ -10,7 +10,7 @@ body:
       value: |
         Before filing a bug report, verify that it is not a question or support request:
         1. Thoroughly review our [Getting Started](https://docs.photoprism.app/getting-started/) and [User Guides](https://docs.photoprism.app/user-guide/).          
-        2. Work through our [troubleshooting checklists](https://docs.photoprism.app/getting-started/troubleshooting/).
+        2. Work through the [Troubleshooting Checklists](https://docs.photoprism.app/getting-started/troubleshooting/) we provide.
         3. Do not report [known issues](https://docs.photoprism.app/known-issues/) or [missing features](https://github.com/photoprism/photoprism/issues) as bugs.
   - type: checkboxes
     id: prerequisites
@@ -18,7 +18,7 @@ body:
       label: Before You Continue
       description: Confirm that you reviewed the guidance above.
       options:
-        - label: This is a confirmed bug — not reported or documented
+        - label: This is a new, confirmed bug that has not yet been reported or documented
           required: true
   - type: textarea
     id: documented-behavior
