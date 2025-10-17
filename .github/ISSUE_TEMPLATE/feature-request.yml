@@ -15,7 +15,7 @@ body:
       label: Confirmation
       description: Make sure you completed these steps before opening a new request.
       options:
-        - label: I confirm that this request is not a support question and that I searched the roadmap and existing issues.
+        - label: I checked this request against the roadmap and existing issues
           required: true
   - type: textarea
     id: problem-statement
