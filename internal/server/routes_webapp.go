@@ -2,6 +2,7 @@ package server
 
 import (
 	"net/http"
+	"os"
 	"path/filepath"
 
 	"github.com/gin-gonic/gin"
@@ -52,7 +53,20 @@ func registerWebAppRoutes(router *gin.Engine, conf *config.Config) {
 	// Serve user interface service worker file.
 	swWorker := func(c *gin.Context) {
 		c.Header(header.CacheControl, header.CacheControlNoStore)
-		c.File(filepath.Join(conf.BuildPath(), "sw.js"))
+
+		if swBuildPath := filepath.Join(conf.BuildPath(), "sw.js"); swBuildPath != "" {
+			if _, err := os.Stat(swBuildPath); err == nil {
+				c.File(swBuildPath)
+				return
+			}
+		}
+
+		if len(fallbackServiceWorker) > 0 {
+			c.Data(http.StatusOK, "application/javascript", fallbackServiceWorker)
+			return
+		}
+
+		c.Status(http.StatusNotFound)
 	}
 	router.Any("/sw.js", swWorker)
 
