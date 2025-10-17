@@ -1,6 +1,6 @@
 name: Question 💬
 description: Use Discussions for general questions, community support, and troubleshooting help
-title: "Category: Short Description (PLEASE CHANGE)"
+title: "Category: Question details (PLEASE CHANGE)"
 labels:
   - question
 assignees: []
@@ -18,9 +18,9 @@ body:
         - label: I understand that questions should not be asked through GitHub Issues
           required: true
   - type: textarea
-    id: question-details
+    id: question
     attributes:
-      label: Question Details
+      label: Question
       description: Provide the specific question and the context needed to answer it.
       placeholder: Summarize your question, the context, and any resources you have already reviewed.
     validations:
