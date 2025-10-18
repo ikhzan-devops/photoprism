@@ -17,8 +17,6 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"gopkg.in/yaml.v2"
-
 	clusterjwt "github.com/photoprism/photoprism/internal/auth/jwt"
 	"github.com/photoprism/photoprism/internal/config"
 	"github.com/photoprism/photoprism/internal/event"
@@ -30,9 +28,8 @@ import (
 
 var log = event.Log
 
-// Values is an shorthand alias for map[string]interface{}.
-type Values = map[string]interface{}
-
+// init registers the cluster node bootstrap extension so it runs before the
+// database connection is established.
 func init() {
 	// Register early so this can adjust DB settings before connectDb().
 	config.RegisterEarly("cluster-node", InitConfig, nil)
@@ -98,6 +95,8 @@ func InitConfig(c *config.Config) error {
 	return nil
 }
 
+// isLocalHost reports whether the given host string refers to a local loopback
+// address that may safely use plain HTTP during bootstrap.
 func isLocalHost(h string) bool {
 	switch strings.ToLower(h) {
 	case "localhost", "127.0.0.1", "::1":
@@ -109,6 +108,9 @@ func isLocalHost(h string) bool {
 	}
 }
 
+// newHTTPClient returns a short-lived HTTP client configured with the provided
+// timeout. It is intentionally lightweight to avoid leaking transports between
+// bootstrap attempts.
 func newHTTPClient(timeout time.Duration) *http.Client {
 	// TODO: Consider reusing a shared *http.Transport with sane defaults and enabling
 	// proxy support explicitly if required. For now, rely on net/http defaults and
@@ -116,6 +118,9 @@ func newHTTPClient(timeout time.Duration) *http.Client {
 	return &http.Client{Timeout: timeout}
 }
 
+// registerWithPortal attempts to register the node with the Portal, retrying on
+// transient errors up to the configured limits. Successful registrations update
+// local configuration and prime JWKS credentials.
 func registerWithPortal(c *config.Config, portal *url.URL, token string) error {
 	maxAttempts := cluster.BootstrapRegisterMaxAttempts
 	delay := cluster.BootstrapRegisterRetryDelay
@@ -145,7 +150,7 @@ func registerWithPortal(c *config.Config, portal *url.URL, token string) error {
 		payload.ClientSecret = secret
 	}
 
-	// Include siteUrl when it differs from advertiseUrl; server will validate/normalize.
+	// Include SiteUrl when it differs from AdvertiseUrl; server will validate/normalize.
 	if su := c.SiteUrl(); su != "" && su != c.AdvertiseUrl() {
 		payload.SiteUrl = su
 	}
@@ -219,79 +224,90 @@ func registerWithPortal(c *config.Config, portal *url.URL, token string) error {
 	return nil
 }
 
+// isTemporary reports whether the given error represents a temporary network
+// failure that merits another retry attempt.
 func isTemporary(err error) bool {
 	var nerr net.Error
 	return errors.As(err, &nerr) && nerr.Timeout()
 }
 
+// persistRegistration merges registration responses into options.yml and, when
+// necessary, reloads the in-memory configuration so future bootstrap steps use
+// the updated values.
 func persistRegistration(c *config.Config, r *cluster.RegisterResponse, wantRotateDatabase bool) error {
-	updates := Values{}
+	updates := cluster.OptionsUpdate{}
 
 	// Persist ClusterUUID from portal response if provided.
 	if rnd.IsUUID(r.UUID) {
-		updates["ClusterUUID"] = r.UUID
+		updates.SetClusterUUID(r.UUID)
 	}
 
 	if cidr := strings.TrimSpace(r.ClusterCIDR); cidr != "" {
-		updates["ClusterCIDR"] = cidr
+		updates.SetClusterCIDR(cidr)
 	}
 
 	// Always persist NodeClientID (client UID) from response for future OAuth token requests.
 	if r.Node.ClientID != "" {
-		updates["NodeClientID"] = r.Node.ClientID
+		updates.SetNodeClientID(r.Node.ClientID)
 	}
 
 	// Persist node client secret only if missing locally and provided by server.
 	if r.Secrets != nil && r.Secrets.ClientSecret != "" && c.NodeClientSecret() == "" {
-		updates["NodeClientSecret"] = r.Secrets.ClientSecret
+		updates.SetNodeClientSecret(r.Secrets.ClientSecret)
 	}
 
 	if jwksUrl := strings.TrimSpace(r.JWKSUrl); jwksUrl != "" {
-		updates["JWKSUrl"] = jwksUrl
+		updates.SetJWKSUrl(jwksUrl)
 		c.SetJWKSUrl(jwksUrl)
 	}
 
 	// Persist NodeUUID from portal response if provided and not set locally.
 	if r.Node.UUID != "" && c.NodeUUID() == "" {
-		updates["NodeUUID"] = r.Node.UUID
+		updates.SetNodeUUID(r.Node.UUID)
 	}
 
 	// Persist DB settings only if rotation was requested and driver is MySQL/MariaDB
 	// and local DB not configured (as checked before calling).
 	if wantRotateDatabase {
 		if r.Database.DSN != "" {
-			updates["DatabaseDriver"] = r.Database.Driver
-			updates["DatabaseDSN"] = r.Database.DSN
+			updates.SetDatabaseDriver(r.Database.Driver)
+			updates.SetDatabaseDSN(r.Database.DSN)
 		} else if r.Database.Name != "" && r.Database.User != "" && r.Database.Password != "" {
 			server := r.Database.Host
 			if r.Database.Port > 0 {
 				server = net.JoinHostPort(r.Database.Host, strconv.Itoa(r.Database.Port))
 			}
-			updates["DatabaseDriver"] = r.Database.Driver
-			updates["DatabaseServer"] = server
-			updates["DatabaseName"] = r.Database.Name
-			updates["DatabaseUser"] = r.Database.User
-			updates["DatabasePassword"] = r.Database.Password
+			updates.SetDatabaseDriver(r.Database.Driver)
+			updates.SetDatabaseServer(server)
+			updates.SetDatabaseName(r.Database.Name)
+			updates.SetDatabaseUser(r.Database.User)
+			updates.SetDatabasePassword(r.Database.Password)
 		}
 	}
 
-	if len(updates) == 0 {
+	if updates.IsZero() {
 		return nil
 	}
 
-	if err := mergeOptionsYaml(c, updates); err != nil {
+	wrote, err := ApplyOptionsUpdate(c, updates)
+	if err != nil {
 		return err
 	}
 
-	// Reload into memory so later code paths see updated values during this run.
-	_ = c.Options().Load(c.OptionsYaml())
+	if wrote {
+		// Reload into memory so later code paths see updated values during this run.
+		_ = c.Options().Load(c.OptionsYaml())
 
-	if hasDBUpdate(updates) {
-		log.Infof("cluster: database settings applied; restart required to take effect")
+		if updates.HasDatabaseUpdate() {
+			log.Infof("cluster: database settings applied; restart required to take effect")
+		}
 	}
+
 	return nil
 }
 
+// primeJWKS eagerly fetches the Portal JWKS so that subsequent token
+// verification does not incur network latency during critical operations.
 func primeJWKS(c *config.Config, url string) {
 	if c == nil {
 		return
@@ -306,51 +322,6 @@ func primeJWKS(c *config.Config, url string) {
 	if err := verifier.Prime(ctx, url); err != nil {
 		log.Debugf("cluster: jwks prime skipped (%s)", clean.Error(err))
 	}
-}
-
-func hasDBUpdate(m Values) bool {
-	if _, ok := m["DatabaseDSN"]; ok {
-		return true
-	}
-	if _, ok := m["DatabaseName"]; ok {
-		return true
-	}
-	if _, ok := m["DatabaseUser"]; ok {
-		return true
-	}
-	if _, ok := m["DatabasePassword"]; ok {
-		return true
-	}
-	if _, ok := m["DatabaseServer"]; ok {
-		return true
-	}
-	return false
-}
-
-func mergeOptionsYaml(c *config.Config, updates Values) error {
-	if err := fs.MkdirAll(c.ConfigPath()); err != nil {
-		return err
-	}
-	fileName := c.OptionsYaml()
-
-	var m Values
-	if fs.FileExists(fileName) {
-		if b, err := os.ReadFile(fileName); err == nil && len(b) > 0 {
-			_ = yaml.Unmarshal(b, &m)
-		}
-	}
-	if m == nil {
-		m = Values{}
-	}
-	for k, v := range updates {
-		m[k] = v
-	}
-
-	b, err := yaml.Marshal(m)
-	if err != nil {
-		return err
-	}
-	return os.WriteFile(fileName, b, fs.ModeFile)
 }
 
 // installThemeIfMissing downloads and installs the Portal-provided theme if the

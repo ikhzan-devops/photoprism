@@ -116,7 +116,11 @@ func TestThemeInstall_Missing(t *testing.T) {
 			_ = json.NewEncoder(w).Encode(cluster.RegisterResponse{UUID: rnd.UUID(), ClusterCIDR: "198.51.100.0/24", Node: cluster.Node{ClientID: "cs5gfen1bgxz7s9i", Name: "pp-node-01"}, Secrets: &cluster.RegisterSecrets{ClientSecret: clientSecret}, JWKSUrl: jwksURL2})
 		case "/api/v1/oauth/token":
 			w.Header().Set("Content-Type", "application/json")
-			_ = json.NewEncoder(w).Encode(map[string]any{"access_token": "tok", "token_type": "Bearer"})
+			type tokenResponse struct {
+				AccessToken string `json:"access_token"`
+				TokenType   string `json:"token_type"`
+			}
+			_ = json.NewEncoder(w).Encode(tokenResponse{AccessToken: "tok", TokenType: "Bearer"})
 		case "/api/v1/cluster/theme":
 			w.Header().Set("Content-Type", "application/zip")
 			w.WriteHeader(http.StatusOK)

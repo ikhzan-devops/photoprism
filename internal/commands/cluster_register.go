@@ -14,10 +14,10 @@ import (
 	"time"
 
 	"github.com/urfave/cli/v2"
-	"gopkg.in/yaml.v2"
 
 	"github.com/photoprism/photoprism/internal/config"
 	"github.com/photoprism/photoprism/internal/service/cluster"
+	clusternode "github.com/photoprism/photoprism/internal/service/cluster/node"
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/fs"
 	"github.com/photoprism/photoprism/pkg/rnd"
@@ -124,7 +124,10 @@ func clusterRegisterAction(ctx *cli.Context) error {
 		// In dry-run, we allow empty portalURL (will print derived/empty values).
 		if ctx.Bool("dry-run") {
 			if ctx.Bool("json") {
-				out := map[string]any{"portalUrl": portalURL, "payload": payload}
+				out := struct {
+					PortalURL string                  `json:"PortalUrl"`
+					Payload   cluster.RegisterRequest `json:"Payload"`
+				}{PortalURL: portalURL, Payload: payload}
 				jb, _ := json.Marshal(out)
 				fmt.Println(string(jb))
 			} else {
@@ -343,14 +346,14 @@ func parseLabelSlice(labels []string) map[string]string {
 
 // Persistence helpers for --write-config
 func persistRegisterResponse(conf *config.Config, resp *cluster.RegisterResponse) error {
-	updates := map[string]any{}
+	updates := cluster.OptionsUpdate{}
 
 	if rnd.IsUUID(resp.UUID) {
-		updates["ClusterUUID"] = resp.UUID
+		updates.SetClusterUUID(resp.UUID)
 	}
 
 	if cidr := strings.TrimSpace(resp.ClusterCIDR); cidr != "" {
-		updates["ClusterCIDR"] = cidr
+		updates.SetClusterCIDR(cidr)
 	}
 
 	// Node client secret file
@@ -371,43 +374,18 @@ func persistRegisterResponse(conf *config.Config, resp *cluster.RegisterResponse
 
 	// DB settings (MySQL/MariaDB only)
 	if resp.Database.Name != "" && resp.Database.User != "" {
-		updates["DatabaseDriver"] = config.MySQL
-		updates["DatabaseName"] = resp.Database.Name
-		updates["DatabaseServer"] = fmt.Sprintf("%s:%d", resp.Database.Host, resp.Database.Port)
-		updates["DatabaseUser"] = resp.Database.User
-		updates["DatabasePassword"] = resp.Database.Password
+		updates.SetDatabaseDriver(config.MySQL)
+		updates.SetDatabaseName(resp.Database.Name)
+		updates.SetDatabaseServer(fmt.Sprintf("%s:%d", resp.Database.Host, resp.Database.Port))
+		updates.SetDatabaseUser(resp.Database.User)
+		updates.SetDatabasePassword(resp.Database.Password)
 	}
 
-	if len(updates) > 0 {
-		if err := mergeOptionsYaml(conf, updates); err != nil {
+	if !updates.IsZero() {
+		if _, err := clusternode.ApplyOptionsUpdate(conf, updates); err != nil {
 			return err
 		}
 		log.Infof("updated options.yml with cluster registration settings for node %s", clean.LogQuote(resp.Node.Name))
 	}
 	return nil
-}
-
-func mergeOptionsYaml(conf *config.Config, kv map[string]any) error {
-	fileName := conf.OptionsYaml()
-	if err := fs.MkdirAll(filepath.Dir(fileName)); err != nil {
-		return err
-	}
-
-	var m map[string]any
-	if fs.FileExists(fileName) {
-		if b, err := os.ReadFile(fileName); err == nil && len(b) > 0 {
-			_ = yaml.Unmarshal(b, &m)
-		}
-	}
-	if m == nil {
-		m = map[string]any{}
-	}
-	for k, v := range kv {
-		m[k] = v
-	}
-	b, err := yaml.Marshal(m)
-	if err != nil {
-		return err
-	}
-	return os.WriteFile(fileName, b, fs.ModeFile)
 }

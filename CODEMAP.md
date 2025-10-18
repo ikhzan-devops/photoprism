@@ -184,7 +184,7 @@ Conventions & Rules of Thumb
 - Never log secrets; compare tokens constant‑time.
 - Don’t import Portal internals from cluster instance/service bootstraps; use HTTP.
 - Prefer small, hermetic unit tests; isolate filesystem paths with `t.TempDir()` and env like `PHOTOPRISM_STORAGE_PATH`.
-- Cluster nodes: identify by UUID v7 (internally stored as `NodeUUID`; exposed as `uuid` in API/CLI). The OAuth client ID (`NodeClientID`, exposed as `clientId`) is for OAuth only. Registry lookups and CLI commands accept uuid, clientId, or DNS‑label name (priority in that order).
+- Cluster nodes: identify by UUID v7 (internally stored as `NodeUUID`; exposed as `UUID` in API/CLI). The OAuth client ID (`NodeClientID`, exposed as `ClientID`) is for OAuth only. Registry lookups and CLI commands accept UUID, ClientID, or DNS-label name (priority in that order).
 
 Filesystem Permissions & io/fs Aliasing
 - Use `github.com/photoprism/photoprism/pkg/fs` permission variables when creating files/dirs:
@@ -202,10 +202,10 @@ Cluster Registry & Provisioner Cheatsheet
 - DSN builder: `BuildDSN(driver, host, port, user, pass, name)`; warns and falls back to MySQL format for unsupported drivers.
 - Go tests live beside sources: for `path/to/pkg/<file>.go`, add tests in `path/to/pkg/<file>_test.go` (create if missing). For the same function, group related cases as `t.Run(...)` sub-tests (table-driven where helpful) and name each subtest string in PascalCase.
 - Public API and internal registry DTOs use normalized field names:
-  - `database` (not `db`) with `name`, `user`, `driver`, `rotatedAt`.
-  - Node-level rotation timestamps use `rotatedAt`.
-  - Registration returns `secrets.clientSecret`; the CLI persists it under config `NodeClientSecret`.
-  - Admin responses may include `advertiseUrl` and `database`; non-admin responses are redacted by default.
+  - `Database` (not `db`) with `Name`, `User`, `Driver`, `RotatedAt`.
+  - Node-level rotation timestamps use `RotatedAt`.
+  - Registration returns `Secrets.ClientSecret`; the CLI persists it under config `NodeClientSecret`.
+  - Admin responses may include `AdvertiseUrl` and `Database`; non-admin responses are redacted by default.
 
 Frequently Touched Files (by topic)
 - CLI wiring: `cmd/photoprism/photoprism.go`, `internal/commands/commands.go`

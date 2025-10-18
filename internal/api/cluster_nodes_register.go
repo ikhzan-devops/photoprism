@@ -28,12 +28,12 @@ var RegisterRequireClientSecret = true
 
 // ClusterNodesRegister registers the Portal-only node registration endpoint.
 //
-//	@Summary	registers a node, provisions DB credentials, and issues clientSecret
+//	@Summary	registers a node, provisions DB credentials, and issues ClientSecret
 //	@Id			ClusterNodesRegister
 //	@Tags		Cluster
 //	@Accept		json
 //	@Produce	json
-//	@Param		request				body		object	true	"registration payload (nodeName required; optional: nodeRole, labels, advertiseUrl, siteUrl; to authorize UUID/name changes include clientId+clientSecret; rotation: rotateDatabase, rotateSecret)"
+//	@Param		request				body		object	true	"registration payload (NodeName required; optional: NodeRole, Labels, AdvertiseUrl, SiteUrl; to authorize UUID/name changes include ClientID+ClientSecret; rotation: RotateDatabase, RotateSecret)"
 //	@Success	200,201				{object}	cluster.RegisterResponse
 //	@Failure	400,401,403,409,429	{object}	i18n.Response
 //	@Router		/api/v1/cluster/nodes/register [post]

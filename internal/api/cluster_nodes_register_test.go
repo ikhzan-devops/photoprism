@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/tidwall/gjson"
 
 	"github.com/photoprism/photoprism/internal/config"
 	"github.com/photoprism/photoprism/internal/service/cluster"
@@ -23,11 +24,11 @@ func TestClusterNodesRegister(t *testing.T) {
 		conf.Options().NodeRole = cluster.RoleInstance
 		ClusterNodesRegister(router)
 
-		r := PerformRequestWithBody(app, http.MethodPost, "/api/v1/cluster/nodes/register", `{"nodeName":"pp-node-01"}`)
+		r := PerformRequestWithBody(app, http.MethodPost, "/api/v1/cluster/nodes/register", `{"NodeName":"pp-node-01"}`)
 		assert.Equal(t, http.StatusForbidden, r.Code)
 	})
 
-	// Register with existing ClientID requires clientSecret
+	// Register with existing ClientID requires ClientSecret
 	t.Run("ExistingClientRequiresSecret", func(t *testing.T) {
 		app, router, conf := NewApiTest()
 		conf.Options().NodeRole = cluster.RolePortal
@@ -44,17 +45,17 @@ func TestClusterNodesRegister(t *testing.T) {
 		secret := nr.ClientSecret
 
 		// Missing secret → 401
-		body := `{"nodeName":"pp-auth","clientId":"` + nr.ClientID + `"}`
+		body := `{"NodeName":"pp-auth","ClientID":"` + nr.ClientID + `"}`
 		r := AuthenticatedRequestWithBody(app, http.MethodPost, "/api/v1/cluster/nodes/register", body, cluster.ExampleJoinToken)
 		assert.Equal(t, http.StatusUnauthorized, r.Code)
 
 		// Wrong secret → 401
-		body = `{"nodeName":"pp-auth","clientId":"` + nr.ClientID + `","clientSecret":"WRONG"}`
+		body = `{"NodeName":"pp-auth","ClientID":"` + nr.ClientID + `","ClientSecret":"WRONG"}`
 		r = AuthenticatedRequestWithBody(app, http.MethodPost, "/api/v1/cluster/nodes/register", body, cluster.ExampleJoinToken)
 		assert.Equal(t, http.StatusUnauthorized, r.Code)
 
 		// Correct secret → 200 (existing-node path)
-		body = `{"nodeName":"pp-auth","clientId":"` + nr.ClientID + `","clientSecret":"` + secret + `"}`
+		body = `{"NodeName":"pp-auth","ClientID":"` + nr.ClientID + `","ClientSecret":"` + secret + `"}`
 		r = AuthenticatedRequestWithBody(app, http.MethodPost, "/api/v1/cluster/nodes/register", body, cluster.ExampleJoinToken)
 		assert.Equal(t, http.StatusOK, r.Code)
 		cleanupRegisterProvisioning(t, conf, r)
@@ -64,7 +65,7 @@ func TestClusterNodesRegister(t *testing.T) {
 		conf.Options().NodeRole = cluster.RolePortal
 		ClusterNodesRegister(router)
 
-		r := PerformRequestWithBody(app, http.MethodPost, "/api/v1/cluster/nodes/register", `{"nodeName":"pp-node-01"}`)
+		r := PerformRequestWithBody(app, http.MethodPost, "/api/v1/cluster/nodes/register", `{"NodeName":"pp-node-01"}`)
 		assert.Equal(t, http.StatusUnauthorized, r.Code)
 	})
 	t.Run("CreateNodeSucceedsWithProvisioner", func(t *testing.T) {
@@ -75,13 +76,13 @@ func TestClusterNodesRegister(t *testing.T) {
 
 		// Provisioner is independent of the main DB; with MariaDB admin DSN configured
 		// it should successfully provision and return 201.
-		r := AuthenticatedRequestWithBody(app, http.MethodPost, "/api/v1/cluster/nodes/register", `{"nodeName":"pp-node-01"}`, cluster.ExampleJoinToken)
+		r := AuthenticatedRequestWithBody(app, http.MethodPost, "/api/v1/cluster/nodes/register", `{"NodeName":"pp-node-01"}`, cluster.ExampleJoinToken)
 		assert.Equal(t, http.StatusCreated, r.Code)
 		body := r.Body.String()
-		assert.Contains(t, body, "\"database\"")
-		assert.Contains(t, body, "\"secrets\"")
+		assert.Contains(t, body, "\"Database\"")
+		assert.Contains(t, body, "\"Secrets\"")
 		// New nodes return the client secret; include alias for clarity.
-		assert.Contains(t, body, "\"clientSecret\"")
+		assert.Contains(t, body, "\"ClientSecret\"")
 		cleanupRegisterProvisioning(t, conf, r)
 	})
 	t.Run("UUIDChangeRequiresSecret", func(t *testing.T) {
@@ -99,7 +100,7 @@ func TestClusterNodesRegister(t *testing.T) {
 
 		// Attempt to change UUID via name without client credentials → 409
 		newUUID := rnd.UUIDv7()
-		r := AuthenticatedRequestWithBody(app, http.MethodPost, "/api/v1/cluster/nodes/register", `{"nodeName":"pp-lock","nodeUUID":"`+newUUID+`"}`, cluster.ExampleJoinToken)
+		r := AuthenticatedRequestWithBody(app, http.MethodPost, "/api/v1/cluster/nodes/register", `{"NodeName":"pp-lock","NodeUUID":"`+newUUID+`"}`, cluster.ExampleJoinToken)
 		assert.Equal(t, http.StatusConflict, r.Code)
 	})
 	t.Run("BadAdvertiseUrlRejected", func(t *testing.T) {
@@ -109,7 +110,7 @@ func TestClusterNodesRegister(t *testing.T) {
 		ClusterNodesRegister(router)
 
 		// http scheme for public host must be rejected (require https unless localhost).
-		r := AuthenticatedRequestWithBody(app, http.MethodPost, "/api/v1/cluster/nodes/register", `{"nodeName":"pp-node-03","advertiseUrl":"http://example.com"}`, cluster.ExampleJoinToken)
+		r := AuthenticatedRequestWithBody(app, http.MethodPost, "/api/v1/cluster/nodes/register", `{"NodeName":"pp-node-03","AdvertiseUrl":"http://example.com"}`, cluster.ExampleJoinToken)
 		assert.Equal(t, http.StatusBadRequest, r.Code)
 	})
 	t.Run("GoodAdvertiseUrlAccepted", func(t *testing.T) {
@@ -119,12 +120,12 @@ func TestClusterNodesRegister(t *testing.T) {
 		ClusterNodesRegister(router)
 
 		// https is allowed for public host
-		r := AuthenticatedRequestWithBody(app, http.MethodPost, "/api/v1/cluster/nodes/register", `{"nodeName":"pp-node-04","advertiseUrl":"https://example.com"}`, cluster.ExampleJoinToken)
+		r := AuthenticatedRequestWithBody(app, http.MethodPost, "/api/v1/cluster/nodes/register", `{"NodeName":"pp-node-04","AdvertiseUrl":"https://example.com"}`, cluster.ExampleJoinToken)
 		assert.Equal(t, http.StatusCreated, r.Code)
 		cleanupRegisterProvisioning(t, conf, r)
 
 		// http is allowed for localhost
-		r = AuthenticatedRequestWithBody(app, http.MethodPost, "/api/v1/cluster/nodes/register", `{"nodeName":"pp-node-04b","advertiseUrl":"http://localhost:2342"}`, cluster.ExampleJoinToken)
+		r = AuthenticatedRequestWithBody(app, http.MethodPost, "/api/v1/cluster/nodes/register", `{"NodeName":"pp-node-04b","AdvertiseUrl":"http://localhost:2342"}`, cluster.ExampleJoinToken)
 		assert.Equal(t, http.StatusCreated, r.Code)
 		cleanupRegisterProvisioning(t, conf, r)
 	})
@@ -134,12 +135,12 @@ func TestClusterNodesRegister(t *testing.T) {
 		conf.Options().JoinToken = cluster.ExampleJoinToken
 		ClusterNodesRegister(router)
 
-		// Reject http siteUrl for public host
-		r := AuthenticatedRequestWithBody(app, http.MethodPost, "/api/v1/cluster/nodes/register", `{"nodeName":"pp-node-05","siteUrl":"http://example.com"}`, cluster.ExampleJoinToken)
+		// Reject http SiteUrl for public host
+		r := AuthenticatedRequestWithBody(app, http.MethodPost, "/api/v1/cluster/nodes/register", `{"NodeName":"pp-node-05","SiteUrl":"http://example.com"}`, cluster.ExampleJoinToken)
 		assert.Equal(t, http.StatusBadRequest, r.Code)
 
-		// Accept https siteUrl
-		r = AuthenticatedRequestWithBody(app, http.MethodPost, "/api/v1/cluster/nodes/register", `{"nodeName":"pp-node-06","siteUrl":"https://photos.example.com"}`, cluster.ExampleJoinToken)
+		// Accept https SiteUrl
+		r = AuthenticatedRequestWithBody(app, http.MethodPost, "/api/v1/cluster/nodes/register", `{"NodeName":"pp-node-06","SiteUrl":"https://photos.example.com"}`, cluster.ExampleJoinToken)
 		assert.Equal(t, http.StatusCreated, r.Code)
 		cleanupRegisterProvisioning(t, conf, r)
 	})
@@ -150,7 +151,7 @@ func TestClusterNodesRegister(t *testing.T) {
 		ClusterNodesRegister(router)
 
 		// Mixed separators and case should normalize to DNS label
-		body := `{"nodeName":"My.Node/Name:Prod"}`
+		body := `{"NodeName":"My.Node/Name:Prod"}`
 		r := AuthenticatedRequestWithBody(app, http.MethodPost, "/api/v1/cluster/nodes/register", body, cluster.ExampleJoinToken)
 		assert.Equal(t, http.StatusCreated, r.Code)
 		cleanupRegisterProvisioning(t, conf, r)
@@ -170,7 +171,7 @@ func TestClusterNodesRegister(t *testing.T) {
 		ClusterNodesRegister(router)
 
 		// Empty nodeName → 400
-		r := AuthenticatedRequestWithBody(app, http.MethodPost, "/api/v1/cluster/nodes/register", `{"nodeName":""}`, cluster.ExampleJoinToken)
+		r := AuthenticatedRequestWithBody(app, http.MethodPost, "/api/v1/cluster/nodes/register", `{"NodeName":""}`, cluster.ExampleJoinToken)
 		assert.Equal(t, http.StatusBadRequest, r.Code)
 	})
 	t.Run("RotateSecretPersistsAndRespondsOK", func(t *testing.T) {
@@ -188,7 +189,7 @@ func TestClusterNodesRegister(t *testing.T) {
 		n := &reg.Node{Node: cluster.Node{Name: "pp-node-01", Role: "instance"}}
 		assert.NoError(t, regy.Put(n))
 
-		r := AuthenticatedRequestWithBody(app, http.MethodPost, "/api/v1/cluster/nodes/register", `{"nodeName":"pp-node-01","rotateSecret":true}`, cluster.ExampleJoinToken)
+		r := AuthenticatedRequestWithBody(app, http.MethodPost, "/api/v1/cluster/nodes/register", `{"NodeName":"pp-node-01","RotateSecret":true}`, cluster.ExampleJoinToken)
 		assert.Equal(t, http.StatusOK, r.Code)
 		cleanupRegisterProvisioning(t, conf, r)
 
@@ -213,11 +214,11 @@ func TestClusterNodesRegister(t *testing.T) {
 		assert.NoError(t, regy.Put(n))
 
 		// Provisioner is independent; endpoint should respond 200 and persist metadata.
-		r := AuthenticatedRequestWithBody(app, http.MethodPost, "/api/v1/cluster/nodes/register", `{"nodeName":"pp-node-02","siteUrl":"https://Photos.Example.COM"}`, cluster.ExampleJoinToken)
+		r := AuthenticatedRequestWithBody(app, http.MethodPost, "/api/v1/cluster/nodes/register", `{"NodeName":"pp-node-02","SiteUrl":"https://Photos.Example.COM"}`, cluster.ExampleJoinToken)
 		assert.Equal(t, http.StatusOK, r.Code)
 		cleanupRegisterProvisioning(t, conf, r)
 
-		// Ensure normalized/persisted siteUrl.
+		// Ensure normalized/persisted SiteUrl.
 		n2, err := regy.FindByName("pp-node-02")
 		assert.NoError(t, err)
 		assert.Equal(t, "https://photos.example.com", n2.SiteUrl)
@@ -229,13 +230,13 @@ func TestClusterNodesRegister(t *testing.T) {
 		ClusterNodesRegister(router)
 
 		// Register without nodeUUID; server should assign one (UUID v7 preferred).
-		r := AuthenticatedRequestWithBody(app, http.MethodPost, "/api/v1/cluster/nodes/register", `{"nodeName":"pp-node-uuid"}`, cluster.ExampleJoinToken)
+		r := AuthenticatedRequestWithBody(app, http.MethodPost, "/api/v1/cluster/nodes/register", `{"NodeName":"pp-node-uuid"}`, cluster.ExampleJoinToken)
 		assert.Equal(t, http.StatusCreated, r.Code)
 		cleanupRegisterProvisioning(t, conf, r)
 
-		// Response must include node.uuid
+		// Response must include Node.UUID
 		body := r.Body.String()
-		assert.Contains(t, body, "\"uuid\"")
+		assert.NotEmpty(t, gjson.Get(body, "Node.UUID").String())
 
 		// Verify it is persisted in the registry
 		regy, err := reg.NewClientRegistryWithConfig(conf)
