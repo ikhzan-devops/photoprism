@@ -75,6 +75,57 @@ func TestClusterRegister_HTTPHappyPath(t *testing.T) {
 	assert.Equal(t, "pp_db", parsed.Name)
 }
 
+func TestClusterRegister_SiteURLFlag(t *testing.T) {
+	conf := get.Config()
+	prev := conf.Options().SiteUrl
+	conf.Options().SiteUrl = ""
+	defer func() { conf.Options().SiteUrl = prev }()
+
+	const site = "https://public.example.test/"
+	const advertise = "https://internal.example.test/"
+
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/api/v1/cluster/nodes/register" {
+			http.NotFound(w, r)
+			return
+		}
+		if r.Header.Get("Authorization") != "Bearer "+cluster.ExampleJoinToken {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+		body, _ := io.ReadAll(r.Body)
+		assert.Equal(t, site, gjson.GetBytes(body, "SiteUrl").String())
+		assert.Equal(t, advertise, gjson.GetBytes(body, "AdvertiseUrl").String())
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusCreated)
+		resp := cluster.RegisterResponse{
+			Node: cluster.Node{
+				UUID:      "n-site",
+				Name:      "neon",
+				Role:      "instance",
+				CreatedAt: "2025-09-15T00:00:00Z",
+				UpdatedAt: "2025-09-15T00:00:00Z",
+				SiteUrl:   site,
+			},
+			Secrets: &cluster.RegisterSecrets{ClientSecret: cluster.ExampleClientSecret, RotatedAt: "2025-09-15T00:00:00Z"},
+		}
+		_ = json.NewEncoder(w).Encode(resp)
+	}))
+	defer ts.Close()
+
+	out, err := RunWithTestContext(ClusterRegisterCommand, []string{
+		"register",
+		"--name", "neon",
+		"--advertise-url", advertise,
+		"--site-url", site,
+		"--portal-url", ts.URL,
+		"--join-token", cluster.ExampleJoinToken,
+		"--json",
+	})
+	assert.NoError(t, err)
+	assert.Equal(t, site, gjson.Get(out, "Node.SiteUrl").String())
+}
+
 func TestClusterNodesRotate_HTTPHappyPath(t *testing.T) {
 	// Fake Portal register endpoint for rotation
 	secret := cluster.ExampleClientSecret
@@ -111,7 +162,7 @@ func TestClusterNodesRotate_HTTPHappyPath(t *testing.T) {
 				RotatedAt:    "2025-09-15T00:00:00Z",
 			},
 			AlreadyRegistered:  true,
-			AlreadyProvisioned: true,
+			AlreadyProvisioned: false,
 		}
 		_ = json.NewEncoder(w).Encode(resp)
 	}))

@@ -10,6 +10,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"time"
 
@@ -30,6 +31,7 @@ var (
 	regNameFlag       = &cli.StringFlag{Name: "name", Usage: "node `NAME` (lowercase letters, digits, hyphens)"}
 	regRoleFlag       = &cli.StringFlag{Name: "role", Usage: "node `ROLE` (instance, service)", Value: "instance"}
 	regIntUrlFlag     = &cli.StringFlag{Name: "advertise-url", Usage: "internal service `URL`"}
+	regSiteUrlFlag    = &cli.StringFlag{Name: "site-url", Usage: "public site `URL` (https://...)"}
 	regLabelFlag      = &cli.StringSliceFlag{Name: "label", Usage: "`k=v` label (repeatable)"}
 	regRotateDatabase = &cli.BoolFlag{Name: "rotate", Usage: "rotates the node's database password"}
 	regRotateSec      = &cli.BoolFlag{Name: "rotate-secret", Usage: "rotates the node's secret used for JWT"}
@@ -41,6 +43,7 @@ var (
 )
 
 // ClusterRegisterCommand registers a node with the Portal via HTTP.
+// ClusterRegisterCommand wires the `cluster register` CLI entrypoint.
 var ClusterRegisterCommand = &cli.Command{
 	Name:  "register",
 	Usage: "Registers a node or updates its credentials within a cluster",
@@ -51,6 +54,7 @@ var ClusterRegisterCommand = &cli.Command{
 		regPortalURL,
 		regPortalTok,
 		regIntUrlFlag,
+		regSiteUrlFlag,
 		regLabelFlag,
 		regRotateDatabase,
 		regRotateSec,
@@ -60,6 +64,8 @@ var ClusterRegisterCommand = &cli.Command{
 	Action: clusterRegisterAction,
 }
 
+// clusterRegisterAction resolves CLI flags, builds the registration payload,
+// and calls the Portal's register endpoint with retry/backoff handling.
 func clusterRegisterAction(ctx *cli.Context) error {
 	return CallWithDependencies(ctx, func(conf *config.Config) error {
 		// Resolve inputs
@@ -98,7 +104,10 @@ func clusterRegisterAction(ctx *cli.Context) error {
 		if advertise == "" {
 			advertise = conf.AdvertiseUrl()
 		}
-		site := conf.SiteUrl()
+		site := strings.TrimSpace(ctx.String("site-url"))
+		if site == "" {
+			site = conf.SiteUrl()
+		}
 
 		payload := cluster.RegisterRequest{
 			NodeName:       name,
@@ -109,14 +118,20 @@ func clusterRegisterAction(ctx *cli.Context) error {
 			RotateSecret:   ctx.Bool("rotate-secret"),
 		}
 
-		// If we already have client credentials (e.g., re-register), include them so the
-		// portal can verify and authorize UUID/name moves or metadata updates.
-		if id, secret := strings.TrimSpace(conf.NodeClientID()), strings.TrimSpace(conf.NodeClientSecret()); id != "" && secret != "" {
+		// If auto detection is allowed, rotate database only when the current node lacks configured credentials.
+		if !payload.RotateDatabase && conf.ShouldAutoRotateDatabase() {
+			payload.RotateDatabase = true
+		}
+
+		// If we already have client credentials for this node (e.g., re-registering the
+		// same instance), include them so the portal can verify UUID/name changes. Avoid
+		// sending the portal's own credentials when registering a different node.
+		if id, secret := strings.TrimSpace(conf.NodeClientID()), strings.TrimSpace(conf.NodeClientSecret()); id != "" && secret != "" && strings.EqualFold(conf.NodeName(), name) {
 			payload.ClientID = id
 			payload.ClientSecret = secret
 		}
 
-		if site != "" && site != advertise {
+		if site != "" {
 			payload.SiteUrl = site
 		}
 		b, _ := json.Marshal(payload)
@@ -203,19 +218,31 @@ func clusterRegisterAction(ctx *cli.Context) error {
 			fmt.Println(string(jb))
 		} else {
 			// Human-readable: node row and credentials if present (UUID first as primary identifier)
-			cols := []string{"UUID", "ClientID", "Name", "Role", "DB Driver", "DB Name", "DB User", "Host", "Port"}
+			cols := []string{"UUID", "ClientID", "Name", "Role"}
+			row := []string{resp.Node.UUID, resp.Node.ClientID, resp.Node.Name, resp.Node.Role}
 
-			var dbName, dbUser string
-
+			if resp.Database.Driver != "" {
+				cols = append(cols, "DB Driver")
+				row = append(row, resp.Database.Driver)
+			}
 			if resp.Database.Name != "" {
-				dbName = resp.Database.Name
+				cols = append(cols, "DB Name")
+				row = append(row, resp.Database.Name)
 			}
-
 			if resp.Database.User != "" {
-				dbUser = resp.Database.User
+				cols = append(cols, "DB User")
+				row = append(row, resp.Database.User)
+			}
+			if resp.Database.Host != "" {
+				cols = append(cols, "Host")
+				row = append(row, resp.Database.Host)
+			}
+			if resp.Database.Port > 0 {
+				cols = append(cols, "Port")
+				row = append(row, strconv.Itoa(resp.Database.Port))
 			}
 
-			rows := [][]string{{resp.Node.UUID, resp.Node.ClientID, resp.Node.Name, resp.Node.Role, resp.Database.Driver, dbName, dbUser, resp.Database.Host, fmt.Sprintf("%d", resp.Database.Port)}}
+			rows := [][]string{row}
 			out, _ := report.RenderFormat(rows, cols, report.CliFormat(ctx))
 			fmt.Printf("\n%s\n", out)
 
@@ -223,12 +250,13 @@ func clusterRegisterAction(ctx *cli.Context) error {
 			// Show secrets in up to two tables, then print DSN if present
 			if (resp.Secrets != nil && resp.Secrets.ClientSecret != "") || resp.Database.Password != "" {
 				fmt.Println("PLEASE WRITE DOWN THE FOLLOWING CREDENTIALS; THEY WILL NOT BE SHOWN AGAIN:")
-				if resp.Secrets != nil && resp.Secrets.ClientSecret != "" && resp.Database.Password != "" {
-					fmt.Printf("\n%s\n", report.Credentials("Node Client Secret", resp.Secrets.ClientSecret, "DB Password", resp.Database.Password))
-				} else if resp.Secrets != nil && resp.Secrets.ClientSecret != "" {
-					fmt.Printf("\n%s\n", report.Credentials("Node Client Secret", resp.Secrets.ClientSecret, "", ""))
-				} else if resp.Database.Password != "" {
-					fmt.Printf("\n%s\n", report.Credentials("DB User", resp.Database.User, "DB Password", resp.Database.Password))
+				if resp.Secrets != nil && resp.Secrets.ClientSecret != "" {
+					secretTable, _ := report.RenderFormat([][]string{{resp.Secrets.ClientSecret}}, []string{"Node Client Secret"}, report.CliFormat(ctx))
+					fmt.Printf("\n%s\n", secretTable)
+				}
+				if resp.Database.Password != "" {
+					dbTable, _ := report.RenderFormat([][]string{{resp.Database.User, resp.Database.Password}}, []string{"DB User", "DB Password"}, report.CliFormat(ctx))
+					fmt.Printf("\n%s\n", dbTable)
 				}
 				if resp.Database.DSN != "" {
 					fmt.Printf("DSN: %s\n", resp.Database.DSN)
@@ -256,6 +284,7 @@ type httpError struct {
 
 func (e *httpError) Error() string { return fmt.Sprintf("http %d: %s", e.Status, e.Body) }
 
+// postWithBackoff executes the register HTTP POST with bounded retries for 429 responses.
 func postWithBackoff(url, token string, payload []byte, out any) error {
 	// backoff: 500ms -> max ~8s, 6 attempts with jitter
 	delay := 500 * time.Millisecond
@@ -290,6 +319,7 @@ func postWithBackoff(url, token string, payload []byte, out any) error {
 	return &httpError{Status: http.StatusTooManyRequests, Body: "rate limited"}
 }
 
+// jitter applies +/- jitter to a duration to avoid retry stampedes.
 func jitter(d time.Duration, frac float64) time.Duration {
 	// simple +/- jitter
 	n := time.Duration(float64(d) * (1 + (randFloat()*2-1)*frac))
@@ -299,9 +329,10 @@ func jitter(d time.Duration, frac float64) time.Duration {
 	return n
 }
 
-// tiny rand without pulling math/rand global state unpredictably
+// randFloat returns a simple pseudo-random float in [0,1) without touching math/rand global state.
 func randFloat() float64 { return float64(time.Now().UnixNano()%1000) / 1000.0 }
 
+// stringsTrimRightSlash removes trailing slashes to build consistent endpoints.
 func stringsTrimRightSlash(s string) string {
 	for len(s) > 0 && s[len(s)-1] == '/' {
 		s = s[:len(s)-1]
@@ -309,7 +340,7 @@ func stringsTrimRightSlash(s string) string {
 	return s
 }
 
-// warnInsecurePublicURL returns true if the URL uses http and the host is not localhost/127.0.0.1/::1.
+// warnInsecurePublicURL returns true if the URL is HTTP on a non-local host.
 func warnInsecurePublicURL(u string) bool {
 	parsed, err := url.Parse(u)
 	if err != nil || parsed.Scheme == "" || parsed.Host == "" {
@@ -325,7 +356,7 @@ func warnInsecurePublicURL(u string) bool {
 	return true
 }
 
-// Persistence helpers for --write-config
+// parseLabelSlice converts repeated k=v CLI inputs into a map.
 func parseLabelSlice(labels []string) map[string]string {
 	if len(labels) == 0 {
 		return nil
@@ -344,7 +375,7 @@ func parseLabelSlice(labels []string) map[string]string {
 	return m
 }
 
-// Persistence helpers for --write-config
+// persistRegisterResponse writes returned secrets/DB details into local config when requested.
 func persistRegisterResponse(conf *config.Config, resp *cluster.RegisterResponse) error {
 	updates := cluster.OptionsUpdate{}
 

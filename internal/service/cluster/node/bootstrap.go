@@ -129,13 +129,8 @@ func registerWithPortal(c *config.Config, portal *url.URL, token string) error {
 	endpoint := *portal
 	endpoint.Path = strings.TrimRight(endpoint.Path, "/") + "/api/v1/cluster/nodes/register"
 
-	// Decide if DB rotation is desired as per spec: only if driver is MySQL/MariaDB
-	// and no DSN/fields are set (raw options) and no password is provided via file.
-	opts := c.Options()
-	driver := c.DatabaseDriver()
-	wantRotateDatabase := (driver == config.MySQL || driver == config.MariaDB) &&
-		opts.DatabaseDSN == "" && opts.DatabaseName == "" && opts.DatabaseUser == "" && opts.DatabasePassword == "" &&
-		c.DatabasePassword() == ""
+	// Let the configuration decide if credentials are missing (MySQL with no effective name/user/password).
+	wantRotateDatabase := c.ShouldAutoRotateDatabase()
 
 	payload := cluster.RegisterRequest{
 		NodeName:     c.NodeName(),
@@ -150,8 +145,8 @@ func registerWithPortal(c *config.Config, portal *url.URL, token string) error {
 		payload.ClientSecret = secret
 	}
 
-	// Include SiteUrl when it differs from AdvertiseUrl; server will validate/normalize.
-	if su := c.SiteUrl(); su != "" && su != c.AdvertiseUrl() {
+	// Include SiteUrl whenever configured; the server normalizes duplicates if needed.
+	if su := c.SiteUrl(); su != "" {
 		payload.SiteUrl = su
 	}
 

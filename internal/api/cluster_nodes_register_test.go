@@ -68,7 +68,7 @@ func TestClusterNodesRegister(t *testing.T) {
 		r := PerformRequestWithBody(app, http.MethodPost, "/api/v1/cluster/nodes/register", `{"NodeName":"pp-node-01"}`)
 		assert.Equal(t, http.StatusUnauthorized, r.Code)
 	})
-	t.Run("CreateNodeSucceedsWithProvisioner", func(t *testing.T) {
+	t.Run("CreateNodeWithoutRotateSkipsProvisioner", func(t *testing.T) {
 		app, router, conf := NewApiTest()
 		conf.Options().NodeRole = cluster.RolePortal
 		conf.Options().JoinToken = cluster.ExampleJoinToken
@@ -81,8 +81,23 @@ func TestClusterNodesRegister(t *testing.T) {
 		body := r.Body.String()
 		assert.Contains(t, body, "\"Database\"")
 		assert.Contains(t, body, "\"Secrets\"")
-		// New nodes return the client secret; include alias for clarity.
 		assert.Contains(t, body, "\"ClientSecret\"")
+		assert.Equal(t, "", gjson.Get(body, "Database.Name").String())
+		assert.False(t, gjson.Get(body, "AlreadyProvisioned").Bool())
+		cleanupRegisterProvisioning(t, conf, r)
+	})
+	t.Run("CreateNodeRotateDatabaseProvisioned", func(t *testing.T) {
+		app, router, conf := NewApiTest()
+		conf.Options().NodeRole = cluster.RolePortal
+		conf.Options().JoinToken = cluster.ExampleJoinToken
+		ClusterNodesRegister(router)
+
+		r := AuthenticatedRequestWithBody(app, http.MethodPost, "/api/v1/cluster/nodes/register", `{"NodeName":"pp-node-rotate","RotateDatabase":true}`, cluster.ExampleJoinToken)
+		assert.Equal(t, http.StatusCreated, r.Code)
+		body := r.Body.String()
+		assert.NotEqual(t, "", gjson.Get(body, "Database.Name").String())
+		assert.NotEqual(t, "", gjson.Get(body, "Database.Password").String())
+		assert.True(t, gjson.Get(body, "AlreadyProvisioned").Bool())
 		cleanupRegisterProvisioning(t, conf, r)
 	})
 	t.Run("UUIDChangeRequiresSecret", func(t *testing.T) {
@@ -259,6 +274,10 @@ func cleanupRegisterProvisioning(t *testing.T, conf *config.Config, r *httptest.
 	var resp cluster.RegisterResponse
 	if err := json.Unmarshal(r.Body.Bytes(), &resp); err != nil {
 		t.Fatalf("unmarshal register response: %v", err)
+	}
+
+	if !resp.AlreadyProvisioned {
+		return
 	}
 
 	name := resp.Database.Name

@@ -39,9 +39,13 @@ func TestInitConfig_ServiceRole(t *testing.T) {
 func TestRegister_PersistSecretAndDB(t *testing.T) {
 	// Fake Portal server.
 	var jwksURL string
+	expectedSite := "https://public.example.test/"
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case "/api/v1/cluster/nodes/register":
+			var req cluster.RegisterRequest
+			assert.NoError(t, json.NewDecoder(r.Body).Decode(&req))
+			assert.Equal(t, expectedSite, req.SiteUrl)
 			// Minimal successful registration with secrets + DSN.
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusCreated)
@@ -78,6 +82,8 @@ func TestRegister_PersistSecretAndDB(t *testing.T) {
 	// Configure Portal.
 	c.Options().PortalUrl = srv.URL
 	c.Options().JoinToken = cluster.ExampleJoinToken
+	c.Options().SiteUrl = expectedSite
+	c.Options().AdvertiseUrl = expectedSite
 	// Gate rotate=true: driver mysql and no DSN/fields.
 	c.Options().DatabaseDriver = config.MySQL
 	c.Options().DatabaseDSN = ""
