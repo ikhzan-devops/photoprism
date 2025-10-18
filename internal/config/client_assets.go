@@ -135,7 +135,7 @@ func (a *ClientAssets) readFile(fileName string) string {
 
 // ClientAssets returns the frontend build assets.
 func (c *Config) ClientAssets() *ClientAssets {
-	result := NewClientAssets(c.BuildPath(), c.StaticUri())
+	result := NewClientAssets(c.StaticBuildPath(), c.StaticUri())
 
 	if err := result.Load("assets.json"); err != nil {
 		log.Debugf("frontend: %s", err)

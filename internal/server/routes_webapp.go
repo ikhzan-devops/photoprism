@@ -2,13 +2,12 @@ package server
 
 import (
 	"net/http"
-	"os"
-	"path/filepath"
 
 	"github.com/gin-gonic/gin"
 
 	"github.com/photoprism/photoprism/internal/api"
 	"github.com/photoprism/photoprism/internal/config"
+	"github.com/photoprism/photoprism/pkg/fs"
 	"github.com/photoprism/photoprism/pkg/service/http/header"
 )
 
@@ -54,23 +53,25 @@ func registerWebAppRoutes(router *gin.Engine, conf *config.Config) {
 	swWorker := func(c *gin.Context) {
 		c.Header(header.CacheControl, header.CacheControlNoStore)
 
-		if swBuildPath := filepath.Join(conf.BuildPath(), "sw.js"); swBuildPath != "" {
-			if _, err := os.Stat(swBuildPath); err == nil {
-				c.File(swBuildPath)
-				return
-			}
+		// Serve the Workbox-generated service worker when the frontend build has
+		// produced one (default for production builds).
+		if swFile := conf.StaticBuildFile(fs.SwJsFile); fs.FileExistsNotEmpty(swFile) {
+			c.File(swFile)
+			return
 		}
 
+		// Fall back to the embedded no-op service worker so tests and dev builds
+		// still receive a valid response.
 		if len(fallbackServiceWorker) > 0 {
-			c.Data(http.StatusOK, "application/javascript", fallbackServiceWorker)
+			c.Data(http.StatusOK, header.ContentTypeJavaScript, fallbackServiceWorker)
 			return
 		}
 
 		c.Status(http.StatusNotFound)
 	}
-	router.Any("/sw.js", swWorker)
+	router.Any("/"+fs.SwJsFile, swWorker)
 
-	if swUri := conf.BaseUri("/sw.js"); swUri != "/sw.js" {
+	if swUri := conf.BaseUri("/" + fs.SwJsFile); swUri != "/"+fs.SwJsFile {
 		router.Any(swUri, swWorker)
 	}
 }

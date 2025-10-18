@@ -38,3 +38,9 @@ const (
 	UsersDir        = "users"
 	ZipDir          = "zip"
 )
+
+// Common file names used across packages (sorted by name).
+const (
+	AppJsFile = "app.js"
+	SwJsFile  = "sw.js"
+)

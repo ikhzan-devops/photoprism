@@ -348,7 +348,10 @@ func mergeOptionsYaml(c *config.Config, updates Values) error {
 // local theme directory is missing or lacks an app.js file.
 func installThemeIfMissing(c *config.Config, portal *url.URL, token string) error {
 	themeDir := c.ThemePath()
-	need := !fs.PathExists(themeDir) || (cluster.BootstrapThemeInstallOnlyIfMissingJS && !fs.FileExists(filepath.Join(themeDir, "app.js")))
+
+	need := !fs.PathExists(themeDir) ||
+		(cluster.BootstrapThemeInstallOnlyIfMissingJS && !fs.FileExists(filepath.Join(themeDir, fs.AppJsFile)))
+
 	if !need && !cluster.BootstrapAllowThemeOverwrite {
 		return nil
 	}
