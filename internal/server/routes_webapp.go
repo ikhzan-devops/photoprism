@@ -39,6 +39,8 @@ func registerWebAppRoutes(router *gin.Engine, conf *config.Config) {
 		// Render bootstrap template.
 		c.HTML(http.StatusOK, conf.TemplateName(), values)
 	}
+
+	// HTML bootstrap for the SPA (served from /library/**).
 	router.Any(conf.LibraryUri("/*path"), ui)
 
 	// Serve the user interface manifest file.
@@ -47,6 +49,8 @@ func registerWebAppRoutes(router *gin.Engine, conf *config.Config) {
 		c.Header(header.ContentType, header.ContentTypeJsonUtf8)
 		c.IndentedJSON(200, conf.AppManifest())
 	}
+
+	// Web App Manifest (served at /manifest.json under the base URI).
 	router.Any(conf.BaseUri("/manifest.json"), manifest)
 
 	// Serve user interface service worker file.
@@ -69,8 +73,11 @@ func registerWebAppRoutes(router *gin.Engine, conf *config.Config) {
 
 		c.Status(http.StatusNotFound)
 	}
+
+	// Primary service worker endpoint (/sw.js relative to the site root).
 	router.Any("/"+fs.SwJsFile, swWorker)
 
+	// Serve the service worker under the site base URI as well (e.g. /photoprism/sw.js).
 	if swUri := conf.BaseUri("/" + fs.SwJsFile); swUri != "/"+fs.SwJsFile {
 		router.Any(swUri, swWorker)
 	}
