@@ -206,6 +206,9 @@ Cluster Registry & Provisioner Cheatsheet
   - Node-level rotation timestamps use `RotatedAt`.
   - Registration returns `Secrets.ClientSecret`; the CLI persists it under config `NodeClientSecret`.
   - Admin responses may include `AdvertiseUrl` and `Database`; non-admin responses are redacted by default.
+- Cluster CLI highlights:
+  - `photoprism cluster register` supports `--site-url` and `--advertise-url`. Both values are always forwarded to the Portal; `SiteUrl` no longer depends on being different from the advertised URL.
+  - Automatic MariaDB credential rotation logic now lives in `config.ShouldAutoRotateDatabase()` and is shared by both the CLI and node bootstrap.
 
 Frequently Touched Files (by topic)
 - CLI wiring: `cmd/photoprism/photoprism.go`, `internal/commands/commands.go`
