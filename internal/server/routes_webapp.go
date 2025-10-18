@@ -8,6 +8,7 @@ import (
 	"github.com/photoprism/photoprism/internal/api"
 	"github.com/photoprism/photoprism/internal/config"
 	"github.com/photoprism/photoprism/pkg/fs"
+	"github.com/photoprism/photoprism/pkg/i18n"
 	"github.com/photoprism/photoprism/pkg/service/http/header"
 )
 
@@ -57,6 +58,12 @@ func registerWebAppRoutes(router *gin.Engine, conf *config.Config) {
 	swWorker := func(c *gin.Context) {
 		c.Header(header.CacheControl, header.CacheControlNoStore)
 
+		// Return if only headers are requested.
+		if c.Request.Method == http.MethodHead {
+			c.Header(header.ContentType, header.ContentTypeJavaScript)
+			return
+		}
+
 		// Serve the Workbox-generated service worker when the frontend build has
 		// produced one (default for production builds).
 		if swFile := conf.StaticBuildFile(fs.SwJsFile); fs.FileExistsNotEmpty(swFile) {
@@ -71,14 +78,14 @@ func registerWebAppRoutes(router *gin.Engine, conf *config.Config) {
 			return
 		}
 
-		c.Status(http.StatusNotFound)
+		api.Abort(c, http.StatusNotFound, i18n.ErrNotFound)
 	}
 
 	// Primary service worker endpoint (/sw.js relative to the site root).
-	router.Any("/"+fs.SwJsFile, swWorker)
+	router.Match([]string{http.MethodGet, http.MethodHead}, "/"+fs.SwJsFile, swWorker)
 
 	// Serve the service worker under the site base URI as well (e.g. /photoprism/sw.js).
 	if swUri := conf.BaseUri("/" + fs.SwJsFile); swUri != "/"+fs.SwJsFile {
-		router.Any(swUri, swWorker)
+		router.Match([]string{http.MethodGet, http.MethodHead}, swUri, swWorker)
 	}
 }
