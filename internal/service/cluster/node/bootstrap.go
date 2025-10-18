@@ -15,6 +15,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"unicode/utf8"
 
 	"gopkg.in/yaml.v2"
 
@@ -45,16 +46,22 @@ func InitConfig(c *config.Config) error {
 	}
 
 	role := c.NodeRole()
+
 	// Skip on portal nodes and unknown node types.
 	if c.Portal() || (role != cluster.RoleInstance && role != cluster.RoleService) {
+		log.Debugf("cluster: skipped node bootstrap role=%s", role)
 		return nil
 	}
 
 	portalURL := strings.TrimSpace(c.PortalUrl())
 	joinToken := strings.TrimSpace(c.JoinToken())
+
 	if portalURL == "" || joinToken == "" {
+		log.Debugf("cluster: skipped node bootstrap portalUrl=%s joinToken=%s", portalURL, strings.Repeat("*", utf8.RuneCountInString(joinToken)))
 		return nil
 	}
+
+	log.Debugf("cluster: starting node bootstrap")
 
 	u, err := url.Parse(portalURL)
 	if err != nil || u.Scheme == "" || u.Host == "" {
@@ -70,7 +77,7 @@ func InitConfig(c *config.Config) error {
 
 	// Register with retry policy.
 	if cluster.BootstrapAutoJoinEnabled {
-		if err := registerWithPortal(c, u, joinToken); err != nil {
+		if err = registerWithPortal(c, u, joinToken); err != nil {
 			// Registration errors are expected when the Portal is temporarily unavailable
 			// or not configured with cluster endpoints (404). Keep as warn to signal
 			// exhaustion/terminal errors; per-attempt details are logged at debug level.
@@ -80,11 +87,13 @@ func InitConfig(c *config.Config) error {
 
 	// Pull theme if missing.
 	if cluster.BootstrapAutoThemeEnabled {
-		if err := installThemeIfMissing(c, u, joinToken); err != nil {
+		if err = installThemeIfMissing(c, u, joinToken); err != nil {
 			// Theme install failures are non-critical; log at debug to avoid noise.
 			log.Debugf("cluster: theme install skipped/failed (%s)", clean.Error(err))
 		}
 	}
+
+	log.Infof("cluster: uuid %s", clean.Log(c.ClusterUUID()))
 
 	return nil
 }
