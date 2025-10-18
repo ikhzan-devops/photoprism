@@ -336,7 +336,7 @@ services:
   ## Dummy WebDAV Server
   dummy-webdav:
     image: photoprism/dummy-webdav:240627
-    stop_grace_period: 15s
+    stop_grace_period: 30s
     environment:
       WEBDAV_USERNAME: admin
       WEBDAV_PASSWORD: photoprism
@@ -353,7 +353,7 @@ services:
   ## Dummy OIDC Identity Provider
   dummy-oidc:
     image: photoprism/dummy-oidc:240627
-    stop_grace_period: 15s
+    stop_grace_period: 30s
     labels:
       - "traefik.enable=true"
       - "traefik.http.services.dummy-oidc.loadbalancer.server.port=9998"
@@ -388,7 +388,7 @@ services:
   ## Login with "user / photoprism" and "admin / photoprism".
   keycloak:
     image: quay.io/keycloak/keycloak:25.0
-    stop_grace_period: 15s
+    stop_grace_period: 30s
     command: "start-dev" # development mode, do not use this in production!
     links:
       - "traefik:localssl.dev"
