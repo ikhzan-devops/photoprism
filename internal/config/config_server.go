@@ -272,7 +272,9 @@ func (c *Config) StaticPath() string {
 	return filepath.Join(c.AssetsPath(), fs.StaticDir)
 }
 
-// StaticFile returns the path to a static file.
+// StaticFile joins the static assets directory with the given path (leading
+// slashes are preserved inside the static tree) and returns an absolute file
+// system location.
 func (c *Config) StaticFile(fileName string) string {
 	return filepath.Join(c.AssetsPath(), fs.StaticDir, fileName)
 }
@@ -282,8 +284,9 @@ func (c *Config) StaticBuildPath() string {
 	return filepath.Join(c.StaticPath(), fs.BuildDir)
 }
 
-// StaticBuildFile joins the static build directory with the given relative path and
-// returns an absolute file system location (e.g. hashed bundles or sw.js).
+// StaticBuildFile joins the static build directory with the given path (leading
+// slashes are preserved inside the build tree) and returns an absolute file system
+// location (e.g. hashed bundles or sw.js).
 func (c *Config) StaticBuildFile(fileName string) string {
 	return filepath.Join(c.StaticBuildPath(), fileName)
 }
@@ -293,8 +296,9 @@ func (c *Config) StaticImgPath() string {
 	return filepath.Join(c.StaticPath(), fs.ImgDir)
 }
 
-// StaticImgFile joins the static image directory with the given relative path and
-// returns an absolute file system location (e.g. icons or wallpapers).
+// StaticImgFile joins the static image directory with the given path (leading
+// slashes are preserved inside the image tree) and returns an absolute file system
+// location (e.g. icons or wallpapers).
 func (c *Config) StaticImgFile(fileName string) string {
 	return filepath.Join(c.StaticImgPath(), fileName)
 }

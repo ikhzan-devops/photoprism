@@ -254,6 +254,9 @@ func TestConfig_StaticFile(t *testing.T) {
 
 	path := c.StaticFile("video/404.mp4")
 	assert.Equal(t, "/go/src/github.com/photoprism/photoprism/assets/static/video/404.mp4", path)
+
+	path = c.StaticFile("/img/logo.png")
+	assert.Equal(t, filepath.Join(c.StaticPath(), "img/logo.png"), path)
 }
 
 func TestConfig_StaticBuildPath(t *testing.T) {
