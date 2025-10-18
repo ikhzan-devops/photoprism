@@ -84,7 +84,7 @@ func TestWebAppRoutes(t *testing.T) {
 	})
 	t.Run("GetManifest", func(t *testing.T) {
 		w := httptest.NewRecorder()
-		req, _ := http.NewRequest("GET", "/manifest.json", nil)
+		req, _ := http.NewRequest("GET", "/"+fs.ManifestJsonFile, nil)
 		r.ServeHTTP(w, req)
 		assert.Equal(t, 200, w.Code)
 		assert.NotEmpty(t, w.Body.String())

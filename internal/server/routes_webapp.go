@@ -51,7 +51,7 @@ func registerWebAppRoutes(router *gin.Engine, conf *config.Config) {
 	}
 
 	// Web App Manifest (served at /manifest.json under the base URI).
-	router.Any(conf.BaseUri("/manifest.json"), manifest)
+	router.Any(conf.BaseUri("/"+fs.ManifestJsonFile), manifest)
 
 	// Serve user interface service worker file.
 	swWorker := func(c *gin.Context) {
