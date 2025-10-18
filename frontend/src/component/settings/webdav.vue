@@ -67,6 +67,7 @@
             style="color: inherit"
             href="https://docs.photoprism.app/user-guide/sync/webdav/"
             target="_blank"
+            rel="noopener"
           >
             {{ $gettext(`Detailed instructions can be found in our User Guide.`) }}
           </a>
