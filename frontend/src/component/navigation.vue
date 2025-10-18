@@ -1151,7 +1151,7 @@ export default {
     },
     showLegalInfo() {
       if (this.config.legalUrl) {
-        window.open(this.config.legalUrl, "_blank").focus();
+        this.$util.openUrl(this.config.legalUrl);
       } else {
         this.$router.push({ name: "about" });
       }

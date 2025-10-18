@@ -268,7 +268,7 @@ export default {
       this.error = "";
     },
     compare() {
-      window.open(links.compare, "_blank").focus();
+      this.$util.openUrl(links.compare);
     },
     connect() {
       this.$view.redirect(links.connect + encodeURIComponent(window.location));
