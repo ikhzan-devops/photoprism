@@ -131,33 +131,42 @@ func (c *Config) NodeThemeVersion() string {
 // lazily loads the token from disk (or generates a new one) and caches it in
 // memory. Example format: k9sEFe6-A7gt6zqm-gY9gFh0.
 func (c *Config) JoinToken() string {
-	if s := strings.TrimSpace(c.options.JoinToken); rnd.IsJoinToken(s, false) {
-		c.options.JoinToken = s
-		return s
+	// Read token from config options (memory).
+	if rnd.IsJoinToken(c.options.JoinToken, false) {
+		return c.options.JoinToken
 	}
 
-	if fileName := c.JoinTokenFile(); fs.FileExistsNotEmpty(fileName) {
-		if b, err := os.ReadFile(fileName); err != nil || len(b) == 0 {
-			log.Warnf("config: could not read cluster join token from %s (%s)", fileName, err)
-		} else if s := strings.TrimSpace(string(b)); rnd.IsJoinToken(s, false) {
-			c.options.JoinToken = s
-			return s
-		} else {
-			log.Warnf("config: cluster join token from %s is shorter than %d characters", fileName, rnd.JoinTokenLength)
+	// Read token from file if possible. Uses a cache to reduce I/O.
+	if fileName := c.JoinTokenFile(); fileName != "" {
+		if c.cache == nil {
+			// Skip cache lookup.
+		} else if s, hit := c.cache.Get(fileName); hit && s != nil {
+			return s.(string)
+		}
+
+		if fs.FileExistsNotEmpty(fileName) {
+			if b, err := os.ReadFile(fileName); err != nil || len(b) == 0 {
+				log.Warnf("config: could not read cluster join token from %s (%s)", fileName, err)
+			} else if s := strings.TrimSpace(string(b)); rnd.IsJoinToken(s, false) {
+				if c.cache != nil {
+					c.cache.SetDefault(fileName, s)
+				}
+				return s
+			} else {
+				log.Warnf("config: cluster join token from %s is shorter than %d characters", fileName, rnd.JoinTokenLength)
+			}
 		}
 	}
 
+	// Do not proceed with generating a token on nodes.
 	if !c.Portal() {
 		return ""
-	}
-
-	token, _, err := c.SaveJoinToken("")
-	if err != nil {
+	} else if token, _, err := c.SaveJoinToken(""); err != nil {
 		log.Errorf("config: %v", err)
 		return ""
+	} else {
+		return token
 	}
-
-	return token
 }
 
 // SaveJoinToken writes a fresh portal join token to disk and updates the
@@ -194,9 +203,18 @@ func (c *Config) SaveJoinToken(customToken string) (token string, fileName strin
 		return "", "", fmt.Errorf("could not write cluster join token (%w)", err)
 	}
 
-	c.options.JoinToken = token
+	if c.cache != nil {
+		c.cache.SetDefault(fileName, token)
+	}
 
 	return token, fileName, nil
+}
+
+// clearJoinTokenFileCache invalidates the cached join token file cache.
+func (c *Config) clearJoinTokenFileCache() {
+	if c.cache != nil {
+		c.cache.Delete(c.JoinTokenFile())
+	}
 }
 
 // JoinTokenFile returns the path where the portal join token is stored for the

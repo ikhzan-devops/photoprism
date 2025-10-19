@@ -438,6 +438,13 @@ func TestConfig_Cluster(t *testing.T) {
 		assert.Equal(t, cluster.ExampleClientSecret, c.NodeClientSecret())
 		assert.Equal(t, cluster.ExampleJoinTokenAlt, c.JoinToken())
 
+		// Refreshing the token file should invalidate the cache.
+		time.Sleep(5 * time.Millisecond)
+		newToken := cluster.ExampleJoinToken
+		assert.NoError(t, os.WriteFile(tkFile, []byte(newToken), fs.ModeSecretFile))
+		c.clearJoinTokenFileCache()
+		assert.Equal(t, newToken, c.JoinToken())
+
 		// Empty / missing should yield empty strings.
 		t.Setenv("PHOTOPRISM_NODE_CLIENT_SECRET_FILE", filepath.Join(dir, "missing"))
 		t.Setenv("PHOTOPRISM_JOIN_TOKEN_FILE", filepath.Join(dir, "missing"))

@@ -43,6 +43,7 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"github.com/klauspost/cpuid/v2"
+	gc "github.com/patrickmn/go-cache"
 	"github.com/pbnjay/memory"
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
@@ -82,6 +83,7 @@ type Config struct {
 	env       string
 	start     bool
 	ready     atomic.Bool
+	cache     *gc.Cache
 }
 
 // Values is a shorthand alias for map[string]interface{}.
@@ -163,6 +165,7 @@ func NewConfig(ctx *cli.Context) *Config {
 		token:   rnd.Base36(8),
 		env:     os.Getenv("DOCKER_ENV"),
 		start:   start,
+		cache:   gc.New(time.Minute, 10*time.Minute),
 	}
 
 	// Override options with values from the "options.yml" file, if it exists.
