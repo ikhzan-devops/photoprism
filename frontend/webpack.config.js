@@ -106,8 +106,8 @@ const config = {
         exclude: [
           /\.map$/,
           /\.txt$/,
-          /\.ttf$/,
-          /\.woff$/,
+          /\.ttf(\?.*)?$/,
+          /\.woff(\?.*)?$/,
           /assets\.json$/,
           /chunk\/.*-json\.[a-f0-9]+\.js$/,
           /locales\/json\/.*\.json$/,
