@@ -141,6 +141,24 @@ func registerWithPortal(c *config.Config, portal *url.URL, token string) error {
 		NodeRole:     c.NodeRole(),
 		AdvertiseUrl: c.AdvertiseUrl(),
 	}
+
+	// Auto-derive Advertise/Site URLs from node name and cluster domain when not configured.
+	if domain := strings.TrimSpace(defaultClusterDomain(c)); domain != "" {
+		if payload.NodeName == "" {
+			payload.NodeName = c.NodeName()
+		}
+
+		if payload.AdvertiseUrl == "" {
+			if u := defaultNodeURL(payload.NodeName, domain); u != "" {
+				payload.AdvertiseUrl = u
+			}
+		}
+
+		if payload.SiteUrl == "" && payload.AdvertiseUrl != "" {
+			payload.SiteUrl = payload.AdvertiseUrl
+		}
+	}
+
 	// Include client credentials when present so the Portal can verify re-registration
 	// and authorize UUID/name changes.
 	if id, secret := strings.TrimSpace(c.NodeClientID()), strings.TrimSpace(c.NodeClientSecret()); id != "" && secret != "" {
@@ -183,10 +201,10 @@ func registerWithPortal(c *config.Config, portal *url.URL, token string) error {
 		case http.StatusOK, http.StatusCreated:
 			var r cluster.RegisterResponse
 			dec := json.NewDecoder(resp.Body)
-			if err := dec.Decode(&r); err != nil {
+			if err = dec.Decode(&r); err != nil {
 				return err
 			}
-			if err := persistRegistration(c, &r, wantRotateDatabase); err != nil {
+			if err = persistRegistration(c, &r, wantRotateDatabase); err != nil {
 				return err
 			}
 			primeJWKS(c, r.JWKSUrl)
@@ -220,6 +238,57 @@ func registerWithPortal(c *config.Config, portal *url.URL, token string) error {
 		}
 	}
 	return nil
+}
+
+// defaultClusterDomain returns the configured cluster domain or, if absent,
+// attempts to derive it from the Portal URL by stripping common prefixes.
+func defaultClusterDomain(c *config.Config) string {
+	if c == nil {
+		return ""
+	}
+
+	domain := strings.TrimSpace(c.ClusterDomain())
+
+	if domain != "" {
+		return strings.Trim(domain, ".")
+	}
+
+	portalURL := strings.TrimSpace(c.PortalUrl())
+
+	if portalURL == "" {
+		return ""
+	}
+
+	u, err := url.Parse(portalURL)
+
+	if err != nil {
+		return ""
+	}
+
+	host := strings.Trim(u.Hostname(), ".")
+
+	if host == "" {
+		return ""
+	}
+
+	// Strip common prefixes like portal.<domain>.
+	if strings.HasPrefix(host, "portal.") && len(host) > len("portal.") {
+		return strings.TrimPrefix(host, "portal.")
+	}
+
+	return host
+}
+
+// defaultNodeURL builds https://<name>.<domain> using sanitized labels.
+func defaultNodeURL(name, domain string) string {
+	name = clean.TypeLowerDash(strings.TrimSpace(name))
+	domain = strings.Trim(strings.ToLower(domain), ".")
+
+	if name == "" || domain == "" {
+		return ""
+	}
+
+	return fmt.Sprintf("https://%s.%s", name, domain)
 }
 
 // isTemporary reports whether the given error represents a temporary network
@@ -288,6 +357,7 @@ func persistRegistration(c *config.Config, r *cluster.RegisterResponse, wantRota
 	}
 
 	wrote, err := ApplyOptionsUpdate(c, updates)
+
 	if err != nil {
 		return err
 	}
@@ -310,13 +380,18 @@ func primeJWKS(c *config.Config, url string) {
 	if c == nil {
 		return
 	}
+
 	url = strings.TrimSpace(url)
+
 	if url == "" {
 		return
 	}
+
 	verifier := clusterjwt.NewVerifier(c)
+
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
+
 	if err := verifier.Prime(ctx, url); err != nil {
 		log.Debugf("cluster: jwks prime skipped (%s)", clean.Error(err))
 	}
@@ -370,20 +445,25 @@ func installThemeIfMissing(c *config.Config, portal *url.URL, token string) erro
 		}
 		zipName := filepath.Join(c.TempPath(), "cluster-theme.zip")
 		out, err := os.Create(zipName)
+
 		if err != nil {
 			return err
 		}
+
 		if _, err = io.Copy(out, resp.Body); err != nil {
 			_ = out.Close()
 			return err
 		}
+
 		_ = out.Close()
 
 		// Extract with moderate limits.
-		if err := fs.MkdirAll(themeDir); err != nil {
+		if err = fs.MkdirAll(themeDir); err != nil {
 			return err
 		}
+
 		_, _, unzipErr := fs.Unzip(zipName, themeDir, 32*fs.MB, 512*fs.MB)
+
 		return unzipErr
 	case http.StatusNotFound:
 		// No theme configured at Portal.
@@ -414,24 +494,32 @@ func oauthAccessToken(c *config.Config, portal *url.URL, clientID, clientSecret 
 	req.Header.Set("Authorization", "Basic "+basic)
 
 	resp, err := newHTTPClient(cluster.BootstrapRegisterTimeout).Do(req)
+
 	if err != nil {
 		return "", err
 	}
+
 	defer resp.Body.Close()
+
 	if resp.StatusCode != http.StatusOK {
 		return "", fmt.Errorf("%s", resp.Status)
 	}
+
 	var tok struct {
 		AccessToken string `json:"access_token"`
 		TokenType   string `json:"token_type"`
 		Scope       string `json:"scope"`
 	}
+
 	dec := json.NewDecoder(resp.Body)
-	if err := dec.Decode(&tok); err != nil {
+
+	if err = dec.Decode(&tok); err != nil {
 		return "", err
 	}
+
 	if tok.AccessToken == "" {
 		return "", fmt.Errorf("empty access_token")
 	}
+
 	return tok.AccessToken, nil
 }

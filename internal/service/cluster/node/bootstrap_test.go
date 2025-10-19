@@ -205,6 +205,47 @@ func TestRegister_SQLite_NoDBPersist(t *testing.T) {
 	assert.Equal(t, "203.0.113.0/24", c.ClusterCIDR())
 }
 
+func TestDefaultClusterDomain(t *testing.T) {
+	t.Run("explicit domain", func(t *testing.T) {
+		c := config.NewMinimalTestConfigWithDb("domain-explicit", t.TempDir())
+		defer c.CloseDb()
+
+		c.Options().ClusterDomain = "photoprism.example"
+		assert.Equal(t, "photoprism.example", defaultClusterDomain(c))
+	})
+
+	t.Run("portal host fallback", func(t *testing.T) {
+		c := config.NewMinimalTestConfigWithDb("domain-portal", t.TempDir())
+		defer c.CloseDb()
+
+		c.Options().PortalUrl = "https://portal.photoprism.example"
+		assert.Equal(t, "photoprism.example", defaultClusterDomain(c))
+	})
+
+	t.Run("no portal domain", func(t *testing.T) {
+		c := config.NewMinimalTestConfigWithDb("domain-none", t.TempDir())
+		defer c.CloseDb()
+
+		c.Options().PortalUrl = "https://localhost:8443"
+		assert.Equal(t, "", defaultClusterDomain(c))
+	})
+
+	t.Run("invalid Portal URL", func(t *testing.T) {
+		c := config.NewMinimalTestConfigWithDb("domain-invalid", t.TempDir())
+		defer c.CloseDb()
+
+		c.Options().PortalUrl = "://bad url"
+		assert.Equal(t, "", defaultClusterDomain(c))
+	})
+}
+
+func TestDefaultNodeURL(t *testing.T) {
+	assert.Equal(t, "https://node1.photoprism.example", defaultNodeURL("Node1", "photoprism.example"))
+	assert.Equal(t, "", defaultNodeURL("", "photoprism.example"))
+	assert.Equal(t, "", defaultNodeURL("node1", ""))
+	assert.Equal(t, "https://node-1.photoprism.example", defaultNodeURL("NODE_1", "photoprism.example"))
+}
+
 func TestRegister_404_NoRetry(t *testing.T) {
 	var hits int
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
