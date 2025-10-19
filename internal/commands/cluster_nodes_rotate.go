@@ -75,10 +75,10 @@ func clusterNodesRotateAction(ctx *cli.Context) error {
 		}
 		token := ctx.String("join-token")
 		if token == "" {
-			token = conf.JoinToken()
+			token = os.Getenv(config.EnvVar("join-token"))
 		}
 		if token == "" {
-			token = os.Getenv(config.EnvVar("join-token"))
+			token = conf.JoinToken()
 		}
 
 		// Default: rotate DB only if no flag given (safer default)

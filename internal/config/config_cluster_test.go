@@ -46,7 +46,7 @@ func TestConfig_PortalUrl(t *testing.T) {
 		assert.True(t, rnd.IsJoinToken(token, false))
 		assert.True(t, rnd.IsJoinToken(token, true))
 
-		secretFile := filepath.Join(c.PortalConfigPath(), "secrets", "join_token")
+		secretFile := filepath.Join(c.PortalConfigPath(), fs.SecretsDir, fs.JoinTokenFile)
 		assert.FileExists(t, secretFile)
 		info, err := os.Stat(secretFile)
 		assert.NoError(t, err)
@@ -281,6 +281,67 @@ func TestConfig_Cluster(t *testing.T) {
 		modTime := time.Date(2025, 10, 18, 12, 0, 0, 0, time.UTC)
 		assert.NoError(t, os.Chtimes(appJS, modTime, modTime))
 		assert.Equal(t, modTime.Format(time.RFC3339), c.NodeThemeVersion())
+	})
+	t.Run("SaveJoinToken", func(t *testing.T) {
+		tempCfg := t.TempDir()
+		ctx := CliTestContext()
+		assert.NoError(t, ctx.Set("config-path", tempCfg))
+		c := NewConfig(ctx)
+		c.options.NodeRole = cluster.RolePortal
+
+		token, tokenFile, err := c.SaveJoinToken("")
+		assert.NoError(t, err)
+		assert.True(t, rnd.IsJoinToken(token, false))
+		assert.FileExists(t, tokenFile)
+
+		data, readErr := os.ReadFile(tokenFile)
+		assert.NoError(t, readErr)
+		assert.Equal(t, token, strings.TrimSpace(string(data)))
+	})
+	t.Run("SaveNodeClientSecret", func(t *testing.T) {
+		tempCfg := t.TempDir()
+		ctx := CliTestContext()
+		assert.NoError(t, ctx.Set("config-path", tempCfg))
+		c := NewConfig(ctx)
+
+		fileName, err := c.SaveNodeClientSecret(cluster.ExampleClientSecret)
+		assert.NoError(t, err)
+		assert.FileExists(t, fileName)
+
+		data, readErr := os.ReadFile(fileName)
+		assert.NoError(t, readErr)
+		assert.Equal(t, cluster.ExampleClientSecret, strings.TrimSpace(string(data)))
+	})
+	t.Run("JoinTokenFilePortal", func(t *testing.T) {
+		tempCfg := t.TempDir()
+		ctx := CliTestContext()
+		assert.NoError(t, ctx.Set("config-path", tempCfg))
+		c := NewConfig(ctx)
+		c.options.NodeRole = cluster.RolePortal
+
+		expected := filepath.Join(c.PortalConfigPath(), fs.SecretsDir, fs.JoinTokenFile)
+		assert.Equal(t, expected, c.JoinTokenFile())
+		assert.Equal(t, expected, c.PortalJoinTokenFile())
+	})
+	t.Run("JoinTokenFileInstance", func(t *testing.T) {
+		tempCfg := t.TempDir()
+		ctx := CliTestContext()
+		assert.NoError(t, ctx.Set("config-path", tempCfg))
+		c := NewConfig(ctx)
+		c.options.NodeRole = cluster.RoleInstance
+
+		expected := filepath.Join(c.NodeConfigPath(), fs.SecretsDir, fs.JoinTokenFile)
+		assert.Equal(t, expected, c.JoinTokenFile())
+		assert.Equal(t, expected, c.NodeJoinTokenFile())
+	})
+	t.Run("NodeClientSecretFile", func(t *testing.T) {
+		tempCfg := t.TempDir()
+		ctx := CliTestContext()
+		assert.NoError(t, ctx.Set("config-path", tempCfg))
+		c := NewConfig(ctx)
+
+		expected := filepath.Join(c.NodeConfigPath(), fs.SecretsDir, fs.ClientSecretFile)
+		assert.Equal(t, expected, c.NodeClientSecretFile())
 	})
 	t.Run("AbsolutePaths", func(t *testing.T) {
 		c := NewConfig(CliTestContext())

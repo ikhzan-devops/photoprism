@@ -24,18 +24,18 @@ const (
 	EnvTest    = "test"
 )
 
-// EnvVar returns the name of the environment variable for the specified config flag.
+// EnvVar returns the environment variable that backs the given CLI flag name.
 func EnvVar(flag string) string {
 	return clean.EnvVar(flag)
 }
 
-// EnvVars returns the names of the environment variable for the specified config flag.
+// EnvVars converts a list of flag names to their corresponding environment variables.
 func EnvVars(flags ...string) (vars []string) {
 	return clean.EnvVars(flags...)
 }
 
-// Env checks whether the specified boolean command-line or environment flag is set and can be used independently,
-// i.e. before the options are initialized with the values found in config files, the environment or CLI flags.
+// Env reports whether any of the provided boolean flags are set via environment
+// variable or CLI switch, before configuration files are processed.
 func Env(vars ...string) bool {
 	for _, s := range vars {
 		if (txt.Bool(os.Getenv(EnvVar(s))) || list.Contains(os.Args, "--"+s)) &&
@@ -47,12 +47,12 @@ func Env(vars ...string) bool {
 	return false
 }
 
-// FlagFileVar returns the name of the environment variable that can contain a filename to load a config value from.
+// FlagFileVar returns the environment variable that contains a file path for a flag.
 func FlagFileVar(flag string) string {
 	return EnvVar(flag) + "_FILE"
 }
 
-// FlagFilePath returns the name of the that contains the value of the specified config flag, if any.
+// FlagFilePath resolves the path provided via the *_FILE environment variable for a flag.
 func FlagFilePath(flag string) string {
 	if envVar := os.Getenv(FlagFileVar(flag)); envVar == "" {
 		return ""

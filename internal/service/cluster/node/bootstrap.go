@@ -321,7 +321,9 @@ func persistRegistration(c *config.Config, r *cluster.RegisterResponse, wantRota
 
 	// Persist node client secret only if missing locally and provided by server.
 	if r.Secrets != nil && r.Secrets.ClientSecret != "" && c.NodeClientSecret() == "" {
-		updates.SetNodeClientSecret(r.Secrets.ClientSecret)
+		if _, err := c.SaveNodeClientSecret(r.Secrets.ClientSecret); err != nil {
+			return fmt.Errorf("failed to persist node client secret: %w", err)
+		}
 	}
 
 	if jwksUrl := strings.TrimSpace(r.JWKSUrl); jwksUrl != "" {
