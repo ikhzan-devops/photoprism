@@ -137,7 +137,7 @@ func clusterNodesRotateAction(ctx *cli.Context) error {
 			NodeName:       name,
 			RotateDatabase: rotateDatabase,
 			RotateSecret:   rotateSecret,
-			AppName:        clean.TypeUnicode(conf.AppName()),
+			AppName:        clean.TypeUnicode(conf.Name()),
 			AppVersion:     clean.TypeUnicode(conf.Version()),
 		}
 		if themeVersion, err := theme.DetectVersion(conf.ThemePath()); err == nil && themeVersion != "" {

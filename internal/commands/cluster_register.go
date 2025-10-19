@@ -117,7 +117,7 @@ func clusterRegisterAction(ctx *cli.Context) error {
 		overrideAppName := clean.TypeUnicode(ctx.String("app-name"))
 		overrideAppVersion := clean.TypeUnicode(ctx.String("app-version"))
 
-		defaultAppName := clean.TypeUnicode(conf.AppName())
+		defaultAppName := clean.TypeUnicode(conf.Name())
 		defaultAppVersion := clean.TypeUnicode(conf.Version())
 
 		if overrideAppName == "" {

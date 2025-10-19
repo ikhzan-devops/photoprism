@@ -221,7 +221,7 @@ Frequently Touched Files (by topic)
 - Workers: `internal/workers/*`
 - Cluster: `internal/service/cluster/*`
   - Theme support: `internal/service/cluster/theme/version.go` exposes `DetectVersion`, used by bootstrap, CLI, and API handlers to compare portal vs node theme revisions (prefers `fs.VersionTxtFile`, falls back to `app.js` mtime).
-  - Registration sanitizes `AppName`, `AppVersion`, and `Theme` with `clean.TypeUnicode`; `cluster.RegisterResponse` now includes a `Theme` hint when the portal has a newer bundle so nodes can decide whether to download immediately.
+  - Registration sanitizes `AppName`, `AppVersion`, and `Theme` with `clean.TypeUnicode`; defaults for app metadata come from `config.Name()` / `config.Version()`. `cluster.RegisterResponse` now includes a `Theme` hint when the portal has a newer bundle so nodes can decide whether to download immediately.
 - Headers: `pkg/service/http/header/*`
 
 Downloads (CLI) & yt-dlp helpers

@@ -141,7 +141,7 @@ func registerWithPortal(c *config.Config, portal *url.URL, token string) error {
 		NodeUUID:     c.NodeUUID(),
 		NodeRole:     c.NodeRole(),
 		AdvertiseUrl: c.AdvertiseUrl(),
-		AppName:      clean.TypeUnicode(c.AppName()),
+		AppName:      clean.TypeUnicode(c.Name()),
 		AppVersion:   clean.TypeUnicode(c.Version()),
 	}
 
