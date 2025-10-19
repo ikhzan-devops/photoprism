@@ -500,6 +500,7 @@
                       <BatchChipSelector
                         v-model:items="labelItems"
                         :available-items="availableLabelOptions"
+                        :resolve-item-from-text="resolveLabelFromText"
                         :input-placeholder="$gettext('Enter label name...')"
                         :empty-text="$gettext('No labels assigned')"
                         :loading="loading"
@@ -847,6 +848,44 @@ export default {
     }
   },
   methods: {
+    resolveLabelFromText(inputTitle) {
+      if (!inputTitle || !Array.isArray(this.availableLabelOptions)) {
+        return null;
+      }
+
+      const t = String(inputTitle).trim();
+      if (!t) return null;
+
+      const normalize = (s) =>
+        s
+          .toLowerCase()
+          .replace(/&/g, "and")
+          .replace(/[+_\-]+/g, " ")
+          .replace(/[^a-z0-9 ]+/g, "")
+          .replace(/\s+/g, " ")
+          .trim();
+      const toSlug = (s) =>
+        s
+          .toLowerCase()
+          .replace(/&/g, "and")
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/-+/g, "-")
+          .replace(/^-|-$/g, "");
+
+      const nt = normalize(t);
+      const st = toSlug(t);
+
+      let found = this.availableLabelOptions.find((o) => o.title.toLowerCase() === t.toLowerCase());
+      if (found) return { value: found.value, title: found.title };
+
+      found = this.availableLabelOptions.find((o) => o.slug === st || o.customSlug === st);
+      if (found) return { value: found.value, title: found.title };
+
+      found = this.availableLabelOptions.find((o) => normalize(o.title) === nt);
+      if (found) return { value: found.value, title: found.title };
+
+      return { value: "", title: t };
+    },
     changeValue(newValue, fieldType, fieldName) {
       if (!fieldName) return;
 
@@ -1504,7 +1543,6 @@ export default {
       try {
         this.loading = true;
 
-        // Fetch albums and labels using existing model search
         const [albumsResponse, labelsResponse] = await Promise.all([
           Album.search({ count: 1000, type: "album", order: "name" }),
           Label.search({ count: 1000, order: "name" }),
@@ -1518,6 +1556,8 @@ export default {
         this.availableLabelOptions = (labelsResponse.models || []).map((label) => ({
           value: label.UID,
           title: label.Name,
+          slug: (label.Slug || "").toLowerCase(),
+          customSlug: (label.CustomSlug || "").toLowerCase(),
         }));
       } catch (error) {
         console.error("Error fetching available options:", error);

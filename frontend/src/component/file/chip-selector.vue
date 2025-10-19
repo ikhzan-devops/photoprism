@@ -96,6 +96,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    resolveItemFromText: {
+      type: Function,
+      default: null,
+    },
   },
   emits: ["update:items"],
   data() {
@@ -247,12 +251,31 @@ export default {
 
       if (!title) return;
 
+      if (typeof this.resolveItemFromText === "function") {
+        const resolved = this.resolveItemFromText(title);
+        if (resolved && typeof resolved === "object") {
+          if (resolved.title) title = resolved.title;
+          if (resolved.value) value = resolved.value;
+        }
+      }
+
+      const normalizedTitle = title.toLowerCase();
       const existingItem = this.items.find(
-        (item) => item.title.toLowerCase() === title.toLowerCase() || (item.value && item.value === value)
+        (item) => (item.value && value && item.value === value) || item.title.toLowerCase() === normalizedTitle
       );
 
       if (existingItem) {
-        // Item already exists, skip adding
+        this.$nextTick(() => {
+          this.newItemTitle = "";
+          if (this.$refs.inputField) {
+            this.$refs.inputField.blur();
+            setTimeout(() => {
+              this.newItemTitle = null;
+            }, 10);
+          } else {
+            this.newItemTitle = null;
+          }
+        });
         return;
       }
 
