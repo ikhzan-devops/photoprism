@@ -63,7 +63,8 @@ func ClusterGetTheme(router *gin.RouterGroup) {
 			AbortFeatureDisabled(c)
 			return
 		}
-		themePath := conf.ThemePath()
+
+		themePath := conf.PortalThemePath()
 
 		// Resolve symbolic links.
 		if resolved, err := filepath.EvalSymlinks(themePath); err != nil {
