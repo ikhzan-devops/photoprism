@@ -78,7 +78,7 @@ func InitConfig(c *config.Config) error {
 			// Registration errors are expected when the Portal is temporarily unavailable
 			// or not configured with cluster endpoints (404). Keep as warn to signal
 			// exhaustion/terminal errors; per-attempt details are logged at debug level.
-			log.Warnf("cluster: register failed (%s)", clean.Error(err))
+			log.Warnf("cluster: could not join (%s)", clean.Error(err))
 		}
 	}
 
@@ -86,11 +86,14 @@ func InitConfig(c *config.Config) error {
 	if cluster.BootstrapAutoThemeEnabled {
 		if err = installThemeIfMissing(c, u, joinToken); err != nil {
 			// Theme install failures are non-critical; log at debug to avoid noise.
-			log.Debugf("cluster: theme install skipped/failed (%s)", clean.Error(err))
+			log.Debugf("cluster: could not install theme (%s)", clean.Error(err))
 		}
 	}
 
-	log.Infof("cluster: uuid %s", clean.Log(c.ClusterUUID()))
+	// Log cluster UUID.
+	if uuid := c.ClusterUUID(); uuid != "" {
+		log.Infof("cluster: UUID %s", clean.Log(uuid))
+	}
 
 	return nil
 }
@@ -166,7 +169,7 @@ func registerWithPortal(c *config.Config, portal *url.URL, token string) error {
 		resp, err := newHTTPClient(timeout).Do(req)
 		if err != nil {
 			if attempt < maxAttempts {
-				log.Debugf("cluster: register attempt %d/%d error: %s", attempt, maxAttempts, clean.Error(err))
+				log.Debugf("cluster: join attempt %d/%d error: %s", attempt, maxAttempts, clean.Error(err))
 				time.Sleep(delay)
 				continue
 			}
@@ -188,7 +191,7 @@ func registerWithPortal(c *config.Config, portal *url.URL, token string) error {
 			}
 			primeJWKS(c, r.JWKSUrl)
 			if resp.StatusCode == http.StatusCreated {
-				log.Infof("cluster: registered as %s (%d)", clean.LogQuote(r.Node.Name), resp.StatusCode)
+				log.Infof("cluster: joined as %s (%d)", clean.LogQuote(r.Node.Name), resp.StatusCode)
 			} else {
 				log.Infof("cluster: registration ok (%d)", resp.StatusCode)
 			}
@@ -198,7 +201,7 @@ func registerWithPortal(c *config.Config, portal *url.URL, token string) error {
 			return errors.New(resp.Status)
 		case http.StatusTooManyRequests:
 			if attempt < maxAttempts {
-				log.Debugf("cluster: register attempt %d/%d rate limited", attempt, maxAttempts)
+				log.Debugf("cluster: join attempt %d/%d rate limited", attempt, maxAttempts)
 				time.Sleep(delay)
 				continue
 			}
@@ -208,7 +211,7 @@ func registerWithPortal(c *config.Config, portal *url.URL, token string) error {
 			return errors.New(resp.Status)
 		default:
 			if attempt < maxAttempts {
-				log.Debugf("cluster: register attempt %d/%d server responded %s", attempt, maxAttempts, resp.Status)
+				log.Debugf("cluster: join attempt %d/%d server responded %s", attempt, maxAttempts, resp.Status)
 				// TODO: Consider exponential backoff with jitter instead of constant delay.
 				time.Sleep(delay)
 				continue
