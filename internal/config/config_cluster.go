@@ -2,7 +2,6 @@ package config
 
 import (
 	"errors"
-	"net"
 	urlpkg "net/url"
 	"os"
 	"path/filepath"
@@ -303,7 +302,7 @@ func (c *Config) SetJWKSUrl(url string) {
 	case "https":
 		// Always allowed.
 	case "http":
-		if !isLoopbackHost(host) {
+		if !dns.IsLoopbackHost(host) {
 			log.Warnf("config: rejecting JWKS URL %q (http only allowed for localhost/loopback)", trimmed)
 			return
 		}
@@ -361,23 +360,6 @@ func (c *Config) AdvertiseUrl() string {
 		}
 	}
 	return c.SiteUrl()
-}
-
-// isLoopbackHost returns true when host represents localhost or a loopback IP.
-func isLoopbackHost(host string) bool {
-	if host == "" {
-		return false
-	}
-
-	if strings.EqualFold(host, "localhost") {
-		return true
-	}
-
-	if ip := net.ParseIP(host); ip != nil {
-		return ip.IsLoopback()
-	}
-
-	return false
 }
 
 // SaveClusterUUID writes or updates the ClusterUUID key in options.yml without
