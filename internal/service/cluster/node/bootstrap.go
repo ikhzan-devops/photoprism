@@ -272,6 +272,15 @@ func defaultClusterDomain(c *config.Config) string {
 	}
 
 	// Strip common prefixes like portal.<domain>.
+	if isLocalHost(host) {
+		return ""
+	}
+
+	if ip := net.ParseIP(host); ip != nil {
+		// Prefer DNS domains over raw IP addresses; leave empty so caller can decide.
+		return ""
+	}
+
 	if strings.HasPrefix(host, "portal.") && len(host) > len("portal.") {
 		return strings.TrimPrefix(host, "portal.")
 	}

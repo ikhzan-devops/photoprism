@@ -213,7 +213,6 @@ func TestDefaultClusterDomain(t *testing.T) {
 		c.Options().ClusterDomain = "photoprism.example"
 		assert.Equal(t, "photoprism.example", defaultClusterDomain(c))
 	})
-
 	t.Run("portal host fallback", func(t *testing.T) {
 		c := config.NewMinimalTestConfigWithDb("domain-portal", t.TempDir())
 		defer c.CloseDb()
@@ -221,7 +220,6 @@ func TestDefaultClusterDomain(t *testing.T) {
 		c.Options().PortalUrl = "https://portal.photoprism.example"
 		assert.Equal(t, "photoprism.example", defaultClusterDomain(c))
 	})
-
 	t.Run("no portal domain", func(t *testing.T) {
 		c := config.NewMinimalTestConfigWithDb("domain-none", t.TempDir())
 		defer c.CloseDb()
@@ -229,7 +227,13 @@ func TestDefaultClusterDomain(t *testing.T) {
 		c.Options().PortalUrl = "https://localhost:8443"
 		assert.Equal(t, "", defaultClusterDomain(c))
 	})
+	t.Run("portal ip fallback empty", func(t *testing.T) {
+		c := config.NewMinimalTestConfigWithDb("domain-ip", t.TempDir())
+		defer c.CloseDb()
 
+		c.Options().PortalUrl = "https://203.0.113.10"
+		assert.Equal(t, "", defaultClusterDomain(c))
+	})
 	t.Run("invalid Portal URL", func(t *testing.T) {
 		c := config.NewMinimalTestConfigWithDb("domain-invalid", t.TempDir())
 		defer c.CloseDb()
