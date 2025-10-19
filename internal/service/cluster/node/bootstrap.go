@@ -21,6 +21,7 @@ import (
 	"github.com/photoprism/photoprism/internal/config"
 	"github.com/photoprism/photoprism/internal/event"
 	"github.com/photoprism/photoprism/internal/service/cluster"
+	"github.com/photoprism/photoprism/internal/service/cluster/theme"
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/fs"
 	"github.com/photoprism/photoprism/pkg/rnd"
@@ -140,6 +141,12 @@ func registerWithPortal(c *config.Config, portal *url.URL, token string) error {
 		NodeUUID:     c.NodeUUID(),
 		NodeRole:     c.NodeRole(),
 		AdvertiseUrl: c.AdvertiseUrl(),
+		AppName:      clean.TypeUnicode(c.AppName()),
+		AppVersion:   clean.TypeUnicode(c.Version()),
+	}
+
+	if v, err := theme.DetectVersion(c.ThemePath()); err == nil && v != "" {
+		payload.Theme = v
 	}
 
 	// Auto-derive Advertise/Site URLs from node name and cluster domain when not configured.

@@ -12,6 +12,7 @@ import (
 	"github.com/photoprism/photoprism/internal/config"
 	"github.com/photoprism/photoprism/internal/service/cluster"
 	reg "github.com/photoprism/photoprism/internal/service/cluster/registry"
+	"github.com/photoprism/photoprism/internal/service/cluster/theme"
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/txt"
 	"github.com/photoprism/photoprism/pkg/txt/report"
@@ -136,6 +137,11 @@ func clusterNodesRotateAction(ctx *cli.Context) error {
 			NodeName:       name,
 			RotateDatabase: rotateDatabase,
 			RotateSecret:   rotateSecret,
+			AppName:        clean.TypeUnicode(conf.AppName()),
+			AppVersion:     clean.TypeUnicode(conf.Version()),
+		}
+		if themeVersion, err := theme.DetectVersion(conf.ThemePath()); err == nil && themeVersion != "" {
+			payload.Theme = themeVersion
 		}
 		b, _ := json.Marshal(payload)
 

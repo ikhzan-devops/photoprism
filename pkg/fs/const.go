@@ -45,4 +45,5 @@ const (
 	AssetsJsonFile   = "assets.json"
 	ManifestJsonFile = "manifest.json"
 	SwJsFile         = "sw.js"
+	VersionTxtFile   = "version.txt"
 )

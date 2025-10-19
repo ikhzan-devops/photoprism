@@ -17,6 +17,7 @@ import (
 	"github.com/photoprism/photoprism/internal/service/cluster"
 	"github.com/photoprism/photoprism/internal/service/cluster/provisioner"
 	reg "github.com/photoprism/photoprism/internal/service/cluster/registry"
+	"github.com/photoprism/photoprism/internal/service/cluster/theme"
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/rnd"
 	"github.com/photoprism/photoprism/pkg/service/http/header"
@@ -33,7 +34,7 @@ var RegisterRequireClientSecret = true
 //	@Tags		Cluster
 //	@Accept		json
 //	@Produce	json
-//	@Param		request				body		object	true	"registration payload (NodeName required; optional: NodeRole, Labels, AdvertiseUrl, SiteUrl; to authorize UUID/name changes include ClientID+ClientSecret; rotation: RotateDatabase, RotateSecret)"
+//	@Param		request				body		object	true	"registration payload (NodeName required; optional: NodeRole, Labels, AdvertiseUrl, SiteUrl, AppName, AppVersion, Theme; to authorize UUID/name changes include ClientID+ClientSecret; rotation: RotateDatabase, RotateSecret)"
 //	@Success	200,201				{object}	cluster.RegisterResponse
 //	@Failure	400,401,403,409,429	{object}	i18n.Response
 //	@Router		/api/v1/cluster/nodes/register [post]
@@ -76,6 +77,10 @@ func ClusterNodesRegister(router *gin.RouterGroup) {
 			AbortBadRequest(c)
 			return
 		}
+
+		appName := clean.TypeUnicode(req.AppName)
+		appVersion := clean.TypeUnicode(req.AppVersion)
+		nodeTheme := clean.TypeUnicode(req.Theme)
 
 		// If an existing ClientID is provided, require the corresponding client secret for verification.
 		if RegisterRequireClientSecret && req.ClientID != "" {
@@ -139,6 +144,11 @@ func ClusterNodesRegister(router *gin.RouterGroup) {
 			return
 		}
 
+		portalTheme := ""
+		if t, err := theme.DetectVersion(conf.PortalThemePath()); err == nil {
+			portalTheme = t
+		}
+
 		// Try to find existing node.
 		if n, _ := regy.FindByName(name); n != nil {
 			// If caller attempts to change UUID by name without proving client secret, block with 409.
@@ -158,6 +168,15 @@ func ClusterNodesRegister(router *gin.RouterGroup) {
 			}
 			if s := normalizeSiteURL(req.SiteUrl); s != "" {
 				n.SiteUrl = s
+			}
+			if appName != "" {
+				n.AppName = appName
+			}
+			if appVersion != "" {
+				n.AppVersion = appVersion
+			}
+			if nodeTheme != "" {
+				n.Theme = nodeTheme
 			}
 			// Apply UUID changes for existing node: if a UUID was requested and differs, or if none exists yet.
 			if requestedUUID != "" {
@@ -239,6 +258,10 @@ func ClusterNodesRegister(router *gin.RouterGroup) {
 				AlreadyProvisioned: n.Database != nil && n.Database.Name != "",
 			}
 
+			if portalTheme != "" && (nodeTheme == "" || nodeTheme != portalTheme) {
+				resp.Theme = portalTheme
+			}
+
 			if n.Database != nil {
 				resp.Database = cluster.RegisterDatabase{Host: conf.DatabaseHost(), Port: conf.DatabasePort(), Name: n.Database.Name, User: n.Database.User, Driver: provisioner.DatabaseDriver, RotatedAt: n.Database.RotatedAt}
 			}
@@ -258,10 +281,13 @@ func ClusterNodesRegister(router *gin.RouterGroup) {
 		// New node (client UID will be generated in registry.Put).
 		n := &reg.Node{
 			Node: cluster.Node{
-				Name:   name,
-				Role:   clean.TypeLowerDash(req.NodeRole),
-				UUID:   requestedUUID,
-				Labels: req.Labels,
+				Name:       name,
+				Role:       clean.TypeLowerDash(req.NodeRole),
+				UUID:       requestedUUID,
+				Labels:     req.Labels,
+				AppName:    appName,
+				AppVersion: appVersion,
+				Theme:      nodeTheme,
 			},
 		}
 
@@ -318,6 +344,10 @@ func ClusterNodesRegister(router *gin.RouterGroup) {
 			AlreadyProvisioned: shouldProvisionDB,
 		}
 
+		if portalTheme != "" && (nodeTheme == "" || nodeTheme != portalTheme) {
+			resp.Theme = portalTheme
+		}
+
 		if shouldProvisionDB {
 			resp.Database = cluster.RegisterDatabase{Host: conf.DatabaseHost(), Port: conf.DatabasePort(), Name: creds.Name, User: creds.User, Driver: provisioner.DatabaseDriver, Password: creds.Password, DSN: creds.DSN, RotatedAt: creds.RotatedAt}
 		}
@@ -334,23 +364,31 @@ func ClusterNodesRegister(router *gin.RouterGroup) {
 // Rules: require http/https scheme, non-empty host, <=255 chars; lowercase host.
 func normalizeSiteURL(u string) string {
 	u = strings.TrimSpace(u)
+
 	if u == "" {
 		return ""
 	}
+
 	if len(u) > 255 {
 		return ""
 	}
+
 	parsed, err := url.Parse(u)
+
 	if err != nil {
 		return ""
 	}
+
 	if parsed.Scheme != "http" && parsed.Scheme != "https" {
 		return ""
 	}
+
 	if parsed.Host == "" {
 		return ""
 	}
+
 	parsed.Host = strings.ToLower(parsed.Host)
+
 	return parsed.String()
 }
 
@@ -358,19 +396,24 @@ func normalizeSiteURL(u string) string {
 // and requires https for non-local hosts. http is allowed only for localhost/127.0.0.1/::1.
 func validateAdvertiseURL(u string) bool {
 	parsed, err := url.Parse(strings.TrimSpace(u))
+
 	if err != nil || parsed.Scheme == "" || parsed.Host == "" {
 		return false
 	}
+
 	host := strings.ToLower(parsed.Hostname())
+
 	if parsed.Scheme == "https" {
 		return true
 	}
+
 	if parsed.Scheme == "http" {
 		if host == "localhost" || host == "127.0.0.1" || host == "::1" {
 			return true
 		}
 		return false
 	}
+
 	return false
 }
 
@@ -378,17 +421,23 @@ func buildJWKSURL(conf *config.Config) string {
 	if conf == nil {
 		return "/.well-known/jwks.json"
 	}
+
 	path := conf.BaseUri("/.well-known/jwks.json")
+
 	if path == "" {
 		path = "/.well-known/jwks.json"
 	}
+
 	if !strings.HasPrefix(path, "/") {
 		path = "/" + path
 	}
+
 	site := strings.TrimRight(conf.SiteUrl(), "/")
+
 	if site == "" {
 		return path
 	}
+
 	return site + path
 }
 
