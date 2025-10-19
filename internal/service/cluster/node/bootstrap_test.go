@@ -88,7 +88,7 @@ func TestRegister_PersistSecretAndDB(t *testing.T) {
 	c.Options().JoinToken = cluster.ExampleJoinToken
 	c.Options().SiteUrl = expectedSite
 	c.Options().AdvertiseUrl = expectedSite
-	expectedAppName = c.Name()
+	expectedAppName = c.About()
 	expectedAppVersion = c.Version()
 	// Gate rotate=true: driver mysql and no DSN/fields.
 	c.Options().DatabaseDriver = config.MySQL
