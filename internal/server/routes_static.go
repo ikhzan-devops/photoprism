@@ -2,13 +2,11 @@ package server
 
 import (
 	"net/http"
-	"regexp"
 
 	"github.com/gin-gonic/gin"
 
 	"github.com/photoprism/photoprism/internal/api"
 	"github.com/photoprism/photoprism/internal/config"
-	"github.com/photoprism/photoprism/pkg/fs"
 	"github.com/photoprism/photoprism/pkg/i18n"
 	"github.com/photoprism/photoprism/pkg/service/http/header"
 )
@@ -61,29 +59,6 @@ func registerStaticRoutes(router *gin.Engine, conf *config.Config) {
 		{
 			group.Static("", dir)
 		}
-
-		// Handle hashed Workbox runtime requests (e.g. workbox-<hash>.js) separately.
-		// These files live under the static build directory, so we sanitize the hash and
-		// serve them via StaticBuildFile. Regular assets under /static still flow through
-		// the group.Static handler above, so this check only runs for the service worker helper.
-		workboxPattern := regexp.MustCompile(`^[A-Za-z0-9_-]+$`)
-		router.GET(conf.BaseUri("/workbox-:hash.js"), func(c *gin.Context) {
-			hash := c.Param("hash")
-			if !workboxPattern.MatchString(hash) {
-				c.Status(http.StatusNotFound)
-				return
-			}
-
-			fileName := "workbox-" + hash + ".js"
-			filePath := conf.StaticBuildFile(fileName)
-
-			if !fs.FileExists(filePath) {
-				c.Status(http.StatusNotFound)
-				return
-			}
-
-			c.File(filePath)
-		})
 	}
 
 	// Serves custom static assets if folder exists.
