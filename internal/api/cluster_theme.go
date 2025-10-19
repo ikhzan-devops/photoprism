@@ -68,7 +68,7 @@ func ClusterGetTheme(router *gin.RouterGroup) {
 
 		// Resolve symbolic links.
 		if resolved, err := filepath.EvalSymlinks(themePath); err != nil {
-			event.AuditWarn([]string{clientIp, "session %s", string(acl.ResourceCluster), "theme", "download", "failed to resolve path"}, refID, clean.Error(err))
+			event.AuditWarn([]string{clientIp, "session %s", string(acl.ResourceCluster), "theme", "download", "%s"}, refID, clean.Error(err))
 			AbortNotFound(c)
 			return
 		} else {
