@@ -111,7 +111,7 @@ const config = {
           /assets\.json$/,
           /chunk\/.*-json\.[a-f0-9]+\.js$/,
           /locales\/json\/.*\.json$/,
-          /share\.[a-f0-9]+\.(?:js|css)$/,
+          /share\.[a-f0-9]+\.(js|css)$/,
         ],
         modifyURLPrefix: {
           "": "static/build/",
