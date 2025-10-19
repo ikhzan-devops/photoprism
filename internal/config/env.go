@@ -2,8 +2,8 @@ package config
 
 import (
 	"os"
-	"strings"
 
+	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/fs"
 	"github.com/photoprism/photoprism/pkg/list"
 	"github.com/photoprism/photoprism/pkg/txt"
@@ -26,18 +26,12 @@ const (
 
 // EnvVar returns the name of the environment variable for the specified config flag.
 func EnvVar(flag string) string {
-	return "PHOTOPRISM_" + strings.ToUpper(strings.ReplaceAll(flag, "-", "_"))
+	return clean.EnvVar(flag)
 }
 
 // EnvVars returns the names of the environment variable for the specified config flag.
 func EnvVars(flags ...string) (vars []string) {
-	vars = make([]string, len(flags))
-
-	for i, flag := range flags {
-		vars[i] = EnvVar(flag)
-	}
-
-	return vars
+	return clean.EnvVars(flags...)
 }
 
 // Env checks whether the specified boolean command-line or environment flag is set and can be used independently,

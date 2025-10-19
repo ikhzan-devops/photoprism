@@ -11,6 +11,7 @@ import (
 	"gopkg.in/yaml.v2"
 
 	"github.com/photoprism/photoprism/internal/service/cluster"
+	"github.com/photoprism/photoprism/internal/service/cluster/theme"
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/fs"
 	"github.com/photoprism/photoprism/pkg/list"
@@ -89,12 +90,12 @@ func (c *Config) Portal() bool {
 	return c.NodeRole() == cluster.RolePortal
 }
 
-// PortalConfigPath returns the path to the default configuration for cluster nodes.
+// PortalConfigPath returns the path to the default configuration for cluster portals.
 func (c *Config) PortalConfigPath() string {
 	return filepath.Join(c.ConfigPath(), fs.PortalDir)
 }
 
-// PortalThemePath returns the path to the theme files for cluster nodes to use.
+// PortalThemePath returns the path to the theme files for cluster portals to use.
 func (c *Config) PortalThemePath() string {
 	themeDir := filepath.Join(c.PortalConfigPath(), fs.ThemeDir)
 
@@ -104,6 +105,25 @@ func (c *Config) PortalThemePath() string {
 
 	// Fallback to the default theme directory in the main config path.
 	return c.ThemePath()
+}
+
+// NodeConfigPath returns the path to the default configuration for cluster nodes.
+func (c *Config) NodeConfigPath() string {
+	return filepath.Join(c.ConfigPath(), fs.NodeDir)
+}
+
+// NodeThemePath returns the path to the theme files for cluster nodes to use.
+func (c *Config) NodeThemePath() string {
+	return filepath.Join(c.NodeConfigPath(), fs.ThemeDir)
+}
+
+// NodeThemeVersion returns the version to the theme files of the cluster node.
+func (c *Config) NodeThemeVersion() string {
+	if version, err := theme.DetectVersion(c.NodeThemePath()); err == nil {
+		return version
+	}
+
+	return ""
 }
 
 // JoinToken returns the token required to use the node register API endpoint.

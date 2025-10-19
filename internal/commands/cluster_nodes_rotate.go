@@ -144,7 +144,7 @@ func clusterNodesRotateAction(ctx *cli.Context) error {
 		if themeVersion, err := theme.DetectVersion(conf.ThemePath()); err == nil && themeVersion != "" {
 			payload.Theme = themeVersion
 		}
-		
+
 		b, _ := json.Marshal(payload)
 
 		endpointUrl := stringsTrimRightSlash(portalURL) + "/api/v1/cluster/nodes/register"

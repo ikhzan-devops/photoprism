@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v2"
@@ -247,6 +248,38 @@ func TestConfig_Cluster(t *testing.T) {
 		assert.Equal(t, "https://portal.example.test", c.PortalUrl())
 		assert.Equal(t, cluster.ExampleJoinToken, c.JoinToken())
 		assert.Equal(t, "node-secret", c.NodeClientSecret())
+	})
+	t.Run("NodePathsAndVersion", func(t *testing.T) {
+		tempCfg := t.TempDir()
+		ctx := CliTestContext()
+		assert.NoError(t, ctx.Set("config-path", tempCfg))
+		c := NewConfig(ctx)
+
+		expectedNode := filepath.Join(c.ConfigPath(), fs.NodeDir)
+		assert.Equal(t, expectedNode, c.NodeConfigPath())
+
+		expectedTheme := filepath.Join(expectedNode, fs.ThemeDir)
+		assert.Equal(t, expectedTheme, c.NodeThemePath())
+
+		// No files yet → empty version.
+		assert.Equal(t, "", c.NodeThemeVersion())
+
+		assert.NoError(t, os.MkdirAll(expectedTheme, fs.ModeDir))
+
+		// Version file takes precedence and is sanitized.
+		appJsFile := filepath.Join(expectedTheme, fs.AppJsFile)
+		assert.NoError(t, os.WriteFile(appJsFile, []byte(`{foo:"bar"}`), fs.ModeFile))
+		versionFile := filepath.Join(expectedTheme, fs.VersionTxtFile)
+		assert.NoError(t, os.WriteFile(versionFile, []byte(" demo-theme \n"), fs.ModeFile))
+		assert.Equal(t, "demo-theme", c.NodeThemeVersion())
+
+		// Removing version file should fall back to app.js modification time.
+		assert.NoError(t, os.Remove(versionFile))
+		appJS := filepath.Join(expectedTheme, fs.AppJsFile)
+		assert.NoError(t, os.WriteFile(appJS, []byte("console.log('theme');\n"), fs.ModeFile))
+		modTime := time.Date(2025, 10, 18, 12, 0, 0, 0, time.UTC)
+		assert.NoError(t, os.Chtimes(appJS, modTime, modTime))
+		assert.Equal(t, modTime.Format(time.RFC3339), c.NodeThemeVersion())
 	})
 	t.Run("AbsolutePaths", func(t *testing.T) {
 		c := NewConfig(CliTestContext())

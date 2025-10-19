@@ -21,7 +21,6 @@ import (
 	"github.com/photoprism/photoprism/internal/config"
 	"github.com/photoprism/photoprism/internal/event"
 	"github.com/photoprism/photoprism/internal/service/cluster"
-	"github.com/photoprism/photoprism/internal/service/cluster/theme"
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/fs"
 	"github.com/photoprism/photoprism/pkg/rnd"
@@ -74,8 +73,9 @@ func InitConfig(c *config.Config) error {
 	}
 
 	// Register with retry policy.
+	var registerResp *cluster.RegisterResponse
 	if cluster.BootstrapAutoJoinEnabled {
-		if err = registerWithPortal(c, u, joinToken); err != nil {
+		if registerResp, err = registerWithPortal(c, u, joinToken); err != nil {
 			// Registration errors are expected when the Portal is temporarily unavailable
 			// or not configured with cluster endpoints (404). Keep as warn to signal
 			// exhaustion/terminal errors; per-attempt details are logged at debug level.
@@ -83,12 +83,13 @@ func InitConfig(c *config.Config) error {
 		}
 	}
 
-	// Pull theme if missing.
+	// Pull theme if missing or outdated, and activate it when present.
 	if cluster.BootstrapAutoThemeEnabled {
-		if err = installThemeIfMissing(c, u, joinToken); err != nil {
+		if err = syncNodeTheme(c, u, registerResp); err != nil {
 			// Theme install failures are non-critical; log at debug to avoid noise.
 			log.Debugf("cluster: could not install theme (%s)", clean.Error(err))
 		}
+		activateNodeThemeIfPresent(c)
 	}
 
 	// Log cluster UUID.
@@ -125,7 +126,7 @@ func newHTTPClient(timeout time.Duration) *http.Client {
 // registerWithPortal attempts to register the node with the Portal, retrying on
 // transient errors up to the configured limits. Successful registrations update
 // local configuration and prime JWKS credentials.
-func registerWithPortal(c *config.Config, portal *url.URL, token string) error {
+func registerWithPortal(c *config.Config, portal *url.URL, token string) (*cluster.RegisterResponse, error) {
 	maxAttempts := cluster.BootstrapRegisterMaxAttempts
 	delay := cluster.BootstrapRegisterRetryDelay
 	timeout := cluster.BootstrapRegisterTimeout
@@ -143,10 +144,7 @@ func registerWithPortal(c *config.Config, portal *url.URL, token string) error {
 		AdvertiseUrl: c.AdvertiseUrl(),
 		AppName:      clean.TypeUnicode(c.About()),
 		AppVersion:   clean.TypeUnicode(c.Version()),
-	}
-
-	if v, err := theme.DetectVersion(c.ThemePath()); err == nil && v != "" {
-		payload.Theme = v
+		Theme:        clean.TypeUnicode(c.NodeThemeVersion()),
 	}
 
 	// Auto-derive Advertise/Site URLs from node name and cluster domain when not configured.
@@ -198,7 +196,7 @@ func registerWithPortal(c *config.Config, portal *url.URL, token string) error {
 				time.Sleep(delay)
 				continue
 			}
-			return err
+			return nil, err
 		}
 
 		// Ensure body is closed after handling the response.
@@ -209,10 +207,10 @@ func registerWithPortal(c *config.Config, portal *url.URL, token string) error {
 			var r cluster.RegisterResponse
 			dec := json.NewDecoder(resp.Body)
 			if err = dec.Decode(&r); err != nil {
-				return err
+				return nil, err
 			}
 			if err = persistRegistration(c, &r, wantRotateDatabase); err != nil {
-				return err
+				return nil, err
 			}
 			primeJWKS(c, r.JWKSUrl)
 			if resp.StatusCode == http.StatusCreated {
@@ -220,20 +218,20 @@ func registerWithPortal(c *config.Config, portal *url.URL, token string) error {
 			} else {
 				log.Infof("cluster: registration ok (%d)", resp.StatusCode)
 			}
-			return nil
+			return &r, nil
 		case http.StatusUnauthorized, http.StatusForbidden, http.StatusNotFound:
 			// Terminal errors (no retry). 404 likely indicates a Portal without cluster endpoints.
-			return errors.New(resp.Status)
+			return nil, errors.New(resp.Status)
 		case http.StatusTooManyRequests:
 			if attempt < maxAttempts {
 				log.Debugf("cluster: join attempt %d/%d rate limited", attempt, maxAttempts)
 				time.Sleep(delay)
 				continue
 			}
-			return errors.New(resp.Status)
+			return nil, errors.New(resp.Status)
 		case http.StatusConflict, http.StatusBadRequest:
 			// Do not retry on 400/409 per spec intent.
-			return errors.New(resp.Status)
+			return nil, errors.New(resp.Status)
 		default:
 			if attempt < maxAttempts {
 				log.Debugf("cluster: join attempt %d/%d server responded %s", attempt, maxAttempts, resp.Status)
@@ -241,10 +239,10 @@ func registerWithPortal(c *config.Config, portal *url.URL, token string) error {
 				time.Sleep(delay)
 				continue
 			}
-			return errors.New(resp.Status)
+			return nil, errors.New(resp.Status)
 		}
 	}
-	return nil
+	return nil, nil
 }
 
 // defaultClusterDomain returns the configured cluster domain or, if absent,
@@ -413,22 +411,44 @@ func primeJWKS(c *config.Config, url string) {
 	}
 }
 
-// installThemeIfMissing downloads and installs the Portal-provided theme if the
-// local theme directory is missing or lacks an app.js file.
-func installThemeIfMissing(c *config.Config, portal *url.URL, token string) error {
-	themeDir := c.ThemePath()
+// syncNodeTheme downloads or refreshes the Portal-provided theme in the node-specific
+// theme directory when the local version is missing or differs from the portal version.
+func syncNodeTheme(c *config.Config, portal *url.URL, registerResp *cluster.RegisterResponse) error {
+	themeDir := c.NodeThemePath()
+	localVersion := strings.TrimSpace(c.NodeThemeVersion())
+	hasAppJS := fs.FileExists(filepath.Join(themeDir, fs.AppJsFile))
 
-	need := !fs.PathExists(themeDir) ||
-		(cluster.BootstrapThemeInstallOnlyIfMissingJS && !fs.FileExists(filepath.Join(themeDir, fs.AppJsFile)))
+	portalVersion := ""
+	if registerResp != nil {
+		portalVersion = clean.TypeUnicode(registerResp.Theme)
+	}
 
-	if !need && !cluster.BootstrapAllowThemeOverwrite {
+	shouldProbe := registerResp == nil
+
+	needsDownload := false
+	requiresOverwrite := false
+
+	switch {
+	case portalVersion != "":
+		if !hasAppJS {
+			needsDownload = true
+		} else if localVersion != portalVersion {
+			needsDownload = true
+			requiresOverwrite = true
+		}
+	case shouldProbe:
+		// Registration failed or was skipped; attempt to obtain the theme when missing.
+		needsDownload = !hasAppJS || localVersion == ""
+	default:
+		// Portal responded but has no theme configured; keep existing node theme.
 		return nil
 	}
 
-	endpoint := *portal
-	endpoint.Path = strings.TrimRight(endpoint.Path, "/") + "/api/v1/cluster/theme"
+	if !needsDownload {
+		return nil
+	}
 
-	// Prefer OAuth client-credentials using NodeClientID/NodeClientSecret if available; fallback to join token.
+	// Acquire OAuth bearer via client credentials; skip when credentials are unavailable.
 	bearer := ""
 	if id, secret := strings.TrimSpace(c.NodeClientID()), strings.TrimSpace(c.NodeClientSecret()); id != "" && secret != "" {
 		if t, err := oauthAccessToken(c, portal, id, secret); err != nil {
@@ -437,11 +457,14 @@ func installThemeIfMissing(c *config.Config, portal *url.URL, token string) erro
 			bearer = t
 		}
 	}
-	// If we do not have a bearer token, skip theme install for this run (no insecure fallback).
+
 	if bearer == "" {
-		log.Debugf("cluster: theme install skipped (missing OAuth credentials)")
+		log.Debugf("cluster: theme sync skipped (missing OAuth credentials)")
 		return nil
 	}
+
+	endpoint := *portal
+	endpoint.Path = strings.TrimRight(endpoint.Path, "/") + "/api/v1/cluster/theme"
 
 	req, _ := http.NewRequest(http.MethodGet, endpoint.String(), nil)
 	req.Header.Set("Authorization", "Bearer "+bearer)
@@ -455,14 +478,14 @@ func installThemeIfMissing(c *config.Config, portal *url.URL, token string) erro
 
 	switch resp.StatusCode {
 	case http.StatusOK:
-		// Save to temp zip.
-		if err := fs.MkdirAll(c.TempPath()); err != nil {
+		if err = fs.MkdirAll(c.TempPath()); err != nil {
 			return err
 		}
-		zipName := filepath.Join(c.TempPath(), "cluster-theme.zip")
-		out, err := os.Create(zipName)
 
-		if err != nil {
+		zipName := filepath.Join(c.TempPath(), "cluster-theme.zip")
+		var out *os.File
+
+		if out, err = os.Create(zipName); err != nil {
 			return err
 		}
 
@@ -473,16 +496,19 @@ func installThemeIfMissing(c *config.Config, portal *url.URL, token string) erro
 
 		_ = out.Close()
 
-		// Extract with moderate limits.
+		if requiresOverwrite && fs.PathExists(themeDir) {
+			if err = os.RemoveAll(themeDir); err != nil {
+				return err
+			}
+		}
+
 		if err = fs.MkdirAll(themeDir); err != nil {
 			return err
 		}
 
 		_, _, unzipErr := fs.Unzip(zipName, themeDir, 32*fs.MB, 512*fs.MB)
-
 		return unzipErr
 	case http.StatusNotFound:
-		// No theme configured at Portal.
 		return nil
 	case http.StatusUnauthorized, http.StatusForbidden:
 		return errors.New(resp.Status)
@@ -491,11 +517,40 @@ func installThemeIfMissing(c *config.Config, portal *url.URL, token string) erro
 	}
 }
 
+// activateNodeThemeIfPresent switches the active theme path to the node-specific
+// directory when a valid cluster-managed theme bundle is available.
+func activateNodeThemeIfPresent(c *config.Config) {
+	if c == nil {
+		return
+	}
+
+	// If NodeThemePath() does not exist or does not contain an app.js file,
+	// NodeThemeVersion() returns an empty string. No additional checks required.
+	if c.NodeThemeVersion() == "" {
+		return
+	}
+
+	// nodeDir is already clean, because filepath.Join() returns it that way.
+	nodeDir := c.NodeThemePath()
+
+	// Return is theme is already activated.
+	if filepath.Clean(c.ThemePath()) == nodeDir {
+		return
+	}
+
+	// Activate cluster theme.
+	c.SetThemePath(nodeDir)
+
+	// Report activation.
+	log.Debugf("cluster: activated theme in %s", clean.Log(nodeDir))
+}
+
 // oauthAccessToken requests an OAuth access token via client_credentials using Basic auth.
 func oauthAccessToken(c *config.Config, portal *url.URL, clientID, clientSecret string) (string, error) {
 	if portal == nil {
 		return "", fmt.Errorf("invalid portal url")
 	}
+
 	tokenURL := *portal
 	tokenURL.Path = strings.TrimRight(tokenURL.Path, "/") + "/api/v1/oauth/token"
 

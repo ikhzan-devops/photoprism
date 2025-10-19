@@ -16,6 +16,7 @@ const (
 	BuildDir        = "build"
 	CacheDir        = "cache"
 	CertificatesDir = "certificates"
+	NodeDir         = "node"
 	PortalDir       = "portal"
 	CmdDir          = "cmd"
 	ConfigDir       = "config"
