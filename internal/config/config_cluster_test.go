@@ -12,6 +12,7 @@ import (
 
 	"github.com/photoprism/photoprism/internal/service/cluster"
 	"github.com/photoprism/photoprism/pkg/fs"
+	"github.com/photoprism/photoprism/pkg/http/dns"
 	"github.com/photoprism/photoprism/pkg/list"
 	"github.com/photoprism/photoprism/pkg/rnd"
 )
@@ -316,9 +317,9 @@ func TestConfig_Cluster(t *testing.T) {
 		assert.Regexp(t, `^[a-z0-9](?:[a-z0-9-]{0,30}[a-z0-9])?$`, got)
 	})
 	t.Run("NodeNameNormalization", func(t *testing.T) {
-		orig := getHostname
-		getHostname = func() (string, error) { return "", nil }
-		t.Cleanup(func() { getHostname = orig })
+		orig := dns.GetHostname
+		dns.GetHostname = func() (string, error) { return "", nil }
+		t.Cleanup(func() { dns.GetHostname = orig })
 
 		c := NewConfig(CliTestContext())
 		c.options.NodeName = " My.Host/Name:Prod "
@@ -331,9 +332,9 @@ func TestConfig_Cluster(t *testing.T) {
 		assert.Equal(t, strings.Repeat("a", 32), c.NodeName())
 	})
 	t.Run("NodeNameFromHostname", func(t *testing.T) {
-		orig := getHostname
-		getHostname = func() (string, error) { return "My.Host/Name:Prod", nil }
-		t.Cleanup(func() { getHostname = orig })
+		orig := dns.GetHostname
+		dns.GetHostname = func() (string, error) { return "My.Host/Name:Prod", nil }
+		t.Cleanup(func() { dns.GetHostname = orig })
 
 		c := NewConfig(CliTestContext())
 		c.options.NodeName = ""

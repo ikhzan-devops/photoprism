@@ -15,7 +15,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	"unicode/utf8"
 
 	clusterjwt "github.com/photoprism/photoprism/internal/auth/jwt"
 	"github.com/photoprism/photoprism/internal/config"
@@ -23,6 +22,7 @@ import (
 	"github.com/photoprism/photoprism/internal/service/cluster"
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/fs"
+	"github.com/photoprism/photoprism/pkg/http/dns"
 	"github.com/photoprism/photoprism/pkg/rnd"
 )
 
@@ -32,7 +32,7 @@ var log = event.Log
 // database connection is established.
 func init() {
 	// Register early so this can adjust DB settings before connectDb().
-	config.RegisterEarly("cluster-node", InitConfig, nil)
+	config.Register(config.StageBoot, "cluster-node", InitConfig, nil)
 }
 
 // InitConfig performs node bootstrap: optional registration with the Portal
@@ -46,7 +46,7 @@ func InitConfig(c *config.Config) error {
 
 	// Skip on portal nodes and unknown node types.
 	if c.Portal() || (role != cluster.RoleInstance && role != cluster.RoleService) {
-		log.Debugf("cluster: skipped node bootstrap role=%s", role)
+		log.Debugf("config: skipping cluster bootstrap for %s", clean.Log(role))
 		return nil
 	}
 
@@ -54,21 +54,21 @@ func InitConfig(c *config.Config) error {
 	joinToken := strings.TrimSpace(c.JoinToken())
 
 	if portalURL == "" || joinToken == "" {
-		log.Debugf("cluster: skipped node bootstrap portalUrl=%s joinToken=%s", portalURL, strings.Repeat("*", utf8.RuneCountInString(joinToken)))
+		log.Debugf("config: no cluster bootstrap configuration found")
 		return nil
 	}
 
-	log.Debugf("cluster: starting node bootstrap")
+	log.Debugf("config: attempting to join the configured cluster")
 
 	u, err := url.Parse(portalURL)
 	if err != nil || u.Scheme == "" || u.Host == "" {
-		log.Warnf("cluster: invalid portal url %s", clean.Log(portalURL))
+		log.Warnf("config: invalid cluster portal URL %s", clean.Log(portalURL))
 		return nil
 	}
 
 	// Enforce TLS for non-local URLs.
-	if u.Scheme != "https" && !isLocalHost(u.Hostname()) {
-		log.Warnf("cluster: refusing non-TLS portal url %s on non-local host", clean.Log(portalURL))
+	if u.Scheme != "https" && !dns.IsLoopbackHost(u.Hostname()) {
+		log.Warnf("config: refusing non-TLS portal URL %s on non-local host", clean.Log(portalURL))
 		return nil
 	}
 
@@ -79,7 +79,7 @@ func InitConfig(c *config.Config) error {
 			// Registration errors are expected when the Portal is temporarily unavailable
 			// or not configured with cluster endpoints (404). Keep as warn to signal
 			// exhaustion/terminal errors; per-attempt details are logged at debug level.
-			log.Warnf("cluster: could not join (%s)", clean.Error(err))
+			log.Warnf("config: failed to join the configured cluster (%s)", clean.Error(err))
 		}
 	}
 
@@ -87,30 +87,17 @@ func InitConfig(c *config.Config) error {
 	if cluster.BootstrapAutoThemeEnabled {
 		if err = syncNodeTheme(c, u, registerResp); err != nil {
 			// Theme install failures are non-critical; log at debug to avoid noise.
-			log.Debugf("cluster: could not install theme (%s)", clean.Error(err))
+			log.Debugf("config: portal theme download skipped (%s)", clean.Error(err))
 		}
 		activateNodeThemeIfPresent(c)
 	}
 
 	// Log cluster UUID.
 	if uuid := c.ClusterUUID(); uuid != "" {
-		log.Infof("cluster: UUID %s", clean.Log(uuid))
+		log.Infof("config: using portal cluster UUID %s", clean.Log(uuid))
 	}
 
 	return nil
-}
-
-// isLocalHost reports whether the given host string refers to a local loopback
-// address that may safely use plain HTTP during bootstrap.
-func isLocalHost(h string) bool {
-	switch strings.ToLower(h) {
-	case "localhost", "127.0.0.1", "::1":
-		return true
-	default:
-		// TODO: Consider treating RFC1918/link-local hosts as local for TLS enforcement
-		// if the operator explicitly opts in (e.g., via a policy var). Keep simple for now.
-		return false
-	}
 }
 
 // newHTTPClient returns a short-lived HTTP client configured with the provided
@@ -192,7 +179,7 @@ func registerWithPortal(c *config.Config, portal *url.URL, token string) (*clust
 		resp, err := newHTTPClient(timeout).Do(req)
 		if err != nil {
 			if attempt < maxAttempts {
-				log.Debugf("cluster: join attempt %d/%d error: %s", attempt, maxAttempts, clean.Error(err))
+				log.Debugf("config: join attempt %d/%d failed with network error: %s", attempt, maxAttempts, clean.Error(err))
 				time.Sleep(delay)
 				continue
 			}
@@ -214,9 +201,9 @@ func registerWithPortal(c *config.Config, portal *url.URL, token string) (*clust
 			}
 			primeJWKS(c, r.JWKSUrl)
 			if resp.StatusCode == http.StatusCreated {
-				log.Infof("cluster: joined as %s (%d)", clean.LogQuote(r.Node.Name), resp.StatusCode)
+				log.Infof("config: successfully joined cluster as node %s (%d)", clean.LogQuote(r.Node.Name), resp.StatusCode)
 			} else {
-				log.Infof("cluster: registration ok (%d)", resp.StatusCode)
+				log.Infof("config: cluster membership confirmed (%d)", resp.StatusCode)
 			}
 			return &r, nil
 		case http.StatusUnauthorized, http.StatusForbidden, http.StatusNotFound:
@@ -224,7 +211,7 @@ func registerWithPortal(c *config.Config, portal *url.URL, token string) (*clust
 			return nil, errors.New(resp.Status)
 		case http.StatusTooManyRequests:
 			if attempt < maxAttempts {
-				log.Debugf("cluster: join attempt %d/%d rate limited", attempt, maxAttempts)
+				log.Debugf("config: join attempt %d/%d rate limited by portal", attempt, maxAttempts)
 				time.Sleep(delay)
 				continue
 			}
@@ -234,7 +221,7 @@ func registerWithPortal(c *config.Config, portal *url.URL, token string) (*clust
 			return nil, errors.New(resp.Status)
 		default:
 			if attempt < maxAttempts {
-				log.Debugf("cluster: join attempt %d/%d server responded %s", attempt, maxAttempts, resp.Status)
+				log.Debugf("config: join attempt %d/%d received portal status %s", attempt, maxAttempts, resp.Status)
 				// TODO: Consider exponential backoff with jitter instead of constant delay.
 				time.Sleep(delay)
 				continue
@@ -277,7 +264,7 @@ func defaultClusterDomain(c *config.Config) string {
 	}
 
 	// Strip common prefixes like portal.<domain>.
-	if isLocalHost(host) {
+	if dns.IsLoopbackHost(host) {
 		return ""
 	}
 
@@ -381,7 +368,7 @@ func persistRegistration(c *config.Config, r *cluster.RegisterResponse, wantRota
 		_ = c.Options().Load(c.OptionsYaml())
 
 		if updates.HasDatabaseUpdate() {
-			log.Infof("cluster: database settings applied; restart required to take effect")
+			log.Infof("config: applied portal database settings; restart required to connect with new credentials")
 		}
 	}
 
@@ -407,7 +394,7 @@ func primeJWKS(c *config.Config, url string) {
 	defer cancel()
 
 	if err := verifier.Prime(ctx, url); err != nil {
-		log.Debugf("cluster: jwks prime skipped (%s)", clean.Error(err))
+		log.Debugf("config: jwks prime skipped (%s)", clean.Error(err))
 	}
 }
 
@@ -452,14 +439,14 @@ func syncNodeTheme(c *config.Config, portal *url.URL, registerResp *cluster.Regi
 	bearer := ""
 	if id, secret := strings.TrimSpace(c.NodeClientID()), strings.TrimSpace(c.NodeClientSecret()); id != "" && secret != "" {
 		if t, err := oauthAccessToken(c, portal, id, secret); err != nil {
-			log.Debugf("cluster: oauth token request failed (%s)", clean.Error(err))
+			log.Debugf("config: portal access token request failed (%s)", clean.Error(err))
 		} else {
 			bearer = t
 		}
 	}
 
 	if bearer == "" {
-		log.Debugf("cluster: theme sync skipped (missing OAuth credentials)")
+		log.Debugf("config: theme sync skipped because no portal credentials are available yet")
 		return nil
 	}
 
@@ -542,7 +529,7 @@ func activateNodeThemeIfPresent(c *config.Config) {
 	c.SetThemePath(nodeDir)
 
 	// Report activation.
-	log.Debugf("cluster: activated theme in %s", clean.Log(nodeDir))
+	log.Debugf("config: activated portal theme from %s", clean.Log(nodeDir))
 }
 
 // oauthAccessToken requests an OAuth access token via client_credentials using Basic auth.

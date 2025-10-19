@@ -173,7 +173,7 @@ Security & Hot Spots (Where to Look)
   - Shared utility: `pkg/service/http/safe` (`Download`, `Options`).
   - Protections: scheme allow‑list (http/https), pre‑DNS + per‑redirect hostname/IP validation, final peer IP check, size and timeout enforcement, temp file `0600` + rename.
   - Avatars: wrapper `internal/thumb/avatar.SafeDownload` applies stricter defaults (15s, 10 MiB, `AllowPrivate=false`, image‑focused `Accept`).
-  - Tests: `go test ./pkg/service/http/safe -count=1` (includes redirect SSRF cases); avatars: `go test ./internal/thumb/avatar -count=1`.
+  - Tests: `go test ./pkg/http/safe -count=1` (includes redirect SSRF cases); avatars: `go test ./internal/thumb/avatar -count=1`.
 
 Performance & Limits
 - Prefer existing caches/workers/batching as per Makefile and code.

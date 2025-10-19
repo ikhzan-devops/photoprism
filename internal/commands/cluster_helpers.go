@@ -9,7 +9,7 @@ import (
 	"strings"
 
 	"github.com/photoprism/photoprism/internal/service/cluster"
-	"github.com/photoprism/photoprism/pkg/service/http/header"
+	"github.com/photoprism/photoprism/pkg/http/header"
 )
 
 // obtainClientCredentialsViaRegister calls the portal register endpoint using a join token

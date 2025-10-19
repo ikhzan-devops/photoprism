@@ -66,8 +66,6 @@ import (
 	"github.com/photoprism/photoprism/pkg/txt"
 )
 
-var initThumbsMutex sync.Mutex
-
 // Config aggregates CLI flags, options.yml overrides, runtime settings, and shared resources (database, caches) for the running instance.
 type Config struct {
 	once      sync.Once
@@ -85,6 +83,9 @@ type Config struct {
 	start     bool
 	ready     atomic.Bool
 }
+
+// Values is a shorthand alias for map[string]interface{}.
+type Values = map[string]interface{}
 
 func init() {
 	TotalMem = memory.TotalMemory()
@@ -241,9 +242,9 @@ func (c *Config) Init() error {
 	// Load settings from the "settings.yml" config file.
 	c.initSettings()
 
-	// Initialize early extensions before connecting to the database so they can
+	// Initialize boot extensions before connecting to the database so they can
 	// influence DB settings (e.g., cluster bootstrap providing MariaDB creds).
-	EarlyExt().InitEarly(c)
+	Ext(StageBoot).Boot(c)
 
 	// Connect to database.
 	if err := c.connectDb(); err != nil {
@@ -252,8 +253,8 @@ func (c *Config) Init() error {
 		c.RegisterDb()
 	}
 
-	// Initialize extensions.
-	Ext().Init(c)
+	// Initialize regular extensions.
+	Ext(StageInit).Init(c)
 
 	// Initialize thumbnail package.
 	thumb.Init(memory.FreeMemory(), c.IndexWorkers(), c.ThumbLibrary())
