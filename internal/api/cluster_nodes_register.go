@@ -154,7 +154,7 @@ func ClusterNodesRegister(router *gin.RouterGroup) {
 			// If caller attempts to change UUID by name without proving client secret, block with 409.
 			if RegisterRequireClientSecret {
 				if requestedUUID != "" && n.UUID != "" && requestedUUID != n.UUID && req.ClientID == "" {
-					event.AuditWarn([]string{clientIp, string(acl.ResourceCluster), "node %s uuid change requires client secret", event.Denied}, clean.Log(name))
+					event.AuditWarn([]string{clientIp, string(acl.ResourceCluster), "node %s", "invalid client secret", event.Denied}, clean.Log(name))
 					c.JSON(http.StatusConflict, gin.H{"error": "client secret required to change node uuid"})
 					return
 				}
@@ -206,7 +206,7 @@ func ClusterNodesRegister(router *gin.RouterGroup) {
 					return
 				}
 				respSecret = &cluster.RegisterSecrets{ClientSecret: n.ClientSecret, RotatedAt: n.RotatedAt}
-				event.AuditInfo([]string{clientIp, string(acl.ResourceCluster), "node %s rotate secret", event.Succeeded}, clean.Log(name))
+				event.AuditInfo([]string{clientIp, string(acl.ResourceCluster), "node %s", "rotate secret", event.Succeeded}, clean.Log(name))
 
 				// Extra safety: ensure the updated secret is persisted even if subsequent steps fail.
 				if putErr := regy.Put(n); putErr != nil {
@@ -239,7 +239,7 @@ func ClusterNodesRegister(router *gin.RouterGroup) {
 						AbortUnexpectedError(c)
 						return
 					}
-					event.AuditInfo([]string{clientIp, string(acl.ResourceCluster), "node %s rotate database", event.Succeeded}, clean.Log(name))
+					event.AuditInfo([]string{clientIp, string(acl.ResourceCluster), "node %s", "rotate database", event.Succeeded}, clean.Log(name))
 				}
 			}
 
