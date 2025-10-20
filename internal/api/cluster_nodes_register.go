@@ -159,6 +159,7 @@ func ClusterNodesRegister(router *gin.RouterGroup) {
 					return
 				}
 			}
+
 			// Update mutable metadata when provided.
 			if req.AdvertiseUrl != "" {
 				n.AdvertiseUrl = req.AdvertiseUrl
@@ -178,6 +179,7 @@ func ClusterNodesRegister(router *gin.RouterGroup) {
 			if nodeTheme != "" {
 				n.Theme = nodeTheme
 			}
+
 			// Apply UUID changes for existing node: if a UUID was requested and differs, or if none exists yet.
 			if requestedUUID != "" {
 				oldUUID := n.UUID
@@ -191,12 +193,14 @@ func ClusterNodesRegister(router *gin.RouterGroup) {
 				n.UUID = rnd.UUIDv7()
 				event.AuditInfo([]string{clientIp, string(acl.ResourceCluster), "node %s", "assign uuid %s", event.Created}, clean.Log(name), clean.Log(n.UUID))
 			}
+
 			// Persist metadata changes so UpdatedAt advances.
 			if putErr := regy.Put(n); putErr != nil {
 				event.AuditErr([]string{clientIp, string(acl.ResourceCluster), "node %s", "persist node", "%s", event.Failed}, clean.Log(name), clean.Error(putErr))
 				AbortUnexpectedError(c)
 				return
 			}
+
 			// Optional rotations.
 			var respSecret *cluster.RegisterSecrets
 			if req.RotateSecret {
@@ -355,7 +359,7 @@ func ClusterNodesRegister(router *gin.RouterGroup) {
 		// When DB provisioning is skipped, leave Database fields zero-value.
 
 		c.Header(header.CacheControl, header.CacheControlNoStore)
-		event.AuditInfo([]string{clientIp, string(acl.ResourceCluster), "node %s", event.Created}, clean.Log(name))
+		event.AuditInfo([]string{clientIp, string(acl.ResourceCluster), "node %s", event.Joined}, clean.Log(name))
 		c.JSON(http.StatusCreated, resp)
 	})
 }
