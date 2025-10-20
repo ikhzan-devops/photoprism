@@ -203,8 +203,15 @@ func (c *Config) SaveJoinToken(customToken string) (token string, fileName strin
 		return "", "", fmt.Errorf("could not write cluster join token (%w)", err)
 	}
 
+	// Use an in-memory cache with a
+	// short TTL to cache the token.
 	if c.cache != nil {
 		c.cache.SetDefault(fileName, token)
+		c.options.JoinToken = ""
+	} else {
+		// Store token in Options
+		// if cache is unavailable.
+		c.options.JoinToken = token
 	}
 
 	return token, fileName, nil

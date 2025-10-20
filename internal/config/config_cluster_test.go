@@ -289,8 +289,11 @@ func TestConfig_Cluster(t *testing.T) {
 		c := NewConfig(ctx)
 		c.options.NodeRole = cluster.RolePortal
 
+		c.options.JoinToken = "onwnOVt-MZCCkA0z-YJXHnzJ"
 		token, tokenFile, err := c.SaveJoinToken("")
 		assert.NoError(t, err)
+		assert.Empty(t, c.options.JoinToken)
+		assert.Equal(t, token, c.JoinToken())
 		assert.True(t, rnd.IsJoinToken(token, false))
 		assert.FileExists(t, tokenFile)
 
