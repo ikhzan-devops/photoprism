@@ -16,9 +16,9 @@ import (
 	"github.com/photoprism/photoprism/internal/server/limiter"
 	"github.com/photoprism/photoprism/pkg/authn"
 	"github.com/photoprism/photoprism/pkg/clean"
+	"github.com/photoprism/photoprism/pkg/http/header"
 	"github.com/photoprism/photoprism/pkg/i18n"
 	"github.com/photoprism/photoprism/pkg/rnd"
-	"github.com/photoprism/photoprism/pkg/service/http/header"
 )
 
 // CreateUserPasscode sets up a new two-factor authentication passcode for a user.
@@ -30,7 +30,7 @@ import (
 //	@Produce	json
 //	@Param		uid				path		string			true	"user uid"
 //	@Param		request			body		form.Passcode	true	"passcode setup (password required)"
-//	@Success	200				{object}	entity.Passcode
+//	@Success	201				{object}	entity.Passcode
 //	@Failure	400,401,403,429	{object}	i18n.Response
 //	@Router		/api/v1/users/{uid}/passcode [post]
 func CreateUserPasscode(router *gin.RouterGroup) {
@@ -84,7 +84,8 @@ func CreateUserPasscode(router *gin.RouterGroup) {
 
 		event.AuditInfo([]string{ClientIP(c), "session %s", authn.Users, user.UserName, authn.Passcode, authn.Created}, s.RefID)
 
-		c.JSON(http.StatusOK, passcode)
+		header.SetLocation(c)
+		c.JSON(http.StatusCreated, passcode)
 	})
 }
 

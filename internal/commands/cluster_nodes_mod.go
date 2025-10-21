@@ -7,7 +7,9 @@ import (
 	"github.com/manifoldco/promptui"
 	"github.com/urfave/cli/v2"
 
+	"github.com/photoprism/photoprism/internal/auth/acl"
 	"github.com/photoprism/photoprism/internal/config"
+	"github.com/photoprism/photoprism/internal/event"
 	reg "github.com/photoprism/photoprism/internal/service/cluster/registry"
 	"github.com/photoprism/photoprism/pkg/clean"
 )
@@ -24,14 +26,20 @@ var ClusterNodesModCommand = &cli.Command{
 	Name:      "mod",
 	Usage:     "Updates node properties",
 	ArgsUsage: "<id|name>",
-	Flags:     []cli.Flag{nodesModRoleFlag, nodesModInternal, nodesModLabel, &cli.BoolFlag{Name: "yes", Aliases: []string{"y"}, Usage: "runs the command non-interactively"}},
-	Hidden:    true, // Required for cluster-management only.
-	Action:    clusterNodesModAction,
+	Flags: []cli.Flag{
+		DryRunFlag("preview updates without modifying the registry"),
+		nodesModRoleFlag,
+		nodesModInternal,
+		nodesModLabel,
+		YesFlag(),
+	},
+	Hidden: true, // Required for cluster-management only.
+	Action: clusterNodesModAction,
 }
 
 func clusterNodesModAction(ctx *cli.Context) error {
 	return CallWithDependencies(ctx, func(conf *config.Config) error {
-		if !conf.IsPortal() {
+		if !conf.Portal() {
 			return cli.Exit(fmt.Errorf("node update is only available on a Portal node"), 2)
 		}
 
@@ -62,11 +70,15 @@ func clusterNodesModAction(ctx *cli.Context) error {
 			return cli.Exit(fmt.Errorf("node not found"), 3)
 		}
 
+		changes := make([]string, 0, 4)
+
 		if v := ctx.String("role"); v != "" {
 			n.Role = clean.TypeLowerDash(v)
+			changes = append(changes, fmt.Sprintf("role=%s", clean.Log(n.Role)))
 		}
 		if v := ctx.String("advertise-url"); v != "" {
 			n.AdvertiseUrl = v
+			changes = append(changes, fmt.Sprintf("advertise-url=%s", clean.Log(n.AdvertiseUrl)))
 		}
 		if labels := ctx.StringSlice("label"); len(labels) > 0 {
 			if n.Labels == nil {
@@ -77,6 +89,16 @@ func clusterNodesModAction(ctx *cli.Context) error {
 					n.Labels[k] = v
 				}
 			}
+			changes = append(changes, fmt.Sprintf("labels+=%s", clean.Log(strings.Join(labels, ","))))
+		}
+
+		if ctx.Bool("dry-run") {
+			if len(changes) == 0 {
+				log.Infof("dry-run: no updates to apply for node %s", clean.LogQuote(n.Name))
+			} else {
+				log.Infof("dry-run: would update node %s (%s)", clean.LogQuote(n.Name), strings.Join(changes, ", "))
+			}
+			return nil
 		}
 
 		confirmed := RunNonInteractively(ctx.Bool("yes"))
@@ -91,6 +113,29 @@ func clusterNodesModAction(ctx *cli.Context) error {
 		if err := r.Put(n); err != nil {
 			return cli.Exit(err, 1)
 		}
+
+		nodeID := n.UUID
+		if nodeID == "" {
+			nodeID = n.Name
+		}
+
+		changeSummary := strings.Join(changes, ", ")
+
+		who := clusterAuditWho(ctx, conf)
+		segments := []string{
+			string(acl.ResourceCluster),
+			"update node %s",
+		}
+		args := []interface{}{clean.Log(nodeID)}
+
+		if changeSummary != "" {
+			segments = append(segments, "%s")
+			args = append(args, clean.Log(changeSummary))
+		}
+
+		segments = append(segments, event.Updated)
+
+		event.AuditInfo(append(who, segments...), args...)
 
 		log.Infof("node %s has been updated", clean.LogQuote(n.Name))
 		return nil

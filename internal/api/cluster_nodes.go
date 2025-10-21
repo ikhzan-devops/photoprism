@@ -57,7 +57,7 @@ func ClusterListNodes(router *gin.RouterGroup) {
 
 		conf := get.Config()
 
-		if !conf.IsPortal() {
+		if !conf.Portal() {
 			AbortFeatureDisabled(c)
 			return
 		}
@@ -108,7 +108,14 @@ func ClusterListNodes(router *gin.RouterGroup) {
 		resp := reg.BuildClusterNodes(page, opts)
 
 		// Audit list access.
-		event.AuditInfo([]string{ClientIP(c), "session %s", string(acl.ResourceCluster), "nodes", "list", event.Succeeded, "count=%d", "offset=%d", "returned=%d"}, s.RefID, count, offset, len(resp))
+		event.AuditDebug([]string{
+			ClientIP(c),
+			"session %s",
+			string(acl.ResourceCluster),
+			"list nodes",
+			"count %d offset %d returned %d",
+			event.Succeeded,
+		}, s.RefID, count, offset, len(resp))
 
 		c.JSON(http.StatusOK, resp)
 	})
@@ -134,7 +141,7 @@ func ClusterGetNode(router *gin.RouterGroup) {
 
 		conf := get.Config()
 
-		if !conf.IsPortal() {
+		if !conf.Portal() {
 			AbortFeatureDisabled(c)
 			return
 		}
@@ -166,13 +173,19 @@ func ClusterGetNode(router *gin.RouterGroup) {
 		resp := reg.BuildClusterNode(*n, opts)
 
 		// Audit get access.
-		event.AuditInfo([]string{ClientIP(c), "session %s", string(acl.ResourceCluster), "nodes", "get", uuid, event.Succeeded}, s.RefID)
+		event.AuditInfo([]string{
+			ClientIP(c),
+			"session %s",
+			string(acl.ResourceCluster),
+			"get node %s",
+			event.Succeeded,
+		}, s.RefID, uuid)
 
 		c.JSON(http.StatusOK, resp)
 	})
 }
 
-// ClusterUpdateNode updates mutable fields: role, labels, advertiseUrl.
+// ClusterUpdateNode updates mutable fields: role, labels, AdvertiseUrl.
 //
 //	@Summary	update node fields
 //	@Id			ClusterUpdateNode
@@ -180,7 +193,7 @@ func ClusterGetNode(router *gin.RouterGroup) {
 //	@Accept		json
 //	@Produce	json
 //	@Param		uuid				path		string	true	"node uuid"
-//	@Param		node				body		object	true	"properties to update (role, labels, advertiseUrl, siteUrl)"
+//	@Param		node				body		object	true	"properties to update (Role, Labels, AdvertiseUrl, SiteUrl)"
 //	@Success	200					{object}	cluster.StatusResponse
 //	@Failure	400,401,403,404,429	{object}	i18n.Response
 //	@Router		/api/v1/cluster/nodes/{uuid} [patch]
@@ -194,7 +207,7 @@ func ClusterUpdateNode(router *gin.RouterGroup) {
 
 		conf := get.Config()
 
-		if !conf.IsPortal() {
+		if !conf.Portal() {
 			AbortFeatureDisabled(c)
 			return
 		}
@@ -202,10 +215,10 @@ func ClusterUpdateNode(router *gin.RouterGroup) {
 		uuid := c.Param("uuid")
 
 		var req struct {
-			Role         string            `json:"role"`
-			Labels       map[string]string `json:"labels"`
-			AdvertiseUrl string            `json:"advertiseUrl"`
-			SiteUrl      string            `json:"siteUrl"`
+			Role         string            `json:"Role"`
+			Labels       map[string]string `json:"Labels"`
+			AdvertiseUrl string            `json:"AdvertiseUrl"`
+			SiteUrl      string            `json:"SiteUrl"`
 		}
 
 		if err := c.ShouldBindJSON(&req); err != nil {
@@ -238,8 +251,9 @@ func ClusterUpdateNode(router *gin.RouterGroup) {
 		if req.AdvertiseUrl != "" {
 			n.AdvertiseUrl = req.AdvertiseUrl
 		}
-		if s := normalizeSiteURL(req.SiteUrl); s != "" {
-			n.SiteUrl = s
+
+		if u := normalizeSiteURL(req.SiteUrl); u != "" {
+			n.SiteUrl = u
 		}
 
 		n.UpdatedAt = time.Now().UTC().Format(time.RFC3339)
@@ -249,7 +263,14 @@ func ClusterUpdateNode(router *gin.RouterGroup) {
 			return
 		}
 
-		event.AuditInfo([]string{ClientIP(c), string(acl.ResourceCluster), "nodes", "update", uuid, event.Succeeded})
+		event.AuditInfo([]string{
+			ClientIP(c),
+			"session %s",
+			string(acl.ResourceCluster),
+			"node %s",
+			event.Updated,
+		}, s.RefID, uuid)
+
 		c.JSON(http.StatusOK, cluster.StatusResponse{Status: "ok"})
 	})
 }
@@ -274,7 +295,7 @@ func ClusterDeleteNode(router *gin.RouterGroup) {
 
 		conf := get.Config()
 
-		if !conf.IsPortal() {
+		if !conf.Portal() {
 			AbortFeatureDisabled(c)
 			return
 		}
@@ -303,7 +324,14 @@ func ClusterDeleteNode(router *gin.RouterGroup) {
 			return
 		}
 
-		event.AuditInfo([]string{ClientIP(c), string(acl.ResourceCluster), "nodes", "delete", uuid, event.Succeeded})
+		event.AuditWarn([]string{
+			ClientIP(c),
+			"session %s",
+			string(acl.ResourceCluster),
+			"node %s",
+			event.Deleted,
+		}, s.RefID, uuid)
+
 		c.JSON(http.StatusOK, cluster.StatusResponse{Status: "ok"})
 	})
 }

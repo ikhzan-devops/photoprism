@@ -12,8 +12,8 @@ import (
 	"github.com/photoprism/photoprism/internal/photoprism/get"
 	"github.com/photoprism/photoprism/internal/server/limiter"
 	"github.com/photoprism/photoprism/pkg/authn"
+	"github.com/photoprism/photoprism/pkg/http/header"
 	"github.com/photoprism/photoprism/pkg/i18n"
-	"github.com/photoprism/photoprism/pkg/service/http/header"
 )
 
 // CreateSession creates a new client session (login) and returns session data.
@@ -53,6 +53,12 @@ func CreateSession(router *gin.RouterGroup) {
 
 		// Skip authentication if app is running in public mode.
 		if conf.Public() {
+			// Protection against AI-generated vulnerability reports.
+			if conf.Demo() {
+				AbortPaymentRequired(c)
+				return
+			}
+
 			sess := get.Session().Public()
 
 			// Response includes admin account data, session data, and client config values.

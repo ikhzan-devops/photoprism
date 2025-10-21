@@ -583,7 +583,7 @@ export default class Config {
 
     if (!theme) {
       theme = themes.Get(name);
-      this.themeName = theme.name;
+      this.themeName = theme?.name;
     }
 
     if (this.values.settings && this.values.settings.ui) {
@@ -668,6 +668,10 @@ export default class Config {
 
   // getDefaultRoute returns the default route to use after login or in case of routing errors.
   getDefaultRoute() {
+    if (this.isPortal()) {
+      return "cluster";
+    }
+
     const albumsRoute = "albums";
     const browseRoute = "browse";
     const defaultRoute = this.deny("photos", "access_library") ? albumsRoute : browseRoute;
@@ -818,6 +822,16 @@ export default class Config {
     return this.values && this.values.demo;
   }
 
+  // isPortal returns true if this is a cluster portal server.
+  isPortal() {
+    return this.values && this.values.portal;
+  }
+
+  // isPro returns true if this is team version.
+  isPro() {
+    return !!this.values?.ext["pro"];
+  }
+
   isSponsor() {
     if (!this.values || !this.values.sponsor) {
       return false;
@@ -908,7 +922,7 @@ export default class Config {
   }
 
   getLoginIcon() {
-    const loginTheme = themes.Get("login");
+    const loginTheme = themes.Get("login", false);
     if (loginTheme?.variables?.icon) {
       return loginTheme?.variables?.icon;
     }
