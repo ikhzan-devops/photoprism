@@ -14,7 +14,7 @@ const (
 	Activated           = "activated"
 	Deactivated         = "deactivated"
 	Joined              = "joined"
-	Synced              = "synced"
+	Confirmed           = "confirmed"
 	Skipped             = "skipped"
 	NotFound            = "not found"
 	Unsupported         = "not supported"

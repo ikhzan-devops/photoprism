@@ -49,6 +49,9 @@ func ClusterNodesRegister(router *gin.RouterGroup) {
 			return
 		}
 
+		// Don't cache requests to this endpoint.
+		c.Header(header.CacheControl, header.CacheControlNoStore)
+
 		// Rate limit by IP (reuse existing limiter).
 		clientIp := ClientIP(c)
 		r := limiter.Auth.Request(clientIp)
@@ -277,8 +280,8 @@ func ClusterNodesRegister(router *gin.RouterGroup) {
 				resp.Database.DSN = creds.DSN
 				resp.Database.RotatedAt = creds.RotatedAt
 			}
-			c.Header(header.CacheControl, header.CacheControlNoStore)
-			event.AuditInfo([]string{clientIp, string(acl.ResourceCluster), "node", "%s", status.Synced}, clean.Log(name))
+
+			event.AuditInfo([]string{clientIp, string(acl.ResourceCluster), "node", "%s", status.Confirmed}, clean.Log(name))
 			c.JSON(http.StatusOK, resp)
 			return
 		}
@@ -353,13 +356,11 @@ func ClusterNodesRegister(router *gin.RouterGroup) {
 			resp.Theme = portalTheme
 		}
 
+		// If DB provisioning is skipped, leave Database fields zero-value.
 		if shouldProvisionDB {
 			resp.Database = cluster.RegisterDatabase{Host: conf.DatabaseHost(), Port: conf.DatabasePort(), Name: creds.Name, User: creds.User, Driver: provisioner.DatabaseDriver, Password: creds.Password, DSN: creds.DSN, RotatedAt: creds.RotatedAt}
 		}
 
-		// When DB provisioning is skipped, leave Database fields zero-value.
-
-		c.Header(header.CacheControl, header.CacheControlNoStore)
 		event.AuditInfo([]string{clientIp, string(acl.ResourceCluster), "node", "%s", status.Joined}, clean.Log(name))
 		c.JSON(http.StatusCreated, resp)
 	})
