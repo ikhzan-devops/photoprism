@@ -251,11 +251,13 @@ export default {
 
       if (!title) return;
 
+      let resolvedApplied = false;
       if (typeof this.resolveItemFromText === "function") {
         const resolved = this.resolveItemFromText(title);
         if (resolved && typeof resolved === "object") {
           if (resolved.title) title = resolved.title;
           if (resolved.value) value = resolved.value;
+          resolvedApplied = true;
         }
       }
 
@@ -265,6 +267,9 @@ export default {
       );
 
       if (existingItem) {
+        if (resolvedApplied && (existingItem.mixed || existingItem.action !== "add")) {
+          this.updateItemAction(existingItem, "add");
+        }
         this.$nextTick(() => {
           this.newItemTitle = "";
           if (this.$refs.inputField) {

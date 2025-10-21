@@ -1545,7 +1545,7 @@ export default {
 
         const [albumsResponse, labelsResponse] = await Promise.all([
           Album.search({ count: 1000, type: "album", order: "name" }),
-          Label.search({ count: 1000, order: "name" }),
+          Label.search({ count: 1000, order: "name", all: true }),
         ]);
 
         this.availableAlbumOptions = (albumsResponse.models || []).map((album) => ({
