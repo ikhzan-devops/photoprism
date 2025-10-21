@@ -54,7 +54,7 @@ func ClusterNodesRegister(router *gin.RouterGroup) {
 		r := limiter.Auth.Request(clientIp)
 
 		if r.Reject() || limiter.Auth.Reject(clientIp) {
-			event.AuditWarn([]string{clientIp, string(acl.ResourceCluster), "register", "rate limit exceeded", status.Denied})
+			event.AuditWarn([]string{clientIp, string(acl.ResourceCluster), "register", status.RateLimited})
 			limiter.AbortJSON(c)
 			return
 		}

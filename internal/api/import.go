@@ -58,7 +58,7 @@ func StartImport(router *gin.RouterGroup) {
 
 		// Abort if there is not enough free storage to import new files.
 		if conf.FilesQuotaReached() {
-			event.AuditErr([]string{ClientIP(c), "session %s", "import files", "insufficient storage"}, s.RefID)
+			event.AuditErr([]string{ClientIP(c), "session %s", "import files", status.InsufficientStorage}, s.RefID)
 			Abort(c, http.StatusInsufficientStorage, i18n.ErrInsufficientStorage)
 			return
 		}

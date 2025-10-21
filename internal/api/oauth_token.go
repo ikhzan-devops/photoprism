@@ -110,7 +110,7 @@ func OAuthToken(router *gin.RouterGroup) {
 				AbortInvalidCredentials(c)
 				return
 			} else if method := client.Method(); !method.IsDefault() && method != authn.MethodOAuth2 {
-				event.AuditWarn([]string{clientIp, "oauth2", actor, action, "method %s not supported"}, clean.LogQuote(method.String()))
+				event.AuditWarn([]string{clientIp, "oauth2", actor, action, "method %s", status.Unsupported}, clean.LogQuote(method.String()))
 				AbortInvalidCredentials(c)
 				return
 			} else if client.InvalidSecret(frm.ClientSecret) {

@@ -94,7 +94,7 @@ func ClusterGetTheme(router *gin.RouterGroup) {
 		// This aligns with bootstrap behavior, which only installs a theme when
 		// app.js exists locally or can be fetched from the Portal.
 		if !fs.FileExistsNotEmpty(filepath.Join(themePath, "app.js")) {
-			event.AuditDebug([]string{clientIp, "session %s", string(acl.ResourceCluster), "download theme app.js", "not found"}, refID)
+			event.AuditDebug([]string{clientIp, "session %s", string(acl.ResourceCluster), "download theme app.js", status.NotFound}, refID)
 			AbortNotFound(c)
 			return
 		}
@@ -218,7 +218,7 @@ func updateNodeThemeVersion(conf *config.Config, session *entity.Session, versio
 	}
 
 	if node == nil {
-		event.AuditDebug([]string{clientIP, "session %s", string(acl.ResourceCluster), "theme metadata node", "skipped"}, refID)
+		event.AuditDebug([]string{clientIP, "session %s", string(acl.ResourceCluster), "theme metadata node", status.Skipped}, refID)
 		return
 	}
 
