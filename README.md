@@ -96,6 +96,10 @@ We kindly ask you not to report bugs via GitHub Issues **unless you are certain 
 - [Contact us](https://www.photoprism.app/contact) or [a community member](https://link.photoprism.app/discussions) if you need help, it could be a local configuration problem, or a misunderstanding in how the software works
 - This gives us the opportunity to [improve our documentation](https://docs.photoprism.app/getting-started/troubleshooting/) and provide best-in-class support instead of dealing with unclear/duplicate bug reports or triggering a flood of notifications by replying to comments
 
+## Developer Notes ##
+
+- When emitting audit logs, reuse the helpers in `pkg/log/status`; call `status.Error(err)` whenever the sanitized error message should serve as the outcome token. See `AGENTS.md` and `specs/common/audit-logs.md` for full guidelines.
+
 ## Connect with the Community ##
 
 <a href="https://link.photoprism.app/chat"><img align="right" width="144" height="144" src="https://dl.photoprism.app/img/brands/element-logo.svg"></a>

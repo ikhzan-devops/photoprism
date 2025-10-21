@@ -17,6 +17,7 @@ import (
 	reg "github.com/photoprism/photoprism/internal/service/cluster/registry"
 	"github.com/photoprism/photoprism/internal/service/cluster/theme"
 	"github.com/photoprism/photoprism/pkg/clean"
+	"github.com/photoprism/photoprism/pkg/log/status"
 	"github.com/photoprism/photoprism/pkg/txt"
 	"github.com/photoprism/photoprism/pkg/txt/report"
 )
@@ -198,7 +199,7 @@ func clusterNodesRotateAction(ctx *cli.Context) error {
 			segments = append(segments, "%s")
 			args = append(args, clean.Log(detail))
 		}
-		segments = append(segments, event.Succeeded)
+		segments = append(segments, status.Succeeded)
 
 		event.AuditInfo(append(who, segments...), args...)
 

@@ -1,18 +1,19 @@
-package event
+package status
 
+// Generic outcomes for use in system and audit logs.
 const (
-	Succeeded   = "succeeded"
 	Failed      = "failed"
 	Denied      = "denied"
 	Granted     = "granted"
-	Created     = "created"
 	Added       = "added"
 	Updated     = "updated"
+	Created     = "created"
 	Deleted     = "deleted"
-	Removed     = "removed"
+	Succeeded   = "succeeded"
+	NotFound    = "not found"
 	Verified    = "verified"
 	Activated   = "activated"
 	Deactivated = "deactivated"
 	Joined      = "joined"
-	Confirmed   = "confirmed"
+	Synced      = "synced"
 )

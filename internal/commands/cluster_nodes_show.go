@@ -11,6 +11,7 @@ import (
 	"github.com/photoprism/photoprism/internal/event"
 	reg "github.com/photoprism/photoprism/internal/service/cluster/registry"
 	"github.com/photoprism/photoprism/pkg/clean"
+	"github.com/photoprism/photoprism/pkg/log/status"
 	"github.com/photoprism/photoprism/pkg/txt/report"
 )
 
@@ -63,7 +64,7 @@ func clusterNodesShowAction(ctx *cli.Context) error {
 		event.AuditInfo(append(who,
 			string(acl.ResourceCluster),
 			"show node %s",
-			event.Succeeded,
+			status.Succeeded,
 		), clean.Log(dto.UUID))
 
 		if ctx.Bool("json") {

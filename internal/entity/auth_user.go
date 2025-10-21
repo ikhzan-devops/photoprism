@@ -18,6 +18,7 @@ import (
 	"github.com/photoprism/photoprism/pkg/authn"
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/list"
+	"github.com/photoprism/photoprism/pkg/log/status"
 	"github.com/photoprism/photoprism/pkg/rnd"
 	"github.com/photoprism/photoprism/pkg/txt"
 )
@@ -180,7 +181,7 @@ func FirstOrCreateUser(m *User) *User {
 	if found := FindUser(*m); found != nil {
 		return found
 	} else if err := m.Create(); err != nil {
-		event.AuditErr([]string{"user", "failed to create", "%s"}, err)
+		event.AuditErr([]string{"user", "failed to create", status.Error(err)})
 		return nil
 	} else {
 		return m
@@ -281,14 +282,14 @@ func (m *User) InitAccount(initName, initPasswd string) (updated bool) {
 
 	// Save password.
 	if err := initialPasswd.Save(); err != nil {
-		event.AuditErr([]string{"user %s", "failed to change password", "%s"}, m.RefID, err)
+		event.AuditErr([]string{"user %s", "failed to change password", status.Error(err)}, m.RefID)
 		return false
 	}
 
 	// Change username if needed.
 	if initName != "" && initName != m.UserName {
 		if err := m.UpdateUsername(initName); err != nil {
-			event.AuditErr([]string{"user %s", "failed to change username to %s", "%s"}, m.RefID, clean.Log(initName), err)
+			event.AuditErr([]string{"user %s", "failed to change username to %s", status.Error(err)}, m.RefID, clean.Log(initName))
 		}
 	}
 
@@ -328,7 +329,7 @@ func (m *User) Delete() (err error) {
 	}
 
 	if err = UnscopedDb().Delete(Session{}, "user_uid = ?", m.UserUID).Error; err != nil {
-		event.AuditErr([]string{"user %s", "delete", "failed to remove sessions", "%s"}, m.RefID, err)
+		event.AuditErr([]string{"user %s", "delete", "failed to remove sessions", status.Error(err)}, m.RefID)
 	}
 
 	err = Db().Delete(m).Error
@@ -359,10 +360,10 @@ func (m *User) LoadRelated() *User {
 // SaveRelated saves related settings and details.
 func (m *User) SaveRelated() *User {
 	if err := m.Settings().Save(); err != nil {
-		event.AuditErr([]string{"user %s", "failed to save settings", "%s"}, m.RefID, err)
+		event.AuditErr([]string{"user %s", "failed to save settings", status.Error(err)}, m.RefID)
 	}
 	if err := m.Details().Save(); err != nil {
-		event.AuditErr([]string{"user %s", "failed to save details", "%s"}, m.RefID, err)
+		event.AuditErr([]string{"user %s", "failed to save details", status.Error(err)}, m.RefID)
 	}
 
 	return m
@@ -630,7 +631,7 @@ func (m *User) SetAuthID(id, issuer string) *User {
 		if err := UnscopedDb().Model(&User{}).
 			Where("user_uid <> ? AND auth_provider = ? AND auth_id = ? AND super_admin = 0", m.UserUID, m.AuthProvider, m.AuthID).
 			Updates(Values{"auth_id": "", "auth_provider": authn.ProviderNone}).Error; err != nil {
-			event.AuditErr([]string{"user %s", "failed to resolve auth id conflicts", "%s"}, m.RefID, err)
+			event.AuditErr([]string{"user %s", "failed to resolve auth id conflicts", status.Error(err)}, m.RefID)
 		}
 	}
 
@@ -902,14 +903,14 @@ func (m *User) DeleteSessions(omit []string) (deleted int) {
 	sess := Sessions{}
 
 	if err := stmt.Find(&sess).Error; err != nil {
-		event.AuditErr([]string{"user %s", "failed to invalidate sessions", "%s"}, m.RefID, err)
+		event.AuditErr([]string{"user %s", "failed to invalidate sessions", status.Error(err)}, m.RefID)
 		return 0
 	}
 
 	// Delete sessions from cache and database.
 	for _, s := range sess {
 		if err := s.Delete(); err != nil {
-			event.AuditWarn([]string{"user %s", "failed to invalidate session %s", "%s"}, m.RefID, clean.Log(s.RefID), err)
+			event.AuditWarn([]string{"user %s", "failed to invalidate session %s", status.Error(err)}, m.RefID, clean.Log(s.RefID))
 		} else {
 			deleted++
 		}
@@ -957,7 +958,7 @@ func (m *User) DeletePassword() (err error) {
 
 	// Remove local account password.
 	if err = pw.Delete(); err != nil {
-		event.AuditErr([]string{"user %s", "failed to remove password", "%s"}, m.RefID, err)
+		event.AuditErr([]string{"user %s", "failed to remove password", status.Error(err)}, m.RefID)
 	} else {
 		event.AuditWarn([]string{"user %s", "password has been removed"}, m.RefID)
 	}
@@ -1239,12 +1240,12 @@ func (m *User) RedeemToken(token string) (n int) {
 			share.Comment = link.Comment
 
 			if err := share.Save(); err != nil {
-				event.AuditErr([]string{"user %s", "token %s", "failed to redeem shares", "%s"}, m.RefID, clean.Log(token), err)
+				event.AuditErr([]string{"user %s", "token %s", "failed to redeem shares", status.Error(err)}, m.RefID, clean.Log(token))
 			} else {
 				link.Redeem()
 			}
 		} else if err := found.UpdateLink(link); err != nil {
-			event.AuditErr([]string{"user %s", "token %s", "failed to update shares", "%s"}, m.RefID, clean.Log(token), err)
+			event.AuditErr([]string{"user %s", "token %s", "failed to update shares", status.Error(err)}, m.RefID, clean.Log(token))
 		}
 	}
 
