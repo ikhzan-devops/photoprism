@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import { mount } from "@vue/test-utils";
 import { nextTick } from "vue";
 import ChipSelector from "component/file/chip-selector.vue";
@@ -229,6 +229,102 @@ describe("component/file/chip-selector", () => {
       await combobox.trigger("keydown.enter");
 
       expect(wrapper.emitted("update:items")).toBeFalsy();
+    });
+  });
+
+  describe("Label resolver and normalization", () => {
+    it("resolves 'cat' → 'Katze' and sets mixed chip to add", async () => {
+      vi.useFakeTimers();
+      const wrapper2 = mount(ChipSelector, {
+        props: {
+          items: [{ value: "l1", title: "Katze", mixed: true, action: "none" }],
+          availableItems: [{ value: "l1", title: "Katze" }],
+          allowCreate: true,
+          resolveItemFromText: (txt) => (txt.toLowerCase() === "cat" ? { value: "l1", title: "Katze" } : null),
+        },
+        global: {
+          stubs: { VIcon: true, VTooltip: true },
+          mocks: { $gettext: (s) => s },
+        },
+      });
+
+      wrapper2.vm.newItemTitle = "cat";
+      await wrapper2.vm.addNewItem();
+
+      const emitted = wrapper2.emitted("update:items")?.at(-1)?.[0];
+      const katze = emitted.find((i) => i.title === "Katze");
+      expect(katze.action).toBe("add");
+    });
+
+    it("re-typing existing chip clears input and does not add a duplicate", async () => {
+      vi.useFakeTimers();
+      const wrapper2 = mount(ChipSelector, {
+        props: {
+          items: [{ value: "l1", title: "Katze", mixed: false, action: "add" }],
+          availableItems: [{ value: "l1", title: "Katze" }],
+          allowCreate: true,
+        },
+        global: {
+          stubs: { VIcon: true, VTooltip: true },
+          mocks: { $gettext: (s) => s },
+        },
+      });
+
+      wrapper2.vm.newItemTitle = "Katze";
+      await wrapper2.vm.addNewItem();
+      await nextTick();
+      vi.runAllTimers();
+      expect(wrapper2.vm.newItemTitle).toBeNull();
+      expect(wrapper2.emitted("update:items")).toBeFalsy();
+    });
+
+    it("normalizes 'fire+station' → 'Fire Station' via resolver and sets to add", async () => {
+      const wrapper2 = mount(ChipSelector, {
+        props: {
+          items: [{ value: "l2", title: "Fire Station", mixed: true, action: "none" }],
+          availableItems: [{ value: "l2", title: "Fire Station" }],
+          allowCreate: true,
+          resolveItemFromText: (txt) =>
+            txt
+              .toLowerCase()
+              .replace(/[^a-z0-9]+/g, " ")
+              .trim() === "fire station"
+              ? { value: "l2", title: "Fire Station" }
+              : null,
+        },
+        global: {
+          stubs: { VIcon: true, VTooltip: true },
+          mocks: { $gettext: (s) => s },
+        },
+      });
+
+      wrapper2.vm.newItemTitle = "fire+station";
+      await wrapper2.vm.addNewItem();
+
+      const emitted = wrapper2.emitted("update:items")?.at(-1)?.[0];
+      const fs = emitted.find((i) => i.title === "Fire Station");
+      expect(fs.action).toBe("add");
+    });
+
+    it("adds unmatched free text as isNew: true with action 'add'", async () => {
+      const wrapper2 = mount(ChipSelector, {
+        props: {
+          items: [],
+          availableItems: [],
+          allowCreate: true,
+        },
+        global: {
+          stubs: { VIcon: true, VTooltip: true },
+          mocks: { $gettext: (s) => s },
+        },
+      });
+
+      wrapper2.vm.newItemTitle = "Completely New";
+      await wrapper2.vm.addNewItem();
+
+      const emitted = wrapper2.emitted("update:items")?.at(-1)?.[0];
+      const created = emitted.find((i) => i.title === "Completely New");
+      expect(created).toMatchObject({ isNew: true, action: "add" });
     });
   });
 
