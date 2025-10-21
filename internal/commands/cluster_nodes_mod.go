@@ -125,7 +125,7 @@ func clusterNodesModAction(ctx *cli.Context) error {
 		who := clusterAuditWho(ctx, conf)
 		segments := []string{
 			string(acl.ResourceCluster),
-			"update node %s",
+			"update node", "%s",
 		}
 		args := []interface{}{clean.Log(nodeID)}
 

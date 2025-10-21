@@ -63,7 +63,7 @@ func clusterNodesShowAction(ctx *cli.Context) error {
 		who := clusterAuditWho(ctx, conf)
 		event.AuditInfo(append(who,
 			string(acl.ResourceCluster),
-			"show node %s",
+			"show node", "%s",
 			status.Succeeded,
 		), clean.Log(dto.UUID))
 

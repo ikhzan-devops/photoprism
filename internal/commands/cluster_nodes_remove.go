@@ -115,7 +115,7 @@ func clusterNodesRemoveAction(ctx *cli.Context) error {
 		who := clusterAuditWho(ctx, conf)
 		event.AuditInfo(append(who,
 			string(acl.ResourceCluster),
-			"node %s",
+			"node", "%s",
 			status.Deleted,
 		), clean.Log(uuid))
 

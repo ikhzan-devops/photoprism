@@ -174,7 +174,7 @@ func ClusterGetNode(router *gin.RouterGroup) {
 
 		// Audit get access.
 		event.AuditInfo(
-			[]string{ClientIP(c), "session %s", string(acl.ResourceCluster), "get node %s", status.Succeeded},
+			[]string{ClientIP(c), "session %s", string(acl.ResourceCluster), "get node", "%s", status.Succeeded},
 			s.RefID,
 			uuid,
 		)
@@ -262,7 +262,7 @@ func ClusterUpdateNode(router *gin.RouterGroup) {
 		}
 
 		event.AuditInfo(
-			[]string{ClientIP(c), "session %s", string(acl.ResourceCluster), "node %s", status.Updated},
+			[]string{ClientIP(c), "session %s", string(acl.ResourceCluster), "node", "%s", status.Updated},
 			s.RefID,
 			uuid,
 		)
@@ -321,7 +321,7 @@ func ClusterDeleteNode(router *gin.RouterGroup) {
 		}
 
 		event.AuditWarn(
-			[]string{ClientIP(c), "session %s", string(acl.ResourceCluster), "node %s", status.Deleted},
+			[]string{ClientIP(c), "session %s", string(acl.ResourceCluster), "node", "%s", status.Deleted},
 			s.RefID,
 			uuid,
 		)

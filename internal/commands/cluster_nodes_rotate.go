@@ -192,7 +192,7 @@ func clusterNodesRotateAction(ctx *cli.Context) error {
 		who := clusterAuditWho(ctx, conf)
 		segments := []string{
 			string(acl.ResourceCluster),
-			"rotate node %s",
+			"rotate node", "%s",
 		}
 		args := []interface{}{clean.Log(nodeID)}
 		if detail != "" {

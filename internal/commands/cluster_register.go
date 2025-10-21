@@ -304,7 +304,7 @@ func clusterRegisterAction(ctx *cli.Context) error {
 		who := clusterAuditWho(ctx, conf)
 		event.AuditInfo(append(who,
 			string(acl.ResourceCluster),
-			"register node %s",
+			"register node", "%s",
 			status.Succeeded,
 		), clean.Log(nodeID))
 
