@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { mount } from "@vue/test-utils";
 import { nextTick } from "vue";
 import ChipSelector from "component/file/chip-selector.vue";
@@ -50,6 +50,10 @@ describe("component/file/chip-selector", () => {
         },
       },
     });
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   describe("Component Rendering", () => {
@@ -234,8 +238,7 @@ describe("component/file/chip-selector", () => {
 
   describe("Label resolver and normalization", () => {
     it("resolves 'cat' → 'Katze' and sets mixed chip to add", async () => {
-      vi.useFakeTimers();
-      const wrapper2 = mount(ChipSelector, {
+      const wrapper = mount(ChipSelector, {
         props: {
           items: [{ value: "l1", title: "Katze", mixed: true, action: "none" }],
           availableItems: [{ value: "l1", title: "Katze" }],
@@ -248,17 +251,19 @@ describe("component/file/chip-selector", () => {
         },
       });
 
-      wrapper2.vm.newItemTitle = "cat";
-      await wrapper2.vm.addNewItem();
+      wrapper.vm.newItemTitle = "cat";
+      await wrapper.vm.addNewItem();
 
-      const emitted = wrapper2.emitted("update:items")?.at(-1)?.[0];
+      const emitted = wrapper.emitted("update:items")?.at(-1)?.[0];
+      expect(emitted).toBeTruthy();
       const katze = emitted.find((i) => i.title === "Katze");
       expect(katze.action).toBe("add");
+      wrapper.unmount();
     });
 
     it("re-typing existing chip clears input and does not add a duplicate", async () => {
       vi.useFakeTimers();
-      const wrapper2 = mount(ChipSelector, {
+      const wrapper = mount(ChipSelector, {
         props: {
           items: [{ value: "l1", title: "Katze", mixed: false, action: "add" }],
           availableItems: [{ value: "l1", title: "Katze" }],
@@ -270,16 +275,17 @@ describe("component/file/chip-selector", () => {
         },
       });
 
-      wrapper2.vm.newItemTitle = "Katze";
-      await wrapper2.vm.addNewItem();
+      wrapper.vm.newItemTitle = "Katze";
+      await wrapper.vm.addNewItem();
+      await vi.runAllTimersAsync();
       await nextTick();
-      vi.runAllTimers();
-      expect(wrapper2.vm.newItemTitle).toBeNull();
-      expect(wrapper2.emitted("update:items")).toBeFalsy();
+      expect(wrapper.vm.newItemTitle).toBeNull();
+      expect(wrapper.emitted("update:items")).toBeFalsy();
+      wrapper.unmount();
     });
 
     it("normalizes 'fire+station' → 'Fire Station' via resolver and sets to add", async () => {
-      const wrapper2 = mount(ChipSelector, {
+      const wrapper = mount(ChipSelector, {
         props: {
           items: [{ value: "l2", title: "Fire Station", mixed: true, action: "none" }],
           availableItems: [{ value: "l2", title: "Fire Station" }],
@@ -298,16 +304,18 @@ describe("component/file/chip-selector", () => {
         },
       });
 
-      wrapper2.vm.newItemTitle = "fire+station";
-      await wrapper2.vm.addNewItem();
+      wrapper.vm.newItemTitle = "fire+station";
+      await wrapper.vm.addNewItem();
 
-      const emitted = wrapper2.emitted("update:items")?.at(-1)?.[0];
+      const emitted = wrapper.emitted("update:items")?.at(-1)?.[0];
+      expect(emitted).toBeTruthy();
       const fs = emitted.find((i) => i.title === "Fire Station");
       expect(fs.action).toBe("add");
+      wrapper.unmount();
     });
 
     it("adds unmatched free text as isNew: true with action 'add'", async () => {
-      const wrapper2 = mount(ChipSelector, {
+      const wrapper = mount(ChipSelector, {
         props: {
           items: [],
           availableItems: [],
@@ -319,12 +327,14 @@ describe("component/file/chip-selector", () => {
         },
       });
 
-      wrapper2.vm.newItemTitle = "Completely New";
-      await wrapper2.vm.addNewItem();
+      wrapper.vm.newItemTitle = "Completely New";
+      await wrapper.vm.addNewItem();
 
-      const emitted = wrapper2.emitted("update:items")?.at(-1)?.[0];
+      const emitted = wrapper.emitted("update:items")?.at(-1)?.[0];
+      expect(emitted).toBeTruthy();
       const created = emitted.find((i) => i.title === "Completely New");
       expect(created).toMatchObject({ isNew: true, action: "add" });
+      wrapper.unmount();
     });
   });
 
