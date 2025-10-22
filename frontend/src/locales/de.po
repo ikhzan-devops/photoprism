@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: ci@photoprism.app\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-10-11 13:44+0000\n"
+"PO-Revision-Date: 2025-10-22 04:02+0000\n"
 "Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
 "Language-Team: German <https://translate.photoprism.app/projects/photoprism/"
 "frontend/de/>\n"
@@ -816,7 +816,7 @@ msgstr "Schließen"
 
 #: src/app/routes.js:122
 msgid "Cluster"
-msgstr ""
+msgstr "Cluster"
 
 #: src/component/photo/edit/files.vue:157
 #: src/component/photo/edit/files.vue:158
