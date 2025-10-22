@@ -17,6 +17,7 @@ import (
 
 	"github.com/photoprism/photoprism/internal/entity"
 	"github.com/photoprism/photoprism/internal/entity/migrate"
+	"github.com/photoprism/photoprism/internal/event"
 	"github.com/photoprism/photoprism/internal/mutex"
 	"github.com/photoprism/photoprism/pkg/clean"
 )
@@ -100,12 +101,19 @@ func (c *Config) DatabaseSsl() bool {
 	}
 }
 
-// DatabaseDSN returns the database data source name (DSN).
-func (c *Config) DatabaseDSN() string {
+// normalizeDatabaseDSN maps the deprecated DatabaseDsn database configuration
+// value to its current counterpart, DatabaseDSN, before consumption.
+func (c *Config) normalizeDatabaseDSN() {
 	if c.options.DatabaseDSN == "" && c.options.Deprecated.DatabaseDsn != "" {
 		c.options.DatabaseDSN = c.options.Deprecated.DatabaseDsn
 		c.options.Deprecated.DatabaseDsn = ""
+		event.SystemWarn([]string{"config", "options", "DatabaseDsn has been deprecated in favor of DatabaseDSN"})
 	}
+}
+
+// DatabaseDSN returns the database data source name (DSN).
+func (c *Config) DatabaseDSN() string {
+	c.normalizeDatabaseDSN()
 
 	if c.options.DatabaseDSN == "" {
 		switch c.DatabaseDriver() {
@@ -149,18 +157,9 @@ func (c *Config) DatabaseDSN() string {
 	return c.options.DatabaseDSN
 }
 
-// DatabaseFile returns the filename part of a sqlite database DSN.
-func (c *Config) DatabaseFile() string {
-	fileName, _, _ := strings.Cut(strings.TrimPrefix(c.DatabaseDSN(), "file:"), "?")
-	return fileName
-}
-
 // ParseDatabaseDSN parses the database dsn and extracts user, password, database server, and name.
 func (c *Config) ParseDatabaseDSN() {
-	if c.options.DatabaseDSN == "" && c.options.Deprecated.DatabaseDsn != "" {
-		c.options.DatabaseDSN = c.options.Deprecated.DatabaseDsn
-		c.options.Deprecated.DatabaseDsn = ""
-	}
+	c.normalizeDatabaseDSN()
 
 	if c.options.DatabaseDSN == "" || c.options.DatabaseServer != "" {
 		return
@@ -172,6 +171,12 @@ func (c *Config) ParseDatabaseDSN() {
 	c.options.DatabaseServer = d.Server
 	c.options.DatabaseUser = d.User
 	c.options.DatabasePassword = d.Password
+}
+
+// DatabaseFile returns the filename part of a sqlite database DSN.
+func (c *Config) DatabaseFile() string {
+	fileName, _, _ := strings.Cut(strings.TrimPrefix(c.DatabaseDSN(), "file:"), "?")
+	return fileName
 }
 
 // DatabaseServer the database server.
