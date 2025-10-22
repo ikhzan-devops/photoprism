@@ -141,7 +141,7 @@ msgstr "Уліковы запіс выдалены"
 msgid "Account restored"
 msgstr "Уліковы запіс адноўлены"
 
-#: src/page/admin.vue:53
+#: src/page/admin.vue:54
 msgid "Accounts"
 msgstr "Уліковыя запісы"
 
@@ -186,6 +186,11 @@ msgstr "Уключыце для сартавання па змяншэнні."
 #: src/page/connect.vue:125 src/page/connect.vue:136
 msgid "Activation Code"
 msgstr "Код актывацыі"
+
+#: src/page/admin.vue:76
+#, fuzzy
+msgid "Activity"
+msgstr "Актываваць"
 
 #: src/component/user/add/dialog.vue:203 src/page/admin/users.vue:36
 #: src/component/settings/apps.vue:127 src/component/settings/apps.vue:128
@@ -491,7 +496,7 @@ msgstr "Суадносіны бакоў"
 msgid "Audio"
 msgstr "Аўдыё"
 
-#: src/model/logs.js:173
+#: src/model/logs.js:192
 #, fuzzy
 msgid "Audit Log"
 msgstr "Аўдыё"
@@ -1751,6 +1756,11 @@ msgstr "Няправільны час"
 msgid "Invalid URL"
 msgstr "Няправільны URL"
 
+#: src/page/admin/activity.vue:129
+#, fuzzy
+msgid "IP Address"
+msgstr "Няправільны адрас"
+
 #: src/component/settings/passcode.vue:164
 #: src/component/settings/passcode.vue:199
 msgid "It is a one-time use code that will disable 2FA for your account when you use it."
@@ -2032,7 +2042,8 @@ msgstr "Сяброўства"
 msgid "Merge %{a} with %{b}?"
 msgstr "Аб'яднаць %{a} з %{b}?"
 
-#: src/page/about/feedback.vue:51 src/page/about/feedback.vue:52
+#: src/page/about/feedback.vue:51 src/page/admin/activity.vue:130
+#: src/page/about/feedback.vue:52
 msgid "Message"
 msgstr "паведамленне"
 
@@ -2276,8 +2287,8 @@ msgstr "Заўвагі"
 msgid "Nothing to see here yet."
 msgstr "Тут пакуль няма чаго бачыць."
 
-#: src/page/admin/sessions.vue:47 src/page/admin/users.vue:56
-#: src/component/settings/apps.vue:197
+#: src/page/admin/activity.vue:60 src/page/admin/sessions.vue:47
+#: src/page/admin/users.vue:56 src/component/settings/apps.vue:197
 msgid "Nothing was found."
 msgstr "Нічога не знайшлі."
 
@@ -2705,11 +2716,12 @@ msgstr "Код аднаўлення"
 msgid "Red"
 msgstr "Чырвоны"
 
-#: src/page/admin/sessions.vue:333 src/page/admin/users.vue:321
-#: src/component/album/toolbar.vue:164 src/component/photo/toolbar.vue:488
-#: src/page/albums.vue:552 src/page/labels.vue:297
-#: src/page/library/browse.vue:21 src/page/library/errors.vue:226
-#: src/page/people/new.vue:7 src/page/people/recognized.vue:37
+#: src/page/admin/activity.vue:42 src/page/admin/sessions.vue:333
+#: src/page/admin/users.vue:321 src/component/album/toolbar.vue:164
+#: src/component/photo/toolbar.vue:488 src/page/albums.vue:552
+#: src/page/labels.vue:297 src/page/library/browse.vue:21
+#: src/page/library/errors.vue:226 src/page/people/new.vue:7
+#: src/page/people/recognized.vue:37
 msgid "Refresh"
 msgstr "Абнавіць"
 
@@ -2756,6 +2768,11 @@ msgstr "Выдаліць з альбома"
 #: src/page/library/import.vue:46
 msgid "Remove imported files to save storage. Unsupported file types will never be deleted, they remain in their current location."
 msgstr "Выдаліце імпартаваныя файлы, каб зэканоміць памяць. Непадтрымоўваныя тыпы файлаў ніколі не выдаляюцца, яны застаюцца ў сваім бягучым месцы."
+
+#: src/page/admin/activity.vue:132
+#, fuzzy
+msgid "Repeated"
+msgstr "Згенераваны"
 
 #: src/common/api.js:102 src/component/lightbox.vue:921
 msgid "Request failed - are you offline?"
@@ -2875,12 +2892,13 @@ msgstr "Сканы"
 msgid "Scope"
 msgstr "Вобласць прымянення"
 
-#: src/page/admin/sessions.vue:13 src/page/admin/users.vue:13
-#: src/component/location/dialog.vue:63 src/component/navigation.vue:122
-#: src/component/navigation.vue:903 src/component/photo/toolbar.vue:35
-#: src/options/options.js:201 src/page/albums.vue:31 src/page/labels.vue:26
-#: src/page/library/errors.vue:29 src/page/people/recognized.vue:15
-#: src/page/places.vue:33 src/page/settings/content.vue:131
+#: src/page/admin/activity.vue:13 src/page/admin/sessions.vue:13
+#: src/page/admin/users.vue:13 src/component/location/dialog.vue:63
+#: src/component/navigation.vue:122 src/component/navigation.vue:903
+#: src/component/photo/toolbar.vue:35 src/options/options.js:201
+#: src/page/albums.vue:31 src/page/labels.vue:26 src/page/library/errors.vue:29
+#: src/page/people/recognized.vue:15 src/page/places.vue:33
+#: src/page/settings/content.vue:131
 msgid "Search"
 msgstr "Пошук"
 
@@ -2965,7 +2983,7 @@ msgstr "сесія"
 msgid "Session ID"
 msgstr "Ідэнтыфікатар сеансу"
 
-#: src/page/admin.vue:64
+#: src/page/admin.vue:65
 msgid "Sessions"
 msgstr "Сесіі"
 
@@ -2995,6 +3013,11 @@ msgstr "Налады захаваны"
 #: src/component/settings/passcode.vue:70
 msgid "Setup"
 msgstr "Усталяваць"
+
+#: src/page/admin/activity.vue:128 src/page/admin/activity.vue:36
+#, fuzzy
+msgid "Severity"
+msgstr "ніколі"
 
 #: src/component/album/clipboard.vue:32 src/component/album/toolbar.vue:183
 #: src/component/photo/clipboard.vue:32 src/page/settings/general.vue:221
@@ -3293,6 +3316,11 @@ msgstr "Гэта мантуе папку арыгіналаў у якасці с
 #, fuzzy
 msgid "This mounts the originals folder as a network drive and allows you to open, edit, and delete files from your computer or smartphone as if they were local. "
 msgstr "Гэта мантуе папку арыгіналаў у якасці сеткавага дыска і дазваляе адкрываць, рэдагаваць і выдаляць файлы з вашага камп'ютара або смартфона, як калі б яны былі лакальнымі."
+
+#: src/page/admin/activity.vue:127
+#, fuzzy
+msgid "Time"
+msgstr "Тайм-аўт"
 
 #: src/component/photo/edit/details.vue:122
 msgid "Time UTC"

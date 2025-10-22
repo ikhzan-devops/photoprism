@@ -141,7 +141,7 @@ msgstr "Tài khoản đã bị xóa"
 msgid "Account restored"
 msgstr "Tài khoản đã được khôi phục"
 
-#: src/page/admin.vue:53
+#: src/page/admin.vue:54
 msgid "Accounts"
 msgstr "Tài khoản"
 
@@ -186,6 +186,11 @@ msgstr "Kích hoạt để sắp xếp theo thứ tự giảm dần."
 #: src/page/connect.vue:125 src/page/connect.vue:136
 msgid "Activation Code"
 msgstr "Mã kích hoạt"
+
+#: src/page/admin.vue:76
+#, fuzzy
+msgid "Activity"
+msgstr "Kích hoạt"
 
 #: src/component/user/add/dialog.vue:203 src/page/admin/users.vue:36
 #: src/component/settings/apps.vue:127 src/component/settings/apps.vue:128
@@ -491,7 +496,7 @@ msgstr "Tỷ lệ khung hình"
 msgid "Audio"
 msgstr "Âm thanh"
 
-#: src/model/logs.js:173
+#: src/model/logs.js:192
 #, fuzzy
 msgid "Audit Log"
 msgstr "Âm thanh"
@@ -1751,6 +1756,11 @@ msgstr "Thời gian không hợp lệ"
 msgid "Invalid URL"
 msgstr "URL không hợp lệ"
 
+#: src/page/admin/activity.vue:129
+#, fuzzy
+msgid "IP Address"
+msgstr "Địa chỉ không hợp lệ"
+
 #: src/component/settings/passcode.vue:164
 #: src/component/settings/passcode.vue:199
 msgid "It is a one-time use code that will disable 2FA for your account when you use it."
@@ -2032,7 +2042,8 @@ msgstr "Tư cách thành viên"
 msgid "Merge %{a} with %{b}?"
 msgstr "Hợp nhất %{a} với %{b}?"
 
-#: src/page/about/feedback.vue:51 src/page/about/feedback.vue:52
+#: src/page/about/feedback.vue:51 src/page/admin/activity.vue:130
+#: src/page/about/feedback.vue:52
 msgid "Message"
 msgstr "Tin nhắn"
 
@@ -2276,8 +2287,8 @@ msgstr "Ghi chú"
 msgid "Nothing to see here yet."
 msgstr "Chưa có gì để xem ở đây."
 
-#: src/page/admin/sessions.vue:47 src/page/admin/users.vue:56
-#: src/component/settings/apps.vue:197
+#: src/page/admin/activity.vue:60 src/page/admin/sessions.vue:47
+#: src/page/admin/users.vue:56 src/component/settings/apps.vue:197
 msgid "Nothing was found."
 msgstr "Không có gì được tìm thấy."
 
@@ -2705,11 +2716,12 @@ msgstr "Mã phục hồi"
 msgid "Red"
 msgstr "Màu đỏ"
 
-#: src/page/admin/sessions.vue:333 src/page/admin/users.vue:321
-#: src/component/album/toolbar.vue:164 src/component/photo/toolbar.vue:488
-#: src/page/albums.vue:552 src/page/labels.vue:297
-#: src/page/library/browse.vue:21 src/page/library/errors.vue:226
-#: src/page/people/new.vue:7 src/page/people/recognized.vue:37
+#: src/page/admin/activity.vue:42 src/page/admin/sessions.vue:333
+#: src/page/admin/users.vue:321 src/component/album/toolbar.vue:164
+#: src/component/photo/toolbar.vue:488 src/page/albums.vue:552
+#: src/page/labels.vue:297 src/page/library/browse.vue:21
+#: src/page/library/errors.vue:226 src/page/people/new.vue:7
+#: src/page/people/recognized.vue:37
 msgid "Refresh"
 msgstr "Làm cho khỏe lại"
 
@@ -2756,6 +2768,11 @@ msgstr "Xóa khỏi album"
 #: src/page/library/import.vue:46
 msgid "Remove imported files to save storage. Unsupported file types will never be deleted, they remain in their current location."
 msgstr "Xóa các tập tin đã nhập để tiết kiệm dung lượng. Các loại tệp không được hỗ trợ sẽ không bao giờ bị xóa, chúng vẫn ở vị trí hiện tại."
+
+#: src/page/admin/activity.vue:132
+#, fuzzy
+msgid "Repeated"
+msgstr "Đã tạo ra"
 
 #: src/common/api.js:102 src/component/lightbox.vue:921
 msgid "Request failed - are you offline?"
@@ -2875,12 +2892,13 @@ msgstr "Quét"
 msgid "Scope"
 msgstr "Phạm vi"
 
-#: src/page/admin/sessions.vue:13 src/page/admin/users.vue:13
-#: src/component/location/dialog.vue:63 src/component/navigation.vue:122
-#: src/component/navigation.vue:903 src/component/photo/toolbar.vue:35
-#: src/options/options.js:201 src/page/albums.vue:31 src/page/labels.vue:26
-#: src/page/library/errors.vue:29 src/page/people/recognized.vue:15
-#: src/page/places.vue:33 src/page/settings/content.vue:131
+#: src/page/admin/activity.vue:13 src/page/admin/sessions.vue:13
+#: src/page/admin/users.vue:13 src/component/location/dialog.vue:63
+#: src/component/navigation.vue:122 src/component/navigation.vue:903
+#: src/component/photo/toolbar.vue:35 src/options/options.js:201
+#: src/page/albums.vue:31 src/page/labels.vue:26 src/page/library/errors.vue:29
+#: src/page/people/recognized.vue:15 src/page/places.vue:33
+#: src/page/settings/content.vue:131
 msgid "Search"
 msgstr "Tìm kiếm"
 
@@ -2965,7 +2983,7 @@ msgstr "Phiên họp"
 msgid "Session ID"
 msgstr "ID phiên"
 
-#: src/page/admin.vue:64
+#: src/page/admin.vue:65
 msgid "Sessions"
 msgstr "Phiên"
 
@@ -2995,6 +3013,11 @@ msgstr "Đã lưu cài đặt"
 #: src/component/settings/passcode.vue:70
 msgid "Setup"
 msgstr "Cài đặt"
+
+#: src/page/admin/activity.vue:128 src/page/admin/activity.vue:36
+#, fuzzy
+msgid "Severity"
+msgstr "Không bao giờ"
 
 #: src/component/album/clipboard.vue:32 src/component/album/toolbar.vue:183
 #: src/component/photo/clipboard.vue:32 src/page/settings/general.vue:221
@@ -3293,6 +3316,11 @@ msgstr "Thao tác này sẽ gắn thư mục gốc dưới dạng ổ đĩa mạ
 #, fuzzy
 msgid "This mounts the originals folder as a network drive and allows you to open, edit, and delete files from your computer or smartphone as if they were local. "
 msgstr "Thao tác này sẽ gắn thư mục gốc dưới dạng ổ đĩa mạng và cho phép bạn mở, chỉnh sửa và xóa các tệp khỏi máy tính hoặc điện thoại thông minh của bạn như thể chúng là cục bộ."
+
+#: src/page/admin/activity.vue:127
+#, fuzzy
+msgid "Time"
+msgstr "Hết giờ"
 
 #: src/component/photo/edit/details.vue:122
 msgid "Time UTC"

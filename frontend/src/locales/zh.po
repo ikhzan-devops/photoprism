@@ -144,7 +144,7 @@ msgstr "账户已删除"
 msgid "Account restored"
 msgstr "账户已恢复"
 
-#: src/page/admin.vue:53
+#: src/page/admin.vue:54
 msgid "Accounts"
 msgstr "账户"
 
@@ -189,6 +189,11 @@ msgstr "激活以降序排序。"
 #: src/page/connect.vue:125 src/page/connect.vue:136
 msgid "Activation Code"
 msgstr "激活码"
+
+#: src/page/admin.vue:76
+#, fuzzy
+msgid "Activity"
+msgstr "激活"
 
 #: src/component/user/add/dialog.vue:203 src/page/admin/users.vue:36
 #: src/component/settings/apps.vue:127 src/component/settings/apps.vue:128
@@ -494,7 +499,7 @@ msgstr "长宽比"
 msgid "Audio"
 msgstr "音频"
 
-#: src/model/logs.js:173
+#: src/model/logs.js:192
 #, fuzzy
 msgid "Audit Log"
 msgstr "音频"
@@ -1754,6 +1759,11 @@ msgstr "无效时间"
 msgid "Invalid URL"
 msgstr "无效 URL"
 
+#: src/page/admin/activity.vue:129
+#, fuzzy
+msgid "IP Address"
+msgstr "无效地址"
+
 #: src/component/settings/passcode.vue:164
 #: src/component/settings/passcode.vue:199
 msgid "It is a one-time use code that will disable 2FA for your account when you use it."
@@ -2035,7 +2045,8 @@ msgstr "会员资格"
 msgid "Merge %{a} with %{b}?"
 msgstr "将 %{a} 与 %{b} 合并？"
 
-#: src/page/about/feedback.vue:51 src/page/about/feedback.vue:52
+#: src/page/about/feedback.vue:51 src/page/admin/activity.vue:130
+#: src/page/about/feedback.vue:52
 msgid "Message"
 msgstr "留言"
 
@@ -2279,8 +2290,8 @@ msgstr "备注"
 msgid "Nothing to see here yet."
 msgstr "暂无数据。"
 
-#: src/page/admin/sessions.vue:47 src/page/admin/users.vue:56
-#: src/component/settings/apps.vue:197
+#: src/page/admin/activity.vue:60 src/page/admin/sessions.vue:47
+#: src/page/admin/users.vue:56 src/component/settings/apps.vue:197
 msgid "Nothing was found."
 msgstr "没有发现任何问题。"
 
@@ -2710,11 +2721,12 @@ msgstr "恢复代码"
 msgid "Red"
 msgstr "红"
 
-#: src/page/admin/sessions.vue:333 src/page/admin/users.vue:321
-#: src/component/album/toolbar.vue:164 src/component/photo/toolbar.vue:488
-#: src/page/albums.vue:552 src/page/labels.vue:297
-#: src/page/library/browse.vue:21 src/page/library/errors.vue:226
-#: src/page/people/new.vue:7 src/page/people/recognized.vue:37
+#: src/page/admin/activity.vue:42 src/page/admin/sessions.vue:333
+#: src/page/admin/users.vue:321 src/component/album/toolbar.vue:164
+#: src/component/photo/toolbar.vue:488 src/page/albums.vue:552
+#: src/page/labels.vue:297 src/page/library/browse.vue:21
+#: src/page/library/errors.vue:226 src/page/people/new.vue:7
+#: src/page/people/recognized.vue:37
 msgid "Refresh"
 msgstr "刷新"
 
@@ -2761,6 +2773,11 @@ msgstr "从相册中移除"
 #: src/page/library/import.vue:46
 msgid "Remove imported files to save storage. Unsupported file types will never be deleted, they remain in their current location."
 msgstr "移除导入的文件以节省存储空间，不支持的文件类型将永远不会被删除，它们会保留在它们当前的位置。"
+
+#: src/page/admin/activity.vue:132
+#, fuzzy
+msgid "Repeated"
+msgstr "生成"
 
 #: src/common/api.js:102 src/component/lightbox.vue:921
 msgid "Request failed - are you offline?"
@@ -2880,12 +2897,13 @@ msgstr "扫描"
 msgid "Scope"
 msgstr "范围"
 
-#: src/page/admin/sessions.vue:13 src/page/admin/users.vue:13
-#: src/component/location/dialog.vue:63 src/component/navigation.vue:122
-#: src/component/navigation.vue:903 src/component/photo/toolbar.vue:35
-#: src/options/options.js:201 src/page/albums.vue:31 src/page/labels.vue:26
-#: src/page/library/errors.vue:29 src/page/people/recognized.vue:15
-#: src/page/places.vue:33 src/page/settings/content.vue:131
+#: src/page/admin/activity.vue:13 src/page/admin/sessions.vue:13
+#: src/page/admin/users.vue:13 src/component/location/dialog.vue:63
+#: src/component/navigation.vue:122 src/component/navigation.vue:903
+#: src/component/photo/toolbar.vue:35 src/options/options.js:201
+#: src/page/albums.vue:31 src/page/labels.vue:26 src/page/library/errors.vue:29
+#: src/page/people/recognized.vue:15 src/page/places.vue:33
+#: src/page/settings/content.vue:131
 msgid "Search"
 msgstr "搜索"
 
@@ -2970,7 +2988,7 @@ msgstr "会议"
 msgid "Session ID"
 msgstr "会议ID"
 
-#: src/page/admin.vue:64
+#: src/page/admin.vue:65
 msgid "Sessions"
 msgstr "会议"
 
@@ -3000,6 +3018,11 @@ msgstr "设置已保存"
 #: src/component/settings/passcode.vue:70
 msgid "Setup"
 msgstr "设置"
+
+#: src/page/admin/activity.vue:128 src/page/admin/activity.vue:36
+#, fuzzy
+msgid "Severity"
+msgstr "永不"
 
 #: src/component/album/clipboard.vue:32 src/component/album/toolbar.vue:183
 #: src/component/photo/clipboard.vue:32 src/page/settings/general.vue:221
@@ -3298,6 +3321,11 @@ msgstr "这会将源文件夹安装为网络驱动器，并允许您从计算机
 #, fuzzy
 msgid "This mounts the originals folder as a network drive and allows you to open, edit, and delete files from your computer or smartphone as if they were local. "
 msgstr "这会将源文件夹安装为网络驱动器，并允许您从计算机或智能手机中打开，编辑和删除文件，就像它们是本地文件一样。"
+
+#: src/page/admin/activity.vue:127
+#, fuzzy
+msgid "Time"
+msgstr "超时"
 
 #: src/component/photo/edit/details.vue:122
 msgid "Time UTC"

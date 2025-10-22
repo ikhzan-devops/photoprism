@@ -143,7 +143,7 @@ msgstr "Konto usunięte"
 msgid "Account restored"
 msgstr "Konto przywrócone"
 
-#: src/page/admin.vue:53
+#: src/page/admin.vue:54
 msgid "Accounts"
 msgstr "Konta"
 
@@ -188,6 +188,11 @@ msgstr "Aktywuj, aby sortować malejąco."
 #: src/page/connect.vue:125 src/page/connect.vue:136
 msgid "Activation Code"
 msgstr "Kod aktywacji"
+
+#: src/page/admin.vue:76
+#, fuzzy
+msgid "Activity"
+msgstr "Aktywuj"
 
 #: src/component/user/add/dialog.vue:203 src/page/admin/users.vue:36
 #: src/component/settings/apps.vue:127 src/component/settings/apps.vue:128
@@ -493,7 +498,7 @@ msgstr "Proporcje obrazu"
 msgid "Audio"
 msgstr "Audio"
 
-#: src/model/logs.js:173
+#: src/model/logs.js:192
 #, fuzzy
 msgid "Audit Log"
 msgstr "Audio"
@@ -1753,6 +1758,11 @@ msgstr "Nieprawidłowy czas"
 msgid "Invalid URL"
 msgstr "Nieprawidłowy adres URL"
 
+#: src/page/admin/activity.vue:129
+#, fuzzy
+msgid "IP Address"
+msgstr "Nieprawidłowy adres"
+
 #: src/component/settings/passcode.vue:164
 #: src/component/settings/passcode.vue:199
 msgid "It is a one-time use code that will disable 2FA for your account when you use it."
@@ -2034,7 +2044,8 @@ msgstr "Członkostwo"
 msgid "Merge %{a} with %{b}?"
 msgstr "Złączyć %{a} z %{b}?"
 
-#: src/page/about/feedback.vue:51 src/page/about/feedback.vue:52
+#: src/page/about/feedback.vue:51 src/page/admin/activity.vue:130
+#: src/page/about/feedback.vue:52
 msgid "Message"
 msgstr "Wiadomość"
 
@@ -2278,8 +2289,8 @@ msgstr "Notatki"
 msgid "Nothing to see here yet."
 msgstr "Na razie nic tu nie widać."
 
-#: src/page/admin/sessions.vue:47 src/page/admin/users.vue:56
-#: src/component/settings/apps.vue:197
+#: src/page/admin/activity.vue:60 src/page/admin/sessions.vue:47
+#: src/page/admin/users.vue:56 src/component/settings/apps.vue:197
 msgid "Nothing was found."
 msgstr "Nic nie znaleziono."
 
@@ -2707,11 +2718,12 @@ msgstr "Kod odzyskiwania"
 msgid "Red"
 msgstr "Czerwony"
 
-#: src/page/admin/sessions.vue:333 src/page/admin/users.vue:321
-#: src/component/album/toolbar.vue:164 src/component/photo/toolbar.vue:488
-#: src/page/albums.vue:552 src/page/labels.vue:297
-#: src/page/library/browse.vue:21 src/page/library/errors.vue:226
-#: src/page/people/new.vue:7 src/page/people/recognized.vue:37
+#: src/page/admin/activity.vue:42 src/page/admin/sessions.vue:333
+#: src/page/admin/users.vue:321 src/component/album/toolbar.vue:164
+#: src/component/photo/toolbar.vue:488 src/page/albums.vue:552
+#: src/page/labels.vue:297 src/page/library/browse.vue:21
+#: src/page/library/errors.vue:226 src/page/people/new.vue:7
+#: src/page/people/recognized.vue:37
 msgid "Refresh"
 msgstr "Odśwież"
 
@@ -2758,6 +2770,11 @@ msgstr "Usuń z albumu"
 #: src/page/library/import.vue:46
 msgid "Remove imported files to save storage. Unsupported file types will never be deleted, they remain in their current location."
 msgstr "Usuń zaimportowane pliki z ich obecnej lokalizacji, aby zaoszczędzić miejsce na dysku. Nieobsługiwane typy plików pozostaną nienaruszone."
+
+#: src/page/admin/activity.vue:132
+#, fuzzy
+msgid "Repeated"
+msgstr "Wygenerowano"
 
 #: src/common/api.js:102 src/component/lightbox.vue:921
 msgid "Request failed - are you offline?"
@@ -2877,12 +2894,13 @@ msgstr "Skany"
 msgid "Scope"
 msgstr "Zakres"
 
-#: src/page/admin/sessions.vue:13 src/page/admin/users.vue:13
-#: src/component/location/dialog.vue:63 src/component/navigation.vue:122
-#: src/component/navigation.vue:903 src/component/photo/toolbar.vue:35
-#: src/options/options.js:201 src/page/albums.vue:31 src/page/labels.vue:26
-#: src/page/library/errors.vue:29 src/page/people/recognized.vue:15
-#: src/page/places.vue:33 src/page/settings/content.vue:131
+#: src/page/admin/activity.vue:13 src/page/admin/sessions.vue:13
+#: src/page/admin/users.vue:13 src/component/location/dialog.vue:63
+#: src/component/navigation.vue:122 src/component/navigation.vue:903
+#: src/component/photo/toolbar.vue:35 src/options/options.js:201
+#: src/page/albums.vue:31 src/page/labels.vue:26 src/page/library/errors.vue:29
+#: src/page/people/recognized.vue:15 src/page/places.vue:33
+#: src/page/settings/content.vue:131
 msgid "Search"
 msgstr "Szukaj"
 
@@ -2967,7 +2985,7 @@ msgstr "Sesja"
 msgid "Session ID"
 msgstr "Identyfikator sesji"
 
-#: src/page/admin.vue:64
+#: src/page/admin.vue:65
 msgid "Sessions"
 msgstr "Sesje"
 
@@ -2997,6 +3015,11 @@ msgstr "Zapisano ustawienia"
 #: src/component/settings/passcode.vue:70
 msgid "Setup"
 msgstr "Ustawienia"
+
+#: src/page/admin/activity.vue:128 src/page/admin/activity.vue:36
+#, fuzzy
+msgid "Severity"
+msgstr "Nigdy"
 
 #: src/component/album/clipboard.vue:32 src/component/album/toolbar.vue:183
 #: src/component/photo/clipboard.vue:32 src/page/settings/general.vue:221
@@ -3295,6 +3318,11 @@ msgstr "Pozwala to na zamontowanie folderu oryginałów jako dysku sieciowego i 
 #, fuzzy
 msgid "This mounts the originals folder as a network drive and allows you to open, edit, and delete files from your computer or smartphone as if they were local. "
 msgstr "Pozwala to na zamontowanie folderu oryginałów jako dysku sieciowego i umożliwia otwieranie, edytowanie i usuwanie plików z komputera lub smartfona w taki sam sposób, jakby były one przechowywane lokalnie."
+
+#: src/page/admin/activity.vue:127
+#, fuzzy
+msgid "Time"
+msgstr "Upłynął limit czasu"
 
 #: src/component/photo/edit/details.vue:122
 msgid "Time UTC"

@@ -144,7 +144,7 @@ msgstr "Konto slettet"
 msgid "Account restored"
 msgstr "Konto gjenopprettet"
 
-#: src/page/admin.vue:53
+#: src/page/admin.vue:54
 msgid "Accounts"
 msgstr "Kontoer"
 
@@ -189,6 +189,11 @@ msgstr "Aktiver for å sortere synkende."
 #: src/page/connect.vue:125 src/page/connect.vue:136
 msgid "Activation Code"
 msgstr "Aktiveringskode"
+
+#: src/page/admin.vue:76
+#, fuzzy
+msgid "Activity"
+msgstr "Aktiver"
 
 #: src/component/user/add/dialog.vue:203 src/page/admin/users.vue:36
 #: src/component/settings/apps.vue:127 src/component/settings/apps.vue:128
@@ -494,7 +499,7 @@ msgstr "Sideforhold"
 msgid "Audio"
 msgstr "Lyd"
 
-#: src/model/logs.js:173
+#: src/model/logs.js:192
 #, fuzzy
 msgid "Audit Log"
 msgstr "Lyd"
@@ -1754,6 +1759,11 @@ msgstr "Ugyldig klokkeslett"
 msgid "Invalid URL"
 msgstr "Ugyldig URL"
 
+#: src/page/admin/activity.vue:129
+#, fuzzy
+msgid "IP Address"
+msgstr "Ugyldig adresse"
+
 #: src/component/settings/passcode.vue:164
 #: src/component/settings/passcode.vue:199
 msgid "It is a one-time use code that will disable 2FA for your account when you use it."
@@ -2035,7 +2045,8 @@ msgstr "Medlemskap"
 msgid "Merge %{a} with %{b}?"
 msgstr "Vil du slå sammen %{a} med %{b}?"
 
-#: src/page/about/feedback.vue:51 src/page/about/feedback.vue:52
+#: src/page/about/feedback.vue:51 src/page/admin/activity.vue:130
+#: src/page/about/feedback.vue:52
 msgid "Message"
 msgstr "Melding"
 
@@ -2279,8 +2290,8 @@ msgstr "Notater"
 msgid "Nothing to see here yet."
 msgstr "Ingenting å se her ennå."
 
-#: src/page/admin/sessions.vue:47 src/page/admin/users.vue:56
-#: src/component/settings/apps.vue:197
+#: src/page/admin/activity.vue:60 src/page/admin/sessions.vue:47
+#: src/page/admin/users.vue:56 src/component/settings/apps.vue:197
 msgid "Nothing was found."
 msgstr "Ingenting ble funnet."
 
@@ -2708,11 +2719,12 @@ msgstr "Gjenopprettingskode"
 msgid "Red"
 msgstr "Rød"
 
-#: src/page/admin/sessions.vue:333 src/page/admin/users.vue:321
-#: src/component/album/toolbar.vue:164 src/component/photo/toolbar.vue:488
-#: src/page/albums.vue:552 src/page/labels.vue:297
-#: src/page/library/browse.vue:21 src/page/library/errors.vue:226
-#: src/page/people/new.vue:7 src/page/people/recognized.vue:37
+#: src/page/admin/activity.vue:42 src/page/admin/sessions.vue:333
+#: src/page/admin/users.vue:321 src/component/album/toolbar.vue:164
+#: src/component/photo/toolbar.vue:488 src/page/albums.vue:552
+#: src/page/labels.vue:297 src/page/library/browse.vue:21
+#: src/page/library/errors.vue:226 src/page/people/new.vue:7
+#: src/page/people/recognized.vue:37
 msgid "Refresh"
 msgstr "Oppdater"
 
@@ -2759,6 +2771,11 @@ msgstr "Fjern fra albumet"
 #: src/page/library/import.vue:46
 msgid "Remove imported files to save storage. Unsupported file types will never be deleted, they remain in their current location."
 msgstr "Fjern importerte filer for å spare lagringsplass. Filtyper som ikke støttes vil ikke bli slettet, men vil forbli der de er lagret nå."
+
+#: src/page/admin/activity.vue:132
+#, fuzzy
+msgid "Repeated"
+msgstr "Generert"
 
 #: src/common/api.js:102 src/component/lightbox.vue:921
 msgid "Request failed - are you offline?"
@@ -2878,12 +2895,13 @@ msgstr "Skanninger"
 msgid "Scope"
 msgstr "Omfang"
 
-#: src/page/admin/sessions.vue:13 src/page/admin/users.vue:13
-#: src/component/location/dialog.vue:63 src/component/navigation.vue:122
-#: src/component/navigation.vue:903 src/component/photo/toolbar.vue:35
-#: src/options/options.js:201 src/page/albums.vue:31 src/page/labels.vue:26
-#: src/page/library/errors.vue:29 src/page/people/recognized.vue:15
-#: src/page/places.vue:33 src/page/settings/content.vue:131
+#: src/page/admin/activity.vue:13 src/page/admin/sessions.vue:13
+#: src/page/admin/users.vue:13 src/component/location/dialog.vue:63
+#: src/component/navigation.vue:122 src/component/navigation.vue:903
+#: src/component/photo/toolbar.vue:35 src/options/options.js:201
+#: src/page/albums.vue:31 src/page/labels.vue:26 src/page/library/errors.vue:29
+#: src/page/people/recognized.vue:15 src/page/places.vue:33
+#: src/page/settings/content.vue:131
 msgid "Search"
 msgstr "Søk"
 
@@ -2968,7 +2986,7 @@ msgstr "Sesjon"
 msgid "Session ID"
 msgstr "Sesjons-ID"
 
-#: src/page/admin.vue:64
+#: src/page/admin.vue:65
 msgid "Sessions"
 msgstr "Sesjoner"
 
@@ -2998,6 +3016,11 @@ msgstr "Innstillinger lagret"
 #: src/component/settings/passcode.vue:70
 msgid "Setup"
 msgstr "Oppsett"
+
+#: src/page/admin/activity.vue:128 src/page/admin/activity.vue:36
+#, fuzzy
+msgid "Severity"
+msgstr "Aldri"
 
 #: src/component/album/clipboard.vue:32 src/component/album/toolbar.vue:183
 #: src/component/photo/clipboard.vue:32 src/page/settings/general.vue:221
@@ -3296,6 +3319,11 @@ msgstr "Dette setter opp original-mappen som en nettverksstasjon og lar deg åpn
 #, fuzzy
 msgid "This mounts the originals folder as a network drive and allows you to open, edit, and delete files from your computer or smartphone as if they were local. "
 msgstr "Dette setter opp original-mappen som en nettverksstasjon og lar deg åpne, redigere og slette filer fra datamaskinen eller smarttelefonen som om de var lokale."
+
+#: src/page/admin/activity.vue:127
+#, fuzzy
+msgid "Time"
+msgstr "Tidsavbrudd"
 
 #: src/component/photo/edit/details.vue:122
 msgid "Time UTC"

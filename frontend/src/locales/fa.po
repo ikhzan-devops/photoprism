@@ -144,7 +144,7 @@ msgstr "حساب کاربری حذف شد"
 msgid "Account restored"
 msgstr "حساب بازیابی شد"
 
-#: src/page/admin.vue:53
+#: src/page/admin.vue:54
 msgid "Accounts"
 msgstr "حساب ها"
 
@@ -189,6 +189,11 @@ msgstr "برای مرتب سازی نزولی فعال کنید."
 #: src/page/connect.vue:125 src/page/connect.vue:136
 msgid "Activation Code"
 msgstr "کد فعال سازی"
+
+#: src/page/admin.vue:76
+#, fuzzy
+msgid "Activity"
+msgstr "فعال کنید"
 
 #: src/component/user/add/dialog.vue:203 src/page/admin/users.vue:36
 #: src/component/settings/apps.vue:127 src/component/settings/apps.vue:128
@@ -494,7 +499,7 @@ msgstr "نسبت ابعاد"
 msgid "Audio"
 msgstr "صوتی"
 
-#: src/model/logs.js:173
+#: src/model/logs.js:192
 #, fuzzy
 msgid "Audit Log"
 msgstr "صوتی"
@@ -1754,6 +1759,11 @@ msgstr "زمان نامعتبر"
 msgid "Invalid URL"
 msgstr "URL نامعتبر است"
 
+#: src/page/admin/activity.vue:129
+#, fuzzy
+msgid "IP Address"
+msgstr "آدرس نامعتبر است"
+
 #: src/component/settings/passcode.vue:164
 #: src/component/settings/passcode.vue:199
 msgid "It is a one-time use code that will disable 2FA for your account when you use it."
@@ -2035,7 +2045,8 @@ msgstr "عضویت"
 msgid "Merge %{a} with %{b}?"
 msgstr "%{a} با %{b} ادغام شود؟"
 
-#: src/page/about/feedback.vue:51 src/page/about/feedback.vue:52
+#: src/page/about/feedback.vue:51 src/page/admin/activity.vue:130
+#: src/page/about/feedback.vue:52
 msgid "Message"
 msgstr "پیام"
 
@@ -2279,8 +2290,8 @@ msgstr "یادداشت"
 msgid "Nothing to see here yet."
 msgstr "هنوز چیزی برای دیدن اینجا وجود ندارد."
 
-#: src/page/admin/sessions.vue:47 src/page/admin/users.vue:56
-#: src/component/settings/apps.vue:197
+#: src/page/admin/activity.vue:60 src/page/admin/sessions.vue:47
+#: src/page/admin/users.vue:56 src/component/settings/apps.vue:197
 msgid "Nothing was found."
 msgstr "چیزی پیدا نشد."
 
@@ -2708,11 +2719,12 @@ msgstr "کد بازیابی"
 msgid "Red"
 msgstr "قرمز"
 
-#: src/page/admin/sessions.vue:333 src/page/admin/users.vue:321
-#: src/component/album/toolbar.vue:164 src/component/photo/toolbar.vue:488
-#: src/page/albums.vue:552 src/page/labels.vue:297
-#: src/page/library/browse.vue:21 src/page/library/errors.vue:226
-#: src/page/people/new.vue:7 src/page/people/recognized.vue:37
+#: src/page/admin/activity.vue:42 src/page/admin/sessions.vue:333
+#: src/page/admin/users.vue:321 src/component/album/toolbar.vue:164
+#: src/component/photo/toolbar.vue:488 src/page/albums.vue:552
+#: src/page/labels.vue:297 src/page/library/browse.vue:21
+#: src/page/library/errors.vue:226 src/page/people/new.vue:7
+#: src/page/people/recognized.vue:37
 msgid "Refresh"
 msgstr "تازه کردن"
 
@@ -2759,6 +2771,11 @@ msgstr "حذف از آلبوم"
 #: src/page/library/import.vue:46
 msgid "Remove imported files to save storage. Unsupported file types will never be deleted, they remain in their current location."
 msgstr "برای صرفه جویی در فضای ذخیره سازی، فایل های وارد شده را حذف کنید. انواع فایل های پشتیبانی نشده هرگز حذف نمی شوند، آنها در مکان فعلی خود باقی می مانند."
+
+#: src/page/admin/activity.vue:132
+#, fuzzy
+msgid "Repeated"
+msgstr "تولید شده است"
 
 #: src/common/api.js:102 src/component/lightbox.vue:921
 msgid "Request failed - are you offline?"
@@ -2878,12 +2895,13 @@ msgstr "اسکن ها"
 msgid "Scope"
 msgstr "محدوده"
 
-#: src/page/admin/sessions.vue:13 src/page/admin/users.vue:13
-#: src/component/location/dialog.vue:63 src/component/navigation.vue:122
-#: src/component/navigation.vue:903 src/component/photo/toolbar.vue:35
-#: src/options/options.js:201 src/page/albums.vue:31 src/page/labels.vue:26
-#: src/page/library/errors.vue:29 src/page/people/recognized.vue:15
-#: src/page/places.vue:33 src/page/settings/content.vue:131
+#: src/page/admin/activity.vue:13 src/page/admin/sessions.vue:13
+#: src/page/admin/users.vue:13 src/component/location/dialog.vue:63
+#: src/component/navigation.vue:122 src/component/navigation.vue:903
+#: src/component/photo/toolbar.vue:35 src/options/options.js:201
+#: src/page/albums.vue:31 src/page/labels.vue:26 src/page/library/errors.vue:29
+#: src/page/people/recognized.vue:15 src/page/places.vue:33
+#: src/page/settings/content.vue:131
 msgid "Search"
 msgstr "جستجو"
 
@@ -2968,7 +2986,7 @@ msgstr "جلسه"
 msgid "Session ID"
 msgstr "شناسه جلسه"
 
-#: src/page/admin.vue:64
+#: src/page/admin.vue:65
 msgid "Sessions"
 msgstr "جلسات"
 
@@ -2998,6 +3016,11 @@ msgstr "تنظیمات ذخیره شد"
 #: src/component/settings/passcode.vue:70
 msgid "Setup"
 msgstr "راه اندازی"
+
+#: src/page/admin/activity.vue:128 src/page/admin/activity.vue:36
+#, fuzzy
+msgid "Severity"
+msgstr "هرگز"
 
 #: src/component/album/clipboard.vue:32 src/component/album/toolbar.vue:183
 #: src/component/photo/clipboard.vue:32 src/page/settings/general.vue:221
@@ -3296,6 +3319,11 @@ msgstr "این پوشه اصلی را به عنوان درایو شبکه نصب
 #, fuzzy
 msgid "This mounts the originals folder as a network drive and allows you to open, edit, and delete files from your computer or smartphone as if they were local. "
 msgstr "این پوشه اصلی را به عنوان درایو شبکه نصب می کند و به شما امکان می دهد فایل ها را از رایانه یا تلفن هوشمند خود باز، ویرایش و حذف کنید، گویی محلی هستند."
+
+#: src/page/admin/activity.vue:127
+#, fuzzy
+msgid "Time"
+msgstr "تایم اوت"
 
 #: src/component/photo/edit/details.vue:122
 msgid "Time UTC"
