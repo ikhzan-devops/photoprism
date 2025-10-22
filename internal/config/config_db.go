@@ -408,7 +408,7 @@ func (c *Config) MigrateDb(runFailed bool, ids []string) {
 	if c.AdminPassword() == "" {
 		log.Warnf("config: %s account cannot be initialized due to missing or invalid password", clean.LogQuote(c.AdminUser()))
 	} else {
-		entity.Admin.InitAccount(c.AdminUser(), c.AdminPassword())
+		entity.Admin.InitAccount(c.AdminUser(), c.AdminPassword(), c.AdminScope())
 	}
 
 	// Start recording warnings and errors after the required database table has been created.
@@ -422,7 +422,7 @@ func (c *Config) InitTestDb() {
 	if c.AdminPassword() == "" {
 		// Do nothing.
 	} else {
-		entity.Admin.InitAccount(c.AdminUser(), c.AdminPassword())
+		entity.Admin.InitAccount(c.AdminUser(), c.AdminPassword(), c.AdminScope())
 	}
 
 	// Start recording warnings and errors after the required table has have been created.
