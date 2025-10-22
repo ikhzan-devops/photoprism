@@ -40,14 +40,13 @@ function splitSegments(message) {
 
 // All log levels ordered by severity.
 export const AuditSeverityNames = Object.freeze([
-  "emergency",
-  "alert",
-  "critical",
+  "panic",
+  "fatal",
   "error",
   "warning",
-  "notice",
   "info",
   "debug",
+  "trace",
 ]);
 
 // Audit logs currently only exist with the following levels:
