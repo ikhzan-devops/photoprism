@@ -144,7 +144,7 @@ msgstr "계정 삭제됨"
 msgid "Account restored"
 msgstr "계정이 복원되었습니다."
 
-#: src/page/admin.vue:54
+#: src/page/admin.vue:53
 msgid "Accounts"
 msgstr "계정"
 
@@ -189,11 +189,6 @@ msgstr "활성화하면 내림차순으로 정렬됩니다."
 #: src/page/connect.vue:125 src/page/connect.vue:136
 msgid "Activation Code"
 msgstr "활성화 코드"
-
-#: src/page/admin.vue:76
-#, fuzzy
-msgid "Activity"
-msgstr "활성화"
 
 #: src/component/user/add/dialog.vue:203 src/page/admin/users.vue:36
 #: src/component/settings/apps.vue:127 src/component/settings/apps.vue:128
@@ -499,7 +494,7 @@ msgstr "종횡비"
 msgid "Audio"
 msgstr "오디오"
 
-#: src/model/logs.js:192
+#: src/model/logs.js:173
 #, fuzzy
 msgid "Audit Log"
 msgstr "오디오"
@@ -1759,11 +1754,6 @@ msgstr "유효하지 않은 시간"
 msgid "Invalid URL"
 msgstr "잘못된 URL"
 
-#: src/page/admin/activity.vue:129
-#, fuzzy
-msgid "IP Address"
-msgstr "잘못된 주소"
-
 #: src/component/settings/passcode.vue:164
 #: src/component/settings/passcode.vue:199
 msgid "It is a one-time use code that will disable 2FA for your account when you use it."
@@ -2045,8 +2035,7 @@ msgstr "멤버쉽"
 msgid "Merge %{a} with %{b}?"
 msgstr "%{a}을 %{b}과(를) 병합하시겠습니까?"
 
-#: src/page/about/feedback.vue:51 src/page/admin/activity.vue:130
-#: src/page/about/feedback.vue:52
+#: src/page/about/feedback.vue:51 src/page/about/feedback.vue:52
 msgid "Message"
 msgstr "메시지"
 
@@ -2290,8 +2279,8 @@ msgstr "노트"
 msgid "Nothing to see here yet."
 msgstr "아직 볼 것이 없습니다. 인내심을 가지세요."
 
-#: src/page/admin/activity.vue:60 src/page/admin/sessions.vue:47
-#: src/page/admin/users.vue:56 src/component/settings/apps.vue:197
+#: src/page/admin/sessions.vue:47 src/page/admin/users.vue:56
+#: src/component/settings/apps.vue:197
 msgid "Nothing was found."
 msgstr "아무것도 발견되지 않았습니다."
 
@@ -2719,12 +2708,11 @@ msgstr "복구 코드"
 msgid "Red"
 msgstr "빨간색"
 
-#: src/page/admin/activity.vue:42 src/page/admin/sessions.vue:333
-#: src/page/admin/users.vue:321 src/component/album/toolbar.vue:164
-#: src/component/photo/toolbar.vue:488 src/page/albums.vue:552
-#: src/page/labels.vue:297 src/page/library/browse.vue:21
-#: src/page/library/errors.vue:226 src/page/people/new.vue:7
-#: src/page/people/recognized.vue:37
+#: src/page/admin/sessions.vue:333 src/page/admin/users.vue:321
+#: src/component/album/toolbar.vue:164 src/component/photo/toolbar.vue:488
+#: src/page/albums.vue:552 src/page/labels.vue:297
+#: src/page/library/browse.vue:21 src/page/library/errors.vue:226
+#: src/page/people/new.vue:7 src/page/people/recognized.vue:37
 msgid "Refresh"
 msgstr "새로 고침"
 
@@ -2772,11 +2760,6 @@ msgstr "앨범에서 제거"
 #: src/page/library/import.vue:46
 msgid "Remove imported files to save storage. Unsupported file types will never be deleted, they remain in their current location."
 msgstr "가져온 파일을 제거하여 저장 공간을 절약하십시오. 지원되지 않는 파일 형식은 삭제되지 않으며 현재 위치에 남아 있습니다."
-
-#: src/page/admin/activity.vue:132
-#, fuzzy
-msgid "Repeated"
-msgstr "생성됨"
 
 #: src/common/api.js:102 src/component/lightbox.vue:921
 msgid "Request failed - are you offline?"
@@ -2896,13 +2879,12 @@ msgstr "스켄"
 msgid "Scope"
 msgstr "범위"
 
-#: src/page/admin/activity.vue:13 src/page/admin/sessions.vue:13
-#: src/page/admin/users.vue:13 src/component/location/dialog.vue:63
-#: src/component/navigation.vue:122 src/component/navigation.vue:903
-#: src/component/photo/toolbar.vue:35 src/options/options.js:201
-#: src/page/albums.vue:31 src/page/labels.vue:26 src/page/library/errors.vue:29
-#: src/page/people/recognized.vue:15 src/page/places.vue:33
-#: src/page/settings/content.vue:131
+#: src/page/admin/sessions.vue:13 src/page/admin/users.vue:13
+#: src/component/location/dialog.vue:63 src/component/navigation.vue:122
+#: src/component/navigation.vue:903 src/component/photo/toolbar.vue:35
+#: src/options/options.js:201 src/page/albums.vue:31 src/page/labels.vue:26
+#: src/page/library/errors.vue:29 src/page/people/recognized.vue:15
+#: src/page/places.vue:33 src/page/settings/content.vue:131
 msgid "Search"
 msgstr "검색"
 
@@ -2987,7 +2969,7 @@ msgstr "세션"
 msgid "Session ID"
 msgstr "세션 ID"
 
-#: src/page/admin.vue:65
+#: src/page/admin.vue:64
 msgid "Sessions"
 msgstr "세션"
 
@@ -3017,11 +2999,6 @@ msgstr "설정 저장됨"
 #: src/component/settings/passcode.vue:70
 msgid "Setup"
 msgstr "설치"
-
-#: src/page/admin/activity.vue:128 src/page/admin/activity.vue:36
-#, fuzzy
-msgid "Severity"
-msgstr "안함"
 
 #: src/component/album/clipboard.vue:32 src/component/album/toolbar.vue:183
 #: src/component/photo/clipboard.vue:32 src/page/settings/general.vue:221
@@ -3320,11 +3297,6 @@ msgstr "이렇게 하면 원본 폴더가 네트워크 드라이브로 마운트
 #, fuzzy
 msgid "This mounts the originals folder as a network drive and allows you to open, edit, and delete files from your computer or smartphone as if they were local. "
 msgstr "이렇게 하면 원본 폴더가 네트워크 드라이브로 마운트되고 컴퓨터나 스마트폰에서 파일을 로컬에 있는 것처럼 열고 편집하고 삭제할 수 있습니다."
-
-#: src/page/admin/activity.vue:127
-#, fuzzy
-msgid "Time"
-msgstr "타임아웃"
 
 #: src/component/photo/edit/details.vue:122
 msgid "Time UTC"

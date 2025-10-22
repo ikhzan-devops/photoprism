@@ -143,7 +143,7 @@ msgstr ""
 msgid "Account restored"
 msgstr ""
 
-#: src/page/admin.vue:54
+#: src/page/admin.vue:53
 msgid "Accounts"
 msgstr ""
 
@@ -187,10 +187,6 @@ msgstr ""
 
 #: src/page/connect.vue:125 src/page/connect.vue:136
 msgid "Activation Code"
-msgstr ""
-
-#: src/page/admin.vue:76
-msgid "Activity"
 msgstr ""
 
 #: src/component/user/add/dialog.vue:203 src/page/admin/users.vue:36
@@ -497,7 +493,7 @@ msgstr ""
 msgid "Audio"
 msgstr ""
 
-#: src/model/logs.js:192
+#: src/model/logs.js:173
 msgid "Audit Log"
 msgstr ""
 
@@ -1756,10 +1752,6 @@ msgstr ""
 msgid "Invalid URL"
 msgstr ""
 
-#: src/page/admin/activity.vue:129
-msgid "IP Address"
-msgstr ""
-
 #: src/component/settings/passcode.vue:164
 #: src/component/settings/passcode.vue:199
 msgid "It is a one-time use code that will disable 2FA for your account when you use it."
@@ -2041,8 +2033,7 @@ msgstr ""
 msgid "Merge %{a} with %{b}?"
 msgstr ""
 
-#: src/page/about/feedback.vue:51 src/page/admin/activity.vue:130
-#: src/page/about/feedback.vue:52
+#: src/page/about/feedback.vue:51 src/page/about/feedback.vue:52
 msgid "Message"
 msgstr ""
 
@@ -2286,8 +2277,8 @@ msgstr ""
 msgid "Nothing to see here yet."
 msgstr ""
 
-#: src/page/admin/activity.vue:60 src/page/admin/sessions.vue:47
-#: src/page/admin/users.vue:56 src/component/settings/apps.vue:197
+#: src/page/admin/sessions.vue:47 src/page/admin/users.vue:56
+#: src/component/settings/apps.vue:197
 msgid "Nothing was found."
 msgstr ""
 
@@ -2714,12 +2705,11 @@ msgstr ""
 msgid "Red"
 msgstr ""
 
-#: src/page/admin/activity.vue:42 src/page/admin/sessions.vue:333
-#: src/page/admin/users.vue:321 src/component/album/toolbar.vue:164
-#: src/component/photo/toolbar.vue:488 src/page/albums.vue:552
-#: src/page/labels.vue:297 src/page/library/browse.vue:21
-#: src/page/library/errors.vue:226 src/page/people/new.vue:7
-#: src/page/people/recognized.vue:37
+#: src/page/admin/sessions.vue:333 src/page/admin/users.vue:321
+#: src/component/album/toolbar.vue:164 src/component/photo/toolbar.vue:488
+#: src/page/albums.vue:552 src/page/labels.vue:297
+#: src/page/library/browse.vue:21 src/page/library/errors.vue:226
+#: src/page/people/new.vue:7 src/page/people/recognized.vue:37
 msgid "Refresh"
 msgstr ""
 
@@ -2765,10 +2755,6 @@ msgstr ""
 
 #: src/page/library/import.vue:46
 msgid "Remove imported files to save storage. Unsupported file types will never be deleted, they remain in their current location."
-msgstr ""
-
-#: src/page/admin/activity.vue:132
-msgid "Repeated"
 msgstr ""
 
 #: src/common/api.js:102 src/component/lightbox.vue:921
@@ -2889,13 +2875,12 @@ msgstr ""
 msgid "Scope"
 msgstr ""
 
-#: src/page/admin/activity.vue:13 src/page/admin/sessions.vue:13
-#: src/page/admin/users.vue:13 src/component/location/dialog.vue:63
-#: src/component/navigation.vue:122 src/component/navigation.vue:903
-#: src/component/photo/toolbar.vue:35 src/options/options.js:201
-#: src/page/albums.vue:31 src/page/labels.vue:26 src/page/library/errors.vue:29
-#: src/page/people/recognized.vue:15 src/page/places.vue:33
-#: src/page/settings/content.vue:131
+#: src/page/admin/sessions.vue:13 src/page/admin/users.vue:13
+#: src/component/location/dialog.vue:63 src/component/navigation.vue:122
+#: src/component/navigation.vue:903 src/component/photo/toolbar.vue:35
+#: src/options/options.js:201 src/page/albums.vue:31 src/page/labels.vue:26
+#: src/page/library/errors.vue:29 src/page/people/recognized.vue:15
+#: src/page/places.vue:33 src/page/settings/content.vue:131
 msgid "Search"
 msgstr ""
 
@@ -2980,7 +2965,7 @@ msgstr ""
 msgid "Session ID"
 msgstr ""
 
-#: src/page/admin.vue:65
+#: src/page/admin.vue:64
 msgid "Sessions"
 msgstr ""
 
@@ -3009,10 +2994,6 @@ msgstr ""
 #: src/component/settings/passcode.vue:54
 #: src/component/settings/passcode.vue:70
 msgid "Setup"
-msgstr ""
-
-#: src/page/admin/activity.vue:128 src/page/admin/activity.vue:36
-msgid "Severity"
 msgstr ""
 
 #: src/component/album/clipboard.vue:32 src/component/album/toolbar.vue:183
@@ -3310,10 +3291,6 @@ msgstr ""
 
 #: src/page/settings/services.vue:85
 msgid "This mounts the originals folder as a network drive and allows you to open, edit, and delete files from your computer or smartphone as if they were local. "
-msgstr ""
-
-#: src/page/admin/activity.vue:127
-msgid "Time"
 msgstr ""
 
 #: src/component/photo/edit/details.vue:122

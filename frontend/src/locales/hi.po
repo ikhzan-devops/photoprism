@@ -144,7 +144,7 @@ msgstr "खाता हटाया गया"
 msgid "Account restored"
 msgstr "खाता बहाल किया गया"
 
-#: src/page/admin.vue:54
+#: src/page/admin.vue:53
 msgid "Accounts"
 msgstr "हिसाब किताब"
 
@@ -189,11 +189,6 @@ msgstr "अवरोही क्रम में क्रमबद्ध क�
 #: src/page/connect.vue:125 src/page/connect.vue:136
 msgid "Activation Code"
 msgstr "एक्टिवेशन कोड"
-
-#: src/page/admin.vue:76
-#, fuzzy
-msgid "Activity"
-msgstr "सक्रिय"
 
 #: src/component/user/add/dialog.vue:203 src/page/admin/users.vue:36
 #: src/component/settings/apps.vue:127 src/component/settings/apps.vue:128
@@ -499,7 +494,7 @@ msgstr "आस्पेक्ट अनुपात"
 msgid "Audio"
 msgstr "ऑडियो"
 
-#: src/model/logs.js:192
+#: src/model/logs.js:173
 #, fuzzy
 msgid "Audit Log"
 msgstr "ऑडियो"
@@ -1759,11 +1754,6 @@ msgstr "अमान्य समय"
 msgid "Invalid URL"
 msgstr "असामान्य यूआरएल"
 
-#: src/page/admin/activity.vue:129
-#, fuzzy
-msgid "IP Address"
-msgstr "अमान्य पता"
-
 #: src/component/settings/passcode.vue:164
 #: src/component/settings/passcode.vue:199
 msgid "It is a one-time use code that will disable 2FA for your account when you use it."
@@ -2045,8 +2035,7 @@ msgstr "सदस्यता"
 msgid "Merge %{a} with %{b}?"
 msgstr "%{a} को %{b} के साथ मिलाएं?"
 
-#: src/page/about/feedback.vue:51 src/page/admin/activity.vue:130
-#: src/page/about/feedback.vue:52
+#: src/page/about/feedback.vue:51 src/page/about/feedback.vue:52
 msgid "Message"
 msgstr "संदेश"
 
@@ -2290,8 +2279,8 @@ msgstr "नोट्स"
 msgid "Nothing to see here yet."
 msgstr "यहां देखने के लिए अभी कुछ भी नहीं है।"
 
-#: src/page/admin/activity.vue:60 src/page/admin/sessions.vue:47
-#: src/page/admin/users.vue:56 src/component/settings/apps.vue:197
+#: src/page/admin/sessions.vue:47 src/page/admin/users.vue:56
+#: src/component/settings/apps.vue:197
 msgid "Nothing was found."
 msgstr "कुछ न मिला।"
 
@@ -2719,12 +2708,11 @@ msgstr "पुनःप्राप्ति सांकेतिक अंक"
 msgid "Red"
 msgstr "लाल"
 
-#: src/page/admin/activity.vue:42 src/page/admin/sessions.vue:333
-#: src/page/admin/users.vue:321 src/component/album/toolbar.vue:164
-#: src/component/photo/toolbar.vue:488 src/page/albums.vue:552
-#: src/page/labels.vue:297 src/page/library/browse.vue:21
-#: src/page/library/errors.vue:226 src/page/people/new.vue:7
-#: src/page/people/recognized.vue:37
+#: src/page/admin/sessions.vue:333 src/page/admin/users.vue:321
+#: src/component/album/toolbar.vue:164 src/component/photo/toolbar.vue:488
+#: src/page/albums.vue:552 src/page/labels.vue:297
+#: src/page/library/browse.vue:21 src/page/library/errors.vue:226
+#: src/page/people/new.vue:7 src/page/people/recognized.vue:37
 msgid "Refresh"
 msgstr "ताज़ा करना"
 
@@ -2772,11 +2760,6 @@ msgstr "एल्बम से निकालें"
 #: src/page/library/import.vue:46
 msgid "Remove imported files to save storage. Unsupported file types will never be deleted, they remain in their current location."
 msgstr "स्टोरेज को सेव करने के लिए इंपोर्टेड फाइल्स निकालें। असमर्थित फ़ाइल प्रकार कभी भी हटाए नहीं जाएंगे, वे अपने वर्तमान स्थान पर बने रहेंगे।"
-
-#: src/page/admin/activity.vue:132
-#, fuzzy
-msgid "Repeated"
-msgstr "जनरेट किया गया"
 
 #: src/common/api.js:102 src/component/lightbox.vue:921
 msgid "Request failed - are you offline?"
@@ -2896,13 +2879,12 @@ msgstr "स्कैन"
 msgid "Scope"
 msgstr "दायरा"
 
-#: src/page/admin/activity.vue:13 src/page/admin/sessions.vue:13
-#: src/page/admin/users.vue:13 src/component/location/dialog.vue:63
-#: src/component/navigation.vue:122 src/component/navigation.vue:903
-#: src/component/photo/toolbar.vue:35 src/options/options.js:201
-#: src/page/albums.vue:31 src/page/labels.vue:26 src/page/library/errors.vue:29
-#: src/page/people/recognized.vue:15 src/page/places.vue:33
-#: src/page/settings/content.vue:131
+#: src/page/admin/sessions.vue:13 src/page/admin/users.vue:13
+#: src/component/location/dialog.vue:63 src/component/navigation.vue:122
+#: src/component/navigation.vue:903 src/component/photo/toolbar.vue:35
+#: src/options/options.js:201 src/page/albums.vue:31 src/page/labels.vue:26
+#: src/page/library/errors.vue:29 src/page/people/recognized.vue:15
+#: src/page/places.vue:33 src/page/settings/content.vue:131
 msgid "Search"
 msgstr "खोज"
 
@@ -2987,7 +2969,7 @@ msgstr "सत्र"
 msgid "Session ID"
 msgstr "सत्र आईडी"
 
-#: src/page/admin.vue:65
+#: src/page/admin.vue:64
 msgid "Sessions"
 msgstr "सत्र"
 
@@ -3017,11 +2999,6 @@ msgstr "सेटिंग्स को सहेजा गया"
 #: src/component/settings/passcode.vue:70
 msgid "Setup"
 msgstr "सेट अप"
-
-#: src/page/admin/activity.vue:128 src/page/admin/activity.vue:36
-#, fuzzy
-msgid "Severity"
-msgstr "कभी नहीँ"
 
 #: src/component/album/clipboard.vue:32 src/component/album/toolbar.vue:183
 #: src/component/photo/clipboard.vue:32 src/page/settings/general.vue:221
@@ -3320,11 +3297,6 @@ msgstr "यह मूल फ़ोल्डर को नेटवर्क ड�
 #, fuzzy
 msgid "This mounts the originals folder as a network drive and allows you to open, edit, and delete files from your computer or smartphone as if they were local. "
 msgstr "यह मूल फ़ोल्डर को नेटवर्क ड्राइव के रूप में मापता है और आपको अपने कंप्यूटर या स्मार्टफोन से फ़ाइलों को खोलने, संपादित करने और हटाने की अनुमति देता है जैसे कि वे स्थानीय थे।"
-
-#: src/page/admin/activity.vue:127
-#, fuzzy
-msgid "Time"
-msgstr "समय समाप्त"
 
 #: src/component/photo/edit/details.vue:122
 msgid "Time UTC"
