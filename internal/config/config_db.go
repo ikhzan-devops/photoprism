@@ -40,6 +40,8 @@ const (
 
 // DatabaseDriver returns the database driver name.
 func (c *Config) DatabaseDriver() string {
+	c.normalizeDatabaseDSN()
+
 	switch strings.ToLower(c.options.DatabaseDriver) {
 	case MySQL, MariaDB:
 		c.options.DatabaseDriver = MySQL

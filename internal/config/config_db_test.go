@@ -22,11 +22,23 @@ func resetDatabaseOptions(c *Config) {
 }
 
 func TestConfig_DatabaseDriver(t *testing.T) {
-	c := NewConfig(CliTestContext())
-	// Ensure defaults not overridden by repo fixtures.
-	resetDatabaseOptions(c)
-	driver := c.DatabaseDriver()
-	assert.Equal(t, SQLite3, driver)
+	t.Run("DefaultsToSQLite", func(t *testing.T) {
+		c := NewConfig(CliTestContext())
+		resetDatabaseOptions(c)
+
+		assert.Equal(t, SQLite3, c.DatabaseDriver())
+	})
+	t.Run("NormalizesDeprecatedDSN", func(t *testing.T) {
+		c := NewConfig(CliTestContext())
+		resetDatabaseOptions(c)
+
+		c.options.DatabaseDriver = MySQL
+		c.options.Deprecated.DatabaseDsn = "user:pass@tcp(localhost:3306)/photoprism"
+
+		assert.Equal(t, MySQL, c.DatabaseDriver())
+		assert.Equal(t, "user:pass@tcp(localhost:3306)/photoprism", c.options.DatabaseDSN)
+		assert.Empty(t, c.options.Deprecated.DatabaseDsn)
+	})
 }
 
 func TestConfig_DatabaseDriverName(t *testing.T) {
