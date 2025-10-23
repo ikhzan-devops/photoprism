@@ -126,7 +126,7 @@ msgid "Access Token"
 msgstr "Token akses"
 
 #: src/component/navigation.vue:1067 src/component/navigation.vue:868
-#: src/component/service/upload.vue:24 src/locales.js:332
+#: src/component/service/upload.vue:24 src/locales.js:331
 #: src/model/service.js:72 src/model/user.js:151 src/page/settings.vue:111
 #: src/page/settings/general.vue:348
 msgid "Account"
@@ -144,7 +144,7 @@ msgstr "Akaun dipadamkan"
 msgid "Account restored"
 msgstr "Akaun dipulihkan"
 
-#: src/page/admin.vue:54 src/locales.js:333
+#: src/page/admin.vue:54 src/locales.js:332
 msgid "Accounts"
 msgstr "Akaun"
 
@@ -190,7 +190,7 @@ msgstr "Aktifkan untuk mengisih menurun."
 msgid "Activation Code"
 msgstr "Kod pengaktifan"
 
-#: src/page/admin.vue:76 src/locales.js:349
+#: src/page/admin.vue:76 src/locales.js:348
 msgid "Activity"
 msgstr "Aktiviti"
 
@@ -258,10 +258,6 @@ msgstr "Admin"
 #: src/page/settings.vue:85
 msgid "Advanced"
 msgstr "Lanjutan"
-
-#: src/locales.js:363
-msgid "Advertise URL"
-msgstr "URL iklan"
 
 #: src/options/options.js:378
 msgid "After 1 day"
@@ -498,7 +494,7 @@ msgstr "Artis"
 msgid "Aspect Ratio"
 msgstr "Nisbah aspek"
 
-#: src/locales.js:339
+#: src/locales.js:338
 msgid "Attributes"
 msgstr "Atribut"
 
@@ -516,7 +512,7 @@ msgstr "Audio"
 
 #: src/component/user/add/dialog.vue:107 src/component/user/edit/dialog.vue:183
 #: src/page/admin/sessions.vue:152 src/page/admin/sessions.vue:292
-#: src/page/admin/users.vue:270 src/locales.js:334
+#: src/page/admin/users.vue:270 src/locales.js:333
 msgid "Authentication"
 msgstr "Pengesahan"
 
@@ -613,10 +609,6 @@ msgstr "Layari Gambar"
 #: src/page/about/feedback.vue:111 src/options/options.js:409
 msgid "Bug Report"
 msgstr "Laporan Pepijat"
-
-#: src/locales.js:323
-msgid "Build"
-msgstr "bina"
 
 #: src/page/connect.vue:8 src/common/notify.js:119 src/page/connect.vue:13
 msgid "Busy, please wait…"
@@ -775,14 +767,6 @@ msgstr "Pelanggan"
 #: src/options/auth.js:25
 msgid "Client Credentials"
 msgstr "Tauliah Pelanggan"
-
-#: src/locales.js:364
-msgid "Client ID"
-msgstr "ID Pelanggan"
-
-#: src/locales.js:365
-msgid "Client Secret"
-msgstr "Rahsia Pelanggan"
 
 #: src/component/user/edit/dialog.vue:311 src/page/admin/sessions.vue:224
 #: src/component/lightbox.vue:1211 src/component/lightbox.vue:1212
@@ -1001,7 +985,7 @@ msgstr "Cyan"
 msgid "Daily"
 msgstr "Setiap hari"
 
-#: src/locales.js:328
+#: src/locales.js:327
 msgid "Database"
 msgstr "Pangkalan data"
 
@@ -1009,7 +993,7 @@ msgstr "Pangkalan data"
 msgid "Database Backups"
 msgstr "Sandaran Pangkalan Data"
 
-#: src/locales.js:329
+#: src/locales.js:328
 msgid "Databases"
 msgstr "Pangkalan data"
 
@@ -1246,7 +1230,7 @@ msgstr "Penapis Penskalaan Rendah"
 msgid "Drag and drop files here"
 msgstr "Seret dan lepaskan fail di sini"
 
-#: src/locales.js:345
+#: src/locales.js:344
 msgid "Driver"
 msgstr "Pemandu"
 
@@ -1321,7 +1305,7 @@ msgstr "Mendayakan pratetap penukar RAW. Boleh mengurangkan prestasi."
 msgid "Enabling two-factor authentication means that you will need a randomly generated verification code to log in, so even if someone gains access to your password, they will not be able to access your account."
 msgstr "Mendayakan pengesahan dua faktor bermakna anda memerlukan kod pengesahan yang dijana secara rawak untuk log masuk, jadi walaupun seseorang mendapat akses kepada kata laluan anda, mereka tidak akan dapat mengakses akaun anda."
 
-#: src/locales.js:346
+#: src/locales.js:345
 msgid "Engine"
 msgstr "Enjin"
 
@@ -1805,7 +1789,7 @@ msgstr "Masa tidak sah"
 msgid "Invalid URL"
 msgstr "URL tidak sah"
 
-#: src/page/admin/activity.vue:129 src/locales.js:351
+#: src/page/admin/activity.vue:126 src/locales.js:350
 msgid "IP Address"
 msgstr "Alamat IP"
 
@@ -1852,7 +1836,7 @@ msgstr "Label"
 #: src/component/photo/edit/dialog.vue:38
 #: src/component/photo/edit/dialog.vue:50
 #: src/component/photo/edit/dialog.vue:52
-#: src/component/photo/edit/dialog.vue:53 src/locales.js:326
+#: src/component/photo/edit/dialog.vue:53 src/locales.js:325
 #: src/options/options.js:210 src/page/settings/general.vue:140
 msgid "Labels"
 msgstr "Label"
@@ -1873,7 +1857,7 @@ msgstr "Bahasa"
 msgid "Last Active"
 msgstr "Aktif Terakhir"
 
-#: src/page/admin/users.vue:276 src/locales.js:336
+#: src/page/admin/users.vue:276 src/locales.js:335
 msgid "Last Login"
 msgstr "Log masuk kali terakhir"
 
@@ -1984,7 +1968,7 @@ msgstr "Memuatkan item..."
 msgid "Loading..."
 msgstr "Memuatkan..."
 
-#: src/options/admin.js:39 src/locales.js:342 src/options/auth.js:23
+#: src/options/admin.js:39 src/locales.js:341 src/options/auth.js:23
 #: src/options/auth.js:28 src/options/options.js:38
 #: src/page/settings/general.vue:55
 msgid "Local"
@@ -2091,7 +2075,7 @@ msgstr "Keahlian"
 msgid "Merge %{a} with %{b}?"
 msgstr "Gabungkan %{a} dengan %{b}?"
 
-#: src/page/about/feedback.vue:51 src/page/admin/activity.vue:130
+#: src/page/about/feedback.vue:51 src/page/admin/activity.vue:127
 #: src/locales.js:352 src/page/about/feedback.vue:52
 msgid "Message"
 msgstr "Mesej"
@@ -2630,7 +2614,7 @@ msgstr "PM"
 msgid "PNG Size Limit: %{n}px"
 msgstr "Had Saiz PNG: %{n}px"
 
-#: src/locales.js:324
+#: src/locales.js:323
 msgid "Portal"
 msgstr "Portal"
 
@@ -2829,15 +2813,15 @@ msgstr "Alih keluar daripada album"
 msgid "Remove imported files to save storage. Unsupported file types will never be deleted, they remain in their current location."
 msgstr "Alih keluar fail yang diimport untuk menjimatkan storan. Jenis fail yang tidak disokong tidak akan dipadamkan, ia kekal di lokasi semasanya."
 
-#: src/locales.js:366
+#: src/locales.js:362
 msgid "Remove the selected instance from the cluster registry?"
 msgstr "Alih keluar contoh yang dipilih daripada daftar kluster?"
 
-#: src/locales.js:327
+#: src/locales.js:326
 msgid "Removed"
 msgstr "Dialih keluar"
 
-#: src/page/admin/activity.vue:132 src/locales.js:353
+#: src/page/admin/activity.vue:129 src/locales.js:353
 msgid "Repeated"
 msgstr "Diulang"
 
@@ -2893,15 +2877,15 @@ msgstr "Tinjauan"
 
 #: src/component/user/add/dialog.vue:93 src/component/user/edit/dialog.vue:166
 #: src/page/admin/sessions.vue:145 src/page/admin/users.vue:268
-#: src/locales.js:337
+#: src/locales.js:336
 msgid "Role"
 msgstr "Peranan"
 
-#: src/locales.js:338
+#: src/locales.js:337
 msgid "Roles"
 msgstr "Peranan"
 
-#: src/locales.js:347
+#: src/locales.js:346
 msgid "Rotated"
 msgstr "Diputar"
 
@@ -2965,11 +2949,11 @@ msgstr "Imbasan"
 
 #: src/page/admin/sessions.vue:179 src/page/admin/sessions.vue:293
 #: src/component/settings/apps.vue:150 src/component/settings/apps.vue:308
-#: src/locales.js:340
+#: src/locales.js:339
 msgid "Scope"
 msgstr "Skop"
 
-#: src/locales.js:341
+#: src/locales.js:340
 msgid "Scopes"
 msgstr "Skop"
 
@@ -3061,7 +3045,7 @@ msgstr "URL perkhidmatan"
 msgid "Services"
 msgstr "URL perkhidmatan"
 
-#: src/locales.js:343 src/model/session.js:83 src/options/auth.js:42
+#: src/locales.js:342 src/model/session.js:83 src/options/auth.js:42
 #: src/options/auth.js:91
 msgid "Session"
 msgstr "Sesi"
@@ -3070,7 +3054,7 @@ msgstr "Sesi"
 msgid "Session ID"
 msgstr "ID Sesi"
 
-#: src/page/admin.vue:65 src/locales.js:344
+#: src/page/admin.vue:65 src/locales.js:343
 msgid "Sessions"
 msgstr "Sesi"
 
@@ -3102,8 +3086,8 @@ msgstr "Tetapan Disimpan"
 msgid "Setup"
 msgstr "Persediaan"
 
-#: src/page/admin/activity.vue:128 src/page/admin/activity.vue:36
-#: src/locales.js:348
+#: src/page/admin/activity.vue:125 src/page/admin/activity.vue:36
+#: src/locales.js:347
 msgid "Severity"
 msgstr "Keterukan"
 
@@ -3170,7 +3154,7 @@ msgstr "Log masuk"
 msgid "Similar"
 msgstr "serupa"
 
-#: src/locales.js:362
+#: src/locales.js:351
 msgid "Site URL"
 msgstr "URL tapak"
 
@@ -3389,7 +3373,7 @@ msgstr "Indeks pada masa ini mengandungi %{n} fail tersembunyi."
 msgid "Their format may not be supported, they haven't been converted to JPEG yet or there are duplicates."
 msgstr "Format mereka mungkin tidak disokong, mereka belum ditukar kepada JPEG lagi atau terdapat pendua."
 
-#: src/locales.js:325 src/page/settings/general.vue:25
+#: src/locales.js:324 src/page/settings/general.vue:25
 msgid "Theme"
 msgstr "Tema"
 
@@ -3408,7 +3392,7 @@ msgstr "Ini melekapkan folder asal sebagai pemacu rangkaian dan membolehkan anda
 msgid "This mounts the originals folder as a network drive and allows you to open, edit, and delete files from your computer or smartphone as if they were local. "
 msgstr "Ini melekapkan folder asal sebagai pemacu rangkaian dan membolehkan anda membuka, mengedit dan memadam fail daripada komputer atau telefon pintar anda seolah-olah ia adalah tempatan."
 
-#: src/page/admin/activity.vue:127 src/locales.js:350
+#: src/page/admin/activity.vue:124 src/locales.js:349
 msgid "Time"
 msgstr "Masa"
 
@@ -3660,7 +3644,7 @@ msgid "Use your recovery code or contact an administrator for help."
 msgstr "Gunakan kod pemulihan anda atau hubungi pentadbir untuk mendapatkan bantuan."
 
 #: src/options/admin.js:14 src/page/admin/sessions.vue:138
-#: src/page/admin/sessions.vue:291 src/locales.js:330 src/model/user.js:365
+#: src/page/admin/sessions.vue:291 src/locales.js:329 src/model/user.js:365
 #: src/options/auth.js:8
 msgid "User"
 msgstr "Pengguna"
@@ -3684,7 +3668,7 @@ msgstr "Nama Pengguna"
 #: src/component/navigation.vue:425 src/component/navigation.vue:431
 #: src/component/navigation.vue:446 src/component/navigation.vue:677
 #: src/component/navigation.vue:685 src/component/navigation.vue:693
-#: src/locales.js:331
+#: src/locales.js:330
 msgid "Users"
 msgstr "Pengguna"
 
@@ -3766,7 +3750,7 @@ msgid "We do our best to respond within five business days or less."
 msgstr "Kami melakukan yang terbaik untuk membalas dalam tempoh lima hari perniagaan atau kurang."
 
 #: src/component/user/add/dialog.vue:141 src/component/user/edit/dialog.vue:280
-#: src/page/admin/users.vue:275 src/locales.js:335
+#: src/page/admin/users.vue:275 src/locales.js:334
 msgid "Web Login"
 msgstr "Log Masuk Web"
 
@@ -3914,6 +3898,18 @@ msgstr "Tajuk"
 msgctxt "Verb"
 msgid "Archive"
 msgstr "Arkib"
+
+#~ msgid "Advertise URL"
+#~ msgstr "URL iklan"
+
+#~ msgid "Build"
+#~ msgstr "bina"
+
+#~ msgid "Client ID"
+#~ msgstr "ID Pelanggan"
+
+#~ msgid "Client Secret"
+#~ msgstr "Rahsia Pelanggan"
 
 #~ msgid "Continue with %{provider}"
 #~ msgstr "Teruskan dengan %{provider}"

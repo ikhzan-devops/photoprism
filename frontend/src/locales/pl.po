@@ -125,7 +125,7 @@ msgid "Access Token"
 msgstr "Token dostępu"
 
 #: src/component/navigation.vue:1067 src/component/navigation.vue:868
-#: src/component/service/upload.vue:24 src/locales.js:332
+#: src/component/service/upload.vue:24 src/locales.js:331
 #: src/model/service.js:72 src/model/user.js:151 src/page/settings.vue:111
 #: src/page/settings/general.vue:348
 msgid "Account"
@@ -143,7 +143,7 @@ msgstr "Konto usunięte"
 msgid "Account restored"
 msgstr "Konto przywrócone"
 
-#: src/page/admin.vue:54 src/locales.js:333
+#: src/page/admin.vue:54 src/locales.js:332
 msgid "Accounts"
 msgstr "Konta"
 
@@ -189,7 +189,7 @@ msgstr "Aktywuj, aby sortować malejąco."
 msgid "Activation Code"
 msgstr "Kod aktywacji"
 
-#: src/page/admin.vue:76 src/locales.js:349
+#: src/page/admin.vue:76 src/locales.js:348
 msgid "Activity"
 msgstr "Aktywność"
 
@@ -257,10 +257,6 @@ msgstr "Administrator"
 #: src/page/settings.vue:85
 msgid "Advanced"
 msgstr "Zaawansowane"
-
-#: src/locales.js:363
-msgid "Advertise URL"
-msgstr "Reklamuj adres URL"
 
 #: src/options/options.js:378
 msgid "After 1 day"
@@ -497,7 +493,7 @@ msgstr "Artysta"
 msgid "Aspect Ratio"
 msgstr "Proporcje obrazu"
 
-#: src/locales.js:339
+#: src/locales.js:338
 msgid "Attributes"
 msgstr "Atrybuty"
 
@@ -515,7 +511,7 @@ msgstr "Audio"
 
 #: src/component/user/add/dialog.vue:107 src/component/user/edit/dialog.vue:183
 #: src/page/admin/sessions.vue:152 src/page/admin/sessions.vue:292
-#: src/page/admin/users.vue:270 src/locales.js:334
+#: src/page/admin/users.vue:270 src/locales.js:333
 msgid "Authentication"
 msgstr "Uwierzytelnianie"
 
@@ -612,10 +608,6 @@ msgstr "Przeglądaj zdjęcia"
 #: src/page/about/feedback.vue:111 src/options/options.js:409
 msgid "Bug Report"
 msgstr "Zgłoszenie błędu"
-
-#: src/locales.js:323
-msgid "Build"
-msgstr "Buduj"
 
 #: src/page/connect.vue:8 src/common/notify.js:119 src/page/connect.vue:13
 msgid "Busy, please wait…"
@@ -774,14 +766,6 @@ msgstr "Klient"
 #: src/options/auth.js:25
 msgid "Client Credentials"
 msgstr "Poświadczenia klienta"
-
-#: src/locales.js:364
-msgid "Client ID"
-msgstr "Identyfikator klienta"
-
-#: src/locales.js:365
-msgid "Client Secret"
-msgstr "Tajemnica klienta"
 
 #: src/component/user/edit/dialog.vue:311 src/page/admin/sessions.vue:224
 #: src/component/lightbox.vue:1211 src/component/lightbox.vue:1212
@@ -1000,7 +984,7 @@ msgstr "Cyjan"
 msgid "Daily"
 msgstr "Codziennie"
 
-#: src/locales.js:328
+#: src/locales.js:327
 msgid "Database"
 msgstr "Baza danych"
 
@@ -1008,7 +992,7 @@ msgstr "Baza danych"
 msgid "Database Backups"
 msgstr "Kopie zapasowe bazy danych"
 
-#: src/locales.js:329
+#: src/locales.js:328
 msgid "Databases"
 msgstr "Bazy danych"
 
@@ -1245,7 +1229,7 @@ msgstr "Filtr skalowania rozdzielczości w dół"
 msgid "Drag and drop files here"
 msgstr "Przeciągnij i upuść pliki tutaj"
 
-#: src/locales.js:345
+#: src/locales.js:344
 msgid "Driver"
 msgstr "Kierowca"
 
@@ -1320,7 +1304,7 @@ msgstr "Włącza wstępne ustawienia konwertera RAW. Może zmniejszyć wydajnoś
 msgid "Enabling two-factor authentication means that you will need a randomly generated verification code to log in, so even if someone gains access to your password, they will not be able to access your account."
 msgstr "Włączenie uwierzytelniania dwuskładnikowego oznacza, że do zalogowania będziesz potrzebować losowo wygenerowanego kodu weryfikacyjnego, więc nawet jeśli ktoś uzyska dostęp do Twojego hasła, nie będzie mógł uzyskać dostępu do Twojego konta."
 
-#: src/locales.js:346
+#: src/locales.js:345
 msgid "Engine"
 msgstr "Silnik"
 
@@ -1804,7 +1788,7 @@ msgstr "Nieprawidłowy czas"
 msgid "Invalid URL"
 msgstr "Nieprawidłowy adres URL"
 
-#: src/page/admin/activity.vue:129 src/locales.js:351
+#: src/page/admin/activity.vue:126 src/locales.js:350
 msgid "IP Address"
 msgstr "Adres IP"
 
@@ -1851,7 +1835,7 @@ msgstr "Etykieta"
 #: src/component/photo/edit/dialog.vue:38
 #: src/component/photo/edit/dialog.vue:50
 #: src/component/photo/edit/dialog.vue:52
-#: src/component/photo/edit/dialog.vue:53 src/locales.js:326
+#: src/component/photo/edit/dialog.vue:53 src/locales.js:325
 #: src/options/options.js:210 src/page/settings/general.vue:140
 msgid "Labels"
 msgstr "Etykiety"
@@ -1872,7 +1856,7 @@ msgstr "Język"
 msgid "Last Active"
 msgstr "Ostatni aktywny"
 
-#: src/page/admin/users.vue:276 src/locales.js:336
+#: src/page/admin/users.vue:276 src/locales.js:335
 msgid "Last Login"
 msgstr "Ostatnie logowanie"
 
@@ -1983,7 +1967,7 @@ msgstr "Ładowanie pozycji..."
 msgid "Loading..."
 msgstr "Ładowanie..."
 
-#: src/options/admin.js:39 src/locales.js:342 src/options/auth.js:23
+#: src/options/admin.js:39 src/locales.js:341 src/options/auth.js:23
 #: src/options/auth.js:28 src/options/options.js:38
 #: src/page/settings/general.vue:55
 msgid "Local"
@@ -2090,7 +2074,7 @@ msgstr "Członkostwo"
 msgid "Merge %{a} with %{b}?"
 msgstr "Złączyć %{a} z %{b}?"
 
-#: src/page/about/feedback.vue:51 src/page/admin/activity.vue:130
+#: src/page/about/feedback.vue:51 src/page/admin/activity.vue:127
 #: src/locales.js:352 src/page/about/feedback.vue:52
 msgid "Message"
 msgstr "Wiadomość"
@@ -2629,7 +2613,7 @@ msgstr "PM"
 msgid "PNG Size Limit: %{n}px"
 msgstr "Limit rozmiaru PNG: %{n}px"
 
-#: src/locales.js:324
+#: src/locales.js:323
 msgid "Portal"
 msgstr "Portal"
 
@@ -2828,15 +2812,15 @@ msgstr "Usuń z albumu"
 msgid "Remove imported files to save storage. Unsupported file types will never be deleted, they remain in their current location."
 msgstr "Usuń zaimportowane pliki z ich obecnej lokalizacji, aby zaoszczędzić miejsce na dysku. Nieobsługiwane typy plików pozostaną nienaruszone."
 
-#: src/locales.js:366
+#: src/locales.js:362
 msgid "Remove the selected instance from the cluster registry?"
 msgstr "Usunąć wybraną instancję z rejestru klastra?"
 
-#: src/locales.js:327
+#: src/locales.js:326
 msgid "Removed"
 msgstr "Usunięto"
 
-#: src/page/admin/activity.vue:132 src/locales.js:353
+#: src/page/admin/activity.vue:129 src/locales.js:353
 msgid "Repeated"
 msgstr "Powtarzane"
 
@@ -2892,15 +2876,15 @@ msgstr "Do sprawdzenia"
 
 #: src/component/user/add/dialog.vue:93 src/component/user/edit/dialog.vue:166
 #: src/page/admin/sessions.vue:145 src/page/admin/users.vue:268
-#: src/locales.js:337
+#: src/locales.js:336
 msgid "Role"
 msgstr "Rola"
 
-#: src/locales.js:338
+#: src/locales.js:337
 msgid "Roles"
 msgstr "Role"
 
-#: src/locales.js:347
+#: src/locales.js:346
 msgid "Rotated"
 msgstr "Obrócony"
 
@@ -2964,11 +2948,11 @@ msgstr "Skany"
 
 #: src/page/admin/sessions.vue:179 src/page/admin/sessions.vue:293
 #: src/component/settings/apps.vue:150 src/component/settings/apps.vue:308
-#: src/locales.js:340
+#: src/locales.js:339
 msgid "Scope"
 msgstr "Zakres"
 
-#: src/locales.js:341
+#: src/locales.js:340
 msgid "Scopes"
 msgstr "Lunety"
 
@@ -3060,7 +3044,7 @@ msgstr "Adres URL do usługi"
 msgid "Services"
 msgstr "Usługi"
 
-#: src/locales.js:343 src/model/session.js:83 src/options/auth.js:42
+#: src/locales.js:342 src/model/session.js:83 src/options/auth.js:42
 #: src/options/auth.js:91
 msgid "Session"
 msgstr "Sesja"
@@ -3069,7 +3053,7 @@ msgstr "Sesja"
 msgid "Session ID"
 msgstr "Identyfikator sesji"
 
-#: src/page/admin.vue:65 src/locales.js:344
+#: src/page/admin.vue:65 src/locales.js:343
 msgid "Sessions"
 msgstr "Sesje"
 
@@ -3101,8 +3085,8 @@ msgstr "Zapisano ustawienia"
 msgid "Setup"
 msgstr "Ustawienia"
 
-#: src/page/admin/activity.vue:128 src/page/admin/activity.vue:36
-#: src/locales.js:348
+#: src/page/admin/activity.vue:125 src/page/admin/activity.vue:36
+#: src/locales.js:347
 msgid "Severity"
 msgstr "Istotność"
 
@@ -3169,7 +3153,7 @@ msgstr "Zaloguj się"
 msgid "Similar"
 msgstr "Podobne"
 
-#: src/locales.js:362
+#: src/locales.js:351
 msgid "Site URL"
 msgstr "Adres URL witryny"
 
@@ -3388,7 +3372,7 @@ msgstr "Indeks zawiera obecnie %{n} ukrytych plików."
 msgid "Their format may not be supported, they haven't been converted to JPEG yet or there are duplicates."
 msgstr "Może być to spowodowane brakiem wsparcia dla ich formatu, nieukończoną konwersją na JPEG lub byciem duplikatami istniejących plików."
 
-#: src/locales.js:325 src/page/settings/general.vue:25
+#: src/locales.js:324 src/page/settings/general.vue:25
 msgid "Theme"
 msgstr "Motyw"
 
@@ -3407,7 +3391,7 @@ msgstr "Pozwala to na zamontowanie folderu oryginałów jako dysku sieciowego i 
 msgid "This mounts the originals folder as a network drive and allows you to open, edit, and delete files from your computer or smartphone as if they were local. "
 msgstr "Pozwala to na zamontowanie folderu oryginałów jako dysku sieciowego i umożliwia otwieranie, edytowanie i usuwanie plików z komputera lub smartfona w taki sam sposób, jakby były one przechowywane lokalnie."
 
-#: src/page/admin/activity.vue:127 src/locales.js:350
+#: src/page/admin/activity.vue:124 src/locales.js:349
 msgid "Time"
 msgstr "Czas"
 
@@ -3659,7 +3643,7 @@ msgid "Use your recovery code or contact an administrator for help."
 msgstr "Użyj kodu odzyskiwania lub skontaktuj się z administratorem w celu uzyskania pomocy."
 
 #: src/options/admin.js:14 src/page/admin/sessions.vue:138
-#: src/page/admin/sessions.vue:291 src/locales.js:330 src/model/user.js:365
+#: src/page/admin/sessions.vue:291 src/locales.js:329 src/model/user.js:365
 #: src/options/auth.js:8
 msgid "User"
 msgstr "Użytkownik"
@@ -3683,7 +3667,7 @@ msgstr "Nazwa użytkownika"
 #: src/component/navigation.vue:425 src/component/navigation.vue:431
 #: src/component/navigation.vue:446 src/component/navigation.vue:677
 #: src/component/navigation.vue:685 src/component/navigation.vue:693
-#: src/locales.js:331
+#: src/locales.js:330
 msgid "Users"
 msgstr "Użytkownicy"
 
@@ -3765,7 +3749,7 @@ msgid "We do our best to respond within five business days or less."
 msgstr "Dokładamy wszelkich starań, aby odpowiedzieć w ciągu pięciu dni roboczych lub mniej."
 
 #: src/component/user/add/dialog.vue:141 src/component/user/edit/dialog.vue:280
-#: src/page/admin/users.vue:275 src/locales.js:335
+#: src/page/admin/users.vue:275 src/locales.js:334
 msgid "Web Login"
 msgstr "Logowanie przez Internet"
 
@@ -3913,6 +3897,18 @@ msgstr "Tytuł"
 msgctxt "Verb"
 msgid "Archive"
 msgstr "Archiwum"
+
+#~ msgid "Advertise URL"
+#~ msgstr "Reklamuj adres URL"
+
+#~ msgid "Build"
+#~ msgstr "Buduj"
+
+#~ msgid "Client ID"
+#~ msgstr "Identyfikator klienta"
+
+#~ msgid "Client Secret"
+#~ msgstr "Tajemnica klienta"
 
 #~ msgid "Continue with %{provider}"
 #~ msgstr "Kontynuuj z %{dostawca}"

@@ -126,7 +126,7 @@ msgid "Access Token"
 msgstr "Fitxa d'accés"
 
 #: src/component/navigation.vue:1067 src/component/navigation.vue:868
-#: src/component/service/upload.vue:24 src/locales.js:332
+#: src/component/service/upload.vue:24 src/locales.js:331
 #: src/model/service.js:72 src/model/user.js:151 src/page/settings.vue:111
 #: src/page/settings/general.vue:348
 msgid "Account"
@@ -144,7 +144,7 @@ msgstr "Compte suprimit"
 msgid "Account restored"
 msgstr "S'ha restaurat el compte"
 
-#: src/page/admin.vue:54 src/locales.js:333
+#: src/page/admin.vue:54 src/locales.js:332
 msgid "Accounts"
 msgstr "Comptes"
 
@@ -190,7 +190,7 @@ msgstr "Activa per ordenar descendent."
 msgid "Activation Code"
 msgstr "Codi d'activació"
 
-#: src/page/admin.vue:76 src/locales.js:349
+#: src/page/admin.vue:76 src/locales.js:348
 msgid "Activity"
 msgstr "Activitat"
 
@@ -258,10 +258,6 @@ msgstr "Admin"
 #: src/page/settings.vue:85
 msgid "Advanced"
 msgstr "Avançat"
-
-#: src/locales.js:363
-msgid "Advertise URL"
-msgstr "URL d'anunci"
 
 #: src/options/options.js:378
 msgid "After 1 day"
@@ -498,7 +494,7 @@ msgstr "Artista"
 msgid "Aspect Ratio"
 msgstr "Relació d'aspecte"
 
-#: src/locales.js:339
+#: src/locales.js:338
 msgid "Attributes"
 msgstr "Atributs"
 
@@ -516,7 +512,7 @@ msgstr "Àudio"
 
 #: src/component/user/add/dialog.vue:107 src/component/user/edit/dialog.vue:183
 #: src/page/admin/sessions.vue:152 src/page/admin/sessions.vue:292
-#: src/page/admin/users.vue:270 src/locales.js:334
+#: src/page/admin/users.vue:270 src/locales.js:333
 msgid "Authentication"
 msgstr "Autenticació"
 
@@ -613,10 +609,6 @@ msgstr "Navega per les imatges"
 #: src/page/about/feedback.vue:111 src/options/options.js:409
 msgid "Bug Report"
 msgstr "Informe d'error"
-
-#: src/locales.js:323
-msgid "Build"
-msgstr "Construir"
 
 #: src/page/connect.vue:8 src/common/notify.js:119 src/page/connect.vue:13
 msgid "Busy, please wait…"
@@ -775,14 +767,6 @@ msgstr "Client"
 #: src/options/auth.js:25
 msgid "Client Credentials"
 msgstr "Credencials del client"
-
-#: src/locales.js:364
-msgid "Client ID"
-msgstr "ID de client"
-
-#: src/locales.js:365
-msgid "Client Secret"
-msgstr "Secret del client"
 
 #: src/component/user/edit/dialog.vue:311 src/page/admin/sessions.vue:224
 #: src/component/lightbox.vue:1211 src/component/lightbox.vue:1212
@@ -1001,7 +985,7 @@ msgstr "Cian"
 msgid "Daily"
 msgstr "Diari"
 
-#: src/locales.js:328
+#: src/locales.js:327
 msgid "Database"
 msgstr "Base de dades"
 
@@ -1009,7 +993,7 @@ msgstr "Base de dades"
 msgid "Database Backups"
 msgstr "Còpies de seguretat de bases de dades"
 
-#: src/locales.js:329
+#: src/locales.js:328
 msgid "Databases"
 msgstr "Bases de dades"
 
@@ -1246,7 +1230,7 @@ msgstr "Filtre de reducció d'escala"
 msgid "Drag and drop files here"
 msgstr "Arrossegueu i deixeu anar els fitxers aquí"
 
-#: src/locales.js:345
+#: src/locales.js:344
 msgid "Driver"
 msgstr "Conductor"
 
@@ -1321,7 +1305,7 @@ msgstr "Habilita els valors predefinits del convertidor RAW. Pot reduir el rendi
 msgid "Enabling two-factor authentication means that you will need a randomly generated verification code to log in, so even if someone gains access to your password, they will not be able to access your account."
 msgstr "Habilitar l'autenticació de dos factors significa que necessitareu un codi de verificació generat aleatòriament per iniciar sessió, de manera que fins i tot si algú accedeix a la vostra contrasenya, no podrà accedir al vostre compte."
 
-#: src/locales.js:346
+#: src/locales.js:345
 msgid "Engine"
 msgstr "Motor"
 
@@ -1805,7 +1789,7 @@ msgstr "Hora no vàlida"
 msgid "Invalid URL"
 msgstr "URL no vàlid"
 
-#: src/page/admin/activity.vue:129 src/locales.js:351
+#: src/page/admin/activity.vue:126 src/locales.js:350
 msgid "IP Address"
 msgstr "Adreça IP"
 
@@ -1852,7 +1836,7 @@ msgstr "Etiqueta"
 #: src/component/photo/edit/dialog.vue:38
 #: src/component/photo/edit/dialog.vue:50
 #: src/component/photo/edit/dialog.vue:52
-#: src/component/photo/edit/dialog.vue:53 src/locales.js:326
+#: src/component/photo/edit/dialog.vue:53 src/locales.js:325
 #: src/options/options.js:210 src/page/settings/general.vue:140
 msgid "Labels"
 msgstr "Etiquetes"
@@ -1873,7 +1857,7 @@ msgstr "Idioma"
 msgid "Last Active"
 msgstr "Últim actiu"
 
-#: src/page/admin/users.vue:276 src/locales.js:336
+#: src/page/admin/users.vue:276 src/locales.js:335
 msgid "Last Login"
 msgstr "Últim inici de sessió"
 
@@ -1984,7 +1968,7 @@ msgstr "S'estan carregant elements..."
 msgid "Loading..."
 msgstr "Carregant..."
 
-#: src/options/admin.js:39 src/locales.js:342 src/options/auth.js:23
+#: src/options/admin.js:39 src/locales.js:341 src/options/auth.js:23
 #: src/options/auth.js:28 src/options/options.js:38
 #: src/page/settings/general.vue:55
 msgid "Local"
@@ -2091,7 +2075,7 @@ msgstr "Pertinença"
 msgid "Merge %{a} with %{b}?"
 msgstr "Combinar %{a} amb %{b}?"
 
-#: src/page/about/feedback.vue:51 src/page/admin/activity.vue:130
+#: src/page/about/feedback.vue:51 src/page/admin/activity.vue:127
 #: src/locales.js:352 src/page/about/feedback.vue:52
 msgid "Message"
 msgstr "Missatge"
@@ -2630,7 +2614,7 @@ msgstr "PM"
 msgid "PNG Size Limit: %{n}px"
 msgstr "Límit de mida del PNG: %{n}px"
 
-#: src/locales.js:324
+#: src/locales.js:323
 msgid "Portal"
 msgstr "Portal"
 
@@ -2829,15 +2813,15 @@ msgstr "Elimina de l'àlbum"
 msgid "Remove imported files to save storage. Unsupported file types will never be deleted, they remain in their current location."
 msgstr "Elimina els fitxers importats per estalviar emmagatzematge. Els tipus de fitxers no compatibles no se suprimiran mai, es mantenen a la seva ubicació actual."
 
-#: src/locales.js:366
+#: src/locales.js:362
 msgid "Remove the selected instance from the cluster registry?"
 msgstr "Voleu eliminar la instància seleccionada del registre del clúster?"
 
-#: src/locales.js:327
+#: src/locales.js:326
 msgid "Removed"
 msgstr "Eliminat"
 
-#: src/page/admin/activity.vue:132 src/locales.js:353
+#: src/page/admin/activity.vue:129 src/locales.js:353
 msgid "Repeated"
 msgstr "Repetida"
 
@@ -2893,15 +2877,15 @@ msgstr "Valoració"
 
 #: src/component/user/add/dialog.vue:93 src/component/user/edit/dialog.vue:166
 #: src/page/admin/sessions.vue:145 src/page/admin/users.vue:268
-#: src/locales.js:337
+#: src/locales.js:336
 msgid "Role"
 msgstr "Rol"
 
-#: src/locales.js:338
+#: src/locales.js:337
 msgid "Roles"
 msgstr "Rols"
 
-#: src/locales.js:347
+#: src/locales.js:346
 msgid "Rotated"
 msgstr "Girat"
 
@@ -2965,11 +2949,11 @@ msgstr "Escaneigs"
 
 #: src/page/admin/sessions.vue:179 src/page/admin/sessions.vue:293
 #: src/component/settings/apps.vue:150 src/component/settings/apps.vue:308
-#: src/locales.js:340
+#: src/locales.js:339
 msgid "Scope"
 msgstr "Àmbit"
 
-#: src/locales.js:341
+#: src/locales.js:340
 msgid "Scopes"
 msgstr "Àmbits"
 
@@ -3061,7 +3045,7 @@ msgstr "URL del servei"
 msgid "Services"
 msgstr "Serveis"
 
-#: src/locales.js:343 src/model/session.js:83 src/options/auth.js:42
+#: src/locales.js:342 src/model/session.js:83 src/options/auth.js:42
 #: src/options/auth.js:91
 msgid "Session"
 msgstr "Sessió"
@@ -3070,7 +3054,7 @@ msgstr "Sessió"
 msgid "Session ID"
 msgstr "ID de sessió"
 
-#: src/page/admin.vue:65 src/locales.js:344
+#: src/page/admin.vue:65 src/locales.js:343
 msgid "Sessions"
 msgstr "Sessions"
 
@@ -3102,8 +3086,8 @@ msgstr "Configuració desada"
 msgid "Setup"
 msgstr "Configuració"
 
-#: src/page/admin/activity.vue:128 src/page/admin/activity.vue:36
-#: src/locales.js:348
+#: src/page/admin/activity.vue:125 src/page/admin/activity.vue:36
+#: src/locales.js:347
 msgid "Severity"
 msgstr "Gravetat"
 
@@ -3170,7 +3154,7 @@ msgstr "Iniciar sessió"
 msgid "Similar"
 msgstr "Similars"
 
-#: src/locales.js:362
+#: src/locales.js:351
 msgid "Site URL"
 msgstr "URL del lloc"
 
@@ -3389,7 +3373,7 @@ msgstr "Actualment, l'índex conté %{n} fitxers ocults."
 msgid "Their format may not be supported, they haven't been converted to JPEG yet or there are duplicates."
 msgstr "És possible que el seu format no sigui compatible, que encara no s'han convertit a JPEG o que hi hagi duplicats."
 
-#: src/locales.js:325 src/page/settings/general.vue:25
+#: src/locales.js:324 src/page/settings/general.vue:25
 msgid "Theme"
 msgstr "Tema"
 
@@ -3408,7 +3392,7 @@ msgstr "Això munta la carpeta originals com a unitat de xarxa i us permet obrir
 msgid "This mounts the originals folder as a network drive and allows you to open, edit, and delete files from your computer or smartphone as if they were local. "
 msgstr "Això munta la carpeta originals com a unitat de xarxa i us permet obrir, editar i suprimir fitxers del vostre ordinador o telèfon intel·ligent com si fossin locals."
 
-#: src/page/admin/activity.vue:127 src/locales.js:350
+#: src/page/admin/activity.vue:124 src/locales.js:349
 msgid "Time"
 msgstr "Temps"
 
@@ -3660,7 +3644,7 @@ msgid "Use your recovery code or contact an administrator for help."
 msgstr "Utilitzeu el vostre codi de recuperació o poseu-vos en contacte amb un administrador per obtenir ajuda."
 
 #: src/options/admin.js:14 src/page/admin/sessions.vue:138
-#: src/page/admin/sessions.vue:291 src/locales.js:330 src/model/user.js:365
+#: src/page/admin/sessions.vue:291 src/locales.js:329 src/model/user.js:365
 #: src/options/auth.js:8
 msgid "User"
 msgstr "Usuari"
@@ -3684,7 +3668,7 @@ msgstr "Usuari"
 #: src/component/navigation.vue:425 src/component/navigation.vue:431
 #: src/component/navigation.vue:446 src/component/navigation.vue:677
 #: src/component/navigation.vue:685 src/component/navigation.vue:693
-#: src/locales.js:331
+#: src/locales.js:330
 msgid "Users"
 msgstr "Usuaris"
 
@@ -3766,7 +3750,7 @@ msgid "We do our best to respond within five business days or less."
 msgstr "Fem tot el possible per respondre en un termini de cinc dies laborables o menys."
 
 #: src/component/user/add/dialog.vue:141 src/component/user/edit/dialog.vue:280
-#: src/page/admin/users.vue:275 src/locales.js:335
+#: src/page/admin/users.vue:275 src/locales.js:334
 msgid "Web Login"
 msgstr "Inici de sessió web"
 
@@ -3916,6 +3900,18 @@ msgstr "Títol"
 msgctxt "Verb"
 msgid "Archive"
 msgstr "Arxiu"
+
+#~ msgid "Advertise URL"
+#~ msgstr "URL d'anunci"
+
+#~ msgid "Build"
+#~ msgstr "Construir"
+
+#~ msgid "Client ID"
+#~ msgstr "ID de client"
+
+#~ msgid "Client Secret"
+#~ msgstr "Secret del client"
 
 #~ msgid "Continue with %{provider}"
 #~ msgstr "Continua amb %{provider}"

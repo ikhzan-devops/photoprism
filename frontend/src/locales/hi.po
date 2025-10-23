@@ -126,7 +126,7 @@ msgid "Access Token"
 msgstr "एक्सेस टोकन"
 
 #: src/component/navigation.vue:1067 src/component/navigation.vue:868
-#: src/component/service/upload.vue:24 src/locales.js:332
+#: src/component/service/upload.vue:24 src/locales.js:331
 #: src/model/service.js:72 src/model/user.js:151 src/page/settings.vue:111
 #: src/page/settings/general.vue:348
 msgid "Account"
@@ -144,7 +144,7 @@ msgstr "खाता हटाया गया"
 msgid "Account restored"
 msgstr "खाता बहाल किया गया"
 
-#: src/page/admin.vue:54 src/locales.js:333
+#: src/page/admin.vue:54 src/locales.js:332
 msgid "Accounts"
 msgstr "हिसाब किताब"
 
@@ -190,7 +190,7 @@ msgstr "अवरोही क्रम में क्रमबद्ध क�
 msgid "Activation Code"
 msgstr "एक्टिवेशन कोड"
 
-#: src/page/admin.vue:76 src/locales.js:349
+#: src/page/admin.vue:76 src/locales.js:348
 msgid "Activity"
 msgstr "गतिविधि"
 
@@ -258,10 +258,6 @@ msgstr "व्यवस्थापक"
 #: src/page/settings.vue:85
 msgid "Advanced"
 msgstr "उन्नत"
-
-#: src/locales.js:363
-msgid "Advertise URL"
-msgstr "विज्ञापन URL"
 
 #: src/options/options.js:378
 msgid "After 1 day"
@@ -498,7 +494,7 @@ msgstr "कलाकार"
 msgid "Aspect Ratio"
 msgstr "आस्पेक्ट अनुपात"
 
-#: src/locales.js:339
+#: src/locales.js:338
 msgid "Attributes"
 msgstr "गुण"
 
@@ -516,7 +512,7 @@ msgstr "ऑडियो"
 
 #: src/component/user/add/dialog.vue:107 src/component/user/edit/dialog.vue:183
 #: src/page/admin/sessions.vue:152 src/page/admin/sessions.vue:292
-#: src/page/admin/users.vue:270 src/locales.js:334
+#: src/page/admin/users.vue:270 src/locales.js:333
 msgid "Authentication"
 msgstr "प्रमाणीकरण"
 
@@ -613,10 +609,6 @@ msgstr "चित्र ब्राउज़ करें"
 #: src/page/about/feedback.vue:111 src/options/options.js:409
 msgid "Bug Report"
 msgstr "बग रिपोर्ट"
-
-#: src/locales.js:323
-msgid "Build"
-msgstr "निर्माण"
 
 #: src/page/connect.vue:8 src/common/notify.js:119 src/page/connect.vue:13
 msgid "Busy, please wait…"
@@ -775,14 +767,6 @@ msgstr "ग्राहक"
 #: src/options/auth.js:25
 msgid "Client Credentials"
 msgstr "ग्राहक क्रेडेंशियल"
-
-#: src/locales.js:364
-msgid "Client ID"
-msgstr "क्लाइंट आईडी"
-
-#: src/locales.js:365
-msgid "Client Secret"
-msgstr "क्लाइंट सीक्रेट"
 
 #: src/component/user/edit/dialog.vue:311 src/page/admin/sessions.vue:224
 #: src/component/lightbox.vue:1211 src/component/lightbox.vue:1212
@@ -1001,7 +985,7 @@ msgstr "सियान"
 msgid "Daily"
 msgstr "रोज"
 
-#: src/locales.js:328
+#: src/locales.js:327
 msgid "Database"
 msgstr "डेटाबेस"
 
@@ -1009,7 +993,7 @@ msgstr "डेटाबेस"
 msgid "Database Backups"
 msgstr "डेटाबेस बैकअप"
 
-#: src/locales.js:329
+#: src/locales.js:328
 msgid "Databases"
 msgstr "डेटाबेस"
 
@@ -1246,7 +1230,7 @@ msgstr "गुणवत्ता फ़िल्टर"
 msgid "Drag and drop files here"
 msgstr "फ़ाइलों को यहां खींचें और छोड़ें"
 
-#: src/locales.js:345
+#: src/locales.js:344
 msgid "Driver"
 msgstr "ड्राइवर"
 
@@ -1321,7 +1305,7 @@ msgstr "रॉ कनवर्टर प्रीसेट सक्षम क�
 msgid "Enabling two-factor authentication means that you will need a randomly generated verification code to log in, so even if someone gains access to your password, they will not be able to access your account."
 msgstr "दो-कारक प्रमाणीकरण सक्षम करने का अर्थ है कि आपको लॉग इन करने के लिए एक यादृच्छिक रूप से उत्पन्न सत्यापन कोड की आवश्यकता होगी, इसलिए यदि कोई आपके पासवर्ड तक पहुंच प्राप्त भी कर लेता है, तो वह आपके खाते तक नहीं पहुंच पाएगा।"
 
-#: src/locales.js:346
+#: src/locales.js:345
 msgid "Engine"
 msgstr "इंजन"
 
@@ -1805,7 +1789,7 @@ msgstr "अमान्य समय"
 msgid "Invalid URL"
 msgstr "असामान्य यूआरएल"
 
-#: src/page/admin/activity.vue:129 src/locales.js:351
+#: src/page/admin/activity.vue:126 src/locales.js:350
 msgid "IP Address"
 msgstr "आईपी पता"
 
@@ -1852,7 +1836,7 @@ msgstr "लेबल"
 #: src/component/photo/edit/dialog.vue:38
 #: src/component/photo/edit/dialog.vue:50
 #: src/component/photo/edit/dialog.vue:52
-#: src/component/photo/edit/dialog.vue:53 src/locales.js:326
+#: src/component/photo/edit/dialog.vue:53 src/locales.js:325
 #: src/options/options.js:210 src/page/settings/general.vue:140
 msgid "Labels"
 msgstr "लेबल"
@@ -1873,7 +1857,7 @@ msgstr "भाषा"
 msgid "Last Active"
 msgstr "अंतिम सक्रिय"
 
-#: src/page/admin/users.vue:276 src/locales.js:336
+#: src/page/admin/users.vue:276 src/locales.js:335
 msgid "Last Login"
 msgstr "आखरी लॉगइन"
 
@@ -1984,7 +1968,7 @@ msgstr "आइटम लोड हो रहे हैं..।"
 msgid "Loading..."
 msgstr "लोड हो रहा है..।"
 
-#: src/options/admin.js:39 src/locales.js:342 src/options/auth.js:23
+#: src/options/admin.js:39 src/locales.js:341 src/options/auth.js:23
 #: src/options/auth.js:28 src/options/options.js:38
 #: src/page/settings/general.vue:55
 msgid "Local"
@@ -2091,7 +2075,7 @@ msgstr "सदस्यता"
 msgid "Merge %{a} with %{b}?"
 msgstr "%{a} को %{b} के साथ मिलाएं?"
 
-#: src/page/about/feedback.vue:51 src/page/admin/activity.vue:130
+#: src/page/about/feedback.vue:51 src/page/admin/activity.vue:127
 #: src/locales.js:352 src/page/about/feedback.vue:52
 msgid "Message"
 msgstr "संदेश"
@@ -2630,7 +2614,7 @@ msgstr "बजे"
 msgid "PNG Size Limit: %{n}px"
 msgstr "PNG आकार सीमा: %{n} px"
 
-#: src/locales.js:324
+#: src/locales.js:323
 msgid "Portal"
 msgstr "पोर्टल"
 
@@ -2829,15 +2813,15 @@ msgstr "एल्बम से निकालें"
 msgid "Remove imported files to save storage. Unsupported file types will never be deleted, they remain in their current location."
 msgstr "स्टोरेज को सेव करने के लिए इंपोर्टेड फाइल्स निकालें। असमर्थित फ़ाइल प्रकार कभी भी हटाए नहीं जाएंगे, वे अपने वर्तमान स्थान पर बने रहेंगे।"
 
-#: src/locales.js:366
+#: src/locales.js:362
 msgid "Remove the selected instance from the cluster registry?"
 msgstr "क्लस्टर रजिस्ट्री से चयनित इंस्टेंस को हटाएँ?"
 
-#: src/locales.js:327
+#: src/locales.js:326
 msgid "Removed"
 msgstr "निकाला गया"
 
-#: src/page/admin/activity.vue:132 src/locales.js:353
+#: src/page/admin/activity.vue:129 src/locales.js:353
 msgid "Repeated"
 msgstr "दोहराया गया"
 
@@ -2893,15 +2877,15 @@ msgstr "समीक्षा"
 
 #: src/component/user/add/dialog.vue:93 src/component/user/edit/dialog.vue:166
 #: src/page/admin/sessions.vue:145 src/page/admin/users.vue:268
-#: src/locales.js:337
+#: src/locales.js:336
 msgid "Role"
 msgstr "भूमिका"
 
-#: src/locales.js:338
+#: src/locales.js:337
 msgid "Roles"
 msgstr "भूमिकाएँ"
 
-#: src/locales.js:347
+#: src/locales.js:346
 msgid "Rotated"
 msgstr "घुमाया गया"
 
@@ -2965,11 +2949,11 @@ msgstr "स्कैन"
 
 #: src/page/admin/sessions.vue:179 src/page/admin/sessions.vue:293
 #: src/component/settings/apps.vue:150 src/component/settings/apps.vue:308
-#: src/locales.js:340
+#: src/locales.js:339
 msgid "Scope"
 msgstr "दायरा"
 
-#: src/locales.js:341
+#: src/locales.js:340
 msgid "Scopes"
 msgstr "कार्यक्षेत्र"
 
@@ -3061,7 +3045,7 @@ msgstr "सेवा URL"
 msgid "Services"
 msgstr "सेवाएं"
 
-#: src/locales.js:343 src/model/session.js:83 src/options/auth.js:42
+#: src/locales.js:342 src/model/session.js:83 src/options/auth.js:42
 #: src/options/auth.js:91
 msgid "Session"
 msgstr "सत्र"
@@ -3070,7 +3054,7 @@ msgstr "सत्र"
 msgid "Session ID"
 msgstr "सत्र आईडी"
 
-#: src/page/admin.vue:65 src/locales.js:344
+#: src/page/admin.vue:65 src/locales.js:343
 msgid "Sessions"
 msgstr "सत्र"
 
@@ -3102,8 +3086,8 @@ msgstr "सेटिंग्स को सहेजा गया"
 msgid "Setup"
 msgstr "सेट अप"
 
-#: src/page/admin/activity.vue:128 src/page/admin/activity.vue:36
-#: src/locales.js:348
+#: src/page/admin/activity.vue:125 src/page/admin/activity.vue:36
+#: src/locales.js:347
 msgid "Severity"
 msgstr "गंभीरता"
 
@@ -3170,7 +3154,7 @@ msgstr "साइन इन करें"
 msgid "Similar"
 msgstr "समान"
 
-#: src/locales.js:362
+#: src/locales.js:351
 msgid "Site URL"
 msgstr "साइट URL"
 
@@ -3389,7 +3373,7 @@ msgstr "सूचकांक में वर्तमान में %{n} छ
 msgid "Their format may not be supported, they haven't been converted to JPEG yet or there are duplicates."
 msgstr "उनके प्रारूप का समर्थन नहीं किया जा सकता है, वे अभी तक जेपीईजी में परिवर्तित नहीं हुए हैं या डुप्लिकेट हैं।"
 
-#: src/locales.js:325 src/page/settings/general.vue:25
+#: src/locales.js:324 src/page/settings/general.vue:25
 msgid "Theme"
 msgstr "विषय"
 
@@ -3408,7 +3392,7 @@ msgstr "यह मूल फ़ोल्डर को नेटवर्क ड�
 msgid "This mounts the originals folder as a network drive and allows you to open, edit, and delete files from your computer or smartphone as if they were local. "
 msgstr "यह मूल फ़ोल्डर को नेटवर्क ड्राइव के रूप में मापता है और आपको अपने कंप्यूटर या स्मार्टफोन से फ़ाइलों को खोलने, संपादित करने और हटाने की अनुमति देता है जैसे कि वे स्थानीय थे।"
 
-#: src/page/admin/activity.vue:127 src/locales.js:350
+#: src/page/admin/activity.vue:124 src/locales.js:349
 msgid "Time"
 msgstr "समय"
 
@@ -3660,7 +3644,7 @@ msgid "Use your recovery code or contact an administrator for help."
 msgstr "सहायता के लिए अपना पुनर्प्राप्ति कोड उपयोग करें या किसी व्यवस्थापक से संपर्क करें।"
 
 #: src/options/admin.js:14 src/page/admin/sessions.vue:138
-#: src/page/admin/sessions.vue:291 src/locales.js:330 src/model/user.js:365
+#: src/page/admin/sessions.vue:291 src/locales.js:329 src/model/user.js:365
 #: src/options/auth.js:8
 msgid "User"
 msgstr "उपयोगकर्ता"
@@ -3684,7 +3668,7 @@ msgstr "उपयोगकर्ता नाम"
 #: src/component/navigation.vue:425 src/component/navigation.vue:431
 #: src/component/navigation.vue:446 src/component/navigation.vue:677
 #: src/component/navigation.vue:685 src/component/navigation.vue:693
-#: src/locales.js:331
+#: src/locales.js:330
 msgid "Users"
 msgstr "उपयोगकर्ताओं"
 
@@ -3766,7 +3750,7 @@ msgid "We do our best to respond within five business days or less."
 msgstr "हम पांच व्यावसायिक दिनों या उससे कम समय में जवाब देने की पूरी कोशिश करते हैं।"
 
 #: src/component/user/add/dialog.vue:141 src/component/user/edit/dialog.vue:280
-#: src/page/admin/users.vue:275 src/locales.js:335
+#: src/page/admin/users.vue:275 src/locales.js:334
 msgid "Web Login"
 msgstr "वेब लॉगिन"
 
@@ -3914,6 +3898,18 @@ msgstr "शीर्षक"
 msgctxt "Verb"
 msgid "Archive"
 msgstr "पुरालेख"
+
+#~ msgid "Advertise URL"
+#~ msgstr "विज्ञापन URL"
+
+#~ msgid "Build"
+#~ msgstr "निर्माण"
+
+#~ msgid "Client ID"
+#~ msgstr "क्लाइंट आईडी"
+
+#~ msgid "Client Secret"
+#~ msgstr "क्लाइंट सीक्रेट"
 
 #~ msgid "Continue with %{provider}"
 #~ msgstr "%{provider} के साथ जारी रखें"

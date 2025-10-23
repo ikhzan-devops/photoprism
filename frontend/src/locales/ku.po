@@ -126,7 +126,7 @@ msgid "Access Token"
 msgstr "Access Token"
 
 #: src/component/navigation.vue:1067 src/component/navigation.vue:868
-#: src/component/service/upload.vue:24 src/locales.js:332
+#: src/component/service/upload.vue:24 src/locales.js:331
 #: src/model/service.js:72 src/model/user.js:151 src/page/settings.vue:111
 #: src/page/settings/general.vue:348
 msgid "Account"
@@ -144,7 +144,7 @@ msgstr "هەژمارەکە سڕایەوە"
 msgid "Account restored"
 msgstr "Hesab hat restorekirin"
 
-#: src/page/admin.vue:54 src/locales.js:333
+#: src/page/admin.vue:54 src/locales.js:332
 msgid "Accounts"
 msgstr "Accounts"
 
@@ -190,7 +190,7 @@ msgstr "Çalak bike ji bo rêzkirina daketî."
 msgid "Activation Code"
 msgstr "Koda Çalakkirinê"
 
-#: src/page/admin.vue:76 src/locales.js:349
+#: src/page/admin.vue:76 src/locales.js:348
 msgid "Activity"
 msgstr "Çalakî"
 
@@ -258,10 +258,6 @@ msgstr "Admin"
 #: src/page/settings.vue:85
 msgid "Advanced"
 msgstr "پێشکەوتوو"
-
-#: src/locales.js:363
-msgid "Advertise URL"
-msgstr "URL-ya reklamê"
 
 #: src/options/options.js:378
 msgid "After 1 day"
@@ -498,7 +494,7 @@ msgstr "هونەرمەند"
 msgid "Aspect Ratio"
 msgstr "ڕێژەی ڕوو"
 
-#: src/locales.js:339
+#: src/locales.js:338
 msgid "Attributes"
 msgstr "Taybetmendî"
 
@@ -516,7 +512,7 @@ msgstr "Audio"
 
 #: src/component/user/add/dialog.vue:107 src/component/user/edit/dialog.vue:183
 #: src/page/admin/sessions.vue:152 src/page/admin/sessions.vue:292
-#: src/page/admin/users.vue:270 src/locales.js:334
+#: src/page/admin/users.vue:270 src/locales.js:333
 msgid "Authentication"
 msgstr "Authentication"
 
@@ -613,10 +609,6 @@ msgstr "Wêneyan Bigerîne"
 #: src/page/about/feedback.vue:111 src/options/options.js:409
 msgid "Bug Report"
 msgstr "راپۆرتی هەڵە"
-
-#: src/locales.js:323
-msgid "Build"
-msgstr "Avakirin"
 
 #: src/page/connect.vue:8 src/common/notify.js:119 src/page/connect.vue:13
 msgid "Busy, please wait…"
@@ -775,14 +767,6 @@ msgstr "Kirrîxwaz"
 #: src/options/auth.js:25
 msgid "Client Credentials"
 msgstr "Bawernameyên Client"
-
-#: src/locales.js:364
-msgid "Client ID"
-msgstr "Nasnameya xerîdar"
-
-#: src/locales.js:365
-msgid "Client Secret"
-msgstr "Nehêniya Xerîdar"
 
 #: src/component/user/edit/dialog.vue:311 src/page/admin/sessions.vue:224
 #: src/component/lightbox.vue:1211 src/component/lightbox.vue:1212
@@ -1001,7 +985,7 @@ msgstr "شینی ئاسمانی"
 msgid "Daily"
 msgstr "ڕۆژانە"
 
-#: src/locales.js:328
+#: src/locales.js:327
 msgid "Database"
 msgstr "Databas"
 
@@ -1009,7 +993,7 @@ msgstr "Databas"
 msgid "Database Backups"
 msgstr "Backups Database"
 
-#: src/locales.js:329
+#: src/locales.js:328
 msgid "Databases"
 msgstr "Databas"
 
@@ -1246,7 +1230,7 @@ msgstr "فلتەری کەمکردنەوە"
 msgid "Drag and drop files here"
 msgstr "Pelan li vir kaş bikin û bavêjin"
 
-#: src/locales.js:345
+#: src/locales.js:344
 msgid "Driver"
 msgstr "Ajotvan"
 
@@ -1321,7 +1305,7 @@ msgstr "Pêşdibistanên veguheztina RAW çalak dike. Dibe ku performans kêm bi
 msgid "Enabling two-factor authentication means that you will need a randomly generated verification code to log in, so even if someone gains access to your password, they will not be able to access your account."
 msgstr "Çalakkirina erêkirina du-faktorî tê vê wateyê ku hûn ê hewceyê kodek verastkirinê ya ku bi rengek rasthatî hatî hilberandin hewce bike ku têkevinê, ji ber vê yekê her çend kes bigihîje şîfreya we jî, ew ê nikaribe bigihîje hesabê we."
 
-#: src/locales.js:346
+#: src/locales.js:345
 msgid "Engine"
 msgstr "Makîne"
 
@@ -1805,7 +1789,7 @@ msgstr "Dema nederbasdar"
 msgid "Invalid URL"
 msgstr "URL nederbasdar"
 
-#: src/page/admin/activity.vue:129 src/locales.js:351
+#: src/page/admin/activity.vue:126 src/locales.js:350
 msgid "IP Address"
 msgstr "Navnîşana IP'yê"
 
@@ -1852,7 +1836,7 @@ msgstr "پێناس"
 #: src/component/photo/edit/dialog.vue:38
 #: src/component/photo/edit/dialog.vue:50
 #: src/component/photo/edit/dialog.vue:52
-#: src/component/photo/edit/dialog.vue:53 src/locales.js:326
+#: src/component/photo/edit/dialog.vue:53 src/locales.js:325
 #: src/options/options.js:210 src/page/settings/general.vue:140
 msgid "Labels"
 msgstr "پێناسەکان"
@@ -1873,7 +1857,7 @@ msgstr "زمان"
 msgid "Last Active"
 msgstr "Last Active"
 
-#: src/page/admin/users.vue:276 src/locales.js:336
+#: src/page/admin/users.vue:276 src/locales.js:335
 msgid "Last Login"
 msgstr "Têketina Dawî"
 
@@ -1984,7 +1968,7 @@ msgstr "Barkirina tiştan..."
 msgid "Loading..."
 msgstr "Barkirin..."
 
-#: src/options/admin.js:39 src/locales.js:342 src/options/auth.js:23
+#: src/options/admin.js:39 src/locales.js:341 src/options/auth.js:23
 #: src/options/auth.js:28 src/options/options.js:38
 #: src/page/settings/general.vue:55
 msgid "Local"
@@ -2091,7 +2075,7 @@ msgstr "Endamî"
 msgid "Merge %{a} with %{b}?"
 msgstr "Bi %{b} re bi %{b} re bibe yek?"
 
-#: src/page/about/feedback.vue:51 src/page/admin/activity.vue:130
+#: src/page/about/feedback.vue:51 src/page/admin/activity.vue:127
 #: src/locales.js:352 src/page/about/feedback.vue:52
 msgid "Message"
 msgstr "Agah"
@@ -2630,7 +2614,7 @@ msgstr "PM"
 msgid "PNG Size Limit: %{n}px"
 msgstr "سنووری قەبارەی PNG: %{n}px"
 
-#: src/locales.js:324
+#: src/locales.js:323
 msgid "Portal"
 msgstr "Portal"
 
@@ -2829,15 +2813,15 @@ msgstr "Ji albûmê derxe"
 msgid "Remove imported files to save storage. Unsupported file types will never be deleted, they remain in their current location."
 msgstr "لابردنی پەڕگە هاوردەکان بۆ بەتاڵکردنی بیرگە. جۆرەکانی پەڕگەی پشتیوانی نەکراو هەرگیز ناسڕدرێتەوە، ئەوان لە شوێنی ئێستایان دەمێننەوە."
 
-#: src/locales.js:366
+#: src/locales.js:362
 msgid "Remove the selected instance from the cluster registry?"
 msgstr "Nimûneya bijartî ji qeyda klusterê rake?"
 
-#: src/locales.js:327
+#: src/locales.js:326
 msgid "Removed"
 msgstr "Rakirî"
 
-#: src/page/admin/activity.vue:132 src/locales.js:353
+#: src/page/admin/activity.vue:129 src/locales.js:353
 msgid "Repeated"
 msgstr "Dubarekirî"
 
@@ -2893,15 +2877,15 @@ msgstr "پێشبینین"
 
 #: src/component/user/add/dialog.vue:93 src/component/user/edit/dialog.vue:166
 #: src/page/admin/sessions.vue:145 src/page/admin/users.vue:268
-#: src/locales.js:337
+#: src/locales.js:336
 msgid "Role"
 msgstr "Role"
 
-#: src/locales.js:338
+#: src/locales.js:337
 msgid "Roles"
 msgstr "Rol"
 
-#: src/locales.js:347
+#: src/locales.js:346
 msgid "Rotated"
 msgstr "Zivirî"
 
@@ -2965,11 +2949,11 @@ msgstr "پشکنینەکان"
 
 #: src/page/admin/sessions.vue:179 src/page/admin/sessions.vue:293
 #: src/component/settings/apps.vue:150 src/component/settings/apps.vue:308
-#: src/locales.js:340
+#: src/locales.js:339
 msgid "Scope"
 msgstr "Scope"
 
-#: src/locales.js:341
+#: src/locales.js:340
 msgid "Scopes"
 msgstr "Çarçove"
 
@@ -3061,7 +3045,7 @@ msgstr "بەستەری خزمەتگوزاری"
 msgid "Services"
 msgstr "بەستەری خزمەتگوزاری"
 
-#: src/locales.js:343 src/model/session.js:83 src/options/auth.js:42
+#: src/locales.js:342 src/model/session.js:83 src/options/auth.js:42
 #: src/options/auth.js:91
 msgid "Session"
 msgstr "Rûniştinî"
@@ -3070,7 +3054,7 @@ msgstr "Rûniştinî"
 msgid "Session ID"
 msgstr "Nasnameya rûniştinê"
 
-#: src/page/admin.vue:65 src/locales.js:344
+#: src/page/admin.vue:65 src/locales.js:343
 msgid "Sessions"
 msgstr "Sessions"
 
@@ -3102,8 +3086,8 @@ msgstr "ڕێکخستنەکان پاشەکەوتکرا"
 msgid "Setup"
 msgstr "دایبەزێنە"
 
-#: src/page/admin/activity.vue:128 src/page/admin/activity.vue:36
-#: src/locales.js:348
+#: src/page/admin/activity.vue:125 src/page/admin/activity.vue:36
+#: src/locales.js:347
 msgid "Severity"
 msgstr "Giraniya"
 
@@ -3170,7 +3154,7 @@ msgstr "چوونەژوورەوە"
 msgid "Similar"
 msgstr "وەکویەک"
 
-#: src/locales.js:362
+#: src/locales.js:351
 msgid "Site URL"
 msgstr "URL-ya malperê"
 
@@ -3389,7 +3373,7 @@ msgstr "نوانەکە لە ئێستادا %{n} فایلی شاراوەی لەخ
 msgid "Their format may not be supported, they haven't been converted to JPEG yet or there are duplicates."
 msgstr "فۆرماتەکەیان لەوانەیە پشتگیری کراو نەبێت, هێشتا نەگۆڕدراوە بۆ JPEG یان لێکچووی دووبارەبوونی هەیە."
 
-#: src/locales.js:325 src/page/settings/general.vue:25
+#: src/locales.js:324 src/page/settings/general.vue:25
 msgid "Theme"
 msgstr "ڕووکار"
 
@@ -3408,7 +3392,7 @@ msgstr "ئەمە فۆڵدەری ڕەسەنەکان وەک درایڤی ڕایە�
 msgid "This mounts the originals folder as a network drive and allows you to open, edit, and delete files from your computer or smartphone as if they were local. "
 msgstr "ئەمە فۆڵدەری ڕەسەنەکان وەک درایڤی ڕایەڵە هەڵدەکات و ڕێگەت پێدەدات فایلەکان لە کۆمپیوتەرەکەت یان مۆبایلەکە بکەیتەوە، بژاری بکەیت، یان بسڕیتەوە وەک ئەوەی کە خۆماڵی بن."
 
-#: src/page/admin/activity.vue:127 src/locales.js:350
+#: src/page/admin/activity.vue:124 src/locales.js:349
 msgid "Time"
 msgstr "Dem"
 
@@ -3660,7 +3644,7 @@ msgid "Use your recovery code or contact an administrator for help."
 msgstr "Koda vegerandina xwe bikar bînin an ji bo alîkariyê bi rêveberek re têkilî daynin."
 
 #: src/options/admin.js:14 src/page/admin/sessions.vue:138
-#: src/page/admin/sessions.vue:291 src/locales.js:330 src/model/user.js:365
+#: src/page/admin/sessions.vue:291 src/locales.js:329 src/model/user.js:365
 #: src/options/auth.js:8
 msgid "User"
 msgstr "بەکارهێنەر"
@@ -3684,7 +3668,7 @@ msgstr "ناوی بەکارهێنەر"
 #: src/component/navigation.vue:425 src/component/navigation.vue:431
 #: src/component/navigation.vue:446 src/component/navigation.vue:677
 #: src/component/navigation.vue:685 src/component/navigation.vue:693
-#: src/locales.js:331
+#: src/locales.js:330
 msgid "Users"
 msgstr "Bikarhêner"
 
@@ -3766,7 +3750,7 @@ msgid "We do our best to respond within five business days or less."
 msgstr "Em çêtirîn dikin ku di nav pênc rojên karsaziyê an kêmtir de bersiv bidin."
 
 #: src/component/user/add/dialog.vue:141 src/component/user/edit/dialog.vue:280
-#: src/page/admin/users.vue:275 src/locales.js:335
+#: src/page/admin/users.vue:275 src/locales.js:334
 msgid "Web Login"
 msgstr "Têketina Webê"
 
@@ -3914,6 +3898,18 @@ msgstr "ناونیشان"
 msgctxt "Verb"
 msgid "Archive"
 msgstr "ئەرشیف"
+
+#~ msgid "Advertise URL"
+#~ msgstr "URL-ya reklamê"
+
+#~ msgid "Build"
+#~ msgstr "Avakirin"
+
+#~ msgid "Client ID"
+#~ msgstr "Nasnameya xerîdar"
+
+#~ msgid "Client Secret"
+#~ msgstr "Nehêniya Xerîdar"
 
 #~ msgid "Continue with %{provider}"
 #~ msgstr "Bi %{provider} re bidomîne"

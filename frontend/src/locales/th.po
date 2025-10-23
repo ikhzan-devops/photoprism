@@ -126,7 +126,7 @@ msgid "Access Token"
 msgstr "โทเค็นการเข้าถึง"
 
 #: src/component/navigation.vue:1067 src/component/navigation.vue:868
-#: src/component/service/upload.vue:24 src/locales.js:332
+#: src/component/service/upload.vue:24 src/locales.js:331
 #: src/model/service.js:72 src/model/user.js:151 src/page/settings.vue:111
 #: src/page/settings/general.vue:348
 msgid "Account"
@@ -144,7 +144,7 @@ msgstr "ลบบัญชีแล้ว"
 msgid "Account restored"
 msgstr "บัญชีได้รับการคืนสภาพแล้ว"
 
-#: src/page/admin.vue:54 src/locales.js:333
+#: src/page/admin.vue:54 src/locales.js:332
 msgid "Accounts"
 msgstr "บัญชี"
 
@@ -190,7 +190,7 @@ msgstr "เปิดใช้งานการเรียงลำดับจ
 msgid "Activation Code"
 msgstr "รหัสเปิดใช้งาน"
 
-#: src/page/admin.vue:76 src/locales.js:349
+#: src/page/admin.vue:76 src/locales.js:348
 msgid "Activity"
 msgstr "กิจกรรม"
 
@@ -258,10 +258,6 @@ msgstr "ผู้ดูแลระบบ"
 #: src/page/settings.vue:85
 msgid "Advanced"
 msgstr "ขั้นสูง"
-
-#: src/locales.js:363
-msgid "Advertise URL"
-msgstr "URL โฆษณา"
 
 #: src/options/options.js:378
 msgid "After 1 day"
@@ -498,7 +494,7 @@ msgstr "ศิลปิน"
 msgid "Aspect Ratio"
 msgstr "อัตราส่วน"
 
-#: src/locales.js:339
+#: src/locales.js:338
 msgid "Attributes"
 msgstr "คุณสมบัติ"
 
@@ -516,7 +512,7 @@ msgstr "เสียง"
 
 #: src/component/user/add/dialog.vue:107 src/component/user/edit/dialog.vue:183
 #: src/page/admin/sessions.vue:152 src/page/admin/sessions.vue:292
-#: src/page/admin/users.vue:270 src/locales.js:334
+#: src/page/admin/users.vue:270 src/locales.js:333
 msgid "Authentication"
 msgstr "การรับรองความถูกต้อง"
 
@@ -613,10 +609,6 @@ msgstr "เรียกดูรูปภาพ"
 #: src/page/about/feedback.vue:111 src/options/options.js:409
 msgid "Bug Report"
 msgstr "รายงานข้อผิดพลาด"
-
-#: src/locales.js:323
-msgid "Build"
-msgstr "สร้าง"
 
 #: src/page/connect.vue:8 src/common/notify.js:119 src/page/connect.vue:13
 msgid "Busy, please wait…"
@@ -775,14 +767,6 @@ msgstr "ลูกค้า"
 #: src/options/auth.js:25
 msgid "Client Credentials"
 msgstr "ข้อมูลรับรองลูกค้า"
-
-#: src/locales.js:364
-msgid "Client ID"
-msgstr "รหัสลูกค้า"
-
-#: src/locales.js:365
-msgid "Client Secret"
-msgstr "ความลับของลูกค้า"
 
 #: src/component/user/edit/dialog.vue:311 src/page/admin/sessions.vue:224
 #: src/component/lightbox.vue:1211 src/component/lightbox.vue:1212
@@ -1001,7 +985,7 @@ msgstr "สีฟ้า"
 msgid "Daily"
 msgstr "รายวัน"
 
-#: src/locales.js:328
+#: src/locales.js:327
 msgid "Database"
 msgstr "ฐานข้อมูล"
 
@@ -1009,7 +993,7 @@ msgstr "ฐานข้อมูล"
 msgid "Database Backups"
 msgstr "การสำรองฐานข้อมูล"
 
-#: src/locales.js:329
+#: src/locales.js:328
 msgid "Databases"
 msgstr "ฐานข้อมูล"
 
@@ -1246,7 +1230,7 @@ msgstr "ตัวกรองการลดขนาด"
 msgid "Drag and drop files here"
 msgstr "ลากและวางไฟล์ที่นี่"
 
-#: src/locales.js:345
+#: src/locales.js:344
 msgid "Driver"
 msgstr "คนขับรถ"
 
@@ -1321,7 +1305,7 @@ msgstr "เปิดใช้งานการตั้งค่าล่วง
 msgid "Enabling two-factor authentication means that you will need a randomly generated verification code to log in, so even if someone gains access to your password, they will not be able to access your account."
 msgstr "การเปิดใช้งานการตรวจสอบสิทธิ์แบบสองปัจจัยหมายความว่าคุณจะต้องใช้รหัสยืนยันที่สร้างขึ้นแบบสุ่มเพื่อเข้าสู่ระบบ ดังนั้นแม้ว่าจะมีคนเข้าถึงรหัสผ่านของคุณ พวกเขาจะไม่สามารถเข้าถึงบัญชีของคุณได้"
 
-#: src/locales.js:346
+#: src/locales.js:345
 msgid "Engine"
 msgstr "เครื่องยนต์"
 
@@ -1805,7 +1789,7 @@ msgstr "เวลาไม่ถูกต้อง"
 msgid "Invalid URL"
 msgstr "URL ไม่ถูกต้อง"
 
-#: src/page/admin/activity.vue:129 src/locales.js:351
+#: src/page/admin/activity.vue:126 src/locales.js:350
 msgid "IP Address"
 msgstr "ที่อยู่ IP"
 
@@ -1852,7 +1836,7 @@ msgstr "ฉลาก"
 #: src/component/photo/edit/dialog.vue:38
 #: src/component/photo/edit/dialog.vue:50
 #: src/component/photo/edit/dialog.vue:52
-#: src/component/photo/edit/dialog.vue:53 src/locales.js:326
+#: src/component/photo/edit/dialog.vue:53 src/locales.js:325
 #: src/options/options.js:210 src/page/settings/general.vue:140
 msgid "Labels"
 msgstr "ป้าย"
@@ -1873,7 +1857,7 @@ msgstr "ภาษา"
 msgid "Last Active"
 msgstr "ใช้งานล่าสุด"
 
-#: src/page/admin/users.vue:276 src/locales.js:336
+#: src/page/admin/users.vue:276 src/locales.js:335
 msgid "Last Login"
 msgstr "เข้าสู่ระบบครั้งล่าสุด"
 
@@ -1984,7 +1968,7 @@ msgstr "กำลังโหลดรายการ..."
 msgid "Loading..."
 msgstr "กำลังโหลด..."
 
-#: src/options/admin.js:39 src/locales.js:342 src/options/auth.js:23
+#: src/options/admin.js:39 src/locales.js:341 src/options/auth.js:23
 #: src/options/auth.js:28 src/options/options.js:38
 #: src/page/settings/general.vue:55
 msgid "Local"
@@ -2091,7 +2075,7 @@ msgstr "การเป็นสมาชิก"
 msgid "Merge %{a} with %{b}?"
 msgstr "ผสาน %{a} กับ %{b}?"
 
-#: src/page/about/feedback.vue:51 src/page/admin/activity.vue:130
+#: src/page/about/feedback.vue:51 src/page/admin/activity.vue:127
 #: src/locales.js:352 src/page/about/feedback.vue:52
 msgid "Message"
 msgstr "ข้อความ"
@@ -2630,7 +2614,7 @@ msgstr "นายกฯ"
 msgid "PNG Size Limit: %{n}px"
 msgstr "ขีดจำกัดขนาด PNG: %{n}px"
 
-#: src/locales.js:324
+#: src/locales.js:323
 msgid "Portal"
 msgstr "พอร์ทัล"
 
@@ -2829,15 +2813,15 @@ msgstr "นำออกจากอัลบั้ม"
 msgid "Remove imported files to save storage. Unsupported file types will never be deleted, they remain in their current location."
 msgstr "ลบไฟล์ที่นำเข้าเพื่อประหยัดพื้นที่จัดเก็บ ประเภทไฟล์ที่ไม่รองรับจะไม่ถูกลบ โดยจะยังคงอยู่ในตำแหน่งปัจจุบัน"
 
-#: src/locales.js:366
+#: src/locales.js:362
 msgid "Remove the selected instance from the cluster registry?"
 msgstr "ลบอินสแตนซ์ที่เลือกออกจากรีจิสทรีคลัสเตอร์หรือไม่"
 
-#: src/locales.js:327
+#: src/locales.js:326
 msgid "Removed"
 msgstr "ลบออก"
 
-#: src/page/admin/activity.vue:132 src/locales.js:353
+#: src/page/admin/activity.vue:129 src/locales.js:353
 msgid "Repeated"
 msgstr "ซ้ำแล้วซ้ำเล่า"
 
@@ -2893,15 +2877,15 @@ msgstr "ทบทวน"
 
 #: src/component/user/add/dialog.vue:93 src/component/user/edit/dialog.vue:166
 #: src/page/admin/sessions.vue:145 src/page/admin/users.vue:268
-#: src/locales.js:337
+#: src/locales.js:336
 msgid "Role"
 msgstr "บทบาท"
 
-#: src/locales.js:338
+#: src/locales.js:337
 msgid "Roles"
 msgstr "บทบาท"
 
-#: src/locales.js:347
+#: src/locales.js:346
 msgid "Rotated"
 msgstr "หมุน"
 
@@ -2965,11 +2949,11 @@ msgstr "สแกน"
 
 #: src/page/admin/sessions.vue:179 src/page/admin/sessions.vue:293
 #: src/component/settings/apps.vue:150 src/component/settings/apps.vue:308
-#: src/locales.js:340
+#: src/locales.js:339
 msgid "Scope"
 msgstr "ขอบเขต"
 
-#: src/locales.js:341
+#: src/locales.js:340
 msgid "Scopes"
 msgstr "ขอบเขต"
 
@@ -3061,7 +3045,7 @@ msgstr "URL บริการ"
 msgid "Services"
 msgstr "URL บริการ"
 
-#: src/locales.js:343 src/model/session.js:83 src/options/auth.js:42
+#: src/locales.js:342 src/model/session.js:83 src/options/auth.js:42
 #: src/options/auth.js:91
 msgid "Session"
 msgstr "การประชุม"
@@ -3070,7 +3054,7 @@ msgstr "การประชุม"
 msgid "Session ID"
 msgstr "รหัสเซสชัน"
 
-#: src/page/admin.vue:65 src/locales.js:344
+#: src/page/admin.vue:65 src/locales.js:343
 msgid "Sessions"
 msgstr "เซสชัน"
 
@@ -3102,8 +3086,8 @@ msgstr "การตั้งค่าที่บันทึกไว้"
 msgid "Setup"
 msgstr "ติดตั้ง"
 
-#: src/page/admin/activity.vue:128 src/page/admin/activity.vue:36
-#: src/locales.js:348
+#: src/page/admin/activity.vue:125 src/page/admin/activity.vue:36
+#: src/locales.js:347
 msgid "Severity"
 msgstr "ความรุนแรง"
 
@@ -3170,7 +3154,7 @@ msgstr "เข้าสู่ระบบ"
 msgid "Similar"
 msgstr "คล้ายกัน"
 
-#: src/locales.js:362
+#: src/locales.js:351
 msgid "Site URL"
 msgstr "URL ของไซต์"
 
@@ -3389,7 +3373,7 @@ msgstr "ขณะนี้ดัชนีมีไฟล์ที่ซ่อน
 msgid "Their format may not be supported, they haven't been converted to JPEG yet or there are duplicates."
 msgstr "รูปแบบของไฟล์อาจไม่ได้รับการสนับสนุน ยังไม่ได้แปลงเป็น JPEG หรือมีรูปแบบที่ซ้ำกัน"
 
-#: src/locales.js:325 src/page/settings/general.vue:25
+#: src/locales.js:324 src/page/settings/general.vue:25
 msgid "Theme"
 msgstr "ธีม"
 
@@ -3408,7 +3392,7 @@ msgstr "การดำเนินการนี้จะต่อเชื่
 msgid "This mounts the originals folder as a network drive and allows you to open, edit, and delete files from your computer or smartphone as if they were local. "
 msgstr "การดำเนินการนี้จะต่อเชื่อมโฟลเดอร์ต้นฉบับเป็นไดรฟ์เครือข่าย และช่วยให้คุณสามารถเปิด แก้ไข และลบไฟล์จากคอมพิวเตอร์หรือสมาร์ทโฟนได้เสมือนอยู่ในเครื่อง"
 
-#: src/page/admin/activity.vue:127 src/locales.js:350
+#: src/page/admin/activity.vue:124 src/locales.js:349
 msgid "Time"
 msgstr "เวลา"
 
@@ -3660,7 +3644,7 @@ msgid "Use your recovery code or contact an administrator for help."
 msgstr "ใช้รหัสกู้คืนของคุณหรือติดต่อผู้ดูแลระบบเพื่อขอความช่วยเหลือ"
 
 #: src/options/admin.js:14 src/page/admin/sessions.vue:138
-#: src/page/admin/sessions.vue:291 src/locales.js:330 src/model/user.js:365
+#: src/page/admin/sessions.vue:291 src/locales.js:329 src/model/user.js:365
 #: src/options/auth.js:8
 msgid "User"
 msgstr "ผู้ใช้"
@@ -3684,7 +3668,7 @@ msgstr "ชื่อผู้ใช้"
 #: src/component/navigation.vue:425 src/component/navigation.vue:431
 #: src/component/navigation.vue:446 src/component/navigation.vue:677
 #: src/component/navigation.vue:685 src/component/navigation.vue:693
-#: src/locales.js:331
+#: src/locales.js:330
 msgid "Users"
 msgstr "ผู้ใช้"
 
@@ -3766,7 +3750,7 @@ msgid "We do our best to respond within five business days or less."
 msgstr "เราพยายามอย่างเต็มที่ที่จะตอบกลับภายในห้าวันทำการหรือน้อยกว่านั้น"
 
 #: src/component/user/add/dialog.vue:141 src/component/user/edit/dialog.vue:280
-#: src/page/admin/users.vue:275 src/locales.js:335
+#: src/page/admin/users.vue:275 src/locales.js:334
 msgid "Web Login"
 msgstr "เข้าสู่ระบบเว็บ"
 
@@ -3914,6 +3898,18 @@ msgstr "ชื่อ"
 msgctxt "Verb"
 msgid "Archive"
 msgstr "คลังเก็บเอกสารสำคัญ"
+
+#~ msgid "Advertise URL"
+#~ msgstr "URL โฆษณา"
+
+#~ msgid "Build"
+#~ msgstr "สร้าง"
+
+#~ msgid "Client ID"
+#~ msgstr "รหัสลูกค้า"
+
+#~ msgid "Client Secret"
+#~ msgstr "ความลับของลูกค้า"
 
 #~ msgid "Continue with %{provider}"
 #~ msgstr "ดำเนินการต่อด้วย %{provider}"

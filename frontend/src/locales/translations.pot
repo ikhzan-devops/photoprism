@@ -134,7 +134,7 @@ msgstr ""
 #: src/component/navigation.vue:1067
 #: src/component/navigation.vue:868
 #: src/component/service/upload.vue:24
-#: src/locales.js:332
+#: src/locales.js:331
 #: src/model/service.js:72
 #: src/model/user.js:151
 #: src/page/settings.vue:111
@@ -157,7 +157,7 @@ msgid "Account restored"
 msgstr ""
 
 #: src/page/admin.vue:54
-#: src/locales.js:333
+#: src/locales.js:332
 msgid "Accounts"
 msgstr ""
 
@@ -214,7 +214,7 @@ msgid "Activation Code"
 msgstr ""
 
 #: src/page/admin.vue:76
-#: src/locales.js:349
+#: src/locales.js:348
 msgid "Activity"
 msgstr ""
 
@@ -298,10 +298,6 @@ msgstr ""
 
 #: src/page/settings.vue:85
 msgid "Advanced"
-msgstr ""
-
-#: src/locales.js:363
-msgid "Advertise URL"
 msgstr ""
 
 #: src/options/options.js:378
@@ -562,7 +558,7 @@ msgstr ""
 msgid "Aspect Ratio"
 msgstr ""
 
-#: src/locales.js:339
+#: src/locales.js:338
 msgid "Attributes"
 msgstr ""
 
@@ -587,7 +583,7 @@ msgstr ""
 #: src/page/admin/sessions.vue:152
 #: src/page/admin/sessions.vue:292
 #: src/page/admin/users.vue:270
-#: src/locales.js:334
+#: src/locales.js:333
 msgid "Authentication"
 msgstr ""
 
@@ -695,10 +691,6 @@ msgstr ""
 #: src/page/about/feedback.vue:111
 #: src/options/options.js:409
 msgid "Bug Report"
-msgstr ""
-
-#: src/locales.js:323
-msgid "Build"
 msgstr ""
 
 #: src/page/connect.vue:8
@@ -908,14 +900,6 @@ msgstr ""
 
 #: src/options/auth.js:25
 msgid "Client Credentials"
-msgstr ""
-
-#: src/locales.js:364
-msgid "Client ID"
-msgstr ""
-
-#: src/locales.js:365
-msgid "Client Secret"
 msgstr ""
 
 #: src/component/user/edit/dialog.vue:311
@@ -1192,7 +1176,7 @@ msgstr ""
 msgid "Daily"
 msgstr ""
 
-#: src/locales.js:328
+#: src/locales.js:327
 msgid "Database"
 msgstr ""
 
@@ -1200,7 +1184,7 @@ msgstr ""
 msgid "Database Backups"
 msgstr ""
 
-#: src/locales.js:329
+#: src/locales.js:328
 msgid "Databases"
 msgstr ""
 
@@ -1484,7 +1468,7 @@ msgstr ""
 msgid "Drag and drop files here"
 msgstr ""
 
-#: src/locales.js:345
+#: src/locales.js:344
 msgid "Driver"
 msgstr ""
 
@@ -1569,7 +1553,7 @@ msgstr ""
 msgid "Enabling two-factor authentication means that you will need a randomly generated verification code to log in, so even if someone gains access to your password, they will not be able to access your account."
 msgstr ""
 
-#: src/locales.js:346
+#: src/locales.js:345
 msgid "Engine"
 msgstr ""
 
@@ -2139,8 +2123,8 @@ msgstr ""
 msgid "Invalid URL"
 msgstr ""
 
-#: src/page/admin/activity.vue:129
-#: src/locales.js:351
+#: src/page/admin/activity.vue:126
+#: src/locales.js:350
 msgid "IP Address"
 msgstr ""
 
@@ -2190,7 +2174,7 @@ msgstr ""
 #: src/component/photo/edit/dialog.vue:50
 #: src/component/photo/edit/dialog.vue:52
 #: src/component/photo/edit/dialog.vue:53
-#: src/locales.js:326
+#: src/locales.js:325
 #: src/options/options.js:210
 #: src/page/settings/general.vue:140
 msgid "Labels"
@@ -2214,7 +2198,7 @@ msgid "Last Active"
 msgstr ""
 
 #: src/page/admin/users.vue:276
-#: src/locales.js:336
+#: src/locales.js:335
 msgid "Last Login"
 msgstr ""
 
@@ -2351,7 +2335,7 @@ msgid "Loading..."
 msgstr ""
 
 #: src/options/admin.js:39
-#: src/locales.js:342
+#: src/locales.js:341
 #: src/options/auth.js:23
 #: src/options/auth.js:28
 #: src/options/options.js:38
@@ -2475,7 +2459,7 @@ msgid "Merge %{a} with %{b}?"
 msgstr ""
 
 #: src/page/about/feedback.vue:51
-#: src/page/admin/activity.vue:130
+#: src/page/admin/activity.vue:127
 #: src/locales.js:352
 #: src/page/about/feedback.vue:52
 msgid "Message"
@@ -3111,7 +3095,7 @@ msgstr ""
 msgid "PNG Size Limit: %{n}px"
 msgstr ""
 
-#: src/locales.js:324
+#: src/locales.js:323
 msgid "Portal"
 msgstr ""
 
@@ -3351,15 +3335,15 @@ msgstr ""
 msgid "Remove imported files to save storage. Unsupported file types will never be deleted, they remain in their current location."
 msgstr ""
 
-#: src/locales.js:366
+#: src/locales.js:362
 msgid "Remove the selected instance from the cluster registry?"
 msgstr ""
 
-#: src/locales.js:327
+#: src/locales.js:326
 msgid "Removed"
 msgstr ""
 
-#: src/page/admin/activity.vue:132
+#: src/page/admin/activity.vue:129
 #: src/locales.js:353
 msgid "Repeated"
 msgstr ""
@@ -3428,15 +3412,15 @@ msgstr ""
 #: src/component/user/edit/dialog.vue:166
 #: src/page/admin/sessions.vue:145
 #: src/page/admin/users.vue:268
-#: src/locales.js:337
+#: src/locales.js:336
 msgid "Role"
 msgstr ""
 
-#: src/locales.js:338
+#: src/locales.js:337
 msgid "Roles"
 msgstr ""
 
-#: src/locales.js:347
+#: src/locales.js:346
 msgid "Rotated"
 msgstr ""
 
@@ -3512,11 +3496,11 @@ msgstr ""
 #: src/page/admin/sessions.vue:293
 #: src/component/settings/apps.vue:150
 #: src/component/settings/apps.vue:308
-#: src/locales.js:340
+#: src/locales.js:339
 msgid "Scope"
 msgstr ""
 
-#: src/locales.js:341
+#: src/locales.js:340
 msgid "Scopes"
 msgstr ""
 
@@ -3623,7 +3607,7 @@ msgstr ""
 msgid "Services"
 msgstr ""
 
-#: src/locales.js:343
+#: src/locales.js:342
 #: src/model/session.js:83
 #: src/options/auth.js:42
 #: src/options/auth.js:91
@@ -3635,7 +3619,7 @@ msgid "Session ID"
 msgstr ""
 
 #: src/page/admin.vue:65
-#: src/locales.js:344
+#: src/locales.js:343
 msgid "Sessions"
 msgstr ""
 
@@ -3676,9 +3660,9 @@ msgstr ""
 msgid "Setup"
 msgstr ""
 
-#: src/page/admin/activity.vue:128
+#: src/page/admin/activity.vue:125
 #: src/page/admin/activity.vue:36
-#: src/locales.js:348
+#: src/locales.js:347
 msgid "Severity"
 msgstr ""
 
@@ -3756,7 +3740,7 @@ msgstr ""
 msgid "Similar"
 msgstr ""
 
-#: src/locales.js:362
+#: src/locales.js:351
 msgid "Site URL"
 msgstr ""
 
@@ -3995,7 +3979,7 @@ msgstr ""
 msgid "Their format may not be supported, they haven't been converted to JPEG yet or there are duplicates."
 msgstr ""
 
-#: src/locales.js:325
+#: src/locales.js:324
 #: src/page/settings/general.vue:25
 msgid "Theme"
 msgstr ""
@@ -4022,8 +4006,8 @@ msgstr ""
 msgid "This mounts the originals folder as a network drive and allows you to open, edit, and delete files from your computer or smartphone as if they were local. "
 msgstr ""
 
-#: src/page/admin/activity.vue:127
-#: src/locales.js:350
+#: src/page/admin/activity.vue:124
+#: src/locales.js:349
 msgid "Time"
 msgstr ""
 
@@ -4334,7 +4318,7 @@ msgstr ""
 #: src/options/admin.js:14
 #: src/page/admin/sessions.vue:138
 #: src/page/admin/sessions.vue:291
-#: src/locales.js:330
+#: src/locales.js:329
 #: src/model/user.js:365
 #: src/options/auth.js:8
 msgid "User"
@@ -4367,7 +4351,7 @@ msgstr ""
 #: src/component/navigation.vue:677
 #: src/component/navigation.vue:685
 #: src/component/navigation.vue:693
-#: src/locales.js:331
+#: src/locales.js:330
 msgid "Users"
 msgstr ""
 
@@ -4472,7 +4456,7 @@ msgstr ""
 #: src/component/user/add/dialog.vue:141
 #: src/component/user/edit/dialog.vue:280
 #: src/page/admin/users.vue:275
-#: src/locales.js:335
+#: src/locales.js:334
 msgid "Web Login"
 msgstr ""
 

@@ -123,7 +123,7 @@ msgid "Access Token"
 msgstr "Truy cập thẻ"
 
 #: src/component/navigation.vue:1067 src/component/navigation.vue:868
-#: src/component/service/upload.vue:24 src/locales.js:332
+#: src/component/service/upload.vue:24 src/locales.js:331
 #: src/model/service.js:72 src/model/user.js:151 src/page/settings.vue:111
 #: src/page/settings/general.vue:348
 msgid "Account"
@@ -141,7 +141,7 @@ msgstr "Tài khoản đã bị xóa"
 msgid "Account restored"
 msgstr "Tài khoản đã được khôi phục"
 
-#: src/page/admin.vue:54 src/locales.js:333
+#: src/page/admin.vue:54 src/locales.js:332
 msgid "Accounts"
 msgstr "Tài khoản"
 
@@ -187,7 +187,7 @@ msgstr "Kích hoạt để sắp xếp theo thứ tự giảm dần."
 msgid "Activation Code"
 msgstr "Mã kích hoạt"
 
-#: src/page/admin.vue:76 src/locales.js:349
+#: src/page/admin.vue:76 src/locales.js:348
 msgid "Activity"
 msgstr "Hoạt động"
 
@@ -255,10 +255,6 @@ msgstr "Quản trị viên"
 #: src/page/settings.vue:85
 msgid "Advanced"
 msgstr "Trình độ cao"
-
-#: src/locales.js:363
-msgid "Advertise URL"
-msgstr "URL quảng cáo"
 
 #: src/options/options.js:378
 msgid "After 1 day"
@@ -495,7 +491,7 @@ msgstr "Nghệ sĩ"
 msgid "Aspect Ratio"
 msgstr "Tỷ lệ khung hình"
 
-#: src/locales.js:339
+#: src/locales.js:338
 msgid "Attributes"
 msgstr "Thuộc tính"
 
@@ -513,7 +509,7 @@ msgstr "Âm thanh"
 
 #: src/component/user/add/dialog.vue:107 src/component/user/edit/dialog.vue:183
 #: src/page/admin/sessions.vue:152 src/page/admin/sessions.vue:292
-#: src/page/admin/users.vue:270 src/locales.js:334
+#: src/page/admin/users.vue:270 src/locales.js:333
 msgid "Authentication"
 msgstr "Xác thực"
 
@@ -610,10 +606,6 @@ msgstr "Duyệt hình ảnh"
 #: src/page/about/feedback.vue:111 src/options/options.js:409
 msgid "Bug Report"
 msgstr "Báo cáo lỗi"
-
-#: src/locales.js:323
-msgid "Build"
-msgstr "Xây dựng"
 
 #: src/page/connect.vue:8 src/common/notify.js:119 src/page/connect.vue:13
 msgid "Busy, please wait…"
@@ -772,14 +764,6 @@ msgstr "Khách hàng"
 #: src/options/auth.js:25
 msgid "Client Credentials"
 msgstr "Thông tin xác thực của khách hàng"
-
-#: src/locales.js:364
-msgid "Client ID"
-msgstr "ID khách hàng"
-
-#: src/locales.js:365
-msgid "Client Secret"
-msgstr "Bí mật của khách hàng"
 
 #: src/component/user/edit/dialog.vue:311 src/page/admin/sessions.vue:224
 #: src/component/lightbox.vue:1211 src/component/lightbox.vue:1212
@@ -998,7 +982,7 @@ msgstr "lục lam"
 msgid "Daily"
 msgstr "Hằng ngày"
 
-#: src/locales.js:328
+#: src/locales.js:327
 msgid "Database"
 msgstr "Cơ sở dữ liệu"
 
@@ -1006,7 +990,7 @@ msgstr "Cơ sở dữ liệu"
 msgid "Database Backups"
 msgstr "Sao lưu cơ sở dữ liệu"
 
-#: src/locales.js:329
+#: src/locales.js:328
 msgid "Databases"
 msgstr "Cơ sở dữ liệu"
 
@@ -1243,7 +1227,7 @@ msgstr "Bộ lọc thu nhỏ"
 msgid "Drag and drop files here"
 msgstr "Kéo và thả tập tin vào đây"
 
-#: src/locales.js:345
+#: src/locales.js:344
 msgid "Driver"
 msgstr "Tài xế"
 
@@ -1318,7 +1302,7 @@ msgstr "Cho phép cài đặt trước bộ chuyển đổi RAW. Có thể làm 
 msgid "Enabling two-factor authentication means that you will need a randomly generated verification code to log in, so even if someone gains access to your password, they will not be able to access your account."
 msgstr "Kích hoạt xác thực hai yếu tố có nghĩa là bạn sẽ cần mã xác minh được tạo ngẫu nhiên để đăng nhập, vì vậy ngay cả khi ai đó có quyền truy cập vào mật khẩu của bạn, họ sẽ không thể truy cập vào tài khoản của bạn."
 
-#: src/locales.js:346
+#: src/locales.js:345
 msgid "Engine"
 msgstr "Động cơ"
 
@@ -1802,7 +1786,7 @@ msgstr "Thời gian không hợp lệ"
 msgid "Invalid URL"
 msgstr "URL không hợp lệ"
 
-#: src/page/admin/activity.vue:129 src/locales.js:351
+#: src/page/admin/activity.vue:126 src/locales.js:350
 msgid "IP Address"
 msgstr "Địa chỉ IP"
 
@@ -1849,7 +1833,7 @@ msgstr "Nhãn"
 #: src/component/photo/edit/dialog.vue:38
 #: src/component/photo/edit/dialog.vue:50
 #: src/component/photo/edit/dialog.vue:52
-#: src/component/photo/edit/dialog.vue:53 src/locales.js:326
+#: src/component/photo/edit/dialog.vue:53 src/locales.js:325
 #: src/options/options.js:210 src/page/settings/general.vue:140
 msgid "Labels"
 msgstr "Nhãn"
@@ -1870,7 +1854,7 @@ msgstr "Ngôn ngữ"
 msgid "Last Active"
 msgstr "Hoạt động lần cuối"
 
-#: src/page/admin/users.vue:276 src/locales.js:336
+#: src/page/admin/users.vue:276 src/locales.js:335
 msgid "Last Login"
 msgstr "Lân đăng nhập cuôi"
 
@@ -1981,7 +1965,7 @@ msgstr "Đang tải mục..."
 msgid "Loading..."
 msgstr "Đang tải..."
 
-#: src/options/admin.js:39 src/locales.js:342 src/options/auth.js:23
+#: src/options/admin.js:39 src/locales.js:341 src/options/auth.js:23
 #: src/options/auth.js:28 src/options/options.js:38
 #: src/page/settings/general.vue:55
 msgid "Local"
@@ -2088,7 +2072,7 @@ msgstr "Tư cách thành viên"
 msgid "Merge %{a} with %{b}?"
 msgstr "Hợp nhất %{a} với %{b}?"
 
-#: src/page/about/feedback.vue:51 src/page/admin/activity.vue:130
+#: src/page/about/feedback.vue:51 src/page/admin/activity.vue:127
 #: src/locales.js:352 src/page/about/feedback.vue:52
 msgid "Message"
 msgstr "Tin nhắn"
@@ -2627,7 +2611,7 @@ msgstr "Thủ tướng"
 msgid "PNG Size Limit: %{n}px"
 msgstr "Giới hạn kích thước PNG: %{n}px"
 
-#: src/locales.js:324
+#: src/locales.js:323
 msgid "Portal"
 msgstr "Cổng thông tin"
 
@@ -2826,15 +2810,15 @@ msgstr "Xóa khỏi album"
 msgid "Remove imported files to save storage. Unsupported file types will never be deleted, they remain in their current location."
 msgstr "Xóa các tập tin đã nhập để tiết kiệm dung lượng. Các loại tệp không được hỗ trợ sẽ không bao giờ bị xóa, chúng vẫn ở vị trí hiện tại."
 
-#: src/locales.js:366
+#: src/locales.js:362
 msgid "Remove the selected instance from the cluster registry?"
 msgstr "Xóa phiên bản đã chọn khỏi sổ đăng ký cụm?"
 
-#: src/locales.js:327
+#: src/locales.js:326
 msgid "Removed"
 msgstr "LOẠI BỎ"
 
-#: src/page/admin/activity.vue:132 src/locales.js:353
+#: src/page/admin/activity.vue:129 src/locales.js:353
 msgid "Repeated"
 msgstr "Lặp lại"
 
@@ -2890,15 +2874,15 @@ msgstr "Ôn tập"
 
 #: src/component/user/add/dialog.vue:93 src/component/user/edit/dialog.vue:166
 #: src/page/admin/sessions.vue:145 src/page/admin/users.vue:268
-#: src/locales.js:337
+#: src/locales.js:336
 msgid "Role"
 msgstr "Vai trò"
 
-#: src/locales.js:338
+#: src/locales.js:337
 msgid "Roles"
 msgstr "Vai trò"
 
-#: src/locales.js:347
+#: src/locales.js:346
 msgid "Rotated"
 msgstr "Đã xoay"
 
@@ -2962,11 +2946,11 @@ msgstr "Quét"
 
 #: src/page/admin/sessions.vue:179 src/page/admin/sessions.vue:293
 #: src/component/settings/apps.vue:150 src/component/settings/apps.vue:308
-#: src/locales.js:340
+#: src/locales.js:339
 msgid "Scope"
 msgstr "Phạm vi"
 
-#: src/locales.js:341
+#: src/locales.js:340
 msgid "Scopes"
 msgstr "Phạm vi"
 
@@ -3058,7 +3042,7 @@ msgstr "URL dịch vụ"
 msgid "Services"
 msgstr "Dịch vụ"
 
-#: src/locales.js:343 src/model/session.js:83 src/options/auth.js:42
+#: src/locales.js:342 src/model/session.js:83 src/options/auth.js:42
 #: src/options/auth.js:91
 msgid "Session"
 msgstr "Phiên họp"
@@ -3067,7 +3051,7 @@ msgstr "Phiên họp"
 msgid "Session ID"
 msgstr "ID phiên"
 
-#: src/page/admin.vue:65 src/locales.js:344
+#: src/page/admin.vue:65 src/locales.js:343
 msgid "Sessions"
 msgstr "Phiên"
 
@@ -3099,8 +3083,8 @@ msgstr "Đã lưu cài đặt"
 msgid "Setup"
 msgstr "Cài đặt"
 
-#: src/page/admin/activity.vue:128 src/page/admin/activity.vue:36
-#: src/locales.js:348
+#: src/page/admin/activity.vue:125 src/page/admin/activity.vue:36
+#: src/locales.js:347
 msgid "Severity"
 msgstr "Mức độ nghiêm trọng"
 
@@ -3167,7 +3151,7 @@ msgstr "Đăng nhập"
 msgid "Similar"
 msgstr "Tương tự"
 
-#: src/locales.js:362
+#: src/locales.js:351
 msgid "Site URL"
 msgstr "URL trang web"
 
@@ -3386,7 +3370,7 @@ msgstr "Chỉ mục hiện chứa %{n} tệp ẩn."
 msgid "Their format may not be supported, they haven't been converted to JPEG yet or there are duplicates."
 msgstr "Định dạng của chúng có thể không được hỗ trợ, chúng chưa được chuyển đổi sang JPEG hoặc có bản sao."
 
-#: src/locales.js:325 src/page/settings/general.vue:25
+#: src/locales.js:324 src/page/settings/general.vue:25
 msgid "Theme"
 msgstr "chủ đề"
 
@@ -3405,7 +3389,7 @@ msgstr "Thao tác này sẽ gắn thư mục gốc dưới dạng ổ đĩa mạ
 msgid "This mounts the originals folder as a network drive and allows you to open, edit, and delete files from your computer or smartphone as if they were local. "
 msgstr "Thao tác này sẽ gắn thư mục gốc dưới dạng ổ đĩa mạng và cho phép bạn mở, chỉnh sửa và xóa các tệp khỏi máy tính hoặc điện thoại thông minh của bạn như thể chúng là cục bộ."
 
-#: src/page/admin/activity.vue:127 src/locales.js:350
+#: src/page/admin/activity.vue:124 src/locales.js:349
 msgid "Time"
 msgstr "Thời gian"
 
@@ -3657,7 +3641,7 @@ msgid "Use your recovery code or contact an administrator for help."
 msgstr "Sử dụng mã khôi phục của bạn hoặc liên hệ với quản trị viên để được trợ giúp."
 
 #: src/options/admin.js:14 src/page/admin/sessions.vue:138
-#: src/page/admin/sessions.vue:291 src/locales.js:330 src/model/user.js:365
+#: src/page/admin/sessions.vue:291 src/locales.js:329 src/model/user.js:365
 #: src/options/auth.js:8
 msgid "User"
 msgstr "Người dùng"
@@ -3681,7 +3665,7 @@ msgstr "tên tài khoản"
 #: src/component/navigation.vue:425 src/component/navigation.vue:431
 #: src/component/navigation.vue:446 src/component/navigation.vue:677
 #: src/component/navigation.vue:685 src/component/navigation.vue:693
-#: src/locales.js:331
+#: src/locales.js:330
 msgid "Users"
 msgstr "Người dùng"
 
@@ -3763,7 +3747,7 @@ msgid "We do our best to respond within five business days or less."
 msgstr "Chúng tôi cố gắng hết sức để phản hồi trong vòng năm ngày làm việc hoặc ít hơn."
 
 #: src/component/user/add/dialog.vue:141 src/component/user/edit/dialog.vue:280
-#: src/page/admin/users.vue:275 src/locales.js:335
+#: src/page/admin/users.vue:275 src/locales.js:334
 msgid "Web Login"
 msgstr "Đăng nhập web"
 
@@ -3913,6 +3897,18 @@ msgstr "Tiêu đề"
 msgctxt "Verb"
 msgid "Archive"
 msgstr "Lưu trữ"
+
+#~ msgid "Advertise URL"
+#~ msgstr "URL quảng cáo"
+
+#~ msgid "Build"
+#~ msgstr "Xây dựng"
+
+#~ msgid "Client ID"
+#~ msgstr "ID khách hàng"
+
+#~ msgid "Client Secret"
+#~ msgstr "Bí mật của khách hàng"
 
 #~ msgid "Continue with %{provider}"
 #~ msgstr "Tiếp tục với %{provider}"

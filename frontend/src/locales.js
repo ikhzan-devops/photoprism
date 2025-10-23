@@ -320,7 +320,6 @@ export const ExtraMessages = () => {
   $gettext("Username");
   $gettext("Display Name");
   $gettext("Version");
-  $gettext("Build");
   $gettext("Portal");
   $gettext("Theme");
   $gettext("Labels");
@@ -349,6 +348,7 @@ export const ExtraMessages = () => {
   $gettext("Activity");
   $gettext("Time");
   $gettext("IP Address");
+  $gettext("Site URL");
   $gettext("Message");
   $gettext("Repeated");
   $gettext("Application");
@@ -359,9 +359,5 @@ export const ExtraMessages = () => {
   $gettext("Services");
   $gettext("Instance");
   $gettext("Instances");
-  $gettext("Site URL");
-  $gettext("Advertise URL");
-  $gettext("Client ID");
-  $gettext("Client Secret");
   $gettext("Remove the selected instance from the cluster registry?");
 };

@@ -126,7 +126,7 @@ msgid "Access Token"
 msgstr "Přístupový token"
 
 #: src/component/navigation.vue:1067 src/component/navigation.vue:868
-#: src/component/service/upload.vue:24 src/locales.js:332
+#: src/component/service/upload.vue:24 src/locales.js:331
 #: src/model/service.js:72 src/model/user.js:151 src/page/settings.vue:111
 #: src/page/settings/general.vue:348
 msgid "Account"
@@ -144,7 +144,7 @@ msgstr "Účet vymazán"
 msgid "Account restored"
 msgstr "Obnovení účtu"
 
-#: src/page/admin.vue:54 src/locales.js:333
+#: src/page/admin.vue:54 src/locales.js:332
 msgid "Accounts"
 msgstr "Účty"
 
@@ -190,7 +190,7 @@ msgstr "Aktivací seřadíte sestupně."
 msgid "Activation Code"
 msgstr "Aktivační kód"
 
-#: src/page/admin.vue:76 src/locales.js:349
+#: src/page/admin.vue:76 src/locales.js:348
 msgid "Activity"
 msgstr "Aktivita"
 
@@ -258,10 +258,6 @@ msgstr "Admin"
 #: src/page/settings.vue:85
 msgid "Advanced"
 msgstr "Pokročilé"
-
-#: src/locales.js:363
-msgid "Advertise URL"
-msgstr "Inzerovat adresu URL"
 
 #: src/options/options.js:378
 msgid "After 1 day"
@@ -498,7 +494,7 @@ msgstr "Umělec"
 msgid "Aspect Ratio"
 msgstr "Poměr stran"
 
-#: src/locales.js:339
+#: src/locales.js:338
 msgid "Attributes"
 msgstr "Atributy"
 
@@ -516,7 +512,7 @@ msgstr "Audio"
 
 #: src/component/user/add/dialog.vue:107 src/component/user/edit/dialog.vue:183
 #: src/page/admin/sessions.vue:152 src/page/admin/sessions.vue:292
-#: src/page/admin/users.vue:270 src/locales.js:334
+#: src/page/admin/users.vue:270 src/locales.js:333
 msgid "Authentication"
 msgstr "Ověřování"
 
@@ -613,10 +609,6 @@ msgstr "Procházet obrázky"
 #: src/page/about/feedback.vue:111 src/options/options.js:409
 msgid "Bug Report"
 msgstr "Nahlásit chybu"
-
-#: src/locales.js:323
-msgid "Build"
-msgstr "Sestavte"
 
 #: src/page/connect.vue:8 src/common/notify.js:119 src/page/connect.vue:13
 msgid "Busy, please wait…"
@@ -775,14 +767,6 @@ msgstr "Klient"
 #: src/options/auth.js:25
 msgid "Client Credentials"
 msgstr "Pověření klienta"
-
-#: src/locales.js:364
-msgid "Client ID"
-msgstr "ID klienta"
-
-#: src/locales.js:365
-msgid "Client Secret"
-msgstr "Tajemství klienta"
 
 #: src/component/user/edit/dialog.vue:311 src/page/admin/sessions.vue:224
 #: src/component/lightbox.vue:1211 src/component/lightbox.vue:1212
@@ -1001,7 +985,7 @@ msgstr "Tyrkysová"
 msgid "Daily"
 msgstr "Denně"
 
-#: src/locales.js:328
+#: src/locales.js:327
 msgid "Database"
 msgstr "Databáze"
 
@@ -1009,7 +993,7 @@ msgstr "Databáze"
 msgid "Database Backups"
 msgstr "Zálohování databáze"
 
-#: src/locales.js:329
+#: src/locales.js:328
 msgid "Databases"
 msgstr "Databáze"
 
@@ -1246,7 +1230,7 @@ msgstr "Filtr pro snížení měřítka"
 msgid "Drag and drop files here"
 msgstr "Přetáhněte sem soubory"
 
-#: src/locales.js:345
+#: src/locales.js:344
 msgid "Driver"
 msgstr "Řidič"
 
@@ -1321,7 +1305,7 @@ msgstr "Povolí předvolby konvertoru RAW. Může snížit výkon."
 msgid "Enabling two-factor authentication means that you will need a randomly generated verification code to log in, so even if someone gains access to your password, they will not be able to access your account."
 msgstr "Povolení dvoufaktorové autentizace znamená, že k přihlášení budete potřebovat libovolně vygenerovaný kód, takže i když někdo získá přístup k vašemu heslu, nebude mít přístup k vašemu účtu."
 
-#: src/locales.js:346
+#: src/locales.js:345
 msgid "Engine"
 msgstr "Motor"
 
@@ -1805,7 +1789,7 @@ msgstr "Neplatný čas"
 msgid "Invalid URL"
 msgstr "Neplatná adresa URL"
 
-#: src/page/admin/activity.vue:129 src/locales.js:351
+#: src/page/admin/activity.vue:126 src/locales.js:350
 msgid "IP Address"
 msgstr "IP adresa"
 
@@ -1852,7 +1836,7 @@ msgstr "Štítek"
 #: src/component/photo/edit/dialog.vue:38
 #: src/component/photo/edit/dialog.vue:50
 #: src/component/photo/edit/dialog.vue:52
-#: src/component/photo/edit/dialog.vue:53 src/locales.js:326
+#: src/component/photo/edit/dialog.vue:53 src/locales.js:325
 #: src/options/options.js:210 src/page/settings/general.vue:140
 msgid "Labels"
 msgstr "Štítky"
@@ -1873,7 +1857,7 @@ msgstr "Jazyk"
 msgid "Last Active"
 msgstr "Poslední aktivní"
 
-#: src/page/admin/users.vue:276 src/locales.js:336
+#: src/page/admin/users.vue:276 src/locales.js:335
 msgid "Last Login"
 msgstr "Poslední přihlášení"
 
@@ -1984,7 +1968,7 @@ msgstr "Načítání položek..."
 msgid "Loading..."
 msgstr "Načítání..."
 
-#: src/options/admin.js:39 src/locales.js:342 src/options/auth.js:23
+#: src/options/admin.js:39 src/locales.js:341 src/options/auth.js:23
 #: src/options/auth.js:28 src/options/options.js:38
 #: src/page/settings/general.vue:55
 msgid "Local"
@@ -2091,7 +2075,7 @@ msgstr "Členství"
 msgid "Merge %{a} with %{b}?"
 msgstr "Sloučit %{a} s %{b}?"
 
-#: src/page/about/feedback.vue:51 src/page/admin/activity.vue:130
+#: src/page/about/feedback.vue:51 src/page/admin/activity.vue:127
 #: src/locales.js:352 src/page/about/feedback.vue:52
 msgid "Message"
 msgstr "Zpráva"
@@ -2630,7 +2614,7 @@ msgstr "PM"
 msgid "PNG Size Limit: %{n}px"
 msgstr "PNG limit velikosti: %{n}px"
 
-#: src/locales.js:324
+#: src/locales.js:323
 msgid "Portal"
 msgstr "Portál"
 
@@ -2829,15 +2813,15 @@ msgstr "Odebrat z alba"
 msgid "Remove imported files to save storage. Unsupported file types will never be deleted, they remain in their current location."
 msgstr "Odstranit importované soubory pro ušetření úložného prostoru. Nepodporované typy souborů odstraněny nikdy nebudou, zůstanou ve svém aktuálním umístění."
 
-#: src/locales.js:366
+#: src/locales.js:362
 msgid "Remove the selected instance from the cluster registry?"
 msgstr "Odebrat vybranou instanci z registru clusteru?"
 
-#: src/locales.js:327
+#: src/locales.js:326
 msgid "Removed"
 msgstr "Odstraněno"
 
-#: src/page/admin/activity.vue:132 src/locales.js:353
+#: src/page/admin/activity.vue:129 src/locales.js:353
 msgid "Repeated"
 msgstr "Opakované"
 
@@ -2893,15 +2877,15 @@ msgstr "Kontrola"
 
 #: src/component/user/add/dialog.vue:93 src/component/user/edit/dialog.vue:166
 #: src/page/admin/sessions.vue:145 src/page/admin/users.vue:268
-#: src/locales.js:337
+#: src/locales.js:336
 msgid "Role"
 msgstr "Role"
 
-#: src/locales.js:338
+#: src/locales.js:337
 msgid "Roles"
 msgstr "Role"
 
-#: src/locales.js:347
+#: src/locales.js:346
 msgid "Rotated"
 msgstr "Otočené"
 
@@ -2965,11 +2949,11 @@ msgstr "Skeny"
 
 #: src/page/admin/sessions.vue:179 src/page/admin/sessions.vue:293
 #: src/component/settings/apps.vue:150 src/component/settings/apps.vue:308
-#: src/locales.js:340
+#: src/locales.js:339
 msgid "Scope"
 msgstr "Oblast působnosti"
 
-#: src/locales.js:341
+#: src/locales.js:340
 msgid "Scopes"
 msgstr "Rozsahy"
 
@@ -3061,7 +3045,7 @@ msgstr "URL služby"
 msgid "Services"
 msgstr "Služby"
 
-#: src/locales.js:343 src/model/session.js:83 src/options/auth.js:42
+#: src/locales.js:342 src/model/session.js:83 src/options/auth.js:42
 #: src/options/auth.js:91
 msgid "Session"
 msgstr "Relace"
@@ -3070,7 +3054,7 @@ msgstr "Relace"
 msgid "Session ID"
 msgstr "ID relace"
 
-#: src/page/admin.vue:65 src/locales.js:344
+#: src/page/admin.vue:65 src/locales.js:343
 msgid "Sessions"
 msgstr "Relace"
 
@@ -3102,8 +3086,8 @@ msgstr "Nastavení uloženo"
 msgid "Setup"
 msgstr "Prvotní nastavení"
 
-#: src/page/admin/activity.vue:128 src/page/admin/activity.vue:36
-#: src/locales.js:348
+#: src/page/admin/activity.vue:125 src/page/admin/activity.vue:36
+#: src/locales.js:347
 msgid "Severity"
 msgstr "Závažnost"
 
@@ -3170,7 +3154,7 @@ msgstr "Přihlásit se"
 msgid "Similar"
 msgstr "Podobné"
 
-#: src/locales.js:362
+#: src/locales.js:351
 msgid "Site URL"
 msgstr "Adresa URL webu"
 
@@ -3389,7 +3373,7 @@ msgstr "Index aktuálně obsahuje %{n} skrytých souborů."
 msgid "Their format may not be supported, they haven't been converted to JPEG yet or there are duplicates."
 msgstr "Jejich formát nemusí být podporován, nebyly dosud převedeny do JPEG nebo existují duplikáty."
 
-#: src/locales.js:325 src/page/settings/general.vue:25
+#: src/locales.js:324 src/page/settings/general.vue:25
 msgid "Theme"
 msgstr "Téma"
 
@@ -3408,7 +3392,7 @@ msgstr "Toto nastaví složku originálů jako síťový disk a umožní vám ot
 msgid "This mounts the originals folder as a network drive and allows you to open, edit, and delete files from your computer or smartphone as if they were local. "
 msgstr "Toto nastaví složku originálů jako síťový disk a umožní vám otevírat, upravovat a mazat soubory prostřednictvím vašeho počítače nebo telefonu jako by byly lokálně."
 
-#: src/page/admin/activity.vue:127 src/locales.js:350
+#: src/page/admin/activity.vue:124 src/locales.js:349
 msgid "Time"
 msgstr "Čas"
 
@@ -3660,7 +3644,7 @@ msgid "Use your recovery code or contact an administrator for help."
 msgstr "Použijte kód pro obnovení nebo se obraťte na správce."
 
 #: src/options/admin.js:14 src/page/admin/sessions.vue:138
-#: src/page/admin/sessions.vue:291 src/locales.js:330 src/model/user.js:365
+#: src/page/admin/sessions.vue:291 src/locales.js:329 src/model/user.js:365
 #: src/options/auth.js:8
 msgid "User"
 msgstr "Uživatel"
@@ -3684,7 +3668,7 @@ msgstr "Uživatelské jméno"
 #: src/component/navigation.vue:425 src/component/navigation.vue:431
 #: src/component/navigation.vue:446 src/component/navigation.vue:677
 #: src/component/navigation.vue:685 src/component/navigation.vue:693
-#: src/locales.js:331
+#: src/locales.js:330
 msgid "Users"
 msgstr "Uživatelé"
 
@@ -3766,7 +3750,7 @@ msgid "We do our best to respond within five business days or less."
 msgstr "Snažíme se odpovědět do pěti pracovních dnů nebo později."
 
 #: src/component/user/add/dialog.vue:141 src/component/user/edit/dialog.vue:280
-#: src/page/admin/users.vue:275 src/locales.js:335
+#: src/page/admin/users.vue:275 src/locales.js:334
 msgid "Web Login"
 msgstr "Webové přihlášení"
 
@@ -3914,6 +3898,18 @@ msgstr "Titulek"
 msgctxt "Verb"
 msgid "Archive"
 msgstr "Archivovat"
+
+#~ msgid "Advertise URL"
+#~ msgstr "Inzerovat adresu URL"
+
+#~ msgid "Build"
+#~ msgstr "Sestavte"
+
+#~ msgid "Client ID"
+#~ msgstr "ID klienta"
+
+#~ msgid "Client Secret"
+#~ msgstr "Tajemství klienta"
 
 #~ msgid "Continue with %{provider}"
 #~ msgstr "Pokračovat pomocí %{provider}"

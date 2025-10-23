@@ -126,7 +126,7 @@ msgid "Access Token"
 msgstr "访问令牌"
 
 #: src/component/navigation.vue:1067 src/component/navigation.vue:868
-#: src/component/service/upload.vue:24 src/locales.js:332
+#: src/component/service/upload.vue:24 src/locales.js:331
 #: src/model/service.js:72 src/model/user.js:151 src/page/settings.vue:111
 #: src/page/settings/general.vue:348
 msgid "Account"
@@ -144,7 +144,7 @@ msgstr "账户已删除"
 msgid "Account restored"
 msgstr "账户已恢复"
 
-#: src/page/admin.vue:54 src/locales.js:333
+#: src/page/admin.vue:54 src/locales.js:332
 msgid "Accounts"
 msgstr "账户"
 
@@ -190,7 +190,7 @@ msgstr "激活以降序排序。"
 msgid "Activation Code"
 msgstr "激活码"
 
-#: src/page/admin.vue:76 src/locales.js:349
+#: src/page/admin.vue:76 src/locales.js:348
 msgid "Activity"
 msgstr "活动"
 
@@ -258,10 +258,6 @@ msgstr "管理员"
 #: src/page/settings.vue:85
 msgid "Advanced"
 msgstr "高级"
-
-#: src/locales.js:363
-msgid "Advertise URL"
-msgstr "广告 URL"
 
 #: src/options/options.js:378
 msgid "After 1 day"
@@ -498,7 +494,7 @@ msgstr "艺术家"
 msgid "Aspect Ratio"
 msgstr "长宽比"
 
-#: src/locales.js:339
+#: src/locales.js:338
 msgid "Attributes"
 msgstr "属性"
 
@@ -516,7 +512,7 @@ msgstr "音频"
 
 #: src/component/user/add/dialog.vue:107 src/component/user/edit/dialog.vue:183
 #: src/page/admin/sessions.vue:152 src/page/admin/sessions.vue:292
-#: src/page/admin/users.vue:270 src/locales.js:334
+#: src/page/admin/users.vue:270 src/locales.js:333
 msgid "Authentication"
 msgstr "认证"
 
@@ -613,10 +609,6 @@ msgstr "浏览图片"
 #: src/page/about/feedback.vue:111 src/options/options.js:409
 msgid "Bug Report"
 msgstr "上报问题"
-
-#: src/locales.js:323
-msgid "Build"
-msgstr "建设"
 
 #: src/page/connect.vue:8 src/common/notify.js:119 src/page/connect.vue:13
 msgid "Busy, please wait…"
@@ -775,14 +767,6 @@ msgstr "客户"
 #: src/options/auth.js:25
 msgid "Client Credentials"
 msgstr "客户证书"
-
-#: src/locales.js:364
-msgid "Client ID"
-msgstr "客户 ID"
-
-#: src/locales.js:365
-msgid "Client Secret"
-msgstr "客户秘密"
 
 #: src/component/user/edit/dialog.vue:311 src/page/admin/sessions.vue:224
 #: src/component/lightbox.vue:1211 src/component/lightbox.vue:1212
@@ -1001,7 +985,7 @@ msgstr "青"
 msgid "Daily"
 msgstr "每日"
 
-#: src/locales.js:328
+#: src/locales.js:327
 msgid "Database"
 msgstr "数据库"
 
@@ -1009,7 +993,7 @@ msgstr "数据库"
 msgid "Database Backups"
 msgstr "数据库备份"
 
-#: src/locales.js:329
+#: src/locales.js:328
 msgid "Databases"
 msgstr "数据库"
 
@@ -1246,7 +1230,7 @@ msgstr "缩小方法"
 msgid "Drag and drop files here"
 msgstr "在此处拖放文件"
 
-#: src/locales.js:345
+#: src/locales.js:344
 msgid "Driver"
 msgstr "司机"
 
@@ -1321,7 +1305,7 @@ msgstr "启用 RAW 转换器预设，可能会降低性能。"
 msgid "Enabling two-factor authentication means that you will need a randomly generated verification code to log in, so even if someone gains access to your password, they will not be able to access your account."
 msgstr "启用双重身份验证意味着您需要随机生成的验证码才能登录，因此即使有人获得了您的密码，他们也无法访问您的帐户。"
 
-#: src/locales.js:346
+#: src/locales.js:345
 msgid "Engine"
 msgstr "发动机"
 
@@ -1805,7 +1789,7 @@ msgstr "无效时间"
 msgid "Invalid URL"
 msgstr "无效 URL"
 
-#: src/page/admin/activity.vue:129 src/locales.js:351
+#: src/page/admin/activity.vue:126 src/locales.js:350
 msgid "IP Address"
 msgstr "IP 地址"
 
@@ -1852,7 +1836,7 @@ msgstr "标签"
 #: src/component/photo/edit/dialog.vue:38
 #: src/component/photo/edit/dialog.vue:50
 #: src/component/photo/edit/dialog.vue:52
-#: src/component/photo/edit/dialog.vue:53 src/locales.js:326
+#: src/component/photo/edit/dialog.vue:53 src/locales.js:325
 #: src/options/options.js:210 src/page/settings/general.vue:140
 msgid "Labels"
 msgstr "标签"
@@ -1873,7 +1857,7 @@ msgstr "语言"
 msgid "Last Active"
 msgstr "最后一次活动"
 
-#: src/page/admin/users.vue:276 src/locales.js:336
+#: src/page/admin/users.vue:276 src/locales.js:335
 msgid "Last Login"
 msgstr "最后一次登录"
 
@@ -1984,7 +1968,7 @@ msgstr "正在加载项目..."
 msgid "Loading..."
 msgstr "正在加载..."
 
-#: src/options/admin.js:39 src/locales.js:342 src/options/auth.js:23
+#: src/options/admin.js:39 src/locales.js:341 src/options/auth.js:23
 #: src/options/auth.js:28 src/options/options.js:38
 #: src/page/settings/general.vue:55
 msgid "Local"
@@ -2091,7 +2075,7 @@ msgstr "会员资格"
 msgid "Merge %{a} with %{b}?"
 msgstr "将 %{a} 与 %{b} 合并？"
 
-#: src/page/about/feedback.vue:51 src/page/admin/activity.vue:130
+#: src/page/about/feedback.vue:51 src/page/admin/activity.vue:127
 #: src/locales.js:352 src/page/about/feedback.vue:52
 msgid "Message"
 msgstr "留言"
@@ -2631,7 +2615,7 @@ msgstr "下午"
 msgid "PNG Size Limit: %{n}px"
 msgstr "PNG 尺寸限制：%{n}px"
 
-#: src/locales.js:324
+#: src/locales.js:323
 msgid "Portal"
 msgstr "门户网站"
 
@@ -2831,15 +2815,15 @@ msgstr "从相册中移除"
 msgid "Remove imported files to save storage. Unsupported file types will never be deleted, they remain in their current location."
 msgstr "移除导入的文件以节省存储空间，不支持的文件类型将永远不会被删除，它们会保留在它们当前的位置。"
 
-#: src/locales.js:366
+#: src/locales.js:362
 msgid "Remove the selected instance from the cluster registry?"
 msgstr "从群集注册表中删除所选实例？"
 
-#: src/locales.js:327
+#: src/locales.js:326
 msgid "Removed"
 msgstr "已删除"
 
-#: src/page/admin/activity.vue:132 src/locales.js:353
+#: src/page/admin/activity.vue:129 src/locales.js:353
 msgid "Repeated"
 msgstr "重复"
 
@@ -2895,15 +2879,15 @@ msgstr "审查"
 
 #: src/component/user/add/dialog.vue:93 src/component/user/edit/dialog.vue:166
 #: src/page/admin/sessions.vue:145 src/page/admin/users.vue:268
-#: src/locales.js:337
+#: src/locales.js:336
 msgid "Role"
 msgstr "角色"
 
-#: src/locales.js:338
+#: src/locales.js:337
 msgid "Roles"
 msgstr "角色"
 
-#: src/locales.js:347
+#: src/locales.js:346
 msgid "Rotated"
 msgstr "旋转"
 
@@ -2967,11 +2951,11 @@ msgstr "扫描"
 
 #: src/page/admin/sessions.vue:179 src/page/admin/sessions.vue:293
 #: src/component/settings/apps.vue:150 src/component/settings/apps.vue:308
-#: src/locales.js:340
+#: src/locales.js:339
 msgid "Scope"
 msgstr "范围"
 
-#: src/locales.js:341
+#: src/locales.js:340
 msgid "Scopes"
 msgstr "瞄准镜"
 
@@ -3063,7 +3047,7 @@ msgstr "服务 URL"
 msgid "Services"
 msgstr "服务"
 
-#: src/locales.js:343 src/model/session.js:83 src/options/auth.js:42
+#: src/locales.js:342 src/model/session.js:83 src/options/auth.js:42
 #: src/options/auth.js:91
 msgid "Session"
 msgstr "会议"
@@ -3072,7 +3056,7 @@ msgstr "会议"
 msgid "Session ID"
 msgstr "会议ID"
 
-#: src/page/admin.vue:65 src/locales.js:344
+#: src/page/admin.vue:65 src/locales.js:343
 msgid "Sessions"
 msgstr "会议"
 
@@ -3104,8 +3088,8 @@ msgstr "设置已保存"
 msgid "Setup"
 msgstr "设置"
 
-#: src/page/admin/activity.vue:128 src/page/admin/activity.vue:36
-#: src/locales.js:348
+#: src/page/admin/activity.vue:125 src/page/admin/activity.vue:36
+#: src/locales.js:347
 msgid "Severity"
 msgstr "严重性"
 
@@ -3172,7 +3156,7 @@ msgstr "登录"
 msgid "Similar"
 msgstr "相似"
 
-#: src/locales.js:362
+#: src/locales.js:351
 msgid "Site URL"
 msgstr "网站 URL"
 
@@ -3391,7 +3375,7 @@ msgstr "该索引当前包含 %{n} 个隐藏文件。"
 msgid "Their format may not be supported, they haven't been converted to JPEG yet or there are duplicates."
 msgstr "它们的格式可能不受支持，它们尚未转换为 JPEG 或存在重复项。"
 
-#: src/locales.js:325 src/page/settings/general.vue:25
+#: src/locales.js:324 src/page/settings/general.vue:25
 msgid "Theme"
 msgstr "主题"
 
@@ -3410,7 +3394,7 @@ msgstr "这会将源文件夹安装为网络驱动器，并允许您从计算机
 msgid "This mounts the originals folder as a network drive and allows you to open, edit, and delete files from your computer or smartphone as if they were local. "
 msgstr "这会将源文件夹安装为网络驱动器，并允许您从计算机或智能手机中打开，编辑和删除文件，就像它们是本地文件一样。"
 
-#: src/page/admin/activity.vue:127 src/locales.js:350
+#: src/page/admin/activity.vue:124 src/locales.js:349
 msgid "Time"
 msgstr "时间"
 
@@ -3662,7 +3646,7 @@ msgid "Use your recovery code or contact an administrator for help."
 msgstr "使用恢复密码或联系管理员寻求帮助。"
 
 #: src/options/admin.js:14 src/page/admin/sessions.vue:138
-#: src/page/admin/sessions.vue:291 src/locales.js:330 src/model/user.js:365
+#: src/page/admin/sessions.vue:291 src/locales.js:329 src/model/user.js:365
 #: src/options/auth.js:8
 msgid "User"
 msgstr "用户"
@@ -3686,7 +3670,7 @@ msgstr "用户名"
 #: src/component/navigation.vue:425 src/component/navigation.vue:431
 #: src/component/navigation.vue:446 src/component/navigation.vue:677
 #: src/component/navigation.vue:685 src/component/navigation.vue:693
-#: src/locales.js:331
+#: src/locales.js:330
 msgid "Users"
 msgstr "用户"
 
@@ -3768,7 +3752,7 @@ msgid "We do our best to respond within five business days or less."
 msgstr "我们尽力在五个工作日或更短时间内作出回应。"
 
 #: src/component/user/add/dialog.vue:141 src/component/user/edit/dialog.vue:280
-#: src/page/admin/users.vue:275 src/locales.js:335
+#: src/page/admin/users.vue:275 src/locales.js:334
 msgid "Web Login"
 msgstr "网络登录"
 
@@ -3916,6 +3900,18 @@ msgstr "标题"
 msgctxt "Verb"
 msgid "Archive"
 msgstr "归档"
+
+#~ msgid "Advertise URL"
+#~ msgstr "广告 URL"
+
+#~ msgid "Build"
+#~ msgstr "建设"
+
+#~ msgid "Client ID"
+#~ msgstr "客户 ID"
+
+#~ msgid "Client Secret"
+#~ msgstr "客户秘密"
 
 #~ msgid "Continue with %{provider}"
 #~ msgstr "继续 %{provider}"

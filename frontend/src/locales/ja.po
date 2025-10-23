@@ -126,7 +126,7 @@ msgid "Access Token"
 msgstr "アクセストークン"
 
 #: src/component/navigation.vue:1067 src/component/navigation.vue:868
-#: src/component/service/upload.vue:24 src/locales.js:332
+#: src/component/service/upload.vue:24 src/locales.js:331
 #: src/model/service.js:72 src/model/user.js:151 src/page/settings.vue:111
 #: src/page/settings/general.vue:348
 msgid "Account"
@@ -144,7 +144,7 @@ msgstr "アカウントが削除されました"
 msgid "Account restored"
 msgstr "アカウントが復元されました"
 
-#: src/page/admin.vue:54 src/locales.js:333
+#: src/page/admin.vue:54 src/locales.js:332
 msgid "Accounts"
 msgstr "アカウント"
 
@@ -190,7 +190,7 @@ msgstr "降順に並び替える。"
 msgid "Activation Code"
 msgstr "アクティベーションコード"
 
-#: src/page/admin.vue:76 src/locales.js:349
+#: src/page/admin.vue:76 src/locales.js:348
 msgid "Activity"
 msgstr "アクティビティ"
 
@@ -258,10 +258,6 @@ msgstr "管理者"
 #: src/page/settings.vue:85
 msgid "Advanced"
 msgstr "高度"
-
-#: src/locales.js:363
-msgid "Advertise URL"
-msgstr "広告URL"
 
 #: src/options/options.js:378
 msgid "After 1 day"
@@ -498,7 +494,7 @@ msgstr "アーティスト"
 msgid "Aspect Ratio"
 msgstr "アスペクト比"
 
-#: src/locales.js:339
+#: src/locales.js:338
 msgid "Attributes"
 msgstr "属性"
 
@@ -516,7 +512,7 @@ msgstr "オーディオ"
 
 #: src/component/user/add/dialog.vue:107 src/component/user/edit/dialog.vue:183
 #: src/page/admin/sessions.vue:152 src/page/admin/sessions.vue:292
-#: src/page/admin/users.vue:270 src/locales.js:334
+#: src/page/admin/users.vue:270 src/locales.js:333
 msgid "Authentication"
 msgstr "認証"
 
@@ -613,10 +609,6 @@ msgstr "写真を見る"
 #: src/page/about/feedback.vue:111 src/options/options.js:409
 msgid "Bug Report"
 msgstr "バグ報告"
-
-#: src/locales.js:323
-msgid "Build"
-msgstr "ビルド"
 
 #: src/page/connect.vue:8 src/common/notify.js:119 src/page/connect.vue:13
 msgid "Busy, please wait…"
@@ -775,14 +767,6 @@ msgstr "クライアント"
 #: src/options/auth.js:25
 msgid "Client Credentials"
 msgstr "クライアント資格情報"
-
-#: src/locales.js:364
-msgid "Client ID"
-msgstr "クライアントID"
-
-#: src/locales.js:365
-msgid "Client Secret"
-msgstr "クライアントの秘密"
 
 #: src/component/user/edit/dialog.vue:311 src/page/admin/sessions.vue:224
 #: src/component/lightbox.vue:1211 src/component/lightbox.vue:1212
@@ -1001,7 +985,7 @@ msgstr "シアン"
 msgid "Daily"
 msgstr "毎日"
 
-#: src/locales.js:328
+#: src/locales.js:327
 msgid "Database"
 msgstr "データベース"
 
@@ -1009,7 +993,7 @@ msgstr "データベース"
 msgid "Database Backups"
 msgstr "データベースのバックアップ"
 
-#: src/locales.js:329
+#: src/locales.js:328
 msgid "Databases"
 msgstr "データベース"
 
@@ -1246,7 +1230,7 @@ msgstr "ダウンスケーリングフィルター"
 msgid "Drag and drop files here"
 msgstr "ここにファイルをドラッグ＆ドロップしてください"
 
-#: src/locales.js:345
+#: src/locales.js:344
 msgid "Driver"
 msgstr "ドライバー"
 
@@ -1321,7 +1305,7 @@ msgstr "RAW 現像機のプリセットを有効にします。パフォーマ�
 msgid "Enabling two-factor authentication means that you will need a randomly generated verification code to log in, so even if someone gains access to your password, they will not be able to access your account."
 msgstr "2要素認証を有効にすると、ログイン時にランダムに生成された確認コードが必要になるため、誰かがパスワードを使っても、アカウントにアクセスできなくなります。"
 
-#: src/locales.js:346
+#: src/locales.js:345
 msgid "Engine"
 msgstr "エンジン"
 
@@ -1805,7 +1789,7 @@ msgstr "無効な時間"
 msgid "Invalid URL"
 msgstr "無効なURL"
 
-#: src/page/admin/activity.vue:129 src/locales.js:351
+#: src/page/admin/activity.vue:126 src/locales.js:350
 msgid "IP Address"
 msgstr "IPアドレス"
 
@@ -1852,7 +1836,7 @@ msgstr "ラベル"
 #: src/component/photo/edit/dialog.vue:38
 #: src/component/photo/edit/dialog.vue:50
 #: src/component/photo/edit/dialog.vue:52
-#: src/component/photo/edit/dialog.vue:53 src/locales.js:326
+#: src/component/photo/edit/dialog.vue:53 src/locales.js:325
 #: src/options/options.js:210 src/page/settings/general.vue:140
 msgid "Labels"
 msgstr "ラベル"
@@ -1873,7 +1857,7 @@ msgstr "言語"
 msgid "Last Active"
 msgstr "最終アクティブ"
 
-#: src/page/admin/users.vue:276 src/locales.js:336
+#: src/page/admin/users.vue:276 src/locales.js:335
 msgid "Last Login"
 msgstr "最終ログイン"
 
@@ -1984,7 +1968,7 @@ msgstr "項目を読み込んでいます..."
 msgid "Loading..."
 msgstr "読み込み中..."
 
-#: src/options/admin.js:39 src/locales.js:342 src/options/auth.js:23
+#: src/options/admin.js:39 src/locales.js:341 src/options/auth.js:23
 #: src/options/auth.js:28 src/options/options.js:38
 #: src/page/settings/general.vue:55
 msgid "Local"
@@ -2091,7 +2075,7 @@ msgstr "メンバーシップ"
 msgid "Merge %{a} with %{b}?"
 msgstr "%{a} を %{b} に統合しますか？"
 
-#: src/page/about/feedback.vue:51 src/page/admin/activity.vue:130
+#: src/page/about/feedback.vue:51 src/page/admin/activity.vue:127
 #: src/locales.js:352 src/page/about/feedback.vue:52
 msgid "Message"
 msgstr "メッセージ"
@@ -2630,7 +2614,7 @@ msgstr "PM"
 msgid "PNG Size Limit: %{n}px"
 msgstr "PNG サイズ制限: %{n} px"
 
-#: src/locales.js:324
+#: src/locales.js:323
 msgid "Portal"
 msgstr "ポータル"
 
@@ -2829,15 +2813,15 @@ msgstr "アルバムから削除"
 msgid "Remove imported files to save storage. Unsupported file types will never be deleted, they remain in their current location."
 msgstr "インポートされたファイルを削除してストレージを節約します。対応していない形式のファイルは削除されることなく、現在の場所に残ります。"
 
-#: src/locales.js:366
+#: src/locales.js:362
 msgid "Remove the selected instance from the cluster registry?"
 msgstr "選択したインスタンスをクラスタ・レジストリから削除するか？"
 
-#: src/locales.js:327
+#: src/locales.js:326
 msgid "Removed"
 msgstr "削除"
 
-#: src/page/admin/activity.vue:132 src/locales.js:353
+#: src/page/admin/activity.vue:129 src/locales.js:353
 msgid "Repeated"
 msgstr "繰り返し"
 
@@ -2893,15 +2877,15 @@ msgstr "レビュー"
 
 #: src/component/user/add/dialog.vue:93 src/component/user/edit/dialog.vue:166
 #: src/page/admin/sessions.vue:145 src/page/admin/users.vue:268
-#: src/locales.js:337
+#: src/locales.js:336
 msgid "Role"
 msgstr "役割"
 
-#: src/locales.js:338
+#: src/locales.js:337
 msgid "Roles"
 msgstr "役割"
 
-#: src/locales.js:347
+#: src/locales.js:346
 msgid "Rotated"
 msgstr "回転"
 
@@ -2965,11 +2949,11 @@ msgstr "スキャン"
 
 #: src/page/admin/sessions.vue:179 src/page/admin/sessions.vue:293
 #: src/component/settings/apps.vue:150 src/component/settings/apps.vue:308
-#: src/locales.js:340
+#: src/locales.js:339
 msgid "Scope"
 msgstr "スコープ"
 
-#: src/locales.js:341
+#: src/locales.js:340
 msgid "Scopes"
 msgstr "スコープ"
 
@@ -3061,7 +3045,7 @@ msgstr "サービス URL"
 msgid "Services"
 msgstr "サービス"
 
-#: src/locales.js:343 src/model/session.js:83 src/options/auth.js:42
+#: src/locales.js:342 src/model/session.js:83 src/options/auth.js:42
 #: src/options/auth.js:91
 msgid "Session"
 msgstr "セッション"
@@ -3070,7 +3054,7 @@ msgstr "セッション"
 msgid "Session ID"
 msgstr "セッション ID"
 
-#: src/page/admin.vue:65 src/locales.js:344
+#: src/page/admin.vue:65 src/locales.js:343
 msgid "Sessions"
 msgstr "セッション"
 
@@ -3102,8 +3086,8 @@ msgstr "設定が保存されました"
 msgid "Setup"
 msgstr "セットアップ"
 
-#: src/page/admin/activity.vue:128 src/page/admin/activity.vue:36
-#: src/locales.js:348
+#: src/page/admin/activity.vue:125 src/page/admin/activity.vue:36
+#: src/locales.js:347
 msgid "Severity"
 msgstr "重大性"
 
@@ -3170,7 +3154,7 @@ msgstr "サインイン"
 msgid "Similar"
 msgstr "似ている項目"
 
-#: src/locales.js:362
+#: src/locales.js:351
 msgid "Site URL"
 msgstr "サイトURL"
 
@@ -3389,7 +3373,7 @@ msgstr "インデックスには現在 %{n} 件の隠しファイルがありま
 msgid "Their format may not be supported, they haven't been converted to JPEG yet or there are duplicates."
 msgstr "それらの形式がサポートされていないか、まだ JPEG に変換されていないか、重複している可能性があります。"
 
-#: src/locales.js:325 src/page/settings/general.vue:25
+#: src/locales.js:324 src/page/settings/general.vue:25
 msgid "Theme"
 msgstr "テーマ"
 
@@ -3408,7 +3392,7 @@ msgstr "オリジナルフォルダをネットワークドライブとしてマ
 msgid "This mounts the originals folder as a network drive and allows you to open, edit, and delete files from your computer or smartphone as if they were local. "
 msgstr "オリジナルフォルダをネットワークドライブとしてマウントし、あなたのコンピュータまたはスマートフォンからまるでローカルのようにファイルを開き、編集、削除できるようにします。"
 
-#: src/page/admin/activity.vue:127 src/locales.js:350
+#: src/page/admin/activity.vue:124 src/locales.js:349
 msgid "Time"
 msgstr "時間"
 
@@ -3660,7 +3644,7 @@ msgid "Use your recovery code or contact an administrator for help."
 msgstr "リカバリーコードを使用するか、管理者に問い合わせてください。"
 
 #: src/options/admin.js:14 src/page/admin/sessions.vue:138
-#: src/page/admin/sessions.vue:291 src/locales.js:330 src/model/user.js:365
+#: src/page/admin/sessions.vue:291 src/locales.js:329 src/model/user.js:365
 #: src/options/auth.js:8
 msgid "User"
 msgstr "ユーザー"
@@ -3684,7 +3668,7 @@ msgstr "ユーザー名"
 #: src/component/navigation.vue:425 src/component/navigation.vue:431
 #: src/component/navigation.vue:446 src/component/navigation.vue:677
 #: src/component/navigation.vue:685 src/component/navigation.vue:693
-#: src/locales.js:331
+#: src/locales.js:330
 msgid "Users"
 msgstr "ユーザー"
 
@@ -3766,7 +3750,7 @@ msgid "We do our best to respond within five business days or less."
 msgstr "5営業日以内に対応できるよう、最善を尽くします。"
 
 #: src/component/user/add/dialog.vue:141 src/component/user/edit/dialog.vue:280
-#: src/page/admin/users.vue:275 src/locales.js:335
+#: src/page/admin/users.vue:275 src/locales.js:334
 msgid "Web Login"
 msgstr "ウェブログイン"
 
@@ -3914,6 +3898,18 @@ msgstr "タイトル"
 msgctxt "Verb"
 msgid "Archive"
 msgstr "アーカイブ"
+
+#~ msgid "Advertise URL"
+#~ msgstr "広告URL"
+
+#~ msgid "Build"
+#~ msgstr "ビルド"
+
+#~ msgid "Client ID"
+#~ msgstr "クライアントID"
+
+#~ msgid "Client Secret"
+#~ msgstr "クライアントの秘密"
 
 #~ msgid "Continue with %{provider}"
 #~ msgstr "プロバイダー %{provider} で続行"

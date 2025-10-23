@@ -126,7 +126,7 @@ msgid "Access Token"
 msgstr "Токен за достъп"
 
 #: src/component/navigation.vue:1067 src/component/navigation.vue:868
-#: src/component/service/upload.vue:24 src/locales.js:332
+#: src/component/service/upload.vue:24 src/locales.js:331
 #: src/model/service.js:72 src/model/user.js:151 src/page/settings.vue:111
 #: src/page/settings/general.vue:348
 msgid "Account"
@@ -144,7 +144,7 @@ msgstr "Изтрит акаунт"
 msgid "Account restored"
 msgstr "Възстановена сметка"
 
-#: src/page/admin.vue:54 src/locales.js:333
+#: src/page/admin.vue:54 src/locales.js:332
 msgid "Accounts"
 msgstr "Сметки"
 
@@ -190,7 +190,7 @@ msgstr "Активирайте, за да сортирате в низходящ
 msgid "Activation Code"
 msgstr "Код за активиране"
 
-#: src/page/admin.vue:76 src/locales.js:349
+#: src/page/admin.vue:76 src/locales.js:348
 msgid "Activity"
 msgstr "Дейност"
 
@@ -258,10 +258,6 @@ msgstr "Администратор"
 #: src/page/settings.vue:85
 msgid "Advanced"
 msgstr "Разширени"
-
-#: src/locales.js:363
-msgid "Advertise URL"
-msgstr "Рекламиране на URL"
 
 #: src/options/options.js:378
 msgid "After 1 day"
@@ -498,7 +494,7 @@ msgstr "Художник"
 msgid "Aspect Ratio"
 msgstr "Съотношение"
 
-#: src/locales.js:339
+#: src/locales.js:338
 msgid "Attributes"
 msgstr "Атрибути"
 
@@ -516,7 +512,7 @@ msgstr "Аудио"
 
 #: src/component/user/add/dialog.vue:107 src/component/user/edit/dialog.vue:183
 #: src/page/admin/sessions.vue:152 src/page/admin/sessions.vue:292
-#: src/page/admin/users.vue:270 src/locales.js:334
+#: src/page/admin/users.vue:270 src/locales.js:333
 msgid "Authentication"
 msgstr "Удостоверяване"
 
@@ -613,10 +609,6 @@ msgstr "Преглед на снимки"
 #: src/page/about/feedback.vue:111 src/options/options.js:409
 msgid "Bug Report"
 msgstr "Доклад за грешка"
-
-#: src/locales.js:323
-msgid "Build"
-msgstr "Изграждане на"
 
 #: src/page/connect.vue:8 src/common/notify.js:119 src/page/connect.vue:13
 msgid "Busy, please wait…"
@@ -775,14 +767,6 @@ msgstr "Клиент"
 #: src/options/auth.js:25
 msgid "Client Credentials"
 msgstr "Удостоверения на клиента"
-
-#: src/locales.js:364
-msgid "Client ID"
-msgstr "Идентификатор на клиента"
-
-#: src/locales.js:365
-msgid "Client Secret"
-msgstr "Тайна на клиента"
 
 #: src/component/user/edit/dialog.vue:311 src/page/admin/sessions.vue:224
 #: src/component/lightbox.vue:1211 src/component/lightbox.vue:1212
@@ -1001,7 +985,7 @@ msgstr "Cyan"
 msgid "Daily"
 msgstr "Daily"
 
-#: src/locales.js:328
+#: src/locales.js:327
 msgid "Database"
 msgstr "База данни"
 
@@ -1009,7 +993,7 @@ msgstr "База данни"
 msgid "Database Backups"
 msgstr "Резервни копия на бази данни"
 
-#: src/locales.js:329
+#: src/locales.js:328
 msgid "Databases"
 msgstr "Бази данни"
 
@@ -1246,7 +1230,7 @@ msgstr "Филтър за намаляване на мащаба"
 msgid "Drag and drop files here"
 msgstr "Влачете и пуснете файлове тук"
 
-#: src/locales.js:345
+#: src/locales.js:344
 msgid "Driver"
 msgstr "Шофьор"
 
@@ -1321,7 +1305,7 @@ msgstr "Активира предварителните настройки на 
 msgid "Enabling two-factor authentication means that you will need a randomly generated verification code to log in, so even if someone gains access to your password, they will not be able to access your account."
 msgstr "Активирането на двуфакторно удостоверяване означава, че ще ви трябва произволно генериран код за потвърждение, за да влезете, така че дори ако някой получи достъп до вашата парола, той няма да може да влезе в акаунта ви."
 
-#: src/locales.js:346
+#: src/locales.js:345
 msgid "Engine"
 msgstr "Двигател"
 
@@ -1805,7 +1789,7 @@ msgstr "Невалидно време"
 msgid "Invalid URL"
 msgstr "Невалиден URL адрес"
 
-#: src/page/admin/activity.vue:129 src/locales.js:351
+#: src/page/admin/activity.vue:126 src/locales.js:350
 msgid "IP Address"
 msgstr "IP адрес"
 
@@ -1852,7 +1836,7 @@ msgstr "Етикет"
 #: src/component/photo/edit/dialog.vue:38
 #: src/component/photo/edit/dialog.vue:50
 #: src/component/photo/edit/dialog.vue:52
-#: src/component/photo/edit/dialog.vue:53 src/locales.js:326
+#: src/component/photo/edit/dialog.vue:53 src/locales.js:325
 #: src/options/options.js:210 src/page/settings/general.vue:140
 msgid "Labels"
 msgstr "Етикети"
@@ -1873,7 +1857,7 @@ msgstr "Език"
 msgid "Last Active"
 msgstr "Последен активен"
 
-#: src/page/admin/users.vue:276 src/locales.js:336
+#: src/page/admin/users.vue:276 src/locales.js:335
 msgid "Last Login"
 msgstr "Последно влизане"
 
@@ -1984,7 +1968,7 @@ msgstr "Зареждане на елементи..."
 msgid "Loading..."
 msgstr "Зареждане..."
 
-#: src/options/admin.js:39 src/locales.js:342 src/options/auth.js:23
+#: src/options/admin.js:39 src/locales.js:341 src/options/auth.js:23
 #: src/options/auth.js:28 src/options/options.js:38
 #: src/page/settings/general.vue:55
 msgid "Local"
@@ -2091,7 +2075,7 @@ msgstr "Членство"
 msgid "Merge %{a} with %{b}?"
 msgstr "Сливане на %{a} с %{b}?"
 
-#: src/page/about/feedback.vue:51 src/page/admin/activity.vue:130
+#: src/page/about/feedback.vue:51 src/page/admin/activity.vue:127
 #: src/locales.js:352 src/page/about/feedback.vue:52
 msgid "Message"
 msgstr "Съобщение"
@@ -2630,7 +2614,7 @@ msgstr "PM"
 msgid "PNG Size Limit: %{n}px"
 msgstr "Ограничение на размера на PNG: %{n}px"
 
-#: src/locales.js:324
+#: src/locales.js:323
 msgid "Portal"
 msgstr "Портал"
 
@@ -2829,15 +2813,15 @@ msgstr "Премахване от албума"
 msgid "Remove imported files to save storage. Unsupported file types will never be deleted, they remain in their current location."
 msgstr "Премахване на импортирани файлове, за да се спести място за съхранение. Неподдържаните типове файлове никога не се изтриват, те остават в текущото си местоположение."
 
-#: src/locales.js:366
+#: src/locales.js:362
 msgid "Remove the selected instance from the cluster registry?"
 msgstr "Премахване на избрания екземпляр от регистъра на клъстера?"
 
-#: src/locales.js:327
+#: src/locales.js:326
 msgid "Removed"
 msgstr "Премахнати"
 
-#: src/page/admin/activity.vue:132 src/locales.js:353
+#: src/page/admin/activity.vue:129 src/locales.js:353
 msgid "Repeated"
 msgstr "Повтарящи се"
 
@@ -2893,15 +2877,15 @@ msgstr "Преглед на"
 
 #: src/component/user/add/dialog.vue:93 src/component/user/edit/dialog.vue:166
 #: src/page/admin/sessions.vue:145 src/page/admin/users.vue:268
-#: src/locales.js:337
+#: src/locales.js:336
 msgid "Role"
 msgstr "Роля"
 
-#: src/locales.js:338
+#: src/locales.js:337
 msgid "Roles"
 msgstr "Роли"
 
-#: src/locales.js:347
+#: src/locales.js:346
 msgid "Rotated"
 msgstr "Завъртян"
 
@@ -2965,11 +2949,11 @@ msgstr "Сканиране"
 
 #: src/page/admin/sessions.vue:179 src/page/admin/sessions.vue:293
 #: src/component/settings/apps.vue:150 src/component/settings/apps.vue:308
-#: src/locales.js:340
+#: src/locales.js:339
 msgid "Scope"
 msgstr "Обхват"
 
-#: src/locales.js:341
+#: src/locales.js:340
 msgid "Scopes"
 msgstr "Обхват"
 
@@ -3061,7 +3045,7 @@ msgstr "URL адрес на услугата"
 msgid "Services"
 msgstr "URL адрес на услугата"
 
-#: src/locales.js:343 src/model/session.js:83 src/options/auth.js:42
+#: src/locales.js:342 src/model/session.js:83 src/options/auth.js:42
 #: src/options/auth.js:91
 msgid "Session"
 msgstr "Сесия"
@@ -3070,7 +3054,7 @@ msgstr "Сесия"
 msgid "Session ID"
 msgstr "Идентификатор на сесията"
 
-#: src/page/admin.vue:65 src/locales.js:344
+#: src/page/admin.vue:65 src/locales.js:343
 msgid "Sessions"
 msgstr "Сесии"
 
@@ -3102,8 +3086,8 @@ msgstr "Запазени настройки"
 msgid "Setup"
 msgstr "Настройка"
 
-#: src/page/admin/activity.vue:128 src/page/admin/activity.vue:36
-#: src/locales.js:348
+#: src/page/admin/activity.vue:125 src/page/admin/activity.vue:36
+#: src/locales.js:347
 msgid "Severity"
 msgstr "Тежест"
 
@@ -3170,7 +3154,7 @@ msgstr "Влезте"
 msgid "Similar"
 msgstr "Подобни"
 
-#: src/locales.js:362
+#: src/locales.js:351
 msgid "Site URL"
 msgstr "Адрес на сайта"
 
@@ -3389,7 +3373,7 @@ msgstr "Индексът в момента съдържа %{n} скрити фа
 msgid "Their format may not be supported, they haven't been converted to JPEG yet or there are duplicates."
 msgstr "Възможно е техният формат да не се поддържа, да не са били конвертирани в JPEG или да има дубликати."
 
-#: src/locales.js:325 src/page/settings/general.vue:25
+#: src/locales.js:324 src/page/settings/general.vue:25
 msgid "Theme"
 msgstr "Тема"
 
@@ -3408,7 +3392,7 @@ msgstr "Това монтира папката с оригинали като м
 msgid "This mounts the originals folder as a network drive and allows you to open, edit, and delete files from your computer or smartphone as if they were local. "
 msgstr "Това монтира папката с оригинали като мрежово устройство и ви позволява да отваряте, редактирате и изтривате файлове от компютъра или смартфона си, сякаш са локални."
 
-#: src/page/admin/activity.vue:127 src/locales.js:350
+#: src/page/admin/activity.vue:124 src/locales.js:349
 msgid "Time"
 msgstr "Време"
 
@@ -3660,7 +3644,7 @@ msgid "Use your recovery code or contact an administrator for help."
 msgstr "Използвайте кода си за възстановяване или се свържете с администратор за помощ."
 
 #: src/options/admin.js:14 src/page/admin/sessions.vue:138
-#: src/page/admin/sessions.vue:291 src/locales.js:330 src/model/user.js:365
+#: src/page/admin/sessions.vue:291 src/locales.js:329 src/model/user.js:365
 #: src/options/auth.js:8
 msgid "User"
 msgstr "Потребител"
@@ -3684,7 +3668,7 @@ msgstr "Потребителско име"
 #: src/component/navigation.vue:425 src/component/navigation.vue:431
 #: src/component/navigation.vue:446 src/component/navigation.vue:677
 #: src/component/navigation.vue:685 src/component/navigation.vue:693
-#: src/locales.js:331
+#: src/locales.js:330
 msgid "Users"
 msgstr "Потребители"
 
@@ -3766,7 +3750,7 @@ msgid "We do our best to respond within five business days or less."
 msgstr "Стараем се да отговаряме в рамките на пет работни дни или по-малко."
 
 #: src/component/user/add/dialog.vue:141 src/component/user/edit/dialog.vue:280
-#: src/page/admin/users.vue:275 src/locales.js:335
+#: src/page/admin/users.vue:275 src/locales.js:334
 msgid "Web Login"
 msgstr "Уеб вход"
 
@@ -3914,6 +3898,18 @@ msgstr "Заглавие"
 msgctxt "Verb"
 msgid "Archive"
 msgstr "Архив"
+
+#~ msgid "Advertise URL"
+#~ msgstr "Рекламиране на URL"
+
+#~ msgid "Build"
+#~ msgstr "Изграждане на"
+
+#~ msgid "Client ID"
+#~ msgstr "Идентификатор на клиента"
+
+#~ msgid "Client Secret"
+#~ msgstr "Тайна на клиента"
 
 #~ msgid "Continue with %{provider}"
 #~ msgstr "Продължете с %{provider}"
