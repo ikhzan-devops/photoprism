@@ -513,7 +513,6 @@ msgid "Audio"
 msgstr "Audio"
 
 #: src/model/logs.js:192
-#, fuzzy
 msgid "Audit Log"
 msgstr "Journal d'audit"
 
@@ -2934,7 +2933,6 @@ msgstr ""
 "emplacement actuel."
 
 #: src/page/admin/activity.vue:132
-#, fuzzy
 msgid "Repeated"
 msgstr "Répétition"
 
@@ -3188,7 +3186,6 @@ msgid "Setup"
 msgstr "Configurer"
 
 #: src/page/admin/activity.vue:128 src/page/admin/activity.vue:36
-#, fuzzy
 msgid "Severity"
 msgstr "Gravité"
 
@@ -3519,7 +3516,6 @@ msgid ""
 msgstr "Cela monte le dossier des originaux en tant que lecteur réseau et vous permet d'ouvrir, modifier et supprimer des fichiers de votre ordinateur ou smartphone comme s'ils étaient locaux. "
 
 #: src/page/admin/activity.vue:127
-#, fuzzy
 msgid "Time"
 msgstr "L'heure"
 
