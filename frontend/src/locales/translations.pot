@@ -272,8 +272,8 @@ msgstr ""
 #: src/component/file/clipboard.vue:44
 #: src/component/label/clipboard.vue:32
 #: src/component/people/clipboard.vue:42
+#: src/component/photo/album/dialog.vue:100
 #: src/component/photo/album/dialog.vue:15
-#: src/component/photo/album/dialog.vue:95
 #: src/component/photo/clipboard.vue:104
 msgid "Add to album"
 msgstr ""
@@ -661,7 +661,7 @@ msgstr ""
 #: src/component/photo/edit/files.vue:67
 #: src/component/photo/edit/files.vue:75
 #: src/component/photo/toolbar.vue:109
-#: src/component/upload/dialog.vue:120
+#: src/component/upload/dialog.vue:123
 #: src/component/upload/dialog.vue:75
 #: src/component/upload/dialog.vue:76
 #: src/component/upload/dialog.vue:87
@@ -764,7 +764,7 @@ msgstr ""
 #: src/component/label/edit/dialog.vue:53
 #: src/component/location/dialog.vue:119
 #: src/component/people/edit/dialog.vue:63
-#: src/component/photo/album/dialog.vue:56
+#: src/component/photo/album/dialog.vue:59
 #: src/component/service/add.vue:99
 #: src/component/service/edit.vue:242
 #: src/component/service/remove.vue:18
@@ -928,7 +928,7 @@ msgstr ""
 #: src/component/share/dialog.vue:81
 #: src/component/sidebar/info.vue:6
 #: src/component/update.vue:24
-#: src/component/upload/dialog.vue:117
+#: src/component/upload/dialog.vue:120
 #: src/locales.js:206
 #: src/page/library/errors.vue:137
 msgid "Close"
@@ -985,7 +985,7 @@ msgstr ""
 #: src/component/photo/album/dialog.vue:29
 #: src/component/photo/album/dialog.vue:30
 #: src/component/photo/album/dialog.vue:38
-#: src/component/photo/album/dialog.vue:59
+#: src/component/photo/album/dialog.vue:62
 #: src/component/settings/passcode.vue:112
 #: src/component/settings/passcode.vue:122
 #: src/component/settings/passcode.vue:74
@@ -1129,7 +1129,7 @@ msgstr ""
 msgid "Create Account"
 msgstr ""
 
-#: src/component/photo/album/dialog.vue:96
+#: src/component/photo/album/dialog.vue:101
 msgid "Create album"
 msgstr ""
 
@@ -2713,7 +2713,7 @@ msgstr ""
 #: src/component/photo/view/list.vue:217
 #: src/component/photo/view/list.vue:26
 #: src/component/photo/view/mosaic.vue:26
-#: src/component/upload/dialog.vue:106
+#: src/component/upload/dialog.vue:109
 msgid "Non-photographic and low-quality images require a review before they appear in search results."
 msgstr ""
 
@@ -3062,11 +3062,11 @@ msgstr ""
 msgid "Please copy the following randomly generated app password and keep it in a safe place, as you will not be able to see it again:"
 msgstr ""
 
-#: src/component/upload/dialog.vue:98
+#: src/component/upload/dialog.vue:101
 msgid "Please do not upload any private, unlawful or offensive pictures. "
 msgstr ""
 
-#: src/component/upload/dialog.vue:101
+#: src/component/upload/dialog.vue:104
 msgid "Please don't upload photos containing offensive content."
 msgstr ""
 
@@ -3109,8 +3109,8 @@ msgstr ""
 msgid "Preserve filenames"
 msgstr ""
 
-#: src/component/photo/album/dialog.vue:37
-#: src/component/upload/dialog.vue:69
+#: src/component/photo/album/dialog.vue:40
+#: src/component/upload/dialog.vue:72
 msgid "Press enter to create a new album."
 msgstr ""
 
@@ -3558,8 +3558,8 @@ msgstr ""
 msgid "Select dates"
 msgstr ""
 
-#: src/component/photo/album/dialog.vue:31
-#: src/component/upload/dialog.vue:63
+#: src/component/photo/album/dialog.vue:33
+#: src/component/upload/dialog.vue:65
 msgid "Select or create albums"
 msgstr ""
 
@@ -3776,7 +3776,7 @@ msgstr ""
 msgid "Some albums could not be copied"
 msgstr ""
 
-#: src/component/photo/album/dialog.vue:188
+#: src/component/photo/album/dialog.vue:193
 msgid "Some albums could not be created. Please edit the names and try again."
 msgstr ""
 
@@ -4074,7 +4074,7 @@ msgstr ""
 msgid "Token"
 msgstr ""
 
-#: src/component/upload/dialog.vue:352
+#: src/component/upload/dialog.vue:373
 msgid "Too many files selected"
 msgstr ""
 
@@ -4247,7 +4247,7 @@ msgstr ""
 #: src/component/service/upload.vue:37
 #: src/component/service/upload.vue:62
 #: src/component/service/upload.vue:69
-#: src/component/upload/dialog.vue:185
+#: src/component/upload/dialog.vue:190
 #: src/page/albums.vue:562
 #: src/page/labels.vue:352
 #: src/page/library/import.vue:69
@@ -4262,7 +4262,7 @@ msgid "Upload complete. Indexing…"
 msgstr ""
 
 #: src/component/upload/dialog.vue:38
-#: src/component/upload/dialog.vue:436
+#: src/component/upload/dialog.vue:457
 msgid "Upload failed"
 msgstr ""
 
@@ -4283,9 +4283,9 @@ msgstr ""
 msgid "Uploading %{n} of %{t}…"
 msgstr ""
 
-#: src/component/upload/dialog.vue:266
-#: src/component/upload/dialog.vue:274
-#: src/component/upload/dialog.vue:388
+#: src/component/upload/dialog.vue:285
+#: src/component/upload/dialog.vue:293
+#: src/component/upload/dialog.vue:409
 msgid "Uploading photos…"
 msgstr ""
 
@@ -4294,7 +4294,7 @@ msgstr ""
 msgid "Uploading…"
 msgstr ""
 
-#: src/component/upload/dialog.vue:102
+#: src/component/upload/dialog.vue:105
 msgid "Uploads that may contain such images will be rejected automatically."
 msgstr ""
 
@@ -4561,7 +4561,7 @@ msgstr ""
 msgid "You can search for a location or move the marker on the map to change the position:"
 msgstr ""
 
-#: src/component/upload/dialog.vue:97
+#: src/component/upload/dialog.vue:100
 msgid "You can upload up to %{n} files for test purposes."
 msgstr ""
 

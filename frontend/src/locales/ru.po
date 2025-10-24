@@ -234,8 +234,8 @@ msgstr "Добавьте картинки из результатов поиск
 
 #: src/component/album/clipboard.vue:65 src/component/file/clipboard.vue:44
 #: src/component/label/clipboard.vue:32 src/component/people/clipboard.vue:42
+#: src/component/photo/album/dialog.vue:100
 #: src/component/photo/album/dialog.vue:15
-#: src/component/photo/album/dialog.vue:95
 #: src/component/photo/clipboard.vue:104
 msgid "Add to album"
 msgstr "Добавить в альбом"
@@ -581,7 +581,7 @@ msgstr "Коричневый"
 
 #: src/component/photo/edit/files.vue:107 src/component/photo/edit/files.vue:67
 #: src/component/photo/edit/files.vue:75 src/component/photo/toolbar.vue:109
-#: src/component/upload/dialog.vue:120 src/component/upload/dialog.vue:75
+#: src/component/upload/dialog.vue:123 src/component/upload/dialog.vue:75
 #: src/component/upload/dialog.vue:76 src/component/upload/dialog.vue:87
 msgid "Browse"
 msgstr "Просмотреть"
@@ -660,7 +660,7 @@ msgstr "Нельзя выбрать больше элементов"
 #: src/component/label/delete/dialog.vue:16
 #: src/component/label/edit/dialog.vue:53 src/component/location/dialog.vue:119
 #: src/component/people/edit/dialog.vue:63
-#: src/component/photo/album/dialog.vue:56 src/component/service/add.vue:99
+#: src/component/photo/album/dialog.vue:59 src/component/service/add.vue:99
 #: src/component/service/edit.vue:242 src/component/service/remove.vue:18
 #: src/component/service/upload.vue:56 src/component/settings/apps.vue:172
 #: src/component/settings/passcode.vue:119
@@ -785,7 +785,7 @@ msgstr "Учетные данные клиента"
 #: src/component/share/dialog.vue:141 src/component/share/dialog.vue:72
 #: src/component/share/dialog.vue:73 src/component/share/dialog.vue:81
 #: src/component/sidebar/info.vue:6 src/component/update.vue:24
-#: src/component/upload/dialog.vue:117 src/locales.js:206
+#: src/component/upload/dialog.vue:120 src/locales.js:206
 #: src/page/library/errors.vue:137
 msgid "Close"
 msgstr "Закрыть"
@@ -833,7 +833,7 @@ msgstr "Уверенность"
 #: src/component/location/dialog.vue:81 src/component/photo/album/dialog.vue:29
 #: src/component/photo/album/dialog.vue:30
 #: src/component/photo/album/dialog.vue:38
-#: src/component/photo/album/dialog.vue:59
+#: src/component/photo/album/dialog.vue:62
 #: src/component/settings/passcode.vue:112
 #: src/component/settings/passcode.vue:122
 #: src/component/settings/passcode.vue:74
@@ -940,7 +940,7 @@ msgstr "Страна"
 msgid "Create Account"
 msgstr "Создать учетную запись"
 
-#: src/component/photo/album/dialog.vue:96
+#: src/component/photo/album/dialog.vue:101
 msgid "Create album"
 msgstr "Создать альбом"
 
@@ -2282,7 +2282,7 @@ msgstr "Узлы"
 
 #: src/component/photo/view/cards.vue:26 src/component/photo/view/list.vue:217
 #: src/component/photo/view/list.vue:26 src/component/photo/view/mosaic.vue:26
-#: src/component/upload/dialog.vue:106
+#: src/component/upload/dialog.vue:109
 msgid "Non-photographic and low-quality images require a review before they appear in search results."
 msgstr "Файлы, не являющиеся фотографиями, или изображения низкого качества нужно одобрить, чтобы они появились в результатах поиска."
 
@@ -2582,11 +2582,11 @@ msgstr "Пожалуйста, подтвердите ваш новый паро�
 msgid "Please copy the following randomly generated app password and keep it in a safe place, as you will not be able to see it again:"
 msgstr "Скопируйте следующий случайно сгенерированный пароль приложения и сохраните его в надежном месте, так как вы больше не сможете его увидеть:"
 
-#: src/component/upload/dialog.vue:98
+#: src/component/upload/dialog.vue:101
 msgid "Please do not upload any private, unlawful or offensive pictures. "
 msgstr "Пожалуйста, не загружайте частные, незаконные или оскорбительные фотографии."
 
-#: src/component/upload/dialog.vue:101
+#: src/component/upload/dialog.vue:104
 msgid "Please don't upload photos containing offensive content."
 msgstr "Пожалуйста, не загружайте фотографии, содержащие недопустимый контент."
 
@@ -2628,7 +2628,7 @@ msgstr "Портрет"
 msgid "Preserve filenames"
 msgstr "Сохранять имена файлов"
 
-#: src/component/photo/album/dialog.vue:37 src/component/upload/dialog.vue:69
+#: src/component/photo/album/dialog.vue:40 src/component/upload/dialog.vue:72
 msgid "Press enter to create a new album."
 msgstr "Нажмите enter, чтобы создать новый альбом."
 
@@ -2999,7 +2999,7 @@ msgstr "Выберите дату"
 msgid "Select dates"
 msgstr "Выберите даты"
 
-#: src/component/photo/album/dialog.vue:31 src/component/upload/dialog.vue:63
+#: src/component/photo/album/dialog.vue:33 src/component/upload/dialog.vue:65
 msgid "Select or create albums"
 msgstr "Выбирай или создавай альбомы"
 
@@ -3188,7 +3188,7 @@ msgstr "Обновление программного обеспечения"
 msgid "Some albums could not be copied"
 msgstr "Некоторые альбомы не удалось скопировать"
 
-#: src/component/photo/album/dialog.vue:188
+#: src/component/photo/album/dialog.vue:193
 msgid "Some albums could not be created. Please edit the names and try again."
 msgstr "Некоторые альбомы не удалось создать. Пожалуйста, отредактируй названия и попробуй снова."
 
@@ -3453,7 +3453,7 @@ msgstr "Переключить вид"
 msgid "Token"
 msgstr "Токен"
 
-#: src/component/upload/dialog.vue:352
+#: src/component/upload/dialog.vue:373
 msgid "Too many files selected"
 msgstr "Выбрано слишком много файлов"
 
@@ -3584,7 +3584,7 @@ msgstr "Обновить сейчас"
 #: src/component/photo/toolbar.vue:498 src/component/service/upload.vue:28
 #: src/component/service/upload.vue:29 src/component/service/upload.vue:37
 #: src/component/service/upload.vue:62 src/component/service/upload.vue:69
-#: src/component/upload/dialog.vue:185 src/page/albums.vue:562
+#: src/component/upload/dialog.vue:190 src/page/albums.vue:562
 #: src/page/labels.vue:352 src/page/library/import.vue:69
 #: src/page/library/import.vue:75 src/page/settings/general.vue:173
 #: src/page/settings/services.vue:184
@@ -3595,7 +3595,7 @@ msgstr "Загрузка"
 msgid "Upload complete. Indexing…"
 msgstr "Загрузка завершена. Индексирование…"
 
-#: src/component/upload/dialog.vue:38 src/component/upload/dialog.vue:436
+#: src/component/upload/dialog.vue:38 src/component/upload/dialog.vue:457
 msgid "Upload failed"
 msgstr "Загрузка не удалась"
 
@@ -3616,8 +3616,8 @@ msgstr "Загружайте WebDAV и делитесь ссылками с др
 msgid "Uploading %{n} of %{t}…"
 msgstr "Загрузка %{n} из %{t}…"
 
-#: src/component/upload/dialog.vue:266 src/component/upload/dialog.vue:274
-#: src/component/upload/dialog.vue:388
+#: src/component/upload/dialog.vue:285 src/component/upload/dialog.vue:293
+#: src/component/upload/dialog.vue:409
 msgid "Uploading photos…"
 msgstr "Загрузка фотографий…"
 
@@ -3625,7 +3625,7 @@ msgstr "Загрузка фотографий…"
 msgid "Uploading…"
 msgstr "Загрузка…"
 
-#: src/component/upload/dialog.vue:102
+#: src/component/upload/dialog.vue:105
 msgid "Uploads that may contain such images will be rejected automatically."
 msgstr "Загрузки, которые могут содержать такие изображение будут автоматически отменены."
 
@@ -3839,7 +3839,7 @@ msgstr "Вы можете загрузить только одну метку"
 msgid "You can search for a location or move the marker on the map to change the position:"
 msgstr "Ты можешь искать местоположение или перемещать маркер на карте, чтобы изменить положение:"
 
-#: src/component/upload/dialog.vue:97
+#: src/component/upload/dialog.vue:100
 msgid "You can upload up to %{n} files for test purposes."
 msgstr "Для тестирования можно загрузить до %{n} файлов."
 

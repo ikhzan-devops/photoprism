@@ -234,8 +234,8 @@ msgstr "Přidat obrázky z výsledků vyhledávání jejich výběrem."
 
 #: src/component/album/clipboard.vue:65 src/component/file/clipboard.vue:44
 #: src/component/label/clipboard.vue:32 src/component/people/clipboard.vue:42
+#: src/component/photo/album/dialog.vue:100
 #: src/component/photo/album/dialog.vue:15
-#: src/component/photo/album/dialog.vue:95
 #: src/component/photo/clipboard.vue:104
 msgid "Add to album"
 msgstr "Přidat do alba"
@@ -581,7 +581,7 @@ msgstr "Hnědá"
 
 #: src/component/photo/edit/files.vue:107 src/component/photo/edit/files.vue:67
 #: src/component/photo/edit/files.vue:75 src/component/photo/toolbar.vue:109
-#: src/component/upload/dialog.vue:120 src/component/upload/dialog.vue:75
+#: src/component/upload/dialog.vue:123 src/component/upload/dialog.vue:75
 #: src/component/upload/dialog.vue:76 src/component/upload/dialog.vue:87
 msgid "Browse"
 msgstr "Procházet"
@@ -660,7 +660,7 @@ msgstr "Není možné vybrat více položek"
 #: src/component/label/delete/dialog.vue:16
 #: src/component/label/edit/dialog.vue:53 src/component/location/dialog.vue:119
 #: src/component/people/edit/dialog.vue:63
-#: src/component/photo/album/dialog.vue:56 src/component/service/add.vue:99
+#: src/component/photo/album/dialog.vue:59 src/component/service/add.vue:99
 #: src/component/service/edit.vue:242 src/component/service/remove.vue:18
 #: src/component/service/upload.vue:56 src/component/settings/apps.vue:172
 #: src/component/settings/passcode.vue:119
@@ -785,7 +785,7 @@ msgstr "Pověření klienta"
 #: src/component/share/dialog.vue:141 src/component/share/dialog.vue:72
 #: src/component/share/dialog.vue:73 src/component/share/dialog.vue:81
 #: src/component/sidebar/info.vue:6 src/component/update.vue:24
-#: src/component/upload/dialog.vue:117 src/locales.js:206
+#: src/component/upload/dialog.vue:120 src/locales.js:206
 #: src/page/library/errors.vue:137
 msgid "Close"
 msgstr "Zavřít"
@@ -833,7 +833,7 @@ msgstr "Jistota"
 #: src/component/location/dialog.vue:81 src/component/photo/album/dialog.vue:29
 #: src/component/photo/album/dialog.vue:30
 #: src/component/photo/album/dialog.vue:38
-#: src/component/photo/album/dialog.vue:59
+#: src/component/photo/album/dialog.vue:62
 #: src/component/settings/passcode.vue:112
 #: src/component/settings/passcode.vue:122
 #: src/component/settings/passcode.vue:74
@@ -940,7 +940,7 @@ msgstr "Země"
 msgid "Create Account"
 msgstr "Vytvořit účet"
 
-#: src/component/photo/album/dialog.vue:96
+#: src/component/photo/album/dialog.vue:101
 msgid "Create album"
 msgstr "Vytvořit album"
 
@@ -2282,7 +2282,7 @@ msgstr "Uzly"
 
 #: src/component/photo/view/cards.vue:26 src/component/photo/view/list.vue:217
 #: src/component/photo/view/list.vue:26 src/component/photo/view/mosaic.vue:26
-#: src/component/upload/dialog.vue:106
+#: src/component/upload/dialog.vue:109
 msgid "Non-photographic and low-quality images require a review before they appear in search results."
 msgstr "Nefotografické obrázky a snímky nízké kvality vyžadují kontrolu, než se objeví ve výsledcích vyhledávání."
 
@@ -2582,11 +2582,11 @@ msgstr "Potvrďte prosím nové heslo."
 msgid "Please copy the following randomly generated app password and keep it in a safe place, as you will not be able to see it again:"
 msgstr "Zkopírujte prosím následující náhodně vygenerované heslo aplikace a uschovejte je na bezpečném místě, protože je již neuvidíte:"
 
-#: src/component/upload/dialog.vue:98
+#: src/component/upload/dialog.vue:101
 msgid "Please do not upload any private, unlawful or offensive pictures. "
 msgstr "Nevkládejte prosím žádné soukromé, nezákonné nebo urážlivé obrázky."
 
-#: src/component/upload/dialog.vue:101
+#: src/component/upload/dialog.vue:104
 msgid "Please don't upload photos containing offensive content."
 msgstr "Nenahrávejte prosím fotografie obsahující urážlivý obsah."
 
@@ -2628,7 +2628,7 @@ msgstr "Portrét"
 msgid "Preserve filenames"
 msgstr "Zachovat názvy souborů"
 
-#: src/component/photo/album/dialog.vue:37 src/component/upload/dialog.vue:69
+#: src/component/photo/album/dialog.vue:40 src/component/upload/dialog.vue:72
 msgid "Press enter to create a new album."
 msgstr "Stiskněte Enter pro vytvoření nového alba."
 
@@ -2999,7 +2999,7 @@ msgstr "Zvolte datum"
 msgid "Select dates"
 msgstr "Zvolte data"
 
-#: src/component/photo/album/dialog.vue:31 src/component/upload/dialog.vue:63
+#: src/component/photo/album/dialog.vue:33 src/component/upload/dialog.vue:65
 msgid "Select or create albums"
 msgstr "Výběr nebo vytvoření alb"
 
@@ -3188,7 +3188,7 @@ msgstr "Aktualizace softwaru"
 msgid "Some albums could not be copied"
 msgstr "Některá alba nebylo možné zkopírovat"
 
-#: src/component/photo/album/dialog.vue:188
+#: src/component/photo/album/dialog.vue:193
 msgid "Some albums could not be created. Please edit the names and try again."
 msgstr "Některá alba nebylo možné vytvořit. Upravte prosím názvy a zkuste to znovu."
 
@@ -3453,7 +3453,7 @@ msgstr "Přepnout zobrazení"
 msgid "Token"
 msgstr "Token"
 
-#: src/component/upload/dialog.vue:352
+#: src/component/upload/dialog.vue:373
 msgid "Too many files selected"
 msgstr "Příliš mnoho vybraných souborů"
 
@@ -3584,7 +3584,7 @@ msgstr "Upgradujte nyní"
 #: src/component/photo/toolbar.vue:498 src/component/service/upload.vue:28
 #: src/component/service/upload.vue:29 src/component/service/upload.vue:37
 #: src/component/service/upload.vue:62 src/component/service/upload.vue:69
-#: src/component/upload/dialog.vue:185 src/page/albums.vue:562
+#: src/component/upload/dialog.vue:190 src/page/albums.vue:562
 #: src/page/labels.vue:352 src/page/library/import.vue:69
 #: src/page/library/import.vue:75 src/page/settings/general.vue:173
 #: src/page/settings/services.vue:184
@@ -3595,7 +3595,7 @@ msgstr "Nahrát"
 msgid "Upload complete. Indexing…"
 msgstr "Nahrávání dokončeno. Indexování…"
 
-#: src/component/upload/dialog.vue:38 src/component/upload/dialog.vue:436
+#: src/component/upload/dialog.vue:38 src/component/upload/dialog.vue:457
 msgid "Upload failed"
 msgstr "Nahrávání selhalo"
 
@@ -3616,8 +3616,8 @@ msgstr "Nahrát do WebDAV a sdílet odkazy s přáteli."
 msgid "Uploading %{n} of %{t}…"
 msgstr "Nahrávání %{n} z %{t}…"
 
-#: src/component/upload/dialog.vue:266 src/component/upload/dialog.vue:274
-#: src/component/upload/dialog.vue:388
+#: src/component/upload/dialog.vue:285 src/component/upload/dialog.vue:293
+#: src/component/upload/dialog.vue:409
 msgid "Uploading photos…"
 msgstr "Nahrávání fotografií…"
 
@@ -3625,7 +3625,7 @@ msgstr "Nahrávání fotografií…"
 msgid "Uploading…"
 msgstr "Nahrávání…"
 
-#: src/component/upload/dialog.vue:102
+#: src/component/upload/dialog.vue:105
 msgid "Uploads that may contain such images will be rejected automatically."
 msgstr "Nahrávání obsahující takovéto snímky budou automaticky odmítnuta."
 
@@ -3839,7 +3839,7 @@ msgstr "Stáhnout lze pouze jeden štítek"
 msgid "You can search for a location or move the marker on the map to change the position:"
 msgstr "Můžete vyhledat místo nebo přesunout značku na mapě a změnit polohu:"
 
-#: src/component/upload/dialog.vue:97
+#: src/component/upload/dialog.vue:100
 msgid "You can upload up to %{n} files for test purposes."
 msgstr "Pro testovací účely můžete nahrát až %{n} souborů."
 

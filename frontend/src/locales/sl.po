@@ -231,8 +231,8 @@ msgstr "Dodajte slike iz rezultatov iskanja, z izbiranjem."
 
 #: src/component/album/clipboard.vue:65 src/component/file/clipboard.vue:44
 #: src/component/label/clipboard.vue:32 src/component/people/clipboard.vue:42
+#: src/component/photo/album/dialog.vue:100
 #: src/component/photo/album/dialog.vue:15
-#: src/component/photo/album/dialog.vue:95
 #: src/component/photo/clipboard.vue:104
 msgid "Add to album"
 msgstr "Dodaj v album"
@@ -578,7 +578,7 @@ msgstr "Rjava"
 
 #: src/component/photo/edit/files.vue:107 src/component/photo/edit/files.vue:67
 #: src/component/photo/edit/files.vue:75 src/component/photo/toolbar.vue:109
-#: src/component/upload/dialog.vue:120 src/component/upload/dialog.vue:75
+#: src/component/upload/dialog.vue:123 src/component/upload/dialog.vue:75
 #: src/component/upload/dialog.vue:76 src/component/upload/dialog.vue:87
 msgid "Browse"
 msgstr "Brskanje po"
@@ -657,7 +657,7 @@ msgstr "Ne morete izbrati več elementov"
 #: src/component/label/delete/dialog.vue:16
 #: src/component/label/edit/dialog.vue:53 src/component/location/dialog.vue:119
 #: src/component/people/edit/dialog.vue:63
-#: src/component/photo/album/dialog.vue:56 src/component/service/add.vue:99
+#: src/component/photo/album/dialog.vue:59 src/component/service/add.vue:99
 #: src/component/service/edit.vue:242 src/component/service/remove.vue:18
 #: src/component/service/upload.vue:56 src/component/settings/apps.vue:172
 #: src/component/settings/passcode.vue:119
@@ -782,7 +782,7 @@ msgstr "Pooblastila stranke"
 #: src/component/share/dialog.vue:141 src/component/share/dialog.vue:72
 #: src/component/share/dialog.vue:73 src/component/share/dialog.vue:81
 #: src/component/sidebar/info.vue:6 src/component/update.vue:24
-#: src/component/upload/dialog.vue:117 src/locales.js:206
+#: src/component/upload/dialog.vue:120 src/locales.js:206
 #: src/page/library/errors.vue:137
 msgid "Close"
 msgstr "Zapri"
@@ -830,7 +830,7 @@ msgstr "Zaupanje"
 #: src/component/location/dialog.vue:81 src/component/photo/album/dialog.vue:29
 #: src/component/photo/album/dialog.vue:30
 #: src/component/photo/album/dialog.vue:38
-#: src/component/photo/album/dialog.vue:59
+#: src/component/photo/album/dialog.vue:62
 #: src/component/settings/passcode.vue:112
 #: src/component/settings/passcode.vue:122
 #: src/component/settings/passcode.vue:74
@@ -937,7 +937,7 @@ msgstr "Država"
 msgid "Create Account"
 msgstr "Ustvarjanje računa"
 
-#: src/component/photo/album/dialog.vue:96
+#: src/component/photo/album/dialog.vue:101
 msgid "Create album"
 msgstr "Ustvari album"
 
@@ -2279,7 +2279,7 @@ msgstr "Vozlišča"
 
 #: src/component/photo/view/cards.vue:26 src/component/photo/view/list.vue:217
 #: src/component/photo/view/list.vue:26 src/component/photo/view/mosaic.vue:26
-#: src/component/upload/dialog.vue:106
+#: src/component/upload/dialog.vue:109
 msgid "Non-photographic and low-quality images require a review before they appear in search results."
 msgstr "Nefotografske slike in slike nizke kakovosti je treba pred prikazom v rezultatih iskanja pregledati."
 
@@ -2579,11 +2579,11 @@ msgstr "Potrdite novo geslo."
 msgid "Please copy the following randomly generated app password and keep it in a safe place, as you will not be able to see it again:"
 msgstr "Kopirajte naslednje naključno ustvarjeno geslo za aplikacijo in ga shranite na varno mesto, saj ga ne boste mogli več videti:"
 
-#: src/component/upload/dialog.vue:98
+#: src/component/upload/dialog.vue:101
 msgid "Please do not upload any private, unlawful or offensive pictures. "
 msgstr "Ne nalagajte zasebnih, nezakonitih ali žaljivih slik."
 
-#: src/component/upload/dialog.vue:101
+#: src/component/upload/dialog.vue:104
 msgid "Please don't upload photos containing offensive content."
 msgstr "Ne nalagajte fotografij z žaljivo vsebino."
 
@@ -2625,7 +2625,7 @@ msgstr "Portret"
 msgid "Preserve filenames"
 msgstr "Ohranjanje imen datotek"
 
-#: src/component/photo/album/dialog.vue:37 src/component/upload/dialog.vue:69
+#: src/component/photo/album/dialog.vue:40 src/component/upload/dialog.vue:72
 msgid "Press enter to create a new album."
 msgstr "Pritisnite enter, da ustvarite nov album."
 
@@ -2996,7 +2996,7 @@ msgstr "Izberite datum"
 msgid "Select dates"
 msgstr "Izberite datume"
 
-#: src/component/photo/album/dialog.vue:31 src/component/upload/dialog.vue:63
+#: src/component/photo/album/dialog.vue:33 src/component/upload/dialog.vue:65
 msgid "Select or create albums"
 msgstr "Izberite ali ustvarite albume"
 
@@ -3185,7 +3185,7 @@ msgstr "Posodobitev programske opreme"
 msgid "Some albums could not be copied"
 msgstr "Nekaterih albumov ni bilo mogoče kopirati"
 
-#: src/component/photo/album/dialog.vue:188
+#: src/component/photo/album/dialog.vue:193
 msgid "Some albums could not be created. Please edit the names and try again."
 msgstr "Nekaterih albumov ni bilo mogoče ustvariti. Uredite imena in poskusite znova."
 
@@ -3450,7 +3450,7 @@ msgstr "Toggle View"
 msgid "Token"
 msgstr "Žeton"
 
-#: src/component/upload/dialog.vue:352
+#: src/component/upload/dialog.vue:373
 msgid "Too many files selected"
 msgstr "Izbranih je preveč datotek"
 
@@ -3581,7 +3581,7 @@ msgstr "Nadgradite zdaj"
 #: src/component/photo/toolbar.vue:498 src/component/service/upload.vue:28
 #: src/component/service/upload.vue:29 src/component/service/upload.vue:37
 #: src/component/service/upload.vue:62 src/component/service/upload.vue:69
-#: src/component/upload/dialog.vue:185 src/page/albums.vue:562
+#: src/component/upload/dialog.vue:190 src/page/albums.vue:562
 #: src/page/labels.vue:352 src/page/library/import.vue:69
 #: src/page/library/import.vue:75 src/page/settings/general.vue:173
 #: src/page/settings/services.vue:184
@@ -3592,7 +3592,7 @@ msgstr "Naložite"
 msgid "Upload complete. Indexing…"
 msgstr "Nalaganje je končano. Indeksiranje…"
 
-#: src/component/upload/dialog.vue:38 src/component/upload/dialog.vue:436
+#: src/component/upload/dialog.vue:38 src/component/upload/dialog.vue:457
 msgid "Upload failed"
 msgstr "Nalaganje ni uspelo"
 
@@ -3613,8 +3613,8 @@ msgstr "Prenesite v WebDAV in delite povezave s prijatelji."
 msgid "Uploading %{n} of %{t}…"
 msgstr "Nalaganje %{n} od %{t}…"
 
-#: src/component/upload/dialog.vue:266 src/component/upload/dialog.vue:274
-#: src/component/upload/dialog.vue:388
+#: src/component/upload/dialog.vue:285 src/component/upload/dialog.vue:293
+#: src/component/upload/dialog.vue:409
 msgid "Uploading photos…"
 msgstr "Nalaganje fotografij…"
 
@@ -3622,7 +3622,7 @@ msgstr "Nalaganje fotografij…"
 msgid "Uploading…"
 msgstr "Polnjenje…"
 
-#: src/component/upload/dialog.vue:102
+#: src/component/upload/dialog.vue:105
 msgid "Uploads that may contain such images will be rejected automatically."
 msgstr "Prenosi, ki bi lahko vsebovali takšne slike, bodo samodejno zavrnjeni."
 
@@ -3836,7 +3836,7 @@ msgstr "Prenesete lahko samo eno nalepko"
 msgid "You can search for a location or move the marker on the map to change the position:"
 msgstr "Poiščete lahko lokacijo ali premaknete označevalnik na zemljevidu in spremenite položaj:"
 
-#: src/component/upload/dialog.vue:97
+#: src/component/upload/dialog.vue:100
 msgid "You can upload up to %{n} files for test purposes."
 msgstr "V testne namene lahko naložite do %{n} datotek."
 

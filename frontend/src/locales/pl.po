@@ -233,8 +233,8 @@ msgstr "Dodaj zdjęcia poprzez zaznaczenie ich w wynikach wyszukiwania."
 
 #: src/component/album/clipboard.vue:65 src/component/file/clipboard.vue:44
 #: src/component/label/clipboard.vue:32 src/component/people/clipboard.vue:42
+#: src/component/photo/album/dialog.vue:100
 #: src/component/photo/album/dialog.vue:15
-#: src/component/photo/album/dialog.vue:95
 #: src/component/photo/clipboard.vue:104
 msgid "Add to album"
 msgstr "Dodaj do albumu"
@@ -580,7 +580,7 @@ msgstr "Brązowy"
 
 #: src/component/photo/edit/files.vue:107 src/component/photo/edit/files.vue:67
 #: src/component/photo/edit/files.vue:75 src/component/photo/toolbar.vue:109
-#: src/component/upload/dialog.vue:120 src/component/upload/dialog.vue:75
+#: src/component/upload/dialog.vue:123 src/component/upload/dialog.vue:75
 #: src/component/upload/dialog.vue:76 src/component/upload/dialog.vue:87
 msgid "Browse"
 msgstr "Przeglądaj"
@@ -659,7 +659,7 @@ msgstr "Nie można zaznaczyć większej ilości elementów"
 #: src/component/label/delete/dialog.vue:16
 #: src/component/label/edit/dialog.vue:53 src/component/location/dialog.vue:119
 #: src/component/people/edit/dialog.vue:63
-#: src/component/photo/album/dialog.vue:56 src/component/service/add.vue:99
+#: src/component/photo/album/dialog.vue:59 src/component/service/add.vue:99
 #: src/component/service/edit.vue:242 src/component/service/remove.vue:18
 #: src/component/service/upload.vue:56 src/component/settings/apps.vue:172
 #: src/component/settings/passcode.vue:119
@@ -784,7 +784,7 @@ msgstr "Poświadczenia klienta"
 #: src/component/share/dialog.vue:141 src/component/share/dialog.vue:72
 #: src/component/share/dialog.vue:73 src/component/share/dialog.vue:81
 #: src/component/sidebar/info.vue:6 src/component/update.vue:24
-#: src/component/upload/dialog.vue:117 src/locales.js:206
+#: src/component/upload/dialog.vue:120 src/locales.js:206
 #: src/page/library/errors.vue:137
 msgid "Close"
 msgstr "Zamknij"
@@ -832,7 +832,7 @@ msgstr "Pewność"
 #: src/component/location/dialog.vue:81 src/component/photo/album/dialog.vue:29
 #: src/component/photo/album/dialog.vue:30
 #: src/component/photo/album/dialog.vue:38
-#: src/component/photo/album/dialog.vue:59
+#: src/component/photo/album/dialog.vue:62
 #: src/component/settings/passcode.vue:112
 #: src/component/settings/passcode.vue:122
 #: src/component/settings/passcode.vue:74
@@ -939,7 +939,7 @@ msgstr "Kraj"
 msgid "Create Account"
 msgstr "Utwórz konto"
 
-#: src/component/photo/album/dialog.vue:96
+#: src/component/photo/album/dialog.vue:101
 msgid "Create album"
 msgstr "Stwórz album"
 
@@ -2281,7 +2281,7 @@ msgstr "Węzły"
 
 #: src/component/photo/view/cards.vue:26 src/component/photo/view/list.vue:217
 #: src/component/photo/view/list.vue:26 src/component/photo/view/mosaic.vue:26
-#: src/component/upload/dialog.vue:106
+#: src/component/upload/dialog.vue:109
 msgid "Non-photographic and low-quality images require a review before they appear in search results."
 msgstr "Obrazy niebędące fotografiami lub posiadające niską jakość wymagają zatwierdzenia, zanim pojawią się w wynikach wyszukiwania."
 
@@ -2581,11 +2581,11 @@ msgstr "Potwierdź nowe hasło."
 msgid "Please copy the following randomly generated app password and keep it in a safe place, as you will not be able to see it again:"
 msgstr "Skopiuj następujące losowo wygenerowane hasło do aplikacji i przechowuj je w bezpiecznym miejscu, ponieważ nie będziesz mógł go ponownie zobaczyć:"
 
-#: src/component/upload/dialog.vue:98
+#: src/component/upload/dialog.vue:101
 msgid "Please do not upload any private, unlawful or offensive pictures. "
 msgstr "Prosimy o nieprzesyłanie żadnych prywatnych, niezgodnych z prawem lub obraźliwych zdjęć."
 
-#: src/component/upload/dialog.vue:101
+#: src/component/upload/dialog.vue:104
 msgid "Please don't upload photos containing offensive content."
 msgstr "Proszę nie przesyłać zdjęć zawierających nieprzyzwoite treści."
 
@@ -2627,7 +2627,7 @@ msgstr "Portret"
 msgid "Preserve filenames"
 msgstr "Zachowaj oryginalne nazwy plików"
 
-#: src/component/photo/album/dialog.vue:37 src/component/upload/dialog.vue:69
+#: src/component/photo/album/dialog.vue:40 src/component/upload/dialog.vue:72
 msgid "Press enter to create a new album."
 msgstr "Naciśnij enter by utworzyć nowy album."
 
@@ -2998,7 +2998,7 @@ msgstr "Wybierz datę"
 msgid "Select dates"
 msgstr "Wybierz daty"
 
-#: src/component/photo/album/dialog.vue:31 src/component/upload/dialog.vue:63
+#: src/component/photo/album/dialog.vue:33 src/component/upload/dialog.vue:65
 msgid "Select or create albums"
 msgstr "Wybierz lub utwórz albumy"
 
@@ -3187,7 +3187,7 @@ msgstr "Aktualizacja oprogramowania"
 msgid "Some albums could not be copied"
 msgstr "Niektórych albumów nie można było skopiować"
 
-#: src/component/photo/album/dialog.vue:188
+#: src/component/photo/album/dialog.vue:193
 msgid "Some albums could not be created. Please edit the names and try again."
 msgstr "Nie można utworzyć niektórych albumów. Zmień nazwy i spróbuj ponownie."
 
@@ -3452,7 +3452,7 @@ msgstr "Zmień widok"
 msgid "Token"
 msgstr "Token"
 
-#: src/component/upload/dialog.vue:352
+#: src/component/upload/dialog.vue:373
 msgid "Too many files selected"
 msgstr "Wybrano zbyt wiele plików"
 
@@ -3583,7 +3583,7 @@ msgstr "Uaktualnij teraz"
 #: src/component/photo/toolbar.vue:498 src/component/service/upload.vue:28
 #: src/component/service/upload.vue:29 src/component/service/upload.vue:37
 #: src/component/service/upload.vue:62 src/component/service/upload.vue:69
-#: src/component/upload/dialog.vue:185 src/page/albums.vue:562
+#: src/component/upload/dialog.vue:190 src/page/albums.vue:562
 #: src/page/labels.vue:352 src/page/library/import.vue:69
 #: src/page/library/import.vue:75 src/page/settings/general.vue:173
 #: src/page/settings/services.vue:184
@@ -3594,7 +3594,7 @@ msgstr "Wgraj"
 msgid "Upload complete. Indexing…"
 msgstr "Wgrywanie zakończone. Indeksowanie…"
 
-#: src/component/upload/dialog.vue:38 src/component/upload/dialog.vue:436
+#: src/component/upload/dialog.vue:38 src/component/upload/dialog.vue:457
 msgid "Upload failed"
 msgstr "Wgrywanie nie powiodło się"
 
@@ -3615,8 +3615,8 @@ msgstr "Udostępnij album poprzez link lub prześlij wybrane pliki na serwer Web
 msgid "Uploading %{n} of %{t}…"
 msgstr "Wgrywanie %{n} z %{t}…"
 
-#: src/component/upload/dialog.vue:266 src/component/upload/dialog.vue:274
-#: src/component/upload/dialog.vue:388
+#: src/component/upload/dialog.vue:285 src/component/upload/dialog.vue:293
+#: src/component/upload/dialog.vue:409
 msgid "Uploading photos…"
 msgstr "Wgrywanie zdjęć…"
 
@@ -3624,7 +3624,7 @@ msgstr "Wgrywanie zdjęć…"
 msgid "Uploading…"
 msgstr "Przesyłanie..."
 
-#: src/component/upload/dialog.vue:102
+#: src/component/upload/dialog.vue:105
 msgid "Uploads that may contain such images will be rejected automatically."
 msgstr "Tego typu obrazy zostaną automatycznie odrzucone."
 
@@ -3838,7 +3838,7 @@ msgstr "Możesz pobrać tylko jedną etykietę"
 msgid "You can search for a location or move the marker on the map to change the position:"
 msgstr "Możesz wyszukać lokalizację lub przesunąć znacznik na mapie, aby zmienić pozycję:"
 
-#: src/component/upload/dialog.vue:97
+#: src/component/upload/dialog.vue:100
 msgid "You can upload up to %{n} files for test purposes."
 msgstr "Do celów testowych można przesłać maksymalnie %{n} plików."
 
