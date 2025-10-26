@@ -245,7 +245,7 @@ func ClusterNodesRegister(router *gin.RouterGroup) {
 
 				n.Database.Name = creds.Name
 				n.Database.User = creds.User
-				n.Database.Driver = provisioner.DatabaseDriver
+				n.Database.Driver = creds.Driver
 				if creds.RotatedAt != "" {
 					n.Database.RotatedAt = creds.RotatedAt
 				}
@@ -281,7 +281,11 @@ func ClusterNodesRegister(router *gin.RouterGroup) {
 			}
 
 			if n.Database != nil {
-				resp.Database = cluster.RegisterDatabase{Host: conf.DatabaseHost(), Port: conf.DatabasePort(), Name: n.Database.Name, User: n.Database.User, Driver: provisioner.DatabaseDriver, RotatedAt: n.Database.RotatedAt}
+				driver := n.Database.Driver
+				if driver == "" {
+					driver = provisioner.DatabaseDriver
+				}
+				resp.Database = cluster.RegisterDatabase{Host: conf.DatabaseHost(), Port: conf.DatabasePort(), Name: n.Database.Name, User: n.Database.User, Driver: driver, RotatedAt: n.Database.RotatedAt}
 			}
 
 			// Include password/dsn only if rotated now.
@@ -343,7 +347,7 @@ func ClusterNodesRegister(router *gin.RouterGroup) {
 			}
 
 			n.Database.Name, n.Database.User, n.Database.RotatedAt = creds.Name, creds.User, creds.RotatedAt
-			n.Database.Driver = provisioner.DatabaseDriver
+			n.Database.Driver = creds.Driver
 		}
 
 		if err = regy.Put(n); err != nil {
@@ -368,7 +372,7 @@ func ClusterNodesRegister(router *gin.RouterGroup) {
 
 		// If DB provisioning is skipped, leave Database fields zero-value.
 		if shouldProvisionDB {
-			resp.Database = cluster.RegisterDatabase{Host: conf.DatabaseHost(), Port: conf.DatabasePort(), Name: creds.Name, User: creds.User, Driver: provisioner.DatabaseDriver, Password: creds.Password, DSN: creds.DSN, RotatedAt: creds.RotatedAt}
+			resp.Database = cluster.RegisterDatabase{Host: conf.DatabaseHost(), Port: conf.DatabasePort(), Name: creds.Name, User: creds.User, Driver: creds.Driver, Password: creds.Password, DSN: creds.DSN, RotatedAt: creds.RotatedAt}
 		}
 
 		event.AuditInfo([]string{clientIp, string(acl.ResourceCluster), "node", "%s", status.Joined}, clean.Log(name))
