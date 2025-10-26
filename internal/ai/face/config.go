@@ -27,7 +27,7 @@ var (
 	// ClusterRadius is the maximum normalized distance for cluster samples.
 	ClusterRadius = 0.42
 	// MatchDist is the distance offset threshold used to match new faces with existing clusters.
-	MatchDist = 0.43
+	MatchDist = 0.42
 	// CollisionDist is the minimum distance under which embeddings cannot be distinguished.
 	CollisionDist = 0.1
 	// ClusterCore is the minimum number of faces required to seed a cluster core.
