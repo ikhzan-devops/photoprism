@@ -26,6 +26,8 @@ var (
 	ClusterSizeThreshold = 50
 	// ClusterDist is the similarity distance threshold that defines the cluster core.
 	ClusterDist = 0.64
+	// ClusterRadius is the maximum normalized distance for cluster samples.
+	ClusterRadius = 0.42
 	// MatchDist is the distance offset threshold used to match new faces with existing clusters.
 	MatchDist = 0.46
 	// CollisionDist is the minimum distance under which embeddings cannot be distinguished.
@@ -34,8 +36,6 @@ var (
 	ClusterCore = 4
 	// SampleThreshold is the number of faces required before automatic clustering begins.
 	SampleThreshold = 2 * ClusterCore
-	// SampleRadius is the maximum normalized distance for cluster samples.
-	SampleRadius = 0.35
 	// Epsilon is the numeric tolerance used during cluster comparisons.
 	Epsilon = 0.01
 	// SkipChildren controls whether the clustering step omits faces from child samples by default.
