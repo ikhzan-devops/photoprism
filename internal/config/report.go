@@ -323,7 +323,12 @@ func (c *Config) Report() (rows [][]string, cols []string) {
 		{"face-cluster-score", fmt.Sprintf("%d", c.FaceClusterScore())},
 		{"face-cluster-core", fmt.Sprintf("%d", c.FaceClusterCore())},
 		{"face-cluster-dist", fmt.Sprintf("%f", c.FaceClusterDist())},
+		{"face-cluster-radius", fmt.Sprintf("%f", c.FaceClusterRadius())},
+		{"face-collision-dist", fmt.Sprintf("%f", c.FaceCollisionDist())},
+		{"face-epsilon-dist", fmt.Sprintf("%f", c.FaceEpsilonDist())},
 		{"face-match-dist", fmt.Sprintf("%f", c.FaceMatchDist())},
+		{"face-match-children", fmt.Sprintf("%t", c.FaceMatchChildren())},
+		{"face-match-background", fmt.Sprintf("%t", c.FaceMatchBackground())},
 
 		// Daemon Mode.
 		{"pid-filename", c.PIDFilename()},
