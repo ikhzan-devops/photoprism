@@ -28,6 +28,8 @@ var (
 	ClusterDist = 0.64
 	// MatchDist is the distance offset threshold used to match new faces with existing clusters.
 	MatchDist = 0.46
+	// CollisionDist is the minimum distance under which embeddings cannot be distinguished.
+	CollisionDist = 0.1
 	// ClusterCore is the minimum number of faces required to seed a cluster core.
 	ClusterCore = 4
 	// SampleThreshold is the number of faces required before automatic clustering begins.

@@ -217,7 +217,7 @@ func (c *Config) FaceClusterCore() int {
 
 // FaceClusterDist returns the radius of faces forming a cluster core.
 func (c *Config) FaceClusterDist() float64 {
-	if c.options.FaceClusterDist < 0.1 || c.options.FaceClusterDist > 1.5 {
+	if c.options.FaceClusterDist < face.CollisionDist || c.options.FaceClusterDist > 1.5 {
 		return face.ClusterDist
 	}
 
@@ -226,7 +226,7 @@ func (c *Config) FaceClusterDist() float64 {
 
 // FaceMatchDist returns the offset distance when matching faces with clusters.
 func (c *Config) FaceMatchDist() float64 {
-	if c.options.FaceMatchDist < 0.1 || c.options.FaceMatchDist > 1.5 {
+	if c.options.FaceMatchDist < face.CollisionDist || c.options.FaceMatchDist > 1.5 {
 		return face.MatchDist
 	}
 
