@@ -1,8 +1,6 @@
 package face
 
 import (
-	"os"
-
 	"github.com/photoprism/photoprism/internal/thumb/crop"
 )
 
@@ -54,16 +52,6 @@ var (
 	// LandmarkQualitySlack is the maximum allowed difference between the quality threshold and the detected score.
 	LandmarkQualitySlack = float32(4.0)
 )
-
-func init() {
-	// Disable ignore/skip for background and children if legacy env variables are set.
-	if os.Getenv("PHOTOPRISM_FACE_CHILDREN_DIST") != "" || os.Getenv("PHOTOPRISM_FACE_KIDS_DIST") != "" {
-		SkipChildren = false
-	}
-	if os.Getenv("PHOTOPRISM_FACE_BACKGROUND_DIST") != "" || os.Getenv("PHOTOPRISM_FACE_IGNORED_DIST") != "" {
-		IgnoreBackground = false
-	}
-}
 
 // PigoQualityThreshold returns the scale-adjusted minimum Pigo quality score threshold for the provided detection scale.
 func PigoQualityThreshold(scale int) (score float32) {
