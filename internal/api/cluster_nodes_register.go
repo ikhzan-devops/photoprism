@@ -200,7 +200,7 @@ func ClusterNodesRegister(router *gin.RouterGroup) {
 
 			// Persist metadata changes so UpdatedAt advances.
 			if putErr := regy.Put(n); putErr != nil {
-				event.AuditErr([]string{clientIp, string(acl.ResourceCluster), "node", "%s", "persist node", status.Error(putErr)}, clean.Log(name))
+				event.AuditErr([]string{clientIp, string(acl.ResourceCluster), "node", "%s", "persist", status.Error(putErr)}, clean.Log(name))
 				AbortUnexpectedError(c)
 				return
 			}
@@ -251,7 +251,7 @@ func ClusterNodesRegister(router *gin.RouterGroup) {
 				}
 
 				if putErr := regy.Put(n); putErr != nil {
-					event.AuditErr([]string{clientIp, string(acl.ResourceCluster), "node", "%s", "persist node", status.Error(putErr)}, clean.Log(name))
+					event.AuditErr([]string{clientIp, string(acl.ResourceCluster), "node", "%s", "persist", status.Error(putErr)}, clean.Log(name))
 					AbortUnexpectedError(c)
 					return
 				}
@@ -351,7 +351,7 @@ func ClusterNodesRegister(router *gin.RouterGroup) {
 		}
 
 		if err = regy.Put(n); err != nil {
-			event.AuditErr([]string{clientIp, string(acl.ResourceCluster), "register", "persist node", status.Error(err)})
+			event.AuditErr([]string{clientIp, string(acl.ResourceCluster), "register", "persist", status.Error(err)})
 			AbortUnexpectedError(c)
 			return
 		}
