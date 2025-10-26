@@ -239,14 +239,24 @@ func ClusterNodesRegister(router *gin.RouterGroup) {
 				}
 				haveCreds = true
 
-				if req.RotateDatabase {
+				if n.Database == nil {
+					n.Database = &cluster.NodeDatabase{}
+				}
+
+				n.Database.Name = creds.Name
+				n.Database.User = creds.User
+				n.Database.Driver = provisioner.DatabaseDriver
+				if creds.RotatedAt != "" {
 					n.Database.RotatedAt = creds.RotatedAt
-					n.Database.Driver = provisioner.DatabaseDriver
-					if putErr := regy.Put(n); putErr != nil {
-						event.AuditErr([]string{clientIp, string(acl.ResourceCluster), "node", "%s", "persist node", status.Error(putErr)}, clean.Log(name))
-						AbortUnexpectedError(c)
-						return
-					}
+				}
+
+				if putErr := regy.Put(n); putErr != nil {
+					event.AuditErr([]string{clientIp, string(acl.ResourceCluster), "node", "%s", "persist node", status.Error(putErr)}, clean.Log(name))
+					AbortUnexpectedError(c)
+					return
+				}
+
+				if req.RotateDatabase {
 					event.AuditInfo([]string{clientIp, string(acl.ResourceCluster), "node", "%s", "rotate database", status.Succeeded}, clean.Log(name))
 				}
 			}
