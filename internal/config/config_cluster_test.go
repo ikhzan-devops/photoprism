@@ -477,6 +477,9 @@ func TestConfig_Cluster(t *testing.T) {
 		// Empty / missing should yield empty strings.
 		t.Setenv("PHOTOPRISM_NODE_CLIENT_SECRET_FILE", filepath.Join(dir, "missing"))
 		t.Setenv("PHOTOPRISM_JOIN_TOKEN_FILE", filepath.Join(dir, "missing"))
+		c.options.NodeClientSecret = ""
+		c.options.JoinToken = ""
+		c.clearJoinTokenFileCache()
 		assert.Equal(t, "", c.NodeClientSecret())
 		assert.Equal(t, "", c.JoinToken())
 	})

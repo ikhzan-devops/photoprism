@@ -352,8 +352,7 @@ func (c *Config) NodeClientSecret() string {
 		log.Warnf("config: failed to read node client secret from %s (%s)", fileName, err)
 		return ""
 	} else {
-		c.options.NodeClientSecret = string(b)
-		return c.options.NodeClientSecret
+		return string(b)
 	}
 }
 
@@ -379,7 +378,7 @@ func (c *Config) SaveNodeClientSecret(clientSecret string) (fileName string, err
 		return "", fmt.Errorf("could not write node client secret (%s)", err)
 	}
 
-	c.options.NodeClientSecret = clientSecret
+	c.options.NodeClientSecret = ""
 
 	return fileName, nil
 }
