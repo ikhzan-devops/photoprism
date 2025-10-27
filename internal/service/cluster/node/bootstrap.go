@@ -420,16 +420,24 @@ func syncNodeTheme(c *config.Config, portal *url.URL, registerResp *cluster.Regi
 	switch {
 	case portalVersion != "":
 		if !hasAppJS {
+			log.Infof("config: portal theme %s not installed yet; scheduling download", clean.Log(portalVersion))
 			needsDownload = true
 		} else if localVersion != portalVersion {
+			log.Infof("config: portal theme update detected (local %s, portal %s); scheduling download", clean.Log(localVersion), clean.Log(portalVersion))
 			needsDownload = true
 			requiresOverwrite = true
+		} else {
+			log.Infof("config: portal theme version %s already installed", clean.Log(localVersion))
 		}
 	case shouldProbe:
 		// Registration failed or was skipped; attempt to obtain the theme when missing.
 		needsDownload = !hasAppJS || localVersion == ""
+		if needsDownload {
+			log.Infof("config: probing portal for theme because local bundle is missing")
+		}
 	default:
 		// Portal responded but has no theme configured; keep existing node theme.
+		log.Infof("config: portal did not advertise a theme; skipping download")
 		return nil
 	}
 
@@ -441,14 +449,14 @@ func syncNodeTheme(c *config.Config, portal *url.URL, registerResp *cluster.Regi
 	bearer := ""
 	if id, secret := strings.TrimSpace(c.NodeClientID()), strings.TrimSpace(c.NodeClientSecret()); id != "" && secret != "" {
 		if t, err := oauthAccessToken(c, portal, id, secret); err != nil {
-			log.Debugf("config: portal access token request failed (%s)", clean.Error(err))
+			log.Infof("config: portal access token request failed (%s)", clean.Error(err))
 		} else {
 			bearer = t
 		}
 	}
 
 	if bearer == "" {
-		log.Debugf("config: theme sync skipped because no portal credentials are available yet")
+		log.Infof("config: theme sync skipped because no portal credentials are available yet")
 		return nil
 	}
 

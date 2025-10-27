@@ -276,8 +276,9 @@ func ClusterNodesRegister(router *gin.RouterGroup) {
 				AlreadyProvisioned: n.Database != nil && n.Database.Name != "",
 			}
 
-			if portalTheme != "" && (nodeTheme == "" || nodeTheme != portalTheme) {
+			if portalTheme != "" {
 				resp.Theme = portalTheme
+				log.Debugf("cluster: reporting portal theme hint %s for node %s", clean.Log(portalTheme), clean.Log(name))
 			}
 
 			if n.Database != nil {
@@ -366,8 +367,9 @@ func ClusterNodesRegister(router *gin.RouterGroup) {
 			AlreadyProvisioned: shouldProvisionDB,
 		}
 
-		if portalTheme != "" && (nodeTheme == "" || nodeTheme != portalTheme) {
+		if portalTheme != "" {
 			resp.Theme = portalTheme
+			log.Debugf("cluster: portal theme hint %s for node %s", clean.Log(portalTheme), clean.Log(name))
 		}
 
 		// If DB provisioning is skipped, leave Database fields zero-value.
