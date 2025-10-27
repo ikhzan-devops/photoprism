@@ -294,7 +294,7 @@ func TestClusterNodesRegister(t *testing.T) {
 		body = `{"NodeName":"pp-node-theme","Theme":"2.0.0"}`
 		r2 := AuthenticatedRequestWithBody(app, http.MethodPost, "/api/v1/cluster/nodes/register", body, cluster.ExampleJoinToken)
 		assert.Equal(t, http.StatusOK, r2.Code)
-		assert.False(t, gjson.Get(r2.Body.String(), "Theme").Exists())
+		assert.Equal(t, "2.0.0", gjson.Get(r2.Body.String(), "Theme").String())
 		cleanupRegisterProvisioning(t, conf, r2)
 	})
 }

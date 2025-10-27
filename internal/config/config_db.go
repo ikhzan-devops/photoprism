@@ -17,6 +17,7 @@ import (
 
 	"github.com/photoprism/photoprism/internal/entity"
 	"github.com/photoprism/photoprism/internal/entity/migrate"
+	"github.com/photoprism/photoprism/internal/event"
 	"github.com/photoprism/photoprism/internal/mutex"
 	"github.com/photoprism/photoprism/pkg/clean"
 )
@@ -39,6 +40,8 @@ const (
 
 // DatabaseDriver returns the database driver name.
 func (c *Config) DatabaseDriver() string {
+	c.normalizeDatabaseDSN()
+
 	switch strings.ToLower(c.options.DatabaseDriver) {
 	case MySQL, MariaDB:
 		c.options.DatabaseDriver = MySQL
@@ -100,9 +103,19 @@ func (c *Config) DatabaseSsl() bool {
 	}
 }
 
+// normalizeDatabaseDSN maps the deprecated DatabaseDsn database configuration
+// value to its current counterpart, DatabaseDSN, before consumption.
+func (c *Config) normalizeDatabaseDSN() {
+	if c.options.DatabaseDSN == "" && c.options.Deprecated.DatabaseDsn != "" {
+		c.options.DatabaseDSN = c.options.Deprecated.DatabaseDsn
+		c.options.Deprecated.DatabaseDsn = ""
+		event.SystemWarn([]string{"config", "options", "DatabaseDsn has been deprecated in favor of DatabaseDSN"})
+	}
+}
+
 // DatabaseDSN returns the database data source name (DSN).
 func (c *Config) DatabaseDSN() string {
-	if c.options.DatabaseDSN == "" {
+	if c.NoDatabaseDSN() {
 		switch c.DatabaseDriver() {
 		case MySQL, MariaDB:
 			databaseServer := c.DatabaseServer()
@@ -144,15 +157,33 @@ func (c *Config) DatabaseDSN() string {
 	return c.options.DatabaseDSN
 }
 
-// DatabaseFile returns the filename part of a sqlite database DSN.
-func (c *Config) DatabaseFile() string {
-	fileName, _, _ := strings.Cut(strings.TrimPrefix(c.DatabaseDSN(), "file:"), "?")
-	return fileName
+// NoDatabaseDSN checks if no manual database data source name (DSN) configuration is set.
+func (c *Config) NoDatabaseDSN() bool {
+	c.normalizeDatabaseDSN()
+
+	return c.options.DatabaseDSN == ""
+}
+
+// HasDatabaseDSN checks if a manual database data source name (DSN) configuration is set.
+func (c *Config) HasDatabaseDSN() bool {
+	return !c.NoDatabaseDSN()
+}
+
+// ReportDatabaseDSN checks if the database data source name (DSN) should be reported
+// instead of database name, server, user, and password.
+func (c *Config) ReportDatabaseDSN() bool {
+	if c.DatabaseDriver() == SQLite3 {
+		return true
+	}
+
+	return c.HasDatabaseDSN()
 }
 
 // ParseDatabaseDSN parses the database dsn and extracts user, password, database server, and name.
 func (c *Config) ParseDatabaseDSN() {
-	if c.options.DatabaseDSN == "" || c.options.DatabaseServer != "" {
+	if c.NoDatabaseDSN() {
+		return
+	} else if c.options.DatabaseServer != "" && c.DatabaseDriver() == SQLite3 {
 		return
 	}
 
@@ -162,6 +193,12 @@ func (c *Config) ParseDatabaseDSN() {
 	c.options.DatabaseServer = d.Server
 	c.options.DatabaseUser = d.User
 	c.options.DatabasePassword = d.Password
+}
+
+// DatabaseFile returns the filename part of a sqlite database DSN.
+func (c *Config) DatabaseFile() string {
+	fileName, _, _ := strings.Cut(strings.TrimPrefix(c.DatabaseDSN(), "file:"), "?")
+	return fileName
 }
 
 // DatabaseServer the database server.
@@ -393,7 +430,7 @@ func (c *Config) MigrateDb(runFailed bool, ids []string) {
 	if c.AdminPassword() == "" {
 		log.Warnf("config: %s account cannot be initialized due to missing or invalid password", clean.LogQuote(c.AdminUser()))
 	} else {
-		entity.Admin.InitAccount(c.AdminUser(), c.AdminPassword())
+		entity.Admin.InitAccount(c.AdminUser(), c.AdminPassword(), c.AdminScope())
 	}
 
 	// Start recording warnings and errors after the required database table has been created.
@@ -407,7 +444,7 @@ func (c *Config) InitTestDb() {
 	if c.AdminPassword() == "" {
 		// Do nothing.
 	} else {
-		entity.Admin.InitAccount(c.AdminUser(), c.AdminPassword())
+		entity.Admin.InitAccount(c.AdminUser(), c.AdminPassword(), c.AdminScope())
 	}
 
 	// Start recording warnings and errors after the required table has have been created.
