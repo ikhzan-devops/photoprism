@@ -46,7 +46,7 @@ var ClusterThemePullCommand = &cli.Command{
 func clusterThemePullAction(ctx *cli.Context) error {
 	return CallWithDependencies(ctx, func(conf *config.Config) error {
 		portalURL := ""
-		if ctx.IsSet("portal-url") {
+		if ctx.IsSet("portal-url") && ctx.String("portal-url") != "" {
 			portalURL = strings.TrimRight(ctx.String("portal-url"), "/")
 		}
 		if portalURL == "" {
@@ -54,6 +54,11 @@ func clusterThemePullAction(ctx *cli.Context) error {
 		}
 		if portalURL == "" {
 			portalURL = strings.TrimRight(os.Getenv(config.EnvVar("portal-url")), "/")
+		}
+		if portalURL == "" {
+			if domain := strings.TrimSpace(conf.ClusterDomain()); domain != "" {
+				portalURL = fmt.Sprintf("https://portal.%s", domain)
+			}
 		}
 		if portalURL == "" {
 			return fmt.Errorf("portal-url not configured; set --portal-url or PHOTOPRISM_PORTAL_URL")
