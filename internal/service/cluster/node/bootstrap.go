@@ -78,6 +78,9 @@ func InitConfig(c *config.Config) error {
 	if cluster.BootstrapAutoJoinEnabled {
 		if registerResp, err = registerWithPortal(c, u, joinToken); err != nil {
 			log.Warnf("config: failed to join the configured cluster (%s)", clean.Error(err))
+			if isAuthError(err) {
+				log.Infof("config: refreshing node credentials after authentication failure")
+			}
 			if isAuthError(err) && refreshNodeCredentials(c, u) {
 				if registerResp, err = registerWithPortal(c, u, joinToken); err != nil {
 					log.Warnf("config: retry join attempt failed (%s)", clean.Error(err))
@@ -468,6 +471,9 @@ func syncNodeTheme(c *config.Config, portal *url.URL, registerResp *cluster.Regi
 			shouldRefresh = true
 		}
 
+		if shouldRefresh {
+			log.Infof("config: refreshing node credentials for portal theme download")
+		}
 		if shouldRefresh && refreshNodeCredentials(c, portal) {
 			if id, secret := strings.TrimSpace(c.NodeClientID()), strings.TrimSpace(c.NodeClientSecret()); id != "" && secret != "" {
 				if t, err := oauthAccessToken(c, portal, id, secret); err == nil {
