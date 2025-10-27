@@ -349,7 +349,11 @@ func (c *Config) NodeClientSecret() string {
 	}
 
 	if b, err := os.ReadFile(fileName); err != nil || len(b) == 0 {
-		log.Warnf("config: failed to read node client secret from %s (%s)", fileName, err)
+		if os.IsNotExist(err) {
+			log.Debugf("config: node client secret file %s not found", fileName)
+		} else {
+			log.Warnf("config: failed to read node client secret from %s (%s)", fileName, err)
+		}
 		return ""
 	} else {
 		return string(b)
