@@ -340,13 +340,20 @@ func (c *Config) NodeClientID() string {
 func (c *Config) NodeClientSecret() string {
 	if c.options.NodeClientSecret != "" {
 		return c.options.NodeClientSecret
-	} else if fileName := FlagFilePath("NODE_CLIENT_SECRET"); fileName == "" {
+	}
+
+	fileName := c.NodeClientSecretFile()
+
+	if fileName == "" {
 		return ""
-	} else if b, err := os.ReadFile(fileName); err != nil || len(b) == 0 {
+	}
+
+	if b, err := os.ReadFile(fileName); err != nil || len(b) == 0 {
 		log.Warnf("config: failed to read node client secret from %s (%s)", fileName, err)
 		return ""
 	} else {
-		return string(b)
+		c.options.NodeClientSecret = string(b)
+		return c.options.NodeClientSecret
 	}
 }
 
