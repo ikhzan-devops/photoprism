@@ -476,6 +476,8 @@ func (c *Config) JWTAllowedScopes() list.Attr {
 }
 
 // AdvertiseUrl returns the advertised node URL for intra-cluster calls (scheme://host[:port]).
+// Portal validation permits HTTPS for external hosts and HTTP only for loopback
+// or cluster-internal service domains (e.g., *.svc, *.cluster.local, *.internal).
 func (c *Config) AdvertiseUrl() string {
 	if c.options.AdvertiseUrl != "" {
 		return strings.TrimRight(c.options.AdvertiseUrl, "/") + "/"
