@@ -355,6 +355,8 @@ func (c *Config) NodeClientSecret() string {
 	}
 
 	if b, err := os.ReadFile(fileName); err == nil && len(b) > 0 {
+		// Do not cache the value. Always read from the disk to ensure
+		// that updates from other processes are observed.
 		return string(b)
 	}
 
