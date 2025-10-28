@@ -23,6 +23,7 @@ import (
 // DefaultPortalUrl specifies the default portal URL with variable cluster domain.
 var DefaultPortalUrl = "https://portal.${PHOTOPRISM_CLUSTER_DOMAIN}"
 var DefaultNodeRole = cluster.RoleInstance
+var DefaultJWTAllowedScopes = "cluster vision metrics"
 
 // ClusterDomain returns the cluster DOMAIN (lowercase DNS name; 1–63 chars).
 func (c *Config) ClusterDomain() string {
@@ -491,7 +492,7 @@ func (c *Config) JWTAllowedScopes() list.Attr {
 		}
 	}
 
-	return list.ParseAttr("cluster vision metrics")
+	return list.ParseAttr(DefaultJWTAllowedScopes)
 }
 
 // AdvertiseUrl returns the advertised node URL for intra-cluster calls (scheme://host[:port]).

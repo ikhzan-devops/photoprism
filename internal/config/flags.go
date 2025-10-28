@@ -734,6 +734,7 @@ var Flags = CliFlags{
 		Flag: &cli.StringFlag{
 			Name:    "jwt-scope",
 			Usage:   "allowed JWT `SCOPES` (space separated). Leave empty to accept defaults",
+			Value:   DefaultJWTAllowedScopes,
 			EnvVars: EnvVars("JWT_SCOPE"),
 		}}, {
 		Flag: &cli.IntFlag{
