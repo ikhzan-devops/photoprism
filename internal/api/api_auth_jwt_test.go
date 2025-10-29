@@ -91,6 +91,39 @@ func TestAuthAnyJWT(t *testing.T) {
 		assert.True(t, session.SessExpires > session.CreatedAt.Unix())
 		assert.True(t, session.LastActive >= session.CreatedAt.Unix())
 	})
+	t.Run("ConfigScopePortalRole", func(t *testing.T) {
+		fx := newPortalJWTFixture(t, "cluster-jwt-config")
+		spec := fx.defaultClaimsSpec()
+		spec.Scope = []string{"cluster", "config"}
+		token := fx.issue(t, spec)
+
+		origScope := fx.nodeConf.Options().JWTScope
+		fx.nodeConf.Options().JWTScope = "cluster config"
+		get.SetConfig(fx.nodeConf)
+		t.Cleanup(func() {
+			fx.nodeConf.Options().JWTScope = origScope
+			get.SetConfig(fx.nodeConf)
+		})
+
+		gin.SetMode(gin.TestMode)
+		w := httptest.NewRecorder()
+		c, _ := gin.CreateTestContext(w)
+		req, _ := http.NewRequest(http.MethodGet, "/api/v1/config", nil)
+		req.Header.Set("Authorization", "Bearer "+token)
+		req.Header.Set(header.UserAgent, "PhotoPrism Portal/1.0")
+		req.RemoteAddr = "192.0.2.51:1234"
+		c.Request = req
+
+		session := authAnyJWT(c, "192.0.2.51", token, acl.ResourceConfig, acl.Permissions{acl.ActionView})
+		require.NotNil(t, session)
+		assert.Equal(t, http.StatusOK, session.HttpStatus())
+		assert.Equal(t, acl.RolePortal, session.GetClientRole())
+		assert.True(t, session.Valid())
+
+		cfg := fx.nodeConf.ClientSession(session)
+		require.NotNil(t, cfg)
+		assert.Equal(t, string(config.ClientUser), cfg.Mode)
+	})
 	t.Run("ClusterCIDRAllowed", func(t *testing.T) {
 		fx := newPortalJWTFixture(t, "cluster-jwt-cidr-allow")
 		spec := fx.defaultClaimsSpec()
