@@ -260,22 +260,22 @@ func (c *Config) FaceMatchDist() float64 {
 	return c.options.FaceMatchDist
 }
 
-// FaceMatchChildren reports whether child embeddings should be matched automatically.
-func (c *Config) FaceMatchChildren() bool {
+// FaceSkipChildren reports whether child embeddings should be skipped when matching.
+func (c *Config) FaceSkipChildren() bool {
 	if c == nil {
-		return false
+		return face.SkipChildren
 	}
 
-	return c.options.FaceMatchChildren
+	return c.options.FaceSkipChildren
 }
 
-// FaceMatchBackground reports whether background embeddings should be matched.
-func (c *Config) FaceMatchBackground() bool {
+// FaceAllowBackground reports whether background embeddings should not be ignored.
+func (c *Config) FaceAllowBackground() bool {
 	if c == nil {
-		return false
+		return !face.IgnoreBackground
 	}
 
-	return c.options.FaceMatchBackground
+	return c.options.FaceAllowBackground
 }
 
 // FaceAngles returns the set of detection angles in radians.

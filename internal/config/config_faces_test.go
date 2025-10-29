@@ -288,18 +288,18 @@ func TestConfig_FaceMatchDist(t *testing.T) {
 	assert.Equal(t, face.MatchDist, c.FaceMatchDist())
 }
 
-func TestConfig_FaceMatchChildren(t *testing.T) {
+func TestConfig_FaceSkipChildren(t *testing.T) {
 	c := NewConfig(CliTestContext())
-	assert.False(t, c.FaceMatchChildren())
-	c.options.FaceMatchChildren = true
-	assert.True(t, c.FaceMatchChildren())
+	assert.False(t, c.FaceSkipChildren())
+	c.options.FaceSkipChildren = true
+	assert.True(t, c.FaceSkipChildren())
 }
 
-func TestConfig_FaceMatchBackground(t *testing.T) {
+func TestConfig_FaceAllowBackground(t *testing.T) {
 	c := NewConfig(CliTestContext())
-	assert.False(t, c.FaceMatchBackground())
-	c.options.FaceMatchBackground = true
-	assert.True(t, c.FaceMatchBackground())
+	assert.False(t, c.FaceAllowBackground())
+	c.options.FaceAllowBackground = true
+	assert.True(t, c.FaceAllowBackground())
 }
 
 func TestConfig_FaceAngles(t *testing.T) {

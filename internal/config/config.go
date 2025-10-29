@@ -364,8 +364,8 @@ func (c *Config) Propagate() {
 	face.ClusterRadius = c.FaceClusterRadius()
 	face.ClusterDist = c.FaceClusterDist()
 	face.MatchDist = c.FaceMatchDist()
-	face.SkipChildren = !c.FaceMatchChildren()
-	face.IgnoreBackground = !c.FaceMatchBackground()
+	face.SkipChildren = c.FaceSkipChildren()
+	face.IgnoreBackground = !c.FaceAllowBackground()
 	face.DetectionAngles = c.FaceAngles()
 	if err := face.ConfigureEngine(face.EngineSettings{
 		Name: c.FaceEngine(),

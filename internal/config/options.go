@@ -246,8 +246,8 @@ type Options struct {
 	FaceCollisionDist       float64       `yaml:"-" json:"-" flag:"face-collision-dist"`
 	FaceEpsilonDist         float64       `yaml:"-" json:"-" flag:"face-epsilon-dist"`
 	FaceMatchDist           float64       `yaml:"-" json:"-" flag:"face-match-dist"`
-	FaceMatchChildren       bool          `yaml:"-" json:"-" flag:"face-match-children"`
-	FaceMatchBackground     bool          `yaml:"-" json:"-" flag:"face-match-background"`
+	FaceSkipChildren        bool          `yaml:"-" json:"-" flag:"face-skip-children"`
+	FaceAllowBackground     bool          `yaml:"-" json:"-" flag:"face-allow-background"`
 	PIDFilename             string        `yaml:"PIDFilename" json:"-" flag:"pid-filename"`
 	LogFilename             string        `yaml:"LogFilename" json:"-" flag:"log-filename"`
 	DetachServer            bool          `yaml:"DetachServer" json:"-" flag:"detach-server"`
