@@ -354,13 +354,11 @@ func (m *Session) clientRole(resolve bool) acl.Role {
 		return c.AclRole()
 	}
 
-	if !resolve {
+	if !resolve || m.ClientUID == "" {
 		// Skip lookup to avoid recursive loop.
-	} else if uid := m.ClientUID; uid != "" {
-		if c := FindClientByUID(uid); c != nil {
-			m.SetClient(c)
-			return c.AclRole()
-		}
+	} else if c := FindClientByUID(m.ClientUID); c != nil {
+		m.SetClient(c)
+		return c.AclRole()
 	}
 
 	if m.IsClient() {
