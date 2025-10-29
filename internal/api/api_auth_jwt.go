@@ -112,6 +112,18 @@ func authAnyJWT(c *gin.Context, clientIP, authToken string, resource acl.Resourc
 		IssuedAt:  issuedAt,
 		NotBefore: notBefore,
 		ExpiresAt: expiresAt,
+		PreviewToken: func() string {
+			if tokenScopes.Contains(acl.ResourceFiles.String()) {
+				return conf.PreviewToken()
+			}
+			return ""
+		}(),
+		DownloadToken: func() string {
+			if tokenScopes.Contains(acl.ResourceFiles.String()) {
+				return conf.DownloadToken()
+			}
+			return ""
+		}(),
 	})
 }
 

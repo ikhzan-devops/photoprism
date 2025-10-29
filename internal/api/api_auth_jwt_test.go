@@ -53,13 +53,43 @@ func TestAuthAnyJWT(t *testing.T) {
 		assert.True(t, strings.HasPrefix(session.AuthID, "jwt"))
 		assert.Equal(t, session.AuthID, session.RefID)
 		assert.True(t, rnd.IsRefID(session.RefID))
-		assert.False(t, session.CreatedAt.IsZero())
-		assert.False(t, session.UpdatedAt.IsZero())
-		assert.NotZero(t, session.SessExpires)
-		assert.Greater(t, session.SessExpires, session.CreatedAt.Unix())
+		assert.True(t, session.SessExpires > session.CreatedAt.Unix())
 		assert.GreaterOrEqual(t, session.LastActive, session.CreatedAt.Unix())
 		assert.True(t, session.GetUser().IsUnknown())
 		assert.Equal(t, acl.RolePortal, session.GetClientRole())
+		assert.Empty(t, session.PreviewToken)
+		assert.Empty(t, session.DownloadToken)
+	})
+	t.Run("FilesScopeTokens", func(t *testing.T) {
+		fx := newPortalJWTFixture(t, "cluster-jwt-files")
+		spec := fx.defaultClaimsSpec()
+		spec.Scope = []string{"cluster", "files"}
+		token := fx.issue(t, spec)
+
+		origScope := fx.nodeConf.Options().JWTScope
+		fx.nodeConf.Options().JWTScope = "cluster vision metrics files"
+		get.SetConfig(fx.nodeConf)
+		t.Cleanup(func() {
+			fx.nodeConf.Options().JWTScope = origScope
+			get.SetConfig(fx.nodeConf)
+		})
+
+		gin.SetMode(gin.TestMode)
+		w := httptest.NewRecorder()
+		c, _ := gin.CreateTestContext(w)
+		req, _ := http.NewRequest(http.MethodGet, "/api/v1/cluster/theme", nil)
+		req.Header.Set("Authorization", "Bearer "+token)
+		req.Header.Set(header.UserAgent, "PhotoPrism Portal/1.0")
+		req.RemoteAddr = "192.0.2.50:4567"
+		c.Request = req
+
+		session := authAnyJWT(c, "192.0.2.50", token, acl.ResourceFiles, acl.Permissions{acl.AccessLibrary})
+		require.NotNil(t, session)
+		assert.Equal(t, http.StatusOK, session.HttpStatus())
+		assert.Equal(t, fx.preview, session.PreviewToken)
+		assert.Equal(t, fx.download, session.DownloadToken)
+		assert.True(t, session.SessExpires > session.CreatedAt.Unix())
+		assert.True(t, session.LastActive >= session.CreatedAt.Unix())
 	})
 	t.Run("ClusterCIDRAllowed", func(t *testing.T) {
 		fx := newPortalJWTFixture(t, "cluster-jwt-cidr-allow")

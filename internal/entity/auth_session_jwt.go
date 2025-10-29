@@ -13,15 +13,17 @@ import (
 // JWT captures the subset of JWT fields needed to construct
 // an in-memory session for portal-to-node authentication flows.
 type JWT struct {
-	Token     string
-	ID        string
-	Issuer    string
-	Subject   string
-	Scope     string
-	Audience  []string
-	IssuedAt  *time.Time
-	NotBefore *time.Time
-	ExpiresAt *time.Time
+	Token         string
+	ID            string
+	Issuer        string
+	Subject       string
+	Scope         string
+	Audience      []string
+	IssuedAt      *time.Time
+	NotBefore     *time.Time
+	ExpiresAt     *time.Time
+	PreviewToken  string
+	DownloadToken string
 }
 
 // NewSessionFromJWT constructs an in-memory session based on verified
@@ -57,6 +59,14 @@ func NewSessionFromJWT(c *gin.Context, jwt *JWT) *Session {
 	sess.SetClientName(jwt.Subject)
 	sess.SetClientIP(header.ClientIP(c))
 	sess.SetUserAgent(header.ClientUserAgent(c))
+
+	// Set media preview and download tokens, if specified.
+	if jwt.PreviewToken != "" {
+		sess.PreviewToken = jwt.PreviewToken
+	}
+	if jwt.DownloadToken != "" {
+		sess.DownloadToken = jwt.DownloadToken
+	}
 
 	// Derive timestamps from JWT claims when available.
 	now := time.Now().UTC()

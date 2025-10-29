@@ -931,12 +931,18 @@ func (m *Session) UpdateLastActive(save bool) *Session {
 
 // Invalid checks if the session does not belong to a registered user or a visitor with shares.
 func (m *Session) Invalid() bool {
+	if m == nil {
+		return true
+	}
+
 	return !m.Valid()
 }
 
 // Valid checks whether the session belongs to a registered user or a visitor with shares.
 func (m *Session) Valid() bool {
-	if m.IsClient() {
+	if m == nil {
+		return false
+	} else if m.IsClient() {
 		return true
 	}
 
