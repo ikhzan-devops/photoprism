@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 	"net"
-	"net/http"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -15,7 +15,6 @@ import (
 	"github.com/photoprism/photoprism/internal/config"
 	"github.com/photoprism/photoprism/internal/entity"
 	"github.com/photoprism/photoprism/internal/photoprism/get"
-	"github.com/photoprism/photoprism/pkg/authn"
 	"github.com/photoprism/photoprism/pkg/clean"
 )
 
@@ -89,7 +88,31 @@ func authAnyJWT(c *gin.Context, clientIP, authToken string, resource acl.Resourc
 
 	claims.Scope = tokenScopes.String()
 
-	return sessionFromJWTClaims(claims, clientIP)
+	var issuedAt, notBefore, expiresAt *time.Time
+	if claims.IssuedAt != nil {
+		t := claims.IssuedAt.Time
+		issuedAt = &t
+	}
+	if claims.NotBefore != nil {
+		t := claims.NotBefore.Time
+		notBefore = &t
+	}
+	if claims.ExpiresAt != nil {
+		t := claims.ExpiresAt.Time
+		expiresAt = &t
+	}
+
+	return entity.NewSessionFromJWT(c, &entity.JWT{
+		Token:     authToken,
+		ID:        claims.ID,
+		Issuer:    claims.Issuer,
+		Subject:   claims.Subject,
+		Scope:     claims.Scope,
+		Audience:  claims.Audience,
+		IssuedAt:  issuedAt,
+		NotBefore: notBefore,
+		ExpiresAt: expiresAt,
+	})
 }
 
 // shouldAttemptJWT reports whether JWT verification should run for the supplied
@@ -191,26 +214,6 @@ func verifyTokenFromPortal(ctx context.Context, token string, expected clusterjw
 	}
 
 	return nil
-}
-
-// sessionFromJWTClaims constructs a Session populated with fields derived from
-// the verified JWT claims.
-func sessionFromJWTClaims(claims *clusterjwt.Claims, clientIP string) *entity.Session {
-	sess := &entity.Session{
-		Status:       http.StatusOK,
-		ClientUID:    claims.Subject,
-		AuthScope:    clean.Scope(claims.Scope),
-		AuthIssuer:   claims.Issuer,
-		AuthID:       claims.ID,
-		GrantType:    authn.GrantJwtBearer.String(),
-		AuthProvider: authn.ProviderClient.String(),
-	}
-
-	sess.SetMethod(authn.MethodJWT)
-	sess.SetClientName(claims.Subject)
-	sess.SetClientIP(clientIP)
-
-	return sess
 }
 
 // jwtIssuerCandidates returns the possible issuer values the node should accept

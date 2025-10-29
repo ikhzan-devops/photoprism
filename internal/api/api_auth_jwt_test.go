@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/gin-gonic/gin"
-	gojwt "github.com/golang-jwt/jwt/v5"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -16,7 +16,10 @@ import (
 	clusterjwt "github.com/photoprism/photoprism/internal/auth/jwt"
 	"github.com/photoprism/photoprism/internal/config"
 	"github.com/photoprism/photoprism/internal/photoprism/get"
+	"github.com/photoprism/photoprism/pkg/authn"
 	"github.com/photoprism/photoprism/pkg/clean"
+	"github.com/photoprism/photoprism/pkg/http/header"
+	"github.com/photoprism/photoprism/pkg/rnd"
 )
 
 func TestAuthAnyJWT(t *testing.T) {
@@ -30,15 +33,33 @@ func TestAuthAnyJWT(t *testing.T) {
 		c, _ := gin.CreateTestContext(w)
 		req, _ := http.NewRequest(http.MethodGet, "/api/v1/cluster/theme", nil)
 		req.Header.Set("Authorization", "Bearer "+token)
+		req.Header.Set(header.UserAgent, "PhotoPrism Portal/1.0")
 		req.RemoteAddr = "192.0.2.10:12345"
 		c.Request = req
 
 		session := authAnyJWT(c, "192.0.2.10", token, acl.ResourceCluster, nil)
 		require.NotNil(t, session)
 		assert.Equal(t, http.StatusOK, session.HttpStatus())
-		assert.Equal(t, spec.Subject, session.ClientUID)
+		assert.Empty(t, session.ClientUID)
+		assert.Equal(t, spec.Subject, session.GetClientName())
 		assert.Contains(t, session.AuthScope, "cluster")
 		assert.Equal(t, spec.Issuer, session.AuthIssuer)
+		assert.Equal(t, authn.MethodJWT.String(), session.AuthMethod)
+		assert.Equal(t, authn.ProviderClient.String(), session.AuthProvider)
+		assert.Equal(t, authn.GrantJwtBearer.String(), session.GrantType)
+		assert.Equal(t, "192.0.2.10", session.ClientIP)
+		assert.Equal(t, "PhotoPrism Portal/1.0", session.UserAgent)
+		assert.Equal(t, token, session.AuthToken())
+		assert.True(t, strings.HasPrefix(session.AuthID, "jwt"))
+		assert.Equal(t, session.AuthID, session.RefID)
+		assert.True(t, rnd.IsRefID(session.RefID))
+		assert.False(t, session.CreatedAt.IsZero())
+		assert.False(t, session.UpdatedAt.IsZero())
+		assert.NotZero(t, session.SessExpires)
+		assert.Greater(t, session.SessExpires, session.CreatedAt.Unix())
+		assert.GreaterOrEqual(t, session.LastActive, session.CreatedAt.Unix())
+		assert.True(t, session.GetUser().IsUnknown())
+		assert.Equal(t, acl.RolePortal, session.GetClientRole())
 	})
 	t.Run("ClusterCIDRAllowed", func(t *testing.T) {
 		fx := newPortalJWTFixture(t, "cluster-jwt-cidr-allow")
@@ -63,7 +84,8 @@ func TestAuthAnyJWT(t *testing.T) {
 
 		session := authAnyJWT(c, "192.0.2.10", token, acl.ResourceCluster, nil)
 		require.NotNil(t, session)
-		assert.Equal(t, spec.Subject, session.ClientUID)
+		assert.Empty(t, session.ClientUID)
+		assert.Equal(t, spec.Subject, session.GetClientName())
 	})
 	t.Run("ClusterCIDRBlocked", func(t *testing.T) {
 		fx := newPortalJWTFixture(t, "cluster-jwt-cidr-block")
@@ -352,24 +374,4 @@ func TestVerifyTokenFromPortal(t *testing.T) {
 
 	nilClaims := verifyTokenFromPortal(context.Background(), token, expected, []string{"wrong"})
 	assert.Nil(t, nilClaims)
-}
-
-func TestSessionFromJWTClaims(t *testing.T) {
-	claims := &clusterjwt.Claims{
-		Scope: "cluster vision",
-		RegisteredClaims: gojwt.RegisteredClaims{
-			Issuer:  "portal:test",
-			Subject: "portal:client",
-			ID:      "token-id",
-		},
-	}
-
-	sess := sessionFromJWTClaims(claims, "192.0.2.100")
-	require.NotNil(t, sess)
-	assert.Equal(t, http.StatusOK, sess.HttpStatus())
-	assert.Equal(t, "portal:client", sess.ClientUID)
-	assert.Equal(t, clean.Scope("cluster vision"), sess.AuthScope)
-	assert.Equal(t, "portal:test", sess.AuthIssuer)
-	assert.Equal(t, "token-id", sess.AuthID)
-	assert.Equal(t, "192.0.2.100", sess.ClientIP)
 }

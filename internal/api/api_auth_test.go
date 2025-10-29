@@ -166,7 +166,8 @@ func TestAuthAnyPortalJWT(t *testing.T) {
 	assert.Equal(t, http.StatusOK, s.HttpStatus())
 	assert.Contains(t, s.AuthScope, "cluster")
 	assert.Equal(t, fmt.Sprintf("portal:%s", fx.clusterUUID), s.AuthIssuer)
-	assert.Equal(t, "portal:client-test", s.ClientUID)
+	assert.Empty(t, s.ClientUID)
+	assert.Equal(t, "portal:client-test", s.GetClientName())
 	assert.False(t, s.Abort(c))
 
 	// Audience mismatch should reject the token once the node UUID changes.

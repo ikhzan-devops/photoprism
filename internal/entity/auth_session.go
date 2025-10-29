@@ -78,18 +78,18 @@ func (Session) TableName() string {
 }
 
 // NewSession creates a new session with the expiration and idle time specified in seconds (-1 for infinite).
-func NewSession(expiresIn, timeout int64) (m *Session) {
-	m = &Session{}
+func NewSession(expiresIn, timeout int64) (sess *Session) {
+	sess = &Session{}
 
-	m.Regenerate()
+	sess.Regenerate()
 
 	// Set session expiration time in seconds (-1 for infinite).
-	m.SetExpiresIn(expiresIn)
+	sess.SetExpiresIn(expiresIn)
 
 	// Set session idle time in seconds (-1 for infinite).
-	m.SetTimeout(timeout)
+	sess.SetTimeout(timeout)
 
-	return m
+	return sess
 }
 
 // SessionStatusUnauthorized returns a session with status unauthorized (401).
@@ -123,12 +123,17 @@ func FindSessionByRefID(refId string) *Session {
 	return m
 }
 
-// AuthToken returns the secret client authentication token.
+// AuthToken returns the session's bearer token. Stored sessions read this value from
+// the database/cache, while transient sessions (for example, portal JWTs) mirror the
+// bearer presented in the current request so audit logs and diagnostics can report the
+// correct token.
 func (m *Session) AuthToken() string {
 	return m.authToken
 }
 
-// SetAuthToken sets a custom authentication token.
+// SetAuthToken assigns the bearer token and derives the session ID from it. Always
+// pass the exact token presented by the caller (JWT, API key, etc.) so follow-up
+// actions reference the same value.
 func (m *Session) SetAuthToken(authToken string) *Session {
 	m.authToken = authToken
 	m.ID = rnd.SessionID(authToken)
