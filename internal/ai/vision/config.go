@@ -92,13 +92,13 @@ func (c *ConfigValues) Load(fileName string) error {
 
 		switch model.Type {
 		case ModelTypeLabels:
-			c.Models[i] = NasnetModel
+			c.Models[i] = NasnetModel.Clone()
 		case ModelTypeNsfw:
-			c.Models[i] = NsfwModel
+			c.Models[i] = NsfwModel.Clone()
 		case ModelTypeFace:
-			c.Models[i] = FacenetModel
+			c.Models[i] = FacenetModel.Clone()
 		case ModelTypeCaption:
-			c.Models[i] = CaptionModel
+			c.Models[i] = CaptionModel.Clone()
 		}
 
 		if runType != RunAuto {
