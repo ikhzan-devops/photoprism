@@ -12,11 +12,11 @@ import (
 	"github.com/photoprism/photoprism/pkg/clean"
 )
 
-// ShareToken renders the generic share landing page.
+// ShareToken creates a session using the specified share token and renders the generic sharing bootstrap page.
 //
-//	@Summary	renders the generic share landing page
+//	@Summary	creates a session using the specified share token and renders the generic sharing bootstrap page
 //	@Id			ShareToken
-//	@Tags		Shares
+//	@Tags		Sharing
 //	@Produce	text/html
 //	@Param		token	path		string	true	"Share token"
 //	@Success	200		{string}	string	"Rendered HTML page"
@@ -43,11 +43,11 @@ func ShareToken(router *gin.RouterGroup) {
 	})
 }
 
-// ShareTokenShared renders the album/page view for an individual share.
+// ShareTokenShared creates a session with the specified share token and redirects to the shared content.
 //
-//	@Summary	renders the album/page view for an individual share
+//	@Summary	creates a session with the specified share token and redirects to the shared content
 //	@Id			ShareTokenShared
-//	@Tags		Shares
+//	@Tags		Sharing
 //	@Produce	text/html
 //	@Param		token	path		string	true	"Share token"
 //	@Param		shared	path		string	true	"Shared resource UID"

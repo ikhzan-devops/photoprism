@@ -12568,9 +12568,9 @@
                         }
                     }
                 },
-                "summary": "renders the generic share landing page",
+                "summary": "creates a session using the specified share token and renders the generic sharing bootstrap page",
                 "tags": [
-                    "Shares"
+                    "Sharing"
                 ]
             }
         },
@@ -12610,9 +12610,9 @@
                         }
                     }
                 },
-                "summary": "renders the album/page view for an individual share",
+                "summary": "creates a session with the specified share token and redirects to the shared content",
                 "tags": [
-                    "Shares"
+                    "Sharing"
                 ]
             }
         },
@@ -12654,7 +12654,7 @@
                 },
                 "summary": "returns a share preview image when the token is valid",
                 "tags": [
-                    "Shares"
+                    "Sharing"
                 ]
             }
         },

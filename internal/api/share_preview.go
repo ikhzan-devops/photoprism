@@ -27,7 +27,7 @@ import (
 //
 //	@Summary	returns a share preview image when the token is valid
 //	@Id			SharePreview
-//	@Tags		Shares
+//	@Tags		Sharing
 //	@Produce	image/jpeg
 //	@Param		token	path		string	true	"Share token"
 //	@Param		shared	path		string	true	"Shared resource UID"
