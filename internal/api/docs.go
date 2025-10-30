@@ -23,7 +23,7 @@ var swaggerJSON []byte
 //
 //	@Summary	serves embedded Swagger documentation (debug builds only)
 //	@Id			GetDocs
-//	@Tags		System
+//	@Tags		Debug
 //	@Produce	json
 //	@Success	200	{object}	gin.H	"Swagger JSON"
 //	@Router		/swagger.json [get]

@@ -7568,7 +7568,7 @@
                 },
                 "summary": "allows members to submit a feedback message to the PhotoPrism team",
                 "tags": [
-                    "Admin"
+                    "Internal"
                 ]
             }
         },
@@ -10079,7 +10079,7 @@
                 },
                 "summary": "allows authorized admins to restart the server",
                 "tags": [
-                    "Admin"
+                    "Internal"
                 ]
             }
         },
@@ -12674,7 +12674,7 @@
                 },
                 "summary": "serves embedded Swagger documentation (debug builds only)",
                 "tags": [
-                    "System"
+                    "Debug"
                 ]
             }
         },
