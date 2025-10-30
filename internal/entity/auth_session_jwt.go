@@ -47,13 +47,11 @@ func NewSessionFromJWT(c *gin.Context, jwt *JWT) *Session {
 	sess.SetAuthToken(token)
 
 	// Set scope/claims metadata.
-	if jwt.Scope != "" {
-		sess.SetScope(jwt.Scope)
-	}
+	sess.SetScope(jwt.Scope)
 	sess.SetAuthID(jwt.ID, jwt.Issuer)
 	sess.SetGrantType(authn.GrantJwtBearer)
 	sess.SetMethod(authn.MethodJWT)
-	sess.SetProvider(authn.ProviderClient)
+	sess.SetProvider(authn.ProviderAccessToken)
 	sess.SetClientName(jwt.Subject)
 	sess.SetClientIP(header.ClientIP(c))
 	sess.SetUserAgent(header.ClientUserAgent(c))

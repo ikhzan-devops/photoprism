@@ -2,6 +2,7 @@ package entity
 
 import (
 	"net/http"
+	"net/http/httptest"
 	"testing"
 	"time"
 
@@ -59,6 +60,41 @@ func TestNewSession(t *testing.T) {
 		assert.Len(t, m.GetData().Tokens, 2)
 		assert.Equal(t, "foo", m.GetData().Tokens[0])
 		assert.Equal(t, "bar", m.GetData().Tokens[1])
+	})
+}
+
+func TestNewSessionFromToken(t *testing.T) {
+	gin.SetMode(gin.TestMode)
+
+	t.Run("EmptyToken", func(t *testing.T) {
+		w := httptest.NewRecorder()
+		c, _ := gin.CreateTestContext(w)
+
+		assert.Nil(t, NewSessionFromToken(c, "", acl.ResourceVision.String(), "vision-api"))
+	})
+	t.Run("PopulatedSession", func(t *testing.T) {
+		w := httptest.NewRecorder()
+		c, _ := gin.CreateTestContext(w)
+		req := httptest.NewRequest(http.MethodPost, "/api/v1/vision/labels", nil)
+		req.RemoteAddr = "198.51.100.42:8080"
+		req.Header.Set(header.UserAgent, "VisionClient/1.0")
+		c.Request = req
+
+		token := "vision-service-key-abc123"
+		sess := NewSessionFromToken(c, token, acl.ResourceVision.String(), "vision-api")
+		if assert.NotNil(t, sess) {
+			assert.Equal(t, http.StatusOK, sess.HttpStatus())
+			assert.Equal(t, token, sess.AuthToken())
+			assert.Equal(t, rnd.SessionID(token), sess.ID)
+			assert.Equal(t, acl.ResourceVision.String(), sess.Scope())
+			assert.Equal(t, authn.GrantToken, sess.GetGrantType())
+			assert.Equal(t, authn.MethodDefault, sess.GetMethod())
+			assert.Equal(t, authn.ProviderAccessToken, sess.GetProvider())
+			assert.Equal(t, header.ClientIP(c), sess.ClientIP)
+			assert.Equal(t, req.UserAgent(), sess.UserAgent)
+			assert.EqualValues(t, 60, sess.SessTimeout)
+			assert.True(t, rnd.IsRefID(sess.RefID))
+		}
 	})
 }
 

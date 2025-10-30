@@ -318,6 +318,7 @@ func (c *Config) Propagate() {
 	// Configure computer vision package.
 	vision.SetCachePath(c.CachePath())
 	vision.SetModelsPath(c.ModelsPath())
+	vision.ServiceApi = c.VisionApi()
 	vision.ServiceUri = c.VisionUri()
 	vision.ServiceKey = c.VisionKey()
 	vision.DownloadUrl = c.DownloadUrl()

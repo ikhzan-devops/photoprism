@@ -11,12 +11,14 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"github.com/photoprism/photoprism/internal/ai/vision"
 	"github.com/photoprism/photoprism/internal/auth/acl"
 	clusterjwt "github.com/photoprism/photoprism/internal/auth/jwt"
 	"github.com/photoprism/photoprism/internal/auth/session"
 	"github.com/photoprism/photoprism/internal/config"
 	"github.com/photoprism/photoprism/internal/photoprism/get"
 	"github.com/photoprism/photoprism/internal/service/cluster"
+	"github.com/photoprism/photoprism/pkg/authn"
 	"github.com/photoprism/photoprism/pkg/http/header"
 	"github.com/photoprism/photoprism/pkg/rnd"
 )
@@ -144,6 +146,44 @@ func TestAuthToken(t *testing.T) {
 		bearerToken := header.BearerToken(c)
 		assert.Equal(t, "", bearerToken)
 	})
+}
+
+func TestAuthAnyVisionServiceKey(t *testing.T) {
+	origAPI := vision.ServiceApi
+	origKey := vision.ServiceKey
+	defer func() {
+		vision.ServiceApi = origAPI
+		vision.ServiceKey = origKey
+	}()
+
+	vision.ServiceApi = true
+	vision.ServiceKey = "vision-service-key-abc123"
+
+	gin.SetMode(gin.TestMode)
+	w := httptest.NewRecorder()
+	c, _ := gin.CreateTestContext(w)
+	req := httptest.NewRequest(http.MethodPost, "/api/v1/vision/labels", nil)
+	header.SetAuthorization(req, vision.ServiceKey)
+	req.RemoteAddr = "198.51.100.24:1234"
+	req.Header.Set(header.UserAgent, "VisionClient/1.0")
+	c.Request = req
+
+	s := AuthAny(c, acl.ResourceVision, acl.Permissions{acl.ActionUse})
+	require.NotNil(t, s)
+	assert.False(t, s.Abort(c))
+	assert.Equal(t, http.StatusOK, s.HttpStatus())
+	assert.Equal(t, vision.ServiceKey, s.AuthToken())
+	assert.Equal(t, rnd.SessionID(vision.ServiceKey), s.ID)
+	assert.Equal(t, acl.ResourceVision.String(), s.Scope())
+	assert.Equal(t, authn.GrantToken, s.GetGrantType())
+	assert.Equal(t, authn.ProviderAccessToken, s.GetProvider())
+	assert.Equal(t, authn.MethodDefault, s.GetMethod())
+	assert.Equal(t, header.ClientIP(c), s.ClientIP)
+	assert.Equal(t, req.UserAgent(), s.UserAgent)
+	assert.True(t, s.IsClient())
+	assert.Equal(t, acl.RoleClient, s.GetClientRole())
+	assert.EqualValues(t, 60, s.SessTimeout)
+	assert.True(t, rnd.IsRefID(s.RefID))
 }
 
 func TestAuthAnyPortalJWT(t *testing.T) {

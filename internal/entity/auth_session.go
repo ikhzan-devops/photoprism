@@ -92,6 +92,50 @@ func NewSession(expiresIn, timeout int64) (sess *Session) {
 	return sess
 }
 
+// NewSessionFromToken creates a transient access-token session backed by the caller's bearer token.
+// It copies scope, client metadata, and request context so service-key and API token flows can reuse
+// the existing authorization path without persisting state.
+func NewSessionFromToken(c *gin.Context, token, scope, refId string) *Session {
+	if token == "" {
+		return nil
+	}
+
+	// "vision-api"
+	if !rnd.IsRefID(refId) {
+		refId = rnd.AuthTokenID("key")
+	}
+
+	// Create new session
+	sess := &Session{
+		Status: http.StatusOK,
+		RefID:  refId,
+	}
+
+	// Determine token string.
+	sess.SetAuthToken(token)
+
+	// Set scope/claims metadata.
+	sess.SetScope(scope)
+	sess.SetGrantType(authn.GrantToken)
+	sess.SetMethod(authn.MethodDefault)
+	sess.SetProvider(authn.ProviderAccessToken)
+	sess.SetClientIP(header.ClientIP(c))
+	sess.SetUserAgent(header.ClientUserAgent(c))
+
+	// Derive timestamps from JWT claims when available.
+	now := time.Now().UTC()
+
+	sess.CreatedAt = now
+	sess.UpdatedAt = now
+	sess.LastActive = now.Unix()
+
+	// Expires in 60 seconds.
+	sess.SetExpiresIn(60)
+	sess.SetTimeout(60)
+
+	return sess
+}
+
 // SessionStatusUnauthorized returns a session with status unauthorized (401).
 func SessionStatusUnauthorized() *Session {
 	return &Session{Status: http.StatusUnauthorized}

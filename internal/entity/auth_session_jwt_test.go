@@ -48,7 +48,7 @@ func TestNewSessionFromJWT(t *testing.T) {
 	assert.True(t, rnd.IsSessionID(sess.ID))
 	assert.Equal(t, authn.GrantJwtBearer.String(), sess.GrantType)
 	assert.Equal(t, authn.MethodJWT.String(), sess.AuthMethod)
-	assert.Equal(t, authn.ProviderClient.String(), sess.AuthProvider)
+	assert.Equal(t, authn.ProviderAccessToken.String(), sess.AuthProvider)
 	assert.Equal(t, "portal:cs5cpu17n6gj2qo5", sess.GetClientName())
 	assert.Equal(t, clean.Scope("cluster vision"), sess.AuthScope)
 	assert.Equal(t, "portal:cbaa0276-07d3-43ac-b420-25e2601b0ad4", sess.AuthIssuer)

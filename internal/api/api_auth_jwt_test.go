@@ -45,7 +45,7 @@ func TestAuthAnyJWT(t *testing.T) {
 		assert.Contains(t, session.AuthScope, "cluster")
 		assert.Equal(t, spec.Issuer, session.AuthIssuer)
 		assert.Equal(t, authn.MethodJWT.String(), session.AuthMethod)
-		assert.Equal(t, authn.ProviderClient.String(), session.AuthProvider)
+		assert.Equal(t, authn.ProviderAccessToken.String(), session.AuthProvider)
 		assert.Equal(t, authn.GrantJwtBearer.String(), session.GrantType)
 		assert.Equal(t, "192.0.2.10", session.ClientIP)
 		assert.Equal(t, "PhotoPrism Portal/1.0", session.UserAgent)
