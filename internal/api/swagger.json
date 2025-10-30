@@ -7232,7 +7232,7 @@
                 },
                 "summary": "removes all entries from the error logs",
                 "tags": [
-                    "Errors"
+                    "Logs"
                 ]
             },
             "get": {
@@ -7299,7 +7299,7 @@
                 },
                 "summary": "searches the error logs and returns the results as JSON",
                 "tags": [
-                    "Errors"
+                    "Logs"
                 ]
             }
         },
