@@ -444,7 +444,7 @@ var Flags = CliFlags{
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "disable-tensorflow",
-			Usage:   "disables features depending on TensorFlow, e.g. image classification and face recognition",
+			Usage:   "disables features depending on TensorFlow, e.g. face recognition",
 			EnvVars: EnvVars("DISABLE_TENSORFLOW"),
 		}}, {
 		Flag: &cli.BoolFlag{
@@ -454,7 +454,7 @@ var Flags = CliFlags{
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "disable-classification",
-			Usage:   "disables image classification (requires TensorFlow)",
+			Usage:   "disables label generation for image classification",
 			EnvVars: EnvVars("DISABLE_CLASSIFICATION"),
 		}}, {
 		Flag: &cli.BoolFlag{
