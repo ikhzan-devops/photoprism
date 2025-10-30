@@ -12,10 +12,17 @@ import (
 	"github.com/photoprism/photoprism/pkg/clean"
 )
 
-// Shares handles link share
+// ShareToken renders the generic share landing page.
 //
-// GET /s/:token/...
-func Shares(router *gin.RouterGroup) {
+//	@Summary	renders the generic share landing page
+//	@Id			ShareToken
+//	@Tags		Shares
+//	@Produce	text/html
+//	@Param		token	path		string	true	"Share token"
+//	@Success	200		{string}	string	"Rendered HTML page"
+//	@Failure	302		{string}	string	"Redirect to the base site when the token is invalid"
+//	@Router		/s/{token} [get]
+func ShareToken(router *gin.RouterGroup) {
 	router.GET("/:token", func(c *gin.Context) {
 		conf := get.Config()
 
@@ -34,7 +41,20 @@ func Shares(router *gin.RouterGroup) {
 		uri := conf.LibraryUri("/albums")
 		c.HTML(http.StatusOK, "share.gohtml", gin.H{"shared": gin.H{"token": token, "uri": uri}, "config": clientConfig})
 	})
+}
 
+// ShareTokenShared renders the album/page view for an individual share.
+//
+//	@Summary	renders the album/page view for an individual share
+//	@Id			ShareTokenShared
+//	@Tags		Shares
+//	@Produce	text/html
+//	@Param		token	path		string	true	"Share token"
+//	@Param		shared	path		string	true	"Shared resource UID"
+//	@Success	200		{string}	string	"Rendered HTML page"
+//	@Failure	302		{string}	string	"Redirect to the base site when the token is invalid"
+//	@Router		/s/{token}/{shared} [get]
+func ShareTokenShared(router *gin.RouterGroup) {
 	router.GET("/:token/:shared", func(c *gin.Context) {
 		conf := get.Config()
 
