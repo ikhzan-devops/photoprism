@@ -18,7 +18,7 @@ func TestClientRegistry_FindByClientID(t *testing.T) {
 	defer c.CloseDb()
 
 	r, _ := NewClientRegistryWithConfig(c)
-	n := &Node{Node: cluster.Node{Name: "pp-find-client", Role: "instance", UUID: rnd.UUIDv7()}}
+	n := &Node{Node: cluster.Node{Name: "pp-find-client", Role: cluster.RoleApp, UUID: rnd.UUIDv7()}}
 	assert.NoError(t, r.Put(n))
 
 	got, err := r.FindByClientID(n.ClientID)
@@ -38,7 +38,7 @@ func TestClientRegistry_ClientIDChangedAfterRestore(t *testing.T) {
 
 	uuid := rnd.UUIDv7()
 	// Original row
-	a := entity.NewClient().SetName("pp-restore").SetRole("instance")
+	a := entity.NewClient().SetName("pp-restore").SetRole(cluster.RoleApp)
 	a.NodeUUID = uuid
 	assert.NoError(t, a.Create())
 	oldID := a.ClientUID
@@ -46,7 +46,7 @@ func TestClientRegistry_ClientIDChangedAfterRestore(t *testing.T) {
 	// Simulate restore: remove old row, create new row for same node UUID with new UID
 	assert.NoError(t, a.Delete())
 	time.Sleep(1100 * time.Millisecond)
-	b := entity.NewClient().SetName("pp-restore").SetRole("instance")
+	b := entity.NewClient().SetName("pp-restore").SetRole(cluster.RoleApp)
 	b.NodeUUID = uuid
 	assert.NoError(t, b.Create())
 
@@ -73,7 +73,7 @@ func TestClientRegistry_SwapNames_UUIDAuthoritative(t *testing.T) {
 	defer c.CloseDb()
 
 	r, _ := NewClientRegistryWithConfig(c)
-	a := &Node{Node: cluster.Node{UUID: rnd.UUIDv7(), Name: "pp-a", Role: "instance"}}
+	a := &Node{Node: cluster.Node{UUID: rnd.UUIDv7(), Name: "pp-a", Role: cluster.RoleApp}}
 	b := &Node{Node: cluster.Node{UUID: rnd.UUIDv7(), Name: "pp-b", Role: "service"}}
 	assert.NoError(t, r.Put(a))
 	assert.NoError(t, r.Put(b))
@@ -118,7 +118,7 @@ func TestClientRegistry_DBDriverAndFields(t *testing.T) {
 	defer c.CloseDb()
 
 	r, _ := NewClientRegistryWithConfig(c)
-	n := &Node{Node: cluster.Node{UUID: rnd.UUIDv7(), Name: "pp-db", Role: "instance"}}
+	n := &Node{Node: cluster.Node{UUID: rnd.UUIDv7(), Name: "pp-db", Role: cluster.RoleApp}}
 	db := n.ensureDatabase()
 	db.Name = "photoprism_d123"
 	db.User = "photoprism_u123"

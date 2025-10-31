@@ -10,6 +10,7 @@ import (
 	"github.com/photoprism/photoprism/internal/config/ttl"
 	"github.com/photoprism/photoprism/internal/entity"
 	"github.com/photoprism/photoprism/internal/ffmpeg/encode"
+	"github.com/photoprism/photoprism/internal/service/cluster"
 	"github.com/photoprism/photoprism/internal/service/hub/places"
 	"github.com/photoprism/photoprism/internal/thumb"
 	"github.com/photoprism/photoprism/pkg/authn"
@@ -699,7 +700,7 @@ var Flags = CliFlags{
 		}}, {
 		Flag: &cli.StringFlag{
 			Name:    "node-role",
-			Usage:   "node `ROLE` (instance or service)",
+			Usage:   fmt.Sprintf("node `ROLE` (%s or %s)", cluster.RoleApp, cluster.RoleService),
 			EnvVars: EnvVars("NODE_ROLE"),
 		}}, {
 		Flag: &cli.StringFlag{
