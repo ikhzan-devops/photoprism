@@ -91,7 +91,7 @@
                 class="input-name pa-0 ma-0"
                 @blur="onSetName(m)"
                 @update:model-value="(person) => onSetPerson(m, person)"
-                @keyup.enter.native="onSetName(m)"
+                @keyup.enter="onSetName(m)"
               >
               </v-combobox>
             </v-card-actions>
@@ -324,6 +324,11 @@ export default {
     },
     onSetName(model) {
       if (this.busy || !model) {
+        return;
+      }
+
+      // If there's a pending confirmation for a different face, don't process new input
+      if (this.confirm.visible && this.confirm.model && this.confirm.model.UID !== model.UID) {
         return;
       }
 

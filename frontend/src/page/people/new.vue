@@ -85,8 +85,8 @@
                   single-line
                   density="comfortable"
                   class="input-name pa-0 ma-0"
-                  @blur="onSetName(m, false)"
-                  @keyup.enter="onSetName(m, false)"
+                  @blur="onSetName(m)"
+                  @keyup.enter="onSetName(m)"
                 ></v-text-field>
                 <v-combobox
                   v-else
@@ -106,9 +106,9 @@
                   autocomplete="off"
                   density="comfortable"
                   class="input-name pa-0 ma-0"
-                  @blur="onSetName(m, true)"
+                  @blur="onSetName(m)"
                   @update:model-value="(person) => onSetPerson(m, person)"
-                  @keyup.enter.native="onSetName(m, false)"
+                  @keyup.enter="onSetName(m)"
                 >
                 </v-combobox>
               </v-card-actions>
@@ -155,6 +155,7 @@ export default {
     },
     active: Boolean,
   },
+  emits: ["updateFaceCount"],
   data() {
     const query = this.$route.query;
     const routeName = this.$route.name;
@@ -643,8 +644,13 @@ export default {
 
       return true;
     },
-    onSetName(model, confirm) {
+    onSetName(model) {
       if (this.busy || !model) {
+        return;
+      }
+
+      // If there's a pending confirmation for a different face, don't process new input
+      if (this.confirm.visible && this.confirm.model && this.confirm.model.ID !== model.ID) {
         return;
       }
 
@@ -674,7 +680,8 @@ export default {
       model.Name = name;
       model.SubjUID = "";
 
-      if (confirm && model.wasChanged()) {
+      // Always show confirmation dialog for new person names
+      if (model.Name && !model.SubjUID) {
         this.confirm.visible = true;
       } else {
         this.onConfirmRename();
