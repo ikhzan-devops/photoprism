@@ -2,13 +2,13 @@
 
 ## Overview
 
-The provisioner package manages per-node MariaDB schemas and users for cluster deployments. It derives deterministic identifiers from the cluster UUID and node name, creates or rotates credentials via the admin DSN, and exposes helpers (`EnsureCredentials`, `DropCredentials`, `GenerateCredentials`) that API and CLI layers can reuse when onboarding or rotating nodes.
+The provisioner package manages per-node MariaDB schemas and users for cluster deployments. It derives deterministic identifiers from the cluster UUID and node name using a configurable prefix (default `cluster_`), creates or rotates credentials via the admin DSN, and exposes helpers (`EnsureCredentials`, `DropCredentials`, `GenerateCredentials`) that API and CLI layers can reuse when onboarding or rotating nodes.
 
 ## Development Workflow
 
 - Configuration lives in `database.go`. The admin connection string is `ProvisionDSN` (default `root:photoprism@tcp(mariadb:4001)/photoprism?...`). Adjust only when running against a different host or password.
 - `EnsureCredentials` accepts node UUID and name, creates the schema if needed, and returns credentials plus rotation metadata. `DropCredentials` revokes grants, drops the user, and removes the schema. Both functions require a context; prefer `context.WithTimeout` in callers.
-- Identifier generation is centralized in `GenerateCredentials`. Call it instead of handcrafting database or user names so tests, CLI, and API stay aligned.
+- Identifier generation is centralized in `GenerateCredentials`. Call it instead of handcrafting database or user names so tests, CLI, and API stay aligned. The resulting identifiers follow `<prefix>d<hmac11>` for schemas and `<prefix>u<hmac11>` for users. Portal deployments may override the prefix via the `database-provision-prefix` flag; defaults are `cluster_d…` / `cluster_u…`.
 
 ## Testing Guidelines
 
@@ -31,12 +31,12 @@ The provisioner package manages per-node MariaDB schemas and users for cluster d
 - Connect from the dev container using `mariadb` (already configured to reach `mariadb:4001`). Common snippets:
   ```bash
   cat <<'SQL' | mariadb
-  SHOW DATABASES LIKE 'cluster_d%';
+  SHOW DATABASES LIKE 'cluster_d%'; -- adjust prefix if database-provision-prefix overrides the default
   SQL
   ```
   ```bash
   cat <<'SQL' | mariadb
-  SELECT User, Host FROM mysql.user WHERE User LIKE 'cluster_u%';
+  SELECT User, Host FROM mysql.user WHERE User LIKE 'cluster_u%'; -- adjust prefix if needed
   SQL
   ```
 - Manually drop leftover resources when iterating outside tests:

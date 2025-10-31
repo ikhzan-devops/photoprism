@@ -922,6 +922,13 @@ var Flags = CliFlags{
 			Hidden:  true,
 		}}, {
 		Flag: &cli.StringFlag{
+			Name:    "database-provision-prefix",
+			Usage:   "auto-provisioning name `PREFIX` for generated database names and users",
+			Value:   cluster.DefaultDatabaseProvisionPrefix,
+			EnvVars: EnvVars("DATABASE_PROVISION_PREFIX"),
+			Hidden:  true,
+		}}, {
+		Flag: &cli.StringFlag{
 			Name:    "database-provision-dsn",
 			Usage:   "auto-provisioning `DSN`",
 			EnvVars: EnvVars("DATABASE_PROVISION_DSN"),
