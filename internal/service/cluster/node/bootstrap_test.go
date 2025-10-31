@@ -22,7 +22,7 @@ func TestInitConfig_NoPortal_NoOp(t *testing.T) {
 	c := config.NewMinimalTestConfigWithDb("bootstrap", t.TempDir())
 	defer c.CloseDb()
 
-	// Default NodeRole() resolves to instance; no Portal configured.
+	// Default NodeRole() resolves to app; no Portal configured.
 	assert.Equal(t, cluster.RoleApp, c.NodeRole())
 	assert.NoError(t, InitConfig(c))
 }

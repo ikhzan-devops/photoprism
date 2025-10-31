@@ -120,8 +120,8 @@ func TestClientRegistry_DBDriverAndFields(t *testing.T) {
 	r, _ := NewClientRegistryWithConfig(c)
 	n := &Node{Node: cluster.Node{UUID: rnd.UUIDv7(), Name: "pp-db", Role: cluster.RoleApp}}
 	db := n.ensureDatabase()
-	db.Name = "photoprism_d123"
-	db.User = "photoprism_u123"
+	db.Name = "cluster_d123"
+	db.User = "cluster_u123"
 	db.Driver = "mysql"
 	db.RotatedAt = time.Now().UTC().Format(time.RFC3339)
 	assert.NoError(t, r.Put(n))
@@ -129,8 +129,8 @@ func TestClientRegistry_DBDriverAndFields(t *testing.T) {
 	got, err := r.FindByNodeUUID(n.UUID)
 	assert.NoError(t, err)
 	if assert.NotNil(t, got) {
-		assert.Equal(t, "photoprism_d123", got.Database.Name)
-		assert.Equal(t, "photoprism_u123", got.Database.User)
+		assert.Equal(t, "cluster_d123", got.Database.Name)
+		assert.Equal(t, "cluster_u123", got.Database.User)
 		assert.Equal(t, "mysql", got.Database.Driver)
 	}
 
@@ -138,6 +138,6 @@ func TestClientRegistry_DBDriverAndFields(t *testing.T) {
 	dto := BuildClusterNode(*got, NodeOpts{IncludeAdvertiseUrl: true, IncludeDatabase: true})
 	if assert.NotNil(t, dto.Database) {
 		assert.Equal(t, "mysql", dto.Database.Driver)
-		assert.Equal(t, "photoprism_d123", dto.Database.Name)
+		assert.Equal(t, "cluster_d123", dto.Database.Name)
 	}
 }

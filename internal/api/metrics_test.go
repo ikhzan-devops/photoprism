@@ -105,7 +105,7 @@ func TestGetMetrics(t *testing.T) {
 			name string
 			role string
 		}{
-			{"metrics-instance-1", string(cluster.RoleApp)},
+			{"metrics-app-1", string(cluster.RoleApp)},
 			{"metrics-service-1", string(cluster.RoleService)},
 		}
 

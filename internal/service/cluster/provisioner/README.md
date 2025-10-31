@@ -31,18 +31,18 @@ The provisioner package manages per-node MariaDB schemas and users for cluster d
 - Connect from the dev container using `mariadb` (already configured to reach `mariadb:4001`). Common snippets:
   ```bash
   cat <<'SQL' | mariadb
-  SHOW DATABASES LIKE 'photoprism_d%';
+  SHOW DATABASES LIKE 'cluster_d%';
   SQL
   ```
   ```bash
   cat <<'SQL' | mariadb
-  SELECT User, Host FROM mysql.user WHERE User LIKE 'photoprism_u%';
+  SELECT User, Host FROM mysql.user WHERE User LIKE 'cluster_u%';
   SQL
   ```
 - Manually drop leftover resources when iterating outside tests:
   ```bash
   for db in $(cat <<'SQL' | mariadb --batch --skip-column-names
-  SELECT schema_name FROM information_schema.schemata WHERE schema_name LIKE 'photoprism_d%';
+  SELECT schema_name FROM information_schema.schemata WHERE schema_name LIKE 'cluster_d%';
   SQL
   ); do
       printf 'DROP DATABASE IF EXISTS `%s`;\\n' "$db" | mariadb
@@ -50,7 +50,7 @@ The provisioner package manages per-node MariaDB schemas and users for cluster d
   ```
   ```bash
   for user in $(cat <<'SQL' | mariadb --batch --skip-column-names
-  SELECT User FROM mysql.user WHERE User LIKE 'photoprism_u%';
+  SELECT User FROM mysql.user WHERE User LIKE 'cluster_u%';
   SQL
   ); do
       cat <<SQL | mariadb
@@ -64,7 +64,7 @@ The provisioner package manages per-node MariaDB schemas and users for cluster d
 
 - Always pair credential creation with `DropCredentials` inside `t.Cleanup` for tests and defer blocks for ad-hoc scripts.
 - When troubleshooting API or CLI flows, capture the node UUID and name from the response and call `GenerateCredentials` to identify which schema/user to drop once finished.
-- Before committing, run `SHOW DATABASES LIKE 'photoprism_d%';` and `SELECT User FROM mysql.user WHERE User LIKE 'photoprism_u%';` to verify the MariaDB instance is clean.
+- Before committing, run `SHOW DATABASES LIKE 'cluster_d%';` and `SELECT User FROM mysql.user WHERE User LIKE 'cluster_u%';` to verify the MariaDB instance is clean.
 
 ## Focused Commands
 

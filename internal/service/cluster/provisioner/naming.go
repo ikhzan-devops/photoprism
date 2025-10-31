@@ -14,8 +14,8 @@ import (
 const (
 	// Name prefix for generated DB objects.
 	// Final pattern without slugs (UUID-based):
-	//   database: photoprism_d<hmac11>
-	//   username: photoprism_u<hmac11>
+	//   database: cluster_d<hmac11>
+	//   username: cluster_u<hmac11>
 	prefix     = "photoprism_"
 	dbSuffix   = 11
 	userSuffix = 11

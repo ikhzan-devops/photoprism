@@ -50,7 +50,7 @@ func TestClientRegistry_RoleChange(t *testing.T) {
 	if assert.NotNil(t, got) {
 		assert.Equal(t, "service", got.Role)
 	}
-	// Change to instance
+	// Change to app
 	upd := &Node{Node: cluster.Node{ClientID: got.ClientID, Name: got.Name, Role: cluster.RoleApp}}
 	assert.NoError(t, r.Put(upd))
 	got2, err := r.FindByName("pp-role")

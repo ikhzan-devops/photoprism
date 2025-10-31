@@ -103,7 +103,7 @@ Background Workers
 - Auto indexer: `internal/workers/auto/*`.
 
 Cluster / Portal
-- Node types: `internal/service/cluster/const.go` (`cluster.RoleInstance`, `cluster.RolePortal`, `cluster.RoleService`).
+- Node types: `internal/service/cluster/const.go` (`cluster.RoleApp`, `cluster.RolePortal`, `cluster.RoleService`).
 - Node bootstrap & registration: `internal/service/cluster/node/*` (HTTP to Portal; do not import Portal internals).
   - Registration now retries once on 401/403 by rotating the node client secret with the join token and persists the new credentials (falling back to in-memory storage if the secrets directory is read-only).
   - Theme sync logs explicitly when refresh/rotation occurs so operators can trace credential churn in standard log levels.
@@ -201,8 +201,8 @@ Cluster Registry & Provisioner Cheatsheet
 - UUID‑first everywhere: API paths `{uuid}`, Registry `Get/Delete/RotateSecret` by UUID; explicit `FindByClientID` exists for OAuth.
 - Node/DTO fields: `uuid` required; `clientId` optional; database metadata includes `driver`.
 - Provisioner naming (no slugs):
-  - database: `photoprism_d<hmac11>`
-  - username: `photoprism_u<hmac11>`
+  - database: `cluster_d<hmac11>`
+  - username: `cluster_u<hmac11>`
   HMAC is base32 of ClusterUUID+NodeUUID; drivers currently `mysql|mariadb`.
 - DSN builder: `BuildDSN(driver, host, port, user, pass, name)`; warns and falls back to MySQL format for unsupported drivers.
 - Go tests live beside sources: for `path/to/pkg/<file>.go`, add tests in `path/to/pkg/<file>_test.go` (create if missing). For the same function, group related cases as `t.Run(...)` sub-tests (table-driven where helpful) and name each subtest string in PascalCase.
