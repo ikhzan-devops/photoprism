@@ -444,7 +444,7 @@ var Flags = CliFlags{
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "disable-tensorflow",
-			Usage:   "disables features depending on TensorFlow, e.g. image classification and face recognition",
+			Usage:   "disables features depending on TensorFlow, e.g. face recognition",
 			EnvVars: EnvVars("DISABLE_TENSORFLOW"),
 		}}, {
 		Flag: &cli.BoolFlag{
@@ -454,7 +454,7 @@ var Flags = CliFlags{
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "disable-classification",
-			Usage:   "disables image classification (requires TensorFlow)",
+			Usage:   "disables label generation for image classification",
 			EnvVars: EnvVars("DISABLE_CLASSIFICATION"),
 		}}, {
 		Flag: &cli.BoolFlag{
@@ -734,6 +734,7 @@ var Flags = CliFlags{
 		Flag: &cli.StringFlag{
 			Name:    "jwt-scope",
 			Usage:   "allowed JWT `SCOPES` (space separated). Leave empty to accept defaults",
+			Value:   DefaultJWTAllowedScopes,
 			EnvVars: EnvVars("JWT_SCOPE"),
 		}}, {
 		Flag: &cli.IntFlag{
@@ -1251,14 +1252,14 @@ var Flags = CliFlags{
 			EnvVars: EnvVars("FACE_MATCH_DIST"),
 		}}, {
 		Flag: &cli.BoolFlag{
-			Name:    "face-match-children",
-			Usage:   "enable automatic matching for child face embeddings",
-			EnvVars: EnvVars("FACE_MATCH_CHILDREN"),
+			Name:    "face-skip-children",
+			Usage:   "skips automatic matching of child face embeddings",
+			EnvVars: EnvVars("FACE_SKIP_CHILDREN"),
 		}}, {
 		Flag: &cli.BoolFlag{
-			Name:    "face-match-background",
-			Usage:   "enable automatic matching for background embeddings",
-			EnvVars: EnvVars("FACE_MATCH_BACKGROUND"),
+			Name:    "face-allow-background",
+			Usage:   "allows matching of probable background embeddings",
+			EnvVars: EnvVars("FACE_ALLOW_BACKGROUND"),
 		}}, {
 		Flag: &cli.StringFlag{
 			Name:      "pid-filename",

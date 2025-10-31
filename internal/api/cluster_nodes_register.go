@@ -430,7 +430,7 @@ func validateAdvertiseURL(u string) bool {
 	}
 
 	if parsed.Scheme == "http" {
-		if host == "localhost" || host == "127.0.0.1" || host == "::1" {
+		if host == "localhost" || host == "127.0.0.1" || host == "::1" || isClusterServiceHost(host) {
 			return true
 		}
 		return false
@@ -464,4 +464,28 @@ func buildJWKSURL(conf *config.Config) string {
 }
 
 // validateSiteURL applies the same rules as validateAdvertiseURL.
-func validateSiteURL(u string) bool { return validateAdvertiseURL(u) }
+func validateSiteURL(u string) bool {
+	return validateAdvertiseURL(u)
+}
+
+// isClusterServiceHost reports whether the host refers to a cluster-internal
+// service DNS name so that HTTP can be permitted for intra-cluster traffic.
+func isClusterServiceHost(host string) bool {
+	host = strings.TrimSuffix(host, ".")
+
+	if host == "" {
+		return false
+	}
+
+	// Allow cluster internal service hosts.
+	if strings.HasSuffix(host, ".svc") || strings.Contains(host, ".svc.") {
+		return true
+	}
+
+	// Allow hosts with .local or .internal domain.
+	if strings.HasSuffix(host, ".local") || strings.HasSuffix(host, ".internal") {
+		return true
+	}
+
+	return false
+}

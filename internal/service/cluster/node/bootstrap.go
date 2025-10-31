@@ -55,7 +55,7 @@ func InitConfig(c *config.Config) error {
 	joinToken := strings.TrimSpace(c.JoinToken())
 
 	if portalURL == "" || joinToken == "" {
-		log.Debugf("config: no cluster bootstrap configuration found")
+		log.Debugf("cluster: no bootstrap configuration found")
 		return nil
 	}
 
@@ -63,13 +63,13 @@ func InitConfig(c *config.Config) error {
 
 	u, err := url.Parse(portalURL)
 	if err != nil || u.Scheme == "" || u.Host == "" {
-		log.Warnf("config: invalid cluster portal URL %s", clean.Log(portalURL))
+		log.Warnf("cluster: invalid portal URL %s", clean.Log(portalURL))
 		return nil
 	}
 
 	// Enforce TLS for non-local URLs.
 	if u.Scheme != "https" && !dns.IsLoopbackHost(u.Hostname()) {
-		log.Warnf("config: refusing non-TLS portal URL %s on non-local host", clean.Log(portalURL))
+		log.Warnf("cluster: refusing non-TLS portal URL %s on non-local host", clean.Log(portalURL))
 		return nil
 	}
 
@@ -79,11 +79,11 @@ func InitConfig(c *config.Config) error {
 		if registerResp, err = registerWithPortal(c, u, joinToken); err != nil {
 			log.Warnf("config: failed to join the configured cluster (%s)", clean.Error(err))
 			if isAuthError(err) {
-				log.Infof("config: refreshing node credentials after authentication failure")
+				log.Infof("cluster: refreshing credentials after authentication failure")
 			}
 			if isAuthError(err) && refreshNodeCredentials(c, u) {
 				if registerResp, err = registerWithPortal(c, u, joinToken); err != nil {
-					log.Warnf("config: retry join attempt failed (%s)", clean.Error(err))
+					log.Warnf("cluster: retry join attempt failed (%s)", clean.Error(err))
 				}
 			}
 		}
@@ -93,7 +93,7 @@ func InitConfig(c *config.Config) error {
 	if cluster.BootstrapAutoThemeEnabled {
 		if err = syncNodeTheme(c, u, registerResp); err != nil {
 			// Theme install failures are non-critical; log at debug to avoid noise.
-			log.Debugf("config: portal theme download skipped (%s)", clean.Error(err))
+			log.Debugf("cluster: theme download skipped (%s)", clean.Error(err))
 		}
 		activateNodeThemeIfPresent(c)
 	}
@@ -185,7 +185,7 @@ func registerWithPortal(c *config.Config, portal *url.URL, token string) (*clust
 		resp, err := newHTTPClient(timeout).Do(req)
 		if err != nil {
 			if attempt < maxAttempts {
-				log.Debugf("config: join attempt %d/%d failed with network error: %s", attempt, maxAttempts, clean.Error(err))
+				log.Debugf("cluster: join attempt %d/%d failed with %s", attempt, maxAttempts, clean.Error(err))
 				time.Sleep(delay)
 				continue
 			}
@@ -209,7 +209,7 @@ func registerWithPortal(c *config.Config, portal *url.URL, token string) (*clust
 			if resp.StatusCode == http.StatusCreated {
 				log.Infof("config: successfully joined cluster as node %s (%d)", clean.LogQuote(r.Node.Name), resp.StatusCode)
 			} else {
-				log.Infof("config: cluster membership confirmed (%d)", resp.StatusCode)
+				log.Infof("cluster: membership confirmed")
 			}
 			return &r, nil
 		case http.StatusUnauthorized, http.StatusForbidden, http.StatusNotFound:
@@ -217,7 +217,7 @@ func registerWithPortal(c *config.Config, portal *url.URL, token string) (*clust
 			return nil, errors.New(resp.Status)
 		case http.StatusTooManyRequests:
 			if attempt < maxAttempts {
-				log.Debugf("config: join attempt %d/%d rate limited by portal", attempt, maxAttempts)
+				log.Debugf("cluster: join attempt %d/%d rate limited by portal", attempt, maxAttempts)
 				time.Sleep(delay)
 				continue
 			}
@@ -227,7 +227,7 @@ func registerWithPortal(c *config.Config, portal *url.URL, token string) (*clust
 			return nil, errors.New(resp.Status)
 		default:
 			if attempt < maxAttempts {
-				log.Debugf("config: join attempt %d/%d received portal status %s", attempt, maxAttempts, resp.Status)
+				log.Debugf("cluster: join attempt %d/%d failed with status %s", attempt, maxAttempts, resp.Status)
 				// TODO: Consider exponential backoff with jitter instead of constant delay.
 				time.Sleep(delay)
 				continue
@@ -402,7 +402,7 @@ func primeJWKS(c *config.Config, url string) {
 	defer cancel()
 
 	if err := verifier.Prime(ctx, url); err != nil {
-		log.Debugf("config: jwks prime skipped (%s)", clean.Error(err))
+		log.Debugf("auth: jwks prime skipped (%s)", clean.Error(err))
 	}
 }
 
@@ -426,24 +426,24 @@ func syncNodeTheme(c *config.Config, portal *url.URL, registerResp *cluster.Regi
 	switch {
 	case portalVersion != "":
 		if !hasAppJS {
-			log.Infof("config: portal theme %s not installed yet; scheduling download", clean.Log(portalVersion))
+			log.Infof("theme: %s not installed yet; scheduling download", clean.Log(portalVersion))
 			needsDownload = true
 		} else if localVersion != portalVersion {
-			log.Infof("config: portal theme update detected (local %s, portal %s); scheduling download", clean.Log(localVersion), clean.Log(portalVersion))
+			log.Infof("theme: update detected (local %s, portal %s); scheduling download", clean.Log(localVersion), clean.Log(portalVersion))
 			needsDownload = true
 			requiresOverwrite = true
 		} else {
-			log.Infof("config: portal theme version %s already installed", clean.Log(localVersion))
+			log.Infof("theme: version %s already installed", clean.Log(localVersion))
 		}
 	case shouldProbe:
 		// Registration failed or was skipped; attempt to obtain the theme when missing.
 		needsDownload = !hasAppJS || localVersion == ""
 		if needsDownload {
-			log.Infof("config: probing portal for theme because local bundle is missing")
+			log.Infof("theme: probing portal because local bundle is missing")
 		}
 	default:
 		// Portal responded but has no theme configured; keep existing node theme.
-		log.Infof("config: portal did not advertise a theme; skipping download")
+		log.Infof("cluster: portal did not advertise a theme; skipping download")
 		return nil
 	}
 
@@ -486,7 +486,7 @@ func syncNodeTheme(c *config.Config, portal *url.URL, registerResp *cluster.Regi
 	}
 
 	if bearer == "" {
-		log.Infof("config: theme sync skipped because no portal credentials are available yet")
+		log.Infof("theme: sync skipped because no portal credentials are available yet")
 		return nil
 	}
 
@@ -632,18 +632,18 @@ func refreshNodeCredentials(c *config.Config, portal *url.URL) bool {
 
 	joinToken := strings.TrimSpace(c.JoinToken())
 	if joinToken == "" {
-		log.Infof("config: cannot refresh node credentials without a join token")
+		log.Infof("cluster: cannot refresh credentials without a join token")
 		return false
 	}
 
 	id, secret, err := obtainNodeCredentialsViaRegister(c, portal, joinToken)
 	if err != nil {
-		log.Infof("config: failed to refresh node credentials (%s)", clean.Error(err))
+		log.Infof("cluster: failed to refresh credentials (%s)", clean.Error(err))
 		return false
 	}
 
 	if _, err = c.SaveNodeClientSecret(secret); err != nil {
-		log.Warnf("config: failed to persist node client secret (%s)", clean.Error(err))
+		log.Warnf("cluster: failed to persist client secret (%s)", clean.Error(err))
 		return false
 	}
 
@@ -654,10 +654,10 @@ func refreshNodeCredentials(c *config.Config, portal *url.URL) bool {
 	}
 
 	if wrote, err := ApplyOptionsUpdate(c, updates); err != nil {
-		log.Warnf("config: failed to persist node client id (%s)", clean.Error(err))
+		log.Warnf("cluster: failed to persist client id (%s)", clean.Error(err))
 	} else if wrote {
 		if loadErr := c.Options().Load(c.OptionsYaml()); loadErr != nil {
-			log.Warnf("config: failed to reload options after credential refresh (%s)", clean.Error(loadErr))
+			log.Warnf("cluster: failed to reload options.yml after credential refresh (%s)", clean.Error(loadErr))
 		}
 	}
 

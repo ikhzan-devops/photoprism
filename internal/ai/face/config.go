@@ -17,19 +17,19 @@ var (
 	// ScoreThreshold is the base minimum face score accepted by the detector.
 	ScoreThreshold = 9.0
 	// ClusterScoreThreshold is the minimum score required for faces that contribute to automatic clustering.
-	ClusterScoreThreshold = 15
+	ClusterScoreThreshold = 20
 	// SizeThreshold is the minimum detected face size, in pixels.
 	SizeThreshold = 25
 	// ClusterSizeThreshold is the minimum face size, in pixels, for faces considered when forming clusters.
-	ClusterSizeThreshold = 50
+	ClusterSizeThreshold = 60
 	// ClusterDist is the similarity distance threshold that defines the cluster core.
 	ClusterDist = 0.64
 	// ClusterRadius is the maximum normalized distance for cluster samples.
 	ClusterRadius = 0.42
 	// MatchDist is the distance offset threshold used to match new faces with existing clusters.
-	MatchDist = 0.42
+	MatchDist = 0.4
 	// CollisionDist is the minimum distance under which embeddings cannot be distinguished.
-	CollisionDist = 0.1
+	CollisionDist = 0.05
 	// ClusterCore is the minimum number of faces required to seed a cluster core.
 	ClusterCore = 4
 	// SampleThreshold is the number of faces required before automatic clustering begins.
@@ -37,7 +37,7 @@ var (
 	// Epsilon is the numeric tolerance used during cluster comparisons.
 	Epsilon = 0.01
 	// SkipChildren controls whether the clustering step omits faces from child samples by default.
-	SkipChildren = true
+	SkipChildren = false
 	// IgnoreBackground determines whether background faces are ignored when generating matches.
 	IgnoreBackground = true
 )

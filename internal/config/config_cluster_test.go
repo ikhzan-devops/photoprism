@@ -181,7 +181,7 @@ func TestConfig_Cluster(t *testing.T) {
 		c.options.JWTScope = "cluster vision"
 		assert.Equal(t, list.ParseAttr("cluster vision"), c.JWTAllowedScopes())
 		c.options.JWTScope = ""
-		assert.Equal(t, list.ParseAttr("cluster vision metrics"), c.JWTAllowedScopes())
+		assert.Equal(t, list.ParseAttr("config cluster vision metrics"), c.JWTAllowedScopes())
 	})
 	t.Run("Paths", func(t *testing.T) {
 		c := NewConfig(CliTestContext())
@@ -341,6 +341,20 @@ func TestConfig_Cluster(t *testing.T) {
 		c.options.NodeClientSecret = ""
 		assert.Equal(t, cluster.ExampleClientSecret, c.NodeClientSecret())
 	})
+	t.Run("NodeClientSecretFallbackOnWrite", func(t *testing.T) {
+		tempCfg := t.TempDir()
+		ctx := CliTestContext()
+		assert.NoError(t, ctx.Set("config-path", tempCfg))
+		c := NewConfig(ctx)
+
+		secretDir := filepath.Join(c.NodeConfigPath(), fs.SecretsDir)
+		assert.NoError(t, os.MkdirAll(secretDir, fs.ModeDir))
+		assert.NoError(t, os.Chmod(secretDir, 0o500))
+
+		_, err := c.SaveNodeClientSecret(cluster.ExampleClientSecret)
+		assert.Error(t, err)
+		assert.Equal(t, cluster.ExampleClientSecret, c.NodeClientSecret())
+	})
 	t.Run("JoinTokenFilePortal", func(t *testing.T) {
 		tempCfg := t.TempDir()
 		ctx := CliTestContext()
@@ -362,6 +376,21 @@ func TestConfig_Cluster(t *testing.T) {
 		expected := filepath.Join(c.NodeConfigPath(), fs.SecretsDir, fs.JoinTokenFile)
 		assert.Equal(t, expected, c.JoinTokenFile())
 		assert.Equal(t, expected, c.NodeJoinTokenFile())
+	})
+	t.Run("SaveJoinTokenFallbackOnWrite", func(t *testing.T) {
+		tempCfg := t.TempDir()
+		ctx := CliTestContext()
+		assert.NoError(t, ctx.Set("config-path", tempCfg))
+		c := NewConfig(ctx)
+
+		secretDir := filepath.Join(c.NodeConfigPath(), fs.SecretsDir)
+		assert.NoError(t, os.MkdirAll(secretDir, fs.ModeDir))
+		assert.NoError(t, os.Chmod(secretDir, 0o500))
+
+		_, _, err := c.SaveJoinToken("")
+		assert.Error(t, err)
+		token := c.JoinToken()
+		assert.True(t, rnd.IsJoinToken(token, false))
 	})
 	t.Run("NodeClientSecretFile", func(t *testing.T) {
 		tempCfg := t.TempDir()
