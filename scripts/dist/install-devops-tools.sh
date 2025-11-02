@@ -35,6 +35,10 @@ BIN_DIR="${BIN_DIR:-/usr/local/bin}"
 TMPDIR="$(mktemp -d)"
 trap 'rm -rf "${TMPDIR}"' EXIT
 
+export PIPX_HOME="${PIPX_HOME:-/opt/pipx}"
+export PIPX_BIN_DIR="${PIPX_BIN_DIR:-/usr/local/bin}"
+$SUDO install -d -m 0755 "${PIPX_HOME}" "${PIPX_BIN_DIR}"
+
 install_apt_packages() {
   local packages=(
     bash-completion
@@ -45,6 +49,8 @@ install_apt_packages() {
     netcat-openbsd
     nfs-common
     percona-toolkit
+    pipx
+    python3-venv
     socat
     yq
   )
@@ -193,9 +199,15 @@ install_kubectl_neat() {
 
 install_proxysql_admin() {
   if command -v pipx >/dev/null 2>&1; then
+    if ! pipx ensurepath --force >/dev/null 2>&1; then
+      echo "pipx ensurepath failed; continuing with existing PATH." >&2
+    fi
     if ! pipx list 2>/dev/null | grep -q "proxysql-admin-tool"; then
-      if ! pipx install proxysql-admin-tool; then
-        echo "pipx install proxysql-admin-tool failed; skipping proxysql-admin-tool installation." >&2
+      if ! pipx install proxysql-admin-tool >/dev/null 2>&1; then
+        echo "pipx install proxysql-admin-tool from PyPI failed; trying GitHub source." >&2
+        if ! pipx install "git+https://github.com/sysown/proxysql-admin-tool.git@master" >/dev/null 2>&1; then
+          echo "pipx install proxysql-admin-tool failed; skipping proxysql-admin-tool installation." >&2
+        fi
       fi
     fi
   else
