@@ -331,7 +331,9 @@ func NewTestConfig(dbName string) *Config {
 		log.Fatalf("config: %s", err.Error())
 	}
 
-	if err := s.Save(filepath.Join(c.ConfigPath(), "settings.yml")); err != nil {
+	// Save settings next to the test config path, reusing any existing
+	// `.yaml`/`.yml` variant so the tests mirror production behavior.
+	if err := s.Save(fs.ConfigFilePath(c.ConfigPath(), "settings", fs.ExtYml)); err != nil {
 		log.Fatalf("config: %s", err.Error())
 	}
 
