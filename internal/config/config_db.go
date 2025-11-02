@@ -21,6 +21,7 @@ import (
 	"github.com/photoprism/photoprism/internal/mutex"
 	"github.com/photoprism/photoprism/internal/service/cluster"
 	"github.com/photoprism/photoprism/pkg/clean"
+	"github.com/photoprism/photoprism/pkg/txt"
 )
 
 // SQL Databases.
@@ -503,6 +504,15 @@ func (c *Config) InitTestDb() {
 
 // checkDb checks the database server version.
 func (c *Config) checkDb(db *gorm.DB) error {
+	if txt.Bool(os.Getenv(EnvVar("DATABASE_SKIP_VERSION_CHECK"))) {
+		log.Debugf("config: skipping database version check")
+		return nil
+	}
+
+	if db == nil {
+		return fmt.Errorf("config: missing database connection")
+	}
+
 	switch c.DatabaseDriver() {
 	case MySQL:
 		type Res struct {

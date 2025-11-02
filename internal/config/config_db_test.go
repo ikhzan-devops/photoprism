@@ -344,3 +344,12 @@ func TestConfig_DatabaseConnsIdle(t *testing.T) {
 	c.options.DatabaseConnsIdle = 35
 	assert.Equal(t, 28, c.DatabaseConnsIdle())
 }
+
+func TestConfig_checkDb(t *testing.T) {
+	c := NewConfig(CliTestContext())
+
+	t.Setenv("PHOTOPRISM_DATABASE_SKIP_VERSION_CHECK", "true")
+	assert.NoError(t, c.checkDb(nil))
+	t.Setenv("PHOTOPRISM_DATABASE_SKIP_VERSION_CHECK", "")
+	assert.Error(t, c.checkDb(nil))
+}
