@@ -295,6 +295,7 @@ Note: Across our public documentation, official images, and in production, the c
 - For CLI-driven tests, wrap commands with `RunWithTestContext(cmd, args)` so `urfave/cli` cannot exit the process, and assert CLI output with `assert.Contains`/regex because `show` reports quote strings.
 - In `internal/photoprism` tests, rely on `photoprism.Config()` for runtime-accurate behavior; only build a new config if you replace it via `photoprism.SetConfig`.
 - Generate identifiers with `rnd.GenerateUID(entity.ClientUID)` for OAuth client IDs and `rnd.UUIDv7()` for node UUIDs; treat `node.uuid` as required in responses.
+- When creating or editing shell scripts, run `shellcheck <file>` (or the relevant `make` target) and resolve warnings before exiting the task.
 - When adding persistent fixtures (photos, files, labels, etc.), always obtain new IDs via `rnd.GenerateUID(...)` with the matching prefix (`entity.PhotoUID`, `entity.FileUID`, `entity.LabelUID`, …) instead of inventing manual strings so the search helpers recognize them.
 - For database updates, prefer the `entity.Values` type alias over raw `map[string]interface{}` so helpers stay type-safe and consistent with existing code.
 - Reach for `config.NewMinimalTestConfig(t.TempDir())` when a test only needs filesystem/config scaffolding, and use `config.NewMinimalTestConfigWithDb("<name>", t.TempDir())` when you need a fresh SQLite schema without the cached fixture snapshot.
