@@ -174,7 +174,7 @@ func TestConfig_DatabasePortString(t *testing.T) {
 func TestConfig_DatabaseName(t *testing.T) {
 	c := NewConfig(CliTestContext())
 	resetDatabaseOptions(c)
-	assert.Equal(t, "/go/src/github.com/photoprism/photoprism/storage/testdata/index.db?_busy_timeout=5000", c.DatabaseName())
+	assert.Equal(t, ProjectRoot+"/storage/testdata/index.db?_busy_timeout=5000", c.DatabaseName())
 }
 
 func TestConfig_DatabaseUser(t *testing.T) {
@@ -251,13 +251,13 @@ func TestConfig_DatabaseDSN(t *testing.T) {
 	c.options.DatabaseDriver = "MariaDB"
 	assert.Equal(t, "photoprism:@tcp(localhost)/photoprism?charset=utf8mb4,utf8&collation=utf8mb4_unicode_ci&parseTime=true&timeout=15s", c.DatabaseDSN())
 	c.options.DatabaseDriver = "tidb"
-	assert.Equal(t, "/go/src/github.com/photoprism/photoprism/storage/testdata/index.db?_busy_timeout=5000", c.DatabaseDSN())
+	assert.Equal(t, ProjectRoot+"/storage/testdata/index.db?_busy_timeout=5000", c.DatabaseDSN())
 	c.options.DatabaseDriver = "Postgres"
-	assert.Equal(t, "/go/src/github.com/photoprism/photoprism/storage/testdata/index.db?_busy_timeout=5000", c.DatabaseDSN())
+	assert.Equal(t, ProjectRoot+"/storage/testdata/index.db?_busy_timeout=5000", c.DatabaseDSN())
 	c.options.DatabaseDriver = "SQLite"
-	assert.Equal(t, "/go/src/github.com/photoprism/photoprism/storage/testdata/index.db?_busy_timeout=5000", c.DatabaseDSN())
+	assert.Equal(t, ProjectRoot+"/storage/testdata/index.db?_busy_timeout=5000", c.DatabaseDSN())
 	c.options.DatabaseDriver = ""
-	assert.Equal(t, "/go/src/github.com/photoprism/photoprism/storage/testdata/index.db?_busy_timeout=5000", c.DatabaseDSN())
+	assert.Equal(t, ProjectRoot+"/storage/testdata/index.db?_busy_timeout=5000", c.DatabaseDSN())
 }
 
 func TestConfig_DatabaseDSNFlags(t *testing.T) {
@@ -304,8 +304,8 @@ func TestConfig_DatabaseFile(t *testing.T) {
 	driver := c.DatabaseDriver()
 	assert.Equal(t, SQLite3, driver)
 	c.options.DatabaseDSN = ""
-	assert.Equal(t, "/go/src/github.com/photoprism/photoprism/storage/testdata/index.db", c.DatabaseFile())
-	assert.Equal(t, "/go/src/github.com/photoprism/photoprism/storage/testdata/index.db?_busy_timeout=5000", c.DatabaseDSN())
+	assert.Equal(t, ProjectRoot+"/storage/testdata/index.db", c.DatabaseFile())
+	assert.Equal(t, ProjectRoot+"/storage/testdata/index.db?_busy_timeout=5000", c.DatabaseDSN())
 }
 
 func TestConfig_DatabaseTimeout(t *testing.T) {

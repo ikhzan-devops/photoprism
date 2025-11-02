@@ -9,13 +9,13 @@ import (
 
 func TestNewDSN(t *testing.T) {
 	t.Run("File", func(t *testing.T) {
-		dsn := NewDSN("/go/src/github.com/photoprism/photoprism/storage/index.db?_busy_timeout=5000")
+		dsn := NewDSN(ProjectRoot + "/storage/index.db?_busy_timeout=5000")
 
 		assert.Equal(t, "", dsn.Driver)
 		assert.Equal(t, "", dsn.User)
 		assert.Equal(t, "", dsn.Password)
 		assert.Equal(t, "", dsn.Net)
-		assert.Equal(t, "/go/src/github.com/photoprism/photoprism/storage", dsn.Server)
+		assert.Equal(t, ProjectRoot+"/storage", dsn.Server)
 		assert.Equal(t, "index.db", dsn.Name)
 		assert.Equal(t, "_busy_timeout=5000", dsn.Params)
 	})

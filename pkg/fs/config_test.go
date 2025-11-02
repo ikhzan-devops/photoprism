@@ -114,4 +114,35 @@ func TestConfigFilePath(t *testing.T) {
 			})
 		}
 	})
+	t.Run("DefaultExtensionPreferred", func(t *testing.T) {
+		tests := []struct {
+			name       string
+			defaultExt string
+			altExt     string
+		}{
+			{name: "yaml-vs-yml", defaultExt: ExtYaml, altExt: ExtYml},
+			{name: "html-vs-htm", defaultExt: ExtHTML, altExt: ExtHTM},
+			{name: "proto-vs-pb", defaultExt: ExtProto, altExt: ExtPb},
+		}
+
+		for _, tc := range tests {
+			t.Run(tc.name, func(t *testing.T) {
+				dir := t.TempDir()
+				base := "prefer-" + tc.name
+
+				defaultPath := filepath.Join(dir, base+tc.defaultExt)
+				if err := os.WriteFile(defaultPath, []byte("default"), ModeFile); err != nil {
+					t.Fatalf("write %s: %v", defaultPath, err)
+				}
+
+				altPath := filepath.Join(dir, base+tc.altExt)
+				if err := os.WriteFile(altPath, []byte("alt"), ModeFile); err != nil {
+					t.Fatalf("write %s: %v", altPath, err)
+				}
+
+				got := ConfigFilePath(dir, base, tc.defaultExt)
+				assert.Equal(t, defaultPath, got)
+			})
+		}
+	})
 }
