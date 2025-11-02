@@ -118,6 +118,18 @@ func EnsureCredentials(ctx context.Context, conf *config.Config, nodeUUID, nodeN
 		return out, created, err
 	}
 
+	// 7) Provision ProxySQL user account if ProvisionProxyDSN is set.
+	if ProvisionProxyDSN != "" {
+		proxyPass := ""
+		if rotate || created {
+			proxyPass = dbPass
+		}
+
+		if err = SyncProxyUser(ctx, ProvisionProxyDSN, dbName, dbUser, proxyPass, ProvisionProxyOptions); err != nil {
+			return out, created, fmt.Errorf("proxysql: %w", err)
+		}
+	}
+
 	// Compose credentials.
 	out.Host = DatabaseHost
 	out.Port = DatabasePort
@@ -164,6 +176,12 @@ func DropCredentials(ctx context.Context, dbName, user string) error {
 			if err := execTimeout(ctx, db, 15*time.Second, "DROP DATABASE IF EXISTS "+qdb); err != nil {
 				errs = append(errs, fmt.Sprintf("drop database: %v", err))
 			}
+		}
+	}
+
+	if ProvisionProxyDSN != "" && user != "" {
+		if err := DropProxyUser(ctx, ProvisionProxyDSN, user); err != nil {
+			errs = append(errs, fmt.Sprintf("proxysql: %v", err))
 		}
 	}
 

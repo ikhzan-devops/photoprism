@@ -939,6 +939,12 @@ var Flags = CliFlags{
 			Hidden:  true,
 		}}, {
 		Flag: &cli.StringFlag{
+			Name:    "database-provision-proxy-dsn",
+			Usage:   "ProxySQL admin `DSN` (port 6032 by default) for keeping user accounts in sync",
+			EnvVars: EnvVars("DATABASE_PROVISION_PROXY_DSN"),
+			Hidden:  true,
+		}}, {
+		Flag: &cli.StringFlag{
 			Name:    "ffmpeg-bin",
 			Usage:   "FFmpeg `COMMAND` for video transcoding and thumbnail extraction",
 			Value:   encode.FFmpegBin,

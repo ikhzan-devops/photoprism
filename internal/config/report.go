@@ -199,6 +199,7 @@ func (c *Config) Report() (rows [][]string, cols []string) {
 			{"database-provision-driver", c.options.DatabaseProvisionDriver},
 			{"database-provision-prefix", c.DatabaseProvisionPrefix()},
 			{"database-provision-dsn", maskDatabaseProvisionDSN(c.options.DatabaseProvisionDSN)},
+			{"database-provision-proxy-dsn", maskDatabaseProvisionDSN(c.options.DatabaseProvisionProxyDSN)},
 		}...)
 	}
 
