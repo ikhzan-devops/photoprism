@@ -1,7 +1,9 @@
 package config
 
 import (
+	"net"
 	"regexp"
+	"strconv"
 	"strings"
 	"unicode"
 )
@@ -85,9 +87,75 @@ func (d *DSN) MaskPassword() (s string) {
 	return s
 }
 
-// Parse parses a data source name string.
+// Host the database server host.
+func (d *DSN) Host() string {
+	if d.Driver == SQLite3 {
+		return ""
+	}
+
+	host, _ := d.splitHostPort()
+	return host
+}
+
+// Port the database server port.
+func (d *DSN) Port() int {
+	switch d.Driver {
+	case SQLite3:
+		return 0
+	}
+
+	defaultPort := 0
+
+	switch d.Driver {
+	case MySQL, MariaDB:
+		defaultPort = 3306
+	case Postgres:
+		defaultPort = 5432
+	}
+
+	if d.Server == "" {
+		return 0
+	}
+
+	_, portValue := d.splitHostPort()
+
+	if portValue == "" {
+		return defaultPort
+	}
+
+	port, err := strconv.Atoi(portValue)
+	if err != nil || port < 1 || port > 65535 {
+		return defaultPort
+	}
+
+	return port
+}
+
+// splitHostPort splits the DSN server field into host and port components.
+func (d *DSN) splitHostPort() (host, port string) {
+	server := strings.TrimSpace(d.Server)
+
+	if server == "" {
+		return "", ""
+	}
+
+	var err error
+
+	host, port, err = net.SplitHostPort(server)
+
+	if err != nil {
+		return server, ""
+	}
+
+	return host, port
+}
+
+// parse parses a data source name string.
 func (d *DSN) parse() {
-	// Assume a regular DSN, and if parsing fails, treat it as a PostgreSQL-style DSN.
+	if d.parsePostgres() {
+		return
+	}
+
 	if matches := dsnPattern.FindStringSubmatch(d.DSN); len(matches) > 0 {
 		names := dsnPattern.SubexpNames()
 
@@ -114,14 +182,18 @@ func (d *DSN) parse() {
 			d.Server = d.Net
 			d.Net = ""
 		}
-	} else {
-		// Parse PostgreSQL-style DSN
-		d.parsePostgres()
 	}
+
+	d.detectDriver()
 }
 
-// parsePostgres extracts connection settings from PostgreSQL key/value style DSNs.
+// parsePostgres extracts connection settings from PostgreSQL key/value style DSNs and
+// returns true on success.
 func (d *DSN) parsePostgres() bool {
+	if !strings.Contains(d.DSN, "password=") || !strings.Contains(d.DSN, "user=") {
+		return false
+	}
+
 	fields, ok := d.splitKeyValue(d.DSN)
 
 	if !ok {
@@ -274,6 +346,54 @@ func (d *DSN) splitKeyValue(input string) ([]string, bool) {
 	}
 
 	return tokens, true
+}
+
+// detectDriver infers the driver name from DSN contents when it is not explicitly specified.
+func (d *DSN) detectDriver() {
+	driver := strings.ToLower(d.Driver)
+
+	switch driver {
+	case "postgres", "postgresql":
+		d.Driver = Postgres
+		return
+	case "mysql", "mariadb":
+		d.Driver = MySQL
+		return
+	case "sqlite", "sqlite3", "file":
+		d.Driver = SQLite3
+		return
+	}
+
+	if driver != "" {
+		d.Driver = driver
+		return
+	}
+
+	lower := strings.ToLower(d.DSN)
+
+	if strings.Contains(lower, "postgres://") || strings.Contains(lower, "postgresql://") {
+		d.Driver = Postgres
+		return
+	}
+
+	if d.Net == "tcp" || d.Net == "unix" || strings.Contains(lower, "@tcp(") || strings.Contains(lower, "@unix(") {
+		d.Driver = MySQL
+		return
+	}
+
+	if strings.HasPrefix(lower, "file:") || strings.HasSuffix(lower, ".db") || strings.HasSuffix(strings.ToLower(d.Name), ".db") {
+		d.Driver = SQLite3
+		return
+	}
+
+	if strings.Contains(lower, " host=") && strings.Contains(lower, " dbname=") {
+		d.Driver = Postgres
+		return
+	}
+
+	if d.Server != "" && (strings.Contains(d.Server, ":") || d.Net != "") && d.Driver == "" {
+		d.Driver = MySQL
+	}
 }
 
 // MaskDatabaseDSN hides the password portion of a DSN while leaving the rest untouched for logging/reporting.

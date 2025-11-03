@@ -238,32 +238,26 @@ func (c *Config) DatabaseServer() string {
 
 // DatabaseHost the database server host.
 func (c *Config) DatabaseHost() string {
+	c.ParseDatabaseDSN()
+
 	if c.DatabaseDriver() == SQLite3 {
 		return ""
 	}
 
-	if s := strings.Split(c.DatabaseServer(), ":"); len(s) > 0 {
-		return s[0]
-	}
-
-	return c.options.DatabaseServer
+	dsn := NewDSN(c.DatabaseDSN())
+	return dsn.Host()
 }
 
 // DatabasePort the database server port.
 func (c *Config) DatabasePort() int {
-	const defaultPort = 3306
+	c.ParseDatabaseDSN()
 
-	if server := c.DatabaseServer(); server == "" {
+	if c.DatabaseDriver() == SQLite3 {
 		return 0
-	} else if s := strings.Split(server, ":"); len(s) != 2 {
-		return defaultPort
-	} else if port, err := strconv.Atoi(s[1]); err != nil {
-		return defaultPort
-	} else if port < 1 || port > 65535 {
-		return defaultPort
-	} else {
-		return port
 	}
+
+	dsn := NewDSN(c.DatabaseDSN())
+	return dsn.Port()
 }
 
 // DatabasePortString the database server port as string.
