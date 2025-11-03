@@ -8,6 +8,7 @@ import (
 
 	"github.com/photoprism/photoprism/internal/ai/face"
 	"github.com/photoprism/photoprism/internal/ai/vision"
+	"github.com/photoprism/photoprism/pkg/dsn"
 )
 
 // Report returns global config values as a table for reporting.
@@ -223,7 +224,7 @@ func (c *Config) Report() (rows [][]string, cols []string) {
 	if reportDatabaseDSN {
 		rows = append(rows, [][]string{
 			{"database-driver", c.DatabaseDriver()},
-			{"database-dsn", MaskDatabaseDSN(c.DatabaseDSN())},
+			{"database-dsn", dsn.Mask(c.DatabaseDSN())},
 		}...)
 	} else {
 		rows = append(rows, [][]string{
@@ -241,8 +242,8 @@ func (c *Config) Report() (rows [][]string, cols []string) {
 		rows = append(rows, [][]string{
 			{"database-provision-driver", c.options.DatabaseProvisionDriver},
 			{"database-provision-prefix", c.DatabaseProvisionPrefix()},
-			{"database-provision-dsn", MaskDatabaseDSN(c.options.DatabaseProvisionDSN)},
-			{"database-provision-proxy-dsn", MaskDatabaseDSN(c.options.DatabaseProvisionProxyDSN)},
+			{"database-provision-dsn", dsn.Mask(c.options.DatabaseProvisionDSN)},
+			{"database-provision-proxy-dsn", dsn.Mask(c.options.DatabaseProvisionProxyDSN)},
 		}...)
 	}
 

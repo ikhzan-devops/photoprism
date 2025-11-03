@@ -118,19 +118,19 @@ func applyProxySQL(ctx context.Context, db *sql.DB) error {
 }
 
 // normalizeProxyDSN adds interpolateParams to ProxySQL admin DSNs when missing so prepared statements work.
-func normalizeProxyDSN(dsn string) string {
-	if dsn == "" || strings.Contains(dsn, "interpolateParams=") {
-		return dsn
+func normalizeProxyDSN(proxyDsn string) string {
+	if proxyDsn == "" || strings.Contains(proxyDsn, "interpolateParams=") {
+		return proxyDsn
 	}
 
 	sep := "?"
-	if strings.Contains(dsn, "?") {
-		if strings.HasSuffix(dsn, "?") || strings.HasSuffix(dsn, "&") {
+	if strings.Contains(proxyDsn, "?") {
+		if strings.HasSuffix(proxyDsn, "?") || strings.HasSuffix(proxyDsn, "&") {
 			sep = ""
 		} else {
 			sep = "&"
 		}
 	}
 
-	return dsn + sep + "interpolateParams=true"
+	return proxyDsn + sep + "interpolateParams=true"
 }

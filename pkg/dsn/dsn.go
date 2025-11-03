@@ -1,4 +1,29 @@
-package config
+/*
+Package dsn provides helpers for parsing database data source names, masking
+credentials, and sharing driver-specific defaults used throughout PhotoPrism.
+
+Copyright (c) 2018 - 2025 PhotoPrism UG. All rights reserved.
+
+	This program is free software: you can redistribute it and/or modify
+	it under Version 3 of the GNU Affero General Public License (the "AGPL"):
+	<https://docs.photoprism.app/license/agpl>
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Affero General Public License for more details.
+
+	The AGPL is supplemented by our Trademark and Brand Guidelines,
+	which describe how our Brand Assets may be used:
+	<https://www.photoprism.app/trademark>
+
+Feel free to send an email to hello@photoprism.app if you have questions,
+want to support our work, or just want to say hello.
+
+Additional information can be found in our Developer Guide:
+<https://docs.photoprism.app/developer-guide/>
+*/
+package dsn
 
 import (
 	"net"
@@ -30,13 +55,6 @@ type DSN struct {
 	Params   string
 }
 
-// NewDSN creates a new DSN struct from a string.
-func NewDSN(dsn string) DSN {
-	d := DSN{DSN: dsn}
-	d.parse()
-	return d
-}
-
 // String returns the original DSN string.
 func (d *DSN) String() string {
 	return d.DSN
@@ -57,7 +75,7 @@ func (d *DSN) MaskPassword() (s string) {
 	}
 
 	// Mask password in PostgreSQL-style DSN.
-	if d.Driver == Postgres || strings.Contains(s, "password=") {
+	if d.Driver == DriverPostgres || strings.Contains(s, "password=") {
 		return dsnPostgresPasswordPattern.ReplaceAllStringFunc(s, func(segment string) string {
 			matches := dsnPostgresPasswordPattern.FindStringSubmatch(segment)
 			if len(matches) != 3 {
@@ -89,7 +107,7 @@ func (d *DSN) MaskPassword() (s string) {
 
 // Host the database server host.
 func (d *DSN) Host() string {
-	if d.Driver == SQLite3 {
+	if d.Driver == DriverSQLite3 {
 		return ""
 	}
 
@@ -100,16 +118,16 @@ func (d *DSN) Host() string {
 // Port the database server port.
 func (d *DSN) Port() int {
 	switch d.Driver {
-	case SQLite3:
+	case DriverSQLite3:
 		return 0
 	}
 
 	defaultPort := 0
 
 	switch d.Driver {
-	case MySQL, MariaDB:
+	case DriverMySQL, DriverMariaDB:
 		defaultPort = 3306
-	case Postgres:
+	case DriverPostgres:
 		defaultPort = 5432
 	}
 
@@ -232,7 +250,7 @@ func (d *DSN) parsePostgres() bool {
 		}
 	}
 
-	d.Driver = Postgres
+	d.Driver = DriverPostgres
 	d.User = values["user"]
 	d.Password = values["password"]
 	d.Name = name
@@ -354,13 +372,13 @@ func (d *DSN) detectDriver() {
 
 	switch driver {
 	case "postgres", "postgresql":
-		d.Driver = Postgres
+		d.Driver = DriverPostgres
 		return
 	case "mysql", "mariadb":
-		d.Driver = MySQL
+		d.Driver = DriverMySQL
 		return
 	case "sqlite", "sqlite3", "file":
-		d.Driver = SQLite3
+		d.Driver = DriverSQLite3
 		return
 	}
 
@@ -372,44 +390,26 @@ func (d *DSN) detectDriver() {
 	lower := strings.ToLower(d.DSN)
 
 	if strings.Contains(lower, "postgres://") || strings.Contains(lower, "postgresql://") {
-		d.Driver = Postgres
+		d.Driver = DriverPostgres
 		return
 	}
 
 	if d.Net == "tcp" || d.Net == "unix" || strings.Contains(lower, "@tcp(") || strings.Contains(lower, "@unix(") {
-		d.Driver = MySQL
+		d.Driver = DriverMySQL
 		return
 	}
 
 	if strings.HasPrefix(lower, "file:") || strings.HasSuffix(lower, ".db") || strings.HasSuffix(strings.ToLower(d.Name), ".db") {
-		d.Driver = SQLite3
+		d.Driver = DriverSQLite3
 		return
 	}
 
 	if strings.Contains(lower, " host=") && strings.Contains(lower, " dbname=") {
-		d.Driver = Postgres
+		d.Driver = DriverPostgres
 		return
 	}
 
 	if d.Server != "" && (strings.Contains(d.Server, ":") || d.Net != "") && d.Driver == "" {
-		d.Driver = MySQL
+		d.Driver = DriverMySQL
 	}
-}
-
-// MaskDatabaseDSN hides the password portion of a DSN while leaving the rest untouched for logging/reporting.
-func MaskDatabaseDSN(dsn string) string {
-	if dsn == "" {
-		return ""
-	}
-
-	// Parse database DSN.
-	d := NewDSN(dsn)
-
-	// Return original DSN if no password was found.
-	if d.Password == "" {
-		return dsn
-	}
-
-	// Return DSN with masked password.
-	return d.MaskPassword()
 }

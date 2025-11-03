@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/photoprism/photoprism/internal/config"
+	"github.com/photoprism/photoprism/pkg/dsn"
 )
 
 // Credentials contains the connection details returned when ensuring a node database.
@@ -34,9 +35,9 @@ func EnsureCredentials(ctx context.Context, conf *config.Config, nodeUUID, nodeN
 	driver := strings.ToLower(DatabaseDriver)
 
 	switch driver {
-	case config.MySQL, config.MariaDB:
+	case dsn.DriverMySQL, dsn.DriverMariaDB:
 		// ok
-	case config.SQLite3, config.Postgres:
+	case dsn.DriverSQLite3, dsn.DriverPostgres:
 		return out, false, errors.New("database must be MySQL/MariaDB for auto-provisioning")
 	default:
 		// Driver is configured externally for the provisioner (decoupled from app config).

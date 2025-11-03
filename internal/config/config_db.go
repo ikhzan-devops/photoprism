@@ -21,6 +21,7 @@ import (
 	"github.com/photoprism/photoprism/internal/mutex"
 	"github.com/photoprism/photoprism/internal/service/cluster"
 	"github.com/photoprism/photoprism/pkg/clean"
+	"github.com/photoprism/photoprism/pkg/dsn"
 	"github.com/photoprism/photoprism/pkg/txt"
 )
 
@@ -28,25 +29,11 @@ import (
 // TODO: PostgreSQL support requires upgrading GORM, so generic column data types can be used.
 const (
 	Auto     = "auto"
-	MySQL    = "mysql"
-	MariaDB  = "mariadb"
-	Postgres = "postgres"
-	SQLite3  = "sqlite3"
+	MySQL    = dsn.DriverMySQL
+	MariaDB  = dsn.DriverMariaDB
+	Postgres = dsn.DriverPostgres
+	SQLite3  = dsn.DriverSQLite3
 )
-
-// SQLite default DSNs.
-const (
-	SQLiteTestDB    = ".test.db"
-	SQLiteMemoryDSN = ":memory:"
-)
-
-// DatabaseDSNParams maps required DSN parameters by driver type.
-var DatabaseDSNParams = Values{
-	MySQL:    "charset=utf8mb4,utf8&collation=utf8mb4_unicode_ci&parseTime=true",
-	MariaDB:  "charset=utf8mb4,utf8&collation=utf8mb4_unicode_ci&parseTime=true",
-	Postgres: "sslmode=disable TimeZone=UTC",
-	SQLite3:  "_busy_timeout=5000",
-}
 
 // DatabaseDriver returns the database driver name.
 func (c *Config) DatabaseDriver() string {
@@ -145,7 +132,7 @@ func (c *Config) DatabaseDSN() string {
 				c.DatabasePassword(),
 				databaseServer,
 				c.DatabaseName(),
-				DatabaseDSNParams[MySQL],
+				dsn.Params[dsn.DriverMySQL],
 				c.DatabaseTimeout(),
 			)
 		case Postgres:
@@ -157,10 +144,10 @@ func (c *Config) DatabaseDSN() string {
 				c.DatabaseHost(),
 				c.DatabasePort(),
 				c.DatabaseTimeout(),
-				DatabaseDSNParams[Postgres],
+				dsn.Params[dsn.DriverPostgres],
 			)
 		case SQLite3:
-			return filepath.Join(c.StoragePath(), fmt.Sprintf("index.db?%s", DatabaseDSNParams[SQLite3]))
+			return filepath.Join(c.StoragePath(), fmt.Sprintf("index.db?%s", dsn.Params[dsn.DriverSQLite3]))
 		default:
 			log.Errorf("config: empty database dsn")
 			return ""
@@ -172,7 +159,7 @@ func (c *Config) DatabaseDSN() string {
 		c.options.DatabaseDSN = fmt.Sprintf(
 			"%s?%s&timeout=%ds",
 			c.options.DatabaseDSN,
-			DatabaseDSNParams[MySQL],
+			dsn.Params[dsn.DriverMySQL],
 			c.DatabaseTimeout())
 	}
 
@@ -209,7 +196,7 @@ func (c *Config) ParseDatabaseDSN() {
 		return
 	}
 
-	d := NewDSN(c.options.DatabaseDSN)
+	d := dsn.Parse(c.options.DatabaseDSN)
 
 	c.options.DatabaseName = d.Name
 	c.options.DatabaseServer = d.Server
@@ -244,8 +231,8 @@ func (c *Config) DatabaseHost() string {
 		return ""
 	}
 
-	dsn := NewDSN(c.DatabaseDSN())
-	return dsn.Host()
+	d := dsn.Parse(c.DatabaseDSN())
+	return d.Host()
 }
 
 // DatabasePort the database server port.
@@ -256,8 +243,8 @@ func (c *Config) DatabasePort() int {
 		return 0
 	}
 
-	dsn := NewDSN(c.DatabaseDSN())
-	return dsn.Port()
+	d := dsn.Parse(c.DatabaseDSN())
+	return d.Port()
 }
 
 // DatabasePortString the database server port as string.
