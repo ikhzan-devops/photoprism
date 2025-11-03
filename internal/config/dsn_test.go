@@ -77,6 +77,27 @@ func TestDSNParse(t *testing.T) {
 			},
 		},
 		{
+			name: "SQLite",
+			in:   "/index.db?_busy_timeout=5000",
+			want: DSN{
+				Server: "",
+				Name:   "index.db",
+				Params: "_busy_timeout=5000",
+			},
+		},
+		{
+			name: "PostgresKeyValue",
+			in:   "user=alice password=s3cr3t dbname=app host=db.internal port=5432 connect_timeout=5 sslmode=require",
+			want: DSN{
+				Driver:   Postgres,
+				User:     "alice",
+				Password: "s3cr3t",
+				Server:   "db.internal:5432",
+				Name:     "app",
+				Params:   "connect_timeout=5 sslmode=require",
+			},
+		},
+		{
 			name: "EmptyInput",
 			in:   "",
 			want: DSN{},
@@ -85,9 +106,69 @@ func TestDSNParse(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := NewDSN(tt.in)
-			if got != tt.want {
-				t.Fatalf("NewDSN(%q) = %#v, want %#v", tt.in, got, tt.want)
+			d := NewDSN(tt.in)
+			if d != tt.want {
+				t.Fatalf("NewDSN(%q) = %#v, want %#v", tt.in, d, tt.want)
+			}
+		})
+	}
+}
+
+func TestDSNParsePostgres(t *testing.T) {
+	cases := []struct {
+		name string
+		in   string
+		want DSN
+		ok   bool
+	}{
+		{
+			name: "Basic",
+			in:   "user=alice password=s3cr3t dbname=app",
+			want: DSN{Driver: Postgres, User: "alice", Password: "s3cr3t", Name: "app"},
+			ok:   true,
+		},
+		{
+			name: "WithHostPortAndParams",
+			in:   "user=alice password=s3cr3t dbname=app host=db.internal port=5432 connect_timeout=5 sslmode=require",
+			want: DSN{
+				Driver:   Postgres,
+				User:     "alice",
+				Password: "s3cr3t",
+				Server:   "db.internal:5432",
+				Name:     "app",
+				Params:   "connect_timeout=5 sslmode=require",
+			},
+			ok: true,
+		},
+		{
+			name: "QuotedValues",
+			in:   `user="alice" password="s ec ret" dbname="app" host=db.internal`,
+			want: DSN{
+				Driver:   Postgres,
+				User:     "alice",
+				Password: "s ec ret",
+				Server:   "db.internal",
+				Name:     "app",
+			},
+			ok: true,
+		},
+		{
+			name: "MissingDatabase",
+			in:   "user=alice host=db.internal",
+			want: DSN{},
+			ok:   false,
+		},
+	}
+
+	for _, tt := range cases {
+		t.Run(tt.name, func(t *testing.T) {
+			var got DSN
+			ok := got.parsePostgres(tt.in)
+			if ok != tt.ok {
+				t.Fatalf("parsePostgres(%q) ok=%v, want %v", tt.in, ok, tt.ok)
+			}
+			if ok && got != tt.want {
+				t.Fatalf("parsePostgres(%q) = %#v, want %#v", tt.in, got, tt.want)
 			}
 		})
 	}
