@@ -1,6 +1,10 @@
 package config
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
 
 func TestMaskDatabaseDSN(t *testing.T) {
 	tests := []struct {
@@ -15,6 +19,9 @@ func TestMaskDatabaseDSN(t *testing.T) {
 		{name: "FallbackWhenNoNeedle", in: "user:secret@tcp(localhost:3306)/db?password=secret", out: "user:***@tcp(localhost:3306)/db?password=secret"},
 		{name: "UnixSocket", in: "user:secret@unix(/var/run/mysql.sock)/db", out: "user:***@unix(/var/run/mysql.sock)/db"},
 		{name: "NoPasswordQuery", in: "user@tcp(localhost:3306)/db?password=secret", out: "user@tcp(localhost:3306)/db?password=secret"},
+		{name: "Postgres", in: "user=alice password=s3cr3t dbname=app", out: "user=alice password=*** dbname=app"},
+		{name: "PostgresQuoted", in: "user=alice password=\"s ec ret\" dbname=app", out: "user=alice password=\"***\" dbname=app"},
+		{name: "PostgresSingleQuoted", in: "password='secret' user=alice dbname=app", out: "password='***' user=alice dbname=app"},
 	}
 
 	for _, tt := range tests {
@@ -36,6 +43,7 @@ func TestDSNParse(t *testing.T) {
 			name: "ClassicTCP",
 			in:   "user:secret@tcp(localhost:3306)/photoprism?charset=utf8mb4,utf8&collation=utf8mb4_unicode_ci&parseTime=true",
 			want: DSN{
+				DSN:      "user:secret@tcp(localhost:3306)/photoprism?charset=utf8mb4,utf8&collation=utf8mb4_unicode_ci&parseTime=true",
 				User:     "user",
 				Password: "secret",
 				Net:      "tcp",
@@ -48,6 +56,7 @@ func TestDSNParse(t *testing.T) {
 			name: "URIStyle",
 			in:   "mysql://user:secret@localhost:3306/photoprism?parseTime=true",
 			want: DSN{
+				DSN:      "mysql://user:secret@localhost:3306/photoprism?parseTime=true",
 				Driver:   "mysql",
 				User:     "user",
 				Password: "secret",
@@ -60,6 +69,7 @@ func TestDSNParse(t *testing.T) {
 			name: "UnixSocket",
 			in:   "user:secret@unix(/var/run/mysql.sock)/photoprism",
 			want: DSN{
+				DSN:      "user:secret@unix(/var/run/mysql.sock)/photoprism",
 				User:     "user",
 				Password: "secret",
 				Net:      "unix",
@@ -71,6 +81,7 @@ func TestDSNParse(t *testing.T) {
 			name: "FileDSN",
 			in:   "file:/data/index.db?_busy_timeout=5000",
 			want: DSN{
+				DSN:    "file:/data/index.db?_busy_timeout=5000",
 				Server: "file:/data",
 				Name:   "index.db",
 				Params: "_busy_timeout=5000",
@@ -80,6 +91,7 @@ func TestDSNParse(t *testing.T) {
 			name: "SQLite",
 			in:   "/index.db?_busy_timeout=5000",
 			want: DSN{
+				DSN:    "/index.db?_busy_timeout=5000",
 				Server: "",
 				Name:   "index.db",
 				Params: "_busy_timeout=5000",
@@ -89,6 +101,7 @@ func TestDSNParse(t *testing.T) {
 			name: "PostgresKeyValue",
 			in:   "user=alice password=s3cr3t dbname=app host=db.internal port=5432 connect_timeout=5 sslmode=require",
 			want: DSN{
+				DSN:      "user=alice password=s3cr3t dbname=app host=db.internal port=5432 connect_timeout=5 sslmode=require",
 				Driver:   Postgres,
 				User:     "alice",
 				Password: "s3cr3t",
@@ -106,9 +119,10 @@ func TestDSNParse(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			d := NewDSN(tt.in)
-			if d != tt.want {
-				t.Fatalf("NewDSN(%q) = %#v, want %#v", tt.in, d, tt.want)
+			got := NewDSN(tt.in)
+			assert.Equal(t, tt.in, got.String())
+			if got != tt.want {
+				t.Fatalf("NewDSN(%q) = %#v, want %#v", tt.in, got, tt.want)
 			}
 		})
 	}
@@ -124,13 +138,20 @@ func TestDSNParsePostgres(t *testing.T) {
 		{
 			name: "Basic",
 			in:   "user=alice password=s3cr3t dbname=app",
-			want: DSN{Driver: Postgres, User: "alice", Password: "s3cr3t", Name: "app"},
-			ok:   true,
+			want: DSN{
+				DSN:      "user=alice password=s3cr3t dbname=app",
+				Driver:   Postgres,
+				User:     "alice",
+				Password: "s3cr3t",
+				Name:     "app",
+			},
+			ok: true,
 		},
 		{
 			name: "WithHostPortAndParams",
 			in:   "user=alice password=s3cr3t dbname=app host=db.internal port=5432 connect_timeout=5 sslmode=require",
 			want: DSN{
+				DSN:      "user=alice password=s3cr3t dbname=app host=db.internal port=5432 connect_timeout=5 sslmode=require",
 				Driver:   Postgres,
 				User:     "alice",
 				Password: "s3cr3t",
@@ -144,6 +165,7 @@ func TestDSNParsePostgres(t *testing.T) {
 			name: "QuotedValues",
 			in:   `user="alice" password="s ec ret" dbname="app" host=db.internal`,
 			want: DSN{
+				DSN:      `user="alice" password="s ec ret" dbname="app" host=db.internal`,
 				Driver:   Postgres,
 				User:     "alice",
 				Password: "s ec ret",
@@ -155,18 +177,22 @@ func TestDSNParsePostgres(t *testing.T) {
 		{
 			name: "MissingDatabase",
 			in:   "user=alice host=db.internal",
-			want: DSN{},
+			want: DSN{DSN: "user=alice host=db.internal"},
 			ok:   false,
 		},
 	}
 
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
-			var got DSN
-			ok := got.parsePostgres(tt.in)
+			var got = NewDSN(tt.in)
+			ok := got.parsePostgres()
+
+			assert.Equal(t, tt.in, got.String())
+
 			if ok != tt.ok {
 				t.Fatalf("parsePostgres(%q) ok=%v, want %v", tt.in, ok, tt.ok)
 			}
+
 			if ok && got != tt.want {
 				t.Fatalf("parsePostgres(%q) = %#v, want %#v", tt.in, got, tt.want)
 			}

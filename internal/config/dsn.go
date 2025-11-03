@@ -13,8 +13,12 @@ var dsnPattern = regexp.MustCompile(
 		`\/(?P<name>.*?)` +
 		`(?:\?(?P<params>[^\?]*))?$`)
 
+// dsnPostgresPasswordPattern is a regular expression matching a password in a PostgreSQL-style database DSN string.
+var dsnPostgresPasswordPattern = regexp.MustCompile(`(?i)(password\s*=\s*)("[^"]*"|'[^']*'|\S+)`)
+
 // DSN represents parts of a data source name.
 type DSN struct {
+	DSN      string
 	Driver   string
 	User     string
 	Password string
@@ -26,19 +30,65 @@ type DSN struct {
 
 // NewDSN creates a new DSN struct from a string.
 func NewDSN(dsn string) DSN {
-	d := DSN{}
-	d.Parse(dsn)
+	d := DSN{DSN: dsn}
+	d.parse()
 	return d
 }
 
-// Parse parses a data source name string.
-func (d *DSN) Parse(dsn string) {
-	if dsn == "" {
-		return
+// String returns the original DSN string.
+func (d *DSN) String() string {
+	return d.DSN
+}
+
+// MaskPassword hides the password portion of a DSN while leaving the rest untouched for logging/reporting.
+func (d *DSN) MaskPassword() (s string) {
+	if d.DSN == "" || d.Password == "" {
+		return d.DSN
 	}
 
+	s = d.DSN
+
+	// Mask password in regular DSN.
+	needle := ":" + d.Password + "@"
+	if strings.Contains(s, needle) {
+		return strings.Replace(s, needle, ":***@", 1)
+	}
+
+	// Mask password in PostgreSQL-style DSN.
+	if d.Driver == Postgres || strings.Contains(s, "password=") {
+		return dsnPostgresPasswordPattern.ReplaceAllStringFunc(s, func(segment string) string {
+			matches := dsnPostgresPasswordPattern.FindStringSubmatch(segment)
+			if len(matches) != 3 {
+				return segment
+			}
+
+			prefix := matches[1]
+			value := matches[2]
+			unquoted := strings.Trim(value, `'"`)
+
+			if unquoted != d.Password {
+				return segment
+			}
+
+			switch {
+			case strings.HasPrefix(value, `"`) && strings.HasSuffix(value, `"`):
+				return prefix + `"` + "***" + `"`
+			case strings.HasPrefix(value, `'`) && strings.HasSuffix(value, `'`):
+				return prefix + `'` + "***" + `'`
+			default:
+				return prefix + "***"
+			}
+		})
+	}
+
+	// Return DSN with masked password.
+	return s
+}
+
+// Parse parses a data source name string.
+func (d *DSN) parse() {
 	// Assume a regular DSN, and if parsing fails, treat it as a PostgreSQL-style DSN.
-	if matches := dsnPattern.FindStringSubmatch(dsn); len(matches) > 0 {
+	if matches := dsnPattern.FindStringSubmatch(d.DSN); len(matches) > 0 {
 		names := dsnPattern.SubexpNames()
 
 		for i, match := range matches {
@@ -66,13 +116,13 @@ func (d *DSN) Parse(dsn string) {
 		}
 	} else {
 		// Parse PostgreSQL-style DSN
-		d.parsePostgres(dsn)
+		d.parsePostgres()
 	}
 }
 
 // parsePostgres extracts connection settings from PostgreSQL key/value style DSNs.
-func (d *DSN) parsePostgres(dsn string) bool {
-	fields, ok := d.splitKeyValue(dsn)
+func (d *DSN) parsePostgres() bool {
+	fields, ok := d.splitKeyValue(d.DSN)
 
 	if !ok {
 		return false
@@ -156,6 +206,7 @@ func (d *DSN) parsePostgres(dsn string) bool {
 // splitKeyValue tokenizes PostgreSQL key/value DSNs, supporting quoted values with spaces.
 func (d *DSN) splitKeyValue(input string) ([]string, bool) {
 	runes := []rune(strings.TrimSpace(input))
+
 	if len(runes) == 0 || !strings.Contains(input, "=") {
 		return nil, false
 	}
@@ -231,15 +282,14 @@ func MaskDatabaseDSN(dsn string) string {
 		return ""
 	}
 
-	ds := NewDSN(dsn)
-	if ds.Password == "" {
+	// Parse database DSN.
+	d := NewDSN(dsn)
+
+	// Return original DSN if no password was found.
+	if d.Password == "" {
 		return dsn
 	}
 
-	needle := ":" + ds.Password + "@"
-	if strings.Contains(dsn, needle) {
-		return strings.Replace(dsn, needle, ":***@", 1)
-	}
-
-	return dsn
+	// Return DSN with masked password.
+	return d.MaskPassword()
 }
