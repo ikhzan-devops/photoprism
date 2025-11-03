@@ -194,15 +194,6 @@ func (c *Config) Report() (rows [][]string, cols []string) {
 		{"advertise-url", c.AdvertiseUrl()},
 	}...)
 
-	if c.Portal() {
-		rows = append(rows, [][]string{
-			{"database-provision-driver", c.options.DatabaseProvisionDriver},
-			{"database-provision-prefix", c.DatabaseProvisionPrefix()},
-			{"database-provision-dsn", maskDatabaseProvisionDSN(c.options.DatabaseProvisionDSN)},
-			{"database-provision-proxy-dsn", maskDatabaseProvisionDSN(c.options.DatabaseProvisionProxyDSN)},
-		}...)
-	}
-
 	rows = append(rows, [][]string{
 		// Proxy Servers.
 		{"https-proxy", c.HttpsProxy()},
@@ -228,11 +219,11 @@ func (c *Config) Report() (rows [][]string, cols []string) {
 		{"http-port", fmt.Sprintf("%d", c.HttpPort())},
 	}...)
 
-	// Database.
+	// Primary Database, Cluster Provision, and ProxySQL Credentials.
 	if reportDatabaseDSN {
 		rows = append(rows, [][]string{
 			{"database-driver", c.DatabaseDriver()},
-			{"database-dsn", c.DatabaseDSN()},
+			{"database-dsn", MaskDatabaseDSN(c.DatabaseDSN())},
 		}...)
 	} else {
 		rows = append(rows, [][]string{
@@ -243,6 +234,15 @@ func (c *Config) Report() (rows [][]string, cols []string) {
 			{"database-port", c.DatabasePortString()},
 			{"database-user", c.DatabaseUser()},
 			{"database-password", strings.Repeat("*", utf8.RuneCountInString(c.DatabasePassword()))},
+		}...)
+	}
+
+	if c.Portal() {
+		rows = append(rows, [][]string{
+			{"database-provision-driver", c.options.DatabaseProvisionDriver},
+			{"database-provision-prefix", c.DatabaseProvisionPrefix()},
+			{"database-provision-dsn", MaskDatabaseDSN(c.options.DatabaseProvisionDSN)},
+			{"database-provision-proxy-dsn", MaskDatabaseDSN(c.options.DatabaseProvisionProxyDSN)},
 		}...)
 	}
 
@@ -355,22 +355,4 @@ func (c *Config) Report() (rows [][]string, cols []string) {
 	}
 
 	return rows, cols
-}
-
-func maskDatabaseProvisionDSN(dsn string) string {
-	if dsn == "" {
-		return ""
-	}
-
-	ds := NewDSN(dsn)
-	if ds.Password == "" {
-		return dsn
-	}
-
-	needle := ":" + ds.Password + "@"
-	if strings.Contains(dsn, needle) {
-		return strings.Replace(dsn, needle, ":***@", 1)
-	}
-
-	return dsn
 }

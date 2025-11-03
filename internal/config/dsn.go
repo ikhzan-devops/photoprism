@@ -1,6 +1,9 @@
 package config
 
-import "regexp"
+import (
+	"regexp"
+	"strings"
+)
 
 // dsnPattern is a regular expression matching a database DSN string.
 var dsnPattern = regexp.MustCompile(
@@ -59,4 +62,23 @@ func (d *DSN) Parse(dsn string) {
 		d.Server = d.Net
 		d.Net = ""
 	}
+}
+
+// MaskDatabaseDSN hides the password portion of a DSN while leaving the rest untouched for logging/reporting.
+func MaskDatabaseDSN(dsn string) string {
+	if dsn == "" {
+		return ""
+	}
+
+	ds := NewDSN(dsn)
+	if ds.Password == "" {
+		return dsn
+	}
+
+	needle := ":" + ds.Password + "@"
+	if strings.Contains(dsn, needle) {
+		return strings.Replace(dsn, needle, ":***@", 1)
+	}
+
+	return dsn
 }
