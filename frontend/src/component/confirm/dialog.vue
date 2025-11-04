@@ -1,13 +1,16 @@
 <template>
   <v-dialog
+    ref="dialog"
     :model-value="visible"
     persistent
     max-width="360"
     class="p-dialog p-confirm-dialog"
-    @keydown.esc.exact="close"
-    @keydown.enter.exact="confirm"
+    retain-focus
+    @keydown.esc.exact.stop.prevent="close"
+    @keydown.enter.exact.stop.prevent="confirm"
+    @after-enter="afterEnter"
   >
-    <v-card>
+    <v-card ref="content" tabindex="1">
       <v-card-title class="d-flex justify-start align-center ga-3">
         <v-icon :icon="icon" :size="iconSize" color="primary"></v-icon>
         <div class="text-subtitle-1">{{ text ? text : $gettext(`Are you sure?`) }}</div>
@@ -52,7 +55,19 @@ export default {
   data() {
     return {};
   },
+  watch: {
+    visible(show) {
+      if (show) {
+        this.$nextTick(() => this.$view.enter(this, this.$refs?.content, ".action-confirm"));
+      } else {
+        this.$view.leave(this);
+      }
+    },
+  },
   methods: {
+    afterEnter() {
+      this.$nextTick(() => this.$view.enter(this, this.$refs?.content, ".action-confirm"));
+    },
     close() {
       this.$emit("close");
     },
