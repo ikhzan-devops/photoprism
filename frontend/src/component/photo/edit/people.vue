@@ -372,7 +372,12 @@ export default {
       this.setName(this.confirm.model);
     },
     onCancelSetName() {
+      if (this.confirm && this.confirm.model) {
+        this.confirm.model.Name = "";
+        this.confirm.model.SubjUID = "";
+      }
       this.confirm.visible = false;
+      this.openMenuId = "";
     },
     getModelKey(model) {
       return model?.UID || model?.ID || "";

@@ -703,7 +703,12 @@ export default {
       }
     },
     onCancelRename() {
+      if (this.confirm && this.confirm.model) {
+        this.confirm.model.Name = "";
+        this.confirm.model.SubjUID = "";
+      }
       this.confirm.visible = false;
+      this.openMenuId = "";
     },
     getModelKey(model) {
       return model?.ID || model?.UID || "";
