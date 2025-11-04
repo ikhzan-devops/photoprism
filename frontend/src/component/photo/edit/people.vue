@@ -82,16 +82,18 @@
                 return-object
                 hide-no-data
                 :menu-props="menuProps"
+                :menu="openMenuId === m.UID"
                 hide-details
                 single-line
                 open-on-clear
                 append-icon=""
                 prepend-inner-icon="mdi-account-plus"
                 density="comfortable"
-                class="input-name pa-0 ma-0"
-                @blur="onSetName(m)"
+                class="input-name pa-0 ma-0 text-selectable"
+                @blur="() => { onSetName(m); onUpdateMenu(m, false); }"
+                @update:menu="(val) => onUpdateMenu(m, val)"
                 @update:model-value="(person) => onSetPerson(m, person)"
-                @keyup.enter.native="onSetName(m)"
+                @keyup.enter="onSetName(m)"
               >
               </v-combobox>
             </v-card-actions>
@@ -145,6 +147,7 @@ export default {
         openOnClick: false,
         density: "compact",
         maxHeight: 300,
+        scrollStrategy: "reposition",
       },
       textRule: (v) => {
         if (!v || !v.length) {
@@ -153,6 +156,7 @@ export default {
 
         return v.length <= this.$config.get("clip") || this.$gettext("Name too long");
       },
+      openMenuId: "",
     };
   },
   watch: {
@@ -317,13 +321,19 @@ export default {
       if (typeof person === "object" && model?.UID && person?.UID && person?.Name) {
         model.Name = person.Name;
         model.SubjUID = person.UID;
-        this.setName(model);
+        this.confirm.model = model;
+        this.confirm.visible = true;
       }
 
       return true;
     },
     onSetName(model) {
       if (this.busy || !model) {
+        return;
+      }
+
+      // If there's a pending confirmation for a different face, don't process new input
+      if (this.confirm.visible && this.confirm.model && this.confirm.model.UID !== model.UID) {
         return;
       }
 
@@ -343,7 +353,9 @@ export default {
         if (found) {
           model.Name = found.Name;
           model.SubjUID = found.UID;
-          this.setName(model);
+          if (model.wasChanged()) {
+            this.confirm.visible = true;
+          }
           return;
         }
       }
@@ -361,6 +373,18 @@ export default {
     },
     onCancelSetName() {
       this.confirm.visible = false;
+    },
+    getModelKey(model) {
+      return model?.UID || model?.ID || "";
+    },
+    onUpdateMenu(model, open) {
+      const key = this.getModelKey(model);
+      if (!key) return;
+      if (open) {
+        this.openMenuId = key;
+      } else if (this.openMenuId === key) {
+        this.openMenuId = "";
+      }
     },
     setName(model) {
       if (this.busy || !model) {
