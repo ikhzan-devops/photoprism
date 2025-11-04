@@ -24,16 +24,12 @@ case "${ARCH_RAW}" in
     ;;
 esac
 
-if command -v proxysql-admin >/dev/null 2>&1; then
-  echo "proxysql-admin is already installed ("$(command -v proxysql-admin)")."
-  exit 0
-fi
-
 if [[ ! -r /etc/os-release ]]; then
   echo "Cannot detect operating system (missing /etc/os-release)." >&2
   exit 1
 fi
 
+# shellcheck source=/dev/null
 . /etc/os-release
 
 SUDO=${SUDO:-sudo}
@@ -44,6 +40,33 @@ trap 'rm -rf "${TMPDIR}"' EXIT
 if [[ "${ID_LIKE:-}" =~ (debian|ubuntu) ]] || [[ "${ID:-}" =~ (debian|ubuntu) ]]; then
   export DEBIAN_FRONTEND="noninteractive"
 fi
+
+patch_mysql_client_version_parser() {
+  local file="/usr/bin/proxysql-common"
+  local pattern='[[:space:]]11\\.'
+  if [[ ! -f "${file}" ]]; then
+    return
+  fi
+  if grep -q "${pattern}" "${file}"; then
+    return
+  fi
+  if ! command -v python3 >/dev/null 2>&1; then
+    echo "python3 not found; skipping proxysql-common patch." >&2
+    return
+  fi
+  ${SUDO} python3 - <<'PY'
+from pathlib import Path
+path = Path('/usr/bin/proxysql-common')
+text = path.read_text()
+target = '  elif echo "$version_string" | grep -qe "[[:space:]]10\\.11\\."; then\n    echo "10.11"\n'
+if target not in text:
+    raise SystemExit(0)
+replacement = target + '  elif echo "$version_string" | grep -qe "[[:space:]]11\\."; then\n    echo "11.0"\n'
+if '[[:space:]]11\\.' not in text:
+    text = text.replace(target, replacement, 1)
+    path.write_text(text)
+PY
+}
 
 stop_disable_service() {
   command -v systemctl >/dev/null 2>&1 || return
@@ -99,7 +122,7 @@ install_from_rpm() {
 }
 
 install_from_tarball() {
-  local glibc ver tarball url target_dir arch
+  local ver tarball url target_dir arch
   ver=$(ldd --version | head -n1 | awk '{print $NF}')
   arch=${TAR_ARCH}
   tarball="proxysql-${PROXYSQL_VERSION}-Linux-${arch}.glibc${ver}.tar.gz"
@@ -127,6 +150,40 @@ install_from_tarball() {
   fi
 }
 
+detect_installed_package_version() {
+  if command -v dpkg-query >/dev/null 2>&1; then
+    dpkg-query -W -f='${Version}' proxysql3 2>/dev/null || true
+    return
+  fi
+  if command -v rpm >/dev/null 2>&1; then
+    rpm -q --queryformat '%{VERSION}-%{RELEASE}' proxysql3 2>/dev/null || true
+    return
+  fi
+  printf ''
+}
+
+existing_path="$(command -v proxysql-admin || true)"
+if [[ -n "${existing_path}" ]]; then
+  install_required="yes"
+  installed_pkg_version="$(detect_installed_package_version)"
+  resolved_path="$(readlink -f "${existing_path}" 2>/dev/null || true)"
+  if [[ -n "${installed_pkg_version}" ]]; then
+    if [[ "${installed_pkg_version}" == *"${PROXYSQL_VERSION}"* ]]; then
+      install_required="no"
+    fi
+  elif [[ -n "${resolved_path}" && "${resolved_path}" == *"/usr/local/proxysql-${PROXYSQL_VERSION}/"* ]]; then
+    install_required="no"
+  fi
+
+  if [[ "${install_required}" == "no" ]]; then
+    echo "proxysql-admin already detected at ${existing_path}; refreshing proxysql-common version parser patch."
+    patch_mysql_client_version_parser
+    exit 0
+  fi
+
+  echo "proxysql-admin detected at ${existing_path} (package version: ${installed_pkg_version:-unknown}); reinstalling ProxySQL tooling ${PROXYSQL_VERSION}-${PROXYSQL_REVISION}."
+fi
+
 if [[ "${ID_LIKE:-}" =~ (debian|ubuntu) ]] || [[ "${ID:-}" =~ (debian|ubuntu) ]]; then
   install_from_deb
 elif [[ "${ID_LIKE:-}" =~ (rhel|centos|rocky|fedora) ]] || [[ "${ID:-}" =~ (rhel|centos|rocky|fedora) ]]; then
@@ -135,6 +192,8 @@ else
   echo "Unknown distribution (${ID}); installing from generic tarball." >&2
   install_from_tarball
 fi
+
+patch_mysql_client_version_parser
 
 if ! command -v proxysql-admin >/dev/null 2>&1; then
   echo "proxysql-admin installation did not place the binary on PATH." >&2
