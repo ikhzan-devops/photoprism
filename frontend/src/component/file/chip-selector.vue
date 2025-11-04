@@ -38,6 +38,7 @@
       <v-combobox
         ref="inputField"
         v-model="newItemTitle"
+        v-model:menu="menuOpen"
         :placeholder="computedInputPlaceholder"
         :persistent-placeholder="true"
         :items="availableItems"
@@ -48,9 +49,10 @@
         hide-no-data
         return-object
         class="chip-selector__input"
-        @keydown.enter.prevent="addNewItem"
+        @keydown.enter.prevent="onEnter"
         @blur="addNewItem"
         @update:model-value="onComboboxChange"
+        @update:menu="onMenuUpdate"
       >
         <template #no-data>
           <v-list-item>
@@ -105,6 +107,8 @@ export default {
   data() {
     return {
       newItemTitle: null,
+      menuOpen: false,
+      suppressMenuOpen: false,
     };
   },
   computed: {
@@ -219,6 +223,7 @@ export default {
       if (value && typeof value === "object" && value.title) {
         this.newItemTitle = value;
         this.addNewItem();
+        this.menuOpen = false;
         // Immediately clear the input, remove focus and restore placeholder
         this.$nextTick(() => {
           this.newItemTitle = "";
@@ -270,6 +275,7 @@ export default {
         if (resolvedApplied && (existingItem.mixed || existingItem.action !== "add")) {
           this.updateItemAction(existingItem, "add");
         }
+        this.menuOpen = false;
         this.$nextTick(() => {
           this.newItemTitle = "";
           if (this.$refs.inputField) {
@@ -294,6 +300,7 @@ export default {
 
       this.$emit("update:items", [...this.items, newItem]);
       this.newItemTitle = null;
+      this.menuOpen = false;
 
       // Refocus input field
       this.$nextTick(() => {
@@ -301,6 +308,23 @@ export default {
           this.$refs.inputField.focus();
         }
       });
+    },
+
+    onEnter() {
+      this.suppressMenuOpen = true;
+      this.menuOpen = false;
+      this.addNewItem();
+      window.setTimeout(() => {
+        this.suppressMenuOpen = false;
+      }, 250);
+    },
+
+    onMenuUpdate(val) {
+      if (val && this.suppressMenuOpen) {
+        this.menuOpen = false;
+        return;
+      }
+      this.menuOpen = val;
     },
   },
 };
