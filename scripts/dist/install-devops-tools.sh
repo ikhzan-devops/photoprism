@@ -42,7 +42,6 @@ install_apt_packages() {
   local packages=(
     bash-completion
     dnsutils
-    iperf3
     jq
     mariadb-client
     mysql-shell
@@ -53,9 +52,9 @@ install_apt_packages() {
     yq
   )
 
-  $SUDO apt-get update
-  $SUDO apt-get install -y --no-install-recommends "${packages[@]}"
-  $SUDO apt-get clean
+  $SUDO DEBIAN_FRONTEND=noninteractive apt-get update
+  $SUDO DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends "${packages[@]}"
+  $SUDO DEBIAN_FRONTEND=noninteractive apt-get clean
   $SUDO rm -rf /var/lib/apt/lists/*
 }
 
