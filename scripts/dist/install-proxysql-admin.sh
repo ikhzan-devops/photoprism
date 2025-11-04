@@ -13,7 +13,7 @@ case "${ARCH_RAW}" in
     TAR_ARCH="x86_64"
     ;;
   aarch64|arm64)
-    DEB_DIR="arm64"
+    DEB_DIR="aarch64"
     DEB_ARCH="arm64"
     RPM_ARCH="aarch64"
     TAR_ARCH="aarch64"
