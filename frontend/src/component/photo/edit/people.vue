@@ -90,10 +90,15 @@
                 prepend-inner-icon="mdi-account-plus"
                 density="comfortable"
                 class="input-name pa-0 ma-0 text-selectable"
-                @blur="() => { onSetName(m); onUpdateMenu(m, false); }"
+                @blur="
+                  () => {
+                    onSetName(m, 'blur');
+                    onUpdateMenu(m, false);
+                  }
+                "
                 @update:menu="(val) => onUpdateMenu(m, val)"
                 @update:model-value="(person) => onSetPerson(m, person)"
-                @keyup.enter="onSetName(m)"
+                @keyup.enter="onSetName(m, 'enter')"
               >
               </v-combobox>
             </v-card-actions>
@@ -326,7 +331,7 @@ export default {
 
       return true;
     },
-    onSetName(model) {
+    onSetName(model, trigger) {
       if (this.busy || !model) {
         return;
       }
@@ -361,7 +366,11 @@ export default {
 
       model.Name = name;
       model.SubjUID = "";
-      this.confirm.visible = true;
+      if (trigger === "enter") {
+        this.setName(model);
+      } else {
+        this.confirm.visible = true;
+      }
     },
     onConfirmSetName() {
       if (!this.confirm?.model?.Name) {
