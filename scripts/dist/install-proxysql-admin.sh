@@ -96,10 +96,14 @@ install_from_deb() {
   pkg="proxysql3_${PROXYSQL_VERSION}-${PROXYSQL_REVISION}.${codename}_${deb_arch}.deb"
   url="https://downloads.percona.com/downloads/proxysql3/proxysql3-${PROXYSQL_VERSION}/binary/debian/${codename}/${DEB_DIR}/${pkg}"
   echo "Downloading ${pkg}..."
+  # Allow APT's sandbox user (_apt) to read the download directory & file
+  ${SUDO} chmod 755 "${TMPDIR}"
   curl -fsSL "${url}" -o "${TMPDIR}/${pkg}"
+  ${SUDO} chmod 644 "${TMPDIR}/${pkg}"
   echo "Installing ${pkg}..."
   ${SUDO} env DEBIAN_FRONTEND="noninteractive" apt-get update -y >/dev/null
-  ( cd "${TMPDIR}" && ${SUDO} env DEBIAN_FRONTEND="noninteractive" apt-get install -y "./${pkg}" )
+  # Use absolute path so _apt can access it without relying on CWD permissions
+  ${SUDO} env DEBIAN_FRONTEND="noninteractive" apt-get install -y "${TMPDIR}/${pkg}"
   stop_disable_service
 }
 
