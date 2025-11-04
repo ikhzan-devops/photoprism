@@ -144,7 +144,7 @@ export default {
       menuProps: {
         closeOnClick: false,
         closeOnContentClick: true,
-        openOnClick: false,
+        openOnClick: true,
         density: "compact",
         maxHeight: 300,
         scrollStrategy: "reposition",
