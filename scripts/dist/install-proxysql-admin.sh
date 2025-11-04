@@ -98,8 +98,8 @@ install_from_deb() {
   echo "Downloading ${pkg}..."
   curl -fsSL "${url}" -o "${TMPDIR}/${pkg}"
   echo "Installing ${pkg}..."
-  ${SUDO} DEBIAN_FRONTEND=noninteractive apt-get update -y >/dev/null
-  ( cd "${TMPDIR}" && ${SUDO} DEBIAN_FRONTEND=noninteractive apt-get install -y "./${pkg}" )
+  ${SUDO} env DEBIAN_FRONTEND="noninteractive" apt-get update -y >/dev/null
+  ( cd "${TMPDIR}" && ${SUDO} env DEBIAN_FRONTEND="noninteractive" apt-get install -y "./${pkg}" )
   stop_disable_service
 }
 

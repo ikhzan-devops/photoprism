@@ -52,10 +52,10 @@ install_apt_packages() {
     yq
   )
 
-  $SUDO DEBIAN_FRONTEND=noninteractive apt-get update
-  $SUDO DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends "${packages[@]}"
-  $SUDO DEBIAN_FRONTEND=noninteractive apt-get clean
-  $SUDO rm -rf /var/lib/apt/lists/*
+  ${SUDO} env DEBIAN_FRONTEND="noninteractive" apt-get update
+  ${SUDO} env DEBIAN_FRONTEND="noninteractive" apt-get install -y --no-install-recommends "${packages[@]}"
+  ${SUDO} env DEBIAN_FRONTEND="noninteractive" apt-get clean
+  ${SUDO} rm -rf /var/lib/apt/lists/*
 }
 
 fetch_latest_github_tag() {
@@ -87,7 +87,7 @@ install_kubectl() {
     cd "${TMPDIR}"
     printf '%s  %s\n' "$(cat "$(basename "${artifact}.sha256")")" "$(basename "${artifact}")" | sha256sum --check --status -
   )
-  $SUDO install -m 0755 "${artifact}" "${BIN_DIR}/kubectl"
+  ${SUDO} install -m 0755 "${artifact}" "${BIN_DIR}/kubectl"
 }
 
 install_helm() {
@@ -98,7 +98,7 @@ install_helm() {
   curl -fsSLo "${TMPDIR}/${base}.tar.gz.sha256sum" "https://get.helm.sh/${base}.tar.gz.sha256sum"
   (cd "${TMPDIR}" && sha256sum --check "${base}.tar.gz.sha256sum")
   tar -xzf "${TMPDIR}/${base}.tar.gz" -C "${TMPDIR}"
-  $SUDO install -m 0755 "${TMPDIR}/linux-${LINUX_ARCH}/helm" "${BIN_DIR}/helm"
+  ${SUDO} install -m 0755 "${TMPDIR}/linux-${LINUX_ARCH}/helm" "${BIN_DIR}/helm"
 }
 
 install_rancher_cli() {
@@ -116,12 +116,12 @@ install_rancher_cli() {
   fi
   tar -xzf "${TMPDIR}/${tarball}" -C "${TMPDIR}"
   if [[ -f "${TMPDIR}/rancher-v${version}/rancher" ]]; then
-    $SUDO install -m 0755 "${TMPDIR}/rancher-v${version}/rancher" "${BIN_DIR}/rancher"
+    ${SUDO} install -m 0755 "${TMPDIR}/rancher-v${version}/rancher" "${BIN_DIR}/rancher"
   else
-    $SUDO install -m 0755 "${TMPDIR}/rancher-${version}/rancher" "${BIN_DIR}/rancher"
+    ${SUDO} install -m 0755 "${TMPDIR}/rancher-${version}/rancher" "${BIN_DIR}/rancher"
   fi
   if [[ -f "${TMPDIR}/rancher-v${version}/rancher-compose" ]]; then
-    $SUDO install -m 0755 "${TMPDIR}/rancher-v${version}/rancher-compose" "${BIN_DIR}/rancher-compose"
+    ${SUDO} install -m 0755 "${TMPDIR}/rancher-v${version}/rancher-compose" "${BIN_DIR}/rancher-compose"
   fi
 }
 
@@ -136,7 +136,7 @@ install_kustomize() {
   curl -fsSLo "${checksum_file}" "https://github.com/kubernetes-sigs/kustomize/releases/download/${encoded_tag}/checksums.txt"
   verify_with_checksums "${checksum_file}" "${TMPDIR}/${artifact}" "${artifact}"
   tar -xzf "${TMPDIR}/${artifact}" -C "${TMPDIR}"
-  $SUDO install -m 0755 "${TMPDIR}/kustomize" "${BIN_DIR}/kustomize"
+  ${SUDO} install -m 0755 "${TMPDIR}/kustomize" "${BIN_DIR}/kustomize"
 }
 
 install_k9s() {
@@ -154,7 +154,7 @@ install_k9s() {
   fi
   verify_with_checksums "${checksum_file}" "${TMPDIR}/${artifact}" "${artifact}"
   tar -xzf "${TMPDIR}/${artifact}" -C "${TMPDIR}"
-  $SUDO install -m 0755 "${TMPDIR}/k9s" "${BIN_DIR}/k9s"
+  ${SUDO} install -m 0755 "${TMPDIR}/k9s" "${BIN_DIR}/k9s"
 }
 
 install_stern() {
@@ -167,7 +167,7 @@ install_stern() {
   curl -fsSLo "${checksum_file}" "https://github.com/stern/stern/releases/download/${raw_tag}/checksums.txt"
   verify_with_checksums "${checksum_file}" "${TMPDIR}/${artifact}" "${artifact}"
   tar -xzf "${TMPDIR}/${artifact}" -C "${TMPDIR}"
-  $SUDO install -m 0755 "${TMPDIR}/stern" "${BIN_DIR}/stern"
+  ${SUDO} install -m 0755 "${TMPDIR}/stern" "${BIN_DIR}/stern"
 }
 
 install_longhornctl() {
@@ -178,7 +178,7 @@ install_longhornctl() {
   curl -fsSLo "${TMPDIR}/${artifact}" "https://github.com/longhorn/cli/releases/download/${raw_tag}/${artifact}"
   curl -fsSLo "${TMPDIR}/${artifact}.sha256" "https://github.com/longhorn/cli/releases/download/${raw_tag}/${artifact}.sha256"
   (cd "${TMPDIR}" && sha256sum --check "$(basename "${artifact}.sha256")")
-  $SUDO install -m 0755 "${TMPDIR}/${artifact}" "${BIN_DIR}/longhornctl"
+  ${SUDO} install -m 0755 "${TMPDIR}/${artifact}" "${BIN_DIR}/longhornctl"
 }
 
 install_kubectl_neat() {
@@ -191,7 +191,7 @@ install_kubectl_neat() {
   curl -fsSLo "${checksum_file}" "https://github.com/itaysk/kubectl-neat/releases/download/${raw_tag}/checksums.txt"
   verify_with_checksums "${checksum_file}" "${TMPDIR}/${artifact}" "${artifact}"
   tar -xzf "${TMPDIR}/${artifact}" -C "${TMPDIR}"
-  $SUDO install -m 0755 "${TMPDIR}/kubectl-neat" "${BIN_DIR}/kubectl-neat"
+  ${SUDO} install -m 0755 "${TMPDIR}/kubectl-neat" "${BIN_DIR}/kubectl-neat"
 }
 
 install_apt_packages
