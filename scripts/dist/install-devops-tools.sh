@@ -31,26 +31,24 @@ case "$(uname -m)" in
     ;;
 esac
 
+# Ensure installation runs non-interactively.
+export DEBIAN_FRONTEND="noninteractive"
+
 BIN_DIR="${BIN_DIR:-/usr/local/bin}"
 TMPDIR="$(mktemp -d)"
 trap 'rm -rf "${TMPDIR}"' EXIT
-
-export PIPX_HOME="${PIPX_HOME:-/opt/pipx}"
-export PIPX_BIN_DIR="${PIPX_BIN_DIR:-/usr/local/bin}"
-$SUDO install -d -m 0755 "${PIPX_HOME}" "${PIPX_BIN_DIR}"
 
 install_apt_packages() {
   local packages=(
     bash-completion
     dnsutils
+    iperf3
     jq
     mariadb-client
     mysql-shell
     netcat-openbsd
     nfs-common
     percona-toolkit
-    pipx
-    python3-venv
     socat
     yq
   )
@@ -197,26 +195,7 @@ install_kubectl_neat() {
   $SUDO install -m 0755 "${TMPDIR}/kubectl-neat" "${BIN_DIR}/kubectl-neat"
 }
 
-install_proxysql_admin() {
-  if command -v pipx >/dev/null 2>&1; then
-    if ! pipx ensurepath --force >/dev/null 2>&1; then
-      echo "pipx ensurepath failed; continuing with existing PATH." >&2
-    fi
-    if ! pipx list 2>/dev/null | grep -q "proxysql-admin-tool"; then
-      if ! pipx install proxysql-admin-tool >/dev/null 2>&1; then
-        echo "pipx install proxysql-admin-tool from PyPI failed; trying GitHub source." >&2
-        if ! pipx install "git+https://github.com/sysown/proxysql-admin-tool.git@master" >/dev/null 2>&1; then
-          echo "pipx install proxysql-admin-tool failed; skipping proxysql-admin-tool installation." >&2
-        fi
-      fi
-    fi
-  else
-    echo "pipx not available; skipping proxysql-admin-tool installation." >&2
-  fi
-}
-
 install_apt_packages
-
 install_kubectl
 install_helm
 install_rancher_cli
@@ -225,7 +204,6 @@ install_k9s
 install_stern
 install_longhornctl
 install_kubectl_neat
-install_proxysql_admin
 
 cat <<'EOF'
 
@@ -238,7 +216,6 @@ DevOps tooling installation completed:
   - stern
   - longhornctl
   - kubectl-neat
-  - proxysql-admin-tool (via pipx)
   - Supporting utilities installed via apt
 
 EOF
