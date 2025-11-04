@@ -643,8 +643,7 @@ export default {
       if (typeof person === "object" && model?.ID && person?.UID && person?.Name) {
         model.Name = person.Name;
         model.SubjUID = person.UID;
-        this.confirm.model = model;
-        this.confirm.visible = true;
+        this.setName(model, person.Name);
       }
 
       return true;
@@ -676,7 +675,7 @@ export default {
           model.Name = found.Name;
           model.SubjUID = found.UID;
           if (model.wasChanged()) {
-            this.confirm.visible = true;
+            this.setName(model, model.Name);
           }
           return;
         }
