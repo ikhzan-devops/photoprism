@@ -28,7 +28,7 @@
                 :maxlength="maxLength"
                 :append-inner-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
                 :label="$gettext('Current Password')"
-                tabindex="1"
+                :autofocus="oldRequired"
                 hide-details
                 autocorrect="off"
                 autocapitalize="none"
@@ -46,7 +46,7 @@
                 :maxlength="maxLength"
                 :label="$gettext('New Password')"
                 :hint="$gettextInterpolate($gettext('Must have at least %{n} characters.'), { n: minLength })"
-                tabindex="2"
+                :autofocus="!oldRequired"
                 counter
                 persistent-hint
                 type="password"
@@ -65,7 +65,6 @@
                 :maxlength="maxLength"
                 :label="$gettext('Retype Password')"
                 :hint="$gettext('Please confirm your new password.')"
-                tabindex="3"
                 counter
                 persistent-hint
                 type="password"
@@ -79,11 +78,10 @@
           </v-row>
         </v-card-text>
         <v-card-actions class="action-buttons">
-          <v-btn tabindex="5" variant="flat" color="button" class="action-cancel" @click.stop="close">
+          <v-btn variant="flat" color="button" class="action-cancel" @click.stop="close">
             {{ $gettext(`Cancel`) }}
           </v-btn>
           <v-btn
-            tabindex="4"
             variant="flat"
             color="highlight"
             class="action-confirm"

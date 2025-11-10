@@ -14,7 +14,7 @@
     @keydown.esc.stop="onClose"
     @focusout="onFocusOut"
   >
-    <v-card ref="content" tabindex="1" :tile="$vuetify.display.smAndDown">
+    <v-card ref="content" tabindex="-1" :tile="$vuetify.display.smAndDown">
       <v-toolbar flat color="navigation" :density="$vuetify.display.smAndDown ? 'compact' : 'comfortable'">
         <v-btn icon class="action-close" @click.stop="onClose">
           <v-icon>mdi-close</v-icon>

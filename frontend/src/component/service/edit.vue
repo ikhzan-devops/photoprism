@@ -8,7 +8,7 @@
     @after-enter="afterEnter"
     @after-leave="afterLeave"
   >
-    <v-form ref="form" validate-on="invalid-input" accept-charset="UTF-8" tabindex="1" @submit.prevent>
+    <v-form ref="form" validate-on="invalid-input" accept-charset="UTF-8" tabindex="-1" @submit.prevent>
       <v-card>
         <v-card-title v-if="scope === 'sharing'" class="d-flex justify-space-between align-center ga-3">
           <h6 class="text-h6">

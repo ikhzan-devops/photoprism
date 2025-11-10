@@ -188,60 +188,84 @@ const encodeRestoreKey = (key) => {
   return restoreNamespace + encodeURIComponent(key);
 };
 
+// resolveFocusTarget returns the most appropriate element inside root for initial focus.
+function resolveFocusTarget(root) {
+  if (!root) {
+    return null;
+  }
+
+  let el = root;
+
+  if (el.$el && el.$el instanceof HTMLElement) {
+    el = el.$el;
+  }
+
+  if (!(el instanceof HTMLElement)) {
+    return null;
+  }
+
+  if (el.hasAttribute("autofocus") || el.getAttribute("tabindex") === "-1") {
+    return el;
+  }
+
+  try {
+    const autofocus = el.querySelector("[autofocus]");
+
+    if (autofocus instanceof HTMLElement) {
+      return autofocus;
+    }
+
+    const sentinel = el.querySelector('[tabindex="-1"]');
+
+    if (sentinel instanceof HTMLElement) {
+      return sentinel;
+    }
+
+    if (!window.$isMobile) {
+      const focusable = el.querySelector(
+        'input:not([type="hidden"]), select, textarea, button, [tabindex]:not([tabindex="-1"])'
+      );
+
+      if (focusable instanceof HTMLElement) {
+        return focusable;
+      }
+    }
+  } catch {
+    // Ignore.
+  }
+
+  return null;
+}
+
 // Returns the most likely focus element for the given component, or null if none exists.
 export function findFocusElement(c) {
   if (!c) {
     return null;
   }
 
-  let el, ref;
+  const candidates = [];
 
   if (c.$refs && c.$refs instanceof Object) {
     focusRefs.forEach((r) => {
-      if (c.$refs[r] && c.$refs[r] instanceof Object) {
-        if (c.$refs[r].$el instanceof HTMLElement && c.$refs[r].$el.getAttribute("tabindex") !== null) {
-          ref = c.$refs[r].$el;
-        } else if (c.$refs[r] instanceof HTMLElement && c.$refs[r].getAttribute("tabindex") !== null) {
-          ref = c.$refs[r];
-        }
+      if (c.$refs[r]) {
+        candidates.push(c.$refs[r]);
       }
     });
   }
 
-  if (!ref || !(ref instanceof Object) || typeof ref.getAttribute !== "function") {
-    ref = null;
-  } else if (ref.getAttribute("tabindex") === null) {
-    ref = null;
+  if (c.$el) {
+    candidates.push(c.$el);
   }
 
-  if (!ref && c.$el && c.$el instanceof Object) {
-    if (c.$el instanceof HTMLElement) {
-      ref = c.$el;
-    } else if (c.$el.parentElement && c.$el.parentElement instanceof HTMLElement) {
-      ref = c.$el.parentElement;
-    }
+  if (c.$el?.parentElement) {
+    candidates.push(c.$el.parentElement);
   }
 
-  if (ref) {
-    if (ref.$el && ref.$el instanceof HTMLElement) {
-      ref = ref.$el;
-    }
+  for (let i = 0; i < candidates.length; i++) {
+    const target = resolveFocusTarget(candidates[i]);
 
-    if (ref instanceof HTMLElement) {
-      if (ref.getAttribute("tabindex") !== null) {
-        return ref;
-      }
-
-      if (!window.$isMobile) {
-        try {
-          el = ref.querySelector('input[tabindex="1"]');
-          if (el && el instanceof HTMLElement) {
-            return el;
-          }
-        } catch {
-          // Ignore.
-        }
-      }
+    if (target) {
+      return target;
     }
   }
 
@@ -453,7 +477,7 @@ export class View {
       console.log("data:", toRaw(c?.$data));
     }
 
-    // Automatically focus the active component if its element tabindex attribute is set to "1":
+    // Automatically focus the active component based on autofocus markers or tabindex sentinels:
     // https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex
     if (focusElement) {
       setFocus(focusElement, focusSelector, false);

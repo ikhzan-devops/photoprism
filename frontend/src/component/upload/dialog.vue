@@ -11,7 +11,7 @@
     @keydown.esc.exact="onClose"
     @focusout="onFocusOut"
   >
-    <v-form ref="form" class="p-photo-upload" validate-on="invalid-input" tabindex="1" @submit.prevent="onSubmit">
+    <v-form ref="form" class="p-photo-upload" validate-on="invalid-input" tabindex="-1" @submit.prevent="onSubmit">
       <input ref="upload" type="file" multiple :accept="accept" class="d-none input-upload" @change.stop="onUpload()" />
       <v-card :tile="$vuetify.display.mdAndDown">
         <v-toolbar

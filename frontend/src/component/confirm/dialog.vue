@@ -14,16 +14,16 @@
     @after-leave="afterLeave"
     @focusout="onFocusOut"
   >
-    <v-card ref="content" tabindex="0">
+    <v-card ref="content" tabindex="-1">
       <v-card-title class="d-flex justify-start align-center ga-3">
         <v-icon :icon="icon" :size="iconSize" color="primary"></v-icon>
         <div class="text-subtitle-1">{{ text ? text : $gettext(`Are you sure?`) }}</div>
       </v-card-title>
       <v-card-actions class="action-buttons">
-        <v-btn variant="flat" tabindex="0" color="button" class="action-cancel action-close" @click.stop="close">
+        <v-btn variant="flat" color="button" class="action-cancel action-close" @click.stop="close">
           {{ $gettext(`Cancel`) }}
         </v-btn>
-        <v-btn color="highlight" tabindex="0" variant="flat" class="action-confirm" @click.stop="confirm">
+        <v-btn color="highlight" variant="flat" class="action-confirm" @click.stop="confirm">
           {{ action ? action : $gettext(`Yes`) }}
         </v-btn>
       </v-card-actions>

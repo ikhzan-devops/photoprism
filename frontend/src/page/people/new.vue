@@ -4,13 +4,12 @@
       <v-toolbar density="compact" class="page-toolbar" color="secondary-light">
         <v-spacer></v-spacer>
 
-        <v-btn :title="$gettext('Refresh')" icon="mdi-refresh" tabindex="2" class="action-reload" @click.stop="refresh">
+        <v-btn :title="$gettext('Refresh')" icon="mdi-refresh" class="action-reload" @click.stop="refresh">
         </v-btn>
 
         <v-btn
           v-if="!filter.hidden"
           :title="$gettext('Show hidden')"
-          tabindex="3"
           icon="mdi-eye"
           class="action-show-hidden"
           @click.stop="onShowHidden"
@@ -18,7 +17,6 @@
         </v-btn>
         <v-btn
           v-else
-          tabindex="3"
           :title="$gettext('Exclude hidden')"
           icon="mdi-eye-off"
           class="action-exclude-hidden"
@@ -198,6 +196,7 @@ export default {
         openOnFocus: true,
         closeOnBack: true,
         closeOnContentClick: true,
+        disableInitialFocus: true,
         persistent: false,
         scrim: true,
         openDelay: 0,
@@ -205,7 +204,9 @@ export default {
         opacity: 0,
         density: "compact",
         maxHeight: 300,
+        locationStrategy: "connected",
         scrollStrategy: "reposition",
+        origin: "auto",
       },
       textRule: (v) => {
         if (!v || !v.length) {

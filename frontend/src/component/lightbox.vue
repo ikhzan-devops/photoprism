@@ -26,7 +26,7 @@
     <div ref="container" class="p-lightbox__container no-transition">
       <div
         ref="content"
-        tabindex="1"
+        tabindex="-1"
         class="p-lightbox__content no-transition"
         :class="{
           'sidebar-visible': info,
@@ -40,11 +40,11 @@
           'is-selected': $clipboard.has(model),
         }"
       >
-        <div ref="lightbox" tabindex="2" class="p-lightbox__pswp no-transition"></div>
+        <div ref="lightbox" tabindex="-1" class="p-lightbox__pswp no-transition"></div>
         <div
           v-show="video.controls && controlsShown !== 0"
           ref="controls"
-          tabindex="3"
+          tabindex="-1"
           class="p-lightbox__controls"
           @click.stop.prevent
         >
