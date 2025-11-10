@@ -79,10 +79,9 @@
                 item-title="Name"
                 item-value="Name"
                 :disabled="busy"
+                :menu-props="menuProps"
                 return-object
                 hide-no-data
-                :menu-props="menuProps"
-                :menu="openMenuId === m.UID"
                 hide-details
                 single-line
                 open-on-clear
@@ -90,15 +89,9 @@
                 prepend-inner-icon="mdi-account-plus"
                 density="comfortable"
                 class="input-name pa-0 ma-0 text-selectable"
-                @blur="
-                  () => {
-                    onSetName(m, 'blur');
-                    onUpdateMenu(m, false);
-                  }
-                "
-                @update:menu="(val) => onUpdateMenu(m, val)"
                 @update:model-value="(person) => onSetPerson(m, person)"
-                @keyup.enter="onSetName(m, 'enter')"
+                @blur="(ev) => onSetName(m, ev)"
+                @keyup.enter="(ev) => onSetName(m, ev)"
               >
               </v-combobox>
             </v-card-actions>
@@ -147,9 +140,15 @@ export default {
         text: this.$gettext("Add person?"),
       },
       menuProps: {
-        closeOnClick: false,
-        closeOnContentClick: true,
         openOnClick: true,
+        openOnFocus: true,
+        closeOnBack: true,
+        closeOnContentClick: true,
+        persistent: false,
+        scrim: true,
+        openDelay: 0,
+        closeDelay: 0,
+        opacity: 0,
         density: "compact",
         maxHeight: 300,
         scrollStrategy: "reposition",
@@ -161,7 +160,6 @@ export default {
 
         return v.length <= this.$config.get("clip") || this.$gettext("Name too long");
       },
-      openMenuId: "",
     };
   },
   watch: {
@@ -331,7 +329,7 @@ export default {
 
       return true;
     },
-    onSetName(model, trigger) {
+    onSetName(model, ev) {
       if (this.busy || !model) {
         return;
       }
@@ -366,7 +364,8 @@ export default {
 
       model.Name = name;
       model.SubjUID = "";
-      if (trigger === "enter") {
+
+      if (ev && ev.key === "Enter" && !ev.isComposing && !ev.repeat) {
         this.setName(model);
       } else {
         this.confirm.visible = true;
@@ -385,19 +384,6 @@ export default {
         this.confirm.model.SubjUID = "";
       }
       this.confirm.visible = false;
-      this.openMenuId = "";
-    },
-    getModelKey(model) {
-      return model?.UID || model?.ID || "";
-    },
-    onUpdateMenu(model, open) {
-      const key = this.getModelKey(model);
-      if (!key) return;
-      if (open) {
-        this.openMenuId = key;
-      } else if (this.openMenuId === key) {
-        this.openMenuId = "";
-      }
     },
     setName(model) {
       if (this.busy || !model) {
