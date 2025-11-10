@@ -85,8 +85,8 @@
                   single-line
                   density="comfortable"
                   class="input-name pa-0 ma-0"
-                  @blur="onSetName(m, false)"
-                  @keyup.enter="onSetName(m, false)"
+                  @blur="(ev) => onSetName(m, ev)"
+                  @keyup.enter="(ev) => onSetName(m, ev)"
                 ></v-text-field>
                 <v-combobox
                   v-else
@@ -95,9 +95,9 @@
                   item-title="Name"
                   item-value="Name"
                   :readonly="readonly"
+                  :menu-props="menuProps"
                   return-object
                   hide-no-data
-                  :menu-props="menuProps"
                   hide-details
                   single-line
                   open-on-clear
@@ -105,10 +105,10 @@
                   prepend-inner-icon="mdi-account-plus"
                   autocomplete="off"
                   density="comfortable"
-                  class="input-name pa-0 ma-0"
-                  @blur="onSetName(m, true)"
+                  class="input-name pa-0 ma-0 text-selectable"
                   @update:model-value="(person) => onSetPerson(m, person)"
-                  @keyup.enter.native="onSetName(m, false)"
+                  @blur="(ev) => onSetName(m, ev)"
+                  @keyup.enter="(ev) => onSetName(m, ev)"
                 >
                 </v-combobox>
               </v-card-actions>
@@ -155,6 +155,7 @@ export default {
     },
     active: Boolean,
   },
+  emits: ["updateFaceCount"],
   data() {
     const query = this.$route.query;
     const routeName = this.$route.name;
@@ -193,11 +194,18 @@ export default {
         text: this.$gettext("Add person?"),
       },
       menuProps: {
-        closeOnClick: false,
+        openOnClick: true,
+        openOnFocus: true,
+        closeOnBack: true,
         closeOnContentClick: true,
-        openOnClick: false,
+        persistent: false,
+        scrim: true,
+        openDelay: 0,
+        closeDelay: 0,
+        opacity: 0,
         density: "compact",
         maxHeight: 300,
+        scrollStrategy: "reposition",
       },
       textRule: (v) => {
         if (!v || !v.length) {
@@ -643,8 +651,13 @@ export default {
 
       return true;
     },
-    onSetName(model, confirm) {
+    onSetName(model, ev) {
       if (this.busy || !model) {
+        return;
+      }
+
+      // If there's a pending confirmation for a different face, don't process new input
+      if (this.confirm.visible && this.confirm.model && this.confirm.model.ID !== model.ID) {
         return;
       }
 
@@ -674,10 +687,12 @@ export default {
       model.Name = name;
       model.SubjUID = "";
 
-      if (confirm && model.wasChanged()) {
-        this.confirm.visible = true;
-      } else {
-        this.onConfirmRename();
+      if (model.Name) {
+        if (ev && ev.key === "Enter" && !ev.isComposing && !ev.repeat) {
+          this.setName(model, model.Name);
+        } else {
+          this.confirm.visible = true;
+        }
       }
     },
     onConfirmRename() {
@@ -693,6 +708,10 @@ export default {
       }
     },
     onCancelRename() {
+      if (this.confirm && this.confirm.model) {
+        this.confirm.model.Name = "";
+        this.confirm.model.SubjUID = "";
+      }
       this.confirm.visible = false;
     },
     setName(model, newName) {

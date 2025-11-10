@@ -79,19 +79,19 @@
                 item-title="Name"
                 item-value="Name"
                 :disabled="busy"
+                :menu-props="menuProps"
                 return-object
                 hide-no-data
-                :menu-props="menuProps"
                 hide-details
                 single-line
                 open-on-clear
                 append-icon=""
                 prepend-inner-icon="mdi-account-plus"
                 density="comfortable"
-                class="input-name pa-0 ma-0"
-                @blur="onSetName(m)"
+                class="input-name pa-0 ma-0 text-selectable"
                 @update:model-value="(person) => onSetPerson(m, person)"
-                @keyup.enter.native="onSetName(m)"
+                @blur="(ev) => onSetName(m, ev)"
+                @keyup.enter="(ev) => onSetName(m, ev)"
               >
               </v-combobox>
             </v-card-actions>
@@ -140,11 +140,18 @@ export default {
         text: this.$gettext("Add person?"),
       },
       menuProps: {
-        closeOnClick: false,
+        openOnClick: true,
+        openOnFocus: true,
+        closeOnBack: true,
         closeOnContentClick: true,
-        openOnClick: false,
+        persistent: false,
+        scrim: true,
+        openDelay: 0,
+        closeDelay: 0,
+        opacity: 0,
         density: "compact",
         maxHeight: 300,
+        scrollStrategy: "reposition",
       },
       textRule: (v) => {
         if (!v || !v.length) {
@@ -322,8 +329,13 @@ export default {
 
       return true;
     },
-    onSetName(model) {
+    onSetName(model, ev) {
       if (this.busy || !model) {
+        return;
+      }
+
+      // If there's a pending confirmation for a different face, don't process new input
+      if (this.confirm.visible && this.confirm.model && this.confirm.model.UID !== model.UID) {
         return;
       }
 
@@ -343,14 +355,21 @@ export default {
         if (found) {
           model.Name = found.Name;
           model.SubjUID = found.UID;
-          this.setName(model);
+          if (model.wasChanged()) {
+            this.setName(model);
+          }
           return;
         }
       }
 
       model.Name = name;
       model.SubjUID = "";
-      this.confirm.visible = true;
+
+      if (ev && ev.key === "Enter" && !ev.isComposing && !ev.repeat) {
+        this.setName(model);
+      } else {
+        this.confirm.visible = true;
+      }
     },
     onConfirmSetName() {
       if (!this.confirm?.model?.Name) {
@@ -360,6 +379,10 @@ export default {
       this.setName(this.confirm.model);
     },
     onCancelSetName() {
+      if (this.confirm && this.confirm.model) {
+        this.confirm.model.Name = "";
+        this.confirm.model.SubjUID = "";
+      }
       this.confirm.visible = false;
     },
     setName(model) {
