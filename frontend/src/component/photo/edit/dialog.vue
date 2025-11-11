@@ -1,6 +1,7 @@
 <template>
   <v-dialog
     ref="dialog"
+    tabindex="-1"
     :model-value="visible"
     :fullscreen="$vuetify.display.smAndDown"
     scrim
@@ -195,7 +196,7 @@ export default {
   },
   methods: {
     afterEnter() {
-      this.$view.enter(this);
+      this.$view.enter(this, this.$refs.content);
       this.ready = true;
     },
     afterLeave() {
