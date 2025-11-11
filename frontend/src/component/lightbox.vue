@@ -14,7 +14,6 @@
     class="p-dialog p-lightbox v-dialog--lightbox no-transition"
     @after-enter="afterEnter"
     @after-leave="afterLeave"
-    @focusout="onFocusOut"
     @keydown.space.exact="onKeyDown"
     @keydown.left.exact="onKeyDown"
     @keydown.right.exact="onKeyDown"
@@ -330,31 +329,6 @@ export default {
       this.$view.leave(this);
       this.$event.publish("lightbox.leave");
       this.$emit("leave");
-    },
-    // Traps the focus inside the lightbox dialog.
-    onFocusOut(ev) {
-      if (this.debug) {
-        this.log(`dialog.${ev.type}`, { ev });
-      }
-
-      if (!this.$view.isActive(this)) {
-        return;
-      }
-
-      // Keep content element focused.
-      if (this.$refs.content && this.$refs.content instanceof HTMLElement) {
-        if (
-          (ev.target &&
-            ev.target instanceof HTMLElement &&
-            (!ev.target.closest(".v-dialog--lightbox") || ev.target?.tabIndex < 0 || ev.target.disabled)) ||
-          (ev.relatedTarget &&
-            ev.relatedTarget instanceof HTMLElement &&
-            (!ev.relatedTarget.closest(".v-dialog--lightbox") || ev.relatedTarget.tabIndex < 0))
-        ) {
-          this.focusContent(ev);
-          ev.preventDefault();
-        }
-      }
     },
     focusContent(ev) {
       if (

@@ -10,7 +10,6 @@
     @after-enter="afterEnter"
     @after-leave="afterLeave"
     @keydown.esc.exact="onClose"
-    @focusout="onFocusOut"
   >
     <v-form ref="form" class="p-photo-upload" validate-on="invalid-input" tabindex="-1" @submit.prevent="onSubmit">
       <input ref="upload" type="file" multiple :accept="accept" class="d-none input-upload" @change.stop="onUpload()" />
@@ -221,21 +220,6 @@ export default {
     },
     afterLeave() {
       this.$view.leave(this);
-    },
-    onFocusOut(ev) {
-      if (!this.$view.isActive(this)) {
-        return;
-      }
-
-      if (ev.target && ev.target instanceof HTMLElement && this.$refs.form?.$el instanceof HTMLElement) {
-        if (
-          document.activeElement !== this.$refs.form.$el &&
-          (!ev.target.closest(".p-upload-dialog") || ev.target?.disabled)
-        ) {
-          this.$refs.form?.$el.focus();
-          ev.preventDefault();
-        }
-      }
     },
     removeSelection(index) {
       this.selectedAlbums.splice(index, 1);

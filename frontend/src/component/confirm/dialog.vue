@@ -12,7 +12,6 @@
     @keyup.enter.exact="confirm"
     @after-enter="afterEnter"
     @after-leave="afterLeave"
-    @focusout="onFocusOut"
   >
     <v-card ref="content" tabindex="-1">
       <v-card-title class="d-flex justify-start align-center ga-3">
@@ -65,25 +64,6 @@ export default {
     },
     afterLeave() {
       this.$view.leave(this);
-    },
-    onFocusOut(ev) {
-      if (!this.$view.isActive(this)) {
-        return;
-      }
-
-      const el = this.$refs.content?.$el;
-
-      if (!ev || !ev.target || !(ev.target instanceof HTMLElement) || !(el instanceof HTMLElement)) {
-        return;
-      }
-
-      const next = ev.relatedTarget;
-      const leavingDialog = !next || !(next instanceof Node) || !el.contains(next);
-
-      if (leavingDialog) {
-        el.focus();
-        ev.preventDefault();
-      }
     },
     close() {
       this.$emit("close");
