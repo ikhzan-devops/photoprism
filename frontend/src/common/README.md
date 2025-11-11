@@ -4,7 +4,7 @@
 
 ## Focus Management
 
-PhotoPrism maintains predictable keyboard focus across pages and dialogs by using a shared view helper:
+PhotoPrism uses a shared view helper to maintain predictable focus across pages and dialogs:
 
 - [`frontend/src/common/view.js`](https://github.com/photoprism/photoprism/blob/develop/frontend/src/common/view.js)
 
