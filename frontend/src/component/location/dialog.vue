@@ -12,7 +12,7 @@
     @after-enter="afterEnter"
     @after-leave="afterLeave"
   >
-    <v-card :tile="$vuetify.display.xs">
+    <v-card ref="content" tabindex="-1" :tile="$vuetify.display.xs">
       <v-toolbar v-if="$vuetify.display.xs" flat color="navigation" class="mb-4" density="compact">
         <v-btn icon @click.stop="close">
           <v-icon>mdi-close</v-icon>
@@ -207,11 +207,13 @@ export default {
       }
     },
     afterEnter() {
+      this.$view.enter(this);
       if (this.currentLat && this.currentLng && !(this.currentLat === 0 && this.currentLng === 0)) {
         this.fetchLocationInfo(this.currentLat, this.currentLng);
       }
     },
     afterLeave() {
+      this.$view.leave(this);
       this.location = null;
       this.locationLoading = false;
       this.resetSearchState();
