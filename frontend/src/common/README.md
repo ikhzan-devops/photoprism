@@ -4,9 +4,11 @@
 
 ## Focus Management
 
-PhotoPrism keeps keyboard focus predictable across pages and dialogs by relying on the shared view helper (`frontend/src/common/view.js`).
+PhotoPrism maintains predictable keyboard focus across pages and dialogs by using a shared view helper:
 
-The helper tracks which component is currently active, applies focus when views change, and traps focus inside open dialogs so tabbing never leaks into the page behind an overlay. This document explains how to cooperate with the helper when building new UI.
+- [`frontend/src/common/view.js`](https://github.com/photoprism/photoprism/blob/develop/frontend/src/common/view.js)
+
+This helper tracks the currently active component, applies focus when views change, and traps focus inside open dialogs, ensuring that tabbing never leaks into the page behind an overlay. The following guidelines explain how to work with the helper when building UI functionality.
 
 ### Tabindex Cheat Sheet
 
