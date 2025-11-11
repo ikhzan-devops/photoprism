@@ -734,6 +734,24 @@ export class View {
       return;
     }
 
+    const dialogOverlay = root.closest(".v-overlay");
+    const menuOverlayContent = next instanceof HTMLElement ? next.closest(".v-overlay__content") : null;
+
+    if (dialogOverlay && menuOverlayContent && menuOverlayContent instanceof HTMLElement) {
+      const menuOverlay = menuOverlayContent.closest(".v-overlay");
+
+      if (
+        menuOverlay &&
+        menuOverlay.classList.contains("v-menu") &&
+        menuOverlay.parentElement === dialogOverlay.parentElement &&
+        menuOverlay.style.display !== "none" &&
+        menuOverlayContent.contains(next)
+      ) {
+        // Allow focus to move into sibling menu overlays (e.g., combobox suggestions)
+        return;
+      }
+    }
+
     ev.preventDefault();
 
     const target =
