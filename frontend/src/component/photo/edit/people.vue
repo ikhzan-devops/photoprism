@@ -140,7 +140,7 @@ export default {
         text: this.$gettext("Add person?"),
       },
       menuProps: {
-        openOnClick: true,
+        openOnClick: false,
         openOnFocus: true,
         closeOnBack: true,
         closeOnContentClick: true,
