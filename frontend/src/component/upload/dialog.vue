@@ -1,5 +1,6 @@
 <template>
   <v-dialog
+    ref="dialog"
     :model-value="visible"
     :fullscreen="$vuetify.display.mdAndDown"
     scrim
@@ -52,18 +53,18 @@
                 <v-combobox
                   v-model="selectedAlbums"
                   v-model:menu="albumsMenu"
-                  @update:menu="onAlbumsMenuUpdate"
                   :disabled="busy || loading || total > 0 || filesQuotaReached"
                   hide-details
                   chips
                   closable-chips
+                  return-object
                   multiple
                   class="input-albums"
                   :items="albums"
                   item-title="Title"
                   item-value="UID"
                   :placeholder="$gettext('Select or create albums')"
-                  return-object
+                  @update:menu="onAlbumsMenuUpdate"
                   @keydown.enter.stop="onAlbumsEnter"
                 >
                   <template #no-data>
@@ -232,6 +233,7 @@ export default {
           (!ev.target.closest(".p-upload-dialog") || ev.target?.disabled)
         ) {
           this.$refs.form?.$el.focus();
+          ev.preventDefault();
         }
       }
     },

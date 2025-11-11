@@ -352,6 +352,7 @@ export default {
             (!ev.relatedTarget.closest(".v-dialog--lightbox") || ev.relatedTarget.tabIndex < 0))
         ) {
           this.focusContent(ev);
+          ev.preventDefault();
         }
       }
     },

@@ -214,6 +214,7 @@ export default {
           (!ev.target.closest(".p-photo-edit-dialog") || ev.target?.disabled)
         ) {
           this.$refs.content?.$el.focus();
+          ev.preventDefault();
         }
       }
     },

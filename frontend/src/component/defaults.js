@@ -193,6 +193,7 @@ export default {
     openDelay: 0,
     closeDelay: 0,
     attach: document.body,
+    tabindex: -1,
   },
   VOverlay: {
     transition: false,
