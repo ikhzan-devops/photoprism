@@ -193,6 +193,18 @@ export default {
     },
   },
   methods: {
+    afterEnter() {
+      this.$view.enter(this);
+      if (this.currentLat && this.currentLng && !(this.currentLat === 0 && this.currentLng === 0)) {
+        this.fetchLocationInfo(this.currentLat, this.currentLng);
+      }
+    },
+    afterLeave() {
+      this.location = null;
+      this.locationLoading = false;
+      this.resetSearchState();
+      this.$view.leave(this);
+    },
     close() {
       this.$emit("close");
     },
@@ -205,18 +217,6 @@ export default {
           location: this.location,
         });
       }
-    },
-    afterEnter() {
-      this.$view.enter(this);
-      if (this.currentLat && this.currentLng && !(this.currentLat === 0 && this.currentLng === 0)) {
-        this.fetchLocationInfo(this.currentLat, this.currentLng);
-      }
-    },
-    afterLeave() {
-      this.$view.leave(this);
-      this.location = null;
-      this.locationLoading = false;
-      this.resetSearchState();
     },
     onMarkerMoved(event) {
       this.setPositionAndFetchInfo(event.lat, event.lng);
