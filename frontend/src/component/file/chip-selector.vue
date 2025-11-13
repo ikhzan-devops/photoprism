@@ -74,6 +74,10 @@ export default {
       type: Array,
       default: () => [],
     },
+    normalizeTitleForCompare: {
+      type: Function,
+      default: null,
+    },
     availableItems: {
       type: Array,
       default: () => [],
@@ -132,6 +136,18 @@ export default {
     },
   },
   methods: {
+    normalizeTitle(text) {
+      const input = text == null ? "" : String(text);
+      if (typeof this.normalizeTitleForCompare === "function") {
+        try {
+          return this.normalizeTitleForCompare(input);
+        } catch (e) {
+          return input.toLowerCase();
+        }
+      }
+      return input.toLowerCase();
+    },
+
     getChipClasses(item) {
       const baseClass = "chip";
       const classes = [baseClass];
@@ -266,15 +282,27 @@ export default {
         }
       }
 
-      const normalizedTitle = title.toLowerCase();
+      const normalizedTitle = this.normalizeTitle(title);
       const existingItem = this.items.find(
-        (item) => (item.value && value && item.value === value) || item.title.toLowerCase() === normalizedTitle
+        (item) => (item.value && value && item.value === value) || this.normalizeTitle(item.title) === normalizedTitle
       );
 
       if (existingItem) {
-        if (resolvedApplied && (existingItem.mixed || existingItem.action !== "add")) {
-          this.updateItemAction(existingItem, "add");
-        }
+        const updatedItems = this.items.map((item) => {
+          const isSame =
+            (item.value && value && item.value === value) || this.normalizeTitle(item.title) === normalizedTitle;
+          if (!isSame) return item;
+          const next = { ...item };
+          if (resolvedApplied) {
+            if (value) next.value = value;
+            if (title) next.title = title;
+          }
+          if (item.mixed || item.action !== "add") {
+            next.action = "add";
+          }
+          return next;
+        });
+        this.$emit("update:items", updatedItems);
         this.menuOpen = false;
         this.$nextTick(() => {
           this.newItemTitle = "";
