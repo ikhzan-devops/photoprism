@@ -8,6 +8,7 @@ import (
 
 	"github.com/photoprism/photoprism/internal/ai/face"
 	"github.com/photoprism/photoprism/internal/ai/vision"
+	"github.com/photoprism/photoprism/pkg/dsn"
 )
 
 // Report returns global config values as a table for reporting.
@@ -192,7 +193,9 @@ func (c *Config) Report() (rows [][]string, cols []string) {
 		{"jwt-scope", c.JWTAllowedScopes().String()},
 		{"jwt-leeway", fmt.Sprintf("%d", c.JWTLeeway())},
 		{"advertise-url", c.AdvertiseUrl()},
+	}...)
 
+	rows = append(rows, [][]string{
 		// Proxy Servers.
 		{"https-proxy", c.HttpsProxy()},
 		{"https-proxy-insecure", fmt.Sprintf("%t", c.HttpsProxyInsecure())},
@@ -217,11 +220,11 @@ func (c *Config) Report() (rows [][]string, cols []string) {
 		{"http-port", fmt.Sprintf("%d", c.HttpPort())},
 	}...)
 
-	// Database.
+	// Primary Database, Cluster Provision, and ProxySQL Credentials.
 	if reportDatabaseDSN {
 		rows = append(rows, [][]string{
 			{"database-driver", c.DatabaseDriver()},
-			{"database-dsn", c.DatabaseDSN()},
+			{"database-dsn", dsn.Mask(c.DatabaseDSN())},
 		}...)
 	} else {
 		rows = append(rows, [][]string{
@@ -232,6 +235,15 @@ func (c *Config) Report() (rows [][]string, cols []string) {
 			{"database-port", c.DatabasePortString()},
 			{"database-user", c.DatabaseUser()},
 			{"database-password", strings.Repeat("*", utf8.RuneCountInString(c.DatabasePassword()))},
+		}...)
+	}
+
+	if c.Portal() {
+		rows = append(rows, [][]string{
+			{"database-provision-driver", c.options.DatabaseProvisionDriver},
+			{"database-provision-prefix", c.DatabaseProvisionPrefix()},
+			{"database-provision-dsn", dsn.Mask(c.options.DatabaseProvisionDSN)},
+			{"database-provision-proxy-dsn", dsn.Mask(c.options.DatabaseProvisionProxyDSN)},
 		}...)
 	}
 

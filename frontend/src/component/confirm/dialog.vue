@@ -1,13 +1,19 @@
 <template>
   <v-dialog
+    ref="dialog"
     :model-value="visible"
+    :close-delay="0"
+    :open-delay="0"
     persistent
+    scrim
     max-width="360"
     class="p-dialog p-confirm-dialog"
     @keydown.esc.exact="close"
-    @keydown.enter.exact="confirm"
+    @keyup.enter.exact="confirm"
+    @after-enter="afterEnter"
+    @after-leave="afterLeave"
   >
-    <v-card>
+    <v-card ref="content" tabindex="-1">
       <v-card-title class="d-flex justify-start align-center ga-3">
         <v-icon :icon="icon" :size="iconSize" color="primary"></v-icon>
         <div class="text-subtitle-1">{{ text ? text : $gettext(`Are you sure?`) }}</div>
@@ -53,6 +59,12 @@ export default {
     return {};
   },
   methods: {
+    afterEnter() {
+      this.$view.enter(this);
+    },
+    afterLeave() {
+      this.$view.leave(this);
+    },
     close() {
       this.$emit("close");
     },

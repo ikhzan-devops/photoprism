@@ -24,7 +24,7 @@ import (
 func TestClusterNodesRegister(t *testing.T) {
 	t.Run("FeatureDisabled", func(t *testing.T) {
 		app, router, conf := NewApiTest()
-		conf.Options().NodeRole = cluster.RoleInstance
+		conf.Options().NodeRole = cluster.RoleApp
 		ClusterNodesRegister(router)
 
 		r := PerformRequestWithBody(app, http.MethodPost, "/api/v1/cluster/nodes/register", `{"NodeName":"pp-node-01"}`)
@@ -41,7 +41,7 @@ func TestClusterNodesRegister(t *testing.T) {
 		// Pre-create a node via registry and rotate to get a plaintext secret for tests
 		regy, err := reg.NewClientRegistryWithConfig(conf)
 		assert.NoError(t, err)
-		n := &reg.Node{Node: cluster.Node{UUID: rnd.UUIDv7(), Name: "pp-auth", Role: "instance"}}
+		n := &reg.Node{Node: cluster.Node{UUID: rnd.UUIDv7(), Name: "pp-auth", Role: cluster.RoleApp}}
 		assert.NoError(t, regy.Put(n))
 		nr, err := regy.RotateSecret(n.UUID)
 		assert.NoError(t, err)
@@ -113,7 +113,7 @@ func TestClusterNodesRegister(t *testing.T) {
 		assert.NoError(t, err)
 
 		// Pre-create node with a UUID
-		n := &reg.Node{Node: cluster.Node{UUID: rnd.UUIDv7(), Name: "pp-lock", Role: "instance"}}
+		n := &reg.Node{Node: cluster.Node{UUID: rnd.UUIDv7(), Name: "pp-lock", Role: cluster.RoleApp}}
 		assert.NoError(t, regy.Put(n))
 
 		// Attempt to change UUID via name without client credentials → 409
@@ -204,7 +204,7 @@ func TestClusterNodesRegister(t *testing.T) {
 		// used by OAuth tests running in the same package.
 		regy, err := reg.NewClientRegistryWithConfig(conf)
 		assert.NoError(t, err)
-		n := &reg.Node{Node: cluster.Node{Name: "pp-node-01", Role: "instance"}}
+		n := &reg.Node{Node: cluster.Node{Name: "pp-node-01", Role: cluster.RoleApp}}
 		assert.NoError(t, regy.Put(n))
 
 		r := AuthenticatedRequestWithBody(app, http.MethodPost, "/api/v1/cluster/nodes/register", `{"NodeName":"pp-node-01","RotateSecret":true}`, cluster.ExampleJoinToken)
@@ -228,7 +228,7 @@ func TestClusterNodesRegister(t *testing.T) {
 		// Pre-create node in registry so handler goes through existing-node path.
 		regy, err := reg.NewClientRegistryWithConfig(conf)
 		assert.NoError(t, err)
-		n := &reg.Node{Node: cluster.Node{Name: "pp-node-02", Role: "instance"}}
+		n := &reg.Node{Node: cluster.Node{Name: "pp-node-02", Role: cluster.RoleApp}}
 		assert.NoError(t, regy.Put(n))
 
 		// Provisioner is independent; endpoint should respond 200 and persist metadata.

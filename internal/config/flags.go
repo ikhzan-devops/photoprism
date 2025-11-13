@@ -10,6 +10,7 @@ import (
 	"github.com/photoprism/photoprism/internal/config/ttl"
 	"github.com/photoprism/photoprism/internal/entity"
 	"github.com/photoprism/photoprism/internal/ffmpeg/encode"
+	"github.com/photoprism/photoprism/internal/service/cluster"
 	"github.com/photoprism/photoprism/internal/service/hub/places"
 	"github.com/photoprism/photoprism/internal/thumb"
 	"github.com/photoprism/photoprism/pkg/authn"
@@ -197,16 +198,20 @@ var Flags = CliFlags{
 		}}, {
 		Flag: &cli.PathFlag{
 			Name:      "config-path",
-			Aliases:   []string{"c"},
+			Aliases:   []string{"config", "c"},
 			Usage:     "config storage `PATH` or options.yml filename, values in this file override CLI flags and environment variables if present",
 			EnvVars:   EnvVars("CONFIG_PATH"),
 			TakesFile: true,
 		}}, {
 		Flag: &cli.StringFlag{
-			Name:      "defaults-yaml",
-			Aliases:   []string{"y"},
-			Usage:     "loads default config values from `FILENAME` if it exists, does not override CLI flags or environment variables",
-			Value:     "/etc/photoprism/defaults.yml",
+			Name: "defaults-yaml",
+			// Alias was changed from "y" to "defaults" since "y" is a reserved alias for "yes".
+			// Since our examples and end-user docs for this flag don't include any aliases, the change should be safe.
+			Aliases: []string{"defaults"},
+			Usage:   "loads default config values from `FILENAME` if it exists, does not override CLI flags or environment variables",
+			// fs.ConfigFilePath lets existing installations keep a defaults.yml file
+			// while new deployments may drop in defaults.yaml without updating the flag.
+			Value:     fs.ConfigFilePath("/etc/photoprism", "defaults", fs.ExtYml),
 			EnvVars:   EnvVars("DEFAULTS_YAML"),
 			TakesFile: true,
 		}}, {
@@ -444,7 +449,7 @@ var Flags = CliFlags{
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "disable-tensorflow",
-			Usage:   "disables features depending on TensorFlow, e.g. face recognition",
+			Usage:   "disables face recognition with TensorFlow *deprecated*",
 			EnvVars: EnvVars("DISABLE_TENSORFLOW"),
 		}}, {
 		Flag: &cli.BoolFlag{
@@ -454,7 +459,7 @@ var Flags = CliFlags{
 		}}, {
 		Flag: &cli.BoolFlag{
 			Name:    "disable-classification",
-			Usage:   "disables label generation for image classification",
+			Usage:   "disables all image classification and label generation",
 			EnvVars: EnvVars("DISABLE_CLASSIFICATION"),
 		}}, {
 		Flag: &cli.BoolFlag{
@@ -699,7 +704,7 @@ var Flags = CliFlags{
 		}}, {
 		Flag: &cli.StringFlag{
 			Name:    "node-role",
-			Usage:   "node `ROLE` (instance or service)",
+			Usage:   fmt.Sprintf("node `ROLE` (%s or %s)", cluster.RoleApp, cluster.RoleService),
 			EnvVars: EnvVars("NODE_ROLE"),
 		}}, {
 		Flag: &cli.StringFlag{
@@ -921,9 +926,22 @@ var Flags = CliFlags{
 			Hidden:  true,
 		}}, {
 		Flag: &cli.StringFlag{
+			Name:    "database-provision-prefix",
+			Usage:   "auto-provisioning name `PREFIX` for generated database names and users",
+			Value:   cluster.DefaultDatabaseProvisionPrefix,
+			EnvVars: EnvVars("DATABASE_PROVISION_PREFIX"),
+			Hidden:  true,
+		}}, {
+		Flag: &cli.StringFlag{
 			Name:    "database-provision-dsn",
 			Usage:   "auto-provisioning `DSN`",
 			EnvVars: EnvVars("DATABASE_PROVISION_DSN"),
+			Hidden:  true,
+		}}, {
+		Flag: &cli.StringFlag{
+			Name:    "database-provision-proxy-dsn",
+			Usage:   "ProxySQL admin `DSN` (port 6032 by default) for keeping user accounts in sync",
+			EnvVars: EnvVars("DATABASE_PROVISION_PROXY_DSN"),
 			Hidden:  true,
 		}}, {
 		Flag: &cli.StringFlag{

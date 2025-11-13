@@ -14,6 +14,7 @@ import (
 
 	"github.com/photoprism/photoprism/internal/config"
 	"github.com/photoprism/photoprism/internal/service/cluster"
+	"github.com/photoprism/photoprism/pkg/dsn"
 	"github.com/photoprism/photoprism/pkg/fs"
 	"github.com/photoprism/photoprism/pkg/rnd"
 )
@@ -22,8 +23,8 @@ func TestInitConfig_NoPortal_NoOp(t *testing.T) {
 	c := config.NewMinimalTestConfigWithDb("bootstrap", t.TempDir())
 	defer c.CloseDb()
 
-	// Default NodeRole() resolves to instance; no Portal configured.
-	assert.Equal(t, cluster.RoleInstance, c.NodeRole())
+	// Default NodeRole() resolves to app; no Portal configured.
+	assert.Equal(t, cluster.RoleApp, c.NodeRole())
 	assert.NoError(t, InitConfig(c))
 }
 
@@ -60,7 +61,7 @@ func TestRegister_PersistSecretAndDB(t *testing.T) {
 				Secrets:     &cluster.RegisterSecrets{ClientSecret: cluster.ExampleClientSecret},
 				JWKSUrl:     jwksURL,
 				Database: cluster.RegisterDatabase{
-					Driver:   config.MySQL,
+					Driver:   dsn.DriverMySQL,
 					Host:     "db.local",
 					Port:     3306,
 					Name:     "pp_db",
@@ -91,7 +92,7 @@ func TestRegister_PersistSecretAndDB(t *testing.T) {
 	expectedAppName = c.About()
 	expectedAppVersion = c.Version()
 	// Gate rotate=true: driver mysql and no DSN/fields.
-	c.Options().DatabaseDriver = config.MySQL
+	c.Options().DatabaseDriver = dsn.DriverMySQL
 	c.Options().DatabaseDSN = ""
 	c.Options().DatabaseName = ""
 	c.Options().DatabaseUser = ""
@@ -104,7 +105,7 @@ func TestRegister_PersistSecretAndDB(t *testing.T) {
 	assert.Equal(t, cluster.ExampleClientSecret, c.NodeClientSecret())
 	// DSN branch should be preferred and persisted.
 	assert.Contains(t, c.Options().DatabaseDSN, "@tcp(db.local:3306)/pp_db")
-	assert.Equal(t, config.MySQL, c.Options().DatabaseDriver)
+	assert.Equal(t, dsn.DriverMySQL, c.Options().DatabaseDriver)
 	assert.Equal(t, srv.URL+"/.well-known/jwks.json", c.JWKSUrl())
 	assert.Equal(t, "192.0.2.0/24", c.ClusterCIDR())
 }
