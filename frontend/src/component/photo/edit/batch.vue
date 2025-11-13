@@ -501,6 +501,7 @@
                         v-model:items="labelItems"
                         :available-items="availableLabelOptions"
                         :resolve-item-from-text="resolveLabelFromText"
+                        :normalize-title-for-compare="normalizeLabelTitleForCompare"
                         :input-placeholder="$gettext('Enter label name...')"
                         :empty-text="$gettext('No labels assigned')"
                         :loading="loading"
@@ -616,6 +617,7 @@ import Thumb from "../../../model/thumb";
 import PLocationDialog from "component/location/dialog.vue";
 import PLocationInput from "component/location/input.vue";
 import BatchChipSelector from "component/file/chip-selector.vue";
+import $util from "common/util";
 
 export default {
   name: "PPhotoEditBatch",
@@ -854,6 +856,9 @@ export default {
     afterLeave() {
       this.$view.leave(this);
     },
+    normalizeLabelTitleForCompare(s) {
+      return $util.normalizeLabelTitle(s);
+    },
     resolveLabelFromText(inputTitle) {
       if (!inputTitle || !Array.isArray(this.availableLabelOptions)) {
         return null;
@@ -862,24 +867,8 @@ export default {
       const t = String(inputTitle).trim();
       if (!t) return null;
 
-      const normalize = (s) =>
-        s
-          .toLowerCase()
-          .replace(/&/g, "and")
-          .replace(/[+_\-]+/g, " ")
-          .replace(/[^a-z0-9 ]+/g, "")
-          .replace(/\s+/g, " ")
-          .trim();
-      const toSlug = (s) =>
-        s
-          .toLowerCase()
-          .replace(/&/g, "and")
-          .replace(/[^a-z0-9]+/g, "-")
-          .replace(/-+/g, "-")
-          .replace(/^-|-$/g, "");
-
-      const nt = normalize(t);
-      const st = toSlug(t);
+      const nt = $util.normalizeLabelTitle(t);
+      const st = $util.slugifyLabelTitle(t);
 
       let found = this.availableLabelOptions.find((o) => o.title.toLowerCase() === t.toLowerCase());
       if (found) return { value: found.value, title: found.title };
@@ -887,7 +876,7 @@ export default {
       found = this.availableLabelOptions.find((o) => o.slug === st || o.customSlug === st);
       if (found) return { value: found.value, title: found.title };
 
-      found = this.availableLabelOptions.find((o) => normalize(o.title) === nt);
+      found = this.availableLabelOptions.find((o) => $util.normalizeLabelTitle(o.title) === nt);
       if (found) return { value: found.value, title: found.title };
 
       return { value: "", title: t };
