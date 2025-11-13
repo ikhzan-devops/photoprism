@@ -8,9 +8,11 @@
     scrollable
     class="p-dialog p-photo-edit-batch v-dialog--sidepanel v-dialog--sidepanel-wide"
     @click.stop="onClick"
-    @keydown.esc.exact="onClose"
+    @keyup.esc.exact="onClose"
+    @after-enter="afterEnter"
+    @after-leave="afterLeave"
   >
-    <v-card ref="content" class="edit-batch__card" :tile="$vuetify.display.mdAndDown" tabindex="1">
+    <v-card ref="content" class="edit-batch__card" :tile="$vuetify.display.mdAndDown" tabindex="-1">
       <v-toolbar flat color="navigation" :density="$vuetify.display.mdAndDown ? 'compact' : 'comfortable'">
         <v-btn icon class="action-close" @click.stop="onClose">
           <v-icon>mdi-close</v-icon>
@@ -105,7 +107,6 @@
               variant="accordion"
               density="compact"
               rounded="6"
-              tabindex="1"
               class="elevation-0"
             >
               <v-expansion-panel title="Pictures" color="secondary" class="pa-0 elevation-0">
@@ -189,7 +190,6 @@
             validate-on="invalid-input"
             class="p-form p-form-photo-details-meta"
             accept-charset="UTF-8"
-            tabindex="1"
             @submit.prevent="save"
           >
             <div class="form-body">
@@ -848,6 +848,12 @@ export default {
     }
   },
   methods: {
+    afterEnter() {
+      this.$view.enter(this);
+    },
+    afterLeave() {
+      this.$view.leave(this);
+    },
     resolveLabelFromText(inputTitle) {
       if (!inputTitle || !Array.isArray(this.availableLabelOptions)) {
         return null;
