@@ -146,9 +146,15 @@ func (ollamaParser) Parse(ctx context.Context, req *ApiRequest, raw []byte, stat
 
 	parsedLabels := len(response.Result.Labels) > 0
 
-	if !parsedLabels && strings.TrimSpace(ollamaResp.Response) != "" && req.Format == FormatJSON {
-		if labels, parseErr := parseOllamaLabels(ollamaResp.Response); parseErr != nil {
-			log.Debugf("vision: %s (parse ollama labels)", clean.Error(parseErr))
+	// Qwen3-VL models stream their JSON payload in the "Thinking" field.
+	fallbackJSON := strings.TrimSpace(ollamaResp.Response)
+	if fallbackJSON == "" {
+		fallbackJSON = strings.TrimSpace(ollamaResp.Thinking)
+	}
+
+	if !parsedLabels && fallbackJSON != "" && (req.Format == FormatJSON || strings.HasPrefix(fallbackJSON, "{")) {
+		if labels, parseErr := parseOllamaLabels(fallbackJSON); parseErr != nil {
+			log.Warnf("vision: %s (parse ollama labels)", clean.Error(parseErr))
 		} else if len(labels) > 0 {
 			response.Result.Labels = append(response.Result.Labels, labels...)
 			parsedLabels = true

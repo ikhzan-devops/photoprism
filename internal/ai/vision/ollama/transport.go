@@ -14,6 +14,7 @@ type Response struct {
 	Model              string        `yaml:"Model,omitempty" json:"model,omitempty"`
 	CreatedAt          time.Time     `yaml:"CreatedAt,omitempty" json:"created_at,omitempty"`
 	Response           string        `yaml:"Response,omitempty" json:"response,omitempty"`
+	Thinking           string        `yaml:"Thinking,omitempty" json:"thinking,omitempty"`
 	Done               bool          `yaml:"Done,omitempty" json:"done,omitempty"`
 	Context            []int         `yaml:"Context,omitempty" json:"context,omitempty"`
 	TotalDuration      int64         `yaml:"TotalDuration,omitempty" json:"total_duration,omitempty"`
