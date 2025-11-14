@@ -53,7 +53,7 @@ Budget-conscious operators can experiment with lighter prompts or lower-resoluti
 #### Environment Variables
 
 - `OPENAI_API_KEY` / `OPENAI_API_KEY_FILE` — fallback credentials when a model’s `Service.Key` is unset.
-- Existing `PHOTOPRISM_VISION_*` variables remain authoritative (see the [Developer Guide](https://docs.photoprism.app/developer-guide/vision/service/) for full lists).
+- Existing `PHOTOPRISM_VISION_*` variables remain authoritative (see the [Getting Started Guide](https://docs.photoprism.app/getting-started/config-options/#computer-vision) for full lists).
 
 #### `vision.yml` Examples
 
