@@ -154,9 +154,11 @@ func (m *Model) EndpointKey() (key string) {
 
 	if key = m.Service.EndpointKey(); key != "" {
 		return key
-	} else {
-		return ServiceKey
 	}
+
+	ensureEnv()
+
+	return strings.TrimSpace(os.ExpandEnv(ServiceKey))
 }
 
 // EndpointFileScheme returns the endpoint API request file scheme type. Nil
@@ -461,6 +463,10 @@ func (m *Model) ApplyEngineDefaults() {
 		if info.DefaultResolution > 0 && m.Resolution <= 0 {
 			m.Resolution = info.DefaultResolution
 		}
+	}
+
+	if engine == openai.EngineName && strings.TrimSpace(m.Service.Key) == "" {
+		m.Service.Key = "${OPENAI_API_KEY}"
 	}
 
 	m.Engine = engine
