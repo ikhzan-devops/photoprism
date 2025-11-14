@@ -10,9 +10,9 @@ import (
 
 func TestOllamaDefaultConfidenceApplied(t *testing.T) {
 	req := &ApiRequest{Format: FormatJSON}
-	payload := ApiResponseOllama{
-		Result: ApiResult{
-			Labels: []LabelResult{{Name: "forest path", Confidence: 0, Topicality: 0}},
+	payload := ollama.Response{
+		Result: ollama.ResultPayload{
+			Labels: []ollama.LabelPayload{{Name: "forest path", Confidence: 0, Topicality: 0}},
 		},
 	}
 	raw, err := json.Marshal(payload)
