@@ -40,14 +40,6 @@ Budget-conscious operators can experiment with lighter prompts or lower-resoluti
 - **Latency:** GPT‑5 nano/mini vision calls typically complete in 3–8 s, depending on OpenAI region. Including reasoning metadata (`reasoning.effort=low`) has negligible impact but improves traceability.
 - **Costs:** Consult OpenAI’s pricing for the selected model. Multiply input/output tokens by the published rate. PhotoPrism currently sends one image per request to keep costs linear with photo count.
 
-#### Defaults
-
-- File scheme: `data:` URLs (base64) for all OpenAI models.
-- Resolution: 720 px thumbnails (`vision.Thumb(ModelTypeCaption|Labels)`).
-- Options: `MaxOutputTokens` raised to 512 (caption) / 1024 (labels); `ForceJson=false` for captions, `true` for labels; `reasoning.effort="low"`.
-- Sampling: `Temperature` and `TopP` set to `0` for `gpt-5*` models; inherited values (0.1/0.9) remain for other engines. `openaiBuilder.Build` performs this override while preserving the struct defaults for non-OpenAI adapters.
-- Schema naming: Automatically derived via `schema.JsonSchemaName`, so operators may omit `SchemaVersion`.
-
 ### Configuration
 
 #### Environment Variables
@@ -89,6 +81,14 @@ Models:
 
 Keep TensorFlow entries in place so PhotoPrism falls back when the external service is unavailable.
 
+#### Defaults
+
+- File scheme: `data:` URLs (base64) for all OpenAI models.
+- Resolution: 720 px thumbnails (`vision.Thumb(ModelTypeCaption|Labels)`).
+- Options: `MaxOutputTokens` raised to 512 (caption) / 1024 (labels); `ForceJson=false` for captions, `true` for labels; `reasoning.effort="low"`.
+- Sampling: `Temperature` and `TopP` set to `0` for `gpt-5*` models; inherited values (0.1/0.9) remain for other engines. `openaiBuilder.Build` performs this override while preserving the struct defaults for non-OpenAI adapters.
+- Schema naming: Automatically derived via `schema.JsonSchemaName`, so operators may omit `SchemaVersion`.
+
 ### Documentation
 
 - Label Generation: <https://docs.photoprism.app/developer-guide/vision/label-generation/>
@@ -111,7 +111,7 @@ OpenAI calls respect the existing `limiter.Auth` configuration used by the visio
 #### Testing & Validation
 
 1. Unit tests: `go test ./internal/ai/vision/openai ./internal/ai/vision -run OpenAI -count=1`. Fixtures under `internal/ai/vision/openai/testdata/` replay real Responses payloads (captions and labels).
-2. CLI smoke test: `photoprism vision run -m labels --count 1 --force --model=gpt-5-mini` with trace logging enabled to inspect sanitised Responses.
+2. CLI smoke test: `photoprism vision run -m labels --count 1 --force` with trace logging enabled to inspect sanitised Responses.
 3. Compare worker summaries and label sources (`openai`) in the UI or via `photoprism vision ls`.
 
 #### Code Map
