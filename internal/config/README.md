@@ -9,7 +9,7 @@ PhotoPrism’s runtime configuration is managed by this package. Fields are defi
 PhotoPrism loads configuration in the following order:
 
 1. **Built-in defaults** defined in this package.
-2. **`defaults.yml`** — optional system defaults (typically `/etc/photoprism/defaults.yml`). See [Global Defaults](https://docs.photoprism.app/getting-started/config-files/defaults/) if you package PhotoPrism for other environments and need to override the compiled defaults.
+2. **`defaults.yml`** — optional system defaults (typically `/etc/photoprism/defaults.yml`). See [Global Config Defaults](https://docs.photoprism.app/getting-started/config-files/defaults/) if you package PhotoPrism for other environments and need to override the compiled defaults.
 3. **Environment variables** prefixed with `PHOTOPRISM_…` and specified in [flags.go](flags.go) along with the CLI flags. This is the primary override mechanism in container environments.
 4. **`options.yml`** — user-level configuration stored under `storage/config/options.yml` (or another directory controlled by `PHOTOPRISM_CONFIG_PATH`). Values here override both defaults and environment variables, see [Config Files](https://docs.photoprism.app/getting-started/config-files/).
 5. **CLI flags** (for example `photoprism --cache-path=/tmp/cache`). Flags always win when a conflict exists.
