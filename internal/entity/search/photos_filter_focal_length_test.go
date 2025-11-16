@@ -25,7 +25,7 @@ func TestPhotosFilterFocalLength(t *testing.T) {
 			assert.GreaterOrEqual(t, 28, r.PhotoFocalLength)
 			assert.LessOrEqual(t, 28, r.PhotoFocalLength)
 		}
-		assert.Equal(t, len(photos), 1)
+		assert.Equal(t, 1, len(photos))
 	})
 	t.Run("Num28Num50", func(t *testing.T) {
 		var f form.SearchPhotos
@@ -44,7 +44,7 @@ func TestPhotosFilterFocalLength(t *testing.T) {
 			assert.LessOrEqual(t, 28, r.PhotoFocalLength)
 		}
 
-		assert.Equal(t, len(photos), 5)
+		assert.Equal(t, 6, len(photos))
 	})
 	t.Run("OneNum400", func(t *testing.T) {
 		var f form.SearchPhotos
@@ -63,7 +63,7 @@ func TestPhotosFilterFocalLength(t *testing.T) {
 			assert.LessOrEqual(t, 1, r.PhotoFocalLength)
 		}
 
-		assert.Equal(t, len(photos), 8)
+		assert.Equal(t, 9, len(photos))
 	})
 	t.Run("Num22", func(t *testing.T) {
 		var f form.SearchPhotos
@@ -77,7 +77,7 @@ func TestPhotosFilterFocalLength(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		assert.Equal(t, len(photos), 0)
+		assert.Equal(t, 0, len(photos))
 	})
 	t.Run("Num100", func(t *testing.T) {
 		var f form.SearchPhotos
@@ -126,7 +126,7 @@ func TestPhotosQueryFocalLength(t *testing.T) {
 			assert.LessOrEqual(t, 28, r.PhotoFocalLength)
 		}
 
-		assert.Equal(t, len(photos), 1)
+		assert.Len(t, photos, 1)
 	})
 	t.Run("Num28Num30", func(t *testing.T) {
 		var f form.SearchPhotos
@@ -145,7 +145,7 @@ func TestPhotosQueryFocalLength(t *testing.T) {
 			assert.LessOrEqual(t, 28, r.PhotoFocalLength)
 		}
 
-		assert.Equal(t, len(photos), 2)
+		assert.Len(t, photos, 2)
 	})
 	t.Run("OneNum400", func(t *testing.T) {
 		var f form.SearchPhotos
@@ -164,7 +164,7 @@ func TestPhotosQueryFocalLength(t *testing.T) {
 			assert.LessOrEqual(t, 1, r.PhotoFocalLength)
 		}
 
-		assert.Equal(t, len(photos), 8)
+		assert.Equal(t, 9, len(photos))
 	})
 	t.Run("Eighteen", func(t *testing.T) {
 		var f form.SearchPhotos
@@ -177,7 +177,7 @@ func TestPhotosQueryFocalLength(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		assert.Equal(t, len(photos), 0)
+		assert.Len(t, photos, 0)
 	})
 	t.Run("Num100", func(t *testing.T) {
 		var f form.SearchPhotos

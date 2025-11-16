@@ -25,7 +25,7 @@ func TestPhotosFilterIso(t *testing.T) {
 			assert.GreaterOrEqual(t, 200, r.PhotoIso)
 			assert.LessOrEqual(t, 200, r.PhotoIso)
 		}
-		assert.Equal(t, len(photos), 1)
+		assert.Len(t, photos, 1)
 	})
 	t.Run("Num200Num400", func(t *testing.T) {
 		var f form.SearchPhotos
@@ -44,7 +44,7 @@ func TestPhotosFilterIso(t *testing.T) {
 			assert.LessOrEqual(t, 200, r.PhotoIso)
 		}
 
-		assert.Equal(t, len(photos), 4)
+		assert.Len(t, photos, 4)
 	})
 	t.Run("OneNum400", func(t *testing.T) {
 		var f form.SearchPhotos
@@ -63,7 +63,7 @@ func TestPhotosFilterIso(t *testing.T) {
 			assert.LessOrEqual(t, 1, r.PhotoIso)
 		}
 
-		assert.Equal(t, len(photos), 7)
+		assert.Len(t, photos, 7)
 	})
 	t.Run("Num155", func(t *testing.T) {
 		var f form.SearchPhotos
@@ -77,7 +77,7 @@ func TestPhotosFilterIso(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		assert.Equal(t, len(photos), 0)
+		assert.Len(t, photos, 0)
 	})
 	t.Run("Num100", func(t *testing.T) {
 		var f form.SearchPhotos
@@ -126,7 +126,7 @@ func TestPhotosQueryIso(t *testing.T) {
 			assert.LessOrEqual(t, 200, r.PhotoIso)
 		}
 
-		assert.Equal(t, len(photos), 1)
+		assert.Len(t, photos, 1)
 	})
 	t.Run("Num200Num400", func(t *testing.T) {
 		var f form.SearchPhotos
@@ -145,7 +145,7 @@ func TestPhotosQueryIso(t *testing.T) {
 			assert.LessOrEqual(t, 200, r.PhotoIso)
 		}
 
-		assert.Equal(t, len(photos), 4)
+		assert.Len(t, photos, 4)
 	})
 	t.Run("OneNum400", func(t *testing.T) {
 		var f form.SearchPhotos
@@ -164,7 +164,7 @@ func TestPhotosQueryIso(t *testing.T) {
 			assert.LessOrEqual(t, 1, r.PhotoIso)
 		}
 
-		assert.Equal(t, len(photos), 7)
+		assert.Len(t, photos, 7)
 	})
 	t.Run("Num155", func(t *testing.T) {
 		var f form.SearchPhotos
@@ -177,7 +177,7 @@ func TestPhotosQueryIso(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		assert.Equal(t, len(photos), 0)
+		assert.Len(t, photos, 0)
 	})
 	t.Run("Num100", func(t *testing.T) {
 		var f form.SearchPhotos

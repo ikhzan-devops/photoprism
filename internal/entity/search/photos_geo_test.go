@@ -745,7 +745,7 @@ func TestGeo(t *testing.T) {
 			t.Fatal(err2)
 		}
 
-		assert.Equal(t, len(photos), len(photos2))
+		assert.Len(t, photos, len(photos2))
 
 		var f3 form.SearchPhotosGeo
 
@@ -776,8 +776,8 @@ func TestGeo(t *testing.T) {
 			t.Fatal(err4)
 		}
 
-		assert.Equal(t, len(photos3), len(photos4))
-		assert.Equal(t, len(photos), len(photos4))
+		assert.Len(t, photos3, len(photos4))
+		assert.Len(t, photos, len(photos4))
 
 		var f5 form.SearchPhotosGeo
 		f5.Subject = "js6sg6b1h1njaaad"
@@ -793,7 +793,7 @@ func TestGeo(t *testing.T) {
 			t.Fatal(err5)
 		}
 
-		assert.Equal(t, len(photos5), len(photos4))
+		assert.Len(t, photos5, len(photos4))
 	})
 	t.Run("FScanEqualTrue", func(t *testing.T) {
 		var frm form.SearchPhotosGeo

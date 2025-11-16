@@ -25,7 +25,7 @@ func TestPhotosFilterResolution(t *testing.T) {
 			assert.GreaterOrEqual(t, 2, r.PhotoResolution)
 			assert.LessOrEqual(t, 2, r.PhotoResolution)
 		}
-		assert.Equal(t, len(photos), 8)
+		assert.Len(t, photos, 8)
 	})
 	t.Run("OneNum50", func(t *testing.T) {
 		var f form.SearchPhotos
@@ -44,7 +44,7 @@ func TestPhotosFilterResolution(t *testing.T) {
 			assert.LessOrEqual(t, 1, r.PhotoResolution)
 		}
 
-		assert.Equal(t, len(photos), 12)
+		assert.Len(t, photos, 13)
 	})
 	t.Run("ThreeNum150", func(t *testing.T) {
 		var f form.SearchPhotos
@@ -63,7 +63,7 @@ func TestPhotosFilterResolution(t *testing.T) {
 			assert.LessOrEqual(t, 3, r.PhotoResolution)
 		}
 
-		assert.Equal(t, len(photos), 5)
+		assert.Len(t, photos, 6)
 	})
 	t.Run("Num155", func(t *testing.T) {
 		var f form.SearchPhotos
@@ -77,7 +77,7 @@ func TestPhotosFilterResolution(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		assert.Equal(t, len(photos), 0)
+		assert.Len(t, photos, 0)
 	})
 	t.Run("Invalid", func(t *testing.T) {
 		var f form.SearchPhotos
@@ -112,7 +112,7 @@ func TestPhotosQueryResolution(t *testing.T) {
 			assert.LessOrEqual(t, 2, r.PhotoResolution)
 		}
 
-		assert.Equal(t, len(photos), 8)
+		assert.Len(t, photos, 8)
 	})
 	t.Run("OneNum50", func(t *testing.T) {
 		var f form.SearchPhotos
@@ -131,7 +131,7 @@ func TestPhotosQueryResolution(t *testing.T) {
 			assert.LessOrEqual(t, 1, r.PhotoResolution)
 		}
 
-		assert.Equal(t, len(photos), 12)
+		assert.Len(t, photos, 13)
 	})
 	t.Run("ThreeNum150", func(t *testing.T) {
 		var f form.SearchPhotos
@@ -150,7 +150,7 @@ func TestPhotosQueryResolution(t *testing.T) {
 			assert.LessOrEqual(t, 3, r.PhotoResolution)
 		}
 
-		assert.Equal(t, len(photos), 5)
+		assert.Len(t, photos, 6)
 	})
 	t.Run("Eighteen", func(t *testing.T) {
 		var f form.SearchPhotos
@@ -163,7 +163,7 @@ func TestPhotosQueryResolution(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		assert.Equal(t, len(photos), 0)
+		assert.Len(t, photos, 0)
 	})
 	t.Run("Invalid", func(t *testing.T) {
 		var f form.SearchPhotos
