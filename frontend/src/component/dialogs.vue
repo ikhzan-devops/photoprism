@@ -8,11 +8,11 @@
       :tab="edit.tab"
       @close="closeEditDialog"
     ></p-photo-edit-dialog>
-    <p-photo-edit-batch
+    <p-photo-batch-edit
       :visible="editBatch.visible"
       :selection="editBatch.selection"
       @close="closeEditBatch"
-    ></p-photo-edit-batch>
+    ></p-photo-batch-edit>
     <p-upload-dialog
       :visible="upload.visible"
       :data="upload.data"
@@ -27,7 +27,7 @@
 import Album from "model/album";
 
 import PPhotoEditDialog from "component/photo/edit/dialog.vue";
-import PPhotoEditBatch from "component/photo/edit/batch.vue";
+import PPhotoBatchEdit from "component/photo/batch-edit.vue";
 import PUploadDialog from "component/upload/dialog.vue";
 import PUpdate from "component/update.vue";
 import PLightbox from "component/lightbox.vue";
@@ -36,7 +36,7 @@ export default {
   name: "PDialogs",
   components: {
     PPhotoEditDialog,
-    PPhotoEditBatch,
+    PPhotoBatchEdit,
     PUploadDialog,
     PUpdate,
     PLightbox,

@@ -1,10 +1,9 @@
 import { describe, it, expect } from "vitest";
 import "../fixtures";
-import * as options from "../../../src/options/options";
+import * as options from "options/options";
 import {
   AccountTypes,
   Colors,
-  DefaultLocale,
   Expires,
   FallbackLocale,
   FeedbackCategories,
@@ -23,7 +22,7 @@ import {
   ThumbFilters,
   ThumbSizes,
   Timeouts,
-} from "../../../src/options/options";
+} from "options/options";
 
 describe("options/options", () => {
   it("should get timezones", () => {
@@ -69,18 +68,6 @@ describe("options/options", () => {
   it("should get countries without mixed by default", () => {
     const list = options.Countries();
     expect(list.some((c) => c.Code === -2)).toBe(false);
-  });
-
-  it("should include mixed option when requested", () => {
-    const base = options.Countries();
-    const withMixed = options.Countries({ includeMixed: true });
-
-    expect(withMixed.length).toBe(base.length + 1);
-    const mixed = withMixed.at(-1);
-    expect(mixed).toMatchObject({ Code: -2, Name: "Mixed" });
-
-    // ensure base list was not mutated
-    expect(options.Countries().length).toBe(base.length);
   });
 
   it("should set default locale", () => {

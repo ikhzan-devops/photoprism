@@ -1,8 +1,9 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { shallowMount } from "@vue/test-utils";
 import { nextTick } from "vue";
-import PPhotoBatchEdit from "component/photo/edit/batch.vue";
+import PPhotoBatchEdit from "component/photo/batch-edit.vue";
 import { Batch } from "model/batch-edit";
+import { Deleted, Mixed } from "options/options";
 
 // Mock the models and dependencies
 vi.mock("model/batch-edit");
@@ -338,7 +339,6 @@ describe("component/photo/edit/batch", () => {
       expect(wrapper.vm.$notify.error).toHaveBeenCalledWith("Failed to save changes");
       expect(wrapper.vm.saving).toBe(false);
     });
-
   });
 
   describe("Form Field Updates", () => {
@@ -456,7 +456,7 @@ describe("component/photo/edit/batch", () => {
     it("shows 'mixed' placeholder for text fields when values differ", () => {
       // Caption is mixed in mockValues
       const field = wrapper.vm.getFieldData("text-field", "Caption");
-      expect(field.placeholder).toBe("mixed");
+      expect(field.placeholder).toBe(Mixed.Placeholder());
       expect(field.persistent).toBe(true);
     });
 
@@ -474,8 +474,8 @@ describe("component/photo/edit/batch", () => {
       wrapper.vm.setFormData();
 
       const field = wrapper.vm.getFieldData("select-field", "Year");
-      expect(field.placeholder).toBe("mixed");
-      expect(field.items.find((i) => i.value === -2)).toBeTruthy();
+      expect(field.placeholder).toBe(Mixed.Placeholder());
+      expect(field.items.find((i) => i.value === Mixed.ID)).toBeTruthy();
     });
 
     it("boolean toggles include 'Mixed' option and current value is 'mixed' when mixed", () => {
@@ -483,8 +483,8 @@ describe("component/photo/edit/batch", () => {
       wrapper.vm.setFormData();
 
       const options = wrapper.vm.toggleOptions("Favorite");
-      expect(options.some((o) => o.value === "mixed")).toBe(true);
-      expect(wrapper.vm.getToggleValue("Favorite")).toBe("mixed");
+      expect(options.some((o) => o.value === Mixed.String)).toBe(true);
+      expect(wrapper.vm.getToggleValue("Favorite")).toBe(Mixed.String);
     });
 
     it("location placeholder shows 'mixed' when coordinates differ", () => {
@@ -492,14 +492,18 @@ describe("component/photo/edit/batch", () => {
       wrapper.vm.values.Lng = { value: 0, mixed: true };
       wrapper.vm.setFormData();
 
-      expect(wrapper.vm.locationPlaceholder).toBe("mixed");
+      expect(wrapper.vm.locationPlaceholder).toBe(Mixed.Placeholder());
     });
   });
 
   describe("Delete and Undo indicators", () => {
     beforeEach(() => {
       // Initialize with concrete values so delete is available
-      wrapper.vm.values = { ...mockValues, Title: { value: "Some Title", mixed: false }, Altitude: { value: 123, mixed: false } };
+      wrapper.vm.values = {
+        ...mockValues,
+        Title: { value: "Some Title", mixed: false },
+        Altitude: { value: 123, mixed: false },
+      };
       wrapper.vm.setFormData();
     });
 
@@ -515,7 +519,7 @@ describe("component/photo/edit/batch", () => {
       // Now undo icon should be visible and placeholder should show <deleted>
       expect(wrapper.vm.getIcon("text-field", "Title")).toBe("mdi-undo");
       const field = wrapper.vm.getFieldData("text-field", "Title");
-      expect(field.placeholder).toBe("<deleted>");
+      expect(field.placeholder).toBe(Deleted.Placeholder());
       expect(field.persistent).toBe(true);
       expect(wrapper.vm.deletedFields.Title).toBe(true);
 

@@ -6,6 +6,57 @@ import countries from "./countries.json";
 import * as media from "common/media";
 import * as locales from "../locales";
 
+export const Deleted = {
+  ID: -1,
+  String: "deleted",
+  Label: () => {
+    return $gettext("deleted");
+  },
+  Placeholder: () => {
+    return "<" + $gettext("deleted") + ">";
+  },
+};
+
+export const Mixed = {
+  ID: -2,
+  String: "mixed",
+  Label: () => {
+    return $gettext("mixed");
+  },
+  Placeholder: () => {
+    return "<" + $gettext("mixed") + ">";
+  },
+};
+
+export const Batch = (items, mixed) => {
+  if (!items.length) {
+    return [];
+  }
+
+  if (mixed) {
+    let result;
+
+    if (items[0].Code) {
+      result = [{ Code: Mixed.ID, Name: Mixed.Placeholder() }];
+    } else if (items[0].ID) {
+      result = [{ ID: Mixed.ID, Name: Mixed.Placeholder() }];
+    } else if (Number.isInteger(items[0].value)) {
+      result = [{ value: Mixed.ID, text: Mixed.Placeholder() }];
+    } else {
+      result = [{ value: Mixed.String, text: Mixed.Placeholder() }];
+    }
+
+    result.unshift(...items);
+    return result;
+  }
+
+  return items;
+};
+
+export const Countries = () => {
+  return countries;
+};
+
 export const GmtOffsets = [
   { ID: "GMT", Name: "Etc/GMT" },
   { ID: "UTC+1", Name: "Etc/GMT+01:00" },
@@ -41,16 +92,6 @@ export const TimeZones = (defaultName) =>
   ]
     .concat(timeZonesNames)
     .concat(GmtOffsets);
-
-export const Countries = (options) => {
-  if (options?.includeMixed) {
-    let result = [{ Code: -2, Name: $gettext("<mixed>") }];
-    result.unshift(...countries);
-    return result;
-  }
-
-  return countries;
-};
 
 export const Days = () => {
   let result = [];
@@ -121,35 +162,6 @@ export const MonthsShort = () => {
   }
 
   result.push({ value: -1, text: $gettext("Unknown") });
-
-  return result;
-};
-
-// Objects for the Batch Dialog to have one more value -2 => mixed
-export const TimeZonesBatchDialog = () => {
-  let result = TimeZones();
-  result.push({ ID: -2, Name: "mixed" });
-
-  return result;
-};
-
-export const DaysBatchDialog = () => {
-  let result = Days();
-  result.push({ value: -2, text: $gettext("mixed") });
-
-  return result;
-};
-
-export const YearsBatchDialog = (start) => {
-  let result = Years(start);
-  result.push({ value: -2, text: $gettext("mixed") });
-
-  return result;
-};
-
-export const MonthsShortBatchDialog = () => {
-  let result = MonthsShort();
-  result.push({ value: -2, text: $gettext("mixed") });
 
   return result;
 };
@@ -356,13 +368,6 @@ export const PhotoTypes = () => [
     value: media.Document,
   },
 ];
-
-export const PhotoTypesBatchDialog = () => {
-  let result = PhotoTypes();
-  result.push({ text: $gettext("mixed"), value: "mixed" });
-
-  return result;
-};
 
 export const Timeouts = () => [
   {

@@ -316,7 +316,7 @@
     line-break: anywhere;
 }
 
-.p-photo-edit-batch .scroll-col {
+.p-photo-batch-edit .scroll-col {
     height: 100%;
     overflow-y: auto;
     padding: 8px;

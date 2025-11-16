@@ -6,9 +6,10 @@
     :fullscreen="$vuetify.display.mdAndDown"
     scrim
     scrollable
-    class="p-dialog p-photo-edit-batch v-dialog--sidepanel v-dialog--sidepanel-wide"
+    persistent
+    class="p-dialog p-photo-batch-edit v-dialog--sidepanel v-dialog--sidepanel-wide"
     @click.stop="onClick"
-    @keyup.esc.exact="onClose"
+    @keydown.esc.exact="onClose"
     @after-enter="afterEnter"
     @after-leave="afterLeave"
   >
@@ -608,18 +609,18 @@
 </template>
 <script>
 import * as options from "options/options";
-import IconLivePhoto from "../../icon/live-photo.vue";
+import IconLivePhoto from "../icon/live-photo.vue";
 import { Batch } from "model/batch-edit";
 import Album from "model/album";
 import Label from "model/label";
-import Thumb from "../../../model/thumb";
+import Thumb from "../../model/thumb";
 import PLocationDialog from "component/location/dialog.vue";
 import PLocationInput from "component/location/input.vue";
 import BatchChipSelector from "component/file/chip-selector.vue";
 import $util from "common/util";
 
 export default {
-  name: "PPhotoEditBatch",
+  name: "PPhotoBatchEdit",
   components: {
     IconLivePhoto,
     PLocationDialog,
@@ -730,8 +731,8 @@ export default {
       if (
         latData.mixed ||
         lngData.mixed ||
-        lat === "mixed" ||
-        lng === "mixed" ||
+        lat === options.Mixed.String ||
+        lng === options.Mixed.String ||
         lat === "" ||
         lng === "" ||
         lat === null ||
@@ -744,9 +745,9 @@ export default {
     },
     locationPlaceholder() {
       if (this.deletedFields.Lat || this.deletedFields.Lng) {
-        return "<deleted>";
+        return options.Deleted.Placeholder();
       } else if (this.isLocationMixed) {
-        return "mixed";
+        return options.Mixed.Placeholder();
       }
 
       const lat = this.formData?.Lat?.value;
@@ -945,7 +946,7 @@ export default {
         // General logic for all other select fields (Country, TimeZone, etc.)
         this.formData[fieldName].value = newValue;
 
-        const newVal = newValue !== -2 ? newValue : "mixed";
+        const newVal = newValue !== options.Mixed.ID ? newValue : options.Mixed.String;
         if (newVal === previousValue) {
           this.formData[fieldName].action = this.actions.none;
         }
@@ -1113,23 +1114,26 @@ export default {
       const fieldData = this.values[fieldName];
       if (!fieldData) return [];
 
-      const options = [
+      const result = [
         { text: this.$gettext("Yes"), value: true },
         { text: this.$gettext("No"), value: false },
       ];
 
       if (fieldData.mixed) {
-        options.splice(1, 0, { text: this.$gettext("Mixed"), value: "mixed" });
+        result.splice(1, 0, { value: options.Mixed.String, text: options.Mixed.Label() });
       }
 
-      return options;
+      return result;
     },
     getToggleValue(fieldName) {
       const fieldData = this.values[fieldName];
-      if (!fieldData) return false;
+
+      if (!fieldData) {
+        return false;
+      }
 
       if (fieldData.mixed) {
-        return "mixed";
+        return options.Mixed.String;
       } else {
         return fieldData.value;
       }
@@ -1202,7 +1206,7 @@ export default {
       if (isDeleted) {
         return {
           value: fieldType === "input-field" ? 0 : "",
-          placeholder: fieldType === "text-field" ? "<deleted>" : "",
+          placeholder: fieldType === "text-field" ? options.Deleted.Placeholder() : "",
           persistent: fieldType === "text-field",
         };
       }
@@ -1212,14 +1216,14 @@ export default {
           const items = this.getItemsArray(fieldName, true);
           return {
             value: this.getValue(fieldName, items),
-            placeholder: "mixed",
+            placeholder: options.Mixed.Placeholder(),
             persistent: true,
             items,
           };
         }
         return {
           value: fieldType === "input-field" ? "" : "",
-          placeholder: "mixed",
+          placeholder: options.Mixed.Placeholder(),
           persistent: true,
         };
       }
@@ -1264,36 +1268,36 @@ export default {
     },
     getValue(fieldName, items) {
       if (fieldName === "Day" || fieldName === "Month" || fieldName === "Year") {
-        return items.find((item) => item.value === -2).text;
+        return items.find((item) => item.value === options.Mixed.ID)?.text;
       }
       if (fieldName === "Country") {
-        return items.find((item) => item.Code === -2).Name;
+        return items.find((item) => item.Code === options.Mixed.ID)?.Name;
       }
       if (fieldName === "TimeZone") {
-        return items.find((item) => item.ID === -2).Name;
+        return items.find((item) => item.ID === options.Mixed.ID)?.Name;
       }
       if (fieldName === "Type") {
-        return items.find((item) => item.value === "mixed").text;
+        return items.find((item) => item.value === options.Mixed.String)?.text;
       }
     },
     getItemsArray(fieldName, isMixed) {
       if (fieldName === "Day") {
-        return isMixed ? options.DaysBatchDialog() : options.Days();
+        return options.Batch(options.Days(), isMixed);
       }
       if (fieldName === "Month") {
-        return isMixed ? options.MonthsShortBatchDialog() : options.MonthsShort();
+        return options.Batch(options.MonthsShort(), isMixed);
       }
       if (fieldName === "Year") {
-        return isMixed ? options.YearsBatchDialog(1900) : options.Years(1900);
+        return options.Batch(options.Years(1900), isMixed);
       }
       if (fieldName === "Country") {
-        return options.Countries({ includeMixed: isMixed });
+        return options.Batch(options.Countries(), isMixed);
       }
       if (fieldName === "TimeZone") {
-        return isMixed ? options.TimeZonesBatchDialog() : options.TimeZones();
+        return options.Batch(options.TimeZones(), isMixed);
       }
       if (fieldName === "Type") {
-        return isMixed ? options.PhotoTypesBatchDialog() : options.PhotoTypes();
+        return options.Batch(options.PhotoTypes(), isMixed);
       }
     },
     openPhoto(index) {
