@@ -66,6 +66,23 @@ describe("options/options", () => {
     expect(Languages[0].value).toBe("en");
   });
 
+  it("should get countries without mixed by default", () => {
+    const list = options.Countries();
+    expect(list.some((c) => c.Code === -2)).toBe(false);
+  });
+
+  it("should include mixed option when requested", () => {
+    const base = options.Countries();
+    const withMixed = options.Countries({ includeMixed: true });
+
+    expect(withMixed.length).toBe(base.length + 1);
+    const mixed = withMixed.at(-1);
+    expect(mixed).toMatchObject({ Code: -2, Name: "Mixed" });
+
+    // ensure base list was not mutated
+    expect(options.Countries().length).toBe(base.length);
+  });
+
   it("should set default locale", () => {
     // Assuming DefaultLocale is exported and mutable for testing purposes
     // Initial state check might depend on test execution order, so we control it here.

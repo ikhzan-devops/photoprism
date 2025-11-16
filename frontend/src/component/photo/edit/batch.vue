@@ -608,7 +608,6 @@
 </template>
 <script>
 import * as options from "options/options";
-import countries from "options/countries.json";
 import IconLivePhoto from "../../icon/live-photo.vue";
 import { Batch } from "model/batch-edit";
 import Album from "model/album";
@@ -665,7 +664,6 @@ export default {
       isAllSelected: true,
       allSelectedLength: 0,
       options,
-      countries,
       firstVisibleElementIndex: 0,
       lastVisibleElementIndex: 0,
       mouseDown: {
@@ -1289,8 +1287,7 @@ export default {
         return isMixed ? options.YearsBatchDialog(1900) : options.Years(1900);
       }
       if (fieldName === "Country") {
-        const newCountries = this.getCountriesArray(this.countries);
-        return isMixed ? newCountries : this.countries;
+        return options.Countries({ includeMixed: isMixed });
       }
       if (fieldName === "TimeZone") {
         return isMixed ? options.TimeZonesBatchDialog() : options.TimeZones();
@@ -1298,13 +1295,6 @@ export default {
       if (fieldName === "Type") {
         return isMixed ? options.PhotoTypesBatchDialog() : options.PhotoTypes();
       }
-    },
-    getCountriesArray(array) {
-      const hasMixed = array.some((item) => item.Code === -2);
-      if (!hasMixed) {
-        array.push({ Code: -2, Name: "mixed" });
-      }
-      return array;
     },
     openPhoto(index) {
       this.$lightbox.openModels(Thumb.fromPhotos([this.model.models[index]]), 0, null, this.isBatchDialog);

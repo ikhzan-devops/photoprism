@@ -2,6 +2,7 @@ import { timeZonesNames } from "@vvo/tzdb";
 import { $gettext } from "common/gettext";
 import { Info } from "luxon";
 import { $config } from "app/session";
+import countries from "./countries.json";
 import * as media from "common/media";
 import * as locales from "../locales";
 
@@ -40,6 +41,16 @@ export const TimeZones = (defaultName) =>
   ]
     .concat(timeZonesNames)
     .concat(GmtOffsets);
+
+export const Countries = (options) => {
+  if (options?.includeMixed) {
+    let result = [{ Code: -2, Name: $gettext("<mixed>") }];
+    result.unshift(...countries);
+    return result;
+  }
+
+  return countries;
+};
 
 export const Days = () => {
   let result = [];
