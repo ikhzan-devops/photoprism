@@ -28,6 +28,9 @@ export const Mixed = {
   },
 };
 
+// Batch returns a copy of the supplied options array and prepends a localized
+// "mixed" placeholder when `mixed` is true so form controls can display that
+// state without mutating the original items.
 export const Batch = (items, mixed) => {
   if (!items.length) {
     return [];

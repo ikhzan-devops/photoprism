@@ -67,7 +67,29 @@ describe("options/options", () => {
 
   it("should get countries without mixed by default", () => {
     const list = options.Countries();
-    expect(list.some((c) => c.Code === -2)).toBe(false);
+    expect(list.some((c) => c.Code === options.Mixed.ID)).toBe(false);
+  });
+
+  it("should use Batch helper to inject mixed entries", () => {
+    const base = [{ Code: "de", Name: "Germany" }];
+    const withMixed = options.Batch(base, true);
+
+    expect(withMixed).toHaveLength(base.length + 1);
+    expect(withMixed.at(-1)).toEqual({ Code: options.Mixed.ID, Name: options.Mixed.Placeholder() });
+    expect(withMixed[0]).toEqual(base[0]);
+
+    // ensure original array is untouched
+    expect(base).toEqual([{ Code: "de", Name: "Germany" }]);
+
+    const noMixed = options.Batch(base, false);
+    expect(noMixed).toBe(base);
+  });
+
+  it("should add mixed placeholder for numeric value lists", () => {
+    const values = [{ value: 1, text: "January" }];
+    const mixedValues = options.Batch(values, true);
+    expect(mixedValues.at(-1)).toEqual({ value: options.Mixed.ID, text: options.Mixed.Placeholder() });
+    expect(mixedValues[0]).toEqual(values[0]);
   });
 
   it("should set default locale", () => {
