@@ -288,33 +288,47 @@ export default {
       );
 
       if (existingItem) {
+        let changed = false;
         const updatedItems = this.items.map((item) => {
           const isSame =
             (item.value && value && item.value === value) || this.normalizeTitle(item.title) === normalizedTitle;
-          if (!isSame) return item;
+          if (!isSame) {
+            return item;
+          }
+
           const next = { ...item };
+          let itemChanged = false;
+
           if (resolvedApplied) {
-            if (value) next.value = value;
-            if (title) next.title = title;
+            if (value && item.value !== value) {
+              next.value = value;
+              itemChanged = true;
+            }
+            if (title && item.title !== title) {
+              next.title = title;
+              itemChanged = true;
+            }
           }
-          if (item.mixed || item.action !== "add") {
+
+          if (item.mixed && item.action !== "add") {
             next.action = "add";
+            next.mixed = false;
+            itemChanged = true;
           }
-          return next;
-        });
-        this.$emit("update:items", updatedItems);
-        this.menuOpen = false;
-        this.$nextTick(() => {
-          this.newItemTitle = "";
-          if (this.$refs.inputField) {
-            this.$refs.inputField.blur();
-            setTimeout(() => {
-              this.newItemTitle = null;
-            }, 10);
-          } else {
-            this.newItemTitle = null;
+
+          if (itemChanged) {
+            changed = true;
+            return next;
           }
+
+          return item;
         });
+
+        if (changed) {
+          this.$emit("update:items", updatedItems);
+        }
+
+        this.resetInputField();
         return;
       }
 
@@ -353,6 +367,20 @@ export default {
         return;
       }
       this.menuOpen = val;
+    },
+    resetInputField() {
+      this.menuOpen = false;
+      this.$nextTick(() => {
+        this.newItemTitle = "";
+        if (this.$refs.inputField) {
+          this.$refs.inputField.blur();
+          setTimeout(() => {
+            this.newItemTitle = null;
+          }, 10);
+        } else {
+          this.newItemTitle = null;
+        }
+      });
     },
   },
 };
