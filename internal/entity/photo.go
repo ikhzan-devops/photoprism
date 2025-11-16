@@ -16,6 +16,7 @@ import (
 	"github.com/photoprism/photoprism/internal/event"
 	"github.com/photoprism/photoprism/internal/form"
 	"github.com/photoprism/photoprism/pkg/clean"
+	"github.com/photoprism/photoprism/pkg/list"
 	"github.com/photoprism/photoprism/pkg/media"
 	"github.com/photoprism/photoprism/pkg/react"
 	"github.com/photoprism/photoprism/pkg/rnd"
@@ -32,6 +33,7 @@ var MetadataUpdateInterval = 24 * 3 * time.Hour   // 3 Days
 var MetadataEstimateInterval = 24 * 7 * time.Hour // 7 Days
 
 var photoMutex = sync.Mutex{}
+var labelKeywordsSkipSrc = []string{SrcTitle, SrcCaption, SrcSubject, SrcKeyword}
 
 // MapKey builds a deterministic indexing key from the capture timestamp and spatial cell identifier.
 func MapKey(takenAt time.Time, cellId string) string {
@@ -435,12 +437,6 @@ func (m *Photo) SaveLabels() error {
 		log.Info(err)
 	}
 
-	details := m.GetDetails()
-
-	w := txt.UniqueWords(txt.Words(details.Keywords))
-	w = append(w, labels.Keywords()...)
-	details.Keywords = strings.Join(txt.UniqueWords(w), ", ")
-
 	if err := m.IndexKeywords(); err != nil {
 		log.Errorf("photo: %s", err.Error())
 	}
@@ -455,6 +451,35 @@ func (m *Photo) SaveLabels() error {
 	UpdateCountsAsync()
 
 	return nil
+}
+
+// LabelKeywords converts the loaded photo labels (and their categories)
+// into the keyword tokens that should be indexable for full‑text search.
+func (m *Photo) LabelKeywords() (result []string) {
+	if m == nil {
+		return nil
+	}
+
+	for _, l := range m.Labels {
+		if l.Label == nil {
+			continue
+		}
+
+		if l.Uncertainty >= 100 || list.Contains(labelKeywordsSkipSrc, l.LabelSrc) {
+			continue
+		}
+
+		result = append(result, txt.Keywords(l.Label.LabelName)...)
+
+		for _, c := range l.Label.LabelCategories {
+			if c == nil {
+				continue
+			}
+			result = append(result, txt.Keywords(c.LabelName)...)
+		}
+	}
+
+	return result
 }
 
 // ClassifyLabels converts attached PhotoLabel relations into classify.Labels for downstream AI components.
@@ -629,6 +654,7 @@ func (m *Photo) IndexKeywords() error {
 	keywords = append(keywords, txt.Keywords(m.GetCaption())...)
 	keywords = append(keywords, m.SubjectKeywords()...)
 	keywords = append(keywords, txt.Words(details.Keywords)...)
+	keywords = append(keywords, m.LabelKeywords()...)
 	keywords = append(keywords, txt.Keywords(details.Subject)...)
 	keywords = append(keywords, txt.Keywords(details.Artist)...)
 

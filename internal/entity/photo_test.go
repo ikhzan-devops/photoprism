@@ -6,12 +6,14 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/photoprism/photoprism/internal/ai/classify"
 	"github.com/photoprism/photoprism/internal/form"
 	"github.com/photoprism/photoprism/pkg/media"
 	"github.com/photoprism/photoprism/pkg/rnd"
 	"github.com/photoprism/photoprism/pkg/time/tz"
+	"github.com/photoprism/photoprism/pkg/txt"
 )
 
 func TestSavePhotoForm(t *testing.T) {
@@ -71,6 +73,120 @@ func TestSavePhotoForm(t *testing.T) {
 		assert.NotNil(t, m.EditedAt)
 
 		t.Log(m.GetDetails().Keywords)
+	})
+}
+
+func TestPhoto_LabelKeywords(t *testing.T) {
+	t.Run("CollectsSearchableKeywords", func(t *testing.T) {
+		photo := Photo{
+			Labels: []PhotoLabel{
+				{
+					LabelSrc:    SrcManual,
+					Uncertainty: 0,
+					Label: &Label{
+						LabelName: "Golden Gate",
+						LabelCategories: []*Label{
+							{LabelName: "Bridge Monuments"},
+							{LabelName: "San Francisco"},
+						},
+					},
+				},
+				{
+					// Skipped because source is ignored
+					LabelSrc: SrcTitle,
+					Label:    &Label{LabelName: "Title Based"},
+				},
+				{
+					// Skipped because uncertainty >= 100
+					LabelSrc:    SrcManual,
+					Uncertainty: 150,
+					Label:       &Label{LabelName: "Too Uncertain"},
+				},
+				{
+					// Safeguard: nil label should be ignored
+					LabelSrc: SrcManual,
+				},
+			},
+		}
+
+		expected := append([]string{}, txt.Keywords("Golden Gate")...)
+		expected = append(expected, txt.Keywords("Bridge Monuments")...)
+		expected = append(expected, txt.Keywords("San Francisco")...)
+
+		assert.ElementsMatch(t, expected, photo.LabelKeywords())
+	})
+	t.Run("NilPhoto", func(t *testing.T) {
+		var photo *Photo
+		assert.Nil(t, photo.LabelKeywords())
+	})
+}
+
+func photoKeywordWords(t *testing.T, photoID uint) []string {
+	t.Helper()
+
+	type row struct {
+		Keyword string
+	}
+
+	var rows []row
+
+	if err := Db().Table(Keyword{}.TableName()).
+		Select("keywords.keyword").
+		Joins("JOIN photos_keywords pk ON pk.keyword_id = keywords.id AND pk.photo_id = ?", photoID).
+		Scan(&rows).Error; err != nil {
+		t.Fatalf("failed querying photo keywords: %v", err)
+	}
+
+	words := make([]string, 0, len(rows))
+
+	for _, r := range rows {
+		words = append(words, r.Keyword)
+	}
+
+	return words
+}
+
+func TestPhoto_LabelKeywordIndexing(t *testing.T) {
+	t.Run("SaveLabels", func(t *testing.T) {
+		fixture := PhotoFixtures.Get("Photo56")
+		photo := FindPhoto(fixture)
+		require.NotNil(t, photo)
+		require.Greater(t, len(photo.Labels), 0)
+
+		require.NoError(t, Db().Where("photo_id = ?", photo.ID).Delete(&PhotoKeyword{}).Error)
+
+		originalKeywords := photo.GetDetails().Keywords
+
+		require.NoError(t, photo.SaveLabels())
+
+		reloaded := FindPhoto(*photo)
+		require.NotNil(t, reloaded)
+		assert.Equal(t, originalKeywords, reloaded.GetDetails().Keywords)
+
+		words := photoKeywordWords(t, photo.ID)
+		assert.Contains(t, words, "flower")
+		assert.Contains(t, words, "cake")
+		assert.NotContains(t, words, "cow") // SrcKeyword entries are skipped
+	})
+	t.Run("Optimize", func(t *testing.T) {
+		fixture := PhotoFixtures.Get("Photo57")
+		photo := FindPhoto(fixture)
+		require.NotNil(t, photo)
+		require.Greater(t, len(photo.Labels), 0)
+
+		require.NoError(t, Db().Where("photo_id = ?", photo.ID).Delete(&PhotoKeyword{}).Error)
+
+		originalKeywords := photo.GetDetails().Keywords
+
+		_, _, err := photo.Optimize(false, false, false, false)
+		require.NoError(t, err)
+
+		reloaded := FindPhoto(*photo)
+		require.NotNil(t, reloaded)
+		assert.Equal(t, originalKeywords, reloaded.GetDetails().Keywords)
+
+		words := photoKeywordWords(t, photo.ID)
+		assert.Contains(t, words, "flower")
 	})
 }
 
