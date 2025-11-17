@@ -9,6 +9,7 @@ import (
 	"github.com/photoprism/photoprism/pkg/rnd"
 )
 
+// Action enumerates the supported batch operations such as add/remove/update.
 type Action = string
 
 const (
@@ -92,6 +93,7 @@ func ApplyLabels(photo *entity.Photo, labels Items) error {
 
 	// Track if we changed anything to call SaveLabels once
 	changed := false
+	labelIndex := indexPhotoLabels(photo.Labels)
 
 	for _, it := range labels.Items {
 		switch it.Action {
@@ -104,6 +106,7 @@ func ApplyLabels(photo *entity.Photo, labels Items) error {
 			// Try by UID first
 			var labelEntity *entity.Label
 			var err error
+
 			if it.Value != "" {
 				// If value is provided, validate it's a proper UID format
 				if !rnd.IsUID(it.Value, entity.LabelUID) {
@@ -115,6 +118,7 @@ func ApplyLabels(photo *entity.Photo, labels Items) error {
 					return fmt.Errorf("label not found: %s", it.Value)
 				}
 			}
+
 			if labelEntity == nil && it.Title != "" {
 				// Create or find by title
 				labelEntity = entity.FirstOrCreateLabel(entity.NewLabel(it.Title, 0))
@@ -128,22 +132,28 @@ func ApplyLabels(photo *entity.Photo, labels Items) error {
 				log.Debugf("batch: could not restore label %s: %s", labelEntity.LabelName, err)
 			}
 
+			pl := labelIndex[labelEntity.ID]
+
+			if pl == nil {
+				pl = entity.FirstOrCreatePhotoLabel(entity.NewPhotoLabel(photo.ID, labelEntity.ID, 0, entity.SrcBatch))
+				if pl == nil {
+					log.Errorf("batch: failed creating photo-label for photo %d and label %d", photo.ID, labelEntity.ID)
+					break
+				}
+				labelIndex[labelEntity.ID] = pl
+			}
+
 			// Ensure 100% confidence (uncertainty 0) and source 'batch'
-			if pl := entity.FirstOrCreatePhotoLabel(entity.NewPhotoLabel(photo.ID, labelEntity.ID, 0, entity.SrcBatch)); pl == nil {
-				log.Errorf("batch: failed creating photo-label for photo %d and label %d", photo.ID, labelEntity.ID)
-			} else {
-				// If it already existed with different values, update it
-				if pl.Uncertainty != 0 || pl.LabelSrc != entity.SrcBatch {
-					pl.Uncertainty = 0
-					pl.LabelSrc = entity.SrcBatch
-					if err := entity.Db().Save(pl).Error; err != nil {
-						log.Errorf("batch: update label to 100%% confidence failed: %s", err)
-					} else {
-						changed = true
-					}
+			if pl.Uncertainty != 0 || pl.LabelSrc != entity.SrcBatch {
+				pl.Uncertainty = 0
+				pl.LabelSrc = entity.SrcBatch
+				if err = entity.Db().Save(pl).Error; err != nil {
+					log.Errorf("batch: update label to 100%% confidence failed: %s", err)
 				} else {
 					changed = true
 				}
+			} else {
+				changed = true
 			}
 
 		case ActionRemove:
@@ -157,19 +167,29 @@ func ApplyLabels(photo *entity.Photo, labels Items) error {
 			}
 
 			labelEntity, err := query.LabelByUID(it.Value)
+
 			if err != nil || labelEntity == nil || !labelEntity.HasID() {
 				return fmt.Errorf("label not found for removal: %s", it.Value)
 			}
 
-			if pl, err := query.PhotoLabel(photo.ID, labelEntity.ID); err != nil {
-				log.Debugf("batch: photo-label not found for removal: photo=%s label_id=%d", photo.PhotoUID, labelEntity.ID)
-				continue
-			} else if pl != nil {
+			pl := labelIndex[labelEntity.ID]
+
+			if pl == nil {
+				if cached, queryErr := query.PhotoLabel(photo.ID, labelEntity.ID); queryErr != nil {
+					log.Debugf("batch: photo-label not found for removal: photo=%s label_id=%d", photo.PhotoUID, labelEntity.ID)
+					continue
+				} else {
+					pl = cached
+				}
+			}
+
+			if pl != nil {
 				if (pl.LabelSrc == entity.SrcManual || pl.LabelSrc == entity.SrcBatch) && pl.Uncertainty < 100 {
 					if err := entity.Db().Delete(&pl).Error; err != nil {
 						log.Errorf("batch: delete label failed: %s", err)
 					} else {
 						log.Debugf("batch: deleted label: photo=%s label_id=%d", photo.PhotoUID, labelEntity.ID)
+						delete(labelIndex, labelEntity.ID)
 						changed = true
 					}
 				} else if pl.LabelSrc != entity.SrcManual && pl.LabelSrc != entity.SrcBatch {
@@ -186,9 +206,11 @@ func ApplyLabels(photo *entity.Photo, labels Items) error {
 						log.Errorf("batch: save label failed: %s", err)
 					}
 				}
+
 				_ = photo.RemoveKeyword(labelEntity.LabelName)
+
 				// Persist updated keywords immediately so the change survives reloads
-				if err := photo.SaveDetails(); err != nil {
+				if err = photo.SaveDetails(); err != nil {
 					log.Debugf("batch: failed to save details after keyword removal: %s", err)
 				}
 			}
@@ -203,15 +225,35 @@ func ApplyLabels(photo *entity.Photo, labels Items) error {
 	if changed {
 		// Reload photo to ensure in-memory labels reflect DB changes before saving derived fields
 		if reloaded, err := query.PhotoPreloadByUID(photo.PhotoUID); err == nil && reloaded.HasID() {
-			if err := (&reloaded).SaveLabels(); err != nil {
+			if err = (&reloaded).SaveLabels(); err != nil {
 				return err
 			}
 		} else {
-			if err := photo.SaveLabels(); err != nil {
+			if err = photo.SaveLabels(); err != nil {
 				return err
 			}
 		}
 	}
 
 	return nil
+}
+
+// indexPhotoLabels builds a PhotoLabel lookup map so ApplyLabels can reuse the associations that
+// were already preloaded for the batch selection without re-querying the join table.
+func indexPhotoLabels(labels entity.PhotoLabels) map[uint]*entity.PhotoLabel {
+	if len(labels) == 0 {
+		return map[uint]*entity.PhotoLabel{}
+	}
+
+	idx := make(map[uint]*entity.PhotoLabel, len(labels))
+
+	for i := range labels {
+		lbl := &labels[i]
+		if lbl == nil || lbl.LabelID == 0 {
+			continue
+		}
+		idx[lbl.LabelID] = lbl
+	}
+
+	return idx
 }

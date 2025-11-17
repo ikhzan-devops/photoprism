@@ -644,7 +644,9 @@ export default {
   },
   computed: {
     formTitle() {
-      return this.$gettext(`Edit Photos (%{n})`, { n: this.allSelectedLength });
+      // TODO: this.allSelectedLength should not include photos that could not be loaded e.g. because they are archived.
+      const n = Number(this.allSelectedLength) > this.getModelCount() ? this.getModelCount() : 0;
+      return this.$gettext(`Edit Photos (%{n})`, { n });
     },
     currentCoordinates() {
       if (this.isLocationMixed || this.deletedFields.Lat || this.deletedFields.Lng) {
@@ -798,6 +800,9 @@ export default {
       this.deletedFields = {};
       this.allSelectedLength = 0;
       this.$view.leave(this);
+    },
+    getModelCount() {
+      return this.model?.models?.length ? this.model.models.length : 0;
     },
     normalizeLabelTitleForCompare(s) {
       return $util.normalizeLabelTitle(s);

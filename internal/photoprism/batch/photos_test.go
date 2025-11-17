@@ -13,7 +13,15 @@ import (
 	"github.com/photoprism/photoprism/pkg/fs"
 )
 
-func TestNewPhotosForm_FromJSON(t *testing.T) {
+func TestNewPhotosForm(t *testing.T) {
+	t.Run("FromJSON", runNewPhotosFormFromJSON)
+	t.Run("FromFixturesAlbumsLabels", runNewPhotosFormFromFixtures)
+	t.Run("TwoPhotosMixedFlags1", runNewPhotosFormMixedFlags1)
+	t.Run("TwoPhotosMixedFlags2", runNewPhotosFormMixedFlags2)
+}
+
+// runNewPhotosFormFromJSON exercises PhotosForm behavior.
+func runNewPhotosFormFromJSON(t *testing.T) {
 	var photos search.PhotoResults
 
 	dataFile := fs.Abs("./testdata/photos.json")
@@ -74,7 +82,8 @@ func TestNewPhotosForm_FromJSON(t *testing.T) {
 	assert.Equal(t, true, frm.DetailsLicense.Mixed)
 }
 
-func TestNewPhotosForm_FromFixturesAlbumsLabels(t *testing.T) {
+// runNewPhotosFormFromFixtures ensures preloaded fixtures behave.
+func runNewPhotosFormFromFixtures(t *testing.T) {
 
 	// Ensure test config and fixtures/DB are initialized.
 	_ = config.TestConfig()
@@ -97,7 +106,8 @@ func TestNewPhotosForm_FromFixturesAlbumsLabels(t *testing.T) {
 	}
 }
 
-func TestNewPhotosForm_TwoPhotosMixedFlags1(t *testing.T) {
+// runNewPhotosFormMixedFlags1 captures mixed flag handling.
+func runNewPhotosFormMixedFlags1(t *testing.T) {
 	photo1 := search.Photo{
 		ID:            111115411,
 		PhotoUID:      "",
@@ -185,7 +195,8 @@ func TestNewPhotosForm_TwoPhotosMixedFlags1(t *testing.T) {
 	assert.Equal(t, true, frm.PhotoYear.Mixed)
 }
 
-func TestNewPhotosForm_TwoPhotosMixedFlags2(t *testing.T) {
+// runNewPhotosFormMixedFlags2 covers camera/lens variance.
+func runNewPhotosFormMixedFlags2(t *testing.T) {
 	photo1 := search.Photo{
 		ID:            111115411,
 		PhotoUID:      "",
@@ -255,4 +266,26 @@ func TestNewPhotosForm_TwoPhotosMixedFlags2(t *testing.T) {
 	assert.Equal(t, true, frm.PhotoMonth.Mixed)
 	assert.Equal(t, 2020, frm.PhotoYear.Value)
 	assert.Equal(t, false, frm.PhotoYear.Mixed)
+}
+
+func TestNewPhotosFormWithEntities(t *testing.T) {
+	t.Run("FallsBack", runNewPhotosFormWithEntitiesFallsBack)
+}
+
+// runNewPhotosFormWithEntitiesFallsBack ensures helper falls back correctly.
+func runNewPhotosFormWithEntitiesFallsBack(t *testing.T) {
+	_ = config.TestConfig()
+	photos := search.PhotoResults{
+		{PhotoUID: "pqkm36fjqvset9uz"},
+		{PhotoUID: "pqkm36fjqvset9uy"},
+	}
+
+	legacy := NewPhotosForm(photos)
+	withNil := NewPhotosFormWithEntities(photos, nil)
+
+	if assert.NotNil(t, legacy) && assert.NotNil(t, withNil) {
+		assert.Equal(t, legacy.PhotoTitle.Value, withNil.PhotoTitle.Value)
+		assert.Equal(t, len(legacy.Albums.Items), len(withNil.Albums.Items))
+		assert.Equal(t, len(legacy.Labels.Items), len(withNil.Labels.Items))
+	}
 }

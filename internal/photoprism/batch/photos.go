@@ -3,6 +3,7 @@ package batch
 import (
 	"sort"
 
+	"github.com/photoprism/photoprism/internal/entity"
 	"github.com/photoprism/photoprism/internal/entity/query"
 	"github.com/photoprism/photoprism/internal/entity/search"
 )
@@ -47,14 +48,40 @@ type PhotosForm struct {
 	DetailsLicense   String `json:"DetailsLicense,omitempty"`
 }
 
-// NewPhotosForm returns a new batch edit form instance
-// initialized with values from the selected photos.
+// NewPhotosForm returns a new batch edit form instance initialized with values from the
+// selected photos. It falls back to reloading each photo individually.
 func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
+	return NewPhotosFormWithEntities(photos, nil)
+}
+
+// NewPhotosFormWithEntities builds the batch edit form using the supplied photo selection and
+// an optional map of preloaded entity.Photo instances that should be reused instead of issuing
+// additional queries. When the map is nil or a photo is missing, the helper falls back to
+// `query.PhotoPreloadByUID` so legacy call sites keep working.
+func NewPhotosFormWithEntities(photos search.PhotoResults, preloaded map[string]*entity.Photo) *PhotosForm {
 	// Create a new batch edit form and initialize it
 	// with the values from the selected photos.
 	frm := &PhotosForm{
 		Albums: Items{Items: []Item{}, Mixed: false, Action: ActionNone},
 		Labels: Items{Items: []Item{}, Mixed: false, Action: ActionNone},
+	}
+
+	getPhoto := func(uid string) *entity.Photo {
+		if uid == "" {
+			return nil
+		}
+
+		if preloaded != nil {
+			if p := preloaded[uid]; p != nil {
+				return p
+			}
+		}
+
+		if p, err := query.PhotoPreloadByUID(uid); err == nil && p.HasID() {
+			return &p
+		}
+
+		return nil
 	}
 
 	// Populate Albums and Labels from selected photos (no raw SQL; use preload helpers)
@@ -64,10 +91,12 @@ func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
 			title string
 			cnt   int
 		}
+
 		type labelAgg struct {
 			name string
 			cnt  int
 		}
+
 		albumCount := map[string]albumAgg{}
 		labelCount := map[string]labelAgg{}
 
@@ -75,10 +104,11 @@ func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
 			if sp.PhotoUID == "" {
 				continue
 			}
-			p, err := query.PhotoPreloadByUID(sp.PhotoUID)
-			if err != nil || !p.HasID() {
+			p := getPhoto(sp.PhotoUID)
+			if p == nil || !p.HasID() {
 				continue
 			}
+
 			// Albums on this photo
 			for _, a := range p.Albums {
 				if a.AlbumUID == "" || a.Deleted() {
@@ -89,6 +119,7 @@ func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
 				v.cnt++
 				albumCount[a.AlbumUID] = v
 			}
+
 			// Labels on this photo (only visible ones: uncertainty < 100)
 			for _, pl := range p.Labels {
 				if pl.Uncertainty >= 100 || pl.Label == nil || !pl.Label.HasID() {
@@ -108,6 +139,7 @@ func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
 		// Build Albums items
 		frm.Albums.Items = make([]Item, 0, len(albumCount))
 		anyAlbumMixed := false
+
 		for uid, agg := range albumCount {
 			mixed := agg.cnt > 0 && agg.cnt < total
 			if mixed {
@@ -115,6 +147,7 @@ func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
 			}
 			frm.Albums.Items = append(frm.Albums.Items, Item{Value: uid, Title: agg.title, Mixed: mixed, Action: ActionNone})
 		}
+
 		// Sort shared-first (Mixed=false), then by Title alphabetically
 		sort.Slice(frm.Albums.Items, func(i, j int) bool {
 			if frm.Albums.Items[i].Mixed != frm.Albums.Items[j].Mixed {
@@ -122,6 +155,7 @@ func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
 			}
 			return frm.Albums.Items[i].Title < frm.Albums.Items[j].Title
 		})
+
 		frm.Albums.Mixed = anyAlbumMixed
 		frm.Albums.Action = ActionNone
 
@@ -135,6 +169,7 @@ func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
 			}
 			frm.Labels.Items = append(frm.Labels.Items, Item{Value: uid, Title: agg.name, Mixed: mixed, Action: ActionNone})
 		}
+
 		// Sort shared-first (Mixed=false), then by Title alphabetically
 		sort.Slice(frm.Labels.Items, func(i, j int) bool {
 			if frm.Labels.Items[i].Mixed != frm.Labels.Items[j].Mixed {
@@ -142,6 +177,7 @@ func NewPhotosForm(photos search.PhotoResults) *PhotosForm {
 			}
 			return frm.Labels.Items[i].Title < frm.Labels.Items[j].Title
 		})
+
 		frm.Labels.Mixed = anyLabelMixed
 		frm.Labels.Action = ActionNone
 	}

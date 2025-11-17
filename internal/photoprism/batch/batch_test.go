@@ -1,4 +1,4 @@
-package backup
+package batch
 
 import (
 	"os"
@@ -13,6 +13,7 @@ import (
 	"github.com/photoprism/photoprism/pkg/fs"
 )
 
+// TestMain configures shared state for the batch action tests.
 func TestMain(m *testing.M) {
 	log = logrus.StandardLogger()
 	log.SetLevel(logrus.TraceLevel)
