@@ -1,7 +1,10 @@
 coverage/
 node_modules/
-tests/screenshots/
-tests/acceptance/screenshots/
+screenshots/
+acceptance/
+build/
+dist/
+bin/
 tests/upload-files/
 *.html
 *.md

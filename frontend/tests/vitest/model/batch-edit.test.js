@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import "../fixtures";
 import { Batch } from "model/batch-edit";
+import { Photo } from "model/photo";
 
 describe("model/batch-edit", () => {
   it("should return defaults", () => {
@@ -88,23 +89,29 @@ describe("model/batch-edit", () => {
 
   it("should call save and update values from response", async () => {
     const b = new Batch();
-    const selection = [5, 7];
+    const selection = ["pt20fg34bbwdm2ld", "pt20fg2qikiy7zax"];
     const values = { Title: { value: "New" } };
 
-    // Mock endpoint expected by $api: baseURL is "/api/v1"
+    const existing = new Photo({ UID: "pt20fg34bbwdm2ld", Title: "Old" });
+    b.models = [existing];
+
     const { Mock } = await import("../fixtures");
-    Mock.onPost("api/v1/batch/photos/edit", { photos: selection, values }).reply(
-      200,
-      { values: { Title: { value: "Saved" } } },
-      { "Content-Type": "application/json; charset=utf-8" }
-    );
+    Mock.onPost("api/v1/batch/photos/edit", { photos: selection, values }).reply(200, {
+      models: [
+        { UID: "pt20fg34bbwdm2ld", Title: "Updated" },
+        { UID: "pt20fg2qikiy7zb0", Title: "New" },
+      ],
+      values: { Title: { value: "Saved" } },
+    });
 
     const result = await b.save(selection, values);
     expect(result).toBe(b);
     expect(b.values).toEqual({ Title: { value: "Saved" } });
+    expect(b.models.find((m) => m.UID === "pt20fg34bbwdm2ld").Title).toBe("Updated");
+    expect(b.models.some((m) => m.UID === "pt20fg2qikiy7zb0")).toBe(true);
   });
 
-  it("should load data (models and values) via getData", async () => {
+  it("should load data (models and values) via load", async () => {
     const b = new Batch();
     const selection = [101, 102];
 
@@ -122,10 +129,13 @@ describe("model/batch-edit", () => {
       { "Content-Type": "application/json; charset=utf-8" }
     );
 
-    await b.getData(selection);
+    const result = await b.load(selection);
+    expect(result).toBe(b);
 
     expect(Array.isArray(b.models)).toBe(true);
     expect(b.models.length).toBe(2);
+    expect(b.models[0]).toBeInstanceOf(Photo);
+    expect(b.models[1]).toBeInstanceOf(Photo);
     expect(b.values).toEqual({ Title: { mixed: true } });
     expect(b.selection).toEqual([
       { id: 101, selected: true },

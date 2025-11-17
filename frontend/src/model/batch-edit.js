@@ -58,36 +58,47 @@ export class Batch extends Model {
   }
 
   save(selection, values) {
-    return $api
-      .post("batch/photos/edit", { photos: selection, values: values })
-      .then((response) => {
-        if (response.data.values) {
-          this.values = response.data.values;
-        }
-        return Promise.resolve(this);
-      })
-      .catch((error) => {
-        throw error;
-      });
-  }
+    return $api.post("batch/photos/edit", { photos: selection, values }).then((response) => {
+      if (response?.data?.models?.length) {
+        const updatedMap = new Map(
+          response.data.models.map((raw) => {
+            const photo = new Photo();
+            photo.setValues(raw);
+            return [photo.UID, photo];
+          })
+        );
 
-  async getData(selection) {
-    const response = await $api.post("batch/photos/edit", { photos: selection });
-    const models = response.data.models || [];
+        this.models = this.models.map((existing) => {
+          const updated = updatedMap.get(existing.UID);
+          if (updated) {
+            existing.setValues(updated);
+            updatedMap.delete(existing.UID);
+          }
+          return existing;
+        });
 
-    this.models = models.map((m) => {
-      const modelInstance = new Photo();
-      return modelInstance.setValues(m);
+        updatedMap.forEach((photo) => {
+          this.models.push(photo);
+        });
+      }
+
+      if (response?.data?.values) {
+        this.values = response.data.values;
+      }
+
+      return this;
     });
-
-    this.values = response.data.values;
-    this.setSelections(selection);
   }
 
-  async getValuesForSelection(selection) {
-    const response = await $api.post("batch/photos/edit", { photos: selection });
-    this.values = response.data.values;
-    return this.values;
+  // load fetches the current selection (+ aggregated form values) and hydrates Photo instances.
+  load(selection) {
+    return $api.post("batch/photos/edit", { photos: selection }).then((response) => {
+      const models = response.data.models || [];
+      this.models = models.map((m) => new Photo(m));
+      this.values = response.data.values;
+      this.setSelections(selection);
+      return this;
+    });
   }
 
   setSelections(selection) {

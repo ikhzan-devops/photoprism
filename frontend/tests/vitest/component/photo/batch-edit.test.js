@@ -116,9 +116,8 @@ describe("component/photo/edit/batch", () => {
         { id: "uid2", selected: true },
         { id: "uid3", selected: true },
       ],
-      getData: vi.fn(),
+      load: vi.fn(),
       save: vi.fn(),
-      getValuesForSelection: vi.fn(),
       getDefaultFormData: vi.fn(),
       getLengthOfAllSelected: vi.fn(),
       isSelected: vi.fn(),
@@ -127,9 +126,8 @@ describe("component/photo/edit/batch", () => {
     };
 
     // Configure mock method behaviors
-    mockBatchInstance.getData.mockResolvedValue(mockBatchInstance);
+    mockBatchInstance.load.mockResolvedValue(mockBatchInstance);
     mockBatchInstance.save.mockResolvedValue(mockBatchInstance);
-    mockBatchInstance.getValuesForSelection.mockResolvedValue(mockValues);
     mockBatchInstance.getDefaultFormData.mockReturnValue(mockDefaultFormData);
     mockBatchInstance.getLengthOfAllSelected.mockReturnValue(3);
     mockBatchInstance.isSelected.mockReturnValue(true);
@@ -447,7 +445,7 @@ describe("component/photo/edit/batch", () => {
       await wrapper.setProps({ visible: true });
       await nextTick();
       await nextTick();
-      expect(mockBatchInstance.getData).toHaveBeenCalledWith(mockSelection);
+      expect(mockBatchInstance.load).toHaveBeenCalledWith(mockSelection);
     });
 
     it("should emit close event", () => {

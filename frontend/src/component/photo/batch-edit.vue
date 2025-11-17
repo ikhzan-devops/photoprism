@@ -747,7 +747,7 @@ export default {
         // Refresh available options each time the dialog opens to avoid stale caches
         await this.fetchAvailableOptions();
 
-        await this.model.getData(this.selection);
+        await this.model.load(this.selection);
         this.values = this.model.values;
         this.setFormData();
         this.allSelectedLength = this.model.getLengthOfAllSelected();
@@ -1375,7 +1375,7 @@ export default {
 
       this.locationDialog = false;
     },
-    async save(close) {
+    save(close) {
       this.saving = true;
 
       // Filter form data to only include fields with changes
@@ -1386,36 +1386,31 @@ export default {
         if (close) {
           this.$emit("close");
         }
-        return;
+        return Promise.resolve();
       }
 
       // Get currently selected photo UIDs from the model
       const currentlySelectedUIDs = this.model.selection.filter((photo) => photo.selected).map((photo) => photo.id);
 
-      try {
-        await this.model.save(currentlySelectedUIDs, filteredFormData);
-
-        // Update form data with new values from backend (force-refresh to avoid stale UI)
-        try {
-          // Only refresh the values for the current selection to avoid losing sidebar items
-          await this.model.getValuesForSelection(currentlySelectedUIDs);
+      return this.model
+        .save(currentlySelectedUIDs, filteredFormData)
+        .then(() => {
+          // Save response already includes updated values, so reuse them to avoid a second POST.
           this.values = this.model.values;
-        } catch {
-          // Fallback to response values if re-fetch fails
-          this.values = this.model.values;
-        }
-        this.setFormData();
+          this.setFormData();
 
-        this.$notify.success(this.$gettext("Changes successfully saved"));
+          this.$notify.success(this.$gettext("Changes successfully saved"));
 
-        if (close) {
-          this.$emit("close");
-        }
-      } catch {
-        this.$notify.error(this.$gettext("Failed to save changes"));
-      } finally {
-        this.saving = false;
-      }
+          if (close) {
+            this.$emit("close");
+          }
+        })
+        .catch(() => {
+          this.$notify.error(this.$gettext("Failed to save changes"));
+        })
+        .finally(() => {
+          this.saving = false;
+        });
     },
     getFilteredFormData() {
       const filtered = {};
