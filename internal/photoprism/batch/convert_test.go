@@ -14,7 +14,6 @@ func TestConvertToPhotoForm(t *testing.T) {
 		assert.Nil(t, form)
 		assert.Error(t, err)
 	})
-
 	t.Run("UpdateTitleCaptionTypeAndBooleans", func(t *testing.T) {
 		photo := &entity.Photo{
 			PhotoTitle:   "Old Title",
@@ -61,7 +60,6 @@ func TestConvertToPhotoForm(t *testing.T) {
 		assert.True(t, form.PhotoScan)
 		assert.True(t, form.PhotoPanorama)
 	})
-
 	t.Run("UpdateLocationSetsPlaceSrc", func(t *testing.T) {
 		photo := &entity.Photo{}
 
@@ -84,7 +82,6 @@ func TestConvertToPhotoForm(t *testing.T) {
 		assert.Equal(t, 15, form.PhotoAltitude)
 		assert.Equal(t, entity.SrcBatch, form.PlaceSrc)
 	})
-
 	t.Run("TitleRemove_CaptionUpdate", func(t *testing.T) {
 		photo := &entity.Photo{PhotoTitle: "Old", PhotoCaption: "OldCap"}
 
@@ -100,7 +97,6 @@ func TestConvertToPhotoForm(t *testing.T) {
 		assert.Equal(t, "NewCap", form.PhotoCaption)
 		assert.Equal(t, entity.SrcBatch, form.CaptionSrc)
 	})
-
 	t.Run("TimeZoneUpdateSetsTakenSrc", func(t *testing.T) {
 		photo := &entity.Photo{}
 
@@ -113,7 +109,6 @@ func TestConvertToPhotoForm(t *testing.T) {
 		assert.Equal(t, "Europe/Berlin", form.TimeZone)
 		assert.Equal(t, entity.SrcBatch, form.TakenSrc)
 	})
-
 	t.Run("YearUpdate_RecomputesTakenAtLocalAndOutputs", func(t *testing.T) {
 		photo := &entity.Photo{}
 		// Assume current date fields are set via NewPhoto(photo)
@@ -130,7 +125,6 @@ func TestConvertToPhotoForm(t *testing.T) {
 		// PhotoDay is set via ComputeDateChange; must be non-zero or -1 depending on base
 		assert.NotZero(t, form.PhotoDay)
 	})
-
 	t.Run("UpdateDetails", func(t *testing.T) {
 		photo := &entity.Photo{}
 
@@ -156,7 +150,6 @@ func TestConvertToPhotoForm(t *testing.T) {
 		assert.Equal(t, "License", form.Details.License)
 		assert.Equal(t, entity.SrcBatch, form.Details.LicenseSrc)
 	})
-
 	t.Run("RemoveDetailsFieldsAndCarryPhotoID", func(t *testing.T) {
 		photo := &entity.Photo{ID: 42}
 

@@ -45,7 +45,6 @@ func TestApplyAlbums(t *testing.T) {
 			t.Fatal(err)
 		}
 	})
-
 	t.Run("AddPhotoToNewAlbumByTitle", func(t *testing.T) {
 		photo := entity.PhotoFixtures.Get("Photo02")
 		albumTitle := "Test Album for Actions"
@@ -75,7 +74,6 @@ func TestApplyAlbums(t *testing.T) {
 			t.Fatal(err)
 		}
 	})
-
 	t.Run("RemovePhotoFromAlbum", func(t *testing.T) {
 		// First add photo to album
 		photo := entity.PhotoFixtures.Get("Photo03")
@@ -128,7 +126,6 @@ func TestApplyAlbums(t *testing.T) {
 			t.Error("expected photo to be marked as hidden in album")
 		}
 	})
-
 	// Error cases
 	t.Run("AddPhotoToNonExistingAlbumByUID", func(t *testing.T) {
 		photo := entity.PhotoFixtures.Get("Photo04")
@@ -145,7 +142,6 @@ func TestApplyAlbums(t *testing.T) {
 			t.Error("expected error when adding photo to non-existing album, but got none")
 		}
 	})
-
 	t.Run("AddPhotoToAlbumWithInvalidUID", func(t *testing.T) {
 		photo := entity.PhotoFixtures.Get("Photo04")
 		invalidUID := "invalid-uid-format" // Invalid UID format
@@ -161,7 +157,6 @@ func TestApplyAlbums(t *testing.T) {
 			t.Error("expected error when adding photo to album with invalid UID, but got none")
 		}
 	})
-
 	t.Run("RemovePhotoFromNonExistingAlbum", func(t *testing.T) {
 		photo := entity.PhotoFixtures.Get("Photo05")
 		nonExistingAlbumUID := "at9lxuqxpobbbbbb" // Non-existing UID
@@ -177,7 +172,6 @@ func TestApplyAlbums(t *testing.T) {
 			t.Error("expected error when removing photo from non-existing album, but got none")
 		}
 	})
-
 	t.Run("InvalidActionOnAlbum", func(t *testing.T) {
 		photo := entity.PhotoFixtures.Get("Photo06")
 		albumUID := entity.AlbumFixtures.Get("christmas2030").AlbumUID
@@ -193,7 +187,6 @@ func TestApplyAlbums(t *testing.T) {
 			t.Error("expected error for invalid action, but got none")
 		}
 	})
-
 	t.Run("EmptyAlbumItems", func(t *testing.T) {
 		photo := entity.PhotoFixtures.Get("Photo07")
 
@@ -207,7 +200,6 @@ func TestApplyAlbums(t *testing.T) {
 			t.Errorf("expected no error for empty album items, but got: %v", err)
 		}
 	})
-
 	t.Run("AddPhotoToAlbumWithEmptyValueAndTitle", func(t *testing.T) {
 		photo := entity.PhotoFixtures.Get("Photo08")
 
@@ -222,7 +214,6 @@ func TestApplyAlbums(t *testing.T) {
 			t.Error("expected error when both Value and Title are empty, but got none")
 		}
 	})
-
 	t.Run("InvalidPhotoUID", func(t *testing.T) {
 		invalidPhotoUID := "invalid-photo-uid"
 		albumUID := entity.AlbumFixtures.Get("christmas2030").AlbumUID
@@ -269,7 +260,6 @@ func TestApplyLabels(t *testing.T) {
 			t.Errorf("expected label source %s, got %s", entity.SrcBatch, photoLabel.LabelSrc)
 		}
 	})
-
 	t.Run("AddNewLabelByTitle", func(t *testing.T) {
 		photo := entity.PhotoFixtures.Pointer("Photo07")
 		labelTitle := "Test Label for Actions"
@@ -307,7 +297,6 @@ func TestApplyLabels(t *testing.T) {
 			t.Errorf("expected label source %s, got %s", entity.SrcBatch, photoLabel.LabelSrc)
 		}
 	})
-
 	t.Run("RemoveLabelByUID", func(t *testing.T) {
 		photo := entity.PhotoFixtures.Pointer("Photo08")
 		label := entity.LabelFixtures.Get("flower")
@@ -342,7 +331,6 @@ func TestApplyLabels(t *testing.T) {
 			t.Error("expected label to be deleted, but it was found")
 		}
 	})
-
 	t.Run("RemoveAutoLabelSetsUncertaintyTo100", func(t *testing.T) {
 		photo := entity.PhotoFixtures.Pointer("Photo09")
 		label := entity.LabelFixtures.Get("cake")
@@ -377,7 +365,6 @@ func TestApplyLabels(t *testing.T) {
 			t.Errorf("expected label source %s, got %s", entity.SrcBatch, blockedLabel.LabelSrc)
 		}
 	})
-
 	t.Run("UpdateExistingLabelConfidence", func(t *testing.T) {
 		photo := entity.PhotoFixtures.Pointer("Photo10")
 		label := entity.LabelFixtures.Get("landscape")
@@ -425,7 +412,6 @@ func TestApplyLabels(t *testing.T) {
 			t.Errorf("expected label source %s, got %s", entity.SrcBatch, updatedLabel.LabelSrc)
 		}
 	})
-
 	t.Run("InvalidPhotoReturnsError", func(t *testing.T) {
 		labels := Items{
 			Items: []Item{
@@ -444,7 +430,6 @@ func TestApplyLabels(t *testing.T) {
 			t.Error("expected error for empty photo")
 		}
 	})
-
 	// Additional error cases
 	t.Run("AddNonExistingLabelByUID", func(t *testing.T) {
 		photo := entity.PhotoFixtures.Pointer("Photo11")
@@ -461,7 +446,6 @@ func TestApplyLabels(t *testing.T) {
 			t.Error("expected error when adding non-existing label by UID, but got none")
 		}
 	})
-
 	t.Run("AddLabelWithInvalidUID", func(t *testing.T) {
 		photo := entity.PhotoFixtures.Pointer("Photo12")
 		invalidUID := "invalid-label-uid-format" // Invalid UID format
@@ -477,7 +461,6 @@ func TestApplyLabels(t *testing.T) {
 			t.Error("expected error when adding label with invalid UID, but got none")
 		}
 	})
-
 	t.Run("RemoveNonExistingLabelByUID", func(t *testing.T) {
 		photo := entity.PhotoFixtures.Pointer("Photo13")
 		nonExistingLabelUID := "lt9lxuqxpobbbbbb" // Non-existing UID
@@ -493,7 +476,6 @@ func TestApplyLabels(t *testing.T) {
 			t.Error("expected error when removing non-existing label, but got none")
 		}
 	})
-
 	t.Run("InvalidActionOnLabel", func(t *testing.T) {
 		photo := entity.PhotoFixtures.Pointer("Photo14")
 		labelUID := entity.LabelFixtures.Get("landscape").LabelUID
@@ -509,7 +491,6 @@ func TestApplyLabels(t *testing.T) {
 			t.Error("expected error for invalid action, but got none")
 		}
 	})
-
 	t.Run("EmptyLabelItems", func(t *testing.T) {
 		photo := entity.PhotoFixtures.Pointer("Photo15")
 
@@ -523,7 +504,6 @@ func TestApplyLabels(t *testing.T) {
 			t.Errorf("expected no error for empty label items, but got: %v", err)
 		}
 	})
-
 	t.Run("AddLabelWithEmptyValueAndTitle", func(t *testing.T) {
 		photo := entity.PhotoFixtures.Pointer("Photo16")
 
@@ -538,7 +518,6 @@ func TestApplyLabels(t *testing.T) {
 			t.Error("expected error when both Value and Title are empty, but got none")
 		}
 	})
-
 	t.Run("RemoveLabelNotAssignedToPhoto", func(t *testing.T) {
 		photo := entity.PhotoFixtures.Pointer("Photo17")
 		labelUID := entity.LabelFixtures.Get("bird").LabelUID

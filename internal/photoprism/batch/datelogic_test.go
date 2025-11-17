@@ -20,7 +20,6 @@ func TestComputeDateChange(t *testing.T) {
 		assert.Equal(t, time.February, newLocal.Month())
 		assert.Equal(t, 28, newLocal.Day())
 	})
-
 	t.Run("DayUnknown_YearNotForcedUnknown", func(t *testing.T) {
 		// Setting Day=-1 should NOT force Year=-1
 		base := time.Date(2023, 11, 12, 9, 0, 0, 0, time.UTC)
@@ -31,7 +30,6 @@ func TestComputeDateChange(t *testing.T) {
 		assert.Equal(t, -1, d)
 		assert.Equal(t, 1, newLocal.Day()) // day used for TakenAtLocal when unknown
 	})
-
 	t.Run("MonthUnknown_KeepsYearValue", func(t *testing.T) {
 		// Setting Month=-1 should NOT force Year=-1
 		base := time.Date(2020, 4, 30, 8, 0, 0, 0, time.UTC)
@@ -43,7 +41,6 @@ func TestComputeDateChange(t *testing.T) {
 		assert.Equal(t, 30, newLocal.Day())
 		assert.Equal(t, time.April, newLocal.Month())
 	})
-
 	t.Run("MixedMonth_UpdateDayClampsPerPhoto", func(t *testing.T) {
 		// Day 31 → March (31 days) should work
 		baseMar := time.Date(2020, 3, 20, 11, 29, 54, 0, time.UTC)
@@ -61,7 +58,6 @@ func TestComputeDateChange(t *testing.T) {
 		assert.Equal(t, 30, d2)
 		assert.Equal(t, 30, newLocal2.Day())
 	})
-
 	t.Run("UnknownCurrentMonth_DayUpdateClampsPerPhoto", func(t *testing.T) {
 		// Base in March, current month unknown, update Day=31
 		baseMar := time.Date(2020, 3, 20, 11, 29, 54, 0, time.UTC)
@@ -81,7 +77,6 @@ func TestComputeDateChange(t *testing.T) {
 		assert.Equal(t, time.April, newLocal2.Month())
 		assert.Equal(t, 30, newLocal2.Day())
 	})
-
 	t.Run("MixedDay_UpdateMonthToFeb2020", func(t *testing.T) {
 		// Photo 1: Day 20 → Feb works fine
 		base1 := time.Date(2020, 4, 20, 11, 29, 54, 0, time.UTC)
@@ -101,7 +96,6 @@ func TestComputeDateChange(t *testing.T) {
 		assert.Equal(t, time.February, newLocal2.Month())
 		assert.Equal(t, 29, newLocal2.Day())
 	})
-
 	t.Run("Mixed_UpdateYearTo2021", func(t *testing.T) {
 		// Photo 1: Feb 29, 2020 → 2021 should clamp to Feb 28, 2021
 		base1 := time.Date(2020, 2, 29, 11, 29, 54, 0, time.UTC)
@@ -121,7 +115,6 @@ func TestComputeDateChange(t *testing.T) {
 		assert.Equal(t, 2021, newLocal2.Year())
 		assert.Equal(t, 31, newLocal2.Day())
 	})
-
 	t.Run("AllUnknown_KeepBaseYearMonth_SetDayOne", func(t *testing.T) {
 		// Current values: 2024-04-30 13:29:54 (local)
 		base := time.Date(2024, 4, 30, 13, 29, 54, 0, time.UTC)
@@ -147,5 +140,25 @@ func TestComputeDateChange(t *testing.T) {
 		assert.Equal(t, 13, newLocal.Hour())
 		assert.Equal(t, 29, newLocal.Minute())
 		assert.Equal(t, 54, newLocal.Second())
+	})
+	t.Run("PreservesClockForNonUTCBase", func(t *testing.T) {
+		loc := time.FixedZone("UTC-7", -7*3600)
+		base := time.Date(2023, 6, 15, 22, 45, 30, 0, loc)
+		newLocal, y, m, d := ComputeDateChange(
+			base,
+			2023, 6, 15,
+			ActionUpdate, 18,
+			ActionNone, 0,
+			ActionNone, 0,
+		)
+
+		assert.Equal(t, 2023, y)
+		assert.Equal(t, 6, m)
+		assert.Equal(t, 18, d)
+		// Returned time is UTC but keeps the local clock so SavePhotoForm can reapply the zone.
+		assert.Equal(t, time.UTC, newLocal.Location())
+		assert.Equal(t, base.Hour(), newLocal.Hour())
+		assert.Equal(t, base.Minute(), newLocal.Minute())
+		assert.Equal(t, base.Second(), newLocal.Second())
 	})
 }

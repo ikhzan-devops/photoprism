@@ -74,6 +74,49 @@ func TestSavePhotoForm(t *testing.T) {
 
 		t.Log(m.GetDetails().Keywords)
 	})
+	t.Run("BatchDateChangeKeepsTimeZone", func(t *testing.T) {
+		photo := PhotoFixtures.Get("Photo09")
+		require.Equal(t, "America/Mexico_City", photo.TimeZone)
+
+		formSnapshot, err := form.NewPhoto(&photo)
+		require.NoError(t, err)
+
+		newDay := photo.PhotoDay + 1
+		formSnapshot.PhotoDay = newDay
+		formSnapshot.TakenSrc = SrcBatch
+		formSnapshot.TimeZone = photo.TimeZone
+		formSnapshot.TakenAtLocal = time.Date(
+			photo.PhotoYear,
+			time.Month(photo.PhotoMonth),
+			newDay,
+			photo.TakenAtLocal.Hour(),
+			photo.TakenAtLocal.Minute(),
+			photo.TakenAtLocal.Second(),
+			0,
+			time.UTC,
+		)
+
+		require.NoError(t, SavePhotoForm(&photo, formSnapshot))
+		require.NoError(t, Db().First(&photo, photo.ID).Error)
+
+		location := tz.Find(photo.TimeZone)
+		require.NotNil(t, location)
+		expectedUTC := time.Date(
+			photo.PhotoYear,
+			time.Month(photo.PhotoMonth),
+			newDay,
+			photo.TakenAtLocal.Hour(),
+			photo.TakenAtLocal.Minute(),
+			photo.TakenAtLocal.Second(),
+			0,
+			location,
+		).UTC()
+
+		assert.Equal(t, newDay, photo.PhotoDay)
+		assert.Equal(t, "America/Mexico_City", photo.TimeZone)
+		assert.Equal(t, SrcBatch, photo.TakenSrc)
+		assert.True(t, photo.TakenAt.Equal(expectedUTC))
+	})
 }
 
 func TestPhoto_LabelKeywords(t *testing.T) {

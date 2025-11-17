@@ -3,8 +3,9 @@ package batch
 import "time"
 
 // ComputeDateChange calculates a new date and output values based on the provided actions and values.
-// It takes a base time and current date components, along with actions and values for day, month, and year updates.
-// Returns the computed new local time and the output year, month, and day values.
+// The returned time is deliberately constructed in UTC: we store TakenAtLocal as a naive timestamp and
+// later derive the real UTC instant via Photo.GetTakenAt() using the photo's TimeZone. See SavePhotoForm
+// for details on how TakenAt / TakenAtLocal stay consistent in the database.
 func ComputeDateChange(
 	baseLocal time.Time,
 	curYear, curMonth, curDay int,

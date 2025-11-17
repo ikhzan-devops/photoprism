@@ -166,6 +166,10 @@ func SavePhotoForm(m *Photo, form form.Photo) error {
 	}
 
 	// Update time fields.
+	// Batch edit (and other callers) treat TakenAtLocal as a naive timestamp that already includes
+	// any new Day/Month/Year. Here we normalize it back to UTC using the photo's TimeZone so MariaDB
+	// (which lacks TZ support) stores a consistent pair of TakenAt / TakenAtLocal values. See
+	// ComputeDateChange for details on why it returns UTC.
 	if m.TimeZoneUTC() {
 		m.TakenAtLocal = m.TakenAt
 	} else {
