@@ -77,7 +77,7 @@ export default {
 
     // Opens the photo edit dialog (when more than 1 image are selected).
     this.subscriptions.push(
-      this.$event.subscribe("dialog.editBatch", (ev, data) => {
+      this.$event.subscribe("dialog.batchedit", (ev, data) => {
         this.onEditBatch(data);
       })
     );
@@ -120,12 +120,12 @@ export default {
       this.edit.visible = true;
     },
     onEditBatch(data) {
-      if (this.editBatch.visible || !this.hasAuth()) {
+      if (this.batchedit.visible || !this.hasAuth()) {
         return;
       }
 
-      this.editBatch.selection = data.selection;
-      this.editBatch.visible = true;
+      this.batchedit.selection = data.selection;
+      this.batchedit.visible = true;
     },
     closeEditDialog() {
       if (this.edit.visible) {
@@ -133,8 +133,8 @@ export default {
       }
     },
     closeEditBatch() {
-      if (this.editBatch.visible) {
-        this.editBatch.visible = false;
+      if (this.batchedit.visible) {
+        this.batchedit.visible = false;
       }
     },
     onUpload(data) {

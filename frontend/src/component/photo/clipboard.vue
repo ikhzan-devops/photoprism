@@ -227,6 +227,7 @@ export default {
       canManage: this.$config.allow("photos", "manage") && features.albums,
       canEdit: this.$config.allow("photos", "update") && features.edit,
       canEditAlbum: this.$config.allow("albums", "update") && features.albums,
+      canBatchEdit: this.$config.allow("photos", "update") && this.$config.allow("photos", "access_all"),
       busy: false,
       config: this.$config.values,
       expanded: false,
@@ -424,11 +425,11 @@ export default {
       download(path, "photos.zip");
     },
     edit() {
-      // Open Edit Dialog
-      if (this.selection.length == 1) {
+      // Open Edit or Batch Edit Dialog.
+      if (!this.canBatchEdit || this.selection.length === 1) {
         this.$event.PubSub.publish("dialog.edit", { selection: this.selection, album: this.album, index: 0 });
       } else {
-        this.$event.PubSub.publish("dialog.editBatch", { selection: this.selection, album: this.album, index: 0 });
+        this.$event.PubSub.publish("dialog.batchedit", { selection: this.selection, album: this.album, index: 0 });
       }
     },
     onShared() {
