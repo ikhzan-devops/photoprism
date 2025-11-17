@@ -548,6 +548,8 @@ import PLocationInput from "component/location/input.vue";
 import PInputChipSelector from "component/input/chip-selector.vue";
 import $util from "common/util";
 
+// TODO: Handle cases where users have more than 10000 albums and/or labels.
+const MaxResults = 10000;
 const iconClear = "mdi-close-circle";
 const iconUndo = "mdi-undo";
 
@@ -593,7 +595,6 @@ export default {
       selectionsFullInfo: [],
       selectedPhotosLength: 0,
       expanded: [0],
-      isBatchDialog: true,
       isAllSelected: true,
       allSelectedLength: 0,
       options,
@@ -1239,7 +1240,30 @@ export default {
       }
     },
     openPhoto(index) {
-      this.$lightbox.openModels(Thumb.fromPhotos([this.model.models[index]]), 0, null, this.isBatchDialog);
+      const targetIndex = typeof index === "number" ? index : 0;
+      this.$lightbox.openView(this, targetIndex);
+    },
+    getLightboxContext(index = 0) {
+      const photos = Array.isArray(this.model?.models) ? this.model.models : [];
+
+      if (!photos.length) {
+        return { models: [], index: 0, allowEdit: false };
+      }
+
+      const thumbs = Thumb.fromPhotos(photos);
+      let targetIndex = typeof index === "number" ? index : 0;
+
+      if (targetIndex < 0 || targetIndex >= thumbs.length) {
+        targetIndex = 0;
+      }
+
+      return {
+        models: thumbs,
+        index: targetIndex,
+        context: this.$gettext("Batch Edit"),
+        allowEdit: false,
+        allowSelect: false,
+      };
     },
     isSelected(model) {
       return this.model.isSelected(model.UID);
@@ -1468,8 +1492,8 @@ export default {
         this.loading = true;
 
         const [albumsResponse, labelsResponse] = await Promise.all([
-          Album.search({ count: 1000, type: "album", order: "name" }),
-          Label.search({ count: 1000, order: "name", all: true }),
+          Album.search({ count: MaxResults, type: "album", order: "name" }),
+          Label.search({ count: MaxResults, order: "name", all: true }),
         ]);
 
         this.availableAlbumOptions = (albumsResponse.models || []).map((album) => ({

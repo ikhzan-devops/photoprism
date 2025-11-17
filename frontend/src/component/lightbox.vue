@@ -193,7 +193,8 @@ export default {
       model: new Thumb(), // Current slide.
       models: [], // Slide models.
       index: 0, // Current slide index in models.
-      isBatchDialog: false,
+      contextAllowsEdit: true,
+      contextAllowsSelect: true,
       subscriptions: [], // Event subscriptions.
       // Video properties for rendering the controls.
       video: {
@@ -264,8 +265,6 @@ export default {
       if (!data) {
         return;
       }
-
-      this.isBatchDialog = !!data.isBatchDialog;
 
       if (data.view) {
         this.showView(data.view, data.index);
@@ -422,6 +421,9 @@ export default {
         return Promise.reject();
       }
 
+      this.contextAllowsEdit = ctx?.allowEdit !== false;
+      this.contextAllowsSelect = ctx?.allowSelect !== false;
+
       // Check if at least one model was passed, as otherwise no content can be displayed.
       if (!Array.isArray(models) || models.length === 0 || index >= models.length) {
         this.log("model list passed to lightbox is empty:", models);
@@ -450,7 +452,29 @@ export default {
         return Promise.reject();
       }
 
-      if (view.loading || !view.listen || view.lightbox.loading || !view.results[index]) {
+      if (view && typeof view.getLightboxContext === "function") {
+        const ctx = view.getLightboxContext(index);
+
+        if (!ctx || !Array.isArray(ctx.models) || ctx.models.length === 0) {
+          return Promise.reject();
+        }
+
+        const targetIndex = this.normalizeIndex(
+          typeof ctx.index === "number" ? ctx.index : typeof index === "number" ? index : 0,
+          ctx.models.length
+        );
+
+        return this.showThumbs(ctx.models, targetIndex, ctx);
+      }
+
+      if (
+        !view ||
+        view.loading ||
+        !view.listen ||
+        view.lightbox?.loading ||
+        !Array.isArray(view.results) ||
+        !view.results[index]
+      ) {
         return Promise.reject();
       }
 
@@ -528,6 +552,28 @@ export default {
           // Unblock.
           view.lightbox.loading = false;
         });
+    },
+    // Keeps the requested slide index within the available bounds before opening the lightbox.
+    normalizeIndex(idx, length) {
+      let target = Number.isFinite(idx) ? idx : 0;
+
+      if (target < 0) {
+        target = 0;
+      }
+
+      const maxIndex = Math.max(length - 1, 0);
+
+      if (target > maxIndex) {
+        target = maxIndex;
+      }
+
+      return target;
+    },
+    shouldShowEditButton() {
+      return this.canEdit && this.contextAllowsEdit;
+    },
+    shouldShowSelectionToggle() {
+      return this.contextAllowsSelect;
     },
     getNumItems() {
       return this.models.length;
@@ -1296,23 +1342,25 @@ export default {
         }
 
         // Add selection toggle control.
-        lightbox.pswp.ui.registerElement({
-          name: "select-toggle",
-          className: "pswp__button--select-toggle pswp__button--mdi", // Sets the icon style/size in lightbox.css.
-          title: this.$gettext("Select"),
-          ariaLabel: this.$gettext("Select"),
-          order: 10,
-          isButton: true,
-          html: {
-            isCustomSVG: true,
-            inner: `<use class="pswp__icn-shadow pswp__icn-select-on" xlink:href="#pswp__icn-select-on"></use><path d="M12 2C6.5 2 2 6.5 2 12S6.5 22 12 22 22 17.5 22 12 17.5 2 12 2M10 17L5 12L6.41 10.59L10 14.17L17.59 6.58L19 8L10 17Z" id="pswp__icn-select-on" class="pswp__icn-select-on" /><use class="pswp__icn-shadow pswp__icn-select-off" xlink:href="#pswp__icn-select-off"></use><path d="M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" id="pswp__icn-select-off" class="pswp__icn-select-off" />`,
-            size: 24, // Depends on the original SVG viewBox, e.g. use 24 for viewBox="0 0 24 24".
-          },
-          onClick: (ev) => this.onControlClick(ev, this.toggleSelect),
-        });
+        if (this.shouldShowSelectionToggle()) {
+          lightbox.pswp.ui.registerElement({
+            name: "select-toggle",
+            className: "pswp__button--select-toggle pswp__button--mdi", // Sets the icon style/size in lightbox.css.
+            title: this.$gettext("Select"),
+            ariaLabel: this.$gettext("Select"),
+            order: 10,
+            isButton: true,
+            html: {
+              isCustomSVG: true,
+              inner: `<use class="pswp__icn-shadow pswp__icn-select-on" xlink:href="#pswp__icn-select-on"></use><path d="M12 2C6.5 2 2 6.5 2 12S6.5 22 12 22 22 17.5 22 12 17.5 2 12 2M10 17L5 12L6.41 10.59L10 14.17L17.59 6.58L19 8L10 17Z" id="pswp__icn-select-on" class="pswp__icn-select-on" /><use class="pswp__icn-shadow pswp__icn-select-off" xlink:href="#pswp__icn-select-off"></use><path d="M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" id="pswp__icn-select-off" class="pswp__icn-select-off" />`,
+              size: 24, // Depends on the original SVG viewBox, e.g. use 24 for viewBox="0 0 24 24".
+            },
+            onClick: (ev) => this.onControlClick(ev, this.toggleSelect),
+          });
+        }
 
         // Add edit button control if user has permission to use it.
-        if (this.canEdit && !this.isBatchDialog) {
+        if (this.shouldShowEditButton()) {
           lightbox.pswp.ui.registerElement({
             name: "edit-button",
             className: "pswp__button--edit-button pswp__button--mdi hidden-shared-only", // Sets the icon style/size in lightbox.css.
@@ -1536,7 +1584,8 @@ export default {
     onReset() {
       this.resetControls();
       this.resetModels();
-      this.isBatchDialog = false;
+      this.contextAllowsEdit = true;
+      this.contextAllowsSelect = true;
     },
     // Resets the state of the lightbox controls.
     resetControls() {
@@ -1847,6 +1896,9 @@ export default {
     },
     // Toggles the selection of the current picture in the global photo clipboard.
     toggleSelect() {
+      if (!this.contextAllowsSelect) {
+        return;
+      }
       this.$clipboard.toggle(this.model);
     },
     // Returns the active HTMLMediaElement element in the lightbox, if any.
@@ -1956,6 +2008,9 @@ export default {
           this.close();
           return true;
         case "Period":
+          if (!this.contextAllowsSelect) {
+            return false;
+          }
           this.onShowMenu();
           this.toggleSelect();
           return true;
@@ -1974,7 +2029,7 @@ export default {
           }
           return true;
         case "KeyE":
-          if (this.canEdit) {
+          if (this.canEdit && this.contextAllowsEdit) {
             this.onEdit();
           }
           return true;

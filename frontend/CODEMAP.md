@@ -1,6 +1,6 @@
 PhotoPrism — Frontend CODEMAP
 
-**Last Updated:** November 12, 2025
+**Last Updated:** November 17, 2025
 
 Purpose
 - Help agents and contributors navigate the Vue 3 + Vuetify 3 app quickly and make safe changes.
@@ -42,6 +42,12 @@ Runtime & Plugins
 - Video: HLS.js assigned to `window.Hls`
 - PWA: Workbox registers a service worker after config load (see `src/app.js`); scope and registration URL derive from `$config.baseUri` so non-root deployments work. Workbox precache rules live in `frontend/webpack.config.js` (see the `GenerateSW` plugin); locale chunks and non-woff2 font variants are excluded there so we don’t force every user to download those assets on first visit.
 - WebSocket: `src/common/websocket.js` publishes `websocket.*` events, used by `$session` for client info
+
+Lightbox Integration
+- Shared entry points live in `src/common/lightbox.js`; `$lightbox.open(options)` fires a `lightbox.open` event consumed by `component/lightbox.vue`.
+- Prefer `$lightbox.openView(this, index)` when a component or dialog already has the photos in memory. Implement `getLightboxContext(index)` on the view and return `{ models, index, context, allowEdit?, allowSelect? }` so the lightbox can build slides without requerying.
+- Set `allowEdit: false` when the caller shouldn’t expose inline editing (the edit button and `KeyE` shortcut are disabled automatically). Set `allowSelect: false` to hide the selection toggle and block the `.` shortcut so batch-edit dialogs don’t mutate the global clipboard.
+- Legacy `$lightbox.openModels(models, index, collection)` still accepts raw thumb arrays, but it cannot express the context flags—only use it when you truly don’t have a backing view.
 
 HTTP Client
 - Axios instance: `src/common/api.js`

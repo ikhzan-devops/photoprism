@@ -3,6 +3,7 @@ import { shallowMount } from "@vue/test-utils";
 import { nextTick } from "vue";
 import PPhotoBatchEdit from "component/photo/batch-edit.vue";
 import { Batch } from "model/batch-edit";
+import Thumb from "model/thumb";
 import { Deleted, Mixed } from "options/options";
 
 // Mock the models and dependencies
@@ -151,7 +152,7 @@ describe("component/photo/edit/batch", () => {
             error: vi.fn(),
           },
           $lightbox: {
-            openModels: vi.fn(),
+            openView: vi.fn(),
           },
           $event: {
             subscribe: vi.fn(),
@@ -374,7 +375,41 @@ describe("component/photo/edit/batch", () => {
 
     it("should handle photo opening", () => {
       wrapper.vm.openPhoto(0);
-      expect(wrapper.vm.$lightbox.openModels).toHaveBeenCalled();
+      expect(wrapper.vm.$lightbox.openView).toHaveBeenCalledWith(wrapper.vm, 0);
+    });
+  });
+
+  describe("Lightbox context", () => {
+    beforeEach(() => {
+      wrapper.vm.model = mockBatchInstance;
+    });
+
+    it("should build context with thumbs and disable edit", () => {
+      const thumbMock = [{ UID: "uid1" }, { UID: "uid2" }];
+      const spy = vi.spyOn(Thumb, "fromPhotos").mockReturnValue(thumbMock);
+
+      const ctx = wrapper.vm.getLightboxContext(1);
+
+      expect(spy).toHaveBeenCalledWith(mockBatchInstance.models);
+      expect(ctx.models).toBe(thumbMock);
+      expect(ctx.index).toBe(1);
+      expect(ctx.allowEdit).toBe(false);
+      expect(ctx.allowSelect).toBe(false);
+      expect(ctx.context).toBe("Batch Edit");
+
+      spy.mockRestore();
+    });
+
+    it("should clamp invalid index to first photo", () => {
+      const thumbMock = [{ UID: "uid1" }];
+      const spy = vi.spyOn(Thumb, "fromPhotos").mockReturnValue(thumbMock);
+
+      const ctx = wrapper.vm.getLightboxContext(5);
+
+      expect(ctx.index).toBe(0);
+      expect(ctx.allowSelect).toBe(false);
+
+      spy.mockRestore();
     });
   });
 
