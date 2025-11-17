@@ -2,17 +2,17 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { shallowMount } from "@vue/test-utils";
 import { nextTick } from "vue";
 import PPhotoBatchEdit from "component/photo/batch-edit.vue";
-import { Batch } from "model/batch-edit";
+import { Batch } from "model/batch";
 import Thumb from "model/thumb";
 import { Deleted, Mixed } from "options/options";
 
 // Mock the models and dependencies
-vi.mock("model/batch-edit");
+vi.mock("model/batch");
 vi.mock("model/album");
 vi.mock("model/label");
 vi.mock("model/thumb");
 
-describe("component/photo/edit/batch", () => {
+describe("component/photo/batch-edit", () => {
   let wrapper;
   let mockBatchInstance;
 
@@ -441,10 +441,14 @@ describe("component/photo/edit/batch", () => {
   });
 
   describe("Component Lifecycle", () => {
+    beforeEach(() => {
+      wrapper.vm.fetchAvailableOptions = vi.fn().mockResolvedValue();
+    });
+
     it("should initialize data when visible becomes true", async () => {
       await wrapper.setProps({ visible: true });
       await nextTick();
-      await nextTick();
+      await wrapper.vm.afterEnter();
       expect(mockBatchInstance.load).toHaveBeenCalledWith(mockSelection);
     });
 

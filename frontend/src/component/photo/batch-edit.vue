@@ -1,7 +1,7 @@
 <template>
   <v-dialog
-    v-if="formData"
     ref="dialog"
+    tabindex="-1"
     :model-value="visible"
     :fullscreen="$vuetify.display.mdAndDown"
     scrim
@@ -26,7 +26,7 @@
 
       <v-progress-linear v-if="saving" :indeterminate="true" color="surface-variant"></v-progress-linear>
 
-      <v-row dense :class="!$vuetify.display.mdAndDown ? 'overflow-hidden' : ''">
+      <v-row v-if="formData" dense :class="!$vuetify.display.mdAndDown ? 'overflow-hidden' : ''">
         <!-- Desktop view -->
         <v-col v-if="!$vuetify.display.mdAndDown" cols="12" lg="4" class="scroll-col">
           <div v-if="model.models" class="edit-batch photo-results list-view">
@@ -73,9 +73,9 @@
                       class="input-open"
                       @click.stop.prevent="openPhoto(index)"
                     >
-                      <i v-if="item.Type === 'live'" class="action-live" :title="$gettext('Live')"
-                        ><icon-live-photo
-                      /></i>
+                      <i v-if="item.Type === 'live'" class="action-live" :title="$gettext('Live')">
+                        <icon-live-photo />
+                      </i>
                       <i
                         v-else-if="item.Type === 'animated'"
                         class="mdi mdi-file-gif-box"
@@ -155,9 +155,9 @@
                             class="input-open"
                             @click.stop.prevent="openPhoto(index)"
                           >
-                            <i v-if="item.Type === 'live'" class="action-live" :title="$gettext('Live')"
-                              ><icon-live-photo
-                            /></i>
+                            <i v-if="item.Type === 'live'" class="action-live" :title="$gettext('Live')">
+                              <icon-live-photo />
+                            </i>
                             <i
                               v-else-if="item.Type === 'animated'"
                               class="mdi mdi-file-gif-box"
@@ -539,7 +539,7 @@
 <script>
 import * as options from "options/options";
 import IconLivePhoto from "../icon/live-photo.vue";
-import { Batch } from "model/batch-edit";
+import { Batch } from "model/batch";
 import Album from "model/album";
 import Label from "model/label";
 import Thumb from "model/thumb";
@@ -740,23 +740,6 @@ export default {
     },
   },
   watch: {
-    visible: async function (show) {
-      if (show) {
-        this.expanded = [];
-
-        // Refresh available options each time the dialog opens to avoid stale caches
-        await this.fetchAvailableOptions();
-
-        await this.model.load(this.selection);
-        this.values = this.model.values;
-        this.setFormData();
-        this.allSelectedLength = this.model.getLengthOfAllSelected();
-      } else {
-        this.model = new Batch();
-        // Reset deleted fields when dialog is closed
-        this.deletedFields = {};
-      }
-    },
     selection: {
       deep: true,
       handler(newSelection) {
@@ -780,7 +763,7 @@ export default {
   },
   created() {
     // this.subscriptions.push(this.$event.subscribe("photos.updated", (ev, data) => this.onUpdate(ev, data)));
-    this.fetchAvailableOptions();
+    // this.fetchAvailableOptions();
   },
   beforeUnmount() {
     for (let i = 0; i < this.subscriptions.length; i++) {
@@ -790,8 +773,30 @@ export default {
   methods: {
     afterEnter() {
       this.$view.enter(this);
+
+      // Load data when dialog opens.
+      this.expanded = [];
+      return this.fetchAvailableOptions()
+        .then(() => {
+          return this.model.load(this.selection);
+        })
+        .then(() => {
+          this.values = this.model.values;
+          this.setFormData();
+          this.allSelectedLength = this.model.getLengthOfAllSelected();
+        })
+        .catch(() => {
+          this.values = {};
+          this.setFormData();
+          this.allSelectedLength = 0;
+        });
     },
     afterLeave() {
+      // Reset when dialog is closed.
+      this.model = new Batch();
+      this.values = {};
+      this.deletedFields = {};
+      this.allSelectedLength = 0;
       this.$view.leave(this);
     },
     normalizeLabelTitleForCompare(s) {

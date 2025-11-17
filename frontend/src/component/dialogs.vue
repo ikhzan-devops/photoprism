@@ -9,9 +9,9 @@
       @close="closeEditDialog"
     ></p-photo-edit-dialog>
     <p-photo-batch-edit
-      :visible="editBatch.visible"
-      :selection="editBatch.selection"
-      @close="closeEditBatch"
+      :visible="batchEdit.visible"
+      :selection="batchEdit.selection"
+      @close="closeBatchEdit"
     ></p-photo-batch-edit>
     <p-upload-dialog
       :visible="upload.visible"
@@ -50,7 +50,7 @@ export default {
         index: 0,
         tab: "",
       },
-      editBatch: {
+      batchEdit: {
         visible: false,
         selection: [],
       },
@@ -78,7 +78,7 @@ export default {
     // Opens the photo edit dialog (when more than 1 image are selected).
     this.subscriptions.push(
       this.$event.subscribe("dialog.batchedit", (ev, data) => {
-        this.onEditBatch(data);
+        this.onBatchEdit(data);
       })
     );
 
@@ -119,22 +119,22 @@ export default {
       this.edit.tab = data?.tab ? data.tab : "";
       this.edit.visible = true;
     },
-    onEditBatch(data) {
-      if (this.batchedit.visible || !this.hasAuth()) {
-        return;
-      }
-
-      this.batchedit.selection = data.selection;
-      this.batchedit.visible = true;
-    },
     closeEditDialog() {
       if (this.edit.visible) {
         this.edit.visible = false;
       }
     },
-    closeEditBatch() {
-      if (this.batchedit.visible) {
-        this.batchedit.visible = false;
+    onBatchEdit(data) {
+      if (this.batchEdit.visible || !this.hasAuth()) {
+        return;
+      }
+
+      this.batchEdit.selection = data.selection;
+      this.batchEdit.visible = true;
+    },
+    closeBatchEdit() {
+      if (this.batchEdit.visible) {
+        this.batchEdit.visible = false;
       }
     },
     onUpload(data) {

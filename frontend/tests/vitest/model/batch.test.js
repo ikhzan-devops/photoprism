@@ -1,9 +1,9 @@
 import { describe, it, expect } from "vitest";
 import "../fixtures";
-import { Batch } from "model/batch-edit";
+import { Batch } from "model/batch";
 import { Photo } from "model/photo";
 
-describe("model/batch-edit", () => {
+describe("model/batch", () => {
   it("should return defaults", () => {
     const b = new Batch();
     const d = b.getDefaults();
