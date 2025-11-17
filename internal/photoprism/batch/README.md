@@ -36,7 +36,7 @@ The `internal/photoprism/batch` package implements the form schema (`PhotosForm`
 4. After persisting updates, the handler issues a follow-up `query.PhotoPreloadByUIDs` call so `batch.PrepareAndSavePhotos` gets hydrated entities for album/label mutations without disrupting the frontend-facing payload.
 5. `batch.PrepareAndSavePhotos` iterates over the preloaded entities, applies requested album/label changes, builds `PhotoSaveRequest` instances via `batch.NewPhotoSaveRequest`, and persists the updates before returning a summary (requests, results, updated count) to the API layer.
 6. `SavePhotos` (invoked by the helper) loops once per request, updates only the columns that changed, clears `checked_at`, touches `edited_at`, and queues `entity.UpdateCountsAsync()` once if any photo saved.
-7. Refreshed entities are converted back to `search.PhotoResults`, and `NewPhotosFormWithEntities` rebuilds the response form so the frontend sees the committed mixed-state snapshot.
+7. Refreshed models and values are sent back in the response form so the frontend can merge and display the changes.
 
 ### Batch Edit API Endpoint
 
