@@ -13,7 +13,6 @@ import (
 	"github.com/photoprism/photoprism/internal/entity/query"
 	"github.com/photoprism/photoprism/internal/entity/search"
 	"github.com/photoprism/photoprism/internal/photoprism/batch"
-	"github.com/photoprism/photoprism/internal/photoprism/get"
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/i18n"
 )
@@ -34,13 +33,6 @@ func BatchPhotosEdit(router *gin.RouterGroup) {
 		s := Auth(c, acl.ResourcePhotos, acl.ActionUpdate)
 
 		if s.Abort(c) {
-			return
-		}
-
-		conf := get.Config()
-
-		if !conf.Develop() && !conf.Experimental() {
-			AbortNotImplemented(c)
 			return
 		}
 
