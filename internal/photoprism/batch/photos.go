@@ -8,6 +8,11 @@ import (
 )
 
 // PhotosForm represents photo batch edit form values.
+// Several EXIF / details fields (ISO, focal length, f-number, exposure,
+// camera/lens IDs, DetailsKeywords) are included here so their mixed state
+// survives round-trips even though the batch dialog doesn’t expose inputs yet.
+// Once the frontend adds those controls, extend ConvertToPhotoForm and AddLabels
+// to persist the values before removing this note.
 type PhotosForm struct {
 	PhotoType        String  `json:"Type,omitempty"`
 	PhotoTitle       String  `json:"Title,omitempty"`

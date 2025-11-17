@@ -951,6 +951,9 @@ export default {
         { type: "text-field", name: "DetailsArtist" },
         { type: "text-field", name: "DetailsCopyright" },
         { type: "text-field", name: "DetailsLicense" },
+        // DetailsKeywords and the following EXIF fields are wired through the form so
+        // their mixed state survives round-trips. UI inputs (and server-side saves) will
+        // be added in a follow-up, so leave them here until that work lands.
         { type: "text-field", name: "DetailsKeywords" },
         { type: "select-field", name: "Type" },
         { type: "input-field", name: "Iso" },

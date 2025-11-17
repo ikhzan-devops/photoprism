@@ -9,6 +9,9 @@ import (
 
 // ConvertToPhotoForm converts PhotosForm into a regular form.Photo while
 // preserving unchanged fields and marking source fields with SrcBatch where applicable.
+// Note: ISO / focal length / f-number / exposure / camera / lens / details keywords
+// are present on PhotosForm for future batch UI work. Once inputs exist, extend this
+// function to copy those fields (and set Details.KeywordsSrc) before removing this note.
 func ConvertToPhotoForm(photo *entity.Photo, v *PhotosForm) (*form.Photo, error) {
 	if photo == nil || v == nil {
 		return nil, fmt.Errorf("photo or batch values is nil")
