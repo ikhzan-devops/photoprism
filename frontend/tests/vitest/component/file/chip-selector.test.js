@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { mount } from "@vue/test-utils";
 import { nextTick } from "vue";
-import ChipSelector from "component/file/chip-selector.vue";
+import PInputChipSelector from "component/input/chip-selector.vue";
 
 describe("component/file/chip-selector", () => {
   let wrapper;
@@ -32,7 +32,7 @@ describe("component/file/chip-selector", () => {
       template: '<div class="v-tooltip-stub"><slot name="activator" :props="{}"></slot><slot /></div>',
     };
 
-    wrapper = mount(ChipSelector, {
+    wrapper = mount(PInputChipSelector, {
       props: {
         items: mockItems,
         availableItems: mockAvailableItems,
@@ -238,7 +238,7 @@ describe("component/file/chip-selector", () => {
 
   describe("Label resolver and normalization", () => {
     it("resolves 'cat' → 'Katze' and sets mixed chip to add", async () => {
-      const wrapper = mount(ChipSelector, {
+      const wrapper = mount(PInputChipSelector, {
         props: {
           items: [{ value: "l1", title: "Katze", mixed: true, action: "none" }],
           availableItems: [{ value: "l1", title: "Katze" }],
@@ -263,7 +263,7 @@ describe("component/file/chip-selector", () => {
 
     it("re-typing existing chip clears input and does not add a duplicate", async () => {
       vi.useFakeTimers();
-      const wrapper = mount(ChipSelector, {
+      const wrapper = mount(PInputChipSelector, {
         props: {
           items: [{ value: "l1", title: "Katze", mixed: false, action: "add" }],
           availableItems: [{ value: "l1", title: "Katze" }],
@@ -285,7 +285,7 @@ describe("component/file/chip-selector", () => {
     });
 
     it("normalizes 'fire+station' → 'Fire Station' via resolver and sets to add", async () => {
-      const wrapper = mount(ChipSelector, {
+      const wrapper = mount(PInputChipSelector, {
         props: {
           items: [{ value: "l2", title: "Fire Station", mixed: true, action: "none" }],
           availableItems: [{ value: "l2", title: "Fire Station" }],
@@ -315,7 +315,7 @@ describe("component/file/chip-selector", () => {
     });
 
     it("adds unmatched free text as isNew: true with action 'add'", async () => {
-      const wrapper = mount(ChipSelector, {
+      const wrapper = mount(PInputChipSelector, {
         props: {
           items: [],
           availableItems: [],

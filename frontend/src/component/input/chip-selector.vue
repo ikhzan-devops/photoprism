@@ -1,5 +1,5 @@
 <template>
-  <div class="chip-selector">
+  <div class="p-input-chip-selector chip-selector">
     <div v-if="shouldRenderChips" class="chip-selector__chips">
       <v-tooltip
         v-for="item in processedItems"
@@ -68,7 +68,7 @@
 
 <script>
 export default {
-  name: "ChipSelector",
+  name: "PInputChipSelector",
   props: {
     items: {
       type: Array,

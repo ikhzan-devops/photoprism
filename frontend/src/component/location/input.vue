@@ -34,22 +34,22 @@
       <v-icon v-if="isDeleted" variant="plain" icon="mdi-undo" class="action-undo" @click.stop="$emit('undo')"></v-icon>
       <v-icon
         v-else-if="isMixed"
+        :icon="iconClear"
         variant="plain"
-        icon="mdi-delete"
         class="action-delete"
         @click.stop="$emit('delete')"
       ></v-icon>
       <v-icon
         v-else-if="showUndoButton"
         variant="plain"
-        icon="mdi-undo"
+        :icon="iconUndo"
         class="action-undo"
         @click.stop="undoClear"
       ></v-icon>
       <v-icon
         v-else-if="coordinateInput"
+        :icon="iconClear"
         variant="plain"
-        icon="mdi-delete"
         class="action-delete"
         @click.stop="clearCoordinates"
       ></v-icon>
@@ -134,6 +134,8 @@ export default {
   emits: ["update:latlng", "changed", "cleared", "open-map", "delete", "undo"],
   data() {
     return {
+      iconClear: "mdi-close-circle",
+      iconUndo: "mdi-undo",
       coordinateInput: "",
       inputTimeout: null,
       wasCleared: false,

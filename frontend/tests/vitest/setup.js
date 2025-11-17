@@ -8,6 +8,7 @@ import "vuetify/styles";
 
 import clientConfig from "./config";
 import { $config } from "app/session";
+import { mockGettext, mockPgettext } from "./helpers/gettext";
 
 $config.setValues(clientConfig);
 
@@ -37,8 +38,8 @@ if (typeof global.ResizeObserver === "undefined") {
 
 // Configure Vue Test Utils global configuration
 config.global.mocks = {
-  $gettext: (text) => text,
-  $pgettext: (_ctx, text) => text,
+  $gettext: mockGettext,
+  $pgettext: mockPgettext,
   $isRtl: false,
   $config: {
     feature: () => true,

@@ -181,8 +181,8 @@ describe("component/photo/edit/batch", () => {
             props: ["visible", "latlng"],
             emits: ["close", "confirm"],
           },
-          BatchChipSelector: {
-            template: '<div class="batch-chip-selector"></div>',
+          PInputChipSelector: {
+            template: '<div class="p-input-chip-selector"></div>',
             props: ["items", "availableItems"],
             emits: ["update:items"],
           },
@@ -221,7 +221,7 @@ describe("component/photo/edit/batch", () => {
     });
 
     it("should compute form title correctly", () => {
-      expect(wrapper.vm.formTitle).toBe("Batch Edit (3)");
+      expect(wrapper.vm.formTitle).toBe("Edit Photos (3)");
     });
 
     it("should compute current coordinates correctly", () => {
@@ -511,10 +511,10 @@ describe("component/photo/edit/batch", () => {
 
     it("shows delete icon for text field, then shows <deleted> + undo after delete", () => {
       // Delete icon visible before deleting
-      expect(wrapper.vm.getIcon("text-field", "Title")).toBe("mdi-delete");
+      expect(wrapper.vm.getIcon("text-field", "Title")).toBe("mdi-close-circle");
 
       // Click delete icon
-      wrapper.vm.toggleField("Title", makeEvent("mdi-delete"));
+      wrapper.vm.toggleField("Title", makeEvent("mdi-close-circle"));
 
       // Now undo icon should be visible and placeholder should show <deleted>
       expect(wrapper.vm.getIcon("text-field", "Title")).toBe("mdi-undo");
@@ -527,15 +527,15 @@ describe("component/photo/edit/batch", () => {
       wrapper.vm.toggleField("Title", makeEvent("mdi-undo"));
       expect(wrapper.vm.deletedFields.Title).toBe(false);
       expect(wrapper.vm.formData.Title.action).toBe("none");
-      expect(wrapper.vm.getIcon("text-field", "Title")).toBe("mdi-delete");
+      expect(wrapper.vm.getIcon("text-field", "Title")).toBe("mdi-close-circle");
     });
 
     it("shows delete icon for numeric field, then undo after delete", () => {
       // Delete icon visible before deleting
-      expect(wrapper.vm.getIcon("input-field", "Altitude")).toBe("mdi-delete");
+      expect(wrapper.vm.getIcon("input-field", "Altitude")).toBe("mdi-close-circle");
 
       // Click delete icon
-      wrapper.vm.toggleField("Altitude", makeEvent("mdi-delete"));
+      wrapper.vm.toggleField("Altitude", makeEvent("mdi-close-circle"));
 
       // Now undo icon should be visible and value should be zeroed
       expect(wrapper.vm.getIcon("input-field", "Altitude")).toBe("mdi-undo");
@@ -544,7 +544,7 @@ describe("component/photo/edit/batch", () => {
       // Undo
       wrapper.vm.toggleField("Altitude", makeEvent("mdi-undo"));
       expect(wrapper.vm.formData.Altitude.value).toBe(123);
-      expect(wrapper.vm.getIcon("input-field", "Altitude")).toBe("mdi-delete");
+      expect(wrapper.vm.getIcon("input-field", "Altitude")).toBe("mdi-close-circle");
     });
   });
 });

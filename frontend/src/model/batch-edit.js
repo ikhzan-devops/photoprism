@@ -72,30 +72,22 @@ export class Batch extends Model {
   }
 
   async getData(selection) {
-    try {
-      const response = await $api.post("batch/photos/edit", { photos: selection });
-      const models = response.data.models || [];
+    const response = await $api.post("batch/photos/edit", { photos: selection });
+    const models = response.data.models || [];
 
-      this.models = models.map((m) => {
-        const modelInstance = new Photo();
-        return modelInstance.setValues(m);
-      });
+    this.models = models.map((m) => {
+      const modelInstance = new Photo();
+      return modelInstance.setValues(m);
+    });
 
-      this.values = response.data.values;
-      this.setSelections(selection);
-    } catch (error) {
-      throw error;
-    }
+    this.values = response.data.values;
+    this.setSelections(selection);
   }
 
   async getValuesForSelection(selection) {
-    try {
-      const response = await $api.post("batch/photos/edit", { photos: selection });
-      this.values = response.data.values;
-      return this.values;
-    } catch (error) {
-      throw error;
-    }
+    const response = await $api.post("batch/photos/edit", { photos: selection });
+    this.values = response.data.values;
+    return this.values;
   }
 
   setSelections(selection) {
@@ -128,5 +120,9 @@ export class Batch extends Model {
     this.selection.forEach((element) => {
       element.selected = isToggledAll;
     });
+  }
+
+  wasChanged() {
+    return super.wasChanged();
   }
 }
