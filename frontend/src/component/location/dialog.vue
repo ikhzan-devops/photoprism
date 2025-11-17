@@ -63,7 +63,7 @@
                 variant="outlined"
                 :placeholder="$gettext(`Search`)"
                 item-title="name"
-                item-value="id"
+                item-value="__key"
                 return-object
                 auto-select-first
                 clearable
@@ -312,7 +312,7 @@ export default {
 
         if (this.searchQuery === query) {
           if (response.data && Array.isArray(response.data)) {
-            this.searchResults = response.data;
+            this.searchResults = this.normalizeSearchResults(response.data);
           } else {
             this.searchResults = [];
           }
@@ -339,6 +339,20 @@ export default {
     },
     clearSearch() {
       this.resetSearchState();
+    },
+    normalizeSearchResults(results) {
+      const seen = new Map();
+
+      return results.map((item, index) => {
+        const base = item.id || `result-${index}`;
+        const occurrence = seen.get(base) || 0;
+        seen.set(base, occurrence + 1);
+
+        return {
+          ...item,
+          __key: occurrence === 0 ? base : `${base}-${occurrence}`,
+        };
+      });
     },
   },
 };
