@@ -645,8 +645,7 @@ export default {
   computed: {
     formTitle() {
       // TODO: this.allSelectedLength should not include photos that could not be loaded e.g. because they are archived.
-      const n = Number(this.allSelectedLength) > this.getModelCount() ? this.getModelCount() : 0;
-      return this.$gettext(`Edit Photos (%{n})`, { n });
+      return this.$gettext(`Edit Photos (%{n})`, { n: this.allSelectedLength });
     },
     currentCoordinates() {
       if (this.isLocationMixed || this.deletedFields.Lat || this.deletedFields.Lng) {
