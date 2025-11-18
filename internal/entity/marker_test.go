@@ -181,7 +181,7 @@ func TestMarker_Updates(t *testing.T) {
 		assert.Equal(t, SrcImage, m.MarkerSrc)
 		assert.Equal(t, MarkerLabel, m.MarkerType)
 
-		if err := m.Updates(Marker{MarkerSrc: SrcMeta}); err != nil {
+		if err = m.Updates(Marker{MarkerSrc: SrcMeta}); err != nil {
 			t.Fatal(err)
 		}
 

@@ -73,12 +73,6 @@ func (m *PhotoLabel) Update(attr string, value interface{}) error {
 	return nil
 }
 
-// AfterUpdate flushes the label cache after a relation change.
-func (m *PhotoLabel) AfterUpdate(tx *gorm.DB) (err error) {
-	FlushCachedPhotoLabel(m)
-	return
-}
-
 // Save updates the record in the database or inserts a new record if it does not already exist.
 func (m *PhotoLabel) Save() error {
 	if m.Photo != nil {
@@ -104,6 +98,12 @@ func (m *PhotoLabel) Create() error {
 func (m *PhotoLabel) AfterCreate(scope *gorm.Scope) error {
 	FlushCachedPhotoLabel(m)
 	return nil
+}
+
+// AfterUpdate flushes the label cache after a relation change.
+func (m *PhotoLabel) AfterUpdate(tx *gorm.DB) (err error) {
+	FlushCachedPhotoLabel(m)
+	return
 }
 
 // Delete removes the label reference and clears the cache.

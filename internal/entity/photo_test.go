@@ -164,6 +164,18 @@ func TestPhoto_LabelKeywords(t *testing.T) {
 	})
 }
 
+func TestPhoto_GetUID(t *testing.T) {
+	t.Run("ReturnsPhotoUID", func(t *testing.T) {
+		uid := rnd.GenerateUID(PhotoUID)
+		photo := &Photo{PhotoUID: uid}
+		assert.Equal(t, uid, photo.GetUID())
+	})
+	t.Run("NilPhoto", func(t *testing.T) {
+		var photo *Photo
+		assert.Equal(t, "<nil>", photo.GetUID())
+	})
+}
+
 func photoKeywordWords(t *testing.T, photoID uint) []string {
 	t.Helper()
 
@@ -588,7 +600,7 @@ func TestPhoto_AddLabels(t *testing.T) {
 		label := LabelFixtures.Get(labelName)
 		assert.NoError(t, UnscopedDb().Model(&PhotoLabel{}).
 			Where("photo_id = ? AND label_id = ?", photo.ID, label.ID).
-			UpdateColumns(Values{"Uncertainty": uncertainty, "LabelSrc": src}).Error)
+			UpdateColumns(Values{"uncertainty": uncertainty, "label_src": src}).Error)
 	}
 
 	t.Run("Add", func(t *testing.T) {

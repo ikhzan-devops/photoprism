@@ -380,6 +380,10 @@ func (m *Photo) HasUID() bool {
 
 // GetUID returns the unique entity id.
 func (m *Photo) GetUID() string {
+	if m == nil {
+		return "<nil>"
+	}
+
 	return m.PhotoUID
 }
 
@@ -481,11 +485,17 @@ func (m *Photo) SaveLabels() error {
 	return nil
 }
 
-// LabelKeywords converts the loaded photo labels (and their categories)
-// into the keyword tokens that should be indexable for full‑text search.
+// LabelKeywords converts the photo labels (and their categories) into
+// keyword tokens that should be indexable for full‑text search. When the
+// relation has not been preloaded yet, it fetches the labels transparently
+// so callers always receive the same output.
 func (m *Photo) LabelKeywords() (result []string) {
 	if m == nil {
 		return nil
+	}
+
+	if m.Labels == nil {
+		m.PreloadLabels()
 	}
 
 	for _, l := range m.Labels {
@@ -770,12 +780,18 @@ func (m *Photo) PreloadAlbums() {
 	Log("photo", "preload albums", q.Scan(&m.Albums).Error)
 }
 
-// PreloadLabels loads labels related to the photo from the database.
+// PreloadLabels loads labels related to the photo from the database. It is a
+// no-op when the Photo pointer is nil or the record has not been persisted yet
+// so call sites can invoke it defensively before reading `m.Labels`.
 func (m *Photo) PreloadLabels() {
-	if err := Db().Model(PhotoLabel{}).Preload("Label").Where("photo_id = ?", m.ID).
-		Order("photos_labels.uncertainty ASC, photos_labels.label_id DESC").Find(&m.Labels).Error; err != nil {
-		log.Warnf("photo: failed to fetch labels (%s)", err)
+	if m == nil {
+		return
+	} else if !m.HasID() {
+		return
 	}
+
+	Log("photo", "preload labels", Db().Model(PhotoLabel{}).Preload("Label").Where("photo_id = ?", m.ID).
+		Order("photos_labels.uncertainty ASC, photos_labels.label_id DESC").Find(&m.Labels).Error)
 }
 
 // PreloadMany loads the primary supporting associations (files, keywords, albums).
@@ -1125,7 +1141,10 @@ func (m *Photo) Delete(permanently bool) (files Files, err error) {
 		}
 	}
 
-	return files, m.Updates(Values{"DeletedAt": Now(), "PhotoQuality": -1})
+	m.DeletedAt = TimeStamp()
+	m.PhotoQuality = -1
+
+	return files, m.Updates(Values{"deleted_at": *m.DeletedAt, "photo_quality": m.PhotoQuality})
 }
 
 // DeletePermanently permanently removes a photo from the index.
@@ -1193,7 +1212,7 @@ func (m *Photo) SetFavorite(favorite bool) error {
 	m.PhotoFavorite = favorite
 	m.PhotoQuality = m.QualityScore()
 
-	if err := m.Updates(Values{"PhotoFavorite": m.PhotoFavorite, "PhotoQuality": m.PhotoQuality}); err != nil {
+	if err := m.Updates(Values{"photo_favorite": m.PhotoFavorite, "photo_quality": m.PhotoQuality}); err != nil {
 		return err
 	}
 
@@ -1217,7 +1236,7 @@ func (m *Photo) SetFavorite(favorite bool) error {
 func (m *Photo) SetStack(stack int8) {
 	if m.PhotoStack != stack {
 		m.PhotoStack = stack
-		Log("photo", "update stack flag", m.Update("PhotoStack", m.PhotoStack))
+		Log("photo", "update stack flag", m.Update("photo_stack", m.PhotoStack))
 	}
 }
 

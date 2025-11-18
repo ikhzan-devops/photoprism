@@ -1,9 +1,12 @@
 package entity
 
 import (
+	"fmt"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestNewPhotoKeyword(t *testing.T) {
@@ -36,4 +39,22 @@ func TestFirstOrCreatePhotoKeyword(t *testing.T) {
 	if result.KeywordID != model.KeywordID {
 		t.Errorf("KeywordID should be the same: %d %d", result.KeywordID, model.KeywordID)
 	}
+}
+
+func TestPhotoKeyword_Delete(t *testing.T) {
+	FlushPhotoKeywordCache()
+	photo := &Photo{}
+	require.NoError(t, Db().First(photo).Error)
+	keyword := NewKeyword(fmt.Sprintf("photo-keyword-delete-%d", time.Now().UnixNano()))
+	require.NoError(t, keyword.Save())
+
+	relation := NewPhotoKeyword(photo.ID, keyword.ID)
+	require.NoError(t, relation.Create())
+
+	photoKeywordCache.SetDefault(relation.CacheKey(), *relation)
+
+	require.NoError(t, relation.Delete())
+
+	_, found := photoKeywordCache.Get(relation.CacheKey())
+	assert.False(t, found)
 }
