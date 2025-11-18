@@ -154,7 +154,7 @@ func SavePhotos(requests []*PhotoSaveRequest) ([]bool, error) {
 
 	for i, req := range requests {
 		saved, err := savePhoto(req)
-		
+
 		if err != nil {
 			return results, err
 		}
