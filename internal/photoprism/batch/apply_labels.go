@@ -125,7 +125,7 @@ func ApplyLabels(photo *entity.Photo, labels Items) (errs []error) {
 			pl, labelEntity := findIndexedPhotoLabel(labelIndex, photo, it.Value)
 
 			if pl == nil || labelEntity == nil || !labelEntity.HasID() {
-				errs = append(errs, fmt.Errorf("label not found for removal: %s", it.Value))
+				log.Debugf("batch: label not found for removal label photo=%s label_id=%d", photo.PhotoUID, labelEntity.ID)
 				continue
 			}
 
@@ -137,7 +137,7 @@ func ApplyLabels(photo *entity.Photo, labels Items) (errs []error) {
 				if err = deletePhotoLabel(pl); err != nil {
 					errs = append(errs, fmt.Errorf("delete label failed: %s", err))
 				} else {
-					log.Debugf("deleted label: photo=%s label_id=%d", photo.PhotoUID, labelEntity.ID)
+					log.Debugf("batch: deleted label photo=%s label_id=%d", photo.PhotoUID, labelEntity.ID)
 					delete(labelIndex, labelEntity.ID)
 					labelChanged = true
 				}
