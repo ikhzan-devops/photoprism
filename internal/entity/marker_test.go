@@ -160,7 +160,7 @@ func TestUpdateOrCreateMarker(t *testing.T) {
 		}
 
 		if m == nil {
-			t.Fatal("result should not be nil")
+			t.Fatal("result must not be nil")
 		}
 
 		if m.MarkerUID == "" || m.FileUID == "" {

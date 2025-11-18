@@ -319,7 +319,7 @@ func TestFindMonthAlbum(t *testing.T) {
 		result := FindMonthAlbum(2021, 9)
 
 		if result == nil {
-			t.Fatal("album should not be nil")
+			t.Fatal("album must not be nil")
 		}
 
 		assert.Equal(t, "September 2021", result.AlbumTitle)
@@ -342,7 +342,7 @@ func TestFindAlbumBySlug(t *testing.T) {
 		result := FindAlbumBySlug("holiday-2030", AlbumManual)
 
 		if result == nil {
-			t.Fatal("album should not be nil")
+			t.Fatal("album must not be nil")
 		}
 
 		assert.Equal(t, "Holiday 2030", result.AlbumTitle)
@@ -352,7 +352,7 @@ func TestFindAlbumBySlug(t *testing.T) {
 		result := FindAlbumBySlug("california-usa", AlbumState)
 
 		if result == nil {
-			t.Fatal("album should not be nil")
+			t.Fatal("album must not be nil")
 		}
 
 		assert.Equal(t, "California / United States", result.AlbumTitle)
@@ -380,7 +380,7 @@ func TestFindAlbumByAttr(t *testing.T) {
 		result := FindAlbumByAttr([]string{}, []string{"path:\"1990/04\" public:true"}, AlbumFolder)
 
 		if result == nil {
-			t.Fatal("album should not be nil")
+			t.Fatal("album must not be nil")
 		}
 
 		assert.Equal(t, "April 1990", result.AlbumTitle)
@@ -389,7 +389,7 @@ func TestFindAlbumByAttr(t *testing.T) {
 		result := FindAlbumByAttr([]string{"holiday-2030"}, []string{}, AlbumManual)
 
 		if result == nil {
-			t.Fatal("album should not be nil")
+			t.Fatal("album must not be nil")
 		}
 
 		assert.Equal(t, "Holiday 2030", result.AlbumTitle)
@@ -443,7 +443,7 @@ func TestFindAlbum(t *testing.T) {
 		result := FindAlbum(album)
 
 		if result == nil {
-			t.Fatal("album should not be nil")
+			t.Fatal("album must not be nil")
 		}
 
 		assert.Equal(t, "Christmas 2030", result.AlbumTitle)
@@ -454,7 +454,7 @@ func TestFindAlbum(t *testing.T) {
 		result := FindAlbum(album)
 
 		if result == nil {
-			t.Fatal("album should not be nil")
+			t.Fatal("album must not be nil")
 		}
 
 		assert.Equal(t, "April 1990", result.AlbumTitle)
@@ -464,7 +464,7 @@ func TestFindAlbum(t *testing.T) {
 		result := FindAlbum(album)
 
 		if result == nil {
-			t.Fatal("album should not be nil")
+			t.Fatal("album must not be nil")
 		}
 
 		assert.Equal(t, "April 1990", result.AlbumTitle)
@@ -474,7 +474,7 @@ func TestFindAlbum(t *testing.T) {
 		result := FindAlbum(album)
 
 		if result == nil {
-			t.Fatal("album should not be nil")
+			t.Fatal("album pointer must not be nil")
 		}
 
 		assert.Equal(t, "Berlin 2019", result.AlbumTitle)
@@ -624,7 +624,7 @@ func TestAlbum_SetLocation(t *testing.T) {
 		result := album.SetLocation("world", "Hessen", "de")
 
 		if result == nil {
-			t.Fatal("album should not be nil")
+			t.Fatal("album pointer must not be nil")
 		}
 
 		assert.Equal(t, "world", result.AlbumLocation)
@@ -636,7 +636,7 @@ func TestAlbum_SetLocation(t *testing.T) {
 		result := album.SetLocation("", "", "zz")
 
 		if result == nil {
-			t.Fatal("album should not be nil")
+			t.Fatal("album pointer must not be nil")
 		}
 
 		assert.Equal(t, "", result.AlbumLocation)

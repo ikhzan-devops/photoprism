@@ -1,6 +1,8 @@
 package entity
 
 import (
+	"errors"
+
 	"github.com/jinzhu/gorm"
 
 	"github.com/photoprism/photoprism/internal/ai/classify"
@@ -41,18 +43,32 @@ func NewPhotoLabel(photoID, labelID uint, uncertainty int, source string) *Photo
 
 // Updates mutates multiple columns in the database and clears cached copies.
 func (m *PhotoLabel) Updates(values interface{}) error {
+	if m == nil {
+		return errors.New("photo label must not be nil - you may have found a bug")
+	} else if !m.HasID() {
+		return errors.New("photo label ID must not be empty - you may have found a bug")
+	}
+
 	if err := UnscopedDb().Model(m).UpdateColumns(values).Error; err != nil {
 		return err
 	}
+
 	FlushCachedPhotoLabel(m)
 	return nil
 }
 
 // Update mutates a single column in the database and clears cached copies.
 func (m *PhotoLabel) Update(attr string, value interface{}) error {
+	if m == nil {
+		return errors.New("photo label must not be nil - you may have found a bug")
+	} else if !m.HasID() {
+		return errors.New("photo label ID must not be empty - you may have found a bug")
+	}
+
 	if err := UnscopedDb().Model(m).UpdateColumn(attr, value).Error; err != nil {
 		return err
 	}
+
 	FlushCachedPhotoLabel(m)
 	return nil
 }

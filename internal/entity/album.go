@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"strconv"
@@ -673,7 +674,9 @@ func (m *Album) UpdateTitleAndState(title, slug, stateName, countryCode string) 
 
 // SaveForm updates the entity using form data and stores it in the database.
 func (m *Album) SaveForm(f *form.Album) error {
-	if f == nil {
+	if m == nil {
+		return errors.New("album must not be nil - you may have found a bug")
+	} else if f == nil {
 		return fmt.Errorf("form is nil")
 	}
 
@@ -694,7 +697,9 @@ func (m *Album) SaveForm(f *form.Album) error {
 
 // Update sets a new value for a database column.
 func (m *Album) Update(attr string, value interface{}) error {
-	if !m.HasID() {
+	if m == nil {
+		return errors.New("album must not be nil - you may have found a bug")
+	} else if !m.HasID() {
 		return fmt.Errorf("album does not exist")
 	}
 
@@ -703,7 +708,9 @@ func (m *Album) Update(attr string, value interface{}) error {
 
 // Updates multiple columns in the database.
 func (m *Album) Updates(values interface{}) error {
-	if !m.HasID() {
+	if m == nil {
+		return errors.New("album must not be nil - you may have found a bug")
+	} else if !m.HasID() {
 		return fmt.Errorf("album does not exist")
 	}
 

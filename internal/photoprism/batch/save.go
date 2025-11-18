@@ -60,11 +60,13 @@ func PreparePhotoSaveRequests(photos search.PhotoResults, preloaded map[string]*
 
 	for _, result := range photos {
 		photoID := result.PhotoUID
+
 		if photoID == "" {
 			continue
 		}
 
 		fullPhoto := preloaded[photoID]
+
 		if fullPhoto == nil {
 			loaded, err := query.PhotoPreloadByUID(photoID)
 			if err != nil {
@@ -76,6 +78,7 @@ func PreparePhotoSaveRequests(photos search.PhotoResults, preloaded map[string]*
 		}
 
 		saveReq, err := NewPhotoSaveRequest(fullPhoto, values)
+
 		if err != nil {
 			log.Errorf("batch: failed to build save request for photo %s: %s", photoID, err)
 			continue
@@ -84,14 +87,14 @@ func PreparePhotoSaveRequests(photos search.PhotoResults, preloaded map[string]*
 		saveRequests = append(saveRequests, saveReq)
 
 		if values.Albums.Action == ActionUpdate {
-			if err := ApplyAlbums(photoID, values.Albums); err != nil {
-				log.Errorf("batch: failed to update albums for photo %s: %s", photoID, err)
+			if errs := ApplyAlbums(fullPhoto, values.Albums); errs != nil {
+				log.Errorf("batch: failed to update albums for photo %s: (%s)", photoID, errs)
 			}
 		}
 
 		if values.Labels.Action == ActionUpdate {
-			if err := ApplyLabels(fullPhoto, values.Labels); err != nil {
-				log.Errorf("batch: failed to update labels for photo %s: %s", photoID, err)
+			if errs := ApplyLabels(fullPhoto, values.Labels); errs != nil {
+				log.Errorf("batch: failed to update labels for photo %s (%s)", photoID, errs)
 			}
 		}
 	}
@@ -104,6 +107,7 @@ func PreparePhotoSaveRequests(photos search.PhotoResults, preloaded map[string]*
 // follow-up work (events, cache flushes) without re-querying state.
 func PrepareAndSavePhotos(photos search.PhotoResults, preloaded map[string]*entity.Photo, values *PhotosForm) (*SaveBatchResult, error) {
 	result := &SaveBatchResult{Preloaded: preloaded}
+
 	if values == nil {
 		if result.Preloaded == nil {
 			result.Preloaded = map[string]*entity.Photo{}
@@ -120,11 +124,13 @@ func PrepareAndSavePhotos(photos search.PhotoResults, preloaded map[string]*enti
 	}
 
 	saveResults, err := SavePhotos(requests)
+
 	if err != nil {
 		return nil, err
 	}
 
 	result.Results = saveResults
+
 	for i, saved := range saveResults {
 		if saved {
 			result.UpdatedCount++
@@ -148,10 +154,13 @@ func SavePhotos(requests []*PhotoSaveRequest) ([]bool, error) {
 
 	for i, req := range requests {
 		saved, err := savePhoto(req)
+		
 		if err != nil {
 			return results, err
 		}
+
 		results[i] = saved
+
 		if saved {
 			anySaved = true
 		}
@@ -364,15 +373,17 @@ func savePhoto(req *PhotoSaveRequest) (bool, error) {
 	edited := entity.Now()
 	updates["edited_at"] = edited
 	p.EditedAt = &edited
+	updates["updated_at"] = edited
+	p.UpdatedAt = edited
 	updates["checked_at"] = nil
 	p.CheckedAt = nil
 
-	if err := entity.Db().Model(p).Updates(updates).Error; err != nil {
+	if err := p.Updates(updates); err != nil {
 		return false, err
 	}
 
 	if len(detailUpdates) > 0 {
-		if err := entity.Db().Model(details).Updates(detailUpdates).Error; err != nil {
+		if err := details.Updates(detailUpdates); err != nil {
 			return false, err
 		}
 	}

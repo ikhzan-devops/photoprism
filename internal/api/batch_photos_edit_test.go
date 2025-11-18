@@ -688,7 +688,7 @@ func TestBatchPhotosEdit(t *testing.T) {
 		assert.NotEmpty(t, body)
 		assert.True(t, strings.HasPrefix(body, `{"models":[{"ID"`), "unexpected response")
 
-		fmt.Println(body)
+		// fmt.Println(body)
 		/* models := gjson.Get(body, "models")
 		values := gjson.Get(body, "values")
 		t.Logf("models: %#v", models)

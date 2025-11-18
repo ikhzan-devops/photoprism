@@ -225,6 +225,136 @@ func SavePhotoForm(m *Photo, form form.Photo) error {
 	return nil
 }
 
+// FindPhoto looks up a Photo by UID or numeric ID and preloads key associations used by higher layers.
+func FindPhoto(find Photo) *Photo {
+	if find.PhotoUID == "" && find.ID == 0 {
+		return nil
+	}
+
+	m := Photo{}
+
+	// Preload related entities if a matching record is found.
+	stmt := UnscopedDb().
+		Preload("Labels", func(db *gorm.DB) *gorm.DB {
+			return db.Order("photos_labels.uncertainty ASC, photos_labels.label_id DESC")
+		}).
+		Preload("Labels.Label").
+		Preload("Camera").
+		Preload("Lens").
+		Preload("Details").
+		Preload("Place").
+		Preload("Cell").
+		Preload("Cell.Place")
+
+	// Find photo by uid.
+	if rnd.IsUID(find.PhotoUID, PhotoUID) {
+		if stmt.First(&m, "photo_uid = ?", find.PhotoUID).Error == nil {
+			return &m
+		}
+	}
+
+	// Find photo by id.
+	if find.ID > 0 {
+		if stmt.First(&m, "id = ?", find.ID).Error == nil {
+			return &m
+		}
+	}
+
+	return nil
+}
+
+// PhotoLogString returns a sanitized identifier for logging that prefers
+// photo name, falling back to original name, UID, or numeric ID.
+func PhotoLogString(photoPath, photoName, originalName, photoUID string, id uint) string {
+	if photoName != "" {
+		return clean.Log(path.Join(photoPath, photoName))
+	} else if originalName != "" {
+		return clean.Log(originalName)
+	} else if photoUID != "" {
+		return "uid " + clean.Log(photoUID)
+	} else if id > 0 {
+		return fmt.Sprintf("id %d", id)
+	}
+
+	return "*Photo"
+}
+
+// String returns the id or name as string for logging purposes.
+func (m *Photo) String() string {
+	if m == nil {
+		return "Photo<nil>"
+	}
+
+	return PhotoLogString(m.PhotoPath, m.PhotoName, m.OriginalName, m.PhotoUID, m.ID)
+}
+
+// FirstOrCreate inserts the Photo if it does not exist and otherwise reloads the persisted row with its associations.
+func (m *Photo) FirstOrCreate() *Photo {
+	if err := m.Create(); err == nil {
+		return m
+	} else {
+		log.Tracef("photo: %s in %s (create)", err, m.String())
+	}
+
+	return FindPhoto(*m)
+}
+
+// Create persists a new Photo while holding the package mutex and ensures the related Details record exists.
+func (m *Photo) Create() error {
+	photoMutex.Lock()
+	defer photoMutex.Unlock()
+
+	if err := UnscopedDb().Create(m).Error; err != nil {
+		return err
+	}
+
+	if err := m.SaveDetails(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Save writes Photo changes, creates missing rows, and re-resolves the primary file relationship.
+func (m *Photo) Save() error {
+	photoMutex.Lock()
+	defer photoMutex.Unlock()
+
+	if err := Save(m, "ID", "PhotoUID"); err != nil {
+		return err
+	}
+
+	if err := m.SaveDetails(); err != nil {
+		return err
+	}
+
+	return m.ResolvePrimary()
+}
+
+// Update a column in the database.
+func (m *Photo) Update(attr string, value interface{}) error {
+	if m == nil {
+		return errors.New("photo must not be nil - you may have found a bug")
+	} else if !m.HasID() {
+		return errors.New("photo ID must not be empty - you may have found a bug")
+	}
+
+	return UnscopedDb().Model(m).UpdateColumn(attr, value).Error
+}
+
+// Updates multiple columns in the database.
+func (m *Photo) Updates(values interface{}) error {
+	if values == nil {
+		return nil
+	} else if m == nil {
+		return errors.New("photo must not be nil - you may have found a bug")
+	} else if !m.HasID() {
+		return errors.New("photo ID must not be empty - you may have found a bug")
+	}
+
+	return UnscopedDb().Model(m).UpdateColumns(values).Error
+}
+
 // GetID returns the numeric entity ID.
 func (m *Photo) GetID() uint {
 	return m.ID
@@ -314,112 +444,6 @@ func (m *Photo) SetMediaType(newType media.Type, typeSrc string) {
 	log.Debugf("photo: changed type of %s from %s to %s", m.String(), currentType.String(), newType.String())
 
 	return
-}
-
-// PhotoLogString returns a sanitized identifier for logging that prefers
-// photo name, falling back to original name, UID, or numeric ID.
-func PhotoLogString(photoPath, photoName, originalName, photoUID string, id uint) string {
-	if photoName != "" {
-		return clean.Log(path.Join(photoPath, photoName))
-	} else if originalName != "" {
-		return clean.Log(originalName)
-	} else if photoUID != "" {
-		return "uid " + clean.Log(photoUID)
-	} else if id > 0 {
-		return fmt.Sprintf("id %d", id)
-	}
-
-	return "*Photo"
-}
-
-// String returns the id or name as string for logging purposes.
-func (m *Photo) String() string {
-	if m == nil {
-		return "Photo<nil>"
-	}
-
-	return PhotoLogString(m.PhotoPath, m.PhotoName, m.OriginalName, m.PhotoUID, m.ID)
-}
-
-// FirstOrCreate inserts the Photo if it does not exist and otherwise reloads the persisted row with its associations.
-func (m *Photo) FirstOrCreate() *Photo {
-	if err := m.Create(); err == nil {
-		return m
-	} else {
-		log.Tracef("photo: %s in %s (create)", err, m.String())
-	}
-
-	return FindPhoto(*m)
-}
-
-// Create persists a new Photo while holding the package mutex and ensures the related Details record exists.
-func (m *Photo) Create() error {
-	photoMutex.Lock()
-	defer photoMutex.Unlock()
-
-	if err := UnscopedDb().Create(m).Error; err != nil {
-		return err
-	}
-
-	if err := m.SaveDetails(); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// Save writes Photo changes, creates missing rows, and re-resolves the primary file relationship.
-func (m *Photo) Save() error {
-	photoMutex.Lock()
-	defer photoMutex.Unlock()
-
-	if err := Save(m, "ID", "PhotoUID"); err != nil {
-		return err
-	}
-
-	if err := m.SaveDetails(); err != nil {
-		return err
-	}
-
-	return m.ResolvePrimary()
-}
-
-// FindPhoto looks up a Photo by UID or numeric ID and preloads key associations used by higher layers.
-func FindPhoto(find Photo) *Photo {
-	if find.PhotoUID == "" && find.ID == 0 {
-		return nil
-	}
-
-	m := Photo{}
-
-	// Preload related entities if a matching record is found.
-	stmt := UnscopedDb().
-		Preload("Labels", func(db *gorm.DB) *gorm.DB {
-			return db.Order("photos_labels.uncertainty ASC, photos_labels.label_id DESC")
-		}).
-		Preload("Labels.Label").
-		Preload("Camera").
-		Preload("Lens").
-		Preload("Details").
-		Preload("Place").
-		Preload("Cell").
-		Preload("Cell.Place")
-
-	// Find photo by uid.
-	if rnd.IsUID(find.PhotoUID, PhotoUID) {
-		if stmt.First(&m, "photo_uid = ?", find.PhotoUID).Error == nil {
-			return &m
-		}
-	}
-
-	// Find photo by id.
-	if find.ID > 0 {
-		if stmt.First(&m, "id = ?", find.ID).Error == nil {
-			return &m
-		}
-	}
-
-	return nil
 }
 
 // Find fetches the matching record.
@@ -552,6 +576,34 @@ func (m *Photo) RemoveKeyword(w string) error {
 	return nil
 }
 
+// DropKeywords removes the specified keywords from the photo details and then persists them.
+func (m *Photo) DropKeywords(remove []string) error {
+	if m == nil || len(remove) == 0 {
+		return nil
+	}
+
+	details := m.GetDetails()
+
+	original := details.Keywords
+
+	words := txt.Words(details.Keywords)
+
+	for _, w := range remove {
+		if w != "" {
+			words = txt.RemoveFromWords(words, w)
+		}
+	}
+
+	details.Keywords = strings.Join(words, ", ")
+
+	// No update required.
+	if details.Keywords == original {
+		return nil
+	}
+
+	return details.Updates(Values{"keywords": details.Keywords})
+}
+
 // UpdateLabels refreshes automatically generated labels derived from the title, caption, subject metadata, and keywords.
 func (m *Photo) UpdateLabels() error {
 	if err := m.UpdateTitleLabels(); err != nil {
@@ -668,7 +720,7 @@ func (m *Photo) IndexKeywords() error {
 		kw := FirstOrCreateKeyword(NewKeyword(w))
 
 		if kw == nil {
-			log.Errorf("index keyword should not be nil - you may have found a bug")
+			log.Errorf("index keyword must not be nil - you may have found a bug")
 			continue
 		}
 
@@ -716,6 +768,14 @@ func (m *Photo) PreloadAlbums() {
 		Order("albums.album_title ASC")
 
 	Log("photo", "preload albums", q.Scan(&m.Albums).Error)
+}
+
+// PreloadLabels loads labels related to the photo from the database.
+func (m *Photo) PreloadLabels() {
+	if err := Db().Model(PhotoLabel{}).Preload("Label").Where("photo_id = ?", m.ID).
+		Order("photos_labels.uncertainty ASC, photos_labels.label_id DESC").Find(&m.Labels).Error; err != nil {
+		log.Warnf("photo: failed to fetch labels (%s)", err)
+	}
 }
 
 // PreloadMany loads the primary supporting associations (files, keywords, albums).
@@ -876,7 +936,7 @@ func (m *Photo) AddLabels(labels classify.Labels) {
 		photoLabel := FirstOrCreatePhotoLabel(template)
 
 		if photoLabel == nil {
-			log.Errorf("index: photo-label %d should not be nil - you may have found a bug (%s)", labelEntity.ID, m)
+			log.Errorf("index: photo-label %d must not be nil - you may have found a bug (%s)", labelEntity.ID, m)
 			continue
 		}
 
@@ -1099,16 +1159,6 @@ func (m *Photo) DeletePermanently() (files Files, err error) {
 	}
 
 	return files, UnscopedDb().Delete(m).Error
-}
-
-// Update a column in the database.
-func (m *Photo) Update(attr string, value interface{}) error {
-	return UnscopedDb().Model(m).UpdateColumn(attr, value).Error
-}
-
-// Updates multiple columns in the database.
-func (m *Photo) Updates(values interface{}) error {
-	return UnscopedDb().Model(m).UpdateColumns(values).Error
 }
 
 // React adds or updates a user reaction.

@@ -64,7 +64,7 @@ func TestFirstOrCreateLabel(t *testing.T) {
 	result := FirstOrCreateLabel(&label)
 
 	if result == nil {
-		t.Fatal("result should not be nil")
+		t.Fatal("result must not be nil")
 	}
 
 	if result.LabelName != label.LabelName {

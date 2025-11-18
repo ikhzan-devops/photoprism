@@ -204,10 +204,11 @@ Testers reported intermittent `Error 1213 (40001)` deadlocks when multiple batch
 ### Observability & Testing
 
 - **Unit Tests**  
-  - `internal/photoprism/batch/actions_test.go` validates album/label mutations, UID validation, and keyword handling.  
+  - `internal/photoprism/batch/apply_albums_test.go` validates album mutations handling.  
+  - `internal/photoprism/batch/apply_labels_test.go` validates label mutations, UID validation, and keyword handling.
   - `internal/photoprism/batch/convert_test.go` and `photos_test.go` cover form aggregation and mixed-value detection.  
   - `internal/photoprism/batch/datelogic_test.go` ensures cross-field dependencies (local time vs. UTC) stay consistent.  
-- `internal/photoprism/batch/save_test.go` exercises partial updates, detail edits, `CheckedAt` resets, and the `PreparePhotoSaveRequests` / `PrepareAndSavePhotos` helpers.  
+  - `internal/photoprism/batch/save_test.go` exercises partial updates, detail edits, `CheckedAt` resets, and the `PreparePhotoSaveRequests` / `PrepareAndSavePhotos` helpers.  
   - `internal/api/batch_photos_edit_test.go` provides end-to-end coverage for response envelopes (`SuccessNoChange`, `SuccessRemoveValues`, etc.).
 - **Logging**  
   - The package uses the shared `event.Log` logger. Debug logs trace selections, album/label changes, and dirty-field sets; warnings/errors surface failed queries so operators can inspect database health.
@@ -227,7 +228,7 @@ Testers reported intermittent `Error 1213 (40001)` deadlocks when multiple batch
 - `request.go` / `response.go` — transport structs for the API payload/response.
 - `photos.go` — form aggregation from `search.PhotoResults` and bulk selection helpers.
 - `convert.go` — translates `PhotosForm` into `form.Photo` instances for persistence.
-- `actions.go` — album/label mutation helpers shared across API endpoints.
+- `apply_albums.go` / `apply_labels.go` — album and label mutation helpers shared across API endpoints.
 - `save.go` — differential persistence, `PreparePhotoSaveRequests`, `PrepareAndSavePhotos`, `NewPhotoSaveRequest`, `PhotoSaveRequest`, background worker triggers.
 - `datelogic.go` — helpers for reconciling time zones and date parts when the UI only supplies partial values.
 - `values.go` — typed wrappers for request fields (value + action + mixed flag).

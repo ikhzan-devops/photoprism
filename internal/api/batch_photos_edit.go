@@ -97,15 +97,6 @@ func BatchPhotosEdit(router *gin.RouterGroup) {
 			savedAny = outcome.SavedAny
 		}
 
-		// Refresh the selection once so Albums / Labels reflect the committed state when we
-		// build the form that is returned to the client.
-		refreshedPhotos := preloadedPhotos
-		if hydrated, err := query.PhotoPreloadByUIDs(photos.UIDs()); err != nil {
-			log.Warnf("batch: failed to refresh photos for response: %s", err)
-		} else {
-			refreshedPhotos = mapPhotosByUID(hydrated)
-		}
-
 		// Refresh selected photos from database?
 		if !savedAny {
 			// Don't refresh.
@@ -115,7 +106,7 @@ func BatchPhotosEdit(router *gin.RouterGroup) {
 
 		// Create batch edit form values form from photo metadata using the refreshed entities so
 		// the response reflects persisted album/label edits without issuing per-photo queries.
-		batchFrm := batch.NewPhotosFormWithEntities(photos, refreshedPhotos)
+		batchFrm := batch.NewPhotosFormWithEntities(photos, preloadedPhotos)
 
 		if len(saveResults) > 0 {
 			for i, saved := range saveResults {
@@ -123,7 +114,7 @@ func BatchPhotosEdit(router *gin.RouterGroup) {
 					continue
 				}
 
-				photo := refreshedPhotos[saveRequests[i].Photo.PhotoUID]
+				photo := preloadedPhotos[saveRequests[i].Photo.PhotoUID]
 
 				if photo == nil {
 					photo = saveRequests[i].Photo
@@ -153,11 +144,13 @@ func BatchPhotosEdit(router *gin.RouterGroup) {
 // selections can reuse already preloaded entities instead of querying again.
 func mapPhotosByUID(photos entity.Photos) map[string]*entity.Photo {
 	result := make(map[string]*entity.Photo, len(photos))
+
 	for _, e := range photos {
 		if e == nil || e.PhotoUID == "" {
 			continue
 		}
 		result[e.PhotoUID] = e
 	}
+
 	return result
 }

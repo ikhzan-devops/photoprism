@@ -26,7 +26,7 @@ func TestFirstOrCreatePhotoKeyword(t *testing.T) {
 	result := FirstOrCreatePhotoKeyword(&model)
 
 	if result == nil {
-		t.Fatal("result should not be nil")
+		t.Fatal("result must not be nil")
 	}
 
 	if result.PhotoID != model.PhotoID {
