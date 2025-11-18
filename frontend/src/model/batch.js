@@ -102,12 +102,18 @@ export class Batch extends Model {
   }
 
   setSelections(selection) {
-    this.selection = selection.map((id) => {
-      return {
-        id: id,
-        selected: true,
-      };
+    // The backend only returns models that are still editable (not archived/deleted).
+    // Filter the original selection so the dialog counts only photos that can be edited now.
+    const models = new Set((this.models || []).map((m) => m.UID));
+
+    this.selection = selection.flatMap((id) => {
+      if (!models.has(id)) {
+        return [];
+      }
+
+      return [{ id: id, selected: true }];
     });
+
     this.selectionById = new Map(this.selection.map((entry) => [entry.id, entry]));
   }
 

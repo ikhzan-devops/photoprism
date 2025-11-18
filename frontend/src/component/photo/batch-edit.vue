@@ -644,7 +644,6 @@ export default {
   },
   computed: {
     formTitle() {
-      // TODO: this.allSelectedLength should not include photos that could not be loaded e.g. because they are archived.
       return this.$gettext(`Edit Photos (%{n})`, { n: this.allSelectedLength });
     },
     currentCoordinates() {

@@ -53,31 +53,33 @@ describe("model/batch", () => {
 
   it("should set selections", () => {
     const b = new Batch();
-    b.setSelections([1, 2, 3]);
-    expect(b.selection).toEqual([
-      { id: 1, selected: true },
-      { id: 2, selected: true },
-      { id: 3, selected: true },
-    ]);
+    b.setSelections(["pt5y3865st5p3k5l", "pt5y3863oyip9a2d", "pt5y38631t2s9p0a"]);
+    expect(b.selection).toEqual([]);
   });
 
   it("should report selection state for a given id", () => {
     const b = new Batch();
-    b.setSelections([1, 2]);
-    expect(b.isSelected(1)).toBe(true);
+    b.models = [new Photo({ UID: "pt5y3865st5p3k5l" }), new Photo({ UID: "pt5y3863oyip9a2d" })];
+    b.setSelections(["pt5y3865st5p3k5l", "pt5y3863oyip9a2d"]);
+    expect(b.isSelected("pt5y3865st5p3k5l")).toBe(true);
     // toggle one and check again
-    b.toggle(1);
-    expect(b.isSelected(1)).toBe(false);
+    b.toggle("pt5y3865st5p3k5l");
+    expect(b.isSelected("pt5y3865st5p3k5l")).toBe(false);
     // unknown id returns null per implementation
-    expect(b.isSelected(999)).toBeNull();
+    expect(b.isSelected("pt00000000000000")).toBeNull();
   });
 
   it("should toggle and toggleAll", () => {
     const b = new Batch();
-    b.setSelections([11, 12, 13]);
+    b.models = [
+      new Photo({ UID: "pt5y3865st5p3k5l" }),
+      new Photo({ UID: "pt5y3863oyip9a2d" }),
+      new Photo({ UID: "pt5y38631t2s9p0a" }),
+    ];
+    b.setSelections(["pt5y3865st5p3k5l", "pt5y3863oyip9a2d", "pt5y38631t2s9p0a"]);
     expect(b.getLengthOfAllSelected()).toBe(3);
-    b.toggle(12);
-    expect(b.isSelected(12)).toBe(false);
+    b.toggle("pt5y3863oyip9a2d");
+    expect(b.isSelected("pt5y3863oyip9a2d")).toBe(false);
     expect(b.getLengthOfAllSelected()).toBe(2);
 
     b.toggleAll(false);
@@ -113,7 +115,7 @@ describe("model/batch", () => {
 
   it("should load data (models and values) via load", async () => {
     const b = new Batch();
-    const selection = [101, 102];
+    const selection = ["pt5y3865st5p3k5l", "pt5y3863oyip9a2d", "pt5y38631t2s9p0a"];
 
     // Response should include models and values
     const { Mock } = await import("../fixtures");
@@ -121,8 +123,8 @@ describe("model/batch", () => {
       200,
       {
         models: [
-          { ID: 1, UID: "ph1", Title: "A" },
-          { ID: 2, UID: "ph2", Title: "B" },
+          { ID: 1, UID: "pt5y3865st5p3k5l", Title: "A" },
+          { ID: 2, UID: "pt5y3863oyip9a2d", Title: "B" },
         ],
         values: { Title: { mixed: true } },
       },
@@ -138,8 +140,27 @@ describe("model/batch", () => {
     expect(b.models[1]).toBeInstanceOf(Photo);
     expect(b.values).toEqual({ Title: { mixed: true } });
     expect(b.selection).toEqual([
-      { id: 101, selected: true },
-      { id: 102, selected: true },
+      { id: "pt5y3865st5p3k5l", selected: true },
+      { id: "pt5y3863oyip9a2d", selected: true },
     ]);
+  });
+
+  it("should drop selection ids that no longer have editable models", () => {
+    const b = new Batch();
+    b.models = [new Photo({ UID: "pt5y3865st5p3k5l" }), new Photo({ UID: "pt5y3863oyip9a2d" })];
+
+    b.setSelections([
+      "pt5y3865st5p3k5l",
+      "pt5y38631t2s9p0a",
+      "pt5y3863oyip9a2d",
+      "pt5y3863kb9amo1x",
+    ]);
+
+    expect(b.selection).toEqual([
+      { id: "pt5y3865st5p3k5l", selected: true },
+      { id: "pt5y3863oyip9a2d", selected: true },
+    ]);
+    expect(b.selectionById.get("pt5y38631t2s9p0a")).toBeUndefined();
+    expect(b.getLengthOfAllSelected()).toBe(2);
   });
 });
