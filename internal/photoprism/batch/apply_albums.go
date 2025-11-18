@@ -61,10 +61,12 @@ func ApplyAlbums(photo *entity.Photo, albums Items) (errs []error) {
 				continue
 			}
 
+			// TODO: Simplify this, so it executes less queries.
 			if a, findErr := entity.CachedAlbumByUID(it.Value); findErr != nil {
 				errs = append(errs, fmt.Errorf("album not found for removal: %s", it.Value))
 				continue
 			} else if a.HasID() {
+				// TODO: Don't error if photo is not in album, since this is normal in batch edit.
 				a.RemovePhotos([]string{photoUID})
 				changed = true
 			}
