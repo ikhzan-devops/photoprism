@@ -1441,6 +1441,7 @@ export default {
           visible:
             this.canArchive &&
             this.context !== "hidden" &&
+            this.context !== "batch-edit" &&
             ((this.context !== "archive" && !this.model?.Archived) || this.model?.Archived === false),
           click: () => {
             this.onArchive();
@@ -1455,6 +1456,7 @@ export default {
           visible:
             this.canArchive &&
             this.context !== "hidden" &&
+            this.context !== "batch-edit" &&
             (this.model?.Archived || (this.context === "archive" && this.model?.Archived !== false)),
           click: () => {
             this.onRestore();
@@ -2015,7 +2017,7 @@ export default {
           this.toggleSelect();
           return true;
         case "KeyA":
-          if (this.canArchive && this.context !== "hidden") {
+          if (this.canArchive && this.context !== "hidden" && this.context !== "batch-edit") {
             if (this.model.Archived || (this.context === "archive" && this.model?.Archived !== false)) {
               this.onRestore();
             } else {

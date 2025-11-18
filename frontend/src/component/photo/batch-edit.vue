@@ -1271,7 +1271,7 @@ export default {
       return {
         models: thumbs,
         index: targetIndex,
-        context: this.$gettext("Batch Edit"),
+        context: "batch-edit",
         allowEdit: false,
         allowSelect: false,
       };
