@@ -41,24 +41,24 @@ func ApplyLabels(photo *entity.Photo, labels Items) (errs []error) {
 
 	var err error
 
-	// Track if we changed anything to call SaveLabels once
+	// Track if we changed anything to call SaveLabels once.
 	changed := false
 	labelIndex := indexPhotoLabels(photo.Labels)
 
 	for _, it := range labels.Items {
 		switch it.Action {
 		case ActionAdd:
-			// Validate that we have either value or title
+			// Validate that we have either value or title.
 			if it.Value == "" && it.Title == "" {
 				errs = append(errs, fmt.Errorf("label value or title required for add action"))
 				continue
 			}
 
-			// Try by UID first
+			// Try by UID first.
 			var labelEntity *entity.Label
 
 			if it.Value != "" {
-				// If value is provided, validate it's a proper UID format
+				// If value is provided, validate it's a proper UID format.
 				if !rnd.IsUID(it.Value, entity.LabelUID) {
 					errs = append(errs, fmt.Errorf("invalid label uid format: %s", it.Value))
 					continue
@@ -98,7 +98,7 @@ func ApplyLabels(photo *entity.Photo, labels Items) (errs []error) {
 				labelIndex[labelEntity.ID] = pl
 			}
 
-			// Ensure 100% confidence (uncertainty 0) and source 'batch'
+			// Ensure 100% confidence (uncertainty 0) and source 'batch'.
 			if pl.Uncertainty != 0 || pl.LabelSrc != entity.SrcBatch {
 				pl.Uncertainty = 0
 				pl.LabelSrc = entity.SrcBatch
@@ -116,16 +116,16 @@ func ApplyLabels(photo *entity.Photo, labels Items) (errs []error) {
 				continue
 			}
 
-			// Validate UID format
+			// Validate UID format.
 			if !rnd.IsUID(it.Value, entity.LabelUID) {
-				errs = append(errs, fmt.Errorf("invalid label uid format: %s", it.Value))
+				errs = append(errs, fmt.Errorf("invalid label uid format: %s", clean.Log(it.Value)))
 				continue
 			}
 
 			pl, labelEntity := findIndexedPhotoLabel(labelIndex, photo, it.Value)
 
 			if pl == nil || labelEntity == nil || !labelEntity.HasID() {
-				log.Debugf("batch: label not found for removal label photo=%s label_id=%d", photo.PhotoUID, labelEntity.ID)
+				log.Debugf("batch: label not found for removal label (photo_uid=%s label_uid=%s)", clean.Log(photo.GetUID()), clean.Log(it.Value))
 				continue
 			}
 
@@ -161,7 +161,7 @@ func ApplyLabels(photo *entity.Photo, labels Items) (errs []error) {
 				}
 			}
 		case ActionNone, ActionUpdate:
-			// Valid actions that do nothing for labels
+			// Valid actions that do nothing for labels.
 			continue
 		default:
 			errs = append(errs, fmt.Errorf("invalid action: %s", it.Action))
