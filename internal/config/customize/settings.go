@@ -86,6 +86,7 @@ func NewSettings(theme, language, timeZone string) *Settings {
 			Labels:    true,
 			Places:    true,
 			Edit:      true,
+			BatchEdit: true,
 			Archive:   true,
 			Review:    true,
 			Share:     true,

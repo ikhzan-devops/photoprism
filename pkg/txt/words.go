@@ -135,6 +135,10 @@ func UniqueWords(words []string) (results []string) {
 
 // RemoveFromWords removes words from a string slice and returns the sorted result.
 func RemoveFromWords(words []string, remove string) (results []string) {
+	if remove == "" {
+		return words
+	}
+
 	remove = strings.ToLower(remove)
 	last := ""
 

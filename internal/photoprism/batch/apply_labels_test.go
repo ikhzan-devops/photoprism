@@ -1,0 +1,491 @@
+package batch
+
+import (
+	"testing"
+
+	"github.com/photoprism/photoprism/internal/entity"
+	"github.com/photoprism/photoprism/internal/entity/query"
+)
+
+// TestApplyLabels exercises batch action logic.
+func TestApplyLabels(t *testing.T) {
+	t.Run("AddExistingLabelByUID", func(t *testing.T) {
+		photo := entity.PhotoFixtures.Pointer("Photo06")
+		labelUID := entity.LabelFixtures.Get("landscape").LabelUID
+
+		labels := Items{
+			Items: []Item{
+				{Action: ActionAdd, Value: labelUID},
+			},
+		}
+
+		if err := ApplyLabels(photo, labels); err != nil {
+			t.Fatal(err)
+		}
+
+		// Verify photo has the label with 100% confidence and batch source
+		var photoLabel entity.PhotoLabel
+
+		if err := entity.Db().Preload("Label").Where("photo_id = ? AND label_id = (SELECT id FROM labels WHERE label_uid = ?)", photo.ID, labelUID).First(&photoLabel).Error; err != nil {
+			t.Fatal(err)
+		}
+
+		if photoLabel.Uncertainty != 0 {
+			t.Errorf("expected uncertainty 0 (100%% confidence), got %d", photoLabel.Uncertainty)
+		}
+
+		if photoLabel.LabelSrc != entity.SrcBatch {
+			t.Errorf("expected label source %s, got %s", entity.SrcBatch, photoLabel.LabelSrc)
+		}
+	})
+	t.Run("AddNewLabelByTitle", func(t *testing.T) {
+		photo := entity.PhotoFixtures.Pointer("Photo07")
+		labelTitle := "Test Label for Actions"
+
+		labels := Items{
+			Items: []Item{
+				{Action: ActionAdd, Title: labelTitle},
+			},
+		}
+
+		if err := ApplyLabels(photo, labels); err != nil {
+			t.Fatal(err)
+		}
+
+		// Verify label was created and added to photo
+		var label entity.Label
+
+		if err := entity.Db().Where("label_name = ?", labelTitle).First(&label).Error; err != nil {
+			t.Fatal(err)
+		}
+
+		if label.LabelName != labelTitle {
+			t.Errorf("expected label name %s, got %s", labelTitle, label.LabelName)
+		}
+
+		var photoLabel entity.PhotoLabel
+
+		if err := entity.Db().Where("photo_id = ? AND label_id = ?", photo.ID, label.ID).First(&photoLabel).Error; err != nil {
+			t.Fatal(err)
+		}
+
+		if photoLabel.Uncertainty != 0 {
+			t.Errorf("expected uncertainty 0, got %d", photoLabel.Uncertainty)
+		}
+
+		if photoLabel.LabelSrc != entity.SrcBatch {
+			t.Errorf("expected label source %s, got %s", entity.SrcBatch, photoLabel.LabelSrc)
+		}
+	})
+	t.Run("RemoveLabelByUID", func(t *testing.T) {
+		photo := entity.PhotoFixtures.Pointer("Photo08")
+		label := entity.LabelFixtures.Get("flower")
+
+		// First add the label manually
+		photoLabel := entity.NewPhotoLabel(photo.ID, label.ID, 0, entity.SrcBatch)
+
+		if err := entity.Db().Create(&photoLabel).Error; err != nil {
+			t.Fatal(err)
+		}
+
+		// Verify label is on photo
+		var checkPhotoLabel entity.PhotoLabel
+
+		if err := entity.Db().Where("photo_id = ? AND label_id = ?", photo.ID, label.ID).First(&checkPhotoLabel).Error; err != nil {
+			t.Fatal(err)
+		}
+
+		// Now remove it
+		labels := Items{
+			Items: []Item{
+				{Action: ActionRemove, Value: label.LabelUID},
+			},
+		}
+
+		if err := ApplyLabels(photo, labels); err != nil {
+			t.Fatal(err)
+		}
+
+		// Verify label was removed (should be deleted from photos_labels)
+		var deletedLabel entity.PhotoLabel
+
+		if err := entity.Db().Where("photo_id = ? AND label_id = ?", photo.ID, label.ID).First(&deletedLabel).Error; err == nil {
+			t.Error("expected label to be deleted, but it was found")
+		}
+	})
+	t.Run("RemoveLabelWithPreloadedPhoto", func(t *testing.T) {
+		photo := entity.PhotoFixtures.Pointer("Photo17")
+		label := entity.LabelFixtures.Get("landscape")
+
+		entity.Db().Where("photo_id = ? AND label_id = ?", photo.ID, label.ID).Delete(&entity.PhotoLabel{})
+
+		if err := entity.Db().Create(entity.NewPhotoLabel(photo.ID, label.ID, 0, entity.SrcManual)).Error; err != nil {
+			t.Fatal(err)
+		}
+
+		preloaded, err := query.PhotoPreloadByUID(photo.PhotoUID)
+
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if len(preloaded.Labels) == 0 {
+			t.Fatalf("expected preloaded labels for %s", photo.PhotoUID)
+		}
+
+		labels := Items{
+			Items: []Item{{Action: ActionRemove, Value: label.LabelUID}},
+		}
+
+		if errs := ApplyLabels(&preloaded, labels); errs != nil {
+			t.Fatal(errs)
+		}
+
+		var deleted entity.PhotoLabel
+
+		if err = entity.Db().Where("photo_id = ? AND label_id = ?", photo.ID, label.ID).First(&deleted).Error; err == nil {
+			t.Fatal("expected label relation to be removed")
+		}
+	})
+	t.Run("RemoveAutoLabelMarksBlocked", func(t *testing.T) {
+		photo := entity.PhotoFixtures.Pointer("Photo09")
+		label := entity.LabelFixtures.Get("cake")
+
+		// Add label with auto source (not manual/batch)
+		photoLabel := entity.NewPhotoLabel(photo.ID, label.ID, 15, entity.SrcImage)
+
+		if err := entity.Db().Create(&photoLabel).Error; err != nil {
+			t.Fatal(err)
+		}
+
+		labels := Items{
+			Items: []Item{
+				{Action: ActionRemove, Value: label.LabelUID},
+			},
+		}
+
+		if err := ApplyLabels(photo, labels); err != nil {
+			t.Fatal(err)
+		}
+
+		var blocked entity.PhotoLabel
+
+		if err := entity.Db().Where("photo_id = ? AND label_id = ?", photo.ID, label.ID).First(&blocked).Error; err != nil {
+			t.Fatalf("expected auto label relation to remain, lookup failed: %v", err)
+		}
+
+		if blocked.Uncertainty != 100 {
+			t.Errorf("expected uncertainty 100 (blocked), got %d", blocked.Uncertainty)
+		}
+
+		if blocked.LabelSrc != entity.SrcBatch {
+			t.Errorf("expected label source %s, got %s", entity.SrcBatch, blocked.LabelSrc)
+		}
+	})
+
+	t.Run("RemoveVisionLabelBlocksRelation", func(t *testing.T) {
+		photo := entity.PhotoFixtures.Pointer("Photo15")
+		label := entity.LabelFixtures.Get("landscape")
+
+		entity.Db().Where("photo_id = ? AND label_id = ?", photo.ID, label.ID).Delete(&entity.PhotoLabel{})
+
+		if err := entity.Db().Create(entity.NewPhotoLabel(photo.ID, label.ID, 25, entity.SrcVision)).Error; err != nil {
+			t.Fatal(err)
+		}
+
+		labels := Items{Items: []Item{{Action: ActionRemove, Value: label.LabelUID}}}
+
+		preloaded, err := query.PhotoPreloadByUID(photo.PhotoUID)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := ApplyLabels(&preloaded, labels); err != nil {
+			t.Fatal(err)
+		}
+
+		var updated entity.PhotoLabel
+
+		if err := entity.Db().Where("photo_id = ? AND label_id = ?", photo.ID, label.ID).First(&updated).Error; err != nil {
+			t.Fatalf("expected vision label relation to remain, lookup failed: %v", err)
+		}
+
+		if updated.Uncertainty != 100 {
+			t.Errorf("expected uncertainty 100 (blocked), got %d", updated.Uncertainty)
+		}
+
+		if updated.LabelSrc != entity.SrcBatch {
+			t.Errorf("expected label source %s, got %s", entity.SrcBatch, updated.LabelSrc)
+		}
+	})
+
+	t.Run("KeepHigherPriorityLabel", func(t *testing.T) {
+		photo := entity.PhotoFixtures.Pointer("Photo16")
+		label := entity.LabelFixtures.Get("flower")
+
+		entity.Db().Where("photo_id = ? AND label_id = ?", photo.ID, label.ID).Delete(&entity.PhotoLabel{})
+
+		if err := entity.Db().Create(entity.NewPhotoLabel(photo.ID, label.ID, 10, entity.SrcAdmin)).Error; err != nil {
+			t.Fatal(err)
+		}
+
+		labels := Items{Items: []Item{{Action: ActionRemove, Value: label.LabelUID}}}
+
+		if err := ApplyLabels(photo, labels); err != nil {
+			t.Fatal(err)
+		}
+
+		var updated entity.PhotoLabel
+
+		if err := entity.Db().Where("photo_id = ? AND label_id = ?", photo.ID, label.ID).First(&updated).Error; err != nil {
+			t.Fatal(err)
+		}
+
+		if updated.Uncertainty != 10 {
+			t.Errorf("expected uncertainty to remain 10, got %d", updated.Uncertainty)
+		}
+
+		if updated.LabelSrc != entity.SrcAdmin {
+			t.Errorf("expected label source %s, got %s", entity.SrcAdmin, updated.LabelSrc)
+		}
+	})
+
+	t.Run("KeepManualLabelWithZeroProbability", func(t *testing.T) {
+		photo := entity.PhotoFixtures.Pointer("Photo12")
+		label := entity.LabelFixtures.Get("landscape")
+
+		entity.Db().Where("photo_id = ? AND label_id = ?", photo.ID, label.ID).Delete(&entity.PhotoLabel{})
+
+		pl := entity.NewPhotoLabel(photo.ID, label.ID, 100, entity.SrcManual)
+
+		if err := entity.Db().Create(pl).Error; err != nil {
+			t.Fatal(err)
+		}
+
+		var before entity.PhotoLabel
+		if err := entity.Db().Where("photo_id = ? AND label_id = ?", photo.ID, label.ID).First(&before).Error; err != nil {
+			t.Fatal(err)
+		}
+
+		labels := Items{Items: []Item{{Action: ActionRemove, Value: label.LabelUID}}}
+
+		preloaded, err := query.PhotoPreloadByUID(photo.PhotoUID)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := ApplyLabels(&preloaded, labels); err != nil {
+			t.Fatal(err)
+		}
+
+		var persisted entity.PhotoLabel
+		if err := entity.Db().Where("photo_id = ? AND label_id = ?", photo.ID, label.ID).First(&persisted).Error; err != nil {
+			t.Fatal(err)
+		}
+
+		if persisted.Uncertainty != 100 {
+			t.Errorf("expected uncertainty to remain 100, got %d", persisted.Uncertainty)
+		}
+
+		if persisted.LabelSrc != entity.SrcManual {
+			t.Errorf("expected label source %s, got %s", entity.SrcManual, persisted.LabelSrc)
+		}
+	})
+	t.Run("UpdateExistingLabelConfidence", func(t *testing.T) {
+		photo := entity.PhotoFixtures.Pointer("Photo10")
+		label := entity.LabelFixtures.Get("landscape")
+
+		// First, delete any existing photo-label relation to ensure clean test
+		entity.Db().Where("photo_id = ? AND label_id = ?", photo.ID, label.ID).Delete(&entity.PhotoLabel{})
+
+		// Add label with some uncertainty using FirstOrCreatePhotoLabel
+		photoLabel := entity.FirstOrCreatePhotoLabel(entity.NewPhotoLabel(photo.ID, label.ID, 50, entity.SrcImage))
+
+		if photoLabel == nil {
+			t.Fatal("failed to create photo label")
+		}
+
+		// Verify initial state
+		if photoLabel.Uncertainty != 50 {
+			t.Errorf("expected uncertainty 50, got %d", photoLabel.Uncertainty)
+		}
+
+		if photoLabel.LabelSrc != entity.SrcImage {
+			t.Errorf("expected label source %s, got %s", entity.SrcImage, photoLabel.LabelSrc)
+		}
+
+		// Re-add same label via batch (should update to 100% confidence)
+		labels := Items{
+			Items: []Item{
+				{Action: ActionAdd, Value: label.LabelUID},
+			},
+		}
+
+		if err := ApplyLabels(photo, labels); err != nil {
+			t.Fatal(err)
+		}
+
+		// Verify label confidence was updated
+		var updatedLabel entity.PhotoLabel
+
+		if err := entity.Db().Where("photo_id = ? AND label_id = ?", photo.ID, label.ID).First(&updatedLabel).Error; err != nil {
+			t.Fatal(err)
+		}
+
+		if updatedLabel.Uncertainty != 0 {
+			t.Errorf("expected uncertainty 0 (100%% confidence), got %d", updatedLabel.Uncertainty)
+		}
+
+		if updatedLabel.LabelSrc != entity.SrcBatch {
+			t.Errorf("expected label source %s, got %s", entity.SrcBatch, updatedLabel.LabelSrc)
+		}
+	})
+	t.Run("InvalidPhotoReturnsError", func(t *testing.T) {
+		labels := Items{
+			Items: []Item{
+				{Action: ActionAdd, Value: "some-uid"},
+			},
+		}
+
+		err := ApplyLabels(nil, labels)
+
+		if err == nil {
+			t.Error("expected error for nil photo")
+		}
+
+		emptyPhoto := &entity.Photo{}
+		err = ApplyLabels(emptyPhoto, labels)
+
+		if err == nil {
+			t.Error("expected error for empty photo")
+		}
+	})
+	// Additional error cases
+	t.Run("AddNonExistingLabelByUID", func(t *testing.T) {
+		photo := entity.PhotoFixtures.Pointer("Photo11")
+		nonExistingLabelUID := "lt9lxuqxpoaaaaaa" // Invalid/non-existing UID
+
+		labels := Items{
+			Items: []Item{
+				{Action: ActionAdd, Value: nonExistingLabelUID},
+			},
+		}
+
+		err := ApplyLabels(photo, labels)
+
+		if err == nil {
+			t.Error("expected error when adding non-existing label by UID, but got none")
+		}
+	})
+	t.Run("AddLabelWithInvalidUID", func(t *testing.T) {
+		photo := entity.PhotoFixtures.Pointer("Photo12")
+		invalidUID := "invalid-label-uid-format" // Invalid UID format
+
+		labels := Items{
+			Items: []Item{
+				{Action: ActionAdd, Value: invalidUID},
+			},
+		}
+
+		err := ApplyLabels(photo, labels)
+
+		if err == nil {
+			t.Error("expected error when adding label with invalid UID, but got none")
+		}
+	})
+	t.Run("RemoveNonExistingLabelByUID", func(t *testing.T) {
+		photo := entity.PhotoFixtures.Pointer("Photo13")
+		nonExistingLabelUID := "lt9lxuqxpobbbbbb" // Non-existing UID
+
+		labels := Items{
+			Items: []Item{
+				{Action: ActionRemove, Value: nonExistingLabelUID},
+			},
+		}
+
+		err := ApplyLabels(photo, labels)
+		if err == nil {
+			t.Error("expected error when removing non-existing label, but got none")
+		}
+	})
+	t.Run("InvalidActionOnLabel", func(t *testing.T) {
+		photo := entity.PhotoFixtures.Pointer("Photo14")
+		labelUID := entity.LabelFixtures.Get("landscape").LabelUID
+
+		labels := Items{
+			Items: []Item{
+				{Action: "invalid-action", Value: labelUID}, // Invalid action
+			},
+		}
+
+		err := ApplyLabels(photo, labels)
+		if err == nil {
+			t.Error("expected error for invalid action, but got none")
+		}
+	})
+	t.Run("EmptyLabelItems", func(t *testing.T) {
+		photo := entity.PhotoFixtures.Pointer("Photo15")
+
+		labels := Items{
+			Items: []Item{}, // Empty items
+		}
+
+		// This should not error, but should be a no-op
+		err := ApplyLabels(photo, labels)
+
+		if err != nil {
+			t.Errorf("expected no error for empty label items, but got: %v", err)
+		}
+	})
+	t.Run("AddLabelWithEmptyValueAndTitle", func(t *testing.T) {
+		photo := entity.PhotoFixtures.Pointer("Photo16")
+
+		labels := Items{
+			Items: []Item{
+				{Action: ActionAdd, Value: "", Title: ""}, // Both empty
+			},
+		}
+
+		err := ApplyLabels(photo, labels)
+
+		if err == nil {
+			t.Error("expected error when both Value and Title are empty, but got none")
+		}
+	})
+	t.Run("RemoveLabelNotAssignedToPhoto", func(t *testing.T) {
+		photo := entity.PhotoFixtures.Pointer("Photo17")
+		labelUID := entity.LabelFixtures.Get("bird").LabelUID
+
+		// Ensure the label is not assigned to this photo
+		entity.Db().Where("photo_id = ? AND label_id = (SELECT id FROM labels WHERE label_uid = ?)", photo.ID, labelUID).Delete(&entity.PhotoLabel{})
+
+		labels := Items{
+			Items: []Item{
+				{Action: ActionRemove, Value: labelUID},
+			},
+		}
+
+		err := ApplyLabels(photo, labels)
+
+		if err == nil {
+			t.Error("expected error when removing label not assigned to photo, but got none")
+		}
+	})
+}
+
+// TestIndexPhotoLabels exercises batch action logic.
+func TestIndexPhotoLabels(t *testing.T) {
+	labels := entity.PhotoLabels{
+		{LabelID: 11},
+		{LabelID: 0},
+		{LabelID: 22},
+	}
+
+	idx := indexPhotoLabels(labels)
+
+	if len(idx) != 2 {
+		t.Fatalf("expected 2 labels in index, got %d", len(idx))
+	}
+
+	if idx[11] == nil || idx[22] == nil {
+		t.Fatal("expected indexed labels to be present")
+	}
+}
