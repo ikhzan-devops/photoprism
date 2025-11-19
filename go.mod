@@ -14,7 +14,7 @@ require (
 	github.com/esimov/pigo v1.4.6
 	github.com/gin-contrib/gzip v1.2.3
 	github.com/gin-gonic/gin v1.11.0
-	github.com/golang/geo v0.0.0-20251111181513-e7f3a1a58fb3
+	github.com/golang/geo v0.0.0-20251117194806-05dcfdd28b33
 	github.com/google/open-location-code/go v0.0.0-20250620134813-83986da0156b
 	github.com/gorilla/websocket v1.5.3
 	github.com/gosimple/slug v1.15.0
@@ -68,7 +68,7 @@ require github.com/go-ldap/ldap/v3 v3.4.12
 
 require (
 	github.com/prometheus/client_golang v1.23.2
-	github.com/prometheus/common v0.67.2
+	github.com/prometheus/common v0.67.3
 )
 
 require github.com/dustinkirkland/golang-petname v0.0.0-20240428194347-eebcea082ee0
