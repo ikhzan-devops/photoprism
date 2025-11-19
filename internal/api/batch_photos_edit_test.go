@@ -259,6 +259,11 @@ func TestBatchPhotosEdit(t *testing.T) {
 		assert.Equal(t, http.StatusOK, r1.Code)
 		assert.Equal(t, "batch", gjson.Get(r1.Body.String(), "PlaceSrc").String())
 		assert.Equal(t, "meta", gjson.Get(r1.Body.String(), "TakenSrc").String())
+		assert.Equal(t, "2018-12-01T03:08:18Z", gjson.Get(r1.Body.String(), "TakenAt").String())
+		assert.Equal(t, "21.850195", gjson.Get(r1.Body.String(), "Lat").String())
+		assert.Equal(t, "90.18015", gjson.Get(r1.Body.String(), "Lng").String())
+		assert.Equal(t, "bd", gjson.Get(r1.Body.String(), "Country").String())
+		assert.Equal(t, "Asia/Dhaka", gjson.Get(r1.Body.String(), "TimeZone").String())
 	})
 	t.Run("SuccessChangeValues", func(t *testing.T) {
 		// Create new API test instance.
@@ -402,6 +407,24 @@ func TestBatchPhotosEdit(t *testing.T) {
 		assert.Equal(t, "batch", gjson.Get(r1.Body.String(), "Details.ArtistSrc").String())
 		assert.Equal(t, "batch", gjson.Get(r1.Body.String(), "Details.CopyrightSrc").String())
 		assert.Equal(t, "batch", gjson.Get(r1.Body.String(), "Details.LicenseSrc").String())
+		assert.Equal(t, "batch", gjson.Get(r1.Body.String(), "PlaceSrc").String())
+		assert.Equal(t, "-1", gjson.Get(r1.Body.String(), "Day").String())
+		assert.Equal(t, "11", gjson.Get(r1.Body.String(), "Month").String())
+		assert.Equal(t, "2000", gjson.Get(r1.Body.String(), "Year").String())
+		assert.Equal(t, "2000-11-01T08:08:18Z", gjson.Get(r1.Body.String(), "TakenAt").String())
+		assert.Equal(t, "Europe/Vienna", gjson.Get(r1.Body.String(), "TimeZone").String())
+		assert.Equal(t, "145", gjson.Get(r1.Body.String(), "Altitude").String())
+		assert.Equal(t, "live", gjson.Get(r1.Body.String(), "Type").String())
+		assert.Equal(t, "My Batch Edited Title", gjson.Get(r1.Body.String(), "Title").String())
+		assert.Equal(t, "Batch edited caption", gjson.Get(r1.Body.String(), "Caption").String())
+		assert.Equal(t, "Batch edited subject", gjson.Get(r1.Body.String(), "Details.Subject").String())
+		assert.Equal(t, "Batchie", gjson.Get(r1.Body.String(), "Details.Artist").String())
+		assert.Equal(t, "Batch edited copyright", gjson.Get(r1.Body.String(), "Details.Copyright").String())
+		assert.Equal(t, "Batch edited license", gjson.Get(r1.Body.String(), "Details.License").String())
+		assert.Equal(t, "true", gjson.Get(r1.Body.String(), "Panorama").String())
+		assert.Equal(t, "false", gjson.Get(r1.Body.String(), "Favorite").String())
+		assert.Equal(t, "true", gjson.Get(r1.Body.String(), "Private").String())
+		assert.Equal(t, "true", gjson.Get(r1.Body.String(), "Scan").String())
 	})
 	t.Run("SuccessChangeAlbumAndLabels", func(t *testing.T) {
 		// Create new API test instance.
@@ -498,6 +521,8 @@ func TestBatchPhotosEdit(t *testing.T) {
 		assert.Equal(t, "100", gjson.Get(r1.Body.String(), "Labels.5.Uncertainty").String())
 		assert.Equal(t, "", gjson.Get(r1.Body.String(), "Labels.6.Label.Name").String())
 
+		batchLabelUid := gjson.Get(r1.Body.String(), "Labels.0.Label.UID").String()
+
 		r2 := PerformRequest(app, "GET", "/api/v1/photos/pqkm36fjqvset9uy")
 		assert.Equal(t, http.StatusOK, r2.Code)
 		assert.Equal(t, "BatchLabel", gjson.Get(r2.Body.String(), "Labels.0.Label.Name").String())
@@ -513,6 +538,40 @@ func TestBatchPhotosEdit(t *testing.T) {
 		assert.Equal(t, "batch", gjson.Get(r2.Body.String(), "Labels.3.LabelSrc").String())
 		assert.Equal(t, "100", gjson.Get(r2.Body.String(), "Labels.3.Uncertainty").String())
 		assert.Equal(t, "", gjson.Get(r2.Body.String(), "Labels.4.Label.Name").String())
+
+		// Get the photo models and current values for the batch edit form.
+		editResponse2 := PerformRequestWithBody(app,
+			"POST", "/api/v1/batch/photos/edit",
+			fmt.Sprintf(`{"photos": %s}`, photoUIDs),
+		)
+
+		// Check the edit response status code.
+		assert.Equal(t, http.StatusOK, editResponse2.Code)
+
+		// Send the edit form values back to the same API endpoint and check for errors.
+		saveResponse2 := PerformRequestWithBody(app,
+			"POST", "/api/v1/batch/photos/edit",
+			fmt.Sprintf(`{"photos": %s, "values": %s}`, photoUIDs,
+				"{"+
+					"\"Labels\":{\"items\":[{\"value\":\""+batchLabelUid+"\",\"title\":\"BatchLabel\",\"mixed\":false,\"action\":\"remove\"}],\"mixed\":false,\"action\":\"update\"}"+
+					"}"),
+		)
+
+		// Check the save response status code.
+		assert.Equal(t, http.StatusOK, saveResponse2.Code)
+
+		// Check the save response body.
+		saveBody2 := saveResponse2.Body.String()
+		assert.NotEmpty(t, saveBody2)
+
+		saveValues2 := gjson.Get(saveBody2, "values").Raw
+		labelsAfter2 := gjson.Get(saveValues2, "Labels")
+		assert.NotContains(t, labelsAfter2.String(), "\"title\":\"BatchLabel\",\"mixed\":false,\"action\":\"none\"}")
+		assert.NotContains(t, labelsAfter2.String(), "{\"value\":\"ls6sg6b1wowuy3c4\",\"title\":\"Cake\"")
+		assert.NotContains(t, labelsAfter2.String(), "{\"value\":\"ls6sg6b1wowuy316\",\"title\":\"\\u0026friendship\"")
+		assert.NotContains(t, labelsAfter2.String(), "{\"value\":\"ls6sg6b1wowuy3c5\",\"title\":\"COW\",\"mixed\":false,\"action\":\"none\"}")
+		assert.NotContains(t, labelsAfter2.String(), "{\"value\":\"ls6sg6b1wowuy3c2\",\"title\":\"Landscape\",\"mixed\":false,\"action\":\"none\"}")
+		assert.NotContains(t, labelsAfter2.String(), "{\"value\":\"ls6sg6b1wowuy317\",\"title\":\"construction\\u0026failure\",\"mixed\":true,\"action\":\"none\"}")
 	})
 	t.Run("SuccessChangeCountry", func(t *testing.T) {
 		// Create new API test instance.
@@ -581,6 +640,17 @@ func TestBatchPhotosEdit(t *testing.T) {
 		assert.Equal(t, "{\"value\":0,\"mixed\":false,\"action\":\"none\"}", latAfter.String())
 		lngAfter := gjson.Get(saveValues, "Lng")
 		assert.Equal(t, "{\"value\":0,\"mixed\":false,\"action\":\"none\"}", lngAfter.String())
+
+		GetPhoto(router)
+		r1 := PerformRequest(app, "GET", "/api/v1/photos/pqkm36fjqvset9uz")
+		assert.Equal(t, http.StatusOK, r1.Code)
+		assert.Equal(t, "batch", gjson.Get(r1.Body.String(), "PlaceSrc").String())
+		assert.Equal(t, "batch", gjson.Get(r1.Body.String(), "TakenSrc").String())
+		assert.Equal(t, "2000-11-01T08:08:18Z", gjson.Get(r1.Body.String(), "TakenAt").String())
+		assert.Equal(t, "0", gjson.Get(r1.Body.String(), "Lat").String())
+		assert.Equal(t, "0", gjson.Get(r1.Body.String(), "Lng").String())
+		assert.Equal(t, "gb", gjson.Get(r1.Body.String(), "Country").String())
+		assert.Equal(t, "Europe/Vienna", gjson.Get(r1.Body.String(), "TimeZone").String())
 	})
 	t.Run("SuccessRemoveValues", func(t *testing.T) {
 		// Create new API test instance.
@@ -669,6 +739,43 @@ func TestBatchPhotosEdit(t *testing.T) {
 		assert.Equal(t, "batch", gjson.Get(r1.Body.String(), "Details.ArtistSrc").String())
 		assert.Equal(t, "batch", gjson.Get(r1.Body.String(), "Details.CopyrightSrc").String())
 		assert.Equal(t, "batch", gjson.Get(r1.Body.String(), "Details.LicenseSrc").String())
+		assert.Equal(t, "-1", gjson.Get(r1.Body.String(), "Day").String())
+		assert.Equal(t, "-1", gjson.Get(r1.Body.String(), "Month").String())
+		assert.Equal(t, "-1", gjson.Get(r1.Body.String(), "Year").String())
+		assert.Equal(t, "2000-11-01T08:08:18Z", gjson.Get(r1.Body.String(), "TakenAt").String())
+		assert.Equal(t, "Europe/Vienna", gjson.Get(r1.Body.String(), "TimeZone").String())
+		assert.Equal(t, "0", gjson.Get(r1.Body.String(), "Altitude").String())
+		assert.Equal(t, "", gjson.Get(r1.Body.String(), "Title").String())
+		assert.Equal(t, "", gjson.Get(r1.Body.String(), "Caption").String())
+		assert.Equal(t, "", gjson.Get(r1.Body.String(), "Details.Subject").String())
+		assert.Equal(t, "", gjson.Get(r1.Body.String(), "Details.Artist").String())
+		assert.Equal(t, "", gjson.Get(r1.Body.String(), "Details.Copyright").String())
+		assert.Equal(t, "", gjson.Get(r1.Body.String(), "Details.License").String())
+
+		r2 := PerformRequest(app, "GET", "/api/v1/photos/pqkm36fjqvset9uy")
+		assert.Equal(t, http.StatusOK, r2.Code)
+		assert.Equal(t, "batch", gjson.Get(r2.Body.String(), "PlaceSrc").String())
+		assert.Equal(t, "batch", gjson.Get(r2.Body.String(), "TakenSrc").String())
+		assert.Equal(t, "batch", gjson.Get(r2.Body.String(), "TypeSrc").String())
+		assert.Equal(t, "batch", gjson.Get(r2.Body.String(), "TitleSrc").String())
+		assert.Equal(t, "batch", gjson.Get(r2.Body.String(), "CaptionSrc").String())
+		assert.Equal(t, "meta", gjson.Get(r2.Body.String(), "Details.KeywordsSrc").String())
+		assert.Equal(t, "batch", gjson.Get(r2.Body.String(), "Details.SubjectSrc").String())
+		assert.Equal(t, "batch", gjson.Get(r2.Body.String(), "Details.ArtistSrc").String())
+		assert.Equal(t, "batch", gjson.Get(r2.Body.String(), "Details.CopyrightSrc").String())
+		assert.Equal(t, "batch", gjson.Get(r2.Body.String(), "Details.LicenseSrc").String())
+		assert.Equal(t, "-1", gjson.Get(r2.Body.String(), "Day").String())
+		assert.Equal(t, "-1", gjson.Get(r2.Body.String(), "Month").String())
+		assert.Equal(t, "-1", gjson.Get(r2.Body.String(), "Year").String())
+		assert.Equal(t, "2000-11-01T08:08:18Z", gjson.Get(r2.Body.String(), "TakenAt").String())
+		assert.Equal(t, "Europe/Vienna", gjson.Get(r2.Body.String(), "TimeZone").String())
+		assert.Equal(t, "0", gjson.Get(r2.Body.String(), "Altitude").String())
+		assert.Equal(t, "", gjson.Get(r2.Body.String(), "Title").String())
+		assert.Equal(t, "", gjson.Get(r2.Body.String(), "Caption").String())
+		assert.Equal(t, "", gjson.Get(r2.Body.String(), "Details.Subject").String())
+		assert.Equal(t, "", gjson.Get(r2.Body.String(), "Details.Artist").String())
+		assert.Equal(t, "", gjson.Get(r2.Body.String(), "Details.Copyright").String())
+		assert.Equal(t, "", gjson.Get(r2.Body.String(), "Details.License").String())
 	})
 	t.Run("ReturnPhotosAndValues", func(t *testing.T) {
 		app, router, conf := NewApiTest()
