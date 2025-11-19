@@ -550,9 +550,28 @@ div.v-dialog.v-dialog--fullscreen > div.v-card {
 }
 
 .v-table.v-table--batch-edit tr,
-.v-table.v-table--batch-edit th,
+.v-table.v-table--batch-edit tr th,
 .v-table.v-table--batch-edit tr td {
     border-bottom: none !important;
+    text-align: start;
+}
+
+.v-table.v-table--batch-edit tr th {
+    overflow: visible;
+    white-space: nowrap;
+}
+
+.v-table.v-table--batch-edit tr th,
+.v-table.v-table--batch-edit tr td {
+    padding: 0 8px !important;
+}
+
+.v-table.v-table--batch-edit th.col-select {
+    width: 42px;
+}
+
+.v-table.v-table--batch-edit th.col-preview {
+    width: 58px;
 }
 
 /* Flex Grids */

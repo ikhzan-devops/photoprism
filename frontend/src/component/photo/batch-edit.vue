@@ -60,7 +60,7 @@
               <template #item.preview="{ item, index }">
                 <div class="media result col-preview">
                   <div
-                    :style="`background-image: url(${item.thumbnailUrl('tile_224')})`"
+                    :style="`background-image: url(${item.thumbnailUrl('tile_50')})`"
                     class="preview"
                     @touchstart.passive="onMouseDown($event, index)"
                     @touchend.stop="onSelectClick($event, index, false)"
@@ -109,7 +109,7 @@
               density="compact"
               class="elevation-0 ra-4 bg-transparent"
             >
-              <v-expansion-panel color="secondary" class="pa-0 ra-4 bg-transparent elevation-0">
+              <v-expansion-panel class="pa-0 ra-4 elevation-0">
                 <v-expansion-panel-title class="px-4">{{ $gettext("Selection") }}</v-expansion-panel-title>
                 <v-expansion-panel-text>
                   <v-data-table
@@ -119,7 +119,7 @@
                     hide-default-footer
                     item-key="ID"
                     density="compact"
-                    class="elevation-0 ra-4"
+                    class="elevation-0 ra-4 v-table--batch-edit"
                   >
                     <template #header.select>
                       <v-checkbox
@@ -142,7 +142,7 @@
                     <template #item.preview="{ item, index }">
                       <div class="media result col-preview">
                         <div
-                          :style="`background-image: url(${item.thumbnailUrl('tile_224')})`"
+                          :style="`background-image: url(${item.thumbnailUrl('tile_50')})`"
                           class="preview"
                           @touchstart.passive="onMouseDown($event, index)"
                           @touchend.stop="onSelectClick($event, index, false)"
@@ -619,25 +619,43 @@ export default {
       albumItems: [],
       labelItems: [],
       tableHeaders: [
-        { key: "select", title: "", sortable: false, width: "50px" },
-        { key: "preview", title: this.$gettext(`Select`), headerProps: { class: "px-2" }, sortable: false },
-        { key: "name", title: this.$gettext(`File Name`), headerProps: { class: "break-word" }, sortable: false },
+        {
+          key: "select",
+          title: "",
+          sortable: false,
+          headerProps: { class: "col-select" },
+        },
+        {
+          key: "preview",
+          title: this.$gettext(`Preview`),
+          sortable: false,
+          headerProps: { class: "col-preview" },
+        },
+        {
+          key: "name",
+          title: this.$gettext(`File Name`),
+          sortable: false,
+          headerProps: { class: "col-name break-word" },
+        },
       ],
       mobileTableHeaders: [
         {
           key: "select",
           title: "",
           sortable: false,
-          width: "50px",
-          align: "center",
+          headerProps: { class: "col-select" },
         },
-        { key: "preview", title: this.$gettext(`Select`), sortable: false, width: "80px" },
+        {
+          key: "preview",
+          title: this.$gettext(`Preview`),
+          sortable: false,
+          headerProps: { class: "col-preview" },
+        },
         {
           key: "name",
           title: this.$gettext(`File Name`),
-          headerProps: { class: "break-word" },
           sortable: false,
-          align: "start",
+          headerProps: { class: "col-name break-word" },
         },
       ],
     };
