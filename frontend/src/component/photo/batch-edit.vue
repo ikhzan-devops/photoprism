@@ -111,7 +111,7 @@
             >
               <v-expansion-panel class="pa-0 ra-4 elevation-0">
                 <v-expansion-panel-title class="px-4">{{ $gettext("Selection") }}</v-expansion-panel-title>
-                <v-expansion-panel-text>
+                <v-expansion-panel-text class="px-2">
                   <v-data-table
                     :headers="mobileTableHeaders"
                     :items="model.models"
