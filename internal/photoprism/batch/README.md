@@ -131,7 +131,7 @@ The SPA consumes the endpoint through a dedicated REST model, dialog component, 
 
 #### Feature Flags & Permissions
 
-- Batch edit is controlled via the `Features.BatchEdit` flag exposed in `customize.FeatureSettings`. The flag defaults to `true` alongside `Features.Edit`, but administrators can disable it in settings or by providing `PHOTOPRISM_DISABLE_FEATURES=batchEdit`.
+- Batch edit is controlled via the `Features.BatchEdit` flag exposed in `customize.FeatureSettings`. The flag defaults to `true` alongside `Features.Edit`, but administrators can disable it in settings.
 - `Settings.ApplyACL` and `Settings.ApplyScope` only keep `BatchEdit` enabled when the current role can update photos **and** has `acl.AccessAll`; this prevents scoped API clients from invoking bulk edits outside their visibility window.
 - The clipboard action (`component/photo/clipboard.vue`) checks the same flag and requires `photos/access_all` before publishing `dialog.batchedit`. If either requirement fails—or the selection only includes a single photo—the component falls back to the single-photo edit dialog so metadata edits remain available.
 - Because the clipboard is our only UI entry point, disabling the flag hides the floating button, un-subscribes the dialog, and keeps backend enforcement consistent with the visible capabilities.
