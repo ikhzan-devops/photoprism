@@ -1,6 +1,6 @@
 ## PhotoPrism — Batch Edit Package
 
-**Last Updated:** November 18, 2025
+**Last Updated:** November 19, 2025
 
 ### Overview
 
@@ -34,9 +34,9 @@ The `internal/photoprism/batch` package implements the form schema (`PhotosForm`
 2. The handler authenticates via `Auth(..., acl.ResourcePhotos, acl.ActionUpdate)` before accepting JSON payloads shaped like `batch.PhotosRequest { photos: [], values: {} }`.
 3. The handler always reuses the ordered `search.BatchPhotos` results when serializing the `models` array so every response mirrors the original selection and exposes the full `search.Photo` schema (thumbnail hashes, files, etc.) required by the lightbox.
 4. After persisting updates, the handler issues a follow-up `query.PhotoPreloadByUIDs` call so `batch.PrepareAndSavePhotos` gets hydrated entities for album/label mutations without disrupting the frontend-facing payload.
-5. `batch.PrepareAndSavePhotos` iterates over the preloaded entities, applies requested album/label changes, builds `PhotoSaveRequest` instances via `batch.NewPhotoSaveRequest`, and persists the updates before returning a summary (requests, results, updated count) to the API layer.
+5. `batch.PrepareAndSavePhotos` iterates over the preloaded entities, applies requested album/label changes, builds `PhotoSaveRequest` instances via `batch.NewPhotoSaveRequest`, and persists the updates before returning a summary (requests, results, updated count, `MutationStats`) to the API layer.
 6. `SavePhotos` (invoked by the helper) loops once per request, updates only the columns that changed, clears `checked_at`, touches `edited_at`, and queues `entity.UpdateCountsAsync()` once if any photo saved.
-7. Refreshed models and values are sent back in the response form so the frontend can merge and display the changes.
+7. Refreshed models and values are sent back in the response form so the frontend can merge and display the changes, and the mutation stats drive the production log line (`updated photo metadata (1/3) and labels (3/3)`) so operators can see which parts of the request succeeded even when metadata columns remained untouched.
 
 ### Batch Edit API Endpoint
 
@@ -120,6 +120,8 @@ The SPA consumes the endpoint through a dedicated REST model, dialog component, 
 - **Vue Components**: `frontend/src/component/photo/batch-edit.vue` renders the dialog, binding the model’s `values` to chips, combo boxes, and toggles. It is mounted via `frontend/src/component/dialogs.vue`, which exposes `<p-photo-batch-edit>` so any view can trigger batch edits.
 - **Vitest Coverage**: `frontend/tests/vitest/model/batch.test.js` mocks Axios to verify that the model posts the correct payloads, updates cached photos, and handles no-op responses. `frontend/tests/vitest/component/photo/batch-edit.test.js` renders the dialog with Vue Test Utils to confirm field bindings, validation flows, and selection toggling behavior.
 
+> **Note:** The frontend `model/batch.js` drops selection IDs that no longer have editable models, so dialog counters and clipboard actions match the set of photos the backend actually returned (archived/deleted photos are silently skipped).
+
 ### Gating & Configuration
 
 - ACL: only sessions allowed to `update` the `photos` resource may call this endpoint. That includes administrators and contributors with write access; read-only tokens fail early.
@@ -127,9 +129,16 @@ The SPA consumes the endpoint through a dedicated REST model, dialog component, 
 - Workers: clearing `CheckedAt` ensures the metadata worker (`internal/workers/meta`) and downstream indexers revisit the files within the configured worker interval (default 10–20 minutes).
 - Environment flags: standard safety toggles (`PHOTOPRISM_READONLY`, maintenance mode, etc.) still apply because the handler runs in the main API process.
 
+#### Feature Flags & Permissions
+
+- Batch edit is controlled via the `Features.BatchEdit` flag exposed in `customize.FeatureSettings`. The flag defaults to `true` alongside `Features.Edit`, but administrators can disable it in settings or by providing `PHOTOPRISM_DISABLE_FEATURES=batchEdit`.
+- `Settings.ApplyACL` and `Settings.ApplyScope` only keep `BatchEdit` enabled when the current role can update photos **and** has `acl.AccessAll`; this prevents scoped API clients from invoking bulk edits outside their visibility window.
+- The clipboard action (`component/photo/clipboard.vue`) checks the same flag and requires `photos/access_all` before publishing `dialog.batchedit`. If either requirement fails—or the selection only includes a single photo—the component falls back to the single-photo edit dialog so metadata edits remain available.
+- Because the clipboard is our only UI entry point, disabling the flag hides the floating button, un-subscribes the dialog, and keeps backend enforcement consistent with the visible capabilities.
+
 ### Supported Fields & Values
 
-PhotosForm currently carries:
+`PhotosForm` currently carries:
 
 - Core descriptive metadata: title, caption, type, favorite/private flags, scan/panorama toggles.
 - Temporal data: exact timestamps, local offsets, broken-out year/month/day, and time zone identifiers.
@@ -211,7 +220,7 @@ Testers reported intermittent `Error 1213 (40001)` deadlocks when multiple batch
   - `internal/photoprism/batch/save_test.go` exercises partial updates, detail edits, `CheckedAt` resets, and the `PreparePhotoSaveRequests` / `PrepareAndSavePhotos` helpers.  
   - `internal/api/batch_photos_edit_test.go` provides end-to-end coverage for response envelopes (`SuccessNoChange`, `SuccessRemoveValues`, etc.).
 - **Logging**  
-  - The package uses the shared `event.Log` logger. Debug logs trace selections, album/label changes, and dirty-field sets; warnings/errors surface failed queries so operators can inspect database health.
+  - The package uses the shared `event.Log` logger. Debug logs trace selections, album/label changes, and dirty-field sets; warnings/errors surface failed queries so operators can inspect database health. The final `INFO` line now reports metadata success counts alongside album and label mutations (including error tallies) so label-only edits no longer read as “0 out of N photos”.
 - **Metrics & Alerts**  
   - The API shares the `/api/v1/metrics` Prometheus endpoint; batch edits increment the standard HTTP counters/latencies. Consider dashboarding 5xx/4xx spikes for `/batch/photos/edit` if you rely heavily on automation.
 
