@@ -415,14 +415,25 @@ export default {
         errorMsg: this.$gettext("Error"),
       };
     },
+    // Updates lightbox permissions and capabilities (e.g., batch edit disables selecting and editing).
+    applyContext(ctx = {}) {
+      this.contextAllowsSelect = ctx?.allowSelect !== false;
+      this.contextAllowsEdit = ctx?.allowEdit !== false;
+
+      this.canEdit = this.$config.allow("photos", "update") && this.$config.feature("edit");
+      this.canLike = this.$config.allow("photos", "manage") && this.$config.feature("favorites");
+      this.canDownload = this.$config.allow("photos", "download") && this.$config.feature("download");
+      this.canArchive = this.$config.allow("photos", "delete") && this.$config.feature("archive");
+      this.canManageAlbums = this.$config.allow("albums", "manage");
+    },
     // Displays the thumbnail images and/or videos that belong to the specified models in the lightbox.
     showThumbs(models, index = 0, ctx = {}) {
       if (this.isBusy("show thumbs")) {
         return Promise.reject();
       }
 
-      this.contextAllowsEdit = ctx?.allowEdit !== false;
-      this.contextAllowsSelect = ctx?.allowSelect !== false;
+      // Update permissions and capabilities.
+      this.applyContext(ctx);
 
       // Check if at least one model was passed, as otherwise no content can be displayed.
       if (!Array.isArray(models) || models.length === 0 || index >= models.length) {

@@ -393,7 +393,7 @@ describe("component/photo/batch-edit", () => {
       expect(ctx.index).toBe(1);
       expect(ctx.allowEdit).toBe(false);
       expect(ctx.allowSelect).toBe(false);
-      expect(ctx.context).toBe("Batch Edit");
+      expect(ctx.context).toBe("batch-edit");
 
       spy.mockRestore();
     });
