@@ -215,6 +215,7 @@ export default {
   },
   data() {
     const features = this.$config.getSettings().features;
+    const canEdit = this.$config.allow("photos", "update") && features.edit;
 
     return {
       selection: this.$clipboard.selection,
@@ -225,9 +226,9 @@ export default {
       canShare: this.$config.allow("photos", "share") && features.share,
       canServiceUpload: this.$config.feature("services") && this.$config.allow("services", "upload"),
       canManage: this.$config.allow("photos", "manage") && features.albums,
-      canEdit: this.$config.allow("photos", "update") && features.edit,
+      canEdit: canEdit,
+      canBatchEdit: canEdit && this.$config.allow("photos", "access_all") && features.batchEdit,
       canEditAlbum: this.$config.allow("albums", "update") && features.albums,
-      canBatchEdit: this.$config.allow("photos", "update") && this.$config.allow("photos", "access_all"),
       busy: false,
       config: this.$config.values,
       expanded: false,
@@ -425,6 +426,11 @@ export default {
       download(path, "photos.zip");
     },
     edit() {
+      if (!this.canEdit) {
+        $notify.error(this.$gettext("Disabled"));
+        return;
+      }
+
       // Open Edit or Batch Edit Dialog.
       if (!this.canBatchEdit || this.selection.length === 1) {
         this.$event.PubSub.publish("dialog.edit", { selection: this.selection, album: this.album, index: 0 });
