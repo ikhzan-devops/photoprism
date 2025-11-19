@@ -17,6 +17,24 @@ import (
 )
 
 func TestBatchPhotosEdit(t *testing.T) {
+	t.Run("FeatureDisabled", func(t *testing.T) {
+		app, router, conf := NewApiTest()
+
+		settings := conf.Settings()
+		orig := settings.Features.BatchEdit
+		settings.Features.BatchEdit = false
+		t.Cleanup(func() {
+			settings.Features.BatchEdit = orig
+		})
+
+		BatchPhotosEdit(router)
+
+		photoUIDs := `{"photos": ["pqkm36fjqvset9uy"]}`
+		resp := PerformRequestWithBody(app, "POST", "/api/v1/batch/photos/edit", photoUIDs)
+
+		assert.Equal(t, http.StatusForbidden, resp.Code)
+		assert.Contains(t, resp.Body.String(), i18n.Msg(i18n.ErrFeatureDisabled))
+	})
 	t.Run("SuccessNoChange", func(t *testing.T) {
 		// Create new API test instance.
 		app, router, _ := NewApiTest()

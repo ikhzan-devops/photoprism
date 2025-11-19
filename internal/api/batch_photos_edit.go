@@ -11,6 +11,7 @@ import (
 	"github.com/photoprism/photoprism/internal/entity/query"
 	"github.com/photoprism/photoprism/internal/entity/search"
 	"github.com/photoprism/photoprism/internal/photoprism/batch"
+	"github.com/photoprism/photoprism/internal/photoprism/get"
 	"github.com/photoprism/photoprism/pkg/clean"
 	"github.com/photoprism/photoprism/pkg/i18n"
 )
@@ -38,6 +39,12 @@ func BatchPhotosEdit(router *gin.RouterGroup) {
 		// Require update permissions for photos.
 		if acl.Rules.Deny(acl.ResourcePhotos, s.GetUserRole(), acl.ActionUpdate) {
 			AbortForbidden(c)
+			return
+		}
+
+		// Check feature flags.
+		if !get.Config().Settings().Features.BatchEdit {
+			AbortFeatureDisabled(c)
 			return
 		}
 
