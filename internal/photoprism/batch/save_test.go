@@ -206,9 +206,10 @@ func TestNewPhotoSaveRequest(t *testing.T) {
 func TestPreparePhotoSaveRequests(t *testing.T) {
 	t.Run("NilValues", func(t *testing.T) {
 		preloaded := map[string]*entity.Photo{}
-		requests, updated := PreparePhotoSaveRequests(nil, preloaded, nil)
+		requests, updated, stats := PreparePhotoSaveRequests(nil, preloaded, nil)
 		assert.Nil(t, requests)
 		assert.Equal(t, preloaded, updated)
+		assert.Equal(t, MutationStats{}, stats)
 	})
 
 	t.Run("LoadsMissingPhoto", func(t *testing.T) {
@@ -216,20 +217,22 @@ func TestPreparePhotoSaveRequests(t *testing.T) {
 		values := &PhotosForm{PhotoTitle: String{Value: "Prepared", Action: ActionUpdate}}
 		photos := search.PhotoResults{{PhotoUID: fixture.PhotoUID}}
 
-		requests, updated := PreparePhotoSaveRequests(photos, nil, values)
+		requests, updated, stats := PreparePhotoSaveRequests(photos, nil, values)
 		require.Len(t, requests, 1)
 		assert.NotNil(t, requests[0].Photo)
 		assert.Equal(t, "Prepared", requests[0].Form.PhotoTitle)
 		assert.Contains(t, updated, fixture.PhotoUID)
+		assert.Equal(t, MutationStats{}, stats)
 	})
 
 	t.Run("SkipsMissing", func(t *testing.T) {
 		values := &PhotosForm{PhotoTitle: String{Value: "Prepared", Action: ActionUpdate}}
 		photos := search.PhotoResults{{PhotoUID: "pt_does_not_exist"}}
 
-		requests, updated := PreparePhotoSaveRequests(photos, nil, values)
+		requests, updated, stats := PreparePhotoSaveRequests(photos, nil, values)
 		assert.Len(t, requests, 0)
 		assert.Empty(t, updated)
+		assert.Equal(t, MutationStats{}, stats)
 	})
 }
 

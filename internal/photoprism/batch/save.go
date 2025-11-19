@@ -3,6 +3,7 @@ package batch
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/photoprism/photoprism/internal/entity"
 	"github.com/photoprism/photoprism/internal/entity/query"
@@ -26,6 +27,16 @@ type SaveBatchResult struct {
 	Preloaded    map[string]*entity.Photo
 	UpdatedCount int
 	SavedAny     bool
+	Stats        MutationStats
+}
+
+// MutationStats captures how many photos received supporting mutations and
+// how many errors occurred while applying them.
+type MutationStats struct {
+	AlbumMutations int
+	LabelMutations int
+	AlbumErrors    int
+	LabelErrors    int
 }
 
 // NewPhotoSaveRequest converts the batch values into a form.Photo and bundles it with the
@@ -46,17 +57,19 @@ func NewPhotoSaveRequest(photo *entity.Photo, values *PhotosForm) (*PhotoSaveReq
 // PreparePhotoSaveRequests converts the given selection into save requests, ensuring each photo
 // entity is hydrated and album/label actions are applied once per selection. The returned map is
 // the (possibly newly populated) preloaded set so callers can reuse it for response rendering.
-func PreparePhotoSaveRequests(photos search.PhotoResults, preloaded map[string]*entity.Photo, values *PhotosForm) ([]*PhotoSaveRequest, map[string]*entity.Photo) {
+func PreparePhotoSaveRequests(photos search.PhotoResults, preloaded map[string]*entity.Photo, values *PhotosForm) ([]*PhotoSaveRequest, map[string]*entity.Photo, MutationStats) {
 	if values == nil {
-		return nil, preloaded
+		return nil, preloaded, MutationStats{}
 	}
 
 	if preloaded == nil {
 		preloaded = map[string]*entity.Photo{}
 	}
 
-	log.Debugf("batch: updating photo metadata for %d photos", len(photos))
+	log.Infof("batch: updating %d photos", len(photos))
+
 	saveRequests := make([]*PhotoSaveRequest, 0, len(photos))
+	stats := MutationStats{}
 
 	for _, result := range photos {
 		photoID := result.PhotoUID
@@ -89,23 +102,34 @@ func PreparePhotoSaveRequests(photos search.PhotoResults, preloaded map[string]*
 		if values.Albums.Action == ActionUpdate {
 			if errs := ApplyAlbums(fullPhoto, values.Albums); errs != nil {
 				log.Errorf("batch: failed to update albums for photo %s: (%s)", photoID, errs)
+				stats.AlbumErrors += len(errs)
+			}
+
+			if len(values.Albums.Items) > 0 {
+				stats.AlbumMutations++
 			}
 		}
 
 		if values.Labels.Action == ActionUpdate {
 			if errs := ApplyLabels(fullPhoto, values.Labels); errs != nil {
 				log.Errorf("batch: failed to update labels for photo %s (%s)", photoID, errs)
+				stats.LabelErrors += len(errs)
+			}
+
+			if len(values.Labels.Items) > 0 {
+				stats.LabelMutations++
 			}
 		}
 	}
 
-	return saveRequests, preloaded
+	return saveRequests, preloaded, stats
 }
 
 // PrepareAndSavePhotos hydrates the photo selection, applies album/label mutations, builds save
 // requests, and persists the changes in one step. It returns a SaveBatchResult so callers can run
 // follow-up work (events, cache flushes) without re-querying state.
 func PrepareAndSavePhotos(photos search.PhotoResults, preloaded map[string]*entity.Photo, values *PhotosForm) (*SaveBatchResult, error) {
+	start := time.Now()
 	result := &SaveBatchResult{Preloaded: preloaded}
 
 	if values == nil {
@@ -115,9 +139,11 @@ func PrepareAndSavePhotos(photos search.PhotoResults, preloaded map[string]*enti
 		return result, nil
 	}
 
-	requests, preloaded := PreparePhotoSaveRequests(photos, result.Preloaded, values)
+	requests, preloaded, mutationStats := PreparePhotoSaveRequests(photos, result.Preloaded, values)
+
 	result.Requests = requests
 	result.Preloaded = preloaded
+	result.Stats = mutationStats
 
 	if len(requests) == 0 {
 		return result, nil
@@ -139,7 +165,33 @@ func PrepareAndSavePhotos(photos search.PhotoResults, preloaded map[string]*enti
 		}
 	}
 
-	log.Infof("batch: successfully updated %d out of %d photos", result.UpdatedCount, len(photos))
+	var logFields []string
+
+	if result.UpdatedCount > 0 {
+		logFields = append(logFields, fmt.Sprintf("metadata (%d/%d)", result.UpdatedCount, len(photos)))
+	}
+
+	if result.Stats.LabelMutations > 0 {
+		entry := fmt.Sprintf("labels (%d/%d)", result.Stats.LabelMutations, len(photos))
+		if result.Stats.LabelErrors > 0 {
+			entry = fmt.Sprintf("%s with %d errors", entry, result.Stats.LabelErrors)
+		}
+		logFields = append(logFields, entry)
+	}
+
+	if result.Stats.AlbumMutations > 0 {
+		entry := fmt.Sprintf("albums (%d/%d)", result.Stats.AlbumMutations, len(photos))
+		if result.Stats.AlbumErrors > 0 {
+			entry = fmt.Sprintf("%s with %d errors", entry, result.Stats.AlbumErrors)
+		}
+		logFields = append(logFields, entry)
+	}
+
+	if len(logFields) > 0 {
+		log.Infof("batch: updated photo %s [%s]", txt.JoinAnd(logFields), time.Since(start))
+	} else {
+		log.Infof("batch: no photos have been updated [%s]", time.Since(start))
+	}
 
 	return result, nil
 }
