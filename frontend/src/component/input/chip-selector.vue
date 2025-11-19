@@ -136,6 +136,18 @@ export default {
     },
   },
   methods: {
+    suppressMenuTemporarily(callback) {
+      this.suppressMenuOpen = true;
+
+      if (typeof callback === "function") {
+        callback();
+      }
+
+      window.setTimeout(() => {
+        this.suppressMenuOpen = false;
+      }, 250);
+    },
+
     normalizeTitle(text) {
       const input = text == null ? "" : String(text);
       if (typeof this.normalizeTitleForCompare === "function") {
@@ -237,19 +249,21 @@ export default {
 
     onComboboxChange(value) {
       if (value && typeof value === "object" && value.title) {
-        this.newItemTitle = value;
-        this.addNewItem();
-        this.menuOpen = false;
-        // Immediately clear the input, remove focus and restore placeholder
-        this.$nextTick(() => {
-          this.newItemTitle = "";
-          if (this.$refs.inputField) {
-            this.$refs.inputField.blur();
-            // Force the combobox to reset completely
-            setTimeout(() => {
-              this.newItemTitle = null;
-            }, 10);
-          }
+        this.suppressMenuTemporarily(() => {
+          this.newItemTitle = value;
+          this.addNewItem();
+          this.menuOpen = false;
+          // Immediately clear the input, remove focus and restore placeholder
+          this.$nextTick(() => {
+            this.newItemTitle = "";
+            if (this.$refs.inputField) {
+              this.$refs.inputField.blur();
+              // Force the combobox to reset completely
+              setTimeout(() => {
+                this.newItemTitle = null;
+              }, 10);
+            }
+          });
         });
       } else {
         this.newItemTitle = value;
@@ -353,12 +367,10 @@ export default {
     },
 
     onEnter() {
-      this.suppressMenuOpen = true;
-      this.menuOpen = false;
-      this.addNewItem();
-      window.setTimeout(() => {
-        this.suppressMenuOpen = false;
-      }, 250);
+      this.suppressMenuTemporarily(() => {
+        this.menuOpen = false;
+        this.addNewItem();
+      });
     },
 
     onMenuUpdate(val) {
