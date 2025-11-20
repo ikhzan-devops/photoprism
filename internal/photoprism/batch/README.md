@@ -1,6 +1,6 @@
 ## PhotoPrism — Batch Edit Package
 
-**Last Updated:** November 19, 2025
+**Last Updated:** November 20, 2025
 
 ### Overview
 
@@ -35,8 +35,9 @@ The `internal/photoprism/batch` package implements the form schema (`PhotosForm`
 3. The handler always reuses the ordered `search.BatchPhotos` results when serializing the `models` array so every response mirrors the original selection and exposes the full `search.Photo` schema (thumbnail hashes, files, etc.) required by the lightbox.
 4. After persisting updates, the handler issues a follow-up `query.PhotoPreloadByUIDs` call so `batch.PrepareAndSavePhotos` gets hydrated entities for album/label mutations without disrupting the frontend-facing payload.
 5. `batch.PrepareAndSavePhotos` iterates over the preloaded entities, applies requested album/label changes, builds `PhotoSaveRequest` instances via `batch.NewPhotoSaveRequest`, and persists the updates before returning a summary (requests, results, updated count, `MutationStats`) to the API layer.
-6. `SavePhotos` (invoked by the helper) loops once per request, updates only the columns that changed, clears `checked_at`, touches `edited_at`, and queues `entity.UpdateCountsAsync()` once if any photo saved.
-7. Refreshed models and values are sent back in the response form so the frontend can merge and display the changes, and the mutation stats drive the production log line (`updated photo metadata (1/3) and labels (3/3)`) so operators can see which parts of the request succeeded even when metadata columns remained untouched.
+6. `resolveBatchItemValues` runs before per-photo work so album/label additions referenced by title are looked up or created once per batch (rather than per photo) and deleted albums/labels are restored before use.
+7. `SavePhotos` (invoked by the helper) loops once per request, updates only the columns that changed, clears `checked_at`, touches `edited_at`, and queues `entity.UpdateCountsAsync()` once if any photo saved. When album mutations occurred and YAML backups are enabled, the resolved album list is written back to disk via `updateAlbumBackups` after all database work succeeds.
+8. Refreshed models and values are sent back in the response form so the frontend can merge and display the changes, and the mutation stats drive the production log line (`updated photo metadata (1/3) and labels (3/3)`) so operators can see which parts of the request succeeded even when metadata columns remained untouched.
 
 ### Batch Edit API Endpoint
 
@@ -154,7 +155,7 @@ Each field embeds one of the typed wrappers (`String`, `Bool`, `Time`, `Int`, et
 
 - `Action` enums (`none`, `update`, `add`, `remove`) describe intent. Strings treat `remove` the same as `update` plus empty values, allowing the backend to wipe titles/captions clean.
 - Source columns (`TitleSrc`, `CaptionSrc`, `TypeSrc`, `PlaceSrc`, details `*_src`) keep track of provenance. `SavePhotos` updates them whenever batch edits win over prior metadata (EXIF, AI, manual, etc.).
-- Album & label updates respect UID validation: `ApplyAlbums` verifies `PhotoUID` / `AlbumUID`, creates albums by title when needed, and delegates to `entity.AddPhotoToAlbums`, which now uses per-album keyed locks to avoid blocking unrelated requests.
+- Album & label updates respect UID validation: `ApplyAlbums` verifies `PhotoUID` / `AlbumUID`, creates albums by title when needed, and delegates to `entity.AddPhotoToAlbums`, which now uses per-album keyed locks to avoid blocking unrelated requests. `Items.ResolveValuesByTitle` plus `resolveBatchItemValues` ensure those creations happen once per batch, so per-photo calls operate on cached UIDs instead of repeating lookups.
 - Label writes reuse existing `PhotoLabel` rows when possible, force 100 % confidence for manual/batch additions, and demote AI suggestions by setting `uncertainty = 100` when users explicitly remove them.
 - Keyword keywords stay consistent because label removals call `photo.RemoveKeyword` and `SaveDetails` immediately, while location edits append unique place keywords via `txt.UniqueWords`.
 
@@ -220,6 +221,7 @@ Testers reported intermittent `Error 1213 (40001)` deadlocks when multiple batch
   - `internal/photoprism/batch/datelogic_test.go` ensures cross-field dependencies (local time vs. UTC) stay consistent.  
   - `internal/photoprism/batch/save_test.go` exercises partial updates, detail edits, `CheckedAt` resets, and the `PreparePhotoSaveRequests` / `PrepareAndSavePhotos` helpers.  
   - `internal/api/batch_photos_edit_test.go` provides end-to-end coverage for response envelopes (`SuccessNoChange`, `SuccessRemoveValues`, etc.).
+  - `internal/photoprism/batch/save_resolve_test.go` validates pre-resolution helpers for albums/labels, while `save_backup_test.go` covers the YAML backup flow controlled by `updateAlbumBackups`.
 - **Logging**  
   - The package uses the shared `event.Log` logger. Debug logs trace selections, album/label changes, and dirty-field sets; warnings/errors surface failed queries so operators can inspect database health. The final `INFO` line now reports metadata success counts alongside album and label mutations (including error tallies) so label-only edits no longer read as “0 out of N photos”.
 - **Metrics & Alerts**  
@@ -240,6 +242,9 @@ Testers reported intermittent `Error 1213 (40001)` deadlocks when multiple batch
 - `convert.go` — translates `PhotosForm` into `form.Photo` instances for persistence.
 - `apply_albums.go` / `apply_labels.go` — album and label mutation helpers shared across API endpoints.
 - `save.go` — differential persistence, `PreparePhotoSaveRequests`, `PrepareAndSavePhotos`, `NewPhotoSaveRequest`, `PhotoSaveRequest`, background worker triggers.
+- `save_photo.go` — `savePhoto` applies a single request, compares old/new values, and writes only the changed columns (indirectly invoked by `SavePhotos`).
+- `save_resolve.go` — album/label title resolution helpers that run before persistence so per-photo work only receives resolved UIDs.
+- `save_backup.go` — YAML backup synchronisation for albums whenever batch edits touch them and backups are enabled.
 - `datelogic.go` — helpers for reconciling time zones and date parts when the UI only supplies partial values.
 - `values.go` — typed wrappers for request fields (value + action + mixed flag).
 

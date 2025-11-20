@@ -195,6 +195,11 @@ func PrepareAndSavePhotos(photos search.PhotoResults, preloaded map[string]*enti
 		log.Infof("batch: no photos have been updated [%s]", time.Since(start))
 	}
 
+	// Update YAML backups for all albums referenced in the current batch request.
+	if result.Stats.AlbumMutations > 0 {
+		updateAlbumBackups(values)
+	}
+
 	return result, nil
 }
 
