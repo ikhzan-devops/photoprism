@@ -110,6 +110,9 @@ func ApplyLabels(photo *entity.Photo, labels Items) (errs []error) {
 					continue
 				}
 				labelIndex[labelEntity.ID] = pl
+			} else if entity.SrcPriority[pl.LabelSrc] > entity.SrcPriority[entity.SrcBatch] {
+				// Keep existing label with higher priority.
+				continue
 			}
 
 			// Ensure 100% confidence (uncertainty 0) and source 'batch'.
