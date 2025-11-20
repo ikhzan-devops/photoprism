@@ -489,3 +489,104 @@ func TestIndexPhotoLabels(t *testing.T) {
 		t.Fatal("expected indexed labels to be present")
 	}
 }
+
+// TestDetermineLabelRemovalAction enumerates the matrix documented in
+// internal/photoprism/batch/README.md under "Rules for Deleting Photo Labels"
+// so we can guarantee the implementation stays aligned with the published
+// expectations.
+func TestDetermineLabelRemovalAction(t *testing.T) {
+	t.Parallel()
+
+	makeLabel := func(src string, uncertainty int) *entity.PhotoLabel {
+		return &entity.PhotoLabel{
+			LabelSrc:    src,
+			Uncertainty: uncertainty,
+		}
+	}
+
+	tests := []struct {
+		name string
+		pl   *entity.PhotoLabel
+		want labelRemovalAction
+	}{
+		{name: "NilLabelDefaultsToKeep", pl: nil, want: labelRemovalKeep},
+
+		// image, openai, ollama (priority < batch) => block regardless of confidence.
+		{name: "ImagePriority8Uncertainty0", pl: makeLabel(entity.SrcImage, 0), want: labelRemovalBlock},
+		{name: "OpenAI_Uncertainty50", pl: makeLabel(entity.SrcOpenAI, 50), want: labelRemovalBlock},
+		{name: "Ollama_Uncertainty100", pl: makeLabel(entity.SrcOllama, 100), want: labelRemovalBlock},
+
+		// Generic sources with priority < 64 => block.
+		{name: "FilePriority2_Uncertainty0", pl: makeLabel(entity.SrcFile, 0), want: labelRemovalBlock},
+		{name: "AutoPriority1_Uncertainty35", pl: makeLabel(entity.SrcAuto, 35), want: labelRemovalBlock},
+		{name: "UnknownSrcDefaultsToPriority0", pl: makeLabel("", 100), want: labelRemovalBlock},
+
+		// manual source (priority == batch) => delete unless already blocked (uncertainty 100).
+		{name: "Manual_Uncertainty0", pl: makeLabel(entity.SrcManual, 0), want: labelRemovalDelete},
+		{name: "Manual_Uncertainty42", pl: makeLabel(entity.SrcManual, 42), want: labelRemovalDelete},
+		{name: "Manual_Uncertainty100", pl: makeLabel(entity.SrcManual, 100), want: labelRemovalKeep},
+
+		// vision source (priority == batch) => block unless already blocked.
+		{name: "Vision_Uncertainty0", pl: makeLabel(entity.SrcVision, 0), want: labelRemovalBlock},
+		{name: "Vision_Uncertainty60", pl: makeLabel(entity.SrcVision, 60), want: labelRemovalBlock},
+		{name: "Vision_Uncertainty100", pl: makeLabel(entity.SrcVision, 100), want: labelRemovalKeep},
+
+		// batch source mirrors manual (delete until explicitly blocked).
+		{name: "Batch_Uncertainty0", pl: makeLabel(entity.SrcBatch, 0), want: labelRemovalDelete},
+		{name: "Batch_Uncertainty15", pl: makeLabel(entity.SrcBatch, 15), want: labelRemovalDelete},
+		{name: "Batch_Uncertainty100", pl: makeLabel(entity.SrcBatch, 100), want: labelRemovalKeep},
+
+		// admin (higher priority) => always keep.
+		{name: "Admin_Uncertainty0", pl: makeLabel(entity.SrcAdmin, 0), want: labelRemovalKeep},
+		{name: "Admin_Uncertainty55", pl: makeLabel(entity.SrcAdmin, 55), want: labelRemovalKeep},
+		{name: "Admin_Uncertainty100", pl: makeLabel(entity.SrcAdmin, 100), want: labelRemovalKeep},
+	}
+
+	for _, tc := range tests {
+		tc := tc
+
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
+			got := determineLabelRemovalAction(tc.pl)
+			if got != tc.want {
+				src := "<nil>"
+				uncertainty := 0
+				if tc.pl != nil {
+					src = tc.pl.LabelSrc
+					uncertainty = tc.pl.Uncertainty
+				}
+
+				t.Fatalf("determineLabelRemovalAction(src=%q uncertainty=%d) = %s, want %s",
+					src, uncertainty, got.String(), tc.want.String())
+			}
+		})
+	}
+}
+
+func TestLabelRemovalActionString(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name string
+		act  labelRemovalAction
+		want string
+	}{
+		{name: "Keep", act: labelRemovalKeep, want: "keep"},
+		{name: "Block", act: labelRemovalBlock, want: "block"},
+		{name: "Delete", act: labelRemovalDelete, want: "delete"},
+		{name: "Unknown", act: labelRemovalAction(99), want: "unknown"},
+	}
+
+	for _, tc := range tests {
+		tc := tc
+
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
+			if got := tc.act.String(); got != tc.want {
+				t.Fatalf("labelRemovalAction(%d).String() = %q, want %q", tc.act, got, tc.want)
+			}
+		})
+	}
+}

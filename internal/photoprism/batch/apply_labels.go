@@ -24,6 +24,20 @@ const (
 	labelRemovalDelete
 )
 
+// String returns a stable action name so logs and errors stay readable.
+func (a labelRemovalAction) String() string {
+	switch a {
+	case labelRemovalKeep:
+		return "keep"
+	case labelRemovalBlock:
+		return "block"
+	case labelRemovalDelete:
+		return "delete"
+	default:
+		return "unknown"
+	}
+}
+
 // Locking note: testers observed MySQL deadlocks (error 1213) when concurrent
 // batch edits inserted / removed rows in photos_labels. The helpers below retry
 // a few times with a short backoff so we can surface success whenever InnoDB
@@ -204,7 +218,7 @@ func determineLabelRemovalAction(pl *entity.PhotoLabel) labelRemovalAction {
 		return labelRemovalKeep
 	}
 
-	priority := labelPriority(pl.LabelSrc)
+	priority := entity.SrcPriority[pl.LabelSrc]
 	batchPriority := entity.SrcPriority[entity.SrcBatch]
 
 	if priority > batchPriority {
@@ -251,17 +265,6 @@ func markLabelBlocked(pl *entity.PhotoLabel) bool {
 	}
 
 	return changed
-}
-
-// labelPriority returns the configured priority value for the provided source.
-func labelPriority(src string) int {
-	if src == "" {
-		return 0
-	}
-	if priority, ok := entity.SrcPriority[src]; ok {
-		return priority
-	}
-	return 0
 }
 
 // findLabelEntityForRemoval tries to resolve the label referenced in a removal
