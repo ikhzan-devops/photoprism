@@ -591,7 +591,6 @@ export default {
       loading: false,
       saving: false,
       subscriptions: [],
-
       selectionsFullInfo: [],
       selectedPhotosLength: 0,
       expanded: [0],
@@ -793,6 +792,7 @@ export default {
       this.$view.enter(this);
 
       // Load data when dialog opens.
+      this.placesDisabled = !this.$config.feature("places");
       this.expanded = [];
       return this.fetchAvailableOptions()
         .then(() => {

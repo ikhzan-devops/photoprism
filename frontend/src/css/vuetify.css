@@ -407,6 +407,12 @@ div.v-dialog.v-dialog--fullscreen > div.v-card {
     line-height: inherit;
 }
 
+.v-field--prepended:hover .v-field__prepend-inner .v-icon--clickable {
+    color: rgb(var(--v-theme-primary));
+}
+
+/* Tables */
+
 .v-table thead tr td,
 .v-table thead tr th,
 .v-table tfoot tr td,
