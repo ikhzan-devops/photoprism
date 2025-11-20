@@ -223,6 +223,7 @@ func determineLabelRemovalAction(pl *entity.PhotoLabel) labelRemovalAction {
 		if pl.Uncertainty < 100 {
 			return labelRemovalBlock
 		}
+
 		return labelRemovalKeep
 	}
 
