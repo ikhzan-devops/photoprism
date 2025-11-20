@@ -166,6 +166,28 @@ func TestAddPhotoToUserAlbums(t *testing.T) {
 	})
 }
 
+func TestAlbumSearch(t *testing.T) {
+	t.Run("DefaultsManual", func(t *testing.T) {
+		result := AlbumSearch("as6sg6bxpogaaba8", "Holiday 2030", "")
+		assert.Equal(t, AlbumManual, result.AlbumType)
+		assert.Equal(t, "as6sg6bxpogaaba8", result.AlbumUID)
+		assert.NotEmpty(t, result.AlbumSlug)
+	})
+	t.Run("CustomType", func(t *testing.T) {
+		result := AlbumSearch("as6sg6bipogaaba1", "April 1990", AlbumFolder)
+		assert.Equal(t, AlbumFolder, result.AlbumType)
+		assert.Equal(t, "april-1990", result.AlbumSlug)
+	})
+	t.Run("IntegrationWithFind", func(t *testing.T) {
+		search := AlbumSearch("as6sg6bxpogaaba8", "Holiday 2030", AlbumManual)
+		found := FindAlbum(search)
+		if found == nil {
+			t.Fatal("expected find to return album")
+		}
+		assert.Equal(t, "as6sg6bxpogaaba8", found.AlbumUID)
+	})
+}
+
 // TestAddPhotoToUserAlbumsConcurrentCreate exercises the related album behavior.
 func TestAddPhotoToUserAlbumsConcurrentCreate(t *testing.T) {
 	_ = Db().Where("album_title = ?", "ConcurrencyTestAlbum").Unscoped().Delete(&Album{})
@@ -490,6 +512,34 @@ func TestFindAlbum(t *testing.T) {
 		result := FindAlbum(album)
 
 		assert.Nil(t, result)
+	})
+	t.Run("RejectsEmptySlugSearch", func(t *testing.T) {
+		base := Album{AlbumUID: "as6sg6bxpogaaba8"}
+		reference := base.Find()
+		if reference == nil {
+			t.Fatal("expected fixture album as6sg6bxpogaaba8 to exist")
+		}
+
+		originalSlug := reference.AlbumSlug
+
+		if err := Db().Model(&Album{}).
+			Where("album_uid = ?", reference.AlbumUID).
+			UpdateColumn("album_slug", "").Error; err != nil {
+			t.Fatalf("failed to blank album slug: %v", err)
+		}
+
+		FlushAlbumCache()
+
+		t.Cleanup(func() {
+			_ = Db().Model(&Album{}).
+				Where("album_uid = ?", reference.AlbumUID).
+				UpdateColumn("album_slug", originalSlug).Error
+			FlushAlbumCache()
+		})
+
+		if result := FindAlbum(Album{AlbumType: AlbumManual, AlbumSlug: ""}); result != nil {
+			t.Fatalf("expected empty slug lookup to return nil, got %s", result.AlbumUID)
+		}
 	})
 }
 

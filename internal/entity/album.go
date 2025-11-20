@@ -419,6 +419,27 @@ func FindFolderAlbum(albumPath string) *Album {
 	return &m
 }
 
+// AlbumSearch creates a new Album to be used as parameter for FindAlbum.
+func AlbumSearch(albumUid, albumTitle, albumType string) Album {
+	// Set default type.
+	if albumType == "" {
+		albumType = AlbumManual
+	}
+
+	// Set default values.
+	result := Album{
+		AlbumType: albumType,
+		AlbumUID:  albumUid,
+	}
+
+	// Set album title.
+	if albumTitle != "" {
+		result.SetTitle(albumTitle)
+	}
+
+	return result
+}
+
 // FindAlbum retrieves the matching record from the database and updates the entity.
 func FindAlbum(find Album) *Album {
 	m := Album{}
@@ -443,18 +464,18 @@ func FindAlbum(find Album) *Album {
 
 	// Search by slug and filter or title.
 	if find.AlbumType != AlbumManual {
-		if find.AlbumFilter != "" && find.AlbumSlug != UnknownSlug {
+		if find.AlbumFilter != "" && find.AlbumSlug != "" && find.AlbumSlug != UnknownSlug {
 			stmt = stmt.Where("album_slug = ? OR album_filter = ?", find.AlbumSlug, find.AlbumFilter)
 		} else if find.AlbumFilter != "" {
 			stmt = stmt.Where("album_filter = ?", find.AlbumFilter)
-		} else if find.AlbumSlug != UnknownSlug {
+		} else if find.AlbumSlug != "" && find.AlbumSlug != UnknownSlug {
 			stmt = stmt.Where("album_slug = ?", find.AlbumSlug)
 		} else {
 			return nil
 		}
-	} else if find.AlbumTitle != "" && find.AlbumSlug != UnknownSlug {
+	} else if find.AlbumTitle != "" && find.AlbumSlug != "" && find.AlbumSlug != UnknownSlug {
 		stmt = stmt.Where("album_slug = ? OR album_title LIKE ?", find.AlbumSlug, find.AlbumTitle)
-	} else if find.AlbumSlug != UnknownSlug {
+	} else if find.AlbumSlug != "" && find.AlbumSlug != UnknownSlug {
 		stmt = stmt.Where("album_slug = ?", find.AlbumSlug)
 	} else if find.AlbumTitle != "" {
 		stmt = stmt.Where("album_title LIKE ?", find.AlbumTitle)
