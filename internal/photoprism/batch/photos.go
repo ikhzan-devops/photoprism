@@ -84,7 +84,7 @@ func NewPhotosFormWithEntities(photos search.PhotoResults, preloaded map[string]
 		return nil
 	}
 
-	// Populate Albums and Labels from selected photos (no raw SQL; use preload helpers)
+	// Populate Albums and Labels from selected photos (no raw SQL; use preload helpers).
 	total := len(photos)
 	if total > 0 {
 		type albumAgg struct {
@@ -120,7 +120,7 @@ func NewPhotosFormWithEntities(photos search.PhotoResults, preloaded map[string]
 				albumCount[a.AlbumUID] = v
 			}
 
-			// Labels on this photo (only visible ones: uncertainty < 100)
+			// Labels on this photo (only visible ones: uncertainty < 100).
 			for _, pl := range p.Labels {
 				if pl.Uncertainty >= 100 || pl.Label == nil || !pl.Label.HasID() {
 					continue
@@ -136,7 +136,7 @@ func NewPhotosFormWithEntities(photos search.PhotoResults, preloaded map[string]
 			}
 		}
 
-		// Build Albums items
+		// Build Albums items.
 		frm.Albums.Items = make([]Item, 0, len(albumCount))
 		anyAlbumMixed := false
 
@@ -148,7 +148,7 @@ func NewPhotosFormWithEntities(photos search.PhotoResults, preloaded map[string]
 			frm.Albums.Items = append(frm.Albums.Items, Item{Value: uid, Title: agg.title, Mixed: mixed, Action: ActionNone})
 		}
 
-		// Sort shared-first (Mixed=false), then by Title alphabetically
+		// Sort shared-first (Mixed=false), then by Title alphabetically.
 		sort.Slice(frm.Albums.Items, func(i, j int) bool {
 			if frm.Albums.Items[i].Mixed != frm.Albums.Items[j].Mixed {
 				return !frm.Albums.Items[i].Mixed && frm.Albums.Items[j].Mixed
@@ -159,7 +159,7 @@ func NewPhotosFormWithEntities(photos search.PhotoResults, preloaded map[string]
 		frm.Albums.Mixed = anyAlbumMixed
 		frm.Albums.Action = ActionNone
 
-		// Build Labels items
+		// Build Labels items.
 		frm.Labels.Items = make([]Item, 0, len(labelCount))
 		anyLabelMixed := false
 		for uid, agg := range labelCount {
@@ -170,7 +170,7 @@ func NewPhotosFormWithEntities(photos search.PhotoResults, preloaded map[string]
 			frm.Labels.Items = append(frm.Labels.Items, Item{Value: uid, Title: agg.name, Mixed: mixed, Action: ActionNone})
 		}
 
-		// Sort shared-first (Mixed=false), then by Title alphabetically
+		// Sort shared-first (Mixed=false), then by Title alphabetically.
 		sort.Slice(frm.Labels.Items, func(i, j int) bool {
 			if frm.Labels.Items[i].Mixed != frm.Labels.Items[j].Mixed {
 				return !frm.Labels.Items[i].Mixed && frm.Labels.Items[j].Mixed
