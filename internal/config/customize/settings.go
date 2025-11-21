@@ -3,6 +3,7 @@ package customize
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"gopkg.in/yaml.v2"
 
@@ -11,6 +12,7 @@ import (
 	"github.com/photoprism/photoprism/pkg/i18n"
 )
 
+// RootPath defines the default root directory used for import and index settings.
 const (
 	RootPath = "/"
 )
@@ -169,7 +171,9 @@ func (s *Settings) Load(fileName string) error {
 		return fmt.Errorf("settings file not found: %s", clean.Log(fileName))
 	}
 
-	yamlConfig, err := os.ReadFile(fileName)
+	name := filepath.Clean(fileName)
+
+	yamlConfig, err := os.ReadFile(name) // #nosec G304 -- file path is provided by the caller and validated above
 
 	if err != nil {
 		return err
@@ -198,9 +202,5 @@ func (s *Settings) Save(fileName string) error {
 
 	s.Propagate()
 
-	if err = os.WriteFile(fileName, data, fs.ModeConfigFile); err != nil {
-		return err
-	}
-
-	return nil
+	return os.WriteFile(fileName, data, fs.ModeConfigFile)
 }
