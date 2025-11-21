@@ -44,6 +44,7 @@ case $DESTARCH in
     GOBIN="/usr/local/bin" go install github.com/psampaz/go-mod-outdated@latest
     GOBIN="/usr/local/bin" go install github.com/kyoh86/richgo@latest
     GOBIN="/usr/local/bin" go install github.com/goreleaser/nfpm/v2/cmd/nfpm@latest
+    GOBIN="/usr/local/bin" go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
     ;;
 
   *)
@@ -58,6 +59,7 @@ case $DESTARCH in
     GOBIN="/usr/local/bin" go install github.com/goreleaser/nfpm/v2/cmd/nfpm@latest
     GOBIN="/usr/local/bin" go install github.com/google/go-licenses@latest
     GOBIN="/usr/local/bin" go install github.com/swaggo/swag/cmd/swag@latest
+    GOBIN="/usr/local/bin" go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
     ;;
 esac
 

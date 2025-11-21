@@ -1,0 +1,21 @@
+version: "2"
+
+linters:
+  default: standard
+
+  # Extra linters that are usually worth the cost even on a big codebase.
+  enable:
+    - revive
+    - gosec
+    - gocritic   # good generic bug/quality suggestions
+    - misspell   # catch obvious spelling mistakes in identifiers/comments
+
+  # Linters that tend to fight with established code style or structure:
+  disable:
+    - funlen
+    - gocyclo
+    - wsl
+    - lll        # don't enforce a strict max line length
+    - mnd        # don't go after every "magic number"
+    - depguard   # only useful once you define strict dependency rules
+    - gomodguard
