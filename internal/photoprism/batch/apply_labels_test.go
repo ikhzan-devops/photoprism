@@ -309,7 +309,7 @@ func TestApplyLabels(t *testing.T) {
 		photo := entity.PhotoFixtures.Pointer("Photo10")
 		label := entity.LabelFixtures.Get("landscape")
 
-		// First, delete any existing photo-label relation to ensure clean test.
+		// First, delete any existing photo-label to ensure clean start.
 		if existing, err := entity.FindPhotoLabel(photo.ID, label.ID, true); err == nil && existing != nil {
 			assert.NoError(t, existing.Delete())
 		}
@@ -323,6 +323,11 @@ func TestApplyLabels(t *testing.T) {
 		if photoLabel == nil {
 			t.Fatal("failed to create photo label")
 		}
+
+		// Finally, delete the added photo label to ensure a clean state.
+		t.Cleanup(func() {
+			_ = photoLabel.Delete()
+		})
 
 		// Verify initial state
 		if photoLabel.Uncertainty != 50 {
@@ -359,23 +364,11 @@ func TestApplyLabels(t *testing.T) {
 		if updatedLabel.LabelSrc != entity.SrcBatch {
 			t.Errorf("expected label source %s, got %s", entity.SrcBatch, updatedLabel.LabelSrc)
 		}
-
-		// Finally delete the added photo-label relation to ensure clean test.
-		if existing, err := entity.FindPhotoLabel(photo.ID, label.ID, true); err == nil && existing != nil {
-			assert.NoError(t, existing.Delete())
-		}
 	})
 	t.Run("AddExistingBatchLabelZeroConfidence", func(t *testing.T) {
-		photo := entity.PhotoFixtures.Pointer("Photo10")
-		label := entity.LabelFixtures.Get("landscape")
-
-		// First, delete any existing photo-label relation to ensure clean test.
-		if existing, err := entity.FindPhotoLabel(photo.ID, label.ID, true); err == nil && existing != nil {
-			assert.NoError(t, existing.Delete())
-		}
-
 		// Load labels from database.
-		photo.PreloadLabels()
+		photo := entity.PhotoFixtures.Pointer("Photo10").PreloadLabels()
+		label := entity.LabelFixtures.Get("landscape")
 
 		// Add label with some uncertainty using FirstOrCreatePhotoLabel.
 		photoLabel := entity.FirstOrCreatePhotoLabel(entity.NewPhotoLabel(photo.ID, label.ID, 100, entity.SrcBatch))
@@ -383,6 +376,11 @@ func TestApplyLabels(t *testing.T) {
 		if photoLabel == nil {
 			t.Fatal("failed to create photo label")
 		}
+
+		// Finally, delete the added photo label to ensure a clean state.
+		t.Cleanup(func() {
+			_ = photoLabel.Delete()
+		})
 
 		// Verify initial state
 		if photoLabel.Uncertainty != 100 {
@@ -418,11 +416,6 @@ func TestApplyLabels(t *testing.T) {
 
 		if updatedLabel.LabelSrc != entity.SrcBatch {
 			t.Errorf("expected label source %s, got %s", entity.SrcBatch, updatedLabel.LabelSrc)
-		}
-
-		// Finally delete the added photo-label relation to ensure clean test.
-		if existing, err := entity.FindPhotoLabel(photo.ID, label.ID, true); err == nil && existing != nil {
-			assert.NoError(t, existing.Delete())
 		}
 	})
 	t.Run("InvalidPhotoReturnsError", func(t *testing.T) {
