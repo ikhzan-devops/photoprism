@@ -1,6 +1,6 @@
 ## PhotoPrism — Batch Edit Package
 
-**Last Updated:** November 20, 2025
+**Last Updated:** November 21, 2025
 
 ### Overview
 
@@ -226,6 +226,8 @@ Testers reported intermittent `Error 1213 (40001)` deadlocks when multiple batch
   - The package uses the shared `event.Log` logger. Debug logs trace selections, album/label changes, and dirty-field sets; warnings/errors surface failed queries so operators can inspect database health. The final `INFO` line now reports metadata success counts alongside album and label mutations (including error tallies) so label-only edits no longer read as “0 out of N photos”.
 - **Metrics & Alerts**  
   - The API shares the `/api/v1/metrics` Prometheus endpoint; batch edits increment the standard HTTP counters/latencies. Consider dashboarding 5xx/4xx spikes for `/batch/photos/edit` if you rely heavily on automation.
+
+> When adjusting `internal/photoprism/batch/apply_labels*.go`, remember tests assert cache behavior. Call `photo.PreloadLabels()` after deleting existing label relations and set `Items.Action = ActionUpdate` whenever labels are (re)added/removed in tests; otherwise cached joins may cause flakiness when subtests run together.
 
 ### Documentation & References
 
