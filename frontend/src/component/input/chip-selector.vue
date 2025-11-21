@@ -38,7 +38,6 @@
       <v-combobox
         ref="inputField"
         v-model="newItemTitle"
-        v-model:menu="menuOpen"
         :placeholder="computedInputPlaceholder"
         :persistent-placeholder="true"
         :items="availableItems"
@@ -52,7 +51,6 @@
         @keydown.enter.prevent="onEnter"
         @blur="addNewItem"
         @update:model-value="onComboboxChange"
-        @update:menu="onMenuUpdate"
       >
         <template #no-data>
           <v-list-item>
@@ -111,8 +109,6 @@ export default {
   data() {
     return {
       newItemTitle: null,
-      menuOpen: false,
-      suppressMenuOpen: false,
     };
   },
   computed: {
@@ -136,24 +132,12 @@ export default {
     },
   },
   methods: {
-    suppressMenuTemporarily(callback) {
-      this.suppressMenuOpen = true;
-
-      if (typeof callback === "function") {
-        callback();
-      }
-
-      window.setTimeout(() => {
-        this.suppressMenuOpen = false;
-      }, 250);
-    },
-
     normalizeTitle(text) {
       const input = text == null ? "" : String(text);
       if (typeof this.normalizeTitleForCompare === "function") {
         try {
           return this.normalizeTitleForCompare(input);
-        } catch (e) {
+        } catch {
           return input.toLowerCase();
         }
       }
@@ -249,21 +233,18 @@ export default {
 
     onComboboxChange(value) {
       if (value && typeof value === "object" && value.title) {
-        this.suppressMenuTemporarily(() => {
-          this.newItemTitle = value;
-          this.addNewItem();
-          this.menuOpen = false;
-          // Immediately clear the input, remove focus and restore placeholder
-          this.$nextTick(() => {
-            this.newItemTitle = "";
-            if (this.$refs.inputField) {
-              this.$refs.inputField.blur();
-              // Force the combobox to reset completely
-              setTimeout(() => {
-                this.newItemTitle = null;
-              }, 10);
-            }
-          });
+        this.newItemTitle = value;
+        this.addNewItem();
+        // Immediately clear the input, remove focus and restore placeholder
+        this.$nextTick(() => {
+          this.newItemTitle = "";
+          if (this.$refs.inputField) {
+            this.$refs.inputField.blur();
+            // Force the combobox to reset completely
+            setTimeout(() => {
+              this.newItemTitle = null;
+            }, 10);
+          }
         });
       } else {
         this.newItemTitle = value;
@@ -356,32 +337,15 @@ export default {
 
       this.$emit("update:items", [...this.items, newItem]);
       this.newItemTitle = null;
-      this.menuOpen = false;
-
-      // Refocus input field
-      this.$nextTick(() => {
-        if (this.$refs.inputField) {
-          this.$refs.inputField.focus();
-        }
-      });
     },
 
     onEnter() {
-      this.suppressMenuTemporarily(() => {
-        this.menuOpen = false;
-        this.addNewItem();
-      });
-    },
-
-    onMenuUpdate(val) {
-      if (val && this.suppressMenuOpen) {
-        this.menuOpen = false;
-        return;
+      this.addNewItem();
+      if (this.$refs.inputField) {
+        this.$refs.inputField.blur();
       }
-      this.menuOpen = val;
     },
     resetInputField() {
-      this.menuOpen = false;
       this.$nextTick(() => {
         this.newItemTitle = "";
         if (this.$refs.inputField) {
