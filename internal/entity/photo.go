@@ -747,7 +747,7 @@ func (m *Photo) IndexKeywords() error {
 }
 
 // PreloadFiles loads the non-deleted file records associated with the photo.
-func (m *Photo) PreloadFiles() {
+func (m *Photo) PreloadFiles() *Photo {
 	q := Db().
 		Table("files").
 		Select("files.*").
@@ -755,10 +755,12 @@ func (m *Photo) PreloadFiles() {
 		Order("files.file_name DESC")
 
 	Log("photo", "preload files", q.Scan(&m.Files).Error)
+
+	return m
 }
 
 // PreloadKeywords loads keyword entities linked to the photo.
-func (m *Photo) PreloadKeywords() {
+func (m *Photo) PreloadKeywords() *Photo {
 	q := Db().NewScope(nil).DB().
 		Table("keywords").
 		Select(`keywords.*`).
@@ -766,10 +768,12 @@ func (m *Photo) PreloadKeywords() {
 		Order("keywords.keyword ASC")
 
 	Log("photo", "preload files", q.Scan(&m.Keywords).Error)
+
+	return m
 }
 
 // PreloadAlbums loads albums related to the photo using the standard visibility filters.
-func (m *Photo) PreloadAlbums() {
+func (m *Photo) PreloadAlbums() *Photo {
 	q := Db().NewScope(nil).DB().
 		Table("albums").
 		Select(`albums.*`).
@@ -778,27 +782,33 @@ func (m *Photo) PreloadAlbums() {
 		Order("albums.album_title ASC")
 
 	Log("photo", "preload albums", q.Scan(&m.Albums).Error)
+
+	return m
 }
 
 // PreloadLabels loads labels related to the photo from the database. It is a
 // no-op when the Photo pointer is nil or the record has not been persisted yet
 // so call sites can invoke it defensively before reading `m.Labels`.
-func (m *Photo) PreloadLabels() {
+func (m *Photo) PreloadLabels() *Photo {
 	if m == nil {
-		return
+		return m
 	} else if !m.HasID() {
-		return
+		return m
 	}
 
 	Log("photo", "preload labels", Db().Model(PhotoLabel{}).Preload("Label").Where("photo_id = ?", m.ID).
 		Order("photos_labels.uncertainty ASC, photos_labels.label_id DESC").Find(&m.Labels).Error)
+
+	return m
 }
 
 // PreloadMany loads the primary supporting associations (files, keywords, albums).
-func (m *Photo) PreloadMany() {
+func (m *Photo) PreloadMany() *Photo {
 	m.PreloadFiles()
 	m.PreloadKeywords()
 	m.PreloadAlbums()
+
+	return m
 }
 
 // NormalizeValues updates the model values with the values from deprecated fields, if any.

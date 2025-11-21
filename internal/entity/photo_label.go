@@ -91,6 +91,7 @@ func (m *PhotoLabel) Save() error {
 
 // Create inserts a new row into the database without touching cache state.
 func (m *PhotoLabel) Create() error {
+	FlushCachedPhotoLabel(m)
 	return Db().Create(m).Error
 }
 
