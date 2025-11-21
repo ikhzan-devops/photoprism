@@ -17,12 +17,14 @@ func TestMain(m *testing.M) {
 	event.AuditLog = log
 
 	c := config.TestConfig()
-	defer c.CloseDb()
 
 	code := m.Run()
 
 	// Remove temporary SQLite files after running the tests.
 	fs.PurgeTestDbFiles(".", false)
+	if err := c.CloseDb(); err != nil {
+		log.Fatalf("close db: %v", err)
+	}
 
 	os.Exit(code)
 }
