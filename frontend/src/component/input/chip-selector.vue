@@ -48,7 +48,8 @@
         hide-no-data
         return-object
         class="chip-selector__input"
-        @keydown.enter.prevent="onEnter"
+        :menu-props="menuProps"
+        @keydown.enter.stop.prevent="onEnter"
         @blur="addNewItem"
         @update:model-value="onComboboxChange"
       >
@@ -109,6 +110,9 @@ export default {
   data() {
     return {
       newItemTitle: null,
+      menuProps: {
+        disableInitialFocus: true,
+      },
     };
   },
   computed: {
@@ -235,17 +239,7 @@ export default {
       if (value && typeof value === "object" && value.title) {
         this.newItemTitle = value;
         this.addNewItem();
-        // Immediately clear the input, remove focus and restore placeholder
-        this.$nextTick(() => {
-          this.newItemTitle = "";
-          if (this.$refs.inputField) {
-            this.$refs.inputField.blur();
-            // Force the combobox to reset completely
-            setTimeout(() => {
-              this.newItemTitle = null;
-            }, 10);
-          }
-        });
+        this.newItemTitle = null;
       } else {
         this.newItemTitle = value;
       }
@@ -323,7 +317,7 @@ export default {
           this.$emit("update:items", updatedItems);
         }
 
-        this.resetInputField();
+        this.newItemTitle = null;
         return;
       }
 
@@ -341,22 +335,6 @@ export default {
 
     onEnter() {
       this.addNewItem();
-      if (this.$refs.inputField) {
-        this.$refs.inputField.blur();
-      }
-    },
-    resetInputField() {
-      this.$nextTick(() => {
-        this.newItemTitle = "";
-        if (this.$refs.inputField) {
-          this.$refs.inputField.blur();
-          setTimeout(() => {
-            this.newItemTitle = null;
-          }, 10);
-        } else {
-          this.newItemTitle = null;
-        }
-      });
     },
   },
 };
