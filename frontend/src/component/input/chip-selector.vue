@@ -38,6 +38,7 @@
       <v-combobox
         ref="inputField"
         v-model="newItemTitle"
+        v-model:menu="menuOpen"
         :placeholder="computedInputPlaceholder"
         :persistent-placeholder="true"
         :items="availableItems"
@@ -113,6 +114,7 @@ export default {
       menuProps: {
         disableInitialFocus: true,
       },
+      menuOpen: false,
     };
   },
   computed: {
@@ -240,6 +242,7 @@ export default {
         this.newItemTitle = value;
         this.addNewItem();
         this.newItemTitle = null;
+        this.menuOpen = false;
       } else {
         this.newItemTitle = value;
       }
@@ -335,6 +338,9 @@ export default {
 
     onEnter() {
       this.addNewItem();
+      this.$nextTick(() => {
+        this.menuOpen = false;
+      });
     },
   },
 };
