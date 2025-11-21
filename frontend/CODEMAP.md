@@ -1,6 +1,6 @@
 PhotoPrism — Frontend CODEMAP
 
-**Last Updated:** November 17, 2025
+**Last Updated:** November 21, 2025
 
 Purpose
 - Help agents and contributors navigate the Vue 3 + Vuetify 3 app quickly and make safe changes.
@@ -83,7 +83,7 @@ Testing
 Build & Tooling
 - Webpack is used for bundling; scripts in `frontend/package.json`:
   - `npm run build` (prod), `npm run build-dev` (dev), `npm run watch`
-  - Lint/format: `npm run lint`, `npm run fmt`
+  - Lint/format: `npm run lint` or `make lint-js`; repo root `make lint` runs both backend (golangci-lint via `.golangci.yml`) and frontend linters
   - Security scan: `npm run security:scan` (checks `--ignore-scripts` and forbids `v-html`)
 - Licensing: run `make notice` from the repo root to regenerate `NOTICE` files after dependency changes—never edit them manually.
 - Make targets (from repo root): `make build-js`, `make watch-js`, `make test-js`
