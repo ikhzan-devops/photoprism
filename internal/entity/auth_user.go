@@ -488,7 +488,7 @@ func (m *User) CanUpload() bool {
 	}
 }
 
-// DefaultBasePath returns the default base path of the user based on the user name.
+// DefaultBasePath returns the default base path of the user based on the username.
 func (m *User) DefaultBasePath() string {
 	if s := m.Handle(); s == "" {
 		return ""
@@ -1241,7 +1241,7 @@ func (m *User) HasShares() bool {
 	return !m.NoShares()
 }
 
-// HasShare if a uid was shared with the user.
+// HasShare if an uid was shared with the user.
 func (m *User) HasShare(uid string) bool {
 	if m.NotRegistered() || m.NoShares() {
 		return false
