@@ -936,8 +936,13 @@ docker-dummy-oidc:
 packer-digitalocean:
 	$(info Buildinng DigitalOcean marketplace image...)
 	(cd ./setup/docker/cloud && packer build digitalocean.json)
+lint: lint-js lint-go
 lint-js:
-	(cd frontend &&	npm run lint)
+	$(info Linting JS code...)
+	$(MAKE) -C frontend lint
+lint-go:
+	$(info Linting Go code...)
+	golangci-lint run --issues-exit-code 0 ./pkg/... ./internal/... ./.../internal/...
 fmt-js:
 	(cd frontend &&	npm run fmt)
 fmt-go:
