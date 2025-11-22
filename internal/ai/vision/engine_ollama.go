@@ -70,8 +70,7 @@ func (ollamaDefaults) SchemaTemplate(model *Model) string {
 		return ""
 	}
 
-	switch model.Type {
-	case ModelTypeLabels:
+	if model.Type == ModelTypeLabels {
 		return ollama.SchemaLabels(model.PromptContains("nsfw"))
 	}
 

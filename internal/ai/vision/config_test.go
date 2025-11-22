@@ -70,7 +70,7 @@ func TestConfigValues_LoadDefaultModelDisabled(t *testing.T) {
 }
 
 func TestConfigModelPrefersLastEnabled(t *testing.T) {
-	defaultModel := *NasnetModel
+	defaultModel := *NasnetModel //nolint:govet // copy for test to avoid mutating shared model
 	defaultModel.Disabled = false
 	defaultModel.Name = "nasnet-default"
 

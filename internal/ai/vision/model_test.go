@@ -219,7 +219,7 @@ func TestModelGetSource(t *testing.T) {
 }
 
 func TestModel_IsDefault(t *testing.T) {
-	nasnetCopy := *NasnetModel
+	nasnetCopy := *NasnetModel //nolint:govet // copy for test inspection only
 	nasnetCopy.Default = false
 
 	cases := []struct {

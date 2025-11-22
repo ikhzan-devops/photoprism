@@ -142,13 +142,15 @@ func (openaiBuilder) Build(ctx context.Context, model *Model, files Files) (*Api
 
 	if opts := model.GetOptions(); opts != nil {
 		req.Options = cloneOptions(opts)
-		if model.Type == ModelTypeCaption {
+
+		switch model.Type {
+		case ModelTypeCaption:
 			// Captions default to plain text responses; structured JSON is optional.
 			req.Options.ForceJson = false
 			if req.Options.MaxOutputTokens < openai.CaptionMaxTokens {
 				req.Options.MaxOutputTokens = openai.CaptionMaxTokens
 			}
-		} else if model.Type == ModelTypeLabels {
+		case ModelTypeLabels:
 			if req.Options.MaxOutputTokens < openai.LabelsMaxTokens {
 				req.Options.MaxOutputTokens = openai.LabelsMaxTokens
 			}

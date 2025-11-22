@@ -16,22 +16,38 @@ import (
 )
 
 var (
-	CachePath             = ""
-	ModelsPath            = ""
-	DownloadUrl           = ""
-	ServiceApi            = false
-	ServiceUri            = ""
-	ServiceKey            = ""
-	ServiceTimeout        = 10 * time.Minute
-	ServiceMethod         = http.MethodPost
-	ServiceFileScheme     = scheme.Data
-	ServiceRequestFormat  = ApiFormatVision
+	// CachePath stores the directory used for caching downloaded vision models.
+	CachePath = ""
+	// ModelsPath stores the directory containing downloaded vision models.
+	ModelsPath = ""
+	// DownloadUrl overrides the default model download endpoint when set.
+	DownloadUrl = ""
+	// ServiceApi enables exposing vision APIs via the service layer when true.
+	ServiceApi = false
+	// ServiceUri sets the base URI for the vision service when exposed externally.
+	ServiceUri = ""
+	// ServiceKey provides an optional API key for the vision service.
+	ServiceKey = ""
+	// ServiceTimeout sets the maximum duration for service API requests.
+	ServiceTimeout = 10 * time.Minute
+	// ServiceMethod defines the HTTP verb used when calling the vision service.
+	ServiceMethod = http.MethodPost
+	// ServiceFileScheme specifies how local files are encoded when sent to the service.
+	ServiceFileScheme = scheme.Data
+	// ServiceRequestFormat sets the default payload format for service requests.
+	ServiceRequestFormat = ApiFormatVision
+	// ServiceResponseFormat sets the expected response format from the service.
 	ServiceResponseFormat = ApiFormatVision
-	DefaultResolution     = 224
-	DefaultTemperature    = 0.1
-	MaxTemperature        = 2.0
-	DefaultSrc            = entity.SrcImage
-	DetectNSFWLabels      = false
+	// DefaultResolution specifies the default square resize dimension for model inputs.
+	DefaultResolution = 224
+	// DefaultTemperature sets the sampling temperature for compatible models.
+	DefaultTemperature = 0.1
+	// MaxTemperature clamps user-supplied temperatures to a safe upper bound.
+	MaxTemperature = 2.0
+	// DefaultSrc defines the fallback source string for generated labels.
+	DefaultSrc = entity.SrcImage
+	// DetectNSFWLabels toggles NSFW label detection in vision responses.
+	DetectNSFWLabels = false
 )
 
 // Config reference the current configuration options.
@@ -65,7 +81,7 @@ func (c *ConfigValues) Load(fileName string) error {
 		return fmt.Errorf("%s not found", clean.Log(fileName))
 	}
 
-	yamlConfig, err := os.ReadFile(fileName)
+	yamlConfig, err := os.ReadFile(fileName) // #nosec G304 fileName is from validated config path
 
 	if err != nil {
 		return err
@@ -141,11 +157,7 @@ func (c *ConfigValues) Save(fileName string) error {
 		return err
 	}
 
-	if err = os.WriteFile(fileName, data, fs.ModeConfigFile); err != nil {
-		return err
-	}
-
-	return nil
+	return os.WriteFile(fileName, data, fs.ModeConfigFile)
 }
 
 // Model returns the first enabled model with the matching type.
@@ -260,18 +272,22 @@ func GetModelsPath() string {
 	return ModelsPath
 }
 
+// GetModelPath returns the absolute path of a named model file in CachePath.
 func GetModelPath(name string) string {
 	return filepath.Join(GetModelsPath(), clean.Path(clean.TypeLowerUnderscore(name)))
 }
 
+// GetNasnetModelPath returns the absolute path of the default Nasnet model.
 func GetNasnetModelPath() string {
 	return GetModelPath(NasnetModel.Name)
 }
 
+// GetFacenetModelPath returns the absolute path of the default Facenet model.
 func GetFacenetModelPath() string {
 	return GetModelPath(FacenetModel.Name)
 }
 
+// GetNsfwModelPath returns the absolute path of the default NSFW model.
 func GetNsfwModelPath() string {
 	return GetModelPath(NsfwModel.Name)
 }

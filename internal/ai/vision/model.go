@@ -488,6 +488,7 @@ func (m *Model) SchemaTemplate() string {
 				if path == "" {
 					path = envFile
 				}
+				// #nosec G304 path comes from validated config/env
 				if data, err := os.ReadFile(path); err != nil {
 					log.Warnf("vision: failed to read schema from %s (%s)", clean.Log(path), err)
 				} else {
@@ -505,6 +506,7 @@ func (m *Model) SchemaTemplate() string {
 			if path == "" {
 				path = m.SchemaFile
 			}
+			// #nosec G304 schema file path provided via config
 			if data, err := os.ReadFile(path); err != nil {
 				log.Warnf("vision: failed to read schema from %s (%s)", clean.Log(path), err)
 			} else {
@@ -757,6 +759,6 @@ func (m *Model) Clone() *Model {
 		return nil
 	}
 
-	c := *m
+	c := *m //nolint:govet // Model contains sync.Once; shallow copy used for reporting
 	return &c
 }
