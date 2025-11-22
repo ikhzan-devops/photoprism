@@ -73,7 +73,7 @@ func BatchPhotosEdit(router *gin.RouterGroup) {
 			return
 		}
 
-		preloadedPhotos := map[string]*entity.Photo{}
+		var preloadedPhotos map[string]*entity.Photo
 
 		if hydrated, err := query.PhotoPreloadByUIDs(photos.UIDs()); err != nil {
 			log.Errorf("batch: failed to preload photo selection: %s", err)
@@ -107,7 +107,7 @@ func BatchPhotosEdit(router *gin.RouterGroup) {
 		// Refresh selected photos from database?
 		if !savedAny {
 			// Don't refresh.
-		} else if photos, count, err = search.BatchPhotos(frm.Photos, s); err != nil {
+		} else if photos, _, err = search.BatchPhotos(frm.Photos, s); err != nil {
 			log.Errorf("batch: %s (refresh selection)", clean.Error(err))
 		}
 

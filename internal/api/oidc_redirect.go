@@ -66,8 +66,7 @@ func OIDCRedirect(router *gin.RouterGroup) {
 		}
 
 		// Check request rate limit.
-		var r *limiter.Request
-		r = limiter.Login.Request(clientIp)
+		r := limiter.Login.Request(clientIp)
 
 		// Abort if failure rate limit is exceeded.
 		if r.Reject() || limiter.Auth.Reject(clientIp) {
@@ -145,17 +144,18 @@ func OIDCRedirect(router *gin.RouterGroup) {
 			event.AuditInfo([]string{clientIp, "create session", "oidc", "found user", userName})
 
 			// Check if the account is enabled and the OIDC Subject ID matches.
-			if !user.CanLogIn() {
+			switch {
+			case !user.CanLogIn():
 				event.AuditErr([]string{clientIp, "create session", "oidc", userName, authn.ErrAccountDisabled.Error()})
 				event.LoginError(clientIp, "oidc", userName, userAgent, authn.ErrAccountDisabled.Error())
 				c.HTML(http.StatusUnauthorized, "auth.gohtml", CreateSessionError(http.StatusUnauthorized, i18n.Error(i18n.ErrInvalidCredentials)))
 				return
-			} else if authn.ProviderOIDC.NotEqual(user.AuthProvider) {
+			case authn.ProviderOIDC.NotEqual(user.AuthProvider):
 				event.AuditErr([]string{clientIp, "create session", "oidc", userName, authn.ErrAuthProviderIsNotOIDC.Error()})
 				event.LoginError(clientIp, "oidc", userName, userAgent, authn.ErrAuthProviderIsNotOIDC.Error())
 				c.HTML(http.StatusUnauthorized, "auth.gohtml", CreateSessionError(http.StatusUnauthorized, i18n.Error(i18n.ErrInvalidCredentials)))
 				return
-			} else if user.AuthID == "" || oidcUser.AuthID == "" || user.AuthID != oidcUser.AuthID {
+			case user.AuthID == "" || oidcUser.AuthID == "" || user.AuthID != oidcUser.AuthID:
 				event.AuditErr([]string{clientIp, "create session", "oidc", userName, authn.ErrInvalidAuthID.Error()})
 				event.LoginError(clientIp, "oidc", userName, userAgent, authn.ErrInvalidAuthID.Error())
 				c.HTML(http.StatusUnauthorized, "auth.gohtml", CreateSessionError(http.StatusUnauthorized, i18n.Error(i18n.ErrInvalidCredentials)))
@@ -228,12 +228,12 @@ func OIDCRedirect(router *gin.RouterGroup) {
 			}
 
 			// Set user avatar image?
-			if avatarUrl := userInfo.Picture; avatarUrl == "" || user.HasAvatar() {
-				// Do nothing.
-			} else if err = avatar.SetUserImageURL(user, avatarUrl, entity.SrcOIDC, conf.ThumbCachePath()); err != nil {
-				event.AuditWarn([]string{clientIp, "create session", "oidc", userName, "failed to set avatar image", err.Error()})
+			if avatarUrl := userInfo.Picture; avatarUrl != "" && !user.HasAvatar() {
+				if err = avatar.SetUserImageURL(user, avatarUrl, entity.SrcOIDC, conf.ThumbCachePath()); err != nil {
+					event.AuditWarn([]string{clientIp, "create session", "oidc", userName, "failed to set avatar image", err.Error()})
+				}
 			}
-		} else if conf.UsersQuotaReached(conf.OIDCRole()) {
+		} else if conf.UsersQuotaReached(conf.OIDCRole()) { //nolint:gocritic
 			userName = oidcUser.Username()
 			event.AuditWarn([]string{clientIp, "create session", "oidc", "create user", userName, authn.ErrUsersQuotaExceeded.Error()})
 			event.LoginError(clientIp, "oidc", userName, userAgent, authn.ErrUsersQuotaExceeded.Error())
@@ -247,7 +247,7 @@ func OIDCRedirect(router *gin.RouterGroup) {
 
 			// Resolve potential naming conflict by adding a random number to the username.
 			if found := entity.FindUserByName(userName); found != nil {
-				userName = userName + rnd.Base10(6)
+				userName += rnd.Base10(6)
 			}
 
 			event.AuditInfo([]string{clientIp, "create session", "oidc", "create user", userName})
