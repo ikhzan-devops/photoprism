@@ -1,5 +1,9 @@
 ## PhotoPrism — Download Helpers
 
+**Last Updated:** November 22, 2025
+
+### Overview
+
 This package provides thin wrappers around `yt-dlp`, which the `photoprism dl` command uses for metadata discovery and downloading.
 
 It currently supports two invocation methods:
