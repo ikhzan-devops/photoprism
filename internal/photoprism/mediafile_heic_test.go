@@ -32,14 +32,12 @@ func TestMediaFile_Heic(t *testing.T) {
 		convert := NewConvert(conf)
 
 		// Create JPEG image.
-		jpeg, err := convert.ToImage(img, false)
-
-		if err != nil {
+		if _, err = convert.ToImage(img, false); err != nil {
 			t.Fatal(err)
 		}
 
 		// Replace JPEG image.
-		jpeg, err = convert.ToImage(img, true)
+		jpeg, err := convert.ToImage(img, true)
 
 		if err != nil {
 			t.Fatal(err)
@@ -97,14 +95,12 @@ func TestMediaFile_Heic(t *testing.T) {
 		convert := NewConvert(c)
 
 		// Create JPEG image.
-		jpeg, err := convert.ToImage(img, false)
-
-		if err != nil {
+		if _, err = convert.ToImage(img, false); err != nil {
 			t.Fatal(err)
 		}
 
 		// Replace JPEG image.
-		jpeg, err = convert.ToImage(img, true)
+		jpeg, err := convert.ToImage(img, true)
 
 		if err != nil {
 			t.Fatal(err)
