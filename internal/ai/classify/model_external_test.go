@@ -25,7 +25,7 @@ const (
 var baseUrl = "https://dl.photoprism.app/tensorflow/models"
 
 // To avoid downloading everything again and again...
-//var baseUrl = "http://host.docker.internal:8000"
+// var baseUrl = "http://host.docker.internal:8000"
 
 type ModelTestCase struct {
 	Info   *tensorflow.ModelInfo
@@ -286,7 +286,7 @@ func testModel_LabelsFromFile(t *testing.T, tensorFlow *Model) {
 
 		if len(result) > 0 {
 			assert.Contains(t, result[0].Name, "chameleon")
-			//assert.Equal(t, 7, result[0].Uncertainty)
+			// assert.Equal(t, 7, result[0].Uncertainty)
 		}
 	})
 	t.Run(testName("cat_224.jpeg"), func(t *testing.T) {
@@ -312,7 +312,7 @@ func testModel_LabelsFromFile(t *testing.T, tensorFlow *Model) {
 		assert.NoError(t, err)
 		assert.NotNil(t, result)
 		assert.IsType(t, Labels{}, result)
-		//assert.Equal(t, 3, len(result))
+		// assert.Equal(t, 3, len(result))
 		assert.GreaterOrEqual(t, len(result), 1)
 
 		// t.Logf("labels: %#v", result)
