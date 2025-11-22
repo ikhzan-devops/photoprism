@@ -100,7 +100,14 @@ func ReadUrl(fileUrl string, schemes []string) (data []byte, err error) {
 			return DecodeBase64String(binaryData)
 		}
 	case scheme.File:
-		if data, err = os.ReadFile(fileUrl); err != nil { //nolint:gosec // fileUrl validated earlier
+		path := u.Path
+		if path == "" {
+			path = u.Opaque
+		}
+		if path == "" {
+			return data, fmt.Errorf("invalid %s url (empty path)", u.Scheme)
+		}
+		if data, err = os.ReadFile(path); err != nil { //nolint:gosec // file path validated earlier
 			return data, fmt.Errorf("invalid %s url (%s)", u.Scheme, err)
 		}
 	default:

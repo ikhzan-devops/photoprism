@@ -5,6 +5,8 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -74,6 +76,16 @@ func TestReadUrl(t *testing.T) {
 		// os.ReadFile will not accept a file:// URL; expect error path is exercised.
 		_, err := ReadUrl("file:///this/does/not/exist", []string{"file"})
 		assert.Error(t, err)
+	})
+	t.Run("FileSchemeValidPng", func(t *testing.T) {
+		tmp := t.TempDir()
+		fn := filepath.Join(tmp, "pic.png")
+		payload := append([]byte{0x89, 'P', 'N', 'G', '\r', '\n', 0x1A, '\n'}, bytes.Repeat([]byte{0}, 16)...)
+		assert.NoError(t, os.WriteFile(fn, payload, 0o600))
+
+		data, err := ReadUrl("file://"+fn, []string{"file"})
+		assert.NoError(t, err)
+		assert.Equal(t, payload, data)
 	})
 }
 
