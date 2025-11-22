@@ -62,16 +62,17 @@ func Vips(imageName string, imageBuffer []byte, hash, thumbPath string, width, h
 
 	// Choose thumbnail crop.
 	var crop vips.Interesting
-	if method == ResampleFillTopLeft {
+	switch method {
+	case ResampleFillTopLeft:
 		crop = vips.InterestingLow
 		size = vips.SizeBoth
-	} else if method == ResampleFillBottomRight {
+	case ResampleFillBottomRight:
 		crop = vips.InterestingHigh
 		size = vips.SizeBoth
-	} else if method == ResampleFit {
+	case ResampleFit:
 		crop = vips.InterestingNone
 		size = vips.SizeDown
-	} else if method == ResampleFillCenter || method == ResampleResize {
+	case ResampleFillCenter, ResampleResize:
 		crop = vips.InterestingCentre
 		size = vips.SizeBoth
 	}
