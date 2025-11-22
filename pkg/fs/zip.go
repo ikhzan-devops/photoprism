@@ -24,7 +24,7 @@ func Zip(zipName string, files []string, compress bool) (err error) {
 
 	var newZipFile *os.File
 
-	if newZipFile, err = os.Create(zipName); err != nil {
+	if newZipFile, err = os.Create(zipName); err != nil { //nolint:gosec // zipName provided by caller
 		return err
 	}
 
@@ -46,7 +46,7 @@ func Zip(zipName string, files []string, compress bool) (err error) {
 // ZipFile adds a file to a zip archive, optionally with an alias and compression.
 func ZipFile(zipWriter *zip.Writer, fileName, fileAlias string, compress bool) (err error) {
 	// Open file.
-	fileToZip, err := os.Open(fileName)
+	fileToZip, err := os.Open(fileName) //nolint:gosec // fileName provided by caller
 
 	if err != nil {
 		return err
@@ -174,7 +174,7 @@ func unzipFileWithLimit(f *zip.File, dir string, fileSizeLimit int64) (fileName 
 		return fileName, err
 	}
 
-	fd, err := os.OpenFile(fileName, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, f.Mode())
+	fd, err := os.OpenFile(fileName, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, f.Mode()) //nolint:gosec // destination derived from safeJoin
 	if err != nil {
 		return fileName, err
 	}

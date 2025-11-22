@@ -14,7 +14,7 @@ import (
 
 func writeZip(t *testing.T, path string, entries map[string][]byte) {
 	t.Helper()
-	f, err := os.Create(path)
+	f, err := os.Create(path) //nolint:gosec // test helper creates temp zip file
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -62,7 +62,7 @@ func TestUnzip_SkipRulesAndLimits(t *testing.T) {
 	// ok2 (1 byte) allowed; total limit reduces to 2; nothing else left that fits
 	assert.ElementsMatch(t, []string{filepath.Join(outDir, "ok2.txt")}, files)
 	// Ensure file written
-	b, rerr := os.ReadFile(filepath.Join(outDir, "ok2.txt"))
+	b, rerr := os.ReadFile(filepath.Join(outDir, "ok2.txt")) //nolint:gosec // test helper reads temp file
 	assert.NoError(t, rerr)
 	assert.Equal(t, []byte("x"), b)
 	// Skipped contains at least the three excluded entries
@@ -213,7 +213,7 @@ func writeZip64Stub(t *testing.T, path, name string, size uint64) {
 	if len(filename) > math.MaxUint16 {
 		t.Fatalf("filename too long")
 	}
-	writeLE(uint16(len(filename)))
+	writeLE(uint16(len(filename))) //nolint:gosec // filename length checked above
 	writeLE(localExtraLen)
 	bw(filename)
 	// zip64 extra
@@ -239,7 +239,7 @@ func writeZip64Stub(t *testing.T, path, name string, size uint64) {
 	if len(filename) > math.MaxUint16 {
 		t.Fatalf("filename too long")
 	}
-	writeLE(uint16(len(filename)))
+	writeLE(uint16(len(filename))) //nolint:gosec // filename length checked above
 	writeLE(centralExtraLen)
 	writeLE(uint16(0)) // comment len
 	writeLE(uint16(0)) // disk start
@@ -264,9 +264,9 @@ func writeZip64Stub(t *testing.T, path, name string, size uint64) {
 	if centralLen > math.MaxUint32 || localLen > math.MaxUint32 {
 		t.Fatalf("central or local length exceeds uint32")
 	}
-	writeLE(uint32(centralLen))
-	writeLE(uint32(localLen))
-	writeLE(uint16(0)) // comment length
+	writeLE(uint32(centralLen)) //nolint:gosec // lengths checked above
+	writeLE(uint32(localLen))   //nolint:gosec
+	writeLE(uint16(0))          // comment length
 
 	if err := os.WriteFile(path, buf, 0o600); err != nil {
 		t.Fatal(err)

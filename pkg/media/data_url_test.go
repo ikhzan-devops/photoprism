@@ -117,7 +117,8 @@ func TestDataUrl_WebpDetection(t *testing.T) {
 	// Minimal RIFF/WEBP container header
 	// RIFF <size=26> WEBP VP8  + padding
 	riff := []byte{'R', 'I', 'F', 'F', 26, 0, 0, 0, 'W', 'E', 'B', 'P', 'V', 'P', '8', ' '}
-	buf := append(riff, bytes.Repeat([]byte{0}, 32)...)
+	riff = append(riff, bytes.Repeat([]byte{0}, 32)...)
+	buf := riff
 	s := DataUrl(bytes.NewReader(buf))
 	assert.True(t, strings.HasPrefix(s, "data:image/webp;base64,"))
 }
