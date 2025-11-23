@@ -98,6 +98,47 @@ func OIDCRedirect(router *gin.RouterGroup) {
 			return
 		}
 
+		groupClaim := conf.OIDCGroupClaim()
+
+		var idTokenClaims map[string]any
+
+		if tokens != nil && tokens.IDTokenClaims != nil {
+			idTokenClaims = tokens.IDTokenClaims.Claims
+		}
+
+		groups, groupOverage := oidc.GroupsFromClaims(idTokenClaims, groupClaim)
+		moreGroups, moreOverage := oidc.GroupsFromClaims(userInfo.Claims, groupClaim)
+
+		if len(groups) == 0 && len(moreGroups) > 0 {
+			groups = moreGroups
+		}
+
+		if moreOverage {
+			groupOverage = true
+		}
+
+		requiredGroups := conf.OIDCGroup()
+
+		if len(requiredGroups) > 0 {
+			switch {
+			case groupOverage && len(groups) == 0:
+				message := "group claim overage; cannot validate required groups"
+				event.AuditErr([]string{clientIp, "create session", "oidc", message})
+				event.LoginError(clientIp, "oidc", userName, userAgent, message)
+				c.HTML(http.StatusUnauthorized, "auth.gohtml", CreateSessionError(http.StatusUnauthorized, i18n.Error(i18n.ErrForbidden)))
+				return
+			case !oidc.HasAnyGroup(groups, requiredGroups):
+				message := "missing required group membership"
+				event.AuditErr([]string{clientIp, "create session", "oidc", message})
+				event.LoginError(clientIp, "oidc", userName, userAgent, message)
+				c.HTML(http.StatusUnauthorized, "auth.gohtml", CreateSessionError(http.StatusUnauthorized, i18n.Error(i18n.ErrForbidden)))
+				return
+			}
+		}
+
+		mappedRole, hasMappedRole := oidc.MapGroupsToRole(groups, conf.OIDCGroupRoles())
+		defaultRole := conf.OIDCRole()
+
 		// Step 1: Create user account if it does not exist yet.
 		var user *entity.User
 		var err error
@@ -216,6 +257,10 @@ func OIDCRedirect(router *gin.RouterGroup) {
 				user.VerifiedAt = entity.TimeStamp()
 			}
 
+			if hasMappedRole && !user.HasRole(mappedRole) {
+				user.SetRole(mappedRole.String())
+			}
+
 			// Update Subject ID and Issuer URI.
 			user.SetAuthID(userInfo.Subject, provider.Issuer())
 
@@ -294,7 +339,11 @@ func OIDCRedirect(router *gin.RouterGroup) {
 			}
 
 			// Set user role and permissions.
-			user.SetRole(conf.OIDCRole().String())
+			if hasMappedRole {
+				user.SetRole(mappedRole.String())
+			} else {
+				user.SetRole(defaultRole.String())
+			}
 			user.CanLogin = true
 			user.WebDAV = conf.OIDCWebDAV()
 

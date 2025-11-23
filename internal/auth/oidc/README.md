@@ -53,13 +53,15 @@
 
 ### Security Group Extension for Entra ID
 
-- [ ] Parse `groups` claim (string GUIDs) from ID/Access tokens and map to roles using a configurable mapping, mirroring LDAP group handling.
-- [ ] Detect `_claim_names.groups` overage markers; optionally fetch memberships from Microsoft Graph (`/me/transitiveMemberOf`) behind a feature flag and enforced timeouts.
-- [ ] Keep `roles`/`wids` (app and directory roles) separate from security groups; document precedence.
-- [ ] Add unit tests with signed JWT fixtures covering: direct `groups` array, overage marker, and no-groups fallback.
+- [x] Parse `groups` claim (string GUIDs) from ID/Access tokens and map to roles using a configurable mapping, mirroring LDAP group handling.
+- [x] Detect `_claim_names.groups` overage markers; optionally fetch memberships from Microsoft Graph (`/me/transitiveMemberOf`) behind a feature flag and enforced timeouts.
+- [x] Keep `roles`/`wids` (app and directory roles) separate from security groups; document precedence.
+- [x] Add unit tests with signed JWT fixtures covering: direct `groups` array, overage marker, and no-groups fallback.
+- [x] Expose config knobs (e.g., `AuthOIDCGroupsToRoles`, Graph fetch enable/disable, request timeout) and surface them in CLI/`options.yml` reports.
 - [ ] Add integration doc/tests for Entra app registration requirements (`groupMembershipClaims=SecurityGroup|All|ApplicationGroup`) and token size limits (~200 groups).
-- [ ] Expose config knobs (e.g., `AuthOIDCGroupsToRoles`, Graph fetch enable/disable, request timeout) and surface them in CLI/`options.yml` reports.
 - [ ] Update Pro parity notes so LDAP and OIDC group mappings share helpers and behavior.
+
+> **Note:** Entra ID security groups are only supported in PhotoPrism® Pro, so the related configuration flags are hidden in other editions.
 
 #### Related Resources & Specs
 

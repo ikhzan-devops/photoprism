@@ -6,6 +6,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"sort"
 	"strings"
 	"unicode/utf8"
 
@@ -133,6 +134,62 @@ func (c *Config) OIDCUsername() string {
 	}
 }
 
+// OIDCGroupClaim returns the claim name that should contain security group identifiers.
+func (c *Config) OIDCGroupClaim() string {
+	if claim := strings.TrimSpace(c.options.OIDCGroupClaim); claim != "" {
+		return claim
+	}
+
+	return "groups"
+}
+
+// OIDCGroup returns the normalized list of required groups; empty means no group check.
+func (c *Config) OIDCGroup() []string {
+	if len(c.options.OIDCGroup) == 0 {
+		return nil
+	}
+
+	result := make([]string, 0, len(c.options.OIDCGroup))
+
+	for _, g := range c.options.OIDCGroup {
+		if n := normalizeGroupID(g); n != "" {
+			result = append(result, n)
+		}
+	}
+
+	return result
+}
+
+// OIDCGroupRoles maps normalized group identifiers to roles.
+func (c *Config) OIDCGroupRoles() map[string]acl.Role {
+	result := make(map[string]acl.Role, len(c.options.OIDCGroupRole))
+
+	for _, entry := range c.options.OIDCGroupRole {
+		entry = strings.TrimSpace(entry)
+
+		if entry == "" {
+			continue
+		}
+
+		sep := strings.IndexAny(entry, "=:")
+
+		if sep < 1 || sep >= len(entry)-1 {
+			continue
+		}
+
+		group := normalizeGroupID(entry[:sep])
+		role := acl.ParseRole(entry[sep+1:])
+
+		if group == "" || role == acl.RoleNone {
+			continue
+		}
+
+		result[group] = role
+	}
+
+	return result
+}
+
 // OIDCDomain returns the email domain name for restricted single sign-on via OIDC.
 func (c *Config) OIDCDomain() string {
 	return clean.Domain(c.options.OIDCDomain)
@@ -193,6 +250,25 @@ func (c *Config) OIDCReport() (rows [][]string, cols []string) {
 		rows = append(rows, []string{"oidc-domain", domain})
 	}
 
+	if claim := c.OIDCGroupClaim(); claim != "" {
+		rows = append(rows, []string{"oidc-group-claim", claim})
+	}
+
+	if groups := c.OIDCGroup(); len(groups) > 0 {
+		rows = append(rows, []string{"oidc-group", strings.Join(groups, ",")})
+	}
+
+	if roles := c.OIDCGroupRoles(); len(roles) > 0 {
+		pairs := make([]string, 0, len(roles))
+
+		for g, r := range roles {
+			pairs = append(pairs, fmt.Sprintf("%s=%s", g, r))
+		}
+
+		sort.Strings(pairs)
+		rows = append(rows, []string{"oidc-group-role", strings.Join(pairs, ",")})
+	}
+
 	rows = append(rows, [][]string{
 		{"oidc-role", c.OIDCRole().String()},
 		{"oidc-webdav", fmt.Sprintf("%t", c.OIDCWebDAV())},
@@ -200,4 +276,9 @@ func (c *Config) OIDCReport() (rows [][]string, cols []string) {
 	}...)
 
 	return rows, cols
+}
+
+// normalizeGroupID lowercases and sanitizes a group identifier (GUID or name) for comparisons.
+func normalizeGroupID(id string) string {
+	return strings.ToLower(clean.Auth(id))
 }
