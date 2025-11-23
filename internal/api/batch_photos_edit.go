@@ -1,6 +1,7 @@
 package api
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/dustin/go-humanize/english"
@@ -92,7 +93,12 @@ func BatchPhotosEdit(router *gin.RouterGroup) {
 		if frm.Values != nil {
 			outcome, saveErr := batch.PrepareAndSavePhotos(photos, preloadedPhotos, frm.Values)
 
-			if saveErr != nil {
+			switch {
+			case errors.Is(saveErr, batch.ErrBatchEditBusy), errors.Is(saveErr, batch.ErrBatchEditCanceled):
+				log.Warnf("batch: %s", saveErr)
+				AbortBusy(c)
+				return
+			case saveErr != nil:
 				log.Errorf("batch: failed to persist photo updates: %s", saveErr)
 				AbortUnexpectedError(c)
 				return
