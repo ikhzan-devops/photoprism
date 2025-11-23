@@ -308,7 +308,7 @@ msgstr "หลังจากสองสัปดาห์"
 msgid "Album"
 msgstr "อัลบั้ม"
 
-#: src/page/settings/advanced.vue:193
+#: src/page/settings/advanced.vue:189
 msgid "Album Backups"
 msgstr "การสำรองข้อมูลอัลบั้ม"
 
@@ -540,7 +540,7 @@ msgstr "กลับ"
 msgid "Back to top"
 msgstr "กลับสู่ด้านบน"
 
-#: src/page/settings/advanced.vue:165
+#: src/page/settings/advanced.vue:161
 msgid "Backup"
 msgstr "สำรองข้อมูล"
 
@@ -747,7 +747,7 @@ msgstr "ไม่สามารถบันทึกการเปลี่ย
 #: src/component/photo/edit/files.vue:570 src/component/service/edit.vue:343
 #: src/component/share/dialog.vue:240 src/component/share/dialog.vue:259
 #: src/page/albums.vue:1268 src/page/people/recognized.vue:320
-#: src/page/settings/advanced.vue:539 src/page/settings/content.vue:300
+#: src/page/settings/advanced.vue:535 src/page/settings/content.vue:300
 #: src/page/settings/general.vue:525
 msgid "Changes successfully saved"
 msgstr "บันทึกการเปลี่ยนแปลงเรียบร้อยแล้ว"
@@ -965,15 +965,15 @@ msgstr "สร้างบัญชี"
 msgid "Create album"
 msgstr "สร้างอัลบั้ม"
 
-#: src/page/settings/advanced.vue:178
+#: src/page/settings/advanced.vue:174
 msgid "Create regular backups based on the configured schedule."
 msgstr "สร้างการสำรองข้อมูลดัชนีตามกำหนดเวลาที่กำหนดไว้"
 
-#: src/page/settings/advanced.vue:194
+#: src/page/settings/advanced.vue:190
 msgid "Create YAML files to back up album metadata."
 msgstr "สร้างไฟล์ YAML เพื่อสำรองข้อมูลเมตาของอัลบั้ม"
 
-#: src/page/settings/advanced.vue:210
+#: src/page/settings/advanced.vue:206
 msgid "Create YAML sidecar files to back up picture metadata."
 msgstr "สร้างไฟล์ช่วยเหลือ YAML เพื่อสำรองข้อมูลเมตาของรูปภาพ"
 
@@ -1010,7 +1010,7 @@ msgstr "รายวัน"
 msgid "Database"
 msgstr "ฐานข้อมูล"
 
-#: src/page/settings/advanced.vue:177
+#: src/page/settings/advanced.vue:173
 msgid "Database Backups"
 msgstr "การสำรองฐานข้อมูล"
 
@@ -1098,47 +1098,51 @@ msgstr "รายละเอียด"
 msgid "Dimensions"
 msgstr "ขนาด"
 
+#: src/page/settings/advanced.vue:117
+msgid "Disable all face detection and recognition features."
+msgstr ""
+
 #: src/page/settings/advanced.vue:84
 msgid "Disable Backups"
 msgstr "ปิดการสำรองข้อมูล"
 
-#: src/page/settings/advanced.vue:366
+#: src/page/settings/advanced.vue:362
 msgid "Disable Darktable"
 msgstr "ปิดการใช้งาน Darktable"
 
-#: src/page/settings/advanced.vue:132
+#: src/page/settings/advanced.vue:148
 msgid "Disable ExifTool"
 msgstr "ปิดการใช้งาน ExifTool"
+
+#: src/page/settings/advanced.vue:116
+msgid "Disable Faces"
+msgstr ""
 
 #: src/page/settings/advanced.vue:69
 msgid "Disable features that require write permission for the originals folder."
 msgstr "ปิดใช้งานคุณลักษณะที่ต้องมีสิทธิ์ในการเขียนสำหรับโฟลเดอร์ต้นฉบับ"
 
-#: src/page/settings/advanced.vue:430
+#: src/page/settings/advanced.vue:426
 msgid "Disable FFmpeg"
 msgstr "ปิดการใช้งาน FFmpeg"
 
-#: src/page/settings/advanced.vue:414
+#: src/page/settings/advanced.vue:410
 msgid "Disable ImageMagick"
 msgstr "ปิดการใช้งาน ImageMagick"
 
-#: src/page/settings/advanced.vue:117
+#: src/page/settings/advanced.vue:133
 msgid "Disable interactive world maps and reverse geocoding."
 msgstr "ปิดการใช้งานแผนที่โลกเชิงโต้ตอบและการเข้ารหัสทางภูมิศาสตร์แบบย้อนกลับ"
 
-#: src/page/settings/advanced.vue:116
+#: src/page/settings/advanced.vue:132
 msgid "Disable Places"
 msgstr "ปิดการใช้งานสถานที่"
 
-#: src/page/settings/advanced.vue:382
+#: src/page/settings/advanced.vue:378
 msgid "Disable RawTherapee"
 msgstr "ปิดการใช้งาน RawTherapee"
 
-#: src/page/settings/advanced.vue:148
-msgid "Disable TensorFlow"
-msgstr "ปิดการใช้งาน TensorFlow"
-
-#: src/page/settings/advanced.vue:446
+#: src/page/settings/advanced.vue:442
 msgid "Disable Vectors"
 msgstr "ปิดการใช้งานเวกเตอร์"
 
@@ -1150,11 +1154,11 @@ msgstr "ปิดการใช้งาน WebDAV"
 msgid "Disabled"
 msgstr "พิการ"
 
-#: src/page/settings/advanced.vue:447
+#: src/page/settings/advanced.vue:443
 msgid "Disables vector graphics support."
 msgstr "ปิดใช้งานการสนับสนุนกราฟิกแบบเวกเตอร์"
 
-#: src/page/settings/advanced.vue:431
+#: src/page/settings/advanced.vue:427
 msgid "Disables video transcoding and thumbnail extraction."
 msgstr "ปิดใช้งานการแปลงรหัสวิดีโอและการดึงภาพขนาดย่อ"
 
@@ -1205,15 +1209,15 @@ msgstr "เอกสาร"
 msgid "Documents"
 msgstr "เอกสาร"
 
-#: src/page/settings/advanced.vue:367
+#: src/page/settings/advanced.vue:363
 msgid "Don't use Darktable to convert RAW images."
 msgstr "อย่าใช้ Darktable เพื่อแปลงไฟล์ RAW"
 
-#: src/page/settings/advanced.vue:415
+#: src/page/settings/advanced.vue:411
 msgid "Don't use ImageMagick to convert images."
 msgstr "อย่าใช้ ImageMagick เพื่อแปลงรูปภาพ"
 
-#: src/page/settings/advanced.vue:383
+#: src/page/settings/advanced.vue:379
 msgid "Don't use RawTherapee to convert RAW images."
 msgstr "อย่าใช้ RawTherapee เพื่อแปลงไฟล์ RAW"
 
@@ -1258,7 +1262,7 @@ msgstr "ดาวน์โหลดไฟล์เดี่ยวและไฟ
 msgid "Downloading…"
 msgstr "กำลังดาวน์โหลด…"
 
-#: src/page/settings/advanced.vue:232
+#: src/page/settings/advanced.vue:228
 msgid "Downscaling Filter"
 msgstr "ตัวกรองการลดขนาด"
 
@@ -1284,11 +1288,11 @@ msgstr "รายการที่ซ้ำกันจะถูกข้าม
 msgid "Duration"
 msgstr "ระยะเวลา"
 
-#: src/page/settings/advanced.vue:285
+#: src/page/settings/advanced.vue:281
 msgid "Dynamic Previews"
 msgstr "การแสดงตัวอย่างแบบไดนามิก"
 
-#: src/page/settings/advanced.vue:261
+#: src/page/settings/advanced.vue:257
 msgid "Dynamic Size Limit: %{n}px"
 msgstr "ขีดจำกัดขนาดไดนามิก: %{n}px"
 
@@ -1316,7 +1320,7 @@ msgstr "แก้ไขบัญชี"
 msgid "Edit Photo"
 msgstr "แก้ไขรูปภาพ"
 
-#: src/component/photo/batch-edit.vue:665
+#: src/component/photo/batch-edit.vue:664
 msgid "Edit Photos (%{n})"
 msgstr "แก้ไขรูปภาพ (%{n})"
 
@@ -1341,7 +1345,7 @@ msgstr "เปิดใช้งานโหมดแก้ไขข้อบก
 msgid "Enable new features that may be incomplete or unstable."
 msgstr "เปิดใช้งานฟีเจอร์ใหม่ที่อาจไม่สมบูรณ์หรือไม่เสถียร"
 
-#: src/page/settings/advanced.vue:399
+#: src/page/settings/advanced.vue:395
 msgid "Enables RAW converter presets. May reduce performance."
 msgstr "เปิดใช้งานการตั้งค่าล่วงหน้าของตัวแปลง RAW อาจลดประสิทธิภาพลง"
 
@@ -1414,7 +1418,7 @@ msgstr "ยกเว้นเนื้อหาที่ทำเครื่อ
 msgid "Exclude hidden"
 msgstr "ไม่รวมซ่อน"
 
-#: src/page/settings/advanced.vue:133
+#: src/page/settings/advanced.vue:149
 msgid "ExifTool is required for full support of XMP metadata, videos and Live Photos."
 msgstr "จำเป็นต้องมีการแยกข้อมูลเมตาด้วย ExifTool เพื่อสนับสนุนวิดีโอเต็มรูปแบบ Live Photo และ XMP"
 
@@ -1511,13 +1515,13 @@ msgstr "ไฟล์"
 msgid "File Browser"
 msgstr "ไฟล์เบราว์เซอร์"
 
-#: src/page/settings/advanced.vue:354
+#: src/page/settings/advanced.vue:350
 msgid "File Conversion"
 msgstr "การแปลงไฟล์"
 
 #: src/component/album/edit/dialog.vue:147
-#: src/component/photo/batch-edit.vue:636
-#: src/component/photo/batch-edit.vue:656 src/component/photo/toolbar.vue:415
+#: src/component/photo/batch-edit.vue:635
+#: src/component/photo/batch-edit.vue:655 src/component/photo/toolbar.vue:415
 #: src/component/photo/toolbar.vue:426 src/component/photo/toolbar.vue:437
 #: src/component/photo/view/list.vue:47
 msgid "File Name"
@@ -1711,7 +1715,7 @@ msgstr "หากคุณสูญเสียการเข้าถึงแ
 msgid "Image"
 msgstr "ภาพ"
 
-#: src/page/settings/advanced.vue:301
+#: src/page/settings/advanced.vue:297
 msgid "Image Quality"
 msgstr "คุณภาพของภาพ"
 
@@ -1861,11 +1865,11 @@ msgstr "สิ่งของ"
 msgid "Items per page:"
 msgstr "รายการต่อหน้า:"
 
-#: src/page/settings/advanced.vue:308
+#: src/page/settings/advanced.vue:304
 msgid "JPEG Quality: %{n}"
 msgstr "คุณภาพ JPEG: %{n}"
 
-#: src/page/settings/advanced.vue:323
+#: src/page/settings/advanced.vue:319
 msgid "JPEG Size Limit: %{n}px"
 msgstr "ขีดจำกัดขนาด JPEG: %{n}px"
 
@@ -2039,7 +2043,7 @@ msgstr "เวลาท้องถิ่น"
 #: src/page/settings/account.vue:359 src/page/settings/account.vue:361
 #: src/common/util.js:792 src/component/album/edit/dialog.vue:46
 #: src/component/photo/batch-edit.vue:307
-#: src/component/photo/batch-edit.vue:616
+#: src/component/photo/batch-edit.vue:615
 #: src/component/photo/edit/details.vue:471
 #: src/component/photo/edit/details.vue:591
 #: src/component/photo/edit/details.vue:685
@@ -2428,7 +2432,7 @@ msgstr "เก่าสุดก่อน"
 msgid "On Windows, enter the following resource in the connection dialog:"
 msgstr "บน Windows ให้ป้อนทรัพยากรต่อไปนี้ในกล่องโต้ตอบการเชื่อมต่อ:"
 
-#: src/page/settings/advanced.vue:287
+#: src/page/settings/advanced.vue:283
 msgid "On-demand generation of thumbnails may cause high CPU and memory usage. It is not recommended for resource-constrained servers and NAS devices."
 msgstr "การสร้างภาพขนาดย่อตามความต้องการอาจทำให้มีการใช้งาน CPU และหน่วยความจำสูง ไม่แนะนำสำหรับเซิร์ฟเวอร์และอุปกรณ์ NAS ที่จำกัดทรัพยากร"
 
@@ -2691,7 +2695,7 @@ msgstr "โปรดรอ…"
 msgid "PM"
 msgstr "นายกฯ"
 
-#: src/page/settings/advanced.vue:338
+#: src/page/settings/advanced.vue:334
 msgid "PNG Size Limit: %{n}px"
 msgstr "ขีดจำกัดขนาด PNG: %{n}px"
 
@@ -2725,12 +2729,12 @@ msgstr "ป้องกันการสำรองข้อมูลฐาน
 msgid "Prevent other apps from accessing PhotoPrism as a shared network drive."
 msgstr "ป้องกันไม่ให้แอปอื่นเข้าถึง PhotoPrism เป็นไดรฟ์เครือข่ายที่ใช้ร่วมกัน"
 
-#: src/component/photo/batch-edit.vue:630
-#: src/component/photo/batch-edit.vue:650 src/component/photo/edit/files.vue:30
+#: src/component/photo/batch-edit.vue:629
+#: src/component/photo/batch-edit.vue:649 src/component/photo/edit/files.vue:30
 msgid "Preview"
 msgstr "ดูตัวอย่าง"
 
-#: src/page/settings/advanced.vue:222
+#: src/page/settings/advanced.vue:218
 msgid "Preview Images"
 msgstr "ดูตัวอย่างรูปภาพ"
 
@@ -2937,7 +2941,7 @@ msgid "Resolution"
 msgstr "ปณิธาน"
 
 #: src/page/connect.vue:74 src/page/connect.vue:83 src/page/connect.vue:76
-#: src/page/connect.vue:85 src/page/settings/advanced.vue:460
+#: src/page/connect.vue:85 src/page/settings/advanced.vue:456
 msgid "Restart"
 msgstr "เริ่มต้นใหม่"
 
@@ -3246,7 +3250,7 @@ msgstr "แสดงชื่อเรื่อง"
 msgid "Sidecar"
 msgstr "ไซด์คาร์"
 
-#: src/page/settings/advanced.vue:209
+#: src/page/settings/advanced.vue:205
 msgid "Sidecar Files"
 msgstr "ไฟล์รถไซด์คาร์"
 
@@ -3374,7 +3378,7 @@ msgstr "เริ่ม"
 msgid "Start Page"
 msgstr "หน้าแรก"
 
-#: src/page/settings/advanced.vue:244
+#: src/page/settings/advanced.vue:240
 msgid "Static Size Limit: %{n}px"
 msgstr "ขีดจำกัดขนาดคงที่: %{n}px"
 
@@ -3447,10 +3451,6 @@ msgstr "ถ่าย"
 #: src/options/options.js:452
 msgid "Teal"
 msgstr "นกเป็ดน้ำ"
-
-#: src/page/settings/advanced.vue:150
-msgid "TensorFlow is required for image classification, facial recognition, and detecting unsafe content."
-msgstr "ต้องใช้ TensorFlow สำหรับการจัดหมวดหมู่รูปภาพ การจดจำใบหน้า และการตรวจจับเนื้อหาที่ไม่ปลอดภัย"
 
 #: src/options/options.js:322
 msgid "Terrain"
@@ -3737,7 +3737,7 @@ msgstr "กำลังโหลดซ้ำ…"
 msgid "Uploads that may contain such images will be rejected automatically."
 msgstr "การอัปโหลดที่อาจมีภาพดังกล่าวจะถูกปฏิเสธโดยอัตโนมัติ"
 
-#: src/page/settings/advanced.vue:398
+#: src/page/settings/advanced.vue:394
 msgid "Use Presets"
 msgstr "ใช้พรีเซ็ต"
 
@@ -4016,6 +4016,12 @@ msgstr "ชื่อ"
 msgctxt "Verb"
 msgid "Archive"
 msgstr "คลังเก็บเอกสารสำคัญ"
+
+#~ msgid "Disable TensorFlow"
+#~ msgstr "ปิดการใช้งาน TensorFlow"
+
+#~ msgid "TensorFlow is required for image classification, facial recognition, and detecting unsafe content."
+#~ msgstr "ต้องใช้ TensorFlow สำหรับการจัดหมวดหมู่รูปภาพ การจดจำใบหน้า และการตรวจจับเนื้อหาที่ไม่ปลอดภัย"
 
 #~ msgid "No server connection"
 #~ msgstr "ไม่มีการเชื่อมต่อกับเซิร์ฟเวอร์"

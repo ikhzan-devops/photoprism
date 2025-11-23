@@ -305,7 +305,7 @@ msgstr "Праз два тыдні"
 msgid "Album"
 msgstr "Альбом"
 
-#: src/page/settings/advanced.vue:193
+#: src/page/settings/advanced.vue:189
 msgid "Album Backups"
 msgstr "Рэзервовыя копіі альбомаў"
 
@@ -537,7 +537,7 @@ msgstr "Назад"
 msgid "Back to top"
 msgstr "Вярнуцца да пачатку"
 
-#: src/page/settings/advanced.vue:165
+#: src/page/settings/advanced.vue:161
 msgid "Backup"
 msgstr "Рэзервовае капіраванне"
 
@@ -744,7 +744,7 @@ msgstr "Не ўдалося захаваць змены"
 #: src/component/photo/edit/files.vue:570 src/component/service/edit.vue:343
 #: src/component/share/dialog.vue:240 src/component/share/dialog.vue:259
 #: src/page/albums.vue:1268 src/page/people/recognized.vue:320
-#: src/page/settings/advanced.vue:539 src/page/settings/content.vue:300
+#: src/page/settings/advanced.vue:535 src/page/settings/content.vue:300
 #: src/page/settings/general.vue:525
 msgid "Changes successfully saved"
 msgstr "Змены паспяхова захаваны"
@@ -962,15 +962,15 @@ msgstr "Стварыць акаунт"
 msgid "Create album"
 msgstr "Стварыць альбом"
 
-#: src/page/settings/advanced.vue:178
+#: src/page/settings/advanced.vue:174
 msgid "Create regular backups based on the configured schedule."
 msgstr "Стварэнне рэзервовых копій індэксаў на аснове наладжанага раскладу."
 
-#: src/page/settings/advanced.vue:194
+#: src/page/settings/advanced.vue:190
 msgid "Create YAML files to back up album metadata."
 msgstr "Стварыце файлы YAML для рэзервовага капіравання метаданых альбома."
 
-#: src/page/settings/advanced.vue:210
+#: src/page/settings/advanced.vue:206
 msgid "Create YAML sidecar files to back up picture metadata."
 msgstr "Стварыце пабочныя файлы YAML для рэзервовага капіравання метададзеных выявы."
 
@@ -1007,7 +1007,7 @@ msgstr "Штодня"
 msgid "Database"
 msgstr "База дадзеных"
 
-#: src/page/settings/advanced.vue:177
+#: src/page/settings/advanced.vue:173
 msgid "Database Backups"
 msgstr "Рэзервовыя копіі баз даных"
 
@@ -1095,47 +1095,51 @@ msgstr "Дэталі"
 msgid "Dimensions"
 msgstr "Памеры"
 
+#: src/page/settings/advanced.vue:117
+msgid "Disable all face detection and recognition features."
+msgstr ""
+
 #: src/page/settings/advanced.vue:84
 msgid "Disable Backups"
 msgstr "Адключыць рэзервовае капіраванне"
 
-#: src/page/settings/advanced.vue:366
+#: src/page/settings/advanced.vue:362
 msgid "Disable Darktable"
 msgstr "Адключыць Darktable"
 
-#: src/page/settings/advanced.vue:132
+#: src/page/settings/advanced.vue:148
 msgid "Disable ExifTool"
 msgstr "Адключыць ExifTool"
+
+#: src/page/settings/advanced.vue:116
+msgid "Disable Faces"
+msgstr ""
 
 #: src/page/settings/advanced.vue:69
 msgid "Disable features that require write permission for the originals folder."
 msgstr "Адключыце функцыі, якія патрабуюць дазволу на запіс для папкі арыгіналаў."
 
-#: src/page/settings/advanced.vue:430
+#: src/page/settings/advanced.vue:426
 msgid "Disable FFmpeg"
 msgstr "Адключыць FFmpeg"
 
-#: src/page/settings/advanced.vue:414
+#: src/page/settings/advanced.vue:410
 msgid "Disable ImageMagick"
 msgstr "Адключыць ImageMagick"
 
-#: src/page/settings/advanced.vue:117
+#: src/page/settings/advanced.vue:133
 msgid "Disable interactive world maps and reverse geocoding."
 msgstr "Адключыць інтэрактыўныя карты свету і адваротнае геакадзіраванне."
 
-#: src/page/settings/advanced.vue:116
+#: src/page/settings/advanced.vue:132
 msgid "Disable Places"
 msgstr "Адключыць Месцы"
 
-#: src/page/settings/advanced.vue:382
+#: src/page/settings/advanced.vue:378
 msgid "Disable RawTherapee"
 msgstr "Адключыць RawTherapee"
 
-#: src/page/settings/advanced.vue:148
-msgid "Disable TensorFlow"
-msgstr "Адключыць TensorFlow"
-
-#: src/page/settings/advanced.vue:446
+#: src/page/settings/advanced.vue:442
 msgid "Disable Vectors"
 msgstr "Адключыць вектары"
 
@@ -1147,11 +1151,11 @@ msgstr "Адключыць WebDAV"
 msgid "Disabled"
 msgstr "Інвалід"
 
-#: src/page/settings/advanced.vue:447
+#: src/page/settings/advanced.vue:443
 msgid "Disables vector graphics support."
 msgstr "Адключае падтрымку вектарнай графікі."
 
-#: src/page/settings/advanced.vue:431
+#: src/page/settings/advanced.vue:427
 msgid "Disables video transcoding and thumbnail extraction."
 msgstr "Адключае перакадзіраванне відэа і выманне мініяцюр."
 
@@ -1202,15 +1206,15 @@ msgstr "Дакумент"
 msgid "Documents"
 msgstr "Дакументы"
 
-#: src/page/settings/advanced.vue:367
+#: src/page/settings/advanced.vue:363
 msgid "Don't use Darktable to convert RAW images."
 msgstr "Не выкарыстоўвайце Darktable для пераўтварэння RAW відарысаў."
 
-#: src/page/settings/advanced.vue:415
+#: src/page/settings/advanced.vue:411
 msgid "Don't use ImageMagick to convert images."
 msgstr "Не выкарыстоўвайце ImageMagick для пераўтварэння відарысаў."
 
-#: src/page/settings/advanced.vue:383
+#: src/page/settings/advanced.vue:379
 msgid "Don't use RawTherapee to convert RAW images."
 msgstr "Не выкарыстоўвайце RawTherapee для пераўтварэння RAW відарысаў."
 
@@ -1255,7 +1259,7 @@ msgstr "Спампаваць асобныя файлы і zip-архівы."
 msgid "Downloading…"
 msgstr "Спампоўка…"
 
-#: src/page/settings/advanced.vue:232
+#: src/page/settings/advanced.vue:228
 msgid "Downscaling Filter"
 msgstr "Фільтр памяншэння памеру"
 
@@ -1281,11 +1285,11 @@ msgstr "Дублікаты будуць прапушчаны і з'явяцца 
 msgid "Duration"
 msgstr "Працягласць"
 
-#: src/page/settings/advanced.vue:285
+#: src/page/settings/advanced.vue:281
 msgid "Dynamic Previews"
 msgstr "Дынамічны папярэдні прагляд"
 
-#: src/page/settings/advanced.vue:261
+#: src/page/settings/advanced.vue:257
 msgid "Dynamic Size Limit: %{n}px"
 msgstr "Абмежаванне дынамічнага памеру: %{n}px"
 
@@ -1313,7 +1317,7 @@ msgstr "Рэдагаваць уліковы запіс"
 msgid "Edit Photo"
 msgstr "Рэдагаваць фота"
 
-#: src/component/photo/batch-edit.vue:665
+#: src/component/photo/batch-edit.vue:664
 msgid "Edit Photos (%{n})"
 msgstr "Рэдагаваць фатаграфіі (%{n})"
 
@@ -1338,7 +1342,7 @@ msgstr "Уключыце рэжым адладкі, каб паказаць да
 msgid "Enable new features that may be incomplete or unstable."
 msgstr "Уключыць новыя функцыі, якія могуць быць няпоўнымі або нестабільнымі."
 
-#: src/page/settings/advanced.vue:399
+#: src/page/settings/advanced.vue:395
 msgid "Enables RAW converter presets. May reduce performance."
 msgstr "Уключае прадусталяваныя налады канвертара RAW. Можа знізіць прадукцыйнасць."
 
@@ -1411,7 +1415,7 @@ msgstr "Выключыць змесціва, пазначанае як прыв�
 msgid "Exclude hidden"
 msgstr "Выключыць схаванае"
 
-#: src/page/settings/advanced.vue:133
+#: src/page/settings/advanced.vue:149
 msgid "ExifTool is required for full support of XMP metadata, videos and Live Photos."
 msgstr "Выманне метаданых з дапамогай ExifTool патрабуецца для поўнай падтрымкі відэа, жывых фота і XMP."
 
@@ -1508,13 +1512,13 @@ msgstr "Файл"
 msgid "File Browser"
 msgstr "Файлавы браўзер"
 
-#: src/page/settings/advanced.vue:354
+#: src/page/settings/advanced.vue:350
 msgid "File Conversion"
 msgstr "Канвертацыя файлаў"
 
 #: src/component/album/edit/dialog.vue:147
-#: src/component/photo/batch-edit.vue:636
-#: src/component/photo/batch-edit.vue:656 src/component/photo/toolbar.vue:415
+#: src/component/photo/batch-edit.vue:635
+#: src/component/photo/batch-edit.vue:655 src/component/photo/toolbar.vue:415
 #: src/component/photo/toolbar.vue:426 src/component/photo/toolbar.vue:437
 #: src/component/photo/view/list.vue:47
 msgid "File Name"
@@ -1708,7 +1712,7 @@ msgstr "Калі вы страціце доступ да праграмы або
 msgid "Image"
 msgstr "Малюнак"
 
-#: src/page/settings/advanced.vue:301
+#: src/page/settings/advanced.vue:297
 msgid "Image Quality"
 msgstr "Якасць выявы"
 
@@ -1858,11 +1862,11 @@ msgstr "Пункт"
 msgid "Items per page:"
 msgstr "Элементаў на старонцы:"
 
-#: src/page/settings/advanced.vue:308
+#: src/page/settings/advanced.vue:304
 msgid "JPEG Quality: %{n}"
 msgstr "Якасць JPEG: %{n}"
 
-#: src/page/settings/advanced.vue:323
+#: src/page/settings/advanced.vue:319
 msgid "JPEG Size Limit: %{n}px"
 msgstr "Абмежаванне памеру JPEG: %{n} пікс"
 
@@ -2036,7 +2040,7 @@ msgstr "Мясцовы час"
 #: src/page/settings/account.vue:359 src/page/settings/account.vue:361
 #: src/common/util.js:792 src/component/album/edit/dialog.vue:46
 #: src/component/photo/batch-edit.vue:307
-#: src/component/photo/batch-edit.vue:616
+#: src/component/photo/batch-edit.vue:615
 #: src/component/photo/edit/details.vue:471
 #: src/component/photo/edit/details.vue:591
 #: src/component/photo/edit/details.vue:685
@@ -2425,7 +2429,7 @@ msgstr "Спачатку самыя старыя"
 msgid "On Windows, enter the following resource in the connection dialog:"
 msgstr "У Windows увядзіце наступны рэсурс у дыялогавым акне злучэння:"
 
-#: src/page/settings/advanced.vue:287
+#: src/page/settings/advanced.vue:283
 msgid "On-demand generation of thumbnails may cause high CPU and memory usage. It is not recommended for resource-constrained servers and NAS devices."
 msgstr "Стварэнне мініяцюр па патрабаванні можа выклікаць высокую загрузку працэсара і памяці. Не рэкамендуецца для сервераў з абмежаванымі рэсурсамі і прылад NAS."
 
@@ -2688,7 +2692,7 @@ msgstr "Калі ласка пачакай…"
 msgid "PM"
 msgstr "PM"
 
-#: src/page/settings/advanced.vue:338
+#: src/page/settings/advanced.vue:334
 msgid "PNG Size Limit: %{n}px"
 msgstr "Ліміт памеру PNG: %{n}px"
 
@@ -2722,12 +2726,12 @@ msgstr "Забараніць стварэнне рэзервовых копій 
 msgid "Prevent other apps from accessing PhotoPrism as a shared network drive."
 msgstr "Забараніць іншым праграмам доступ да PhotoPrism як да агульнага сеткавага дыска."
 
-#: src/component/photo/batch-edit.vue:630
-#: src/component/photo/batch-edit.vue:650 src/component/photo/edit/files.vue:30
+#: src/component/photo/batch-edit.vue:629
+#: src/component/photo/batch-edit.vue:649 src/component/photo/edit/files.vue:30
 msgid "Preview"
 msgstr "Папярэдні прагляд"
 
-#: src/page/settings/advanced.vue:222
+#: src/page/settings/advanced.vue:218
 msgid "Preview Images"
 msgstr "Папярэдні прагляд відарысаў"
 
@@ -2934,7 +2938,7 @@ msgid "Resolution"
 msgstr "дазвол"
 
 #: src/page/connect.vue:74 src/page/connect.vue:83 src/page/connect.vue:76
-#: src/page/connect.vue:85 src/page/settings/advanced.vue:460
+#: src/page/connect.vue:85 src/page/settings/advanced.vue:456
 msgid "Restart"
 msgstr "Перазапуск"
 
@@ -3243,7 +3247,7 @@ msgstr "Паказаць загалоўкі"
 msgid "Sidecar"
 msgstr "Спадарожны файл"
 
-#: src/page/settings/advanced.vue:209
+#: src/page/settings/advanced.vue:205
 msgid "Sidecar Files"
 msgstr "Sidecar Files"
 
@@ -3371,7 +3375,7 @@ msgstr "Пачаць"
 msgid "Start Page"
 msgstr "Пачатковая старонка"
 
-#: src/page/settings/advanced.vue:244
+#: src/page/settings/advanced.vue:240
 msgid "Static Size Limit: %{n}px"
 msgstr "Ліміт статычнага памеру: %{n}px"
 
@@ -3444,10 +3448,6 @@ msgstr "Узяты"
 #: src/options/options.js:452
 msgid "Teal"
 msgstr "Чыркаваты"
-
-#: src/page/settings/advanced.vue:150
-msgid "TensorFlow is required for image classification, facial recognition, and detecting unsafe content."
-msgstr "TensorFlow патрабуецца для класіфікацыі відарысаў, распазнання твараў і выяўлення небяспечнага кантэнту."
 
 #: src/options/options.js:322
 msgid "Terrain"
@@ -3734,7 +3734,7 @@ msgstr "Загрузка…"
 msgid "Uploads that may contain such images will be rejected automatically."
 msgstr "Загрузкі, якія могуць утрымліваць такія выявы, будуць адхіляцца аўтаматычна."
 
-#: src/page/settings/advanced.vue:398
+#: src/page/settings/advanced.vue:394
 msgid "Use Presets"
 msgstr "Выкарыстоўвайце налады"
 
@@ -4013,6 +4013,12 @@ msgstr "Назва"
 msgctxt "Verb"
 msgid "Archive"
 msgstr "Архіў"
+
+#~ msgid "Disable TensorFlow"
+#~ msgstr "Адключыць TensorFlow"
+
+#~ msgid "TensorFlow is required for image classification, facial recognition, and detecting unsafe content."
+#~ msgstr "TensorFlow патрабуецца для класіфікацыі відарысаў, распазнання твараў і выяўлення небяспечнага кантэнту."
 
 #~ msgid "No server connection"
 #~ msgstr "Няма злучэння з серверам"

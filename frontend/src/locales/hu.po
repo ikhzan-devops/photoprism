@@ -307,7 +307,7 @@ msgstr "Két hét után"
 msgid "Album"
 msgstr "Album"
 
-#: src/page/settings/advanced.vue:193
+#: src/page/settings/advanced.vue:189
 msgid "Album Backups"
 msgstr "Album biztonsági mentések"
 
@@ -539,7 +539,7 @@ msgstr "Vissza"
 msgid "Back to top"
 msgstr "Vissza a tetejére"
 
-#: src/page/settings/advanced.vue:165
+#: src/page/settings/advanced.vue:161
 msgid "Backup"
 msgstr "Biztonsági mentés"
 
@@ -746,7 +746,7 @@ msgstr "Módosításokat nem sikerült menteni"
 #: src/component/photo/edit/files.vue:570 src/component/service/edit.vue:343
 #: src/component/share/dialog.vue:240 src/component/share/dialog.vue:259
 #: src/page/albums.vue:1268 src/page/people/recognized.vue:320
-#: src/page/settings/advanced.vue:539 src/page/settings/content.vue:300
+#: src/page/settings/advanced.vue:535 src/page/settings/content.vue:300
 #: src/page/settings/general.vue:525
 msgid "Changes successfully saved"
 msgstr "Módosítások sikeresen mentve"
@@ -964,15 +964,15 @@ msgstr "Fiók létrehozása"
 msgid "Create album"
 msgstr "Album létrehozása"
 
-#: src/page/settings/advanced.vue:178
+#: src/page/settings/advanced.vue:174
 msgid "Create regular backups based on the configured schedule."
 msgstr "Index biztonsági mentések létrehozása a konfigurált ütemezés alapján."
 
-#: src/page/settings/advanced.vue:194
+#: src/page/settings/advanced.vue:190
 msgid "Create YAML files to back up album metadata."
 msgstr "YAML fájlok létrehozása az album metaadatok biztonsági mentéséhez."
 
-#: src/page/settings/advanced.vue:210
+#: src/page/settings/advanced.vue:206
 msgid "Create YAML sidecar files to back up picture metadata."
 msgstr "YAML oldalkocsis fájlok létrehozása a képek metaadatainak mentéséhez."
 
@@ -1009,7 +1009,7 @@ msgstr "Napi"
 msgid "Database"
 msgstr "Adatbázis"
 
-#: src/page/settings/advanced.vue:177
+#: src/page/settings/advanced.vue:173
 msgid "Database Backups"
 msgstr "Adatbázis biztonsági mentések"
 
@@ -1097,47 +1097,51 @@ msgstr "Részletek"
 msgid "Dimensions"
 msgstr "Méretek"
 
+#: src/page/settings/advanced.vue:117
+msgid "Disable all face detection and recognition features."
+msgstr ""
+
 #: src/page/settings/advanced.vue:84
 msgid "Disable Backups"
 msgstr "Biztonsági mentések letiltása"
 
-#: src/page/settings/advanced.vue:366
+#: src/page/settings/advanced.vue:362
 msgid "Disable Darktable"
 msgstr "A Darktable letiltása"
 
-#: src/page/settings/advanced.vue:132
+#: src/page/settings/advanced.vue:148
 msgid "Disable ExifTool"
 msgstr "Az ExifTool letiltása"
+
+#: src/page/settings/advanced.vue:116
+msgid "Disable Faces"
+msgstr ""
 
 #: src/page/settings/advanced.vue:69
 msgid "Disable features that require write permission for the originals folder."
 msgstr "Az eredeti mappa írási engedélyét igénylő funkciók letiltása."
 
-#: src/page/settings/advanced.vue:430
+#: src/page/settings/advanced.vue:426
 msgid "Disable FFmpeg"
 msgstr "Az FFmpeg letiltása"
 
-#: src/page/settings/advanced.vue:414
+#: src/page/settings/advanced.vue:410
 msgid "Disable ImageMagick"
 msgstr "ImageMagick letiltása"
 
-#: src/page/settings/advanced.vue:117
+#: src/page/settings/advanced.vue:133
 msgid "Disable interactive world maps and reverse geocoding."
 msgstr "Az interaktív világtérképek és a fordított geokódolás letiltása."
 
-#: src/page/settings/advanced.vue:116
+#: src/page/settings/advanced.vue:132
 msgid "Disable Places"
 msgstr "Helyek letiltása"
 
-#: src/page/settings/advanced.vue:382
+#: src/page/settings/advanced.vue:378
 msgid "Disable RawTherapee"
 msgstr "A RawTherapee letiltása"
 
-#: src/page/settings/advanced.vue:148
-msgid "Disable TensorFlow"
-msgstr "A TensorFlow letiltása"
-
-#: src/page/settings/advanced.vue:446
+#: src/page/settings/advanced.vue:442
 msgid "Disable Vectors"
 msgstr "Vektorok letiltása"
 
@@ -1149,11 +1153,11 @@ msgstr "A WebDAV letiltása"
 msgid "Disabled"
 msgstr "Tiltva"
 
-#: src/page/settings/advanced.vue:447
+#: src/page/settings/advanced.vue:443
 msgid "Disables vector graphics support."
 msgstr "Letiltja a vektorgrafika támogatását."
 
-#: src/page/settings/advanced.vue:431
+#: src/page/settings/advanced.vue:427
 msgid "Disables video transcoding and thumbnail extraction."
 msgstr "Letiltja a videó átkódolását és a miniatűrök kinyerését."
 
@@ -1204,15 +1208,15 @@ msgstr "Dokumentum"
 msgid "Documents"
 msgstr "Dokumentumok"
 
-#: src/page/settings/advanced.vue:367
+#: src/page/settings/advanced.vue:363
 msgid "Don't use Darktable to convert RAW images."
 msgstr "Ne használja a Darktable-t RAW képek konvertálására."
 
-#: src/page/settings/advanced.vue:415
+#: src/page/settings/advanced.vue:411
 msgid "Don't use ImageMagick to convert images."
 msgstr "Ne használd az ImageMagick programot képek konvertálására."
 
-#: src/page/settings/advanced.vue:383
+#: src/page/settings/advanced.vue:379
 msgid "Don't use RawTherapee to convert RAW images."
 msgstr "Ne használja a RawTherapee-t RAW képek konvertálására."
 
@@ -1257,7 +1261,7 @@ msgstr "Egyedi fájlok és zip-archívumok letöltése."
 msgid "Downloading…"
 msgstr "Letöltés…"
 
-#: src/page/settings/advanced.vue:232
+#: src/page/settings/advanced.vue:228
 msgid "Downscaling Filter"
 msgstr "Lekicsinyítési szűrő"
 
@@ -1283,11 +1287,11 @@ msgstr "A másolatok kimaradnak, és csak egyszer jelennek meg."
 msgid "Duration"
 msgstr "Időtartam"
 
-#: src/page/settings/advanced.vue:285
+#: src/page/settings/advanced.vue:281
 msgid "Dynamic Previews"
 msgstr "Dinamikus előnézetek"
 
-#: src/page/settings/advanced.vue:261
+#: src/page/settings/advanced.vue:257
 msgid "Dynamic Size Limit: %{n}px"
 msgstr "Dinamikus méretkorlát: %{n}px"
 
@@ -1315,7 +1319,7 @@ msgstr "Fiók szerkesztése"
 msgid "Edit Photo"
 msgstr "Fénykép szerkesztése"
 
-#: src/component/photo/batch-edit.vue:665
+#: src/component/photo/batch-edit.vue:664
 msgid "Edit Photos (%{n})"
 msgstr "Fotók szerkesztése (%{n})"
 
@@ -1340,7 +1344,7 @@ msgstr "A hibakeresési mód engedélyezése további naplók megjelenítéséhe
 msgid "Enable new features that may be incomplete or unstable."
 msgstr "Engedélyezze az új funkciókat, amelyek hiányosak vagy instabilak lehetnek."
 
-#: src/page/settings/advanced.vue:399
+#: src/page/settings/advanced.vue:395
 msgid "Enables RAW converter presets. May reduce performance."
 msgstr "Engedélyezi a RAW konverter előbeállításait. Csökkentheti a teljesítményt."
 
@@ -1413,7 +1417,7 @@ msgstr "A privátként megjelölt tartalmak kizárása a keresési eredményekb�
 msgid "Exclude hidden"
 msgstr "Rejtett kizárás"
 
-#: src/page/settings/advanced.vue:133
+#: src/page/settings/advanced.vue:149
 msgid "ExifTool is required for full support of XMP metadata, videos and Live Photos."
 msgstr "Az ExifTool segítségével történő metaadat-kivonatolás szükséges a teljes videó-, élőfotó- és XMP-támogatáshoz."
 
@@ -1510,13 +1514,13 @@ msgstr "Fájl"
 msgid "File Browser"
 msgstr "Fájl böngésző"
 
-#: src/page/settings/advanced.vue:354
+#: src/page/settings/advanced.vue:350
 msgid "File Conversion"
 msgstr "Fájl átalakítás"
 
 #: src/component/album/edit/dialog.vue:147
-#: src/component/photo/batch-edit.vue:636
-#: src/component/photo/batch-edit.vue:656 src/component/photo/toolbar.vue:415
+#: src/component/photo/batch-edit.vue:635
+#: src/component/photo/batch-edit.vue:655 src/component/photo/toolbar.vue:415
 #: src/component/photo/toolbar.vue:426 src/component/photo/toolbar.vue:437
 #: src/component/photo/view/list.vue:47
 msgid "File Name"
@@ -1710,7 +1714,7 @@ msgstr "Ha elveszíti hozzáférését hitelesítő alkalmazásához vagy eszkö
 msgid "Image"
 msgstr "Kép"
 
-#: src/page/settings/advanced.vue:301
+#: src/page/settings/advanced.vue:297
 msgid "Image Quality"
 msgstr "Képminőség"
 
@@ -1860,11 +1864,11 @@ msgstr "Tétel"
 msgid "Items per page:"
 msgstr "Tételek oldalanként:"
 
-#: src/page/settings/advanced.vue:308
+#: src/page/settings/advanced.vue:304
 msgid "JPEG Quality: %{n}"
 msgstr "JPEG minőség: %{n}"
 
-#: src/page/settings/advanced.vue:323
+#: src/page/settings/advanced.vue:319
 msgid "JPEG Size Limit: %{n}px"
 msgstr "JPEG méretkorlát: %{n}px"
 
@@ -2038,7 +2042,7 @@ msgstr "Helyi idő"
 #: src/page/settings/account.vue:359 src/page/settings/account.vue:361
 #: src/common/util.js:792 src/component/album/edit/dialog.vue:46
 #: src/component/photo/batch-edit.vue:307
-#: src/component/photo/batch-edit.vue:616
+#: src/component/photo/batch-edit.vue:615
 #: src/component/photo/edit/details.vue:471
 #: src/component/photo/edit/details.vue:591
 #: src/component/photo/edit/details.vue:685
@@ -2427,7 +2431,7 @@ msgstr "Először a legidősebb"
 msgid "On Windows, enter the following resource in the connection dialog:"
 msgstr "Windows alatt adja meg a következő erőforrást a kapcsolat párbeszédpanelen:"
 
-#: src/page/settings/advanced.vue:287
+#: src/page/settings/advanced.vue:283
 msgid "On-demand generation of thumbnails may cause high CPU and memory usage. It is not recommended for resource-constrained servers and NAS devices."
 msgstr "A miniatűrök igény szerinti generálása magas CPU- és memóriahasználatot okozhat. Erőforrás-korlátozott szerverek és NAS-eszközök esetében nem ajánlott."
 
@@ -2690,7 +2694,7 @@ msgstr "Kérjük, várjon…"
 msgid "PM"
 msgstr "PM"
 
-#: src/page/settings/advanced.vue:338
+#: src/page/settings/advanced.vue:334
 msgid "PNG Size Limit: %{n}px"
 msgstr "PNG méretkorlát: %{n}px"
 
@@ -2724,12 +2728,12 @@ msgstr "Megakadályozza az adatbázis- és albummentések, valamint a YAML oldal
 msgid "Prevent other apps from accessing PhotoPrism as a shared network drive."
 msgstr "Megakadályozza, hogy más alkalmazások hozzáférjenek a PhotoPrismhez mint megosztott hálózati meghajtóhoz."
 
-#: src/component/photo/batch-edit.vue:630
-#: src/component/photo/batch-edit.vue:650 src/component/photo/edit/files.vue:30
+#: src/component/photo/batch-edit.vue:629
+#: src/component/photo/batch-edit.vue:649 src/component/photo/edit/files.vue:30
 msgid "Preview"
 msgstr "Előnézet"
 
-#: src/page/settings/advanced.vue:222
+#: src/page/settings/advanced.vue:218
 msgid "Preview Images"
 msgstr "Képek előnézete"
 
@@ -2936,7 +2940,7 @@ msgid "Resolution"
 msgstr "Felbontás"
 
 #: src/page/connect.vue:74 src/page/connect.vue:83 src/page/connect.vue:76
-#: src/page/connect.vue:85 src/page/settings/advanced.vue:460
+#: src/page/connect.vue:85 src/page/settings/advanced.vue:456
 msgid "Restart"
 msgstr "Újraindítás"
 
@@ -3245,7 +3249,7 @@ msgstr "Címek megjelenítése"
 msgid "Sidecar"
 msgstr "Oldalkocsi"
 
-#: src/page/settings/advanced.vue:209
+#: src/page/settings/advanced.vue:205
 msgid "Sidecar Files"
 msgstr "Oldalkocsis fájlok"
 
@@ -3373,7 +3377,7 @@ msgstr "Rajt"
 msgid "Start Page"
 msgstr "Kezdőlap"
 
-#: src/page/settings/advanced.vue:244
+#: src/page/settings/advanced.vue:240
 msgid "Static Size Limit: %{n}px"
 msgstr "Statikus méretkorlát: %{n}px"
 
@@ -3446,10 +3450,6 @@ msgstr "Felvett"
 #: src/options/options.js:452
 msgid "Teal"
 msgstr "A zöldeskék"
-
-#: src/page/settings/advanced.vue:150
-msgid "TensorFlow is required for image classification, facial recognition, and detecting unsafe content."
-msgstr "A TensorFlow-ra a képosztályozáshoz, az arcfelismeréshez és a nem biztonságos tartalom felismeréséhez van szükség."
 
 #: src/options/options.js:322
 msgid "Terrain"
@@ -3736,7 +3736,7 @@ msgstr "Feltöltés…"
 msgid "Uploads that may contain such images will be rejected automatically."
 msgstr "Az esetlegesen ilyen képeket tartalmazó feltöltések automatikusan elutasításra kerülnek."
 
-#: src/page/settings/advanced.vue:398
+#: src/page/settings/advanced.vue:394
 msgid "Use Presets"
 msgstr "Előbeállítások használata"
 
@@ -4015,6 +4015,12 @@ msgstr "Cím"
 msgctxt "Verb"
 msgid "Archive"
 msgstr "Archívum"
+
+#~ msgid "Disable TensorFlow"
+#~ msgstr "A TensorFlow letiltása"
+
+#~ msgid "TensorFlow is required for image classification, facial recognition, and detecting unsafe content."
+#~ msgstr "A TensorFlow-ra a képosztályozáshoz, az arcfelismeréshez és a nem biztonságos tartalom felismeréséhez van szükség."
 
 #~ msgid "No server connection"
 #~ msgstr "Nincs szerverkapcsolat"

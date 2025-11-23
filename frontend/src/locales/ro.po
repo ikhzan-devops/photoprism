@@ -308,7 +308,7 @@ msgstr "După două săptămâni"
 msgid "Album"
 msgstr "Album"
 
-#: src/page/settings/advanced.vue:193
+#: src/page/settings/advanced.vue:189
 msgid "Album Backups"
 msgstr "Copii de rezervă ale albumelor"
 
@@ -540,7 +540,7 @@ msgstr "Înapoi"
 msgid "Back to top"
 msgstr "Înapoi la începutul paginii"
 
-#: src/page/settings/advanced.vue:165
+#: src/page/settings/advanced.vue:161
 msgid "Backup"
 msgstr "Backup"
 
@@ -747,7 +747,7 @@ msgstr "Modificările nu au putut fi salvate"
 #: src/component/photo/edit/files.vue:570 src/component/service/edit.vue:343
 #: src/component/share/dialog.vue:240 src/component/share/dialog.vue:259
 #: src/page/albums.vue:1268 src/page/people/recognized.vue:320
-#: src/page/settings/advanced.vue:539 src/page/settings/content.vue:300
+#: src/page/settings/advanced.vue:535 src/page/settings/content.vue:300
 #: src/page/settings/general.vue:525
 msgid "Changes successfully saved"
 msgstr "Modificări salvate cu succes"
@@ -965,15 +965,15 @@ msgstr "Creați un cont"
 msgid "Create album"
 msgstr "Creați un album"
 
-#: src/page/settings/advanced.vue:178
+#: src/page/settings/advanced.vue:174
 msgid "Create regular backups based on the configured schedule."
 msgstr "Creați copii de rezervă ale indexurilor pe baza programului configurat."
 
-#: src/page/settings/advanced.vue:194
+#: src/page/settings/advanced.vue:190
 msgid "Create YAML files to back up album metadata."
 msgstr "Creați fișiere YAML pentru a salva metadatele albumelor."
 
-#: src/page/settings/advanced.vue:210
+#: src/page/settings/advanced.vue:206
 msgid "Create YAML sidecar files to back up picture metadata."
 msgstr "Creați fișiere YAML sidecar pentru a salva metadatele imaginilor."
 
@@ -1010,7 +1010,7 @@ msgstr "Zilnic"
 msgid "Database"
 msgstr "Baza de date"
 
-#: src/page/settings/advanced.vue:177
+#: src/page/settings/advanced.vue:173
 msgid "Database Backups"
 msgstr "Copii de rezervă ale bazei de date"
 
@@ -1098,47 +1098,51 @@ msgstr "Detalii"
 msgid "Dimensions"
 msgstr "Dimensiuni"
 
+#: src/page/settings/advanced.vue:117
+msgid "Disable all face detection and recognition features."
+msgstr ""
+
 #: src/page/settings/advanced.vue:84
 msgid "Disable Backups"
 msgstr "Dezactivați copiile de rezervă"
 
-#: src/page/settings/advanced.vue:366
+#: src/page/settings/advanced.vue:362
 msgid "Disable Darktable"
 msgstr "Dezactivați Darktable"
 
-#: src/page/settings/advanced.vue:132
+#: src/page/settings/advanced.vue:148
 msgid "Disable ExifTool"
 msgstr "Dezactivați ExifTool"
+
+#: src/page/settings/advanced.vue:116
+msgid "Disable Faces"
+msgstr ""
 
 #: src/page/settings/advanced.vue:69
 msgid "Disable features that require write permission for the originals folder."
 msgstr "Dezactivați funcțiile care necesită permisiunea de scriere pentru dosarul de originale."
 
-#: src/page/settings/advanced.vue:430
+#: src/page/settings/advanced.vue:426
 msgid "Disable FFmpeg"
 msgstr "Dezactivați FFmpeg"
 
-#: src/page/settings/advanced.vue:414
+#: src/page/settings/advanced.vue:410
 msgid "Disable ImageMagick"
 msgstr "Dezactivați ImageMagick"
 
-#: src/page/settings/advanced.vue:117
+#: src/page/settings/advanced.vue:133
 msgid "Disable interactive world maps and reverse geocoding."
 msgstr "Dezactivați hărțile lumii interactive și geocodarea inversă."
 
-#: src/page/settings/advanced.vue:116
+#: src/page/settings/advanced.vue:132
 msgid "Disable Places"
 msgstr "Dezactivați locurile"
 
-#: src/page/settings/advanced.vue:382
+#: src/page/settings/advanced.vue:378
 msgid "Disable RawTherapee"
 msgstr "Dezactivați RawTherapee"
 
-#: src/page/settings/advanced.vue:148
-msgid "Disable TensorFlow"
-msgstr "Dezactivați TensorFlow"
-
-#: src/page/settings/advanced.vue:446
+#: src/page/settings/advanced.vue:442
 msgid "Disable Vectors"
 msgstr "Dezactivarea vectorilor"
 
@@ -1150,11 +1154,11 @@ msgstr "Dezactivați WebDAV"
 msgid "Disabled"
 msgstr "Persoane cu handicap"
 
-#: src/page/settings/advanced.vue:447
+#: src/page/settings/advanced.vue:443
 msgid "Disables vector graphics support."
 msgstr "Dezactivează suportul pentru grafica vectorială."
 
-#: src/page/settings/advanced.vue:431
+#: src/page/settings/advanced.vue:427
 msgid "Disables video transcoding and thumbnail extraction."
 msgstr "Dezactivează transcodarea video și extragerea miniaturilor."
 
@@ -1205,15 +1209,15 @@ msgstr "Document"
 msgid "Documents"
 msgstr "Documente"
 
-#: src/page/settings/advanced.vue:367
+#: src/page/settings/advanced.vue:363
 msgid "Don't use Darktable to convert RAW images."
 msgstr "Nu utilizați Darktable pentru a converti fișiere RAW."
 
-#: src/page/settings/advanced.vue:415
+#: src/page/settings/advanced.vue:411
 msgid "Don't use ImageMagick to convert images."
 msgstr "Nu folosiți ImageMagick pentru a converti imaginile."
 
-#: src/page/settings/advanced.vue:383
+#: src/page/settings/advanced.vue:379
 msgid "Don't use RawTherapee to convert RAW images."
 msgstr "Nu utilizați RawTherapee pentru a converti fișiere RAW."
 
@@ -1258,7 +1262,7 @@ msgstr "Descărcați fișiere individuale și arhive zip."
 msgid "Downloading…"
 msgstr "Descărcarea…"
 
-#: src/page/settings/advanced.vue:232
+#: src/page/settings/advanced.vue:228
 msgid "Downscaling Filter"
 msgstr "Filtru de reducere a scării"
 
@@ -1284,11 +1288,11 @@ msgstr "Dublurile vor fi omise și vor apărea doar o singură dată."
 msgid "Duration"
 msgstr "Durata"
 
-#: src/page/settings/advanced.vue:285
+#: src/page/settings/advanced.vue:281
 msgid "Dynamic Previews"
 msgstr "Previziuni dinamice"
 
-#: src/page/settings/advanced.vue:261
+#: src/page/settings/advanced.vue:257
 msgid "Dynamic Size Limit: %{n}px"
 msgstr "Limita dimensiunii dinamice: %{n}px"
 
@@ -1316,7 +1320,7 @@ msgstr "Editare cont"
 msgid "Edit Photo"
 msgstr "Editare fotografie"
 
-#: src/component/photo/batch-edit.vue:665
+#: src/component/photo/batch-edit.vue:664
 msgid "Edit Photos (%{n})"
 msgstr "Editarea fotografiilor (%{n})"
 
@@ -1341,7 +1345,7 @@ msgstr "Activați modul de depanare pentru a afișa jurnale suplimentare și pen
 msgid "Enable new features that may be incomplete or unstable."
 msgstr "Activați caracteristici noi care pot fi incomplete sau instabile."
 
-#: src/page/settings/advanced.vue:399
+#: src/page/settings/advanced.vue:395
 msgid "Enables RAW converter presets. May reduce performance."
 msgstr "Activează presetările convertorului RAW. Poate reduce performanța."
 
@@ -1414,7 +1418,7 @@ msgstr "Excludeți conținutul marcat ca fiind privat din rezultatele căutării
 msgid "Exclude hidden"
 msgstr "Excludeți ascunse"
 
-#: src/page/settings/advanced.vue:133
+#: src/page/settings/advanced.vue:149
 msgid "ExifTool is required for full support of XMP metadata, videos and Live Photos."
 msgstr "Extragerea metadatelor cu ExifTool este necesară pentru suportul complet pentru Video, Live Photo și XMP."
 
@@ -1511,13 +1515,13 @@ msgstr "Fișier"
 msgid "File Browser"
 msgstr "Browser de fișiere"
 
-#: src/page/settings/advanced.vue:354
+#: src/page/settings/advanced.vue:350
 msgid "File Conversion"
 msgstr "Conversia fișierelor"
 
 #: src/component/album/edit/dialog.vue:147
-#: src/component/photo/batch-edit.vue:636
-#: src/component/photo/batch-edit.vue:656 src/component/photo/toolbar.vue:415
+#: src/component/photo/batch-edit.vue:635
+#: src/component/photo/batch-edit.vue:655 src/component/photo/toolbar.vue:415
 #: src/component/photo/toolbar.vue:426 src/component/photo/toolbar.vue:437
 #: src/component/photo/view/list.vue:47
 msgid "File Name"
@@ -1711,7 +1715,7 @@ msgstr "Dacă pierdeți accesul la aplicația sau dispozitivul dvs. de autentifi
 msgid "Image"
 msgstr "Imagine"
 
-#: src/page/settings/advanced.vue:301
+#: src/page/settings/advanced.vue:297
 msgid "Image Quality"
 msgstr "Calitatea imaginii"
 
@@ -1861,11 +1865,11 @@ msgstr "Articolul"
 msgid "Items per page:"
 msgstr "Articole pe pagină:"
 
-#: src/page/settings/advanced.vue:308
+#: src/page/settings/advanced.vue:304
 msgid "JPEG Quality: %{n}"
 msgstr "Calitate JPEG: %{n}"
 
-#: src/page/settings/advanced.vue:323
+#: src/page/settings/advanced.vue:319
 msgid "JPEG Size Limit: %{n}px"
 msgstr "Limita dimensiunii JPEG: %{n}px"
 
@@ -2039,7 +2043,7 @@ msgstr "Ora locală"
 #: src/page/settings/account.vue:359 src/page/settings/account.vue:361
 #: src/common/util.js:792 src/component/album/edit/dialog.vue:46
 #: src/component/photo/batch-edit.vue:307
-#: src/component/photo/batch-edit.vue:616
+#: src/component/photo/batch-edit.vue:615
 #: src/component/photo/edit/details.vue:471
 #: src/component/photo/edit/details.vue:591
 #: src/component/photo/edit/details.vue:685
@@ -2428,7 +2432,7 @@ msgstr "Cel mai vechi Mai întâi"
 msgid "On Windows, enter the following resource in the connection dialog:"
 msgstr "Pe Windows, introduceți următoarea resursă în fereastra de dialog de conectare:"
 
-#: src/page/settings/advanced.vue:287
+#: src/page/settings/advanced.vue:283
 msgid "On-demand generation of thumbnails may cause high CPU and memory usage. It is not recommended for resource-constrained servers and NAS devices."
 msgstr "Generarea la cerere a miniaturilor poate cauza o utilizare ridicată a procesorului și a memoriei. Nu este recomandată pentru serverele și dispozitivele NAS cu resurse limitate."
 
@@ -2691,7 +2695,7 @@ msgstr "Vă rugăm să așteptați…"
 msgid "PM"
 msgstr "PM"
 
-#: src/page/settings/advanced.vue:338
+#: src/page/settings/advanced.vue:334
 msgid "PNG Size Limit: %{n}px"
 msgstr "Limita de dimensiune PNG: %{n}px"
 
@@ -2725,12 +2729,12 @@ msgstr "Împiedicați crearea de copii de rezervă ale bazei de date și ale alb
 msgid "Prevent other apps from accessing PhotoPrism as a shared network drive."
 msgstr "Împiedicați alte aplicații să acceseze PhotoPrism ca unitate de rețea partajată."
 
-#: src/component/photo/batch-edit.vue:630
-#: src/component/photo/batch-edit.vue:650 src/component/photo/edit/files.vue:30
+#: src/component/photo/batch-edit.vue:629
+#: src/component/photo/batch-edit.vue:649 src/component/photo/edit/files.vue:30
 msgid "Preview"
 msgstr "Previzualizare"
 
-#: src/page/settings/advanced.vue:222
+#: src/page/settings/advanced.vue:218
 msgid "Preview Images"
 msgstr "Imagini de previzualizare"
 
@@ -2937,7 +2941,7 @@ msgid "Resolution"
 msgstr "Rezoluție"
 
 #: src/page/connect.vue:74 src/page/connect.vue:83 src/page/connect.vue:76
-#: src/page/connect.vue:85 src/page/settings/advanced.vue:460
+#: src/page/connect.vue:85 src/page/settings/advanced.vue:456
 msgid "Restart"
 msgstr "Reporniți"
 
@@ -3246,7 +3250,7 @@ msgstr "Afișați titlurile"
 msgid "Sidecar"
 msgstr "Sidecar"
 
-#: src/page/settings/advanced.vue:209
+#: src/page/settings/advanced.vue:205
 msgid "Sidecar Files"
 msgstr "Fișiere Sidecar"
 
@@ -3374,7 +3378,7 @@ msgstr "Start"
 msgid "Start Page"
 msgstr "Pagina de start"
 
-#: src/page/settings/advanced.vue:244
+#: src/page/settings/advanced.vue:240
 msgid "Static Size Limit: %{n}px"
 msgstr "Limita dimensiunii statice: %{n}px"
 
@@ -3447,10 +3451,6 @@ msgstr "Luat"
 #: src/options/options.js:452
 msgid "Teal"
 msgstr "Turcoaz"
-
-#: src/page/settings/advanced.vue:150
-msgid "TensorFlow is required for image classification, facial recognition, and detecting unsafe content."
-msgstr "TensorFlow este necesar pentru clasificarea imaginilor, recunoașterea facială și detectarea conținutului nesigur."
 
 #: src/options/options.js:322
 msgid "Terrain"
@@ -3737,7 +3737,7 @@ msgstr "Se încarcă…"
 msgid "Uploads that may contain such images will be rejected automatically."
 msgstr "Încărcările care pot conține astfel de imagini vor fi respinse automat."
 
-#: src/page/settings/advanced.vue:398
+#: src/page/settings/advanced.vue:394
 msgid "Use Presets"
 msgstr "Utilizați presetări"
 
@@ -4016,6 +4016,12 @@ msgstr "Titlu"
 msgctxt "Verb"
 msgid "Archive"
 msgstr "Arhiva"
+
+#~ msgid "Disable TensorFlow"
+#~ msgstr "Dezactivați TensorFlow"
+
+#~ msgid "TensorFlow is required for image classification, facial recognition, and detecting unsafe content."
+#~ msgstr "TensorFlow este necesar pentru clasificarea imaginilor, recunoașterea facială și detectarea conținutului nesigur."
 
 #~ msgid "No server connection"
 #~ msgstr "Nu există conexiune la server"

@@ -20,6 +20,7 @@ export class ConfigOptions extends Model {
       DisableRestart: true,
       DisableWebDAV: $config.values.disable.webdav,
       DisableSettings: $config.values.disable.settings,
+      DisableFaces: $config.values.disable.faces,
       DisablePlaces: $config.values.disable.places,
       DisableBackups: $config.values.disable.backups,
       DisableTensorFlow: $config.values.disable.tensorflow,

@@ -308,7 +308,7 @@ msgstr "2 週間後"
 msgid "Album"
 msgstr "アルバム"
 
-#: src/page/settings/advanced.vue:193
+#: src/page/settings/advanced.vue:189
 msgid "Album Backups"
 msgstr "アルバムのバックアップ"
 
@@ -540,7 +540,7 @@ msgstr "戻る"
 msgid "Back to top"
 msgstr "トップに戻る"
 
-#: src/page/settings/advanced.vue:165
+#: src/page/settings/advanced.vue:161
 msgid "Backup"
 msgstr "バックアップ"
 
@@ -747,7 +747,7 @@ msgstr "変更を保存できませんでした"
 #: src/component/photo/edit/files.vue:570 src/component/service/edit.vue:343
 #: src/component/share/dialog.vue:240 src/component/share/dialog.vue:259
 #: src/page/albums.vue:1268 src/page/people/recognized.vue:320
-#: src/page/settings/advanced.vue:539 src/page/settings/content.vue:300
+#: src/page/settings/advanced.vue:535 src/page/settings/content.vue:300
 #: src/page/settings/general.vue:525
 msgid "Changes successfully saved"
 msgstr "変更が正常に保存されました"
@@ -965,15 +965,15 @@ msgstr "アカウントを作成"
 msgid "Create album"
 msgstr "アルバムを作成"
 
-#: src/page/settings/advanced.vue:178
+#: src/page/settings/advanced.vue:174
 msgid "Create regular backups based on the configured schedule."
 msgstr "設定されたスケジュールに基づいて通常のバックアップを作成します。"
 
-#: src/page/settings/advanced.vue:194
+#: src/page/settings/advanced.vue:190
 msgid "Create YAML files to back up album metadata."
 msgstr "アルバムのメタデータをバックアップする YAML ファイルを作成します。"
 
-#: src/page/settings/advanced.vue:210
+#: src/page/settings/advanced.vue:206
 msgid "Create YAML sidecar files to back up picture metadata."
 msgstr "画像のメタデータをバックアップするために YAML サイドカーファイルを作成します。"
 
@@ -1010,7 +1010,7 @@ msgstr "毎日"
 msgid "Database"
 msgstr "データベース"
 
-#: src/page/settings/advanced.vue:177
+#: src/page/settings/advanced.vue:173
 msgid "Database Backups"
 msgstr "データベースのバックアップ"
 
@@ -1098,47 +1098,51 @@ msgstr "詳細"
 msgid "Dimensions"
 msgstr "寸法"
 
+#: src/page/settings/advanced.vue:117
+msgid "Disable all face detection and recognition features."
+msgstr ""
+
 #: src/page/settings/advanced.vue:84
 msgid "Disable Backups"
 msgstr "バックアップを無効化"
 
-#: src/page/settings/advanced.vue:366
+#: src/page/settings/advanced.vue:362
 msgid "Disable Darktable"
 msgstr "Darktable を無効化"
 
-#: src/page/settings/advanced.vue:132
+#: src/page/settings/advanced.vue:148
 msgid "Disable ExifTool"
 msgstr "ExifTool を無効化"
+
+#: src/page/settings/advanced.vue:116
+msgid "Disable Faces"
+msgstr ""
 
 #: src/page/settings/advanced.vue:69
 msgid "Disable features that require write permission for the originals folder."
 msgstr "originals フォルダへの書き込み権限を必要とする機能を無効にします。"
 
-#: src/page/settings/advanced.vue:430
+#: src/page/settings/advanced.vue:426
 msgid "Disable FFmpeg"
 msgstr "FFmpeg を無効化"
 
-#: src/page/settings/advanced.vue:414
+#: src/page/settings/advanced.vue:410
 msgid "Disable ImageMagick"
 msgstr "ImageMagick を無効化"
 
-#: src/page/settings/advanced.vue:117
+#: src/page/settings/advanced.vue:133
 msgid "Disable interactive world maps and reverse geocoding."
 msgstr "インタラクティブな世界地図と逆ジオコーディングを無効にします。"
 
-#: src/page/settings/advanced.vue:116
+#: src/page/settings/advanced.vue:132
 msgid "Disable Places"
 msgstr "場所を無効化"
 
-#: src/page/settings/advanced.vue:382
+#: src/page/settings/advanced.vue:378
 msgid "Disable RawTherapee"
 msgstr "RawTherapee を無効化"
 
-#: src/page/settings/advanced.vue:148
-msgid "Disable TensorFlow"
-msgstr "TensorFlow を無効化"
-
-#: src/page/settings/advanced.vue:446
+#: src/page/settings/advanced.vue:442
 msgid "Disable Vectors"
 msgstr "ベクターを無効化"
 
@@ -1150,11 +1154,11 @@ msgstr "WebDAV を無効化"
 msgid "Disabled"
 msgstr "無効"
 
-#: src/page/settings/advanced.vue:447
+#: src/page/settings/advanced.vue:443
 msgid "Disables vector graphics support."
 msgstr "ベクターグラフィックのサポートを無効にします。"
 
-#: src/page/settings/advanced.vue:431
+#: src/page/settings/advanced.vue:427
 msgid "Disables video transcoding and thumbnail extraction."
 msgstr "ビデオのトランスコーディングとサムネイル抽出を無効にします。"
 
@@ -1205,15 +1209,15 @@ msgstr "ドキュメント"
 msgid "Documents"
 msgstr "ドキュメント"
 
-#: src/page/settings/advanced.vue:367
+#: src/page/settings/advanced.vue:363
 msgid "Don't use Darktable to convert RAW images."
 msgstr "RAW ファイルの変換に Darktable を使用しないようにします。"
 
-#: src/page/settings/advanced.vue:415
+#: src/page/settings/advanced.vue:411
 msgid "Don't use ImageMagick to convert images."
 msgstr "画像の変換に ImageMagick を使用しないようにします。"
 
-#: src/page/settings/advanced.vue:383
+#: src/page/settings/advanced.vue:379
 msgid "Don't use RawTherapee to convert RAW images."
 msgstr "RAW ファイルの変換に RawTherapee を使用しないようにします。"
 
@@ -1258,7 +1262,7 @@ msgstr "単一のファイルと zip アーカイブをダウンロードしま�
 msgid "Downloading…"
 msgstr "ダウンロードしています…"
 
-#: src/page/settings/advanced.vue:232
+#: src/page/settings/advanced.vue:228
 msgid "Downscaling Filter"
 msgstr "ダウンスケーリングフィルター"
 
@@ -1284,11 +1288,11 @@ msgstr "重複している項目はスキップされ、1度だけ表示され�
 msgid "Duration"
 msgstr "長さ"
 
-#: src/page/settings/advanced.vue:285
+#: src/page/settings/advanced.vue:281
 msgid "Dynamic Previews"
 msgstr "動的プレビュー"
 
-#: src/page/settings/advanced.vue:261
+#: src/page/settings/advanced.vue:257
 msgid "Dynamic Size Limit: %{n}px"
 msgstr "動的サイズの制限: %{n} px"
 
@@ -1316,7 +1320,7 @@ msgstr "アカウントを編集"
 msgid "Edit Photo"
 msgstr "写真を編集"
 
-#: src/component/photo/batch-edit.vue:665
+#: src/component/photo/batch-edit.vue:664
 msgid "Edit Photos (%{n})"
 msgstr "写真を編集する (%{n})"
 
@@ -1341,7 +1345,7 @@ msgstr "デバッグモードを有効にすると、追加のログが表示さ
 msgid "Enable new features that may be incomplete or unstable."
 msgstr "不完全または不安定な新機能を有効にします。"
 
-#: src/page/settings/advanced.vue:399
+#: src/page/settings/advanced.vue:395
 msgid "Enables RAW converter presets. May reduce performance."
 msgstr "RAW 現像機のプリセットを有効にします。パフォーマンスが低下する場合があります。"
 
@@ -1414,7 +1418,7 @@ msgstr "プライベートに設定されたコンテンツを、検索結果、
 msgid "Exclude hidden"
 msgstr "隠された項目を除外"
 
-#: src/page/settings/advanced.vue:133
+#: src/page/settings/advanced.vue:149
 msgid "ExifTool is required for full support of XMP metadata, videos and Live Photos."
 msgstr "ビデオ、ライブフォト、XMP を完全にサポートするには、ExifTool が必要です。"
 
@@ -1511,13 +1515,13 @@ msgstr "ファイル"
 msgid "File Browser"
 msgstr "ファイルブラウザ"
 
-#: src/page/settings/advanced.vue:354
+#: src/page/settings/advanced.vue:350
 msgid "File Conversion"
 msgstr "ファイル変換"
 
 #: src/component/album/edit/dialog.vue:147
-#: src/component/photo/batch-edit.vue:636
-#: src/component/photo/batch-edit.vue:656 src/component/photo/toolbar.vue:415
+#: src/component/photo/batch-edit.vue:635
+#: src/component/photo/batch-edit.vue:655 src/component/photo/toolbar.vue:415
 #: src/component/photo/toolbar.vue:426 src/component/photo/toolbar.vue:437
 #: src/component/photo/view/list.vue:47
 msgid "File Name"
@@ -1711,7 +1715,7 @@ msgstr "認証アプリまたはデバイスにアクセスできなくなった
 msgid "Image"
 msgstr "写真"
 
-#: src/page/settings/advanced.vue:301
+#: src/page/settings/advanced.vue:297
 msgid "Image Quality"
 msgstr "画質"
 
@@ -1861,11 +1865,11 @@ msgstr "項目"
 msgid "Items per page:"
 msgstr "ページごとの項目:"
 
-#: src/page/settings/advanced.vue:308
+#: src/page/settings/advanced.vue:304
 msgid "JPEG Quality: %{n}"
 msgstr "JPEG 品質: %{n}"
 
-#: src/page/settings/advanced.vue:323
+#: src/page/settings/advanced.vue:319
 msgid "JPEG Size Limit: %{n}px"
 msgstr "JPEG サイズの制限: %{n} px"
 
@@ -2039,7 +2043,7 @@ msgstr "現地時間"
 #: src/page/settings/account.vue:359 src/page/settings/account.vue:361
 #: src/common/util.js:792 src/component/album/edit/dialog.vue:46
 #: src/component/photo/batch-edit.vue:307
-#: src/component/photo/batch-edit.vue:616
+#: src/component/photo/batch-edit.vue:615
 #: src/component/photo/edit/details.vue:471
 #: src/component/photo/edit/details.vue:591
 #: src/component/photo/edit/details.vue:685
@@ -2428,7 +2432,7 @@ msgstr "古い順"
 msgid "On Windows, enter the following resource in the connection dialog:"
 msgstr "Windowsの場合、接続ダイアログに以下の内容を入力します:"
 
-#: src/page/settings/advanced.vue:287
+#: src/page/settings/advanced.vue:283
 msgid "On-demand generation of thumbnails may cause high CPU and memory usage. It is not recommended for resource-constrained servers and NAS devices."
 msgstr "サムネイルのオンデマンド生成は、CPU とメモリの使用率が高くなる可能性があります。リソースに制限のあるサーバーや NAS デバイスには推奨されません。"
 
@@ -2691,7 +2695,7 @@ msgstr "お待ちください…"
 msgid "PM"
 msgstr "PM"
 
-#: src/page/settings/advanced.vue:338
+#: src/page/settings/advanced.vue:334
 msgid "PNG Size Limit: %{n}px"
 msgstr "PNG サイズ制限: %{n} px"
 
@@ -2725,12 +2729,12 @@ msgstr "データベースとアルバムのバックアップ、YAML サイド�
 msgid "Prevent other apps from accessing PhotoPrism as a shared network drive."
 msgstr "他のアプリが PhotoPrism を共有ネットワークドライブとしてアクセスできないようにします。"
 
-#: src/component/photo/batch-edit.vue:630
-#: src/component/photo/batch-edit.vue:650 src/component/photo/edit/files.vue:30
+#: src/component/photo/batch-edit.vue:629
+#: src/component/photo/batch-edit.vue:649 src/component/photo/edit/files.vue:30
 msgid "Preview"
 msgstr "プレビュー"
 
-#: src/page/settings/advanced.vue:222
+#: src/page/settings/advanced.vue:218
 msgid "Preview Images"
 msgstr "プレビュー画像"
 
@@ -2937,7 +2941,7 @@ msgid "Resolution"
 msgstr "解像度"
 
 #: src/page/connect.vue:74 src/page/connect.vue:83 src/page/connect.vue:76
-#: src/page/connect.vue:85 src/page/settings/advanced.vue:460
+#: src/page/connect.vue:85 src/page/settings/advanced.vue:456
 msgid "Restart"
 msgstr "再起動"
 
@@ -3246,7 +3250,7 @@ msgstr "タイトルを表示"
 msgid "Sidecar"
 msgstr "サイドカー"
 
-#: src/page/settings/advanced.vue:209
+#: src/page/settings/advanced.vue:205
 msgid "Sidecar Files"
 msgstr "サイドカーファイル"
 
@@ -3374,7 +3378,7 @@ msgstr "開始"
 msgid "Start Page"
 msgstr "スタートページ"
 
-#: src/page/settings/advanced.vue:244
+#: src/page/settings/advanced.vue:240
 msgid "Static Size Limit: %{n}px"
 msgstr "静的サイズ制限: %{n} px"
 
@@ -3447,10 +3451,6 @@ msgstr "撮影日"
 #: src/options/options.js:452
 msgid "Teal"
 msgstr "青緑"
-
-#: src/page/settings/advanced.vue:150
-msgid "TensorFlow is required for image classification, facial recognition, and detecting unsafe content."
-msgstr "TensorFlow は画像分類、顔認識、安全でないコンテンツの検出に必要です。"
 
 #: src/options/options.js:322
 msgid "Terrain"
@@ -3737,7 +3737,7 @@ msgstr "アップロード中…"
 msgid "Uploads that may contain such images will be rejected automatically."
 msgstr "そのような画像を含むアップロードは自動的に拒否されます。"
 
-#: src/page/settings/advanced.vue:398
+#: src/page/settings/advanced.vue:394
 msgid "Use Presets"
 msgstr "プリセットを使用"
 
@@ -4016,6 +4016,12 @@ msgstr "タイトル"
 msgctxt "Verb"
 msgid "Archive"
 msgstr "アーカイブ"
+
+#~ msgid "Disable TensorFlow"
+#~ msgstr "TensorFlow を無効化"
+
+#~ msgid "TensorFlow is required for image classification, facial recognition, and detecting unsafe content."
+#~ msgstr "TensorFlow は画像分類、顔認識、安全でないコンテンツの検出に必要です。"
 
 #~ msgid "No server connection"
 #~ msgstr "サーバーに接続できません"

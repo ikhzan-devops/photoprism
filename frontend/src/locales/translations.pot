@@ -349,7 +349,7 @@ msgstr ""
 msgid "Album"
 msgstr ""
 
-#: src/page/settings/advanced.vue:193
+#: src/page/settings/advanced.vue:189
 msgid "Album Backups"
 msgstr ""
 
@@ -614,7 +614,7 @@ msgstr ""
 msgid "Back to top"
 msgstr ""
 
-#: src/page/settings/advanced.vue:165
+#: src/page/settings/advanced.vue:161
 msgid "Backup"
 msgstr ""
 
@@ -879,7 +879,7 @@ msgstr ""
 #: src/component/share/dialog.vue:259
 #: src/page/albums.vue:1268
 #: src/page/people/recognized.vue:320
-#: src/page/settings/advanced.vue:539
+#: src/page/settings/advanced.vue:535
 #: src/page/settings/content.vue:300
 #: src/page/settings/general.vue:525
 msgid "Changes successfully saved"
@@ -1156,15 +1156,15 @@ msgstr ""
 msgid "Create album"
 msgstr ""
 
-#: src/page/settings/advanced.vue:178
+#: src/page/settings/advanced.vue:174
 msgid "Create regular backups based on the configured schedule."
 msgstr ""
 
-#: src/page/settings/advanced.vue:194
+#: src/page/settings/advanced.vue:190
 msgid "Create YAML files to back up album metadata."
 msgstr ""
 
-#: src/page/settings/advanced.vue:210
+#: src/page/settings/advanced.vue:206
 msgid "Create YAML sidecar files to back up picture metadata."
 msgstr ""
 
@@ -1203,7 +1203,7 @@ msgstr ""
 msgid "Database"
 msgstr ""
 
-#: src/page/settings/advanced.vue:177
+#: src/page/settings/advanced.vue:173
 msgid "Database Backups"
 msgstr ""
 
@@ -1313,47 +1313,51 @@ msgstr ""
 msgid "Dimensions"
 msgstr ""
 
+#: src/page/settings/advanced.vue:117
+msgid "Disable all face detection and recognition features."
+msgstr ""
+
 #: src/page/settings/advanced.vue:84
 msgid "Disable Backups"
 msgstr ""
 
-#: src/page/settings/advanced.vue:366
+#: src/page/settings/advanced.vue:362
 msgid "Disable Darktable"
 msgstr ""
 
-#: src/page/settings/advanced.vue:132
+#: src/page/settings/advanced.vue:148
 msgid "Disable ExifTool"
+msgstr ""
+
+#: src/page/settings/advanced.vue:116
+msgid "Disable Faces"
 msgstr ""
 
 #: src/page/settings/advanced.vue:69
 msgid "Disable features that require write permission for the originals folder."
 msgstr ""
 
-#: src/page/settings/advanced.vue:430
+#: src/page/settings/advanced.vue:426
 msgid "Disable FFmpeg"
 msgstr ""
 
-#: src/page/settings/advanced.vue:414
+#: src/page/settings/advanced.vue:410
 msgid "Disable ImageMagick"
 msgstr ""
 
-#: src/page/settings/advanced.vue:117
+#: src/page/settings/advanced.vue:133
 msgid "Disable interactive world maps and reverse geocoding."
 msgstr ""
 
-#: src/page/settings/advanced.vue:116
+#: src/page/settings/advanced.vue:132
 msgid "Disable Places"
 msgstr ""
 
-#: src/page/settings/advanced.vue:382
+#: src/page/settings/advanced.vue:378
 msgid "Disable RawTherapee"
 msgstr ""
 
-#: src/page/settings/advanced.vue:148
-msgid "Disable TensorFlow"
-msgstr ""
-
-#: src/page/settings/advanced.vue:446
+#: src/page/settings/advanced.vue:442
 msgid "Disable Vectors"
 msgstr ""
 
@@ -1365,11 +1369,11 @@ msgstr ""
 msgid "Disabled"
 msgstr ""
 
-#: src/page/settings/advanced.vue:447
+#: src/page/settings/advanced.vue:443
 msgid "Disables vector graphics support."
 msgstr ""
 
-#: src/page/settings/advanced.vue:431
+#: src/page/settings/advanced.vue:427
 msgid "Disables video transcoding and thumbnail extraction."
 msgstr ""
 
@@ -1433,15 +1437,15 @@ msgstr ""
 msgid "Documents"
 msgstr ""
 
-#: src/page/settings/advanced.vue:367
+#: src/page/settings/advanced.vue:363
 msgid "Don't use Darktable to convert RAW images."
 msgstr ""
 
-#: src/page/settings/advanced.vue:415
+#: src/page/settings/advanced.vue:411
 msgid "Don't use ImageMagick to convert images."
 msgstr ""
 
-#: src/page/settings/advanced.vue:383
+#: src/page/settings/advanced.vue:379
 msgid "Don't use RawTherapee to convert RAW images."
 msgstr ""
 
@@ -1499,7 +1503,7 @@ msgstr ""
 msgid "Downloading…"
 msgstr ""
 
-#: src/page/settings/advanced.vue:232
+#: src/page/settings/advanced.vue:228
 msgid "Downscaling Filter"
 msgstr ""
 
@@ -1526,11 +1530,11 @@ msgstr ""
 msgid "Duration"
 msgstr ""
 
-#: src/page/settings/advanced.vue:285
+#: src/page/settings/advanced.vue:281
 msgid "Dynamic Previews"
 msgstr ""
 
-#: src/page/settings/advanced.vue:261
+#: src/page/settings/advanced.vue:257
 msgid "Dynamic Size Limit: %{n}px"
 msgstr ""
 
@@ -1563,7 +1567,7 @@ msgstr ""
 msgid "Edit Photo"
 msgstr ""
 
-#: src/component/photo/batch-edit.vue:665
+#: src/component/photo/batch-edit.vue:664
 msgid "Edit Photos (%{n})"
 msgstr ""
 
@@ -1592,7 +1596,7 @@ msgstr ""
 msgid "Enable new features that may be incomplete or unstable."
 msgstr ""
 
-#: src/page/settings/advanced.vue:399
+#: src/page/settings/advanced.vue:395
 msgid "Enables RAW converter presets. May reduce performance."
 msgstr ""
 
@@ -1674,7 +1678,7 @@ msgstr ""
 msgid "Exclude hidden"
 msgstr ""
 
-#: src/page/settings/advanced.vue:133
+#: src/page/settings/advanced.vue:149
 msgid "ExifTool is required for full support of XMP metadata, videos and Live Photos."
 msgstr ""
 
@@ -1789,13 +1793,13 @@ msgstr ""
 msgid "File Browser"
 msgstr ""
 
-#: src/page/settings/advanced.vue:354
+#: src/page/settings/advanced.vue:350
 msgid "File Conversion"
 msgstr ""
 
 #: src/component/album/edit/dialog.vue:147
-#: src/component/photo/batch-edit.vue:636
-#: src/component/photo/batch-edit.vue:656
+#: src/component/photo/batch-edit.vue:635
+#: src/component/photo/batch-edit.vue:655
 #: src/component/photo/toolbar.vue:415
 #: src/component/photo/toolbar.vue:426
 #: src/component/photo/toolbar.vue:437
@@ -2021,7 +2025,7 @@ msgstr ""
 msgid "Image"
 msgstr ""
 
-#: src/page/settings/advanced.vue:301
+#: src/page/settings/advanced.vue:297
 msgid "Image Quality"
 msgstr ""
 
@@ -2199,11 +2203,11 @@ msgstr ""
 msgid "Items per page:"
 msgstr ""
 
-#: src/page/settings/advanced.vue:308
+#: src/page/settings/advanced.vue:304
 msgid "JPEG Quality: %{n}"
 msgstr ""
 
-#: src/page/settings/advanced.vue:323
+#: src/page/settings/advanced.vue:319
 msgid "JPEG Size Limit: %{n}px"
 msgstr ""
 
@@ -2414,7 +2418,7 @@ msgstr ""
 #: src/common/util.js:792
 #: src/component/album/edit/dialog.vue:46
 #: src/component/photo/batch-edit.vue:307
-#: src/component/photo/batch-edit.vue:616
+#: src/component/photo/batch-edit.vue:615
 #: src/component/photo/edit/details.vue:471
 #: src/component/photo/edit/details.vue:591
 #: src/component/photo/edit/details.vue:685
@@ -2877,7 +2881,7 @@ msgstr ""
 msgid "On Windows, enter the following resource in the connection dialog:"
 msgstr ""
 
-#: src/page/settings/advanced.vue:287
+#: src/page/settings/advanced.vue:283
 msgid "On-demand generation of thumbnails may cause high CPU and memory usage. It is not recommended for resource-constrained servers and NAS devices."
 msgstr ""
 
@@ -3179,7 +3183,7 @@ msgstr ""
 msgid "PM"
 msgstr ""
 
-#: src/page/settings/advanced.vue:338
+#: src/page/settings/advanced.vue:334
 msgid "PNG Size Limit: %{n}px"
 msgstr ""
 
@@ -3214,13 +3218,13 @@ msgstr ""
 msgid "Prevent other apps from accessing PhotoPrism as a shared network drive."
 msgstr ""
 
-#: src/component/photo/batch-edit.vue:630
-#: src/component/photo/batch-edit.vue:650
+#: src/component/photo/batch-edit.vue:629
+#: src/component/photo/batch-edit.vue:649
 #: src/component/photo/edit/files.vue:30
 msgid "Preview"
 msgstr ""
 
-#: src/page/settings/advanced.vue:222
+#: src/page/settings/advanced.vue:218
 msgid "Preview Images"
 msgstr ""
 
@@ -3473,7 +3477,7 @@ msgstr ""
 #: src/page/connect.vue:83
 #: src/page/connect.vue:76
 #: src/page/connect.vue:85
-#: src/page/settings/advanced.vue:460
+#: src/page/settings/advanced.vue:456
 msgid "Restart"
 msgstr ""
 
@@ -3836,7 +3840,7 @@ msgstr ""
 msgid "Sidecar"
 msgstr ""
 
-#: src/page/settings/advanced.vue:209
+#: src/page/settings/advanced.vue:205
 msgid "Sidecar Files"
 msgstr ""
 
@@ -3979,7 +3983,7 @@ msgstr ""
 msgid "Start Page"
 msgstr ""
 
-#: src/page/settings/advanced.vue:244
+#: src/page/settings/advanced.vue:240
 msgid "Static Size Limit: %{n}px"
 msgstr ""
 
@@ -4058,10 +4062,6 @@ msgstr ""
 
 #: src/options/options.js:452
 msgid "Teal"
-msgstr ""
-
-#: src/page/settings/advanced.vue:150
-msgid "TensorFlow is required for image classification, facial recognition, and detecting unsafe content."
 msgstr ""
 
 #: src/options/options.js:322
@@ -4413,7 +4413,7 @@ msgstr ""
 msgid "Uploads that may contain such images will be rejected automatically."
 msgstr ""
 
-#: src/page/settings/advanced.vue:398
+#: src/page/settings/advanced.vue:394
 msgid "Use Presets"
 msgstr ""
 

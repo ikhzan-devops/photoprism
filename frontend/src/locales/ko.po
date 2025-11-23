@@ -308,7 +308,7 @@ msgstr "2주 후"
 msgid "Album"
 msgstr "앨범"
 
-#: src/page/settings/advanced.vue:193
+#: src/page/settings/advanced.vue:189
 msgid "Album Backups"
 msgstr "앨범 백업"
 
@@ -540,7 +540,7 @@ msgstr "뒤쪽에"
 msgid "Back to top"
 msgstr "맨 위로 돌아가기"
 
-#: src/page/settings/advanced.vue:165
+#: src/page/settings/advanced.vue:161
 msgid "Backup"
 msgstr "백업"
 
@@ -747,7 +747,7 @@ msgstr "변경 사항을 저장할 수 없음"
 #: src/component/photo/edit/files.vue:570 src/component/service/edit.vue:343
 #: src/component/share/dialog.vue:240 src/component/share/dialog.vue:259
 #: src/page/albums.vue:1268 src/page/people/recognized.vue:320
-#: src/page/settings/advanced.vue:539 src/page/settings/content.vue:300
+#: src/page/settings/advanced.vue:535 src/page/settings/content.vue:300
 #: src/page/settings/general.vue:525
 msgid "Changes successfully saved"
 msgstr "변경사항이 성공적으로 저장되었습니다"
@@ -965,15 +965,15 @@ msgstr "계정 만들기"
 msgid "Create album"
 msgstr "앨범 만들기"
 
-#: src/page/settings/advanced.vue:178
+#: src/page/settings/advanced.vue:174
 msgid "Create regular backups based on the configured schedule."
 msgstr "구성된 일정에 따라 인덱스 백업을 생성합니다."
 
-#: src/page/settings/advanced.vue:194
+#: src/page/settings/advanced.vue:190
 msgid "Create YAML files to back up album metadata."
 msgstr "앨범 메타데이터를 백업할 YAML 파일을 만듭니다."
 
-#: src/page/settings/advanced.vue:210
+#: src/page/settings/advanced.vue:206
 msgid "Create YAML sidecar files to back up picture metadata."
 msgstr "사진 메타데이터를 백업하는 YAML 사이드카 파일을 만듭니다."
 
@@ -1010,7 +1010,7 @@ msgstr "매일"
 msgid "Database"
 msgstr "데이터베이스"
 
-#: src/page/settings/advanced.vue:177
+#: src/page/settings/advanced.vue:173
 msgid "Database Backups"
 msgstr "데이터베이스 백업"
 
@@ -1098,47 +1098,51 @@ msgstr "세부 사항"
 msgid "Dimensions"
 msgstr "치수"
 
+#: src/page/settings/advanced.vue:117
+msgid "Disable all face detection and recognition features."
+msgstr ""
+
 #: src/page/settings/advanced.vue:84
 msgid "Disable Backups"
 msgstr "백업 비활성화"
 
-#: src/page/settings/advanced.vue:366
+#: src/page/settings/advanced.vue:362
 msgid "Disable Darktable"
 msgstr "다크테이블 비활성화"
 
-#: src/page/settings/advanced.vue:132
+#: src/page/settings/advanced.vue:148
 msgid "Disable ExifTool"
 msgstr "ExifTool 비활성화"
+
+#: src/page/settings/advanced.vue:116
+msgid "Disable Faces"
+msgstr ""
 
 #: src/page/settings/advanced.vue:69
 msgid "Disable features that require write permission for the originals folder."
 msgstr "원본 폴더에 대한 쓰기 권한이 필요한 기능을 비활성화합니다."
 
-#: src/page/settings/advanced.vue:430
+#: src/page/settings/advanced.vue:426
 msgid "Disable FFmpeg"
 msgstr "FFmpeg 비활성화"
 
-#: src/page/settings/advanced.vue:414
+#: src/page/settings/advanced.vue:410
 msgid "Disable ImageMagick"
 msgstr "ImageMagick 비활성화"
 
-#: src/page/settings/advanced.vue:117
+#: src/page/settings/advanced.vue:133
 msgid "Disable interactive world maps and reverse geocoding."
 msgstr "대화형 세계 지도를 비활성화하고 지오코딩을 역방향으로 설정합니다."
 
-#: src/page/settings/advanced.vue:116
+#: src/page/settings/advanced.vue:132
 msgid "Disable Places"
 msgstr "장소 비활성화"
 
-#: src/page/settings/advanced.vue:382
+#: src/page/settings/advanced.vue:378
 msgid "Disable RawTherapee"
 msgstr "RawTherapee 비활성화"
 
-#: src/page/settings/advanced.vue:148
-msgid "Disable TensorFlow"
-msgstr "TensorFlow 비활성화"
-
-#: src/page/settings/advanced.vue:446
+#: src/page/settings/advanced.vue:442
 msgid "Disable Vectors"
 msgstr "벡터 비활성화"
 
@@ -1150,11 +1154,11 @@ msgstr "WebDAV 비활성화"
 msgid "Disabled"
 msgstr "비활성화"
 
-#: src/page/settings/advanced.vue:447
+#: src/page/settings/advanced.vue:443
 msgid "Disables vector graphics support."
 msgstr "벡터 그래픽 지원을 비활성화합니다."
 
-#: src/page/settings/advanced.vue:431
+#: src/page/settings/advanced.vue:427
 msgid "Disables video transcoding and thumbnail extraction."
 msgstr "동영상 트랜스코딩 및 썸네일 추출을 비활성화합니다."
 
@@ -1205,15 +1209,15 @@ msgstr "문서"
 msgid "Documents"
 msgstr "문서"
 
-#: src/page/settings/advanced.vue:367
+#: src/page/settings/advanced.vue:363
 msgid "Don't use Darktable to convert RAW images."
 msgstr "RAW 파일을 변환하는 데 Darktable을 사용하지 마십시오."
 
-#: src/page/settings/advanced.vue:415
+#: src/page/settings/advanced.vue:411
 msgid "Don't use ImageMagick to convert images."
 msgstr "이미지 변환에 ImageMagick을 사용하지 마세요."
 
-#: src/page/settings/advanced.vue:383
+#: src/page/settings/advanced.vue:379
 msgid "Don't use RawTherapee to convert RAW images."
 msgstr "RawTherapee를 사용하여 RAW 파일을 변환하지 마십시오."
 
@@ -1258,7 +1262,7 @@ msgstr "단일 파일 및 ZIP 아카이브 다운로드하기."
 msgid "Downloading…"
 msgstr "다운로드 중…"
 
-#: src/page/settings/advanced.vue:232
+#: src/page/settings/advanced.vue:228
 msgid "Downscaling Filter"
 msgstr "축소 필터"
 
@@ -1284,11 +1288,11 @@ msgstr "중복은 건너뛰고 한 번만 나타납니다."
 msgid "Duration"
 msgstr "기간"
 
-#: src/page/settings/advanced.vue:285
+#: src/page/settings/advanced.vue:281
 msgid "Dynamic Previews"
 msgstr "다이나믹 미리보기"
 
-#: src/page/settings/advanced.vue:261
+#: src/page/settings/advanced.vue:257
 msgid "Dynamic Size Limit: %{n}px"
 msgstr "다이나믹 크기 제한: %{n}px"
 
@@ -1316,7 +1320,7 @@ msgstr "계정 편집"
 msgid "Edit Photo"
 msgstr "사진 편집"
 
-#: src/component/photo/batch-edit.vue:665
+#: src/component/photo/batch-edit.vue:664
 msgid "Edit Photos (%{n})"
 msgstr "사진 편집(%{n})"
 
@@ -1341,7 +1345,7 @@ msgstr "디버그 모드를 활성화하면 추가 로그를 표시하고 문제
 msgid "Enable new features that may be incomplete or unstable."
 msgstr "불완전하거나 불안정할 수 있는 새로운 기능을 사용하도록 설정합니다."
 
-#: src/page/settings/advanced.vue:399
+#: src/page/settings/advanced.vue:395
 msgid "Enables RAW converter presets. May reduce performance."
 msgstr "RAW 변환기 사전 설정을 활성화합니다. 성능이 저하될 수 있습니다."
 
@@ -1414,7 +1418,7 @@ msgstr "검색 결과, 공유 앨범, 레이블 및 장소에서 비공개로 �
 msgid "Exclude hidden"
 msgstr "숨김 제외"
 
-#: src/page/settings/advanced.vue:133
+#: src/page/settings/advanced.vue:149
 msgid "ExifTool is required for full support of XMP metadata, videos and Live Photos."
 msgstr "전체 비디오, 라이브 사진 및 XMP를 지원하려면 ExifTool을 사용한 메타데이터 추출이 필요합니다."
 
@@ -1511,13 +1515,13 @@ msgstr "파일"
 msgid "File Browser"
 msgstr "파일 탐색기"
 
-#: src/page/settings/advanced.vue:354
+#: src/page/settings/advanced.vue:350
 msgid "File Conversion"
 msgstr "파일 변환"
 
 #: src/component/album/edit/dialog.vue:147
-#: src/component/photo/batch-edit.vue:636
-#: src/component/photo/batch-edit.vue:656 src/component/photo/toolbar.vue:415
+#: src/component/photo/batch-edit.vue:635
+#: src/component/photo/batch-edit.vue:655 src/component/photo/toolbar.vue:415
 #: src/component/photo/toolbar.vue:426 src/component/photo/toolbar.vue:437
 #: src/component/photo/view/list.vue:47
 msgid "File Name"
@@ -1711,7 +1715,7 @@ msgstr "인증 앱이나 장치에 액세스할 수 없는 경우 복구 코드�
 msgid "Image"
 msgstr "이미지"
 
-#: src/page/settings/advanced.vue:301
+#: src/page/settings/advanced.vue:297
 msgid "Image Quality"
 msgstr "이미지 품질"
 
@@ -1861,11 +1865,11 @@ msgstr "아이템"
 msgid "Items per page:"
 msgstr "페이지당 항목:"
 
-#: src/page/settings/advanced.vue:308
+#: src/page/settings/advanced.vue:304
 msgid "JPEG Quality: %{n}"
 msgstr "JPEG 품질: %{n}"
 
-#: src/page/settings/advanced.vue:323
+#: src/page/settings/advanced.vue:319
 msgid "JPEG Size Limit: %{n}px"
 msgstr "JPEG 크기 제한: %{n}px"
 
@@ -2039,7 +2043,7 @@ msgstr "현지 시간"
 #: src/page/settings/account.vue:359 src/page/settings/account.vue:361
 #: src/common/util.js:792 src/component/album/edit/dialog.vue:46
 #: src/component/photo/batch-edit.vue:307
-#: src/component/photo/batch-edit.vue:616
+#: src/component/photo/batch-edit.vue:615
 #: src/component/photo/edit/details.vue:471
 #: src/component/photo/edit/details.vue:591
 #: src/component/photo/edit/details.vue:685
@@ -2428,7 +2432,7 @@ msgstr "오래된 순"
 msgid "On Windows, enter the following resource in the connection dialog:"
 msgstr "Windows의 경우 연결 대화 상자에 다음 리소스를 입력합니다."
 
-#: src/page/settings/advanced.vue:287
+#: src/page/settings/advanced.vue:283
 msgid "On-demand generation of thumbnails may cause high CPU and memory usage. It is not recommended for resource-constrained servers and NAS devices."
 msgstr "썸네일을 주문형으로 생성하면 CPU 및 메모리 사용량이 높아질 수 있습니다. 리소스가 제한된 서버 및 NAS 장치에는 권장되지 않습니다."
 
@@ -2691,7 +2695,7 @@ msgstr "잠시만 기다려주세요…"
 msgid "PM"
 msgstr "PM"
 
-#: src/page/settings/advanced.vue:338
+#: src/page/settings/advanced.vue:334
 msgid "PNG Size Limit: %{n}px"
 msgstr "PNG 크기 제한: %{n}px"
 
@@ -2725,12 +2729,12 @@ msgstr "데이터베이스 및 앨범 백업과 YAML 사이드카 파일이 생�
 msgid "Prevent other apps from accessing PhotoPrism as a shared network drive."
 msgstr "다른 앱이 공유 네트워크 드라이브로서 PhotoPrism에 액세스하지 못하도록 합니다."
 
-#: src/component/photo/batch-edit.vue:630
-#: src/component/photo/batch-edit.vue:650 src/component/photo/edit/files.vue:30
+#: src/component/photo/batch-edit.vue:629
+#: src/component/photo/batch-edit.vue:649 src/component/photo/edit/files.vue:30
 msgid "Preview"
 msgstr "미리보기"
 
-#: src/page/settings/advanced.vue:222
+#: src/page/settings/advanced.vue:218
 msgid "Preview Images"
 msgstr "이미지 미리보기"
 
@@ -2937,7 +2941,7 @@ msgid "Resolution"
 msgstr "해상도"
 
 #: src/page/connect.vue:74 src/page/connect.vue:83 src/page/connect.vue:76
-#: src/page/connect.vue:85 src/page/settings/advanced.vue:460
+#: src/page/connect.vue:85 src/page/settings/advanced.vue:456
 msgid "Restart"
 msgstr "다시 시작"
 
@@ -3246,7 +3250,7 @@ msgstr "제목 표시"
 msgid "Sidecar"
 msgstr "사이드카"
 
-#: src/page/settings/advanced.vue:209
+#: src/page/settings/advanced.vue:205
 msgid "Sidecar Files"
 msgstr "사이드카 파일"
 
@@ -3374,7 +3378,7 @@ msgstr "시작"
 msgid "Start Page"
 msgstr "시작 페이지"
 
-#: src/page/settings/advanced.vue:244
+#: src/page/settings/advanced.vue:240
 msgid "Static Size Limit: %{n}px"
 msgstr "스태틱 크지 제한: %{n}px"
 
@@ -3447,10 +3451,6 @@ msgstr "찍음"
 #: src/options/options.js:452
 msgid "Teal"
 msgstr "암녹색"
-
-#: src/page/settings/advanced.vue:150
-msgid "TensorFlow is required for image classification, facial recognition, and detecting unsafe content."
-msgstr "이미지 분류, 얼굴 인식, 안전하지 않은 콘텐츠 감지에는 TensorFlow가 필요합니다."
 
 #: src/options/options.js:322
 msgid "Terrain"
@@ -3737,7 +3737,7 @@ msgstr "업로드 중…"
 msgid "Uploads that may contain such images will be rejected automatically."
 msgstr "이러한 이미지가 포함될 수 있는 업로드는 자동으로 거부됩니다."
 
-#: src/page/settings/advanced.vue:398
+#: src/page/settings/advanced.vue:394
 msgid "Use Presets"
 msgstr "사전 설정 사용"
 
@@ -4016,6 +4016,12 @@ msgstr "주제"
 msgctxt "Verb"
 msgid "Archive"
 msgstr "보관"
+
+#~ msgid "Disable TensorFlow"
+#~ msgstr "TensorFlow 비활성화"
+
+#~ msgid "TensorFlow is required for image classification, facial recognition, and detecting unsafe content."
+#~ msgstr "이미지 분류, 얼굴 인식, 안전하지 않은 콘텐츠 감지에는 TensorFlow가 필요합니다."
 
 #~ msgid "No server connection"
 #~ msgstr "서버 연결 없음"

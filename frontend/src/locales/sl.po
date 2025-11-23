@@ -305,7 +305,7 @@ msgstr "Po dveh tednih"
 msgid "Album"
 msgstr "Album"
 
-#: src/page/settings/advanced.vue:193
+#: src/page/settings/advanced.vue:189
 msgid "Album Backups"
 msgstr "Varnostne kopije albumov"
 
@@ -537,7 +537,7 @@ msgstr "Nazaj"
 msgid "Back to top"
 msgstr "Nazaj na vrh"
 
-#: src/page/settings/advanced.vue:165
+#: src/page/settings/advanced.vue:161
 msgid "Backup"
 msgstr "Varnostna kopija"
 
@@ -744,7 +744,7 @@ msgstr "Sprememb ni bilo mogoče shraniti"
 #: src/component/photo/edit/files.vue:570 src/component/service/edit.vue:343
 #: src/component/share/dialog.vue:240 src/component/share/dialog.vue:259
 #: src/page/albums.vue:1268 src/page/people/recognized.vue:320
-#: src/page/settings/advanced.vue:539 src/page/settings/content.vue:300
+#: src/page/settings/advanced.vue:535 src/page/settings/content.vue:300
 #: src/page/settings/general.vue:525
 msgid "Changes successfully saved"
 msgstr "Spremembe so bile uspešno shranjene"
@@ -962,15 +962,15 @@ msgstr "Ustvarjanje računa"
 msgid "Create album"
 msgstr "Ustvari album"
 
-#: src/page/settings/advanced.vue:178
+#: src/page/settings/advanced.vue:174
 msgid "Create regular backups based on the configured schedule."
 msgstr "Ustvarite varnostne kopije indeksov na podlagi konfiguriranega urnika."
 
-#: src/page/settings/advanced.vue:194
+#: src/page/settings/advanced.vue:190
 msgid "Create YAML files to back up album metadata."
 msgstr "Ustvarite datoteke YAML za varnostno kopiranje metapodatkov albuma."
 
-#: src/page/settings/advanced.vue:210
+#: src/page/settings/advanced.vue:206
 msgid "Create YAML sidecar files to back up picture metadata."
 msgstr "Ustvarite stranske datoteke YAML za varnostno kopiranje metapodatkov slik."
 
@@ -1007,7 +1007,7 @@ msgstr "Dnevno"
 msgid "Database"
 msgstr "Podatkovna zbirka"
 
-#: src/page/settings/advanced.vue:177
+#: src/page/settings/advanced.vue:173
 msgid "Database Backups"
 msgstr "Varnostne kopije podatkovne baze"
 
@@ -1095,47 +1095,51 @@ msgstr "Podrobnosti"
 msgid "Dimensions"
 msgstr "Dimenzije"
 
+#: src/page/settings/advanced.vue:117
+msgid "Disable all face detection and recognition features."
+msgstr ""
+
 #: src/page/settings/advanced.vue:84
 msgid "Disable Backups"
 msgstr "Onemogoči varnostno kopiranje"
 
-#: src/page/settings/advanced.vue:366
+#: src/page/settings/advanced.vue:362
 msgid "Disable Darktable"
 msgstr "Onemogoči Darktable"
 
-#: src/page/settings/advanced.vue:132
+#: src/page/settings/advanced.vue:148
 msgid "Disable ExifTool"
 msgstr "Onemogoči orodje ExifTool"
+
+#: src/page/settings/advanced.vue:116
+msgid "Disable Faces"
+msgstr ""
 
 #: src/page/settings/advanced.vue:69
 msgid "Disable features that require write permission for the originals folder."
 msgstr "Onemogočite funkcije, ki zahtevajo dovoljenje za pisanje v mapo z izvirniki."
 
-#: src/page/settings/advanced.vue:430
+#: src/page/settings/advanced.vue:426
 msgid "Disable FFmpeg"
 msgstr "Onemogoči FFmpeg"
 
-#: src/page/settings/advanced.vue:414
+#: src/page/settings/advanced.vue:410
 msgid "Disable ImageMagick"
 msgstr "Onemogočite ImageMagick"
 
-#: src/page/settings/advanced.vue:117
+#: src/page/settings/advanced.vue:133
 msgid "Disable interactive world maps and reverse geocoding."
 msgstr "Onemogočite interaktivne zemljevide sveta in obratno geokodiranje."
 
-#: src/page/settings/advanced.vue:116
+#: src/page/settings/advanced.vue:132
 msgid "Disable Places"
 msgstr "Onemogoči mesta"
 
-#: src/page/settings/advanced.vue:382
+#: src/page/settings/advanced.vue:378
 msgid "Disable RawTherapee"
 msgstr "Onemogoči RawTherapee"
 
-#: src/page/settings/advanced.vue:148
-msgid "Disable TensorFlow"
-msgstr "Onemogoči TensorFlow"
-
-#: src/page/settings/advanced.vue:446
+#: src/page/settings/advanced.vue:442
 msgid "Disable Vectors"
 msgstr "Onemogočite vektorje"
 
@@ -1147,11 +1151,11 @@ msgstr "Onemogoči WebDAV"
 msgid "Disabled"
 msgstr "Onemogočeno"
 
-#: src/page/settings/advanced.vue:447
+#: src/page/settings/advanced.vue:443
 msgid "Disables vector graphics support."
 msgstr "Onemogoči podporo za vektorsko grafiko."
 
-#: src/page/settings/advanced.vue:431
+#: src/page/settings/advanced.vue:427
 msgid "Disables video transcoding and thumbnail extraction."
 msgstr "Onemogoči prekodiranje videoposnetkov in pridobivanje sličic."
 
@@ -1202,15 +1206,15 @@ msgstr "Dokument"
 msgid "Documents"
 msgstr "Dokumenti"
 
-#: src/page/settings/advanced.vue:367
+#: src/page/settings/advanced.vue:363
 msgid "Don't use Darktable to convert RAW images."
 msgstr "Za pretvorbo datotek RAW ne uporabljajte programa Darktable."
 
-#: src/page/settings/advanced.vue:415
+#: src/page/settings/advanced.vue:411
 msgid "Don't use ImageMagick to convert images."
 msgstr "Za pretvorbo slik ne uporabljajte programa ImageMagick."
 
-#: src/page/settings/advanced.vue:383
+#: src/page/settings/advanced.vue:379
 msgid "Don't use RawTherapee to convert RAW images."
 msgstr "Za pretvorbo slik RAW ne uporabljajte programa RawTherapee."
 
@@ -1255,7 +1259,7 @@ msgstr "Prenesite posamezne datoteke in arhive zip."
 msgid "Downloading…"
 msgstr "Prenašanje…"
 
-#: src/page/settings/advanced.vue:232
+#: src/page/settings/advanced.vue:228
 msgid "Downscaling Filter"
 msgstr "Filter za zmanjševanje obsega"
 
@@ -1281,11 +1285,11 @@ msgstr "Podvojeni podatki bodo preskočeni in prikazani samo enkrat."
 msgid "Duration"
 msgstr "Trajanje"
 
-#: src/page/settings/advanced.vue:285
+#: src/page/settings/advanced.vue:281
 msgid "Dynamic Previews"
 msgstr "Dinamični predogledi"
 
-#: src/page/settings/advanced.vue:261
+#: src/page/settings/advanced.vue:257
 msgid "Dynamic Size Limit: %{n}px"
 msgstr "Omejitev dinamične velikosti: %{n}px"
 
@@ -1313,7 +1317,7 @@ msgstr "Urejanje računa"
 msgid "Edit Photo"
 msgstr "Uredi fotografijo"
 
-#: src/component/photo/batch-edit.vue:665
+#: src/component/photo/batch-edit.vue:664
 msgid "Edit Photos (%{n})"
 msgstr "Urejanje fotografij (%{n})"
 
@@ -1338,7 +1342,7 @@ msgstr "Omogočite način za odpravljanje napak, da prikažete dodatne dnevnike 
 msgid "Enable new features that may be incomplete or unstable."
 msgstr "omogočanje novih funkcij, ki so lahko nepopolne ali nestabilne."
 
-#: src/page/settings/advanced.vue:399
+#: src/page/settings/advanced.vue:395
 msgid "Enables RAW converter presets. May reduce performance."
 msgstr "Omogoči prednastavitve pretvornika RAW. Lahko zmanjša zmogljivost."
 
@@ -1411,7 +1415,7 @@ msgstr "Vsebino, označeno kot zasebno, izključite iz rezultatov iskanja, skupn
 msgid "Exclude hidden"
 msgstr "Izključite skrite"
 
-#: src/page/settings/advanced.vue:133
+#: src/page/settings/advanced.vue:149
 msgid "ExifTool is required for full support of XMP metadata, videos and Live Photos."
 msgstr "Za popolno podporo za videoposnetke, fotografije v živo in XMP je potrebno pridobivanje metapodatkov z orodjem ExifTool."
 
@@ -1508,13 +1512,13 @@ msgstr "Datoteka"
 msgid "File Browser"
 msgstr "Brskalnik za datoteke"
 
-#: src/page/settings/advanced.vue:354
+#: src/page/settings/advanced.vue:350
 msgid "File Conversion"
 msgstr "Pretvarjanje datotek"
 
 #: src/component/album/edit/dialog.vue:147
-#: src/component/photo/batch-edit.vue:636
-#: src/component/photo/batch-edit.vue:656 src/component/photo/toolbar.vue:415
+#: src/component/photo/batch-edit.vue:635
+#: src/component/photo/batch-edit.vue:655 src/component/photo/toolbar.vue:415
 #: src/component/photo/toolbar.vue:426 src/component/photo/toolbar.vue:437
 #: src/component/photo/view/list.vue:47
 msgid "File Name"
@@ -1708,7 +1712,7 @@ msgstr "Če izgubite dostop do aplikacije ali naprave za preverjanje pristnosti,
 msgid "Image"
 msgstr "Slika"
 
-#: src/page/settings/advanced.vue:301
+#: src/page/settings/advanced.vue:297
 msgid "Image Quality"
 msgstr "Kakovost slike"
 
@@ -1858,11 +1862,11 @@ msgstr "Artikel"
 msgid "Items per page:"
 msgstr "Elementi na stran:"
 
-#: src/page/settings/advanced.vue:308
+#: src/page/settings/advanced.vue:304
 msgid "JPEG Quality: %{n}"
 msgstr "Kakovost JPEG: %{n}"
 
-#: src/page/settings/advanced.vue:323
+#: src/page/settings/advanced.vue:319
 msgid "JPEG Size Limit: %{n}px"
 msgstr "Omejitev velikosti JPEG: %{n}px"
 
@@ -2036,7 +2040,7 @@ msgstr "Lokalni čas"
 #: src/page/settings/account.vue:359 src/page/settings/account.vue:361
 #: src/common/util.js:792 src/component/album/edit/dialog.vue:46
 #: src/component/photo/batch-edit.vue:307
-#: src/component/photo/batch-edit.vue:616
+#: src/component/photo/batch-edit.vue:615
 #: src/component/photo/edit/details.vue:471
 #: src/component/photo/edit/details.vue:591
 #: src/component/photo/edit/details.vue:685
@@ -2425,7 +2429,7 @@ msgstr "Najprej najstarejši"
 msgid "On Windows, enter the following resource in the connection dialog:"
 msgstr "V operacijskem sistemu Windows v pogovorno okno za povezavo vnesite naslednji vir:"
 
-#: src/page/settings/advanced.vue:287
+#: src/page/settings/advanced.vue:283
 msgid "On-demand generation of thumbnails may cause high CPU and memory usage. It is not recommended for resource-constrained servers and NAS devices."
 msgstr "Ustvarjanje sličic na zahtevo lahko povzroči veliko porabo procesorja in pomnilnika. To ni priporočljivo za strežnike in naprave NAS z omejenimi viri."
 
@@ -2688,7 +2692,7 @@ msgstr "Počakajte…"
 msgid "PM"
 msgstr "PM"
 
-#: src/page/settings/advanced.vue:338
+#: src/page/settings/advanced.vue:334
 msgid "PNG Size Limit: %{n}px"
 msgstr "Omejitev velikosti PNG: %{n}px"
 
@@ -2722,12 +2726,12 @@ msgstr "Preprečite ustvarjanje varnostnih kopij podatkovnih zbirk in albumov te
 msgid "Prevent other apps from accessing PhotoPrism as a shared network drive."
 msgstr "Preprečite drugim aplikacijam dostop do programa PhotoPrism kot do omrežnega pogona v skupni rabi."
 
-#: src/component/photo/batch-edit.vue:630
-#: src/component/photo/batch-edit.vue:650 src/component/photo/edit/files.vue:30
+#: src/component/photo/batch-edit.vue:629
+#: src/component/photo/batch-edit.vue:649 src/component/photo/edit/files.vue:30
 msgid "Preview"
 msgstr "Predogled"
 
-#: src/page/settings/advanced.vue:222
+#: src/page/settings/advanced.vue:218
 msgid "Preview Images"
 msgstr "Predogled slik"
 
@@ -2934,7 +2938,7 @@ msgid "Resolution"
 msgstr "Resolucija"
 
 #: src/page/connect.vue:74 src/page/connect.vue:83 src/page/connect.vue:76
-#: src/page/connect.vue:85 src/page/settings/advanced.vue:460
+#: src/page/connect.vue:85 src/page/settings/advanced.vue:456
 msgid "Restart"
 msgstr "Ponovni zagon"
 
@@ -3243,7 +3247,7 @@ msgstr "Prikaži naslove"
 msgid "Sidecar"
 msgstr "Sidecar"
 
-#: src/page/settings/advanced.vue:209
+#: src/page/settings/advanced.vue:205
 msgid "Sidecar Files"
 msgstr "Datoteke Sidecar"
 
@@ -3371,7 +3375,7 @@ msgstr "Začetek"
 msgid "Start Page"
 msgstr "Začetna stran"
 
-#: src/page/settings/advanced.vue:244
+#: src/page/settings/advanced.vue:240
 msgid "Static Size Limit: %{n}px"
 msgstr "Omejitev statične velikosti: %{n}px"
 
@@ -3444,10 +3448,6 @@ msgstr "Prevzeto"
 #: src/options/options.js:452
 msgid "Teal"
 msgstr "Teal"
-
-#: src/page/settings/advanced.vue:150
-msgid "TensorFlow is required for image classification, facial recognition, and detecting unsafe content."
-msgstr "TensorFlow je potreben za razvrščanje slik, prepoznavanje obrazov in zaznavanje nevarne vsebine."
 
 #: src/options/options.js:322
 msgid "Terrain"
@@ -3734,7 +3734,7 @@ msgstr "Polnjenje…"
 msgid "Uploads that may contain such images will be rejected automatically."
 msgstr "Prenosi, ki bi lahko vsebovali takšne slike, bodo samodejno zavrnjeni."
 
-#: src/page/settings/advanced.vue:398
+#: src/page/settings/advanced.vue:394
 msgid "Use Presets"
 msgstr "Uporaba prednastavitev"
 
@@ -4013,6 +4013,12 @@ msgstr "Naslov"
 msgctxt "Verb"
 msgid "Archive"
 msgstr "Arhiv"
+
+#~ msgid "Disable TensorFlow"
+#~ msgstr "Onemogoči TensorFlow"
+
+#~ msgid "TensorFlow is required for image classification, facial recognition, and detecting unsafe content."
+#~ msgstr "TensorFlow je potreben za razvrščanje slik, prepoznavanje obrazov in zaznavanje nevarne vsebine."
 
 #~ msgid "No server connection"
 #~ msgstr "Ni povezave s strežnikom"

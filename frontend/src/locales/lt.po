@@ -308,7 +308,7 @@ msgstr "Po dviejų savaičių"
 msgid "Album"
 msgstr "Albumas"
 
-#: src/page/settings/advanced.vue:193
+#: src/page/settings/advanced.vue:189
 msgid "Album Backups"
 msgstr "Albumo atsarginės kopijos"
 
@@ -540,7 +540,7 @@ msgstr "Atgal"
 msgid "Back to top"
 msgstr "Grįžti į viršų"
 
-#: src/page/settings/advanced.vue:165
+#: src/page/settings/advanced.vue:161
 msgid "Backup"
 msgstr "Atsarginė kopija"
 
@@ -747,7 +747,7 @@ msgstr "Pakeitimų nepavyko išsaugoti"
 #: src/component/photo/edit/files.vue:570 src/component/service/edit.vue:343
 #: src/component/share/dialog.vue:240 src/component/share/dialog.vue:259
 #: src/page/albums.vue:1268 src/page/people/recognized.vue:320
-#: src/page/settings/advanced.vue:539 src/page/settings/content.vue:300
+#: src/page/settings/advanced.vue:535 src/page/settings/content.vue:300
 #: src/page/settings/general.vue:525
 msgid "Changes successfully saved"
 msgstr "Pakeitimai sėkmingai išsaugoti"
@@ -965,15 +965,15 @@ msgstr "Sukurti paskyrą"
 msgid "Create album"
 msgstr "Sukurti albumą"
 
-#: src/page/settings/advanced.vue:178
+#: src/page/settings/advanced.vue:174
 msgid "Create regular backups based on the configured schedule."
 msgstr "Kurkite indekso atsargines kopijas pagal sukonfigūruotą tvarkaraštį."
 
-#: src/page/settings/advanced.vue:194
+#: src/page/settings/advanced.vue:190
 msgid "Create YAML files to back up album metadata."
 msgstr "Sukurkite YAML failus albumo metaduomenims kurti."
 
-#: src/page/settings/advanced.vue:210
+#: src/page/settings/advanced.vue:206
 msgid "Create YAML sidecar files to back up picture metadata."
 msgstr "Sukurkite YAML šalutinius failus paveikslėlių metaduomenims kurti."
 
@@ -1010,7 +1010,7 @@ msgstr "Kasdien"
 msgid "Database"
 msgstr "Duomenų bazė"
 
-#: src/page/settings/advanced.vue:177
+#: src/page/settings/advanced.vue:173
 msgid "Database Backups"
 msgstr "Duomenų bazės atsarginės kopijos"
 
@@ -1098,47 +1098,51 @@ msgstr "Detalės"
 msgid "Dimensions"
 msgstr "Matmenys"
 
+#: src/page/settings/advanced.vue:117
+msgid "Disable all face detection and recognition features."
+msgstr ""
+
 #: src/page/settings/advanced.vue:84
 msgid "Disable Backups"
 msgstr "Išjungti atsargines kopijas"
 
-#: src/page/settings/advanced.vue:366
+#: src/page/settings/advanced.vue:362
 msgid "Disable Darktable"
 msgstr "Išjungti \"Darktable"
 
-#: src/page/settings/advanced.vue:132
+#: src/page/settings/advanced.vue:148
 msgid "Disable ExifTool"
 msgstr "Išjungti \"ExifTool"
+
+#: src/page/settings/advanced.vue:116
+msgid "Disable Faces"
+msgstr ""
 
 #: src/page/settings/advanced.vue:69
 msgid "Disable features that require write permission for the originals folder."
 msgstr "Išjunkite funkcijas, kurioms reikia originalų aplanko rašymo leidimo."
 
-#: src/page/settings/advanced.vue:430
+#: src/page/settings/advanced.vue:426
 msgid "Disable FFmpeg"
 msgstr "Išjungti \"FFmpeg"
 
-#: src/page/settings/advanced.vue:414
+#: src/page/settings/advanced.vue:410
 msgid "Disable ImageMagick"
 msgstr "Išjungti \"ImageMagick"
 
-#: src/page/settings/advanced.vue:117
+#: src/page/settings/advanced.vue:133
 msgid "Disable interactive world maps and reverse geocoding."
 msgstr "Išjunkite interaktyvius pasaulio žemėlapius ir atvirkštinį geokodavimą."
 
-#: src/page/settings/advanced.vue:116
+#: src/page/settings/advanced.vue:132
 msgid "Disable Places"
 msgstr "Išjungti vietas"
 
-#: src/page/settings/advanced.vue:382
+#: src/page/settings/advanced.vue:378
 msgid "Disable RawTherapee"
 msgstr "Išjungti \"RawTherapee"
 
-#: src/page/settings/advanced.vue:148
-msgid "Disable TensorFlow"
-msgstr "Išjungti \"TensorFlow"
-
-#: src/page/settings/advanced.vue:446
+#: src/page/settings/advanced.vue:442
 msgid "Disable Vectors"
 msgstr "Išjungti vektorius"
 
@@ -1150,11 +1154,11 @@ msgstr "Išjungti WebDAV"
 msgid "Disabled"
 msgstr "Neįgalieji"
 
-#: src/page/settings/advanced.vue:447
+#: src/page/settings/advanced.vue:443
 msgid "Disables vector graphics support."
 msgstr "Išjungia vektorinės grafikos palaikymą."
 
-#: src/page/settings/advanced.vue:431
+#: src/page/settings/advanced.vue:427
 msgid "Disables video transcoding and thumbnail extraction."
 msgstr "Išjungiamas vaizdo perkodavimas ir miniatiūrų išskyrimas."
 
@@ -1205,15 +1209,15 @@ msgstr "Dokumentas"
 msgid "Documents"
 msgstr "Dokumentai"
 
-#: src/page/settings/advanced.vue:367
+#: src/page/settings/advanced.vue:363
 msgid "Don't use Darktable to convert RAW images."
 msgstr "Nenaudokite \"Darktable\" RAW failams konvertuoti."
 
-#: src/page/settings/advanced.vue:415
+#: src/page/settings/advanced.vue:411
 msgid "Don't use ImageMagick to convert images."
 msgstr "Nenaudokite ImageMagick vaizdams konvertuoti."
 
-#: src/page/settings/advanced.vue:383
+#: src/page/settings/advanced.vue:379
 msgid "Don't use RawTherapee to convert RAW images."
 msgstr "Nenaudokite \"RawTherapee\" RAW failams konvertuoti."
 
@@ -1258,7 +1262,7 @@ msgstr "Atsisiųskite atskirus failus ir zip archyvus."
 msgid "Downloading…"
 msgstr "Atsisiuntimas…"
 
-#: src/page/settings/advanced.vue:232
+#: src/page/settings/advanced.vue:228
 msgid "Downscaling Filter"
 msgstr "Mažinimo filtras"
 
@@ -1284,11 +1288,11 @@ msgstr "Dublikatai bus praleisti ir rodomi tik vieną kartą."
 msgid "Duration"
 msgstr "Dovanos"
 
-#: src/page/settings/advanced.vue:285
+#: src/page/settings/advanced.vue:281
 msgid "Dynamic Previews"
 msgstr "Dinaminės peržiūros"
 
-#: src/page/settings/advanced.vue:261
+#: src/page/settings/advanced.vue:257
 msgid "Dynamic Size Limit: %{n}px"
 msgstr "Dinaminio dydžio riba: %{n}px"
 
@@ -1316,7 +1320,7 @@ msgstr "Redaguoti paskyrą"
 msgid "Edit Photo"
 msgstr "Redaguoti nuotrauką"
 
-#: src/component/photo/batch-edit.vue:665
+#: src/component/photo/batch-edit.vue:664
 msgid "Edit Photos (%{n})"
 msgstr "Redaguoti nuotraukas (%{n})"
 
@@ -1341,7 +1345,7 @@ msgstr "Įjunkite derinimo režimą, kad būtų rodomi papildomi žurnalai ir pa
 msgid "Enable new features that may be incomplete or unstable."
 msgstr "įgalinti naujas funkcijas, kurios gali būti neišbaigtos arba nestabilios."
 
-#: src/page/settings/advanced.vue:399
+#: src/page/settings/advanced.vue:395
 msgid "Enables RAW converter presets. May reduce performance."
 msgstr "Įjungiamos RAW konverterio išankstinės nuostatos. Gali sumažinti našumą."
 
@@ -1414,7 +1418,7 @@ msgstr "Neįtraukti turinio, pažymėto kaip privataus, į paieškos rezultatus,
 msgid "Exclude hidden"
 msgstr "Neįtraukti paslėptų"
 
-#: src/page/settings/advanced.vue:133
+#: src/page/settings/advanced.vue:149
 msgid "ExifTool is required for full support of XMP metadata, videos and Live Photos."
 msgstr "Kad būtų palaikomi visi vaizdo įrašai, tiesioginės nuotraukos ir XMP, reikia ištraukti metaduomenis su \"ExifTool\"."
 
@@ -1511,13 +1515,13 @@ msgstr "Failas"
 msgid "File Browser"
 msgstr "Failų naršyklė"
 
-#: src/page/settings/advanced.vue:354
+#: src/page/settings/advanced.vue:350
 msgid "File Conversion"
 msgstr "Failų konvertavimas"
 
 #: src/component/album/edit/dialog.vue:147
-#: src/component/photo/batch-edit.vue:636
-#: src/component/photo/batch-edit.vue:656 src/component/photo/toolbar.vue:415
+#: src/component/photo/batch-edit.vue:635
+#: src/component/photo/batch-edit.vue:655 src/component/photo/toolbar.vue:415
 #: src/component/photo/toolbar.vue:426 src/component/photo/toolbar.vue:437
 #: src/component/photo/view/list.vue:47
 msgid "File Name"
@@ -1711,7 +1715,7 @@ msgstr "Jei prarasite prieigą prie autentifikavimo programos ar įrenginio, gal
 msgid "Image"
 msgstr "Vaizdas"
 
-#: src/page/settings/advanced.vue:301
+#: src/page/settings/advanced.vue:297
 msgid "Image Quality"
 msgstr "Vaizdo kokybė"
 
@@ -1861,11 +1865,11 @@ msgstr "Prekė"
 msgid "Items per page:"
 msgstr "Viename puslapyje esantys elementai:"
 
-#: src/page/settings/advanced.vue:308
+#: src/page/settings/advanced.vue:304
 msgid "JPEG Quality: %{n}"
 msgstr "JPEG kokybė: %{n}"
 
-#: src/page/settings/advanced.vue:323
+#: src/page/settings/advanced.vue:319
 msgid "JPEG Size Limit: %{n}px"
 msgstr "JPEG dydžio riba: %{n}px"
 
@@ -2039,7 +2043,7 @@ msgstr "Vietinis laikas"
 #: src/page/settings/account.vue:359 src/page/settings/account.vue:361
 #: src/common/util.js:792 src/component/album/edit/dialog.vue:46
 #: src/component/photo/batch-edit.vue:307
-#: src/component/photo/batch-edit.vue:616
+#: src/component/photo/batch-edit.vue:615
 #: src/component/photo/edit/details.vue:471
 #: src/component/photo/edit/details.vue:591
 #: src/component/photo/edit/details.vue:685
@@ -2428,7 +2432,7 @@ msgstr "Seniausias pirmas"
 msgid "On Windows, enter the following resource in the connection dialog:"
 msgstr "\"Windows\" sistemoje prisijungimo dialogo lange įveskite šiuos išteklius:"
 
-#: src/page/settings/advanced.vue:287
+#: src/page/settings/advanced.vue:283
 msgid "On-demand generation of thumbnails may cause high CPU and memory usage. It is not recommended for resource-constrained servers and NAS devices."
 msgstr "Miniatiūrų generavimas pagal pareikalavimą gali būti susijęs su dideliu procesoriaus ir atminties naudojimu. Nerekomenduojama naudoti serveriuose ir NAS įrenginiuose, kurių ištekliai yra riboti."
 
@@ -2691,7 +2695,7 @@ msgstr "Palaukite…"
 msgid "PM"
 msgstr "PREMJERAS"
 
-#: src/page/settings/advanced.vue:338
+#: src/page/settings/advanced.vue:334
 msgid "PNG Size Limit: %{n}px"
 msgstr "PNG dydžio riba: %{n}px"
 
@@ -2725,12 +2729,12 @@ msgstr "Užkirskite kelią duomenų bazių ir albumų atsarginių kopijų bei YA
 msgid "Prevent other apps from accessing PhotoPrism as a shared network drive."
 msgstr "Neleiskite kitoms programoms pasiekti \"PhotoPrism\" kaip bendrinamąjį tinklo diską."
 
-#: src/component/photo/batch-edit.vue:630
-#: src/component/photo/batch-edit.vue:650 src/component/photo/edit/files.vue:30
+#: src/component/photo/batch-edit.vue:629
+#: src/component/photo/batch-edit.vue:649 src/component/photo/edit/files.vue:30
 msgid "Preview"
 msgstr "Peržiūra"
 
-#: src/page/settings/advanced.vue:222
+#: src/page/settings/advanced.vue:218
 msgid "Preview Images"
 msgstr "Peržiūros vaizdai"
 
@@ -2937,7 +2941,7 @@ msgid "Resolution"
 msgstr "Rezoliucija"
 
 #: src/page/connect.vue:74 src/page/connect.vue:83 src/page/connect.vue:76
-#: src/page/connect.vue:85 src/page/settings/advanced.vue:460
+#: src/page/connect.vue:85 src/page/settings/advanced.vue:456
 msgid "Restart"
 msgstr "Iš naujo paleiskite"
 
@@ -3246,7 +3250,7 @@ msgstr "Rodyti pavadinimus"
 msgid "Sidecar"
 msgstr "Sidecar"
 
-#: src/page/settings/advanced.vue:209
+#: src/page/settings/advanced.vue:205
 msgid "Sidecar Files"
 msgstr "\"Sidecar\" failai"
 
@@ -3374,7 +3378,7 @@ msgstr "Pradžia"
 msgid "Start Page"
 msgstr "Pradinis puslapis"
 
-#: src/page/settings/advanced.vue:244
+#: src/page/settings/advanced.vue:240
 msgid "Static Size Limit: %{n}px"
 msgstr "Statinio dydžio riba: %{n}px"
 
@@ -3447,10 +3451,6 @@ msgstr "Paimta"
 #: src/options/options.js:452
 msgid "Teal"
 msgstr "Teal"
-
-#: src/page/settings/advanced.vue:150
-msgid "TensorFlow is required for image classification, facial recognition, and detecting unsafe content."
-msgstr "\"TensorFlow\" reikalingas vaizdų klasifikavimui, veido atpažinimui ir nesaugaus turinio aptikimui."
 
 #: src/options/options.js:322
 msgid "Terrain"
@@ -3737,7 +3737,7 @@ msgstr "Perkrovimas…"
 msgid "Uploads that may contain such images will be rejected automatically."
 msgstr "Siunčiami vaizdai, kuriuose gali būti tokių vaizdų, bus automatiškai atmesti."
 
-#: src/page/settings/advanced.vue:398
+#: src/page/settings/advanced.vue:394
 msgid "Use Presets"
 msgstr "Naudokite išankstinius nustatymus"
 
@@ -4016,6 +4016,12 @@ msgstr "Pavadinimas"
 msgctxt "Verb"
 msgid "Archive"
 msgstr "Archyvas"
+
+#~ msgid "Disable TensorFlow"
+#~ msgstr "Išjungti \"TensorFlow"
+
+#~ msgid "TensorFlow is required for image classification, facial recognition, and detecting unsafe content."
+#~ msgstr "\"TensorFlow\" reikalingas vaizdų klasifikavimui, veido atpažinimui ir nesaugaus turinio aptikimui."
 
 #~ msgid "No server connection"
 #~ msgstr "Nėra ryšio su serveriu"

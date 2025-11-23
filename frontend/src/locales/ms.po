@@ -308,7 +308,7 @@ msgstr "Selepas dua minggu"
 msgid "Album"
 msgstr "Album"
 
-#: src/page/settings/advanced.vue:193
+#: src/page/settings/advanced.vue:189
 msgid "Album Backups"
 msgstr "Sandaran Album"
 
@@ -540,7 +540,7 @@ msgstr "belakang"
 msgid "Back to top"
 msgstr "Kembali ke atas"
 
-#: src/page/settings/advanced.vue:165
+#: src/page/settings/advanced.vue:161
 msgid "Backup"
 msgstr "Sandaran"
 
@@ -747,7 +747,7 @@ msgstr "Perubahan tidak dapat disimpan"
 #: src/component/photo/edit/files.vue:570 src/component/service/edit.vue:343
 #: src/component/share/dialog.vue:240 src/component/share/dialog.vue:259
 #: src/page/albums.vue:1268 src/page/people/recognized.vue:320
-#: src/page/settings/advanced.vue:539 src/page/settings/content.vue:300
+#: src/page/settings/advanced.vue:535 src/page/settings/content.vue:300
 #: src/page/settings/general.vue:525
 msgid "Changes successfully saved"
 msgstr "Perubahan berjaya disimpan"
@@ -965,15 +965,15 @@ msgstr "Buat akaun"
 msgid "Create album"
 msgstr "Buat album"
 
-#: src/page/settings/advanced.vue:178
+#: src/page/settings/advanced.vue:174
 msgid "Create regular backups based on the configured schedule."
 msgstr "Buat sandaran indeks berdasarkan jadual yang dikonfigurasikan."
 
-#: src/page/settings/advanced.vue:194
+#: src/page/settings/advanced.vue:190
 msgid "Create YAML files to back up album metadata."
 msgstr "Cipta fail YAML untuk menyandarkan metadata album."
 
-#: src/page/settings/advanced.vue:210
+#: src/page/settings/advanced.vue:206
 msgid "Create YAML sidecar files to back up picture metadata."
 msgstr "Cipta fail sidecar YAML untuk menyandarkan metadata gambar."
 
@@ -1010,7 +1010,7 @@ msgstr "Setiap hari"
 msgid "Database"
 msgstr "Pangkalan data"
 
-#: src/page/settings/advanced.vue:177
+#: src/page/settings/advanced.vue:173
 msgid "Database Backups"
 msgstr "Sandaran Pangkalan Data"
 
@@ -1098,47 +1098,51 @@ msgstr "Perincian:"
 msgid "Dimensions"
 msgstr "Dimensi"
 
+#: src/page/settings/advanced.vue:117
+msgid "Disable all face detection and recognition features."
+msgstr ""
+
 #: src/page/settings/advanced.vue:84
 msgid "Disable Backups"
 msgstr "Lumpuhkan Sandaran"
 
-#: src/page/settings/advanced.vue:366
+#: src/page/settings/advanced.vue:362
 msgid "Disable Darktable"
 msgstr "Lumpuhkan Darktable"
 
-#: src/page/settings/advanced.vue:132
+#: src/page/settings/advanced.vue:148
 msgid "Disable ExifTool"
 msgstr "Lumpuhkan ExifTool"
+
+#: src/page/settings/advanced.vue:116
+msgid "Disable Faces"
+msgstr ""
 
 #: src/page/settings/advanced.vue:69
 msgid "Disable features that require write permission for the originals folder."
 msgstr "Lumpuhkan ciri yang memerlukan kebenaran menulis untuk folder asal."
 
-#: src/page/settings/advanced.vue:430
+#: src/page/settings/advanced.vue:426
 msgid "Disable FFmpeg"
 msgstr "Lumpuhkan FFmpeg"
 
-#: src/page/settings/advanced.vue:414
+#: src/page/settings/advanced.vue:410
 msgid "Disable ImageMagick"
 msgstr "Lumpuhkan ImageMagick"
 
-#: src/page/settings/advanced.vue:117
+#: src/page/settings/advanced.vue:133
 msgid "Disable interactive world maps and reverse geocoding."
 msgstr "Lumpuhkan peta dunia interaktif dan pengekodan geo terbalik."
 
-#: src/page/settings/advanced.vue:116
+#: src/page/settings/advanced.vue:132
 msgid "Disable Places"
 msgstr "Lumpuhkan Tempat"
 
-#: src/page/settings/advanced.vue:382
+#: src/page/settings/advanced.vue:378
 msgid "Disable RawTherapee"
 msgstr "Lumpuhkan RawTherapee"
 
-#: src/page/settings/advanced.vue:148
-msgid "Disable TensorFlow"
-msgstr "Lumpuhkan TensorFlow"
-
-#: src/page/settings/advanced.vue:446
+#: src/page/settings/advanced.vue:442
 msgid "Disable Vectors"
 msgstr "Lumpuhkan Vektor"
 
@@ -1150,11 +1154,11 @@ msgstr "Lumpuhkan WebDAV"
 msgid "Disabled"
 msgstr "Dilumpuhkan"
 
-#: src/page/settings/advanced.vue:447
+#: src/page/settings/advanced.vue:443
 msgid "Disables vector graphics support."
 msgstr "Melumpuhkan sokongan grafik vektor."
 
-#: src/page/settings/advanced.vue:431
+#: src/page/settings/advanced.vue:427
 msgid "Disables video transcoding and thumbnail extraction."
 msgstr "Melumpuhkan transkod video dan pengekstrakan lakaran kenit."
 
@@ -1205,15 +1209,15 @@ msgstr "Dokumen"
 msgid "Documents"
 msgstr "Dokumen"
 
-#: src/page/settings/advanced.vue:367
+#: src/page/settings/advanced.vue:363
 msgid "Don't use Darktable to convert RAW images."
 msgstr "Jangan gunakan Darktable untuk menukar imej RAW."
 
-#: src/page/settings/advanced.vue:415
+#: src/page/settings/advanced.vue:411
 msgid "Don't use ImageMagick to convert images."
 msgstr "Jangan gunakan ImageMagick untuk menukar imej."
 
-#: src/page/settings/advanced.vue:383
+#: src/page/settings/advanced.vue:379
 msgid "Don't use RawTherapee to convert RAW images."
 msgstr "Jangan gunakan RawTherapee untuk menukar imej RAW."
 
@@ -1258,7 +1262,7 @@ msgstr "Muat turun fail tunggal dan arkib zip."
 msgid "Downloading…"
 msgstr "Memuat turun…"
 
-#: src/page/settings/advanced.vue:232
+#: src/page/settings/advanced.vue:228
 msgid "Downscaling Filter"
 msgstr "Penapis Penskalaan Rendah"
 
@@ -1284,11 +1288,11 @@ msgstr "Pendua akan dilangkau dan hanya muncul sekali."
 msgid "Duration"
 msgstr "Tempoh"
 
-#: src/page/settings/advanced.vue:285
+#: src/page/settings/advanced.vue:281
 msgid "Dynamic Previews"
 msgstr "Pratonton Dinamik"
 
-#: src/page/settings/advanced.vue:261
+#: src/page/settings/advanced.vue:257
 msgid "Dynamic Size Limit: %{n}px"
 msgstr "Had Saiz Dinamik: %{n}px"
 
@@ -1316,7 +1320,7 @@ msgstr "Edit Akaun"
 msgid "Edit Photo"
 msgstr "Edit Foto"
 
-#: src/component/photo/batch-edit.vue:665
+#: src/component/photo/batch-edit.vue:664
 msgid "Edit Photos (%{n})"
 msgstr "Edit Foto (%{n})"
 
@@ -1341,7 +1345,7 @@ msgstr "Dayakan mod nyahpepijat untuk memaparkan log tambahan dan membantu menye
 msgid "Enable new features that may be incomplete or unstable."
 msgstr "Dayakan ciri baharu yang mungkin tidak lengkap atau tidak stabil."
 
-#: src/page/settings/advanced.vue:399
+#: src/page/settings/advanced.vue:395
 msgid "Enables RAW converter presets. May reduce performance."
 msgstr "Mendayakan pratetap penukar RAW. Boleh mengurangkan prestasi."
 
@@ -1414,7 +1418,7 @@ msgstr "Kecualikan kandungan yang ditandai sebagai peribadi daripada hasil caria
 msgid "Exclude hidden"
 msgstr "Kecualikan tersembunyi"
 
-#: src/page/settings/advanced.vue:133
+#: src/page/settings/advanced.vue:149
 msgid "ExifTool is required for full support of XMP metadata, videos and Live Photos."
 msgstr "Pengekstrakan metadata dengan ExifTool diperlukan untuk sokongan Video, Live Photo dan XMP penuh."
 
@@ -1511,13 +1515,13 @@ msgstr "Fail"
 msgid "File Browser"
 msgstr "Pelayar Fail"
 
-#: src/page/settings/advanced.vue:354
+#: src/page/settings/advanced.vue:350
 msgid "File Conversion"
 msgstr "Penukaran Fail"
 
 #: src/component/album/edit/dialog.vue:147
-#: src/component/photo/batch-edit.vue:636
-#: src/component/photo/batch-edit.vue:656 src/component/photo/toolbar.vue:415
+#: src/component/photo/batch-edit.vue:635
+#: src/component/photo/batch-edit.vue:655 src/component/photo/toolbar.vue:415
 #: src/component/photo/toolbar.vue:426 src/component/photo/toolbar.vue:437
 #: src/component/photo/view/list.vue:47
 msgid "File Name"
@@ -1711,7 +1715,7 @@ msgstr "Jika anda kehilangan akses kepada apl atau peranti pengesah anda, anda b
 msgid "Image"
 msgstr "Imej"
 
-#: src/page/settings/advanced.vue:301
+#: src/page/settings/advanced.vue:297
 msgid "Image Quality"
 msgstr "Kualiti gambar"
 
@@ -1861,11 +1865,11 @@ msgstr "Item"
 msgid "Items per page:"
 msgstr "Item setiap halaman:"
 
-#: src/page/settings/advanced.vue:308
+#: src/page/settings/advanced.vue:304
 msgid "JPEG Quality: %{n}"
 msgstr "Kualiti JPEG: %{n}"
 
-#: src/page/settings/advanced.vue:323
+#: src/page/settings/advanced.vue:319
 msgid "JPEG Size Limit: %{n}px"
 msgstr "Had Saiz JPEG: %{n}px"
 
@@ -2039,7 +2043,7 @@ msgstr "Waktu Tempatan"
 #: src/page/settings/account.vue:359 src/page/settings/account.vue:361
 #: src/common/util.js:792 src/component/album/edit/dialog.vue:46
 #: src/component/photo/batch-edit.vue:307
-#: src/component/photo/batch-edit.vue:616
+#: src/component/photo/batch-edit.vue:615
 #: src/component/photo/edit/details.vue:471
 #: src/component/photo/edit/details.vue:591
 #: src/component/photo/edit/details.vue:685
@@ -2428,7 +2432,7 @@ msgstr "Tertua dahulu"
 msgid "On Windows, enter the following resource in the connection dialog:"
 msgstr "Pada Windows, masukkan sumber berikut dalam dialog sambungan:"
 
-#: src/page/settings/advanced.vue:287
+#: src/page/settings/advanced.vue:283
 msgid "On-demand generation of thumbnails may cause high CPU and memory usage. It is not recommended for resource-constrained servers and NAS devices."
 msgstr "Penjanaan lakaran kecil atas permintaan boleh menyebabkan penggunaan CPU dan memori yang tinggi. Ia tidak disyorkan untuk pelayan terhad sumber dan peranti NAS."
 
@@ -2691,7 +2695,7 @@ msgstr "Sila tunggu…"
 msgid "PM"
 msgstr "PM"
 
-#: src/page/settings/advanced.vue:338
+#: src/page/settings/advanced.vue:334
 msgid "PNG Size Limit: %{n}px"
 msgstr "Had Saiz PNG: %{n}px"
 
@@ -2725,12 +2729,12 @@ msgstr "Elakkan sandaran pangkalan data dan album serta fail sidecar YAML daripa
 msgid "Prevent other apps from accessing PhotoPrism as a shared network drive."
 msgstr "Halang apl lain daripada mengakses PhotoPrism sebagai pemacu rangkaian kongsi."
 
-#: src/component/photo/batch-edit.vue:630
-#: src/component/photo/batch-edit.vue:650 src/component/photo/edit/files.vue:30
+#: src/component/photo/batch-edit.vue:629
+#: src/component/photo/batch-edit.vue:649 src/component/photo/edit/files.vue:30
 msgid "Preview"
 msgstr "Pratonton"
 
-#: src/page/settings/advanced.vue:222
+#: src/page/settings/advanced.vue:218
 msgid "Preview Images"
 msgstr "Pratonton Imej"
 
@@ -2937,7 +2941,7 @@ msgid "Resolution"
 msgstr "Resolusi"
 
 #: src/page/connect.vue:74 src/page/connect.vue:83 src/page/connect.vue:76
-#: src/page/connect.vue:85 src/page/settings/advanced.vue:460
+#: src/page/connect.vue:85 src/page/settings/advanced.vue:456
 msgid "Restart"
 msgstr "Mula semula"
 
@@ -3246,7 +3250,7 @@ msgstr "Tajuk Tajuk"
 msgid "Sidecar"
 msgstr "Sidecar"
 
-#: src/page/settings/advanced.vue:209
+#: src/page/settings/advanced.vue:205
 msgid "Sidecar Files"
 msgstr "Fail Sidecar"
 
@@ -3374,7 +3378,7 @@ msgstr "Mula"
 msgid "Start Page"
 msgstr "Halaman Mula"
 
-#: src/page/settings/advanced.vue:244
+#: src/page/settings/advanced.vue:240
 msgid "Static Size Limit: %{n}px"
 msgstr "Had Saiz Statik: %{n}px"
 
@@ -3447,10 +3451,6 @@ msgstr "diambil"
 #: src/options/options.js:452
 msgid "Teal"
 msgstr "Teal"
-
-#: src/page/settings/advanced.vue:150
-msgid "TensorFlow is required for image classification, facial recognition, and detecting unsafe content."
-msgstr "TensorFlow diperlukan untuk klasifikasi imej, pengecaman muka dan mengesan kandungan yang tidak selamat."
 
 #: src/options/options.js:322
 msgid "Terrain"
@@ -3737,7 +3737,7 @@ msgstr "Memuatkan semula…"
 msgid "Uploads that may contain such images will be rejected automatically."
 msgstr "Muat naik yang mungkin mengandungi imej sedemikian akan ditolak secara automatik."
 
-#: src/page/settings/advanced.vue:398
+#: src/page/settings/advanced.vue:394
 msgid "Use Presets"
 msgstr "Gunakan Pratetap"
 
@@ -4016,6 +4016,12 @@ msgstr "Tajuk"
 msgctxt "Verb"
 msgid "Archive"
 msgstr "Arkib"
+
+#~ msgid "Disable TensorFlow"
+#~ msgstr "Lumpuhkan TensorFlow"
+
+#~ msgid "TensorFlow is required for image classification, facial recognition, and detecting unsafe content."
+#~ msgstr "TensorFlow diperlukan untuk klasifikasi imej, pengecaman muka dan mengesan kandungan yang tidak selamat."
 
 #~ msgid "No server connection"
 #~ msgstr "Tiada sambungan pelayan"

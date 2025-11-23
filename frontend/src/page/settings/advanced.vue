@@ -108,6 +108,22 @@
 
             <v-col cols="12" sm="6" lg="3">
               <v-checkbox
+                v-model="settings.DisableFaces"
+                :disabled="isDemo"
+                class="ma-0 pa-0 input-disable-faces"
+                density="compact"
+                color="surface-variant"
+                :label="$gettext('Disable Faces')"
+                :hint="$gettext('Disable all face detection and recognition features.')"
+                prepend-icon="mdi-account-off"
+                persistent-hint
+                @update:model-value="onChange"
+              >
+              </v-checkbox>
+            </v-col>
+
+            <v-col cols="12" sm="6" lg="3">
+              <v-checkbox
                 v-model="settings.DisablePlaces"
                 :disabled="isDemo"
                 class="ma-0 pa-0 input-disable-places"
@@ -132,26 +148,6 @@
                 :label="$gettext('Disable ExifTool')"
                 :hint="$gettext('ExifTool is required for full support of XMP metadata, videos and Live Photos.')"
                 prepend-icon="mdi-movie-off-outline"
-                persistent-hint
-                @update:model-value="onChange"
-              >
-              </v-checkbox>
-            </v-col>
-
-            <v-col cols="12" sm="6" lg="3">
-              <v-checkbox
-                v-model="settings.DisableTensorFlow"
-                :disabled="isDemo"
-                class="ma-0 pa-0 input-disable-tensorflow"
-                density="compact"
-                color="surface-variant"
-                :label="$gettext('Disable TensorFlow')"
-                :hint="
-                  $gettext(
-                    'TensorFlow is required for image classification, facial recognition, and detecting unsafe content.'
-                  )
-                "
-                prepend-icon="mdi-layers-off"
                 persistent-hint
                 @update:model-value="onChange"
               >
