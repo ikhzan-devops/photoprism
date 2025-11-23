@@ -1,6 +1,6 @@
 # PhotoPrism® Repository Guidelines
 
-**Last Updated:** November 21, 2025
+**Last Updated:** November 23, 2025
 
 ## Purpose
 
@@ -212,6 +212,7 @@ Note: Across our public documentation, official images, and in production, the c
 ## Code Style & Lint
 
 - Go: run `make fmt-go swag-fmt` to reformat the backend code + Swagger annotations (see `Makefile` for additional targets)
+  - Run `make lint-go` (golangci-lint) after Go changes; prefer `golangci-lint run ./internal/<pkg>/...` for focused edits.
   - Doc comments for packages and exported identifiers must be complete sentences that begin with the name of the thing being described and end with a period.
   - All newly added functions, including unexported helpers, must have a concise doc comment that explains their behavior.
   - For short examples inside comments, indent code rather than using backticks; godoc treats indented blocks as preformatted.
