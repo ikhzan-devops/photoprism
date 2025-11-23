@@ -44,12 +44,6 @@
 - `internal/config` provides OIDC options/flags (issuer, client ID/secret, scopes, insecure).
 - `internal/event` supplies the logger used for audit and error reporting.
 
-### Operational Tips
-
-- Always call `RedirectURL(siteUrl)` to build callbacks that respect reverse proxies and base URIs.
-- Reuse `HttpClient(insecure)` so timeouts and TLS settings stay consistent.
-- When adding claims processing, keep parsing isolated (e.g., new helper) and ensure failures do not block sign‑in unless required.
-
 ### Configuration & Safety
 
 - Enforce `https` for issuers unless `insecure` is explicitly set (intended for dev/test).
@@ -67,15 +61,21 @@
 - [ ] Add integration doc/tests for Entra app registration requirements (`groupMembershipClaims=SecurityGroup|All|ApplicationGroup`) and token size limits (~200 groups).
 - [ ] Update Pro parity notes so LDAP and OIDC group mappings share helpers and behavior.
 
-#### Related Resources & Specs
+> **Note:** Entra ID security groups are only supported in PhotoPrism® Pro.
+
+### Documentation & References
 
 - Microsoft Entra group claims: https://learn.microsoft.com/en-us/entra/identity-platform/access-token-claims-reference#groups-claim
 - Group overage handling: https://learn.microsoft.com/en-us/entra/identity-platform/howto-add-app-roles-in-azure-ad-apps#group-overage-and-_claim_names
 - Token customization guidance: https://learn.microsoft.com/en-us/entra/architecture/customize-tokens
 
-> **Note:** Entra ID security groups are only supported in PhotoPrism® Pro.
+### Operational Tips
 
-### Testing
+- Always call `RedirectURL(siteUrl)` to build callbacks that respect reverse proxies and base URIs.
+- Reuse `HttpClient(insecure)` so timeouts and TLS settings stay consistent.
+- When adding claims processing, keep parsing isolated (e.g., new helper) and ensure failures do not block sign‑in unless required.
+
+### Test Guidelines
 
 - Unit tests: `go test ./internal/auth/oidc -count=1`
 - Tests cover discovery failures, PKCE detection, redirect URL construction, username extraction, and code‑exchange error handling.
