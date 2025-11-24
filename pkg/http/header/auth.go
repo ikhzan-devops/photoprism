@@ -12,9 +12,11 @@ import (
 
 // Authentication header names.
 const (
-	Auth       = "Authorization" // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization
-	XAuthToken = "X-Auth-Token"  //nolint:gosec // header name, not a secret
-	XSessionID = "X-Session-ID"
+	Auth          = "Authorization" // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization
+	XAuthToken    = "X-Auth-Token"  //nolint:gosec // header name, not a secret
+	XSessionID    = "X-Session-ID"
+	OpenAIOrg     = "OpenAI-Organization"
+	OpenAIProject = "OpenAI-Project"
 )
 
 // Authentication header values.
@@ -71,6 +73,22 @@ func Authorization(c *gin.Context) (authType, authToken string) {
 func SetAuthorization(r *http.Request, authToken string) {
 	if authToken != "" {
 		r.Header.Add(Auth, fmt.Sprintf("%s %s", AuthBearer, authToken))
+	}
+}
+
+// SetOpenAIOrg adds the organization header expected by the OpenAI API if a
+// non-empty value is provided.
+func SetOpenAIOrg(r *http.Request, org string) {
+	if org = strings.TrimSpace(org); org != "" {
+		r.Header.Add(OpenAIOrg, org)
+	}
+}
+
+// SetOpenAIProject adds the project header expected by the OpenAI API if a
+// non-empty value is provided.
+func SetOpenAIProject(r *http.Request, project string) {
+	if project = strings.TrimSpace(project); project != "" {
+		r.Header.Add(OpenAIProject, project)
 	}
 }
 
