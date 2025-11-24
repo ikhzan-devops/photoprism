@@ -1,6 +1,6 @@
 ## PhotoPrism — Thumbnails Package
 
-**Last Updated:** November 23, 2025
+**Last Updated:** November 24, 2025
 
 ### Overview
 
@@ -35,18 +35,20 @@
 
 ### ICC & Interop Handling
 
-- EXIF `InteropIndex` codes we honor (per EXIF TagNames and regex.info):
+- EXIF `InteroperabilityIndex` codes we honor (per EXIF TagNames and regex.info):
   - `R03` → Adobe RGB (1998) compatible (`a98.icc`, etc.)
   - `R98` → sRGB (assumed default; no embed)
   - `THM` → Thumbnail (treated as sRGB; no embed)
 - If an ICC profile already exists, we skip embedding.
+- Exiftool name differs (libvips expects `exif-ifd4-InteroperabilityIndex`):
+  ```
+  exiftool -InteropIndex -InteropVersion -icc_profile:all -G -s file.jpg
+  ```
 - Test Files:
   - `testdata/interop_index.jpg` — R03 interop tag, no ICC (expects Adobe profile embed).
   - `testdata/interop_index_srgb_icc.jpg` — R03 tag with embedded ICC (must remain unchanged).
   - `testdata/interop_index_r98.jpg` — R98 interop tag, no ICC (should stay sRGB without embedding).
   - `testdata/interop_index_thm.jpg` — THM interop tag, no ICC (thumbnail; should remain unchanged).
-- Command:
-  - `exiftool -InteropIndex -InteropVersion -icc_profile:all -G -s filename.jpg`
 - References:
   - [EXIF TagNames (InteroperabilityIndex)](https://unpkg.com/exiftool-vendored.pl@10.50.0/bin/html/TagNames/EXIF.html)
   - [Digital-Image Color Spaces: Recommendations and Links](https://regex.info/blog/photo-tech/color-spaces-page7)

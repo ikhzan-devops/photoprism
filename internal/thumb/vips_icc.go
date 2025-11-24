@@ -10,6 +10,9 @@ import (
 // Sources: EXIF TagNames (R03=Adobe RGB, R98=sRGB, THM=thumbnail)
 // https://unpkg.com/exiftool-vendored.pl@10.50.0/bin/html/TagNames/EXIF.html
 // Additional context: https://regex.info/blog/photo-tech/color-spaces-page7
+// Note: exiftool refers to this tag as "InteropIndex"; in libvips/govips the
+// corresponding field name is "exif-ifd4-InteroperabilityIndex".
+// Exiftool example: exiftool -InteropIndex -InteropVersion -icc_profile:all -G -s file.jpg
 const (
 	// InteropIndexAdobeRGB is the EXIF code for Adobe RGB (1998) ("R03").
 	InteropIndexAdobeRGB = "R03"
