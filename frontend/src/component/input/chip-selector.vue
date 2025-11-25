@@ -49,6 +49,7 @@
         hide-no-data
         return-object
         class="chip-selector__input"
+        @click:control="focusInput"
         @keydown.enter.prevent="onEnter"
         @blur="addNewItem"
         @update:model-value="onComboboxChange"
@@ -238,19 +239,8 @@ export default {
     onComboboxChange(value) {
       if (value && typeof value === "object" && value.title) {
         this.newItemTitle = value;
+        this.temporarilyCloseMenu();
         this.addNewItem();
-        this.menuOpen = false;
-        // Immediately clear the input, remove focus and restore placeholder
-        this.$nextTick(() => {
-          this.newItemTitle = "";
-          if (this.$refs.inputField) {
-            this.$refs.inputField.blur();
-            // Force the combobox to reset completely
-            setTimeout(() => {
-              this.newItemTitle = null;
-            }, 10);
-          }
-        });
       } else {
         this.newItemTitle = value;
       }
@@ -341,24 +331,13 @@ export default {
       };
 
       this.$emit("update:items", [...this.items, newItem]);
-      this.newItemTitle = null;
-      this.menuOpen = false;
-
-      // Refocus input field
-      this.$nextTick(() => {
-        if (this.$refs.inputField) {
-          this.$refs.inputField.focus();
-        }
-      });
+      this.temporarilyCloseMenu();
+      this.clearAndOptionallyRefocus(true);
     },
 
     onEnter() {
-      this.suppressMenuOpen = true;
-      this.menuOpen = false;
+      this.temporarilyCloseMenu();
       this.addNewItem();
-      window.setTimeout(() => {
-        this.suppressMenuOpen = false;
-      }, 250);
     },
 
     onMenuUpdate(val) {
@@ -368,19 +347,41 @@ export default {
       }
       this.menuOpen = val;
     },
-    resetInputField() {
+
+    focusInput() {
+      if (this.$refs.inputField && typeof this.$refs.inputField.focus === "function") {
+        this.$refs.inputField.focus();
+      }
+    },
+
+    temporarilyCloseMenu() {
       this.menuOpen = false;
+      this.suppressMenuOpen = true;
+      window.setTimeout(() => {
+        this.suppressMenuOpen = false;
+      }, 200);
+    },
+
+    clearAndOptionallyRefocus(shouldRefocus = false) {
       this.$nextTick(() => {
         this.newItemTitle = "";
         if (this.$refs.inputField) {
           this.$refs.inputField.blur();
           setTimeout(() => {
             this.newItemTitle = null;
+            if (shouldRefocus) {
+              this.focusInput();
+            }
           }, 10);
         } else {
           this.newItemTitle = null;
         }
       });
+    },
+
+    resetInputField() {
+      this.temporarilyCloseMenu();
+      this.clearAndOptionallyRefocus(false);
     },
   },
 };
