@@ -6,7 +6,6 @@
       grow
       class="bg-transparent"
       bg-color="secondary"
-      slider-color="surface-variant"
       :height="$vuetify.display.smAndDown ? 48 : 64"
     >
       <v-tab id="tab-discover-colors" ripple @click="changePath('/discover')">

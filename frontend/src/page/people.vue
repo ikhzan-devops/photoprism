@@ -5,7 +5,6 @@
       elevation="0"
       grow
       bg-color="secondary"
-      slider-color="surface-variant"
       :height="$vuetify.display.smAndDown ? 48 : 64"
       class="bg-transparent p-page__navigation"
     >
