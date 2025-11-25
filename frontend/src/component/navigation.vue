@@ -98,7 +98,7 @@
             bg-color="navigation"
             color="primary"
             open-strategy="single"
-            :density="$vuetify.display.smAndDown ? 'compact' : 'default'"
+            :density="$vuetify.display.smAndDown ? 'compact' : 'comfortable'"
             tabindex="-1"
           >
             <v-list-item v-if="isMini && !isRestricted" class="nav-expand" @click.stop="toggleIsMini()">

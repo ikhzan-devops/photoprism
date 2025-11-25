@@ -264,6 +264,17 @@ div.v-dialog.v-dialog--fullscreen > div.v-card {
     padding-inline: 10px;
 }
 
+.v-list-group--open .activator-parent {
+    color: rgb(var(--v-theme-primary));
+}
+
+.v-list--nav .v-list-group:not(:first-child) > .v-list-item,
+.v-list--nav .v-list-group__items > .v-list-group,
+.v-list--nav .v-list-group__items > .v-list-item,
+.v-list--nav .v-list-item:not(:first-child) {
+    margin-top: 0;
+}
+
 /* Progress */
 
 .v-progress-linear,

@@ -360,7 +360,7 @@ let themes = {
     title: "Mint",
     name: "mint",
     colors: {
-      "background": "#121212",
+      "background": "#181818",
       "surface": "#191919",
       "card": "#1e1e1e",
       "primary": "#2bb14c",
@@ -371,7 +371,7 @@ let themes = {
       "table": "#1a1a1a",
       "button": "#1F1F1F",
       "switch": "#ffffff",
-      "selected": "228d3c",
+      "selected": "#286c29",
       "accent": "#727272",
       "error": "#d36161",
       "info": "#0696a7",
