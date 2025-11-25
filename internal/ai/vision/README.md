@@ -40,12 +40,14 @@ The `vision.yml` file is usually kept in the `storage/config` directory (overrid
 |-----------------|------------------------------------------------------------------|------------------------------------------------|
 | `auto`          | TensorFlow defaults during index; external via metadata/schedule | Leave as-is for most setups.                   |
 | `manual`        | Only when explicitly invoked (CLI/API)                           | Experiments and diagnostics.                   |
-| `on-index`      | During indexing + manual                                         | Fast local models only.                        |
+| `on-index`      | During indexing + manual                                         | Fast built-in models only.                     |
 | `newly-indexed` | Metadata worker after indexing + manual                          | External/Ollama/OpenAI without slowing import. |
 | `on-demand`     | Manual, metadata worker, and scheduled jobs                      | Broad coverage without index path.             |
 | `on-schedule`   | Scheduled jobs + manual                                          | Nightly/cron-style runs.                       |
 | `always`        | Indexing, metadata, scheduled, manual                            | High-priority models; watch resource use.      |
 | `never`         | Never executes                                                   | Keep definition without running it.            |
+
+> **Note:** For performance reasons, `on-index` is only supported for the built-in TensorFlow models.
 
 #### Model Options
 
