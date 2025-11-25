@@ -16,8 +16,9 @@ Learn more: https://agents.md/
 - Security: https://github.com/photoprism/photoprism/blob/develop/SECURITY.md
 - REST API: https://docs.photoprism.dev/ (Swagger), https://docs.photoprism.app/developer-guide/api/ (Docs)
 - Code Maps: [`CODEMAP.md`](CODEMAP.md) (Backend/Go), [`frontend/CODEMAP.md`](frontend/CODEMAP.md) (Frontend/JS)
-- Face Detection & Embeddings Notes: [`internal/ai/face/README.md`](internal/ai/face/README.md)
-- Vision Config & Engine Guides: [`internal/ai/vision/README.md`](internal/ai/vision/README.md), [`internal/ai/vision/openai/README.md`](internal/ai/vision/openai/README.md), [`internal/ai/vision/ollama/README.md`](internal/ai/vision/ollama/README.md)
+- Packages: `README.md` files under `internal/`, `pkg/`, and `frontend/src/`, e.g. [`internal/photoprism/README.md`](internal/photoprism/README.md), [`internal/photoprism/batch/README.md`](internal/photoprism/batch/README.md), [`internal/config/README.md`](internal/config/README.md), [`internal/server/README.md`](internal/server/README.md), [`internal/api/README.md`](internal/api/README.md), [`internal/thumb/README.md`](internal/thumb/README.md), [`internal/ffmpeg/README.md`](internal/ffmpeg/README.md), and [`frontend/src/common/README.md`](frontend/src/common/README.md).
+- Face Detection & Embeddings: [`internal/ai/face/README.md`](internal/ai/face/README.md)
+- Vision Config & Engines: [`internal/ai/vision/README.md`](internal/ai/vision/README.md), [`internal/ai/vision/openai/README.md`](internal/ai/vision/openai/README.md), [`internal/ai/vision/ollama/README.md`](internal/ai/vision/ollama/README.md)
 
 > Quick Tip: to inspect GitHub issue details without leaving the terminal, run `curl -s https://api.github.com/repos/photoprism/photoprism/issues/<id>`.
 
