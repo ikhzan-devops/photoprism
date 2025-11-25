@@ -448,7 +448,7 @@ func (m *Model) EngineName() string {
 		case ApiFormatVision, "":
 			return EngineVision
 		default:
-			return strings.ToLower(string(format))
+			return strings.ToLower(format)
 		}
 	}
 
