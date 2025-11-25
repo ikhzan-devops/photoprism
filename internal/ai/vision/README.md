@@ -1,6 +1,6 @@
 ## PhotoPrism — Vision Package
 
-**Last Updated:** November 24, 2025
+**Last Updated:** November 25, 2025
 
 ### Overview
 
@@ -16,23 +16,23 @@
 
 The `vision.yml` file is usually kept in the `storage/config` directory (override with `PHOTOPRISM_VISION_YAML`). It defines a list of models under `Models:`. Key fields are captured below:
 
-| Field                   | Default                     | Notes                                                                              |
-|-------------------------|-----------------------------|------------------------------------------------------------------------------------|
-| `Type` (required)       | —                           | `labels`, `caption`, `face`, `nsfw`, `generate`. Drives routing & scheduling.      |
-| `Name`                  | derived from type/version   | Display name; lower-cased by helpers.                                              |
-| `Model`                 | `""`                        | Raw identifier override; precedence: `Service.Model` → `Model` → `Name`.           |
-| `Version`               | `latest` (non-OpenAI)       | OpenAI payloads omit version.                                                      |
-| `Engine`                | inferred from service/alias | Aliases set formats, file scheme, resolution. Explicit `Service` values still win. |
-| `Run`                   | `auto`                      | See Run modes table below.                                                         |
-| `Default`               | `false`                     | Keep one per type for TensorFlow fallbacks.                                        |
-| `Disabled`              | `false`                     | Registered but inactive.                                                           |
-| `Resolution`            | 224 (720 for Ollama/OpenAI) | Thumbnail edge in px.                                                              |
-| `System` / `Prompt`     | engine defaults             | Override prompts per model.                                                        |
-| `Format`                | `""`                        | Response hint (`json`, `text`, `markdown`).                                        |
-| `Schema` / `SchemaFile` | engine defaults / empty     | Inline vs file JSON schema (labels).                                               |
-| `TensorFlow`            | nil                         | Local TF model info (paths, tags).                                                 |
-| `Options`               | nil                         | Sampling/settings merged with engine defaults.                                     |
-| `Service`               | nil                         | Remote endpoint config (see below).                                                |
+| Field                   | Default                                | Notes                                                                              |
+|-------------------------|----------------------------------------|------------------------------------------------------------------------------------|
+| `Type` (required)       | —                                      | `labels`, `caption`, `face`, `nsfw`, `generate`. Drives routing & scheduling.      |
+| `Name`                  | derived from type/version              | Display name; lower-cased by helpers.                                              |
+| `Model`                 | `""`                                   | Raw identifier override; precedence: `Service.Model` → `Model` → `Name`.           |
+| `Version`               | `latest` (non-OpenAI)                  | OpenAI payloads omit version.                                                      |
+| `Engine`                | inferred from service/alias            | Aliases set formats, file scheme, resolution. Explicit `Service` values still win. |
+| `Run`                   | `auto`                                 | See Run modes table below.                                                         |
+| `Default`               | `false`                                | Keep one per type for TensorFlow fallbacks.                                        |
+| `Disabled`              | `false`                                | Registered but inactive.                                                           |
+| `Resolution`            | 224 (TensorFlow) / 720 (Ollama/OpenAI) | Thumbnail edge in px; TensorFlow models default to 224 unless you override.        |
+| `System` / `Prompt`     | engine defaults                        | Override prompts per model.                                                        |
+| `Format`                | `""`                                   | Response hint (`json`, `text`, `markdown`).                                        |
+| `Schema` / `SchemaFile` | engine defaults / empty                | Inline vs file JSON schema (labels).                                               |
+| `TensorFlow`            | nil                                    | Local TF model info (paths, tags).                                                 |
+| `Options`               | nil                                    | Sampling/settings merged with engine defaults.                                     |
+| `Service`               | nil                                    | Remote endpoint config (see below).                                                |
 
 #### Run Modes
 
@@ -107,7 +107,7 @@ Models:
 ```yaml
 Models:
   - Type: labels
-    Model: qwen2.5vl:7b
+    Model: gemma3:latest
     Engine: ollama
     Run: newly-indexed
     Service:
@@ -133,17 +133,28 @@ Models:
 
 More OpenAI guidance: [`internal/ai/vision/openai/README.md`](openai/README.md).
 
-#### Custom TensorFlow Caption (local file model)
+#### Custom TensorFlow Labels (SavedModel)
 
 ```yaml
 Models:
-  - Type: caption
-    Name: custom-caption
+  - Type: labels
+    Name: transformer
     Engine: tensorflow
-    Path: storage/models/custom-caption
-    Resolution: 448
-    Run: manual
+    Path: transformer   # resolved under assets/models
+    Resolution: 224     # keep standard TF input size unless your model differs
+    TensorFlow:
+      Output:
+        Logits: true    # set true for most TF2 SavedModel classifiers
 ```
+
+### Custom TensorFlow Models — What’s Supported
+
+- Scope: Classification tasks only (`labels`). TensorFlow models cannot generate captions today; use Ollama or OpenAI for captions.
+- Location & paths: If `Path` is empty, the model is loaded from `assets/models/<name>` (lowercased, underscores). If `Path` is set, it is still searched under `assets/models`; absolute paths are not supported.
+- Expected files: `saved_model.pb`, a `variables/` directory, and a `labels.txt` alongside the model; use TF2 SavedModel classifiers.
+- Resolution: Stays at 224px unless your model requires a different input size; adjust `Resolution` and the `TensorFlow.Input` block if needed.
+- Sources: Labels produced by TensorFlow models are recorded with source `image`; overriding the source isn’t supported yet.
+- Config file: `vision.yml` is the conventional name; in the latest version, `.yaml` is also supported by the loader.
 
 ### CLI Quick Reference
 
