@@ -34,6 +34,10 @@
     opacity: 0.75;
 }
 
+.v-tab__slider {
+    color: rgb(var(--v-theme-surface-variant)) !important;
+}
+
 /* Themes */
 
 body.dark-theme {
