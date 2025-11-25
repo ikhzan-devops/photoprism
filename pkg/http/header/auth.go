@@ -60,10 +60,10 @@ func Authorization(c *gin.Context) (authType, authToken string) {
 		return "", ""
 	} else if s := c.GetHeader(Auth); s == "" {
 		// Ignore.
-	} else if t := strings.Split(s, " "); len(t) != 2 {
+	} else if typ, token, ok := strings.Cut(s, " "); !ok {
 		// Ignore.
 	} else {
-		return ID(t[0]), ID(t[1])
+		return ID(typ), ID(token)
 	}
 
 	return "", ""
