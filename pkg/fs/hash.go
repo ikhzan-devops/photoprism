@@ -24,7 +24,10 @@ func Hash(fileName string) string {
 
 	hash := sha1.New() //nolint:gosec // legacy SHA1 hashes retained for compatibility
 
-	if _, err := io.Copy(hash, file); err != nil {
+	buf := getCopyBuffer()
+	defer putCopyBuffer(buf)
+
+	if _, err = io.CopyBuffer(hash, file, buf); err != nil {
 		return ""
 	}
 
@@ -45,7 +48,10 @@ func Checksum(fileName string) string {
 
 	hash := crc32.New(checksum.Crc32Castagnoli)
 
-	if _, err := io.Copy(hash, file); err != nil {
+	buf := getCopyBuffer()
+	defer putCopyBuffer(buf)
+
+	if _, err = io.CopyBuffer(hash, file, buf); err != nil {
 		return ""
 	}
 

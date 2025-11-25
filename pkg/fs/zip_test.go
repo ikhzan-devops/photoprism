@@ -3,6 +3,7 @@ package fs
 import (
 	"archive/zip"
 	"encoding/binary"
+	"fmt"
 	"math"
 	"os"
 	"path/filepath"
@@ -47,26 +48,30 @@ func TestUnzip_SkipRulesAndLimits(t *testing.T) {
 	}
 	writeZip(t, zipPath, entries)
 
-	// totalSizeLimit == 0 → skip everything
-	files, skipped, err := Unzip(zipPath, filepath.Join(dir, "a"), 0, 0)
-	assert.NoError(t, err)
-	assert.Empty(t, files)
-	assert.GreaterOrEqual(t, len(skipped), 1)
+	t.Run("UnlimitedTotalSize", func(t *testing.T) {
+		files, skipped, err := Unzip(zipPath, filepath.Join(dir, "a"), 0, 0)
+		assert.NoError(t, err)
+		assert.ElementsMatch(t, []string{
+			filepath.Join(dir, "a", "ok1.txt"),
+			filepath.Join(dir, "a", "ok2.txt"),
+		}, files)
+		assert.GreaterOrEqual(t, len(skipped), 2) // __MACOSX and evil path skipped
+	})
+	t.Run("WithEntryAndTotalLimits", func(t *testing.T) {
+		outDir := filepath.Join(dir, "b")
+		files, skipped, err := Unzip(zipPath, outDir, 2, 3) // file limit=2 bytes; total limit=3 bytes
+		assert.NoError(t, err)
 
-	// Apply per-file and total limits
-	outDir := filepath.Join(dir, "b")
-	files, skipped, err = Unzip(zipPath, outDir, 2, 3) // file limit=2 bytes; total limit=3 bytes
-	assert.NoError(t, err)
-
-	// ok1 (3 bytes) skipped by file limit; evil skipped by '..'; __MACOSX skipped by prefix
-	// ok2 (1 byte) allowed; total limit reduces to 2; nothing else left that fits
-	assert.ElementsMatch(t, []string{filepath.Join(outDir, "ok2.txt")}, files)
-	// Ensure file written
-	b, rerr := os.ReadFile(filepath.Join(outDir, "ok2.txt")) //nolint:gosec // test helper reads temp file
-	assert.NoError(t, rerr)
-	assert.Equal(t, []byte("x"), b)
-	// Skipped contains at least the three excluded entries
-	assert.GreaterOrEqual(t, len(skipped), 3)
+		// ok1 (3 bytes) skipped by file limit; evil skipped by '..'; __MACOSX skipped by prefix
+		// ok2 (1 byte) allowed; total limit reduces to 2; nothing else left that fits
+		assert.ElementsMatch(t, []string{filepath.Join(outDir, "ok2.txt")}, files)
+		// Ensure file written
+		b, rerr := os.ReadFile(filepath.Join(outDir, "ok2.txt")) //nolint:gosec // test helper reads temp file
+		assert.NoError(t, rerr)
+		assert.Equal(t, []byte("x"), b)
+		// Skipped contains at least the three excluded entries
+		assert.GreaterOrEqual(t, len(skipped), 3)
+	})
 }
 
 func TestUnzip_AbsolutePathRejected(t *testing.T) {
@@ -160,6 +165,25 @@ func TestUnzip_SkipsVeryLargeEntry(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Empty(t, files)
 	assert.Contains(t, skipped, "huge.bin")
+}
+
+func TestUnzip_EntryLimit(t *testing.T) {
+	dir := t.TempDir()
+	zipPath := filepath.Join(dir, "limit.zip")
+
+	entries := map[string][]byte{}
+	for i := 0; i < 5; i++ {
+		entries[fmt.Sprintf("f%d.txt", i)] = []byte("x")
+	}
+	writeZip(t, zipPath, entries)
+
+	orig := MaxUnzipEntries
+	MaxUnzipEntries = 3
+	defer func() { MaxUnzipEntries = orig }()
+
+	_, _, err := Unzip(zipPath, filepath.Join(dir, "out"), 0, 0)
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "entry limit")
 }
 
 // writeZip64Stub writes a minimal ZIP64 archive with one stored entry and custom size values.
@@ -361,4 +385,119 @@ func TestZip(t *testing.T) {
 			t.Fatal(err)
 		}
 	})
+}
+
+func TestSafeJoin(t *testing.T) {
+	base := filepath.Clean("/tmp/base")
+
+	if runtime.GOOS == "windows" {
+		base = filepath.Clean(`C:\tmp\base`)
+	}
+
+	type testCase struct {
+		name     string
+		baseDir  string
+		input    string
+		wantErr  bool
+		wantPath string
+	}
+
+	tests := []testCase{
+		{
+			name:     "SimpleFile",
+			baseDir:  base,
+			input:    "a.txt",
+			wantPath: filepath.Join(base, "a.txt"),
+		},
+		{
+			name:     "NestedRelative",
+			baseDir:  base,
+			input:    "nested/dir/file.jpg",
+			wantPath: filepath.Join(base, "nested", "dir", "file.jpg"),
+		},
+		{
+			name:    "EmptyName",
+			baseDir: base,
+			input:   "",
+			wantErr: true,
+		},
+		{
+			name:    "DotDotTraversal",
+			baseDir: base,
+			input:   "../secret.txt",
+			wantErr: true,
+		},
+		{
+			name:     "MixedSeparatorsTraversal",
+			baseDir:  base,
+			input:    `dir\..\evil.txt`,
+			wantPath: filepath.Join(base, "evil.txt"),
+		},
+		{
+			name:     "ContainsParentInMiddle",
+			baseDir:  base,
+			input:    "dir/../evil.txt",
+			wantPath: filepath.Join(base, "evil.txt"),
+		},
+		{
+			name:    "AbsoluteUnix",
+			baseDir: base,
+			input:   "/etc/passwd",
+			wantErr: true,
+		},
+		{
+			name:    "WindowsVolumeForwardSlash",
+			baseDir: base,
+			input:   "C:/Windows/System32/evil.txt",
+			wantErr: true,
+		},
+		{
+			name:    "WindowsVolumeBackslash",
+			baseDir: base,
+			input:   `D:\Data\evil.txt`,
+			wantErr: true,
+		},
+		{
+			name:     "CleansInsideBase",
+			baseDir:  base,
+			input:    "sub/../ok.txt",
+			wantPath: filepath.Join(base, "ok.txt"),
+		},
+		{
+			name:     "RepeatedSeparators",
+			baseDir:  base,
+			input:    "dir//file.txt",
+			wantPath: filepath.Join(base, "dir", "file.txt"),
+		},
+		{
+			name:    "VolumeNameOnly",
+			baseDir: base,
+			input:   "C:",
+			wantErr: true,
+		},
+		{
+			name:    "RootedBackslashUnix",
+			baseDir: base,
+			input:   `\evil.txt`,
+			wantErr: true,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			got, err := safeJoin(tc.baseDir, tc.input)
+			if tc.wantErr {
+				if err == nil {
+					t.Fatalf("expected error, got none (path=%q)", got)
+				}
+				return
+			}
+			if err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
+			if got != tc.wantPath {
+				t.Fatalf("unexpected path: got %q want %q", got, tc.wantPath)
+			}
+		})
+	}
 }

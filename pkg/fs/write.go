@@ -72,7 +72,10 @@ func WriteFileFromReader(fileName string, reader io.Reader) (err error) {
 		return err
 	}
 
-	_, err = io.Copy(file, reader)
+	buf := getCopyBuffer()
+	defer putCopyBuffer(buf)
+
+	_, err = io.CopyBuffer(file, reader, buf)
 
 	if closeErr := file.Close(); closeErr != nil && err == nil {
 		err = closeErr

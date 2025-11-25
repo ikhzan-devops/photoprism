@@ -11,6 +11,9 @@ import (
 	"strings"
 )
 
+// MaxUnzipEntries caps the number of entries extracted by Unzip. It may be tuned via config/env later.
+var MaxUnzipEntries = 100000
+
 // Zip compresses one or many files into a single zip archive file.
 func Zip(zipName string, files []string, compress bool) (err error) {
 	// Create zip file directory if it does not yet exist.
@@ -94,6 +97,7 @@ func ZipFile(zipWriter *zip.Writer, fileName, fileAlias string, compress bool) (
 }
 
 // Unzip extracts the contents of a zip file to the target directory.
+// totalSizeLimit: 0 means unlimited; -1 also means unlimited (reserved for backward compatibility).
 func Unzip(zipName, dir string, fileSizeLimit, totalSizeLimit int64) (files []string, skipped []string, err error) {
 	zipReader, err := zip.OpenReader(zipName)
 
@@ -103,10 +107,21 @@ func Unzip(zipName, dir string, fileSizeLimit, totalSizeLimit int64) (files []st
 
 	defer zipReader.Close()
 
-	for _, zipFile := range zipReader.File {
+	// Treat 0 as no limit; negative also unlimited.
+	if totalSizeLimit == 0 {
+		totalSizeLimit = -1
+	}
+
+	entryLimit := MaxUnzipEntries
+
+	for i, zipFile := range zipReader.File {
+		if entryLimit > 0 && i >= entryLimit {
+			return files, skipped, fmt.Errorf("zip entry limit exceeded (%d)", entryLimit)
+		}
+
 		// Skip directories like __OSX and potentially malicious file names containing "..".
 		if strings.HasPrefix(zipFile.Name, "__") || strings.Contains(zipFile.Name, "..") ||
-			totalSizeLimit == 0 || fileSizeLimit > 0 && zipFile.UncompressedSize64 > uint64(fileSizeLimit) {
+			fileSizeLimit > 0 && zipFile.UncompressedSize64 > uint64(fileSizeLimit) {
 			skipped = append(skipped, zipFile.Name)
 			continue
 		}
@@ -218,15 +233,31 @@ func safeJoin(baseDir, name string) (string, error) {
 	if name == "" {
 		return "", fmt.Errorf("invalid zip path")
 	}
+
+	// Normalize separators so mixed '/' and '\\' are handled consistently.
+	name = strings.ReplaceAll(name, "\\", "/")
+
+	// Reject Windows-style volume names even on non-Windows platforms.
+	if len(name) >= 2 && name[1] == ':' && ((name[0] >= 'A' && name[0] <= 'Z') || (name[0] >= 'a' && name[0] <= 'z')) {
+		return "", fmt.Errorf("invalid zip path: absolute or volume path not allowed")
+	}
+
 	if filepath.IsAbs(name) || filepath.VolumeName(name) != "" {
 		return "", fmt.Errorf("invalid zip path: absolute or volume path not allowed")
 	}
+
 	cleaned := filepath.Clean(name)
-	// Prevent paths that resolve outside the base dir.
-	dest := filepath.Join(baseDir, cleaned)
 	base := filepath.Clean(baseDir)
-	if dest != base && !strings.HasPrefix(dest, base+string(os.PathSeparator)) {
+
+	dest := filepath.Join(base, cleaned)
+	rel, err := filepath.Rel(base, dest)
+	if err != nil {
+		return "", fmt.Errorf("invalid zip path: %w", err)
+	}
+
+	if rel == ".." || strings.HasPrefix(rel, ".."+string(os.PathSeparator)) {
 		return "", fmt.Errorf("invalid zip path: outside target directory")
 	}
+
 	return dest, nil
 }

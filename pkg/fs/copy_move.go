@@ -72,7 +72,10 @@ func Copy(src, dest string, force bool) (err error) {
 
 	defer destFile.Close()
 
-	_, err = io.Copy(destFile, thisFile)
+	buf := getCopyBuffer()
+	defer putCopyBuffer(buf)
+
+	_, err = io.CopyBuffer(destFile, thisFile, buf)
 
 	if err != nil {
 		return err
