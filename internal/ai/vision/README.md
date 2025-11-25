@@ -73,7 +73,7 @@ Used for Ollama/OpenAI (and any future HTTP engines). All credentials and identi
 | `Key`                              | `""`                                     | Bearer token; prefer env expansion.                  |
 | `Username` / `Password`            | `""`                                     | Injected as basic auth when URI lacks userinfo.      |
 | `Model`                            | `""`                                     | Endpoint-specific override; wins over model/name.    |
-| `Org` / `Project`                  | `""`                                     | OpenAI headers.                                      |
+| `Org` / `Project`                  | `""`                                     | OpenAI headers (org/proj IDs)                        |
 | `RequestFormat` / `ResponseFormat` | set by engine alias                      | Explicit values win over alias defaults.             |
 | `FileScheme`                       | set by engine alias (`data` or `base64`) | Controls image transport.                            |
 | `Disabled`                         | `false`                                  | Disable the endpoint without removing the model.     |
