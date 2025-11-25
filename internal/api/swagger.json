@@ -4542,6 +4542,12 @@
                 "options": {
                     "$ref": "#/definitions/vision.ApiRequestOptions"
                 },
+                "org": {
+                    "type": "string"
+                },
+                "project": {
+                    "type": "string"
+                },
                 "prompt": {
                     "type": "string"
                 },
@@ -4797,6 +4803,9 @@
                 "format": {
                     "type": "string"
                 },
+                "model": {
+                    "type": "string"
+                },
                 "name": {
                     "type": "string"
                 },
@@ -4895,6 +4904,18 @@
                     "type": "string"
                 },
                 "method": {
+                    "type": "string"
+                },
+                "model": {
+                    "description": "Optional endpoint-specific model override.",
+                    "type": "string"
+                },
+                "org": {
+                    "description": "Optional organization header (e.g. OpenAI).",
+                    "type": "string"
+                },
+                "project": {
+                    "description": "Optional project header (e.g. OpenAI).",
                     "type": "string"
                 },
                 "requestFormat": {
