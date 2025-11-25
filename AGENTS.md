@@ -25,13 +25,13 @@ Learn more: https://agents.md/
 ### Specifications, Versioning, & Writing Style
 
 - In the main repo, `specs/` and other directories may appear to be ignored because they are nested Git repositories; if so, change directories before staging or committing updates.
-- Availability: The `specs/` repository is private and is not guaranteed to be present in every clone or environment. Do not add `Makefile` targets in the main project that depend on `specs/` paths. When `specs/` is available, run its tools directly (e.g., `bash specs/scripts/lint-status.sh`).
+- Availability: The `specs/` repository is private and is not guaranteed to be present in every clone or environment. Do not add `Makefile` targets in the main project that depend on `specs/` paths. When `specs/` is available, you MAY run its tools manually (e.g., `bash specs/scripts/lint-status.sh`), but the main repo must remain buildable without `specs/`.
   - If available, always use the latest spec version for a topic (highest `-vN`), as linked from `specs/README.md`.
   - Testing Guides: `specs/dev/backend-testing.md` (Backend/Go), `specs/dev/frontend-testing.md` (Frontend/JS)
   - Whenever the Change Management instructions for a document require it, publish changes as a new file with an incremented version suffix (e.g., `*-v3.md`) rather than overwriting the original file.
   - Older spec versions remain in the repo for historical reference but are not linked from the main TOC. Do not base new work on superseded files (e.g., `*-v1.md` when `*-v2.md` exists).
   - Auto-generated configuration and command references live under `specs/generated/`. Agents MUST NOT read, analyse, or modify anything in this directory; refer humans to `specs/generated/README.md` if regeneration is required.
-- Regenerate `NOTICE` files with `make notice` when dependencies change. Do not edit `NOTICE` or `frontend/NOTICE` manually.
+- Regenerate `NOTICE` files with `make notice` when dependencies change (e.g., updates to `go.mod`, `go.sum`, `package-lock.json`, or other lockfiles). Do not edit `NOTICE` or `frontend/NOTICE` manually.
 - When writing CLI examples or scripts, place option flags before positional arguments unless the command requires a different order.
 
 > Document headings must use **Title Case** (in APA or AP style) across Markdown files to keep generated navigation and changelogs consistent. Always spell the product name as `PhotoPrism`; this proper noun is an exception to generic naming rules.
@@ -53,7 +53,7 @@ Learn more: https://agents.md/
 - Backend: Go (`internal/`, `pkg/`, `cmd/`) + MariaDB/SQLite
   - Package boundaries: Code in `pkg/*` MUST NOT import from `internal/*`.
   - If you need access to config/entity/DB, put new code in a package under `internal/` instead of `pkg/`.
-  - GORM field naming: When adding struct fields that include uppercase abbreviations (e.g., `LabelNSFW`), set an explicit `gorm:"column:<name>"` tag so column names stay consistent (`label_nsfw` instead of `label_n_s_f_w`).
+- GORM field naming: When adding struct fields that include uppercase abbreviations (e.g., `LabelNSFW`, `UserID`, `URLHash`), set an explicit `gorm:"column:<name>"` tag so column names stay consistent (`label_nsfw`, `user_id`, `url_hash` instead of split-letter variants).
 - Frontend: Vue 3 + Vuetify 3 (`frontend/`)
 - Docker/compose for dev/CI; Traefik is used for local TLS (`*.localssl.dev`)
 
@@ -76,16 +76,15 @@ Agents MAY run either:
 
 Agents SHOULD detect the runtime and choose commands accordingly:
 
-- **Inside container if** one of the following is true:
-  - File exists: `/.dockerenv`
-  - Project path equals (or is a direct child of): `/go/src/github.com/photoprism/photoprism`
+- **Inside container if** `/.dockerenv` exists (authoritative signal).
+- Path hint: when the project path is `/go/src/github.com/photoprism/photoprism` *and* `/.dockerenv` is absent, assume you are on the host with a bind mount; treat it as host mode and prefer host-side Docker commands.
 
 #### Examples
 
 Bash:
 
 ```bash
-if [ -f "/.dockerenv" ] || [ -d "/go/src/github.com/photoprism/photoprism/.git" ]; then
+if [ -f "/.dockerenv" ]; then
   echo "container"
 else
   echo "host"
@@ -97,8 +96,7 @@ Node.js:
 ```js
 const fs = require("fs");
 const inContainer = fs.existsSync("/.dockerenv");
-const inDevPath = fs.existsSync("/go/src/github.com/photoprism/photoprism/.git");
-console.log(inContainer || inDevPath ? "container" : "host");
+console.log(inContainer ? "container" : "host");
 ```
 
 ### Agent installation and invocation
@@ -144,7 +142,7 @@ console.log(inContainer || inDevPath ? "container" : "host");
       - Only if Traefik is running and the dev compose labels are active
       - Labels for `*.localssl.dev` are defined in the dev compose files, e.g. https://github.com/photoprism/photoprism/blob/develop/compose.yaml
   - Admin Login: Local compose files set `PHOTOPRISM_ADMIN_USER=admin` and `PHOTOPRISM_ADMIN_PASSWORD=photoprism`; if the credentials differ, inspect `compose.yaml` (or the active environment) for these variables before logging in.
-  - Do not use the Docker CLI inside the container; starting/stopping services requires host Docker access.
+  - Do not use the Docker CLI inside the container; starting/stopping services requires host Docker access. If you need to manage compose while inside the dev container, switch to host mode (or ask a human) instead of running `docker compose` there.
 
 Note: Across our public documentation, official images, and in production, the command-line interface (CLI) name is `photoprism`. Other PhotoPrism binary names are only used in development builds for side-by-side comparisons of the Community Edition (CE) with PhotoPrism Plus (`photoprism-plus`) and PhotoPrism Pro (`photoprism-pro`).
 
