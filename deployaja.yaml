@@ -1,30 +1,43 @@
 name: photoprism
 version: 1.0.0
-description: My awesome application
+description: Photoprism on DeployAja
+
 container:
   image: photoprism:latest
-  port: 3000
+  port: 2342   # port WAJIB 2342
+
 resources:
-  cpu: 100m
-  memory: 128Mi
+  cpu: 300m
+  memory: 512Mi
   replicas: 1
+
 env:
-  - name: NODE_ENV
-    value: production
-  -  name: DB_PORT
-     value: '3309'
+  - name: PHOTOPRISM_ADMIN_PASSWORD
+    value: admin
+  - name: PHOTOPRISM_DATABASE_DRIVER
+    value: mysql
+  - name: PHOTOPRISM_DATABASE_SERVER
+    value: mysql:3306
+  - name: PHOTOPRISM_DATABASE_NAME
+    value: photoprism
+  - name: PHOTOPRISM_DATABASE_USER
+    value: root
+  - name: PHOTOPRISM_DATABASE_PASSWORD
+    valueFrom:
+      secret: DB_PASSWORD
+
 dependencies:
   - type: mysql
-    name: mysql   
+    name: mysql
     version: "8.0"
     size: 1Gi
+
 domain: photoprism.deployaja.id
-envMap:
-  db_host: DB_HOST
-  db_name: DB_DATABASE
-  db_user: DB_USERNAME
-  db_password: DB_PASSWORD
+
 volumes:
   - name: photoprism-storage
     size: 1Gi
-    mountPath: /config
+    mountPath: /photoprism/storage
+  - name: photoprism-originals
+    size: 1Gi
+    mountPath: /photoprism/originals
