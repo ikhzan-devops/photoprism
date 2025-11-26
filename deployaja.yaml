@@ -11,9 +11,20 @@ resources:
 env:
   - name: NODE_ENV
     value: production
-
+  -  name: DB_PORT
+     value: '3309'
 dependencies:
   - type: mysql
     name: mysql   
     version: "8.0"
+    size: 1Gi
 domain: photoprism.deployaja.id
+envMap:
+  db_host: DB_HOST
+  db_name: DB_DATABASE
+  db_user: DB_USERNAME
+  db_password: DB_PASSWORD
+volumes:
+  - name: photoprism-storage
+    size: 1Gi
+    mountPath: /config
