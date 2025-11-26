@@ -1,0 +1,18 @@
+name: photoprism
+version: 1.0.0
+description: My awesome application
+container:
+  image: photoprism:latest
+  port: 3000
+resources:
+  cpu: 100m
+  memory: 128Mi
+  replicas: 1
+env:
+  - name: NODE_ENV
+    value: production
+
+dependencies:
+  - type: MYSQL
+    name: MYSQL    
+domain: photoprism.deployaja.id
