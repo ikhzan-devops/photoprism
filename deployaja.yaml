@@ -15,4 +15,5 @@ env:
 dependencies:
   - type: MYSQL
     name: MYSQL    
+    version: "8.0"
 domain: photoprism.deployaja.id
