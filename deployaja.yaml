@@ -13,7 +13,7 @@ env:
     value: production
 
 dependencies:
-  - type: MYSQL
-    name: MYSQL    
+  - type: mysql
+    name: mysql   
     version: "8.0"
 domain: photoprism.deployaja.id
