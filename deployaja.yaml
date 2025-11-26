@@ -4,7 +4,7 @@ description: Photoprism on DeployAja
 
 container:
   image: photoprism:latest
-  port: 2342   # port WAJIB 2342
+  port: 2342
 
 resources:
   cpu: 300m
@@ -23,14 +23,16 @@ env:
   - name: PHOTOPRISM_DATABASE_USER
     value: root
   - name: PHOTOPRISM_DATABASE_PASSWORD
-    valueFrom:
-      secret: DB_PASSWORD
+    value: ${DB_PASSWORD}
 
 dependencies:
   - type: mysql
     name: mysql
     version: "8.0"
     size: 1Gi
+
+secrets:
+  DB_PASSWORD: "your-db-password"
 
 domain: photoprism.deployaja.id
 
